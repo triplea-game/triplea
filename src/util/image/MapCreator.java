@@ -213,7 +213,8 @@ public class MapCreator extends JFrame {
         try {
           DesktopUtilityBrowserLauncher.openFile(
               new File(GameRunner2.getRootFolder(), "doc" + File.separator + "map_and_map_skin_making_overview.html"));
-          // DesktopUtilityBrowserLauncher.openURL(GameRunner.getRootFolder().getAbsoluteFile() + File.separator + "doc" + File.separator +
+          // DesktopUtilityBrowserLauncher.openURL(GameRunner.getRootFolder().getAbsoluteFile() + File.separator + "doc"
+          // + File.separator +
           // "map_and_map_skin_making_overview.html");
         } catch (final Exception e1) {
           e1.printStackTrace();

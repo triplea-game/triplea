@@ -15,7 +15,8 @@ import org.apache.commons.httpclient.methods.GetMethod;
  * <p>
  * Generally there is one lobby server, but that server may move.
  * <p>
- * To keep track of this, we always have a properties file in a constant location that points to the current lobby server.
+ * To keep track of this, we always have a properties file in a constant location that points to the current lobby
+ * server.
  * <p>
  * The properties file may indicate that the server is not available using the ERROR_MESSAGE key.
  * <p>

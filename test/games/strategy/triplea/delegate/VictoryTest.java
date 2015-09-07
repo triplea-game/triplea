@@ -112,7 +112,8 @@ public class VictoryTest extends TestCase {
     assertEquals(error, null);
   }
 
-  // test if it gives the unit can't blitz error instead of the unit lost blitz error if a non-blitzing unit tries to blitz!
+  // test if it gives the unit can't blitz error instead of the unit lost blitz error if a non-blitzing unit tries to
+  // blitz!
   public void testMotorizedThroughMountain() {
     final Territory libya = m_data.getMap().getTerritory("Libya");
     final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");

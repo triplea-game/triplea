@@ -8,8 +8,10 @@ import games.strategy.engine.data.GameData;
  * </p>
  */
 public class Properties implements Constants {
-  // These should always default to false, if boolean, and if not should default to whatever is the "default" behavior of TripleA.
-  // If you want something to default to "true", when change the wording of the constant to make it a negative of itself, then default to
+  // These should always default to false, if boolean, and if not should default to whatever is the "default" behavior
+  // of TripleA.
+  // If you want something to default to "true", when change the wording of the constant to make it a negative of
+  // itself, then default to
   // false. (ex: "Do not do something", false; instead of "Do something", true;)
   public static int getNeutralCharge(final GameData data) {
     return data.getProperties().get(NEUTRAL_CHARGE_PROPERTY, 0);

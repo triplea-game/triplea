@@ -421,7 +421,8 @@ public class ServerLauncher extends AbstractLauncher {
       e.printStackTrace();
       if (m_headless && HeadlessGameServer.getInstance() != null) {
         HeadlessGameServer.getInstance().printThreadDumpsAndStatus();
-        // TODO: We seem to be getting this bug once a week (1.8.0.1 and previous versions). Trying a fix for 1.8.0.3, need to see if it
+        // TODO: We seem to be getting this bug once a week (1.8.0.1 and previous versions). Trying a fix for 1.8.0.3,
+        // need to see if it
         // works.
       }
     }

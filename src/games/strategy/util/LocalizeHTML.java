@@ -13,7 +13,8 @@ public class LocalizeHTML {
   public static final String ASSET_IMAGE_FOLDER = "doc/images/";
   public static final String ASSET_IMAGE_NOT_FOUND = "notFound.png";
   /*
-   * You would think that there would be a single standardized REGEX for pulling html links out of <img> tags and <a> tags.
+   * You would think that there would be a single standardized REGEX for pulling html links out of <img> tags and <a>
+   * tags.
    * But there isn't, and the internet seems to give million different answers, none of which work perfectly.
    * So here are the best one I could find.
    * Regex's found at http://www.mkyong.com/
@@ -93,7 +94,8 @@ public class LocalizeHTML {
   }
 
   /**
-   * This is only useful once we are IN a game. Before we go into the game, resource loader will either be null, or be the last game's
+   * This is only useful once we are IN a game. Before we go into the game, resource loader will either be null, or be
+   * the last game's
    * resource loader.
    */
   public static String localizeImgLinksInHTML(final String htmlText) {

@@ -342,7 +342,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param distance
    * @param cond
    * @return All neighbors within a certain distance of the starting territory set that match the condition.
-   *         Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each other.
+   *         Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each
+   *         other.
    */
   public Set<Territory> getNeighbors(final Set<Territory> frontier, final int distance, final Match<Territory> cond) {
     final Set<Territory> rVal = getNeighbors(frontier, new HashSet<Territory>(frontier), distance, cond);
@@ -354,7 +355,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param frontier
    * @param distance
    * @return All neighbors within a certain distance of the starting territory set.
-   *         Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each other.
+   *         Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each
+   *         other.
    */
   public Set<Territory> getNeighbors(final Set<Territory> frontier, final int distance) {
     final Set<Territory> rVal = getNeighbors(frontier, new HashSet<Territory>(frontier), distance);
@@ -454,9 +456,11 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   /**
    * A composite route between two territories
    * Example set of matches: [Friendly Land, score: 1] [Enemy Land, score: 2] [Neutral Land, score = 4]
-   * With this example set, an 8 length friendly route is considered equal in score to a 4 length enemy route and a 2 length neutral route.
+   * With this example set, an 8 length friendly route is considered equal in score to a 4 length enemy route and a 2
+   * length neutral route.
    * This is because the friendly route score is 1/2 of the enemy route score and 1/4 of the neutral route score.
-   * Note that you can choose whatever scores you want, and that the matches can mix and match with each other in any way.
+   * Note that you can choose whatever scores you want, and that the matches can mix and match with each other in any
+   * way.
    * (Recommended that you use 2,3,4 as scores, unless you will allow routes to be much longer under certain conditions)
    * Returns null if there is no route that exists that matches any of the matches.
    *
@@ -546,7 +550,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *        end territory of the route
    * @param cond
    *        condition that covered territories of the route must match EXCEPT FOR THE END
-   * @return the distance between two territories where the covered territories of the route (except the end) satisfy the condition
+   * @return the distance between two territories where the covered territories of the route (except the end) satisfy
+   *         the condition
    *         or -1 if they are not connected. (Distance includes to the end)
    */
   public int getDistance_IgnoreEndForCondition(final Territory t1, final Territory t2, final Match<Territory> cond) {

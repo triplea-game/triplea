@@ -244,7 +244,8 @@ public class AdvancedUtils {
         // If the carrier has been filled or overflowed
         if (spaceLeftOnSeekedCarrier <= 0) {
           if (spaceLeftOnSeekedCarrier < 0) {
-            // Move current unit index up one, so we re-process this unit (since it can't fit on the current seeked carrier)
+            // Move current unit index up one, so we re-process this unit (since it can't fit on the current seeked
+            // carrier)
             i++;
           }
           // If the seeked carrier is earlier in the list

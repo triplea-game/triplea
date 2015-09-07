@@ -5,7 +5,8 @@ import javax.swing.JOptionPane;
 /**
  * This class starts and runs the game.
  * <p>
- * This class is compiled to run under older jdks (1.3 at least), and should not do anything more than check the java version
+ * This class is compiled to run under older jdks (1.3 at least), and should not do anything more than check the java
+ * version
  * number, and then delegate to GameRunner2
  * <p>
  */

@@ -36,10 +36,12 @@ public class AIAlgorithm {
         childCounter++;
         // Have we seen this child state before?
         if (!visitedStates.contains(child)) {
-          // System.out.println("Considering child " + child + " #"+childCounter + " at depth " + depth + " created by move " +
+          // System.out.println("Considering child " + child + " #"+childCounter + " at depth " + depth + " created by
+          // move " +
           // child.getMove());
           // Mark that we've now seen this child state
-          // System.out.println("We have now seen " + child + " at depth " + depth + " created by move " + child.getMove());
+          // System.out.println("We have now seen " + child + " at depth " + depth + " created by move " +
+          // child.getMove());
           visitedStates.add(child);
           // Is the child state a win state?
           if (child.gameIsOver()) {
@@ -55,7 +57,8 @@ public class AIAlgorithm {
             }
           }
         }
-        // else System.out.println("HAVE already seen " + child + " #"+childCounter + " now at depth " + depth+ " created by move " +
+        // else System.out.println("HAVE already seen " + child + " #"+childCounter + " now at depth " + depth+ "
+        // created by move " +
         // child.getMove());
       }
     }

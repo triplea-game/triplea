@@ -14,7 +14,8 @@ class ServerLoginHelper {
    * 1) client writes user name
    * 1) server writes challenge string (or null if no challenge, at which point the communication ends)
    * 2) client writes credentials in response to challenge string
-   * 3) server reads credentials, sends null and then client name if login suceeds, otherwise an error message and the connection is closed
+   * 3) server reads credentials, sends null and then client name if login suceeds, otherwise an error message and the
+   * connection is closed
    */
   private final static Logger s_logger = Logger.getLogger(ServerLoginHelper.class.getName());
   private final SocketAddress m_remoteAddress;

@@ -94,7 +94,10 @@ public class SUtils {
     return waterTerrs;
   }
 
-  /** returns all territories that are water territories. used to remove convoy zones from places the ai will put a factory */
+  /**
+   * returns all territories that are water territories. used to remove convoy zones from places the ai will put a
+   * factory
+   */
   public static List<Territory> onlyWaterTerr(final GameData data, final List<Territory> allTerr) {
     final List<Territory> water = new ArrayList<Territory>(allTerr);
     final Iterator<Territory> wFIter = water.iterator();
@@ -346,7 +349,8 @@ public class SUtils {
     // failsafe, just freaking attack already damnit!
     if (weWin && (eTUV == 0 || (((SUtils.strength(defenderUnits, false, eTerr.isWater(), tFirst) * 5F) + 10F) < SUtils
         .strength(invasionUnits, true, eTerr.isWater(), tFirst)))) {
-      // essentially, when a player can't build a unit, it has ZERO TUV, so this means the AIs will never attack it if they
+      // essentially, when a player can't build a unit, it has ZERO TUV, so this means the AIs will never attack it if
+      // they
       return true;
       // consider TUV value. this is because the TUV is not listed in the cost map
     }
@@ -639,9 +643,9 @@ public class SUtils {
     return isLand;
   }
 
-  /*
+  /**
    * distance to the closest enemy
-   * just utilises findNearest
+   * just uses findNearest
    */
   public static int distanceToEnemy(final Territory t, final GameData data, final PlayerID player, final boolean sea) {
     // note: neutrals are enemies
@@ -688,7 +692,8 @@ public class SUtils {
   /**
    * List containing all 'live' enemy capitals (ones owned by original owner)
    */
-  public static List<Territory> getLiveEnemyCapitals(final GameData data, final PlayerID player) { // generate a list of all enemy capitals
+  public static List<Territory> getLiveEnemyCapitals(final GameData data, final PlayerID player) { // generate a list of
+                                                                                                   // all enemy capitals
     final List<Territory> enemyCapitals = new ArrayList<Territory>();
     final List<PlayerID> ePlayers = SUtils.getEnemyPlayers(data, player);
     for (final PlayerID otherPlayer : ePlayers) {
@@ -1242,13 +1247,6 @@ public class SUtils {
 
   /**
    * does not count planes already in the starting territory
-   *
-   * @param start
-   * @param maxDistance
-   * @param player
-   * @param data
-   * @param ignore
-   * @param checked
    */
   private static List<Unit> findPlaneAttackersThatCanLand(final Territory start, final int maxDistance,
       final PlayerID player, final GameData data, final List<Territory> ignore, final List<Territory> checked) {
@@ -1398,7 +1396,8 @@ public class SUtils {
   }
 
   /**
-   * Find Route from start to a Territory having endCondition which has a maximum of a certain set of Units (unitCondition)
+   * Find Route from start to a Territory having endCondition which has a maximum of a certain set of Units
+   * (unitCondition)
    *
    * @param start
    *        - initial territory
@@ -1475,7 +1474,9 @@ public class SUtils {
   /**
    * Returns a list of all territories containing owned AirCraft Carriers
    */
-  public static List<Territory> ACTerritory(final PlayerID player, final GameData data) { // Return Territories containing AirCraft Carriers
+  public static List<Territory> ACTerritory(final PlayerID player, final GameData data) { // Return Territories
+                                                                                          // containing AirCraft
+                                                                                          // Carriers
     final List<Territory> carriers = new ArrayList<Territory>();
     final CompositeMatch<Unit> ourCarrier =
         new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player));
@@ -1668,7 +1669,8 @@ public class SUtils {
       }
       final IntegerMap<Territory> terrProd = new IntegerMap<Territory>();
       for (final Territory prodTerr : owned) {
-        // sorting territories to have ones with greatest production and closeness to enemy first (by land, then by sea) (veqryn)
+        // sorting territories to have ones with greatest production and closeness to enemy first (by land, then by sea)
+        // (veqryn)
         int territoryValue = 0;
         if (hasLandRouteToEnemyOwnedCapitol(prodTerr, player, data)) {
           territoryValue += 2;
@@ -1717,7 +1719,8 @@ public class SUtils {
     // because currently this entire factory location picker just picks the first good territory it finds. (veqryn)
     final IntegerMap<Territory> terrProd = new IntegerMap<Territory>();
     for (final Territory prodTerr : owned) {
-      // sorting territories to have ones with greatest production and closeness to enemy first (by land, then by sea) (veqryn)
+      // sorting territories to have ones with greatest production and closeness to enemy first (by land, then by sea)
+      // (veqryn)
       int territoryValue = 0;
       if (hasLandRouteToEnemyOwnedCapitol(prodTerr, player, data)) {
         territoryValue += 3;
@@ -1812,7 +1815,8 @@ public class SUtils {
       }
       // int routeLength = nearEnemyRoute.getLength();
       final int factoryLength = factoryRoute.getLength();
-      if (buyfactory && hasLandRouteToEnemyOwnedCapitol(t, player, data) && factoryLength <= 8) // try to keep Britain from building in SA
+      if (buyfactory && hasLandRouteToEnemyOwnedCapitol(t, player, data) && factoryLength <= 8) // try to keep Britain
+                                                                                                // from building in SA
       {
         minTerr = t;
         // risk = 0.00F;
@@ -2109,7 +2113,8 @@ public class SUtils {
   public static float inviteTransports(final boolean noncombat, final Territory target,
       final float remainingStrengthNeeded, final Collection<Unit> unitsAlreadyMoved,
       final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final GameData data, final PlayerID player,
-      final boolean tFirst, final boolean allowEnemy, final List<Territory> seaTerrAttacked) { // needs a check for remainingStrength
+      final boolean tFirst, final boolean allowEnemy, final List<Territory> seaTerrAttacked) { // needs a check for
+                                                                                               // remainingStrength
     final CompositeMatch<Unit> airUnits = new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier,
         Matches.unitIsOwnedBy(player), Matches.UnitCanMove, Matches.unitHasMovementLeft);
     final CompositeMatch<Unit> escortShip = new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsNotTransport,
@@ -2759,7 +2764,8 @@ public class SUtils {
     }
     deadA = totDefend / 6;
     deadModD = totDefend % 6;
-    if (deadD == 0 && deadA == 0 && deadModA <= 2 && deadModD <= 2 && deadModA == deadModD) { // declare it a tie when equal attack/defend
+    if (deadD == 0 && deadA == 0 && deadModA <= 2 && deadModD <= 2 && deadModA == deadModD) { // declare it a tie when
+                                                                                              // equal attack/defend
                                                                                               // and 2 or less
       deadA = 1;
       deadD = 1;
@@ -3151,9 +3157,11 @@ public class SUtils {
      * intended to be self-nesting for each rule in bestAttack
      * countMax tells us which rule we are on...it should increase each time it is passed
      * parametersChanged tells us if the next call changed the parameters (forcing a change at this level)
-     * thisParametersChanged tells us if this routine changed parameters either way (by calculation or by return from a nested call)
+     * thisParametersChanged tells us if this routine changed parameters either way (by calculation or by return from a
+     * nested call)
      * Assumptions: 1) artillery purchased with infantry has a bonus
-     * 2) fighters have attack: 3 and defense: 4 TODO: Recode this to use fighter attack/defense and to handle tech bonus
+     * 2) fighters have attack: 3 and defense: 4 TODO: Recode this to use fighter attack/defense and to handle tech
+     * bonus
      */
     final Resource key = data.getResourceList().getResource(Constants.PUS);
     final Set<ProductionRule> ruleCheck = bestAttack.keySet();
@@ -3211,7 +3219,8 @@ public class SUtils {
     } else if (thisIsSub && uDefense >= 1) {
       uDefense--;
     }
-    // Encourage buying balanced units. Added by veqryn, to decrease the rate at which the AI buys walls, fortresses, and mortars, among
+    // Encourage buying balanced units. Added by veqryn, to decrease the rate at which the AI buys walls, fortresses,
+    // and mortars, among
     // other specialty units that should not be bought often if at all.
     if (u.getMovement(player) == 0) {
       uAttack = 0;
@@ -3228,9 +3237,11 @@ public class SUtils {
         uAttack--;
       }
     }
-    // TODO: stop it from buying zero movement units under all circumstances. Also, lessen the number of artillery type units bought
+    // TODO: stop it from buying zero movement units under all circumstances. Also, lessen the number of artillery type
+    // units bought
     // slightly. And lessen sub purchases, or eliminate entirely. (veqryn)
-    // TODO: some transport ships have large capacity, others have a small capacity and are made for fighting. Make sure if the AI is buying
+    // TODO: some transport ships have large capacity, others have a small capacity and are made for fighting. Make sure
+    // if the AI is buying
     // transports, it chooses high capacity transports even if more expensive and less att/def than normal ships
     int fightersremaining = fighters;
     int usableMaxUnits = maxUnits;
@@ -3252,7 +3263,8 @@ public class SUtils {
         if (thisIsSupportableInf) {
           supportableInfCount++;
         }
-        // give bonus of 1 hit per 2 units and if fighters are on the capital, a bonus for carrier equal to fighter attack or defense
+        // give bonus of 1 hit per 2 units and if fighters are on the capital, a bonus for carrier equal to fighter
+        // attack or defense
         int carrierLoad = Math.min(u.getCarrierCapacity(), fightersremaining);
         if (carrierLoad < 0) {
           carrierLoad = 0;
@@ -3738,7 +3750,8 @@ public class SUtils {
           landRankMap.put(eTerr, eTerrValue + netStrength * 0.50F);
         }
       }
-      // Currently there are a lot of territories that don't make it into the list, especially if the politics involves neutral nations. we
+      // Currently there are a lot of territories that don't make it into the list, especially if the politics involves
+      // neutral nations. we
       // should add them here.
     }
     if (nonCombat) {
@@ -3806,6 +3819,10 @@ public class SUtils {
     return nonBlitzStrength;
   }
 
+  /**
+   * Target Territories for amphibious non-combat movement
+   * No Islands will result
+   */
   public static HashMap<Territory, Float> rankAmphibReinforcementTerritories(final GameData data,
       final List<Territory> ignoreTerr, final PlayerID player, final boolean tFirst) {
     final HashMap<Territory, Float> landRankMap = new HashMap<Territory, Float>();

@@ -33,9 +33,11 @@ import games.strategy.util.Match;
 
 /**
  * SpecialMoveDelegate is a move delegate made for special movements like the new paratrooper/airborne movement.
- * Airborne Attacks is actually Paratroopers tech for Global 1940, except that I really do not want to confuse myself by naming yet another
+ * Airborne Attacks is actually Paratroopers tech for Global 1940, except that I really do not want to confuse myself by
+ * naming yet another
  * thing Paratroopers, so this is now getting a new name.
- * This is very different than "paratroopers" for AA50. We are actually launching the units from a static unit (an airbase) to another
+ * This is very different than "paratroopers" for AA50. We are actually launching the units from a static unit (an
+ * airbase) to another
  * territory, instead of carrying them.
  */
 public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDelegate {
@@ -105,7 +107,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
       return "No Airborne Movement Allowed Yet";
     }
     final GameData data = getData();
-    // there reason we use this, is because if we are in edit mode, we may have a different unit owner than the current player.
+    // there reason we use this, is because if we are in edit mode, we may have a different unit owner than the current
+    // player.
     final PlayerID player = getUnitsOwner(units);
     // here we have our own new validation method....
     final MoveValidationResult result =

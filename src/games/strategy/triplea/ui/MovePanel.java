@@ -58,7 +58,8 @@ public class MovePanel extends AbstractMovePanel {
   private static final int s_defaultMinTransportCost = 5;
   /**
    * @param s_deselectNumber
-   *        adds or removes 10 units (used to remove 1/s_deselectNumber of total units (useful for splitting large armies), but changed it
+   *        adds or removes 10 units (used to remove 1/s_deselectNumber of total units (useful for splitting large
+   *        armies), but changed it
    *        after feedback)
    */
   private static final int s_deselectNumber = 10;
@@ -95,10 +96,12 @@ public class MovePanel extends AbstractMovePanel {
     m_currentCursorImage = null;
   }
 
-  // TODO: oh my fucking god this code is awefull. only the local computer has access to the UI. why the fuck did someone think they could
+  // TODO: oh my fucking god this code is awefull. only the local computer has access to the UI. why the fuck did
+  // someone think they could
   // do this?
   // The host has no access to the client's UI, and therefore does not know what dependent units there are.
-  // TODO: rewrite this fucking garbage! None of this s_dependentUnits shit should be in the move panel! (fixed by sending a copy of this
+  // TODO: rewrite this fucking garbage! None of this s_dependentUnits shit should be in the move panel! (fixed by
+  // sending a copy of this
   // with the move details)
   private static Map<Unit, Collection<Unit>> getDependents() {
     return s_dependentUnits;
@@ -1302,7 +1305,8 @@ public class MovePanel extends AbstractMovePanel {
           getData().acquireReadLock();
           try {
             updateUnitsThatCanMoveOnRoute(m_selectedUnits, route);
-            // now, check if there is a better route for just the units that can get there (we check only air since that is the only one for
+            // now, check if there is a better route for just the units that can get there (we check only air since that
+            // is the only one for
             // which the route may actually change much)
             if (m_unitsThatCanMoveOnRoute.size() < m_selectedUnits.size() && (m_unitsThatCanMoveOnRoute.size() == 0
                 || Match.allMatch(m_unitsThatCanMoveOnRoute, Matches.UnitIsAir))) {

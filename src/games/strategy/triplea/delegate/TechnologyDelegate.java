@@ -77,7 +77,8 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       return;
     }
     if (games.strategy.triplea.Properties.getTriggers(getData())) {
-      // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
+      // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
+      // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
       final Match<TriggerAttachment> technologyDelegateTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
           AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),

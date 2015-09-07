@@ -65,7 +65,8 @@ public class GameParser {
    *
    * @param stream
    * @param delayParsing
-   *        Should we only parse the game name, notes, and playerlist? Normally this should be "false", except for the game chooser which
+   *        Should we only parse the game name, notes, and playerlist? Normally this should be "false", except for the
+   *        game chooser which
    *        should use the user set preference.
    * @throws GameParseException
    * @throws SAXException
@@ -96,7 +97,8 @@ public class GameParser {
     // test minimum engine version FIRST
     parseMinimumEngineVersionNumber(getSingleChild("triplea", root, true));
     parseGameLoader(getSingleChild("loader", root));
-    // if we manage to get this far, past the minimum engine version number test, AND we are still good, then check and see if we have any
+    // if we manage to get this far, past the minimum engine version number test, AND we are still good, then check and
+    // see if we have any
     // SAX errors we need to show
     if (!errorsSAX.isEmpty()) {
       for (final SAXParseException error : errorsSAX) {
@@ -160,7 +162,8 @@ public class GameParser {
     data.getRelationshipTracker().setNullPlayerRelations();
     // sets the relationship for all players with themselfs to the SelfRelation (with archeType Allied)
     data.getRelationshipTracker().setSelfRelations();
-    // set default tech attachments (comes after we parse all technologies, parse all attachments, and parse all game options/properties)
+    // set default tech attachments (comes after we parse all technologies, parse all attachments, and parse all game
+    // options/properties)
     if (data.getGameLoader() instanceof games.strategy.triplea.TripleA) {
       checkThatAllUnitsHaveAttachments(data);
       TechAbilityAttachment.setDefaultTechnologyAttachments(data);
@@ -298,7 +301,8 @@ public class GameParser {
   /**
    * If mustfind is true and cannot find the player an exception will be thrown.
    *
-   * @return a RelationshipType from the relationshipTypeList, at this point all relationshipTypes should have been declared
+   * @return a RelationshipType from the relationshipTypeList, at this point all relationshipTypes should have been
+   *         declared
    * @throws GameParseException
    *         when
    */
@@ -475,7 +479,8 @@ public class GameParser {
     catch (final ClassNotFoundException cnfe) {
       if (newClassesForOldNames == null) {
         newClassesForOldNames = new HashMap<String, String>();
-        // put in here class names that have been changed like //newClassesForOldNames.put("<oldClassName>", "<newClassName>"), e.g.
+        // put in here class names that have been changed like //newClassesForOldNames.put("<oldClassName>",
+        // "<newClassName>"), e.g.
         // newClassesForOldNames.put("attatchment", "attachment")
       }
       final String newClassName = newClassesForOldNames.get(className);
@@ -681,7 +686,7 @@ public class GameParser {
           }
         }
       }
-    // This type is a triangular grid of points and lines, used for in several rail games
+      // This type is a triangular grid of points and lines, used for in several rail games
     } else if (gridType.equals("points-and-lines")) {
       // Add territories
       for (int y = 0; y < y_size; y++) {
@@ -920,7 +925,8 @@ public class GameParser {
       } else {
         final List<Node> children2 = getNonTextNodesIgnoring(current, "value");
         if (children2.size() == 0) {
-          // we don't know what type this property is!!, it appears like only numbers and string may be represented without proper type
+          // we don't know what type this property is!!, it appears like only numbers and string may be represented
+          // without proper type
           // definition
           try {
             // test if it is an integer
@@ -1451,7 +1457,8 @@ public class GameParser {
         // set the original owner
         final TerritoryAttachment ta = TerritoryAttachment.get(territory);
         if (ta != null) {
-          // If we already have an original owner set (ie: we set it previously in the attachment using originalOwner or occupiedTerrOf),
+          // If we already have an original owner set (ie: we set it previously in the attachment using originalOwner or
+          // occupiedTerrOf),
           // then we DO NOT set the original owner again.
           // This is how we can have a game start with territories owned by 1 faction but controlled by a 2nd faction.
           final PlayerID currentOwner = ta.getOriginalOwner();

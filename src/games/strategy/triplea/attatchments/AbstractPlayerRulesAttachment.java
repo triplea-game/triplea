@@ -21,7 +21,8 @@ import games.strategy.util.IntegerMap;
 public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachment {
   private static final long serialVersionUID = 7224407193725789143L;
   // Please do not add new things to this class. Any new Player-Rules type of stuff should go in "PlayerAttachment".
-  // These variables are related to a "rulesAttatchment" that changes certain rules for the attached player. They are not related to
+  // These variables are related to a "rulesAttatchment" that changes certain rules for the attached player. They are
+  // not related to
   // conditions at all.
   protected String m_movementRestrictionType = null;
   protected String[] m_movementRestrictionTerritories = null;
@@ -48,14 +49,16 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   // maximum number of units that can be placed in each territory.
   protected int m_maxPlacePerTerritory = -1;
 
-  // It would wreck most map xmls to move the rulesAttatchment's to another class, so don't move them out of here please!
+  // It would wreck most map xmls to move the rulesAttatchment's to another class, so don't move them out of here
+  // please!
   // However, any new rules attachments that are not conditions, should be put into the "PlayerAttachment" class.
   public AbstractPlayerRulesAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
   /**
-   * Convenience method, will not return objectives and conditions, only the RulesAttachment (like what China in ww2v3 has).
+   * Convenience method, will not return objectives and conditions, only the RulesAttachment (like what China in ww2v3
+   * has).
    * These attachments returned are not conditions to be tested, they are special rules affecting a player
    * (for example: being able to produce without factories, or not being able to move out of specific territories).
    *

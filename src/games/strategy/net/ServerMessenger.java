@@ -192,7 +192,8 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     }
   }
 
-  // We need to cache whether players are muted, because otherwise the database would have to be accessed each time a message was sent,
+  // We need to cache whether players are muted, because otherwise the database would have to be accessed each time a
+  // message was sent,
   // which can be very slow
   private final List<String> m_liveMutedUsernames = new ArrayList<String>();
 
@@ -664,7 +665,10 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     return new TimerTask() {
       @Override
       public void run() { // lobby has a database we need to check, normal hosted games do not
-        if ((isLobby() && new MutedUsernameController().getUsernameUnmuteTime(username) == -1) || (isGame())) // If the mute has expired
+        if ((isLobby() && new MutedUsernameController().getUsernameUnmuteTime(username) == -1) || (isGame())) // If the
+                                                                                                              // mute
+                                                                                                              // has
+                                                                                                              // expired
         {
           synchronized (m_cachedListLock) {
             // Remove the username from the list of live username's muted
@@ -694,7 +698,8 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     return new TimerTask() {
       @Override
       public void run() { // lobby has a database we need to check, normal hosted games do not
-        if ((isLobby() && new MutedMacController().getMacUnmuteTime(mac) == -1) || (isGame())) // If the mute has expired
+        if ((isLobby() && new MutedMacController().getMacUnmuteTime(mac) == -1) || (isGame())) // If the mute has
+                                                                                               // expired
         {
           synchronized (m_cachedListLock) {
             // Remove the mac from the list of live mac's muted

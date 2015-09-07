@@ -29,7 +29,8 @@ public class GameStepPropertiesHelper {
   }
 
   /**
-   * What players is this turn summary for? If more than 1 player, whose phases are touching or intermeshed, then we will summarize for all
+   * What players is this turn summary for? If more than 1 player, whose phases are touching or intermeshed, then we
+   * will summarize for all
    * those phases.
    *
    * @return colon separated list of player names. could be empty. can be null if not set.
@@ -132,7 +133,8 @@ public class GameStepPropertiesHelper {
   }
 
   /**
-   * Fire rockets after phase is over. Normally would occur after combat move for WW2v2 and WW2v3, and after noncombat move for WW2v1.
+   * Fire rockets after phase is over. Normally would occur after combat move for WW2v2 and WW2v3, and after noncombat
+   * move for WW2v1.
    */
   public static boolean isFireRockets(final GameData data) {
     final boolean isFireRockets;
@@ -211,7 +213,8 @@ public class GameStepPropertiesHelper {
   }
 
   /**
-   * Kills all air that can not land. Normally would occur both at the end of noncombat movement and also at end of placement phase.
+   * Kills all air that can not land. Normally would occur both at the end of noncombat movement and also at end of
+   * placement phase.
    */
   public static boolean isRemoveAirThatCanNotLand(final GameData data) {
     final boolean isRemoveAir;
@@ -242,7 +245,8 @@ public class GameStepPropertiesHelper {
    * Effects so far:
    * Lets air live if the other players could put a carrier under it.
    *
-   * @return a set of player ids. if argument player is not null this set will definitely include that player, but if not the set could be
+   * @return a set of player ids. if argument player is not null this set will definitely include that player, but if
+   *         not the set could be
    *         empty. never null.
    */
   public static Set<PlayerID> getCombinedTurns(final GameData data, final PlayerID player) {
@@ -292,7 +296,8 @@ public class GameStepPropertiesHelper {
   }
 
   /**
-   * Resets unit state, such as movement, submerged, transport unload/load, airborne, etc. Normally occurs at end of noncombat move phase.
+   * Resets unit state, such as movement, submerged, transport unload/load, airborne, etc. Normally occurs at end of
+   * noncombat move phase.
    */
   public static boolean isResetUnitStateAtEnd(final GameData data) {
     final boolean isReset;
@@ -334,7 +339,8 @@ public class GameStepPropertiesHelper {
   }
 
   /**
-   * @return a set of player ids. if argument player is not null this set will definitely include that player, but if not the set could be
+   * @return a set of player ids. if argument player is not null this set will definitely include that player, but if
+   *         not the set could be
    *         empty. never null.
    */
   public static Set<PlayerID> getRepairPlayers(final GameData data, final PlayerID player) {

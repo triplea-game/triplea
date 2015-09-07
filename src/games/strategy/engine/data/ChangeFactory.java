@@ -169,7 +169,8 @@ public class ChangeFactory {
   }
 
   /**
-   * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a
+   * You don't want to clear the variable first unless you are setting some variable where the setting method is
+   * actually adding things to a
    * list rather than overwriting.
    */
   public static Change attachmentPropertyChange(final IAttachment attachment, final Object newValue,
@@ -178,7 +179,8 @@ public class ChangeFactory {
   }
 
   /**
-   * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a
+   * You don't want to clear the variable first unless you are setting some variable where the setting method is
+   * actually adding things to a
    * list rather than overwriting.
    */
   public static Change attachmentPropertyChange(final Attachable attachment, final String attachmentName,
@@ -187,7 +189,8 @@ public class ChangeFactory {
   }
 
   /**
-   * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a
+   * You don't want to clear the variable first unless you are setting some variable where the setting method is
+   * actually adding things to a
    * list rather than overwriting.
    */
   public static Change attachmentPropertyReset(final IAttachment attachment, final String property,
@@ -227,7 +230,8 @@ public class ChangeFactory {
   private ChangeFactory() {}
 
   /**
-   * Creates a change of relationshipType between 2 players, for example: change Germany-France relationship from neutral to war.
+   * Creates a change of relationshipType between 2 players, for example: change Germany-France relationship from
+   * neutral to war.
    *
    * @return the Change of relationship between 2 players
    */

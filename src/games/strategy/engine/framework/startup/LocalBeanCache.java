@@ -95,7 +95,8 @@ public class LocalBeanCache {
    * adds a new Serializable to the cache
    *
    * @param key
-   *        the key the serializable should be stored under. Take care not to override a serializable stored by other code
+   *        the key the serializable should be stored under. Take care not to override a serializable stored by other
+   *        code
    *        it is generally a good ide to use fully qualified class names, getClass().getCanonicalName() as key
    * @param bean
    *        the bean

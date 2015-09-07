@@ -30,8 +30,10 @@ import games.strategy.util.Triple;
 /**
  * For when you do not want things condensed into categories.
  * <p>
- * This creates a panel which shows a group of units individually, and lets you put points/hits towards each unit individually.
- * It lets you set a max number of points total (though max per unit is not allowed yet). It can return an IntegerMap with the points per
+ * This creates a panel which shows a group of units individually, and lets you put points/hits towards each unit
+ * individually.
+ * It lets you set a max number of points total (though max per unit is not allowed yet). It can return an IntegerMap
+ * with the points per
  * unit.
  */
 public class IndividualUnitPanel extends JPanel {
@@ -56,8 +58,10 @@ public class IndividualUnitPanel extends JPanel {
 
   /**
    * For when you do not want things condensed into categories.
-   * This creates a panel which shows a group of units individually, and lets you put points/hits towards each unit individually.
-   * It lets you set a max number of points total (though max per unit is not allowed yet). It can return an IntegerMap with the points per
+   * This creates a panel which shows a group of units individually, and lets you put points/hits towards each unit
+   * individually.
+   * It lets you set a max number of points total (though max per unit is not allowed yet). It can return an IntegerMap
+   * with the points per
    * unit.
    *
    * @param units
@@ -90,7 +94,8 @@ public class IndividualUnitPanel extends JPanel {
 
   /**
    * For when you do not want things condensed into categories.
-   * This creates a panel which shows a group of units individually, and lets you put points/hits towards each unit individually.
+   * This creates a panel which shows a group of units individually, and lets you put points/hits towards each unit
+   * individually.
    * It lets you set a max number of points total AND per unit. It can return an IntegerMap with the points per unit.
    *
    * @param units

@@ -436,7 +436,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     while (battleTerritories.hasNext()) {
       final Territory territory = battleTerritories.next();
       final List<Unit> attackingUnits = territory.getUnits().getMatches(Matches.unitIsOwnedBy(player));
-      // now make sure to add any units that must move with these attacking units, so that they get included as dependencies
+      // now make sure to add any units that must move with these attacking units, so that they get included as
+      // dependencies
       final Map<Unit, Collection<Unit>> transportMap = TransportTracker.transporting(territory.getUnits().getUnits());
       final HashSet<Unit> dependants = new HashSet<Unit>();
       for (final Entry<Unit, Collection<Unit>> entry : transportMap.entrySet()) {
@@ -460,7 +461,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       IBattle battle = battleTracker.getPendingBattle(territory, false, BattleType.NORMAL);
       if (battle == null) {
-        // we must land any paratroopers here, but only if there is not going to be a battle (cus battles land them separately, after aa
+        // we must land any paratroopers here, but only if there is not going to be a battle (cus battles land them
+        // separately, after aa
         // fires)
         if (enemyUnits.isEmpty() || Match.allMatch(enemyUnits, Matches.UnitIsInfrastructure)) {
           landParatroopers(player, territory, data, aBridge);
@@ -680,7 +682,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         }
       }
       final IBattle battle = m_battleTracker.getPendingBattle(battleTerr, false, BattleType.NORMAL);
-      // do not forget we may already have the territory in the list, so we need to add to the collection, not overwrite it.
+      // do not forget we may already have the territory in the list, so we need to add to the collection, not overwrite
+      // it.
       if (battle != null && battle.isAmphibious()) {
         if (battle instanceof MustFightBattle) {
           final MustFightBattle mfb = (MustFightBattle) battle;
@@ -860,18 +863,21 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (bombing != null) {
           attackingUnits.removeAll(bombing.getAttackingUnits());
         }
-        // no need to create a "bombing" battle or air battle, because those are set up automatically whenever the map allows scrambling
+        // no need to create a "bombing" battle or air battle, because those are set up automatically whenever the map
+        // allows scrambling
         // into an air battle / air raid
         if (attackingUnits.isEmpty()) {
           continue;
         }
         m_bridge.getHistoryWriter()
             .startEvent(defender.getName() + " scrambles to create a battle in territory " + to.getName());
-        // TODO: the attacking sea units do not remember where they came from, so they can not retreat anywhere. Need to fix.
+        // TODO: the attacking sea units do not remember where they came from, so they can not retreat anywhere. Need to
+        // fix.
         m_battleTracker.addBattle(new RouteScripted(to), attackingUnits, false, m_player, m_bridge, null, null);
         battle = m_battleTracker.getPendingBattle(to, false, BattleType.NORMAL);
         if (battle instanceof MustFightBattle) {
-          // this is an ugly mess of hacks, but will have to stay here till all transport related code is gutted and refactored.
+          // this is an ugly mess of hacks, but will have to stay here till all transport related code is gutted and
+          // refactored.
           final MustFightBattle mfb = (MustFightBattle) battle;
           final Collection<Territory> neighborsLand = data.getMap().getNeighbors(to, Matches.TerritoryIsLand);
           if (Match.someMatch(attackingUnits, Matches.UnitIsTransport)) {
@@ -887,7 +893,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             final Map<Unit, Collection<Unit>> dependenciesForMFB =
                 TransportTracker.transporting(attackingUnits, attackingUnits);
             for (final Unit transport : Match.getMatches(attackingUnits, Matches.UnitIsTransport)) {
-              // however, the map we add to the newly created battle, can not hold any units that are NOT in this territory.
+              // however, the map we add to the newly created battle, can not hold any units that are NOT in this
+              // territory.
               // BUT it must still hold all transports
               if (!dependenciesForMFB.containsKey(transport)) {
                 dependenciesForMFB.put(transport, new ArrayList<Unit>());
@@ -924,7 +931,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             }
           }
           if (Match.someMatch(attackingUnits, Matches.UnitIsAir.invert())) {
-            // TODO: for now, we will hack and say that the attackers came from Everywhere, and hope the user will choose the correct place
+            // TODO: for now, we will hack and say that the attackers came from Everywhere, and hope the user will
+            // choose the correct place
             // to retreat to! (TODO: Fix this)
             final Map<Territory, Collection<Unit>> attackingFromMap = new HashMap<Territory, Collection<Unit>>();
             final Collection<Territory> neighbors = data.getMap().getNeighbors(to,
@@ -1199,12 +1207,16 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   /**
-   * KamikazeSuicideAttacks are attacks that are made during an Opponent's turn, using Resources that you own that have been designated.
+   * KamikazeSuicideAttacks are attacks that are made during an Opponent's turn, using Resources that you own that have
+   * been designated.
    * The resources are designated in PlayerAttachment, and hold information like the attack power of the resource.
-   * KamikazeSuicideAttacks are done in any territory that is a kamikazeZone, and the attacks are done by the original owner of that
+   * KamikazeSuicideAttacks are done in any territory that is a kamikazeZone, and the attacks are done by the original
+   * owner of that
    * territory.
-   * The user has the option not to do any attacks, and they make target any number of units with any number of resource tokens.
-   * The units are then attacked individually by each resource token (meaning that casualties do not get selected because the attacks are
+   * The user has the option not to do any attacks, and they make target any number of units with any number of resource
+   * tokens.
+   * The units are then attacked individually by each resource token (meaning that casualties do not get selected
+   * because the attacks are
    * targeted).
    * The enemies of current player should decide all their attacks before the attacks are rolled.
    */
@@ -1213,7 +1225,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     if (!games.strategy.triplea.Properties.getUseKamikazeSuicideAttacks(data)) {
       return;
     }
-    // the current player is not the one who is doing these attacks, it is the all the enemies of this player who will do attacks
+    // the current player is not the one who is doing these attacks, it is the all the enemies of this player who will
+    // do attacks
     final Collection<PlayerID> enemies =
         Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWar(m_player, data));
     if (enemies.isEmpty()) {

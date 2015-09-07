@@ -105,7 +105,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     }
     // now check for generic trigger based victories
     if (isTriggeredVictory()) {
-      // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
+      // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
+      // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
       final Match<TriggerAttachment> endRoundDelegateTriggerMatch =
           new CompositeMatchAnd<TriggerAttachment>(AbstractTriggerAttachment.availableUses,
@@ -283,7 +284,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       getDisplay(aBridge).reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true);
       final boolean stopGame;
       if (HeadlessGameServer.headless()) {
-        // a terrible dirty hack, but I can't think of a better way to do it right now. If we are headless, end the game.
+        // a terrible dirty hack, but I can't think of a better way to do it right now. If we are headless, end the
+        // game.
         stopGame = true;
       } else {
         // now tell the HOST, and see if they want to continue the game.
@@ -294,7 +296,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         } else {
           displayMessage = displayMessage + "</br><p>Do you want to continue?</p>";
         }
-        // this is currently the ONLY instance of JOptionPane that is allowed outside of the UI classes. maybe there is a better way?
+        // this is currently the ONLY instance of JOptionPane that is allowed outside of the UI classes. maybe there is
+        // a better way?
         stopGame = (JOptionPane.OK_OPTION != EventThreadJOptionPane.showConfirmDialog(null,
             ("<html>" + displayMessage + "</html>"), "Continue Game?  (" + title + ")", JOptionPane.YES_NO_OPTION,
             new CountDownLatchHandler(true)));

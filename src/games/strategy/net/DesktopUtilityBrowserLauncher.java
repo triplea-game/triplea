@@ -24,7 +24,8 @@ public class DesktopUtilityBrowserLauncher {
   static final String errMsg = "Error attempting to launch web browser";
 
   /**
-   * Opens a specific file on the user's computer, using whatever default program is used to open such files, using the local computer's
+   * Opens a specific file on the user's computer, using whatever default program is used to open such files, using the
+   * local computer's
    * file associations. (veqryn)
    *
    * @param file

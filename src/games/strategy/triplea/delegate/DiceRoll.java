@@ -80,7 +80,8 @@ public class DiceRoll implements Externalizable {
   }
 
   /**
-   * Returns a Tuple with 2 values, the first is the max attack, the second is the max dice sides for the AA unit with that attack value
+   * Returns a Tuple with 2 values, the first is the max attack, the second is the max dice sides for the AA unit with
+   * that attack value
    */
   public static Tuple<Integer, Integer> getAAattackAndMaxDiceSides(final Collection<Unit> defendingEnemyAA,
       final GameData data, final boolean defending) {
@@ -159,7 +160,8 @@ public class DiceRoll implements Externalizable {
     if (totalAAattacksTotal <= 0) {
       return new DiceRoll(new ArrayList<Die>(0), 0);
     }
-    // determine dicesides for everyone (we are not going to consider the possibility of different dicesides within the same typeAA)
+    // determine dicesides for everyone (we are not going to consider the possibility of different dicesides within the
+    // same typeAA)
     final Tuple<Integer, Integer> attackThenDiceSidesForAll = getAAattackAndMaxDiceSides(defendingAA, data, defending);
     // final int highestAttackPower = attackThenDiceSidesForAll.getFirst();
     final int chosenDiceSizeForAll = attackThenDiceSidesForAll.getSecond();
@@ -188,7 +190,8 @@ public class DiceRoll implements Externalizable {
   }
 
   /**
-   * Basically I wanted 1 single method for both Low Luck and Dice, because if we have 2 methods then there is a chance they will go out of
+   * Basically I wanted 1 single method for both Low Luck and Dice, because if we have 2 methods then there is a chance
+   * they will go out of
    * sync.
    *
    * @param dice
@@ -199,8 +202,10 @@ public class DiceRoll implements Externalizable {
    * @param validAttackingUnitsForThisRoll
    * @param data
    * @param fillInSortedDiceAndRecordHits
-   * @return an object containing 3 things: first is the total power of the defendingAA who will be rolling, second is number of hits,
-   *         third is true/false are all rolls using the same hitAt (example: if all the rolls are at 1, we would return true, but if one
+   * @return an object containing 3 things: first is the total power of the defendingAA who will be rolling, second is
+   *         number of hits,
+   *         third is true/false are all rolls using the same hitAt (example: if all the rolls are at 1, we would return
+   *         true, but if one
    *         roll is at 1 and another roll is at 2, then we return false)
    */
   public static Triple<Integer, Integer, Boolean> getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
@@ -216,15 +221,20 @@ public class DiceRoll implements Externalizable {
     // we want to make sure the higher powers fire
     sortAAHighToLow(defendingAA, data, defending);
     // this is confusing, but what we want to do is the following:
-    // any aa that are NOT infinite attacks, and NOT overstack, will fire first individually ((because their power/dicesides might be
-    // different [example: radar tech on a german aa gun, in the same territory as an italian aagun without radar, neither is infinite])
-    // all aa that have "infinite attacks" will have the one with the highest power/dicesides of them all, fire at whatever aa units have
+    // any aa that are NOT infinite attacks, and NOT overstack, will fire first individually ((because their
+    // power/dicesides might be
+    // different [example: radar tech on a german aa gun, in the same territory as an italian aagun without radar,
+    // neither is infinite])
+    // all aa that have "infinite attacks" will have the one with the highest power/dicesides of them all, fire at
+    // whatever aa units have
     // not yet been fired at
-    // HOWEVER, if the non-infinite attackers are less powerful than the infinite attacker, then the non-infinite will not fire, and the
+    // HOWEVER, if the non-infinite attackers are less powerful than the infinite attacker, then the non-infinite will
+    // not fire, and the
     // infinite one will do all the attacks for both groups.
     // the total number of shots from these first 2 groups can not exceed the number of air units being shot at
     // last, any aa that can overstack will fire after, individually
-    // (an aa guns that is both infinite, and overstacks, ignores the overstack part because that totally doesn't make any sense)
+    // (an aa guns that is both infinite, and overstacks, ignores the overstack part because that totally doesn't make
+    // any sense)
     // set up all 3 groups of aa guns
     final List<Unit> normalNonInfiniteAA = new ArrayList<Unit>(defendingAA);
     final List<Unit> infiniteAA = Match.getMatches(defendingAA, Matches.UnitMaxAAattacksIsInfinite);
@@ -245,7 +255,8 @@ public class DiceRoll implements Externalizable {
         + overstackAAtotalAAattacks)) {
       throw new IllegalStateException("Total attacks should be: " + totalAAattacksTotal + " but instead is: "
           + (normalNonInfiniteAAtotalAAattacks + infiniteAAtotalAAattacks + overstackAAtotalAAattacks));
-      // determine dicesides for everyone (we are not going to consider the possibility of different dicesides within the same typeAA)
+      // determine dicesides for everyone (we are not going to consider the possibility of different dicesides within
+      // the same typeAA)
       // final Tuple<Integer, Integer> attackThenDiceSidesForAll = getAAattackAndMaxDiceSides(defendingAA, data);
       // final int chosenDiceSizeForAll = attackThenDiceSidesForAll.getSecond();
     }
@@ -256,7 +267,8 @@ public class DiceRoll implements Externalizable {
     final int hitAtForInfinite = attackThenDiceSidesForInfinite.getFirst();
     // not zero based
     // final int powerForInfinite = highestAttackForInfinite;
-    // if we are low luck, we only want to know the power and total attacks, while if we are dice we will be filling the sorted dice
+    // if we are low luck, we only want to know the power and total attacks, while if we are dice we will be filling the
+    // sorted dice
     final boolean recordSortedDice =
         fillInSortedDiceAndRecordHits && dice != null && dice.length > 0 && sortedDice != null;
     int totalPower = 0;
@@ -550,7 +562,8 @@ public class DiceRoll implements Externalizable {
         final UnitAttachment ua = UnitAttachment.get(entry.getKey().getType());
         if (lowLuck) {
           if (lhtrBombers || ua.getChooseBestRoll()) {
-            // LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead, we will just add +1 onto the power to
+            // LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead, we will just add
+            // +1 onto the power to
             // simulate the gains of having the best die picked.
             unitStrength += extraRollBonus * (unitRolls - 1);
             totalPower += Math.min(unitStrength, diceSides);
@@ -561,8 +574,10 @@ public class DiceRoll implements Externalizable {
           }
         } else {
           if (lhtrBombers || ua.getChooseBestRoll()) {
-            // Even though we are DICE, we still have to wait for actual dice to be thrown before we can pick the best die. So actually for
-            // dice this totalPower method is basically useless, so lets just use the approximation of adding on +1 to power for now.
+            // Even though we are DICE, we still have to wait for actual dice to be thrown before we can pick the best
+            // die. So actually for
+            // dice this totalPower method is basically useless, so lets just use the approximation of adding on +1 to
+            // power for now.
             unitStrength += extraRollBonus * (unitRolls - 1);
             totalPower += Math.min(unitStrength, diceSides);
             totalRolls += unitRolls;
@@ -821,7 +836,8 @@ public class DiceRoll implements Externalizable {
         // we want to apply the biggest bonus first
         // Make sure stronger supports are ordered first if friendly, and worst are ordered first if enemy
         // TODO: it is possible that we will waste negative support if we reduce a units power to less than zero.
-        // We should actually apply enemy negative support in order from worst to least bad, on a unit list that is ordered from strongest
+        // We should actually apply enemy negative support in order from worst to least bad, on a unit list that is
+        // ordered from strongest
         // to weakest.
         final boolean u1CanBonus = defense ? u1.getDefence() : u1.getOffence();
         final boolean u2CanBonus = defense ? u2.getDefence() : u2.getOffence();
@@ -861,15 +877,20 @@ public class DiceRoll implements Externalizable {
             }
           }
         }
-        // if the bonuses are the same, we want to make sure any support which only supports 1 single unittype goes first
-        // the reason being that we could have Support1 which supports both infantry and mech infantry, and Support2 which only supports
+        // if the bonuses are the same, we want to make sure any support which only supports 1 single unittype goes
+        // first
+        // the reason being that we could have Support1 which supports both infantry and mech infantry, and Support2
+        // which only supports
         // mech infantry
-        // if the Support1 goes first, and the mech infantry is first in the unit list (highly probable), then Support1 will end up using
+        // if the Support1 goes first, and the mech infantry is first in the unit list (highly probable), then Support1
+        // will end up using
         // all of itself up on the mech infantry
         // then when the Support2 comes up, all the mech infantry are used up, and it does nothing.
-        // instead, we want Support2 to come first, support all mech infantry that it can, then have Support1 come in and support whatever
+        // instead, we want Support2 to come first, support all mech infantry that it can, then have Support1 come in
+        // and support whatever
         // is left, that way no support is wasted
-        // TODO: this breaks down completely if we have Support1 having a higher bonus than Support2, because it will come first. It should
+        // TODO: this breaks down completely if we have Support1 having a higher bonus than Support2, because it will
+        // come first. It should
         // come first, unless we would have support wasted otherwise. This ends up being a pretty tricky math puzzle.
         final HashSet<UnitType> types1 = u1.getUnitType();
         final HashSet<UnitType> types2 = u2.getUnitType();
@@ -880,7 +901,8 @@ public class DiceRoll implements Externalizable {
           return compareTo;
         }
         // Now we need to sort so that the supporters who are the most powerful go before the less powerful
-        // This is not necessary for the providing of support, but is necessary for our default casualty selection method
+        // This is not necessary for the providing of support, but is necessary for our default casualty selection
+        // method
         final UnitType unitType1 = (UnitType) u1.getAttachedTo();
         final UnitType unitType2 = (UnitType) u2.getAttachedTo();
         final UnitAttachment ua1 = UnitAttachment.get(unitType1);
@@ -936,7 +958,8 @@ public class DiceRoll implements Externalizable {
         final int strength = Math.min(data.getDiceSides(),
             Math.max(0, (defending ? ua.getAirDefense(current.getOwner()) : ua.getAirAttack(current.getOwner()))));
         for (int i = 0; i < rolls; i++) {
-          // LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead, we will just add +1 onto the power to
+          // LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead, we will just add +1
+          // onto the power to
           // simulate the gains of having the best die picked.
           if (i > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
             totalStrength += extraRollBonus;

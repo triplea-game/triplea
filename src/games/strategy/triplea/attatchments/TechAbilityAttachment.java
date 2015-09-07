@@ -1216,14 +1216,16 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   /**
-   * Must be done only in GameParser, and only after we have already parsed ALL technologies, attachments, and game options/properties.
+   * Must be done only in GameParser, and only after we have already parsed ALL technologies, attachments, and game
+   * options/properties.
    *
    * @param data
    * @throws GameParseException
    */
   @InternalDoNotExport
   public static void setDefaultTechnologyAttachments(final GameData data) throws GameParseException {
-    // loop through all technologies. any "default/hard-coded" tech that doesn't have an attachment, will get its "default" attachment. any
+    // loop through all technologies. any "default/hard-coded" tech that doesn't have an attachment, will get its
+    // "default" attachment. any
     // non-default tech are ignored.
     for (final TechAdvance techAdvance : TechAdvance.getTechAdvances(data)) {
       final TechAdvance ta;
@@ -1240,7 +1242,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
       final String propertyString = ta.getProperty();
       TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
       if (taa == null) {
-        // debating if we should have flags for things like "air", "land", "sea", "aaGun", "factory", "strategic bomber", etc.
+        // debating if we should have flags for things like "air", "land", "sea", "aaGun", "factory", "strategic
+        // bomber", etc.
         // perhaps just the easy ones, of air, land, and sea?
         if (propertyString.equals(TechAdvance.TECH_PROPERTY_LONG_RANGE_AIRCRAFT)) {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
@@ -1328,8 +1331,10 @@ public class TechAbilityAttachment extends DefaultAttachment {
                 heavyBomberDiceRollsTotal - UnitAttachment.get(bomber).getAttackRolls(PlayerID.NULL_PLAYERID);
             taa.setAttackRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
             if (heavyBombersLHTR) {
-              // TODO: this all happens WHEN the xml is parsed. Which means if the user changes the game options, this does not get changed.
-              // (meaning, turning on LHTR bombers will not result in this bonus damage, etc. It would have to start on, in the xml.)
+              // TODO: this all happens WHEN the xml is parsed. Which means if the user changes the game options, this
+              // does not get changed.
+              // (meaning, turning on LHTR bombers will not result in this bonus damage, etc. It would have to start on,
+              // in the xml.)
               taa.setDefenseRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
               // LHTR adds 1 to base roll
               taa.setBombingBonus("1:" + bomber.getName());
@@ -1338,12 +1343,16 @@ public class TechAbilityAttachment extends DefaultAttachment {
         }
         // The following technologies should NOT have ability attachments for them:
         // shipyards and industrialTechnology = because it is better to use a Trigger to change player's production
-        // improvedArtillerySupport = because it is already completely atomized and controlled through support attachments
-        // paratroopers = because it is already completely atomized and controlled through unit attachments + game options
+        // improvedArtillerySupport = because it is already completely atomized and controlled through support
+        // attachments
+        // paratroopers = because it is already completely atomized and controlled through unit attachments + game
+        // options
         // mechanizedInfantry = because it is already completely atomized and controlled through unit attachments
-        // IF one of the above named techs changes what it does in a future version of a&a, and the change is large enough or different
+        // IF one of the above named techs changes what it does in a future version of a&a, and the change is large
+        // enough or different
         // enough that it can not be done easily with a new game option,
-        // then it is better to create a new tech rather than change the old one, and give the new one a new name, like paratroopers2 or
+        // then it is better to create a new tech rather than change the old one, and give the new one a new name, like
+        // paratroopers2 or
         // paratroopersAttack or Airborne_Forces, or some crap.
       }
     }

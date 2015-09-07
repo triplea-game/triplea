@@ -30,7 +30,8 @@ public class NotificationMessages {
   }
 
   public static NotificationMessages getInstance() {
-    if (s_nm == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 10000) { // cache properties for 10 seconds
+    if (s_nm == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 10000) { // cache properties for 10
+                                                                                          // seconds
       s_nm = new NotificationMessages();
       s_timestamp = Calendar.getInstance().getTimeInMillis();
     }

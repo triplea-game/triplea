@@ -193,7 +193,8 @@ public class ConnectionFinder {
    *
    * @param allTerritoryNames
    * @param waterString
-   *        a substring contained in a TerritoryName to define a Sea Zone or a regex expression that indicates that a territory is water
+   *        a substring contained in a TerritoryName to define a Sea Zone or a regex expression that indicates that a
+   *        territory is water
    * @return StringBuffer containing XML representing these connections
    */
   private static StringBuffer doTerritoryDefinitions(final List<String> allTerritoryNames, final String waterString) {

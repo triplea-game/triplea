@@ -33,7 +33,8 @@ import games.strategy.util.Tuple;
  * For when you want multiple individual unit panels, perhaps one for each territory, etc.
  * <p>
  * This lets you create multiple IndividualUnitPanel into a single panel, and have them integrated to use the same MAX.
- * IndividualUnitPanel is a group of units each displayed individually, and you can set an integer up to max for each unit.
+ * IndividualUnitPanel is a group of units each displayed individually, and you can set an integer up to max for each
+ * unit.
  */
 public class IndividualUnitPanelGrouped extends JPanel {
   private static final long serialVersionUID = 3573683064535306664L;
@@ -58,8 +59,10 @@ public class IndividualUnitPanelGrouped extends JPanel {
 
   /**
    * For when you want multiple individual unit panels, perhaps one for each territory, etc.
-   * This lets you create multiple IndividualUnitPanel into a single panel, and have them integrated to use the same MAX.
-   * IndividualUnitPanel is a group of units each displayed individually, and you can set an integer up to max for each unit.
+   * This lets you create multiple IndividualUnitPanel into a single panel, and have them integrated to use the same
+   * MAX.
+   * IndividualUnitPanel is a group of units each displayed individually, and you can set an integer up to max for each
+   * unit.
    *
    * @param unitsToChooseFrom
    * @param data

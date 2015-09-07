@@ -325,7 +325,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     }
 
     /**
-     * This should not be called from within game, only from the game setup screen, while everyone is waiting for game to start
+     * This should not be called from within game, only from the game setup screen, while everyone is waiting for game
+     * to start
      */
     @Override
     public byte[] getSaveGame() {
@@ -417,7 +418,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     @Override
     public void changeToGameSave(final byte[] bytes, final String fileName) {
-      // TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why if not.
+      // TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why
+      // if not.
       final HeadlessGameServer headless = HeadlessGameServer.getInstance();
       if (headless == null || bytes == null) {
         return;
@@ -451,7 +453,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     @Override
     public void changeToGameOptions(final byte[] bytes) {
-      // TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why if not.
+      // TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why
+      // if not.
       final HeadlessGameServer headless = HeadlessGameServer.getInstance();
       if (headless == null || bytes == null) {
         return;

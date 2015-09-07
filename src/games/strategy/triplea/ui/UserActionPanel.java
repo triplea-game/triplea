@@ -139,7 +139,8 @@ public class UserActionPanel extends ActionPanel {
               new Insets(25, 10, 25, 30), 0, 0));
       final JScrollPane overviewScroll = new JScrollPane(overview);
       overviewScroll.setBorder(BorderFactory.createEmptyBorder());
-      // add 26 to height when the actions are empty, because for some stupid reason java calculates the pack size wrong (again)...
+      // add 26 to height when the actions are empty, because for some stupid reason java calculates the pack size wrong
+      // (again)...
       // add 20 to either when the opposite needs scroll bars, because that is how big scroll bars are..
       overviewScroll.setPreferredSize(new Dimension(
           (overviewScroll.getPreferredSize().width > availWidth ? availWidth

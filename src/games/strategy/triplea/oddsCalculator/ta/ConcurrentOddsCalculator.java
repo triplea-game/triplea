@@ -46,7 +46,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   private volatile int m_cancelCurrentOperation = 0;
   // do not let calcing happen while we are setting game data
   private final CountUpAndDownLatch m_latchSetData = new CountUpAndDownLatch();
-  // do not let setting of game data happen multiple times while we offload creating workers and copying data to a different thread
+  // do not let setting of game data happen multiple times while we offload creating workers and copying data to a
+  // different thread
   private final CountUpAndDownLatch m_latchWorkerThreadsCreation = new CountUpAndDownLatch();
 
   // do not let setting of game data happen at same time
@@ -136,7 +137,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
       final long startTime = System.currentTimeMillis();
       final long startMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
       final GameData newData;
-      try { // make first copy, then release lock on it so game can continue (ie: we don't want to lock on it while we copy it 16 times,
+      try { // make first copy, then release lock on it so game can continue (ie: we don't want to lock on it while we
+            // copy it 16 times,
             // when once is enough)
         // don't let the data change while we make the first copy
         data.acquireReadLock();
@@ -149,8 +151,10 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
         // make sure all workers are using the same data
         newData.acquireReadLock();
         int i = 0;
-        if (m_currentThreads <= 2 || MAX_THREADS <= 2) // we are already in 1 executor thread, so we have MAX_THREADS-1 threads left to use
-        { // if 2 or fewer threads, do not multi-thread the copying (we have already copied it once above, so at most only 1 more copy to
+        if (m_currentThreads <= 2 || MAX_THREADS <= 2) // we are already in 1 executor thread, so we have MAX_THREADS-1
+                                                       // threads left to use
+        { // if 2 or fewer threads, do not multi-thread the copying (we have already copied it once above, so at most
+          // only 1 more copy to
           // make)
           while (m_cancelCurrentOperation >= 0 && i < m_currentThreads) {
             // the last one will use our already copied data from above, without copying it again
@@ -216,7 +220,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 
   private void awaitLatch() {
     try {
-      // there is a small chance calculate or setCalculateData or something could be called in between calls to setGameData
+      // there is a small chance calculate or setCalculateData or something could be called in between calls to
+      // setGameData
       m_latchSetData.await();
     } catch (final InterruptedException e) {
     }
@@ -233,7 +238,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
       final int workerRunCount = Math.max(1, (runCount / Math.max(1, workerNum)));
       for (final OddsCalculator worker : m_workers) {
         if (!m_isDataSet || m_isShutDown) {
-          // we could have attempted to set a new game data, while the old one was still being set, causing it to abort with null data
+          // we could have attempted to set a new game data, while the old one was still being set, causing it to abort
+          // with null data
           return;
         }
         worker.setCalculateData(attacker, defender, location, attacking, defending, bombarding, territoryEffects,
@@ -248,7 +254,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   }
 
   /**
-   * Concurrently calculates odds using the OddsCalculatorWorker. It uses Executor to process the results. Then waits for all the future
+   * Concurrently calculates odds using the OddsCalculatorWorker. It uses Executor to process the results. Then waits
+   * for all the future
    * results and combines them together.
    */
   @Override
@@ -261,7 +268,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
       final List<Future<AggregateResults>> list = new ArrayList<Future<AggregateResults>>();
       for (final OddsCalculator worker : m_workers) {
         if (!getIsReady()) {
-          // we could have attempted to set a new game data, while the old one was still being set, causing it to abort with null data
+          // we could have attempted to set a new game data, while the old one was still being set, causing it to abort
+          // with null data
           return new AggregateResults(0);
         }
         if (!worker.getIsReady()) {

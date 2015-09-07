@@ -473,7 +473,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
       fileDialog.setFilenameFilter(new FilenameFilter() {
         @Override
-        public boolean accept(final File dir, final String name) { // the extension should be .tsvg, but find svg extensions as well
+        public boolean accept(final File dir, final String name) { // the extension should be .tsvg, but find svg
+                                                                   // extensions as well
           return name.endsWith(".tsvg") || name.endsWith(".svg");
         }
       });

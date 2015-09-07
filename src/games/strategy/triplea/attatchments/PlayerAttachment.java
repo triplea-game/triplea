@@ -624,7 +624,8 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   /**
-   * setTakeUnitControl (and getTakeUnitControl) DO NOTHING. They are kept for backwards compatibility only, otherwise users get Java
+   * setTakeUnitControl (and getTakeUnitControl) DO NOTHING. They are kept for backwards compatibility only, otherwise
+   * users get Java
    * errors.
    */
   @Deprecated

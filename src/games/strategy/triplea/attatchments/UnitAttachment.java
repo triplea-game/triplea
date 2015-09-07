@@ -119,7 +119,8 @@ public class UnitAttachment extends DefaultAttachment {
   private boolean m_isInfantry = false;
   private boolean m_isLandTransport = false;
   // aa related
-  // "isAA" and "isAAmovement" are also valid setters, used as shortcuts for calling multiple aa related setters. Must keep.
+  // "isAA" and "isAAmovement" are also valid setters, used as shortcuts for calling multiple aa related setters. Must
+  // keep.
   private boolean m_isAAforCombatOnly = false;
   private boolean m_isAAforBombingThisUnitOnly = false;
   private boolean m_isAAforFlyOverOnly = false;
@@ -187,7 +188,8 @@ public class UnitAttachment extends DefaultAttachment {
   private IntegerMap<UnitType> m_consumesUnits = new IntegerMap<UnitType>();
   // a colon delimited list of territories where this unit may not be placed
   private String[] m_unitPlacementRestrictions = null;
-  // also an allowed setter is "setUnitPlacementOnlyAllowedIn", which just creates m_unitPlacementRestrictions with an inverted list of
+  // also an allowed setter is "setUnitPlacementOnlyAllowedIn", which just creates m_unitPlacementRestrictions with an
+  // inverted list of
   // territories
   // -1 if infinite (infinite is default)
   private int m_maxBuiltPerPlayer = -1;
@@ -207,7 +209,8 @@ public class UnitAttachment extends DefaultAttachment {
   private IntegerMap<UnitType> m_repairsUnits = new IntegerMap<UnitType>();
   private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
   private ArrayList<Tuple<String, PlayerID>> m_destroyedWhenCapturedBy = new ArrayList<Tuple<String, PlayerID>>();
-  // also an allowed setter is "setDestroyedWhenCapturedFrom" which will just create m_destroyedWhenCapturedBy with a specific list
+  // also an allowed setter is "setDestroyedWhenCapturedFrom" which will just create m_destroyedWhenCapturedBy with a
+  // specific list
   private LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>> m_whenCapturedChangesInto =
       new LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>>();
   private ArrayList<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<PlayerID>();
@@ -491,7 +494,8 @@ public class UnitAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setDestroyedWhenCapturedBy(String value) throws GameParseException {
-    // We can prefix this value with "BY" or "FROM" to change the setting. If no setting, default to "BY" since this this is called by
+    // We can prefix this value with "BY" or "FROM" to change the setting. If no setting, default to "BY" since this
+    // this is called by
     // destroyedWhenCapturedBy
     String byOrFrom = "BY";
     if (value.startsWith("BY:") && getData().getPlayerList().getPlayerID("BY") == null) {
@@ -795,7 +799,8 @@ public class UnitAttachment extends DefaultAttachment {
     m_unitPlacementRestrictions = null;
   }
 
-  // no m_ variable for this, since it is the inverse of m_unitPlacementRestrictions we might as well just use m_unitPlacementRestrictions
+  // no m_ variable for this, since it is the inverse of m_unitPlacementRestrictions we might as well just use
+  // m_unitPlacementRestrictions
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setUnitPlacementOnlyAllowedIn(final String value) throws GameParseException {
     String valueRestricted = new String();
@@ -922,7 +927,8 @@ public class UnitAttachment extends DefaultAttachment {
     }
     // (UnitAttachment) ut.getAttachments().values().iterator().next();
     // UnitAttachment ua = UnitAttachment.get(ut);
-    // Units may be considered transported if they are on a carrier, or if they are paratroopers, or if they are mech infantry. The
+    // Units may be considered transported if they are on a carrier, or if they are paratroopers, or if they are mech
+    // infantry. The
     // "transporter" may not be an actual transport, so we should not check for that here.
     if (m_canInvadeOnlyFrom == null || Arrays.asList(m_canInvadeOnlyFrom).isEmpty() || m_canInvadeOnlyFrom[0].equals("")
         || m_canInvadeOnlyFrom[0].equals("all")) {
@@ -2095,7 +2101,8 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getAttackAA(final PlayerID player) {
-    // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it does not divide
+    // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it
+    // does not divide
     // perfectly into attackAAmaxDieSides
     return Math.max(0, Math.min(getAttackAAmaxDieSides(),
         m_attackAA + TechAbilityAttachment.getRadarBonus((UnitType) this.getAttachedTo(), player, getData())));
@@ -2116,7 +2123,8 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getOffensiveAttackAA(final PlayerID player) {
-    // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it does not divide
+    // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it
+    // does not divide
     // perfectly into attackAAmaxDieSides
     return Math.max(0, Math.min(getOffensiveAttackAAmaxDieSides(),
         m_offensiveAttackAA + TechAbilityAttachment.getRadarBonus((UnitType) this.getAttachedTo(), player, getData())));
@@ -2721,7 +2729,8 @@ public class UnitAttachment extends DefaultAttachment {
         if (ut.getAttachments() == null || ut.getAttachments().isEmpty()) {
           throw new GameParseException(transport + " has no attachments, please declare " + transport
               + " in the xml before using it as a transport" + thisErrorMsg());
-          // Units may be considered transported if they are on a carrier, or if they are paratroopers, or if they are mech infantry. The
+          // Units may be considered transported if they are on a carrier, or if they are paratroopers, or if they are
+          // mech infantry. The
           // "transporter" may not be an actual transport, so we should not check for that here.
         }
       }
@@ -2809,7 +2818,8 @@ public class UnitAttachment extends DefaultAttachment {
 
   @Override
   public String toString() {
-    // Any overriding method for toString on an attachment needs to include at least the Class, m_attachedTo, and m_name. Or call
+    // Any overriding method for toString on an attachment needs to include at least the Class, m_attachedTo, and
+    // m_name. Or call
     // super.toString()
     return super.toString();
   }
@@ -2817,7 +2827,8 @@ public class UnitAttachment extends DefaultAttachment {
   public String allUnitStatsForExporter() {
     // should cover ALL fields stored in UnitAttachment
     // remember to test for null and fix arrays
-    // the stats exporter relies on this toString having two spaces after each entry, so do not change this please, except to add new
+    // the stats exporter relies on this toString having two spaces after each entry, so do not change this please,
+    // except to add new
     // abilities onto the end
     return this.getAttachedTo().toString().replaceFirst("games.strategy.engine.data.", "") + " with:" + "  isAir:"
         + m_isAir + "  isSea:" + m_isSea + "  movement:" + m_movement + "  attack:" + m_attack + "  defense:"

@@ -247,9 +247,11 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     final long start = System.currentTimeMillis();
     final AggregateResults rVal = new AggregateResults(count);
     final BattleTracker battleTracker = new BattleTracker();
-    // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at the same time (like if the AI and a human
+    // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at the same time (like if
+    // the AI and a human
     // are both using the calc)
-    // TODO: first, see how much it actually speeds stuff up by, and if it does make a difference then convert it to a per-thread, per-calc
+    // TODO: first, see how much it actually speeds stuff up by, and if it does make a difference then convert it to a
+    // per-thread, per-calc
     // caching
     final List<Unit> attackerOrderOfLosses =
         OddsCalculator.getUnitListByOOL(m_attackerOrderOfLosses, m_attackingUnits, m_data);
@@ -637,7 +639,8 @@ class DummyPlayer extends AbstractAI {
       final Collection<Unit> airLeft = Match.getMatches(unitsLeft, Matches.UnitIsAir);
       if (m_retreatWhenOnlyAirLeft) {
         // lets say we have a bunch of 3 attack air unit, and a 4 attack non-air unit,
-        // and we want to retreat when we have all air units left + that 4 attack non-air (cus it gets taken casualty last)
+        // and we want to retreat when we have all air units left + that 4 attack non-air (cus it gets taken casualty
+        // last)
         // then we add the number of air, to the retreat after X left number (which we would set to '1')
         int retreatNum = airLeft.size();
         if (m_retreatAfterXUnitsLeft > 0) {
@@ -669,7 +672,7 @@ class DummyPlayer extends AbstractAI {
                       (m_isAttacker ? battle.getDefender() : battle.getAttacker()), m_bridge.getData(),
                       battle.getTerritory(), battle.getTerritoryEffects(), battle.isAmphibious(),
                       (battle.isAmphibious() && !m_isAttacker ? enemyUnits : new ArrayList<Unit>())),
-              m_bridge.getData()).getFirst();
+                  m_bridge.getData()).getFirst();
           final int diceSides = m_bridge.getData().getDiceSides();
           final int ourMetaPower = BattleCalculator.getNormalizedMetaPower(ourPower, ourHP, diceSides);
           final int enemyMetaPower = BattleCalculator.getNormalizedMetaPower(enemyPower, enemyHP, diceSides);

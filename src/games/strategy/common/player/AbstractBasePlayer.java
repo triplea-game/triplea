@@ -6,7 +6,8 @@ import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 
 /**
- * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate using a change).
+ * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate
+ * using a change).
  */
 public abstract class AbstractBasePlayer implements IGamePlayer {
   // what nation are we playing? ex: "Americans"
@@ -44,7 +45,8 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
 
   /**
    * Get the IPlayerBridge for this game player.
-   * (This is not a delegate bridge, and we can not send changes on this. Changes should only be done within a delegate, never through a
+   * (This is not a delegate bridge, and we can not send changes on this. Changes should only be done within a delegate,
+   * never through a
    * player.)
    */
   protected final IPlayerBridge getPlayerBridge() {
@@ -79,7 +81,8 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
   @Override
   public void start(final String stepName) {
     if (stepName != null) {
-      // PlayerBridge is on a different thread than this one, and so it will be updated asynchronously. Need to wait for it.
+      // PlayerBridge is on a different thread than this one, and so it will be updated asynchronously. Need to wait for
+      // it.
       String bridgeStep = getPlayerBridge().getStepName();
       int i = 0;
       boolean shownErrorMessage = false;

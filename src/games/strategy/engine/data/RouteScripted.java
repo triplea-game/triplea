@@ -4,9 +4,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A scripted or cheating Route, designed for use with Triggers and with units stranded in enemy territory, or other situations where you
+ * A scripted or cheating Route, designed for use with Triggers and with units stranded in enemy territory, or other
+ * situations where you
  * want the "end" to not be null.
- * If the Route only has a start, it will return the start when you call .end(), and it will return a length of 1 if the length is really
+ * If the Route only has a start, it will return the start when you call .end(), and it will return a length of 1 if the
+ * length is really
  * zero.
  */
 public class RouteScripted extends Route {
@@ -15,7 +17,8 @@ public class RouteScripted extends Route {
   public RouteScripted() {}
 
   /**
-   * Shameless cheating. Making a fake route, so as to handle battles properly without breaking battleTracker protected status or
+   * Shameless cheating. Making a fake route, so as to handle battles properly without breaking battleTracker protected
+   * status or
    * duplicating a zillion lines of code.
    * The End will return the Start, and the Length will be 1.
    */

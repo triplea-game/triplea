@@ -80,7 +80,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     if (m_headless) {
       return;
     }
-    // we were having a problem with units that had been killed previously were still part of battle's variables, so we double check that
+    // we were having a problem with units that had been killed previously were still part of battle's variables, so we
+    // double check that
     // the stuff still exists here.
     m_defendingUnits.retainAll(m_battleSite.getUnits().getUnits());
     m_attackingUnits.retainAll(m_battleSite.getUnits().getUnits());
@@ -162,7 +163,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   @Override
   public void fight(final IDelegateBridge bridge) {
-    // remove units that may already be dead due to a previous event (like they died from a strategic bombing raid, rocket attack, etc)
+    // remove units that may already be dead due to a previous event (like they died from a strategic bombing raid,
+    // rocket attack, etc)
     removeUnitsThatNoLongerExist();
     // we were interrupted
     if (m_stack.isExecuting()) {
@@ -171,7 +173,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       return;
     }
     // We update Defending Units twice: first time when the battle is created, and second time before the battle begins.
-    // The reason is because when the battle is created, there are no attacking units yet in it, meaning that m_targets is empty. We need to
+    // The reason is because when the battle is created, there are no attacking units yet in it, meaning that m_targets
+    // is empty. We need to
     // update right as battle begins to know we have the full list of targets.
     updateDefendingUnits();
     bridge.getHistoryWriter().startEvent("Strategic bombing raid in " + m_battleSite, m_battleSite);
@@ -341,7 +344,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             Match.getMatches(m_attackingUnits,
                 new CompositeMatchOr<Unit>(Matches
                     .unitIsOfTypes(targetUnitTypesForThisTypeAA),
-                new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+                    new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne,
+                        Matches.unitIsOfTypes(airborneTypesTargettedToo))));
         final IExecutable roll = new IExecutable() {
           private static final long serialVersionUID = 379538344036513009L;
 
@@ -595,7 +599,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               final UnitAttachment ua = UnitAttachment.get(u.getType());
               int maxDice = ua.getBombingMaxDieSides();
               int bonus = ua.getBombingBonus();
-              // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the map, and zero for
+              // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for
+              // the map, and zero for
               // the bonus.
               if (maxDice < 0) {
                 maxDice = diceSides;
@@ -629,7 +634,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             final UnitAttachment ua = UnitAttachment.get(u.getType());
             int maxDice = ua.getBombingMaxDieSides();
             int bonus = ua.getBombingBonus();
-            // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the map, and zero for
+            // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the
+            // map, and zero for
             // the bonus.
             if (maxDice < 0 || doNotUseBombingBonus) {
               maxDice = diceSides;
@@ -637,7 +643,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             if (bonus < 0 || doNotUseBombingBonus) {
               bonus = 0;
             }
-            // now, regardless of whether they were set or not, we have to apply "low luck" to them, meaning in this case that we reduce the
+            // now, regardless of whether they were set or not, we have to apply "low luck" to them, meaning in this
+            // case that we reduce the
             // luck by 2/3.
             if (maxDice >= 5) {
               bonus += (maxDice + 1) / 3;
@@ -819,7 +826,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units,
       final IDelegateBridge bridge, final boolean withdrawn) {
     // should never happen
-    // throw new IllegalStateException("StrategicBombingRaidBattle should not have any preceding battle with which to possibly remove
+    // throw new IllegalStateException("StrategicBombingRaidBattle should not have any preceding battle with which to
+    // possibly remove
     // dependents from");
   }
 }

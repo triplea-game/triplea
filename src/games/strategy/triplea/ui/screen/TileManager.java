@@ -65,7 +65,8 @@ public class TileManager {
    * @return tiles which fall into the rectangle
    */
   public List<Tile> getTiles(final Rectangle2D bounds) {
-    // if the rectangle exceeds the map dimensions we to do shift the rectangle and check for each shifted rectangle as well as the original
+    // if the rectangle exceeds the map dimensions we to do shift the rectangle and check for each shifted rectangle as
+    // well as the original
     // rectangle
     final MapData mapData = m_uiContext.getMapData();
     final Dimension mapDimensions = mapData.getMapDimensions();

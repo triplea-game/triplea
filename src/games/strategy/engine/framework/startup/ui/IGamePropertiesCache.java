@@ -4,7 +4,8 @@ import games.strategy.engine.data.GameData;
 
 /**
  * Interface that identifies a class that can cache game options
- * the GameProperties can't be replaced, only modified, so the cache works by modifying the GameProperties inside GameData
+ * the GameProperties can't be replaced, only modified, so the cache works by modifying the GameProperties inside
+ * GameData
  */
 public interface IGamePropertiesCache {
   /**

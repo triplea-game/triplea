@@ -56,7 +56,8 @@ public class TechActivationDelegate extends BaseTripleADelegate {
     // empty
     techMap.put(m_player, null);
     if (games.strategy.triplea.Properties.getTriggers(data)) {
-      // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
+      // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
+      // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
       final Match<TriggerAttachment> techActivationDelegateTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
           TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(null, null),

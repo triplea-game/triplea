@@ -26,7 +26,8 @@ import games.strategy.util.Tuple;
 /**
  * Extended unit for triplea games.
  * <p>
- * As with all game data components, changes made to this unit must be made through a Change instance. Calling setters on this directly will
+ * As with all game data components, changes made to this unit must be made through a Change instance. Calling setters
+ * on this directly will
  * not serialize the changes across the network.
  * <p>
  */
@@ -517,7 +518,8 @@ public class TripleAUnit extends Unit {
   }
 
   /**
-   * Currently made for translating unit damage from one unit to another unit. Will adjust damage to be within max damage for the new units.
+   * Currently made for translating unit damage from one unit to another unit. Will adjust damage to be within max
+   * damage for the new units.
    *
    * @param unitGivingAttributes
    * @param unitsThatWillGetAttributes

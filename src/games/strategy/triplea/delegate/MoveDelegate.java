@@ -71,9 +71,11 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
     super.start();
     final GameData data = getData();
     if (m_needToInitialize) {
-      // territory property changes triggered at beginning of combat move // TODO create new delegate called "start of turn" and move them
+      // territory property changes triggered at beginning of combat move // TODO create new delegate called "start of
+      // turn" and move them
       // there.
-      // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
+      // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
+      // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
       HashMap<ICondition, Boolean> testedConditions = null;
       final Match<TriggerAttachment> moveCombatDelegateBeforeBonusTriggerMatch =
@@ -93,7 +95,8 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
         final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
             new HashSet<PlayerID>(Collections.singleton(m_player)), moveCombatDelegateAllTriggerMatch, m_bridge);
         if (!toFirePossible.isEmpty()) {
-          // collect conditions and test them for ALL triggers, both those that we will first before and those we will fire after.
+          // collect conditions and test them for ALL triggers, both those that we will first before and those we will
+          // fire after.
           testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
           final HashSet<TriggerAttachment> toFireBeforeBonus =
               TriggerAttachment.collectForAllTriggersMatching(new HashSet<PlayerID>(Collections.singleton(m_player)),
@@ -120,12 +123,14 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
           }
         }
       }
-      // repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to do this at
+      // repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to
+      // do this at
       // beginning of combat move)
       if (GameStepPropertiesHelper.isRepairUnits(data)) {
         MoveDelegate.repairMultipleHitPointUnits(m_bridge, m_player);
       }
-      // reset any bonus of units, and give movement to units which begin the turn in the same territory as units with giveMovement (like
+      // reset any bonus of units, and give movement to units which begin the turn in the same territory as units with
+      // giveMovement (like
       // air and naval bases)
       if (GameStepPropertiesHelper.isGiveBonusMovement(data)) {
         resetAndGiveBonusMovement();
@@ -195,7 +200,8 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
         m_needToDoRockets = false;
       }
     }
-    // do at the end of the round, if we do it at the start of non combat, then we may do it in the middle of the round, while loading.
+    // do at the end of the round, if we do it at the start of non combat, then we may do it in the middle of the round,
+    // while loading.
     if (GameStepPropertiesHelper.isResetUnitStateAtEnd(data)) {
       resetUnitStateAndDelegateState();
     }
@@ -440,7 +446,8 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
         newHitsMap.size() + " " + MyFormatter.pluralize("unit", newHitsMap.size()) + " repaired.",
         new HashSet<Unit>(newHitsMap.keySet()));
     aBridge.addChange(ChangeFactory.unitsHit(newHitsMap));
-    // now if damaged includes any carriers that are repairing, and have damaged abilities set for not allowing air units to leave while
+    // now if damaged includes any carriers that are repairing, and have damaged abilities set for not allowing air
+    // units to leave while
     // damaged, we need to remove those air units now
     final Collection<Unit> damagedCarriers = Match.getMatches(fullyRepaired.keySet(),
         Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
@@ -500,7 +507,8 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
   public String move(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded,
       final Map<Unit, Collection<Unit>> newDependents) {
     final GameData data = getData();
-    // there reason we use this, is because if we are in edit mode, we may have a different unit owner than the current player.
+    // there reason we use this, is because if we are in edit mode, we may have a different unit owner than the current
+    // player.
     final PlayerID player = getUnitsOwner(units);
     final MoveValidationResult result = MoveValidator.validateMove(units, route, player, transportsThatCanBeLoaded,
         newDependents, GameStepPropertiesHelper.isNonCombatMove(data, false), m_movesToUndo, data);
@@ -763,7 +771,8 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
       // the algorithm below does not guarantee even distribution in all cases
       // but it solves most of the cases
       final List<Unit> shiftedToEnd = Util.shiftElementsToEnd(canTransport, transportIndex);
-      // review the following loop in light of bug ticket 2827064- previously unloaded trns perhaps shouldn't be included.
+      // review the following loop in light of bug ticket 2827064- previously unloaded trns perhaps shouldn't be
+      // included.
       Collections.sort(shiftedToEnd, previouslyLoadedToLast);
       final Iterator<Unit> transportIter = shiftedToEnd.iterator();
       while (transportIter.hasNext() && !loaded) {

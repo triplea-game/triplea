@@ -81,7 +81,8 @@ public class TabbedProductionPanel extends ProductionPanel {
     if (dtab != null && dthis != null) {
       // for an unknown reason, the tabs need a couple extra height and width or else scroll bars will appear
       tabs.setPreferredSize(new Dimension(dtab.width + 4, dtab.height + 4));
-      // for an unknown reason, the window needs to be at least 16 pixels greater in height than normal, to accommodate the tabs
+      // for an unknown reason, the window needs to be at least 16 pixels greater in height than normal, to accommodate
+      // the tabs
       this.setPreferredSize(new Dimension(dthis.width + 8, dthis.height + 24));
 
     }
@@ -164,8 +165,8 @@ public class TabbedProductionPanel extends ProductionPanel {
         if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() >= 1) {
           upgradeConsumesRules.add(rule);
         }
-          // canproduceUnits isn't checked on purpose, since this category is for units that can be placed
-          // anywhere (placed without needing a factory).
+        // canproduceUnits isn't checked on purpose, since this category is for units that can be placed
+        // anywhere (placed without needing a factory).
         if (attach.getIsConstruction()) {
           constructRules.add(rule);
         } else if (attach.getIsSea()) {

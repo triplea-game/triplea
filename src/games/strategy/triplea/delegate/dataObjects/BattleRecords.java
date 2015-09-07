@@ -109,8 +109,10 @@ public class BattleRecords extends GameDataComponent implements Serializable {
           continue;
         }
         return true;
-        // TODO: do more types.... (maybe make a much better enum class that covers both WhoWon and BattleResultDescription in a single enum
-        // with multiple variables for each enum to cover the different tiers of detail (ie: won/lost/draw vs conquer/blitz/etc.)
+        // TODO: do more types.... (maybe make a much better enum class that covers both WhoWon and
+        // BattleResultDescription in a single enum
+        // with multiple variables for each enum to cover the different tiers of detail (ie: won/lost/draw vs
+        // conquer/blitz/etc.)
       }
     }
     return false;
@@ -118,7 +120,8 @@ public class BattleRecords extends GameDataComponent implements Serializable {
 
   public void removeBattle(final PlayerID currentPlayer, final GUID battleID) {
     final HashMap<GUID, BattleRecord> current = m_records.get(currentPlayer);
-    // we can't count on this being the current player. If we created a battle using edit mode, then the battle might be under a different
+    // we can't count on this being the current player. If we created a battle using edit mode, then the battle might be
+    // under a different
     // player.
     if (current == null || !current.containsKey(battleID)) {
       for (final Entry<PlayerID, HashMap<GUID, BattleRecord>> entry : m_records.entrySet()) {
@@ -136,7 +139,8 @@ public class BattleRecords extends GameDataComponent implements Serializable {
     for (final PlayerID p : other.m_records.keySet()) {
       final HashMap<GUID, BattleRecord> currentRecord = m_records.get(p);
       if (currentRecord != null) {
-        // this only comes up if we use edit mode to create an attack for a player who's already had their turn and therefore already has
+        // this only comes up if we use edit mode to create an attack for a player who's already had their turn and
+        // therefore already has
         // their record.
         final HashMap<GUID, BattleRecord> additionalRecords = other.m_records.get(p);
         for (final Entry<GUID, BattleRecord> entry : additionalRecords.entrySet()) {

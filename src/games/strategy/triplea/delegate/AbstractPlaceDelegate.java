@@ -210,7 +210,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   protected void performPlace(final Collection<Unit> units, final Territory at, final PlayerID player) {
-    // System.out.println("Placing " + MyFormatter.unitsToTextNoOwner(units) + " at " + at.getName() + " by " + player.getName());
+    // System.out.println("Placing " + MyFormatter.unitsToTextNoOwner(units) + " at " + at.getName() + " by " +
+    // player.getName());
     final List<Territory> producers = getAllProducers(at, player, units);
     Collections.sort(producers, getBestProducerComparator(at, units, player));
     // System.out.println("Producers: " + producers);
@@ -335,7 +336,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
-   * frees the requested amount of capacity for the given producer by trying to hand over already made placements to other territories.
+   * frees the requested amount of capacity for the given producer by trying to hand over already made placements to
+   * other territories.
    * This only works if one of the placements is done for another territory, more specific for a sea zone.
    * If such placements exists it will be tried to let them be done by other adjacent territories.
    *
@@ -453,7 +455,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         unitsForOldProducer.removeAll(unitsForNewProducer);
         // split move, by undo and creating two new ones
         if (!unitsForNewProducer.isEmpty()) {
-          // there is a chance we have 2 or more splitPlacements that are using the same placement (trying to split the same placement).
+          // there is a chance we have 2 or more splitPlacements that are using the same placement (trying to split the
+          // same placement).
           // So we must make sure that after we undo it the first time, it can never be undone again.
           usedUnoablePlacements.add(placement);
           undoMove(placement.getIndex());
@@ -583,7 +586,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       final String errorP = canProduce(producer, to, units, player);
       if (errorP != null) {
         failingProducers.add(producer);
-        // do not include the error for same territory, if water, because users do not want to see this error report for 99.9% of games
+        // do not include the error for same territory, if water, because users do not want to see this error report for
+        // 99.9% of games
         if (!(producer.equals(to) && producer.isWater())) {
           error += ", " + errorP;
         }
@@ -612,7 +616,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * @param player
    *        - Player doing the placing.
    * @param simpleCheck
-   *        - If true you return true even if a factory is not present. Used when you do not want an infinite loop (getAllProducers ->
+   *        - If true you return true even if a factory is not present. Used when you do not want an infinite loop
+   *        (getAllProducers ->
    *        canProduce -> howManyOfEachConstructionCanPlace -> getAllProducers -> etc)
    * @return - null if allowed to produce, otherwise an error String.
    */
@@ -624,7 +629,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!producer.getOwner().equals(player)) {
       // sea constructions require either owning the sea zone or owning a surrounding land territory
       if (producer.isWater()
-          && Match.someMatch(testUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsConstruction))) { 
+          && Match.someMatch(testUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsConstruction))) {
         boolean ownedNeighbor = false;
         for (final Territory current : getData().getMap().getNeighbors(to, Matches.TerritoryIsLand)) {
           if (current.getOwner().equals(player) && (canProduceInConquered || !wasConquered(current))) {
@@ -683,7 +688,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
-   * Returns the territories that would do the producing if units are to be placed in a given territory. Returns an empty list if no
+   * Returns the territories that would do the producing if units are to be placed in a given territory. Returns an
+   * empty list if no
    * suitable territory could be found.
    *
    * @param to
@@ -693,7 +699,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * @param unitsToPlace
    *        - Can be null, otherwise is the units that will be produced.
    * @param simpleCheck
-   *        - If true you return true even if a factory is not present. Used when you do not want an infinite loop (getAllProducers ->
+   *        - If true you return true even if a factory is not present. Used when you do not want an infinite loop
+   *        (getAllProducers ->
    *        canProduce -> howManyOfEachConstructionCanPlace -> getAllProducers -> etc)
    * @return - List of territories that can produce here.
    */
@@ -898,7 +905,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       for (final Unit currentUnit : Match.getMatches(units, Matches.UnitIsConstruction)) {
         final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
         if (maxUnits > 0) {
-          // we are doing this because we could have multiple unitTypes with the same constructionType, so we have to be able to place the
+          // we are doing this because we could have multiple unitTypes with the same constructionType, so we have to be
+          // able to place the
           // max placement by constructionType of each unitType
           if (skipUnits.contains(currentUnit)) {
             continue;
@@ -972,7 +980,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       if (!weCanConsume) {
         break;
       }
-      // remove units which are now consumed, then test the rest of the consuming units on the diminishing pile of units which were in the
+      // remove units which are now consumed, then test the rest of the consuming units on the diminishing pile of units
+      // which were in the
       // territory at start of turn
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       final IntegerMap<UnitType> requiredUnitsMap = ua.getConsumesUnits();
@@ -1083,7 +1092,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     final Collection<Unit> alreadProducedUnits = getAlreadyProduced(producer);
     final int unitCountAlreadyProduced = alreadProducedUnits.size();
-    if (originalFactory && playerIsOriginalOwner) // && !placementRestrictedByFactory && !unitPlacementPerTerritoryRestricted
+    if (originalFactory && playerIsOriginalOwner) // && !placementRestrictedByFactory &&
+                                                  // !unitPlacementPerTerritoryRestricted
     {
       if (ra != null && ra.getMaxPlacePerTerritory() != -1) {
         return Math.max(0, ra.getMaxPlacePerTerritory() - unitCountAlreadyProduced);
@@ -1104,7 +1114,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         return Math.max(0, ra.getMaxPlacePerTerritory() - unitCountAlreadyProduced);
       }
     }
-    // a factory can produce the same number of units as the number of PUs the territory generates each turn (or not, if it has
+    // a factory can produce the same number of units as the number of PUs the territory generates each turn (or not, if
+    // it has
     // canProduceXUnits)
     int production = 0;
     // int territoryValue = getProduction(producer);
@@ -1149,7 +1160,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         if (placementMove.getProducerTerritory().equals(producer)) {
           final Territory placeTerritory = placementMove.getPlaceTerritory();
           final Collection<Unit> unitsPlacedByCurrentPlacementMove = placementMove.getUnits();
-          // TODO: Units which have the unit attachment property, requiresUnits, are too difficult to mess with logically, so we ignore them
+          // TODO: Units which have the unit attachment property, requiresUnits, are too difficult to mess with
+          // logically, so we ignore them
           // for our special 'move shit around' methods.
           if (!placeTerritory.isWater() || (isUnitPlacementRestrictions()
               && Match.someMatch(unitsPlacedByCurrentPlacementMove, Matches.UnitRequiresUnitsOnCreation))) {
@@ -1241,7 +1253,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> unitsInTO = to.getUnits().getUnits();
     final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
-    // build an integer map of each unit we have in our list of held units, as well as integer maps for maximum units and units per turn
+    // build an integer map of each unit we have in our list of held units, as well as integer maps for maximum units
+    // and units per turn
     final IntegerMap<String> unitMapHeld = new IntegerMap<String>();
     final IntegerMap<String> unitMapMaxType = new IntegerMap<String>();
     final IntegerMap<String> unitMapTypePerTurn = new IntegerMap<String>();
@@ -1353,10 +1366,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * @param to
    *        - Territory we are testing for required units
    * @param doNotCountNeighbors
-   *        - If false, and 'to' is water, then we will test neighboring land territories to see if they have any of the required units as
+   *        - If false, and 'to' is water, then we will test neighboring land territories to see if they have any of the
+   *        required units as
    *        well.
    * @return - Whether the territory contains one of the required combos of units
-   *         (and if 'doNotCountNeighbors' is false, and unit is Sea unit, will return true if an adjacent land territory has one of the
+   *         (and if 'doNotCountNeighbors' is false, and unit is Sea unit, will return true if an adjacent land
+   *         territory has one of the
    *         required combos as well).
    */
   public Match<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory to, final boolean doNotCountNeighbors) {
@@ -1558,7 +1573,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
     final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<Unit>(
         Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
-    // land factories in water can't produce, and sea factories in land can't produce. air can produce like land if in land, and like sea if
+    // land factories in water can't produce, and sea factories in land can't produce. air can produce like land if in
+    // land, and like sea if
     // in water.
     if (to.isWater()) {
       factoryMatch.add(Matches.UnitIsLand.invert());

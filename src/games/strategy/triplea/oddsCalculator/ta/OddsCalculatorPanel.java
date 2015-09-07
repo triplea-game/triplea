@@ -490,7 +490,8 @@ public class OddsCalculatorPanel extends JPanel {
     }, "Odds calc thread");
     // Actually start thread.
     calcThread.start();
-    // the runnable setting the dialog visible must run after this code executes, since this code is running on the swing event thread
+    // the runnable setting the dialog visible must run after this code executes, since this code is running on the
+    // swing event thread
     dialog.setVisible(true);
     // results.get() could be null if we cancelled to quickly or something weird like that.
     if (results == null || results.get() == null) {
@@ -853,7 +854,8 @@ public class OddsCalculatorPanel extends JPanel {
               .getTotalPowerAndRolls(
                   DiceRoll.getUnitPowerAndRollsForNormalBattles(defenders, defenders, attackers, true, false,
                       getDefender(), m_data, m_location, territoryEffects, isAmphibiousBattle, new ArrayList<Unit>()),
-              m_data).getFirst();
+                  m_data)
+              .getFirst();
       m_attackerUnitsTotalPower.setText("Power: " + attackPower);
       m_defenderUnitsTotalPower.setText("Power: " + defensePower);
       m_attackerUnitsTotalPower.setToolTipText(
@@ -1034,8 +1036,10 @@ class PlayerUnitsPanel extends JPanel {
         }
       }
     }
-    // we want to filter out anything like factories, or units that have no combat ability AND can not be taken casualty.
-    // in addition, as of right now AA guns can not fire on the offensive side, so we want to take them out too, unless they have other
+    // we want to filter out anything like factories, or units that have no combat ability AND can not be taken
+    // casualty.
+    // in addition, as of right now AA guns can not fire on the offensive side, so we want to take them out too, unless
+    // they have other
     // combat abilities.
     rVal = Match.getMatches(rVal,
         Matches.UnitTypeCanBeInBattle(!m_defender, m_isLand, player, m_data, 1, false, false, false));
@@ -1100,7 +1104,8 @@ class UnitPanel extends JPanel {
     if (!units.isEmpty()) {
       // creating the unit just makes it, we want to make sure it is damaged if the category says it is damaged
       if (m_category.getHitPoints() > 1 && m_category.getDamaged() > 0) {
-        // we do not need to use bridge and change factory here because this is not sent over the network. these are just some temporary
+        // we do not need to use bridge and change factory here because this is not sent over the network. these are
+        // just some temporary
         // units for the battle calc.
         for (final Unit u : units) {
           u.setHits(m_category.getDamaged());

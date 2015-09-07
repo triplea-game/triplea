@@ -121,7 +121,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   /**
    * Internal use only, is not set by xml or property utils.
    * Is used to determine the number of territories we need to satisfy a specific territory based condition check.
-   * It is set multiple times during each check [isSatisfied], as there might be multiple types of territory checks being done. So it is
+   * It is set multiple times during each check [isSatisfied], as there might be multiple types of territory checks
+   * being done. So it is
    * just a temporary value.
    */
   @InternalDoNotExport
@@ -140,7 +141,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 
   /**
    * Used to determine if there is a multiple on this national objective (if the user specified 'each' in the count.
-   * For example, you may want to have the player receive 3 PUs for controlling each territory, in a list of territories.
+   * For example, you may want to have the player receive 3 PUs for controlling each territory, in a list of
+   * territories.
    */
   public int getEachMultiple() {
     if (!getCountEach()) {
@@ -164,7 +166,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   /**
-   * "uses" on RulesAttachments apply ONLY to giving money (PUs) to the player, they do NOT apply to the condition, and therefore should not
+   * "uses" on RulesAttachments apply ONLY to giving money (PUs) to the player, they do NOT apply to the condition, and
+   * therefore should not
    * be tested for in isSatisfied.
    */
   public int getUses() {
@@ -271,7 +274,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   /**
-   * Takes a string like "original", "originalNoWater", "enemy", "controlled", "controlledNoWater", "all", "map", and turns it into an
+   * Takes a string like "original", "originalNoWater", "enemy", "controlled", "controlledNoWater", "all", "map", and
+   * turns it into an
    * actual list of territories.
    * Also sets territoryCount.
    */
@@ -373,7 +377,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   /**
-   * Validate that all listed territories actually exist. Will return an empty list of territories if sent a list that is empty or contains
+   * Validate that all listed territories actually exist. Will return an empty list of territories if sent a list that
+   * is empty or contains
    * only a "" string.
    */
   public Set<Territory> getListedTerritories(final String[] list, final boolean testFirstItemForCount,

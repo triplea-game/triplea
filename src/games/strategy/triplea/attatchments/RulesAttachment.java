@@ -80,7 +80,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
   }
 
   /**
-   * Convenience method, for use with rules attachments, objectives, and condition attachments. Should return RulesAttachments.
+   * Convenience method, for use with rules attachments, objectives, and condition attachments. Should return
+   * RulesAttachments.
    *
    * @param player PlayerID
    * @param nameOfAttachment exact full name of attachment
@@ -120,10 +121,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 
   /**
    * Convenience method, for use returning any RulesAttachment that begins with "objectiveAttachment"
-   * National Objectives are just conditions that also give money to a player during the end turn delegate. They can be used for testing by
+   * National Objectives are just conditions that also give money to a player during the end turn delegate. They can be
+   * used for testing by
    * triggers as well.
    * Conditions that do not give money are not prefixed with "objectiveAttachment",
-   * and the trigger attachment that uses these kinds of conditions gets them a different way because they are specifically named inside
+   * and the trigger attachment that uses these kinds of conditions gets them a different way because they are
+   * specifically named inside
    * that trigger.
    */
   public static Set<RulesAttachment> getNationalObjectives(final PlayerID player, final GameData data) {
@@ -859,9 +862,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
         objectiveMet = false;
         changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, objectiveMet, false);
       } else {
-        // there is an issue with maps using thousands of chance triggers: they are causing the cypted random source (ie: live and pbem
+        // there is an issue with maps using thousands of chance triggers: they are causing the cypted random source
+        // (ie: live and pbem
         // games) to lock up or error out
-        // so we need to slow them down a bit, until we come up with a better solution (like aggregating all the chances together, then
+        // so we need to slow them down a bit, until we come up with a better solution (like aggregating all the chances
+        // together, then
         // getting a ton of random numbers at once instead of one at a time)
         try {
           Thread.sleep(100);
@@ -1078,7 +1083,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
   }
 
   /**
-   * Checks for allied ownership of the collection of territories. Once the needed number threshold is reached, the satisfied flag is set
+   * Checks for allied ownership of the collection of territories. Once the needed number threshold is reached, the
+   * satisfied flag is set
    * to true and returned
    */
   private boolean checkAlliedOwnership(boolean satisfied, final Collection<Territory> listedTerrs,
@@ -1106,7 +1112,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
   }
 
   /**
-   * Checks for direct ownership of the collection of territories. Once the needed number threshold is reached, return true.
+   * Checks for direct ownership of the collection of territories. Once the needed number threshold is reached, return
+   * true.
    */
   private boolean checkDirectOwnership(boolean satisfied, final Collection<Territory> listedTerrs,
       final int numberNeeded, final Collection<PlayerID> players) {

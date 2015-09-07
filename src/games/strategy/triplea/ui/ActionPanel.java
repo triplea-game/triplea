@@ -133,7 +133,8 @@ public abstract class ActionPanel extends JPanel {
   }
 
   /**
-   * Can override to have specific commands done by key presses (like hitting "N" for next unit, on the move action panel)
+   * Can override to have specific commands done by key presses (like hitting "N" for next unit, on the move action
+   * panel)
    *
    * @param e
    */

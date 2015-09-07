@@ -130,7 +130,8 @@ public class EngineVersionProperties {
   }
 
   private static void runInBackground(final Component parent, final String waitMessage, final Runnable r) {
-    // we do not need to alert the user to this, or have a waiting window or progress window. just check in the background.
+    // we do not need to alert the user to this, or have a waiting window or progress window. just check in the
+    // background.
     // BackgroundTaskRunner.runInBackground(parent, waitMessage, r);
     r.run();
   }

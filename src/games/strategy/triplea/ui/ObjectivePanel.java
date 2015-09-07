@@ -516,7 +516,8 @@ class ObjectiveProperties {
   }
 
   public static ObjectiveProperties getInstance() {
-    if (s_op == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 1000) { // cache properties for 1 second
+    if (s_op == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 1000) { // cache properties for 1
+                                                                                         // second
       s_op = new ObjectiveProperties();
       s_timestamp = Calendar.getInstance().getTimeInMillis();
     }
@@ -934,7 +935,8 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
  * setWrapStyleWord(true);
  * setEditable(false);
  * }
- * public Component getTableCellRendererComponent(final JTable table, final Object obj, final boolean isSelected, final boolean hasFocus,
+ * public Component getTableCellRendererComponent(final JTable table, final Object obj, final boolean isSelected, final
+ * boolean hasFocus,
  * final int row, final int column)
  * {
  * // set the colors, etc. using the standard for that platform

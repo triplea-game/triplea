@@ -21,7 +21,8 @@ public class TechTracker implements java.io.Serializable {
   public TechTracker() {}
 
   /**
-   * Returns what tech advances this player already has successfully researched (including ones that may not be in their tech frontier).
+   * Returns what tech advances this player already has successfully researched (including ones that may not be in their
+   * tech frontier).
    *
    * @param id
    * @param data
@@ -39,7 +40,8 @@ public class TechTracker implements java.io.Serializable {
   }
 
   /**
-   * Returns what tech categories are no longer available for this player, because all techs in them have been successfully researched
+   * Returns what tech categories are no longer available for this player, because all techs in them have been
+   * successfully researched
    * already.
    *
    * @param data

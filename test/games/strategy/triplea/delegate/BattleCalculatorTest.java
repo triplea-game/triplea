@@ -85,7 +85,7 @@ public class BattleCalculatorTest extends TestCase {
                 Match.getMatches(planes,
                     Matches
                         .unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))),
-            defendingAA, m_bridge, territory("Germany", data), true);
+                defendingAA, m_bridge, territory("Germany", data), true);
     final Collection<Unit> casualties = BattleCalculator.getAACasualties(false, planes, planes, defendingAA,
         defendingAA, roll, m_bridge, null, null, null, territory("Germany", data), null, false, null).getKilled();
     assertEquals(casualties.size(), 2);
@@ -111,7 +111,7 @@ public class BattleCalculatorTest extends TestCase {
                 Match.getMatches(planes,
                     Matches
                         .unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))),
-            defendingAA, m_bridge, territory("Germany", data), true);
+                defendingAA, m_bridge, territory("Germany", data), true);
     assertEquals(1, randomSource.getTotalRolled());
     final Collection<Unit> casualties = BattleCalculator.getAACasualties(false, planes, planes, defendingAA,
         defendingAA, roll, m_bridge, null, null, null, territory("Germany", data), null, false, null).getKilled();
@@ -151,7 +151,7 @@ public class BattleCalculatorTest extends TestCase {
                 Match.getMatches(planes,
                     Matches
                         .unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))),
-            defendingAA, m_bridge, territory("Germany", data), true);
+                defendingAA, m_bridge, territory("Germany", data), true);
     final Collection<Unit> casualties =
         BattleCalculator.getAACasualties(false, planes, planes, defendingAA, defendingAA, roll, m_bridge, germans(data),
             british(data), null, territory("Germany", data), null, false, null).getKilled();
@@ -189,7 +189,7 @@ public class BattleCalculatorTest extends TestCase {
                 Match.getMatches(planes,
                     Matches
                         .unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))),
-            defendingAA, m_bridge, territory("Germany", data), true);
+                defendingAA, m_bridge, territory("Germany", data), true);
     final Collection<Unit> casualties =
         BattleCalculator.getAACasualties(false, planes, planes, defendingAA, defendingAA, roll, m_bridge, germans(data),
             british(data), null, territory("Germany", data), null, false, null).getKilled();
@@ -217,7 +217,7 @@ public class BattleCalculatorTest extends TestCase {
                 Match.getMatches(planes,
                     Matches
                         .unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))),
-            defendingAA, m_bridge, territory("Germany", data), true);
+                defendingAA, m_bridge, territory("Germany", data), true);
     // make sure we rolled once
     assertEquals(1, randomSource.getTotalRolled());
     final Collection<Unit> casualties = BattleCalculator.getAACasualties(false, planes, planes, defendingAA,
@@ -249,7 +249,7 @@ public class BattleCalculatorTest extends TestCase {
                 Match.getMatches(planes,
                     Matches
                         .unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))),
-            defendingAA, m_bridge, territory("Germany", data), true);
+                defendingAA, m_bridge, territory("Germany", data), true);
     // make sure we rolled once
     assertEquals(1, randomSource.getTotalRolled());
     final Collection<Unit> casualties = BattleCalculator.getAACasualties(false, planes, planes, defendingAA,
@@ -278,7 +278,7 @@ public class BattleCalculatorTest extends TestCase {
                 Match.getMatches(planes,
                     Matches
                         .unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))),
-            defendingAA, m_bridge, territory("Germany", data), true);
+                defendingAA, m_bridge, territory("Germany", data), true);
     // make sure we rolled once
     assertEquals(1, randomSource.getTotalRolled());
     final Collection<Unit> casualties = BattleCalculator.getAACasualties(false, planes, planes, defendingAA,

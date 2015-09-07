@@ -139,7 +139,8 @@ public class FinishedBattle extends AbstractBattle {
     if (lost.size() != 0) {
       m_attackingUnits.removeAll(lost);
       /*
-       * TODO: these units are no longer in this territory, most probably. Plus they may have already been removed by another "real" battle
+       * TODO: these units are no longer in this territory, most probably. Plus they may have already been removed by
+       * another "real" battle
        * class.
        * final String transcriptText = MyFormatter.unitsToText(lost) + " lost in " + m_battleSite.getName();
        * bridge.getHistoryWriter().startEvent(transcriptText);

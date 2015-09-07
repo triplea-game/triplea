@@ -103,7 +103,8 @@ public class LobbyLoginValidator implements ILoginValidator {
     if (macBanned.getFirst()) {
       return YOU_HAVE_BEEN_BANNED + " " + getBanDurationBreakdown(macBanned.getSecond());
     }
-    // test for username ban after testing normal bans, because if it is only a username ban then the user should know they can change their
+    // test for username ban after testing normal bans, because if it is only a username ban then the user should know
+    // they can change their
     // name
     final Tuple<Boolean, Timestamp> usernameBanned = new BannedUsernameController().isUsernameBanned(clientName);
     if (usernameBanned.getFirst()) {
@@ -183,7 +184,9 @@ public class LobbyLoginValidator implements ILoginValidator {
       return "Can't login anonymously, username already exists";
     }
     if (propertiesReadFromClient.get(LOBBY_WATCHER_LOGIN) != null
-        && propertiesReadFromClient.get(LOBBY_WATCHER_LOGIN).equals(Boolean.TRUE.toString())) // If this is a lobby watcher, use a different
+        && propertiesReadFromClient.get(LOBBY_WATCHER_LOGIN).equals(Boolean.TRUE.toString())) // If this is a lobby
+                                                                                              // watcher, use a
+                                                                                              // different
                                                                                               // set of validation
     {
       if (!userName.endsWith(InGameLobbyWatcher.LOBBY_WATCHER_NAME)) {

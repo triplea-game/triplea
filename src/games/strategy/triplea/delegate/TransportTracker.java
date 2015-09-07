@@ -139,7 +139,8 @@ public class TransportTracker {
       change.add(ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.UNLOADED_AMPHIBIOUS));
     }
     if (!dependentBattle) {
-      // TODO: this is causing issues with Scrambling. if the units were unloaded, then scrambling creates a battle, there is no longer any
+      // TODO: this is causing issues with Scrambling. if the units were unloaded, then scrambling creates a battle,
+      // there is no longer any
       // way to have the units removed if those transports die.
       change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
     }
@@ -168,11 +169,13 @@ public class TransportTracker {
       // change.add(ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.UNLOADED_AMPHIBIOUS));
     }
     if (!dependentBattle) {
-      // TODO: this is causing issues with Scrambling. if the units were unloaded, then scrambling creates a battle, there is no longer any
+      // TODO: this is causing issues with Scrambling. if the units were unloaded, then scrambling creates a battle,
+      // there is no longer any
       // way to have the units removed if those transports die.
       change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
     }
-    // dependencies for battle calc and casualty selection include unloaded. therefore even if we have unloaded this unit, it will die if
+    // dependencies for battle calc and casualty selection include unloaded. therefore even if we have unloaded this
+    // unit, it will die if
     // air transport dies IF we have the unloaded flat set. so don't set it.
     // TODO: fix this bullshit by re-writing entire transportation engine
     // change.add(ChangeFactory.unitPropertyChange(transport, newUnloaded, TripleAUnit.UNLOADED));

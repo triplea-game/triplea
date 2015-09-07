@@ -254,7 +254,8 @@ public class CountUpAndDownLatch implements Serializable {
  * sync.releaseShared(delta);
  * }
  * }
- ** If delta is negative, and our state is already at zero, we will wait until it becomes positive again before counting down.
+ ** If delta is negative, and our state is already at zero, we will wait until it becomes positive again before counting
+ * down.
  *
  * @see CountDownLatch#countDown()
  *
@@ -267,10 +268,12 @@ public class CountUpAndDownLatch implements Serializable {
  * if true, we will apply the delta after we are interrupted, before we throw the interruption up.
  *
  * @throws InterruptedException
- * public void applyDeltaOrWaitIfZero(final int delta, final boolean applyDeltaIfInterrupted) throws InterruptedException {
+ * public void applyDeltaOrWaitIfZero(final int delta, final boolean applyDeltaIfInterrupted) throws
+ * InterruptedException {
  * applyDeltaOrWaitIfZero(delta, applyDeltaIfInterrupted, 0L, TimeUnit.MILLISECONDS);
  * }
- ** If delta is negative, and our state is already at zero, we will wait until it becomes positive again before counting down.
+ ** If delta is negative, and our state is already at zero, we will wait until it becomes positive again before counting
+ * down.
  *
  * @see CountDownLatch#countDown()
  *
@@ -291,7 +294,8 @@ public class CountUpAndDownLatch implements Serializable {
  * @return true if we waited successfully, false if interrupted
  *
  * @throws InterruptedException
- * public boolean applyDeltaOrWaitIfZero(final int delta, final boolean applyDeltaIfInterrupted, final long timeout, final TimeUnit unit)
+ * public boolean applyDeltaOrWaitIfZero(final int delta, final boolean applyDeltaIfInterrupted, final long timeout,
+ * final TimeUnit unit)
  * throws InterruptedException {
  * boolean didNotTimeOut = true;
  * if (delta < 0 && sync.getCount() <= 0) {
@@ -342,7 +346,8 @@ public class CountUpAndDownLatch implements Serializable {
  ** If the current latch is at zero, we will wait until it is positive before we begin awaiting the latch.
  *
  * @see CountDownLatch#await(long,TimeUnit)
- * public boolean awaitOrWaitIfZeroToStartAwaiting(final long timeoutToWaitOnceAwaiting, final long timeoutToWaitIfZeroToStartAwaiting,
+ * public boolean awaitOrWaitIfZeroToStartAwaiting(final long timeoutToWaitOnceAwaiting, final long
+ * timeoutToWaitIfZeroToStartAwaiting,
  * final TimeUnit unit) throws InterruptedException {
  * boolean didNotTimeOut = true;
  * if (sync.getCount() <= 0) {

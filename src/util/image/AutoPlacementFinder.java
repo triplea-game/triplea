@@ -319,7 +319,8 @@ public class AutoPlacementFinder {
   }
 
   /**
-   * java.util.List getPlacementsStartingAtTopLeft(java.util.Collection, java.awt.Rectangle, java.awt.Point, java.util.Collection)
+   * java.util.List getPlacementsStartingAtTopLeft(java.util.Collection, java.awt.Rectangle, java.awt.Point,
+   * java.util.Collection)
    *
    * @param java
    *        .util.Collection
@@ -353,7 +354,8 @@ public class AutoPlacementFinder {
   }
 
   /**
-   * isPlacement(java.util.Collection, java.util.Collection, java.util.List, java.util.List, java.awt.geom.Rectangle2D, java.lang.int,
+   * isPlacement(java.util.Collection, java.util.Collection, java.util.List, java.util.List, java.awt.geom.Rectangle2D,
+   * java.lang.int,
    * java.lang.int)
    *
    * @param java

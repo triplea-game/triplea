@@ -221,7 +221,8 @@ public abstract class AbstractUIContext implements IUIContext {
         // A real life example: player disconnects while you have the battle calc open.
         // Non-EDT thread does shutdown on IGame and UIContext, causing btl calc to shutdown, which calls the
         // window closed event on the EDT, and waits for the lock on UIContext to removeShutdownWindow, meanwhile
-        // our non-EDT tries to dispose the battle panel, which requires the EDT with a invokeAndWait, resulting in a deadlock.
+        // our non-EDT tries to dispose the battle panel, which requires the EDT with a invokeAndWait, resulting in a
+        // deadlock.
         window.dispose();
         // there is a bug in java (1.50._06 for linux at least)
         // where frames are not garbage collected.

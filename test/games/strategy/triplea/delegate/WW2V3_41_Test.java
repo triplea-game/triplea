@@ -962,11 +962,13 @@ public class WW2V3_41_Test extends TestCase {
     battleDelegate(m_data).start();
     final MustFightBattle mfb =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(eg, false, null);
-    // only 2 ships are allowed to bombard (there are 1 battleship and 2 cruisers that COULD bombard, but only 2 ships may bombard total)
+    // only 2 ships are allowed to bombard (there are 1 battleship and 2 cruisers that COULD bombard, but only 2 ships
+    // may bombard total)
     assertEquals(2, mfb.getBombardingUnits().size());
     // Show that bombard casualties can return fire
     // Note- the 3 & 2 hits below show default behavior of bombarding at attack strength
-    // 3= Battleship hitting a 4, 2=Cruiser hitting a 3, 5555=italian infantry missing on 6s, 00= british getting return fire on 1.
+    // 3= Battleship hitting a 4, 2=Cruiser hitting a 3, 5555=italian infantry missing on 6s, 00= british getting return
+    // fire on 1.
     bridge.setRandomSource(new ScriptedRandomSource(3, 2, 5, 5, 5, 5, 0, 0));
     battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     battleDelegate(m_data).start();

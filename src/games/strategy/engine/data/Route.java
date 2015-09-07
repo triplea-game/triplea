@@ -197,7 +197,8 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
   }
 
   /**
-   * @deprecated use: numberOfSteps(), getMovementCost(unit), getMiddleSteps(), getTerritories() or any other method in this class
+   * @deprecated use: numberOfSteps(), getMovementCost(unit), getMiddleSteps(), getTerritories() or any other method in
+   *             this class
    * @return the number of steps in this route.
    */
   @Deprecated
@@ -468,7 +469,8 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
     if (hasNoSteps()) {
       return false;
     }
-    // we should not check if there is only 1 step, because otherwise movement validation will let users move their tanks over water, so
+    // we should not check if there is only 1 step, because otherwise movement validation will let users move their
+    // tanks over water, so
     // long as they end on land
     return getStart().isWater() && !getEnd().isWater();
   }

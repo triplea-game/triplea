@@ -10,7 +10,8 @@ import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.triplea.TripleAPlayer;
 
 /**
- * A sound channel allowing sounds normally played on the server (for example: in a delegate, such as a the move delegate) to also be played
+ * A sound channel allowing sounds normally played on the server (for example: in a delegate, such as a the move
+ * delegate) to also be played
  * on clients.
  */
 public class DefaultSoundChannel implements ISound {
@@ -22,13 +23,15 @@ public class DefaultSoundChannel implements ISound {
 
   /**
    * Plays a sound clip on this local machine.
-   * You will want to call this from UI elements (because all users have these), and not call it from delegates (because only the host has
+   * You will want to call this from UI elements (because all users have these), and not call it from delegates (because
+   * only the host has
    * these).
    *
    * @param clipName
    *        the name of the sound clip to play, found in SoundPath.java
    * @param subFolder
-   *        the name of the player nation who's sound we want to play (ie: russians infantry might make different sounds from german
+   *        the name of the player nation who's sound we want to play (ie: russians infantry might make different sounds
+   *        from german
    *        infantry, etc). Can be null.
    */
   public static void playSoundOnLocalMachine(final String clipName, final String subFolder) {

@@ -467,7 +467,9 @@ public class StatPanel extends AbstractStatPanel {
     public double getValue(final PlayerID player, final GameData data) {
       int rVal = 0;
       for (final Territory place : data.getMap().getTerritories()) {
-        /* Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, or if contested */
+        /*
+         * Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, or if contested
+         */
         if (place.getOwner().equals(player) && Matches.territoryCanCollectIncomeFrom(player, data).match(place)) {
           rVal += TerritoryAttachment.getProduction(place);
         }

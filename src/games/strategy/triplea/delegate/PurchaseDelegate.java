@@ -63,7 +63,8 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     final GameData data = getData();
     if (m_needToInitialize) {
       if (games.strategy.triplea.Properties.getTriggers(data)) {
-        // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
+        // First set up a match for what we want to have fire as a default in this delegate. List out as a composite
+        // match OR.
         // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
         final Match<TriggerAttachment> purchaseDelegateTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
             AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),

@@ -66,9 +66,11 @@ public interface IDelegate {
 
   /**
    * Do we have any user-interface things to do in this delegate or not?
-   * Example: In the "place delegate" if we have units to place or have already placed some units then this should return true,
+   * Example: In the "place delegate" if we have units to place or have already placed some units then this should
+   * return true,
    * and if we have nothing to place then this should return false;
-   * Example2: In a "move delegate" if we have either moved units already or have units with movement left, then this should return true,
+   * Example2: In a "move delegate" if we have either moved units already or have units with movement left, then this
+   * should return true,
    * and if we have no units to move or undo-move, then this should return false.
    * Because communication over the network can take a while, this should only be called from the server game.
    *

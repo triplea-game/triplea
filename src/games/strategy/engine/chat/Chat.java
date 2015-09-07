@@ -37,7 +37,8 @@ public class Chat {
   // TODO: check if this mutex is used for something else as well
   private final Object m_mutexNodes = new Object();
   private List<INode> m_nodes;
-  // this queue is filled ONLY in init phase when m_chatInitVersion is default (-1) and nodes should not be changed until end of
+  // this queue is filled ONLY in init phase when m_chatInitVersion is default (-1) and nodes should not be changed
+  // until end of
   // initialization
   // synchronizes access to queue
   private final Object m_mutexQueue = new Object();

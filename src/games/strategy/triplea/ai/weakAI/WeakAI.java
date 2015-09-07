@@ -705,7 +705,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
         }
         // prevents 2 infantry from attacking 1 infantry
         if (ourStrength > 1.37 * enemyStrength) {
-          // this is all we need to take it, dont go overboard, since we may be able to use the units to attack somewhere else
+          // this is all we need to take it, dont go overboard, since we may be able to use the units to attack
+          // somewhere else
           double remainingStrengthNeeded = (2.5 * enemyStrength) + 4;
           for (final Territory owned : attackFrom) {
             if (dontMoveFrom.contains(owned)) {
@@ -842,8 +843,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
         Match.getMatches(Utils.findUnitTerr(data, player, ourFactories), Matches.isTerritoryOwnedBy(player));
     // figure out if anything needs to be repaired
     if (player.getRepairFrontier() != null
-        && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
-    {
+        && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
       rrules = player.getRepairFrontier().getRules();
       final IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
       final HashMap<Unit, IntegerMap<RepairRule>> repair = new HashMap<Unit, IntegerMap<RepairRule>>();
@@ -891,11 +891,15 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
       }
       rfactories.remove(capitol);
       unitsThatCanProduceNeedingRepair.remove(capUnit);
-      // assume minimum unit price is 3, and that we are buying only that... if we over repair, oh well, that is better than under-repairing
+      // assume minimum unit price is 3, and that we are buying only that... if we over repair, oh well, that is better
+      // than under-repairing
       // goal is to be able to produce all our units, and at least half of that production in the capitol
-      if ((capProduction <= maxUnits / 2 || rfactories.isEmpty()) && capUnit != null) // if capitol is super safe, we don't have to do this.
-                                                                                      // and if capitol is under siege, we should repair
-                                                                                      // enough to place all our units here
+      if ((capProduction <= maxUnits / 2 || rfactories.isEmpty()) && capUnit != null) // if capitol is super safe, we
+                                                                                      // don't have to do this.
+                                                                                      // and if capitol is under siege,
+                                                                                      // we should repair
+                                                                                      // enough to place all our units
+                                                                                      // here
       {
         for (final RepairRule rrule : rrules) {
           if (!capUnit.getUnitType().equals(rrule.getResults().keySet().iterator().next())) {
@@ -945,7 +949,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
                 .match(unitsThatCanProduceNeedingRepair.get(fixUnit))) {
               continue;
             }
-            // we will repair the first territories in the list as much as we can, until we fulfill the condition, then skip all other
+            // we will repair the first territories in the list as much as we can, until we fulfill the condition, then
+            // skip all other
             // territories
             if (currentProduction >= maxUnits) {
               continue;

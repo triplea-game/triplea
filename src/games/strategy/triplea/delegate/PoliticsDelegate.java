@@ -55,7 +55,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     super.end();
     resetAttempts();
     if (games.strategy.triplea.Properties.getTriggers(getData())) {
-      // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
+      // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
+      // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
       final Match<TriggerAttachment> politicsDelegateTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
           TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(null, null),
@@ -386,7 +387,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       MoveDelegate.getBattleTracker(getData()).addRelationshipChangesThisTurn(player1, player2, oldRelation,
           newRelation);
       /*
-       * creation of new battles is handled at the beginning of the battle delegate, in "setupUnitsInSameTerritoryBattles", not here.
+       * creation of new battles is handled at the beginning of the battle delegate, in
+       * "setupUnitsInSameTerritoryBattles", not here.
        * if (Matches.RelationshipTypeIsAtWar.match(newRelation))
        * TriggerAttachment.triggerMustFightBattle(player1, player2, m_bridge);
        */

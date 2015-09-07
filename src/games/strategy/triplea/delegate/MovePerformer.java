@@ -145,7 +145,8 @@ public class MovePerformer implements Serializable {
         final Collection<Unit> arrived = Collections.unmodifiableList(Util.intersection(units, arrivingUnits[0]));
         final Collection<Unit> arrivedCopyForBattles = new ArrayList<Unit>(arrived);
         final Map<Unit, Unit> transporting = MoveDelegate.mapTransports(route, arrived, transportsToLoad);
-        // If we have paratrooper land units being carried by air units, they should be dropped off in the last territory. This means they
+        // If we have paratrooper land units being carried by air units, they should be dropped off in the last
+        // territory. This means they
         // are still dependent during the middle steps of the route.
         final Collection<Unit> dependentOnSomethingTilTheEndOfRoute = new ArrayList<Unit>();
         final Collection<Unit> airTransports = Match.getMatches(arrived, Matches.UnitIsAirTransport);
@@ -232,7 +233,8 @@ public class MovePerformer implements Serializable {
                 dependentOnSomethingTilTheEndOfRoute);
           }
           if (!ignoreBattle && GameStepPropertiesHelper.isNonCombatMove(data, false) && !targetedAttack) {
-            // We are in non-combat move phase, and we are taking over friendly territories. No need for a battle. (This could get really
+            // We are in non-combat move phase, and we are taking over friendly territories. No need for a battle. (This
+            // could get really
             // difficult if we want these recorded in battle records).
             for (final Territory t : route.getMatches(new CompositeMatchAnd<Territory>(
                 Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
@@ -329,7 +331,8 @@ public class MovePerformer implements Serializable {
     if (routeEnd != null && games.strategy.triplea.Properties.getSubsCanEndNonCombatMoveWithEnemies(data)
         && GameStepPropertiesHelper.isNonCombatMove(data, false) && routeEnd.getUnits()
             .someMatch(new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, id), Matches.UnitIsDestroyer))) {
-      // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we want to make sure we can't keep moving them
+      // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we want to make sure we
+      // can't keep moving them
       // if there is an enemy destroyer there
       for (final Unit unit : Match.getMatches(units,
           new CompositeMatchAnd<Unit>(Matches.UnitIsSub, Matches.UnitIsAir.invert()))) {

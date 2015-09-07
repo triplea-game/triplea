@@ -25,7 +25,8 @@ import games.strategy.engine.message.RemoteName;
  * <p>
  * Data can be locked in the vault by a node. This data then is not readable by other nodes until the data is unlocked.
  * <p>
- * When the data is unlocked by the original node, other nodes can read the data. When data is put in the vault, it cant be changed by the
+ * When the data is unlocked by the original node, other nodes can read the data. When data is put in the vault, it cant
+ * be changed by the
  * originating node.
  * <p>
  * NOTE: to allow the data locked in the vault to be gc'd, the <code>release(VaultID id)<code> method

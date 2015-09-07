@@ -242,7 +242,8 @@ public interface ITripleaPlayer extends IRemotePlayer {
    * - user displayable message
    *
    * @return the territory to retreat to, or null if the player doesn't wish to retreat
-   * public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message, PlayerID player);
+   * public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message,
+   * PlayerID player);
    */
   /**
    * Ask the player which units, if any, they want to scramble to defend against the attacker.

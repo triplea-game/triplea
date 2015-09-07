@@ -49,7 +49,8 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
       createDefaultRelationship(Constants.RELATIONSHIP_TYPE_DEFAULT_ALLIED, RelationshipTypeAttachment.ARCHETYPE_ALLIED,
           data);
     } catch (final GameParseException e) {
-      // this should never happen, createDefaultRelationship only throws a GameParseException when the wrong ArcheType is supplied, but we
+      // this should never happen, createDefaultRelationship only throws a GameParseException when the wrong ArcheType
+      // is supplied, but we
       // never do that
       throw new IllegalStateException(e);
     }

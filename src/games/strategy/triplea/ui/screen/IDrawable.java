@@ -703,7 +703,8 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable {
           30 - (float) bounds.getX(), 50 - (float) bounds.getY(), new Color(0, 0, 0, 0), true);
       // newColor = new Color(255,120,120);
       // graphics.setStroke(new BasicStroke(6));
-      // new TerritoryOverLayDrawable(Color.RED, m_territoryName, OP.DRAW).draw(bounds, data, graphics, mapData, unscaled, scaled);
+      // new TerritoryOverLayDrawable(Color.RED, m_territoryName, OP.DRAW).draw(bounds, data, graphics, mapData,
+      // unscaled, scaled);
       super.draw(bounds, graphics, mapData, unscaled, scaled, territory, paint);
     }
   }

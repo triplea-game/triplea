@@ -200,7 +200,8 @@ public class RocketsFireHelper {
     }
     final String transcript;
     if (DamageFromBombingDoneToUnits) {
-      // TODO: rockets needs to be completely redone to allow for multiple rockets to fire at different targets, etc etc.
+      // TODO: rockets needs to be completely redone to allow for multiple rockets to fire at different targets, etc
+      // etc.
       final HashSet<UnitType> legalTargetsForTheseRockets = new HashSet<UnitType>();
       if (rockets == null) {
         legalTargetsForTheseRockets.addAll(data.getUnitTypeList().getAllUnitTypes());
@@ -253,7 +254,8 @@ public class RocketsFireHelper {
           final UnitAttachment ua = UnitAttachment.get(u.getType());
           int maxDice = ua.getBombingMaxDieSides();
           int bonus = ua.getBombingBonus();
-          // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the map, and zero for the
+          // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the
+          // map, and zero for the
           // bonus.
           if (maxDice < 0) {
             maxDice = diceSides;
@@ -308,7 +310,8 @@ public class RocketsFireHelper {
           final UnitAttachment ua = UnitAttachment.get(u.getType());
           int maxDice = ua.getBombingMaxDieSides();
           int bonus = ua.getBombingBonus();
-          // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the map, and zero for the
+          // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the
+          // map, and zero for the
           // bonus.
           if (maxDice < 0 || doNotUseBombingBonus) {
             maxDice = diceSides;
@@ -316,7 +319,8 @@ public class RocketsFireHelper {
           if (bonus < 0 || doNotUseBombingBonus) {
             bonus = 0;
           }
-          // now, regardless of whether they were set or not, we have to apply "low luck" to them, meaning in this case that we reduce the
+          // now, regardless of whether they were set or not, we have to apply "low luck" to them, meaning in this case
+          // that we reduce the
           // luck by 2/3.
           if (maxDice >= 5) {
             bonus += (maxDice + 1) / 3;

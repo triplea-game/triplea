@@ -202,7 +202,8 @@ public class MetaSetupPanel extends SetupPanel {
   private void ruleBook() {
     try {
       // We open both the actual rule book, and the web page for all guides.
-      // This way we can add other guides and rulebooks and tutorials later, as well as being able to update them after the stable is out.
+      // This way we can add other guides and rulebooks and tutorials later, as well as being able to update them after
+      // the stable is out.
       DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/TripleA_RuleBook.pdf");
       DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/mywiki/Guides");
       // BareBonesBrowserLaunch.openURL("https://sourceforge.net/projects/triplea/files/help/");
@@ -390,7 +391,8 @@ public class MetaSetupPanel extends SetupPanel {
       return rVal;
     }
     try {
-      // first is the default, rest are backups. Do NOT add too many backups, as we want to maintain control over all of them.
+      // first is the default, rest are backups. Do NOT add too many backups, as we want to maintain control over all of
+      // them.
       // default:
       rVal.add(new URL("http://triplea.sourceforge.net/lobby/" + s_serverPropertiesName));
       // backups:

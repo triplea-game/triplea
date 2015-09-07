@@ -2273,7 +2273,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
           // calculate if we can win the sea battle,
           ourShipStrength += BBStrength * 2.0F;
           final List<Unit> enemyShipsAtTarget = targetTerr2.getUnits().getMatches(Matches.enemyUnit(player, data));
-          enemyStrengthAtTarget = SUtils.strength(enemyShipsAtTarget, false, true, tFirst);;
+          enemyStrengthAtTarget = SUtils.strength(enemyShipsAtTarget, false, true, tFirst);
+          ;
           final List<Unit> shipsAtTarget = targetTerr2.getUnits().getMatches(Matches.alliedUnit(player, data));
           ourShipStrength += SUtils.strength(shipsAtTarget, false, true, tFirst);
           final float strengthDiff = enemyStrengthAtTarget - ourShipStrength;

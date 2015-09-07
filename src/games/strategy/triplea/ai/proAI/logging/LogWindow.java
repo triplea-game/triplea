@@ -430,7 +430,8 @@ public class LogWindow extends javax.swing.JDialog {
     }
     // Now remove round logging that has 'expired'.
     // Note that this method will also trim all but the first and last log panels if logging is turned off
-    // (We always keep first round's log panel, and we keep last because the user might turn logging back on in the middle of the round)
+    // (We always keep first round's log panel, and we keep last because the user might turn logging back on in the
+    // middle of the round)
     trimLogRoundPanels();
   }
 

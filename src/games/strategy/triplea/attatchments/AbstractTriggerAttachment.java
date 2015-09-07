@@ -24,7 +24,8 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   public static final String NOTIFICATION = "Notification";
   public static final String AFTER = "after";
   public static final String BEFORE = "before";
-  // "setTrigger" is also a valid setter, and it just calls "setConditions" in AbstractConditionsAttachment. Kept for backwards
+  // "setTrigger" is also a valid setter, and it just calls "setConditions" in AbstractConditionsAttachment. Kept for
+  // backwards
   // compatibility.
   private int m_uses = -1;
   @InternalDoNotExport
@@ -188,9 +189,11 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   protected void use(final IDelegateBridge aBridge) {
-    // instead of using up a "use" with every action, we will instead use up a "use" if the trigger is fired during this round
+    // instead of using up a "use" with every action, we will instead use up a "use" if the trigger is fired during this
+    // round
     // this is in order to let a trigger that contains multiple actions, fire all of them in a single use
-    // we only do this for things that do not have m_when set. triggers with m_when set have their uses modified elsewhere.
+    // we only do this for things that do not have m_when set. triggers with m_when set have their uses modified
+    // elsewhere.
     if (!m_usedThisRound && m_uses > 0 && m_when.isEmpty()) {
       aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, true, "usedThisRound"));
     }
@@ -207,9 +210,11 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
       changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, false, false);
       return false;
     }
-    // there is an issue with maps using thousands of chance triggers: they are causing the cypted random source (ie: live and pbem games)
+    // there is an issue with maps using thousands of chance triggers: they are causing the cypted random source (ie:
+    // live and pbem games)
     // to lock up or error out
-    // so we need to slow them down a bit, until we come up with a better solution (like aggregating all the chances together, then getting
+    // so we need to slow them down a bit, until we come up with a better solution (like aggregating all the chances
+    // together, then getting
     // a ton of random numbers at once instead of one at a time)
     try {
       Thread.sleep(100);
@@ -245,7 +250,8 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
    *        can be null, or must be "before" or "after"
    * @param stepName
    *        can be null, or must be exact name of a specific stepName
-   * @return true if when and both args are null, and true if all are not null and when matches the args, otherwise false
+   * @return true if when and both args are null, and true if all are not null and when matches the args, otherwise
+   *         false
    */
   public static Match<TriggerAttachment> whenOrDefaultMatch(final String beforeOrAfter, final String stepName) {
     return new Match<TriggerAttachment>() {

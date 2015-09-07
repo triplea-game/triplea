@@ -92,7 +92,8 @@ public class ProUtils {
     return rVal;
   }
 
-  public List<Territory> getLiveEnemyCapitals(final GameData data, final PlayerID player) { // generate a list of all enemy capitals
+  public List<Territory> getLiveEnemyCapitals(final GameData data, final PlayerID player) { // generate a list of all
+                                                                                            // enemy capitals
     final List<Territory> enemyCapitals = new ArrayList<Territory>();
     final List<PlayerID> ePlayers = getEnemyPlayers(player);
     for (final PlayerID otherPlayer : ePlayers) {
@@ -104,7 +105,8 @@ public class ProUtils {
     return enemyCapitals;
   }
 
-  public List<Territory> getLiveAlliedCapitals(final GameData data, final PlayerID player) { // generate a list of all allied capitals
+  public List<Territory> getLiveAlliedCapitals(final GameData data, final PlayerID player) { // generate a list of all
+                                                                                             // allied capitals
                                                                                              // including player capital
     final List<Territory> capitals = new ArrayList<Territory>();
     final List<PlayerID> players = getAlliedPlayers(player);

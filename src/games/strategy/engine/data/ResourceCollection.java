@@ -159,7 +159,8 @@ public class ResourceCollection extends GameDataComponent {
   }
 
   /**
-   * Will multiply all values by a given double. Can be used to divide all numbers, if given a fractional double (ie: to divide by 2, use
+   * Will multiply all values by a given double. Can be used to divide all numbers, if given a fractional double (ie: to
+   * divide by 2, use
    * 0.5 as the double)
    *
    * @param multiplyBy
@@ -207,7 +208,8 @@ public class ResourceCollection extends GameDataComponent {
     try {
       pus = data.getResourceList().getResource(Constants.PUS);
     } catch (final NullPointerException e) {
-      // we are getting null pointers here occasionally on deserializing gamesaves, because data.getResourceList() is still null at this
+      // we are getting null pointers here occasionally on deserializing gamesaves, because data.getResourceList() is
+      // still null at this
       // point
       for (final Resource r : resources.keySet()) {
         if (r.getName().equals(Constants.PUS)) {

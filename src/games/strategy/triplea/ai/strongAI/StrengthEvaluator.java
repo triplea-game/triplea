@@ -151,7 +151,8 @@ public class StrengthEvaluator {
       thisStrength = 0.0F;
       rDist = 0;
     }
-    if (Matches.TerritoryIsLand.match(ourTerr) && thisStrength > 0.0F) {// ignore air strength if there are no land units
+    if (Matches.TerritoryIsLand.match(ourTerr) && thisStrength > 0.0F) {// ignore air strength if there are no land
+                                                                        // units
       if (allied) {
         m_alliedNeighborStrength += thisStrength + thisAirStrength;
         m_alliedStrengthInRange += inRangeStrength + inRangeAirStrength;

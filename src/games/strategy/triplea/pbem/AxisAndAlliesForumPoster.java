@@ -192,12 +192,14 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
           body = post.getResponseBodyAsString();
           if (status == 302) {
             // site responds with a 302 redirect back to the forum index (board=40)
-            // The syntax for post is ".....topic=xx.yy" where xx is the thread id, and yy is the post number in the given thread
+            // The syntax for post is ".....topic=xx.yy" where xx is the thread id, and yy is the post number in the
+            // given thread
             // since the site is lenient we can just give a high post_number to go to the last post in the thread
             m_turnSummaryRef = "http://www.axisandallies.org/forums/index.php?topic=" + m_topicId + ".10000";
           } else {
             // these two patterns find general errors, where the first pattern checks if the error text appears,
-            // the second pattern extracts the error message. This could be the "The last posting from your IP was less than 15 seconds
+            // the second pattern extracts the error message. This could be the "The last posting from your IP was less
+            // than 15 seconds
             // ago.Please try again later"
             // this patter finds errors that are marked in red (for instance "You are not allowed to post URLs", or
             // "Some one else has posted while you vere reading"
@@ -241,7 +243,8 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
   }
 
   /**
-   * Utility method for creating string parts, since we need to remove transferEncoding and content type to behave like a browser
+   * Utility method for creating string parts, since we need to remove transferEncoding and content type to behave like
+   * a browser
    *
    * @param name
    *        the form field name

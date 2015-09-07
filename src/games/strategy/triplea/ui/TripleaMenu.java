@@ -233,7 +233,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
         final JScrollPane scroll = new JScrollPane(editorPane);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-        // not only do we have a start bar, but we also have the message dialog to account for just the scroll bars plus the window sides
+        // not only do we have a start bar, but we also have the message dialog to account for just the scroll bars plus
+        // the window sides
         final int availHeight = screenResolution.height - 120;
         final int availWidth = screenResolution.width - 40;
         scroll.setPreferredSize(new Dimension(
@@ -941,7 +942,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
       getData().acquireReadLock();
       clone = GameDataUtils.cloneGameData(getData());
       final IStat[] stats = statPanel.getStats();
-      // extended stats covers stuff that doesn't show up in the game stats menu bar, like custom resources or tech tokens or # techs, etc.
+      // extended stats covers stuff that doesn't show up in the game stats menu bar, like custom resources or tech
+      // tokens or # techs, etc.
       final IStat[] statsExtended = statPanel.getStatsExtended(getData());
       final String[] alliances = statPanel.getAlliances().toArray(new String[statPanel.getAlliances().size()]);
       final PlayerID[] players = statPanel.getPlayers().toArray(new PlayerID[statPanel.getPlayers().size()]);

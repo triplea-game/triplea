@@ -34,8 +34,10 @@ import games.strategy.util.Match;
 public class AirMovementValidator {
   public static final String NOT_ALL_AIR_UNITS_CAN_LAND = "Not all air units can land";
 
-  // TODO: this class does a pretty good job already, but could be improved by having the carriers that are potentially moved also look for
-  // any owned air units that are in sea zones without carriers. these would be air units that have already been moved this turn, and
+  // TODO: this class does a pretty good job already, but could be improved by having the carriers that are potentially
+  // moved also look for
+  // any owned air units that are in sea zones without carriers. these would be air units that have already been moved
+  // this turn, and
   // therefore would need pickup.
   public static MoveValidationResult validateAirCanLand(final GameData data, final Collection<Unit> units,
       final Route route, final PlayerID player, final MoveValidationResult result) {
@@ -43,9 +45,11 @@ public class AirMovementValidator {
     if (getEditMode(data) || // Edit Mode, no need to check
         !Match.someMatch(units, Matches.UnitIsAir) || // No Airunits, nothing to check
         route.hasNoSteps() || // if there are no steps, we didn't move, so it is always OK!
-        Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data).match(route.getEnd()) || // we can land at the end, nothing
+        Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data).match(route.getEnd()) || // we can land at
+                                                                                                       // the end,
+                                                                                                       // nothing
                                                                                                        // left to check
-    isKamikazeAircraft(data) // we do not do any validation at all, cus they can all die and we don't care
+        isKamikazeAircraft(data) // we do not do any validation at all, cus they can all die and we don't care
     ) {
       return result;
     }
@@ -64,7 +68,8 @@ public class AirMovementValidator {
     final HashSet<Unit> airThatMustLandOnCarriersHash = new HashSet<Unit>();
     airThatMustLandOnCarriersHash.addAll(Match.getMatches(routeEnd.getUnits().getUnits(), airAlliedNotOwned));
     airThatMustLandOnCarriersHash.addAll(Match.getMatches(units, airAlliedNotOwned));
-    // now we must see if we also need to account for units (allied cargo) that are moving with our carriers, if we have selected any
+    // now we must see if we also need to account for units (allied cargo) that are moving with our carriers, if we have
+    // selected any
     // carriers
     final Collection<Unit> movingCarriersAtStartLocationBeingMoved = Match.getMatches(units, Matches.UnitIsCarrier);
     if (!movingCarriersAtStartLocationBeingMoved.isEmpty()) {
@@ -74,13 +79,15 @@ public class AirMovementValidator {
         airThatMustLandOnCarriersHash.addAll(alliedAirOnCarrier);
       }
     }
-    // now we can add our owned air. we add our owned air last because it can be moved, while allied air can not be. we want the lowest
+    // now we can add our owned air. we add our owned air last because it can be moved, while allied air can not be. we
+    // want the lowest
     // movement to be validated first.
     airThatMustLandOnCarriersHash.addAll(ownedAirThatMustLandOnCarriers);
     final List<Unit> airThatMustLandOnCarriers = new ArrayList<Unit>(airThatMustLandOnCarriersHash);
     // sort the list by shortest range first so those birds will get first pick of landingspots
     Collections.sort(airThatMustLandOnCarriers, getLowestToHighestMovementComparatorIncludingUnitsNotYetMoved(route));
-    // now we should see if the carriers we are moving with, plus the carriers already there, can handle all our air units (we check ending
+    // now we should see if the carriers we are moving with, plus the carriers already there, can handle all our air
+    // units (we check ending
     // territories first, separately, because it is special [it includes units in our selection])
     final Collection<Unit> carriersAtEnd = Match.getMatches(getFriendly(routeEnd, player, data), Matches.UnitIsCarrier);
     carriersAtEnd.addAll(movingCarriersAtStartLocationBeingMoved);
@@ -167,10 +174,13 @@ public class AirMovementValidator {
       if (landAirOnNewCarriers && !carriersInProductionQueue.isEmpty()) {
         if (Matches.TerritoryIsWater.match(t)
             && Matches.territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(data, player).match(t)) {
-          // TODO: Here we are assuming that this factory can produce all of the carriers. Actually it might not be able to produce any
+          // TODO: Here we are assuming that this factory can produce all of the carriers. Actually it might not be able
+          // to produce any
           // carriers (because of complex requires units coding) or because of unit damage or maximum production.
-          // TODO: Here we are also assuming that the first territory we find that has an adjacent factory is the closest one in terms of
-          // unit movement. We have sorted the list of territories so this IS the closest in terms of steps, but each unit may have specific
+          // TODO: Here we are also assuming that the first territory we find that has an adjacent factory is the
+          // closest one in terms of
+          // unit movement. We have sorted the list of territories so this IS the closest in terms of steps, but each
+          // unit may have specific
           // movement allowances for different terrain or some bullshit like that.
           final int producedCarrierCapacity = carrierCapacity(carriersInProductionQueue, t);
           startingSpace.add(t, producedCarrierCapacity);
@@ -292,7 +302,8 @@ public class AirMovementValidator {
         int carrierSpotCapacity = landingSpotsWithCarrierCapacity.getInt(carrierSpot);
         // we don't have it because this spot is not in the landing zone area.
         if (!landingSpotsWithCarrierCapacity.containsKey(carrierSpot)) {
-          // we still have a capacity for allied carriers, but only to carry other allied or local owned units, not to carry our selected
+          // we still have a capacity for allied carriers, but only to carry other allied or local owned units, not to
+          // carry our selected
           // units.
           carrierSpotCapacity =
               carrierCapacity(carrierSpot.getUnits().getMatches(alliedNotOwnedCarrierMatch), carrierSpot);
@@ -300,7 +311,8 @@ public class AirMovementValidator {
         }
         // we have allied air here, so we need to account for them before moving any carriers
         if (!alliedNotOwnedAirInCarrierSpot.isEmpty() || !mustMoveWithMap.isEmpty()) {
-          // mustMoveWithMap is only filled if we have so many allied air that our owned carriers are carrying some of them
+          // mustMoveWithMap is only filled if we have so many allied air that our owned carriers are carrying some of
+          // them
           if (mustMoveWithMap.isEmpty()) {
             // allied carriers can carry enough
             carrierSpotCapacity -= carrierCost(alliedNotOwnedAirInCarrierSpot);
@@ -563,7 +575,8 @@ public class AirMovementValidator {
    *        the airunit in question
    * @param route
    *        the current spot from which he needs to reach safe land.
-   * @return whether the air-unit can find a stretch of friendly land to land on given her current spot and the remaining range.
+   * @return whether the air-unit can find a stretch of friendly land to land on given her current spot and the
+   *         remaining range.
    */
   private static boolean canFindLand(final GameData data, final Unit unit, final Route route) {
     final Territory routeEnd = route.getEnd();
@@ -586,8 +599,10 @@ public class AirMovementValidator {
     final PlayerID player = unit.getOwner();
     final List<Territory> possibleSpots = Match.getMatches(data.getMap().getNeighbors(current, movementLeft),
         Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data));
-    for (final Territory landingSpot : possibleSpots) { // TODO EW: Assuming movement cost of 1, this could get VERY slow when the
-                                                        // movementcost is very high and airunits have a lot of movementcapacity.
+    for (final Territory landingSpot : possibleSpots) { // TODO EW: Assuming movement cost of 1, this could get VERY
+                                                        // slow when the
+                                                        // movementcost is very high and airunits have a lot of
+                                                        // movementcapacity.
       if (canAirReachThisSpot(data, player, unit, current, movementLeft, landingSpot, areNeutralsPassableByAir)) {
         return true;
       }
@@ -655,7 +670,8 @@ public class AirMovementValidator {
 
   /**
    * Does not, and is not supposed to, account for any units already on this carrier (like allied/cargo fighters).
-   * Instead this method only adds up the total capacity of each unit, and accounts for damaged carriers with special properties and
+   * Instead this method only adds up the total capacity of each unit, and accounts for damaged carriers with special
+   * properties and
    * restrictions.
    *
    * @param units
@@ -671,7 +687,8 @@ public class AirMovementValidator {
 
   /**
    * Does not, and is not supposed to, account for any units already on this carrier (like allied/cargo fighters).
-   * Instead this method only adds up the total capacity of each unit, and accounts for damaged carriers with special properties and
+   * Instead this method only adds up the total capacity of each unit, and accounts for damaged carriers with special
+   * properties and
    * restrictions.
    *
    * @param unit

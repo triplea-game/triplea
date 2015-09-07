@@ -36,8 +36,10 @@ import games.strategy.net.INode;
  * <p>
  * <b>Channels and threading</b>
  * <p>
- * There will only be one thread calling methods in a channel at one time. Methods will be called on subscribors in the order that they are
- * called on broadcasters. This means that if you block the current thread during a client invocation, no further methods can be called on
+ * There will only be one thread calling methods in a channel at one time. Methods will be called on subscribors in the
+ * order that they are
+ * called on broadcasters. This means that if you block the current thread during a client invocation, no further
+ * methods can be called on
  * that channel.
  * <p>
  */

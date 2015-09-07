@@ -27,7 +27,8 @@ import games.strategy.triplea.ui.JButtonDialog;
 /**
  * Allows you put multiple beans in a list and use drop down to select which bean to configure.
  * The bean's editor is displayed below the dropdown.
- * Use <code>setBeans</code> to set the beans edited by this editor, and <code>setSelectedBean</code> to select a specific bean
+ * Use <code>setBeans</code> to set the beans edited by this editor, and <code>setSelectedBean</code> to select a
+ * specific bean
  * The editor automatically realigns the label of nested editors
  */
 public class SelectAndViewEditor extends EditorPanel {

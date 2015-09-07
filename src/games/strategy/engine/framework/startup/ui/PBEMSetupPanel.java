@@ -134,7 +134,8 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   public void setWidgetActivation() {}
 
   private void setupListeners() {
-    // register, so we get notified when the game model (GameData) changes (e.g if the user load a save game or selects another game)
+    // register, so we get notified when the game model (GameData) changes (e.g if the user load a save game or selects
+    // another game)
     m_gameSelectorModel.addObserver(this);
     // subscribe to editor changes, so we can notify the MainPanel
     m_diceServerEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
