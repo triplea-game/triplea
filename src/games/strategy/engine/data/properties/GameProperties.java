@@ -131,75 +131,28 @@ public class GameProperties extends GameDataComponent {
   public static void toOutputStream(final OutputStream sink, final List<IEditableProperty> editableProperties)
       throws IOException {
     // write internally first in case of error
-    final ByteArrayOutputStream bos = new ByteArrayOutputStream(5000);
-    ObjectOutputStream outStream = null;
-    GZIPOutputStream zippedOut = null;
-    try {
-      outStream = new ObjectOutputStream(bos);
+    try (ByteArrayOutputStream bos = new ByteArrayOutputStream(5000);
+        ObjectOutputStream outStream = new ObjectOutputStream(bos);
+        GZIPOutputStream zippedOut = new GZIPOutputStream(sink);) {
+
       outStream.writeObject(editableProperties);
-      // final byte[] byteArray = bos.toByteArray();
-      zippedOut = new GZIPOutputStream(sink);
-      // now write to file
       zippedOut.write(bos.toByteArray());
       zippedOut.flush();
-    } finally {
-      try {
-        if (outStream != null) {
-          outStream.close();
-        }
-      } catch (final IOException e) {
-        e.printStackTrace();
-      }
-      try {
-        bos.close();
-      } catch (final IOException e) {
-        e.printStackTrace();
-      }
-      try {
-        if (zippedOut != null) {
-          zippedOut.close();
-        }
-      } catch (final IOException e) {
-        e.printStackTrace();
-      }
     }
   }
 
   @SuppressWarnings("unchecked")
   public static List<IEditableProperty> streamToIEditablePropertiesList(final byte[] byteArray)
       throws IOException, ClassNotFoundException, ClassCastException {
-    ByteArrayInputStream byteStream = null;
-    InputStream inputStream = null;
-    ObjectInputStream objectStream = null;
     List<IEditableProperty> editableProperties = null;
-    try {
-      byteStream = new ByteArrayInputStream(byteArray);
-      inputStream = new BufferedInputStream(byteStream);
-      objectStream = new ObjectInputStream(new GZIPInputStream(inputStream));
+
+    try (ByteArrayInputStream byteStream = new ByteArrayInputStream(byteArray);
+        InputStream inputStream = new BufferedInputStream(byteStream);
+        ObjectInputStream objectStream = new ObjectInputStream(new GZIPInputStream(inputStream));) {
+
       editableProperties = (List<IEditableProperty>) objectStream.readObject();
-    } finally {
-      if (byteStream != null) {
-        try {
-          byteStream.close();
-        } catch (final IOException e) {
-          e.printStackTrace();
-        }
-      }
-      if (inputStream != null) {
-        try {
-          inputStream.close();
-        } catch (final IOException e) {
-          e.printStackTrace();
-        }
-      }
-      if (objectStream != null) {
-        try {
-          objectStream.close();
-        } catch (final IOException e) {
-          e.printStackTrace();
-        }
-      }
     }
+
     return editableProperties;
   }
 

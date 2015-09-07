@@ -132,10 +132,6 @@ public class History extends DefaultTreeModel implements java.io.Serializable {
     getGameData().acquireWriteLock();
     try {
       final int lastChange = getLastChange(removeAfterNode);
-      // final List<Change> changesToRemove = m_changes.subList(Math.min(m_changes.size(), lastChange),
-      // Math.max(m_changes.size(),
-      // lastChange));
-      // m_changes.removeAll(changesToRemove);
       while (m_changes.size() > lastChange) {
         m_changes.remove(lastChange);
       }

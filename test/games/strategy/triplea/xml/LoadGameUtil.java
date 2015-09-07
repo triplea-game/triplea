@@ -30,16 +30,12 @@ public class LoadGameUtil {
   }
 
   private static GameData loadGame(final String game, final String[] possibleFolders) {
-    final InputStream is = openInputStream(game, possibleFolders);
-    if (is == null) {
-      throw new IllegalStateException(game + " does not exist");
-    }
-    try {
-      try {
-        return (new GameParser()).parse(is, new AtomicReference<String>(), false);
-      } finally {
-        is.close();
+
+    try (final InputStream is = openInputStream(game, possibleFolders);) {
+      if (is == null) {
+        throw new IllegalStateException(game + " does not exist");
       }
+      return (new GameParser()).parse(is, new AtomicReference<String>(), false);
     } catch (final Exception e) {
       throw new IllegalStateException(e);
     }
@@ -49,10 +45,10 @@ public class LoadGameUtil {
    * First try to load the game as a file on the classpath, if not found there
    * then try to load it from either the "maps" or "test_data" folders.
    */
-  private static InputStream openInputStream(final String game, final String[] possibleFolders) {
+  private static InputStream openInputStream(final String game, String[] possibleFolders) {
     InputStream is = LoadGameUtil.class.getResourceAsStream(game);
     if (is == null) {
-      final File f = GameRunner2.getFile(game, possibleFolders);
+      File f = GameRunner2.getFile(game, possibleFolders);
       if (f.exists()) {
         try {
           is = new FileInputStream(f);

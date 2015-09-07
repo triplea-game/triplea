@@ -847,14 +847,11 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
           data.releaseReadLock();
         }
         try {
-          final FileWriter writer = new FileWriter(chooser.getSelectedFile());
-          try {
+          try(final FileWriter writer = new FileWriter(chooser.getSelectedFile());) {
             writer.write(xmlFile);
-          } finally {
-            writer.close();
           }
         } catch (final IOException e1) {
-          e1.printStackTrace();
+          ClientLogger.logQuietly(e1);
         }
       }
     };

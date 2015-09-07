@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -25,60 +26,38 @@ public class NewGameChooserEntry {
   public NewGameChooserEntry(final URI uri)
       throws IOException, GameParseException, SAXException, EngineVersionException {
     m_url = uri;
-    InputStream input = null;
     final AtomicReference<String> gameName = new AtomicReference<String>();
-    try {
-      input = uri.toURL().openStream();
+    try (InputStream input = uri.toURL().openStream();) {
       final boolean delayParsing = GameRunner2.getDelayedParsing();
       m_data = new GameParser().parse(input, gameName, delayParsing);
       m_gameDataFullyLoaded = !delayParsing;
       m_gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
-    } finally {
-      try {
-        if (input != null) {
-          input.close();
-        }
-      } catch (final IOException e) {// ignore
-      }
     }
   }
 
   public void fullyParseGameData() throws GameParseException {
     m_data = null;
-    InputStream input = null;
+
     String error = null;
     final AtomicReference<String> gameName = new AtomicReference<String>();
-    try {
-      input = m_url.toURL().openStream();
-      try {
-        m_data = new GameParser().parse(input, gameName, false);
-        m_gameDataFullyLoaded = true;
-      } catch (final EngineVersionException e) {
-        System.out.println(e.getMessage());
-        error = e.getMessage();
-      } catch (final SAXParseException e) {
-        System.err.println(
-            "Could not parse:" + m_url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
-        e.printStackTrace();
-        error = e.getMessage();
-      } catch (final Exception e) {
-        System.err.println("Could not parse:" + m_url);
-        e.printStackTrace();
-        error = e.getMessage();
-      }
-    } catch (final MalformedURLException e1) {
-      e1.printStackTrace();
-      error = e1.getMessage();
-    } catch (final IOException e1) {
-      e1.printStackTrace();
-      error = e1.getMessage();
-    } finally {
-      try {
-        if (input != null) {
-          input.close();
-        }
-      } catch (final IOException e) {// ignore
-      }
+
+    try (InputStream input = m_url.toURL().openStream();) {
+      m_data = new GameParser().parse(input, gameName, false);
+      m_gameDataFullyLoaded = true;
+
+    } catch (final EngineVersionException e) {
+      ClientLogger.logQuietly(e);
+      error = e.getMessage();
+    } catch (final SAXParseException e) {
+      String msg = "Could not parse:" + m_url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber();
+      ClientLogger.logError(msg);
+      e.printStackTrace();
+      error = e.getMessage();
+    } catch (final Exception e) {
+      String msg = "Could not parse:" + m_url;
+      ClientLogger.logError(msg);
+      e.printStackTrace();
+      error = e.getMessage();
     }
     if (error != null) {
       throw new GameParseException(error);
@@ -91,34 +70,20 @@ public class NewGameChooserEntry {
    */
   public void delayParseGameData() {
     m_data = null;
-    InputStream input = null;
+
     final AtomicReference<String> gameName = new AtomicReference<String>();
-    try {
-      input = m_url.toURL().openStream();
-      try {
-        m_data = new GameParser().parse(input, gameName, true);
-        m_gameDataFullyLoaded = false;
-      } catch (final EngineVersionException e) {
-        System.out.println(e.getMessage());
-      } catch (final SAXParseException e) {
-        System.err.println(
-            "Could not parse:" + m_url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
-        e.printStackTrace();
-      } catch (final Exception e) {
-        System.err.println("Could not parse:" + m_url);
-        e.printStackTrace();
-      }
-    } catch (final MalformedURLException e1) {
-      e1.printStackTrace();
-    } catch (final IOException e1) {
-      e1.printStackTrace();
-    } finally {
-      try {
-        if (input != null) {
-          input.close();
-        }
-      } catch (final IOException e) {// ignore
-      }
+    try (InputStream input = m_url.toURL().openStream();) {
+      m_data = new GameParser().parse(input, gameName, true);
+      m_gameDataFullyLoaded = false;
+    } catch (final EngineVersionException e) {
+      System.out.println(e.getMessage());
+    } catch (final SAXParseException e) {
+      System.err.println(
+          "Could not parse:" + m_url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
+      e.printStackTrace();
+    } catch (final Exception e) {
+      System.err.println("Could not parse:" + m_url);
+      e.printStackTrace();
     }
   }
 

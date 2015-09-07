@@ -29,6 +29,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.properties.IEditableProperty;
@@ -462,56 +463,47 @@ public class ClipPlayer {
         final String zipFilePath = soundFilePath.substring(index1,
             Math.max(index1, Math.min(soundFilePath.length(), soundFilePath.lastIndexOf("!"))));
         if (zipFilePath.length() > 5 && zipFilePath.endsWith(".zip")) {
-          ZipFile zf = null;
+          String decoded;
           try {
-            String decoded;
-            try {
-              // the file path may have spaces, which in a URL are equal to %20, but if
-              // we make a file using that it will fail, so we need to decode
-              decoded = URLDecoder.decode(zipFilePath, "UTF-8");
-            } catch (final UnsupportedEncodingException uee) {
-              decoded = zipFilePath.replaceAll("%20", " ");
-            }
+            decoded = URLDecoder.decode(zipFilePath, "UTF-8"); // the file path may have spaces, which in a URL are equal to %20, but if
+                                                               // we make a file using that it will fail, so we need to decode
+          } catch (final UnsupportedEncodingException uee) {
+            decoded = zipFilePath.replaceAll("%20", " ");
+          }
+
+          try {
             final File zipFile = new File(decoded);
             if (zipFile != null && zipFile.exists()) {
-              zf = new ZipFile(zipFile);
-              if (zf != null) {
-                final Enumeration<? extends ZipEntry> zipEnumeration = zf.entries();
-                while (zipEnumeration.hasMoreElements()) {
-                  final ZipEntry zipElement = zipEnumeration.nextElement();
-                  if (zipElement != null && zipElement.getName() != null
-                      && zipElement.getName().indexOf(resourceAndPathURL) != -1
-                      && (zipElement.getName().endsWith(".wav") || zipElement.getName().endsWith(".au")
-                          || zipElement.getName().endsWith(".aiff") || zipElement.getName().endsWith(".midi"))) {
-                    try {
-                      final URL zipSoundURL = m_resourceLoader.getResource(zipElement.getName());
-                      if (zipSoundURL == null) {
-                        continue;
+              try (ZipFile zf = new ZipFile(zipFile);) {
+                if (zf != null) {
+                  final Enumeration<? extends ZipEntry> zipEnumeration = zf.entries();
+                  while (zipEnumeration.hasMoreElements()) {
+                    final ZipEntry zipElement = zipEnumeration.nextElement();
+                    if (zipElement != null && zipElement.getName() != null
+                        && zipElement.getName().indexOf(resourceAndPathURL) != -1
+                        && (zipElement.getName().endsWith(".wav") || zipElement.getName().endsWith(".au")
+                            || zipElement.getName().endsWith(".aiff") || zipElement.getName().endsWith(".midi"))) {
+                      try {
+                        final URL zipSoundURL = m_resourceLoader.getResource(zipElement.getName());
+                        if (zipSoundURL == null) {
+                          continue;
+                        }
+                        if (testClipSuccessful(zipSoundURL)) {
+                          availableSounds.add(zipSoundURL);
+                        }
+                      } catch (final Exception e) {
+                        ClientLogger.logQuietly(e);
                       }
-                      if (testClipSuccessful(zipSoundURL)) {
-                        availableSounds.add(zipSoundURL);
-                      }
-                    } catch (final Exception e) {
-                      e.printStackTrace();
                     }
                   }
                 }
               }
             }
           } catch (final Exception e) {
-            System.out.println(e.getMessage());
-          } finally {
-            if (zf != null) {
-              try {
-                zf.close();
-              } catch (final IOException e) {
-                e.printStackTrace();
-              }
-            }
+            ClientLogger.logQuietly(e);
           }
         }
       }
-      // System.out.println(System.currentTimeMillis() - startTime);
     } else {
       // we must be using unzipped sounds
       if (!thisSoundFile.isDirectory()) {

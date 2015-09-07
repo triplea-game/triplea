@@ -101,37 +101,30 @@ public class NewGameChooserModel extends DefaultListModel {
 
   private void populateFromZip(final File map, final List<NewGameChooserEntry> entries) {
     boolean badMapZip = false;
-    try {
-      final FileInputStream fis = new FileInputStream(map);
-      try {
-        final ZipInputStream zis = new ZipInputStream(fis);
-        try {
-          ZipEntry entry = zis.getNextEntry();
-          while (entry != null) {
-            if (entry.getName().startsWith("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
-              final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()});
-              final URL url = loader.getResource(entry.getName());
-              // we have to close the loader to allow files to be deleted on windows
-              ClassLoaderUtil.closeLoader(loader);
-              if (url == null) {
-                // not loading the URL means the XML is truncated or otherwise in bad shape
+    try (final FileInputStream fis = new FileInputStream(map);
+        final ZipInputStream zis = new ZipInputStream(fis);) {
+
+      ZipEntry entry = zis.getNextEntry();
+
+      while (entry != null) {
+        if (entry.getName().startsWith("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
+          final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()});
+          final URL url = loader.getResource(entry.getName());
+          // we have to close the loader to allow files to be deleted on windows
+          ClassLoaderUtil.closeLoader(loader);
+          if (url == null) {
+               // not loading the URL means the XML is truncated or otherwise in bad shape
                 badMapZip = true;
                 break;
-              }
-              try {
-                addNewGameChooserEntry(entries, new URI(url.toString().replace(" ", "%20")));
-              } catch (final URISyntaxException e) {
-                // only happens when URI couldn't be build and therefore no entry was added. That's fine
-              }
-            }
-            zis.closeEntry();
-            entry = zis.getNextEntry();
           }
-        } finally {
-          zis.close();
+          try {
+            addNewGameChooserEntry(entries, new URI(url.toString().replace(" ", "%20")));
+          } catch (final URISyntaxException e) {
+            // only happens when URI couldn't be build and therefore no entry was added. That's fine
+          }
         }
-      } finally {
-        fis.close();
+        zis.closeEntry();
+        entry = zis.getNextEntry();
       }
     } catch (final IOException ioe) {
       ClientLogger.logQuietly(ioe);

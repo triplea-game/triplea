@@ -49,21 +49,14 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
       if (buttonPressed == null || buttonPressed.equals(cancel)) {
         return;
       } else {
-        // ok was clicked. changing them in the ui changes the underlying properties, but it doesn't change the hosts,
-        // so we need to send it
-        // back to the host.
-        final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000);
+        // ok was clicked. changing them in the ui changes the underlying properties,
+        // but it doesn't change the hosts, so we need to send it back to the host.
         byte[] newBytes = null;
-        try {
+        try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000);) {
           GameProperties.toOutputStream(sink, properties);
           newBytes = sink.toByteArray();
         } catch (final IOException e2) {
           e2.printStackTrace();
-        } finally {
-          try {
-            sink.close();
-          } catch (final IOException e2) {
-          }
         }
         if (newBytes != null) {
           m_serverRemote.changeToGameOptions(newBytes);
