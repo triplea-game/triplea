@@ -45,47 +45,26 @@ public class LocalBeanCache {
   @SuppressWarnings("unchecked")
   private Map<String, IBean> loadMap() {
     if (m_file.exists()) {
-      try {
-        FileInputStream fin = null;
-        ObjectInput oin = null;
-        try {
-          fin = new FileInputStream(m_file);
-          oin = new ObjectInputStream(fin);
-          final Object o = oin.readObject();
-          if (o instanceof Map) {
-            final Map m = (Map) o;
-            for (final Object o1 : m.keySet()) {
-              if (!(o1 instanceof String)) {
-                throw new Exception("Map is corrupt");
-              }
-            }
-          } else {
-            throw new Exception("File is corrupt");
-          }
-          // we know that the map has proper type key/value
-          return (HashMap<String, IBean>) o;
-        } finally {
-          if (fin != null) {
-            try {
-              // close stream, or we can delete the file (on windows)
-              fin.close();
-            } catch (final IOException e) {
-              // ignore
+      try (FileInputStream fin = new FileInputStream(m_file);
+          ObjectInput oin = new ObjectInputStream(fin);) {
+        final Object o = oin.readObject();
+        if (o instanceof Map) {
+          final Map m = (Map) o;
+          for (final Object o1 : m.keySet()) {
+            if (!(o1 instanceof String)) {
+              throw new Exception("Map is corrupt");
             }
           }
-          if (oin != null) {
-            try {
-              // close stream, or we can delete the file (on windows)
-              oin.close();
-            } catch (final IOException e) {
-              // ignore
-            }
-          }
+        } else {
+          throw new Exception("File is corrupt");
         }
+        // we know that the map has proper type key/value
+        return (HashMap<String, IBean>) o;
       } catch (final Exception e) {
         // on error we delete the cache file, if we can
         m_file.delete();
-        System.err.println("Serialization cache invalid");
+        System.err.println("Serialization cache invalid: " + e.getMessage());
+        e.printStackTrace();
       }
     }
     return new HashMap<String, IBean>();
@@ -110,29 +89,12 @@ public class LocalBeanCache {
    */
   public void writeToDisk() {
     synchronized (m_mutex) {
-      ObjectOutputStream out = null;
-      FileOutputStream fout = null;
-      try {
-        fout = new FileOutputStream(m_file, false);
-        out = new ObjectOutputStream(fout);
+      try (FileOutputStream fout = new FileOutputStream(m_file, false);
+          ObjectOutputStream out = new ObjectOutputStream(fout);) {
+
         out.writeObject(m_map);
       } catch (final IOException e) {
         // ignore
-      } finally {
-        if (fout != null) {
-          try {
-            fout.close();
-          } catch (final IOException e) {
-            // ignore
-          }
-        }
-        if (out != null) {
-          try {
-            out.close();
-          } catch (final IOException e) {
-            // ignore
-          }
-        }
       }
     }
   }

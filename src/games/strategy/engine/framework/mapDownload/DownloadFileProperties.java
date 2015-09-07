@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.EngineVersion;
 import games.strategy.util.Version;
 
@@ -19,13 +20,8 @@ class DownloadFileProperties {
       return new DownloadFileProperties();
     }
     final DownloadFileProperties rVal = new DownloadFileProperties();
-    try {
-      final FileInputStream fis = new FileInputStream(fromZip(zipFile));
-      try {
-        rVal.props.load(fis);
-      } finally {
-        fis.close();
-      }
+    try (final FileInputStream fis = new FileInputStream(fromZip(zipFile));) {
+      rVal.props.load(fis);
     } catch (final IOException e) {
       e.printStackTrace(System.out);
     }
@@ -33,13 +29,8 @@ class DownloadFileProperties {
   }
 
   public static void saveForZip(final File zipFile, final DownloadFileProperties props) {
-    try {
-      final FileOutputStream fos = new FileOutputStream(fromZip(zipFile));
-      try {
+    try ( final FileOutputStream fos = new FileOutputStream(fromZip(zipFile));) {
         props.props.store(fos, null);
-      } finally {
-        fos.close();
-      }
     } catch (final IOException e) {
       e.printStackTrace(System.out);
     }

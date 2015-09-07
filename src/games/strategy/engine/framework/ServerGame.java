@@ -65,8 +65,7 @@ public class ServerGame extends AbstractGame {
   private InGameLobbyWatcherWrapper m_inGameLobbyWatcher;
   private boolean m_needToInitialize = true;
   /**
-   * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from
-   * returning.
+   * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from returning.
    * <p>
    */
   private final CountDownLatch m_delegateExecutionStoppedLatch = new CountDownLatch(1);
@@ -359,73 +358,45 @@ public class ServerGame extends AbstractGame {
   }
 
   private void autoSave() {
-    FileOutputStream out = null;
-    try {
+    final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
+    final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
+    final File f;
+    if (f1.lastModified() > f2.lastModified()) {
+      f = f2;
+    } else {
+      f = f1;
+    }
+
+    try (FileOutputStream out = new FileOutputStream(f);) {
       SaveGameFileChooser.ensureDefaultDirExists();
-      final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
-      final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
-      final File f;
-      if (f1.lastModified() > f2.lastModified()) {
-        f = f2;
-      } else {
-        f = f1;
-      }
-      out = new FileOutputStream(f);
       saveGame(out);
     } catch (final Exception e) {
       e.printStackTrace();
-    } finally {
-      try {
-        if (out != null) {
-          out.close();
-        }
-      } catch (final IOException e) {
-        e.printStackTrace();
-      }
     }
   }
 
   private void autoSaveRound() {
-    FileOutputStream out = null;
-    try {
-      SaveGameFileChooser.ensureDefaultDirExists();
-      File autosaveFile;
-      if (m_data.getSequence().getRound() % 2 == 0) {
-        autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveEvenFileName());
-      } else {
-        autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveOddFileName());
-      }
-      out = new FileOutputStream(autosaveFile);
+    SaveGameFileChooser.ensureDefaultDirExists();
+    final File autosaveFile;
+    if (m_data.getSequence().getRound() % 2 == 0) {
+      autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveEvenFileName());
+    } else {
+      autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveOddFileName());
+    }
+
+    try (FileOutputStream out = new FileOutputStream(autosaveFile);) {
       saveGame(out);
     } catch (final Exception e) {
       e.printStackTrace();
-    } finally {
-      try {
-        if (out != null) {
-          out.close();
-        }
-      } catch (final IOException e) {
-        e.printStackTrace();
-      }
     }
   }
 
   @Override
   public void saveGame(final File f) {
-    FileOutputStream fout = null;
-    try {
-      fout = new FileOutputStream(f);
+    try (FileOutputStream fout = new FileOutputStream(f);) {
       saveGame(fout);
     } catch (final IOException e) {
       e.printStackTrace();
-    } finally {
-      if (fout != null) {
-        try {
-          fout.close();
-        } catch (final IOException e) {
-          e.printStackTrace();
-        }
-      }
     }
   }
 
@@ -535,8 +506,7 @@ public class ServerGame extends AbstractGame {
     }
     bridge.setRandomSource(m_delegateRandomSource);
     // do any initialization of game data for all players here (not based on a delegate, and should not be)
-    // we can not do this the very first run through, because there are no history nodes yet. We should do after first
-    // node is created.
+    // we can not do this the very first run through, because there are no history nodes yet. We should do after first node is created.
     if (m_needToInitialize) {
       addPlayerTypesToGameData(m_gamePlayers.values(), m_playerManager, bridge);
     }
