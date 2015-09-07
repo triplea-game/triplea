@@ -29,26 +29,22 @@ public class XmlUpdater {
       System.out.println("No file selected");
       return;
     }
-    // File gameXmlFile = new File("/Users/sgb/Documents/workspace/triplea/maps/revised/games/revised.xml");
     final InputStream source = XmlUpdater.class.getResourceAsStream("gameupdate.xslt");
     if (source == null) {
       throw new IllegalStateException("Could not find xslt file");
     }
     final Transformer trans = TransformerFactory.newInstance().newTransformer(new StreamSource(source));
-    final InputStream gameXmlStream = new BufferedInputStream(new FileInputStream(gameXmlFile));
+
     ByteArrayOutputStream resultBuf;
-    try {
+    try (final InputStream gameXmlStream = new BufferedInputStream(new FileInputStream(gameXmlFile));) {
       final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
       factory.setValidating(true);
-      // use a dummy game.dtd, this prevents the xml parser from adding
-      // default values
+      // use a dummy game.dtd, this prevents the xml parser from adding default values
       final URL url = XmlUpdater.class.getResource("");
       final String system = url.toExternalForm();
       final Source xmlSource = new StreamSource(gameXmlStream, system);
       resultBuf = new ByteArrayOutputStream();
       trans.transform(xmlSource, new StreamResult(resultBuf));
-    } finally {
-      gameXmlStream.close();
     }
     gameXmlFile.renameTo(new File(gameXmlFile.getAbsolutePath() + ".backup"));
     final FileOutputStream outStream = new FileOutputStream(gameXmlFile);

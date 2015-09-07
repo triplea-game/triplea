@@ -302,10 +302,9 @@ public class InstallMapDialog extends JDialog {
       Util.notifyError(this, download.getError());
       return;
     }
-    FileOutputStream sink = null;
-    try {
+
+    try ( FileOutputStream sink = new FileOutputStream(tempFile);){
       validateZip(download);
-      sink = new FileOutputStream(tempFile);
       sink.write(download.getContents());
       sink.getFD().sync();
       final DownloadFileProperties props = new DownloadFileProperties();
@@ -314,24 +313,12 @@ public class InstallMapDialog extends JDialog {
     } catch (final IOException e) {
       Util.notifyError(this, "Could not create write to temp file:" + e.getMessage());
       return;
-    } finally {
-      if (sink != null) {
-        try {
-          sink.close();
-        } catch (final IOException e) {
-          // ignore
-        }
-      }
     }
     // try to make sure it is a valid zip file
-    try {
-      final ZipInputStream zis = new ZipInputStream(new FileInputStream(tempFile));
-      try {
-        while (zis.getNextEntry() != null) {
-          zis.read(new byte[128]);
-        }
-      } finally {
-        zis.close();
+
+    try (final ZipInputStream zis = new ZipInputStream(new FileInputStream(tempFile));) {
+      while (zis.getNextEntry() != null) {
+        zis.read(new byte[128]);
       }
     } catch (final IOException e) {
       Util.notifyError(this, "Invalid zip file:" + e.getMessage());
@@ -340,31 +327,22 @@ public class InstallMapDialog extends JDialog {
     // move it to the games folder
     // try to rename first
     if (!tempFile.renameTo(destination)) {
-      try {
-        final FileInputStream source = new FileInputStream(tempFile);
-        try {
-          final FileOutputStream destSink = new FileOutputStream(destination);
-          try {
-            copy(destSink, source);
-            destSink.getFD().sync();
-          } finally {
-            destSink.close();
-          }
-        } finally {
-          source.close();
-          tempFile.delete();
-        }
+      try (final FileInputStream source = new FileInputStream(tempFile);
+          final FileOutputStream destSink = new FileOutputStream(destination);) {
+        copy(destSink, source);
+        destSink.getFD().sync();
       } catch (final IOException e) {
         Util.notifyError(this, e.getMessage());
         return;
+      } finally {
+        tempFile.delete();
       }
     }
   }
 
-  private void validateZip(final DownloadRunnable download) throws IOException {
+  private static void validateZip(final DownloadRunnable download) throws IOException {
     // try to unzip it to make sure it is valid
-    try {
-      final ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(download.getContents()));
+    try ( final ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(download.getContents()));) {
       ZipEntry ze;
       while ((ze = zis.getNextEntry()) != null) {
         // make sure we can read something from each stream

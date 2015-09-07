@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import games.strategy.debug.ClientLogger;
+
 /**
  * Utiltity to read and write files in the form of
  * String -> a list of points, or string-> list of polygons
@@ -33,19 +35,14 @@ public class PointFileReaderWriter {
       return Collections.emptyMap();
     }
     final Map<String, Point> mapping = new HashMap<String, Point>();
-    LineNumberReader reader = null;
-    try {
-      reader = new LineNumberReader(new InputStreamReader(stream));
+
+    try (LineNumberReader reader = new LineNumberReader(new InputStreamReader(stream));) {
       String current = reader.readLine();
       while (current != null) {
         if (current.trim().length() != 0) {
           readSingle(current, mapping);
         }
         current = reader.readLine();
-      }
-    } finally {
-      if (reader != null) {
-        reader.close();
       }
     }
     return mapping;
@@ -56,19 +53,14 @@ public class PointFileReaderWriter {
    */
   public static Map<String, Point> readOneToOneCenters(final InputStream stream) throws IOException {
     final Map<String, Point> mapping = new HashMap<String, Point>();
-    LineNumberReader reader = null;
-    try {
-      reader = new LineNumberReader(new InputStreamReader(stream));
+
+    try(LineNumberReader reader = new LineNumberReader(new InputStreamReader(stream)); ) {
       String current = reader.readLine();
       while (current != null) {
         if (current.trim().length() != 0) {
           readSingle(current, mapping);
         }
         current = reader.readLine();
-      }
-    } finally {
-      if (reader != null) {
-        reader.close();
       }
     }
     return mapping;
@@ -160,14 +152,12 @@ public class PointFileReaderWriter {
    * Returns a map of the form String -> Collection of points.
    */
   public static Map<String, List<Point>> readOneToMany(final InputStream stream) throws IOException {
+    if (stream == null) {
+      return Collections.emptyMap();
+    }
+
     final HashMap<String, List<Point>> mapping = new HashMap<String, List<Point>>();
-    LineNumberReader reader = null;
-    try {
-      // Check to see if there's null input
-      if (stream == null) {
-        return Collections.emptyMap();
-      }
-      reader = new LineNumberReader(new InputStreamReader(stream));
+    try( LineNumberReader reader = new LineNumberReader(new InputStreamReader(stream));) {
       String current = reader.readLine();
       while (current != null) {
         if (current.trim().length() != 0) {
@@ -176,15 +166,8 @@ public class PointFileReaderWriter {
         current = reader.readLine();
       }
     } catch (final IOException ioe) {
-      ioe.printStackTrace();
+      ClientLogger.logError(ioe);
       System.exit(0);
-    } finally {
-      try {
-        if (reader != null) {
-          reader.close();
-        }
-      } catch (final IOException e) {
-      }
     }
     return mapping;
   }
@@ -194,9 +177,7 @@ public class PointFileReaderWriter {
    */
   public static Map<String, List<Polygon>> readOneToManyPolygons(final InputStream stream) throws IOException {
     final HashMap<String, List<Polygon>> mapping = new HashMap<String, List<Polygon>>();
-    LineNumberReader reader = null;
-    try {
-      reader = new LineNumberReader(new InputStreamReader(stream));
+    try (LineNumberReader reader = new LineNumberReader(new InputStreamReader(stream));) {
       String current = reader.readLine();
       while (current != null) {
         if (current.trim().length() != 0) {
@@ -207,13 +188,6 @@ public class PointFileReaderWriter {
     } catch (final IOException ioe) {
       ioe.printStackTrace();
       System.exit(0);
-    } finally {
-      try {
-        if (reader != null) {
-          reader.close();
-        }
-      } catch (final IOException e) {
-      }
     }
     return mapping;
   }

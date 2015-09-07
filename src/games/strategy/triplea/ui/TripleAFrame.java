@@ -87,6 +87,7 @@ import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.common.ui.MacWrapper;
 import games.strategy.common.ui.MainGameFrame;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;
 import games.strategy.engine.data.Change;
@@ -1537,30 +1538,13 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public static int save(final String filename, final GameData m_data) {
-    FileOutputStream fos = null;
-    ObjectOutputStream oos = null;
-    try {
-      fos = new FileOutputStream(filename);
-      oos = new ObjectOutputStream(fos);
+    try (FileOutputStream fos = new FileOutputStream(filename);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);) {
       oos.writeObject(m_data);
       return 0;
     } catch (final Throwable t) {
-      // t.printStackTrace();
       System.err.println(t.getMessage());
       return -1;
-    } finally {
-      try {
-        if (fos != null) {
-          fos.flush();
-        }
-      } catch (final Exception ignore) {
-      }
-      try {
-        if (oos != null) {
-          oos.close();
-        }
-      } catch (final Exception ignore) {
-      }
     }
   }
 
@@ -1955,9 +1939,7 @@ public class TripleAFrame extends MainGameFrame {
         try {
           final File f = BasicGameMenuBar.getSaveGameLocationDialog(TripleAFrame.this);
           if (f != null) {
-            FileOutputStream fout = null;
-            try {
-              fout = new FileOutputStream(f);
+            try (FileOutputStream fout = new FileOutputStream(f);) {
               final GameData datacopy = GameDataUtils.cloneGameData(m_data, true);
               datacopy.getHistory().gotoNode(m_historyPanel.getCurrentPopupNode());
               datacopy.getHistory().removeAllHistoryAfterNode(m_historyPanel.getCurrentPopupNode());
@@ -1990,19 +1972,10 @@ public class TripleAFrame extends MainGameFrame {
               JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved",
                   JOptionPane.INFORMATION_MESSAGE);
             } catch (final IOException e) {
-              e.printStackTrace();
-            } finally {
-              if (fout != null) {
-                try {
-                  fout.close();
-                } catch (final IOException e) {
-                  e.printStackTrace();
-                }
-              }
+              ClientLogger.logQuietly(e);
             }
           }
         } finally {
-          // m_data.releaseWriteLock();
           m_data.releaseReadLock();
         }
         m_historyPanel.clearCurrentPopupNode();

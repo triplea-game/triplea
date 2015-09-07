@@ -154,7 +154,6 @@ public class ProductionRepairPanel extends JPanel {
             if (initialPurchase.get(u) != null) {
               initialQuantity = initialPurchase.get(u).getInt(repairRule);
             }
-            // initialQuantity = initialPurchase.get(repairRule).getInt(repairRule);
             rule.setQuantity(initialQuantity);
             rule.setMax(taUnit.getHowMuchCanThisUnitBeRepaired(u, terr));
             rule.setName(u.toString());
