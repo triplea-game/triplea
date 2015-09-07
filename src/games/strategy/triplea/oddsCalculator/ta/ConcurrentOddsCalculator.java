@@ -103,8 +103,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
     return m_currentThreads;
   }
 
-  private static int getThreadsToUse(final long timeToCopyInMillis, final long memoryUsedBeforeCopy) { // use both time and memory left to
-                                                                                                       // determine how many copies to make
+  // use both time and memory left to determine how many copies to make
+  private static int getThreadsToUse(final long timeToCopyInMillis, final long memoryUsedBeforeCopy) {
     if (timeToCopyInMillis > 20000 || MAX_THREADS == 1) {
       // just use 1 thread if we took more than 20 seconds to copy
       return 1;

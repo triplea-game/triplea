@@ -681,9 +681,9 @@ public class GameParser {
           }
         }
       }
-    } else if (gridType.equals("points-and-lines")) { // This type is a triangular grid of points and lines,
-                                                      // used for in several rail games
-                                                      // Add territories
+    // This type is a triangular grid of points and lines, used for in several rail games
+    } else if (gridType.equals("points-and-lines")) {
+      // Add territories
       for (int y = 0; y < y_size; y++) {
         for (int x = 0; x < x_size; x++) {
           final boolean isWater = false;

@@ -7543,13 +7543,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
       // goal is to be able to produce all our units, and at least half of that production in the capitol
       if ((capProduction <= maxUnits / 2 || rfactories.isEmpty()) && capUnit != null) {
         // if capitol is super safe, we don't have to do this.
-        // and if capitol is under siege, we should repair
-        // enough to place all our units here
+        // and if capitol is under siege, we should repair enough to place all our units here
         for (final RepairRule rrule : rrules) {
-          /*
-           * if (capUnit == null)
-           * continue;
-           */
           if (!capUnit.getUnitType().equals(rrule.getResults().keySet().iterator().next())) {
             continue;
           }

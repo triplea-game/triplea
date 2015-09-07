@@ -622,21 +622,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final Collection<Unit> testUnits = (units == null ? new ArrayList<Unit>() : units);
     final boolean canProduceInConquered = isPlacementAllowedInCapturedTerritory(player);
     if (!producer.getOwner().equals(player)) {
+      // sea constructions require either owning the sea zone or owning a surrounding land territory
       if (producer.isWater()
-          && Match.someMatch(testUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsConstruction))) { // sea
-                                                                                                                       // constructions
-                                                                                                                       // require
-                                                                                                                       // either
-                                                                                                                       // owning
-                                                                                                                       // the
-                                                                                                                       // sea
-                                                                                                                       // zone
-                                                                                                                       // or
-                                                                                                                       // owning
-                                                                                                                       // a
-                                                                                                                       // surrounding
-                                                                                                                       // land
-                                                                                                                       // territory
+          && Match.someMatch(testUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsConstruction))) { 
         boolean ownedNeighbor = false;
         for (final Territory current : getData().getMap().getNeighbors(to, Matches.TerritoryIsLand)) {
           if (current.getOwner().equals(player) && (canProduceInConquered || !wasConquered(current))) {

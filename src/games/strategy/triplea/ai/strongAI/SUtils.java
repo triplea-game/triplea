@@ -759,31 +759,12 @@ public class SUtils {
    * determines the Land Route to a capital...returns if it exists and puts it in goRoute
    * returns null for the Route if it does not exist
    *
-   * @param thisTerr
-   *        - Territory to be checked
-   * @param goRoute
-   *        - contains the actual route
+   * @param thisTerr Territory to be checked
+   * @param goRoute Contains the actual route
    * @return - true if the route exists, false if it doesn't exist
    */
   public static boolean landRouteToEnemyCapital(final Territory thisTerr, final Route goRoute, final GameData data,
-      final PlayerID player) {// is
-                              // there
-                              // a
-                              // land
-                              // route
-                              // between
-                              // territory
-                              // and
-                              // enemy
-                              // Territory
-                              // myCapital
-                              // =
-                              // TerritoryAttachment.getCapital(player,
-                              // data);
-                              // boolean
-                              // routeExists
-                              // =
-                              // false;
+      final PlayerID player) {
     Route route = null;
     for (final PlayerID otherPlayer : data.getPlayerList().getPlayers()) {
       if (!data.getRelationshipTracker().isAllied(player, otherPlayer)) {
@@ -791,7 +772,6 @@ public class SUtils {
           route = data.getMap().getRoute(thisTerr, capital, Matches.TerritoryIsNotImpassableToLandUnits(player, data));
           if (route != null) {
             return true;
-            // routeExists = true;
           }
         }
       }
@@ -1810,15 +1790,14 @@ public class SUtils {
        * And it needs to take into account friendly land and air within 2 spaces of the territory.
        */
       for (final Territory threeCheck : threeAway) {
-        if (Matches.territoryHasEnemyUnits(player, data).match(threeCheck)) { // only count it if it has a path
-                                                                              // Route d1 = data.getMap().getLandRoute(threeCheck, t);
+        // only count it if it has a path
+        if (Matches.territoryHasEnemyUnits(player, data).match(threeCheck)) {
           threeCheckStrength +=
               strength(threeCheck.getUnits().getMatches(Matches.enemyUnit(player, data)), true, false, false);
         }
       }
-      if ((twoCheckStrength + threeCheckStrength) > (puValue * 8.0F + tStrength) * 4) // take at least 2 moves to invade (veqryn multiplying
-                                                                                      // friendly for now)
-      {
+      // take at least 2 moves to invade (veqryn multiplying friendly for now)
+      if ((twoCheckStrength + threeCheckStrength) > (puValue * 8.0F + tStrength) * 4) {
         badIdea = true;
       }
       if (badIdea) {
@@ -3863,8 +3842,6 @@ public class SUtils {
     final CompositeMatch<Territory> continentTerr = new CompositeMatchAnd<Territory>(
         Matches.isTerritoryAllied(player, data), Matches.territoryHasValidLandRouteTo(data, targetCap));
         /*
-         * Send units because:
-         * 1) Production Value
          * Send units because:
          * 1) Production Value
          * 2) Victory City

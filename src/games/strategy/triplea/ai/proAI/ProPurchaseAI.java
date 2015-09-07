@@ -199,10 +199,10 @@ public class ProPurchaseAI {
         }
       }
     }
-    if (averageSeaMove / seaProductionRules.size() >= 1.8) // most sea units move at least 2 movement, so remove any sea units with 1
-                                                           // movement (dumb t-boats) (some maps like 270BC have mostly 1 movement sea
-                                                           // units, so we must be sure not to remove those)
-    {
+      // most sea units move at least 2 movement, so remove any sea units with 1
+      // movement (dumb t-boats) (some maps like 270BC have mostly 1 movement sea
+      // units, so we must be sure not to remove those)
+    if (averageSeaMove / seaProductionRules.size() >= 1.8)  {
       final List<ProductionRule> seaProductionRulesCopy = new ArrayList<ProductionRule>(seaProductionRules);
       for (final ProductionRule seaRule : seaProductionRulesCopy) {
         final NamedAttachable resourceOrUnit = seaRule.getResults().keySet().iterator().next();
@@ -415,15 +415,9 @@ public class ProPurchaseAI {
         Matches.UnitCanProduceUnits, Matches.UnitIsInfrastructure);
     final List<Territory> rfactories = Match.getMatches(data.getMap().getTerritories(),
         ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data));
+      // figure out if anything needs to be repaired
     if (player.getRepairFrontier() != null
-        && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) // figure
-                                                                                                        // out
-                                                                                                        // if
-                                                                                                        // anything
-                                                                                                        // needs
-                                                                                                        // to
-                                                                                                        // be
-                                                                                                        // repaired
+        && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
     {
       LogUtils.log(Level.FINER, "Factories can be damaged");
       final Map<Unit, Territory> unitsThatCanProduceNeedingRepair = new HashMap<Unit, Territory>();

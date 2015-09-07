@@ -282,9 +282,8 @@ public class MacFinder {
           String mac = rawMac.replace(separator, ".");
           if (isMacValid(mac)) {
             return mac;
-          } else if (allowAppendedZeroCheck && rawMac.substring(2, 3).equals(separator)) // If mac is invalid, see if it works after adding
-                                                                                         // a zero to the front
-          {
+          } else if (allowAppendedZeroCheck && rawMac.substring(2, 3).equals(separator))  {
+            // If mac is invalid, see if it works after adding  a zero to the front
             macStartIndex = Math.max(0, leftToSearch.indexOf(separator) - 1);
             rawMac = "0" + leftToSearch.substring(macStartIndex, Math.min(macStartIndex + 16, leftToSearch.length()));
             mac = rawMac.replace(separator, ".");

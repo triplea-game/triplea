@@ -197,11 +197,7 @@ public class MoveValidator {
     if (!games.strategy.triplea.Properties.getUseFuelCost(data)) {
       return result;
     }
-    final ResourceCollection fuelCost = Route.getMovementFuelCostCharge(units, route, player, data /*
-                                                                                                    * , route.someMatch(MovePerformer.
-                                                                                                    * getMustFightThroughMatch(player,
-                                                                                                    * data))
-                                                                                                    */);
+    final ResourceCollection fuelCost = Route.getMovementFuelCostCharge(units, route, player, data);
     if (player.getResources().has(fuelCost.getResourcesCopy())) {
       return result;
     }
@@ -583,36 +579,9 @@ public class MoveValidator {
             mechanizedSupportAvailable--;
           } else if (Matches.unitIsOwnedBy(player).invert().match(unit) && Matches.alliedUnit(player, data).match(unit)
               && Matches.UnitTypeCanLandOnCarrier.match(unit.getType())
-              /* && !isAlliedAirIndependent(data) */
-              && Match.someMatch(moveTest, Matches.UnitIsAlliedCarrier(unit.getOwner(), data))) { // this
-                                                                                                  // is
-                                                                                                  // so
-                                                                                                  // that
-                                                                                                  // if
-                                                                                                  // the
-                                                                                                  // unit
-                                                                                                  // is
-                                                                                                  // owned
-                                                                                                  // by
-                                                                                                  // any
-                                                                                                  // ally
-                                                                                                  // and
-                                                                                                  // it
-                                                                                                  // is
-                                                                                                  // cargo,
-                                                                                                  // then
-                                                                                                  // it
-                                                                                                  // will
-                                                                                                  // not
-                                                                                                  // count.
-                                                                                                  // (shouldn't
-                                                                                                  // it
-                                                                                                  // be
-                                                                                                  // a
-                                                                                                  // dependant
-                                                                                                  // in
-                                                                                                  // this
-                                                                                                  // case??)
+              && Match.someMatch(moveTest, Matches.UnitIsAlliedCarrier(unit.getOwner(), data))) {
+            // this is so that if the unit is owned by any ally and it is cargo, then it will not count.
+            // (shouldn't it be a dependant in this case??)
             continue;
           } else {
             result.addDisallowedUnit("Not all units have enough movement", unit);

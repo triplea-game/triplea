@@ -587,9 +587,7 @@ public class ServerGame extends AbstractGame {
     final GameData data = aBridge.getData();
     // potential bugs with adding changes to a game that has not yet started and has no history nodes yet. So wait for the first delegate to
     // start before making changes.
-    if (getCurrentStep() == null || getCurrentStep().getPlayerID() == null || (m_firstRun)) // &&
-                                                                                            // data.getPlayerList().getPlayers().iterator().next().getWhoAmI().equals("null:no_one")
-    {
+    if (getCurrentStep() == null || getCurrentStep().getPlayerID() == null || (m_firstRun)) {
       m_firstRun = false;
       return;
     }

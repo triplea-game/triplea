@@ -628,15 +628,6 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
         }
         if (!infrastructureInT1 && infrastructureInT2) {
           return 1;
-          // randomness is a better guide than any other metric
-          // sort the remaining randomly
-          /*
-           * if (!randomInts.containsKey(o1))
-           * randomInts.put(o1, (int) (Math.random() * 1000));
-           * if (!randomInts.containsKey(o2))
-           * randomInts.put(o2, (int) (Math.random() * 1000));
-           * return randomInts.get(o1) - randomInts.get(o2);
-           */
         }
         // next take territories with largest PU value
         return ta2.getProduction() - ta1.getProduction();
@@ -849,15 +840,9 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
         new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanProduceUnits);
     final List<Territory> rfactories =
         Match.getMatches(Utils.findUnitTerr(data, player, ourFactories), Matches.isTerritoryOwnedBy(player));
+    // figure out if anything needs to be repaired
     if (player.getRepairFrontier() != null
-        && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) // figure
-                                                                                                        // out
-                                                                                                        // if
-                                                                                                        // anything
-                                                                                                        // needs
-                                                                                                        // to
-                                                                                                        // be
-                                                                                                        // repaired
+        && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
     {
       rrules = player.getRepairFrontier().getRules();
       final IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
