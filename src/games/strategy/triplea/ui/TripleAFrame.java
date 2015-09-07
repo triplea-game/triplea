@@ -1939,7 +1939,7 @@ public class TripleAFrame extends MainGameFrame {
         try {
           final File f = BasicGameMenuBar.getSaveGameLocationDialog(TripleAFrame.this);
           if (f != null) {
-            try (FileOutputStream fout = new FileOutputStream(f);) {
+            try (FileOutputStream fout = new FileOutputStream(f)) {
               final GameData datacopy = GameDataUtils.cloneGameData(m_data, true);
               datacopy.getHistory().gotoNode(m_historyPanel.getCurrentPopupNode());
               datacopy.getHistory().removeAllHistoryAfterNode(m_historyPanel.getCurrentPopupNode());

@@ -214,7 +214,7 @@ public class MapData {
       return;
     }
     m_decorations = new HashMap<Image, List<Point>>();
-    try (InputStream stream = decorations.openStream();) {
+    try (InputStream stream = decorations.openStream()) {
       final Map<String, List<Point>> points = PointFileReaderWriter.readOneToMany(stream);
       for (final String name : points.keySet()) {
         final Image img = loadImage("misc/" + name);

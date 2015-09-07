@@ -46,7 +46,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
       if (!file.isDirectory() && file.getName().endsWith(".properties")) {
         try {
           final Properties props = new Properties();
-          try (final FileInputStream fin = new FileInputStream(file);) {
+          try (final FileInputStream fin = new FileInputStream(file)) {
             props.load(fin);
             propFiles.add(props);
           }

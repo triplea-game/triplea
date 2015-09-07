@@ -1159,7 +1159,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     } finally {
       getData().releaseReadLock();
     }
-    try (final FileWriter writer = new FileWriter(chooser.getSelectedFile());) {
+    try (final FileWriter writer = new FileWriter(chooser.getSelectedFile())) {
       writer.write(text.toString());
     } catch (final IOException e1) {
       ClientLogger.logQuietly(e1);
@@ -1182,7 +1182,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
         if (chooser.showSaveDialog(m_frame) != JOptionPane.OK_OPTION) {
           return;
         }
-        try (final FileWriter writer = new FileWriter(chooser.getSelectedFile());) {
+        try (final FileWriter writer = new FileWriter(chooser.getSelectedFile())) {
             writer.write(getUnitStatsTable().toString().replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
                 .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHTML.PATTERN_HTML_IMG_TAG, ""));
         } catch (final IOException e1) {

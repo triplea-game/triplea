@@ -448,7 +448,7 @@ public class GameRunner2 {
     final Properties rVal = new Properties();
     final File systemIni = new File(GameRunner2.getRootFolder(), SYSTEM_INI);
     if (systemIni != null && systemIni.exists()) {
-      try (FileInputStream fis = new FileInputStream(systemIni);) {
+      try (FileInputStream fis = new FileInputStream(systemIni)) {
         rVal.load(fis);
       } catch (final IOException e) {
         ClientLogger.logQuietly(e);
@@ -470,7 +470,7 @@ public class GameRunner2 {
 
     final File systemIni = new File(GameRunner2.getRootFolder(), SYSTEM_INI);
 
-    try (FileOutputStream fos = new FileOutputStream(systemIni);) {
+    try (FileOutputStream fos = new FileOutputStream(systemIni)) {
       toWrite.store(fos, SYSTEM_INI);
     } catch (final IOException e) {
       ClientLogger.logQuietly(e);

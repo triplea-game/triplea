@@ -16,7 +16,7 @@ public class DBUserControllerTest extends TestCase {
     controller.createUser(name, email, password, false);
     assertTrue(controller.doesUserExist(name));
 
-    try (final Connection con = Database.getConnection();) {
+    try (final Connection con = Database.getConnection()) {
       final String sql = " select * from TA_USERS where userName = '" + name + "'";
       final ResultSet rs = con.createStatement().executeQuery(sql);
       assertTrue(rs.next());
@@ -69,7 +69,7 @@ public class DBUserControllerTest extends TestCase {
     loginTimeMustBeAfter = System.currentTimeMillis();
     assertTrue(controller.login(name, password));
 
-    try (final Connection con = Database.getConnection();) {
+    try (final Connection con = Database.getConnection()) {
       final String sql = " select * from TA_USERS where userName = '" + name + "'";
       final ResultSet rs = con.createStatement().executeQuery(sql);
       assertTrue(rs.next());
@@ -88,7 +88,7 @@ public class DBUserControllerTest extends TestCase {
     final String password2 = MD5Crypt.crypt("foo");
     final String email2 = "foo@foo.foo";
     controller.updateUser(name, email2, password2, false);
-    try (final Connection con = Database.getConnection();) {
+    try (final Connection con = Database.getConnection()) {
       final String sql = " select * from TA_USERS where userName = '" + name + "'";
       final ResultSet rs = con.createStatement().executeQuery(sql);
       assertTrue(rs.next());

@@ -41,7 +41,7 @@ public class GameDataManager {
   public GameDataManager() {}
 
   public GameData loadGame(final File savedGameFile) throws IOException {
-    try (InputStream input = new BufferedInputStream(new FileInputStream(savedGameFile));) {
+    try (InputStream input = new BufferedInputStream(new FileInputStream(savedGameFile))) {
       String path;
       try {
         path = savedGameFile.getCanonicalPath();
@@ -236,7 +236,7 @@ public class GameDataManager {
     } finally {
       data.releaseReadLock();
     }
-    try (final GZIPOutputStream zippedOut = new GZIPOutputStream(sink);) {
+    try (final GZIPOutputStream zippedOut = new GZIPOutputStream(sink)) {
       // now write to file
       zippedOut.write(bytes.toByteArray());
     }

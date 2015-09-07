@@ -368,7 +368,7 @@ public class ServerGame extends AbstractGame {
       f = f1;
     }
 
-    try (FileOutputStream out = new FileOutputStream(f);) {
+    try (FileOutputStream out = new FileOutputStream(f)) {
       SaveGameFileChooser.ensureDefaultDirExists();
       saveGame(out);
     } catch (final Exception e) {
@@ -385,7 +385,7 @@ public class ServerGame extends AbstractGame {
       autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveOddFileName());
     }
 
-    try (FileOutputStream out = new FileOutputStream(autosaveFile);) {
+    try (FileOutputStream out = new FileOutputStream(autosaveFile)) {
       saveGame(out);
     } catch (final Exception e) {
       e.printStackTrace();
@@ -394,7 +394,7 @@ public class ServerGame extends AbstractGame {
 
   @Override
   public void saveGame(final File f) {
-    try (FileOutputStream fout = new FileOutputStream(f);) {
+    try (FileOutputStream fout = new FileOutputStream(f)) {
       saveGame(fout);
     } catch (final IOException e) {
       e.printStackTrace();

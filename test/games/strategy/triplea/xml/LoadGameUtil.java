@@ -31,7 +31,7 @@ public class LoadGameUtil {
 
   private static GameData loadGame(final String game, final String[] possibleFolders) {
 
-    try (final InputStream is = openInputStream(game, possibleFolders);) {
+    try (final InputStream is = openInputStream(game, possibleFolders)) {
       if (is == null) {
         throw new IllegalStateException(game + " does not exist");
       }
