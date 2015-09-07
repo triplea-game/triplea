@@ -101,7 +101,7 @@ public class ResourceLoader {
       if (dependencesURL != null) {
         final java.util.Properties dependenciesFile = new java.util.Properties();
 
-        try (final InputStream stream = dependencesURL.openStream();) {
+        try (final InputStream stream = dependencesURL.openStream()) {
           dependenciesFile.load(stream);
           final String dependencies = dependenciesFile.getProperty("dependencies");
           final StringTokenizer tokens = new StringTokenizer(dependencies, ",", false);

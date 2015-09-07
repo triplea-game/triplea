@@ -129,7 +129,7 @@ public class HeadlessLobbyConsole {
   }
 
   private void executeSql(final String sql) {
-    try (final Connection con = Database.getConnection();) {
+    try (final Connection con = Database.getConnection()) {
       final Statement ps = con.createStatement();
       if (DBExplorerPanel.isNotQuery(sql)) {
         final int rs = ps.executeUpdate(sql);
@@ -146,7 +146,7 @@ public class HeadlessLobbyConsole {
   }
 
   private void print(final ResultSet rs) {
-    try (final Formatter f = new Formatter(out);) {
+    try (final Formatter f = new Formatter(out)) {
       final String itemFormat = "%20s ";
       f.format(itemFormat, "Count");
       final int count = rs.getMetaData().getColumnCount();

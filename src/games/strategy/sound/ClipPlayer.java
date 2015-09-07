@@ -474,7 +474,7 @@ public class ClipPlayer {
           try {
             final File zipFile = new File(decoded);
             if (zipFile != null && zipFile.exists()) {
-              try (ZipFile zf = new ZipFile(zipFile);) {
+              try (ZipFile zf = new ZipFile(zipFile)) {
                 if (zf != null) {
                   final Enumeration<? extends ZipEntry> zipEnumeration = zf.entries();
                   while (zipEnumeration.hasMoreElements()) {

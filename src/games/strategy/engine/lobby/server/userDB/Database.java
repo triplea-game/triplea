@@ -241,7 +241,7 @@ public class Database {
       return;
     }
     s_logger.log(Level.INFO, "Backing up database to " + backupDir.getAbsolutePath());
-    try (final Connection con = getConnection();) {
+    try (final Connection con = getConnection()) {
       // http://www-128.ibm.com/developerworks/db2/library/techarticle/dm-0502thalamati/
       final String sqlstmt = "CALL SYSCS_UTIL.SYSCS_BACKUP_DATABASE(?)";
       final CallableStatement cs = con.prepareCall(sqlstmt);

@@ -42,7 +42,7 @@ public class NewGameChooserEntry {
       throws IOException, GameParseException, SAXException, EngineVersionException {
     m_url = uri;
     final AtomicReference<String> gameName = new AtomicReference<String>();
-    try (InputStream input = uri.toURL().openStream();) {
+    try (InputStream input = uri.toURL().openStream()) {
       final boolean delayParsing = GameRunner2.getDelayedParsing();
       m_data = new GameParser().parse(input, gameName, delayParsing);
       m_gameDataFullyLoaded = !delayParsing;
@@ -56,7 +56,7 @@ public class NewGameChooserEntry {
     String error = null;
     final AtomicReference<String> gameName = new AtomicReference<String>();
 
-    try (InputStream input = m_url.toURL().openStream();) {
+    try (InputStream input = m_url.toURL().openStream()) {
       m_data = new GameParser().parse(input, gameName, false);
       m_gameDataFullyLoaded = true;
 
@@ -87,7 +87,7 @@ public class NewGameChooserEntry {
     m_data = null;
 
     final AtomicReference<String> gameName = new AtomicReference<String>();
-    try (InputStream input = m_url.toURL().openStream();) {
+    try (InputStream input = m_url.toURL().openStream()) {
       m_data = new GameParser().parse(input, gameName, true);
       m_gameDataFullyLoaded = false;
     } catch (final EngineVersionException e) {

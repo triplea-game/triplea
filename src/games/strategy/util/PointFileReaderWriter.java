@@ -36,7 +36,7 @@ public class PointFileReaderWriter {
     }
     final Map<String, Point> mapping = new HashMap<String, Point>();
 
-    try (LineNumberReader reader = new LineNumberReader(new InputStreamReader(stream));) {
+    try (LineNumberReader reader = new LineNumberReader(new InputStreamReader(stream))) {
       String current = reader.readLine();
       while (current != null) {
         if (current.trim().length() != 0) {
@@ -177,7 +177,7 @@ public class PointFileReaderWriter {
    */
   public static Map<String, List<Polygon>> readOneToManyPolygons(final InputStream stream) throws IOException {
     final HashMap<String, List<Polygon>> mapping = new HashMap<String, List<Polygon>>();
-    try (LineNumberReader reader = new LineNumberReader(new InputStreamReader(stream));) {
+    try (LineNumberReader reader = new LineNumberReader(new InputStreamReader(stream))) {
       String current = reader.readLine();
       while (current != null) {
         if (current.trim().length() != 0) {

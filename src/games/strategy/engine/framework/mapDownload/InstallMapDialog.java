@@ -303,7 +303,7 @@ public class InstallMapDialog extends JDialog {
       return;
     }
 
-    try ( FileOutputStream sink = new FileOutputStream(tempFile);){
+    try ( FileOutputStream sink = new FileOutputStream(tempFile)){
       validateZip(download);
       sink.write(download.getContents());
       sink.getFD().sync();
@@ -316,7 +316,7 @@ public class InstallMapDialog extends JDialog {
     }
     // try to make sure it is a valid zip file
 
-    try (final ZipInputStream zis = new ZipInputStream(new FileInputStream(tempFile));) {
+    try (final ZipInputStream zis = new ZipInputStream(new FileInputStream(tempFile))) {
       while (zis.getNextEntry() != null) {
         zis.read(new byte[128]);
       }
@@ -342,7 +342,7 @@ public class InstallMapDialog extends JDialog {
 
   private static void validateZip(final DownloadRunnable download) throws IOException {
     // try to unzip it to make sure it is valid
-    try ( final ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(download.getContents()));) {
+    try ( final ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(download.getContents()))) {
       ZipEntry ze;
       while ((ze = zis.getNextEntry()) != null) {
         // make sure we can read something from each stream

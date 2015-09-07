@@ -93,7 +93,7 @@ public class UniversalPlugAndPlayHelper {
     final int internalPort = m_port;
     boolean connection = false;
     // boolean bytes = false;
-    try (ServerSocket ss = new ServerSocket(internalPort);) {
+    try (ServerSocket ss = new ServerSocket(internalPort)) {
       ss.setSoTimeout(5000);
       try {
         final Socket s = ss.accept();
