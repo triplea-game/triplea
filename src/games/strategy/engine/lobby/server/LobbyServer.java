@@ -38,6 +38,7 @@ public class LobbyServer {
   private final static Logger s_logger = Logger.getLogger(LobbyServer.class.getName());
   public static final String LOBBY_CHAT = "_LOBBY_CHAT";
   public static final Version LOBBY_VERSION = new Version(1, 0, 0);
+  public static final int DEFAULT_LOBBY_PORT = 3303;
   private final Messengers m_messengers;
   private final IServerMessenger server;
 
@@ -66,7 +67,7 @@ public class LobbyServer {
       // send args to system properties
       handleCommandLineArgs(args);
       // turn off sound if no ui
-      final boolean startUI = true;//Boolean.parseBoolean(System.getProperty(TRIPLEA_LOBBY_UI_PROPERTY, "false"));
+      final boolean startUI = Boolean.parseBoolean(System.getProperty(TRIPLEA_LOBBY_UI_PROPERTY, "false"));
       if (!startUI) {
         ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
       }
@@ -74,7 +75,7 @@ public class LobbyServer {
       final InputStream in = System.in;
       final PrintStream out = System.out;
       setUpLogging();
-      final int port = Integer.parseInt(System.getProperty(TRIPLEA_LOBBY_PORT_PROPERTY, "3303"));
+      final int port = Integer.parseInt(System.getProperty(TRIPLEA_LOBBY_PORT_PROPERTY, String.valueOf(DEFAULT_LOBBY_PORT)));
       System.out.println("Trying to listen on port:" + port);
       runningServer = new LobbyServer(port);
       System.out.println("Starting database");
@@ -134,7 +135,7 @@ public class LobbyServer {
   }
 
   private static void usage() {
-    System.out.println("Arguments\n" + "   " + TRIPLEA_LOBBY_PORT_PROPERTY + "=<port number (ex: 3303)>\n" + "   "
+    System.out.println("Arguments\n" + "   " + TRIPLEA_LOBBY_PORT_PROPERTY + "=<port number (ex: " + DEFAULT_LOBBY_PORT + ")>\n" + "   "
         + TRIPLEA_LOBBY_UI_PROPERTY + "=<true/false>\n" + "   " + TRIPLEA_LOBBY_CONSOLE_PROPERTY + "=<true/false>\n");
   }
 

@@ -21,10 +21,6 @@ public class LobbyClient {
     final HeartBeat heartBeatServer = new HeartBeat(m_messengers.getMessenger().getServerNode());
     m_messengers.getRemoteMessenger().registerRemote(heartBeatServer,
         HeartBeat.getHeartBeatName(m_messengers.getMessenger().getLocalNode()));
-    // final RemoteHostUtils remoteHostUtilsServer = new RemoteHostUtils(m_messengers.getMessenger().getServerNode(),
-    // null);
-    // m_messengers.getRemoteMessenger().registerRemote(remoteHostUtilsServer,
-    // RemoteHostUtils.getRemoteHostUtilsName(m_messengers.getMessenger().getLocalNode()));
   }
 
   public boolean isAdmin() {
