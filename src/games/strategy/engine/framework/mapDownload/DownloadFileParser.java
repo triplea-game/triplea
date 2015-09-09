@@ -57,8 +57,6 @@ public class DownloadFileParser {
           content = new StringBuilder();
         }
       });
-    } catch (final RuntimeException e) {
-      throw e;
     } catch (final SAXParseException e) {
       throw new IllegalStateException("Could not parse xml error at line:" + e.getLineNumber() + " column:"
           + e.getColumnNumber() + " error:" + e.getMessage());
