@@ -129,12 +129,16 @@ public class RemoteMessengerTest extends TestCase {
       assertEquals(2, rVal);
       assertEquals(testRemote.getLastSenderNode(), client.getLocalNode());
     } finally {
-      if (server != null) {
-        server.shutDown();
-      }
-      if (client != null) {
-        client.shutDown();
-      }
+      shutdownServerAndClient(server, client);
+    }
+  }
+
+  private static void shutdownServerAndClient(ServerMessenger server, ClientMessenger client) {
+    if (server != null) {
+      server.shutDown();
+    }
+    if (client != null) {
+      client.shutDown();
     }
   }
 
@@ -158,12 +162,7 @@ public class RemoteMessengerTest extends TestCase {
       assertEquals(2, rVal);
       assertEquals(testRemote.getLastSenderNode(), client.getLocalNode());
     } finally {
-      if (server != null) {
-        server.shutDown();
-      }
-      if (client != null) {
-        client.shutDown();
-      }
+      shutdownServerAndClient(server, client);
     }
   }
 
@@ -194,12 +193,7 @@ public class RemoteMessengerTest extends TestCase {
       sleep(200);
       assertTrue(!serverUM.getHub().hasImplementors(test.getName()));
     } finally {
-      if (server != null) {
-        server.shutDown();
-      }
-      if (client != null) {
-        client.shutDown();
-      }
+      shutdownServerAndClient(server, client);
     }
   }
 
@@ -266,12 +260,7 @@ public class RemoteMessengerTest extends TestCase {
       }
       assertNotNull(rme.get());
     } finally {
-      if (server != null) {
-        server.shutDown();
-      }
-      if (client != null) {
-        client.shutDown();
-      }
+      shutdownServerAndClient(server, client);
     }
   }
 }
