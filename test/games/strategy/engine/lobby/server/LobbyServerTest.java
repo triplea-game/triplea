@@ -1,7 +1,5 @@
 package games.strategy.engine.lobby.server;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,9 +9,9 @@ public class LobbyServerTest {
   public void setUp() throws Exception {}
 
   @Test
-  public void test() {
+  public void lobbyServerStartsAndStops() {
     LobbyServer.main(new String[0]);
-
+    LobbyServer.stopServer();
   }
 
 }

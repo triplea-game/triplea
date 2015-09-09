@@ -39,37 +39,13 @@ public class LobbyServer {
   public static final String LOBBY_CHAT = "_LOBBY_CHAT";
   public static final Version LOBBY_VERSION = new Version(1, 0, 0);
   private final Messengers m_messengers;
+  private final IServerMessenger server;
 
   public static String[] getProperties() {
     return new String[] {TRIPLEA_LOBBY_PORT_PROPERTY, TRIPLEA_LOBBY_CONSOLE_PROPERTY, TRIPLEA_LOBBY_UI_PROPERTY};
   }
 
-  /** Creates a new instance of LobbyServer */
-  public LobbyServer(final int port) {
-    IServerMessenger server;
-    try {
-      server = new ServerMessenger(ADMIN_USERNAME, port);
-    } catch (final IOException ex) {
-      s_logger.log(Level.SEVERE, ex.toString());
-      throw new IllegalStateException(ex.getMessage());
-    }
-    m_messengers = new Messengers(server);
-    server.setLoginValidator(new LobbyLoginValidator());
-    // setup common objects
-    new UserManager().register(m_messengers.getRemoteMessenger());
-    final ModeratorController moderatorController = new ModeratorController(server, m_messengers);
-    moderatorController.register(m_messengers.getRemoteMessenger());
-    new ChatController(LOBBY_CHAT, m_messengers, moderatorController);
-    // register the status controller
-    final StatusManager statusManager = new StatusManager(m_messengers);
-    // we dont need this manager now
-    statusManager.shutDown();
-    final LobbyGameController controller = new LobbyGameController((ILobbyGameBroadcaster) m_messengers
-        .getChannelMessenger().getChannelBroadcastor(ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL), server);
-    controller.register(m_messengers.getRemoteMessenger());
-    // now we are open for business
-    server.setAcceptNewConnections(true);
-  }
+
 
   private static void setUpLogging() {
     // setup logging to read our logging.properties
@@ -83,12 +59,14 @@ public class LobbyServer {
     System.setOut(new LoggingPrintStream("OUT", Level.INFO));
   }
 
+  private static LobbyServer runningServer = null;
+
   public static void main(final String args[]) {
     try {
       // send args to system properties
       handleCommandLineArgs(args);
       // turn off sound if no ui
-      final boolean startUI = Boolean.parseBoolean(System.getProperty(TRIPLEA_LOBBY_UI_PROPERTY, "false"));
+      final boolean startUI = true;//Boolean.parseBoolean(System.getProperty(TRIPLEA_LOBBY_UI_PROPERTY, "false"));
       if (!startUI) {
         ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
       }
@@ -98,41 +76,20 @@ public class LobbyServer {
       setUpLogging();
       final int port = Integer.parseInt(System.getProperty(TRIPLEA_LOBBY_PORT_PROPERTY, "3303"));
       System.out.println("Trying to listen on port:" + port);
-      final LobbyServer server = new LobbyServer(port);
+      runningServer = new LobbyServer(port);
       System.out.println("Starting database");
       // initialize the database
       Database.getConnection().close();
       s_logger.info("Lobby started");
       if (startUI) {
-        startUI(server);
+        startUI(runningServer);
       }
       if (Boolean.parseBoolean(System.getProperty(TRIPLEA_LOBBY_CONSOLE_PROPERTY, "false"))) {
-        startConsole(server, in, out);
+        startConsole(runningServer, in, out);
       }
     } catch (final Exception ex) {
       s_logger.log(Level.SEVERE, ex.toString(), ex);
     }
-  }
-
-  private static void startConsole(final LobbyServer server, final InputStream in, final PrintStream out) {
-    System.out.println("starting console");
-    new HeadlessLobbyConsole(server, in, out).start();
-  }
-
-  private static void startUI(final LobbyServer server) {
-    System.out.println("starting ui");
-    final LobbyAdminConsole console = new LobbyAdminConsole(server);
-    console.setSize(800, 700);
-    console.setLocationRelativeTo(null);
-    console.setVisible(true);
-  }
-
-  public IServerMessenger getMessenger() {
-    return (IServerMessenger) m_messengers.getMessenger();
-  }
-
-  public Messengers getMessengers() {
-    return m_messengers;
   }
 
   /**
@@ -180,4 +137,68 @@ public class LobbyServer {
     System.out.println("Arguments\n" + "   " + TRIPLEA_LOBBY_PORT_PROPERTY + "=<port number (ex: 3303)>\n" + "   "
         + TRIPLEA_LOBBY_UI_PROPERTY + "=<true/false>\n" + "   " + TRIPLEA_LOBBY_CONSOLE_PROPERTY + "=<true/false>\n");
   }
+
+  private static void startConsole(final LobbyServer server, final InputStream in, final PrintStream out) {
+    System.out.println("starting console");
+    new HeadlessLobbyConsole(server, in, out).start();
+  }
+
+  private static void startUI(final LobbyServer server) {
+    System.out.println("starting ui");
+    final LobbyAdminConsole console = new LobbyAdminConsole(server);
+    console.setSize(800, 700);
+    console.setLocationRelativeTo(null);
+    console.setVisible(true);
+  }
+
+  protected static void stopServer() {
+    if( runningServer != null ) {
+      runningServer.stop();
+    }
+  }
+
+
+
+
+  /** Creates a new instance of LobbyServer */
+  public LobbyServer(final int port) {
+    try {
+      server = new ServerMessenger(ADMIN_USERNAME, port);
+    } catch (final IOException ex) {
+      s_logger.log(Level.SEVERE, ex.toString());
+      throw new IllegalStateException(ex.getMessage());
+    }
+    m_messengers = new Messengers(server);
+    server.setLoginValidator(new LobbyLoginValidator());
+    // setup common objects
+    new UserManager().register(m_messengers.getRemoteMessenger());
+    final ModeratorController moderatorController = new ModeratorController(server, m_messengers);
+    moderatorController.register(m_messengers.getRemoteMessenger());
+    new ChatController(LOBBY_CHAT, m_messengers, moderatorController);
+    // register the status controller
+    final StatusManager statusManager = new StatusManager(m_messengers);
+    // we dont need this manager now
+    statusManager.shutDown();
+    final LobbyGameController controller = new LobbyGameController((ILobbyGameBroadcaster) m_messengers
+        .getChannelMessenger().getChannelBroadcastor(ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL), server);
+    controller.register(m_messengers.getRemoteMessenger());
+    // now we are open for business
+    server.setAcceptNewConnections(true);
+  }
+
+
+  private void stop() {
+    server.shutDown();
+  }
+
+
+
+  public IServerMessenger getMessenger() {
+    return (IServerMessenger) m_messengers.getMessenger();
+  }
+
+  public Messengers getMessengers() {
+    return m_messengers;
+  }
+
 }
