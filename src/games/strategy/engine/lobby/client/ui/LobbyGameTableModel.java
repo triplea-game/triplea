@@ -1,6 +1,7 @@
 package games.strategy.engine.lobby.client.ui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
 import games.strategy.net.IMessenger;
+import games.strategy.util.Tuple;
 
 public class LobbyGameTableModel extends AbstractTableModel {
   private static final long serialVersionUID = 6399458368730633993L;
@@ -28,11 +30,13 @@ public class LobbyGameTableModel extends AbstractTableModel {
   private final IChannelMessenger m_channelMessenger;
   private final IRemoteMessenger m_remoteMessenger;
   // these must only be accessed in the swing event thread
-  private final List<GUID> m_gameIDs = new ArrayList<GUID>();
-  private final List<GameDescription> m_games = new ArrayList<GameDescription>();
+  private final List<Tuple<GUID,GameDescription>> gameList;
 
   public LobbyGameTableModel(final IMessenger messenger, final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger) {
+
+    gameList = new ArrayList<Tuple<GUID,GameDescription>>();
+
     m_messenger = messenger;
     m_channelMessenger = channelMessenger;
     m_remoteMessenger = remoteMessenger;
@@ -63,7 +67,7 @@ public class LobbyGameTableModel extends AbstractTableModel {
   }
 
   public GameDescription get(final int i) {
-    return m_games.get(i);
+    return gameList.get(i).getSecond();
   }
 
   @Override
@@ -78,21 +82,31 @@ public class LobbyGameTableModel extends AbstractTableModel {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
-        final int index = m_gameIDs.indexOf(gameId);
-        m_gameIDs.remove(index);
-        m_games.remove(index);
-        fireTableRowsDeleted(index, index);
+        Tuple<GUID, GameDescription> gameToRemove = findGame( gameId );
+        if( gameToRemove != null ) {
+          int index = gameList.indexOf(gameToRemove);
+          gameList.remove(gameToRemove);
+          fireTableRowsDeleted(index, index);
+        }
       }
     });
+  }
+
+  private Tuple<GUID, GameDescription> findGame( final GUID gameId ) {
+    for(Tuple<GUID, GameDescription> game : gameList ) {
+      if( game.getFirst().equals(gameId)) {
+        return game;
+      }
+    }
+    return null;
   }
 
   private void addGame(final GUID gameId, final GameDescription description) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
-        m_gameIDs.add(gameId);
-        m_games.add(description);
-        fireTableRowsInserted(m_gameIDs.size() - 1, m_gameIDs.size() - 1);
+        gameList.add( new Tuple<GUID,GameDescription>( gameId, description ));
+        fireTableRowsInserted(gameList.size() - 1, gameList.size() - 1);
       }
     });
   }
@@ -107,9 +121,10 @@ public class LobbyGameTableModel extends AbstractTableModel {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
-        final int index = m_gameIDs.indexOf(gameId);
-        m_games.set(index, description);
-        fireTableRowsUpdated(index, index);
+        Tuple<GUID,GameDescription> toReplace = findGame(gameId);
+        int replaceIndex = gameList.indexOf(toReplace);
+        gameList.set(replaceIndex, new Tuple<GUID,GameDescription>(gameId, description));
+        fireTableRowsUpdated(replaceIndex, replaceIndex);
       }
     });
   }
@@ -131,13 +146,13 @@ public class LobbyGameTableModel extends AbstractTableModel {
 
   @Override
   public int getRowCount() {
-    return m_gameIDs.size();
+    return gameList.size();
   }
 
   @Override
   public Object getValueAt(final int rowIndex, final int columnIndex) {
     final Column column = Column.values()[columnIndex];
-    final GameDescription description = m_games.get(rowIndex);
+    final GameDescription description = gameList.get(rowIndex).getSecond();
     switch (column) {
       case Host:
         return description.getHostName();
@@ -162,7 +177,7 @@ public class LobbyGameTableModel extends AbstractTableModel {
       case Started:
         return description.getStartDateTime();
       case GUID:
-        return m_gameIDs.get(rowIndex);
+        return gameList.get(rowIndex).getFirst();
       default:
         throw new IllegalStateException("Unknown column:" + column);
     }
