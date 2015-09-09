@@ -36,7 +36,7 @@ public class NewGameChooserModel extends DefaultListModel {
   private static final long serialVersionUID = -2044689419834812524L;
   private final ClearGameChooserCacheMessenger clearCacheMessenger;
 
-  public NewGameChooserModel(ClearGameChooserCacheMessenger clearCacheMessenger ) {
+  public NewGameChooserModel(ClearGameChooserCacheMessenger clearCacheMessenger) {
     this.clearCacheMessenger = clearCacheMessenger;
     populate();
   }
