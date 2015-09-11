@@ -282,17 +282,17 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     return rVal;
   }
 
-  public static boolean isValidOOL(final String ool, final GameData data) {
-    if (ool == null || ool.trim().length() == 0) {
+  public static boolean isValidOrderOfLoss(final String orderOfLoss, final GameData data) {
+    if (orderOfLoss == null || orderOfLoss.trim().length() == 0) {
       return true;
     }
     try {
       final String[] sections;
-      if (ool.indexOf(OOL_SEPARATOR) != -1) {
-        sections = ool.trim().split(OOL_SEPARATOR_REGEX);
+      if (orderOfLoss.indexOf(OOL_SEPARATOR) != -1) {
+        sections = orderOfLoss.trim().split(OOL_SEPARATOR_REGEX);
       } else {
         sections = new String[1];
-        sections[0] = ool.trim();
+        sections[0] = orderOfLoss.trim();
       }
       final UnitTypeList unitTypes;
       try {
