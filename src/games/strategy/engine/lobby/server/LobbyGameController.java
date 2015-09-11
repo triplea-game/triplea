@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.server;
 
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -15,7 +16,6 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
 import games.strategy.net.IConnectionChangeListener;
-import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 
@@ -25,9 +25,9 @@ public class LobbyGameController implements ILobbyGameController {
   private final Map<GUID, GameDescription> allGames = new HashMap<GUID, GameDescription>();
   private final ILobbyGameBroadcaster broadcaster;
 
-  public LobbyGameController(final ILobbyGameBroadcaster broadcaster, final IMessenger messenger) {
+  public LobbyGameController(final ILobbyGameBroadcaster broadcaster, final IServerMessenger messenger) {
     this.broadcaster = broadcaster;
-    ((IServerMessenger) messenger).addConnectionChangeListener(new IConnectionChangeListener() {
+    messenger.addConnectionChangeListener(new IConnectionChangeListener() {
       @Override
       public void connectionRemoved(final INode to) {
         connectionLost(to);
