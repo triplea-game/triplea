@@ -252,9 +252,9 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     // TODO: first, see how much it actually speeds stuff up by, and if it does make a difference then convert it to a per-thread, per-calc
     // caching
     final List<Unit> attackerOrderOfLosses =
-        OddsCalculator.getUnitListByOOL(m_attackerOrderOfLosses, m_attackingUnits, m_data);
+        OddsCalculator.getUnitListByOrderOfLoss(m_attackerOrderOfLosses, m_attackingUnits, m_data);
     final List<Unit> defenderOrderOfLosses =
-        OddsCalculator.getUnitListByOOL(m_defenderOrderOfLosses, m_defendingUnits, m_data);
+        OddsCalculator.getUnitListByOrderOfLoss(m_defenderOrderOfLosses, m_defendingUnits, m_data);
     for (int i = 0; i < count && !m_cancelled; i++) {
       final CompositeChange allChanges = new CompositeChange();
       final DummyDelegateBridge bridge1 = new DummyDelegateBridge(m_attacker, m_data, allChanges, attackerOrderOfLosses,
@@ -326,7 +326,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     return true;
   }
 
-  public static List<Unit> getUnitListByOOL(final String ool, final Collection<Unit> units, final GameData data) {
+  public static List<Unit> getUnitListByOrderOfLoss(final String ool, final Collection<Unit> units, final GameData data) {
     if (ool == null || ool.trim().length() == 0) {
       return null;
     }
