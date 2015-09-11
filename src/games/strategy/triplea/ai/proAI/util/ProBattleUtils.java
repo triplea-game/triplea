@@ -382,4 +382,13 @@ public class ProBattleUtils {
     // while anything less
     // needs more units
   }
+
+  public List<Unit> getCurrentMaxDefenders(Territory t, Map<Territory, ProAttackTerritoryData> moveMap,
+      List<Unit> alreadyMovedUnits) {
+    final List<Unit> defenders = moveMap.get(t).getMaxDefenders();
+    defenders.removeAll(alreadyMovedUnits);
+    defenders.addAll(moveMap.get(t).getUnits());
+    return defenders;
+  }
+
 }

@@ -162,6 +162,25 @@ public class ProTransportUtils {
     return transportCost;
   }
 
+  public List<Unit> getAirThatCantLandOnCarrier(final PlayerID player, final Territory t, final List<Unit> units) {
+    final GameData data = ai.getGameData();
+    int capacity = AirMovementValidator.carrierCapacity(units, t);
+    final Collection<Unit> airUnits = Match.getMatches(units, ProMatches.unitIsAlliedAir(player, data));
+    List<Unit> airThatCantLand = new ArrayList<Unit>();
+    for (final Unit airUnit : airUnits) {
+      final UnitAttachment ua = UnitAttachment.get(airUnit.getType());
+      final int cost = ua.getCarrierCost();
+      if (cost != -1) {
+        if (cost <= capacity) {
+          capacity -= cost;
+        } else {
+          airThatCantLand.add(airUnit);
+        }
+      }
+    }
+    return airThatCantLand;
+  }
+
   public boolean validateCarrierCapacity(final PlayerID player, final Territory t, final List<Unit> existingUnits,
       final Unit newUnit) {
     final GameData data = ai.getGameData();
@@ -265,7 +284,8 @@ public class ProTransportUtils {
         // If the carrier has been filled or overflowed or last unit
         if (indexToPlaceCarrierAt > 0 && (spaceLeftOnSeekedCarrier <= 0 || i == 0)) {
           if (spaceLeftOnSeekedCarrier < 0) {
-            i++; // Move current unit index up one, so we re-process this unit (since it can't fit on the current seeked carrier)
+            i++; // Move current unit index up one, so we re-process this unit (since it can't fit on the current seeked
+                 // carrier)
           }
           // If the seeked carrier is earlier in the list
           if (result.indexOf(seekedCarrier) < i) {
@@ -282,7 +302,8 @@ public class ProTransportUtils {
             if (seekedCarrier == null) {
               break; // No carriers left
             }
-            indexToPlaceCarrierAt = i; // Place next carrier right before this plane (which just filled the old carrier that was just moved)
+            indexToPlaceCarrierAt = i; // Place next carrier right before this plane (which just filled the old carrier
+                                       // that was just moved)
             spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getUnitType()).getCarrierCapacity();
           } else {
             // If it's later in the list
