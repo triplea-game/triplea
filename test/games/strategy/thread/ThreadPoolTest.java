@@ -36,23 +36,6 @@ public class ThreadPoolTest extends TestCase {
     pool.shutDown();
   }
 
-  public void testSimple() {
-    final ThreadPool pool = new ThreadPool(5, "test");
-    final Collection<Task> tasks = new ArrayList<Task>();
-    for (int i = 0; i < 3000; i++) {
-      final Task task = new Task();
-      tasks.add(task);
-      pool.runTask(task);
-    }
-    assertEquals(5, pool.getThreadCount());
-    pool.waitForAll();
-    final Iterator<Task> iter = tasks.iterator();
-    while (iter.hasNext()) {
-      assertTrue(iter.next().isDone());
-    }
-    pool.shutDown();
-  }
-
   public void testBlocked() {
     final Collection<Thread> threads = new ArrayList<Thread>();
     for (int j = 0; j < 15; j++) {
