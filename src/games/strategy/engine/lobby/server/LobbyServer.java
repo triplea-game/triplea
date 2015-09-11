@@ -21,29 +21,56 @@ import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.util.LoggingPrintStream;
 import games.strategy.util.Version;
 
-/**
- * LobbyServer.java
- * Created on May 23, 2006, 6:44 PM
- */
+
 public class LobbyServer {
-  // System properties for the lobby
-  // what port should the lobby use
-  private static final String TRIPLEA_LOBBY_PORT_PROPERTY = "triplea.lobby.port";
-  // should the lobby start a ui, set to true to enable
-  private static final String TRIPLEA_LOBBY_UI_PROPERTY = "triplea.lobby.ui";
-  // should the lobby take commands from stdin,
-  // set to true to enable
-  private static final String TRIPLEA_LOBBY_CONSOLE_PROPERTY = "triplea.lobby.console";
   public static final String ADMIN_USERNAME = "Admin";
-  private final static Logger s_logger = Logger.getLogger(LobbyServer.class.getName());
   public static final String LOBBY_CHAT = "_LOBBY_CHAT";
   public static final Version LOBBY_VERSION = new Version(1, 0, 0);
   public static final int DEFAULT_LOBBY_PORT = 3303;
+
+  private static final String LOBBY_PORT_PROPERTY = "triplea.lobby.port";
+  private static final String ENABLE_UI_PROPERTY = "triplea.lobby.ui";
+  private static final String ENABLE_CONSOLE_PROPERTY = "triplea.lobby.console";
+  private static LobbyServer runningServer = null;
+
+  private final static Logger s_logger = Logger.getLogger(LobbyServer.class.getName());
   private final Messengers m_messengers;
   private final IServerMessenger server;
 
+
+  public static void main(final String args[]) {
+    try {
+      // send args to system properties
+      handleCommandLineArgs(args);
+      // turn off sound if no ui
+      final boolean startUI = Boolean.parseBoolean(System.getProperty(ENABLE_UI_PROPERTY, "false"));
+      if (!startUI) {
+        ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
+      }
+      // grab these before we override them with the loggers
+      final InputStream in = System.in;
+      final PrintStream out = System.out;
+      setUpLogging();
+      final int port = Integer.parseInt(System.getProperty(LOBBY_PORT_PROPERTY, String.valueOf(DEFAULT_LOBBY_PORT)));
+      System.out.println("Trying to listen on port:" + port);
+      runningServer = new LobbyServer(port);
+      System.out.println("Starting database");
+      // initialize the database
+      Database.getConnection().close();
+      s_logger.info("Lobby started");
+      if (startUI) {
+        startUI(runningServer);
+      }
+      if (Boolean.parseBoolean(System.getProperty(ENABLE_CONSOLE_PROPERTY, "false"))) {
+        startConsole(runningServer, in, out);
+      }
+    } catch (final Exception ex) {
+      s_logger.log(Level.SEVERE, ex.toString(), ex);
+    }
+  }
+
   public static String[] getProperties() {
-    return new String[] {TRIPLEA_LOBBY_PORT_PROPERTY, TRIPLEA_LOBBY_CONSOLE_PROPERTY, TRIPLEA_LOBBY_UI_PROPERTY};
+    return new String[] {LOBBY_PORT_PROPERTY, ENABLE_CONSOLE_PROPERTY, ENABLE_UI_PROPERTY};
   }
 
 
@@ -58,39 +85,6 @@ public class LobbyServer {
     Logger.getAnonymousLogger().info("Redirecting std out");
     System.setErr(new LoggingPrintStream("ERROR", Level.SEVERE));
     System.setOut(new LoggingPrintStream("OUT", Level.INFO));
-  }
-
-  private static LobbyServer runningServer = null;
-
-  public static void main(final String args[]) {
-    try {
-      // send args to system properties
-      handleCommandLineArgs(args);
-      // turn off sound if no ui
-      final boolean startUI = Boolean.parseBoolean(System.getProperty(TRIPLEA_LOBBY_UI_PROPERTY, "false"));
-      if (!startUI) {
-        ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
-      }
-      // grab these before we override them with the loggers
-      final InputStream in = System.in;
-      final PrintStream out = System.out;
-      setUpLogging();
-      final int port = Integer.parseInt(System.getProperty(TRIPLEA_LOBBY_PORT_PROPERTY, String.valueOf(DEFAULT_LOBBY_PORT)));
-      System.out.println("Trying to listen on port:" + port);
-      runningServer = new LobbyServer(port);
-      System.out.println("Starting database");
-      // initialize the database
-      Database.getConnection().close();
-      s_logger.info("Lobby started");
-      if (startUI) {
-        startUI(runningServer);
-      }
-      if (Boolean.parseBoolean(System.getProperty(TRIPLEA_LOBBY_CONSOLE_PROPERTY, "false"))) {
-        startConsole(runningServer, in, out);
-      }
-    } catch (final Exception ex) {
-      s_logger.log(Level.SEVERE, ex.toString(), ex);
-    }
   }
 
   /**
@@ -135,8 +129,8 @@ public class LobbyServer {
   }
 
   private static void usage() {
-    System.out.println("Arguments\n" + "   " + TRIPLEA_LOBBY_PORT_PROPERTY + "=<port number (ex: " + DEFAULT_LOBBY_PORT + ")>\n" + "   "
-        + TRIPLEA_LOBBY_UI_PROPERTY + "=<true/false>\n" + "   " + TRIPLEA_LOBBY_CONSOLE_PROPERTY + "=<true/false>\n");
+    System.out.println("Arguments\n" + "   " + LOBBY_PORT_PROPERTY + "=<port number (ex: " + DEFAULT_LOBBY_PORT + ")>\n" + "   "
+        + ENABLE_UI_PROPERTY + "=<true/false>\n" + "   " + ENABLE_CONSOLE_PROPERTY + "=<true/false>\n");
   }
 
   private static void startConsole(final LobbyServer server, final InputStream in, final PrintStream out) {
