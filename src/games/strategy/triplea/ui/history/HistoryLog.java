@@ -392,7 +392,7 @@ public class HistoryLog extends JFrame {
     }
     final Collection<PlayerID> players = new HashSet<PlayerID>();
     players.add(player);
-    printTerritorySummary(data, players, territories);
+    printTerritorySummary(players, territories);
   }
 
   public void printTerritorySummary(final GameData data) {
@@ -407,7 +407,7 @@ public class HistoryLog extends JFrame {
     }
     final Collection<PlayerID> players = new HashSet<PlayerID>();
     players.add(player);
-    printTerritorySummary(data, players, territories);
+    printTerritorySummary(players, territories);
   }
 
   public void printTerritorySummary(final GameData data, final Collection<PlayerID> allowedPlayers) {
@@ -422,10 +422,10 @@ public class HistoryLog extends JFrame {
     } finally {
       data.releaseReadLock();
     }
-    printTerritorySummary(data, allowedPlayers, territories);
+    printTerritorySummary(allowedPlayers, territories);
   }
 
-  private void printTerritorySummary(final GameData data, final Collection<PlayerID> players,
+  private void printTerritorySummary(final Collection<PlayerID> players,
       final Collection<Territory> territories) {
     if (players == null || players.isEmpty() || territories == null || territories.isEmpty()) {
       return;
