@@ -21,8 +21,6 @@ import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 public class DummyTripleAPlayer implements ITripleaPlayer {
-  public void politics(final boolean firstRun) {}
-
   @Override
   public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer) {}
 
