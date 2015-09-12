@@ -118,8 +118,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
    */
   public static String isValidPlay(final IGridPlayData play, final PlayerID player, final GameData data,
       final boolean uncrownedCanCaptureBackwards, final boolean allowJumpingOwnPieces) {
-    // System.out.println("Start: " + start.getX() + "," + start.getY() + " End: " + end.getX() + "," + end.getY());
-    final String basic = isValidMoveBasic(play, player, data);
+    final String basic = isValidMoveBasic(play, player);
     if (basic != null) {
       return basic;
     }
@@ -289,7 +288,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     }
   };
 
-  public static String isValidMoveBasic(final IGridPlayData play, final PlayerID player, final GameData data) {
+  public static String isValidMoveBasic(final IGridPlayData play, final PlayerID player) {
     if (play.getStart() == null || play.getEnd() == null) {
       return "Can Not Move Off Board";
     }
