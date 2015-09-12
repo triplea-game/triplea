@@ -27,14 +27,14 @@ public class UnitSeperator {
   public static Set<UnitCategory> categorize(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
       final boolean categorizeMovement, final boolean categorizeTransportCost, final boolean sort) {
     return categorize(units, dependent, categorizeMovement, categorizeTransportCost, /* ctgzTrnMovement */false,
-        /* categorizeTerritories */false, sort);
+        sort);
   }
 
   public static Set<UnitCategory> categorize(final boolean sort, final Collection<Unit> units,
       final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
       final boolean categorizeTransportCost, final boolean categorizeTerritories) {
     return categorize(units, dependent, categorizeMovement, categorizeTransportCost, /* ctgzTrnMovement */false,
-        categorizeTerritories, sort);
+        sort);
   }
 
   /**
@@ -53,7 +53,7 @@ public class UnitSeperator {
    */
   public static Set<UnitCategory> categorize(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
       final boolean categorizeMovement, final boolean categorizeTransportCost, final boolean categorizeTrnMovement,
-      final boolean categorizeTerritories, final boolean sort) {
+      final boolean sort) {
     // somewhat odd, but we map UnitCategory->UnitCategory,
     // key and value are the same
     // we do this to take advanatge of .equals() on objects that
@@ -78,12 +78,8 @@ public class UnitSeperator {
         currentDependents = dependent.get(current);
       }
       final boolean disabled = Matches.UnitIsDisabled.match(current);
-      Territory originatingTerr = null;
-      if (categorizeTerritories) {
-        originatingTerr = TripleAUnit.get(current).getOriginatedFrom();
-      }
       final UnitCategory entry = new UnitCategory(current, currentDependents, unitMovement, current.getHits(),
-          TripleAUnit.get(current).getUnitDamage(), disabled, unitTransportCost, originatingTerr);
+          TripleAUnit.get(current).getUnitDamage(), disabled, unitTransportCost);
       // we test to see if we have the key using equals, then since
       // key maps to key, we retrieve it to add the unit to the correct
       // category
