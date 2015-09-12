@@ -1690,7 +1690,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
             aBridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
@@ -1705,7 +1705,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
             aBridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
@@ -1721,7 +1721,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
             aBridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
@@ -1736,7 +1736,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
             aBridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
@@ -1752,7 +1752,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
             aBridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
@@ -1768,7 +1768,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
             aBridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
@@ -1822,7 +1822,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
             aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting "
                 + property.getFirst() + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
@@ -1882,7 +1882,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
             aBridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
@@ -1898,7 +1898,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
             aBridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
@@ -1955,7 +1955,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
             aBridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
@@ -2008,7 +2008,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
             aBridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
@@ -2024,7 +2024,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
             aBridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
