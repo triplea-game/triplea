@@ -33,7 +33,7 @@ public class AIUtils {
       throw new IllegalArgumentException("null player id");
     }
     final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-    final ProductionRule rule = getProductionRule(unitType, player, data);
+    final ProductionRule rule = getProductionRule(unitType, player);
     if (rule == null) {
       return Integer.MAX_VALUE;
     } else {
@@ -58,7 +58,7 @@ public class AIUtils {
    * <p>
    * If no such rule can be found, then return null.
    */
-  public static ProductionRule getProductionRule(final UnitType unitType, final PlayerID player, final GameData data) {
+  public static ProductionRule getProductionRule(final UnitType unitType, final PlayerID player) {
     if (unitType == null) {
       throw new IllegalArgumentException("null unit type");
     }
