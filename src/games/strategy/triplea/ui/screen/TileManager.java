@@ -241,11 +241,6 @@ public class TileManager {
     m_allUnitDrawables.removeAll(drawables);
   }
 
-  /**
-   * @param data
-   * @param mapData
-   * @param territory
-   */
   private void drawTerritory(final Territory territory, final GameData data, final MapData mapData) {
     final Set<Tile> drawnOn = new HashSet<Tile>();
     final Set<IDrawable> drawing = new HashSet<IDrawable>();
@@ -266,7 +261,7 @@ public class TileManager {
       if (ta != null) {
         // Kamikaze Zones
         if (ta.getKamikazeZone()) {
-          drawing.add(new KamikazeZoneDrawable(territory.getOwner(), territory, m_uiContext));
+          drawing.add(new KamikazeZoneDrawable(territory, m_uiContext));
         }
         // Blockades
         if (ta.getBlockadeZone()) {

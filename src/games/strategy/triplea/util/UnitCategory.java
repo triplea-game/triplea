@@ -48,7 +48,7 @@ public class UnitCategory implements Comparable {
   }
 
   public UnitCategory(final Unit unit, final Collection<Unit> dependents, final int movement, final int transportCost) {
-    this(unit, dependents, movement, 0, 0, false, transportCost, null);
+    this(unit, dependents, movement, 0, 0, false, transportCost);
   }
 
   public UnitCategory(final UnitType type, final PlayerID owner) {
@@ -57,11 +57,10 @@ public class UnitCategory implements Comparable {
     m_movement = -1;
     m_transportCost = -1;
     m_owner = owner;
-    // m_originatingTerr = null;
   }
 
   public UnitCategory(final Unit unit, final Collection<Unit> dependents, final int movement, final int damaged,
-      final int bombingDamage, final boolean disabled, final int transportCost, final Territory t) {
+      final int bombingDamage, final boolean disabled, final int transportCost) {
     m_type = unit.getType();
     m_movement = movement;
     m_transportCost = transportCost;
@@ -70,7 +69,6 @@ public class UnitCategory implements Comparable {
     m_bombingDamage = bombingDamage;
     m_disabled = disabled;
     m_units.add(unit);
-    // m_originatingTerr = t;
     createDependents(dependents);
   }
 
