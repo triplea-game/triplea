@@ -124,18 +124,18 @@ public class BattleCalculator {
           dice.getHits(), allowMultipleHitsPerUnit);
     } else {
       if (Properties.getLow_Luck(data) || Properties.getLL_AA_ONLY(data)) {
-        return getLowLuckAACasualties(defending, planes, defendingAA, dice, terr, bridge, allowMultipleHitsPerUnit);
+        return getLowLuckAACasualties(defending, planes, defendingAA, dice, bridge, allowMultipleHitsPerUnit);
       } else {
         // priority goes: choose -> individually -> random
         // if none are set, we roll individually
         if (isRollAAIndividually(data)) {
-          return IndividuallyFiredAACasualties(defending, planes, defendingAA, dice, terr, bridge,
+          return IndividuallyFiredAACasualties(defending, planes, defendingAA, dice, bridge,
               allowMultipleHitsPerUnit);
         }
         if (isRandomAACasualties(data)) {
           return RandomAACasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
         }
-        return IndividuallyFiredAACasualties(defending, planes, defendingAA, dice, terr, bridge,
+        return IndividuallyFiredAACasualties(defending, planes, defendingAA, dice, bridge,
             allowMultipleHitsPerUnit);
       }
     }
@@ -169,7 +169,7 @@ public class BattleCalculator {
   }
 
   private static CasualtyDetails getLowLuckAACasualties(final boolean defending, final Collection<Unit> planes,
-      final Collection<Unit> defendingAA, final DiceRoll dice, final Territory location, final IDelegateBridge bridge,
+      final Collection<Unit> defendingAA, final DiceRoll dice, final IDelegateBridge bridge,
       final boolean allowMultipleHitsPerUnit) {
     {
       final Set<Unit> duplicatesCheckSet1 = new HashSet<Unit>(planes);
@@ -392,7 +392,7 @@ public class BattleCalculator {
    * Choose plane casualties based on individual AA shots at each aircraft.
    */
   public static CasualtyDetails IndividuallyFiredAACasualties(final boolean defending, final Collection<Unit> planes,
-      final Collection<Unit> defendingAA, final DiceRoll dice, final Territory location, final IDelegateBridge bridge,
+      final Collection<Unit> defendingAA, final DiceRoll dice, final IDelegateBridge bridge,
       final boolean allowMultipleHitsPerUnit) {
     // if we have aa guns that are not infinite, then we need to randomly decide the aa casualties since there are not enough rolls to have
     // a single roll for each aircraft, or too many rolls
@@ -516,7 +516,7 @@ public class BattleCalculator {
     // Create production cost map, Maybe should do this elsewhere, but in case prices change, we do it here.
     final IntegerMap<UnitType> costs = getCostsForTUV(player, data);
     final Tuple<CasualtyList, List<Unit>> defaultCasualtiesAndSortedTargets = getDefaultCasualties(targetsToPickFrom,
-        hitsRemaining, defending, player, friendlyUnits, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers,
+        hitsRemaining, defending, player, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers,
         battlesite, costs, territoryEffects, data, allowMultipleHitsPerUnit, true);
     final CasualtyList defaultCasualties = defaultCasualtiesAndSortedTargets.getFirst();
     final List<Unit> sortedTargetsToPickFrom = defaultCasualtiesAndSortedTargets.getSecond();
@@ -633,7 +633,7 @@ public class BattleCalculator {
    * are listed, it is dead.
    */
   private static Tuple<CasualtyList, List<Unit>> getDefaultCasualties(final Collection<Unit> targetsToPickFrom,
-      final int hits, final boolean defending, final PlayerID player, final Collection<Unit> friendlyUnits,
+      final int hits, final boolean defending, final PlayerID player,
       final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious,
       final Collection<Unit> amphibiousLandAttackers, final Territory battlesite, final IntegerMap<UnitType> costs,
       final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
@@ -1323,7 +1323,7 @@ public class BattleCalculator {
       final Collection<TerritoryEffect> territoryEffects) {
     int count = 0;
     for (final Unit unit : units) {
-      final int unitRoll = getRolls(unit, location, id, defend, bombing, supportRulesFriendly, supportLeftFriendlyCopy,
+      final int unitRoll = getRolls(unit, id, defend, bombing, supportRulesFriendly, supportLeftFriendlyCopy,
           supportRulesEnemy, supportLeftEnemyCopy, territoryEffects);
       count += unitRoll;
     }
@@ -1337,7 +1337,7 @@ public class BattleCalculator {
         new IntegerMap<UnitSupportAttachment>(), territoryEffects);
   }
 
-  public static int getRolls(final Unit unit, final Territory location, final PlayerID id, final boolean defend,
+  public static int getRolls(final Unit unit, final PlayerID id, final boolean defend,
       final boolean bombing, final Set<List<UnitSupportAttachment>> supportRulesFriendly,
       final IntegerMap<UnitSupportAttachment> supportLeftFriendlyCopy,
       final Set<List<UnitSupportAttachment>> supportRulesEnemy,
@@ -1378,7 +1378,7 @@ public class BattleCalculator {
 
   public static int getRolls(final Unit unit, final Territory location, final PlayerID id, final boolean defend,
       final boolean bombing, final Collection<TerritoryEffect> territoryEffects) {
-    return getRolls(unit, location, id, defend, bombing, new HashSet<List<UnitSupportAttachment>>(),
+    return getRolls(unit, id, defend, bombing, new HashSet<List<UnitSupportAttachment>>(),
         new IntegerMap<UnitSupportAttachment>(), new HashSet<List<UnitSupportAttachment>>(),
         new IntegerMap<UnitSupportAttachment>(), territoryEffects);
   }
