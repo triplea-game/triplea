@@ -377,12 +377,9 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
    * The following methods are more for the ui, and the
    * ai will generally not care
    *****************************************/
-  public void battleInfoMessage(final String shortMessage, final DiceRoll dice) {}
-
   @Override
   public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer) {}
 
-  public void retreatNotificationMessage(final Collection<Unit> units) {}
 
   @Override
   public void reportError(final String error) {}
@@ -448,8 +445,10 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
   }
 
   /**
-   * No need to override this.
+   * @deprecated No need to override this (TODO: why? deprecated because comment states this should not be needed).
+   *
    */
+  @SuppressWarnings("unused")
   protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final GameData data,
       final PlayerID player) {
     // we should not override this...

@@ -52,7 +52,16 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return games.strategy.triplea.Properties.getGiveUnitsByTerritory(getData());
   }
 
+  /**
+   * @deprecated Call the no-arg version instead. Deprecated version here until can be determined
+   * that RMI does not call this exact method during runtime.
+   */
+  @SuppressWarnings("unused")
   public boolean canPlayerCollectIncome(final PlayerID player, final GameData data) {
+    return this.canPlayerCollectIncome();
+  }
+
+  public boolean canPlayerCollectIncome() {
     if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(m_player, getData())) {
       return false;
     }
@@ -76,7 +85,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     m_hasPostedTurnSummary = false;
     final PlayerAttachment pa = PlayerAttachment.get(m_player);
     // can't collect unless you own your own capital
-    if (!canPlayerCollectIncome(m_player, data)) {
+    if (!canPlayerCollectIncome()) {
       endTurnReport.append(rollWarBondsForFriends(m_bridge, m_player, data));
       // we do not collect any income this turn
     } else {
@@ -255,7 +264,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       if (pSides <= 0 && pCount <= 0) {
         // if both are zero, then it must mean we did not share our war bonds tech with them, even though we are sharing all tech (because
         // they can not have this tech)
-        if (canPlayerCollectIncome(p, data)) {
+        if (canPlayerCollectIncome()) {
           giveWarBondsTo = p;
           break;
         }
