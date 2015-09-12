@@ -33,7 +33,7 @@ public class DicePanel extends JPanel {
 
   public void setDiceRollForBombing(final List<Die> dice, final int cost) {
     removeAll();
-    add(create(dice, -1));
+    add(create(dice));
     add(Box.createVerticalGlue());
     add(new JLabel("Cost:" + cost));
     invalidate();
@@ -56,7 +56,7 @@ public class DicePanel extends JPanel {
         continue;
       }
       add(new JLabel("Rolled at " + (i) + ":"));
-      add(create(diceRoll.getRolls(i), i));
+      add(create(diceRoll.getRolls(i)));
     }
     add(Box.createVerticalGlue());
     add(new JLabel("Total hits:" + diceRoll.getHits()));
@@ -65,7 +65,7 @@ public class DicePanel extends JPanel {
     repaint();
   }
 
-  private JComponent create(final List<Die> dice, final int rollAt) {
+  private JComponent create(final List<Die> dice) {
     final JPanel dicePanel = new JPanel();
     dicePanel.setLayout(new BoxLayout(dicePanel, BoxLayout.X_AXIS));
     dicePanel.add(Box.createHorizontalStrut(20));
