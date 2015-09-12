@@ -104,6 +104,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     createHelpMenu(this);
   }
 
+  @SuppressWarnings("unused")
   protected void createGameSpecificMenus(final JMenuBar menuBar) {}
 
   public void dispose() {
@@ -396,6 +397,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     parentMenu.add(guidesLink);
   }
 
+  @SuppressWarnings("unused")
   protected void addGameSpecificHelpMenus(final JMenu helpMenu) {}
 
   protected void addConsoleMenu(final JMenu parentMenu) {
