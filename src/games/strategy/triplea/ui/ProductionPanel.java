@@ -121,7 +121,8 @@ public class ProductionPanel extends JPanel {
   }
 
   // made this protected so can be extended by edit production panel
-  protected void initRules(final PlayerID player, final GameData data,
+  protected void initRules(final PlayerID player,
+      @SuppressWarnings("unused") final GameData data,
       final IntegerMap<ProductionRule> initialPurchase) {
     m_data.acquireReadLock();
     try {
