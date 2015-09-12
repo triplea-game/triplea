@@ -1003,7 +1003,7 @@ public class TripleAFrame extends MainGameFrame {
     final DiceChooser chooser = Util.runInSwingEventThread(new Util.Task<DiceChooser>() {
       @Override
       public DiceChooser run() {
-        return new DiceChooser(getUIContext(), numDice, hitAt, hitOnlyIfEquals, diceSides, m_data);
+        return new DiceChooser(getUIContext(), numDice, hitAt, hitOnlyIfEquals, diceSides);
       }
     });
     do {
