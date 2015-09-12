@@ -76,7 +76,7 @@ public class DummyTripleaDisplay implements ITripleaDisplay {
 
   @Override
   public void changedUnitsNotification(final GUID battleID, final PlayerID player, final Collection<Unit> removedUnits,
-      final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents) {}
+      final Collection<Unit> addedUnits) {}
 
   @Override
   public void bombingResults(final GUID battleID, final List<Die> dice, final int cost) {}

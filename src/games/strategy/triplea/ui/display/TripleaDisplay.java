@@ -61,8 +61,8 @@ public class TripleaDisplay implements ITripleaDisplay {
 
   @Override
   public void changedUnitsNotification(final GUID battleID, final PlayerID player, final Collection<Unit> removedUnits,
-      final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents) {
-    m_ui.getBattlePanel().changedUnitsNotification(player, removedUnits, addedUnits, dependents);
+      final Collection<Unit> addedUnits) {
+    m_ui.getBattlePanel().changedUnitsNotification(player, removedUnits, addedUnits);
   }
 
   @Override

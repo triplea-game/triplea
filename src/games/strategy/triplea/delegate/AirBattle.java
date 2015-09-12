@@ -539,7 +539,7 @@ public class AirBattle extends AbstractBattle {
         beingRemoved.removeAll(interceptors);
         m_defendingUnits.addAll(interceptors);
       }
-      getDisplay(bridge).changedUnitsNotification(m_battleID, m_defender, beingRemoved, null, null);
+      getDisplay(bridge).changedUnitsNotification(m_battleID, m_defender, beingRemoved, null);
       if (groundedPlanesRetreated) {
         // this removes them from the subsequent normal battle. (do not use this for bombing battles)
         retreat(beingRemoved, true, bridge);
