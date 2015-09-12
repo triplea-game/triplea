@@ -730,13 +730,13 @@ public class BattleDisplay extends JPanel {
     m_steps.setStep(step);
   }
 
-  public void battleInfo(final String messageShort, final DiceRoll message, final String step) {
+  public void battleInfo(final DiceRoll message, final String step) {
     setStep(step);
     m_dicePanel.setDiceRoll(message);
     m_actionLayout.show(m_actionPanel, DICE_KEY);
   }
 
-  public void battleInfo(final String messageShort, final String message, final String step) {
+  public void battleInfo(final String message, final String step) {
     m_messageLabel.setText(message);
     setStep(step);
     m_actionLayout.show(m_actionPanel, MESSAGE_KEY);
@@ -746,7 +746,7 @@ public class BattleDisplay extends JPanel {
     m_steps.listBattle(steps);
   }
 
-  private JComponent getPlayerComponent(final PlayerID id) {
+  private static JComponent getPlayerComponent(final PlayerID id) {
     final JLabel player = new JLabel(id.getName());
     player.setBorder(new javax.swing.border.EmptyBorder(5, 5, 5, 5));
     player.setFont(player.getFont().deriveFont((float) 14));

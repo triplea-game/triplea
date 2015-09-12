@@ -67,7 +67,7 @@ public class TripleaDisplay implements ITripleaDisplay {
 
   @Override
   public void battleEnd(final GUID battleID, final String message) {
-    m_ui.getBattlePanel().battleEndMessage(battleID, message);
+    m_ui.getBattlePanel().battleEndMessage(message);
   }
 
   @Override
@@ -87,15 +87,10 @@ public class TripleaDisplay implements ITripleaDisplay {
 
   /**
    * Show dice for the given battle and step
-   *
-   * @param battleId
-   * @param dice
-   * @param the
-   *        player who must act on the roll, ignore
    */
   @Override
-  public void notifyDice(final GUID battleId, final DiceRoll dice, final String stepName) {
-    m_ui.getBattlePanel().showDice(null, dice, stepName);
+  public void notifyDice(final DiceRoll dice, final String stepName) {
+    m_ui.getBattlePanel().showDice(dice, stepName);
   }
 
   @Override

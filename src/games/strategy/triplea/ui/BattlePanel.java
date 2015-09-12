@@ -154,24 +154,24 @@ public class BattlePanel extends ActionPanel {
       @Override
       public void run() {
         if (m_battleDisplay != null) {
-          m_battleDisplay.battleInfo(messageShort, messageLong, step);
+          m_battleDisplay.battleInfo(messageLong, step);
         }
       }
     });
   }
 
-  public void showDice(final String messageShort, final DiceRoll dice, final String step) {
+  public void showDice(final DiceRoll dice, final String step) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
         if (m_battleDisplay != null) {
-          m_battleDisplay.battleInfo(messageShort, dice, step);
+          m_battleDisplay.battleInfo(dice, step);
         }
       }
     });
   }
 
-  public void battleEndMessage(final GUID battleId, final String message) {
+  public void battleEndMessage(final String message) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
