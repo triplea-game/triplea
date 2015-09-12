@@ -2290,7 +2290,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     private CasualtyDetails selectCasualties(final Collection<Unit> validAttackingUnitsForThisRoll,
         final Collection<Unit> defendingAA, final IDelegateBridge bridge, final String currentTypeAA) {
       // send defender the dice roll so he can see what the dice are while he waits for attacker to select casualties
-      getDisplay(bridge).notifyDice(m_battleID, m_dice, (m_defending ? m_attacker.getName() : m_defender.getName())
+      getDisplay(bridge).notifyDice(m_dice, (m_defending ? m_attacker.getName() : m_defender.getName())
           + SELECT_PREFIX + currentTypeAA + CASUALTIES_SUFFIX);
       return BattleCalculator.getAACasualties(!m_defending, validAttackingUnitsForThisRoll,
           (m_defending ? m_attackingUnits : m_defendingUnits), defendingAA,

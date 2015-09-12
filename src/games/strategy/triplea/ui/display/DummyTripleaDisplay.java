@@ -89,7 +89,7 @@ public class DummyTripleaDisplay implements ITripleaDisplay {
   public void notifyRetreat(final GUID battleId, final Collection<Unit> retreating) {}
 
   @Override
-  public void notifyDice(final GUID battleId, final DiceRoll dice, final String stepName) {}
+  public void notifyDice(final DiceRoll dice, final String stepName) {}
 
   @Override
   public void gotoBattleStep(final GUID battleId, final String step) {}

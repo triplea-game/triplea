@@ -452,7 +452,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   private CasualtyDetails calculateCasualties(final Collection<Unit> validAttackingUnitsForThisRoll,
       final Collection<Unit> defendingAA, final IDelegateBridge bridge, final DiceRoll dice,
       final String currentTypeAA) {
-    getDisplay(bridge).notifyDice(m_battleID, dice, SELECT_PREFIX + currentTypeAA + CASUALTIES_SUFFIX);
+    getDisplay(bridge).notifyDice(dice, SELECT_PREFIX + currentTypeAA + CASUALTIES_SUFFIX);
     final boolean isEditMode = BaseEditDelegate.getEditMode(m_data);
     final boolean allowMultipleHitsPerUnit =
         Match.allMatch(defendingAA, Matches.UnitAAShotDamageableInsteadOfKillingInstantly);

@@ -24,8 +24,7 @@ public interface ITripleaDisplay extends IDisplay {
       final boolean doNotIncludeClients, final boolean doNotIncludeObservers);
 
   /**
-   * Sends a message to all TripleAFrame's that are playing AND are controlling one or more of the players listed but
-   * NOT any of the players
+   * Sends a message to all TripleAFrame's that are playing AND are controlling one or more of the players listed but NOT any of the players
    * listed as butNotThesePlayers.
    * (No message to any observers or players not in the list.)
    *
@@ -97,13 +96,6 @@ public interface ITripleaDisplay extends IDisplay {
   public void changedUnitsNotification(GUID battleID, PlayerID player, Collection<Unit> removedUnits,
       Collection<Unit> addedUnits, Map<Unit, Collection<Unit>> dependents);
 
-  /*
-   * Notify that the casualties occurred
-   * public void scrambleNotification(GUID battleID, String step, PlayerID player, Collection<Unit> scrambled, Map<Unit,
-   * Collection<Unit>>
-   * dependents);
-   * public void notifyScramble(String shortMessage, String message, String step, PlayerID scramblingPlayer);
-   */
   /**
    * Notification of the results of a bombing raid
    */
@@ -111,10 +103,6 @@ public interface ITripleaDisplay extends IDisplay {
 
   /**
    * Notify that the given player has retreated some or all of his units.
-   *
-   * @param shortMessage
-   * @param message
-   * @param step
    */
   public void notifyRetreat(String shortMessage, String message, String step, PlayerID retreatingPlayer);
 
@@ -122,11 +110,8 @@ public interface ITripleaDisplay extends IDisplay {
 
   /**
    * Show dice for the given battle and step
-   *
-   * @param battleId
-   * @param dice
    */
-  public void notifyDice(GUID battleId, DiceRoll dice, String stepName);
+  public void notifyDice(DiceRoll dice, String stepName);
 
   public void gotoBattleStep(GUID battleId, String step);
 }
