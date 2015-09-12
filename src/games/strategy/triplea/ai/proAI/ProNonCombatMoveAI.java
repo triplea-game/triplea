@@ -1233,7 +1233,9 @@ public class ProNonCombatMoveAI {
         Territory minTerritory = null;
         for (final Territory t : currentTransportMoveMap.get(transport)) {
           final List<Unit> attackers = moveMap.get(t).getMaxEnemyUnits();
-          final List<Unit> defenders = battleUtils.getCurrentMaxDefenders(t, moveMap, alreadyMovedUnits);
+          final List<Unit> defenders = moveMap.get(t).getMaxDefenders();
+          defenders.removeAll(alreadyMovedUnits);
+          defenders.addAll(moveMap.get(t).getUnits());
           defenders.removeAll(transportUtils.getAirThatCantLandOnCarrier(player, t, defenders));
           final double strengthDifference = battleUtils.estimateStrengthDifference(t, attackers, defenders);
           // TODO: add logic to move towards closest factory

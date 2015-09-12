@@ -378,17 +378,6 @@ public class ProBattleUtils {
         + ", alliedSize=" + myUnits.size() + ", enemySize=" + enemyUnitsInSeaTerritories.size());
     // If I have naval attack/defense superiority then break
     return (defenseStrengthDifference < 50 && attackStrengthDifference > 50);
-    // return Math.min(100, Math.min(200 - 2 * defenseStrengthDifference, 2 * attackStrengthDifference)); // 100 is good
-    // while anything less
-    // needs more units
-  }
-
-  public List<Unit> getCurrentMaxDefenders(Territory t, Map<Territory, ProAttackTerritoryData> moveMap,
-      List<Unit> alreadyMovedUnits) {
-    final List<Unit> defenders = moveMap.get(t).getMaxDefenders();
-    defenders.removeAll(alreadyMovedUnits);
-    defenders.addAll(moveMap.get(t).getUnits());
-    return defenders;
   }
 
 }
