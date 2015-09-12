@@ -51,7 +51,7 @@ public class AirMovementValidator {
     }
     // Find which aircraft cannot find friendly land to land on
     final Collection<Unit> ownedAirThatMustLandOnCarriers =
-        getAirThatMustLandOnCarriers(data, getAirUnitsToValidate(units, route, player), route, result, player);
+        getAirThatMustLandOnCarriers(data, getAirUnitsToValidate(units, route, player), route, result);
     if (ownedAirThatMustLandOnCarriers.isEmpty()) {
       return result; // we are done, everything can find a place to land
     }
@@ -606,7 +606,7 @@ public class AirMovementValidator {
   }
 
   private static Collection<Unit> getAirThatMustLandOnCarriers(final GameData data, final Collection<Unit> ownedAir,
-      final Route route, final MoveValidationResult result, final PlayerID player) {
+      final Route route, final MoveValidationResult result) {
     final Collection<Unit> airThatMustLandOnCarriers = new ArrayList<Unit>();
     final Match<Unit> canLandOnCarriers = Matches.UnitCanLandOnCarrier;
     for (final Unit unit : ownedAir) {
