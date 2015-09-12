@@ -88,13 +88,13 @@ public class AdvancedUtils {
 
   public static Route trimRouteAtFirstTerWithEnemyUnits(final Route route, final int newRouteJumpCount,
       final PlayerID player, final GameData data) {
-    return trimRouteAtFirstTerMatchingX(route, newRouteJumpCount, player, data,
+    return trimRouteAtFirstTerMatchingX(route, newRouteJumpCount,
         Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1),
             Matches.unitIsEnemyOf(data, player))));
   }
 
-  public static Route trimRouteAtFirstTerMatchingX(final Route route, final int newRouteJumpCount,
-      final PlayerID player, final GameData data, final Match<Territory> match) {
+  private static Route trimRouteAtFirstTerMatchingX(final Route route, final int newRouteJumpCount,
+      final Match<Territory> match) {
     final List<Territory> newTers = new ArrayList<Territory>();
     int i = 0;
     for (final Territory ter : route.getTerritories()) {
@@ -112,12 +112,12 @@ public class AdvancedUtils {
 
   public static Route trimRouteAtLastFriendlyTer(final Route route, final int newRouteJumpCount, final PlayerID player,
       final GameData data) {
-    return trimRouteBeforeFirstTerMatching(route, newRouteJumpCount, player, data,
+    return trimRouteBeforeFirstTerMatching(route, newRouteJumpCount,
         Matches.isTerritoryEnemyAndNotUnownedWater(player, data));
   }
 
-  public static Route trimRouteBeforeFirstTerMatching(final Route route, final int newRouteJumpCount,
-      final PlayerID player, final GameData data, final Match<Territory> match) {
+  private static Route trimRouteBeforeFirstTerMatching(final Route route, final int newRouteJumpCount,
+      final Match<Territory> match) {
     final List<Territory> newTers = new ArrayList<Territory>();
     int i = 0;
     for (final Territory ter : route.getTerritories()) {
@@ -138,27 +138,11 @@ public class AdvancedUtils {
 
   public static Route trimRouteBeforeFirstTerWithEnemyUnits(final Route route, final int newRouteJumpCount,
       final PlayerID player, final GameData data) {
-    return trimRouteBeforeFirstTerMatching(route, newRouteJumpCount, player, data,
+    return trimRouteBeforeFirstTerMatching(route, newRouteJumpCount,
         Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1),
             Matches.unitIsEnemyOf(data, player))));
   }
 
-  public static Route trimRouteToLength(final Route route, final int newRouteJumpCount, final PlayerID player,
-      final GameData data) {
-    final List<Territory> newTers = new ArrayList<Territory>();
-    int i = 0;
-    for (final Territory ter : route.getTerritories()) {
-      newTers.add(ter);
-      i++;
-      if (i > newRouteJumpCount) {
-        break;
-      }
-    }
-    if (newTers.size() < 2) {
-      return null;
-    }
-    return new Route(newTers);
-  }
 
   public static List<Territory> getTerritoriesWithinXDistanceOfY(final GameData data, final Territory start,
       final int maxDistance) {
