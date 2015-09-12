@@ -459,7 +459,7 @@ class KamikazeZoneDrawable implements IDrawable {
   private final String m_location;
   private final IUIContext m_uiContext;
 
-  public KamikazeZoneDrawable(final PlayerID player, final Territory location, final IUIContext uiContext2) {
+  public KamikazeZoneDrawable(final Territory location, final IUIContext uiContext2) {
     super();
     m_location = location.getName();
     m_uiContext = uiContext2;
@@ -622,8 +622,8 @@ class SeaZoneOutlineDrawable implements IDrawable {
 
 
 abstract class TerritoryDrawable {
-  protected final void draw(final Rectangle bounds, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled, final AffineTransform scaled, final Territory territory,
+  protected static final void draw(final Rectangle bounds, final Graphics2D graphics, final MapData mapData,
+      final AffineTransform scaled, final Territory territory,
       final Paint territoryPaint) {
     final List<Polygon> polys = mapData.getPolygons(territory);
     for (Polygon polygon : polys) {
@@ -695,16 +695,9 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable {
         stripeColor = mapData.getPlayerColor(attacker.getName());
       }
       final Paint paint = new GradientPaint(0 - (float) bounds.getX(), 0 - (float) bounds.getY(),
-          // (float) (tBounds.getX() - bounds.getX()),
-          // (float) (tBounds.getY() - bounds.getY()),
           new Color(stripeColor.getRed(), stripeColor.getGreen(), stripeColor.getBlue(), 120),
-          // (float) (tBounds.getX() - bounds.getX() + tBounds.getWidth()) ,
-          // (float) (tBounds.getY() - bounds.getY() + tBounds.getHeight()),
           30 - (float) bounds.getX(), 50 - (float) bounds.getY(), new Color(0, 0, 0, 0), true);
-      // newColor = new Color(255,120,120);
-      // graphics.setStroke(new BasicStroke(6));
-      // new TerritoryOverLayDrawable(Color.RED, m_territoryName, OP.DRAW).draw(bounds, data, graphics, mapData, unscaled, scaled);
-      super.draw(bounds, graphics, mapData, unscaled, scaled, territory, paint);
+      super.draw(bounds, graphics, mapData, scaled, territory, paint);
     }
   }
 
@@ -733,7 +726,7 @@ class LandTerritoryDrawable extends TerritoryDrawable implements IDrawable {
     } else {
       territoryColor = mapData.getPlayerColor(territory.getOwner().getName());
     }
-    draw(bounds, graphics, mapData, unscaled, scaled, territory, territoryColor);
+    draw(bounds, graphics, mapData, scaled, territory, territoryColor);
   }
 
   @Override

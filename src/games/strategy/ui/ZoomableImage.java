@@ -77,8 +77,4 @@ class ZoomableImage extends JComponent {
       // TODO deal with this.
     }
   }
-
-  public void addComponent(final Component comp) {
-    throw new IllegalStateException("Cannot add componenets to an image panel");
-  }
 }
