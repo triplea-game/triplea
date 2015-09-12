@@ -2543,7 +2543,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
           m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), 0);
     }
     checkDefendingPlanesCanLand(bridge, m_defender);
-    BattleTracker.captureOrDestroyUnits(m_battleSite, m_defender, m_defender, bridge, null, m_defendingUnits);
+    BattleTracker.captureOrDestroyUnits(m_battleSite, m_defender, m_defender, bridge, null);
     if (!m_headless) {
       bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_FAILURE, m_attacker.getName());
     }

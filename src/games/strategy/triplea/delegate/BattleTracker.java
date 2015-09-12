@@ -688,7 +688,7 @@ public class BattleTracker implements java.io.Serializable {
             "Bombing Raids should be dealt with first! Be sure the battle has dependencies set correctly!");
       }
     }
-    captureOrDestroyUnits(territory, id, newOwner, bridge, changeTracker, arrivedUnits);
+    captureOrDestroyUnits(territory, id, newOwner, bridge, changeTracker);
     // is this territory our capitol or a capitol of our ally
     // Also check to make sure playerAttachment even HAS a capital to fix abend
     if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && ta != null && ta.getCapital() != null
@@ -729,7 +729,7 @@ public class BattleTracker implements java.io.Serializable {
   }
 
   public static void captureOrDestroyUnits(final Territory territory, final PlayerID id, final PlayerID newOwner,
-      final IDelegateBridge bridge, final UndoableMove changeTracker, final Collection<Unit> arrivingUnits) {
+      final IDelegateBridge bridge, final UndoableMove changeTracker) {
     final GameData data = bridge.getData();
     // destroy any units that should be destroyed on capture
     if (games.strategy.triplea.Properties.getUnitsCanBeDestroyedInsteadOfCaptured(data)) {
