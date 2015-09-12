@@ -43,7 +43,6 @@ public class UnitSeperator {
    */
   public static Set<UnitCategory> categorize(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
       final boolean categorizeMovement, final boolean categorizeTransportCost, final boolean sort) {
-    boolean categorizeTrnMovement = false;
     // somewhat odd, but we map UnitCategory->UnitCategory,
     // key and value are the same
     // we do this to take advanatge of .equals() on objects that
@@ -56,7 +55,7 @@ public class UnitSeperator {
     }
     for (final Unit current : units) {
       int unitMovement = -1;
-      if (categorizeMovement || (categorizeTrnMovement && Matches.UnitIsTransport.match(current))) {
+      if (categorizeMovement) {
         unitMovement = TripleAUnit.get(current).getMovementLeft();
       }
       int unitTransportCost = -1;
