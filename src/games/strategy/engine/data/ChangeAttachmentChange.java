@@ -36,7 +36,7 @@ public class ChangeAttachmentChange extends Change {
    * list rather than overwriting.
    */
   ChangeAttachmentChange(final IAttachment attachment, final Object newValue, final String property,
-      final boolean getRaw, final boolean resetFirst) {
+      final boolean resetFirst) {
     if (attachment == null) {
       throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
     }
