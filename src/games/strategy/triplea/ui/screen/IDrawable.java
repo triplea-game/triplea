@@ -623,8 +623,7 @@ class SeaZoneOutlineDrawable implements IDrawable {
 
 abstract class TerritoryDrawable {
   protected static final void draw(final Rectangle bounds, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform scaled, final Territory territory,
-      final Paint territoryPaint) {
+      final Territory territory, final Paint territoryPaint) {
     final List<Polygon> polys = mapData.getPolygons(territory);
     for (Polygon polygon : polys) {
       // if we dont have to draw, dont
@@ -697,7 +696,7 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable {
       final Paint paint = new GradientPaint(0 - (float) bounds.getX(), 0 - (float) bounds.getY(),
           new Color(stripeColor.getRed(), stripeColor.getGreen(), stripeColor.getBlue(), 120),
           30 - (float) bounds.getX(), 50 - (float) bounds.getY(), new Color(0, 0, 0, 0), true);
-      super.draw(bounds, graphics, mapData, scaled, territory, paint);
+      super.draw(bounds, graphics, mapData, territory, paint);
     }
   }
 
@@ -726,7 +725,7 @@ class LandTerritoryDrawable extends TerritoryDrawable implements IDrawable {
     } else {
       territoryColor = mapData.getPlayerColor(territory.getOwner().getName());
     }
-    draw(bounds, graphics, mapData, scaled, territory, territoryColor);
+    draw(bounds, graphics, mapData, territory, territoryColor);
   }
 
   @Override

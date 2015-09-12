@@ -145,8 +145,7 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   private void recreateTiles(final GameData data, final IUIContext uiContext) {
-    m_tileManager.createTiles(new Rectangle(m_uiContext.getMapData().getMapDimensions()), data,
-        m_uiContext.getMapData());
+    m_tileManager.createTiles(new Rectangle(m_uiContext.getMapData().getMapDimensions()));
     m_tileManager.resetTiles(data, uiContext.getMapData());
   }
 
@@ -157,7 +156,7 @@ public class MapPanel extends ImageScrollerLargeView {
   // Beagle Code used to chnage map skin
   public void changeImage(final Dimension newDimensions) {
     m_model.setMaxBounds((int) newDimensions.getWidth(), (int) newDimensions.getHeight());
-    m_tileManager.createTiles(new Rectangle(newDimensions), m_data, m_uiContext.getMapData());
+    m_tileManager.createTiles(new Rectangle(newDimensions));
     m_tileManager.resetTiles(m_data, m_uiContext.getMapData());
   }
 
@@ -421,7 +420,7 @@ public class MapPanel extends ImageScrollerLargeView {
 
   public void updateCountries(final Collection<Territory> countries) {
     m_tileManager.updateTerritories(countries, m_data, m_uiContext.getMapData());
-    m_smallMapImageManager.update(m_data, m_uiContext.getMapData());
+    m_smallMapImageManager.update(m_uiContext.getMapData());
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -759,7 +758,7 @@ public class MapPanel extends ImageScrollerLargeView {
       final Territory territory = territories.next();
       m_smallMapImageManager.updateTerritoryOwner(territory, m_data, m_uiContext.getMapData());
     }
-    m_smallMapImageManager.update(m_data, m_uiContext.getMapData());
+    m_smallMapImageManager.update(m_uiContext.getMapData());
   }
 
   public void changeSmallMapOffscreenMap() {
