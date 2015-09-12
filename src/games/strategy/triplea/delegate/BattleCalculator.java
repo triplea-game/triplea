@@ -147,7 +147,7 @@ public class BattleCalculator {
    * the second list is all the air units that do not fit in the first list
    */
   public static Tuple<List<List<Unit>>, List<Unit>> categorizeLowLuckAirUnits(final Collection<Unit> units,
-      final Territory location, final int diceSides, final int groupSize) {
+      final int groupSize) {
     final Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(units, null, false, true);
     final List<List<Unit>> groupsOfSize = new ArrayList<List<Unit>>();
     final List<Unit> toRoll = new ArrayList<Unit>();
@@ -235,8 +235,7 @@ public class BattleCalculator {
       // if the attack is greater than 1 though, and all use the same attack power, then the group size can be smaller (ie: attack is 2, and
       // we have 3 fighters and 2 bombers, we would want 1 fighter to die for sure).
       // categorize with groupSize
-      final Tuple<List<List<Unit>>, List<Unit>> airSplit =
-          categorizeLowLuckAirUnits(planesList, location, chosenDiceSize, groupSize);
+      final Tuple<List<List<Unit>>, List<Unit>> airSplit = categorizeLowLuckAirUnits(planesList, groupSize);
       // the non rolling air units
       // if we are less hits than the number of groups, OR we have equal hits to number of groups but we also have a remainder that is equal
       // to or greater than group size,
@@ -642,7 +641,7 @@ public class BattleCalculator {
     final CasualtyList defaultCasualtySelection = new CasualtyList();
     // Sort units by power and cost in ascending order
     final List<Unit> sorted = sortUnitsForCasualtiesWithSupport(targetsToPickFrom, hits, defending, player,
-        friendlyUnits, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs,
+        enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs,
         territoryEffects, data, allowMultipleHitsPerUnit, bonus);
     // Remove two hit bb's selecting them first for default casualties
     int numSelectedCasualties = 0;
@@ -684,24 +683,24 @@ public class BattleCalculator {
    * (Veqryn)
    */
   public static List<Unit> sortUnitsForCasualtiesWithSupport(final Collection<Unit> targetsToPickFrom, final int hits,
-      final boolean defending, final PlayerID player, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
+      final boolean defending, final PlayerID player, final PlayerID enemyPlayer,
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
       final Territory battlesite, final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects,
       final GameData data, final boolean allowMultipleHitsPerUnit, final boolean bonus) {
     if (!GameRunner2.getCasualtySelectionSlow()) {
-      return sortUnitsForCasualtiesWithSupportNewWithCaching(targetsToPickFrom, hits, defending, player,
-          enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs, territoryEffects, data,
+      return sortUnitsForCasualtiesWithSupportNewWithCaching(targetsToPickFrom, defending, player,
+          enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs, territoryEffects, data,
           bonus);
     } else {
-      return sortUnitsForCasualtiesWithSupportBruteForce(targetsToPickFrom, hits, defending, player, friendlyUnits,
+      return sortUnitsForCasualtiesWithSupportBruteForce(targetsToPickFrom, hits, defending, player,
           enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs, territoryEffects, data,
           allowMultipleHitsPerUnit, bonus);
     }
   }
 
   private static List<Unit> sortUnitsForCasualtiesWithSupportNewWithCaching(final Collection<Unit> targetsToPickFrom,
-      final int hits, final boolean defending, final PlayerID player,
-      final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious,
+      final boolean defending, final PlayerID player,
+      final Collection<Unit> enemyUnits, final boolean amphibious,
       final Collection<Unit> amphibiousLandAttackers, final Territory battlesite, final IntegerMap<UnitType> costs,
       final Collection<TerritoryEffect> territoryEffects, final GameData data,
       final boolean bonus) {
@@ -908,168 +907,8 @@ public class BattleCalculator {
     return sortedWellEnoughUnitsList;
   }
 
-  private static List<Unit> sortUnitsForCasualtiesWithSupportNew(final Collection<Unit> targetsToPickFrom,
-      final int hits, final boolean defending, final PlayerID player, final Collection<Unit> friendlyUnits,
-      final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious,
-      final Collection<Unit> amphibiousLandAttackers, final Territory battlesite, final IntegerMap<UnitType> costs,
-      final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
-      final boolean bonus) {
-    final List<Unit> sortedUnitsList = new ArrayList<Unit>(targetsToPickFrom);
-    Collections.sort(sortedUnitsList, new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
-    // Determine if there are enough extra hit points or if all units are going to be killed
-    int numberOfUnitsWeMustSort = hits;
-    int extraHP = 0;
-    if (allowMultipleHitsPerUnit) {
-      for (final Unit unit : sortedUnitsList) {
-        extraHP += Math.max(0, UnitAttachment.get(unit.getType()).getHitPoints() - (1 + unit.getHits()));
-        if (extraHP >= hits) {
-          return sortedUnitsList; // No units will be killed as we have enough extra hp, so who cares about doing the time-expensive sort
-                                  // when the UnitBattleComparator is good enough
-        }
-      }
-      numberOfUnitsWeMustSort = Math.max(extraHP, hits - extraHP); // If we have to take 6 hits, and we can damage 2 units, then we really
-                                                                   // only have to sort for the first 4 units to die (if we can damage 4
-                                                                   // units, then we still have to sort those first 4 in case one of them
-                                                                   // will have to die)
-    }
-    if (hits > extraHP + sortedUnitsList.size()) {
-      return sortedUnitsList; // If we are going to lose all units, just return this list
-    }
-    // Sort enough units to kill off
-    Collections.reverse(sortedUnitsList); // Sort units starting with strongest so that support gets added to them first
-    final UnitBattleComparator unitComparatorWithoutPrimaryPower =
-        new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, true);
-    final List<Unit> sortedWellEnoughUnitsList = new ArrayList<Unit>();
-    final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<Unit, IntegerMap<Unit>>();
-    final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<Unit, IntegerMap<Unit>>();
-    final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(
-        sortedUnitsList, sortedUnitsList, new ArrayList<Unit>(enemyUnits), defending, false, player, data, battlesite,
-        territoryEffects, amphibious, amphibiousLandAttackers, unitSupportPowerMap, unitSupportRollsMap);
-    Collections.reverse(sortedUnitsList); // Sort units starting with weakest for finding the worst units
-    for (int i = 0; i < numberOfUnitsWeMustSort; ++i) {
-      // Loop through all target units to find the best unit to take as casualty
-      Unit worstUnit = null;
-      int minPower = Integer.MAX_VALUE;
-      final Set<UnitType> unitTypes = new HashSet<UnitType>();
-      for (final Unit u : sortedUnitsList) {
-        if (unitTypes.contains(u.getType())) {
-          continue;
-        }
-        unitTypes.add(u.getType());
-        // Find unit power
-        final Map<Unit, Tuple<Integer, Integer>> currentUnitMap = new HashMap<Unit, Tuple<Integer, Integer>>();
-        currentUnitMap.put(u, unitPowerAndRollsMap.get(u));
-        int power = DiceRoll.getTotalPowerAndRolls(currentUnitMap, data).getFirst();
-        // Add any support power that it provides to other units
-        final IntegerMap<Unit> unitSupportPowerMapForUnit = unitSupportPowerMap.get(u);
-        if (unitSupportPowerMapForUnit != null) {
-          for (final Unit supportedUnit : unitSupportPowerMapForUnit.keySet()) {
-            Tuple<Integer, Integer> strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
-            if (strengthAndRolls == null) {
-              continue;
-            }
-            // Remove any rolls provided by this support so they aren't counted twice
-            final IntegerMap<Unit> unitSupportRollsMapForUnit = unitSupportRollsMap.get(u);
-            if (unitSupportRollsMapForUnit != null) {
-              strengthAndRolls = new Tuple<Integer, Integer>(strengthAndRolls.getFirst(),
-                  strengthAndRolls.getSecond() - unitSupportRollsMapForUnit.getInt(supportedUnit));
-            }
-            // If one roll then just add the power
-            if (strengthAndRolls.getSecond() == 1) {
-              power += unitSupportPowerMapForUnit.getInt(supportedUnit);
-              continue;
-            }
-            // Find supported unit power with support
-            final Map<Unit, Tuple<Integer, Integer>> supportedUnitMap = new HashMap<Unit, Tuple<Integer, Integer>>();
-            supportedUnitMap.put(supportedUnit, strengthAndRolls);
-            final int powerWithSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
-            // Find supported unit power without support
-            final int strengthWithoutSupport =
-                strengthAndRolls.getFirst() - unitSupportPowerMapForUnit.getInt(supportedUnit);
-            final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
-                new Tuple<Integer, Integer>(strengthWithoutSupport, strengthAndRolls.getSecond());
-            supportedUnitMap.put(supportedUnit, strengthAndRollsWithoutSupport);
-            final int powerWithoutSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
-            // Add the actual power provided by the support
-            final int addedPower = powerWithSupport - powerWithoutSupport;
-            power += addedPower;
-          }
-        }
-        // Add any power from support rolls that it provides to other units
-        final IntegerMap<Unit> unitSupportRollsMapForUnit = unitSupportRollsMap.get(u);
-        if (unitSupportRollsMapForUnit != null) {
-          for (final Unit supportedUnit : unitSupportRollsMapForUnit.keySet()) {
-            final Tuple<Integer, Integer> strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
-            if (strengthAndRolls == null) {
-              continue;
-            }
-            // Find supported unit power with support
-            final Map<Unit, Tuple<Integer, Integer>> supportedUnitMap = new HashMap<Unit, Tuple<Integer, Integer>>();
-            supportedUnitMap.put(supportedUnit, strengthAndRolls);
-            final int powerWithSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
-            // Find supported unit power without support
-            final int rollsWithoutSupport =
-                strengthAndRolls.getSecond() - unitSupportRollsMap.get(u).getInt(supportedUnit);
-            final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
-                new Tuple<Integer, Integer>(strengthAndRolls.getFirst(), rollsWithoutSupport);
-            supportedUnitMap.put(supportedUnit, strengthAndRollsWithoutSupport);
-            final int powerWithoutSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
-            // Add the actual power provided by the support
-            final int addedPower = powerWithSupport - powerWithoutSupport;
-            power += addedPower;
-          }
-        }
-        // Check if unit has lower power
-        if (power < minPower || (power == minPower && unitComparatorWithoutPrimaryPower.compare(u, worstUnit) < 0)) {
-          worstUnit = u;
-          minPower = power;
-        }
-      }
-      // Add worst unit to sorted list, update any units it supported, and remove from other collections
-      final IntegerMap<Unit> unitSupportPowerMapForUnit = unitSupportPowerMap.get(worstUnit);
-      if (unitSupportPowerMapForUnit != null) {
-        for (final Unit supportedUnit : unitSupportPowerMapForUnit.keySet()) {
-          final Tuple<Integer, Integer> strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
-          if (strengthAndRolls == null) {
-            continue;
-          }
-          final int strengthWithoutSupport =
-              strengthAndRolls.getFirst() - unitSupportPowerMapForUnit.getInt(supportedUnit);
-          final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
-              new Tuple<Integer, Integer>(strengthWithoutSupport, strengthAndRolls.getSecond());
-          unitPowerAndRollsMap.put(supportedUnit, strengthAndRollsWithoutSupport);
-          sortedUnitsList.remove(supportedUnit);
-          sortedUnitsList.add(0, supportedUnit);
-        }
-      }
-      final IntegerMap<Unit> unitSupportRollsMapForUnit = unitSupportRollsMap.get(worstUnit);
-      if (unitSupportRollsMapForUnit != null) {
-        for (final Unit supportedUnit : unitSupportRollsMapForUnit.keySet()) {
-          final Tuple<Integer, Integer> strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
-          if (strengthAndRolls == null) {
-            continue;
-          }
-          final int rollsWithoutSupport =
-              strengthAndRolls.getSecond() - unitSupportRollsMapForUnit.getInt(supportedUnit);
-          final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
-              new Tuple<Integer, Integer>(strengthAndRolls.getFirst(), rollsWithoutSupport);
-          unitPowerAndRollsMap.put(supportedUnit, strengthAndRollsWithoutSupport);
-          sortedUnitsList.remove(supportedUnit);
-          sortedUnitsList.add(0, supportedUnit);
-        }
-      }
-      sortedWellEnoughUnitsList.add(worstUnit);
-      sortedUnitsList.remove(worstUnit);
-      unitPowerAndRollsMap.remove(worstUnit);
-      unitSupportPowerMap.remove(worstUnit);
-      unitSupportRollsMap.remove(worstUnit);
-    }
-    sortedWellEnoughUnitsList.addAll(sortedUnitsList);
-    return sortedWellEnoughUnitsList;
-  }
-
   private static List<Unit> sortUnitsForCasualtiesWithSupportBruteForce(final Collection<Unit> targetsToPickFrom,
-      final int hits, final boolean defending, final PlayerID player, final Collection<Unit> friendlyUnits,
+      final int hits, final boolean defending, final PlayerID player,
       final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious,
       final Collection<Unit> amphibiousLandAttackers, final Territory battlesite, final IntegerMap<UnitType> costs,
       final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
