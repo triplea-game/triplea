@@ -159,7 +159,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     return (sb.toString());
   }
 
-  private List<String> getBadWords() {
+  private static List<String> getBadWords() {
     return new BadWordController().list();
   }
 

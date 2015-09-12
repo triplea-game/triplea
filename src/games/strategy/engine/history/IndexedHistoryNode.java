@@ -21,7 +21,7 @@ public abstract class IndexedHistoryNode extends HistoryNode {
   // points after the last change we are responsible for
   private int m_changeStopIndex = -1;
 
-  public IndexedHistoryNode(final String value, final int changeStartIndex, final boolean allowsChildren) {
+  public IndexedHistoryNode(final String value, final int changeStartIndex) {
     super(value, true);
     m_changeStartIndex = changeStartIndex;
   }

@@ -535,7 +535,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    */
   protected String isValidPlacement(final Collection<Unit> units, final Territory at, final PlayerID player) {
     // do we hold enough units
-    String error = playerHasEnoughUnits(units, at, player);
+    String error = playerHasEnoughUnits(units, player);
     if (error != null) {
       return error;
     }
@@ -555,15 +555,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       return error;
     }
     return null;
-  }
-
-  /**
-   * @deprecated Alternate version of htis method exists with fewer parameters, user that. This
-   * is deprecated until it is known RMI does not call this exact method signature.
-   */
-  @SuppressWarnings("unused")
-  String playerHasEnoughUnits(final Collection<Unit> units, final Territory at, final PlayerID player) {
-    return playerHasEnoughUnits(units,player);
   }
 
   /**

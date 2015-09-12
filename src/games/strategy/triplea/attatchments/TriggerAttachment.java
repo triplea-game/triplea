@@ -1579,7 +1579,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
   }
 
   private static void placeUnits(final TriggerAttachment t, final Territory terr, final IntegerMap<UnitType> uMap,
-      final PlayerID player, final GameData data, final IDelegateBridge aBridge) {
+      final PlayerID player, final IDelegateBridge aBridge) {
     // createUnits
     final List<Unit> units = new ArrayList<Unit>();
     for (final UnitType u : uMap.keySet()) {
@@ -2418,7 +2418,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
   public static void triggerUnitPlacement(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
-    final GameData data = aBridge.getData();
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, placeMatch());
     if (testWhen) {
       trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
@@ -2437,9 +2436,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
       for (final PlayerID aPlayer : t.getPlayers()) {
         for (final Territory ter : t.getPlacement().keySet()) {
           for (int i = 0; i < eachMultiple; ++i) {
-            // aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName() + " places " +
-            // t.getPlacement().get(ter).toString() + " in territory " + ter.getName());
-            placeUnits(t, ter, t.getPlacement().get(ter), aPlayer, data, aBridge);
+            placeUnits(t, ter, t.getPlacement().get(ter), aPlayer, aBridge);
           }
         }
       }

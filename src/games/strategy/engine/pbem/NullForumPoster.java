@@ -65,11 +65,6 @@ public class NullForumPoster implements IForumPoster {
     return "Will never be called";
   }
 
-  public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
-      final String displayName) {}
-
-  public void gameDataChanged(final Change change) {}
-
   @Override
   public boolean postTurnSummary(final String summary, final String subject) {
     return false;

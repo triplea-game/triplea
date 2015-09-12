@@ -197,7 +197,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
       if (at.getUnits().size() == 1) {
         // Get image for exactly one unit
         final Unit u = (Unit) at.getUnits().getUnits().toArray()[0];
-        final Image image = m_imageFactory.getImage(u.getType(), u.getOwner(), m_gameData);
+        final Image image = m_imageFactory.getImage(u.getType(), u.getOwner());
         m_images.put(at, image);
       } else {
         m_images.remove(at);
@@ -398,7 +398,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
     int i = 0;
     for (final Unit unit : units) {
       final Point place = new Point(i * (icon_width + xSpace), 0);
-      final Image unitImage = m_imageFactory.getImage(unit.getType(), unit.getOwner(), m_gameData);
+      final Image unitImage = m_imageFactory.getImage(unit.getType(), unit.getOwner());
       g.drawImage(unitImage, place.x - bounds.x, place.y - bounds.y, null);
       i++;
     }

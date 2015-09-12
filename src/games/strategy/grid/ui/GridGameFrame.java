@@ -295,7 +295,7 @@ public class GridGameFrame extends MainGameFrame {
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     for (final Unit u : units) {
       final JLabel label =
-          new JLabel(new ImageIcon(mapPanel.getUnitImageFactory().getImage(u.getType(), u.getOwner(), data)));
+          new JLabel(new ImageIcon(mapPanel.getUnitImageFactory().getImage(u.getType(), u.getOwner())));
       label.setToolTipText(u.getType().getName());
       panel.add(label);
     }
@@ -1141,7 +1141,7 @@ class UnitCellRenderer extends DefaultListCellRenderer {
     if (type != null) {
       ImageIcon icon = iconTable.get(type);
       if (icon == null) {
-        icon = new ImageIcon(m_imageFactory.getImage(type, player, m_data));
+        icon = new ImageIcon(m_imageFactory.getImage(type, player));
         iconTable.put(type, icon);
       }
       label.setIcon(icon);

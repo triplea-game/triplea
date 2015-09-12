@@ -51,7 +51,7 @@ public class CompositeRouteFinder {
   public Route findRoute(final Territory start, final Territory end) {
     final HashSet<Territory> allMatchingTers =
         ToHashSet(Match.getMatches(m_map.getTerritories(), new CompositeMatchOr<Territory>(m_matches.keySet())));
-    final HashMap<Territory, Integer> terScoreMap = CreateScoreMap(allMatchingTers, start);
+    final HashMap<Territory, Integer> terScoreMap = CreateScoreMap();
     final HashMap<Territory, Integer> routeScoreMap = new HashMap<Territory, Integer>();
     int bestRouteToEndScore = Integer.MAX_VALUE;
     final HashMap<Territory, Territory> previous = new HashMap<Territory, Territory>();
@@ -110,7 +110,7 @@ public class CompositeRouteFinder {
     return new Route(routeTers);
   }
 
-  private HashMap<Territory, Integer> CreateScoreMap(final Collection<Territory> ters, final Territory startTer) {
+  private HashMap<Territory, Integer> CreateScoreMap() {
     final HashMap<Territory, Integer> result = new HashMap<Territory, Integer>();
     for (final Territory ter : m_map.getTerritories()) {
       result.put(ter, GetTerScore(ter));

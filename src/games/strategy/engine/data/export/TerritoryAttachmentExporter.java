@@ -24,12 +24,12 @@ public class TerritoryAttachmentExporter extends DefaultAttachmentExporter {
       return mUnitProductionHandler(field, attachment);
     }
     if (fieldName.equals("m_originalOwner")) {
-      return mOriginalOwnerHandler(field, attachment);
+      return mOriginalOwnerHandler(attachment);
     }
     return super.printOption(field, attachment);
   }
 
-  private String mOriginalOwnerHandler(final Field field, final IAttachment attachment) {
+  private String mOriginalOwnerHandler(final IAttachment attachment) {
     final TerritoryAttachment att = (TerritoryAttachment) attachment;
     // check to see if someone else has conquered the territory in the mean time. must check for neutrals too. neutrals can be either NULL
     // or PlayerID.NULL_PLAYERID

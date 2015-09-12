@@ -74,7 +74,7 @@ public class GridHistoryDetailsPanel extends JPanel implements IHistoryDetailsPa
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     for (final Unit u : units) {
       final JLabel label =
-          new JLabel(new ImageIcon(m_mapPanel.getUnitImageFactory().getImage(u.getType(), u.getOwner(), m_data)));
+          new JLabel(new ImageIcon(m_mapPanel.getUnitImageFactory().getImage(u.getType(), u.getOwner())));
       label.setToolTipText(u.getType().getName());
       panel.add(label);
     }

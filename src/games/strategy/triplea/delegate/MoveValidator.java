@@ -1467,7 +1467,7 @@ public class MoveValidator {
           continue;
         }
       }
-      if (units != null && Match.allMatch(units, Matches.unitIsOfTypes(attachment.getExcludedUnits(data)))) {
+      if (units != null && Match.allMatch(units, Matches.unitIsOfTypes(attachment.getExcludedUnits()))) {
         continue;
       }
       for (final Territory borderTerritory : attachment.getLandTerritories()) {

@@ -42,8 +42,8 @@ public class UnitImageFactory {
   /**
    * Return the appropriate unit image.
    */
-  public Image getImage(final UnitType type, final PlayerID player, final GameData data) {
-    final String baseName = getBaseImageName(type, player, data);
+  public Image getImage(final UnitType type, final PlayerID player) {
+    final String baseName = getBaseImageName(type);
     final String fullName = baseName + player.getName();
     if (m_images.containsKey(fullName)) {
       return m_images.get(fullName);
@@ -69,7 +69,7 @@ public class UnitImageFactory {
     return image;
   }
 
-  private String getBaseImageName(final UnitType type, final PlayerID id, final GameData data) {
+  private static String getBaseImageName(final UnitType type) {
     final StringBuilder name = new StringBuilder(32);
     name.append(type.getName());
     return name.toString();

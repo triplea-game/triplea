@@ -1,7 +1,5 @@
 package games.strategy.engine.data;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,13 +29,5 @@ public class DelegateList extends GameDataComponent implements Iterable<IDelegat
 
   public IDelegate getDelegate(final String name) {
     return m_delegates.get(name);
-  }
-
-  private void writeObject(final ObjectOutputStream out) {
-    // dont write since delegates should be handled seperatly.
-  }
-
-  private void readObject(final ObjectInputStream in) {
-    m_delegates = new HashMap<String, IDelegate>();
   }
 }

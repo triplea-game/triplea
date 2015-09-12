@@ -52,15 +52,6 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return games.strategy.triplea.Properties.getGiveUnitsByTerritory(getData());
   }
 
-  /**
-   * @deprecated Call the no-arg version instead. Deprecated version here until can be determined
-   * that RMI does not call this exact method during runtime.
-   */
-  @SuppressWarnings("unused")
-  public boolean canPlayerCollectIncome(final PlayerID player, final GameData data) {
-    return this.canPlayerCollectIncome();
-  }
-
   public boolean canPlayerCollectIncome() {
     if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(m_player, getData())) {
       return false;

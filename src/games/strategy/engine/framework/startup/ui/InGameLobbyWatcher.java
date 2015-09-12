@@ -66,7 +66,7 @@ public class InGameLobbyWatcher {
     @Override
     public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player,
         final int round, final String displayName) {
-      InGameLobbyWatcher.this.gameStepChanged(stepName, round);
+      InGameLobbyWatcher.this.gameStepChanged(round);
     }
   };
   // we create this messenger, and use it to connect to the
@@ -146,11 +146,11 @@ public class InGameLobbyWatcher {
     m_game = game;
     if (game != null) {
       game.addGameStepListener(m_gameStepListener);
-      gameStepChanged(game.getData().getSequence().getStep().getName(), game.getData().getSequence().getRound());
+      gameStepChanged(game.getData().getSequence().getRound());
     }
   }
 
-  private void gameStepChanged(final String stepName, final int round) {
+  private void gameStepChanged(final int round) {
     synchronized (m_mutex) {
       if (!m_gameDescription.getRound().equals(Integer.toString(round))) {
         m_gameDescription.setRound(round + "");
