@@ -2394,10 +2394,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     m_attackingUnits = notRemovedAttacking;
     if (!m_headless) {
       if (!toRemoveDefending.isEmpty()) {
-        getDisplay(bridge).changedUnitsNotification(m_battleID, m_defender, toRemoveDefending, null, null);
+        getDisplay(bridge).changedUnitsNotification(m_battleID, m_defender, toRemoveDefending, null);
       }
       if (!toRemoveAttacking.isEmpty()) {
-        getDisplay(bridge).changedUnitsNotification(m_battleID, m_attacker, toRemoveAttacking, null, null);
+        getDisplay(bridge).changedUnitsNotification(m_battleID, m_attacker, toRemoveAttacking, null);
       }
     }
   }

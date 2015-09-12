@@ -272,8 +272,8 @@ public class BattleDisplay extends JPanel {
     }
   }
 
-  public void changedUnitsNotification(final PlayerID player, final Collection<Unit> removedUnits,
-      final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents) {
+  protected void changedUnitsNotification(final PlayerID player, final Collection<Unit> removedUnits,
+      final Collection<Unit> addedUnits) {
     if (player.equals(m_defender)) {
       if (removedUnits != null) {
         m_defenderModel.removeCasualties(removedUnits);

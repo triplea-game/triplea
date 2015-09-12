@@ -377,12 +377,12 @@ public class BattlePanel extends ActionPanel {
   }
 
   public void changedUnitsNotification(final PlayerID player, final Collection<Unit> removedUnits,
-      final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents) {
+      final Collection<Unit> addedUnits) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
         if (m_battleDisplay != null) {
-          m_battleDisplay.changedUnitsNotification(player, removedUnits, addedUnits, dependents);
+          m_battleDisplay.changedUnitsNotification(player, removedUnits, addedUnits);
         }
       }
     });

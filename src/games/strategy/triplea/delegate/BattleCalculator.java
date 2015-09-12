@@ -1315,7 +1315,7 @@ public class BattleCalculator {
     return false;
   }
 
-  public static int getRolls(final Collection<Unit> units, final Territory location, final PlayerID id,
+  public static int getRolls(final Collection<Unit> units, final PlayerID id,
       final boolean defend, final boolean bombing, final Set<List<UnitSupportAttachment>> supportRulesFriendly,
       final IntegerMap<UnitSupportAttachment> supportLeftFriendlyCopy,
       final Set<List<UnitSupportAttachment>> supportRulesEnemy,
@@ -1330,9 +1330,9 @@ public class BattleCalculator {
     return count;
   }
 
-  public static int getRolls(final Collection<Unit> units, final Territory location, final PlayerID id,
+  public static int getRolls(final Collection<Unit> units, final PlayerID id,
       final boolean defend, final boolean bombing, final Collection<TerritoryEffect> territoryEffects) {
-    return getRolls(units, location, id, defend, bombing, new HashSet<List<UnitSupportAttachment>>(),
+    return getRolls(units, id, defend, bombing, new HashSet<List<UnitSupportAttachment>>(),
         new IntegerMap<UnitSupportAttachment>(), new HashSet<List<UnitSupportAttachment>>(),
         new IntegerMap<UnitSupportAttachment>(), territoryEffects);
   }
@@ -1376,7 +1376,7 @@ public class BattleCalculator {
     return rolls;
   }
 
-  public static int getRolls(final Unit unit, final Territory location, final PlayerID id, final boolean defend,
+  public static int getRolls(final Unit unit, final PlayerID id, final boolean defend,
       final boolean bombing, final Collection<TerritoryEffect> territoryEffects) {
     return getRolls(unit, id, defend, bombing, new HashSet<List<UnitSupportAttachment>>(),
         new IntegerMap<UnitSupportAttachment>(), new HashSet<List<UnitSupportAttachment>>(),

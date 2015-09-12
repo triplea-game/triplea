@@ -94,7 +94,7 @@ public interface ITripleaDisplay extends IDisplay {
       Map<Unit, Collection<Unit>> dependents);
 
   public void changedUnitsNotification(GUID battleID, PlayerID player, Collection<Unit> removedUnits,
-      Collection<Unit> addedUnits, Map<Unit, Collection<Unit>> dependents);
+      Collection<Unit> addedUnits);
 
   /*
    * Notify that the casualties occurred
