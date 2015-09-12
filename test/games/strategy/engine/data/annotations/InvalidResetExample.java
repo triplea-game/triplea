@@ -19,6 +19,7 @@ public class InvalidResetExample extends DefaultAttachment {
 
   private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
 
+  @SuppressWarnings("unused")
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setGivesMovement(final String value) {}
 
