@@ -223,7 +223,7 @@ public class UnitChooser extends JPanel {
       final boolean categorizeMovement, final boolean categorizeTransportCost, final boolean categorizeTerritories,
       final Collection<Unit> defaultSelections) {
     final Collection<UnitCategory> categories =
-        UnitSeperator.categorize(dependent, units, categorizeMovement, categorizeTransportCost, categorizeTerritories);
+        UnitSeperator.categorize(dependent, units, categorizeMovement, categorizeTransportCost);
     final Collection<UnitCategory> defaultSelectionsCategorized =
         UnitSeperator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
     final IntegerMap<UnitCategory> defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);

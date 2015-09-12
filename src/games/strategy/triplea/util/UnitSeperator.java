@@ -15,7 +15,7 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 
 /**
- * Seperates a group of units into distinct categories.
+ * Separates a group of units into distinct categories.
  */
 public class UnitSeperator {
   private UnitSeperator() {}
@@ -24,36 +24,26 @@ public class UnitSeperator {
     return categorize(units, null, false, false);
   }
 
-  public static Set<UnitCategory> categorize(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
-      final boolean categorizeMovement, final boolean categorizeTransportCost, final boolean sort) {
-    return categorize(units, dependent, categorizeMovement, categorizeTransportCost, /* ctgzTrnMovement */false,
-        sort);
-  }
 
-  public static Set<UnitCategory> categorize(final boolean sort, final Collection<Unit> units,
+  private static Set<UnitCategory> categorize(final boolean sort, final Collection<Unit> units,
       final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
-      final boolean categorizeTransportCost, final boolean categorizeTerritories) {
-    return categorize(units, dependent, categorizeMovement, categorizeTransportCost, /* ctgzTrnMovement */false,
-        sort);
+      final boolean categorizeTransportCost) {
+    return categorize(units, dependent, categorizeMovement, categorizeTransportCost, sort);
   }
 
   /**
    * Break the units into discrete categories.
    * Do this based on unit owner, and optionally dependent units and movement
    *
-   * @param dependent
-   *        - can be null
-   * @param categorizeMovement
-   *        - whether to categorize by movement
-   * @param categorizeTrnMovement
-   *        - whether to categorize transports by movement
+   * @param dependent - can be null
+   * @param categorizeMovement - whether to categorize by movement
    * @param - sort - if true then sort the categories in UnitCategory order
    *        - if false, then leave categories in original order (based on units)
    * @return a Collection of UnitCategories
    */
   public static Set<UnitCategory> categorize(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
-      final boolean categorizeMovement, final boolean categorizeTransportCost, final boolean categorizeTrnMovement,
-      final boolean sort) {
+      final boolean categorizeMovement, final boolean categorizeTransportCost, final boolean sort) {
+    boolean categorizeTrnMovement = false;
     // somewhat odd, but we map UnitCategory->UnitCategory,
     // key and value are the same
     // we do this to take advanatge of .equals() on objects that
@@ -102,10 +92,8 @@ public class UnitSeperator {
    * Break the units into discrete categories.
    * Do this based on unit owner, and optionally dependent units and movement
    *
-   * @param dependent
-   *        - can be null
-   * @param categorizeMovement
-   *        - whether to categorize by movement
+   * @param dependent - can be null
+   * @param categorizeMovement - whether to categorize by movement
    * @return a Collection of UnitCategories
    */
   public static Set<UnitCategory> categorize(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
@@ -115,8 +103,8 @@ public class UnitSeperator {
   }
 
   public static Set<UnitCategory> categorize(final Map<Unit, Collection<Unit>> dependent, final Collection<Unit> units,
-      final boolean categorizeMovement, final boolean categorizeTransportCost, final boolean categorizeTerritories) {
+      final boolean categorizeMovement, final boolean categorizeTransportCost) {
     // sort by default
-    return categorize(true, units, dependent, categorizeMovement, categorizeTransportCost, categorizeTerritories);
+    return categorize(true, units, dependent, categorizeMovement, categorizeTransportCost);
   }
 }
