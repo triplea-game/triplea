@@ -378,8 +378,6 @@ public class ProBattleUtils {
         + ", alliedSize=" + myUnits.size() + ", enemySize=" + enemyUnitsInSeaTerritories.size());
     // If I have naval attack/defense superiority then break
     return (defenseStrengthDifference < 50 && attackStrengthDifference > 50);
-    // return Math.min(100, Math.min(200 - 2 * defenseStrengthDifference, 2 * attackStrengthDifference)); // 100 is good
-    // while anything less
-    // needs more units
   }
+
 }
