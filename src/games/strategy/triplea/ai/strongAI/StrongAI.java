@@ -1366,7 +1366,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
    * Unloads a transport into an unoccupied enemy Territory
    * Useful to update AI on true enemy territories for other transport moves
    */
-  private void quickTransportUnload(final GameData data, final List<Collection<Unit>> moveUnits,
+  private static void quickTransportUnload(final GameData data, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final PlayerID player) {
     final CompositeMatch<Unit> loadedTransport = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player),
         Matches.UnitIsTransport, Matches.transportIsTransporting());
@@ -3206,7 +3206,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
           || (!alliedUnitsPresent && !transportUnitsPresent)) // don't need us here
       {
         final int maxUnits = 100;
-        // Route eRoute = SUtils.findNearest(moveTerr, endCond, routeCond, data);
+
         Route eRoute = SUtils.findNearestMaxContaining(moveTerr, endCond, routeCond, enemySeaUnit, maxUnits, data);
         if (eRoute == null) {
           continue;
@@ -5741,15 +5741,14 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
     final Collection<Unit> unitsAlreadyMoved = new HashSet<Unit>();
     final List<Territory> enemyOwned = SUtils.getNeighboringEnemyLandTerritories(data, player, true);
     enemyOwned.removeAll(impassableTerrs);
-    // Include neutral territories that are worth attacking.
-    // enemyOwned.addAll(SUtils.getNeighboringNeutralLandTerritories(data, player, true));
+
     final boolean tFirst = transportsMayDieFirst();
     final List<Territory> alreadyAttacked = getLandTerrAttacked();
     final Territory myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     final float eCapStrength = SUtils.getStrengthOfPotentialAttackers(myCapital, data, player, tFirst, false, null);
     float ourStrength = SUtils.strength(myCapital.getUnits().getUnits(), false, false, tFirst);
     boolean capDanger = eCapStrength > ourStrength;
-    // List<Territory> capitalNeighbors = SUtils.getNeighboringLandTerritories(data, player, myCapital);
+
     final boolean ownMyCapital = myCapital.getOwner() == player;
     final List<Territory> emptyBadTerr = new ArrayList<Territory>();
     float remainingStrengthNeeded = 0.0F;
@@ -5783,9 +5782,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
     }
     // attack these guys first
     final List<Territory> bigProblem2 = SUtils.getNeighboringEnemyLandTerritories(data, player, myCapital);
-    // HashMap<Territory, Float> sortTerritories = new HashMap<Territory, Float>();
+
     final HashMap<Territory, Float> sortProblems = new HashMap<Territory, Float>();
-    // int numTerr = 0;
+
     int numTerrProblem = 0, realProblems = 0;
     float xStrength = 0.0F;
     Territory xTerr = null;
@@ -5795,7 +5794,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
       return;
     }
     SUtils.reorder(enemyOwned, enemyMap, true);
-    // numTerr = enemyMap.size();
+
     float aggregateStrength = 0.0F;
     final Iterator<Territory> bPIter = bigProblem2.iterator();
     while (bPIter.hasNext()) {
