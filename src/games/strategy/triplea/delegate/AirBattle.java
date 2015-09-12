@@ -490,8 +490,8 @@ public class AirBattle extends AbstractBattle {
 
   private void showBattle(final IDelegateBridge bridge) {
     final String title = "Air Battle in " + m_battleSite.getName();
-    getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_attackingUnits, m_defendingUnits, null, null, null,
-        Collections.<Unit, Collection<Unit>>emptyMap(), m_attacker, m_defender, isAmphibious(), getBattleType(),
+    getDisplay(bridge).showBattle(m_battleID, m_battleSite, m_attackingUnits, m_defendingUnits, null, null, null,
+        m_attacker, m_defender, isAmphibious(), getBattleType(),
         Collections.<Unit>emptySet());
     getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
   }

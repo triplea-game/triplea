@@ -324,10 +324,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     // we have already started
     if (m_stack.isExecuting()) {
       final ITripleaDisplay display = getDisplay(bridge);
-      display.showBattle(m_battleID, m_battleSite, getBattleTitle(),
+      display.showBattle(m_battleID, m_battleSite,
           removeNonCombatants(m_attackingUnits, true, m_attacker, false, false, false),
           removeNonCombatants(m_defendingUnits, false, m_defender, false, false, false), m_killed,
-          m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender, isAmphibious(),
+          m_attackingWaitingToDie, m_defendingWaitingToDie, m_attacker, m_defender, isAmphibious(),
           getBattleType(), m_amphibiousLandAttackers);
       display.listBattleSteps(m_battleID, m_stepStrings);
       m_stack.execute(bridge);
@@ -358,10 +358,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     // list the steps
     m_stepStrings = determineStepStrings(true, bridge);
     final ITripleaDisplay display = getDisplay(bridge);
-    display.showBattle(m_battleID, m_battleSite, getBattleTitle(),
+    display.showBattle(m_battleID, m_battleSite,
         removeNonCombatants(m_attackingUnits, true, m_attacker, false, false, false),
         removeNonCombatants(m_defendingUnits, false, m_defender, false, false, false), m_killed,
-        m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender, isAmphibious(),
+        m_attackingWaitingToDie, m_defendingWaitingToDie, m_attacker, m_defender, isAmphibious(),
         getBattleType(), m_amphibiousLandAttackers);
     display.listBattleSteps(m_battleID, m_stepStrings);
     if (!m_headless) {

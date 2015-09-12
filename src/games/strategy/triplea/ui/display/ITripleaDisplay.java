@@ -44,25 +44,21 @@ public interface ITripleaDisplay extends IDisplay {
    *        - a unique id for the battle
    * @param location
    *        - where the battle occurs
-   * @param battleTitle
-   *        - the title of the battle
    * @param attackingUnits
    *        - attacking units
    * @param defendingUnits
    *        - defending units
    * @param killedUnits
    *        - killed units
-   * @param dependentUnits
-   *        - unit dependencies, maps Unit->Collection of units
    * @param attacker
    *        - PlayerID of attacker
    * @param defender
    *        - PlayerID of defender
    * @param isAmphibious
    */
-  public void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits,
+  public void showBattle(GUID battleID, Territory location, Collection<Unit> attackingUnits,
       Collection<Unit> defendingUnits, Collection<Unit> killedUnits, Collection<Unit> attackingWaitingToDie,
-      Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> dependentUnits, final PlayerID attacker,
+      Collection<Unit> defendingWaitingToDie, final PlayerID attacker,
       final PlayerID defender, final boolean isAmphibious, final BattleType battleType,
       final Collection<Unit> amphibiousLandAttackers);
 
