@@ -47,17 +47,6 @@ public class ScrollableTextField extends JPanel {
   private static Icon s_max;
   private static Icon s_min;
 
-  private synchronized static void loadImages(final ScrollableTextField field) {
-    if (s_imagesLoaded) {
-      return;
-    }
-    s_up = new ImageIcon(ScrollableTextField.class.getResource("images/up.gif"));
-    s_down = new ImageIcon(ScrollableTextField.class.getResource("images/down.gif"));
-    s_max = new ImageIcon(ScrollableTextField.class.getResource("images/max.gif"));
-    s_min = new ImageIcon(ScrollableTextField.class.getResource("images/min.gif"));
-    s_imagesLoaded = true;
-  }
-
   private final IntTextField m_text;
   private final JButton m_up;
   private final JButton m_down;
@@ -68,7 +57,7 @@ public class ScrollableTextField extends JPanel {
   /** Creates new ScrollableTextField */
   public ScrollableTextField(final int minVal, final int maxVal) {
     super();
-    loadImages(this);
+    loadImages();
     m_text = new IntTextField(minVal, maxVal);
     setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
     add(m_text);
@@ -98,10 +87,21 @@ public class ScrollableTextField extends JPanel {
     maxMin.add(m_min);
     add(upDown);
     add(maxMin);
-    // add(new JSpinner());
     m_text.addChangeListener(m_textListener);
     setWidgetActivation();
   }
+
+  private synchronized static void loadImages() {
+    if (s_imagesLoaded) {
+      return;
+    }
+    s_up = new ImageIcon(ScrollableTextField.class.getResource("images/up.gif"));
+    s_down = new ImageIcon(ScrollableTextField.class.getResource("images/down.gif"));
+    s_max = new ImageIcon(ScrollableTextField.class.getResource("images/max.gif"));
+    s_min = new ImageIcon(ScrollableTextField.class.getResource("images/min.gif"));
+    s_imagesLoaded = true;
+  }
+
 
   public void setMax(final int max) {
     m_text.setMax(max);
