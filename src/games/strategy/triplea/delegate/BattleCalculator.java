@@ -61,13 +61,7 @@ public class BattleCalculator {
     oolCache.clear();
   }
 
-  // private static IntegerMap<UnitType> s_costsForTuvForAllPlayersMergedAndAveraged; //There is a problem with this variable, that it isn't
-  // being cleared out when we switch maps.
-  // we want to sort in a determined way so that those looking at the dice results
-  // can tell what dice is for who
-  // we also want to sort by movement, so casualties will be choosen as the
-  // units with least movement
-  public static void sortPreBattle(final List<Unit> units, final GameData data) {
+  public static void sortPreBattle(final List<Unit> units) {
     final Comparator<Unit> comparator = new Comparator<Unit>() {
       @Override
       public int compare(final Unit u1, final Unit u2) {
@@ -107,17 +101,6 @@ public class BattleCalculator {
    */
   public static int getNormalizedMetaPower(final int power, final int hitpoints, final int diceSides) {
     return (2 * hitpoints) + (power * 6 / diceSides);
-  }
-
-  public static int getAAHits(final Collection<Unit> units, final IDelegateBridge bridge, final int[] dice) {
-    final int attackingAirCount = Match.countMatches(units, Matches.UnitIsAir);
-    int hitCount = 0;
-    for (int i = 0; i < attackingAirCount; i++) {
-      if (1 > dice[i]) {
-        hitCount++;
-      }
-    }
-    return hitCount;
   }
 
   /**
@@ -500,7 +483,7 @@ public class BattleCalculator {
     if (headLess) {
       dependents = Collections.emptyMap();
     } else {
-      dependents = getDependents(targetsToPickFrom, data);
+      dependents = getDependents(targetsToPickFrom);
     }
     if (isEditMode && !headLess) {
       final CasualtyDetails editSelection = tripleaPlayer.selectCasualties(targetsToPickFrom, dependents, 0, text, dice,
@@ -706,9 +689,9 @@ public class BattleCalculator {
       final Territory battlesite, final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects,
       final GameData data, final boolean allowMultipleHitsPerUnit, final boolean bonus) {
     if (!GameRunner2.getCasualtySelectionSlow()) {
-      return sortUnitsForCasualtiesWithSupportNewWithCaching(targetsToPickFrom, hits, defending, player, friendlyUnits,
+      return sortUnitsForCasualtiesWithSupportNewWithCaching(targetsToPickFrom, hits, defending, player,
           enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs, territoryEffects, data,
-          allowMultipleHitsPerUnit, bonus);
+          bonus);
     } else {
       return sortUnitsForCasualtiesWithSupportBruteForce(targetsToPickFrom, hits, defending, player, friendlyUnits,
           enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs, territoryEffects, data,
@@ -717,10 +700,10 @@ public class BattleCalculator {
   }
 
   private static List<Unit> sortUnitsForCasualtiesWithSupportNewWithCaching(final Collection<Unit> targetsToPickFrom,
-      final int hits, final boolean defending, final PlayerID player, final Collection<Unit> friendlyUnits,
+      final int hits, final boolean defending, final PlayerID player,
       final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious,
       final Collection<Unit> amphibiousLandAttackers, final Territory battlesite, final IntegerMap<UnitType> costs,
-      final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
+      final Collection<TerritoryEffect> territoryEffects, final GameData data,
       final boolean bonus) {
     // Convert unit lists to unit type lists
     final List<UnitType> targetTypes = new ArrayList<UnitType>();
@@ -1156,7 +1139,7 @@ public class BattleCalculator {
     return sortedWellEnoughUnitsList;
   }
 
-  public static Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> targets, final GameData data) {
+  public static Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> targets) {
     // just worry about transports
     final Map<Unit, Collection<Unit>> dependents = new HashMap<Unit, Collection<Unit>>();
     for (final Unit target : targets) {

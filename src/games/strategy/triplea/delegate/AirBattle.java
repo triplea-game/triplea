@@ -93,15 +93,15 @@ public class AirBattle extends AbstractBattle {
     }
     updateDefendingUnits();
     bridge.getHistoryWriter().startEvent("Air Battle in " + m_battleSite, m_battleSite);
-    BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
-    BattleCalculator.sortPreBattle(m_defendingUnits, m_data);
-    m_steps = determineStepStrings(true, bridge);
+    BattleCalculator.sortPreBattle(m_attackingUnits);
+    BattleCalculator.sortPreBattle(m_defendingUnits);
+    m_steps = determineStepStrings(true);
     showBattle(bridge);
-    pushFightLoopOnStack(true, bridge);
+    pushFightLoopOnStack(true);
     m_stack.execute(bridge);
   }
 
-  private void pushFightLoopOnStack(final boolean firstRun, final IDelegateBridge bridge) {
+  private void pushFightLoopOnStack(final boolean firstRun) {
     if (m_isOver) {
       return;
     }
@@ -246,7 +246,7 @@ public class AirBattle extends AbstractBattle {
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        pushFightLoopOnStack(false, bridge);
+        pushFightLoopOnStack(false);
       }
     };
     steps.add(new IExecutable() {
@@ -255,7 +255,7 @@ public class AirBattle extends AbstractBattle {
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         if (!m_isOver) {
-          m_steps = determineStepStrings(false, bridge);
+          m_steps = determineStepStrings(false);
           final ITripleaDisplay display = getDisplay(bridge);
           display.listBattleSteps(m_battleID, m_steps);
           m_round++;
@@ -273,7 +273,7 @@ public class AirBattle extends AbstractBattle {
     return steps;
   }
 
-  public List<String> determineStepStrings(final boolean showFirstRun, final IDelegateBridge bridge) {
+  private List<String> determineStepStrings(final boolean showFirstRun) {
     final List<String> steps = new ArrayList<String>();
     if (showFirstRun) {
       steps.add(AIR_BATTLE);
@@ -291,7 +291,7 @@ public class AirBattle extends AbstractBattle {
     return steps;
   }
 
-  private void recordUnitsWereInAirBattle(final Collection<Unit> units, final IDelegateBridge bridge) {
+  private static void recordUnitsWereInAirBattle(final Collection<Unit> units, final IDelegateBridge bridge) {
     final CompositeChange wasInAirBattleChange = new CompositeChange();
     for (final Unit u : units) {
       wasInAirBattleChange.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_IN_AIR_BATTLE));
@@ -678,7 +678,7 @@ public class AirBattle extends AbstractBattle {
     };
   }
 
-  public static Match<Unit> attackingGroundSeaBattleEscorts(final PlayerID attacker, final GameData data) {
+  protected static Match<Unit> attackingGroundSeaBattleEscorts() {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
