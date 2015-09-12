@@ -250,7 +250,7 @@ public class BattleDisplay extends JPanel {
   public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player,
       final Collection<Unit> killed, final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents) {
     setStep(step);
-    m_casualties.setNotication(dice, player, killed, damaged, dependents);
+    m_casualties.setNotification(dice, killed, damaged, dependents);
     m_actionLayout.show(m_actionPanel, CASUALTIES_KEY);
     killed.addAll(updateKilledUnits(killed, player));
     if (player.equals(m_defender)) {
@@ -262,7 +262,7 @@ public class BattleDisplay extends JPanel {
 
   public void deadUnitNotification(final PlayerID player, final Collection<Unit> killed,
       final Map<Unit, Collection<Unit>> dependents) {
-    m_casualties.setNoticationShort(player, killed, dependents);
+    m_casualties.setNotificationShort(killed, dependents);
     m_actionLayout.show(m_actionPanel, CASUALTIES_KEY);
     killed.addAll(updateKilledUnits(killed, player));
     if (player.equals(m_defender)) {
@@ -988,7 +988,7 @@ class CasualtyNotificationPanel extends JPanel {
     add(m_damaged);
   }
 
-  public void setNotication(final DiceRoll dice, final PlayerID player, final Collection<Unit> killed,
+  protected void setNotification(final DiceRoll dice, final Collection<Unit> killed,
       final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents) {
     final boolean isEditMode = (dice == null);
     if (!isEditMode) {
@@ -1011,8 +1011,7 @@ class CasualtyNotificationPanel extends JPanel {
     validate();
   }
 
-  public void setNoticationShort(final PlayerID player, final Collection<Unit> killed,
-      final Map<Unit, Collection<Unit>> dependents) {
+  protected void setNotificationShort(final Collection<Unit> killed, final Map<Unit, Collection<Unit>> dependents) {
     m_killed.removeAll();
     if (!killed.isEmpty()) {
       m_killed.add(new JLabel("Killed"));
