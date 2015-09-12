@@ -284,7 +284,7 @@ class UnitAutoChooser {
       public boolean match(final Collection<Unit> units) {
         final IntegerMap<UnitCategory> currentMap = new IntegerMap<UnitCategory>(units.size() + 1, 1);
         for (final Unit unit : units) {
-          currentMap.add(new UnitCategory(unit, false, false, false, false), 1);
+          currentMap.add(new UnitCategory(unit), 1);
         }
         return m_chosenCategoryCounts.greaterThanOrEqualTo(currentMap);
       }
