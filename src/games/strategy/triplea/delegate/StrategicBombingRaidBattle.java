@@ -209,7 +209,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        getDisplay(bridge).gotoBattleStep(m_battleID, RAID);
+        getDisplay(bridge).gotoBattleStep(RAID);
         if (isDamageFromBombingDoneToUnitsInsteadOfTerritories()) {
           bridge.getHistoryWriter()
               .addChildToEvent("Bombing raid in " + m_battleSite.getName() + " causes " + m_bombingRaidTotal
@@ -279,7 +279,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private void endBeforeRolling(final IDelegateBridge bridge) {
-    getDisplay(bridge).battleEnd(m_battleID, "Bombing raid does no damage");
+    getDisplay(bridge).battleEnd("Bombing raid does no damage");
     m_whoWon = WhoWon.DRAW;
     m_battleResultDescription = BattleRecord.BattleResultDescription.NO_BATTLE;
     m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
@@ -290,14 +290,15 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   private void end(final IDelegateBridge bridge) {
     if (isDamageFromBombingDoneToUnitsInsteadOfTerritories()) {
-      getDisplay(bridge).battleEnd(m_battleID,
-          "Raid causes " + m_bombingRaidTotal + " damage total."
-              + (m_bombingRaidDamage.size() > 1
-                  ? (" To units: " + MyFormatter.integerUnitMapToString(m_bombingRaidDamage, ", ", " = ", false))
-                  : ""));
+
+      String msg = "Raid causes " + m_bombingRaidTotal + " damage total." +
+          (m_bombingRaidDamage.size() > 1
+          ? (" To units: " + MyFormatter.integerUnitMapToString(m_bombingRaidDamage, ", ", " = ", false))
+          : "");
+      getDisplay(bridge).battleEnd(msg);
     } else {
-      getDisplay(bridge).battleEnd(m_battleID,
-          "Bombing raid cost " + m_bombingRaidTotal + " " + MyFormatter.pluralize("PU", m_bombingRaidTotal));
+      getDisplay(bridge)
+          .battleEnd("Bombing raid cost " + m_bombingRaidTotal + " " + MyFormatter.pluralize("PU", m_bombingRaidTotal));
     }
     if (m_bombingRaidTotal > 0) {
       m_whoWon = WhoWon.ATTACKER;
@@ -473,7 +474,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   private void notifyAAHits(final IDelegateBridge bridge, final DiceRoll dice, final CasualtyDetails casualties,
       final String currentTypeAA) {
-    getDisplay(bridge).casualtyNotification(m_battleID, REMOVE_PREFIX + currentTypeAA + CASUALTIES_SUFFIX, dice,
+    getDisplay(bridge).casualtyNotification(REMOVE_PREFIX + currentTypeAA + CASUALTIES_SUFFIX, dice,
         m_attacker, new ArrayList<Unit>(casualties.getKilled()), new ArrayList<Unit>(casualties.getDamaged()),
         Collections.<Unit, Collection<Unit>>emptyMap());
     final Runnable r = new Runnable() {
@@ -769,7 +770,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           }
           final int totalDamage = taUnit.getUnitDamage() + currentUnitCost;
           // display the results
-          getDisplay(bridge).bombingResults(m_battleID, dice, currentUnitCost);
+          getDisplay(bridge).bombingResults(dice, currentUnitCost);
           if (currentUnitCost > 0) {
             // play a sound
             bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker.getName()); // play sound
@@ -794,7 +795,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         // Record PUs lost
         DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, cost);
         cost *= Properties.getPU_Multiplier(m_data);
-        getDisplay(bridge).bombingResults(m_battleID, dice, cost);
+        getDisplay(bridge).bombingResults(dice, cost);
         if (cost > 0) {
           // play a sound
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker.getName()); // play sound

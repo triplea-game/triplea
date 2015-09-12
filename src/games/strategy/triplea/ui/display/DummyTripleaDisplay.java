@@ -64,22 +64,22 @@ public class DummyTripleaDisplay implements ITripleaDisplay {
   public void listBattleSteps(final GUID battleID, final List<String> steps) {}
 
   @Override
-  public void battleEnd(final GUID battleID, final String message) {}
+  public void battleEnd(final String message) {}
 
   @Override
-  public void casualtyNotification(final GUID battleID, final String step, final DiceRoll dice, final PlayerID player,
+  public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player,
       final Collection<Unit> killed, final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents) {}
 
   @Override
-  public void deadUnitNotification(final GUID battleID, final PlayerID player, final Collection<Unit> dead,
+  public void deadUnitNotification(final PlayerID player, final Collection<Unit> dead,
       final Map<Unit, Collection<Unit>> dependents) {}
 
   @Override
-  public void changedUnitsNotification(final GUID battleID, final PlayerID player, final Collection<Unit> removedUnits,
+  public void changedUnitsNotification(final PlayerID player, final Collection<Unit> removedUnits,
       final Collection<Unit> addedUnits) {}
 
   @Override
-  public void bombingResults(final GUID battleID, final List<Die> dice, final int cost) {}
+  public void bombingResults(final List<Die> dice, final int cost) {}
 
   @Override
   public void notifyRetreat(final String shortMessage, final String message, final String step,
@@ -92,5 +92,5 @@ public class DummyTripleaDisplay implements ITripleaDisplay {
   public void notifyDice(final DiceRoll dice, final String stepName) {}
 
   @Override
-  public void gotoBattleStep(final GUID battleId, final String step) {}
+  public void gotoBattleStep(final String step) {}
 }

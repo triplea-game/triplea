@@ -1436,7 +1436,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
         step = m_attacker.getName() + ATTACKER_WITHDRAW;
       }
     }
-    getDisplay(bridge).gotoBattleStep(m_battleID, step);
+    getDisplay(bridge).gotoBattleStep(step);
     final Territory retreatTo = getRemote(retreatingPlayer, bridge).retreatQuery(m_battleID,
         (submerge || canDefendingSubsSubmergeOrRetreat), m_battleSite, availableTerritories, text);
     if (retreatTo != null && !availableTerritories.contains(retreatTo) && !subs) {
@@ -1721,14 +1721,14 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
   private void checkSuicideUnits(final IDelegateBridge bridge) {
     if (isDefendingSuicideAndMunitionUnitsDoNotFire()) {
       final List<Unit> deadUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
-      getDisplay(bridge).deadUnitNotification(m_battleID, m_attacker, deadUnits, m_dependentUnits);
+      getDisplay(bridge).deadUnitNotification(m_attacker, deadUnits, m_dependentUnits);
       remove(deadUnits, bridge, m_battleSite, false, false);
     } else {
       final List<Unit> deadUnits = new ArrayList<Unit>();
       deadUnits.addAll(Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide));
       deadUnits.addAll(Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide));
-      getDisplay(bridge).deadUnitNotification(m_battleID, m_attacker, deadUnits, m_dependentUnits);
-      getDisplay(bridge).deadUnitNotification(m_battleID, m_defender, deadUnits, m_dependentUnits);
+      getDisplay(bridge).deadUnitNotification(m_attacker, deadUnits, m_dependentUnits);
+      getDisplay(bridge).deadUnitNotification(m_defender, deadUnits, m_dependentUnits);
       remove(deadUnits, bridge, m_battleSite, false, null);
     }
   }
@@ -2301,7 +2301,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       if (m_headless) {
         return;
       }
-      getDisplay(bridge).casualtyNotification(m_battleID,
+      getDisplay(bridge).casualtyNotification(
           (m_defending ? m_attacker.getName() : m_defender.getName()) + REMOVE_PREFIX + currentTypeAA
               + CASUALTIES_SUFFIX,
           m_dice, (m_defending ? m_attacker : m_defender), new ArrayList<Unit>(m_casualties.getKilled()),
@@ -2316,8 +2316,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
                 "Press space to continue", (m_defending ? m_attacker : m_defender));
           } catch (final ConnectionLostException cle) {
             // somone else will deal with this
-            // System.out.println(cle.getMessage());
-            // cle.printStackTrace(System.out);
           } catch (final GameOverException e) {
             // ignore
           } catch (final Exception e) {
@@ -2394,10 +2392,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     m_attackingUnits = notRemovedAttacking;
     if (!m_headless) {
       if (!toRemoveDefending.isEmpty()) {
-        getDisplay(bridge).changedUnitsNotification(m_battleID, m_defender, toRemoveDefending, null);
+        getDisplay(bridge).changedUnitsNotification(m_defender, toRemoveDefending, null);
       }
       if (!toRemoveAttacking.isEmpty()) {
-        getDisplay(bridge).changedUnitsNotification(m_battleID, m_attacker, toRemoveAttacking, null);
+        getDisplay(bridge).changedUnitsNotification(m_attacker, toRemoveAttacking, null);
       }
     }
   }
@@ -2515,7 +2513,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
   private void defenderWins(final IDelegateBridge bridge) {
     m_whoWon = WhoWon.DEFENDER;
-    getDisplay(bridge).battleEnd(m_battleID, m_defender.getName() + " win");
+    getDisplay(bridge).battleEnd(m_defender.getName() + " win");
     if (games.strategy.triplea.Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(m_data)) {
       if (Match.getMatches(m_defendingUnits, Matches.UnitIsNotInfrastructure).size() == 0) {
         final List<Unit> allyOfAttackerUnits = m_battleSite.getUnits().getMatches(Matches.UnitIsNotInfrastructure);
@@ -2553,7 +2551,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
   private void nobodyWins(final IDelegateBridge bridge) {
     m_whoWon = WhoWon.DRAW;
-    getDisplay(bridge).battleEnd(m_battleID, "Stalemate");
+    getDisplay(bridge).battleEnd("Stalemate");
     bridge.getHistoryWriter()
         .addChildToEvent(m_defender.getName() + " and " + m_attacker.getName() + " reach a stalemate");
     m_battleResultDescription = BattleRecord.BattleResultDescription.STALEMATE;
@@ -2568,7 +2566,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
   private void attackerWins(final IDelegateBridge bridge) {
     m_whoWon = WhoWon.ATTACKER;
-    getDisplay(bridge).battleEnd(m_battleID, m_attacker.getName() + " win");
+    getDisplay(bridge).battleEnd(m_attacker.getName() + " win");
     if (m_headless) {
       return;
     }

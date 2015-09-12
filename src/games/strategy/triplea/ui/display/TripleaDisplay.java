@@ -37,7 +37,7 @@ public class TripleaDisplay implements ITripleaDisplay {
       final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
       final Map<Unit, Collection<Unit>> unit_dependents, final PlayerID attacker, final PlayerID defender,
       final boolean isAmphibious, final BattleType battleType, final Collection<Unit> amphibiousLandAttackers) {
-    m_ui.getBattlePanel().showBattle(battleID, location, battleTitle, attackingUnits, defendingUnits, killedUnits,
+    m_ui.getBattlePanel().showBattle(battleID, location, attackingUnits, defendingUnits, killedUnits,
         attackingWaitingToDie, defendingWaitingToDie, unit_dependents, attacker, defender, isAmphibious, battleType,
         amphibiousLandAttackers);
   }
@@ -48,31 +48,31 @@ public class TripleaDisplay implements ITripleaDisplay {
   }
 
   @Override
-  public void casualtyNotification(final GUID battleID, final String step, final DiceRoll dice, final PlayerID player,
+  public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player,
       final Collection<Unit> killed, final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents) {
     m_ui.getBattlePanel().casualtyNotification(step, dice, player, killed, damaged, dependents);
   }
 
   @Override
-  public void deadUnitNotification(final GUID battleID, final PlayerID player, final Collection<Unit> killed,
+  public void deadUnitNotification(final PlayerID player, final Collection<Unit> killed,
       final Map<Unit, Collection<Unit>> dependents) {
     m_ui.getBattlePanel().deadUnitNotification(player, killed, dependents);
   }
 
   @Override
-  public void changedUnitsNotification(final GUID battleID, final PlayerID player, final Collection<Unit> removedUnits,
+  public void changedUnitsNotification(final PlayerID player, final Collection<Unit> removedUnits,
       final Collection<Unit> addedUnits) {
     m_ui.getBattlePanel().changedUnitsNotification(player, removedUnits, addedUnits);
   }
 
   @Override
-  public void battleEnd(final GUID battleID, final String message) {
+  public void battleEnd(final String message) {
     m_ui.getBattlePanel().battleEndMessage(message);
   }
 
   @Override
-  public void bombingResults(final GUID battleID, final List<Die> dice, final int cost) {
-    m_ui.getBattlePanel().bombingResults(battleID, dice, cost);
+  public void bombingResults(final List<Die> dice, final int cost) {
+    m_ui.getBattlePanel().bombingResults(dice, cost);
   }
 
   @Override
@@ -82,7 +82,7 @@ public class TripleaDisplay implements ITripleaDisplay {
     if (m_ui.getLocalPlayers().playing(retreatingPlayer)) {
       return;
     }
-    m_ui.getBattlePanel().notifyRetreat(shortMessage, message, step, retreatingPlayer);
+    m_ui.getBattlePanel().notifyRetreat(message, step);
   }
 
   /**
@@ -99,8 +99,8 @@ public class TripleaDisplay implements ITripleaDisplay {
   }
 
   @Override
-  public void gotoBattleStep(final GUID battleId, final String step) {
-    m_ui.getBattlePanel().gotoStep(battleId, step);
+  public void gotoBattleStep(final String step) {
+    m_ui.getBattlePanel().gotoStep(step);
   }
 
   @Override

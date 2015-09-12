@@ -148,8 +148,7 @@ public class BattlePanel extends ActionPanel {
     });
   }
 
-  public void notifyRetreat(final String messageShort, final String messageLong, final String step,
-      final PlayerID retreatingPlayer) {
+  public void notifyRetreat(final String messageLong, final String step) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -244,7 +243,7 @@ public class BattlePanel extends ActionPanel {
     }
   }
 
-  public void showBattle(final GUID battleID, final Territory location, final String battleTitle,
+  public void showBattle(final GUID battleID, final Territory location,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
       final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
       final Map<Unit, Collection<Unit>> unit_dependents, final PlayerID attacker, final PlayerID defender,
@@ -461,7 +460,7 @@ public class BattlePanel extends ActionPanel {
     return m_battleDisplay.getRetreat(message, possible, submerge);
   }
 
-  public void gotoStep(final GUID battleID, final String step) {
+  public void gotoStep(final String step) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -483,7 +482,7 @@ public class BattlePanel extends ActionPanel {
     });
   }
 
-  public void bombingResults(final GUID battleID, final List<Die> dice, final int cost) {
+  public void bombingResults(final List<Die> dice, final int cost) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {

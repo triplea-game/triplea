@@ -192,7 +192,7 @@ public class Fire implements IExecutable {
     if (m_isHeadless) {
       return;
     }
-    AbstractBattle.getDisplay(bridge).casualtyNotification(m_battleID, m_stepName, m_dice, m_hitPlayer,
+    AbstractBattle.getDisplay(bridge).casualtyNotification(m_stepName, m_dice, m_hitPlayer,
         new ArrayList<Unit>(m_killed), new ArrayList<Unit>(m_damaged), m_dependentUnits);
     final Runnable r = new Runnable() {
       @Override

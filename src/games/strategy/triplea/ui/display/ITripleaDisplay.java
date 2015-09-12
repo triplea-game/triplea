@@ -67,39 +67,36 @@ public interface ITripleaDisplay extends IDisplay {
       final Collection<Unit> amphibiousLandAttackers);
 
   /**
-   * @param battleID
-   *        - the battle we are listing steps for
-   * @param currentStep
-   *        - the current step
-   * @param steps
-   *        - a collection of strings denoting all steps in the battle
+   * @param battleID - the battle we are listing steps for
+   * @param currentStep - the current step
+   * @param steps - a collection of strings denoting all steps in the battle
    */
   public void listBattleSteps(GUID battleID, List<String> steps);
 
   /**
    * The given battle has ended.
    */
-  public void battleEnd(GUID battleID, String message);
+  public void battleEnd(String message);
 
   /**
    * Notify that the casualties occurred
    */
-  public void casualtyNotification(GUID battleID, String step, DiceRoll dice, PlayerID player, Collection<Unit> killed,
+  public void casualtyNotification(String step, DiceRoll dice, PlayerID player, Collection<Unit> killed,
       Collection<Unit> damaged, Map<Unit, Collection<Unit>> dependents);
 
   /**
    * Notify that the casualties occurred, and only the casualty
    */
-  public void deadUnitNotification(GUID battleID, PlayerID player, Collection<Unit> dead,
+  public void deadUnitNotification(PlayerID player, Collection<Unit> dead,
       Map<Unit, Collection<Unit>> dependents);
 
-  public void changedUnitsNotification(GUID battleID, PlayerID player, Collection<Unit> removedUnits,
+  public void changedUnitsNotification(PlayerID player, Collection<Unit> removedUnits,
       Collection<Unit> addedUnits);
 
   /**
    * Notification of the results of a bombing raid
    */
-  public void bombingResults(GUID battleID, List<Die> dice, int cost);
+  public void bombingResults(List<Die> dice, int cost);
 
   /**
    * Notify that the given player has retreated some or all of his units.
@@ -113,5 +110,5 @@ public interface ITripleaDisplay extends IDisplay {
    */
   public void notifyDice(DiceRoll dice, String stepName);
 
-  public void gotoBattleStep(GUID battleId, String step);
+  public void gotoBattleStep(String step);
 }

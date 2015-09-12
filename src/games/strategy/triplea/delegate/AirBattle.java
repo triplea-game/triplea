@@ -405,7 +405,7 @@ public class AirBattle extends AbstractBattle {
     bridge.getHistoryWriter().addChildToEvent(text);
     m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
         m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), 0);
-    getDisplay(bridge).battleEnd(m_battleID, "Air Battle over");
+    getDisplay(bridge).battleEnd("Air Battle over");
     m_isOver = true;
     m_battleTracker.removeBattle(AirBattle.this);
   }
@@ -454,7 +454,7 @@ public class AirBattle extends AbstractBattle {
     final PlayerID retreatingPlayer = defender ? m_defender : m_attacker;
     final String text = retreatingPlayer.getName() + " retreat?";
     final String step = defender ? DEFENDERS_WITHDRAW : ATTACKERS_WITHDRAW;
-    getDisplay(bridge).gotoBattleStep(m_battleID, step);
+    getDisplay(bridge).gotoBattleStep(step);
     final Territory retreatTo =
         getRemote(retreatingPlayer, bridge).retreatQuery(m_battleID, false, m_battleSite, availableTerritories, text);
     if (retreatTo != null && !availableTerritories.contains(retreatTo)) {
@@ -539,7 +539,7 @@ public class AirBattle extends AbstractBattle {
         beingRemoved.removeAll(interceptors);
         m_defendingUnits.addAll(interceptors);
       }
-      getDisplay(bridge).changedUnitsNotification(m_battleID, m_defender, beingRemoved, null);
+      getDisplay(bridge).changedUnitsNotification(m_defender, beingRemoved, null);
       if (groundedPlanesRetreated) {
         // this removes them from the subsequent normal battle. (do not use this for bombing battles)
         retreat(beingRemoved, true, bridge);
@@ -780,7 +780,7 @@ public class AirBattle extends AbstractBattle {
 
   private void notifyCasualties(final GUID battleID, final IDelegateBridge bridge, final String stepName,
       final DiceRoll dice, final PlayerID hitPlayer, final PlayerID firingPlayer, final CasualtyDetails details) {
-    getDisplay(bridge).casualtyNotification(battleID, stepName, dice, hitPlayer, details.getKilled(),
+    getDisplay(bridge).casualtyNotification(stepName, dice, hitPlayer, details.getKilled(),
         details.getDamaged(), Collections.<Unit, Collection<Unit>>emptyMap());
     final Runnable r = new Runnable() {
       @Override
