@@ -115,24 +115,19 @@ public class CenterPicker extends JFrame {
         "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories names?",
         "File Suggestion", 1) == 0) {
       try {
-        System.out.println("Polygons : " + file.getPath());
         m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(file.getPath()));
       } catch (final IOException ex1) {
-        System.out.println("Something wrong with your Polygons file");
+        System.out.println("Something wrong with your Polygons file: " + ex1);
         ex1.printStackTrace();
       }
     } else {
       try {
-        System.out.println("Select the Polygons file");
         final String polyPath = new FileOpen("Select A Polygon File", s_mapFolderLocation, ".txt").getPathString();
         if (polyPath != null) {
-          System.out.println("Polygons : " + polyPath);
           m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(polyPath));
-        } else {
-          System.out.println("Polygons file not given. Will run regardless");
         }
       } catch (final IOException ex1) {
-        System.out.println("Something wrong with your Polygons file");
+        System.out.println("Something wrong with your Polygons file: " + ex1);
         ex1.printStackTrace();
       }
     }
@@ -149,15 +144,11 @@ public class CenterPicker extends JFrame {
         m_location.setText("x:" + e.getX() + " y:" + e.getY());
       }
     });
-    /*
-     * Add a mouse listener to monitor
-     * for right mouse button being
-     * clicked.
-     */
+    // Add a mouse listener to monitor for right mouse button being clicked.
     imagePanel.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent e) {
-        mouseEvent(e.getPoint(), e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
+        mouseEvent(e.getPoint(), SwingUtilities.isRightMouseButton(e));
       }
     });
     // set up the image panel size dimensions ...etc
@@ -342,7 +333,7 @@ public class CenterPicker extends JFrame {
    * @param java
    *        .lang.boolean rightMouse true if the right mouse button was hit
    */
-  private void mouseEvent(final Point point, final boolean ctrlDown, final boolean rightMouse) {
+  private void mouseEvent(final Point point, final boolean rightMouse) {
     if (!rightMouse) {
       String name = findTerritoryName(point);
       name = JOptionPane.showInputDialog(this, "Enter the territory name:", name);

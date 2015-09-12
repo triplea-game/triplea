@@ -190,9 +190,8 @@ public class ChangeFactory {
    * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a
    * list rather than overwriting.
    */
-  public static Change attachmentPropertyReset(final IAttachment attachment, final String property,
-      final boolean getRaw) {
-    return new AttachmentPropertyReset(attachment, property, getRaw);
+  public static Change attachmentPropertyReset(final IAttachment attachment, final String property) {
+    return new AttachmentPropertyReset(attachment, property);
   }
 
   public static Change genericTechChange(final TechAttachment attachment, final Boolean value, final String property) {
@@ -272,7 +271,7 @@ class AttachmentPropertyReset extends Change {
   private final Object m_oldValue;
   private final String m_property;
 
-  AttachmentPropertyReset(final IAttachment attachment, final String property, final boolean getRaw) {
+  AttachmentPropertyReset(final IAttachment attachment, final String property) {
     if (attachment == null) {
       throw new IllegalArgumentException("No attachment, property:" + property);
     }
@@ -484,12 +483,6 @@ class RemoveUnits extends Change {
     m_units = new ArrayList<Unit>(units);
     m_name = name;
     m_type = type;
-  }
-
-  RemoveUnits(final String name, final String type, final Collection<Unit> units, final boolean isCasualty) {
-    m_type = type;
-    m_units = new ArrayList<Unit>(units);
-    m_name = name;
   }
 
   @Override
