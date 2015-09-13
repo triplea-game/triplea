@@ -71,33 +71,6 @@ public class ResourceImageFactory {
     m_icons.clear();
   }
 
-  /**
-   * Return the appropriate image.
-   */
-  public Image getImage(final Resource type, final GameData data, final boolean large) {
-    final String fullName = type.getName() + (large ? "_large" : "");
-    if (m_images.containsKey(fullName)) {
-      return m_images.get(fullName);
-    }
-    final Image baseImage = getBaseImage(fullName);
-    // We want to scale units according to the given scale factor.
-    // We use smooth scaling since the images are cached to allow
-    // to take our time in doing the scaling.
-    // Image observer is null, since the image should have been
-    // guaranteed to be loaded.
-    final int width = (int) (baseImage.getWidth(null) * m_scaleFactor);
-    final int height = (int) (baseImage.getHeight(null) * m_scaleFactor);
-    final Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-    // Ensure the scaling is completed.
-    try {
-      Util.ensureImageLoaded(scaledImage);
-    } catch (final InterruptedException ex) {
-      ex.printStackTrace();
-    }
-    m_images.put(fullName, scaledImage);
-    return scaledImage;
-  }
-
   private Image getBaseImage(final String baseImageName) {
     // URL uses '/' not '\'
     final String fileName = FILE_NAME_BASE + baseImageName + ".png";
