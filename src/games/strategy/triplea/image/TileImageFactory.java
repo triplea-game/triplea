@@ -179,7 +179,7 @@ public final class TileImageFactory {
     return loadImage(url, fileName, false, false, false);
   }
 
-  private String getBaseTileImageName(final int x, final int y) {
+  private static String getBaseTileImageName(final int x, final int y) {
     // we are loading with a class loader now, use /
     final String fileName = "baseTiles" + "/" + x + "_" + y + ".png";
     return fileName;
@@ -219,18 +219,16 @@ public final class TileImageFactory {
     return loadImage(url, fileName, true, false, false);
   }
 
-  private String getReliefTileImageName(final int x, final int y) {
+  private static String getReliefTileImageName(final int x, final int y) {
     // we are loading with a class loader now, use /
     final String fileName = "reliefTiles" + "/" + x + "_" + y + ".png";
     return fileName;
   }
 
   /**
-   * @param input
-   * @return compatibleImage
-   *         This method produces a blank white tile for use in blending.
+   * @return compatibleImage This method produces a blank white tile for use in blending.
    */
-  private static BufferedImage makeMissingBaseTile(final BufferedImage input, final Color baseColor) {
+  private static BufferedImage makeMissingBaseTile(final BufferedImage input) {
     final BufferedImage compatibleImage =
         configuration.createCompatibleImage(input.getWidth(null), input.getHeight(null), Transparency.TRANSLUCENT);
     final Graphics2D g2 = compatibleImage.createGraphics();
@@ -292,9 +290,7 @@ public final class TileImageFactory {
     }
     // This fixes the blank land territories
     if (baseFile == null) {
-      Color baseColor = null;
-      baseColor = Color.lightGray;
-      baseFile = makeMissingBaseTile(reliefFile, baseColor);
+      baseFile = makeMissingBaseTile(reliefFile);
     }
     /* reversing the to/from files leaves white underlays visible */
     if (reliefFile != null) {
