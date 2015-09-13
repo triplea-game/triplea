@@ -97,7 +97,7 @@ public class SimpleUnitPanel extends JPanel {
     final JLabel label = new JLabel();
     label.setText(" x " + quantity);
     if (unit instanceof UnitType) {
-      label.setIcon(m_uiContext.getUnitImageFactory().getIcon((UnitType) unit, player, data, damaged, disabled));
+      label.setIcon(m_uiContext.getUnitImageFactory().getIcon((UnitType) unit, player, damaged, disabled));
     } else if (unit instanceof Resource) {
       label.setIcon(m_uiContext.getResourceImageFactory().getIcon((Resource) unit, data, true));
     }

@@ -282,7 +282,7 @@ public class ProductionPanel extends JPanel {
         final NamedAttachable resourceOrUnit = iter.next();
         if (resourceOrUnit instanceof UnitType) {
           final UnitType type = (UnitType) resourceOrUnit;
-          icon = m_uiContext.getUnitImageFactory().getIcon(type, m_id, m_data, false, false);
+          icon = m_uiContext.getUnitImageFactory().getIcon(type, m_id, false, false);
           final UnitAttachment attach = UnitAttachment.get(type);
           final int attack = attach.getAttack(m_id);
           final int movement = attach.getMovement(m_id);

@@ -148,13 +148,11 @@ public class ProductionRepairPanel extends JPanel {
               continue;
             }
             final TripleAUnit taUnit = (TripleAUnit) u;
-            final Rule rule = new Rule(repairRule, player, m_uiContext, u, terr);
-            // int initialQuantity = initialPurchase.getInt(repairRule);
+            final Rule rule = new Rule(repairRule, player, u, terr);
             int initialQuantity = 0;
             if (initialPurchase.get(u) != null) {
               initialQuantity = initialPurchase.get(u).getInt(repairRule);
             }
-            // initialQuantity = initialPurchase.get(repairRule).getInt(repairRule);
             rule.setQuantity(initialQuantity);
             rule.setMax(taUnit.getHowMuchCanThisUnitBeRepaired(u, terr));
             rule.setName(u.toString());
@@ -266,8 +264,7 @@ public class ProductionRepairPanel extends JPanel {
     private final int m_maxRepairAmount;
     private final int m_repairResults;
 
-    Rule(final RepairRule rule, final PlayerID id, final IUIContext uiContext, final Unit repairUnit,
-        final Territory territoryUnitIsIn) {
+    Rule(final RepairRule rule, final PlayerID id, final Unit repairUnit, final Territory territoryUnitIsIn) {
       setLayout(new GridBagLayout());
       m_unit = repairUnit;
       m_rule = rule;
@@ -279,7 +276,7 @@ public class ProductionRepairPanel extends JPanel {
       }
       m_repairResults = rule.getResults().getInt(type);
       final TripleAUnit taUnit = (TripleAUnit) repairUnit;
-      final Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data,
+      final Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id,
           Matches.UnitHasTakenSomeBombingUnitDamage.match(repairUnit), Matches.UnitIsDisabled.match(repairUnit));
       final String text = "<html> x " + ResourceCollection.toStringForHTML(m_cost, m_data) + "</html>";
       final JLabel label = new JLabel(text, icon, SwingConstants.LEFT);

@@ -109,7 +109,7 @@ public class UnitImageFactory {
    */
   public Image getImage(final UnitType type, final PlayerID player, final GameData data, final boolean damaged,
       final boolean disabled) {
-    final String baseName = getBaseImageName(type, player, data, damaged, disabled);
+    final String baseName = getBaseImageName(type, player, damaged, disabled);
     final String fullName = baseName + player.getName();
     if (m_images.containsKey(fullName)) {
       return m_images.get(fullName);
@@ -177,9 +177,8 @@ public class UnitImageFactory {
   /**
    * Return a icon image for a unit.
    */
-  public ImageIcon getIcon(final UnitType type, final PlayerID player, final GameData data, final boolean damaged,
-      final boolean disabled) {
-    final String baseName = getBaseImageName(type, player, data, damaged, disabled);
+  public ImageIcon getIcon(final UnitType type, final PlayerID player, final boolean damaged, final boolean disabled) {
+    final String baseName = getBaseImageName(type, player, damaged, disabled);
     final String fullName = baseName + player.getName();
     if (m_icons.containsKey(fullName)) {
       return m_icons.get(fullName);
@@ -190,7 +189,7 @@ public class UnitImageFactory {
     return icon;
   }
 
-  public static String getBaseImageName(final UnitType type, final PlayerID id, final GameData data,
+  public static String getBaseImageName(final UnitType type, final PlayerID id,
       final boolean damaged, final boolean disabled) {
     StringBuilder name = new StringBuilder(32);
     name.append(type.getName());
