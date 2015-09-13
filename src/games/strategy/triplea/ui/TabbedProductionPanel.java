@@ -44,7 +44,7 @@ public class TabbedProductionPanel extends ProductionPanel {
   }
 
   @Override
-  protected void initLayout(final PlayerID id) {
+  protected void initLayout() {
     this.removeAll();
     this.setLayout(new GridBagLayout());
     final ResourceCollection totalWithoutTechTokensOrVPs = new ResourceCollection(getResources());

@@ -75,7 +75,7 @@ public class ProductionPanel extends JPanel {
     this.m_bid = bid;
     this.m_data = data;
     this.initRules(id, data, initialPurchase);
-    this.initLayout(id);
+    this.initLayout();
     this.calculateLimits();
     m_dialog.pack();
     m_dialog.setLocationRelativeTo(parent);
@@ -137,8 +137,7 @@ public class ProductionPanel extends JPanel {
     }
   }
 
-  // Edwin: made this protected so the class can be extended
-  protected void initLayout(final PlayerID id) {
+  protected void initLayout() {
     final Insets nullInsets = new Insets(0, 0, 0, 0);
     this.removeAll();
     this.setLayout(new GridBagLayout());

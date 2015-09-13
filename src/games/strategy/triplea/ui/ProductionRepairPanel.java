@@ -78,7 +78,7 @@ public class ProductionRepairPanel extends JPanel {
     this.m_allowedPlayersToRepair = allowedPlayersToRepair;
     this.m_data = data;
     this.initRules(id, allowedPlayersToRepair, data, initialPurchase);
-    this.initLayout(id);
+    this.initLayout();
     this.calculateLimits();
     m_dialog.pack();
     m_dialog.setLocationRelativeTo(parent);
@@ -167,7 +167,7 @@ public class ProductionRepairPanel extends JPanel {
     }
   }
 
-  private void initLayout(final PlayerID id) {
+  private void initLayout() {
     final Insets nullInsets = new Insets(0, 0, 0, 0);
     this.removeAll();
     this.setLayout(new GridBagLayout());
