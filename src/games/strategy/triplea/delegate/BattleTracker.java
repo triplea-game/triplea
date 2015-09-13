@@ -407,7 +407,7 @@ public class BattleTracker implements java.io.Serializable {
       // TODO: if we ever want to scramble to a blitzed territory, then we need to fix this
       if (nonFight == null) {
         nonFight = new FinishedBattle(current, id, this, false, BattleType.NORMAL, data,
-            BattleRecord.BattleResultDescription.CONQUERED, WhoWon.ATTACKER, units);
+            BattleRecord.BattleResultDescription.CONQUERED, WhoWon.ATTACKER);
         m_pendingBattles.add(nonFight);
         getBattleRecords(data).addBattle(id, nonFight.getBattleID(), current, nonFight.getBattleType(), data);
       }
@@ -453,7 +453,7 @@ public class BattleTracker implements java.io.Serializable {
         IBattle nonFight = getPendingBattle(route.getEnd(), false, BattleType.NORMAL);
         if (nonFight == null) {
           nonFight = new FinishedBattle(route.getEnd(), id, this, false, BattleType.NORMAL, data,
-              BattleRecord.BattleResultDescription.CONQUERED, WhoWon.ATTACKER, units);
+              BattleRecord.BattleResultDescription.CONQUERED, WhoWon.ATTACKER);
           m_pendingBattles.add(nonFight);
           getBattleRecords(data).addBattle(id, nonFight.getBattleID(), route.getEnd(), nonFight.getBattleType(), data);
         }
