@@ -94,7 +94,7 @@ public class UserActionPanel extends ActionPanel {
     // DelegateFinder in any way, or access local delegates, or pass the bridge)
     m_validUserActions = new ArrayList<UserActionAttachment>(iUserActionsDelegate.getValidActions()); // reset each time, we need to retest
                                                                                                       // the conditions...
-    Collections.sort(m_validUserActions, new UserActionComparator(getCurrentPlayer(), getData()));
+    Collections.sort(m_validUserActions, new UserActionComparator());
     if (m_validUserActions.isEmpty()) // change to (m_firstRun && m_validUserActions.isEmpty()) if you want to have it show the panel again
                                       // after making an action even if no actions are left.
     {
@@ -258,12 +258,12 @@ public class UserActionPanel extends ActionPanel {
     return panel;
   }
 
-  private String getActionButtonText(final UserActionAttachment paa) {
+  private static String getActionButtonText(final UserActionAttachment paa) {
     final String costString = paa.getCostPU() == 0 ? "" : "[" + paa.getCostPU() + " PU] ";
     return costString + UserActionText.getInstance().getButtonText(paa.getText());
   }
 
-  private JLabel getActionDescriptionLabel(final UserActionAttachment paa) {
+  private static JLabel getActionDescriptionLabel(final UserActionAttachment paa) {
     final String chanceString = paa.getChanceToHit() >= paa.getChanceDiceSides() ? ""
         : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
     return new JLabel(chanceString + UserActionText.getInstance().getDescription(paa.getText()));
@@ -272,7 +272,7 @@ public class UserActionPanel extends ActionPanel {
 
 
 class UserActionComparator implements Comparator<UserActionAttachment> {
-  public UserActionComparator(final PlayerID currentPlayer, final GameData data) {}
+  public UserActionComparator() {}
 
   @Override
   public int compare(final UserActionAttachment uaa1, final UserActionAttachment uaa2) {
