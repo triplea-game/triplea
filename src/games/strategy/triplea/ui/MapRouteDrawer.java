@@ -84,7 +84,7 @@ public class MapRouteDrawer {
           drawCurvedLineWithNextPoint(points[i].x - xOffset, points[i].y - yOffset, points[i + 1].x - xOffset,
               points[i + 1].y - yOffset, points[i + 2].x - xOffset, points[i + 2].y - yOffset, shapes);
         } else if (i + 1 < points.length) {
-          drawLineSegment(graphics, points[i].x - xOffset, points[i].y - yOffset, points[i + 1].x - xOffset,
+          drawLineSegment(points[i].x - xOffset, points[i].y - yOffset, points[i + 1].x - xOffset,
               points[i + 1].y - yOffset, shapes);
         }
       }
@@ -256,7 +256,7 @@ public class MapRouteDrawer {
   }
 
   // http://www.experts-exchange.com/Programming/Programming_Languages/Java/Q_20627343.html
-  private static void drawLineSegment(final Graphics2D graphics, final int x, final int y, final int xx, final int yy,
+  private static void drawLineSegment(final int x, final int y, final int xx, final int yy,
       final List<Shape> shapes) {
     final double arrowWidth = 12.0f;
     final double theta = 0.7f;
