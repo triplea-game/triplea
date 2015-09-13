@@ -864,8 +864,7 @@ public class TripleAFrame extends MainGameFrame {
     return choice == 1;
   }
 
-  public boolean getOKToLetUnitsDie(final PlayerID m_id, final Collection<Territory> unitsCantFight,
-      final boolean movePhase) {
+  public boolean getOKToLetUnitsDie(final Collection<Territory> unitsCantFight, final boolean movePhase) {
     if (unitsCantFight == null || unitsCantFight.isEmpty() || m_messageAndDialogThreadPool == null) {
       return true;
     }

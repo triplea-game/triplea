@@ -376,7 +376,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     if (unitsCantFight.isEmpty()) {
       return false;
     } else {
-      if (m_ui.getOKToLetUnitsDie(getPlayerID(), unitsCantFight, true)) {
+      if (m_ui.getOKToLetUnitsDie(unitsCantFight, true)) {
         return false;
       }
       return true;
