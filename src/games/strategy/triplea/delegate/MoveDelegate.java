@@ -202,18 +202,13 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
     m_needToDoRockets = true;
   }
 
-  @Override
-  public Serializable saveState() {
-    // see below
-    return saveState(true);
-  }
-
   /**
    * Returns the state of the Delegate. We dont want to save the undoState if
    * we are saving the state for an undo move (we dont need it, it will just
    * take up extra space).
    */
-  private Serializable saveState(final boolean saveUndo) {
+  @Override
+  public Serializable saveState() {
     final MoveExtendedDelegateState state = new MoveExtendedDelegateState();
     state.superState = super.saveState();
     // add other variables to state here:
