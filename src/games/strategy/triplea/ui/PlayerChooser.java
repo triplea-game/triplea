@@ -52,7 +52,7 @@ public class PlayerChooser extends JOptionPane {
     m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     m_list.setSelectedValue(m_defaultPlayer, true);
     m_list.setFocusable(false);
-    m_list.setCellRenderer(new PlayerChooserRenderer(m_players, m_uiContext));
+    m_list.setCellRenderer(new PlayerChooserRenderer(m_uiContext));
     m_list.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent evt) {
@@ -83,7 +83,7 @@ class PlayerChooserRenderer extends DefaultListCellRenderer {
   private static final long serialVersionUID = -2185921124436293304L;
   private final IUIContext m_uiContext;
 
-  PlayerChooserRenderer(final PlayerList players, final IUIContext uiContext) {
+  PlayerChooserRenderer(final IUIContext uiContext) {
     m_uiContext = uiContext;
   }
 
