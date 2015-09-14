@@ -220,6 +220,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
     }
   }
 
+  @SuppressWarnings("unused")
   protected void specificViewAction(final AbstractUndoableMove move) {
     // do nothing if not overwritten in child class
   }

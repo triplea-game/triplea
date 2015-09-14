@@ -558,9 +558,18 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
+   * @deprecated Alternate version of htis method exists with fewer parameters, user that. This
+   * is deprecated until it is known RMI does not call this exact method signature.
+   */
+  @SuppressWarnings("unused")
+  String playerHasEnoughUnits(final Collection<Unit> units, final Territory at, final PlayerID player) {
+    return playerHasEnoughUnits(units,player);
+  }
+
+  /**
    * Make sure the player has enough in hand to place the units.
    */
-  String playerHasEnoughUnits(final Collection<Unit> units, final Territory at, final PlayerID player) {
+  public String playerHasEnoughUnits(final Collection<Unit> units, final PlayerID player) {
     // make sure the player has enough units in hand to place
     if (!player.getUnits().getUnits().containsAll(units)) {
       return "Not enough units";
