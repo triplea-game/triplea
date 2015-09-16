@@ -125,7 +125,7 @@ public class Decoder {
       }
       conversation.close();
       // we need to indicate the channel was closed
-      m_errorReporter.error(channel, new CouldNotLogInException());
+      m_errorReporter.error(channel, new CouldNotLogInException("channel has been closed, try again later"));
     } else if (a == ACTION.UNQUARANTINE) {
       if (s_logger.isLoggable(Level.FINER)) {
         s_logger.log(Level.FINER, "Accepting quarantined connection to:" + channel.socket().getRemoteSocketAddress());
