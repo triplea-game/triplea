@@ -7,6 +7,8 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import com.google.common.base.Throwables;
+
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.StatusManager;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
@@ -52,8 +54,11 @@ public class LobbyServer {
       final PrintStream out = System.out;
       setUpLogging();
       final int port = Integer.parseInt(System.getProperty(LOBBY_PORT_PROPERTY, String.valueOf(DEFAULT_LOBBY_PORT)));
+
       System.out.println("Trying to listen on port:" + port);
-      runningServer = new LobbyServer(port);
+      ServerMessenger serverMessenger = createServerMessenger(port);
+      runningServer = new LobbyServer(serverMessenger);
+
       System.out.println("Starting database");
       // initialize the database
       Database.getConnection().close();
@@ -66,6 +71,14 @@ public class LobbyServer {
       }
     } catch (final Exception ex) {
       s_logger.log(Level.SEVERE, ex.toString(), ex);
+    }
+  }
+
+  private static ServerMessenger createServerMessenger(final int port) {
+    try {
+      return new ServerMessenger(ADMIN_USERNAME, port);
+    } catch (final IOException e) {
+      throw Throwables.propagate(e);
     }
   }
 
@@ -153,23 +166,19 @@ public class LobbyServer {
   }
 
 
-
-
   /** Creates a new instance of LobbyServer */
-  public LobbyServer(final int port) {
-    try {
-      server = new ServerMessenger(ADMIN_USERNAME, port);
-    } catch (final IOException ex) {
-      s_logger.log(Level.SEVERE, ex.toString());
-      throw new IllegalStateException(ex.getMessage());
-    }
+  public LobbyServer(final ServerMessenger serverMessenger ) {
+    server = serverMessenger;
+
     m_messengers = new Messengers(server);
     server.setLoginValidator(new LobbyLoginValidator());
     // setup common objects
     new UserManager().register(m_messengers.getRemoteMessenger());
     final ModeratorController moderatorController = new ModeratorController(server, m_messengers);
     moderatorController.register(m_messengers.getRemoteMessenger());
+
     new ChatController(LOBBY_CHAT, m_messengers, moderatorController);
+
     // register the status controller
     final StatusManager statusManager = new StatusManager(m_messengers);
     // we dont need this manager now
