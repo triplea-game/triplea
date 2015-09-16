@@ -1,8 +1,6 @@
 package games.strategy.engine.lobby.server;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -41,38 +39,38 @@ public class LobbyServer {
 
 
   public static void main(final String args[]) {
+    setSystemProperties(args);
     try {
-      // send args to system properties
-      handleCommandLineArgs(args);
-      // turn off sound if no ui
-      final boolean startUI = Boolean.parseBoolean(System.getProperty(ENABLE_UI_PROPERTY, "false"));
-      if (!startUI) {
-        ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
-      }
-      // grab these before we override them with the loggers
-      final InputStream in = System.in;
-      final PrintStream out = System.out;
-      setUpLogging();
-      final int port = Integer.parseInt(System.getProperty(LOBBY_PORT_PROPERTY, String.valueOf(DEFAULT_LOBBY_PORT)));
-
-      System.out.println("Trying to listen on port:" + port);
-      ServerMessenger serverMessenger = createServerMessenger(port);
-      runningServer = new LobbyServer(serverMessenger);
-
-      System.out.println("Starting database");
-      // initialize the database
+      System.out.println("Initializating the database");
       Database.getConnection().close();
-      s_logger.info("Lobby started");
-      if (startUI) {
-        startUI(runningServer);
-      }
-      if (Boolean.parseBoolean(System.getProperty(ENABLE_CONSOLE_PROPERTY, "false"))) {
-        startConsole(runningServer, in, out);
-      }
     } catch (final Exception ex) {
-      s_logger.log(Level.SEVERE, ex.toString(), ex);
+      s_logger.log(Level.SEVERE, "Failed to initialize DB, failed to start the lobby. " + ex.toString(), ex);
+      return;
     }
+
+    final int port = Integer.parseInt(System.getProperty(LOBBY_PORT_PROPERTY, String.valueOf(DEFAULT_LOBBY_PORT)));
+    System.out.println("Trying to listen on port:" + port);
+    ServerMessenger serverMessenger = createServerMessenger(port);
+    runLobby(serverMessenger);
   }
+
+  protected static void runLobby(ServerMessenger serverMessenger) {
+    runningServer = new LobbyServer(serverMessenger);
+
+    final boolean startUI = Boolean.parseBoolean(System.getProperty(ENABLE_UI_PROPERTY, "false"));
+    if (startUI) {
+      startUI(runningServer);
+    } else {
+      ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
+    }
+    if (Boolean.parseBoolean(System.getProperty(ENABLE_CONSOLE_PROPERTY, "false"))) {
+      System.out.println("starting console");
+      new HeadlessLobbyConsole(runningServer, System.in, System.out).start();
+    }
+    setUpLoggingOnStandardInputOutputStreams();
+    s_logger.info("Lobby started");
+  }
+
 
   private static ServerMessenger createServerMessenger(final int port) {
     try {
@@ -88,7 +86,7 @@ public class LobbyServer {
 
 
 
-  private static void setUpLogging() {
+  private static void setUpLoggingOnStandardInputOutputStreams() {
     // setup logging to read our logging.properties
     try {
       LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("server-logging.properties"));
@@ -103,7 +101,7 @@ public class LobbyServer {
   /**
    * Move command line arguments to System.properties
    */
-  private static void handleCommandLineArgs(final String[] args) {
+  private static void setSystemProperties(final String[] args) {
     System.getProperties().setProperty(HeadlessGameServer.TRIPLEA_HEADLESS, "true");
     final String[] properties = getProperties();
     boolean usagePrinted = false;
@@ -146,10 +144,6 @@ public class LobbyServer {
         + ENABLE_UI_PROPERTY + "=<true/false>\n" + "   " + ENABLE_CONSOLE_PROPERTY + "=<true/false>\n");
   }
 
-  private static void startConsole(final LobbyServer server, final InputStream in, final PrintStream out) {
-    System.out.println("starting console");
-    new HeadlessLobbyConsole(server, in, out).start();
-  }
 
   private static void startUI(final LobbyServer server) {
     System.out.println("starting ui");
