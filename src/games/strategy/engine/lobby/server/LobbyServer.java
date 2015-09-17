@@ -72,7 +72,7 @@ public class LobbyServer {
   }
 
 
-  private static ServerMessenger createServerMessenger(final int port) {
+  protected static ServerMessenger createServerMessenger(final int port) {
     try {
       return new ServerMessenger(ADMIN_USERNAME, port);
     } catch (final IOException e) {
@@ -184,12 +184,9 @@ public class LobbyServer {
     server.setAcceptNewConnections(true);
   }
 
-
   private void stop() {
     server.shutDown();
   }
-
-
 
   public IServerMessenger getMessenger() {
     return (IServerMessenger) m_messengers.getMessenger();
@@ -198,5 +195,4 @@ public class LobbyServer {
   public Messengers getMessengers() {
     return m_messengers;
   }
-
 }

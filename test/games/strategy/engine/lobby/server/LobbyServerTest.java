@@ -15,6 +15,7 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URL;
@@ -36,7 +37,11 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.ui.MainFrame;
@@ -53,28 +58,28 @@ import games.strategy.net.ClientMessenger;
 import games.strategy.net.CouldNotLogInException;
 import games.strategy.net.GUID;
 import games.strategy.net.IConnectionLogin;
+import games.strategy.net.IMessageListener;
 import games.strategy.net.INode;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
+import games.strategy.net.ServerMessenger;
 import games.strategy.util.MD5Crypt;
 
+@RunWith(MockitoJUnitRunner.class)
 public class LobbyServerTest {
 
-
   private ILobbyGameController lobbyController;
-
+  private ServerMessenger serverMessenger;
 
   @Before
   public void testSetup() throws Exception {
+    serverMessenger = LobbyServer.createServerMessenger( LobbyServer.DEFAULT_LOBBY_PORT);
+    LobbyServer.runLobby(serverMessenger);
 
-    LobbyServer.main(new String[0]);
-
-    LobbyServerProperties props = new LobbyServerProperties("127.0.100.1", LobbyServer.DEFAULT_LOBBY_PORT, "", "the server says");
-
+    LobbyServerProperties props = new LobbyServerProperties("127.0.0.1", LobbyServer.DEFAULT_LOBBY_PORT, "", "the server says");
     final LobbyClient client = login( props );
     assertThat(client, notNullValue());
     lobbyController = (ILobbyGameController) client.getMessengers().getRemoteMessenger().getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
-//    client.getMessengers().get
   }
 
   private static LobbyClient login(LobbyServerProperties props) {
@@ -157,10 +162,10 @@ public class LobbyServerTest {
   }
 
   @Test
-  public void postAndRemoveGame() {
-
-
-//    lobbyController.updateGame(gameID, description);
-
+  public void postAndThenRemoveGame() {
+    lobbyController.postGame(new GUID(), createGame());
+    assertGameCountIs(1);
+    serverMessenger.notifyConnectionsChanged(false, createNode());
+    assertGameCountIs(0);
   }
 }
