@@ -274,7 +274,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
 
     final PlayerID id = getPlayerID();
     if (!m_soundPlayedAlreadyTechnology) {
-      ClipPlayer.play(SoundPath.CLIP_PHASE_TECHNOLOGY, id.getName());
+      ClipPlayer.play(SoundPath.CLIP_PHASE_TECHNOLOGY, id);
       m_soundPlayedAlreadyTechnology = true;
     }
     final TechRoll techRoll = m_ui.getTechRolls(id);
@@ -308,7 +308,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
 
     final PlayerID id = getPlayerID();
     if ((nonCombat && !m_soundPlayedAlreadyNonCombatMove) || (!nonCombat && !m_soundPlayedAlreadyCombatMove)) {
-      ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_NONCOMBAT, id.getName());
+      ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_NONCOMBAT, id);
       m_soundPlayedAlreadyNonCombatMove = true;
     }
     final MoveDescription moveDescription = m_ui.getMove(id, getPlayerBridge(), nonCombat, stepName);
@@ -389,7 +389,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     final PlayerID id = getPlayerID();
     // play a sound for this phase
     if (!bid && !m_soundPlayedAlreadyPurchase) {
-      ClipPlayer.play(SoundPath.CLIP_PHASE_PURCHASE, id.getName());
+      ClipPlayer.play(SoundPath.CLIP_PHASE_PURCHASE, id);
       m_soundPlayedAlreadyPurchase = true;
     }
     // Check if any factories need to be repaired
@@ -487,7 +487,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
         return;
       }
       if (!m_soundPlayedAlreadyBattle) {
-        ClipPlayer.play(SoundPath.CLIP_PHASE_BATTLE, id.getName());
+        ClipPlayer.play(SoundPath.CLIP_PHASE_BATTLE, id);
         m_soundPlayedAlreadyBattle = true;
       }
       final FightBattleDetails details = m_ui.getBattle(id, battles.getBattles());
@@ -522,7 +522,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     }
     while (true) {
       if (!m_soundPlayedAlreadyPlacement) {
-        ClipPlayer.play(SoundPath.CLIP_PHASE_PLACEMENT, id.getName());
+        ClipPlayer.play(SoundPath.CLIP_PHASE_PLACEMENT, id);
         m_soundPlayedAlreadyPlacement = true;
       }
       final PlaceData placeData = m_ui.waitForPlace(id, bid, getPlayerBridge());
@@ -562,7 +562,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     if (!m_soundPlayedAlreadyEndTurn && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(getPlayerID(), data)) {
       // do not play if we are reloading a savegame from pbem (gets annoying)
       if (!endTurnDelegate.getHasPostedTurnSummary()) {
-        ClipPlayer.play(SoundPath.CLIP_PHASE_END_TURN, getPlayerID().getName());
+        ClipPlayer.play(SoundPath.CLIP_PHASE_END_TURN, getPlayerID());
       }
       m_soundPlayedAlreadyEndTurn = true;
     }

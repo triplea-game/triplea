@@ -98,7 +98,7 @@ public class UserActionPanel extends ActionPanel {
       return null;
     } else {
       if (m_firstRun) {
-        ClipPlayer.play(SoundPath.CLIP_PHASE_USER_ACTIONS, getCurrentPlayer().getName());
+        ClipPlayer.play(SoundPath.CLIP_PHASE_USER_ACTIONS, getCurrentPlayer());
       }
       SwingUtilities.invokeLater(new Runnable() {
         @Override

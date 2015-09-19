@@ -269,13 +269,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
     // play a sound
     if (Match.someMatch(units, Matches.UnitIsInfrastructure)) {
-      m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_INFRASTRUCTURE, m_player.getName());
+      m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_INFRASTRUCTURE, m_player);
     } else if (Match.someMatch(units, Matches.UnitIsSea)) {
-      m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_SEA, m_player.getName());
+      m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_SEA, m_player);
     } else if (Match.someMatch(units, Matches.UnitIsAir)) {
-      m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_AIR, m_player.getName());
+      m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_AIR, m_player);
     } else {
-      m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_LAND, m_player.getName());
+      m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_LAND, m_player);
       // System.out.println("");
     }
   }

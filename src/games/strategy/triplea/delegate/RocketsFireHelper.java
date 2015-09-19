@@ -431,7 +431,7 @@ public class RocketsFireHelper {
     }
     // play a sound
     if (cost > 0) {
-      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_ROCKET, player.getName());
+      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_ROCKET, player);
     }
   }
 

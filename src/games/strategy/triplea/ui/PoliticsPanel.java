@@ -104,7 +104,7 @@ public class PoliticsPanel extends ActionPanel {
       return null;
     } else {
       if (m_firstRun) {
-        ClipPlayer.play(SoundPath.CLIP_PHASE_POLITICS, getCurrentPlayer().getName());
+        ClipPlayer.play(SoundPath.CLIP_PHASE_POLITICS, getCurrentPlayer());
       }
       SwingUtilities.invokeLater(new Runnable() {
         @Override

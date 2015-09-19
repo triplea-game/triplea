@@ -40,7 +40,7 @@ public class ClipPlayerTest {
 
     ClipPlayer.setBeSilent(false);
     ClipPlayer.getInstance().sounds.put(name, availableSounds);
-    ClipPlayer.play(name, null);
+    ClipPlayer.play(name);
     try {
       // sleep for a fraction of a second to let the audio play
       Thread.sleep(100);

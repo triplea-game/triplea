@@ -1,13 +1,10 @@
 package games.strategy.sound;
 
 import java.util.Collection;
-import java.util.Collections;
+
 
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
-import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.triplea.TripleAPlayer;
 
 /**
  * A sound channel allowing sounds normally played on the server (for example: in a delegate, such as a the move
@@ -23,12 +20,12 @@ public class DefaultSoundChannel implements ISound {
 
 
   @Override
-  public void playSoundForAll(final String clipName, final String subFolder) {
-    ClipPlayer.play(clipName, subFolder);
+  public void playSoundForAll(final String clipName, final PlayerID playerID) {
+    ClipPlayer.play(clipName, playerID);
   }
 
   @Override
-  public void playSoundToPlayers(final String clipName, final String subFolder,
+  public void playSoundToPlayers(final String clipName,
       final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
       final boolean includeObservers) {
     if (playersToSendTo == null || playersToSendTo.isEmpty()) {
@@ -52,7 +49,7 @@ public class DefaultSoundChannel implements ISound {
       isPlaying = true;
     }
     if (isPlaying) {
-      ClipPlayer.play(clipName, subFolder);
+      ClipPlayer.play(clipName);
     }
   }
 

@@ -1648,7 +1648,7 @@ public class TripleAFrame extends MainGameFrame {
         public void run() {
           final Boolean play = m_requiredTurnSeries.get(player);
           if (play != null && play.booleanValue()) {
-            ClipPlayer.play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player.getName());
+            ClipPlayer.play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
             m_requiredTurnSeries.put(player, false);
           }
           // center on capital of player, if it is a new player

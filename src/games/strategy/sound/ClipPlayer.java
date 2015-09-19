@@ -33,7 +33,6 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.triplea.ResourceLoader;
 
@@ -278,22 +277,18 @@ public class ClipPlayer {
 
   
   public static void play(final String clipName) {
-    play(clipName,null);
-  }
-  /**
-   * @param clipName
-   *        String - the file name of the clip
-   * @param subFolder
-   *        String - the name of the player, or null
-   */
-  public static void play(final String clipName, final String subFolder) {
-    getInstance().playClip(clipName, subFolder);
+    play(clipName, (PlayerID) null);
   }
 
   /**
-   * @param clipName
-   *        String - the file name of the clip
+   * @param clipName - the file name of the clip
+   * @param playerId - the name of the player, or null
    */
+  public static void play(String clipPath, PlayerID playerId) {
+    getInstance().playClip(clipPath, playerId.getName());
+  }
+  
+  
   private void playClip(final String clipName, final String subFolder) {
     if (beSilent || isMuted(clipName)) {
       return;
@@ -590,5 +585,3 @@ public class ClipPlayer {
     return false;
   }
 }
-
-

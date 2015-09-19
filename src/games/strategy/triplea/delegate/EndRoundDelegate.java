@@ -274,8 +274,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       m_gameOver = true;
       m_winners = winners;
       aBridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_GAME_WON,
-          ((m_winners != null && !m_winners.isEmpty()) ? m_winners.iterator().next().getName()
-              : PlayerID.NULL_PLAYERID.getName()));
+          ((m_winners != null && !m_winners.isEmpty()) ? m_winners.iterator().next()
+              : PlayerID.NULL_PLAYERID));
       // send a message to everyone's screen except the HOST (there is no 'current player' for the end round delegate)
       final String title = "Victory Achieved"
           + (winners.isEmpty() ? "" : " by " + MyFormatter.defaultNamedToTextList(winners, ", ", false));
