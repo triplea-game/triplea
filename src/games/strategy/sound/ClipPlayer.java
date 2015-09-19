@@ -191,15 +191,15 @@ public class ClipPlayer {
       try {
         setPref = !Arrays.asList(prefs.keys()).contains(SOUND_PREFERENCE_GLOBAL_SWITCH);
       } catch (final BackingStoreException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
     if (setPref) {
       prefs.putBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, silentBool);
       try {
         prefs.flush();
-      } catch (final BackingStoreException ex) {
-        ex.printStackTrace();
+      } catch (final BackingStoreException e) {
+        ClientLogger.logQuietly(e);
       }
     }
   }
@@ -297,7 +297,7 @@ public class ClipPlayer {
             clip.loop(0);
           }
         } catch (final Exception e) {
-          e.printStackTrace();
+          ClientLogger.logQuietly(e);
         }
       }
     };
@@ -332,7 +332,7 @@ public class ClipPlayer {
         return loadClipPath(clipName, false, parseThenTestOnly);
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
     return null;
   }
@@ -448,7 +448,8 @@ public class ClipPlayer {
               availableSounds.add(individualSoundURL);
             }
           } catch (final MalformedURLException e) {
-            System.out.println("Error " + e.getMessage() + " with sound file: " + sound.getPath());
+            String msg = "Error " + e.getMessage() + " with sound file: " + sound.getPath();
+            ClientLogger.logQuietly(msg, e);
           }
         }
       }
