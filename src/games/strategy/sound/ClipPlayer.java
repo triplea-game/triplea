@@ -273,11 +273,11 @@ public class ClipPlayer {
    * @param playerId - the name of the player, or null
    */
   public static void play(String clipPath, PlayerID playerId) {
-    getInstance().playClip(clipPath, playerId.getName());
+    getInstance().playClip(clipPath, playerId);
   }
   
   
-  private void playClip(final String clipName, final String subFolder) {
+  private void playClip(final String clipName, final PlayerID playerId) {
     if (beSilent || isMuted(clipName)) {
       return;
     }
@@ -286,6 +286,11 @@ public class ClipPlayer {
       @Override
       public void run() {
         try {
+          String subFolder = null;
+          if( playerId != null ) {
+            subFolder = playerId.toString();
+          }
+
           final Clip clip = loadClip(clipName, subFolder, false);
           if (clip != null) {
             clip.setFramePosition(0);
