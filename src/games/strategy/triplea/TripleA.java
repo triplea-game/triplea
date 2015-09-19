@@ -24,6 +24,7 @@ import games.strategy.engine.framework.headlessGameServer.HeadlessGameServerUI;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
+import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.DummySoundChannel;
 import games.strategy.sound.ISound;
@@ -143,7 +144,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
             game.addSoundChannel(m_soundChannel);
             frame.setSize(700, 400);
             frame.setVisible(true);
-            DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_GAME_START, null);
+            ClipPlayer.play(SoundPath.CLIP_GAME_START);
             connectPlayers(players, frame);
             SwingUtilities.invokeLater(new Runnable() {
               @Override

@@ -16,6 +16,7 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.ServerMessenger;
+import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.SoundPath;
 
@@ -184,7 +185,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
           return;
         }
         addChatMessage(message, from, thirdperson);
-        DefaultSoundChannel.playSoundOnLocalMachine(sound, null);
+        ClipPlayer.play(sound);
       }
     });
     t.start();

@@ -120,6 +120,7 @@ import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Renderable;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
+import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.SoundPath;
 import games.strategy.thread.ThreadPool;
@@ -1647,7 +1648,7 @@ public class TripleAFrame extends MainGameFrame {
         public void run() {
           final Boolean play = m_requiredTurnSeries.get(player);
           if (play != null && play.booleanValue()) {
-            DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player.getName());
+            ClipPlayer.play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player.getName());
             m_requiredTurnSeries.put(player, false);
           }
           // center on capital of player, if it is a new player

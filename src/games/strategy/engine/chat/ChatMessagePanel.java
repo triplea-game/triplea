@@ -31,6 +31,7 @@ import javax.swing.text.StyleConstants;
 
 import games.strategy.net.INode;
 import games.strategy.net.ServerMessenger;
+import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.SoundPath;
 
@@ -248,10 +249,9 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
             scrollModel.setValue(scrollModel.getMaximum());
           }
         });
-        DefaultSoundChannel.playSoundOnLocalMachine(sound, null);
+        ClipPlayer.play(sound);
       }
     };
-    // invoke in the swing event thread
     if (SwingUtilities.isEventDispatchThread()) {
       runner.run();
     } else {

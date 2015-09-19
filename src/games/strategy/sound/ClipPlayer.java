@@ -276,13 +276,17 @@ public class ClipPlayer {
     return SoundPath.getSoundOptions(sounds);
   }
 
+  
+  public static void play(final String clipName) {
+    play(clipName,null);
+  }
   /**
    * @param clipName
    *        String - the file name of the clip
    * @param subFolder
    *        String - the name of the player, or null
    */
-  static void play(final String clipName, final String subFolder) {
+  public static void play(final String clipName, final String subFolder) {
     getInstance().playClip(clipName, subFolder);
   }
 

@@ -27,6 +27,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attatchments.UserActionAttachment;
@@ -97,7 +98,7 @@ public class UserActionPanel extends ActionPanel {
       return null;
     } else {
       if (m_firstRun) {
-        DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_PHASE_USER_ACTIONS, getCurrentPlayer().getName());
+        ClipPlayer.play(SoundPath.CLIP_PHASE_USER_ACTIONS, getCurrentPlayer().getName());
       }
       SwingUtilities.invokeLater(new Runnable() {
         @Override
