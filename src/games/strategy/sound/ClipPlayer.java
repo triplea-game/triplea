@@ -113,20 +113,20 @@ import games.strategy.triplea.ResourceLoader;
  * 6. Randomize the list's order, then pick one, and play the sound.
  */
 public class ClipPlayer {
-  private static ClipPlayer clipPlayer;
-  private boolean beSilent = false;
-  private final HashSet<String> mutedClips = new HashSet<String>();
-  private final HashMap<String, List<URL>> sounds = new HashMap<String, List<URL>>();
-  private final ResourceLoader resourceLoader;
-  private final Set<String> subFolders = new HashSet<String>();
-  // MacOS and Linux can only handle 30 or 32 sound files being open at same time,
-  // so we'll be safe and pick 24
-  private final ClipCache clipCache = new ClipCache(24);
-  // standard settings
   protected static final String ASSETS_SOUNDS_FOLDER = "sounds";
   private static final String SOUND_PREFERENCE_GLOBAL_SWITCH = "beSilent2";
   private static final String SOUND_PREFERENCE_PREFIX = "sound_";
   private static final boolean DEFAULT_SOUND_SILENCED_SWITCH_SETTING = false;
+
+  protected final HashMap<String, List<URL>> sounds = new HashMap<String, List<URL>>();
+  private final HashSet<String> mutedClips = new HashSet<String>();
+  private final HashMap<String, List<URL>> sounds = new HashMap<String, List<URL>>();
+  private final ResourceLoader resourceLoader;
+  private final Set<String> subFolders = new HashSet<String>();
+  private final ClipCache clipCache = new ClipCache(24); // MacOS and Linux can only handle 30 or 32 sound files being open at same time,
+                                                           // so we'll be safe and pick 24
+  private static ClipPlayer clipPlayer;
+  private boolean beSilent = false;
 
   public static synchronized ClipPlayer getInstance() {
     if (clipPlayer == null) {
