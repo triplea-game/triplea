@@ -41,38 +41,6 @@ public class DefaultSoundChannel implements ISound {
 
   @Override
   public void playSoundForAll(final String clipName, final String subFolder) {
-    playSoundForAll(clipName, subFolder, false, false, false);
-  }
-
-  private void playSoundForAll(final String clipName, final String subFolder, final boolean doNotIncludeHost,
-      final boolean doNotIncludeClients, final boolean doNotIncludeObservers) {
-    if (doNotIncludeHost && doNotIncludeClients && doNotIncludeObservers) {
-      return;
-    }
-    if (doNotIncludeHost || doNotIncludeClients || doNotIncludeObservers) {
-      boolean isHost = false;
-      boolean isClient = false;
-      boolean isObserver = true;
-      if (doNotIncludeHost || doNotIncludeClients || doNotIncludeObservers) {
-        for (final IGamePlayer player : m_localPlayers.getLocalPlayers()) {
-          // if we have any local players, we are not an observer
-          isObserver = false;
-          if (player instanceof TripleAPlayer) {
-            if (IGameLoader.CLIENT_PLAYER_TYPE.equals(((TripleAPlayer) player).getType())) {
-              isClient = true;
-            } else {
-              isHost = true;
-            }
-          } else {
-            // AIs are run by the host machine
-            isHost = true;
-          }
-        }
-      }
-      if ((doNotIncludeHost && isHost) || (doNotIncludeClients && isClient) || (doNotIncludeObservers && isObserver)) {
-        return;
-      }
-    }
     playSoundOnLocalMachine(clipName, subFolder);
   }
 
