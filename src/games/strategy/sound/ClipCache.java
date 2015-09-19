@@ -17,14 +17,12 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 class ClipCache {
   private final HashMap<URL, Clip> clipMap = new HashMap<URL, Clip>();
   private final List<URL> cacheOrder = new ArrayList<URL>();
-  private final int maxSize;
 
-  ClipCache(final int max) {
-    if (max < 1) {
-      throw new IllegalArgumentException("ClipCache max must be at least 1");
-    }
-    maxSize = max;
-  }
+  // MacOS and Linux can only handle 30 or 32 sound files being open at same time,
+  // so we'll be safe and pick 24
+  private final int maxSize = 24;
+
+  public ClipCache() {}
 
   public synchronized Clip get(final URL file) {
     Clip clip = clipMap.get(file);

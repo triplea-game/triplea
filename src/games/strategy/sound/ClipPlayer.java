@@ -1,38 +1,29 @@
 package games.strategy.sound;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.triplea.ResourceLoader;
 
@@ -122,8 +113,7 @@ public class ClipPlayer {
   private final HashSet<String> mutedClips = new HashSet<String>();
   private final ResourceLoader resourceLoader;
   private final Set<String> subFolders = new HashSet<String>();
-  private final ClipCache clipCache = new ClipCache(24); // MacOS and Linux can only handle 30 or 32 sound files being open at same time,
-                                                           // so we'll be safe and pick 24
+  private final ClipCache clipCache = new ClipCache();
   private static ClipPlayer clipPlayer;
   private boolean beSilent = false;
 
