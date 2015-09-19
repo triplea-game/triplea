@@ -237,13 +237,10 @@ public class ClipPlayer {
     } else {
       mutedClips.remove(clipName);
     }
-    putSoundInPreferences(clipName, value);
+    final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
+    prefs.putBoolean(SOUND_PREFERENCE_PREFIX + clipName, value);
   }
 
-  private void putSoundInPreferences(final String clip, final boolean isMuted) {
-    final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
-    prefs.putBoolean(SOUND_PREFERENCE_PREFIX + clip, isMuted);
-  }
 
   /** Flushes sounds preferences to persisted data store. This method is *slow* and resource expensive. */
   protected void saveSoundPreferences() {
@@ -256,7 +253,7 @@ public class ClipPlayer {
   }
   
   public static void play(final String clipName) {
-    play(clipName, (PlayerID) null);
+    play(clipName, null);
   }
 
   /**
