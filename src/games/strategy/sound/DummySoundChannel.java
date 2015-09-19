@@ -26,7 +26,4 @@ public class DummySoundChannel implements ISound {
       final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
       final boolean includeObservers) {}
 
-  @Override
-  public void playSoundToPlayer(final String clipName, final String subFolder, final PlayerID playerToSendTo,
-      final boolean includeObservers) {}
 }
