@@ -214,10 +214,7 @@ public class ClipPlayer {
 
   public static boolean isSilencedClip(final String clipName) {
     final ClipPlayer clipPlayer = getInstance();
-    if (clipPlayer == null || clipPlayer.beSilent || clipPlayer.isMuted(clipName)) {
-      return true;
-    }
-    return false;
+    return (clipPlayer == null || clipPlayer.beSilent || clipPlayer.isMuted(clipName));
   }
 
   public boolean isMuted(final String clipName) {
