@@ -268,10 +268,6 @@ public class ClipPlayer {
     }
   }
 
-  public ArrayList<IEditableProperty> getSoundOptions(final SoundPath.SoundType sounds) {
-    return SoundPath.getSoundOptions(sounds);
-  }
-
   
   public static void play(final String clipName) {
     play(clipName, (PlayerID) null);
