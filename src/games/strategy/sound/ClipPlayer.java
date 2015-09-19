@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -109,13 +110,13 @@ public class ClipPlayer {
   private static final String SOUND_PREFERENCE_PREFIX = "sound_";
   private static final boolean DEFAULT_SOUND_SILENCED_SWITCH_SETTING = false;
 
-  protected final HashMap<String, List<URL>> sounds = new HashMap<String, List<URL>>();
-  private final HashSet<String> mutedClips = new HashSet<String>();
-  private final ResourceLoader resourceLoader;
+  protected final Map<String, List<URL>> sounds = new HashMap<String, List<URL>>();
+  private final Set<String> mutedClips = new HashSet<String>();
   private final Set<String> subFolders = new HashSet<String>();
   private final ClipCache clipCache = new ClipCache();
-  private static ClipPlayer clipPlayer;
   private boolean beSilent = false;
+  private final ResourceLoader resourceLoader;
+  private static ClipPlayer clipPlayer;
 
   public static synchronized ClipPlayer getInstance() {
     if (clipPlayer == null) {
