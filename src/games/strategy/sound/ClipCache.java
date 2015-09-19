@@ -35,31 +35,26 @@ class ClipCache {
     }
     if (clipMap.size() >= maxSize) {
       final URL leastPlayed = cacheOrder.get(0);
-      // System.out.println("Removing " + leastPlayed + " and adding " + file);
       final Clip leastClip = clipMap.remove(leastPlayed);
       leastClip.stop();
       leastClip.flush();
       leastClip.close();
       cacheOrder.remove(leastPlayed);
     }
-    clip = createClip(file, false);
+    clip = createClip(file);
     clipMap.put(file, clip);
     cacheOrder.add(file);
     return clip;
   }
   
-  private static synchronized Clip createClip(final URL clipFile, final boolean testOnly) {
+  private static synchronized Clip createClip(final URL clipFile) {
     try {
       final AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(clipFile);
       final AudioFormat format = audioInputStream.getFormat();
       final DataLine.Info info = new DataLine.Info(Clip.class, format);
       final Clip clip = (Clip) AudioSystem.getLine(info);
       clip.open(audioInputStream);
-      if (!testOnly) {
-        return clip;
-      }
-      clip.close();
-      return null;
+      return clip;
     }
     // these can happen if the sound isnt configured, its not that bad.
     catch (final LineUnavailableException e) {
@@ -68,8 +63,6 @@ class ClipCache {
       e.printStackTrace(System.out);
     } catch (final UnsupportedAudioFileException e) {
       e.printStackTrace(System.out);
-    } catch (final RuntimeException re) {
-      re.printStackTrace(System.out);
     }
     return null;
   }

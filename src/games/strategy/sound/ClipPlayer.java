@@ -520,26 +520,13 @@ public class ClipPlayer {
       clip = (Clip) AudioSystem.getLine(info);
       clip.open(audioInputStream);
       successful = true;
-    }
-    // these can happen if the sound isnt configured, its not that bad.
-    catch (final LineUnavailableException e) {
-      e.printStackTrace(System.out);
-    } catch (final IOException e) {
-      e.printStackTrace(System.out);
-    } catch (final UnsupportedAudioFileException e) {
-      e.printStackTrace(System.out);
-    } catch (final RuntimeException e) {
-      e.printStackTrace(System.out);
     } catch (final Exception e) {
-      e.printStackTrace(System.out);
+      ClientLogger.logQuietly(e);
     } finally {
       if (clip != null) {
         clip.close();
-        if (successful) {
-          return true;
-        }
       }
     }
-    return false;
+    return successful;
   }
 }
