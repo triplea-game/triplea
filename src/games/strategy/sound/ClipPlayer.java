@@ -174,13 +174,11 @@ public class ClipPlayer {
 
   /**
    * If set to true, no sounds will play.
-   * This property is persisted using the java.util.prefs API, and will
-   * persist after the vm has stopped.
+   * This property is persisted using the java.util.prefs API, and will persist after the vm has stopped.
    *
-   * @param aBool
-   *        new value for m_beSilent
+   * @param aBool new value for m_beSilent
    */
-  public static void setBeSilent(final boolean aBool) {
+  protected static void setBeSilent(final boolean aBool) {
     final ClipPlayer clipPlayer = getInstance();
     clipPlayer.beSilent = aBool;
     setBeSilentInPreferencesWithoutAffectingCurrent(aBool);
@@ -207,17 +205,13 @@ public class ClipPlayer {
     }
   }
 
-  public static boolean getBeSilent() {
+  protected static boolean getBeSilent() {
     final ClipPlayer clipPlayer = getInstance();
     return clipPlayer.beSilent;
   }
 
-  public static boolean isSilencedClip(final String clipName) {
-    final ClipPlayer clipPlayer = getInstance();
-    return (clipPlayer == null || clipPlayer.beSilent || clipPlayer.isMuted(clipName));
-  }
 
-  public boolean isMuted(final String clipName) {
+  protected boolean isMuted(final String clipName) {
     if (mutedClips.contains(clipName)) {
       return true;
     }
@@ -309,10 +303,9 @@ public class ClipPlayer {
   /**
    * To reduce the delay when the clip is first played, we can preload clips here.
    *
-   * @param clipName
-   *        name of the clip
+   * @param clipName name of the clip
    */
-  public void preLoadClip(final String clipName) {
+  protected void preLoadClip(final String clipName) {
     loadClip(clipName, null, true);
     for (final String sub : subFolders) {
       loadClip(clipName, sub, true);
@@ -381,9 +374,6 @@ public class ClipPlayer {
     if (resourcePath == null) {
       resourcePath = SoundProperties.getInstance(resourceLoader).getDefaultEraFolder() + "/" + pathName;
     }
-    // URL uses "/", not File.separator or "\"
-    // resourcePath = resourcePath.replace('/', File.separatorChar);
-    // resourcePath = resourcePath.replace('\\', File.separatorChar);
     resourcePath = resourcePath.replace('\\', '/');
     final List<URL> availableSounds = new ArrayList<URL>();
     if ("NONE".equals(resourcePath)) {
@@ -408,8 +398,6 @@ public class ClipPlayer {
     final List<URL> availableSounds = new ArrayList<URL>();
     final URL thisSoundURL = resourceLoader.getResource(resourceAndPathURL);
     if (thisSoundURL == null) {
-      // if (!subFolder)
-      // System.out.println("No Sounds Found For: " + path);
       return availableSounds;
     }
     URI thisSoundURI;
@@ -521,33 +509,8 @@ public class ClipPlayer {
     return availableSounds;
   }
 
-  static synchronized Clip createClip(final URL clipFile, final boolean testOnly) {
-    try {
-      final AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(clipFile);
-      final AudioFormat format = audioInputStream.getFormat();
-      final DataLine.Info info = new DataLine.Info(Clip.class, format);
-      final Clip clip = (Clip) AudioSystem.getLine(info);
-      clip.open(audioInputStream);
-      if (!testOnly) {
-        return clip;
-      }
-      clip.close();
-      return null;
-    }
-    // these can happen if the sound isnt configured, its not that bad.
-    catch (final LineUnavailableException e) {
-      e.printStackTrace(System.out);
-    } catch (final IOException e) {
-      e.printStackTrace(System.out);
-    } catch (final UnsupportedAudioFileException e) {
-      e.printStackTrace(System.out);
-    } catch (final RuntimeException re) {
-      re.printStackTrace(System.out);
-    }
-    return null;
-  }
 
-  static synchronized boolean testClipSuccessful(final URL clipFile) {
+  private static synchronized boolean testClipSuccessful(final URL clipFile) {
     Clip clip = null;
     boolean successful = false;
     try {
