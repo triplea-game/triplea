@@ -124,7 +124,7 @@ public class ClipPlayer {
   // so we'll be safe and pick 24
   private final ClipCache clipCache = new ClipCache(24);
   // standard settings
-  private static final String ASSETS_SOUNDS_FOLDER = "sounds";
+  protected static final String ASSETS_SOUNDS_FOLDER = "sounds";
   private static final String SOUND_PREFERENCE_GLOBAL_SWITCH = "beSilent2";
   private static final String SOUND_PREFERENCE_PREFIX = "sound_";
   private static final boolean DEFAULT_SOUND_SILENCED_SWITCH_SETTING = false;
@@ -410,7 +410,7 @@ public class ClipPlayer {
    * @param resourceAndPathURL
    *        (URL uses '/', not File.separator or '\')
    */
-  private List<URL> createAndAddClips(final String resourceAndPathURL) {
+  protected List<URL> createAndAddClips(final String resourceAndPathURL) {
     final List<URL> availableSounds = new ArrayList<URL>();
     final URL thisSoundURL = resourceLoader.getResource(resourceAndPathURL);
     if (thisSoundURL == null) {
@@ -584,53 +584,6 @@ public class ClipPlayer {
       }
     }
     return false;
-  }
-
-  /**
-   * Simple stupid test to see if it works (and to see if our cache stays at or below its max), and to make sure there
-   * are no memory leaks.
-   *
-   * @param args
-   */
-  public static void main(final String[] args) {
-    getInstance();
-    final File root = new File(GameRunner2.getRootFolder(), "assets" + File.separator + "sounds");
-    for (final File folder : root.listFiles()) {
-      if (!(folder.getName().equals("ww2") || folder.getName().equals("preindustrial")
-          || folder.getName().equals("classical"))) {
-        continue;
-      }
-      for (final File file : folder.listFiles()) {
-        if (file.getName().indexOf("svn") != -1) {
-          continue;
-        }
-        final String name = folder.getName() + "/" + file.getName();
-        final List<URL> availableSounds = new ArrayList<URL>();
-        availableSounds.addAll(getInstance().createAndAddClips(ASSETS_SOUNDS_FOLDER + "/" + name));
-        getInstance().sounds.put(name, availableSounds);
-      }
-    }
-    while (true) {
-      for (final File folder : root.listFiles()) {
-        if (!(folder.getName().equals("ww2") || folder.getName().equals("preindustrial")
-            || folder.getName().equals("classical"))) {
-          continue;
-        }
-        for (final File file : folder.listFiles()) {
-          if (file.getName().indexOf("svn") != -1) {
-            continue;
-          }
-          final String soundPath = folder.getName() + "/" + file.getName();
-          System.out.println(soundPath);
-          play(soundPath, null);
-          try {
-            Thread.sleep(4000);
-          } catch (final InterruptedException e) {
-            e.printStackTrace();
-          }
-        }
-      }
-    }
   }
 }
 
