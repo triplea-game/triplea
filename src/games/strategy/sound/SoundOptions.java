@@ -65,16 +65,19 @@ public final class SoundOptions {
       for (final IEditableProperty property : properties) {
         m_clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), !(Boolean) property.getValue());
       }
+      m_clipPlayer.saveSoundPreferences();
     } else if (pressedButton.equals(selectAll)) {
       for (final IEditableProperty property : properties) {
         property.setValue(true);
         m_clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), false);
       }
+      m_clipPlayer.saveSoundPreferences();
     } else if (pressedButton.equals(selectNone)) {
       for (final IEditableProperty property : properties) {
         property.setValue(false);
         m_clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), true);
       }
+      m_clipPlayer.saveSoundPreferences();
     }
   }
 

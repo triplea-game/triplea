@@ -242,7 +242,7 @@ public class ClipPlayer {
     return false;
   }
 
-  public void setMute(final String clipName, final boolean value) {
+  protected void setMute(final String clipName, final boolean value) {
     // we want to avoid unnecessary calls to preferences
     final boolean isCurrentCorrect = mutedClips.contains(clipName) == value;
     if (isCurrentCorrect) {
@@ -256,18 +256,20 @@ public class ClipPlayer {
     putSoundInPreferences(clipName, value);
   }
 
-  // please avoid unnecessary calls of this
   private void putSoundInPreferences(final String clip, final boolean isMuted) {
-    // final ClipPlayer clipPlayer = getInstance();
     final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
     prefs.putBoolean(SOUND_PREFERENCE_PREFIX + clip, isMuted);
-    try {
-      prefs.flush();
-    } catch (final BackingStoreException ex) {
-      ex.printStackTrace();
-    }
   }
 
+  /** Flushes sounds preferences to persisted data store. This method is *slow* and resource expensive. */
+  protected void saveSoundPreferences() {
+    final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
+    try {
+      prefs.flush();
+    } catch (final BackingStoreException e) {
+      ClientLogger.logQuietly(e);
+    }
+  }
   
   public static void play(final String clipName) {
     play(clipName, (PlayerID) null);
