@@ -1,3 +1,7 @@
+Changes for 2.0.1
+* Removing all "Grid" games (Chess, Checkers, Go, Kings Table) as well as inaccessible puzzle games (N-Puzzle and Tic-Tac-Toe). (veqryn)
+
+
 Changes for 1.8.0.9
 * Bug fix, retreat from naval combat was not possible, now fixed. (redrum)
 
