@@ -25,7 +25,7 @@ import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
 import games.strategy.sound.DefaultSoundChannel;
-import games.strategy.sound.DummySound;
+import games.strategy.sound.DummySoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ai.proAI.ProAI;
@@ -113,7 +113,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
           headlessFrameUI = null;
         }
         m_display = new DummyTripleaDisplay(headlessFrameUI);
-        m_soundChannel = new DummySound();
+        m_soundChannel = new DummySoundChannel();
         game.addDisplay(m_display);
         game.addSoundChannel(m_soundChannel);
         initializeGame();

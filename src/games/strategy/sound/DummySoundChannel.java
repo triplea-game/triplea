@@ -9,17 +9,7 @@ import games.strategy.engine.data.PlayerID;
  */
 public class DummySoundChannel implements ISound {
   @Override
-  public void initialize() {}
-
-  @Override
-  public void shutDown() {}
-
-  @Override
   public void playSoundForAll(final String clipName, final String subFolder) {}
-
-  @Override
-  public void playSoundForAll(final String clipName, final String subFolder, final boolean doNotIncludeHost,
-      final boolean doNotIncludeClients, final boolean doNotIncludeObservers) {}
 
   @Override
   public void playSoundToPlayers(final String clipName, final String subFolder,
