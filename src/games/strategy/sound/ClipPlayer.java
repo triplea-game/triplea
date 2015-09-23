@@ -251,7 +251,7 @@ public class ClipPlayer {
       ClientLogger.logQuietly(e);
     }
   }
-  
+
   public static void play(final String clipName) {
     play(clipName, null);
   }
@@ -263,8 +263,8 @@ public class ClipPlayer {
   public static void play(String clipPath, PlayerID playerId) {
     getInstance().playClip(clipPath, playerId);
   }
-  
-  
+
+
   private void playClip(final String clipName, final PlayerID playerId) {
     if (beSilent || isMuted(clipName)) {
       return;
@@ -417,10 +417,11 @@ public class ClipPlayer {
     } catch (final Exception e2) {
       thisSoundFile = null;
     }
-    
+
     if (!thisSoundFile.isDirectory()) {
       if (!(thisSoundFile.getName().endsWith(".wav") || thisSoundFile.getName().endsWith(".au")
-          || thisSoundFile.getName().endsWith(".aiff") || thisSoundFile.getName().endsWith(".midi"))) {
+          || thisSoundFile.getName().endsWith(".aiff") || thisSoundFile.getName().endsWith(".midi")
+          || thisSoundFile.getName().endsWith(".mp3"))) {
         return availableSounds;
       }
       if (testClipSuccessful(thisSoundURL)) {
@@ -429,7 +430,7 @@ public class ClipPlayer {
     } else {
       for (final File sound : thisSoundFile.listFiles()) {
         if (sound.getName().endsWith(".wav") || sound.getName().endsWith(".au") || sound.getName().endsWith(".aiff")
-            || sound.getName().endsWith(".midi")) {
+            || sound.getName().endsWith(".midi") || sound.getName().endsWith(".mp3")) {
           try {
             final URL individualSoundURL = sound.toURI().toURL();
             if (testClipSuccessful(individualSoundURL)) {
@@ -449,12 +450,14 @@ public class ClipPlayer {
     try {
       final AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(clipFile);
       final AudioFormat format = audioInputStream.getFormat();
-      final DataLine.Info info = new DataLine.Info(Clip.class, format);
+      AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), 16, format.getChannels(), format.getChannels() * 2, format.getSampleRate(), false);
+      final DataLine.Info info = new DataLine.Info(Clip.class, decodedFormat);
       Clip clip = (Clip) AudioSystem.getLine(info);
-      clip.open(audioInputStream);
+      AudioInputStream audioStream2 = AudioSystem.getAudioInputStream(decodedFormat, audioInputStream);
+      clip.open(audioStream2);
       return clip;
     } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("failed to create clip: " + clipFile.toString(), e);
       return null;
     }
   }
