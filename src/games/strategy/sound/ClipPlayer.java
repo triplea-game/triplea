@@ -445,24 +445,22 @@ public class ClipPlayer {
     return availableSounds;
   }
 
-
-  private static synchronized boolean testClipSuccessful(final URL clipFile) {
-    Clip clip = null;
-    boolean successful = false;
+  protected static Clip createClip(final URL clipFile) {
     try {
       final AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(clipFile);
       final AudioFormat format = audioInputStream.getFormat();
       final DataLine.Info info = new DataLine.Info(Clip.class, format);
-      clip = (Clip) AudioSystem.getLine(info);
+      Clip clip = (Clip) AudioSystem.getLine(info);
       clip.open(audioInputStream);
-      successful = true;
+      return clip;
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
-    } finally {
-      if (clip != null) {
-        clip.close();
-      }
+      return null;
     }
-    return successful;
+  }
+
+  private static synchronized boolean testClipSuccessful(final URL clipFile) {
+    Clip clip = createClip(clipFile);
+    return clip != null;
   }
 }
