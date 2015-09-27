@@ -88,8 +88,6 @@ public class ValidateAttachmentsTest extends TestCase {
   @SuppressWarnings("unchecked")
   private static Class<? extends IAttachment>[] getKnownAttachmentClasses() {
     return new Class[] {games.strategy.engine.data.DefaultAttachment.class,
-        games.strategy.grid.kingstable.attachments.PlayerAttachment.class,
-        games.strategy.grid.kingstable.attachments.TerritoryAttachment.class,
         games.strategy.triplea.attatchments.CanalAttachment.class,
         games.strategy.triplea.attatchments.PlayerAttachment.class,
         games.strategy.triplea.attatchments.PoliticalActionAttachment.class,
@@ -182,7 +180,8 @@ public class ValidateAttachmentsTest extends TestCase {
       Class<?> clazz;
       try {
         clazz = Class.forName(className);
-        if (!clazz.isInterface() && IAttachment.class.isAssignableFrom(clazz)) // && !Modifier.isAbstract(clazz.getModifiers())
+        if (!clazz.isInterface() && IAttachment.class.isAssignableFrom(clazz)) // &&
+                                                                               // !Modifier.isAbstract(clazz.getModifiers())
         {
           @SuppressWarnings("unchecked")
           final Class<? extends IAttachment> attachmentClass = (Class<? extends IAttachment>) clazz;
@@ -201,7 +200,8 @@ public class ValidateAttachmentsTest extends TestCase {
   /**
    * todo(kg) fix this
    * ReliefImageBreaker and TileImageBreaker has a static field that opens a save dialog!!!
-   * "InvalidGetterExample", "InvalidFieldNameExample", "InvalidReturnTypeExample" are skipped because they are purposely invalid, and use
+   * "InvalidGetterExample", "InvalidFieldNameExample", "InvalidReturnTypeExample" are skipped because they are
+   * purposely invalid, and use
    * to test the validation algorithm
    */
   public static final List<String> SKIPCLASSES = Arrays.asList("ReliefImageBreaker", "TileImageBreaker",
@@ -209,7 +209,8 @@ public class ValidateAttachmentsTest extends TestCase {
       "InvalidFieldTypeExample", "ChatPlayerPanel", "GUID", "Node");
 
   /**
-   * Contains a list of classes which has static initializes, unfortunately you can't reflect this, since loading the class triggers
+   * Contains a list of classes which has static initializes, unfortunately you can't reflect this, since loading the
+   * class triggers
    * the initializer
    *
    * @param className
@@ -378,7 +379,8 @@ public class ValidateAttachmentsTest extends TestCase {
           sb.append("Warning, Class " + clazz.getCanonicalName() + " testing '" + propertyName
               + "', has error: IllegalAccessException: " + e.getMessage() + "\n");
         } catch (final InvocationTargetException e) {
-          // this only occurs if the constructor/getter or setter throws an exception, Usually it is because we pass null to the constructor
+          // this only occurs if the constructor/getter or setter throws an exception, Usually it is because we pass
+          // null to the constructor
           // sb.append("Warning calling " + method + " threw exception " + e.getTargetException().getClass() + "\n");
         }
       }
