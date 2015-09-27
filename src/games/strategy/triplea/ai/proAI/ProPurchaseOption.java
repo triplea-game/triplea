@@ -30,6 +30,7 @@ public class ProPurchaseOption {
   private final UnitType unitType;
   private final PlayerID player;
   private final int cost;
+  private final IntegerMap<Resource> costs;
   private final int movement;
   private final int quantity;
   private int hitPoints;
@@ -65,6 +66,7 @@ public class ProPurchaseOption {
     final UnitAttachment unitAttachment = UnitAttachment.get(unitType);
     final Resource PUs = data.getResourceList().getResource(Constants.PUS);
     cost = productionRule.getCosts().getInt(PUs);
+    costs = productionRule.getCosts();
     movement = unitAttachment.getMovement(player);
     quantity = productionRule.getResults().totalValues();
     isInfra = unitAttachment.getIsInfrastructure();
@@ -126,6 +128,10 @@ public class ProPurchaseOption {
 
   public int getCost() {
     return cost;
+  }
+
+  public IntegerMap<Resource> getCosts() {
+    return costs;
   }
 
   public int getMovement() {
@@ -292,7 +298,8 @@ public class ProPurchaseOption {
 
   private double calculateLandDistanceFactor(final int enemyDistance) {
     final double distance = Math.max(0, enemyDistance - 1.5);
-    final double moveFactor = 1 + 2 * (Math.pow(2, movement - 1) - 1) / Math.pow(2, movement - 1); // 1, 2, 2.5, 2.75, etc
+    final double moveFactor = 1 + 2 * (Math.pow(2, movement - 1) - 1) / Math.pow(2, movement - 1); // 1, 2, 2.5, 2.75,
+                                                                                                   // etc
     final double distanceFactor = Math.pow(moveFactor, distance / 5);
     return distanceFactor;
   }
@@ -330,7 +337,11 @@ public class ProPurchaseOption {
         final int numSupportableUnits = supportableUnits.size();
         // Find ratio of supportable to support units (optimal 2 to 1)
         final int numExtraSupportableUnits = Math.max(0, numSupportableUnits - numSupportProvided);
-        final double ratio = Math.min(1, 2.0 * numExtraSupportableUnits / (numSupportableUnits + numAddedSupport)); // ranges from 0 to 1
+        final double ratio = Math.min(1, 2.0 * numExtraSupportableUnits / (numSupportableUnits + numAddedSupport)); // ranges
+                                                                                                                    // from
+                                                                                                                    // 0
+                                                                                                                    // to
+                                                                                                                    // 1
         // Find approximate strength bonus provided
         double bonus = 0;
         if (usa.getStrength()) {

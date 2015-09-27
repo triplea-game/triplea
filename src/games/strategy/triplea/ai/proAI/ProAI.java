@@ -62,9 +62,14 @@ import games.strategy.util.Tuple;
  */
 public class ProAI extends AbstractAI {
   private final static Logger s_logger = Logger.getLogger(ProAI.class.getName());
-  private final static IOddsCalculator s_battleCalculator = new ConcurrentOddsCalculator("ProAI"); // if non-static, then only need 1 for
-                                                                                                   // the entire AI instance and must be
-                                                                                                   // shutdown when AI is gc'ed.
+  private final static IOddsCalculator s_battleCalculator = new ConcurrentOddsCalculator("ProAI"); // if non-static,
+                                                                                                   // then only need 1
+                                                                                                   // for
+                                                                                                   // the entire AI
+                                                                                                   // instance and must
+                                                                                                   // be
+                                                                                                   // shutdown when AI
+                                                                                                   // is gc'ed.
   // Utilities
   private final ProUtils utils;
   private final ProBattleUtils battleUtils;
@@ -127,7 +132,8 @@ public class ProAI extends AbstractAI {
   }
 
   public static void gameOverClearCache() {
-    s_battleCalculator.setGameData(null); // is static, set to null so that we don't keep the data around after a game is exited.
+    s_battleCalculator.setGameData(null); // is static, set to null so that we don't keep the data around after a game
+                                          // is exited.
     LogUI.clearCachedInstances();
   }
 
@@ -184,8 +190,10 @@ public class ProAI extends AbstractAI {
     if (purchaseForBid) {
       purchaseAI.bid(PUsToSpend, purchaseDelegate, data, player);
     } else {
+
       // Repair factories
       PUsToSpend = purchaseAI.repair(PUsToSpend, purchaseDelegate, data, player);
+
       // Check if any place territories exist
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories = purchaseUtils.findPurchaseTerritories(player);
       if (purchaseTerritories.isEmpty()) {
@@ -193,6 +201,7 @@ public class ProAI extends AbstractAI {
         return;
       }
       LogUtils.log(Level.FINE, "Starting simulation for purchase phase");
+
       // Setup data copy and delegates
       GameData dataCopy;
       try {
@@ -210,11 +219,13 @@ public class ProAI extends AbstractAI {
       final IMoveDelegate moveDel = DelegateFinder.moveDelegate(dataCopy);
       final IDelegateBridge bridge = new ProDummyDelegateBridge(this, playerCopy, dataCopy);
       moveDel.setDelegateBridgeAndPlayer(bridge);
+
       // Determine turn sequence
       final List<GameStep> gameSteps = new ArrayList<GameStep>();
       for (final GameStep gameStep : dataCopy.getSequence()) {
         gameSteps.add(gameStep);
       }
+
       // Simulate the next phases until place/end of turn is reached then use simulated data for purchase
       final int nextStepIndex = dataCopy.getSequence().getStepIndex() + 1;
       final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(playerCopy);
@@ -243,7 +254,7 @@ public class ProAI extends AbstractAI {
         } else if (stepName.endsWith("Battle")) {
           simulateTurnUtils.simulateBattles(dataCopy, playerCopy, bridge);
         } else if (stepName.endsWith("Place") || stepName.endsWith("EndTurn")) {
-          storedPurchaseTerritories = purchaseAI.purchase(PUsToSpend, purchaseDelegate, dataCopy, data, player);
+          storedPurchaseTerritories = purchaseAI.purchase(purchaseDelegate, dataCopy, data, player);
           this.data = null;
           break;
         } else if (stepName.endsWith("Politics")) {
