@@ -95,11 +95,14 @@ public class ProPurchaseOption {
     }
     hitPointEfficiency =
         (hitPoints + 0.1 * attack * 6 / data.getDiceSides() + 0.2 * defense * 6 / data.getDiceSides()) / cost;
-    attackEfficiency = (1 + hitPoints)
-        * (hitPoints + attack * 6 / data.getDiceSides() + 0.5 * defense * 6 / data.getDiceSides()) / cost;
-    defenseEfficiency = (1 + hitPoints)
-        * (hitPoints + 0.5 * attack * 6 / data.getDiceSides() + defense * 6 / data.getDiceSides()) / cost;
+    attackEfficiency =
+        (1 + hitPoints) * (hitPoints + attack * 6 / data.getDiceSides() + 0.5 * defense * 6 / data.getDiceSides())
+            / cost;
+    defenseEfficiency =
+        (1 + hitPoints) * (hitPoints + 0.5 * attack * 6 / data.getDiceSides() + defense * 6 / data.getDiceSides())
+            / cost;
     maxBuiltPerPlayer = unitAttachment.getMaxBuiltPerPlayer();
+
     // Support fields
     unitSupportAttachments = UnitSupportAttachment.get(unitType);
     isAttackSupport = false;
@@ -261,8 +264,8 @@ public class ProPurchaseOption {
   public double getSeaDefenseEfficiency(final GameData data, final List<Unit> ownedLocalUnits,
       final List<Unit> unitsToPlace, final boolean needDestroyer, final int unusedCarrierCapacity,
       final int unusedLocalCarrierCapacity) {
-    if (isAir && (carrierCost <= 0 || carrierCost > unusedCarrierCapacity
-        || !Properties.getProduceFightersOnCarriers(data))) {
+    if (isAir
+        && (carrierCost <= 0 || carrierCost > unusedCarrierCapacity || !Properties.getProduceFightersOnCarriers(data))) {
       return 0;
     }
     final double supportAttackFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, false);
@@ -279,8 +282,7 @@ public class ProPurchaseOption {
     return calculateEfficiency(0.75, 1, supportAttackFactor, supportDefenseFactor, movement, seaFactor, data);
   }
 
-  public double getAmphibEfficiency(final GameData data, final List<Unit> ownedLocalUnits,
-      final List<Unit> unitsToPlace) {
+  public double getAmphibEfficiency(final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace) {
     final double supportAttackFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, false);
     final double supportDefenseFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, true);
     final double hitPointPerUnitFactor = (3 + hitPoints / quantity);
@@ -323,6 +325,7 @@ public class ProPurchaseOption {
         if (!bonusType.contains(usa)) {
           continue;
         }
+
         // Find number of support provided and supportable units
         int numAddedSupport = usa.getNumber();
         if (usa.getImpArtTech() && TechTracker.hasImprovedArtillerySupport(player)) {
@@ -335,13 +338,13 @@ public class ProPurchaseOption {
           supportableUnits.addAll(Match.getMatches(units, Matches.unitIsOfTypes(usa2.getUnitType())));
         }
         final int numSupportableUnits = supportableUnits.size();
+
         // Find ratio of supportable to support units (optimal 2 to 1)
         final int numExtraSupportableUnits = Math.max(0, numSupportableUnits - numSupportProvided);
-        final double ratio = Math.min(1, 2.0 * numExtraSupportableUnits / (numSupportableUnits + numAddedSupport)); // ranges
-                                                                                                                    // from
-                                                                                                                    // 0
-                                                                                                                    // to
-                                                                                                                    // 1
+
+        // Ranges from 0 to 1
+        final double ratio = Math.min(1, 2.0 * numExtraSupportableUnits / (numSupportableUnits + numAddedSupport));
+
         // Find approximate strength bonus provided
         double bonus = 0;
         if (usa.getStrength()) {
@@ -350,17 +353,17 @@ public class ProPurchaseOption {
         if (usa.getRoll()) {
           bonus += (usa.getBonus() * data.getDiceSides() * 0.75);
         }
+
         // Find support factor value
         final double supportFactor = Math.pow(numAddedSupport * 0.9, 0.9) * bonus * ratio;
         totalSupportFactor += supportFactor;
-        LogUtils.log(Level.FINEST,
-            unitType.getName() + ", bonusType=" + usa.getBonusType() + ", supportFactor=" + supportFactor
-                + ", numSupportProvided=" + numSupportProvided + ", numSupportableUnits=" + numSupportableUnits
-                + ", numAddedSupport=" + numAddedSupport + ", ratio=" + ratio + ", bonus=" + bonus);
+        LogUtils.log(Level.FINEST, unitType.getName() + ", bonusType=" + usa.getBonusType() + ", supportFactor="
+            + supportFactor + ", numSupportProvided=" + numSupportProvided + ", numSupportableUnits="
+            + numSupportableUnits + ", numAddedSupport=" + numAddedSupport + ", ratio=" + ratio + ", bonus=" + bonus);
       }
     }
-    LogUtils.log(Level.FINER,
-        unitType.getName() + ", defense=" + defense + ", totalSupportFactor=" + totalSupportFactor);
+    LogUtils.log(Level.FINER, unitType.getName() + ", defense=" + defense + ", totalSupportFactor="
+        + totalSupportFactor);
     return totalSupportFactor;
   }
 
@@ -378,8 +381,8 @@ public class ProPurchaseOption {
     final double hitPointValue = 2 * hitPoints;
     final double attackValue = attackFactor * (attack + supportAttackFactor * quantity) * 6 / data.getDiceSides();
     final double defenseValue = defenseFactor * (defense + supportDefenseFactor * quantity) * 6 / data.getDiceSides();
-    return Math.pow(
-        (hitPointValue + attackValue + defenseValue) * hitPointPerUnitFactor * distanceFactor * seaFactor / cost, 30)
+    return Math.pow((hitPointValue + attackValue + defenseValue) * hitPointPerUnitFactor * distanceFactor * seaFactor
+        / cost, 30)
         / quantity;
   }
 }
