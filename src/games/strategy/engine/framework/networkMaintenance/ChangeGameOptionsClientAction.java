@@ -49,7 +49,8 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
       if (buttonPressed == null || buttonPressed.equals(cancel)) {
         return;
       } else {
-        // ok was clicked. changing them in the ui changes the underlying properties, but it doesn't change the hosts, so we need to send it
+        // ok was clicked. changing them in the ui changes the underlying properties, but it doesn't change the hosts,
+        // so we need to send it
         // back to the host.
         final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000);
         byte[] newBytes = null;

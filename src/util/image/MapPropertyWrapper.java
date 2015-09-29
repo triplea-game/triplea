@@ -31,7 +31,8 @@ import games.strategy.util.PropertyUtil;
 import games.strategy.util.Tuple;
 
 /**
- * This will take ANY object, and then look at every method that begins with 'set[name]' and if there also exists a method 'get[name]'
+ * This will take ANY object, and then look at every method that begins with 'set[name]' and if there also exists a
+ * method 'get[name]'
  * and a field '[name]' which is public, then it will take these and create an editable UI component
  * for each of these based on the games.strategy.engine.data.properties classes.
  *

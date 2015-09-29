@@ -76,7 +76,8 @@ public class FileOpen {
       return;
     }
     try {
-      file = chooser.getSelectedFile(); // get the file
+      // get the file
+      file = chooser.getSelectedFile();
     } catch (final Exception ex) {
       JOptionPane.showMessageDialog(null, ERR_MSG_1, "Warning!", JOptionPane.WARNING_MESSAGE);
       file = null;
@@ -106,4 +107,4 @@ public class FileOpen {
       return file.getPath();
     }
   }
-}// end class FileOpen
+}

@@ -292,10 +292,13 @@ public class HistoryPanel extends JPanel {
     m_currentPopupNode = null;
   }
 
-  final Collection<TreePath> m_stayExpandedPaths = new ArrayList<TreePath>(); // remember which paths were expanded
+  // remember which paths were expanded
+  final Collection<TreePath> m_stayExpandedPaths = new ArrayList<TreePath>();
   private boolean m_mouseOverPanel = false;
-  boolean m_mouseWasOverPanel = false; // to distinguish the first mouse over panel event from the others
-  TreePath m_lastParent = null; // remember where to start collapsing
+  // to distinguish the first mouse over panel event from the others
+  boolean m_mouseWasOverPanel = false;
+  // remember where to start collapsing
+  TreePath m_lastParent = null;
 
   private boolean addToStayExpanded(final Enumeration<TreePath> paths) {
     final Collection<TreePath> expandPaths = new ArrayList<TreePath>();

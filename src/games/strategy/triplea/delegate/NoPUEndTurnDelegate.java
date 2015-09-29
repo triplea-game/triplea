@@ -22,7 +22,8 @@ public class NoPUEndTurnDelegate extends EndTurnDelegate {
   }
 
   /**
-   * Default behavior for this delegate is that we do not collect PU/resource income from territories, but we do collect and do any national
+   * Default behavior for this delegate is that we do not collect PU/resource income from territories, but we do collect
+   * and do any national
    * objectives and triggers.
    */
   @Override

@@ -75,13 +75,15 @@ public class RelationshipTracker extends RelationshipInterpreter {
   }
 
   /**
-   * Convenience method to directly access relationshipTypeAttachment on the relationship that exists between two players
+   * Convenience method to directly access relationshipTypeAttachment on the relationship that exists between two
+   * players
    *
    * @param p1
    *        Player 1 in the relationship
    * @param p2
    *        Player 2 in the relationship
-   * @return the current RelationshipTypeAttachment attached to the current relationship that exists between those 2 players
+   * @return the current RelationshipTypeAttachment attached to the current relationship that exists between those 2
+   *         players
    */
   protected RelationshipTypeAttachment getRelationshipTypeAttachment(final PlayerID p1, final PlayerID p2) {
     final RelationshipType relation = getRelationshipType(p1, p2);
@@ -163,7 +165,8 @@ public class RelationshipTracker extends RelationshipInterpreter {
     }
 
     /**
-     * convenience method to get relationshipTypeAttachment from a new RelatedPlayers(p1,p2).getRelationshipTypeAttachment();
+     * convenience method to get relationshipTypeAttachment from a new
+     * RelatedPlayers(p1,p2).getRelationshipTypeAttachment();
      *
      * @return RelationshipTypeAttachment between these RelatedPlayers
      */

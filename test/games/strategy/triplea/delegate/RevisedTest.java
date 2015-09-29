@@ -893,7 +893,8 @@ public class RevisedTest extends TestCase {
     tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setRemote(getDummyPlayer());
-    // should be exactly 3 rolls total. would be exactly 2 rolls if the number of units being shot at = max dice side of the AA gun, because
+    // should be exactly 3 rolls total. would be exactly 2 rolls if the number of units being shot at = max dice side of
+    // the AA gun, because
     // the casualty selection roll would not happen in LL
     // first 0 is the AA gun rolling 1@2 and getting a 1, which is a hit
     // second 0 is the LL AA casualty selection randomly picking the first unit to die
@@ -1061,15 +1062,20 @@ public class RevisedTest extends TestCase {
     final List<String> steps = battle.determineStepStrings(true, bridge);
     /*
      * Here are the exact errata clarifications on how REVISED rules subs work:
-     * Every sub, regardless of whether it is on the attacking or defending side, fires in the Opening Fire step of combat. That is the only
+     * Every sub, regardless of whether it is on the attacking or defending side, fires in the Opening Fire step of
+     * combat. That is the only
      * time a sub ever fires.
-     * Losses caused by attacking or defending subs are removed at the end of the Opening Fire step, before normal attack and defense rolls,
+     * Losses caused by attacking or defending subs are removed at the end of the Opening Fire step, before normal
+     * attack and defense rolls,
      * unless the enemy has a destroyer present.
-     * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs are not removed until the Remove Casualties step
+     * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs are not removed until the
+     * Remove Casualties step
      * (step 6) of combat.
-     * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever stops a sub from
+     * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever
+     * stops a sub from
      * rolling its die (attack or defense) in the Opening Fire step.
-     * What a destroyer does do is let you keep your units that were sunk by enemy subs on the battle board until step 6, allowing them to
+     * What a destroyer does do is let you keep your units that were sunk by enemy subs on the battle board until step
+     * 6, allowing them to
      * fire back before going to the scrap heap.
      */
     assertEquals(Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE,
@@ -1112,15 +1118,20 @@ public class RevisedTest extends TestCase {
     final List<String> steps = battle.determineStepStrings(true, bridge);
     /*
      * Here are the exact errata clarifications on how REVISED rules subs work:
-     * Every sub, regardless of whether it is on the attacking or defending side, fires in the Opening Fire step of combat. That is the only
+     * Every sub, regardless of whether it is on the attacking or defending side, fires in the Opening Fire step of
+     * combat. That is the only
      * time a sub ever fires.
-     * Losses caused by attacking or defending subs are removed at the end of the Opening Fire step, before normal attack and defense rolls,
+     * Losses caused by attacking or defending subs are removed at the end of the Opening Fire step, before normal
+     * attack and defense rolls,
      * unless the enemy has a destroyer present.
-     * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs are not removed until the Remove Casualties step
+     * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs are not removed until the
+     * Remove Casualties step
      * (step 6) of combat.
-     * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever stops a sub from
+     * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever
+     * stops a sub from
      * rolling its die (attack or defense) in the Opening Fire step.
-     * What a destroyer does do is let you keep your units that were sunk by enemy subs on the battle board until step 6, allowing them to
+     * What a destroyer does do is let you keep your units that were sunk by enemy subs on the battle board until step
+     * 6, allowing them to
      * fire back before going to the scrap heap.
      */
     assertEquals(
@@ -1173,7 +1184,8 @@ public class RevisedTest extends TestCase {
     final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
     assertTrue(attackSubs < defendSubs);
     bridge.setRemote(new DummyTripleAPlayer());
-    // attacking sub hits with sneak attack, but defending sub gets to return fire because it is a sub and this is revised rules
+    // attacking sub hits with sneak attack, but defending sub gets to return fire because it is a sub and this is
+    // revised rules
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 0, ScriptedRandomSource.ERROR);
     bridge.setRandomSource(randomSource);
     battle.fight(bridge);
@@ -1203,15 +1215,20 @@ public class RevisedTest extends TestCase {
     final List<String> steps = battle.determineStepStrings(true, bridge);
     /*
      * Here are the exact errata clarifications on how REVISED rules subs work:
-     * Every sub, regardless of whether it is on the attacking or defending side, fires in the Opening Fire step of combat. That is the only
+     * Every sub, regardless of whether it is on the attacking or defending side, fires in the Opening Fire step of
+     * combat. That is the only
      * time a sub ever fires.
-     * Losses caused by attacking or defending subs are removed at the end of the Opening Fire step, before normal attack and defense rolls,
+     * Losses caused by attacking or defending subs are removed at the end of the Opening Fire step, before normal
+     * attack and defense rolls,
      * unless the enemy has a destroyer present.
-     * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs are not removed until the Remove Casualties step
+     * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs are not removed until the
+     * Remove Casualties step
      * (step 6) of combat.
-     * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever stops a sub from
+     * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever
+     * stops a sub from
      * rolling its die (attack or defense) in the Opening Fire step.
-     * What a destroyer does do is let you keep your units that were sunk by enemy subs on the battle board until step 6, allowing them to
+     * What a destroyer does do is let you keep your units that were sunk by enemy subs on the battle board until step
+     * 6, allowing them to
      * fire back before going to the scrap heap.
      */
     assertEquals(
@@ -1342,7 +1359,8 @@ public class RevisedTest extends TestCase {
     final int finalPUs = germans.getResources().getQuantity("PUs");
     assertEquals(midPUs - 5, finalPUs);
     // Test the variable tech cost
-    ta.setTechCost("6");// Make a Successful roll
+    // Make a Successful roll
+    ta.setTechCost("6");
     delegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {5}));
     final TechResults roll3 = techDelegate.rollTech(1, jet, 0, null);
     // Check to make sure it succeeded
@@ -1380,8 +1398,10 @@ public class RevisedTest extends TestCase {
     move(sz5.getUnits().getMatches(new CompositeMatchOr<Unit>(Matches.UnitCanBlitz, Matches.UnitIsTransport)),
         new Route(sz5, sz6));
     // unload transports, 1 each to a different country
-    assertMoveError(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, norway));// this move is illegal now
-    assertMoveError(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, we));// this move is illegal now
+    // this move is illegal now
+    assertMoveError(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, norway));
+    // this move is illegal now
+    assertMoveError(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, we));
     move(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, uk));
     // fight the battle
     moveDelegate(m_data).end();

@@ -11,7 +11,8 @@ import java.util.Set;
 /**
  * Tracks alliances between players.
  * An alliance is a named entity, players are added to an alliance.
- * Currently only used for tracking stats (like TUV, total production, etc), and for tracking total victory cities for alliance based
+ * Currently only used for tracking stats (like TUV, total production, etc), and for tracking total victory cities for
+ * alliance based
  * victory conditions.
  * Not used for determining in-game alliances (instead, see the Relationship tracker for that).
  */

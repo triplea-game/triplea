@@ -61,7 +61,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   @Override
   protected boolean canWePurchaseOrRepair() {
     final ResourceCollection bidCollection = new ResourceCollection(getData());
-    bidCollection.addResource(getData().getResourceList().getResource(Constants.PUS), m_bid); // TODO: allow bids to have more than just PUs
+    // TODO: allow bids to have more than just PUs
+    bidCollection.addResource(getData().getResourceList().getResource(Constants.PUS), m_bid);
     if (m_player.getProductionFrontier() != null && m_player.getProductionFrontier().getRules() != null) {
       for (final ProductionRule rule : m_player.getProductionFrontier().getRules()) {
         if (bidCollection.has(rule.getCosts())) {
@@ -85,7 +86,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   @Override
   protected boolean canAfford(final IntegerMap<Resource> costs, final PlayerID player) {
     final ResourceCollection bidCollection = new ResourceCollection(getData());
-    bidCollection.addResource(getData().getResourceList().getResource(Constants.PUS), m_bid); // TODO: allow bids to have more than just PUs
+    // TODO: allow bids to have more than just PUs
+    bidCollection.addResource(getData().getResourceList().getResource(Constants.PUS), m_bid);
     return bidCollection.has(costs);
   }
 
@@ -128,7 +130,6 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   public Serializable saveState() {
     final BidPurchaseExtendedDelegateState state = new BidPurchaseExtendedDelegateState();
     state.superState = super.saveState();
-    // add other variables to state here:
     state.m_bid = m_bid;
     state.m_hasBid = m_hasBid;
     state.m_spent = this.m_spent;
@@ -139,7 +140,6 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   public void loadState(final Serializable state) {
     final BidPurchaseExtendedDelegateState s = (BidPurchaseExtendedDelegateState) state;
     super.loadState(s.superState);
-    // load other variables from state here:
     m_bid = s.m_bid;
     m_spent = s.m_spent;
     m_hasBid = s.m_hasBid;
@@ -150,7 +150,6 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
 class BidPurchaseExtendedDelegateState implements Serializable {
   private static final long serialVersionUID = 6896164200767186673L;
   Serializable superState;
-  // add other variables here:
   int m_bid;
   int m_spent;
   boolean m_hasBid;

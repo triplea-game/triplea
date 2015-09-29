@@ -24,9 +24,11 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
  * An abstraction of MoveDelegate in order to allow other delegates to extend this.
  */
 public abstract class AbstractMoveDelegate extends BaseTripleADelegate implements IMoveDelegate {
-  protected List<UndoableMove> m_movesToUndo = new ArrayList<UndoableMove>();// A collection of UndoableMoves
+  // A collection of UndoableMoves
+  protected List<UndoableMove> m_movesToUndo = new ArrayList<UndoableMove>();
   // protected final TransportTracker m_transportTracker = new TransportTracker();
-  protected MovePerformer m_tempMovePerformer;// if we are in the process of doing a move. this instance will allow us to resume the move
+  // if we are in the process of doing a move. this instance will allow us to resume the move
+  protected MovePerformer m_tempMovePerformer;
 
   public static enum MoveType {
     DEFAULT, SPECIAL
@@ -70,8 +72,8 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   public void loadState(final Serializable state) {
     final AbstractMoveExtendedDelegateState s = (AbstractMoveExtendedDelegateState) state;
     super.loadState(s.superState);
-    // load other variables from state here:
-    // if the undo state wasnt saved, then dont load it. prevents overwriting undo state when we restore from an undo move
+    // if the undo state wasnt saved, then dont load it. prevents overwriting undo state when we restore from an undo
+    // move
     if (s.m_movesToUndo != null) {
       m_movesToUndo = s.m_movesToUndo;
     }

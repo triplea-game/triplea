@@ -9,17 +9,9 @@ public class FileSave {
   private File file = null;
 
   /**
-   * Default Constructor.
-   * Creates a file selection dialog starting at the current
-   * working directory. The user will specify what directory
-   * or folder they want their files to be saved in.
-   *
-   * @param java
-   *        .lang.String title the title of the JFileChooser
-   * @param java
-   *        .lang.String name a recomended name
-   * @exception java.lang.Exception
-   *            ex
+   * Creates a file selection dialog starting at the current working directory. The user will specify what directory or
+   * folder they want
+   * their files to be saved in.
    */
   public FileSave(final String title, final String name) {
     this(title, name, new File(System.getProperties().getProperty("user.dir")));
@@ -57,7 +49,7 @@ public class FileSave {
     if (fileFilter != null) {
       chooser.setFileFilter(fileFilter);
     }
-    // show the file chooser dialog
+
     final int r = chooser.showSaveDialog(null);
     if (r == JFileChooser.APPROVE_OPTION) {
       if (name != null) {
@@ -69,22 +61,14 @@ public class FileSave {
   }
 
   /**
-   * File getFile()
-   * Returns the directory path as
-   * a File object.
-   *
-   * @return java.io.File
+   * Returns the directory path as a File object.
    */
   public File getFile() {
     return file;
   }
 
   /**
-   * String getPathString()
-   * Returns the directory path as
-   * as string.
-   *
-   * @return java.lang.String
+   * Returns the directory path as as string.
    */
   public String getPathString() {
     if (file == null) {
@@ -93,4 +77,4 @@ public class FileSave {
       return file.getPath();
     }
   }
-}// end class FileSave
+}

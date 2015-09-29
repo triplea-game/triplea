@@ -15,7 +15,8 @@ import games.strategy.engine.delegate.IDelegateBridge;
  * <p>
  * After execution has finished, we pop the next item, and execute it, repeating till nothing is left to exectue.
  * <p>
- * If an exception occurs during execution, we retain a reference to the current item. When we start executing again, we first push current
+ * If an exception occurs during execution, we retain a reference to the current item. When we start executing again, we
+ * first push current
  * onto the stack. In this way, an item may execute more than once. An IExecutable should be aware of this.
  * <p>
  */

@@ -32,7 +32,8 @@ public class ChangeAttachmentChange extends Change {
   }
 
   /**
-   * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a
+   * You don't want to clear the variable first unless you are setting some variable where the setting method is
+   * actually adding things to a
    * list rather than overwriting.
    */
   ChangeAttachmentChange(final IAttachment attachment, final Object newValue, final String property,
@@ -49,7 +50,8 @@ public class ChangeAttachmentChange extends Change {
   }
 
   /**
-   * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a
+   * You don't want to clear the variable first unless you are setting some variable where the setting method is
+   * actually adding things to a
    * list rather than overwriting.
    */
   public ChangeAttachmentChange(final Attachable attachTo, final String attachmentName, final Object newValue,

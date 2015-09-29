@@ -59,7 +59,8 @@ public class PlacePanel extends AbstractMovePanel {
 
   public PlaceData waitForPlace(final boolean bid, final IPlayerBridge playerBridge) {
     setUp(playerBridge);
-    refreshActionLabelText(bid); // workaround: meant to be in setUpSpecific, but it requires a variable
+    // workaround: meant to be in setUpSpecific, but it requires a variable
+    refreshActionLabelText(bid);
     waitForRelease();
     cleanUp();
     return m_placeData;

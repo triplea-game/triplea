@@ -157,7 +157,8 @@ public class RelationshipInterpreter extends GameDataComponent {
   }
 
   /**
-   * Convenience method to get RelationshipType so you can do relationshipChecks on the relationship between these 2 players
+   * Convenience method to get RelationshipType so you can do relationshipChecks on the relationship between these 2
+   * players
    *
    * @return RelationshipType between these to players
    */

@@ -19,11 +19,14 @@ public class SoundPath {
   public static final String CLIP_CHAT_MESSAGE = "chat_message";
   public static final String CLIP_CHAT_SLAP = "chat_slap";
   public static final String CLIP_CHAT_JOIN_GAME = "chat_join_game";
-  public static final String CLIP_CLICK_BUTTON = "click_button"; // TODO
-  public static final String CLIP_CLICK_PLOT = "click_plot"; // TODO
+  // TODO
+  public static final String CLIP_CLICK_BUTTON = "click_button";
+  // TODO
+  public static final String CLIP_CLICK_PLOT = "click_plot";
   public static final String CLIP_GAME_START = "game_start";
   public static final String CLIP_GAME_WON = "game_won";
-  public static final String CLIP_REQUIRED_ACTION = "required_action"; // TODO
+  // TODO
+  public static final String CLIP_REQUIRED_ACTION = "required_action";
   public static final String CLIP_REQUIRED_YOUR_TURN_SERIES = "required_your_turn_series";
   // TripleA sounds:
   // custom AA Guns:

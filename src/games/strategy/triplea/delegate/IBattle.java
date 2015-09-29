@@ -53,7 +53,8 @@ public interface IBattle extends java.io.Serializable {
    * @param units
    *        - attacking units
    * @param targets
-   *        - Can be NULL if this does not apply. A list of defending units with the collection of attacking units targetting them mapped to
+   *        - Can be NULL if this does not apply. A list of defending units with the collection of attacking units
+   *        targetting them mapped to
    *        each defending unit.
    * @return attack change object
    */

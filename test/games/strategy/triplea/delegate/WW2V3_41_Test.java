@@ -433,7 +433,8 @@ public class WW2V3_41_Test extends TestCase {
   public void testMultipleAAInTerritory() {
     // Set up territories
     final Territory poland = territory("Poland", m_data);
-    final Territory germany = territory("Germany", m_data);// Add a russian factory
+    // Add a russian factory
+    final Territory germany = territory("Germany", m_data);
     addTo(poland, aaGun(m_data).create(1, germans(m_data)));
     MoveDelegate moveDelegate = moveDelegate(m_data);
     ITestDelegateBridge delegateBridge = getDelegateBridge(germans(m_data));
@@ -961,11 +962,13 @@ public class WW2V3_41_Test extends TestCase {
     battleDelegate(m_data).start();
     final MustFightBattle mfb =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(eg, false, null);
-    // only 2 ships are allowed to bombard (there are 1 battleship and 2 cruisers that COULD bombard, but only 2 ships may bombard total)
+    // only 2 ships are allowed to bombard (there are 1 battleship and 2 cruisers that COULD bombard, but only 2 ships
+    // may bombard total)
     assertEquals(2, mfb.getBombardingUnits().size());
     // Show that bombard casualties can return fire
     // Note- the 3 & 2 hits below show default behavior of bombarding at attack strength
-    // 3= Battleship hitting a 4, 2=Cruiser hitting a 3, 5555=italian infantry missing on 6s, 00= british getting return fire on 1.
+    // 3= Battleship hitting a 4, 2=Cruiser hitting a 3, 5555=italian infantry missing on 6s, 00= british getting return
+    // fire on 1.
     bridge.setRandomSource(new ScriptedRandomSource(3, 2, 5, 5, 5, 5, 0, 0));
     battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     battleDelegate(m_data).start();
@@ -1008,7 +1011,8 @@ public class WW2V3_41_Test extends TestCase {
     move(sz15.getUnits().getMatches(Matches.UnitIsLand), new Route(sz15, eg));
     move.end();
     // Set the tech for DDs bombard
-    // TechAttachment.get(italians).setDestroyerBombard("true"); // ww2v3 doesn't have this tech, so this does nothing...
+    // ww2v3 doesn't have this tech, so this does nothing...
+    // TechAttachment.get(italians).setDestroyerBombard("true");
     UnitAttachment.get(destroyer(m_data)).setCanBombard("true");
     // Set the bombard strength for the DDs
     final Collection<Unit> dds = Match.getMatches(sz15.getUnits().getUnits(), Matches.UnitIsDestroyer);
@@ -1355,7 +1359,8 @@ public class WW2V3_41_Test extends TestCase {
       }
     }
     // move the units to east poland
-    String error = moveDelegate(m_data).move(bomberAndParatroop, route); // airTransports
+    // airTransports
+    String error = moveDelegate(m_data).move(bomberAndParatroop, route);
     assertValid(error);
     // try to move them further, this should fail
     error = moveDelegate(m_data).move(bomberAndParatroop, new Route(eastPoland, beloRussia));
@@ -1586,7 +1591,8 @@ public class WW2V3_41_Test extends TestCase {
     repairs.put(repair, 2);
     final String error = del.purchaseRepair(Collections.singletonMap(
         Match.getMatches(germany.getUnits().getUnits(), Matches.UnitCanBeDamaged).iterator().next(), repairs));
-    assertValid(error); // it is no longer an error, we just math max 0 it
+    // it is no longer an error, we just math max 0 it
+    assertValid(error);
     assertEquals(((TripleAUnit) factory).getUnitDamage(), 0);
   }
 

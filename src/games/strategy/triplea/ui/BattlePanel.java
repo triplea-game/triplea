@@ -538,12 +538,14 @@ public class BattlePanel extends ActionPanel {
         if ((m_count % 3) == 0) {
           getMap().setTerritoryOverlayForBorder(m_territory, Color.white);
           getMap().paintImmediately(getMap().getBounds());
-          // TODO: getUIContext().getMapData().getBoundingRect(m_territory)); what kind of additional transformation needed here?
+          // TODO: getUIContext().getMapData().getBoundingRect(m_territory)); what kind of additional transformation
+          // needed here?
           // TODO: setTerritoryOverlayForBorder is causing invalid ordered lock acquire atempt, why?
         } else {
           getMap().clearTerritoryOverlay(m_territory);
           getMap().paintImmediately(getMap().getBounds());
-          // TODO: getUIContext().getMapData().getBoundingRect(m_territory)); what kind of additional transformation needed here?
+          // TODO: getUIContext().getMapData().getBoundingRect(m_territory)); what kind of additional transformation
+          // needed here?
           // TODO: setTerritoryOverlayForBorder is causing invalid ordered lock acquire atempt, why?
         }
         m_count++;
@@ -606,7 +608,8 @@ public class BattlePanel extends ActionPanel {
       if (selected instanceof Territory) {
         return (Territory) selected;
       }
-      return null; // User selected "None" option
+      // User selected "None" option
+      return null;
     }
   }
 }

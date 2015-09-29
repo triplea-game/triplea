@@ -52,13 +52,15 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler {
           final MessengerException cle = (MessengerException) response.getException();
           cle.fillInInvokerStackTrace();
         } else {
-          // do not chain the exception, we want to keep whatever the original exception's class was, so just add our bit to the stack
+          // do not chain the exception, we want to keep whatever the original exception's class was, so just add our
+          // bit to the stack
           // trace.
           final Throwable throwable = response.getException();
           final StackTraceElement[] exceptionTrace = throwable.getStackTrace();
           final Exception ourException =
               new Exception(throwable.getMessage() + " exception in response from other system");
-          final StackTraceElement[] ourTrace = ourException.getStackTrace();// Thread.currentThread().getStackTrace();
+          // Thread.currentThread().getStackTrace();
+          final StackTraceElement[] ourTrace = ourException.getStackTrace();
           if (exceptionTrace != null && ourTrace != null) {
             final StackTraceElement[] combinedTrace = new StackTraceElement[(exceptionTrace.length + ourTrace.length)];
             int i = 0;

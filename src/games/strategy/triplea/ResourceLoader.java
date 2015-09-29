@@ -65,7 +65,8 @@ public class ResourceLoader {
     });
     if (existing.size() > 1) {
       System.out.println("INFO: Found too many files for: " + mapName + "  found: " + existing);
-      // we no longer throw this error message, instead we simply use the first one we find (prioritizing the user maps folder over the root
+      // we no longer throw this error message, instead we simply use the first one we find (prioritizing the user maps
+      // folder over the root
       // folder)
       // throw new IllegalStateException("Found too many files for: " + mapName + " found: " + existing);
     }
@@ -150,7 +151,8 @@ public class ResourceLoader {
 
   /**
    * @param pathURL
-   *        (The name of a resource is a '/'-separated path name that identifies the resource. Do not use '\' or File.separator)
+   *        (The name of a resource is a '/'-separated path name that identifies the resource. Do not use '\' or
+   *        File.separator)
    */
   public URL getResource(final String pathURL) {
     final URL rVal = m_loader.getResource(pathURL);

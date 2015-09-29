@@ -126,7 +126,8 @@ public class Pact_of_Steel_2_Test extends TestCase {
   }
 
   public void testIsConstruction() {
-    // TODO isConstruction, constructionType, constructionsPerTerrPerTypePerTurn, maxConstructionsPerTypePerTerr, "More Constructions with
+    // TODO isConstruction, constructionType, constructionsPerTerrPerTypePerTurn, maxConstructionsPerTypePerTerr, "More
+    // Constructions with
     // Factory", "More Constructions with Factory", "Unlimited Constructions"
   }
 

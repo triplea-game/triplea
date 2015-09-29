@@ -72,7 +72,6 @@ public class InitializationDelegate extends BaseTripleADelegate {
   public void loadState(final Serializable state) {
     final InitializationExtendedDelegateState s = (InitializationExtendedDelegateState) state;
     super.loadState(s.superState);
-    // load other variables from state here:
     this.m_needToInitialize = s.m_needToInitialize;
   }
 
@@ -113,7 +112,6 @@ public class InitializationDelegate extends BaseTripleADelegate {
    * exceptions.
    */
   private void initTransportedLandUnits(final IDelegateBridge aBridge) {
-    // m_firstRun = false;
     final GameData data = aBridge.getData();
     // check every territory
     boolean historyItemCreated = false;
@@ -235,10 +233,6 @@ public class InitializationDelegate extends BaseTripleADelegate {
     }
   }
 
-  /**
-   * @param data
-   * @param aBridge
-   */
   private void initDestroyerArtillery(final IDelegateBridge aBridge) {
     final GameData data = aBridge.getData();
     final boolean addArtilleryAndDestroyers = games.strategy.triplea.Properties.getUse_Destroyers_And_Artillery(data);
@@ -272,37 +266,13 @@ public class InitializationDelegate extends BaseTripleADelegate {
     }
   }
 
-  /**
-   * @param data
-   * @param aBridge
-   */
   private void initShipyards(final IDelegateBridge aBridge) {
-    // TODO: why the hell do we keep ending up here in rounds after round 1, on headless server games?
     final GameData data = aBridge.getData();
     final boolean useShipyards = games.strategy.triplea.Properties.getUse_Shipyards(data);
     if (useShipyards) {
       final CompositeChange change = new CompositeChange();
       final ProductionFrontier frontierShipyards =
           data.getProductionFrontierList().getProductionFrontier("productionShipyards");
-      /*
-       * Remove the hardcoded productionRules and work through those from the XML as specified
-       */
-      /*
-       * ProductionRule buyInfantry = data.getProductionRuleList().getProductionRule("buyInfantry");
-       * ProductionRule buyArtillery = data.getProductionRuleList().getProductionRule("buyArtillery");
-       * ProductionRule buyArmour = data.getProductionRuleList().getProductionRule("buyArmour");
-       * ProductionRule buyFighter = data.getProductionRuleList().getProductionRule("buyFighter");
-       * ProductionRule buyBomber = data.getProductionRuleList().getProductionRule("buyBomber");
-       * ProductionRule buyFactory = data.getProductionRuleList().getProductionRule("buyFactory");
-       * ProductionRule buyAAGun = data.getProductionRuleList().getProductionRule("buyAAGun");
-       * change.add(ChangeFactory.addProductionRule(buyInfantry, frontierShipyards));
-       * change.add(ChangeFactory.addProductionRule(buyArtillery, frontierShipyards));
-       * change.add(ChangeFactory.addProductionRule(buyArmour, frontierShipyards));
-       * change.add(ChangeFactory.addProductionRule(buyFighter, frontierShipyards));
-       * change.add(ChangeFactory.addProductionRule(buyBomber, frontierShipyards));
-       * change.add(ChangeFactory.addProductionRule(buyFactory, frontierShipyards));
-       * change.add(ChangeFactory.addProductionRule(buyAAGun, frontierShipyards));
-       */
       /*
        * Find the productionRules, if the unit is NOT a sea unit, add it to the ShipYards prod rule.
        */
@@ -332,10 +302,6 @@ public class InitializationDelegate extends BaseTripleADelegate {
     return games.strategy.triplea.Properties.getWW2V2(data);
   }
 
-  /**
-   * @param data
-   * @param aBridge
-   */
   private void initTwoHitBattleship(final IDelegateBridge aBridge) {
     final GameData data = aBridge.getData();
     final boolean userEnabled = games.strategy.triplea.Properties.getTwoHitBattleships(data);
@@ -351,9 +317,6 @@ public class InitializationDelegate extends BaseTripleADelegate {
     }
   }
 
-  /**
-   * @param data
-   */
   private void initOriginalOwner(final IDelegateBridge aBridge) {
     final GameData data = aBridge.getData();
     final CompositeChange changes = new CompositeChange();
@@ -389,6 +352,5 @@ public class InitializationDelegate extends BaseTripleADelegate {
 class InitializationExtendedDelegateState implements Serializable {
   private static final long serialVersionUID = -9000446777655823735L;
   Serializable superState;
-  // add other variables here:
   public boolean m_needToInitialize;
 }

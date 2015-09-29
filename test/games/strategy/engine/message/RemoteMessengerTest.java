@@ -248,7 +248,8 @@ public class RemoteMessengerTest extends TestCase {
         sleep(1);
       }
       sleep(20);
-      // TODO: we are getting a RemoteNotFoundException because the client is disconnecting before the invoke goes out completely
+      // TODO: we are getting a RemoteNotFoundException because the client is disconnecting before the invoke goes out
+      // completely
       // Perhaps this situation should be changed to a ConnectionLostException or something else?
       client.shutDown();
       // when the client shutdowns, this should wake up.

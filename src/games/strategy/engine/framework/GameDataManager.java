@@ -84,7 +84,8 @@ public class GameDataManager {
         if (savegamePath == null) {
           throw new IOException(error);
         }
-        // so, what we do here is try to see if our installed copy of triplea includes older jars with it that are the same engine as was
+        // so, what we do here is try to see if our installed copy of triplea includes older jars with it that are the
+        // same engine as was
         // used for this savegame, and if so try to run it
         try {
           final String newClassPath = TripleAProcessRunner.findOldJar(readVersion, true);
@@ -128,7 +129,8 @@ public class GameDataManager {
         }
         return null;
       } else if (!headless && readVersion.isGreaterThan(EngineVersion.VERSION, false)) {
-        // we can still load it because first 3 numbers of the version are the same, however this save was made by a newer engine, so prompt
+        // we can still load it because first 3 numbers of the version are the same, however this save was made by a
+        // newer engine, so prompt
         // the user to upgrade
         final String messageString =
             "<html>Your TripleA engine is OUT OF DATE.  This save was made by a newer version of TripleA."
@@ -145,7 +147,8 @@ public class GameDataManager {
         }
       }
       final GameData data = (GameData) input.readObject();
-      updateDataToBeCompatibleWithNewEngine(readVersion, data); // TODO: expand this functionality (and keep it updated)
+      // TODO: expand this functionality (and keep it updated)
+      updateDataToBeCompatibleWithNewEngine(readVersion, data);
       loadDelegates(input, data);
       data.postDeSerialize();
       return data;
@@ -156,7 +159,8 @@ public class GameDataManager {
 
   /**
    * Use this to keep compatibility between savegames when it is easy to do so.
-   * When it is not easy to do so, just make sure to include the last release's .jar file in the "old" folder for triplea.
+   * When it is not easy to do so, just make sure to include the last release's .jar file in the "old" folder for
+   * triplea.
    * FYI: Engine version numbers work like this with regards to savegames:
    * Any changes to the first 3 digits means that the savegame is not compatible between different engines.
    * While any change only to the 4th (last) digit means that the savegame must be compatible between different engines.
@@ -274,7 +278,8 @@ public class GameDataManager {
   }
 
   /**
-   * Test if a game save works. Also a good way to dump a gamesave in memory to a hprof file, without all the background stuff.
+   * Test if a game save works. Also a good way to dump a gamesave in memory to a hprof file, without all the background
+   * stuff.
    */
   public static void main(final String[] args) {
     if (args == null || args.length == 0 || args[0] == null || args[0].length() == 0) {

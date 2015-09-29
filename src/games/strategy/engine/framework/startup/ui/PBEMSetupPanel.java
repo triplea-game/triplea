@@ -106,7 +106,8 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   private void layoutComponents() {
     removeAll();
     setLayout(new GridBagLayout());
-    setBorder(new EmptyBorder(10, 10, 10, 10)); // Empty border works as margin
+    // Empty border works as margin
+    setBorder(new EmptyBorder(10, 10, 10, 10));
     int row = 0;
     add(m_diceServerEditor, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST,
         GridBagConstraints.HORIZONTAL, new Insets(10, 0, 20, 0), 0, 0));
@@ -121,10 +122,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     int panelRow = 0;
     emailPanel.add(m_emailSenderEditor, new GridBagConstraints(0, panelRow++, 1, 1, 1.0d, 0d,
         GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0));
-    // the play by micro web site settings
-    // m_webPosterEditor.setBorder(new TitledBorder("Play By Web Site"));
-    // add(m_webPosterEditor, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-    // new Insets(0, 0, 20, 0), 0, 0));
+
     // add selection of local players
     add(m_localPlayerSelection, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHEAST,
         GridBagConstraints.NONE, new Insets(10, 0, 10, 0), 0, 0));
@@ -136,7 +134,8 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   public void setWidgetActivation() {}
 
   private void setupListeners() {
-    // register, so we get notified when the game model (GameData) changes (e.g if the user load a save game or selects another game)
+    // register, so we get notified when the game model (GameData) changes (e.g if the user load a save game or selects
+    // another game)
     m_gameSelectorModel.addObserver(this);
     // subscribe to editor changes, so we can notify the MainPanel
     m_diceServerEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
@@ -403,11 +402,12 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
       playerTypes.put(player.getPlayerName(), player.getPlayerType());
       playersEnabled.put(player.getPlayerName(), player.isPlayerEnabled());
     }
+    // we don't need the playerToNode list, the
+    // disable-able players, or the alliances
+    // list, for a local game
     final PlayerListing pl =
         new PlayerListing(null, playersEnabled, playerTypes, m_gameSelectorModel.getGameData().getGameVersion(),
-            m_gameSelectorModel.getGameName(), m_gameSelectorModel.getGameRound(), null, null); // we don't need the playerToNode list, the
-                                                                                                // disable-able players, or the alliances
-                                                                                                // list, for a local game
+            m_gameSelectorModel.getGameName(), m_gameSelectorModel.getGameRound(), null, null);
     return new LocalLauncher(m_gameSelectorModel, randomSource, pl);
   }
 
@@ -511,7 +511,8 @@ class PBEMLocalPlayerComboBoxSelector {
     if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection)) {
       m_playerTypes.setSelectedItem(previousSelection);
     } else if (m_playerName.startsWith("Neutral") || playerName.startsWith("AI")) {
-      m_playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]); // the 4th in the list should be Pro AI (Hard AI)
+      // the 4th in the list should be Pro AI (Hard AI)
+      m_playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]);
     }
     // we do not set the default for the combobox because the default is the top item, which in this case is human
     if (playerAlliances.contains(playerName)) {
@@ -561,10 +562,12 @@ class PBEMLocalPlayerComboBoxSelector {
     public void actionPerformed(final ActionEvent e) {
       if (m_enabledCheckBox.isSelected()) {
         m_enabled = true;
-        m_playerTypes.setSelectedItem(m_types[0]); // the 1st in the list should be human
+        // the 1st in the list should be human
+        m_playerTypes.setSelectedItem(m_types[0]);
       } else {
         m_enabled = false;
-        m_playerTypes.setSelectedItem(m_types[Math.max(0, Math.min(m_types.length - 1, 1))]); // the 2nd in the list should be Weak AI
+        // the 2nd in the list should be Weak AI
+        m_playerTypes.setSelectedItem(m_types[Math.max(0, Math.min(m_types.length - 1, 1))]);
       }
       setWidgetActivation();
     }

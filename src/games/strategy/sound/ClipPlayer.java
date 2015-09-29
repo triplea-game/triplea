@@ -62,33 +62,42 @@ import games.strategy.triplea.ResourceLoader;
  * example: <br>
  * <b>battle_aa_miss</b>=ww2/battle_aa_miss;future/battle_aa_miss/battle_aa_miss_01_ufo_flyby.wav <br>
  * "battle_aa_miss" is one of the folders under "generic", therefore it is a "sound location key" <br>
- * We can set this equal to any list of sounds paths, each separated by a semicolon (;). The engine will pick one at random each time we
+ * We can set this equal to any list of sounds paths, each separated by a semicolon (;). The engine will pick one at
+ * random each time we
  * need to play this sound. <br>
  * The "sound path" can be a "folder" or a "file". If it is a folder, we will use all the sounds in that folder.
- * If it is a file, we will only use that file. We can use a file and folder and another file and another folder, all together. <br>
+ * If it is a file, we will only use that file. We can use a file and folder and another file and another folder, all
+ * together. <br>
  * Example: "<b>ww2/battle_aa_miss</b>" is the sound path for a folder, so we will use all the sounds in that folder.
  * "<b>future/battle_aa_miss/battle_aa_miss_01_ufo_flyby.wav</b>" is a specific file, so we will use just this file.
- * Because we use both of these together, the engine will make a list of all the files in that folder, plus that single file we specified,
+ * Because we use both of these together, the engine will make a list of all the files in that folder, plus that single
+ * file we specified,
  * then it will randomly pick one of this whole list every time it needs to play the "battle_aa_miss" sound. <br>
  * <br>
  * So, lets say that you want to play 2 sounds, for the "battle_land" sound key.
  * One of them is located at "tripleainstallfolder/assets/sounds/generic/battle_land_01_angry_drumming_noise.wav".
- * The other is located at "tripleainstallfolder/assets/sounds/classical/battle_land_02_war_trumpets.wav". Then the entry would look like
+ * The other is located at "tripleainstallfolder/assets/sounds/classical/battle_land_02_war_trumpets.wav". Then the
+ * entry would look like
  * this: <br>
  * battle_land=generic/battle_land_01_angry_drumming_noise.wav;classical/battle_land_02_war_trumpets.wav <br>
- * If you wanted it to also play every single sound in the "tripleainstallfolder/assets/sounds/ww2/battle_land/" folder, then you would add
+ * If you wanted it to also play every single sound in the "tripleainstallfolder/assets/sounds/ww2/battle_land/" folder,
+ * then you would add
  * that folder to path: <br>
- * battle_land=generic/battle_land_01_angry_drumming_noise.wav;classical/battle_land_02_war_trumpets.wav;ww2/battle_land <br>
+ * battle_land=generic/battle_land_01_angry_drumming_noise.wav;classical/battle_land_02_war_trumpets.wav;ww2/battle_land
  * <br>
- * Furthermore, we can customize the sound key by adding "_nationName" onto the end of it. So if you want a specific sound for a german land
+ * <br>
+ * Furthermore, we can customize the sound key by adding "_nationName" onto the end of it. So if you want a specific
+ * sound for a german land
  * attack, then use: <br>
  * battle_land<b>_Germans</b>=misc/battle_land/battle_land_Germans_panzers_and_yelling_in_german.wav <br>
- * You can use nation specific sound keys for almost all sounds, though things like game_start, or chat_message, will never use them. <br>
+ * You can use nation specific sound keys for almost all sounds, though things like game_start, or chat_message, will
+ * never use them. <br>
  * <br>
  * <br>
  * <br>
  * <br>
- * <b>You do not need to specify every single "sound key". This is why/because we have the "Sound.Default.Folder".</b> <br>
+ * <b>You do not need to specify every single "sound key". This is why/because we have the "Sound.Default.Folder".</b>
+ * <br>
  * <br>
  * The logic is as follows: <br>
  * Engine needs to play the "game_start" sound. <br>
@@ -96,8 +105,10 @@ import games.strategy.triplea.ResourceLoader;
  * 2. If none exists, pretend that one exists and that it only contains this line: "Sound.Default.Folder=ww2" <br>
  * 3. Look in the sound.properties file for the specific sound key "game_start" <br>
  * 4. Create a list of all sounds that the key includes.
- * If no key, then just use all the sounds in "Sound.Default.Folder/sound_key/" (which for us would be "ww2/game_start/" folder). <br>
- * 5. If no sounds are found, then use all the sounds located at "generic/sound_key/" (which for us would be "generic/game_start").
+ * If no key, then just use all the sounds in "Sound.Default.Folder/sound_key/" (which for us would be "ww2/game_start/"
+ * folder). <br>
+ * 5. If no sounds are found, then use all the sounds located at "generic/sound_key/" (which for us would be
+ * "generic/game_start").
  * (if any sounds are found in step 4 above, then we ignore the generic folder completely) <br>
  * 6. Randomize the list's order, then pick one, and play the sound.
  */
@@ -108,8 +119,9 @@ public class ClipPlayer {
   private final HashMap<String, List<URL>> m_sounds = new HashMap<String, List<URL>>();
   private final ResourceLoader m_resourceLoader;
   private final Set<String> m_subFolders = new HashSet<String>();
-  private final ClipCache m_clipCache = new ClipCache(24); // MacOS and Linux can only handle 30 or 32 sound files being open at same time,
-                                                           // so we'll be safe and pick 24
+  // MacOS and Linux can only handle 30 or 32 sound files being open at same time,
+  // so we'll be safe and pick 24
+  private final ClipCache m_clipCache = new ClipCache(24);
   // standard settings
   private static final String ASSETS_SOUNDS_FOLDER = "sounds";
   private static final String SOUND_PREFERENCE_GLOBAL_SWITCH = "beSilent2";
@@ -152,7 +164,8 @@ public class ClipPlayer {
      * m_mutedClips.add(SoundPath.CLIP_CHAT_SLAP);
      */
     for (final String sound : choices) {
-      final boolean muted = prefs.getBoolean(SOUND_PREFERENCE_PREFIX + sound, false); // true until we get better sounds
+      // true until we get better sounds
+      final boolean muted = prefs.getBoolean(SOUND_PREFERENCE_PREFIX + sound, false);
       if (muted) {
         m_mutedClips.add(sound);
       }
@@ -348,23 +361,27 @@ public class ClipPlayer {
     if (parseThenTestOnly || availableSounds == null || availableSounds.isEmpty()) {
       return null;
     }
-    Collections.shuffle(availableSounds); // we want to pick a random sound from this folder, as users don't like hearing the same ones over
-                                          // and over again
+    // we want to pick a random sound from this folder, as users don't like hearing the same ones over
+    // and over again
+    Collections.shuffle(availableSounds);
     final URL clipFile = availableSounds.get(0);
     return m_clipCache.get(clipFile);
   }
 
   /**
-   * The user may or may not have a sounds.properties file. If they do not, we should have a default folder (ww2) that we use for sounds.
+   * The user may or may not have a sounds.properties file. If they do not, we should have a default folder (ww2) that
+   * we use for sounds.
    * Because we do not want a lot of duplicate sound files, we also have a "generic" sound folder.
-   * If a sound can not be found for a soundpath using the sounds.properties or default folder, then we try to find one in the generic
+   * If a sound can not be found for a soundpath using the sounds.properties or default folder, then we try to find one
+   * in the generic
    * folder.
    * The sounds.properties file can specify all the sounds to use for a specific sound path (multiple per path).
    * If there is no key for that path, we try by the default way. <br>
    * <br>
    * Example sounds.properties keys:<br>
    * Sound.Default.Folder=ww2<br>
-   * battle_aa_miss=ww2/battle_aa_miss/battle_aa_miss_01_aa_artillery_and_flyby.wav;ww2/battle_aa_miss/battle_aa_miss_02_just_aa_artillery.
+   * battle_aa_miss=ww2/battle_aa_miss/battle_aa_miss_01_aa_artillery_and_flyby.wav;ww2/battle_aa_miss/
+   * battle_aa_miss_02_just_aa_artillery.
    * wav<br>
    * phase_purchase_Germans=phase_purchase_Germans/game_start_Germans_01_anthem.wav
    *
@@ -409,7 +426,8 @@ public class ClipPlayer {
     }
     URI thisSoundURI;
     File thisSoundFile;
-    // we are checking to see if this is a file, to see if it is a directory, or a sound, or a zipped directory, or a zipped sound. There
+    // we are checking to see if this is a file, to see if it is a directory, or a sound, or a zipped directory, or a
+    // zipped sound. There
     // might be a better way to do this...
     try {
       thisSoundURI = thisSoundURL.toURI();
@@ -436,7 +454,8 @@ public class ClipPlayer {
       // we are probably using zipped sounds. there might be a better way to do this...
       final String soundFilePath = thisSoundURL.getPath();
       if (soundFilePath != null && soundFilePath.length() > 5 && soundFilePath.indexOf(".zip!") != -1) {
-        // so the URL with a zip or jar in it, will start with "file:", and unfortunately when you make a file and test if it exists, if it
+        // so the URL with a zip or jar in it, will start with "file:", and unfortunately when you make a file and test
+        // if it exists, if it
         // starts with that it doesn't exist
         final int index1 = Math.max(0, Math.min(soundFilePath.length(),
             soundFilePath.indexOf("file:") != -1 ? soundFilePath.indexOf("file:") + 5 : 0));
@@ -447,8 +466,9 @@ public class ClipPlayer {
           try {
             String decoded;
             try {
-              decoded = URLDecoder.decode(zipFilePath, "UTF-8"); // the file path may have spaces, which in a URL are equal to %20, but if
-                                                                 // we make a file using that it will fail, so we need to decode
+              // the file path may have spaces, which in a URL are equal to %20, but if
+              // we make a file using that it will fail, so we need to decode
+              decoded = URLDecoder.decode(zipFilePath, "UTF-8");
             } catch (final UnsupportedEncodingException uee) {
               decoded = zipFilePath.replaceAll("%20", " ");
             }
@@ -468,7 +488,6 @@ public class ClipPlayer {
                       if (zipSoundURL == null) {
                         continue;
                       }
-                      // System.out.println("Zipped Sound URL: " + zipSoundURL);
                       if (testClipSuccessful(zipSoundURL)) {
                         availableSounds.add(zipSoundURL);
                       }
@@ -583,7 +602,8 @@ public class ClipPlayer {
   }
 
   /**
-   * Simple stupid test to see if it works (and to see if our cache stays at or below its max), and to make sure there are no memory leaks.
+   * Simple stupid test to see if it works (and to see if our cache stays at or below its max), and to make sure there
+   * are no memory leaks.
    *
    * @param args
    */

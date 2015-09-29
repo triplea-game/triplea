@@ -220,7 +220,8 @@ public class MultiPartFormOutputStream {
   }
 
   /**
-   * Writes a input stream's contents. If the input stream is null, a <code>java.lang.IllegalArgumentException</code> will be thrown.
+   * Writes a input stream's contents. If the input stream is null, a <code>java.lang.IllegalArgumentException</code>
+   * will be thrown.
    *
    * @param name
    *        the field name
@@ -277,7 +278,8 @@ public class MultiPartFormOutputStream {
 
   /**
    * Writes the given bytes. The bytes are assumed to be the contents
-   * of a file, and will be sent as such. If the data is null, a <code>java.lang.IllegalArgumentException</code> will be thrown.
+   * of a file, and will be sent as such. If the data is null, a <code>java.lang.IllegalArgumentException</code> will be
+   * thrown.
    *
    * @param name
    *        the field name
@@ -365,7 +367,8 @@ public class MultiPartFormOutputStream {
   /**
    * Creates a new <code>java.net.URLConnection</code> object from the
    * specified <code>java.net.URL</code>. This is a convenience method
-   * which will set the <code>doInput</code>, <code>doOutput</code>, <code>useCaches</code> and <code>defaultUseCaches</code> fields to
+   * which will set the <code>doInput</code>, <code>doOutput</code>, <code>useCaches</code> and
+   * <code>defaultUseCaches</code> fields to
    * the appropriate settings in the correct order.
    *
    * @return a <code>java.net.URLConnection</code> object for the URL
@@ -400,7 +403,8 @@ public class MultiPartFormOutputStream {
    * Gets the content type string suitable for the <code>java.net.URLConnection</code> which includes the multipart
    * boundary string. <br />
    * <br />
-   * This method is static because, due to the nature of the <code>java.net.URLConnection</code> class, once the output stream
+   * This method is static because, due to the nature of the <code>java.net.URLConnection</code> class, once the output
+   * stream
    * for the connection is acquired, it's too late to set the content
    * type (or any other request parameter). So one has to create a
    * multipart boundary string first before using this class, such as

@@ -77,7 +77,8 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       return;
     }
     if (games.strategy.triplea.Properties.getTriggers(getData())) {
-      // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
+      // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
+      // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
       final Match<TriggerAttachment> technologyDelegateTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
           AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
@@ -110,7 +111,6 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   public Serializable saveState() {
     final TechnologyExtendedDelegateState state = new TechnologyExtendedDelegateState();
     state.superState = super.saveState();
-    // add other variables to state here:
     state.m_needToInitialize = m_needToInitialize;
     state.m_techs = m_techs;
     return state;
@@ -120,7 +120,6 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   public void loadState(final Serializable state) {
     final TechnologyExtendedDelegateState s = (TechnologyExtendedDelegateState) state;
     super.loadState(s.superState);
-    // load other variables from state here:
     m_needToInitialize = s.m_needToInitialize;
     m_techs = s.m_techs;
   }

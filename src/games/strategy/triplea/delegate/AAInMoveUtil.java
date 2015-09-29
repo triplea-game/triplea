@@ -133,11 +133,14 @@ class AAInMoveUtil implements Serializable {
         territoriesWhereAAWillFire.add(route.getEnd());
       }
     } else {
-      // Since we are not firing on the last step, check the start as well, to prevent the user from moving to and from AA sites one at a
+      // Since we are not firing on the last step, check the start as well, to prevent the user from moving to and from
+      // AA sites one at a
       // time
-      // if there was a battle fought there then don't fire, this covers the case where we fight, and "Always On AA" wants to fire after the
+      // if there was a battle fought there then don't fire, this covers the case where we fight, and "Always On AA"
+      // wants to fire after the
       // battle.
-      // TODO: there is a bug in which if you move an air unit to a battle site in the middle of non combat, it wont fire
+      // TODO: there is a bug in which if you move an air unit to a battle site in the middle of non combat, it wont
+      // fire
       if (route.getStart().getUnits().someMatch(hasAA) && !getBattleTracker().wasBattleFought(route.getStart())) {
         territoriesWhereAAWillFire.add(route.getStart());
       }
@@ -175,8 +178,10 @@ class AAInMoveUtil implements Serializable {
         TechAbilityAttachment.getAirborneTargettedByAA(movingPlayer, getData());
     final List<Unit> defendingAA = territory.getUnits().getMatches(Matches.UnitIsAAthatCanFire(units,
         airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, 1, true, getData()));
-    final List<String> AAtypes = UnitAttachment.getAllOfTypeAAs(defendingAA); // comes ordered alphabetically already
-    Collections.reverse(AAtypes); // stacks are backwards
+    // comes ordered alphabetically already
+    final List<String> AAtypes = UnitAttachment.getAllOfTypeAAs(defendingAA);
+    // stacks are backwards
+    Collections.reverse(AAtypes);
     for (final String currentTypeAA : AAtypes) {
       final Collection<Unit> currentPossibleAA = Match.getMatches(defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
       final Set<UnitType> targetUnitTypesForThisTypeAA =
@@ -195,7 +200,8 @@ class AAInMoveUtil implements Serializable {
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          validTargetedUnitsForThisRoll.removeAll(m_casualties); // get rid of units already killed, so we don't target them twice
+          // get rid of units already killed, so we don't target them twice
+          validTargetedUnitsForThisRoll.removeAll(m_casualties);
           if (!validTargetedUnitsForThisRoll.isEmpty()) {
             dice[0] = DiceRoll.rollAA(validTargetedUnitsForThisRoll, currentPossibleAA, m_bridge, territory, true);
           }

@@ -49,7 +49,8 @@ public class AirBattle extends AbstractBattle {
   protected final Collection<Unit> m_defendingWaitingToDie = new ArrayList<Unit>();
   protected final Collection<Unit> m_attackingWaitingToDie = new ArrayList<Unit>();
   protected boolean m_intercept = false;
-  protected final int m_maxRounds; // -1 would mean forever until one side is eliminated. (default is 1 round)
+  // -1 would mean forever until one side is eliminated. (default is 1 round)
+  protected final int m_maxRounds;
 
   public AirBattle(final Territory battleSite, final boolean bombingRaid, final GameData data, final PlayerID attacker,
       final BattleTracker battleTracker) {
@@ -83,7 +84,8 @@ public class AirBattle extends AbstractBattle {
 
   @Override
   public void fight(final IDelegateBridge bridge) {
-    // remove units that may already be dead due to a previous event (like they died from a strategic bombing raid, rocket attack, etc)
+    // remove units that may already be dead due to a previous event (like they died from a strategic bombing raid,
+    // rocket attack, etc)
     removeUnitsThatNoLongerExist();
     // we were interrupted
     if (m_stack.isExecuting()) {
@@ -355,7 +357,8 @@ public class AirBattle extends AbstractBattle {
     } else {
       if (!m_attackingUnits.isEmpty()) {
         // currently we already have the battle setup
-        // m_battleTracker.addBattle(new RouteScripted(m_battleSite), new ArrayList<Unit>(m_attackingUnits), false, m_attacker, bridge,
+        // m_battleTracker.addBattle(new RouteScripted(m_battleSite), new ArrayList<Unit>(m_attackingUnits), false,
+        // m_attacker, bridge,
         // null, null, null, true);
       }
     }
@@ -476,7 +479,8 @@ public class AirBattle extends AbstractBattle {
 
   private void retreat(final Collection<Unit> retreating, final boolean defender, final IDelegateBridge bridge) {
     if (!defender) {
-      // we must remove any of these units from the land battle that follows (this comes before we remove them from this battle, because
+      // we must remove any of these units from the land battle that follows (this comes before we remove them from this
+      // battle, because
       // after we remove from this battle we are no longer blocking any battles)
       final Collection<IBattle> dependentBattles = m_battleTracker.getBlocked(AirBattle.this);
       removeFromDependents(retreating, bridge, dependentBattles, true);
@@ -518,7 +522,8 @@ public class AirBattle extends AbstractBattle {
             new ArrayList<Unit>(m_defendingUnits), "Select Air to Intercept");
         groundedPlanesRetreated = false;
       } else {
-        // if normal battle, we may choose to withdraw some air units (keep them grounded for both Air battle and the subsequent normal
+        // if normal battle, we may choose to withdraw some air units (keep them grounded for both Air battle and the
+        // subsequent normal
         // battle) instead of launching
         if (games.strategy.triplea.Properties.getAirBattleDefendersCanRetreat(m_data)) {
           interceptors = getRemote(m_defender, bridge).selectUnitsQuery(m_battleSite,
@@ -830,6 +835,7 @@ public class AirBattle extends AbstractBattle {
   public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units,
       final IDelegateBridge bridge, final boolean withdrawn) {
     // should never happen
-    // throw new IllegalStateException("AirBattle should not have any preceding battle with which to possibly remove dependents from");
+    // throw new IllegalStateException("AirBattle should not have any preceding battle with which to possibly remove
+    // dependents from");
   }
 }

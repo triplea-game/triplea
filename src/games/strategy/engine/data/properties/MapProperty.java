@@ -99,7 +99,8 @@ public class MapProperty<T, U> extends AEditableProperty {
   @Override
   public boolean validate(final Object value) {
     if (value == null) {
-      return false; // is this ok? no idea, no maps or anything use this
+      // is this ok? no idea, no maps or anything use this
+      return false;
     }
     if (Map.class.isAssignableFrom(value.getClass())) {
       try {

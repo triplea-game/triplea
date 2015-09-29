@@ -45,6 +45,7 @@ import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.net.IServerMessenger;
+
 /** Setup panel displayed for hosting a non-lobby network game (using host option from main panel) */
 public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener {
   private static final long serialVersionUID = -2849872641665561807L;
@@ -362,7 +363,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       m_localCheckBox.setSelected(true);
       m_enabledCheckBox = new JCheckBox();
       m_enabledCheckBox.addActionListener(m_disablePlayerActionListener);
-      m_enabledCheckBox.setSelected(true);// this gets updated later
+      // this gets updated later
+      m_enabledCheckBox.setSelected(true);
       m_types = types;
       m_type = new JComboBox(types);
       String previousSelection = reloadSelections.get(playerName);
@@ -373,7 +375,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         m_type.setSelectedItem(previousSelection);
         m_model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
       } else if (playerName.startsWith("Neutral") || playerName.startsWith("AI")) {
-        m_type.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]); // the 4th in the list should be Pro AI (Hard AI)
+        // the 4th in the list should be Pro AI (Hard AI)
+        m_type.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]);
         m_model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
       }
       if (playerAlliances.contains(playerName)) {
@@ -449,10 +452,12 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       public void actionPerformed(final ActionEvent e) {
         if (m_enabledCheckBox.isSelected()) {
           m_model.enablePlayer(m_nameLabel.getText());
-          m_type.setSelectedItem(m_types[0]); // the 1st in the list should be human
+          // the 1st in the list should be human
+          m_type.setSelectedItem(m_types[0]);
         } else {
           m_model.disablePlayer(m_nameLabel.getText());
-          m_type.setSelectedItem(m_types[Math.max(0, Math.min(m_types.length - 1, 1))]); // the 2nd in the list should be Weak AI
+          // the 2nd in the list should be Weak AI
+          m_type.setSelectedItem(m_types[Math.max(0, Math.min(m_types.length - 1, 1))]);
         }
         setWidgetActivation();
       }

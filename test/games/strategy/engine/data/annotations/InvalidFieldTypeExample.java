@@ -18,7 +18,8 @@ public class InvalidFieldTypeExample extends DefaultAttachment {
   }
 
   @SuppressWarnings("unused")
-  private String m_givesMovement; // this should be an integermap, since that is what we are returning. should cause test to fail.
+  // this should be an integermap, since that is what we are returning. should cause test to fail.
+  private String m_givesMovement;
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setGivesMovement(final String value) {}

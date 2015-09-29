@@ -65,7 +65,8 @@ public class ServerGame extends AbstractGame {
   private InGameLobbyWatcherWrapper m_inGameLobbyWatcher;
   private boolean m_needToInitialize = true;
   /**
-   * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from returning.
+   * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from
+   * returning.
    * <p>
    */
   private final CountDownLatch m_delegateExecutionStoppedLatch = new CountDownLatch(1);
@@ -300,10 +301,11 @@ public class ServerGame extends AbstractGame {
     m_isGameOver = true;
     ErrorHandler.setGameOver(true);
     m_delegateExecutionStoppedLatch.countDown();
-    for (final IGamePlayer player : m_gamePlayers.values()) { // tell the players (especially the AI's) that the game is stopping, so stop
-                                                              // doing stuff.
-      player.stopGame();// not sure whether to put this before or after we delegate execution block, but definitely before the game loader
-                        // shutdown
+    // tell the players (especially the AI's) that the game is stopping, so stop doing stuff.
+    for (final IGamePlayer player : m_gamePlayers.values()) {
+      // not sure whether to put this before or after we delegate execution block, but definitely before the game loader
+      // shutdown
+      player.stopGame();
     }
     // block delegate execution to prevent outbound messages to the players while we shut down.
     try {
@@ -534,7 +536,8 @@ public class ServerGame extends AbstractGame {
     }
     bridge.setRandomSource(m_delegateRandomSource);
     // do any initialization of game data for all players here (not based on a delegate, and should not be)
-    // we can not do this the very first run through, because there are no history nodes yet. We should do after first node is created.
+    // we can not do this the very first run through, because there are no history nodes yet. We should do after first
+    // node is created.
     if (m_needToInitialize) {
       addPlayerTypesToGameData(m_gamePlayers.values(), m_playerManager, bridge);
     }
@@ -585,11 +588,10 @@ public class ServerGame extends AbstractGame {
   private void addPlayerTypesToGameData(final Collection<IGamePlayer> localPlayers, final PlayerManager allPlayers,
       final IDelegateBridge aBridge) {
     final GameData data = aBridge.getData();
-    // potential bugs with adding changes to a game that has not yet started and has no history nodes yet. So wait for the first delegate to
+    // potential bugs with adding changes to a game that has not yet started and has no history nodes yet. So wait for
+    // the first delegate to
     // start before making changes.
-    if (getCurrentStep() == null || getCurrentStep().getPlayerID() == null || (m_firstRun)) // &&
-                                                                                            // data.getPlayerList().getPlayers().iterator().next().getWhoAmI().equals("null:no_one")
-    {
+    if (getCurrentStep() == null || getCurrentStep().getPlayerID() == null || (m_firstRun)) {
       m_firstRun = false;
       return;
     }

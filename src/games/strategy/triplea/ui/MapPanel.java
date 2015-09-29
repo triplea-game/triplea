@@ -78,7 +78,8 @@ public class MapPanel extends ImageScrollerLargeView {
   private final ListenerList<MouseOverUnitListener> m_mouseOverUnitsListeners =
       new ListenerList<MouseOverUnitListener>();
   private GameData m_data;
-  private Territory m_currentTerritory; // the territory that the mouse is
+  // the territory that the mouse is
+  private Territory m_currentTerritory;
   // currently over
   // could be null
   private final MapPanelSmallView m_smallView;

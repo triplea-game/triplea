@@ -61,11 +61,11 @@ public class DoesNothingAI extends AbstractAI {
     // destroy whatever we have
     final ResourceCollection resourceCollection = player.getResources();
     final Change removeChange = ChangeFactory.removeResourceCollection(player, resourceCollection);
-    // shameless cheating... (do NOT do this, normally you are never supposed to access the IDelegateBridge from outside of a delegate)
+    // shameless cheating... (do NOT do this, normally you are never supposed to access the IDelegateBridge from outside
+    // of a delegate)
     final IDelegateBridge bridge = endTurnForumPosterDelegate.getBridge();
-    bridge.getHistoryWriter().startEvent(player.getName() + " removes resources: " + resourceCollection, null); // resourceCollection is not
-                                                                                                                // yet a valid
-                                                                                                                // renderingObject
+    // resourceCollection is not yet a valid renderingObject
+    bridge.getHistoryWriter().startEvent(player.getName() + " removes resources: " + resourceCollection, null);
     bridge.addChange(removeChange);
   }
 

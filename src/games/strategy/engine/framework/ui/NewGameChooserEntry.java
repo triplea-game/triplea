@@ -130,7 +130,8 @@ public class NewGameChooserEntry {
     return m_data.getGameName();
   }
 
-  // the user may have selected a map skin instead of this map folder, so don't use this for anything except our equals/hashcode below
+  // the user may have selected a map skin instead of this map folder, so don't use this for anything except our
+  // equals/hashcode below
   private String getMapNameProperty() {
     final String mapName = (String) m_data.getProperties().get(Constants.MAP_NAME);
     if (mapName == null || mapName.trim().length() == 0) {

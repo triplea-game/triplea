@@ -26,9 +26,12 @@ public class ClassLoaderUtil {
   // private static boolean isInitialized = false;
   /** names of classes and fields of interest for closing the loader's jar files */
   private static final String URLCLASSLOADER_UCP_FIELD_NAME = "ucp";
-  private static final String URLCLASSPATH_LOADERS_FIELD_NAME = "loaders"; // ArrayList of URLClassPath.Loader
-  private static final String URLCLASSPATH_URLS_FIELD_NAME = "urls"; // Stack of URL
-  private static final String URLCLASSPATH_LMAP_FIELD_NAME = "lmap"; // HashMap of String -> URLClassPath.Loader
+  // ArrayList of URLClassPath.Loader
+  private static final String URLCLASSPATH_LOADERS_FIELD_NAME = "loaders";
+  // Stack of URL
+  private static final String URLCLASSPATH_URLS_FIELD_NAME = "urls";
+  // HashMap of String -> URLClassPath.Loader
+  private static final String URLCLASSPATH_LMAP_FIELD_NAME = "lmap";
   private static final String URLCLASSPATH_JARLOADER_INNER_CLASS_NAME = "sun.misc.URLClassPath$JarLoader";
   private static final String URLCLASSPATH_JARLOADER_JARFILE_FIELD_NAME = "jar";
   /* Fields used during processing - they can be set up once and then used repeatedly */

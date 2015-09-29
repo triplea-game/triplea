@@ -63,11 +63,15 @@ public class PolygonGrabber extends JFrame {
   private static final long serialVersionUID = 6381498094805120687L;
   private static boolean s_islandMode;
   private final JCheckBoxMenuItem modeItem;
-  private List<Polygon> m_current; // the current set of polyongs
-  // private Image m_image; // holds the map image
+  // the current set of polyongs
+  private List<Polygon> m_current;
+  // holds the map image
+  // private Image m_image;
   private BufferedImage m_bufferedImage;
-  private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>(); // maps String -> List of polygons
-  private Map<String, Point> m_centers; // holds the centers for the polygons
+  // maps String -> List of polygons
+  private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>();
+  // holds the centers for the polygons
+  private Map<String, Point> m_centers;
   private final JLabel location = new JLabel();
   private static File s_mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
@@ -244,12 +248,14 @@ public class PolygonGrabber extends JFrame {
           final Point center = m_centers.get(territoryName);
           System.out.println("Detecting Polygon for:" + territoryName);
           final Polygon p = findPolygon(center.x, center.y);
-          // test if the poly contains the center point (this often fails when there is an island right above (because findPolygon will grab
+          // test if the poly contains the center point (this often fails when there is an island right above (because
+          // findPolygon will grab
           // the island instead)
           if (!p.contains(center)) {
             continue;
           }
-          // test if this poly contains any other centers, and if so do not do this one. let the user manually do it to make sure it gets
+          // test if this poly contains any other centers, and if so do not do this one. let the user manually do it to
+          // make sure it gets
           // done properly
           boolean hasIslands = false;
           for (final Point otherCenterPoint : m_centers.values()) {
@@ -264,7 +270,8 @@ public class PolygonGrabber extends JFrame {
           if (hasIslands) {
             continue;
           }
-          // some islands do not have centers on them because they are island chains that are also part of an island or territory touching a
+          // some islands do not have centers on them because they are island chains that are also part of an island or
+          // territory touching a
           // sidewall or outside of this polygon. we should still skip them.
           if (doesPolygonContainAnyBlackInside(p, imageCopy, g)) {
             continue;
@@ -569,22 +576,26 @@ public class PolygonGrabber extends JFrame {
    */
   private final boolean isBlack(final int x, final int y) {
     if (!inBounds(x, y)) {
-      return false; // not inbounds, can't be black
+      // not inbounds, can't be black
+      return false;
     }
     // gets ARGB integer value and we LOGICAL AND mask it
     // with ARGB value of 00,FF,FF,FF to determine if it
     // it black or not.
-    return (m_bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0; // maybe here ?
+    // maybe here ?
+    return (m_bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0;
   }
 
   private static final boolean isBlack(final int x, final int y, final BufferedImage bufferedImage) {
     if (!inBounds(x, y, bufferedImage)) {
-      return false; // not inbounds, can't be black
+      // not inbounds, can't be black
+      return false;
     }
     // gets ARGB integer value and we LOGICAL AND mask it
     // with ARGB value of 00,FF,FF,FF to determine if it
     // it black or not.
-    return (bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0; // maybe here ?
+    // maybe here ?
+    return (bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0;
   }
 
   /**
@@ -639,7 +650,8 @@ public class PolygonGrabber extends JFrame {
     }
   }
 
-  private final Point m_testPoint = new Point(); // used below
+  // used below
+  private final Point m_testPoint = new Point();
 
   /**
    * java.lang.boolean isOnEdge(java.lang.int, java.awt.Point)
@@ -661,9 +673,11 @@ public class PolygonGrabber extends JFrame {
 
   private final boolean doesPolygonContainAnyBlackInside(final Polygon poly, final BufferedImage imageCopy,
       final Graphics imageCopyGraphics) {
-    // we would like to just test if each point is both black and contained within the polygon, but contains counts the borders,
+    // we would like to just test if each point is both black and contained within the polygon, but contains counts the
+    // borders,
     // so we have to turn the border edges a different color (then later back to black again) using a copy of the image
-    // final BufferedImage testImage = new BufferedImage(m_bufferedImage.getWidth(null), m_bufferedImage.getHeight(null),
+    // final BufferedImage testImage = new BufferedImage(m_bufferedImage.getWidth(null),
+    // m_bufferedImage.getHeight(null),
     // BufferedImage.TYPE_INT_ARGB);
     imageCopyGraphics.setColor(Color.GREEN);
     imageCopyGraphics.drawPolygon(poly.xpoints, poly.ypoints, poly.npoints);

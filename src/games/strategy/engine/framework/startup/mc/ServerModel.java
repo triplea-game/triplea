@@ -157,11 +157,13 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           if (m_headless) {
             if (player.getIsDisabled()) {
               m_playersToNodeListing.put(name, m_serverMessenger.getLocalNode().getName());
-              m_localPlayerTypes.put(name, m_data.getGameLoader().getServerPlayerTypes()[Math.max(0,
-                  Math.min(m_data.getGameLoader().getServerPlayerTypes().length - 1, 1))]); // the 2nd in the list should be Weak AI
+              // the 2nd in the list should be Weak AI
+              int indexPosition = Math.max(0, Math.min(m_data.getGameLoader().getServerPlayerTypes().length - 1, 1));
+              m_localPlayerTypes.put(name, m_data.getGameLoader().getServerPlayerTypes()[indexPosition]);
             } else {
-              m_playersToNodeListing.put(name, null); // we generally do not want a headless host bot to be doing any AI turns, since that
-                                                      // is taxing on the system
+              // we generally do not want a headless host bot to be doing any AI turns, since that
+              // is taxing on the system
+              m_playersToNodeListing.put(name, null);
             }
           } else {
             m_playersToNodeListing.put(name, m_serverMessenger.getLocalNode().getName());
@@ -289,7 +291,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       if (!m_headless) {
         return;
       }
-      setPlayerEnabled(playerName, false);// we don't want the client's changing stuff for anyone but a bot
+      // we don't want the client's changing stuff for anyone but a bot
+      setPlayerEnabled(playerName, false);
     }
 
     @Override
@@ -297,7 +300,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       if (!m_headless) {
         return;
       }
-      setPlayerEnabled(playerName, true); // we don't want the client's changing stuff for anyone but a bot
+      // we don't want the client's changing stuff for anyone but a bot
+      setPlayerEnabled(playerName, true);
     }
 
     @Override
@@ -321,7 +325,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     }
 
     /**
-     * This should not be called from within game, only from the game setup screen, while everyone is waiting for game to start
+     * This should not be called from within game, only from the game setup screen, while everyone is waiting for game
+     * to start
      */
     @Override
     public byte[] getSaveGame() {
@@ -413,7 +418,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     @Override
     public void changeToGameSave(final byte[] bytes, final String fileName) {
-      // TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why if not.
+      // TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why
+      // if not.
       final HeadlessGameServer headless = HeadlessGameServer.getInstance();
       if (headless == null || bytes == null) {
         return;
@@ -447,7 +453,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     @Override
     public void changeToGameOptions(final byte[] bytes) {
-      // TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why if not.
+      // TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why
+      // if not.
       final HeadlessGameServer headless = HeadlessGameServer.getInstance();
       if (headless == null || bytes == null) {
         return;
@@ -506,8 +513,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         if (enabled) {
           m_playersToNodeListing.put(playerName, null);
         } else {
-          m_localPlayerTypes.put(playerName, m_data.getGameLoader().getServerPlayerTypes()[Math.max(0,
-              Math.min(m_data.getGameLoader().getServerPlayerTypes().length - 1, 1))]); // the 2nd in the list should be Weak AI
+          m_localPlayerTypes.put(playerName,
+              m_data.getGameLoader().getServerPlayerTypes()[Math.max(0,
+                  // the 2nd in the list should be Weak AI
+                  Math.min(m_data.getGameLoader().getServerPlayerTypes().length - 1, 1))]);
         }
       }
     }

@@ -73,7 +73,8 @@ public class MapPropertiesMaker extends JFrame {
 
   public static void main(final String[] args) {
     handleCommandLineArgs(args);
-    // JOptionPane.showMessageDialog(null, new JLabel("<html>" + "This is the MapPropertiesMaker, it will create a map.properties file for
+    // JOptionPane.showMessageDialog(null, new JLabel("<html>" + "This is the MapPropertiesMaker, it will create a
+    // map.properties file for
     // you. " + "</html>"));
     if (s_mapFolderLocation == null) {
       System.out.println("Select the map folder");

@@ -25,11 +25,9 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.CountDownLatchHandler;
 
-/**
- * Abstraction by veqryn.
- */
+
 public abstract class AbstractUIContext implements IUIContext {
-  // static
+
   protected static final String UNIT_SCALE_PREF = "UnitScale";
   protected static final String MAP_SKIN_PREF = "MapSkin";
   protected static final String MAP_SCALE_PREF = "MapScale";
@@ -47,9 +45,7 @@ public abstract class AbstractUIContext implements IUIContext {
   protected boolean m_isShutDown = false;
   protected final List<Window> m_windowsToCloseOnShutdown = new ArrayList<Window>();
   protected final List<Active> m_activeToDeactivate = new ArrayList<Active>();
-  protected final CountDownLatchHandler m_latchesToCloseOnShutdown = new CountDownLatchHandler(false); // List<CountDownLatch>
-                                                                                                       // m_latchesToCloseOnShutdown = new
-                                                                                                       // ArrayList<CountDownLatch>();
+  protected final CountDownLatchHandler m_latchesToCloseOnShutdown = new CountDownLatchHandler(false);
   protected LocalPlayers m_localPlayers;
   protected double m_scale = 1;
 
@@ -80,7 +76,6 @@ public abstract class AbstractUIContext implements IUIContext {
   @Override
   public void setScale(final double scale) {
     m_scale = scale;
-    // m_tileImageFactory.setScale(scale);
     final Preferences prefs = getPreferencesMapOrSkin(getMapDir());
     prefs.putDouble(MAP_SCALE_PREF, scale);
     try {
@@ -115,8 +110,7 @@ public abstract class AbstractUIContext implements IUIContext {
     try {
       ResourceLoader.getMapResourceLoader(mapDir, false).close();
     } catch (final RuntimeException re) {
-      // an error
-      // clear the skin
+      // an error, clear the skin
       prefs.remove(MAP_SKIN_PREF);
       // return the default
       return mapName;
@@ -154,11 +148,9 @@ public abstract class AbstractUIContext implements IUIContext {
   @Override
   public void removeActive(final Active actor) {
     if (m_isShutDown) {
-      // closeActor(actor);
       return;
     }
     synchronized (this) {
-      // closeActor(actor);
       m_activeToDeactivate.remove(actor);
     }
   }
@@ -229,7 +221,8 @@ public abstract class AbstractUIContext implements IUIContext {
         // A real life example: player disconnects while you have the battle calc open.
         // Non-EDT thread does shutdown on IGame and UIContext, causing btl calc to shutdown, which calls the
         // window closed event on the EDT, and waits for the lock on UIContext to removeShutdownWindow, meanwhile
-        // our non-EDT tries to dispose the battle panel, which requires the EDT with a invokeAndWait, resulting in a deadlock.
+        // our non-EDT tries to dispose the battle panel, which requires the EDT with a invokeAndWait, resulting in a
+        // deadlock.
         window.dispose();
         // there is a bug in java (1.50._06 for linux at least)
         // where frames are not garbage collected.
@@ -269,11 +262,9 @@ public abstract class AbstractUIContext implements IUIContext {
   @Override
   public void removeShutdownWindow(final Window window) {
     if (m_isShutDown) {
-      // closeWindow(window);
       return;
     }
     synchronized (this) {
-      // closeWindow(window);
       m_windowsToCloseOnShutdown.remove(window);
     }
   }

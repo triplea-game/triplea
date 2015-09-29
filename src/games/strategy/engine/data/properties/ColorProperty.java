@@ -14,7 +14,8 @@ import javax.swing.SwingUtilities;
 /**
  * User editable property representing a color.
  * <p>
- * Presents a clickable label with the currently selected color, through which a color swatch panel is accessable to change the color.
+ * Presents a clickable label with the currently selected color, through which a color swatch panel is accessable to
+ * change the color.
  */
 public class ColorProperty extends AEditableProperty {
   // compatible with 0.9.0.2 saved games

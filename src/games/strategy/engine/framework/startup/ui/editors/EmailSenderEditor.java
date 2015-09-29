@@ -117,7 +117,8 @@ public class EmailSenderEditor extends EditorPanel {
       add(m_testEmail, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
           new Insets(0, 0, bottomSpace, 0), 0, 0));
       // or on a separate line if no encryption
-      // add(m_testEmail, new GridBagConstraints(1, row, 3, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0,
+      // add(m_testEmail, new GridBagConstraints(1, row, 3, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+      // new Insets(0, 0,
       // bottomSpace, 0), 0, 0));
     }
     setupListeners();

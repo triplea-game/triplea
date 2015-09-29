@@ -80,9 +80,11 @@ public class ClientGame extends AbstractGame {
                 m_data.getHistory().getHistoryWriter().startNextRound(++currentRound);
               }
             }
-            // TODO: this is causing problems if the very last step is a client step. we end up creating a new round before the host's
+            // TODO: this is causing problems if the very last step is a client step. we end up creating a new round
+            // before the host's
             // rounds has started.
-            // right now, fixing it with a hack. but in reality we probably need to have a better way of determining when a new round has
+            // right now, fixing it with a hack. but in reality we probably need to have a better way of determining
+            // when a new round has
             // started (like with a roundChanged listener).
             if ((currentRound - 1 > round && ourOriginalCurrentRound >= round)
                 || (currentRound > round && ourOriginalCurrentRound < round)) {
@@ -174,7 +176,8 @@ public class ClientGame extends AbstractGame {
             if (i > 300 && !shownErrorMessage) {
               System.err.println("Waited more than 30 seconds for step to update. Something wrong.");
               shownErrorMessage = true;
-              // TODO: should we throw an illegal state error? or just return? or a game over exception? should we request the server to
+              // TODO: should we throw an illegal state error? or just return? or a game over exception? should we
+              // request the server to
               // send the step update again or something?
             }
           } catch (final InterruptedException e) {

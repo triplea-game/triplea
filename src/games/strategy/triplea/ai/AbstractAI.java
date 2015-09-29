@@ -413,7 +413,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
    */
   @Override
   public final void start(final String name) {
-    super.start(name); // must call super.start
+    // must call super.start
+    super.start(name);
     final PlayerID id = getPlayerID();
     if (name.endsWith("Bid")) {
       final IPurchaseDelegate purchaseDelegate = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
@@ -503,7 +504,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
       if (actionChoicesTowardsWar != null && !actionChoicesTowardsWar.isEmpty()) {
         Collections.shuffle(actionChoicesTowardsWar);
         int i = 0;
-        final double random = Math.random(); // should we use bridge's random source here?
+        // should we use bridge's random source here?
+        final double random = Math.random();
         int MAX_WAR_ACTIONS_PER_TURN =
             (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
         if ((MAX_WAR_ACTIONS_PER_TURN > 0)
@@ -535,7 +537,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
       if (actionChoicesOther != null && !actionChoicesOther.isEmpty()) {
         Collections.shuffle(actionChoicesOther);
         int i = 0;
-        final double random = Math.random(); // should we use bridge's random source here?
+        // should we use bridge's random source here?
+        final double random = Math.random();
         final int MAX_OTHER_ACTIONS_PER_TURN =
             (random < .3 ? 0 : (random < .6 ? 1 : (random < .9 ? 2 : (random < .99 ? 3 : (int) numPlayers))));
         final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();

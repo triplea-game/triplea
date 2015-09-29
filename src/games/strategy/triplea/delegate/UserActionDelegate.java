@@ -85,23 +85,31 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   public void attemptAction(final UserActionAttachment actionChoice) {
     if (actionChoice.canPerform(getTestedConditions())) {
       if (checkEnoughMoney(actionChoice)) { // See if the player has got enough money to pay for the action
-        chargeForAction(actionChoice); // Charge for attempting the action
-        actionChoice.useAttempt(getBridge()); // take one of the uses this round
+        // Charge for attempting the action
+        chargeForAction(actionChoice);
+        // take one of the uses this round
+        actionChoice.useAttempt(getBridge());
         if (actionRollSucceeds(actionChoice)) { // See if the action is successful
           if (actionIsAccepted(actionChoice)) {
-            activateTriggers(actionChoice); // activate the triggers
-            notifySuccess(actionChoice); // notify the players
+            // activate the triggers
+            activateTriggers(actionChoice);
+            // notify the players
+            notifySuccess(actionChoice);
           } else {
-            notifyFailure(actionChoice); // notify the players of the failed attempt
+            // notify the players of the failed attempt
+            notifyFailure(actionChoice);
           }
         } else {
-          notifyFailure(actionChoice); // notify the players of the failed attempt
+          // notify the players of the failed attempt
+          notifyFailure(actionChoice);
         }
       } else {
-        notifyMoney(actionChoice, false); // notify the player he hasn't got enough money;
+        // notify the player he hasn't got enough money;
+        notifyMoney(actionChoice, false);
       }
     } else {
-      notifyNoValidAction(actionChoice); // notify the player the action isn't valid anymore (shouldn't happen)
+      // notify the player the action isn't valid anymore (shouldn't happen)
+      notifyNoValidAction(actionChoice);
     }
   }
 
@@ -137,7 +145,8 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     } else {
       final String transcriptText =
           m_bridge.getPlayerID().getName() + " takes action: " + MyFormatter.attachmentNameToText(uaa.getName());
-      m_bridge.getHistoryWriter().startEvent(transcriptText); // we must start an event anyway
+      // we must start an event anyway
+      m_bridge.getHistoryWriter().startEvent(transcriptText);
     }
   }
 
@@ -216,7 +225,8 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    */
   private void sendNotification(final String text) {
     if (!"NONE".equals(text)) {
-      this.getRemotePlayer().reportMessage(text, text); // "To " + m_player.getName() + ": " +
+      // "To " + m_player.getName() + ": " +
+      this.getRemotePlayer().reportMessage(text, text);
     }
   }
 

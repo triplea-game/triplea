@@ -14,7 +14,8 @@ import games.strategy.test.TestUtil;
 import junit.framework.TestCase;
 
 /**
- * Comment(KG): This test is broken, If you run each test individually they all work, but when running all test in the class some will fail.
+ * Comment(KG): This test is broken, If you run each test individually they all work, but when running all test in the
+ * class some will fail.
  * This is because the lifecycle of the UnifiedMessenger (and internal classes such as NIOReader/Writer) are broken.
  * The UnifiedMessenger will create a new ThreadPool with each instantiation, and this pool is never shutdown.
  */

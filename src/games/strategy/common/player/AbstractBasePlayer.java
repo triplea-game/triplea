@@ -6,11 +6,14 @@ import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 
 /**
- * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate using a change).
+ * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate
+ * using a change).
  */
 public abstract class AbstractBasePlayer implements IGamePlayer {
-  private final String m_name; // what nation are we playing? ex: "Americans"
-  private final String m_type; // what are we? ex: "Human", or "Moore N. Able (AI)"
+  // what nation are we playing? ex: "Americans"
+  private final String m_name;
+  // what are we? ex: "Human", or "Moore N. Able (AI)"
+  private final String m_type;
   private PlayerID m_playerID;
   private IPlayerBridge m_iPlayerBridge;
   private boolean m_stoppedGame = false;
@@ -42,7 +45,8 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
 
   /**
    * Get the IPlayerBridge for this game player.
-   * (This is not a delegate bridge, and we can not send changes on this. Changes should only be done within a delegate, never through a
+   * (This is not a delegate bridge, and we can not send changes on this. Changes should only be done within a delegate,
+   * never through a
    * player.)
    */
   protected final IPlayerBridge getPlayerBridge() {
@@ -77,7 +81,8 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
   @Override
   public void start(final String stepName) {
     if (stepName != null) {
-      // PlayerBridge is on a different thread than this one, and so it will be updated asynchronously. Need to wait for it.
+      // PlayerBridge is on a different thread than this one, and so it will be updated asynchronously. Need to wait for
+      // it.
       String bridgeStep = getPlayerBridge().getStepName();
       int i = 0;
       boolean shownErrorMessage = false;
@@ -99,7 +104,8 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
                 + getPlayerBridge().isGameOver() + ", PlayerID: " + getPlayerID().getName() + ", Game: "
                 + getGameData().getGameName());
             // getPlayerBridge().printErrorStatus();
-            break; // waited more than 30 seconds, so just let stuff run (an error will pop up surely...)
+            // waited more than 30 seconds, so just let stuff run (an error will pop up surely...)
+            break;
           }
         } catch (final InterruptedException e) {
         }

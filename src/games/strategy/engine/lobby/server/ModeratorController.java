@@ -144,7 +144,8 @@ public class ModeratorController extends AbstractModeratorController implements 
   public void boot(final INode node) {
     assertUserIsAdmin();
     /*
-     * if (!MessageContext.getSender().getName().equals("Admin") && isPlayerAdmin(node)) // Let the master lobby administrator boot admins
+     * if (!MessageContext.getSender().getName().equals("Admin") && isPlayerAdmin(node)) // Let the master lobby
+     * administrator boot admins
      * throw new IllegalStateException("Can't boot an admin");
      */
     // You can't boot the server node

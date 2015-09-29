@@ -61,7 +61,8 @@ public class BattleCalculator {
     oolCache.clear();
   }
 
-  // private static IntegerMap<UnitType> s_costsForTuvForAllPlayersMergedAndAveraged; //There is a problem with this variable, that it isn't
+  // There is a problem with this variable, that it isn't
+  // private static IntegerMap<UnitType> s_costsForTuvForAllPlayersMergedAndAveraged;
   // being cleared out when we switch maps.
   // we want to sort in a determined way so that those looking at the dice results
   // can tell what dice is for who
@@ -160,7 +161,8 @@ public class BattleCalculator {
 
   /**
    * http://triplea.sourceforge.net/mywiki/Forum#nabble-td4658925%7Ca4658925
-   * returns two lists, the first list is the air units that can be evenly divided into groups of 3 or 6 (depending on radar)
+   * returns two lists, the first list is the air units that can be evenly divided into groups of 3 or 6 (depending on
+   * radar)
    * the second list is all the air units that do not fit in the first list
    */
   public static Tuple<List<List<Unit>>, List<Unit>> categorizeLowLuckAirUnits(final Collection<Unit> units,
@@ -226,12 +228,14 @@ public class BattleCalculator {
           allowMultipleHitsPerUnit ? (UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits())
               : (Math.min(1, UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits()));
       for (int hp = 0; hp < hpLeft; ++hp) {
-        planesList.add(plane); // if allowMultipleHitsPerUnit, then because the number of rolls exactly equals the hitpoints of all units,
-                               // we roll multiple times for any unit with multiple hitpoints
+        // if allowMultipleHitsPerUnit, then because the number of rolls exactly equals the hitpoints of all units,
+        // we roll multiple times for any unit with multiple hitpoints
+        planesList.add(plane);
       }
     }
     // killing the air by groups does not work if the the attack power is different for some of the rolls
-    // also, killing by groups does not work if some of the aa guns have 'MayOverStackAA' and we have more hits than the total number of
+    // also, killing by groups does not work if some of the aa guns have 'MayOverStackAA' and we have more hits than the
+    // total number of
     // groups (including the remainder group)
     // (when i mean, 'does not work', i mean that it is no longer a mathematically fair way to find casualties)
     // find group size (if no groups, do dice sides)
@@ -247,17 +251,21 @@ public class BattleCalculator {
       // we have too many hits, so just pick randomly
       return RandomAACasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     } else {
-      // if we have a group of 6 fighters and 2 bombers, and dicesides is 6, and attack was 1, then we would want 1 fighter to die for sure.
+      // if we have a group of 6 fighters and 2 bombers, and dicesides is 6, and attack was 1, then we would want 1
+      // fighter to die for sure.
       // this is what groupsize is for.
-      // if the attack is greater than 1 though, and all use the same attack power, then the group size can be smaller (ie: attack is 2, and
+      // if the attack is greater than 1 though, and all use the same attack power, then the group size can be smaller
+      // (ie: attack is 2, and
       // we have 3 fighters and 2 bombers, we would want 1 fighter to die for sure).
       // categorize with groupSize
       final Tuple<List<List<Unit>>, List<Unit>> airSplit =
           categorizeLowLuckAirUnits(planesList, location, chosenDiceSize, groupSize);
       // the non rolling air units
-      // if we are less hits than the number of groups, OR we have equal hits to number of groups but we also have a remainder that is equal
+      // if we are less hits than the number of groups, OR we have equal hits to number of groups but we also have a
+      // remainder that is equal
       // to or greater than group size,
-      // THEN we need to make sure to pick randomly, and include the remainder group. (reason we do not do this with any remainder size, is
+      // THEN we need to make sure to pick randomly, and include the remainder group. (reason we do not do this with any
+      // remainder size, is
       // because we might have missed the dice roll to hit the remainder)
       if (hitsLeft < (airSplit.getFirst().size()
           + ((int) Math.ceil((double) airSplit.getSecond().size() / (double) groupSize)))) {
@@ -366,16 +374,17 @@ public class BattleCalculator {
       return new CasualtyDetails();
     }
     final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
-    final int planeHP = (allowMultipleHitsPerUnit ? getTotalHitpointsLeft(planes) : planes.size()); // normal behavior is instant kill,
-                                                                                                    // which means planes.size()
+    // normal behavior is instant kill, which means planes.size()
+    final int planeHP = (allowMultipleHitsPerUnit ? getTotalHitpointsLeft(planes) : planes.size());
     final List<Unit> planesList = new ArrayList<Unit>();
     for (final Unit plane : planes) {
       final int hpLeft =
           allowMultipleHitsPerUnit ? (UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits())
               : (Math.min(1, UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits()));
       for (int hp = 0; hp < hpLeft; ++hp) {
-        planesList.add(plane); // if allowMultipleHitsPerUnit, then because the number of rolls exactly equals the hitpoints of all units,
-                               // we roll multiple times for any unit with multiple hitpoints
+        // if allowMultipleHitsPerUnit, then because the number of rolls exactly equals the hitpoints of all units,
+        // we roll multiple times for any unit with multiple hitpoints
+        planesList.add(plane);
       }
     }
     // We need to choose which planes die randomly
@@ -412,10 +421,12 @@ public class BattleCalculator {
   public static CasualtyDetails IndividuallyFiredAACasualties(final boolean defending, final Collection<Unit> planes,
       final Collection<Unit> defendingAA, final DiceRoll dice, final Territory location, final IDelegateBridge bridge,
       final boolean allowMultipleHitsPerUnit) {
-    // if we have aa guns that are not infinite, then we need to randomly decide the aa casualties since there are not enough rolls to have
+    // if we have aa guns that are not infinite, then we need to randomly decide the aa casualties since there are not
+    // enough rolls to have
     // a single roll for each aircraft, or too many rolls
-    final int planeHP = (allowMultipleHitsPerUnit ? getTotalHitpointsLeft(planes) : planes.size()); // normal behavior is instant kill,
-                                                                                                    // which means planes.size()
+    // normal behavior is instant kill, which means planes.size()
+    final int planeHP = (allowMultipleHitsPerUnit ? getTotalHitpointsLeft(planes) : planes.size());
+
     if (DiceRoll.getTotalAAattacks(defendingAA, planes, bridge.getData()) != planeHP) {
       return RandomAACasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
@@ -438,8 +449,9 @@ public class BattleCalculator {
           allowMultipleHitsPerUnit ? (UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits())
               : (Math.min(1, UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits()));
       for (int hp = 0; hp < hpLeft; ++hp) {
-        planesList.add(plane); // if allowMultipleHitsPerUnit, then because the number of rolls exactly equals the hitpoints of all units,
-                               // we roll multiple times for any unit with multiple hitpoints
+        // if allowMultipleHitsPerUnit, then because the number of rolls exactly equals the hitpoints of all units,
+        // we roll multiple times for any unit with multiple hitpoints
+        planesList.add(plane);
       }
     }
     // We need to choose which planes die based on their position in the list and the individual AA rolls
@@ -566,11 +578,13 @@ public class BattleCalculator {
       for (final Unit unit : killed) {
         final UnitAttachment ua = UnitAttachment.get(unit.getType());
         final int damageToUnit = Collections.frequency(damaged, unit);
-        numhits += Math.max(0, Math.min(damageToUnit, (ua.getHitPoints() - (1 + unit.getHits())))); // allowed damage
+        // allowed damage
+        numhits += Math.max(0, Math.min(damageToUnit, (ua.getHitPoints() - (1 + unit.getHits()))));
         final Iterator<Unit> iter = damaged.iterator();
         while (iter.hasNext()) {
           if (unit.equals(iter.next())) {
-            iter.remove(); // remove from damaged list, since they will die
+            // remove from damaged list, since they will die
+            iter.remove();
           }
         }
       }
@@ -647,7 +661,8 @@ public class BattleCalculator {
   }
 
   /**
-   * A unit with two hitpoints will be listed twice if they will die. The first time they are listed it is as damaged. The second time they
+   * A unit with two hitpoints will be listed twice if they will die. The first time they are listed it is as damaged.
+   * The second time they
    * are listed, it is dead.
    */
   private static Tuple<CasualtyList, List<Unit>> getDefaultCasualties(final Collection<Unit> targetsToPickFrom,
@@ -694,9 +709,11 @@ public class BattleCalculator {
    * And that means that certain units MUST BE INTERLEAVED.
    * This list assumes that you have already taken any extra hit points away from any 2 hitpoint units.
    * Example: You have a 1 attack Artillery unit that supports, and a 1 attack infantry unit that can receive support.
-   * The best selection of units to die is first to take whichever unit has excess, then cut that down til they are both the same size,
+   * The best selection of units to die is first to take whichever unit has excess, then cut that down til they are both
+   * the same size,
    * then to take 1 artillery followed by 1 infantry, followed by 1 artillery, then 1 inf, etc, until everyone is dead.
-   * If you just return all infantry followed by all artillery, or the other way around, you will be missing out on some important support
+   * If you just return all infantry followed by all artillery, or the other way around, you will be missing out on some
+   * important support
    * provided.
    * (Veqryn)
    */
@@ -767,7 +784,8 @@ public class BattleCalculator {
     // Sort enough units to kill off
     final List<Unit> sortedUnitsList = new ArrayList<Unit>(targetsToPickFrom);
     Collections.sort(sortedUnitsList, new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
-    Collections.reverse(sortedUnitsList); // Sort units starting with strongest so that support gets added to them first
+    // Sort units starting with strongest so that support gets added to them first
+    Collections.reverse(sortedUnitsList);
     final UnitBattleComparator unitComparatorWithoutPrimaryPower =
         new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, true);
     final List<Unit> sortedWellEnoughUnitsList = new ArrayList<Unit>();
@@ -776,7 +794,8 @@ public class BattleCalculator {
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(
         sortedUnitsList, sortedUnitsList, new ArrayList<Unit>(enemyUnits), defending, false, player, data, battlesite,
         territoryEffects, amphibious, amphibiousLandAttackers, unitSupportPowerMap, unitSupportRollsMap);
-    Collections.reverse(sortedUnitsList); // Sort units starting with weakest for finding the worst units
+    // Sort units starting with weakest for finding the worst units
+    Collections.reverse(sortedUnitsList);
     for (int i = 0; i < sortedUnitsList.size(); ++i) {
       // Loop through all target units to find the best unit to take as casualty
       Unit worstUnit = null;
@@ -940,20 +959,24 @@ public class BattleCalculator {
       for (final Unit unit : sortedUnitsList) {
         extraHP += Math.max(0, UnitAttachment.get(unit.getType()).getHitPoints() - (1 + unit.getHits()));
         if (extraHP >= hits) {
-          return sortedUnitsList; // No units will be killed as we have enough extra hp, so who cares about doing the time-expensive sort
-                                  // when the UnitBattleComparator is good enough
+          // No units will be killed as we have enough extra hp, so who cares about doing the time-expensive sort
+          // when the UnitBattleComparator is good enough
+          return sortedUnitsList;
         }
       }
-      numberOfUnitsWeMustSort = Math.max(extraHP, hits - extraHP); // If we have to take 6 hits, and we can damage 2 units, then we really
-                                                                   // only have to sort for the first 4 units to die (if we can damage 4
-                                                                   // units, then we still have to sort those first 4 in case one of them
-                                                                   // will have to die)
+      // If we have to take 6 hits, and we can damage 2 units, then we really
+      // only have to sort for the first 4 units to die (if we can damage 4
+      // units, then we still have to sort those first 4 in case one of them
+      // will have to die)
+      numberOfUnitsWeMustSort = Math.max(extraHP, hits - extraHP);
     }
     if (hits > extraHP + sortedUnitsList.size()) {
-      return sortedUnitsList; // If we are going to lose all units, just return this list
+      // If we are going to lose all units, just return this list
+      return sortedUnitsList;
     }
     // Sort enough units to kill off
-    Collections.reverse(sortedUnitsList); // Sort units starting with strongest so that support gets added to them first
+    // Sort units starting with strongest so that support gets added to them first
+    Collections.reverse(sortedUnitsList);
     final UnitBattleComparator unitComparatorWithoutPrimaryPower =
         new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, true);
     final List<Unit> sortedWellEnoughUnitsList = new ArrayList<Unit>();
@@ -962,7 +985,8 @@ public class BattleCalculator {
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(
         sortedUnitsList, sortedUnitsList, new ArrayList<Unit>(enemyUnits), defending, false, player, data, battlesite,
         territoryEffects, amphibious, amphibiousLandAttackers, unitSupportPowerMap, unitSupportRollsMap);
-    Collections.reverse(sortedUnitsList); // Sort units starting with weakest for finding the worst units
+    // Sort units starting with weakest for finding the worst units
+    Collections.reverse(sortedUnitsList);
     for (int i = 0; i < numberOfUnitsWeMustSort; ++i) {
       // Loop through all target units to find the best unit to take as casualty
       Unit worstUnit = null;
@@ -1100,17 +1124,20 @@ public class BattleCalculator {
       for (final Unit unit : sortedUnitsList) {
         extraHP += Math.max(0, UnitAttachment.get(unit.getType()).getHitPoints() - (1 + unit.getHits()));
         if (extraHP >= hits) {
-          return sortedUnitsList; // no units will be killed as we have enough extra hp, so who cares about doing the time-expensive sort
-                                  // when the UnitBattleComparator is good enough
+          // no units will be killed as we have enough extra hp, so who cares about doing the time-expensive sort
+          // when the UnitBattleComparator is good enough
+          return sortedUnitsList;
         }
       }
-      numberOfUnitsWeMustSort = Math.max(extraHP, hits - extraHP); // if we have to take 6 hits, and we can damage 2 units, then we really
-                                                                   // only have to sort for the first 4 units to die (if we can damage 4
-                                                                   // units, then we still have to sort those first 4 in case one of them
-                                                                   // will have to die)
+      // if we have to take 6 hits, and we can damage 2 units, then we really
+      // only have to sort for the first 4 units to die (if we can damage 4
+      // units, then we still have to sort those first 4 in case one of them
+      // will have to die)
+      numberOfUnitsWeMustSort = Math.max(extraHP, hits - extraHP);
     }
     if (hits > extraHP + sortedUnitsList.size()) {
-      return sortedUnitsList; // if we are going to lose all units, just return this list
+      // if we are going to lose all units, just return this list
+      return sortedUnitsList;
     }
     final UnitBattleComparator unitComparatorWithoutPrimaryPower =
         new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, true);
@@ -1122,7 +1149,8 @@ public class BattleCalculator {
       final Set<UnitType> unitTypes = new HashSet<UnitType>();
       for (final Unit u : sortedUnitsList) {
         if (unitTypes.contains(u.getType())) {
-          continue; // Only check each unit type once
+          // Only check each unit type once
+          continue;
         }
         unitTypes.add(u.getType());
         // Find my power without current unit
@@ -1134,7 +1162,8 @@ public class BattleCalculator {
             .getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, enemyUnitList, defending,
                 false, player, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers), data)
             .getFirst();
-        // Find enemy power without current unit (need to consider this since supports can decrease enemy attack/defense)
+        // Find enemy power without current unit (need to consider this since supports can decrease enemy
+        // attack/defense)
         final int enemyPower = DiceRoll
             .getTotalPowerAndRolls(
                 DiceRoll.getUnitPowerAndRollsForNormalBattles(enemyUnitList, enemyUnitList, units, !defending, false,
@@ -1226,7 +1255,8 @@ public class BattleCalculator {
    */
   public static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(final GameData data) {
     /*
-     * if (s_costsForTuvForAllPlayersMergedAndAveraged != null && s_costsForTuvForAllPlayersMergedAndAveraged.size() > 0)
+     * if (s_costsForTuvForAllPlayersMergedAndAveraged != null && s_costsForTuvForAllPlayersMergedAndAveraged.size() >
+     * 0)
      * return s_costsForTuvForAllPlayersMergedAndAveraged;
      */
     final Resource PUS;
@@ -1266,7 +1296,8 @@ public class BattleCalculator {
       final int averagedCost = (int) Math.round(((double) totalCosts / (double) costsForType.size()));
       costs.put(ut, averagedCost);
     }
-    // s_costsForTuvForAllPlayersMergedAndAveraged = costs; //There is a problem with this variable, that it isn't being cleared out when we
+    // There is a problem with this variable, that it isn't being cleared out when we
+    // s_costsForTuvForAllPlayersMergedAndAveraged = costs;
     // switch maps.
     return costs;
   }

@@ -120,7 +120,8 @@ public class BasicPoliticalAI {
 
   private static boolean isAcceptableCost(final PoliticalActionAttachment nextAction, final PlayerID player,
       final GameData data) {
-    // if we have 21 or more PUs and the cost of the action is l0% or less of our total money, then it is an acceptable price.
+    // if we have 21 or more PUs and the cost of the action is l0% or less of our total money, then it is an acceptable
+    // price.
     final float production = AbstractEndTurnDelegate.getProduction(data.getMap().getTerritoriesOwnedBy(player), data);
     return production >= 21 && (nextAction.getCostPU()) <= ((production / 10));
   }

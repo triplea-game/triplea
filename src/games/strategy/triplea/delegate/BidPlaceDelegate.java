@@ -114,11 +114,8 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> placeableUnits = new ArrayList<Unit>();
     final CompositeMatch<Unit> groundUnits =
-        new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.UnitIsNotConstruction); // we add
-                                                                                        // factories
-                                                                                        // and
-                                                                                        // constructions
-                                                                                        // later
+        // we add factories and constructions later
+        new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.UnitIsNotConstruction);
     final CompositeMatch<Unit> airUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitIsNotConstruction);
     placeableUnits.addAll(Match.getMatches(units, groundUnits));
     placeableUnits.addAll(Match.getMatches(units, airUnits));
@@ -128,7 +125,8 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       for (final Unit currentUnit : Match.getMatches(units, Matches.UnitIsConstruction)) {
         final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
         if (maxUnits > 0) {
-          // we are doing this because we could have multiple unitTypes with the same constructionType, so we have to be able to place the
+          // we are doing this because we could have multiple unitTypes with the same constructionType, so we have to be
+          // able to place the
           // max placement by constructionType of each unitType
           if (skipUnit.contains(currentUnit)) {
             continue;

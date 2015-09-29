@@ -654,9 +654,11 @@ public class MapData {
     while (polyIter.hasNext()) {
       bounds.add(polyIter.next().getBounds());
     }
-    // if we have a territory that straddles the map divide, ie: which has polygons on both the left and right sides of the map,
+    // if we have a territory that straddles the map divide, ie: which has polygons on both the left and right sides of
+    // the map,
     // then the polygon's width or height could be almost equal to the map width or height
-    // this can cause lots of problems, like when we want to get the tiles for the territory we would end up getting all the tiles for the
+    // this can cause lots of problems, like when we want to get the tiles for the territory we would end up getting all
+    // the tiles for the
     // map (and a java heap space error)
     final Dimension mapDimensions = getMapDimensions();
     if ((scrollWrapX() && bounds.width > 1800 && bounds.width > mapDimensions.width * 0.9)
@@ -675,12 +677,14 @@ public class MapData {
     final boolean scrollWrapX = this.scrollWrapX();
     final boolean scrollWrapY = this.scrollWrapY();
     for (final Polygon item : polys) {
-      // if our rectangle is on the right side (mapscrollx) then we push it to be on the negative left side, so that the bounds.x will be
+      // if our rectangle is on the right side (mapscrollx) then we push it to be on the negative left side, so that the
+      // bounds.x will be
       // negative
       // this solves the issue of maps that have a territory where polygons were on both sides of the map divide
       // (so our bounds.x was 0, and our bounds.y would be the entire map width)
       // (when in fact it should actually be bounds.x = -10 or something, and bounds.width = 20 or something)
-      // we use map dimensions.width * 0.9 because the polygon may not actually touch the side of the map (like if the territory borders are
+      // we use map dimensions.width * 0.9 because the polygon may not actually touch the side of the map (like if the
+      // territory borders are
       // thick)
       final Rectangle itemRect = item.getBounds();
       if (scrollWrapX && itemRect.getMaxX() >= closeToMapWidth) {

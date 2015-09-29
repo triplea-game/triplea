@@ -13,14 +13,13 @@ public class LocalizeHTML {
   public static final String ASSET_IMAGE_FOLDER = "doc/images/";
   public static final String ASSET_IMAGE_NOT_FOUND = "notFound.png";
   /*
-   * You would think that there would be a single standardized REGEX for pulling html links out of <img> tags and <a> tags.
+   * You would think that there would be a single standardized REGEX for pulling html links out of <img> tags and <a>
+   * tags.
    * But there isn't, and the internet seems to give million different answers, none of which work perfectly.
    * So here are the best one I could find.
    * Regex's found at http://www.mkyong.com/
    */
-  // frigoref suggested we use this one instead, however it is overly complicated:
-  // private static final String PATTERN_HTML_IMG_SRC_URL = ".*<img
-  // [^>\"]*src\\s*=\\s*\"((https?://)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})[^\"]*)\".*";
+
   /*
    * Match an <a></a> tag.
    * ( # start of group #1
@@ -62,14 +61,13 @@ public class LocalizeHTML {
     final Matcher matcherTag = patternTag.matcher(htmlText);
     Matcher matcherLink;
     while (matcherTag.find()) {
-      final String href = matcherTag.group(1); // a tag
-      // final String linkText = matcherTag.group(2); // link text
-      // System.out.println("Tag Contents: " + href);
-      // System.out.println("Tag Text: " + linkText);
+      // a tag
+      final String href = matcherTag.group(1);
+
       matcherLink = patternLink.matcher(href);
       while (matcherLink.find()) {
-        final String link = matcherLink.group(1); // href link
-        // System.out.println("Link: " + link);
+        // href link
+        final String link = matcherLink.group(1);
         result.add(link);
       }
     }
@@ -83,12 +81,12 @@ public class LocalizeHTML {
     final Matcher matcherTag = patternTag.matcher(htmlText);
     Matcher matcherLink;
     while (matcherTag.find()) {
-      final String href = matcherTag.group(1); // img tag
-      // System.out.println("Tag Contents: " + href);
+      // img tag
+      final String href = matcherTag.group(1);
       matcherLink = patternLink.matcher(href);
       while (matcherLink.find()) {
-        final String link = matcherLink.group(1); // src link
-        // System.out.println("Link: " + link);
+        // src link
+        final String link = matcherLink.group(1);
         result.add(link);
       }
     }
@@ -96,10 +94,9 @@ public class LocalizeHTML {
   }
 
   /**
-   * This is only useful once we are IN a game. Before we go into the game, resource loader will either be null, or be the last game's
+   * This is only useful once we are IN a game. Before we go into the game, resource loader will either be null, or be
+   * the last game's
    * resource loader.
-   *
-   * @param htmlText
    */
   public static String localizeImgLinksInHTML(final String htmlText) {
     return localizeImgLinksInHTML(htmlText, AbstractUIContext.getResourceLoader(), null);
@@ -117,23 +114,27 @@ public class LocalizeHTML {
     final Matcher matcherTag = patternTag.matcher(htmlText);
     Matcher matcherLink;
     while (matcherTag.find()) {
-      final String href = matcherTag.group(1); // img tag
+      // img tag
+      final String href = matcherTag.group(1);
       if (href == null) {
         continue;
       }
-      // System.out.println("Tag Contents: " + href);
       matcherLink = patternLink.matcher(href);
       while (matcherLink.find()) {
-        final String fullLink = matcherLink.group(1); // src link
+        // src link
+        final String fullLink = matcherLink.group(1);
         if (fullLink != null && fullLink.length() > 2) {
           if (ourResourceLoader == null) {
             ourResourceLoader = ResourceLoader.getMapResourceLoader(mapNameDir, false);
           }
-          final String link = fullLink.substring(1, fullLink.length() - 1); // remove quotes
-          // System.out.println("Link: " + link);
-          final String imageFileName = link.substring(Math.max((link.lastIndexOf("/") + 1), 0)); // remove full parent path
-          URL replacementURL = ourResourceLoader.getResource(ASSET_IMAGE_FOLDER + imageFileName); // replace when testing with:
-                                                                                                  // "REPLACEMENTPATH/" + imageFileName;
+          // remove quotes
+          final String link = fullLink.substring(1, fullLink.length() - 1);
+
+          // remove full parent path
+          final String imageFileName = link.substring(Math.max((link.lastIndexOf("/") + 1), 0));
+          // replace when testing with: "REPLACEMENTPATH/" + imageFileName;
+          URL replacementURL = ourResourceLoader.getResource(ASSET_IMAGE_FOLDER + imageFileName);
+
           if (replacementURL == null || replacementURL.toString().length() == 0) {
             System.out.println("Could not find: <map>/" + ASSET_IMAGE_FOLDER + imageFileName);
             replacementURL = ourResourceLoader.getResource(ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND);
@@ -142,12 +143,12 @@ public class LocalizeHTML {
             System.err.println("Could not find: " + ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND);
             continue;
           }
-          // System.out.println("Replacement URL: " + replacementURL);
+
           rVal = rVal.replaceAll(link, replacementURL.toString());
         }
       }
     }
-    // System.out.println(rVal + "\r\n");
+
     return rVal;
   }
 

@@ -132,7 +132,8 @@ public class PacificTest extends DelegateTest {
   }
 
   public void testNonJapanAttack() {
-    bridge.setStepName("japaneseEndTurn"); // this will get us to round 2
+    // this will get us to round 2
+    bridge.setStepName("japaneseEndTurn");
     bridge.setStepName("japaneseBattle");
     // Defending US infantry hit on a 2 (0 base)
     final List<Unit> infantryUS = infantry.create(1, americans);

@@ -56,7 +56,6 @@ public class GameParser {
   private static final Class<?>[] SETTER_ARGS = {String.class};
   private GameData data;
   private final Collection<SAXParseException> errorsSAX = new ArrayList<SAXParseException>();
-  // public static final String OPTION_SEPARATOR = "<>";
   private static HashMap<String, String> newClassesForOldNames;
 
   public GameParser() {}
@@ -66,7 +65,8 @@ public class GameParser {
    *
    * @param stream
    * @param delayParsing
-   *        Should we only parse the game name, notes, and playerlist? Normally this should be "false", except for the game chooser which
+   *        Should we only parse the game name, notes, and playerlist? Normally this should be "false", except for the
+   *        game chooser which
    *        should use the user set preference.
    * @throws GameParseException
    * @throws SAXException
@@ -89,13 +89,16 @@ public class GameParser {
     final Element root = doc.getDocumentElement();
     data = new GameData();
     // mandatory fields
-    parseInfo(getSingleChild("info", root)); // get the name of the map
+    // get the name of the map
+    parseInfo(getSingleChild("info", root));
     if (gameName != null) {
       gameName.set(data.getGameName());
     }
-    parseMinimumEngineVersionNumber(getSingleChild("triplea", root, true)); // test minimum engine version FIRST
+    // test minimum engine version FIRST
+    parseMinimumEngineVersionNumber(getSingleChild("triplea", root, true));
     parseGameLoader(getSingleChild("loader", root));
-    // if we manage to get this far, past the minimum engine version number test, AND we are still good, then check and see if we have any
+    // if we manage to get this far, past the minimum engine version number test, AND we are still good, then check and
+    // see if we have any
     // SAX errors we need to show
     if (!errorsSAX.isEmpty()) {
       for (final SAXParseException error : errorsSAX) {
@@ -154,11 +157,13 @@ public class GameParser {
       parseInitialization(initialization);
     }
     // set & override default relationships
-    data.getRelationshipTracker().setNullPlayerRelations(); // sets the relationship between all players and the NullPlayer to NullRelation
-                                                            // (with archeType War)
-    data.getRelationshipTracker().setSelfRelations(); // sets the relationship for all players with themselfs to the SelfRelation (with
-                                                      // archeType Allied)
-    // set default tech attachments (comes after we parse all technologies, parse all attachments, and parse all game options/properties)
+    // sets the relationship between all players and the NullPlayer to NullRelation
+    // (with archeType War)
+    data.getRelationshipTracker().setNullPlayerRelations();
+    // sets the relationship for all players with themselfs to the SelfRelation (with archeType Allied)
+    data.getRelationshipTracker().setSelfRelations();
+    // set default tech attachments (comes after we parse all technologies, parse all attachments, and parse all game
+    // options/properties)
     if (data.getGameLoader() instanceof games.strategy.triplea.TripleA) {
       checkThatAllUnitsHaveAttachments(data);
       TechAbilityAttachment.setDefaultTechnologyAttachments(data);
@@ -296,7 +301,8 @@ public class GameParser {
   /**
    * If mustfind is true and cannot find the player an exception will be thrown.
    *
-   * @return a RelationshipType from the relationshipTypeList, at this point all relationshipTypes should have been declared
+   * @return a RelationshipType from the relationshipTypeList, at this point all relationshipTypes should have been
+   *         declared
    * @throws GameParseException
    *         when
    */
@@ -473,7 +479,8 @@ public class GameParser {
     catch (final ClassNotFoundException cnfe) {
       if (newClassesForOldNames == null) {
         newClassesForOldNames = new HashMap<String, String>();
-        // put in here class names that have been changed like //newClassesForOldNames.put("<oldClassName>", "<newClassName>"), e.g.
+        // put in here class names that have been changed like //newClassesForOldNames.put("<oldClassName>",
+        // "<newClassName>"), e.g.
         // newClassesForOldNames.put("attatchment", "attachment")
       }
       final String newClassName = newClassesForOldNames.get(className);
@@ -679,9 +686,9 @@ public class GameParser {
           }
         }
       }
-    } else if (gridType.equals("points-and-lines")) { // This type is a triangular grid of points and lines,
-                                                      // used for in several rail games
-                                                      // Add territories
+      // This type is a triangular grid of points and lines, used for in several rail games
+    } else if (gridType.equals("points-and-lines")) {
+      // Add territories
       for (int y = 0; y < y_size; y++) {
         for (int x = 0; x < x_size; x++) {
           final boolean isWater = false;
@@ -842,20 +849,26 @@ public class GameParser {
       final RelationshipTypeList relationshipTypeList = data.getRelationshipTypeList();
       // iterate through all players to get known allies and enemies
       for (final PlayerID currentPlayer : players) {
-        final HashSet<PlayerID> enemies = new HashSet<PlayerID>(players); // start with all players as enemies
-        final HashSet<PlayerID> allies = new HashSet<PlayerID>(); // start with no players as allies
+        // start with all players as enemies
+        final HashSet<PlayerID> enemies = new HashSet<PlayerID>(players);
+        // start with no players as allies
+        final HashSet<PlayerID> allies = new HashSet<PlayerID>();
         // iterate through all alliances the player is in
         if (allianceTracker.getAlliancesMap().get(currentPlayer) != null) {
           for (final String alliance : allianceTracker.getAlliancesMap().get(currentPlayer)) {
             // iterate through the members of the alliances
             for (final PlayerID alliedPlayer : allianceTracker.getPlayersInAlliance(alliance)) {
-              allies.add(alliedPlayer); // add each allianceMember to the alliesList
-              enemies.remove(alliedPlayer); // remove each allianceMember from the enemiesList
+              // add each allianceMember to the alliesList
+              allies.add(alliedPlayer);
+              // remove each allianceMember from the enemiesList
+              enemies.remove(alliedPlayer);
             }
           }
         }
-        enemies.remove(currentPlayer); // remove self from enemieslist (in case of free-for-all)
-        allies.remove(currentPlayer); // remove self from allieslist (in case you are a member of an alliance)
+        // remove self from enemieslist (in case of free-for-all)
+        enemies.remove(currentPlayer);
+        // remove self from allieslist (in case you are a member of an alliance)
+        allies.remove(currentPlayer);
         // At this point enemies and allies should be set for this player.
         for (final PlayerID alliedPLayer : allies) {
           relationshipTracker.setRelationship(currentPlayer, alliedPLayer,
@@ -912,7 +925,8 @@ public class GameParser {
       } else {
         final List<Node> children2 = getNonTextNodesIgnoring(current, "value");
         if (children2.size() == 0) {
-          // we don't know what type this property is!!, it appears like only numbers and string may be represented without proper type
+          // we don't know what type this property is!!, it appears like only numbers and string may be represented
+          // without proper type
           // definition
           try {
             // test if it is an integer
@@ -1443,7 +1457,8 @@ public class GameParser {
         // set the original owner
         final TerritoryAttachment ta = TerritoryAttachment.get(territory);
         if (ta != null) {
-          // If we already have an original owner set (ie: we set it previously in the attachment using originalOwner or occupiedTerrOf),
+          // If we already have an original owner set (ie: we set it previously in the attachment using originalOwner or
+          // occupiedTerrOf),
           // then we DO NOT set the original owner again.
           // This is how we can have a game start with territories owned by 1 faction but controlled by a 2nd faction.
           final PlayerID currentOwner = ta.getOriginalOwner();

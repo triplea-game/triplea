@@ -123,7 +123,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       }
       endTurnReport.append("<br />" + addOtherResources(m_bridge));
       endTurnReport.append("<br />" + doNationalObjectivesAndOtherEndTurnEffects(m_bridge));
-      // now we do upkeep costs, including upkeep cost as a percentage of our entire income for this turn (including NOs)
+      // now we do upkeep costs, including upkeep cost as a percentage of our entire income for this turn (including
+      // NOs)
       final int currentPUs = m_player.getResources().getQuantity(PUs);
       final float gainedPUS = Math.max(0, currentPUs - leftOverPUs);
       int relationshipUpkeepCostFlat = 0;
@@ -203,16 +204,14 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   public void loadState(final Serializable state) {
     final EndTurnExtendedDelegateState s = (EndTurnExtendedDelegateState) state;
     super.loadState(s.superState);
-    // load other variables from state here:
     m_needToInitialize = s.m_needToInitialize;
     m_hasPostedTurnSummary = s.m_hasPostedTurnSummary;
   }
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    return true; // currently we need to call this regardless, because it resets player sounds for the turn.
-    // return PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(getData()) || m_player.isAI(); // we could have a pbem/forum post to
-    // do
+    // currently we need to call this regardless, because it resets player sounds for the turn.
+    return true;
   }
 
   private int rollWarBonds(final IDelegateBridge aBridge, final PlayerID player, final GameData data) {
@@ -238,7 +237,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     if (sides <= 0 || count <= 0) {
       return "";
     }
-    // basically, if we are sharing our technology with someone, and we have warbonds but they do not, then we roll our warbonds and give
+    // basically, if we are sharing our technology with someone, and we have warbonds but they do not, then we roll our
+    // warbonds and give
     // them the proceeds (Global 1940)
     final PlayerAttachment playerattachment = PlayerAttachment.get(player);
     if (playerattachment == null) {
@@ -248,12 +248,14 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     if (shareWith == null || shareWith.isEmpty()) {
       return "";
     }
-    PlayerID giveWarBondsTo = null; // take first one
+    // take first one
+    PlayerID giveWarBondsTo = null;
     for (final PlayerID p : shareWith) {
       final int pCount = TechAbilityAttachment.getWarBondDiceNumber(p, data);
       final int pSides = TechAbilityAttachment.getWarBondDiceSides(p, data);
       if (pSides <= 0 && pCount <= 0) {
-        // if both are zero, then it must mean we did not share our war bonds tech with them, even though we are sharing all tech (because
+        // if both are zero, then it must mean we did not share our war bonds tech with them, even though we are sharing
+        // all tech (because
         // they can not have this tech)
         if (canPlayerCollectIncome(p, data)) {
           giveWarBondsTo = p;
@@ -389,9 +391,11 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
           numberOfDice += UnitAttachment.get(u.getType()).getBlockade();
         }
         if (numberOfDice > 0) {
-          // there is an issue with maps that have lots of rolls without any pause between them: they are causing the cypted random source
+          // there is an issue with maps that have lots of rolls without any pause between them: they are causing the
+          // cypted random source
           // (ie: live and pbem games) to lock up or error out
-          // so we need to slow them down a bit, until we come up with a better solution (like aggregating all the chances together, then
+          // so we need to slow them down a bit, until we come up with a better solution (like aggregating all the
+          // chances together, then
           // getting a ton of random numbers at once instead of one at a time)
           try {
             Thread.sleep(100);
@@ -403,7 +407,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
           transcripts.add(transcript + ". Rolls: " + MyFormatter.asDice(dice));
           rolledDice = true;
           for (final int d : dice) {
-            final int roll = d + 1; // we are zero based
+            // we are zero based
+            final int roll = d + 1;
             loss += (roll <= 3 ? roll : 0);
           }
         }
@@ -422,7 +427,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     if (totalLoss <= 0 && !rolledDice) {
       return 0;
     }
-    // now we need to make sure that we didn't deal more damage than the territories are worth, in the case of having multiple sea zones
+    // now we need to make sure that we didn't deal more damage than the territories are worth, in the case of having
+    // multiple sea zones
     // touching the same land zone.
     final List<Territory> blockadeZonesSorted = new ArrayList<Territory>(damagePerBlockadeZone.keySet());
     Collections.sort(blockadeZonesSorted, getSingleBlockadeThenHighestToLowestBlockadeDamage(damagePerBlockadeZone));

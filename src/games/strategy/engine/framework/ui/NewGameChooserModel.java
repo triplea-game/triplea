@@ -137,7 +137,7 @@ public class NewGameChooserModel extends DefaultListModel {
       ClientLogger.logQuietly(ioe);
     }
 
-    if( badMapZip) {
+    if (badMapZip) {
       confirmWithUserAndThenDeleteCorruptZipFile(map);
     }
   }
@@ -151,15 +151,15 @@ public class NewGameChooserModel extends DefaultListModel {
       SwingUtilities.invokeAndWait(new Runnable() {
         @Override
         public void run() {
-          Component parentComponent = MainFrame.getInstance();
-          String message =
-              "Could not parse map file correctly, would you like to remove it?\n" + map.getAbsolutePath() + "\n(You may see this error message again if you keep the file)";
+          final Component parentComponent = MainFrame.getInstance();
+          String message = "Could not parse map file correctly, would you like to remove it?\n" + map.getAbsolutePath()
+              + "\n(You may see this error message again if you keep the file)";
           String title = "Corrup Map File Found";
-          int optionType = JOptionPane.YES_NO_OPTION;
+          final int optionType = JOptionPane.YES_NO_OPTION;
           int messageType = JOptionPane.WARNING_MESSAGE;
-          int result = JOptionPane.showConfirmDialog(parentComponent, message, title, optionType, messageType);
+          final int result = JOptionPane.showConfirmDialog(parentComponent, message, title, optionType, messageType);
           if (result == JOptionPane.YES_OPTION) {
-            boolean deleted = map.delete();
+            final boolean deleted = map.delete();
             if (deleted) {
               messageType = JOptionPane.INFORMATION_MESSAGE;
               message = "File was deleted successfully.";
@@ -171,9 +171,9 @@ public class NewGameChooserModel extends DefaultListModel {
           }
         }
       });
-    } catch (InvocationTargetException e) {
+    } catch (final InvocationTargetException e) {
       ClientLogger.logError(e);
-    } catch (InterruptedException e) {
+    } catch (final InterruptedException e) {
       ClientLogger.logQuietly(e);
     }
   }

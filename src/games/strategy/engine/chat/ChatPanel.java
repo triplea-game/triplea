@@ -56,11 +56,13 @@ public class ChatPanel extends JPanel implements IChatPanel {
 
   @Override
   public void shutDown() {
-    final Chat chat = getChat(); // get first, before below turns it null
+    // get first, before below turns it null
+    final Chat chat = getChat();
     m_chatMessagePanel.shutDown();
     m_chatPlayerPanel.shutDown();
     if (chat != null) {
-      chat.shutdown(); // now shut down
+      // now shut down
+      chat.shutdown();
     }
   }
 
@@ -95,10 +97,9 @@ public class ChatPanel extends JPanel implements IChatPanel {
   @Override
   public void setPlayerRenderer(final DefaultListCellRenderer renderer) {
     m_chatPlayerPanel.setPlayerRenderer(renderer);
-    m_chatMessagePanel.setPreferredSize(new Dimension(30, m_chatMessagePanel.getPreferredSize().height)); // gets remaining width from
-                                                                                                          // parent component, so setting
-                                                                                                          // the width is not really
-                                                                                                          // necessary
+    // gets remaining width from parent component, so setting
+    // the width is not really necessary
+    m_chatMessagePanel.setPreferredSize(new Dimension(30, m_chatMessagePanel.getPreferredSize().height));
   }
 
   @Override

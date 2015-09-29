@@ -78,7 +78,8 @@ public interface IDelegateBridge {
   /**
    * Return an object that implements the IDisplay interface for the game.
    * <p>
-   * Methods called on this returned object will be invoked on all displays in the game, including those on remote machines
+   * Methods called on this returned object will be invoked on all displays in the game, including those on remote
+   * machines
    * <p>
    */
   public IDisplay getDisplayChannelBroadcaster();
@@ -86,7 +87,8 @@ public interface IDelegateBridge {
   /**
    * Return an object that implements the ISound interface for the game.
    * <p>
-   * Methods called on this returned object will be invoked on all sound channels in the game, including those on remote machines
+   * Methods called on this returned object will be invoked on all sound channels in the game, including those on remote
+   * machines
    * <p>
    */
   public ISound getSoundChannelBroadcaster();
@@ -100,7 +102,8 @@ public interface IDelegateBridge {
   /**
    * After this step finishes executing, the next delegate will not be called.
    * <p>
-   * This methd allows the delegate to signal that the game is over, but does not force the ui or the display to shutdown.
+   * This methd allows the delegate to signal that the game is over, but does not force the ui or the display to
+   * shutdown.
    * <p>
    */
   public void stopGameSequence();

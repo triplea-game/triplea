@@ -161,7 +161,8 @@ public class DownloadMapDialog extends JDialog {
     }
     // return new Vector();
     final Vector<String> mapVector = new Vector<String>();
-    mapVector.add("http://downloads.sourceforge.net/project/tripleamaps/triplea_maps.xml"); // full map listing of all known maps
+    // full map listing of all known maps
+    mapVector.add("http://downloads.sourceforge.net/project/tripleamaps/triplea_maps.xml");
     return mapVector;
   }
 

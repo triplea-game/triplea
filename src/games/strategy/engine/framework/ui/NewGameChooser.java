@@ -32,8 +32,8 @@ import games.strategy.util.LocalizeHTML;
 
 public class NewGameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
-  private static NewGameChooserModel s_cachedGameModel = null; // any methods touching s_cachedGameModel should be both static and
-                                                               // synchronized
+  // any methods touching s_cachedGameModel should be both static and synchronized
+  private static NewGameChooserModel s_cachedGameModel = null;
   private JButton m_okButton;
   private JButton m_cancelButton;
   private JButton m_refreshGamesButton;

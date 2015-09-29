@@ -93,7 +93,8 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
   }
 
   /**
-   * First string is "Human" or "AI", while second string is the name of the player, like "Moore N. Able (AI)". Separate with a colon.
+   * First string is "Human" or "AI", while second string is the name of the player, like "Moore N. Able (AI)". Separate
+   * with a colon.
    *
    * @param humanOrAI_and_playerName
    */

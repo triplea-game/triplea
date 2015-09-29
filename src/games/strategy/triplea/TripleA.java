@@ -126,7 +126,8 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
         game.addDisplay(m_display);
         game.addSoundChannel(m_soundChannel);
         initializeGame();
-        connectPlayers(players, null);// technically not needed because we won't have any "local human players" in a headless game.
+        // technically not needed because we won't have any "local human players" in a headless game.
+        connectPlayers(players, null);
         if (headlessFrameUI != null) {
           headlessFrameUI.setLocationRelativeTo(null);
           headlessFrameUI.setSize(700, 400);

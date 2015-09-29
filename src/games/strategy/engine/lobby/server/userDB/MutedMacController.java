@@ -117,7 +117,8 @@ public class MutedMacController {
     // If the mute has expired, allow the mac
     if (expired) {
       removeMutedMac(mac);
-      result = -1; // Signal as not-muted
+      // Signal as not-muted
+      result = -1;
     }
     return result;
   }

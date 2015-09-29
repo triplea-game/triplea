@@ -739,4 +739,4 @@ public class PlacementPicker extends JFrame {
       System.out.println("Place Dimensions to use: " + PLACEWIDTH + "x" + PLACEHEIGHT);
     }
   }
-}// end class PlacementPicker
+}

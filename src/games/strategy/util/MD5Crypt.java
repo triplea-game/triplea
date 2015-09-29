@@ -148,7 +148,8 @@ public class MD5Crypt {
     ctx1.update(password.getBytes());
     ctx1.update(salt.getBytes());
     ctx1.update(password.getBytes());
-    finalState = ctx1.digest(); // ctx1.Final();
+    // ctx1.Final();
+    finalState = ctx1.digest();
     for (int pl = password.length(); pl > 0; pl -= 16) {
       ctx.update(finalState, 0, pl > 16 ? 16 : pl);
     }
@@ -195,7 +196,8 @@ public class MD5Crypt {
       } else {
         ctx1.update(password.getBytes());
       }
-      finalState = ctx1.digest(); // Final();
+      // Final();
+      finalState = ctx1.digest();
     }
     /* Now make the output string */
     final StringBuffer result = new StringBuffer();
