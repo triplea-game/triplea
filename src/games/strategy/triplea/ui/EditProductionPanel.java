@@ -64,7 +64,8 @@ public class EditProductionPanel extends ProductionPanel {
         }
       }
       // this next part is purely to allow people to "add" neutral (null player) units to territories.
-      // This is because the null player does not have a production frontier, and we also do not know what units we have art for, so only
+      // This is because the null player does not have a production frontier, and we also do not know what units we have
+      // art for, so only
       // use the units on a map.
       for (final Territory t : data.getMap()) {
         for (final Unit u : t.getUnits()) {

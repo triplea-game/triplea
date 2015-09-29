@@ -80,9 +80,9 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
         items.add(seperator);
       }
     }
-    if( m_movePanel.getUndoableMoves() != null && m_movePanel.getUndoableMoves().size() > 1 ) {
-      JButton undoAllButton = new JButton("Undo All");
-      undoAllButton.addActionListener( new UndoAllMovesActionListener());
+    if (m_movePanel.getUndoableMoves() != null && m_movePanel.getUndoableMoves().size() > 1) {
+      final JButton undoAllButton = new JButton("Undo All");
+      undoAllButton.addActionListener(new UndoAllMovesActionListener());
       items.add(undoAllButton);
     }
 
@@ -94,8 +94,8 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
       @Override
       public void paint(final Graphics g) {
         if (previousVisibleIndex != null) {
-          items.scrollRectToVisible(
-              new Rectangle(0, scrollIncrementFinal * ((m_moves.size()) - previousVisibleIndex), 1, scrollIncrementFinal));
+          items.scrollRectToVisible(new Rectangle(0, scrollIncrementFinal * ((m_moves.size()) - previousVisibleIndex),
+              1, scrollIncrementFinal));
           previousVisibleIndex = null;
         }
         super.paint(g);
@@ -124,8 +124,8 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
     final Dimension buttonSize = new Dimension(80, 22);
     while (iter.hasNext()) {
       final UnitCategory category = iter.next();
-      final Icon icon = m_movePanel.getMap().getUIContext().getUnitImageFactory()
-          .getIcon(category.getType(), category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
+      final Icon icon = m_movePanel.getMap().getUIContext().getUnitImageFactory().getIcon(category.getType(),
+          category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
       final JLabel label = new JLabel("x" + category.getUnits().size() + " ", icon, SwingConstants.LEFT);
       unitsBox.add(label);
     }
@@ -192,9 +192,9 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-      int moveCount = m_movePanel.getUndoableMoves().size();
-      boolean suppressErrorMsgToUser = true;
-      for( int i = moveCount -1; i >= 0; i -- ) {
+      final int moveCount = m_movePanel.getUndoableMoves().size();
+      final boolean suppressErrorMsgToUser = true;
+      for (int i = moveCount - 1; i >= 0; i--) {
         m_movePanel.undoMove(i, suppressErrorMsgToUser);
       }
     }

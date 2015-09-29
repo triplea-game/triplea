@@ -23,7 +23,8 @@ import games.strategy.sound.SoundPath;
  * Headless version of ChatPanel.
  */
 public class HeadlessChat implements IChatListener, IChatPanel {
-  private static final int MAX_LENGTH = 1000 * 200; // roughly 1000 chat messages
+  // roughly 1000 chat messages
+  private static final int MAX_LENGTH = 1000 * 200;
   private Chat m_chat;
   private boolean m_showTime = true;
   private StringBuffer m_allText = new StringBuffer();

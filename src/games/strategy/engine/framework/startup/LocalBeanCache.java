@@ -67,14 +67,16 @@ public class LocalBeanCache {
         } finally {
           if (fin != null) {
             try {
-              fin.close();// close stream, or we can delete the file (on windows)
+              // close stream, or we can delete the file (on windows)
+              fin.close();
             } catch (final IOException e) {
               // ignore
             }
           }
           if (oin != null) {
             try {
-              oin.close();// close stream, or we can delete the file (on windows)
+              // close stream, or we can delete the file (on windows)
+              oin.close();
             } catch (final IOException e) {
               // ignore
             }
@@ -93,7 +95,8 @@ public class LocalBeanCache {
    * adds a new Serializable to the cache
    *
    * @param key
-   *        the key the serializable should be stored under. Take care not to override a serializable stored by other code
+   *        the key the serializable should be stored under. Take care not to override a serializable stored by other
+   *        code
    *        it is generally a good ide to use fully qualified class names, getClass().getCanonicalName() as key
    * @param bean
    *        the bean

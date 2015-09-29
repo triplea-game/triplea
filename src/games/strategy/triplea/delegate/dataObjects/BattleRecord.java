@@ -16,7 +16,8 @@ public class BattleRecord extends GameDataComponent {
    * BLITZED = conquered without a fight <br>
    * CONQUERED = fought, won, and took over territory if land or convoy <br>
    * WON_WITHOUT_CONQUERING = fought, won, did not take over territory (could be water, or could be air attackers) <br>
-   * WON_WITH_ENEMY_LEFT = fought, enemy either submerged or the battle is over with our objectives successful even though enemies are left
+   * WON_WITH_ENEMY_LEFT = fought, enemy either submerged or the battle is over with our objectives successful even
+   * though enemies are left
    * <br>
    * STALEMATE = have units left in the territory beside enemy defenders (like both sides have transports left) <br>
    * LOST = either lost the battle, or retreated <br>
@@ -24,7 +25,8 @@ public class BattleRecord extends GameDataComponent {
    * AIR_BATTLE_WON = Won an Air Battle with units surviving <br>
    * AIR_BATTLE_LOST = Lost an Air Battle with enemy units surviving <br>
    * AIR_BATTLE_STALEMATE = Neither side has air units left <br>
-   * NO_BATTLE = No battle was fought, possibly because the territory you were about to bomb was conquered before the bombing could begin,
+   * NO_BATTLE = No battle was fought, possibly because the territory you were about to bomb was conquered before the
+   * bombing could begin,
    * etc.<br>
    */
   public enum BattleResultDescription {
@@ -41,7 +43,8 @@ public class BattleRecord extends GameDataComponent {
   private int m_bombingDamage = 0;
   private BattleType m_battleType;
   private BattleResults m_battleResults;
-  // Something in IBattle (formerly part of BattleResults) can not be Serialized, which can causing MAJOR problems. So the IBattle should
+  // Something in IBattle (formerly part of BattleResults) can not be Serialized, which can causing MAJOR problems. So
+  // the IBattle should
   // never be part of BattleResults or BattleRecord.
 
   // Create copy

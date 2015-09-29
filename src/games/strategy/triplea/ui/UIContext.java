@@ -69,7 +69,8 @@ public class UIContext extends AbstractUIContext implements IUIContext {
       m_mapData.close();
     }
     m_mapData = new MapData(m_resourceLoader);
-    m_diceImageFactory = new DiceImageFactory(m_resourceLoader, data.getDiceSides()); // DiceImageFactory needs loader and game data
+    // DiceImageFactory needs loader and game data
+    m_diceImageFactory = new DiceImageFactory(m_resourceLoader, data.getDiceSides());
     final double unitScale = getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, m_mapData.getDefaultUnitScale());
     m_scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
     if (m_scale < 1) {
@@ -78,12 +79,14 @@ public class UIContext extends AbstractUIContext implements IUIContext {
     m_unitImageFactory.setResourceLoader(m_resourceLoader, unitScale, m_mapData.getDefaultUnitWidth(),
         m_mapData.getDefaultUnitHeight(), m_mapData.getDefaultUnitCounterOffsetWidth(),
         m_mapData.getDefaultUnitCounterOffsetHeight());
-    m_resourceImageFactory.setResourceLoader(m_resourceLoader, 1);// TODO: separate scale for resources
+    // TODO: separate scale for resources
+    m_resourceImageFactory.setResourceLoader(m_resourceLoader, 1);
     m_flagIconImageFactory.setResourceLoader(m_resourceLoader);
     m_PUImageFactory.setResourceLoader(m_resourceLoader);
     m_tileImageFactory.setMapDir(m_resourceLoader);
     m_tileImageFactory.setScale(m_scale);
-    m_mapImage.loadMaps(m_resourceLoader); // load map data
+    // load map data
+    m_mapImage.loadMaps(m_resourceLoader);
     m_mapDir = dir;
     m_drawTerritoryEffects = m_mapData.useTerritoryEffectMarkers();
     // load the sounds in a background thread,
@@ -100,7 +103,8 @@ public class UIContext extends AbstractUIContext implements IUIContext {
     // load a new cursor
     m_cursor = Cursor.getDefaultCursor();
     final Toolkit toolkit = Toolkit.getDefaultToolkit();
-    final URL cursorURL = m_resourceLoader.getResource("misc" + "/" + "cursor.gif"); // URL's use "/" not "\"
+    // URL's use "/" not "\"
+    final URL cursorURL = m_resourceLoader.getResource("misc" + "/" + "cursor.gif");
     if (cursorURL != null) {
       try {
         final Image image = ImageIO.read(cursorURL);

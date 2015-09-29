@@ -42,19 +42,23 @@ public class MapProperties {
   // public List<String> DONT_DRAW_TERRITORY_NAMES = new ArrayList<String>();
   public String DONT_DRAW_TERRITORY_NAMES = "";
   public boolean MAP_MAPBLENDS = false;
-  public String MAP_MAPBLENDMODE = "OVERLAY"; // options are: NORMAL, OVERLAY, LINEAR_LIGHT, DIFFERENCE, MULTIPLY
+  // options are: NORMAL, OVERLAY, LINEAR_LIGHT, DIFFERENCE, MULTIPLY
+  public String MAP_MAPBLENDMODE = "OVERLAY";
   // public double MAP_MAPBLENDALPHA = 0.3f;
   public String MAP_MAPBLENDALPHA = "0.3";
   public boolean SCREENSHOT_TITLE_ENABLED = true;
   public int SCREENSHOT_TITLE_X = 50;
   public int SCREENSHOT_TITLE_Y = 50;
-  public Color SCREENSHOT_TITLE_COLOR = Color.black;// new Color(0x000000);
+  // new Color(0x000000);
+  public Color SCREENSHOT_TITLE_COLOR = Color.black;
   public int SCREENSHOT_TITLE_FONT_SIZE = 20;
   public boolean SCREENSHOT_STATS_ENABLED = true;
   public int SCREENSHOT_STATS_X = 50;
   public int SCREENSHOT_STATS_Y = 54;
-  public Color SCREENSHOT_STATS_TEXT_COLOR = Color.black;// new Color(0x000000);
-  public Color SCREENSHOT_STATS_BORDER_COLOR = Color.white;// new Color(0xFFFFFF);
+  // new Color(0x000000);
+  public Color SCREENSHOT_STATS_TEXT_COLOR = Color.black;
+  // new Color(0xFFFFFF);
+  public Color SCREENSHOT_STATS_BORDER_COLOR = Color.white;
 
   public MapProperties() {
     super();

@@ -26,7 +26,8 @@ import games.strategy.util.Tuple;
 /**
  * Extended unit for triplea games.
  * <p>
- * As with all game data components, changes made to this unit must be made through a Change instance. Calling setters on this directly will
+ * As with all game data components, changes made to this unit must be made through a Change instance. Calling setters
+ * on this directly will
  * not serialize the changes across the network.
  * <p>
  */
@@ -53,26 +54,40 @@ public class TripleAUnit extends Unit {
   public static final String DISABLED = "disabled";
   public static final String LAUNCHED = "launched";
   public static final String AIRBORNE = "airborne";
-  private TripleAUnit m_transportedBy = null; // the transport that is currently transporting us
-  private List<Unit> m_unloaded = Collections.emptyList(); // the units we have unloaded this turn
-  private Boolean m_wasLoadedThisTurn = Boolean.FALSE; // was this unit loaded this turn?
-  private Territory m_unloadedTo = null; // the territory this unit was unloaded to this turn
-  private Boolean m_wasUnloadedInCombatPhase = Boolean.FALSE; // was this unit unloaded in combat phase this turn?
-  private int m_alreadyMoved = 0; // movement used this turn
-  private int m_bonusMovement = 0; // movement used this turn
-  private int m_unitDamage = 0; // amount of damage unit has sustained
-  private boolean m_submerged = false; // is this submarine submerged
-  private PlayerID m_originalOwner = null; // original owner of this unit
-  private boolean m_wasInCombat = false; // Was this unit in combat
+  // the transport that is currently transporting us
+  private TripleAUnit m_transportedBy = null;
+  // the units we have unloaded this turn
+  private List<Unit> m_unloaded = Collections.emptyList();
+  // was this unit loaded this turn?
+  private Boolean m_wasLoadedThisTurn = Boolean.FALSE;
+  // the territory this unit was unloaded to this turn
+  private Territory m_unloadedTo = null;
+  // was this unit unloaded in combat phase this turn?
+  private Boolean m_wasUnloadedInCombatPhase = Boolean.FALSE;
+  // movement used this turn
+  private int m_alreadyMoved = 0;
+  // movement used this turn
+  private int m_bonusMovement = 0;
+  // amount of damage unit has sustained
+  private int m_unitDamage = 0;
+  // is this submarine submerged
+  private boolean m_submerged = false;
+  // original owner of this unit
+  private PlayerID m_originalOwner = null;
+  // Was this unit in combat
+  private boolean m_wasInCombat = false;
   private boolean m_wasLoadedAfterCombat = false;
   private boolean m_wasAmphibious = false;
-  private Territory m_originatedFrom = null; // the territory this unit started in (for use with scrambling)
+  // the territory this unit started in (for use with scrambling)
+  private Territory m_originatedFrom = null;
   private boolean m_wasScrambled = false;
   private int m_maxScrambleCount = -1;
   private boolean m_wasInAirBattle = false;
   private boolean m_disabled = false;
-  private int m_launched = 0; // the number of airborne units launched by this unit this turn
-  private boolean m_airborne = false; // was this unit airborne and launched this turn
+  // the number of airborne units launched by this unit this turn
+  private int m_launched = 0;
+  // was this unit airborne and launched this turn
+  private boolean m_airborne = false;
 
   public static TripleAUnit get(final Unit u) {
     return (TripleAUnit) u;
@@ -368,11 +383,13 @@ public class TripleAUnit extends Unit {
       if (ua.getMaxDamage() <= 0) {
         // factories may or may not have max damage set, so we must still determine here
         // assume that if maxDamage <= 0, then the max damage must be based on the territory value
-        return territoryUnitProduction * 2; // can use "production" or "unitProduction"
+        // can use "production" or "unitProduction"
+        return territoryUnitProduction * 2;
       } else {
         if (Matches.UnitCanProduceUnits.match(u)) {
           if (ua.getCanProduceXUnits() < 0) {
-            return territoryUnitProduction * ua.getMaxDamage(); // can use "production" or "unitProduction"
+            // can use "production" or "unitProduction"
+            return territoryUnitProduction * ua.getMaxDamage();
           } else {
             return ua.getMaxDamage();
           }
@@ -457,9 +474,10 @@ public class TripleAUnit extends Unit {
     if (accountForDamage) {
       if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
         if (ua.getCanProduceXUnits() < 0) {
-          productionCapacity = territoryUnitProduction - taUnit.getUnitDamage(); // we could use territoryUnitProduction OR
-                                                                                 // territoryProduction if we wanted to, however we should
-                                                                                 // change damage to be based on whichever we choose.
+          // we could use territoryUnitProduction OR
+          // territoryProduction if we wanted to, however we should
+          // change damage to be based on whichever we choose.
+          productionCapacity = territoryUnitProduction - taUnit.getUnitDamage();
         } else {
           productionCapacity = ua.getCanProduceXUnits() - taUnit.getUnitDamage();
         }
@@ -500,7 +518,8 @@ public class TripleAUnit extends Unit {
   }
 
   /**
-   * Currently made for translating unit damage from one unit to another unit. Will adjust damage to be within max damage for the new units.
+   * Currently made for translating unit damage from one unit to another unit. Will adjust damage to be within max
+   * damage for the new units.
    *
    * @param unitGivingAttributes
    * @param unitsThatWillGetAttributes

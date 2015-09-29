@@ -72,8 +72,10 @@ public class AutoPlacementFinder {
    * Will calculate the placements on the map automatically.
    */
   static void calculate() {
-    final Map<String, Collection<Point>> m_placements = new HashMap<String, Collection<Point>>(); // create hash map of placements
-    final String mapDir = s_mapFolderLocation == null ? getMapDirectory() : s_mapFolderLocation.getName(); // ask user where the map is
+    // create hash map of placements
+    final Map<String, Collection<Point>> m_placements = new HashMap<String, Collection<Point>>();
+    // ask user where the map is
+    final String mapDir = s_mapFolderLocation == null ? getMapDirectory() : s_mapFolderLocation.getName();
     if (mapDir == null) {
       System.out.println("You need to specify a map name for this to work");
       System.out.println("Shutting down");
@@ -181,7 +183,8 @@ public class AutoPlacementFinder {
       }
     }
     try {
-      s_mapData = new MapData(mapDir); // makes TripleA read all the text data files for the map.
+      // makes TripleA read all the text data files for the map.
+      s_mapData = new MapData(mapDir);
     } catch (final Exception ex) {
       JOptionPane.showMessageDialog(null, new JLabel(
           "Could not find map. Make sure it is in finalized location and contains centers.txt and polygons.txt"));
@@ -231,7 +234,8 @@ public class AutoPlacementFinder {
       System.exit(0);
     }
     textOptionPane.dispose();
-    System.exit(0); // shut down program when done.
+    // shut down program when done.
+    System.exit(0);
   }
 
   /**
@@ -300,7 +304,8 @@ public class AutoPlacementFinder {
       } else {
         step--;
       }
-      // textOptionPane.appendNewLine("x:" + x + " y:" + y); // For Debugging
+      // For Debugging
+      // textOptionPane.appendNewLine("x:" + x + " y:" + y);
       if (placementPoints.size() > 50) {
         break;
       }
@@ -314,7 +319,8 @@ public class AutoPlacementFinder {
   }
 
   /**
-   * java.util.List getPlacementsStartingAtTopLeft(java.util.Collection, java.awt.Rectangle, java.awt.Point, java.util.Collection)
+   * java.util.List getPlacementsStartingAtTopLeft(java.util.Collection, java.awt.Rectangle, java.awt.Point,
+   * java.util.Collection)
    *
    * @param java
    *        .util.Collection
@@ -348,7 +354,8 @@ public class AutoPlacementFinder {
   }
 
   /**
-   * isPlacement(java.util.Collection, java.util.Collection, java.util.List, java.util.List, java.awt.geom.Rectangle2D, java.lang.int,
+   * isPlacement(java.util.Collection, java.util.Collection, java.util.List, java.util.List, java.awt.geom.Rectangle2D,
+   * java.lang.int,
    * java.lang.int)
    *
    * @param java
@@ -541,4 +548,4 @@ public class AutoPlacementFinder {
       System.out.println("Place Dimensions to use: " + PLACEWIDTH + "x" + PLACEHEIGHT);
     }
   }
-}// end class AutoPlacementFinder
+}

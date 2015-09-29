@@ -34,7 +34,8 @@ public abstract class BaseTripleADelegate extends AbstractDelegate implements ID
   /**
    * Called before the delegate will run.
    * All classes should call super.start if they override this.
-   * Persistent delegates like Edit Delegate should not extend BaseDelegate, because we do not want to fire triggers in the edit delegate.
+   * Persistent delegates like Edit Delegate should not extend BaseDelegate, because we do not want to fire triggers in
+   * the edit delegate.
    */
   @Override
   public void start() {
@@ -48,7 +49,8 @@ public abstract class BaseTripleADelegate extends AbstractDelegate implements ID
   /**
    * Called before the delegate will stop running.
    * All classes should call super.end if they override this.
-   * Persistent delegates like Edit Delegate should not extend BaseDelegate, because we do not want to fire triggers in the edit delegate.
+   * Persistent delegates like Edit Delegate should not extend BaseDelegate, because we do not want to fire triggers in
+   * the edit delegate.
    */
   @Override
   public void end() {
@@ -58,7 +60,8 @@ public abstract class BaseTripleADelegate extends AbstractDelegate implements ID
       m_endBaseStepsFinished = true;
       triggerWhenTriggerAttachments(TriggerAttachment.AFTER);
     }
-    // these should probably be somewhere else, but we are relying on the fact that reloading a save go into the start step,
+    // these should probably be somewhere else, but we are relying on the fact that reloading a save go into the start
+    // step,
     // but nothing goes into the end step, and therefore there is no way to save then have the end step repeat itself
     m_startBaseStepsFinished = false;
     m_endBaseStepsFinished = false;
@@ -137,26 +140,3 @@ class BaseDelegateState implements Serializable {
   public boolean m_startBaseStepsFinished = false;
   public boolean m_endBaseStepsFinished = false;
 }
-/*
- * All overriding classes should use the following format for saveState and loadState, in order to save and load the superstate
- * class ExtendedDelegateState implements Serializable
- * {
- * Serializable superState;
- * // add other variables here:
- * }
- * @Override
- * public Serializable saveState()
- * {
- * ExtendedDelegateState state = new ExtendedDelegateState();
- * state.superState = super.saveState();
- * // add other variables to state here:
- * return state;
- * }
- * @Override
- * public void loadState(Serializable state)
- * {
- * ExtendedDelegateState s = (ExtendedDelegateState) state;
- * super.loadState(s.superState);
- * // load other variables from state here:
- * }
- */

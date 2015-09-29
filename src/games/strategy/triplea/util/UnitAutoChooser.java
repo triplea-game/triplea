@@ -645,7 +645,8 @@ class UnitAutoChooser {
       // handle stopping condition
       if (curIndex.intValue() == candidateCategoriesWithDependentsList.size()) {
         if (indexStack.empty()) {
-          break; // finished!
+          // finished!
+          break;
         }
         // System.out.println("Reached end of iteration; popping stack.");
         curIndex = indexStack.pop();
@@ -711,8 +712,10 @@ class UnitAutoChooser {
           // If solver is allowing implicit dependents, then all chosen category counts with dependents
           // must match the current category counts with dependents for an exact solution,
           // since we are trying to account for all dependents.
-          // Note that in the case where there are no dependent units in the territory at all, the List we are processing
-          // in this while loop would be empty so this algo would be skipped and an independent solution would be found later.
+          // Note that in the case where there are no dependent units in the territory at all, the List we are
+          // processing
+          // in this while loop would be empty so this algo would be skipped and an independent solution would be found
+          // later.
           if (!m_bAllowImplicitDependents
               || (chosenCategoryCountsWithDependents.equals(currentChosenCategoryCountsWithDependents))) {
             // System.out.println("->Found exact solution");

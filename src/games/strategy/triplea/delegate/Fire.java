@@ -57,7 +57,8 @@ public class Fire implements IExecutable {
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
     /*
      * This is to remove any Factories, AAguns, and Infrastructure from possible targets for the firing.
-     * If, in the future, Infrastructure or other things could be taken casualty, then this will need to be changed back to:
+     * If, in the future, Infrastructure or other things could be taken casualty, then this will need to be changed back
+     * to:
      * m_attackableUnits = attackableUnits;
      */
     m_attackableUnits = Match.getMatches(attackableUnits, Matches.UnitIsNotInfrastructure);

@@ -26,13 +26,16 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
       return mProductionPerXTerritoriesHandler(field, attachment);
     }
     if (fieldName.equals("m_atWarPlayers")) {
-      return mAtWarPlayersHandler(field, attachment); // AtWarCount is part of m_atWarPlayers
+      // AtWarCount is part of m_atWarPlayers
+      return mAtWarPlayersHandler(field, attachment);
     }
     if (fieldName.equals("m_atWarCount")) {
-      return ""; // AtWarCount is part of m_atWarPlayers
+      // AtWarCount is part of m_atWarPlayers
+      return "";
     }
     if (fieldName.equals("m_territoryCount")) {
-      return ""; // atTerritoryCount is part of m_*Territories
+      // atTerritoryCount is part of m_*Territories
+      return "";
     }
     if (fieldName.matches("m_allied.*Territories") || fieldName.matches("m_enemy.*Territories")
         || fieldName.matches("m_direct.*Territories")) {
@@ -42,7 +45,8 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
       return mTechsHandler(field, attachment);
     }
     if (fieldName.equals("m_techCount")) {
-      return ""; // techCount is part of m_techs
+      // techCount is part of m_techs
+      return "";
     }
     return super.printOption(field, attachment);
   }
@@ -57,7 +61,8 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
       }
       final Iterator<String> values = Arrays.asList(valueArray).iterator();
       if (valueArray.length > 1) {
-        values.next(); // skip the arrayLength entry in the array because for Arrays > 1 the first entry is the count;
+        // skip the arrayLength entry in the array because for Arrays > 1 the first entry is the count;
+        values.next();
       }
       String returnValue = values.next();
       while (values.hasNext()) {

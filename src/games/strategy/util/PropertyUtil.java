@@ -24,7 +24,8 @@ public class PropertyUtil {
   }
 
   /**
-   * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a
+   * You don't want to clear the variable first unless you are setting some variable where the setting method is
+   * actually adding things to a
    * list rather than overwriting.
    */
   public static void set(final String propertyName, final Object value, final Object subject,

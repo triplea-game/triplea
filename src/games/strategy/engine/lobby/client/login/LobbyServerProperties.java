@@ -15,7 +15,8 @@ import org.apache.commons.httpclient.methods.GetMethod;
  * <p>
  * Generally there is one lobby server, but that server may move.
  * <p>
- * To keep track of this, we always have a properties file in a constant location that points to the current lobby server.
+ * To keep track of this, we always have a properties file in a constant location that points to the current lobby
+ * server.
  * <p>
  * The properties file may indicate that the server is not available using the ERROR_MESSAGE key.
  * <p>
@@ -62,7 +63,8 @@ public class LobbyServerProperties {
     final HostConfiguration config = client.getHostConfiguration();
     config.setHost(url.getHost());
     // add the proxy
-    // GameRunner2.addProxy(config); // since lobby actually uses a different port and connection type (TCP), we should not use a proxy for
+    // since lobby actually uses a different port and connection type (TCP), we should not use a proxy for
+    // GameRunner2.addProxy(config);
     // the properties file until we allow the lobby to accept proxy connections
     final GetMethod method = new GetMethod(url.getPath());
     // pretend to be ie

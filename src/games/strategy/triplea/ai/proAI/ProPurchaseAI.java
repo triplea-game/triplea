@@ -68,7 +68,8 @@ public class ProPurchaseAI {
   private final ProPurchaseUtils purchaseUtils;
   // Current data
   private GameData data;
-  private GameData startOfTurnData; // Used to count current units on map for maxBuiltPerPlayer
+  // Used to count current units on map for maxBuiltPerPlayer
+  private GameData startOfTurnData;
   private PlayerID player;
   private Territory myCapital;
   private double minCostPerHitPoint;
@@ -131,15 +132,18 @@ public class ProPurchaseAI {
       if (UnitAttachment.get(x).getMovement(player) < 1 && !(UnitAttachment.get(x).getCanProduceUnits())) {
         continue;
       }
-      // Remove from consideration any unit with Zero defense, or 3 or more attack/defense than defense/attack, that is not a
+      // Remove from consideration any unit with Zero defense, or 3 or more attack/defense than defense/attack, that is
+      // not a
       // transport/factory/aa unit
       if (((UnitAttachment.get(x).getAttack(player) - UnitAttachment.get(x).getDefense(player) >= 3
           || UnitAttachment.get(x).getDefense(player) - UnitAttachment.get(x).getAttack(player) >= 3)
           || UnitAttachment.get(x).getDefense(player) < 1)
           && !(UnitAttachment.get(x).getCanProduceUnits()
               || (UnitAttachment.get(x).getTransportCapacity() > 0 && Matches.UnitTypeIsSea.match(x)))) {
-        // maybe the map only has weird units. make sure there is at least one of each type before we decide not to use it (we are relying
-        // on the fact that map makers generally put specialty units AFTER useful units in their production lists [ie: bombers listed after
+        // maybe the map only has weird units. make sure there is at least one of each type before we decide not to use
+        // it (we are relying
+        // on the fact that map makers generally put specialty units AFTER useful units in their production lists [ie:
+        // bombers listed after
         // fighters, mortars after artillery, etc.])
         if (Matches.UnitTypeIsAir.match(x) && !airProductionRules.isEmpty()) {
           continue;
@@ -172,7 +176,8 @@ public class ProPurchaseAI {
         landProductionRules.add(ruleCheck);
       }
       if (Matches.UnitTypeCanTransport.match(x) && Matches.UnitTypeIsSea.match(x)) {
-        // might be more than 1 transport rule... use ones that can hold at least "2" capacity (we should instead check for median transport
+        // might be more than 1 transport rule... use ones that can hold at least "2" capacity (we should instead check
+        // for median transport
         // cost, and then add all those at or above that capacity)
         if (UnitAttachment.get(x).getTransportCapacity() > 1) {
           transportProductionRules.add(ruleCheck);
@@ -181,7 +186,8 @@ public class ProPurchaseAI {
       if (Matches.UnitTypeIsSub.match(x)) {
         subProductionRules.add(ruleCheck);
       }
-      if (Matches.UnitTypeIsCarrier.match(x)) // might be more than 1 carrier rule...use the one which will hold the most fighters
+      if (Matches.UnitTypeIsCarrier.match(x)) // might be more than 1 carrier rule...use the one which will hold the
+                                              // most fighters
       {
         final int thisFighterLimit = UnitAttachment.get(x).getCarrierCapacity();
         if (thisFighterLimit >= carrierFighterLimit) {
@@ -198,10 +204,10 @@ public class ProPurchaseAI {
         }
       }
     }
-    if (averageSeaMove / seaProductionRules.size() >= 1.8) // most sea units move at least 2 movement, so remove any sea units with 1
-                                                           // movement (dumb t-boats) (some maps like 270BC have mostly 1 movement sea
-                                                           // units, so we must be sure not to remove those)
-    {
+    // most sea units move at least 2 movement, so remove any sea units with 1
+    // movement (dumb t-boats) (some maps like 270BC have mostly 1 movement sea
+    // units, so we must be sure not to remove those)
+    if (averageSeaMove / seaProductionRules.size() >= 1.8) {
       final List<ProductionRule> seaProductionRulesCopy = new ArrayList<ProductionRule>(seaProductionRules);
       for (final ProductionRule seaRule : seaProductionRulesCopy) {
         final NamedAttachable resourceOrUnit = seaRule.getResults().keySet().iterator().next();
@@ -215,7 +221,8 @@ public class ProPurchaseAI {
       }
     }
     if (subProductionRules.size() > 0 && seaProductionRules.size() > 0) {
-      if (subProductionRules.size() / seaProductionRules.size() < 0.3) // remove submarines from consideration, unless we are mostly subs
+      if (subProductionRules.size() / seaProductionRules.size() < 0.3) // remove submarines from consideration, unless
+                                                                       // we are mostly subs
       {
         seaProductionRules.removeAll(subProductionRules);
       }
@@ -239,7 +246,8 @@ public class ProPurchaseAI {
             landProductionRules, PUsToSpend, buyLimit, data, player, 2);
       } else {
         landPurchase = false;
-        buyLimit = PUsToSpend / 5; // assume a larger threshhold
+        // assume a larger threshhold
+        buyLimit = PUsToSpend / 5;
         if (Math.random() > 0.40) {
           SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack,
               seaProductionRules, PUsToSpend, buyLimit, data, player, 2);
@@ -253,7 +261,8 @@ public class ProPurchaseAI {
             landProductionRules, PUsToSpend, buyLimit, data, player, 2);
       }
     } else if (Math.random() < 0.35) {
-      if (Math.random() > 0.55 && carrierRule != null && fighterRule != null) {// force a carrier purchase if enough available $$ for it and
+      if (Math.random() > 0.55 && carrierRule != null && fighterRule != null) {// force a carrier purchase if enough
+                                                                               // available $$ for it and
                                                                                // at least 1 fighter
         final int cost = carrierRule.getCosts().getInt(pus);
         final int fighterCost = fighterRule.getCosts().getInt(pus);
@@ -298,7 +307,8 @@ public class ProPurchaseAI {
           landProductionRules, landPUs, buyLimit, data, player, 2);
     } else {
       landPurchase = false;
-      buyLimit = PUsToSpend / 8; // assume higher end purchase
+      // assume higher end purchase
+      buyLimit = PUsToSpend / 8;
       seaProductionRules.addAll(airProductionRules);
       if (Math.random() > 0.45) {
         SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack,
@@ -412,16 +422,9 @@ public class ProPurchaseAI {
         Matches.UnitCanProduceUnits, Matches.UnitIsInfrastructure);
     final List<Territory> rfactories = Match.getMatches(data.getMap().getTerritories(),
         ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data));
+    // figure out if anything needs to be repaired
     if (player.getRepairFrontier() != null
-        && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) // figure
-                                                                                                        // out
-                                                                                                        // if
-                                                                                                        // anything
-                                                                                                        // needs
-                                                                                                        // to
-                                                                                                        // be
-                                                                                                        // repaired
-    {
+        && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
       LogUtils.log(Level.FINER, "Factories can be damaged");
       final Map<Unit, Territory> unitsThatCanProduceNeedingRepair = new HashMap<Unit, Territory>();
       for (final Territory fixTerr : rfactories) {
@@ -597,7 +600,8 @@ public class ProPurchaseAI {
     final List<Territory> ourEnemyTerr = new ArrayList<Territory>();
     final List<Territory> ourSemiRankedBidTerrs = new ArrayList<Territory>();
     final List<Territory> ourTerrs = SUtils.allOurTerritories(data, player);
-    ourTerrs.remove(capitol); // we'll check the cap last
+    // we'll check the cap last
+    ourTerrs.remove(capitol);
     final HashMap<Territory, Float> rankMap =
         SUtils.rankTerritories(data, ourFriendlyTerr, ourEnemyTerr, null, player, tFirst, false, true);
     final List<Territory> ourTerrWithEnemyNeighbors =
@@ -606,7 +610,8 @@ public class ProPurchaseAI {
     // ourFriendlyTerr.retainAll(ourTerrs);
     if (ourTerrWithEnemyNeighbors.contains(capitol)) {
       ourTerrWithEnemyNeighbors.remove(capitol);
-      ourTerrWithEnemyNeighbors.add(capitol); // move capitol to the end of the list, if it is touching enemies
+      // move capitol to the end of the list, if it is touching enemies
+      ourTerrWithEnemyNeighbors.add(capitol);
     }
     Territory bidLandTerr = null;
     if (ourTerrWithEnemyNeighbors.size() > 0) {
@@ -662,7 +667,8 @@ public class ProPurchaseAI {
       ourTerrs.removeAll(ourTerrWithEnemyNeighbors);
       Collections.shuffle(ourTerrs);
       ourSemiRankedBidTerrs.addAll(ourTerrs);
-      // need to remove places like greenland, iceland and west indies that have no route to the enemy, but somehow keep places like borneo,
+      // need to remove places like greenland, iceland and west indies that have no route to the enemy, but somehow keep
+      // places like borneo,
       // gibralter, etc.
       for (final Territory noRouteTerr : ourTerrs) {
         // do not place bids on areas that have no direct land access to an enemy, unless the value is 3 or greater
@@ -674,7 +680,8 @@ public class ProPurchaseAI {
       final List<Territory> isWaterTerr = SUtils.onlyWaterTerr(data, ourSemiRankedBidTerrs);
       ourSemiRankedBidTerrs.removeAll(isWaterTerr);
       ourSemiRankedBidTerrs.removeAll(impassableTerrs);
-      // This will bid a max of 5 units to ALL territories except for the capitol. The capitol gets units last, and gets unlimited units
+      // This will bid a max of 5 units to ALL territories except for the capitol. The capitol gets units last, and gets
+      // unlimited units
       // (veqryn)
       final int maxBidPerTerritory = 5;
       int bidCycle = 0;
@@ -884,7 +891,8 @@ public class ProPurchaseAI {
     }
     // Place regular land units
     placeLandUnits(placeNonConstructionTerritories, enemyAttackMap, prioritizedLandTerritories, placeDelegate, false);
-    // Place isConstruction land units (needs separated since placeDelegate.getPlaceableUnits doesn't handle them combined)
+    // Place isConstruction land units (needs separated since placeDelegate.getPlaceableUnits doesn't handle them
+    // combined)
     placeLandUnits(placeNonConstructionTerritories, enemyAttackMap, prioritizedLandTerritories, placeDelegate, true);
   }
 

@@ -472,9 +472,10 @@ public class EditPanel extends ActionPanel {
         final JScrollPane scroll = new JScrollPane(panel);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-        final int availHeight = screenResolution.height - 120; // not only do we have a start bar, but we also have the message dialog to
-                                                               // account for
-        final int availWidth = screenResolution.width - 40; // just the scroll bars plus the window sides
+        // not only do we have a start bar, but we also have the message dialog to account for
+        final int availHeight = screenResolution.height - 120;
+        // just the scroll bars plus the window sides
+        final int availWidth = screenResolution.width - 40;
         scroll.setPreferredSize(
             new Dimension((scroll.getPreferredSize().width > availWidth ? availWidth : scroll.getPreferredSize().width),
                 (scroll.getPreferredSize().height > availHeight ? availHeight : scroll.getPreferredSize().height)));

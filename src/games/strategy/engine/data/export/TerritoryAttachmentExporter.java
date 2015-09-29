@@ -31,16 +31,19 @@ public class TerritoryAttachmentExporter extends DefaultAttachmentExporter {
 
   private String mOriginalOwnerHandler(final Field field, final IAttachment attachment) {
     final TerritoryAttachment att = (TerritoryAttachment) attachment;
-    // check to see if someone else has conquered the territory in the mean time. must check for neutrals too. neutrals can be either NULL
+    // check to see if someone else has conquered the territory in the mean time. must check for neutrals too. neutrals
+    // can be either NULL
     // or PlayerID.NULL_PLAYERID
-    // we only need to add an originalOwner IF the current owner does not equal the original owner. Since any time they are equal, this is
+    // we only need to add an originalOwner IF the current owner does not equal the original owner. Since any time they
+    // are equal, this is
     // not needed.
     final PlayerID originalOwner = att.getOriginalOwner();
     final Territory t = (Territory) att.getAttachedTo();
     if (originalOwner == null && (t.getOwner() != null && !t.getOwner().equals(PlayerID.NULL_PLAYERID))) {
       return printDefaultOption("originalOwner", PlayerID.NULL_PLAYERID.getName());
     } else if (originalOwner == null) {
-      return ""; // must be that original owner and current owner are both null
+      // must be that original owner and current owner are both null
+      return "";
     }
     if (!originalOwner.equals(t.getOwner())) {
       return printDefaultOption("originalOwner", originalOwner.getName());

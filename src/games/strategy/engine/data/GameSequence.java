@@ -7,8 +7,9 @@ import java.util.List;
 
 public class GameSequence extends GameDataComponent implements Iterable<GameStep> {
   private static final long serialVersionUID = 6354618406598578287L;
-  private final List<GameStep> m_allOriginalSteps = new ArrayList<GameStep>(); // meant purely so that we never lose our step objects, and
-                                                                               // their order, completely
+  // meant purely so that we never lose our step objects, and
+  // their order, completely
+  private final List<GameStep> m_allOriginalSteps = new ArrayList<GameStep>();
   private final List<GameStep> m_steps = new ArrayList<GameStep>();
   private int m_currentIndex;
   private int m_round = 1;
@@ -30,7 +31,6 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
    */
   public synchronized void setRoundAndStep(final int currentRound, final String stepDisplayName,
       final PlayerID player) {
-    // System.out.println("Finding step for: Player: " + player + " at Step: " + stepDisplayName);
     m_round = currentRound;
     boolean found = false;
     for (int i = 0; i < m_steps.size(); i++) {
@@ -47,8 +47,6 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
       m_currentIndex = 0;
       System.err.println("Step Not Found (" + stepDisplayName + ":" + player.getName() + "), will instead use: "
           + m_steps.get(m_currentIndex));
-    } else {
-      // System.out.println("Step Found: " + m_steps.get(m_currentIndex));
     }
   }
 

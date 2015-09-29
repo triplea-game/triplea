@@ -125,7 +125,8 @@ public class ProPoliticsAI {
           new ArrayList<PoliticalActionAttachment>(attackPercentageMap.keySet());
       Collections.shuffle(options);
       for (final PoliticalActionAttachment action : options) {
-        final double roundFactor = (round - 1) * .05; // 0, .05, .1, .15, etc
+        // 0, .05, .1, .15, etc
+        final double roundFactor = (round - 1) * .05;
         final double warChance = roundFactor + attackPercentageMap.get(action) * (1 + 10 * roundFactor);
         final double random = Math.random();
         LogUtils.log(Level.FINEST, enemyMap.get(action) + ", warChance=" + warChance + ", random=" + random);

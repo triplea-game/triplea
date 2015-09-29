@@ -22,9 +22,11 @@ public class NotesPanel extends JPanel {
   protected final GameData m_data;
   final JButton m_refresh = new JButton("Refresh Notes");
 
-  // we now require passing a JEditorPane containing the notes in it, because we do not want to have multiple copies of it in memory for all
+  // we now require passing a JEditorPane containing the notes in it, because we do not want to have multiple copies of
+  // it in memory for all
   // the different ways the user can access the game notes
-  // so instead we keep the main copy in the BasicGameMenuBar, and then give it to the notes tab. this prevents out of memory errors for
+  // so instead we keep the main copy in the BasicGameMenuBar, and then give it to the notes tab. this prevents out of
+  // memory errors for
   // maps with large images in their games notes.
   public NotesPanel(final GameData data, final SoftJEditorPane gameNotesPane) {
     m_data = data;

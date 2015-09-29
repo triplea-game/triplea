@@ -81,8 +81,9 @@ public class UnitAttachment extends DefaultAttachment {
   private int m_movement = 0;
   private boolean m_canBlitz = false;
   private boolean m_isKamikaze = false;
-  private String[] m_canInvadeOnlyFrom = null; // a colon delimited list of transports where this unit may invade from, it supports "none"
-                                               // and if empty it allows you to invade from all
+  // a colon delimited list of transports where this unit may invade from, it supports "none"
+  // and if empty it allows you to invade from all
+  private String[] m_canInvadeOnlyFrom = null;
   private IntegerMap<Resource> m_fuelCost = new IntegerMap<Resource>();
   private boolean m_canNotMoveDuringCombatMove = false;
   private Tuple<Integer, String> m_movementLimit = null;
@@ -105,16 +106,21 @@ public class UnitAttachment extends DefaultAttachment {
   private boolean m_chooseBestRoll = false;
   // transportation related
   private boolean m_isCombatTransport = false;
-  private int m_transportCapacity = -1; // -1 if cant transport
-  private int m_transportCost = -1; // -1 if cant be transported
-  private int m_carrierCapacity = -1; // -1 if cant act as a carrier
-  private int m_carrierCost = -1; // -1 if cant land on a carrier
+  // -1 if cant transport
+  private int m_transportCapacity = -1;
+  // -1 if cant be transported
+  private int m_transportCost = -1;
+  // -1 if cant act as a carrier
+  private int m_carrierCapacity = -1;
+  // -1 if cant land on a carrier
+  private int m_carrierCost = -1;
   private boolean m_isAirTransport = false;
   private boolean m_isAirTransportable = false;
   private boolean m_isInfantry = false;
   private boolean m_isLandTransport = false;
   // aa related
-  // "isAA" and "isAAmovement" are also valid setters, used as shortcuts for calling multiple aa related setters. Must keep.
+  // "isAA" and "isAAmovement" are also valid setters, used as shortcuts for calling multiple aa related setters. Must
+  // keep.
   private boolean m_isAAforCombatOnly = false;
   private boolean m_isAAforBombingThisUnitOnly = false;
   private boolean m_isAAforFlyOverOnly = false;
@@ -123,14 +129,20 @@ public class UnitAttachment extends DefaultAttachment {
   private int m_offensiveAttackAA = 0;
   private int m_attackAAmaxDieSides = -1;
   private int m_offensiveAttackAAmaxDieSides = -1;
-  private int m_maxAAattacks = -1; // -1 means infinite
-  private int m_maxRoundsAA = 1; // -1 means infinite
-  private String m_typeAA = "AA"; // default value for when it is not set
-  private HashSet<UnitType> m_targetsAA = null; // null means targeting air units only
-  private boolean m_mayOverStackAA = false; // if false, we can not shoot more times than there are number of planes
-  private boolean m_damageableAA = false; // if false, we instantly kill anything our AA shot hits
-  private HashSet<UnitType> m_willNotFireIfPresent = new HashSet<UnitType>(); // if these enemy units are present, the gun does not fire at
-                                                                              // all
+  // -1 means infinite
+  private int m_maxAAattacks = -1;
+  // -1 means infinite
+  private int m_maxRoundsAA = 1;
+  // default value for when it is not set
+  private String m_typeAA = "AA";
+  // null means targeting air units only
+  private HashSet<UnitType> m_targetsAA = null;
+  // if false, we can not shoot more times than there are number of planes
+  private boolean m_mayOverStackAA = false;
+  // if false, we instantly kill anything our AA shot hits
+  private boolean m_damageableAA = false;
+  // if these enemy units are present, the gun does not fire at all
+  private HashSet<UnitType> m_willNotFireIfPresent = new HashSet<UnitType>();
   // strategic bombing related
   private boolean m_isStrategicBomber = false;
   private int m_bombingMaxDieSides = -1;
@@ -140,60 +152,79 @@ public class UnitAttachment extends DefaultAttachment {
   private boolean m_canAirBattle = false;
   private int m_airDefense = 0;
   private int m_airAttack = 0;
-  private HashSet<UnitType> m_bombingTargets = null; // null means they can target any unit that can be damaged
+  // null means they can target any unit that can be damaged
+  private HashSet<UnitType> m_bombingTargets = null;
   // production related
-  // private boolean m_isFactory = false; // this has been split into canProduceUnits, isConstruction, canBeDamaged, and isInfrastructure
+  // this has been split into canProduceUnits, isConstruction, canBeDamaged, and isInfrastructure
+  // private boolean m_isFactory = false;
   private boolean m_canProduceUnits = false;
-  private int m_canProduceXUnits = -1; // -1 means either it can't produce any, or it produces at the value of the territory it is located
-                                       // in
+  // -1 means either it can't produce any, or it produces at the value of the territory it is located in
+  private int m_canProduceXUnits = -1;
   private IntegerMap<UnitType> m_createsUnitsList = new IntegerMap<UnitType>();
   private IntegerMap<Resource> m_createsResourcesList = new IntegerMap<Resource>();
   // damage related
   private int m_hitPoints = 1;
   private boolean m_canBeDamaged = false;
-  private int m_maxDamage = 2; // this is bombing damage, not hitpoints. default of 2 means that factories will take 2x the territory value
-                               // they are in, of damage.
-  private int m_maxOperationalDamage = -1; // -1 if can't be disabled
+  // this is bombing damage, not hitpoints. default of 2 means that factories will take 2x the territory value
+  // they are in, of damage.
+  private int m_maxDamage = 2;
+  // -1 if can't be disabled
+  private int m_maxOperationalDamage = -1;
   private boolean m_canDieFromReachingMaxDamage = false;
   // placement related
   private boolean m_isConstruction = false;
-  private String m_constructionType = "none"; // can be any String except for "none" if isConstruction is true
-  private int m_constructionsPerTerrPerTypePerTurn = -1; // -1 if not set, is meaningless
-  private int m_maxConstructionsPerTypePerTerr = -1; // -1 if not set, is meaningless
-  private int m_canOnlyBePlacedInTerritoryValuedAtX = -1; // -1 means anywhere
-  private ArrayList<String[]> m_requiresUnits = new ArrayList<String[]>(); // multiple colon delimited lists of the unit combos required for
-                                                                           // this unit to be built somewhere. (units must be in same
-                                                                           // territory, owned by player, not be disabled)
+  // can be any String except for "none" if isConstruction is true
+  private String m_constructionType = "none";
+  // -1 if not set, is meaningless
+  private int m_constructionsPerTerrPerTypePerTurn = -1;
+  // -1 if not set, is meaningless
+  private int m_maxConstructionsPerTypePerTerr = -1;
+  // -1 means anywhere
+  private int m_canOnlyBePlacedInTerritoryValuedAtX = -1;
+  // multiple colon delimited lists of the unit combos required for
+  // this unit to be built somewhere. (units must be in same
+  // territory, owned by player, not be disabled)
+  private ArrayList<String[]> m_requiresUnits = new ArrayList<String[]>();
   private IntegerMap<UnitType> m_consumesUnits = new IntegerMap<UnitType>();
-  private String[] m_unitPlacementRestrictions = null; // a colon delimited list of territories where this unit may not be placed
-  // also an allowed setter is "setUnitPlacementOnlyAllowedIn", which just creates m_unitPlacementRestrictions with an inverted list of
+  // a colon delimited list of territories where this unit may not be placed
+  private String[] m_unitPlacementRestrictions = null;
+  // also an allowed setter is "setUnitPlacementOnlyAllowedIn", which just creates m_unitPlacementRestrictions with an
+  // inverted list of
   // territories
-  private int m_maxBuiltPerPlayer = -1; // -1 if infinite (infinite is default)
+  // -1 if infinite (infinite is default)
+  private int m_maxBuiltPerPlayer = -1;
   private Tuple<Integer, String> m_placementLimit = null;
   // scrambling related
   private boolean m_canScramble = false;
   private boolean m_isAirBase = false;
-  private int m_maxScrambleDistance = -1; // -1 if can't scramble
-  private int m_maxScrambleCount = -1; // -1 for infinite
+  // -1 if can't scramble
+  private int m_maxScrambleDistance = -1;
+  // -1 for infinite
+  private int m_maxScrambleCount = -1;
   // special abilities
   private int m_blockade = 0;
-  private IntegerMap<UnitType> m_repairsUnits = new IntegerMap<UnitType>(); // a colon delimited list of the units this unit can repair.
-                                                                            // (units must be in same territory, unless this unit is land
-                                                                            // and the repaired unit is sea)
+  // a colon delimited list of the units this unit can repair.
+  // (units must be in same territory, unless this unit is land
+  // and the repaired unit is sea)
+  private IntegerMap<UnitType> m_repairsUnits = new IntegerMap<UnitType>();
   private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
   private ArrayList<Tuple<String, PlayerID>> m_destroyedWhenCapturedBy = new ArrayList<Tuple<String, PlayerID>>();
-  // also an allowed setter is "setDestroyedWhenCapturedFrom" which will just create m_destroyedWhenCapturedBy with a specific list
+  // also an allowed setter is "setDestroyedWhenCapturedFrom" which will just create m_destroyedWhenCapturedBy with a
+  // specific list
   private LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>> m_whenCapturedChangesInto =
       new LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>>();
   private ArrayList<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<PlayerID>();
   private ArrayList<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<PlayerID>();
+  // a set of information for dealing with special abilities or
+  // loss of abilities when a unit takes x-y amount of damage
   private ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> m_whenCombatDamaged =
-      new ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>>(); // a set of information for dealing with special abilities or
-                                                                              // loss of abilities when a unit takes x-y amount of damage
-  private ArrayList<String> m_receivesAbilityWhenWith = new ArrayList<String>(); // a kind of support attachment for giving actual unit
-                                                                                 // attachment abilities or other to a unit, when in the
-                                                                                 // precense or on the same route with another unit
-  private HashSet<String> m_special = new HashSet<String>(); // currently used for: placement in original territories only,
+      new ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>>();
+  // a kind of support attachment for giving actual unit
+  // attachment abilities or other to a unit, when in the
+  // precense or on the same route with another unit
+  private ArrayList<String> m_receivesAbilityWhenWith = new ArrayList<String>();
+  // currently used for: placement in original territories only
+  private HashSet<String> m_special = new HashSet<String>();
 
   /** Creates new UnitAttachment */
   public UnitAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -463,7 +494,8 @@ public class UnitAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setDestroyedWhenCapturedBy(String value) throws GameParseException {
-    // We can prefix this value with "BY" or "FROM" to change the setting. If no setting, default to "BY" since this this is called by
+    // We can prefix this value with "BY" or "FROM" to change the setting. If no setting, default to "BY" since this
+    // this is called by
     // destroyedWhenCapturedBy
     String byOrFrom = "BY";
     if (value.startsWith("BY:") && getData().getPlayerList().getPlayerID("BY") == null) {
@@ -767,7 +799,8 @@ public class UnitAttachment extends DefaultAttachment {
     m_unitPlacementRestrictions = null;
   }
 
-  // no m_ variable for this, since it is the inverse of m_unitPlacementRestrictions we might as well just use m_unitPlacementRestrictions
+  // no m_ variable for this, since it is the inverse of m_unitPlacementRestrictions we might as well just use
+  // m_unitPlacementRestrictions
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setUnitPlacementOnlyAllowedIn(final String value) throws GameParseException {
     String valueRestricted = new String();
@@ -892,8 +925,10 @@ public class UnitAttachment extends DefaultAttachment {
     if (ut == null) {
       throw new IllegalStateException("No unit called:" + transport + thisErrorMsg());
     }
-    // UnitAttachment ua = UnitAttachment.get(ut); //(UnitAttachment) ut.getAttachments().values().iterator().next();
-    // Units may be considered transported if they are on a carrier, or if they are paratroopers, or if they are mech infantry. The
+    // (UnitAttachment) ut.getAttachments().values().iterator().next();
+    // UnitAttachment ua = UnitAttachment.get(ut);
+    // Units may be considered transported if they are on a carrier, or if they are paratroopers, or if they are mech
+    // infantry. The
     // "transporter" may not be an actual transport, so we should not check for that here.
     if (m_canInvadeOnlyFrom == null || Arrays.asList(m_canInvadeOnlyFrom).isEmpty() || m_canInvadeOnlyFrom[0].equals("")
         || m_canInvadeOnlyFrom[0].equals("all")) {
@@ -2066,7 +2101,8 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getAttackAA(final PlayerID player) {
-    // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it does not divide
+    // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it
+    // does not divide
     // perfectly into attackAAmaxDieSides
     return Math.max(0, Math.min(getAttackAAmaxDieSides(),
         m_attackAA + TechAbilityAttachment.getRadarBonus((UnitType) this.getAttachedTo(), player, getData())));
@@ -2087,7 +2123,8 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getOffensiveAttackAA(final PlayerID player) {
-    // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it does not divide
+    // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it
+    // does not divide
     // perfectly into attackAAmaxDieSides
     return Math.max(0, Math.min(getOffensiveAttackAAmaxDieSides(),
         m_offensiveAttackAA + TechAbilityAttachment.getRadarBonus((UnitType) this.getAttachedTo(), player, getData())));
@@ -2692,7 +2729,8 @@ public class UnitAttachment extends DefaultAttachment {
         if (ut.getAttachments() == null || ut.getAttachments().isEmpty()) {
           throw new GameParseException(transport + " has no attachments, please declare " + transport
               + " in the xml before using it as a transport" + thisErrorMsg());
-          // Units may be considered transported if they are on a carrier, or if they are paratroopers, or if they are mech infantry. The
+          // Units may be considered transported if they are on a carrier, or if they are paratroopers, or if they are
+          // mech infantry. The
           // "transporter" may not be an actual transport, so we should not check for that here.
         }
       }
@@ -2780,7 +2818,8 @@ public class UnitAttachment extends DefaultAttachment {
 
   @Override
   public String toString() {
-    // Any overriding method for toString on an attachment needs to include at least the Class, m_attachedTo, and m_name. Or call
+    // Any overriding method for toString on an attachment needs to include at least the Class, m_attachedTo, and
+    // m_name. Or call
     // super.toString()
     return super.toString();
   }
@@ -2788,7 +2827,8 @@ public class UnitAttachment extends DefaultAttachment {
   public String allUnitStatsForExporter() {
     // should cover ALL fields stored in UnitAttachment
     // remember to test for null and fix arrays
-    // the stats exporter relies on this toString having two spaces after each entry, so do not change this please, except to add new
+    // the stats exporter relies on this toString having two spaces after each entry, so do not change this please,
+    // except to add new
     // abilities onto the end
     return this.getAttachedTo().toString().replaceFirst("games.strategy.engine.data.", "") + " with:" + "  isAir:"
         + m_isAir + "  isSea:" + m_isSea + "  movement:" + m_movement + "  attack:" + m_attack + "  defense:"

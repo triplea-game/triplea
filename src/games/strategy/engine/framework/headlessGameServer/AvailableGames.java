@@ -101,7 +101,8 @@ public class AvailableGames {
       final Set<String> availableMapFolderOrZipNames, final Set<String> mapNamePropertyList) {
     final File games = new File(mapDir, "games");
     if (!games.exists()) {
-      return;// no games in this map dir
+      // no games in this map dir
+      return;
     }
     for (final File game : games.listFiles()) {
       if (game.isFile() && game.getName().toLowerCase().endsWith("xml")) {

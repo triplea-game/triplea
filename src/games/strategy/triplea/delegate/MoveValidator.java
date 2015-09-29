@@ -137,7 +137,7 @@ public class MoveValidator {
         && !Match.allMatch(
             Match.getMatches(units, Matches
                 .unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, player, data, true).invert()),
-        Matches.unitIsOwnedBy(player))) {
+            Matches.unitIsOwnedBy(player))) {
       result.setError(
           "Player, " + player.getName() + ", is not owner of all the units: " + MyFormatter.unitsToTextNoOwner(units));
       return result;
@@ -157,7 +157,8 @@ public class MoveValidator {
     // can not enter territories owned by a player to which we are neutral towards
     final Collection<Territory> landOnRoute = route.getMatches(Matches.TerritoryIsLand);
     if (!landOnRoute.isEmpty()) {
-      // TODO: if this ever changes, we need to also update getBestRoute(), because getBestRoute is also checking to make sure we avoid land
+      // TODO: if this ever changes, we need to also update getBestRoute(), because getBestRoute is also checking to
+      // make sure we avoid land
       // territories owned by nations with these 2 relationship type attachment options
       for (final Territory t : landOnRoute) {
         if (Match.someMatch(units, Matches.UnitIsLand)) {
@@ -197,11 +198,7 @@ public class MoveValidator {
     if (!games.strategy.triplea.Properties.getUseFuelCost(data)) {
       return result;
     }
-    final ResourceCollection fuelCost = Route.getMovementFuelCostCharge(units, route, player, data /*
-                                                                                                    * , route.someMatch(MovePerformer.
-                                                                                                    * getMustFightThroughMatch(player,
-                                                                                                    * data))
-                                                                                                    */);
+    final ResourceCollection fuelCost = Route.getMovementFuelCostCharge(units, route, player, data);
     if (player.getResources().has(fuelCost.getResourcesCopy())) {
       return result;
     }
@@ -229,7 +226,8 @@ public class MoveValidator {
             "Can not move into territories owned by " + t.getOwner().getName() + " during Combat Movement Phase");
       }
     }
-    // we are in a contested territory owned by the enemy, and we want to move to another enemy owned territory. do not allow unless each
+    // we are in a contested territory owned by the enemy, and we want to move to another enemy owned territory. do not
+    // allow unless each
     // unit can blitz the current territory.
     if (!route.getStart().isWater() && Matches.isAtWar(route.getStart().getOwner(), data).match(player)
         && (route.someMatch(Matches.isTerritoryEnemy(player, data))
@@ -243,7 +241,8 @@ public class MoveValidator {
         result.addDisallowedUnit("Not all units can blitz out of empty enemy territory", u);
       }
     }
-    // we are in a contested territory owned by us, and we want to move to an enemy owned territory. do not allow unless the territory is
+    // we are in a contested territory owned by us, and we want to move to an enemy owned territory. do not allow unless
+    // the territory is
     // blitzable.
     if (!route.getStart().isWater() && !Matches.isAtWar(route.getStart().getOwner(), data).match(player)
         && (route.someMatch(Matches.isTerritoryEnemy(player, data))
@@ -366,7 +365,8 @@ public class MoveValidator {
     final CompositeMatch<Territory> neutralOrEnemy =
         new CompositeMatchOr<Territory>(Matches.TerritoryIsNeutralButNotWater,
             Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
-    // final CompositeMatch<Unit> transportsCanNotControl = new CompositeMatchAnd<Unit>(Matches.UnitIsTransportAndNotDestroyer,
+    // final CompositeMatch<Unit> transportsCanNotControl = new
+    // CompositeMatchAnd<Unit>(Matches.UnitIsTransportAndNotDestroyer,
     // Matches.UnitIsTransportButNotCombatTransport);
     final boolean navalMayNotNonComIntoControlled =
         isWW2V2(data) || games.strategy.triplea.Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(data);
@@ -413,9 +413,11 @@ public class MoveValidator {
         return result.setErrorReturnResult("Air units cannot fly over neutral territories in non combat");
       }
     }
-    // if sea units, or land units moving over/onto sea (ex: loading onto a transport), then only check if old rules stop us
+    // if sea units, or land units moving over/onto sea (ex: loading onto a transport), then only check if old rules
+    // stop us
     else if (Match.someMatch(units, Matches.UnitIsSea) || route.someMatch(Matches.TerritoryIsWater)) {
-      // if there are neutral or owned territories, we can not move through them (only under old rules. under new rules we can move through
+      // if there are neutral or owned territories, we can not move through them (only under old rules. under new rules
+      // we can move through
       // owned sea zones.)
       if (navalMayNotNonComIntoControlled && route.someMatch(neutralOrEnemy)) {
         return result.setErrorReturnResult("Cannot move units through neutral or enemy territories in non combat");
@@ -527,9 +529,11 @@ public class MoveValidator {
       final Map<Unit, Collection<Unit>> dependencies =
           getDependents(Match.getMatches(units, Matches.UnitCanTransport), data);
       // add those just added
-      // TODO: do not EVER user something from the UI in a validation method. Only the local computer (ie: client) has a copy of this UI
+      // TODO: do not EVER user something from the UI in a validation method. Only the local computer (ie: client) has a
+      // copy of this UI
       // data. The server has a different copy!!!!
-      // TODO: re-write the entire fucking Paratroopers code. It is garbage! We need a single all encompassing UI and engine for all the
+      // TODO: re-write the entire fucking Paratroopers code. It is garbage! We need a single all encompassing UI and
+      // engine for all the
       // different types of transportation that exist.
       if (!newDependents.isEmpty()) {
         for (final Unit transport : dependencies.keySet()) {
@@ -553,7 +557,8 @@ public class MoveValidator {
               && (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved.match(unit)
                   && Matches.UnitIsInfantry.match(unit))) {
             // we have paratroopers and mechanized infantry, so we must check for both
-            // simple: if it movement group contains an air-transport, then assume we are doing paratroopers. else, assume we are doing
+            // simple: if it movement group contains an air-transport, then assume we are doing paratroopers. else,
+            // assume we are doing
             // mechanized
             if (Match.someMatch(units, Matches.UnitIsAirTransport)) {
               for (final Unit airTransport : dependencies.keySet()) {
@@ -583,36 +588,9 @@ public class MoveValidator {
             mechanizedSupportAvailable--;
           } else if (Matches.unitIsOwnedBy(player).invert().match(unit) && Matches.alliedUnit(player, data).match(unit)
               && Matches.UnitTypeCanLandOnCarrier.match(unit.getType())
-              /* && !isAlliedAirIndependent(data) */
-              && Match.someMatch(moveTest, Matches.UnitIsAlliedCarrier(unit.getOwner(), data))) { // this
-                                                                                                  // is
-                                                                                                  // so
-                                                                                                  // that
-                                                                                                  // if
-                                                                                                  // the
-                                                                                                  // unit
-                                                                                                  // is
-                                                                                                  // owned
-                                                                                                  // by
-                                                                                                  // any
-                                                                                                  // ally
-                                                                                                  // and
-                                                                                                  // it
-                                                                                                  // is
-                                                                                                  // cargo,
-                                                                                                  // then
-                                                                                                  // it
-                                                                                                  // will
-                                                                                                  // not
-                                                                                                  // count.
-                                                                                                  // (shouldn't
-                                                                                                  // it
-                                                                                                  // be
-                                                                                                  // a
-                                                                                                  // dependant
-                                                                                                  // in
-                                                                                                  // this
-                                                                                                  // case??)
+              && Match.someMatch(moveTest, Matches.UnitIsAlliedCarrier(unit.getOwner(), data))) {
+            // this is so that if the unit is owned by any ally and it is cargo, then it will not count.
+            // (shouldn't it be a dependant in this case??)
             continue;
           } else {
             result.addDisallowedUnit("Not all units have enough movement", unit);
@@ -813,7 +791,8 @@ public class MoveValidator {
     } else {
       steps = route.getSteps();
     }
-    // if there are no steps, then we began in this sea zone, so see if there are ignored units in this sea zone (not sure if we need
+    // if there are no steps, then we began in this sea zone, so see if there are ignored units in this sea zone (not
+    // sure if we need
     // !ignoreRouteEnd here).
     if (steps.isEmpty() && route.numberOfStepsIncludingStart() == 1 && !ignoreRouteEnd) {
       steps.add(route.getStart());
@@ -1117,7 +1096,8 @@ public class MoveValidator {
             if (submarinesPreventUnescortedAmphibAssaults
                 && !Matches.territoryHasUnitsThatMatch(ownedSeaNonTransportMatch).match(routeStart)
                 && Matches.territoryHasUnitsThatMatch(enemySubmarineMatch).match(routeStart)) {
-              // we must have at least one warship (non-transport) unit, otherwise the enemy sub stops our unloading for amphibious assault
+              // we must have at least one warship (non-transport) unit, otherwise the enemy sub stops our unloading for
+              // amphibious assault
               for (final Unit unit : TransportTracker.transporting(transport)) {
                 result.addDisallowedUnit(ENEMY_SUBMARINE_PREVENTING_UNESCORTED_AMPHIBIOUS_ASSAULT_LANDING, unit);
               }
@@ -1126,8 +1106,10 @@ public class MoveValidator {
             // this is an unload to a friendly territory
             if (isScramblingOrKamikazeAttacksEnabled
                 || !Matches.territoryIsEmptyOfCombatUnits(data, player).match(routeStart)) {
-              // Unloading a transport from a sea zone with a battle, to a friendly land territory, during combat move phase, is illegal
-              // and in addition to being illegal, it is also causing problems if the sea transports get killed (the land units are not
+              // Unloading a transport from a sea zone with a battle, to a friendly land territory, during combat move
+              // phase, is illegal
+              // and in addition to being illegal, it is also causing problems if the sea transports get killed (the
+              // land units are not
               // dying)
               // TODO: should we use the battle tracker for this instead?
               for (final Unit unit : TransportTracker.transporting(transport)) {
@@ -1173,7 +1155,8 @@ public class MoveValidator {
     // make sure that the only the first or last territory is land
     // dont want situation where they go sea land sea
     if (!isEditMode && route.hasLand() && !(route.getStart().isWater() || route.getEnd().isWater())) {
-      // needs to include all land and air to work, since it makes sure the land units can be carried by the air and that the air has enough
+      // needs to include all land and air to work, since it makes sure the land units can be carried by the air and
+      // that the air has enough
       // capacity
       if (nonParatroopersPresent(player, landAndAir, route)) {
         return result.setErrorReturnResult("Invalid move, only start or end can be land when route has water.");
@@ -1297,7 +1280,8 @@ public class MoveValidator {
       return false;
     }
     // final List<Unit> paratroopsRequiringTransport = getParatroopsRequiringTransport(units, route);
-    // due to various problems with units like tanks, we will assume that if we are in this method, then all the land units need transports
+    // due to various problems with units like tanks, we will assume that if we are in this method, then all the land
+    // units need transports
     final List<Unit> paratroopsRequiringTransport = Match.getMatches(units, Matches.UnitIsAirTransportable);
     if (paratroopsRequiringTransport.isEmpty()) {
       return false;
@@ -1367,7 +1351,8 @@ public class MoveValidator {
       }
       final List<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
       // TODO kev change below to mapAirTransports (or modify mapTransports to handle air cargo)
-      // Map<Unit, Unit> airTransportsAndParatroops = MoveDelegate.mapTransports(route, paratroopsRequiringTransport, airTransports);
+      // Map<Unit, Unit> airTransportsAndParatroops = MoveDelegate.mapTransports(route, paratroopsRequiringTransport,
+      // airTransports);
       final Map<Unit, Unit> airTransportsAndParatroops =
           MoveDelegate.mapAirTransports(route, paratroopsRequiringTransport, airTransports, true, player);
       for (final Unit paratroop : airTransportsAndParatroops.keySet()) {
@@ -1428,7 +1413,8 @@ public class MoveValidator {
    *
    * @param territory
    * @param route
-   *        (Can be null. If not null, we will check to see if the route includes both sea zones, and if it doesn't we will not test the
+   *        (Can be null. If not null, we will check to see if the route includes both sea zones, and if it doesn't we
+   *        will not test the
    *        canal)
    * @param units
    *        (Can be null. If null we will assume all units would be stopped by the canal.)
@@ -1658,7 +1644,8 @@ public class MoveValidator {
     // no impassible or restricted territories
     final CompositeMatchAnd<Territory> noImpassible =
         new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player, data));
-    // if we have air or land, we don't want to move over territories owned by players who's relationships will not let us move into them
+    // if we have air or land, we don't want to move over territories owned by players who's relationships will not let
+    // us move into them
     if (hasAir) {
       noImpassible.add(Matches.TerritoryAllowsCanMoveAirUnitsOverOwnedLand(player, data));
     }
@@ -1673,9 +1660,11 @@ public class MoveValidator {
     } else {
       defaultRoute = data.getMap().getRoute_IgnoreEnd(start, end, noImpassible);
     }
-    // since all routes require at least noImpassible, then if we can not find a route without impassibles, just return any route
+    // since all routes require at least noImpassible, then if we can not find a route without impassibles, just return
+    // any route
     if (defaultRoute == null) {
-      // at least try for a route without impassible territories, but allowing restricted territories, since there is a chance politics may
+      // at least try for a route without impassible territories, but allowing restricted territories, since there is a
+      // chance politics may
       // change in the future.
       defaultRoute = data.getMap().getRoute_IgnoreEnd(start, end,
           (isNeutralsImpassable ? new CompositeMatchAnd<Territory>(noNeutral, Matches.TerritoryIsImpassable)
@@ -1709,8 +1698,8 @@ public class MoveValidator {
       if (landRoute != null
           && ((landRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) <= defaultRoute
               .getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent))
-          || (forceLandOrSeaRoute
-              && Match.someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsLand)))) {
+              || (forceLandOrSeaRoute
+                  && Match.someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsLand)))) {
         defaultRoute = landRoute;
         mustGoLand = true;
       }
@@ -1723,8 +1712,8 @@ public class MoveValidator {
       if (waterRoute != null
           && ((waterRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) <= defaultRoute
               .getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent))
-          || (forceLandOrSeaRoute
-              && Match.someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsSea)))) {
+              || (forceLandOrSeaRoute
+                  && Match.someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsSea)))) {
         defaultRoute = waterRoute;
         mustGoSea = true;
       }

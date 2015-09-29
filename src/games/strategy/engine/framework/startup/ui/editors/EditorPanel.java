@@ -55,7 +55,8 @@ public abstract class EditorPanel extends JPanel {
   }
 
   /**
-   * Validates a the contents of a text field using a specified validator. if the content is not valid the associated label is marked in red
+   * Validates a the contents of a text field using a specified validator. if the content is not valid the associated
+   * label is marked in red
    *
    * @param field
    *        the field to validate
@@ -70,7 +71,8 @@ public abstract class EditorPanel extends JPanel {
   }
 
   /**
-   * Validates a the contents of textusing a specified validator. if the content is not valid the associated label is marked in red
+   * Validates a the contents of textusing a specified validator. if the content is not valid the associated label is
+   * marked in red
    *
    * @param text
    *        the text to validate

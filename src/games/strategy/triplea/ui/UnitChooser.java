@@ -89,7 +89,8 @@ public class UnitChooser extends JPanel {
     m_uiContext = uiContext;
     m_match = null;
     final List<Unit> combinedList = defaultSelections.getDamaged();
-    combinedList.addAll(defaultSelections.getKilled());// TODO: this adds it to the default selections list, is this intended?
+    // TODO: this adds it to the default selections list, is this intended?
+    combinedList.addAll(defaultSelections.getKilled());
     createEntries(units, dependent, false, false, combinedList);
     layoutEntries();
   }
@@ -318,9 +319,11 @@ public class UnitChooser extends JPanel {
       if (chooserEntry.hasMultipleHitPoints()) {
         // there may be some units being given multiple hits, while others get a single or no hits
         for (int i = 0; i < chooserEntry.size() - 1; i++) {
-          // here we are counting on the fact that unit category stores the units in a list, so the order is the same every time we access
+          // here we are counting on the fact that unit category stores the units in a list, so the order is the same
+          // every time we access
           // it.
-          // this means that in the loop we may select the first 2 units in the list to receive 1 hit, then select the first unit the list
+          // this means that in the loop we may select the first 2 units in the list to receive 1 hit, then select the
+          // first unit the list
           // to receive 1 more hit
           addToCollection(selectedUnits, chooserEntry, chooserEntry.getHits(i), false);
         }
@@ -414,13 +417,12 @@ class ChooserEntry {
     final int numUnits = category.getUnits().size();
     int hitsUsedSoFar = 0;
     for (int i = 0; i < Math.max(1, category.getHitPoints() - category.getDamaged()); i++) {
-      final int hitsToUse = Math.min(numUnits, (defaultValue - hitsUsedSoFar)); // TODO: check if default value includes damaged points or
-                                                                                // not
+      // TODO: check if default value includes damaged points or not
+      final int hitsToUse = Math.min(numUnits, (defaultValue - hitsUsedSoFar));
       hitsUsedSoFar += hitsToUse;
       m_defaultHits.add(hitsToUse);
     }
     m_uiContext = uiContext;
-    // System.out.println("Default hits: " + m_defaultValueFirstHits + " " + m_defaultValueSecondHits);
   }
 
   public void createComponents(final JPanel panel, final int yIndex) {

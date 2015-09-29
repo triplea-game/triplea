@@ -37,7 +37,8 @@ public class SoundProperties {
   }
 
   public static SoundProperties getInstance(final ResourceLoader loader) {
-    if (s_op == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 1000) { // cache properties for 1 second
+    if (s_op == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 1000) { // cache properties for 1
+                                                                                         // second
       s_op = new SoundProperties(loader);
       s_timestamp = Calendar.getInstance().getTimeInMillis();
     }

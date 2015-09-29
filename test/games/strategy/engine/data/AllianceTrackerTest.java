@@ -24,9 +24,11 @@ public class AllianceTrackerTest extends TestCase {
     final AllianceTracker allianceTracker = m_data.getAllianceTracker();
     final RelationshipTracker relationshipTracker = m_data.getRelationshipTracker();
     assertEquals(relationshipTracker.isAllied(bush, castro), false);
-    // the alliance tracker now only keeps track of GUI elements like the stats panel alliance TUV totals, and does not affect gameplay
+    // the alliance tracker now only keeps track of GUI elements like the stats panel alliance TUV totals, and does not
+    // affect gameplay
     allianceTracker.addToAlliance(bush, "natp");
-    // the relationship tracker is the one that keeps track of actual relationships between players, affecting gameplay. Note that changing
+    // the relationship tracker is the one that keeps track of actual relationships between players, affecting gameplay.
+    // Note that changing
     // the relationship between bush and castro, does not change the relationship between bush and chretian
     relationshipTracker.setRelationship(bush, castro,
         m_data.getRelationshipTypeList().getRelationshipType(Constants.RELATIONSHIP_TYPE_DEFAULT_ALLIED));

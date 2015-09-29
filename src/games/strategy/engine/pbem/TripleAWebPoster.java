@@ -156,7 +156,8 @@ public class TripleAWebPoster implements IWebPoster {
   }
 
   /**
-   * Utility method for creating string parts, since we need to remove transferEncoding and content type to behave like a browser
+   * Utility method for creating string parts, since we need to remove transferEncoding and content type to behave like
+   * a browser
    *
    * @param name
    *        the form field name
@@ -288,7 +289,8 @@ class ProductionStat extends AbstractStat {
     for (final Territory place : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(place);
       /*
-       * Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, and also check if territory is
+       * Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, and also check if
+       * territory is
        * contested
        */
       if (ta != null && player != null && player.equals(place.getOwner())

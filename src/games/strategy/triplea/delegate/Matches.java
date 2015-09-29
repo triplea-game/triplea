@@ -491,13 +491,15 @@ public class Matches {
       final TripleAUnit taUnit = (TripleAUnit) unit;
       if (ua.getMaxOperationalDamage() < 0) {
         // factories may or may not have max operational damage set, so we must still determine here
-        // assume that if maxOperationalDamage < 0, then the max damage must be based on the territory value (if the damage >= production of
+        // assume that if maxOperationalDamage < 0, then the max damage must be based on the territory value (if the
+        // damage >= production of
         // territory, then we are disabled)
         // TerritoryAttachment ta = TerritoryAttachment.get(t);
         // return taUnit.getUnitDamage() >= ta.getProduction();
         return false;
       }
-      return taUnit.getUnitDamage() > ua.getMaxOperationalDamage(); // only greater than. if == then we can still operate
+      // only greater than. if == then we can still operate
+      return taUnit.getUnitDamage() > ua.getMaxOperationalDamage();
     }
   };
   public static Match<Unit> UnitIsNotDisabled = new InverseMatch<Unit>(UnitIsDisabled);
@@ -1148,7 +1150,7 @@ public class Matches {
   public static final Match<Territory> TerritoryIsLandOrWater = new Match<Territory>() {
     @Override
     public boolean match(final Territory t) {
-      return t != null;// && t instanceof Territory;
+      return t != null;
     }
   };
   public static final Match<Territory> TerritoryIsWater = new Match<Territory>() {
@@ -1180,11 +1182,9 @@ public class Matches {
 
   /**
    * Tests for Land, Convoys Centers and Convoy Routes, and Contested Territories.
-   * Assumes player is either the owner of the territory we are testing, or about to become the owner (ie: this doesn't test ownership).
+   * Assumes player is either the owner of the territory we are testing, or about to become the owner (ie: this doesn't
+   * test ownership).
    * If the game option for contested territories not producing is on, then will also remove any contested territories.
-   *
-   * @param player
-   * @param data
    */
   public static Match<Territory> territoryCanCollectIncomeFrom(final PlayerID player, final GameData data) {
     final boolean contestedDoNotProduce =
@@ -1241,10 +1241,12 @@ public class Matches {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
-        // This method will still return true if territory t is an impassible or restricted territory With enemy neighbors. Makes sure your
+        // This method will still return true if territory t is an impassible or restricted territory With enemy
+        // neighbors. Makes sure your
         // AI does not include any impassible or restricted territories by using this:
         // CompositeMatch<Territory> territoryHasEnemyLandNeighborAndIsNotImpassibleOrRestricted = new
-        // CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player), Matches.territoryHasEnemyLandNeighbor(data,
+        // CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player),
+        // Matches.territoryHasEnemyLandNeighbor(data,
         // player));
         final CompositeMatch<Territory> condition = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand,
             Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
@@ -1538,7 +1540,8 @@ public class Matches {
         final CompositeMatch<Unit> nonCom = new CompositeMatchOr<Unit>();
         nonCom.add(UnitIsInfrastructure);
         nonCom.add(enemyUnit(player, data).invert());
-        // nonCom.add(UnitCanBeCapturedOnEnteringToInThisTerritory(player, t, data)); //this is causing issues where the newly captured
+        // this is causing issues where the newly captured
+        // nonCom.add(UnitCanBeCapturedOnEnteringToInThisTerritory(player, t, data));
         // units fight against themselves
         return t.getUnits().allMatch(nonCom);
       }
@@ -1668,12 +1671,15 @@ public class Matches {
   }
 
   /**
-   * Does NOT check for Canals, Blitzing, Loading units on transports, TerritoryEffects that disallow units, Stacking Limits, Unit movement
+   * Does NOT check for Canals, Blitzing, Loading units on transports, TerritoryEffects that disallow units, Stacking
+   * Limits, Unit movement
    * left, Fuel available, etc.<br>
    * <br>
-   * Does check for: Impassible, ImpassibleNeutrals, ImpassableToAirNeutrals, RestrictedTerritories, Land units moving on water, Sea units
+   * Does check for: Impassible, ImpassibleNeutrals, ImpassableToAirNeutrals, RestrictedTerritories, Land units moving
+   * on water, Sea units
    * moving on land,
-   * and territories that are disallowed due to a relationship attachment (canMoveLandUnitsOverOwnedLand, canMoveAirUnitsOverOwnedLand,
+   * and territories that are disallowed due to a relationship attachment (canMoveLandUnitsOverOwnedLand,
+   * canMoveAirUnitsOverOwnedLand,
    * canLandAirUnitsOnOwnedLand, canMoveIntoDuringCombatMove, etc).
    */
   public static final Match<Territory> TerritoryIsPassableAndNotRestrictedAndOkByRelationships(
@@ -2059,9 +2065,11 @@ public class Matches {
         if (t.getOwner().equals(player)) {
           return false;
         }
-        // if we look at territory attachments, may have funny results for blockades or other things that are passable and not owned. better
+        // if we look at territory attachments, may have funny results for blockades or other things that are passable
+        // and not owned. better
         // to check them by alliance. (veqryn)
-        // OLD code included: if(t.isWater() && t.getOwner().isNull() && TerritoryAttachment.get(t) == null){return false;}
+        // OLD code included: if(t.isWater() && t.getOwner().isNull() && TerritoryAttachment.get(t) == null){return
+        // false;}
         if (t.getOwner().equals(PlayerID.NULL_PLAYERID) && t.isWater()) {
           return false;
         }
@@ -2078,9 +2086,11 @@ public class Matches {
         if (t.getOwner().equals(player)) {
           return false;
         }
-        // if we look at territory attachments, may have funny results for blockades or other things that are passable and not owned. better
+        // if we look at territory attachments, may have funny results for blockades or other things that are passable
+        // and not owned. better
         // to check them by alliance. (veqryn)
-        // OLD code included: if(t.isWater() && t.getOwner().isNull() && TerritoryAttachment.get(t) == null){return false;}
+        // OLD code included: if(t.isWater() && t.getOwner().isNull() && TerritoryAttachment.get(t) == null){return
+        // false;}
         if (t.getOwner().equals(PlayerID.NULL_PLAYERID) && t.isWater()) {
           return false;
         }
@@ -2111,7 +2121,8 @@ public class Matches {
           return false;
         }
         final CompositeMatch<Unit> blitzableUnits = new CompositeMatchOr<Unit>();
-        blitzableUnits.add(Matches.enemyUnit(player, data).invert()); // we ignore neutral units
+        // we ignore neutral units
+        blitzableUnits.add(Matches.enemyUnit(player, data).invert());
         // WW2V2, cant blitz through factories and aa guns
         // WW2V1, you can
         if (!games.strategy.triplea.Properties.getWW2V2(data)
@@ -2362,7 +2373,8 @@ public class Matches {
   }
 
   /**
-   * The territory is owned by the enemy of those enemy units (ie: probably owned by you or your ally, but not necessarily so in an FFA type
+   * The territory is owned by the enemy of those enemy units (ie: probably owned by you or your ally, but not
+   * necessarily so in an FFA type
    * game) and is not unowned water.
    */
   public static Match<Territory> territoryHasEnemyUnitsThatCanCaptureTerritoryAndTerritoryOwnedByTheirEnemyAndIsNotUnownedWater(
@@ -2443,7 +2455,8 @@ public class Matches {
   /**
    * @return Match that tests the TripleAUnit getTransportedBy value
    *         which is normally set for sea transport movement of land units,
-   *         and sometimes set for other things like para-troopers and dependent allied fighters sitting as cargo on a ship. (not sure if
+   *         and sometimes set for other things like para-troopers and dependent allied fighters sitting as cargo on a
+   *         ship. (not sure if
    *         set for mech inf or not)
    */
   public static Match<Unit> unitIsBeingTransported() {
@@ -2665,7 +2678,8 @@ public class Matches {
    * @param data
    *        game data
    * @return Match that will return true if the territory contains a unit that can repair this unit
-   *         (It will also return true if this unit is Sea and an adjacent land territory has a land unit that can repair this unit.)
+   *         (It will also return true if this unit is Sea and an adjacent land territory has a land unit that can
+   *         repair this unit.)
    */
   public static Match<Unit> UnitCanBeRepairedByFacilitiesInItsTerritory(final Territory territory,
       final PlayerID player, final GameData data) {
@@ -2744,7 +2758,8 @@ public class Matches {
    * @param data
    *        game data
    * @return Match that will return true if the territory contains a unit that can give bonus movement to this unit
-   *         (It will also return true if this unit is Sea and an adjacent land territory has a land unit that can give bonus movement to
+   *         (It will also return true if this unit is Sea and an adjacent land territory has a land unit that can give
+   *         bonus movement to
    *         this unit.)
    */
   public static Match<Unit> UnitCanBeGivenBonusMovementByFacilitiesInItsTerritory(final Territory territory,
@@ -2975,7 +2990,8 @@ public class Matches {
   public static final Match<Unit> UnitCanProduceUnitsAndCanBeDamaged =
       new CompositeMatchAnd<Unit>(UnitCanProduceUnits, UnitCanBeDamaged);
   /**
-   * See if a unit can invade. Units with canInvadeFrom not set, or set to "all", can invade from any other unit. Otherwise, units must have
+   * See if a unit can invade. Units with canInvadeFrom not set, or set to "all", can invade from any other unit.
+   * Otherwise, units must have
    * a specific unit in this list to be able to invade from that unit.
    */
   public static final Match<Unit> UnitCanInvade = new Match<Unit>() {
@@ -2984,7 +3000,8 @@ public class Matches {
       // is the unit being transported?
       final Unit transport = TripleAUnit.get(unit).getTransportedBy();
       if (transport == null) {
-        return true; // Unit isn't transported so can Invade
+        // Unit isn't transported so can Invade
+        return true;
       }
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       return ua.canInvadeFrom(transport.getUnitType().getName());
@@ -3372,7 +3389,8 @@ public class Matches {
   };
 
   /**
-   * If player is null, this match Will return true if ANY of the relationship changes match the conditions. (since paa's can have more than
+   * If player is null, this match Will return true if ANY of the relationship changes match the conditions. (since
+   * paa's can have more than
    * 1 change).
    *
    * @param player
@@ -3559,15 +3577,18 @@ public class Matches {
     return new Match<UnitType>() {
       @Override
       public boolean match(final UnitType ut) {
-        // we want to filter out anything like factories, or units that have no combat ability AND can not be taken casualty.
-        // in addition, as of right now AA guns can not fire on the offensive side, so we want to take them out too, unless they have other
+        // we want to filter out anything like factories, or units that have no combat ability AND can not be taken
+        // casualty.
+        // in addition, as of right now AA guns can not fire on the offensive side, so we want to take them out too,
+        // unless they have other
         // combat abilities.
         final Match<UnitType> supporterOrNotInfrastructure =
             new CompositeMatchOr<UnitType>(Matches.UnitTypeIsInfrastructure.invert(),
                 Matches.UnitTypeIsSupporterOrHasCombatAbility(attack, player, data));
         final Match<UnitType> combat;
         if (attack) {
-          final CompositeMatch<UnitType> attackMatchAND = new CompositeMatchAnd<UnitType>();// AND match
+          // AND match
+          final CompositeMatch<UnitType> attackMatchAND = new CompositeMatchAnd<UnitType>();
           attackMatchAND.add(supporterOrNotInfrastructure);
           if (!includeAttackersThatCanNotMove) {
             attackMatchAND.add(Matches.UnitTypeCanNotMoveDuringCombatMove.invert());
@@ -3580,11 +3601,14 @@ public class Matches {
           } else { // is sea battle
             attackMatchAND.add(Matches.UnitTypeIsLand.invert());
           }
-          combat = attackMatchAND; // assign it
+          // assign it
+          combat = attackMatchAND;
         } else { // defense
-          final CompositeMatch<UnitType> defenseMatchAND = new CompositeMatchAnd<UnitType>();// AND match
+          // AND match
+          final CompositeMatch<UnitType> defenseMatchAND = new CompositeMatchAnd<UnitType>();
           {
-            final CompositeMatch<UnitType> defenseMatchOR = new CompositeMatchOr<UnitType>();// OR match
+            // OR match
+            final CompositeMatch<UnitType> defenseMatchOR = new CompositeMatchOr<UnitType>();
             if (!doNotIncludeAA) {
               defenseMatchOR.add(new CompositeMatchAnd<UnitType>(Matches.UnitTypeIsAAforCombatOnly,
                   Matches.UnitTypeIsAAthatCanFireOnRound(battleRound)));
@@ -3597,7 +3621,8 @@ public class Matches {
           } else { // is sea battle
             defenseMatchAND.add(Matches.UnitTypeIsLand.invert());
           }
-          combat = defenseMatchAND; // assign it
+          // assign it
+          combat = defenseMatchAND;
         }
         return combat.match(ut);
       }

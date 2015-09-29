@@ -92,7 +92,8 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
         if (refreshHeader == null) {
           throw new Exception("Missing refresh header after login");
         }
-        final String value = refreshHeader.getValue(); // refresh: 0; URL=http://...
+        // refresh: 0; URL=http://...
+        final String value = refreshHeader.getValue();
         final Pattern p = Pattern.compile("[^;]*;\\s*url=(.*)", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
         final Matcher m = p.matcher(value);
         if (m.matches()) {
@@ -183,19 +184,22 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
             // the site has spam prevention which means you can't post until 15 seconds after login
             Thread.sleep(15 * 1000);
           } catch (final InterruptedException ie) {
-            ie.printStackTrace(); // this should never happen
+            // this should never happen
+            ie.printStackTrace();
           }
           post.setFollowRedirects(false);
           status = m_client.executeMethod(m_hostConfiguration, post, m_httpState);
           body = post.getResponseBodyAsString();
           if (status == 302) {
             // site responds with a 302 redirect back to the forum index (board=40)
-            // The syntax for post is ".....topic=xx.yy" where xx is the thread id, and yy is the post number in the given thread
+            // The syntax for post is ".....topic=xx.yy" where xx is the thread id, and yy is the post number in the
+            // given thread
             // since the site is lenient we can just give a high post_number to go to the last post in the thread
             m_turnSummaryRef = "http://www.axisandallies.org/forums/index.php?topic=" + m_topicId + ".10000";
           } else {
             // these two patterns find general errors, where the first pattern checks if the error text appears,
-            // the second pattern extracts the error message. This could be the "The last posting from your IP was less than 15 seconds
+            // the second pattern extracts the error message. This could be the "The last posting from your IP was less
+            // than 15 seconds
             // ago.Please try again later"
             // this patter finds errors that are marked in red (for instance "You are not allowed to post URLs", or
             // "Some one else has posted while you vere reading"
@@ -213,7 +217,8 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
             final Header refreshHeader = post.getResponseHeader("Refresh");
             if (refreshHeader != null) {
               // sometimes the message will be flagged as spam, and a refresh url is given
-              final String value = refreshHeader.getValue(); // refresh: 0; URL=http://...topic=26114.new%3bspam=true#new
+              // refresh: 0; URL=http://...topic=26114.new%3bspam=true#new
+              final String value = refreshHeader.getValue();
               final Pattern p =
                   Pattern.compile("[^;]*;\\s*url=.*spam=true.*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
               m = p.matcher(value);
@@ -238,7 +243,8 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
   }
 
   /**
-   * Utility method for creating string parts, since we need to remove transferEncoding and content type to behave like a browser
+   * Utility method for creating string parts, since we need to remove transferEncoding and content type to behave like
+   * a browser
    *
    * @param name
    *        the form field name

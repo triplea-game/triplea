@@ -96,7 +96,8 @@ public interface Constants {
   public static final String UNIT_PLACEMENT_PER_TERRITORY_RESTRICTED = "Unit Placement Per Territory Restricted";
   public static final String MOVEMENT_BY_TERRITORY_RESTRICTED = "Movement By Territory Restricted";
   public static final String TRANSPORT_CASUALTIES_RESTRICTED = "Transport Casualties Restricted";
-  public static final String SUB_RETREAT_BEFORE_BATTLE = "Sub Retreat Before Battle"; // may be SUBMERSIBLE_SUBS below
+  // may be SUBMERSIBLE_SUBS below
+  public static final String SUB_RETREAT_BEFORE_BATTLE = "Sub Retreat Before Battle";
   public static final String SHORE_BOMBARD_PER_GROUND_UNIT_RESTRICTED = "Shore Bombard Per Ground Unit Restricted";
   public static final String SBR_AFFECTS_UNIT_PRODUCTION = "SBR Affects Unit Production";
   public static final String AA_TERRITORY_RESTRICTED = "AA Territory Restricted";

@@ -22,10 +22,12 @@ public class BattleResults extends GameDataComponent implements Serializable {
   final List<Unit> m_remainingDefendingUnits;
   private WhoWon m_whoWon;
 
-  // FYI: do not save the battle in BattleResults. It is both too much memory overhead, and also causes problems with BattleResults being
+  // FYI: do not save the battle in BattleResults. It is both too much memory overhead, and also causes problems with
+  // BattleResults being
   // saved into BattleRecords
   /**
-   * This battle must have been fought. If fight() was not run on this battle, then the WhoWon will not have been set yet, which will give
+   * This battle must have been fought. If fight() was not run on this battle, then the WhoWon will not have been set
+   * yet, which will give
    * an error with this constructor.
    *
    * @param battle
@@ -33,9 +35,11 @@ public class BattleResults extends GameDataComponent implements Serializable {
   public BattleResults(final IBattle battle, final GameData data) {
     super(data);
     // m_attackingUnitsLeft = battle.getRemainingAttackingUnits().size();
-    // m_attackingCombatUnitsLeft = Match.countMatches(battle.getRemainingAttackingUnits(), Matches.UnitIsDestructibleInCombatShort);
+    // m_attackingCombatUnitsLeft = Match.countMatches(battle.getRemainingAttackingUnits(),
+    // Matches.UnitIsDestructibleInCombatShort);
     // m_defendingUnitsLeft = battle.getRemainingDefendingUnits().size();
-    // m_defendingCombatUnitsLeft = Match.countMatches(battle.getRemainingDefendingUnits(), Matches.UnitIsDestructibleInCombatShort);
+    // m_defendingCombatUnitsLeft = Match.countMatches(battle.getRemainingDefendingUnits(),
+    // Matches.UnitIsDestructibleInCombatShort);
     m_battleRoundsFought = battle.getBattleRound();
     m_remainingAttackingUnits = battle.getRemainingAttackingUnits();
     m_remainingDefendingUnits = battle.getRemainingDefendingUnits();
@@ -53,8 +57,10 @@ public class BattleResults extends GameDataComponent implements Serializable {
    */
   public BattleResults(final IBattle battle, final WhoWon scriptedWhoWon, final GameData data) {
     super(data);
-    // m_attackingCombatUnitsLeft = Match.countMatches(battle.getRemainingAttackingUnits(), Matches.UnitIsDestructibleInCombatShort);
-    // m_defendingCombatUnitsLeft = Match.countMatches(battle.getRemainingDefendingUnits(), Matches.UnitIsDestructibleInCombatShort);
+    // m_attackingCombatUnitsLeft = Match.countMatches(battle.getRemainingAttackingUnits(),
+    // Matches.UnitIsDestructibleInCombatShort);
+    // m_defendingCombatUnitsLeft = Match.countMatches(battle.getRemainingDefendingUnits(),
+    // Matches.UnitIsDestructibleInCombatShort);
     m_battleRoundsFought = battle.getBattleRound();
     m_remainingAttackingUnits = battle.getRemainingAttackingUnits();
     m_remainingDefendingUnits = battle.getRemainingDefendingUnits();
@@ -93,7 +99,8 @@ public class BattleResults extends GameDataComponent implements Serializable {
     return m_battleRoundsFought;
   }
 
-  // These could easily screw up an AI into thinking it has won when it really hasn't. Must make sure we only count combat units that can
+  // These could easily screw up an AI into thinking it has won when it really hasn't. Must make sure we only count
+  // combat units that can
   // die.
   public boolean attackerWon() {
     // return !draw() && m_attackingCombatUnitsLeft > 0;
@@ -107,7 +114,8 @@ public class BattleResults extends GameDataComponent implements Serializable {
   }
 
   public boolean draw() {
-    // technically the defender wins if there is noone left. However, most people using the battle calc consider that to be a "draw", so we
+    // technically the defender wins if there is noone left. However, most people using the battle calc consider that to
+    // be a "draw", so we
     // should check and see if there is noone left.
     // return (m_attackingCombatUnitsLeft == 0 && m_defendingCombatUnitsLeft == 0) || (m_attackingCombatUnitsLeft > 0 &&
     // m_defendingCombatUnitsLeft > 0);

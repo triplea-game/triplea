@@ -62,9 +62,10 @@ import games.strategy.util.Tuple;
  */
 public class ProAI extends AbstractAI {
   private final static Logger s_logger = Logger.getLogger(ProAI.class.getName());
-  private final static IOddsCalculator s_battleCalculator = new ConcurrentOddsCalculator("ProAI"); // if non-static, then only need 1 for
-                                                                                                   // the entire AI instance and must be
-                                                                                                   // shutdown when AI is gc'ed.
+  // if non-static, then only need 1 for
+  // the entire AI instance and must be
+  // shutdown when AI is gc'ed.
+  private final static IOddsCalculator s_battleCalculator = new ConcurrentOddsCalculator("ProAI");
   // Utilities
   private final ProUtils utils;
   private final ProBattleUtils battleUtils;
@@ -113,7 +114,8 @@ public class ProAI extends AbstractAI {
   }
 
   public static void Initialize(final TripleAFrame frame) {
-    LogUI.initialize(frame); // Must be done first
+    // Must be done first
+    LogUI.initialize(frame);
     LogUtils.log(Level.FINE, "Initialized Hard AI");
   }
 
@@ -127,7 +129,8 @@ public class ProAI extends AbstractAI {
   }
 
   public static void gameOverClearCache() {
-    s_battleCalculator.setGameData(null); // is static, set to null so that we don't keep the data around after a game is exited.
+    // is static, set to null so that we don't keep the data around after a game is exited.
+    s_battleCalculator.setGameData(null);
     LogUI.clearCachedInstances();
   }
 
@@ -146,8 +149,10 @@ public class ProAI extends AbstractAI {
 
   @Override
   public void stopGame() {
-    super.stopGame(); // absolutely MUST call super.stopGame() first
-    s_battleCalculator.cancel(); // cancel any current calcing
+    // absolutely MUST call super.stopGame() first
+    super.stopGame();
+    // cancel any current calcing
+    s_battleCalculator.cancel();
   }
 
   @Override

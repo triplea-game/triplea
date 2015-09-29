@@ -48,7 +48,6 @@ public class HeadlessGameServerConsole {
     Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
       @Override
       public void run() {
-        // m_shutDown = true;
         out.println("Shutting Down.   See log file.");
       }
     }));
@@ -221,12 +220,14 @@ public class HeadlessGameServerConsole {
       }
       final long min;
       try {
-        min = Math.max(0, Math.min(60 * 24 * 2, Long.parseLong(minutes))); // max out at 48 hours
+        // max out at 48 hours
+        min = Math.max(0, Math.min(60 * 24 * 2, Long.parseLong(minutes)));
       } catch (final NumberFormatException nfe) {
         out.println("Invalid minutes");
         return;
       }
-      final long expire = System.currentTimeMillis() + (min * 1000 * 60); // milliseconds
+      // milliseconds
+      final long expire = System.currentTimeMillis() + (min * 1000 * 60);
       for (final INode node : nodes) {
         final String realName = node.getName().split(" ")[0];
         final String ip = node.getAddress().getHostAddress();
@@ -315,12 +316,14 @@ public class HeadlessGameServerConsole {
       }
       final long hrs;
       try {
-        hrs = Math.max(0, Math.min(24 * 30, Long.parseLong(hours))); // max out at 30 days
+        // max out at 30 days
+        hrs = Math.max(0, Math.min(24 * 30, Long.parseLong(hours)));
       } catch (final NumberFormatException nfe) {
         out.println("Invalid minutes");
         return;
       }
-      final long expire = System.currentTimeMillis() + (hrs * 1000 * 60 * 60); // milliseconds
+      // milliseconds
+      final long expire = System.currentTimeMillis() + (hrs * 1000 * 60 * 60);
       for (final INode node : nodes) {
         final String realName = node.getName().split(" ")[0];
         final String ip = node.getAddress().getHostAddress();
@@ -429,8 +432,9 @@ public class HeadlessGameServerConsole {
         if (server != null && server.getSetupPanelModel() != null) {
           final ISetupPanel setup = server.getSetupPanelModel().getPanel();
           if (setup != null && setup instanceof ServerSetupPanel) {
-            ((ServerSetupPanel) setup).shutDown();// this is causing a deadlock when in a shutdown hook, due to swing/awt. so we will shut
-                                                  // it down here instead.
+            // this is causing a deadlock when in a shutdown hook, due to swing/awt. so we will shut
+            // it down here instead.
+            ((ServerSetupPanel) setup).shutDown();
           }
         }
         System.exit(0);

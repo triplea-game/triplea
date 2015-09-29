@@ -7,11 +7,14 @@ import games.strategy.util.PropertyUtil;
 /**
  * Contains some utility methods that subclasses can use to make writing attachments easier.
  * FYI: You may never have a hashmap/linkedhashmap of any other "attachment" within an attachment.
- * This is because there will be a circular reference from this hashmap -> attachment1 -> playerid -> attachment2 -> hashmap -> attachment1,
+ * This is because there will be a circular reference from this hashmap -> attachment1 -> playerid -> attachment2 ->
+ * hashmap -> attachment1,
  * and this causes major problems for Java's deserializing.
- * When deserializing the attachments will not be resolved before their hashcode is taken, resulting in the wrong hashcode and the
+ * When deserializing the attachments will not be resolved before their hashcode is taken, resulting in the wrong
+ * hashcode and the
  * attachment going in the wrong bucket,
- * so that a .get(attachment1) will result in a null instead of giving the key for attachment1. So just don't have maps of attachments, in
+ * so that a .get(attachment1) will result in a null instead of giving the key for attachment1. So just don't have maps
+ * of attachments, in
  * an attachment. Thx, Veqryn.
  */
 public abstract class DefaultAttachment extends GameDataComponent implements IAttachment {
@@ -144,7 +147,8 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
     } else if (!m_attachedTo.toString().equals(other.m_attachedTo.toString())) {
       return false;
     }
-    // else if (!m_attachedTo.equals(other.m_attachedTo)) // m_attachedTo does not override equals, so we should not test it
+    // else if (!m_attachedTo.equals(other.m_attachedTo)) // m_attachedTo does not override equals, so we should not
+    // test it
     // return false;
     if (m_name == null) {
       if (other.m_name != null) {

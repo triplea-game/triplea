@@ -19,7 +19,8 @@ public class CountDownLatchHandler {
   }
 
   /**
-   * If "releaseLatchOnInterrupt" was set to true (defaults to false) on construction of this handler, then interruptAll will release and
+   * If "releaseLatchOnInterrupt" was set to true (defaults to false) on construction of this handler, then interruptAll
+   * will release and
    * remove all current latches.
    * Otherwise does nothing.
    */
@@ -32,7 +33,8 @@ public class CountDownLatchHandler {
   }
 
   /**
-   * If "releaseLatchOnInterrupt" was set to true (defaults to false) on construction of this handler, then interruptLatch will release and
+   * If "releaseLatchOnInterrupt" was set to true (defaults to false) on construction of this handler, then
+   * interruptLatch will release and
    * remove the latch.
    * Otherwise does nothing.
    */

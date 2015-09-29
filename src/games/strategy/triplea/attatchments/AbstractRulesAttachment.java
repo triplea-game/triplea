@@ -26,22 +26,31 @@ import games.strategy.util.Match;
 public abstract class AbstractRulesAttachment extends AbstractConditionsAttachment implements ICondition {
   private static final long serialVersionUID = -6977650137928964759L;
   @InternalDoNotExport
-  protected boolean m_countEach = false; // Do Not Export (do not include in IAttachment). Determines if we will be counting each for the
-                                         // purposes of m_objectiveValue
+  // Do Not Export (do not include in IAttachment). Determines if we will be counting each for the
+  // purposes of m_objectiveValue
+  protected boolean m_countEach = false;
   @InternalDoNotExport
-  protected int m_eachMultiple = 1; // Do Not Export (do not include in IAttachment). The multiple that will be applied to m_objectiveValue
-                                    // if m_countEach is true
+  // Do Not Export (do not include in IAttachment). The multiple that will be applied to m_objectiveValue
+  // if m_countEach is true
+  protected int m_eachMultiple = 1;
   @InternalDoNotExport
-  protected int m_territoryCount = -1; // Do Not Export (do not include in IAttachment). Used with the next Territory conditions to
-                                       // determine the number of territories needed to be valid (ex: m_alliedOwnershipTerritories)
-  protected ArrayList<PlayerID> m_players = new ArrayList<PlayerID>(); // A list of players that can be used with
-                                                                       // directOwnershipTerritories, directExclusionTerritories,
-                                                                       // directPresenceTerritories, or any of the other territory lists
-  protected int m_objectiveValue = 0; // only used if the attachment begins with "objectiveAttachment"
-  protected int m_uses = -1; // only matters for objectiveValue, does not affect the condition
-  protected HashMap<Integer, Integer> m_turns = null; // condition for what turn it is
-  protected boolean m_switch = true; // for on/off conditions
-  protected String m_gameProperty = null; // allows custom GameProperties
+  // Do Not Export (do not include in IAttachment). Used with the next Territory conditions to
+  // determine the number of territories needed to be valid (ex: m_alliedOwnershipTerritories)
+  protected int m_territoryCount = -1;
+  // A list of players that can be used with
+  // directOwnershipTerritories, directExclusionTerritories,
+  // directPresenceTerritories, or any of the other territory lists
+  // only used if the attachment begins with "objectiveAttachment"
+  protected ArrayList<PlayerID> m_players = new ArrayList<PlayerID>();
+  protected int m_objectiveValue = 0;
+  // only matters for objectiveValue, does not affect the condition
+  protected int m_uses = -1;
+  // condition for what turn it is
+  protected HashMap<Integer, Integer> m_turns = null;
+  // for on/off conditions
+  protected boolean m_switch = true;
+  // allows custom GameProperties
+  protected String m_gameProperty = null;
 
   public AbstractRulesAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -49,9 +58,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param names
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setPlayers(final String names) throws GameParseException {
@@ -115,10 +121,9 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   /**
    * Internal use only, is not set by xml or property utils.
    * Is used to determine the number of territories we need to satisfy a specific territory based condition check.
-   * It is set multiple times during each check [isSatisfied], as there might be multiple types of territory checks being done. So it is
+   * It is set multiple times during each check [isSatisfied], as there might be multiple types of territory checks
+   * being done. So it is
    * just a temporary value.
-   *
-   * @param value
    */
   @InternalDoNotExport
   protected void setTerritoryCount(final String value) {
@@ -136,7 +141,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 
   /**
    * Used to determine if there is a multiple on this national objective (if the user specified 'each' in the count.
-   * For example, you may want to have the player receive 3 PUs for controlling each territory, in a list of territories.
+   * For example, you may want to have the player receive 3 PUs for controlling each territory, in a list of
+   * territories.
    */
   public int getEachMultiple() {
     if (!getCountEach()) {
@@ -160,7 +166,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   /**
-   * "uses" on RulesAttachments apply ONLY to giving money (PUs) to the player, they do NOT apply to the condition, and therefore should not
+   * "uses" on RulesAttachments apply ONLY to giving money (PUs) to the player, they do NOT apply to the condition, and
+   * therefore should not
    * be tested for in isSatisfied.
    */
   public int getUses() {
@@ -267,7 +274,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   /**
-   * Takes a string like "original", "originalNoWater", "enemy", "controlled", "controlledNoWater", "all", "map", and turns it into an
+   * Takes a string like "original", "originalNoWater", "enemy", "controlled", "controlledNoWater", "all", "map", and
+   * turns it into an
    * actual list of territories.
    * Also sets territoryCount.
    */
@@ -287,7 +295,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       final Set<Territory> originalTerrs = new HashSet<Territory>();
       for (final PlayerID player : players) {
         originalTerrs.addAll(Match.getMatches(OriginalOwnerTracker.getOriginallyOwned(data, player),
-            Matches.TerritoryIsNotImpassableToLandUnits(player, data))); // TODO: does this account for occupiedTerrOf???
+            // TODO: does this account for occupiedTerrOf???
+            Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
       }
       setTerritoryCount(String.valueOf(originalTerrs.size()));
       return originalTerrs;
@@ -345,15 +354,18 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       if (!terrs[1].equals("controlled") && !terrs[1].equals("controlledNoWater") && !terrs[1].equals("original")
           && !terrs[1].equals("originalNoWater") && !terrs[1].equals("all") && !terrs[1].equals("map")
           && !terrs[1].equals("enemy")) {
-        return getListedTerritories(terrs, true, true); // Get the list of territories
+        // Get the list of territories
+        return getListedTerritories(terrs, true, true);
       } else {
         final Set<Territory> rVal = getTerritoriesBasedOnStringName(terrs[1], players, data);
-        setTerritoryCount(String.valueOf(terrs[0])); // set it a second time, since getTerritoriesBasedOnStringName also sets it (so do it
-                                                     // after the method call).
+        // set it a second time, since getTerritoriesBasedOnStringName also sets it (so do it
+        setTerritoryCount(String.valueOf(terrs[0]));
+        // after the method call).
         return rVal;
       }
     } else {
-      return getListedTerritories(terrs, true, true); // Get the list of territories
+      // Get the list of territories
+      return getListedTerritories(terrs, true, true);
     }
   }
 
@@ -365,11 +377,9 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   /**
-   * Validate that all listed territories actually exist. Will return an empty list of territories if sent a list that is empty or contains
+   * Validate that all listed territories actually exist. Will return an empty list of territories if sent a list that
+   * is empty or contains
    * only a "" string.
-   *
-   * @param list
-   * @throws GameParseException
    */
   public Set<Territory> getListedTerritories(final String[] list, final boolean testFirstItemForCount,
       final boolean mustSetTerritoryCount) {
@@ -415,7 +425,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       rVal.add(territory);
     }
     if (mustSetTerritoryCount && !haveSetCount) {
-      setTerritoryCount(String.valueOf(rVal.size())); // if we have not set it, then set it to be the size of this list
+      // if we have not set it, then set it to be the size of this list
+      setTerritoryCount(String.valueOf(rVal.size()));
     }
     return rVal;
   }
@@ -423,6 +434,5 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   @Override
   public void validate(final GameData data) throws GameParseException {
     super.validate(data);
-    // TODO Auto-generated method stub
   }
 }

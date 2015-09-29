@@ -69,10 +69,12 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
    * for example the RelationshipType ColdWar could be based on the WAR_ARCHETYPE but overrides options like "canInvade"
    * "canAttackHomeTerritory"
    * to not allow all-out invasion to mimic a not-all-out-war.
-   * Or you could base it on NEUTRAL_ARCHETYPE but override the options like "canAttackAtSea" and "canFireAA" to mimic a uneasy peace.
+   * Or you could base it on NEUTRAL_ARCHETYPE but override the options like "canAttackAtSea" and "canFireAA" to mimic a
+   * uneasy peace.
    *
    * @param archeType
-   *        the template used to base this relationType on, can be war, allied or neutral, default archeType = WAR_ARCHETYPE
+   *        the template used to base this relationType on, can be war, allied or neutral, default archeType =
+   *        WAR_ARCHETYPE
    * @throws GameParseException
    *         if archeType isn't set to war, allied or neutral
    */
@@ -91,7 +93,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   * @return the ArcheType of this relationshipType, this really shouldn't be called, typically you should call isNeutral, isAllied or
+   * @return the ArcheType of this relationshipType, this really shouldn't be called, typically you should call
+   *         isNeutral, isAllied or
    *         isWar();
    */
   public String getArcheType() {
@@ -103,7 +106,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral, isAllied or isWar();
+   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral,
+   * isAllied or isWar();
    * Just for future reference, doesn't do anything right now.
    *
    * @param canFlyOver
@@ -115,7 +119,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral, isAllied or isWar();
+   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral,
+   * isAllied or isWar();
    * Just for future reference, doesn't do anything right now.
    *
    * @return whether in this relationshipType you can fly over other territories

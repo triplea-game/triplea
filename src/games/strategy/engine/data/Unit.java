@@ -46,7 +46,8 @@ public class Unit extends GameDataComponent implements Serializable {
    * DO NOT USE THIS METHOD if at all possible. It is very slow.
    * This can return null if the unit is not in any territories.
    * A unit just created, or held by a player after purchasing may not be in a territory.
-   * A unit can be in exactly 2 territories, if the unit is in the process of moving from one territory to another. This method will just
+   * A unit can be in exactly 2 territories, if the unit is in the process of moving from one territory to another. This
+   * method will just
    * return the first territory found.
    * A unit should never be in more than 2 territories.
    */
@@ -65,7 +66,8 @@ public class Unit extends GameDataComponent implements Serializable {
   }
 
   /**
-   * Remember to always use a ChangeFactory change over an IDelegate Bridge for any changes to game data, or any change that should go over
+   * Remember to always use a ChangeFactory change over an IDelegate Bridge for any changes to game data, or any change
+   * that should go over
    * the network.
    *
    * @param hits
@@ -133,7 +135,8 @@ public class Unit extends GameDataComponent implements Serializable {
   }
 
   /**
-   * Until this error gets fixed, lets not scare the crap out of our users, as the problem doesn't seem to be causing any serious issues.
+   * Until this error gets fixed, lets not scare the crap out of our users, as the problem doesn't seem to be causing
+   * any serious issues.
    * TODO: fix the root cause of this deserialization issue (probably a circular dependency somewhere)
    */
   public static class UnitDeserializationErrorLazyMessage {

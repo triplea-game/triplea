@@ -40,7 +40,8 @@ public class ProTerritoryValueUtils {
     if (!t.isWater() && t.getOwner().isNull()) {
       final double strength = battleUtils.estimateStrength(t.getOwner(), t,
           new ArrayList<Unit>(t.getUnits().getUnits()), new ArrayList<Unit>(), false);
-      final double TUVSwing = -(strength / 8) * minCostPerHitPoint; // estimate TUV swing as number of casualties * cost
+      // estimate TUV swing as number of casualties * cost
+      final double TUVSwing = -(strength / 8) * minCostPerHitPoint;
       value += TUVSwing;
     }
     return value;
@@ -112,7 +113,8 @@ public class ProTerritoryValueUtils {
         Collections.sort(values, Collections.reverseOrder());
         double capitalOrFactoryValue = 0;
         for (int i = 0; i < values.size(); i++) {
-          capitalOrFactoryValue += values.get(i) / Math.pow(2, i); // Decrease each additional factory value by half
+          // Decrease each additional factory value by half
+          capitalOrFactoryValue += values.get(i) / Math.pow(2, i);
         }
         // Determine value based on nearby territory production
         double nearbyEnemyValue = 0;
@@ -127,10 +129,12 @@ public class ProTerritoryValueUtils {
           if (distance > 0) {
             double value = TerritoryAttachment.getProduction(nearbyEnemyTerritory);
             if (nearbyEnemyTerritory.getOwner().isNull()) {
-              value = findTerritoryAttackValue(player, nearbyEnemyTerritory, minCostPerHitPoint) / 3; // find neutral value
+              // find neutral value
+              value = findTerritoryAttackValue(player, nearbyEnemyTerritory, minCostPerHitPoint) / 3;
             } else
               if (ProMatches.territoryIsAlliedLandAndHasNoEnemyNeighbors(player, data).match(nearbyEnemyTerritory)) {
-              value *= 0.1; // reduce value for can't hold amphib allied territories
+              // reduce value for can't hold amphib allied territories
+              value *= 0.1;
             }
             if (value > 0) {
               nearbyEnemyValue += (value / Math.pow(2, distance));
@@ -141,7 +145,8 @@ public class ProTerritoryValueUtils {
             .getNeighbors(t, 6, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, true)).size();
         double value = nearbyEnemyValue * landMassSize / maxLandMassSize + capitalOrFactoryValue;
         if (ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t)) {
-          value *= 1.1; // prefer territories with factories
+          // prefer territories with factories
+          value *= 1.1;
         }
         territoryValueMap.put(t, value);
       } else if (!t.isWater()) {
@@ -168,7 +173,8 @@ public class ProTerritoryValueUtils {
         Collections.sort(values, Collections.reverseOrder());
         double capitalOrFactoryValue = 0;
         for (int i = 0; i < values.size(); i++) {
-          capitalOrFactoryValue += values.get(i) / Math.pow(2, i); // Decrease each additional factory value by half
+          // Decrease each additional factory value by half
+          capitalOrFactoryValue += values.get(i) / Math.pow(2, i);
         }
         // Determine value based on nearby territory production
         double nearbyLandValue = 0;

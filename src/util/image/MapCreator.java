@@ -213,7 +213,8 @@ public class MapCreator extends JFrame {
         try {
           DesktopUtilityBrowserLauncher.openFile(
               new File(GameRunner2.getRootFolder(), "doc" + File.separator + "map_and_map_skin_making_overview.html"));
-          // DesktopUtilityBrowserLauncher.openURL(GameRunner.getRootFolder().getAbsoluteFile() + File.separator + "doc" + File.separator +
+          // DesktopUtilityBrowserLauncher.openURL(GameRunner.getRootFolder().getAbsoluteFile() + File.separator + "doc"
+          // + File.separator +
           // "map_and_map_skin_making_overview.html");
         } catch (final Exception e1) {
           e1.printStackTrace();
@@ -627,8 +628,8 @@ public class MapCreator extends JFrame {
     final List<String> commands = new ArrayList<String>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands, s_memory);
     if (s_mapFolderLocation != null && s_mapFolderLocation.exists()) {
-      commands.add("-D" + TRIPLEA_MAP_FOLDER + "=" + s_mapFolderLocation.getAbsolutePath()); // no need for quotes, that will just screw up
-                                                                                             // the process builder
+      // no need for quotes, that will just screw up the process builder
+      commands.add("-D" + TRIPLEA_MAP_FOLDER + "=" + s_mapFolderLocation.getAbsolutePath());
     }
     commands.add("-D" + TRIPLEA_UNIT_ZOOM + "=" + s_unit_zoom);
     commands.add("-D" + TRIPLEA_UNIT_WIDTH + "=" + s_unit_width);

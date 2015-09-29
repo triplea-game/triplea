@@ -139,7 +139,8 @@ public class GameProperties extends GameDataComponent {
       outStream.writeObject(editableProperties);
       // final byte[] byteArray = bos.toByteArray();
       zippedOut = new GZIPOutputStream(sink);
-      zippedOut.write(bos.toByteArray());// now write to file
+      // now write to file
+      zippedOut.write(bos.toByteArray());
       zippedOut.flush();
     } finally {
       try {

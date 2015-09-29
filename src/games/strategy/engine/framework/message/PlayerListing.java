@@ -18,7 +18,8 @@ import games.strategy.util.Version;
  * taken, and what players are being played.
  * This object also contains versioning info which the client should
  * check to ensure that it is playing the same game as the server.
- * (updated by veqryn to be the object that, besides game options, determines the starting setup for game. ie: who is playing what)
+ * (updated by veqryn to be the object that, besides game options, determines the starting setup for game. ie: who is
+ * playing what)
  */
 public class PlayerListing implements Serializable {
   // keep compatability with older versions

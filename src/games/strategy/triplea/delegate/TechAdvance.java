@@ -256,7 +256,8 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
   }
 
   /**
-   * Returns all tech advances that this player can possibly research. (Or if Player is null, returns all techs available in the game).
+   * Returns all tech advances that this player can possibly research. (Or if Player is null, returns all techs
+   * available in the game).
    *
    * @param data
    * @param player

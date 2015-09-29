@@ -341,7 +341,8 @@ public class EnginePreferences extends JDialog {
           public void actionPerformed(final ActionEvent e) {
             tested.set(true);
             System.out.println("Testing TripleA launch with max memory of: " + newMaxMemory.getValue() + "m");
-            TripleAProcessRunner.startNewTripleA((((long) newMaxMemory.getValue()) * 1024 * 1024) + 67108864); // it is in MB
+            // it is in MB
+            TripleAProcessRunner.startNewTripleA((((long) newMaxMemory.getValue()) * 1024 * 1024) + 67108864);
           }
         });
         final JPanel radioPanel = new JPanel();
@@ -463,12 +464,17 @@ public class EnginePreferences extends JDialog {
 
   private void reportMemoryUsageToConsole() {
     final int mb = 1024 * 1024;
-    final Runtime runtime = Runtime.getRuntime(); // Getting the runtime reference from system
+    // Getting the runtime reference from system
+    final Runtime runtime = Runtime.getRuntime();
     System.out.println("Heap utilization statistics [MB]");
-    System.out.println("Used Memory: " + (runtime.totalMemory() - runtime.freeMemory()) / mb); // Print used memory
-    System.out.println("Free Memory: " + runtime.freeMemory() / mb); // Print free memory
-    System.out.println("Total Memory: " + runtime.totalMemory() / mb); // Print total available memory
-    System.out.println("Max Memory: " + runtime.maxMemory() / mb); // Print Maximum available memory
+    // Print used memory
+    System.out.println("Used Memory: " + (runtime.totalMemory() - runtime.freeMemory()) / mb);
+    // Print free memory
+    System.out.println("Free Memory: " + runtime.freeMemory() / mb);
+    // Print total available memory
+    System.out.println("Total Memory: " + runtime.totalMemory() / mb);
+    // Print Maximum available memory
+    System.out.println("Max Memory: " + runtime.maxMemory() / mb);
     final int currentMaxSetting = GameRunner2.getMaxMemoryFromSystemIniFileInMB(GameRunner2.getSystemIni());
     if (currentMaxSetting > 0) {
       System.out.println("Max Memory user setting within 20% of: " + currentMaxSetting);

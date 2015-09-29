@@ -80,9 +80,11 @@ public class MicroWebPosterEditor extends EditorPanel {
       m_initGame.setEnabled(false);
     }
     row++;
-    // add(m_idLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0,
+    // add(m_idLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new
+    // Insets(0, 0,
     // bottomSpace, labelSpace), 0, 0));
-    // add(m_id, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0, 0,
+    // add(m_id, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+    // new Insets(0, 0,
     // bottomSpace, 0), 0, 0));
     // m_id.setText(m_bean.getSiteId());
     // row++;

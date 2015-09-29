@@ -969,7 +969,8 @@ public class UnitAutoChooserTest extends TestCase {
     setUnits(expectedCandidateUnits, t1, a1, i1, t2, a2, i2, t3, i3, t4, a4);
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1);
-    setUnits(expectedSelectedUnits, t1); // simple solution
+    // simple solution
+    setUnits(expectedSelectedUnits, t1);
     assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
         TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));

@@ -163,7 +163,8 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
   }
 
   /**
-   * Utility method for creating string parts, since we need to remove transferEncoding and content type to behave like a browser
+   * Utility method for creating string parts, since we need to remove transferEncoding and content type to behave like
+   * a browser
    *
    * @param name
    *        the form field name

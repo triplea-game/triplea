@@ -15,7 +15,8 @@ import games.strategy.util.Tuple;
 
 public class AggregateResults implements Serializable {
   private static final long serialVersionUID = -556699626060414738L;
-  private final List<BattleResults> m_results; // can be empty!
+  // can be empty!
+  private final List<BattleResults> m_results;
   private long m_time;
 
   public AggregateResults(final int expectedCount) {
@@ -48,16 +49,19 @@ public class AggregateResults implements Serializable {
         closestBattle = results;
       }
     }
-    return closestBattle; // can be null!
+    // can be null!
+    return closestBattle;
   }
 
   public List<Unit> GetAverageAttackingUnitsRemaining() {
-    final BattleResults results = GetBattleResultsClosestToAverage(); // can be null!
+    // can be null!
+    final BattleResults results = GetBattleResultsClosestToAverage();
     return results == null ? new ArrayList<Unit>() : results.getRemainingAttackingUnits();
   }
 
   public List<Unit> GetAverageDefendingUnitsRemaining() {
-    final BattleResults results = GetBattleResultsClosestToAverage(); // can be null!
+    // can be null!
+    final BattleResults results = GetBattleResultsClosestToAverage();
     return results == null ? new ArrayList<Unit>() : results.getRemainingDefendingUnits();
   }
 
@@ -196,7 +200,8 @@ public class AggregateResults implements Serializable {
       count += result.getBattleRoundsFought();
     }
     if (count == 0) {
-      return 1.0; // If this is a 'fake' aggregate result, return 1.0
+      // If this is a 'fake' aggregate result, return 1.0
+      return 1.0;
     }
     return count / m_results.size();
   }

@@ -60,24 +60,31 @@ import games.strategy.util.Tuple;
 /**
  * This is the DecorationPlacer, it will create a text file for you containing the points to place images at. <br>
  * <br>
- * In order to begin this, you must already have the map file, as well as the centers.txt and polygons.txt finished. <br>
+ * In order to begin this, you must already have the map file, as well as the centers.txt and polygons.txt finished.
+ * <br>
  * To start, load you map image. Then you will be asked which kind of Image Point File you are creating. <br>
  * <br>
  * There are basically 2 different kinds of image point files, and with each of those are 2 different sub-types. <br>
- * The 1st type is a folder full of many different images, that after being placed on the map will never be changed. <br>
+ * The 1st type is a folder full of many different images, that after being placed on the map will never be changed.
+ * <br>
  * Examples of this are the decorations.txt file [misc folder] and the name_place.txt file [territoryNames folder]. <br>
- * In these files the 'point' string directly corresponds to exact name of an image file in the folder, with the only <br>
+ * In these files the 'point' string directly corresponds to exact name of an image file in the folder, with the only
+ * <br>
  * exception being whether the point string needs the .png extension or not (decorations do, name_place does not). <br>
  * <br>
- * The 2nd type is single image, or small set of images, where the chosen image is determined by something in the xml file. <br>
+ * The 2nd type is single image, or small set of images, where the chosen image is determined by something in the xml
+ * file. <br>
  * Examples of this are the pu_place.txt file [PUs folder] and the capitols.txt file [flags folder]. <br>
  * In these files, the 'point' string is the exact name of a territory, while the image file has a different name, <br>
- * and is chosen by the engine based on the game data. For things like the pu_place you may want the decoration placer <br>
- * to generate placements for all territories, while others like capitols are more rare and you may want to individually <br>
+ * and is chosen by the engine based on the game data. For things like the pu_place you may want the decoration placer
+ * <br>
+ * to generate placements for all territories, while others like capitols are more rare and you may want to individually
+ * <br>
  * select which territories you need a placement point for. <br>
  * <br>
  * After selecting the point file type you want to make, the program will choose the default selections for you, <br>
- * but it will still confirm with you by asking you the questions. Just hit 'enter' a lot if you do not know the answers. <br>
+ * but it will still confirm with you by asking you the questions. Just hit 'enter' a lot if you do not know the
+ * answers. <br>
  * <br>
  * Any images that this program can not find the point for, will start in the upper left corner of the map, <br>
  * and you may click on them to move them to their appropriate place." <br>
@@ -87,10 +94,14 @@ import games.strategy.util.Tuple;
  */
 public class DecorationPlacer extends JFrame {
   private static final long serialVersionUID = 6385408390173085656L;
-  private Image m_image; // The map image will be stored here
-  private Map<String, List<Point>> m_currentPoints = new HashMap<String, List<Point>>(); // hash map for image points
-  private Map<String, Point> m_centers = new HashMap<String, Point>(); // hash map for center points
-  private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>(); // hash map for polygon points
+  // The map image will be stored here
+  private Image m_image;
+  // hash map for image points
+  private Map<String, List<Point>> m_currentPoints = new HashMap<String, List<Point>>();
+  // hash map for center points
+  private Map<String, Point> m_centers = new HashMap<String, Point>();
+  // hash map for polygon points
+  private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>();
   private final JLabel m_location = new JLabel();
   private static File s_mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
@@ -550,7 +561,8 @@ public class DecorationPlacer extends JFrame {
         "Folder full of images OR Text file full of points?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
         null, miscOrNamesOptions,
         miscOrNamesOptions[(s_imagePointType.isUseFolder() ? 0 : 1)]) != JOptionPane.NO_OPTION) {
-      // points are 'territory name' as opposed to exactly an image file name, like 'territory name.png' (everything but decorations is a
+      // points are 'territory name' as opposed to exactly an image file name, like 'territory name.png' (everything but
+      // decorations is a
       // territory name, while decorations are image file names)
       loadImageFolder();
       if (s_currentImageFolderLocation == null) {
@@ -559,7 +571,8 @@ public class DecorationPlacer extends JFrame {
       loadImagePointTextFile();
       topLeftOrBottomLeft();
       // decorations.txt (misc folder) and name_place.txt (territoryNames folder) use a different image for each point,
-      // while everything else (like pu_place.txt (PUs folder)) will use either a static image or a dynamically chosen image based on some
+      // while everything else (like pu_place.txt (PUs folder)) will use either a static image or a dynamically chosen
+      // image based on some
       // in game property in the game data.
       System.out.println("Points end in .png OR they do not?");
       fillCurrentImagePointsBasedOnImageFolder(JOptionPane.showOptionDialog(this,
@@ -573,7 +586,8 @@ public class DecorationPlacer extends JFrame {
     } else {
       loadImagePointTextFile();
       topLeftOrBottomLeft();
-      // load all territories? things like pu_place.txt should have all or most territories, while things like blockade.txt and
+      // load all territories? things like pu_place.txt should have all or most territories, while things like
+      // blockade.txt and
       // kamikaze_place.txt and capitols.txt will only have a small number of territories
       System.out.println("Select Fill in all territories OR let you select them?");
       fillCurrentImagePointsBasedOnTextFile(JOptionPane.showOptionDialog(this,
@@ -669,7 +683,8 @@ public class DecorationPlacer extends JFrame {
             new Tuple<Image, List<Point>>(s_staticImageForPlacing, entry.getValue()));
       }
     }
-    s_createNewImageOnRightClick = true; // !fillInAllTerritories;
+    // !fillInAllTerritories;
+    s_createNewImageOnRightClick = true;
   }
 
   private void fillCurrentImagePointsBasedOnImageFolder(final boolean pointsAreExactlyTerritoryNames) {

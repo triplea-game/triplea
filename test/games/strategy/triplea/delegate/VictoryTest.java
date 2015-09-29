@@ -87,7 +87,8 @@ public class VictoryTest extends TestCase {
     moveDelegate.setDelegateBridgeAndPlayer(m_bridge);
     moveDelegate.start();
     String error = moveDelegate.move(libya.getUnits().getUnits(), m_data.getMap().getRoute(libya, a_egypt));
-    assertEquals(error, null); // first step is legal
+    // first step is legal
+    assertEquals(error, null);
     // second step isn't legal because we lost blitz even though we took the mountain
     error = moveDelegate.move(a_egypt.getUnits().getUnits(), m_data.getMap().getRoute(a_egypt, b_congo));
     moveDelegate.end();
@@ -111,7 +112,8 @@ public class VictoryTest extends TestCase {
     assertEquals(error, null);
   }
 
-  // test if it gives the unit can't blitz error instead of the unit lost blitz error if a non-blitzing unit tries to blitz!
+  // test if it gives the unit can't blitz error instead of the unit lost blitz error if a non-blitzing unit tries to
+  // blitz!
   public void testMotorizedThroughMountain() {
     final Territory libya = m_data.getMap().getTerritory("Libya");
     final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");

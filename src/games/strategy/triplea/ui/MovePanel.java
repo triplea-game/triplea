@@ -58,7 +58,8 @@ public class MovePanel extends AbstractMovePanel {
   private static final int s_defaultMinTransportCost = 5;
   /**
    * @param s_deselectNumber
-   *        adds or removes 10 units (used to remove 1/s_deselectNumber of total units (useful for splitting large armies), but changed it
+   *        adds or removes 10 units (used to remove 1/s_deselectNumber of total units (useful for splitting large
+   *        armies), but changed it
    *        after feedback)
    */
   private static final int s_deselectNumber = 10;
@@ -95,10 +96,12 @@ public class MovePanel extends AbstractMovePanel {
     m_currentCursorImage = null;
   }
 
-  // TODO: oh my fucking god this code is awefull. only the local computer has access to the UI. why the fuck did someone think they could
+  // TODO: oh my fucking god this code is awefull. only the local computer has access to the UI. why the fuck did
+  // someone think they could
   // do this?
   // The host has no access to the client's UI, and therefore does not know what dependent units there are.
-  // TODO: rewrite this fucking garbage! None of this s_dependentUnits shit should be in the move panel! (fixed by sending a copy of this
+  // TODO: rewrite this fucking garbage! None of this s_dependentUnits shit should be in the move panel! (fixed by
+  // sending a copy of this
   // with the move details)
   private static Map<Unit, Collection<Unit>> getDependents() {
     return s_dependentUnits;
@@ -844,8 +847,9 @@ public class MovePanel extends AbstractMovePanel {
         // check for alt key - add 1/10 of total units (useful for splitting large armies)
         final List<Unit> unitsToMove = Match.getMatches(units, unitsToMoveMatch);
         Collections.sort(unitsToMove, UnitComparator.getHighestToLowestMovementComparator());
-        final int iterCount = (me.isAltDown()) ? s_deselectNumber : 1; // (int) Math.max(1, Math.floor(unitsToMove.size() /
-                                                                       // s_deselectNumber))
+
+        final int iterCount = (me.isAltDown()) ? s_deselectNumber : 1;
+
         int addCount = 0;
         for (final Unit unit : unitsToMove) {
           if (!m_selectedUnits.contains(unit)) {
@@ -1021,8 +1025,7 @@ public class MovePanel extends AbstractMovePanel {
           }
         } else if (!unitsWithoutDependents.isEmpty()) {
           // check for alt key - remove 1/10 of total units (useful for splitting large armies)
-          final int iterCount = (me.isAltDown()) ? s_deselectNumber : 1; // (int) Math.max(1, Math.floor(unitsWithoutDependents.size() /
-                                                                         // s_deselectNumber))
+          final int iterCount = (me.isAltDown()) ? s_deselectNumber : 1;
           // remove the last iterCount elements
           for (int i = 0; i < iterCount; i++) {
             unitsToRemove.add(unitsWithoutDependents.get(unitsWithoutDependents.size() - 1));
@@ -1061,7 +1064,8 @@ public class MovePanel extends AbstractMovePanel {
           // doesn't matter which unit we remove since units are assigned to routes later
           // check for alt key - remove 1/10 of total units (useful for splitting large armies)
           // changed to just remove 10 units
-          final int iterCount = (me.isAltDown()) ? s_deselectNumber : 1; // (int) Math.max(1, Math.floor(units.size() / s_deselectNumber))
+          // (int) Math.max(1, Math.floor(units.size() / s_deselectNumber))
+          final int iterCount = (me.isAltDown()) ? s_deselectNumber : 1;
           int remCount = 0;
           for (final Unit unit : units) {
             if (m_selectedUnits.contains(unit) && !unitsToRemove.contains(unit)) {
@@ -1301,7 +1305,8 @@ public class MovePanel extends AbstractMovePanel {
           getData().acquireReadLock();
           try {
             updateUnitsThatCanMoveOnRoute(m_selectedUnits, route);
-            // now, check if there is a better route for just the units that can get there (we check only air since that is the only one for
+            // now, check if there is a better route for just the units that can get there (we check only air since that
+            // is the only one for
             // which the route may actually change much)
             if (m_unitsThatCanMoveOnRoute.size() < m_selectedUnits.size() && (m_unitsThatCanMoveOnRoute.size() == 0
                 || Match.allMatch(m_unitsThatCanMoveOnRoute, Matches.UnitIsAir))) {
@@ -1471,16 +1476,19 @@ public class MovePanel extends AbstractMovePanel {
       final CompositeMatchAnd<Unit> moveableUnitOwnedByMe =
           new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getCurrentPlayer()), Matches.unitHasMovementLeft);
       if (!m_nonCombat) {
-        moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());// if not non combat, can not move aa units
+        // if not non combat, can not move aa units
+        moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
       }
       final int size = allTerritories.size();
-      int newFocusedIndex = m_lastFocusedTerritory == null ? 0 : allTerritories.indexOf(m_lastFocusedTerritory) + 1; // new focused index is
-                                                                                                                     // 1 greater
+      // new focused index is 1 greater
+      int newFocusedIndex = m_lastFocusedTerritory == null ? 0 : allTerritories.indexOf(m_lastFocusedTerritory) + 1;
       if (newFocusedIndex >= size) {
-        newFocusedIndex = 0; // if we are larger than the number of territories, we must start back at zero
+        // if we are larger than the number of territories, we must start back at zero
+        newFocusedIndex = 0;
       }
       Territory newFocusedTerritory = null;
-      int i = 0; // make sure we go through every single territory on the board
+      // make sure we go through every single territory on the board
+      int i = 0;
       while (i < size) {
         final Territory t = allTerritories.get(newFocusedIndex);
         final List<Unit> matchedUnits = t.getUnits().getMatches(moveableUnitOwnedByMe);
@@ -1515,7 +1523,8 @@ public class MovePanel extends AbstractMovePanel {
       final CompositeMatchAnd<Unit> moveableUnitOwnedByMe =
           new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getCurrentPlayer()), Matches.unitHasMovementLeft);
       if (!m_nonCombat) {
-        moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());// if not non combat, can not move aa units
+        // if not non combat, can not move aa units
+        moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
       }
       final Map<Territory, List<Unit>> highlight = new HashMap<Territory, List<Unit>>();
       for (final Territory t : allTerritories) {

@@ -24,7 +24,8 @@ public class DesktopUtilityBrowserLauncher {
   static final String errMsg = "Error attempting to launch web browser";
 
   /**
-   * Opens a specific file on the user's computer, using whatever default program is used to open such files, using the local computer's
+   * Opens a specific file on the user's computer, using whatever default program is used to open such files, using the
+   * local computer's
    * file associations. (veqryn)
    *
    * @param file
@@ -38,7 +39,8 @@ public class DesktopUtilityBrowserLauncher {
           .invoke(d.getDeclaredMethod("getDesktop").invoke(null), new Object[] {uri});
       // above code mimicks: java.awt.Desktop.getDesktop().browse()
     } catch (final Exception ignore) { // library not available or failed
-      final String url = uri.toString(); // we use "toString()" or to "toASCIIString()" because "getPath()" sometimes does not work.
+      // we use "toString()" or to "toASCIIString()" because "getPath()" sometimes does not work.
+      final String url = uri.toString();
       final String osName = System.getProperty("os.name");
       try {
         if (osName != null && osName.startsWith("Mac OS")) {

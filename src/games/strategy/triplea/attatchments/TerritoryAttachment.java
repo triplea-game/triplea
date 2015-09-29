@@ -42,7 +42,8 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * If we own one of our capitals, return the first one found, otherwise return the first capital we find that we don't own.
+   * If we own one of our capitals, return the first one found, otherwise return the first capital we find that we don't
+   * own.
    * If a capital has no neighbor connections, it will be sent last.
    *
    * @param player
@@ -178,8 +179,9 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   private String m_capital = null;
   private boolean m_originalFactory = false;
-  private int m_production = 0; // "setProduction" will set both m_production and m_unitProduction. While "setProductionOnly" sets only
-                                // m_production.
+  // "setProduction" will set both m_production and m_unitProduction.
+  // While "setProductionOnly" sets only m_production.
+  private int m_production = 0;
   private int m_victoryCity = 0;
   private boolean m_isImpassible = false;
   private PlayerID m_originalOwner = null;
@@ -330,7 +332,8 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * setProduction (or just "production" in a map xml) sets both the m_production AND the m_unitProduction of a territory to be equal to the
+   * setProduction (or just "production" in a map xml) sets both the m_production AND the m_unitProduction of a
+   * territory to be equal to the
    * String value passed.
    *
    * @param value
@@ -338,13 +341,15 @@ public class TerritoryAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setProduction(final String value) {
     m_production = getInt(value);
-    m_unitProduction = m_production; // do NOT remove. unitProduction should always default to production
+    // do NOT remove. unitProduction should always default to production
+    m_unitProduction = m_production;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setProduction(final Integer value) {
     m_production = value;
-    m_unitProduction = m_production; // do NOT remove. unitProduction should always default to production
+    // do NOT remove. unitProduction should always default to production
+    m_unitProduction = m_production;
   }
 
   public void resetProduction() {
@@ -408,7 +413,8 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * Should not be set by a game xml during attachment parsing, but CAN be set by initialization parsing and/or Property Utils.
+   * Should not be set by a game xml during attachment parsing, but CAN be set by initialization parsing and/or Property
+   * Utils.
    *
    * @param player
    */

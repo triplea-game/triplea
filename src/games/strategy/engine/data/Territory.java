@@ -66,7 +66,8 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Seria
   }
 
   /**
-   * refers to attachment changing, and therefore needing a redraw on the map in case something like the production number is now different
+   * refers to attachment changing, and therefore needing a redraw on the map in case something like the production
+   * number is now different
    */
   public void notifyAttachmentChanged() {
     getData().notifyTerritoryAttachmentChanged(this);

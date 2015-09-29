@@ -238,10 +238,8 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
     // we don't want them starting new games if we are an old jar
     if (GameRunner2.areWeOldExtraJar()) {
       m_loadNewGame.setEnabled(false);
-      // m_loadSavedGame.setEnabled(false);
       m_loadNewGame.setToolTipText(
           "This is disabled on older engine jars, please start new games with the latest version of TripleA.");
-      // m_loadSavedGame.setToolTipText("This is disabled on older engine jars, please open savegames from the latest version of TripleA.");
     }
   }
 

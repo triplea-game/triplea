@@ -200,7 +200,8 @@ public class RocketsFireHelper {
     }
     final String transcript;
     if (DamageFromBombingDoneToUnits) {
-      // TODO: rockets needs to be completely redone to allow for multiple rockets to fire at different targets, etc etc.
+      // TODO: rockets needs to be completely redone to allow for multiple rockets to fire at different targets, etc
+      // etc.
       final HashSet<UnitType> legalTargetsForTheseRockets = new HashSet<UnitType>();
       if (rockets == null) {
         legalTargetsForTheseRockets.addAll(data.getUnitTypeList().getAllUnitTypes());
@@ -213,7 +214,8 @@ public class RocketsFireHelper {
       final Collection<Unit> enemyTargets =
           Match.getMatches(enemyTargetsTotal, Matches.unitIsOfTypes(legalTargetsForTheseRockets));
       if (enemyTargets.isEmpty()) {
-        return; // TODO: this sucks
+        // TODO: this sucks
+        return;
       }
       Unit target = null;
       if (enemyTargets.size() == 1) {
@@ -238,7 +240,8 @@ public class RocketsFireHelper {
         final int[] rolls = bridge.getRandom(data.getDiceSides(), numberOfAttacks, player, DiceType.BOMBING,
             "Rocket fired by " + player.getName() + " at " + attacked.getName());
         for (final int r : rolls) {
-          cost += r + 1; // we are zero based
+          // we are zero based
+          cost += r + 1;
         }
         transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: "
             + MyFormatter.asDice(rolls);
@@ -251,7 +254,8 @@ public class RocketsFireHelper {
           final UnitAttachment ua = UnitAttachment.get(u.getType());
           int maxDice = ua.getBombingMaxDieSides();
           int bonus = ua.getBombingBonus();
-          // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the map, and zero for the
+          // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the
+          // map, and zero for the
           // bonus.
           if (maxDice < 0) {
             maxDice = diceSides;
@@ -272,7 +276,8 @@ public class RocketsFireHelper {
           for (int i = 0; i < rolls.length; i++) {
             final int r = rolls[i] + highestBonus;
             rolls[i] = r;
-            cost += r + 1; // we are zero based
+            // we are zero based
+            cost += r + 1;
           }
           transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: "
               + MyFormatter.asDice(rolls);
@@ -292,7 +297,8 @@ public class RocketsFireHelper {
         for (int i = 0; i < rolls.length; i++) {
           final int r = rolls[i] + bonus;
           rolls[i] = r;
-          cost += r + 1; // we are zero based
+          // we are zero based
+          cost += r + 1;
         }
         transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: "
             + MyFormatter.asDice(rolls);
@@ -304,7 +310,8 @@ public class RocketsFireHelper {
           final UnitAttachment ua = UnitAttachment.get(u.getType());
           int maxDice = ua.getBombingMaxDieSides();
           int bonus = ua.getBombingBonus();
-          // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the map, and zero for the
+          // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the
+          // map, and zero for the
           // bonus.
           if (maxDice < 0 || doNotUseBombingBonus) {
             maxDice = diceSides;
@@ -312,7 +319,8 @@ public class RocketsFireHelper {
           if (bonus < 0 || doNotUseBombingBonus) {
             bonus = 0;
           }
-          // now, regardless of whether they were set or not, we have to apply "low luck" to them, meaning in this case that we reduce the
+          // now, regardless of whether they were set or not, we have to apply "low luck" to them, meaning in this case
+          // that we reduce the
           // luck by 2/3.
           if (maxDice >= 5) {
             bonus += (maxDice + 1) / 3;
@@ -331,7 +339,8 @@ public class RocketsFireHelper {
           for (int i = 0; i < rolls.length; i++) {
             final int r = rolls[i] + highestBonus;
             rolls[i] = r;
-            cost += r + 1; // we are zero based
+            // we are zero based
+            cost += r + 1;
           }
           transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: "
               + MyFormatter.asDice(rolls);

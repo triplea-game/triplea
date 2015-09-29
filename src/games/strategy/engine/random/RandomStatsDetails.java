@@ -114,7 +114,8 @@ public class RandomStatsDetails implements Serializable {
         return i;
       }
     }
-    return i; // This is to stop java from complaining
+    // This is to stop java from complaining
+    return i;
     // it should never reach this part.
   }
 
@@ -214,4 +215,4 @@ public class RandomStatsDetails implements Serializable {
   public JPanel getAllStats() {
     return getAllStats(this);
   }
-} // end class RandomStatsDetails
+}

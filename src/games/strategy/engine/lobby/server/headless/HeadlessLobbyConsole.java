@@ -177,7 +177,8 @@ public class HeadlessLobbyConsole {
         f.format("\n");
         f.flush();
       }
-      // f.close(); // do not close, because this closes the underlying stream, which is system.out, which you should never close
+      // do not close, because this closes the underlying stream, which is system.out, which you should never close
+      // f.close();
     } catch (final SQLException e) {
       e.printStackTrace(out);
     }

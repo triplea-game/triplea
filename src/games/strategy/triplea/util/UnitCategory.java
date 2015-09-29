@@ -19,9 +19,12 @@ public class UnitCategory implements Comparable {
   private final UnitType m_type;
   // Collection of UnitOwners, the type of our dependents, not the dependents
   private Collection<UnitOwner> m_dependents;
-  private final int m_movement; // movement of the units
-  private final int m_transportCost; // movement of the units
-  // private final Territory m_originatingTerr; // movement of the units
+  // movement of the units
+  private final int m_movement;
+  // movement of the units
+  private final int m_transportCost;
+  // movement of the units
+  // private final Territory m_originatingTerr;
   private final PlayerID m_owner;
   // the units in the category, may be duplicates.
   private final List<Unit> m_units = new ArrayList<Unit>();
