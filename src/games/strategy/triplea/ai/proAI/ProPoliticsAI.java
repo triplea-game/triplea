@@ -30,6 +30,7 @@ import games.strategy.util.Match;
  * Pro politics AI.
  */
 public class ProPoliticsAI {
+
   private final ProAI ai;
   private final ProUtils utils;
   private final ProAttackOptionsUtils attackOptionsUtils;
@@ -41,6 +42,7 @@ public class ProPoliticsAI {
   }
 
   public List<PoliticalActionAttachment> politicalActions() {
+
     final GameData data = ai.getGameData();
     final PlayerID player = ai.getPlayerID();
     final float numPlayers = data.getPlayerList().getPlayers().size();
@@ -48,14 +50,18 @@ public class ProPoliticsAI {
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
     final List<PoliticalActionAttachment> results = new ArrayList<PoliticalActionAttachment>();
     LogUtils.log(Level.FINE, "Politics for " + player.getName());
+
     // Find valid war actions
     final List<PoliticalActionAttachment> actionChoicesTowardsWar =
         BasicPoliticalAI.getPoliticalActionsTowardsWar(player, politicsDelegate.getTestedConditions(), data);
     LogUtils.log(Level.FINEST, "War options: " + actionChoicesTowardsWar);
     final List<PoliticalActionAttachment> validWarActions =
-        Match.getMatches(actionChoicesTowardsWar, new CompositeMatchAnd<PoliticalActionAttachment>(
-            Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())));
+        Match.getMatches(
+            actionChoicesTowardsWar,
+            new CompositeMatchAnd<PoliticalActionAttachment>(Matches
+                .AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())));
     LogUtils.log(Level.FINEST, "Valid War options: " + validWarActions);
+
     // Divide war actions into enemy and neutral
     final Map<PoliticalActionAttachment, List<PlayerID>> enemyMap =
         new HashMap<PoliticalActionAttachment, List<PlayerID>>();
@@ -89,6 +95,7 @@ public class ProPoliticsAI {
     LogUtils.log(Level.FINER, "Neutral options: " + neutralMap);
     LogUtils.log(Level.FINER, "Enemy options: " + enemyMap);
     if (!enemyMap.isEmpty()) {
+
       // Find all attack options
       final Map<Territory, ProAttackTerritoryData> attackMap = new HashMap<Territory, ProAttackTerritoryData>();
       final Map<Unit, Set<Territory>> unitAttackMap = new HashMap<Unit, Set<Territory>>();
@@ -100,10 +107,12 @@ public class ProPoliticsAI {
           Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
       attackOptionsUtils.findPotentialAttackOptions(player, myUnitTerritories, attackMap, unitAttackMap,
           transportAttackMap, bombardMap, landRoutesMap, transportMapList);
-      final List<ProAttackTerritoryData> prioritizedTerritories = attackOptionsUtils
-          .removeTerritoriesThatCantBeConquered(player, attackMap, unitAttackMap, transportAttackMap, true);
-      LogUtils.log(Level.FINEST, player.getName() + ", numAttackOptions=" + prioritizedTerritories.size() + ", options="
-          + prioritizedTerritories);
+      final List<ProAttackTerritoryData> prioritizedTerritories =
+          attackOptionsUtils.removeTerritoriesThatCantBeConquered(player, attackMap, unitAttackMap, transportAttackMap,
+              true);
+      LogUtils.log(Level.FINEST, player.getName() + ", numAttackOptions=" + prioritizedTerritories.size()
+          + ", options=" + prioritizedTerritories);
+
       // Find attack options per war action
       final Map<PoliticalActionAttachment, Double> attackPercentageMap =
           new HashMap<PoliticalActionAttachment, Double>();
@@ -120,6 +129,7 @@ public class ProPoliticsAI {
         attackPercentageMap.put(action, attackPercentage);
         LogUtils.log(Level.FINEST, enemyPlayers + ", count=" + count + ", attackPercentage=" + attackPercentage);
       }
+
       // Decide whether to declare war on an enemy
       final List<PoliticalActionAttachment> options =
           new ArrayList<PoliticalActionAttachment>(attackPercentageMap.keySet());
@@ -130,13 +140,13 @@ public class ProPoliticsAI {
         final double random = Math.random();
         LogUtils.log(Level.FINEST, enemyMap.get(action) + ", warChance=" + warChance + ", random=" + random);
         if (random <= warChance) {
-          // iPoliticsDelegate.attemptAction(action);
           results.add(action);
           LogUtils.log(Level.FINER, "---Declared war on " + enemyMap.get(action));
           break;
         }
       }
     } else if (!neutralMap.isEmpty()) {
+
       // Decide whether to declare war on a neutral
       final List<PoliticalActionAttachment> options = new ArrayList<PoliticalActionAttachment>(neutralMap.keySet());
       Collections.shuffle(options);
@@ -144,11 +154,11 @@ public class ProPoliticsAI {
       final double warChance = .01;
       LogUtils.log(Level.FINER, "warChance=" + warChance + ", random=" + random);
       if (random <= warChance) {
-        // iPoliticsDelegate.attemptAction(options.get(0));
         results.add(options.get(0));
         LogUtils.log(Level.FINER, "Declared war on " + enemyMap.get(options.get(0)));
       }
     }
+
     // Old code used for non-war actions
     if (Math.random() < .5) {
       final List<PoliticalActionAttachment> actionChoicesOther =
@@ -162,8 +172,7 @@ public class ProPoliticsAI {
         final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
         while (actionOtherIter.hasNext() && MAX_OTHER_ACTIONS_PER_TURN > 0) {
           final PoliticalActionAttachment action = actionOtherIter.next();
-          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
-              .match(action)) {
+          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions()).match(action)) {
             continue;
           }
           if (action.getCostPU() > 0 && action.getCostPU() > player.getResources().getQuantity(Constants.PUS)) {
@@ -173,7 +182,6 @@ public class ProPoliticsAI {
           if (i > MAX_OTHER_ACTIONS_PER_TURN) {
             break;
           }
-          // iPoliticsDelegate.attemptAction(action);
           results.add(action);
         }
       }

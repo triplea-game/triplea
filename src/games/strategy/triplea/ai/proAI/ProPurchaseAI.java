@@ -94,7 +94,9 @@ public class ProPurchaseAI {
   }
 
   public void bid(int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data, final PlayerID player) {
+
     LogUtils.log(Level.FINE, "Starting bid purchase phase");
+
     // Current data at the start of combat move
     this.data = data;
     this.player = player;
@@ -103,6 +105,7 @@ public class ProPurchaseAI {
     if (PUsToSpend == 0 && player.getResources().getQuantity(data.getResourceList().getResource(Constants.PUS)) == 0) {
       return;
     }
+
     // breakdown Rules by type and cost
     int highPrice = 0;
     final List<ProductionRule> rules = player.getProductionFrontier().getRules();
@@ -117,7 +120,7 @@ public class ProPurchaseAI {
     final IntegerMap<ProductionRule> bestTransport = new IntegerMap<ProductionRule>();
     final IntegerMap<ProductionRule> bestMaxUnits = new IntegerMap<ProductionRule>();
     final IntegerMap<ProductionRule> bestMobileAttack = new IntegerMap<ProductionRule>();
-    // ProductionRule highRule = null;
+
     ProductionRule carrierRule = null, fighterRule = null;
     int carrierFighterLimit = 0, maxFighterAttack = 0;
     float averageSeaMove = 0;
@@ -415,7 +418,9 @@ public class ProPurchaseAI {
 
   public int repair(int PUsRemaining, final IPurchaseDelegate purchaseDelegate, final GameData data,
       final PlayerID player) {
+
     LogUtils.log(Level.FINE, "Repairing factories with PUsRemaining=" + PUsRemaining);
+
     // Current data at the start of combat move
     this.data = data;
     this.player = player;
@@ -428,15 +433,7 @@ public class ProPurchaseAI {
         Match.getMatches(data.getMap().getTerritories(),
             ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data));
     if (player.getRepairFrontier() != null
-        && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) // figure
-                                                                                                        // out
-                                                                                                        // if
-                                                                                                        // anything
-                                                                                                        // needs
-                                                                                                        // to
-                                                                                                        // be
-                                                                                                        // repaired
-    {
+        && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
       LogUtils.log(Level.FINER, "Factories can be damaged");
       final Map<Unit, Territory> unitsThatCanProduceNeedingRepair = new HashMap<Unit, Territory>();
       for (final Territory fixTerr : rfactories) {
@@ -837,8 +834,10 @@ public class ProPurchaseAI {
 
   public void place(final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player) {
+
     LogUtils.log(Level.FINE, "Starting place phase");
     if (purchaseTerritories != null) {
+
       // Place all units calculated during purchase phase (land then sea to reduce failed placements)
       for (final Territory t : purchaseTerritories.keySet()) {
         for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories()) {
@@ -877,28 +876,34 @@ public class ProPurchaseAI {
         }
       }
     }
+
     // Place remaining units (currently only implemented to handle land units, ex. WW2v3 China)
     if (player.getUnits().getUnits().isEmpty()) {
       return;
     }
+
     // Current data at the start of place
     LogUtils.log(Level.FINER, "Remaining units to place: " + player.getUnits().getUnits());
     this.data = data;
     this.player = player;
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     allTerritories = data.getMap().getTerritories();
+
     // Find all place territories
     final Map<Territory, ProPurchaseTerritory> placeNonConstructionTerritories =
         purchaseUtils.findPurchaseTerritories(player);
+
     // Determine max enemy attack units and current allied defenders
     final Map<Territory, ProAttackTerritoryData> enemyAttackMap = new HashMap<Territory, ProAttackTerritoryData>();
     attackOptionsUtils.findMaxEnemyAttackUnits(player, new ArrayList<Territory>(), new ArrayList<Territory>(
         placeNonConstructionTerritories.keySet()), enemyAttackMap);
     findDefendersInPlaceTerritories(placeNonConstructionTerritories);
+
     // Prioritize land territories that need defended and place additional defenders
     final List<ProPlaceTerritory> needToDefendLandTerritories =
         prioritizeTerritoriesToDefend(placeNonConstructionTerritories, enemyAttackMap, true);
     placeDefenders(placeNonConstructionTerritories, enemyAttackMap, needToDefendLandTerritories, placeDelegate);
+
     // Find strategic value for each territory
     LogUtils.log(Level.FINE, "Find strategic value for place territories");
     final Map<Territory, Double> territoryValueMap =
@@ -910,6 +915,7 @@ public class ProPurchaseAI {
         LogUtils.log(Level.FINER, ppt.getTerritory() + ", strategicValue=" + territoryValueMap.get(ppt.getTerritory()));
       }
     }
+
     // Prioritize land place territories, add all territories, and then place units
     final List<ProPlaceTerritory> prioritizedLandTerritories =
         prioritizeLandTerritories(placeNonConstructionTerritories);
@@ -923,8 +929,8 @@ public class ProPurchaseAI {
     }
     // Place regular land units
     placeLandUnits(placeNonConstructionTerritories, enemyAttackMap, prioritizedLandTerritories, placeDelegate, false);
-    // Place isConstruction land units (needs separated since placeDelegate.getPlaceableUnits doesn't handle them
-    // combined)
+
+    // Place isConstruction land units (needs separated since placeDelegate.getPlaceableUnits doesn't handle combined)
     placeLandUnits(placeNonConstructionTerritories, enemyAttackMap, prioritizedLandTerritories, placeDelegate, true);
   }
 
@@ -950,6 +956,7 @@ public class ProPurchaseAI {
     final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
     final Set<ProPlaceTerritory> needToDefendTerritories = new HashSet<ProPlaceTerritory>();
     for (final ProPurchaseTerritory ppt : purchaseTerritories.values()) {
+
       // Check if any of the place territories can't be held with current defenders
       for (final ProPlaceTerritory placeTerritory : ppt.getCanPlaceTerritories()) {
         final Territory t = placeTerritory.getTerritory();
@@ -957,6 +964,7 @@ public class ProPurchaseAI {
             || (isLand && t.isWater()) || (!isLand && !t.isWater())) {
           continue;
         }
+
         // Find current battle result
         final Set<Unit> enemyAttackingUnits = new HashSet<Unit>(enemyAttackMap.get(t).getMaxUnits());
         enemyAttackingUnits.addAll(enemyAttackMap.get(t).getMaxAmphibUnits());
@@ -975,6 +983,7 @@ public class ProPurchaseAI {
             t.getName() + " TUVSwing=" + result.getTUVSwing() + ", win%=" + result.getWinPercentage()
                 + ", hasLandUnitRemaining=" + result.isHasLandUnitRemaining() + ", holdValue=" + holdValue
                 + ", enemyAttackers=" + enemyAttackingUnits + ", defenders=" + placeTerritory.getDefendingUnits());
+
         // If it can't currently be held then add to list
         final boolean isLandAndCanOnlyBeAttackedByAir =
             !t.isWater() && Match.allMatch(enemyAttackingUnits, Matches.UnitIsAir);
@@ -985,35 +994,42 @@ public class ProPurchaseAI {
         }
       }
     }
+
     // Calculate value of defending territory
     for (final ProPlaceTerritory placeTerritory : needToDefendTerritories) {
       final Territory t = placeTerritory.getTerritory();
+
       // Determine if it is my capital or adjacent to my capital
       int isMyCapital = 0;
       if (t.equals(myCapital)) {
         isMyCapital = 1;
       }
+
       // Determine if it has a factory
       int isFactory = 0;
       if (ProMatches.territoryHasInfraFactoryAndIsOwnedLand(player).match(t)) {
         isFactory = 1;
       }
+
       // Determine production value and if it is an enemy capital
       int production = 0;
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
       if (ta != null) {
         production = ta.getProduction();
       }
+
       // Determine defending unit value
       double defendingUnitValue = BattleCalculator.getTUV(placeTerritory.getDefendingUnits(), playerCostMap);
       if (t.isWater() && Match.noneMatch(placeTerritory.getDefendingUnits(), Matches.unitIsOwnedBy(player))) {
         defendingUnitValue = 0;
       }
+
       // Calculate defense value for prioritization
       final double territoryValue =
           (2 * production + 4 * isFactory + 0.5 * defendingUnitValue) * (1 + isFactory) * (1 + 10 * isMyCapital);
       placeTerritory.setDefenseValue(territoryValue);
     }
+
     // Remove any territories with negative defense value
     for (final Iterator<ProPlaceTerritory> it = needToDefendTerritories.iterator(); it.hasNext();) {
       final ProPlaceTerritory ppt = it.next();
@@ -1021,6 +1037,7 @@ public class ProPurchaseAI {
         it.remove();
       }
     }
+
     // Sort territories by value
     final List<ProPlaceTerritory> sortedTerritories = new ArrayList<ProPlaceTerritory>(needToDefendTerritories);
     Collections.sort(sortedTerritories, new Comparator<ProPlaceTerritory>() {
@@ -1167,7 +1184,9 @@ public class ProPurchaseAI {
 
   private List<ProPlaceTerritory> prioritizeLandTerritories(
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
+
     LogUtils.log(Level.FINE, "Prioritize land territories to place");
+
     // Get all land place territories
     final List<ProPlaceTerritory> prioritizedLandTerritories = new ArrayList<ProPlaceTerritory>();
     for (final ProPurchaseTerritory ppt : purchaseTerritories.values()) {
@@ -1188,6 +1207,7 @@ public class ProPurchaseAI {
         }
       }
     }
+
     // Sort territories by value
     Collections.sort(prioritizedLandTerritories, new Comparator<ProPlaceTerritory>() {
       @Override
@@ -1561,7 +1581,9 @@ public class ProPurchaseAI {
   private List<ProPlaceTerritory> prioritizeSeaTerritories(
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final Map<Territory, ProAttackTerritoryData> enemyAttackMap) {
+
     LogUtils.log(Level.FINE, "Prioritize sea territories");
+
     // Determine which sea territories can be placed in
     final Set<ProPlaceTerritory> seaPlaceTerritories = new HashSet<ProPlaceTerritory>();
     for (final ProPurchaseTerritory ppt : purchaseTerritories.values()) {
@@ -1572,16 +1594,19 @@ public class ProPurchaseAI {
         }
       }
     }
+
     // Calculate value of territory
     LogUtils.log(Level.FINER, "Determine sea place value:");
     for (final ProPlaceTerritory placeTerritory : seaPlaceTerritories) {
       final Territory t = placeTerritory.getTerritory();
+
       // Find number of local naval units
       final List<Unit> units = new ArrayList<Unit>(placeTerritory.getDefendingUnits());
       units.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
       final List<Unit> myUnits = Match.getMatches(units, Matches.unitIsOwnedBy(player));
       final int numMyTransports = Match.countMatches(myUnits, Matches.UnitIsTransport);
       final int numSeaDefenders = Match.countMatches(units, Matches.UnitIsNotTransport);
+
       // Determine needed defense strength
       int needDefenders = 0;
       if (enemyAttackMap.get(t) != null) {
@@ -1596,6 +1621,7 @@ public class ProPurchaseAI {
       if (!hasLocalNavalSuperiority) {
         needDefenders = 1;
       }
+
       // Calculate sea value for prioritization
       final double territoryValue =
           placeTerritory.getStrategicValue() * (1 + numMyTransports + 0.1 * numSeaDefenders) / (1 + 3 * needDefenders);
@@ -1605,6 +1631,7 @@ public class ProPurchaseAI {
               + needDefenders);
       placeTerritory.setStrategicValue(territoryValue);
     }
+
     // Sort territories by value
     final List<ProPlaceTerritory> sortedTerritories = new ArrayList<ProPlaceTerritory>(seaPlaceTerritories);
     Collections.sort(sortedTerritories, new Comparator<ProPlaceTerritory>() {
@@ -1658,6 +1685,7 @@ public class ProPurchaseAI {
 
       // If any enemy attackers then purchase sea defenders until it can be held
       if (enemyAttackMap.get(t) != null) {
+
         // Determine if need destroyer
         if (Match.someMatch(enemyAttackMap.get(t).getMaxUnits(), Matches.UnitIsSub)
             && Match.noneMatch(t.getUnits().getMatches(Matches.unitIsOwnedBy(player)), Matches.UnitIsDestroyer)) {
@@ -2314,6 +2342,7 @@ public class ProPurchaseAI {
 
   private IntegerMap<ProductionRule> populateProductionRuleMap(
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final ProPurchaseOptionMap purchaseOptions) {
+
     LogUtils.log(Level.FINE, "Populate production rule map");
     final List<Unit> unplacedUnits = player.getUnits().getMatches(Matches.UnitIsNotSea);
     final IntegerMap<ProductionRule> purchaseMap = new IntegerMap<ProductionRule>();
@@ -2340,13 +2369,16 @@ public class ProPurchaseAI {
   private void placeDefenders(final Map<Territory, ProPurchaseTerritory> placeNonConstructionTerritories,
       final Map<Territory, ProAttackTerritoryData> enemyAttackMap,
       final List<ProPlaceTerritory> needToDefendTerritories, final IAbstractPlaceDelegate placeDelegate) {
+
     LogUtils.log(Level.FINE, "Place defenders with units=" + player.getUnits().getUnits());
+
     // Loop through prioritized territories and purchase defenders
     for (final ProPlaceTerritory placeTerritory : needToDefendTerritories) {
       final Territory t = placeTerritory.getTerritory();
       LogUtils.log(Level.FINER, "Placing defenders for " + t.getName() + ", enemyAttackers="
           + enemyAttackMap.get(t).getMaxUnits() + ", amphibEnemyAttackers=" + enemyAttackMap.get(t).getMaxAmphibUnits()
           + ", defenders=" + placeTerritory.getDefendingUnits());
+
       // Check if any units can be placed
       final PlaceableUnits placeableUnits =
           placeDelegate.getPlaceableUnits(player.getUnits().getMatches(Matches.UnitIsNotConstruction), t);
@@ -2354,20 +2386,24 @@ public class ProPurchaseAI {
         LogUtils.log(Level.FINEST, t + " can't place units with error: " + placeableUnits.getErrorMessage());
         continue;
       }
+
       // Find remaining unit production
       int remainingUnitProduction = placeableUnits.getMaxUnits();
       if (remainingUnitProduction == -1) {
         remainingUnitProduction = Integer.MAX_VALUE;
       }
       LogUtils.log(Level.FINEST, t + ", remainingUnitProduction=" + remainingUnitProduction);
+
       // Place defenders and check battle results
       final List<Unit> unitsThatCanBePlaced = new ArrayList<Unit>(placeableUnits.getUnits());
       final int landPlaceCount = Math.min(remainingUnitProduction, unitsThatCanBePlaced.size());
       final List<Unit> unitsToPlace = new ArrayList<Unit>();
       ProBattleResultData finalResult = new ProBattleResultData();
       for (int i = 0; i < landPlaceCount; i++) {
+
         // Add defender
         unitsToPlace.add(unitsThatCanBePlaced.get(i));
+
         // Find current battle result
         final Set<Unit> enemyAttackingUnits = new HashSet<Unit>(enemyAttackMap.get(t).getMaxUnits());
         enemyAttackingUnits.addAll(enemyAttackMap.get(t).getMaxAmphibUnits());
@@ -2376,6 +2412,7 @@ public class ProPurchaseAI {
         finalResult =
             battleUtils.calculateBattleResults(player, t, new ArrayList<Unit>(enemyAttackingUnits), defenders,
                 enemyAttackMap.get(t).getMaxBombardUnits(), false);
+
         // Break if it can be held
         if ((!t.equals(myCapital) && !finalResult.isHasLandUnitRemaining() && finalResult.getTUVSwing() <= 0)
             || (t.equals(myCapital) && finalResult.getWinPercentage() < (100 - WIN_PERCENTAGE) && finalResult
@@ -2383,6 +2420,7 @@ public class ProPurchaseAI {
           break;
         }
       }
+
       // Check to see if its worth trying to defend the territory
       if (!finalResult.isHasLandUnitRemaining()
           || finalResult.getTUVSwing() < placeTerritory.getMinBattleResult().getTUVSwing() || t.equals(myCapital)) {
@@ -2400,28 +2438,34 @@ public class ProPurchaseAI {
       final Map<Territory, ProAttackTerritoryData> enemyAttackMap,
       final List<ProPlaceTerritory> prioritizedLandTerritories, final IAbstractPlaceDelegate placeDelegate,
       final boolean isConstruction) {
+
     LogUtils.log(Level.FINE, "Place land with isConstruction=" + isConstruction + ", units="
         + player.getUnits().getUnits());
+
     Match<Unit> unitMatch = Matches.UnitIsNotConstruction;
     if (isConstruction) {
       unitMatch = Matches.UnitIsConstruction;
     }
+
     // Loop through prioritized territories and place land units
     for (final ProPlaceTerritory placeTerritory : prioritizedLandTerritories) {
       final Territory t = placeTerritory.getTerritory();
       LogUtils.log(Level.FINER, "Checking land place for " + t.getName());
+
       // Check if any units can be placed
       final PlaceableUnits placeableUnits = placeDelegate.getPlaceableUnits(player.getUnits().getMatches(unitMatch), t);
       if (placeableUnits.isError()) {
         LogUtils.log(Level.FINEST, t + " can't place units with error: " + placeableUnits.getErrorMessage());
         continue;
       }
+
       // Find remaining unit production
       int remainingUnitProduction = placeableUnits.getMaxUnits();
       if (remainingUnitProduction == -1) {
         remainingUnitProduction = Integer.MAX_VALUE;
       }
       LogUtils.log(Level.FINEST, t + ", remainingUnitProduction=" + remainingUnitProduction);
+
       // Place as many units as possible
       final List<Unit> unitsThatCanBePlaced = new ArrayList<Unit>(placeableUnits.getUnits());
       final int landPlaceCount = Math.min(remainingUnitProduction, unitsThatCanBePlaced.size());
@@ -2433,11 +2477,14 @@ public class ProPurchaseAI {
 
   private void addUnitsToPlaceTerritory(final ProPlaceTerritory placeTerritory, final List<Unit> unitsToPlace,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
+
     // Add units to place territory
     for (final Territory purchaseTerritory : purchaseTerritories.keySet()) {
       for (final ProPlaceTerritory ppt : purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories()) {
+
         // If place territory is equal to the current place territory and has remaining production
         if (placeTerritory.equals(ppt) && purchaseTerritories.get(purchaseTerritory).getRemainingUnitProduction() > 0) {
+
           // Place max number of units
           final int numUnits =
               Math.min(purchaseTerritories.get(purchaseTerritory).getRemainingUnitProduction(), unitsToPlace.size());
@@ -2451,9 +2498,11 @@ public class ProPurchaseAI {
 
   private void setCantHoldPlaceTerritory(final ProPlaceTerritory placeTerritory,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
+
     // Add units to place territory
     for (final Territory purchaseTerritory : purchaseTerritories.keySet()) {
       for (final ProPlaceTerritory ppt : purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories()) {
+
         // If place territory is equal to the current place territory
         if (placeTerritory.equals(ppt)) {
           ppt.setCanHold(false);

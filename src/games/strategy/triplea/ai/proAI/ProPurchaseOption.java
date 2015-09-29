@@ -26,6 +26,7 @@ import games.strategy.util.LinkedIntegerMap;
 import games.strategy.util.Match;
 
 public class ProPurchaseOption {
+
   private final ProductionRule productionRule;
   private final UnitType unitType;
   private final PlayerID player;
@@ -309,9 +310,11 @@ public class ProPurchaseOption {
   // TODO: doesn't consider enemy support
   private double calculateSupportFactor(final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace,
       final GameData data, final boolean defense) {
+
     if ((!isAttackSupport && !defense) || (!isDefenseSupport && defense)) {
       return 0;
     }
+
     final List<Unit> units = new ArrayList<Unit>(ownedLocalUnits);
     units.addAll(unitsToPlace);
     units.addAll(unitType.create(1, player, true));

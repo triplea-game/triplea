@@ -44,6 +44,7 @@ import games.strategy.util.Match;
  * Pro AI purchase utilities.
  */
 public class ProPurchaseUtils {
+
   private final ProAI ai;
 
   public ProPurchaseUtils(final ProAI proAI) {
@@ -168,6 +169,7 @@ public class ProPurchaseUtils {
 
   public ProPurchaseOption randomizePurchaseOption(final Map<ProPurchaseOption, Double> purchaseEfficiencies,
       final String type) {
+
     LogUtils.log(Level.FINEST, "Select purchase option for " + type);
     double totalEfficiency = 0;
     for (final Double efficiency : purchaseEfficiencies.values()) {
@@ -194,6 +196,7 @@ public class ProPurchaseUtils {
 
   public List<Unit> findMaxPurchaseDefenders(final PlayerID player, final Territory t,
       final List<ProPurchaseOption> landPurchaseOptions) {
+
     LogUtils.log(Level.FINE, "Find max purchase defenders for " + t.getName());
     final GameData data = ai.getGameData();
 
@@ -248,6 +251,7 @@ public class ProPurchaseUtils {
   }
 
   public Map<Territory, ProPurchaseTerritory> findPurchaseTerritories(final PlayerID player) {
+
     LogUtils.log(Level.FINE, "Find all purchase territories");
     final GameData data = ai.getGameData();
 
@@ -277,6 +281,7 @@ public class ProPurchaseUtils {
   }
 
   public int getUnitProduction(final Territory territory, final GameData data, final PlayerID player) {
+
     final CompositeMatchAnd<Unit> factoryMatch =
         new CompositeMatchAnd<Unit>(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches
             .unitIsBeingTransported().invert());
@@ -305,6 +310,7 @@ public class ProPurchaseUtils {
   }
 
   private PlayerID getOriginalFactoryOwner(final Territory territory, final PlayerID player) {
+
     final Collection<Unit> factoryUnits = territory.getUnits().getMatches(Matches.UnitCanProduceUnits);
     if (factoryUnits.size() == 0) {
       throw new IllegalStateException("No factory in territory:" + territory);
@@ -382,6 +388,7 @@ public class ProPurchaseUtils {
 
   public static List<Unit> getPlaceUnits(final Territory t,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
+
     final List<Unit> placeUnits = new ArrayList<Unit>();
     if (purchaseTerritories == null) {
       return placeUnits;

@@ -42,6 +42,7 @@ import java.util.logging.Level;
  * 3. defender submerges (or moves if Classic rules) sub at start or end of battle
  */
 public class ProRetreatAI {
+
   private final ProAI ai;
   private final ProBattleUtils battleUtils;
 
@@ -66,8 +67,8 @@ public class ProRetreatAI {
 
     // Calculate battle results
     final ProBattleResultData result =
-        battleUtils.calculateBattleResults(player, battleTerritory, attackers, defenders,
-            new HashSet<Unit>(), isAttacker);
+        battleUtils.calculateBattleResults(player, battleTerritory, attackers, defenders, new HashSet<Unit>(),
+            isAttacker);
 
     // Determine if it has a factory
     int isFactory = 0;
@@ -108,21 +109,22 @@ public class ProRetreatAI {
           retreatTerritory = t;
           break;
         }
-        final double strength = battleUtils.estimateStrength(player, t,
-            t.getUnits().getMatches(Matches.isUnitAllied(player, data)), new ArrayList<Unit>(), false);
+        final double strength =
+            battleUtils.estimateStrength(player, t, t.getUnits().getMatches(Matches.isUnitAllied(player, data)),
+                new ArrayList<Unit>(), false);
         if (strength > maxStrength) {
           retreatTerritory = t;
           maxStrength = strength;
         }
       }
-      LogUtils.log(Level.FINER,
-          player.getName() + " retreating from territory " + battleTerritory + " to " + retreatTerritory
-              + " because AttackValue=" + battleValue + ", TUVSwing=" + result.getTUVSwing() + ", possibleTerritories="
-              + possibleTerritories.size());
+      LogUtils.log(Level.FINER, player.getName() + " retreating from territory " + battleTerritory + " to "
+          + retreatTerritory + " because AttackValue=" + battleValue + ", TUVSwing=" + result.getTUVSwing()
+          + ", possibleTerritories=" + possibleTerritories.size());
       return retreatTerritory;
     }
     LogUtils.log(Level.FINER, player.getName() + " not retreating from territory " + battleTerritory
         + " with AttackValue=" + battleValue + ", TUVSwing=" + result.getTUVSwing());
+
     return null;
   }
 }

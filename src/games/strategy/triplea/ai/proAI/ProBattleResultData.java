@@ -6,6 +6,7 @@ import java.util.List;
 import games.strategy.engine.data.Unit;
 
 public class ProBattleResultData {
+
   private double winPercentage;
   private double TUVSwing;
   private boolean hasLandUnitRemaining;
