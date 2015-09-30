@@ -26,7 +26,7 @@ import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.proAI.ProPlaceTerritory;
 import games.strategy.triplea.ai.proAI.ProPurchaseOption;
 import games.strategy.triplea.ai.proAI.ProPurchaseTerritory;
-import games.strategy.triplea.ai.proAI.ProResourceData;
+import games.strategy.triplea.ai.proAI.ProResourceTracker;
 import games.strategy.triplea.ai.proAI.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -54,7 +54,7 @@ public class ProPurchaseUtils {
   public void findPurchaseOptions(final PlayerID player, final List<ProPurchaseOption> landPurchaseOptions,
       final List<ProPurchaseOption> airPurchaseOptions, final List<ProPurchaseOption> seaPurchaseOptions,
       final List<ProPurchaseOption> factoryPurchaseOptions, final List<ProPurchaseOption> specialPurchaseOptions) {
-    LogUtils.log(Level.FINE, "Find all purchase options");
+    ProLogUtils.log(Level.FINE, "Find all purchase options");
     final GameData data = ai.getGameData();
     final List<ProductionRule> rules = player.getProductionFrontier().getRules();
     for (final ProductionRule rule : rules) {
@@ -73,23 +73,23 @@ public class ProPurchaseUtils {
           || Matches.UnitTypeCanNotMoveDuringCombatMove.match(unitType) || UnitAttachment.get(unitType).getIsSuicide()) {
         final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
         specialPurchaseOptions.add(purchaseOption);
-        LogUtils.log(Level.FINER, "Special: " + purchaseOption);
+        ProLogUtils.log(Level.FINER, "Special: " + purchaseOption);
       } else if (Matches.UnitTypeCanProduceUnits.match(unitType) && Matches.UnitTypeIsInfrastructure.match(unitType)) {
         final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
         factoryPurchaseOptions.add(purchaseOption);
-        LogUtils.log(Level.FINER, "Factory: " + purchaseOption);
+        ProLogUtils.log(Level.FINER, "Factory: " + purchaseOption);
       } else if (Matches.UnitTypeIsLand.match(unitType)) {
         final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
         landPurchaseOptions.add(purchaseOption);
-        LogUtils.log(Level.FINER, "Land: " + purchaseOption);
+        ProLogUtils.log(Level.FINER, "Land: " + purchaseOption);
       } else if (Matches.UnitTypeIsAir.match(unitType)) {
         final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
         airPurchaseOptions.add(purchaseOption);
-        LogUtils.log(Level.FINER, "Air: " + purchaseOption);
+        ProLogUtils.log(Level.FINER, "Air: " + purchaseOption);
       } else if (Matches.UnitTypeIsSea.match(unitType)) {
         final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
         seaPurchaseOptions.add(purchaseOption);
-        LogUtils.log(Level.FINER, "Sea: " + purchaseOption);
+        ProLogUtils.log(Level.FINER, "Sea: " + purchaseOption);
       }
     }
   }
@@ -125,22 +125,23 @@ public class ProPurchaseUtils {
     return false;
   }
 
-  public void removePurchaseOptionsByCostAndProductionAndLimits(final PlayerID player, final GameData data,
-      final List<ProPurchaseOption> purchaseOptions, ProResourceData resourceData, final int remainingUnitProduction,
-      final List<Unit> unitsToPlace, final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
+  public List<ProPurchaseOption> removeInvalidPurchaseOptions(final PlayerID player, final GameData data,
+      final List<ProPurchaseOption> purchaseOptions, ProResourceTracker resourceTracker,
+      final int remainingUnitProduction, final List<Unit> unitsToPlace,
+      final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
     for (final Iterator<ProPurchaseOption> it = purchaseOptions.iterator(); it.hasNext();) {
-      final ProPurchaseOption ppo = it.next();
+      final ProPurchaseOption purchaseOption = it.next();
 
       // Check PU cost and production
-      if (!resourceData.hasEnough(ppo) || ppo.getQuantity() > remainingUnitProduction) {
+      if (!resourceTracker.hasEnough(purchaseOption) || purchaseOption.getQuantity() > remainingUnitProduction) {
         it.remove();
         continue;
       }
 
       // Check max unit limits (-1 is unlimited)
-      final int maxBuilt = ppo.getMaxBuiltPerPlayer();
-      final UnitType type = ppo.getUnitType();
+      final int maxBuilt = purchaseOption.getMaxBuiltPerPlayer();
+      final UnitType type = purchaseOption.getUnitType();
       if (maxBuilt == 0) {
         it.remove();
       } else if (maxBuilt > 0) {
@@ -160,17 +161,18 @@ public class ProPurchaseUtils {
           }
         }
         final int allowedBuild = maxBuilt - currentlyBuilt;
-        if (allowedBuild - ppo.getQuantity() < 0) {
+        if (allowedBuild - purchaseOption.getQuantity() < 0) {
           it.remove();
         }
       }
     }
+    return purchaseOptions;
   }
 
   public ProPurchaseOption randomizePurchaseOption(final Map<ProPurchaseOption, Double> purchaseEfficiencies,
       final String type) {
 
-    LogUtils.log(Level.FINEST, "Select purchase option for " + type);
+    ProLogUtils.log(Level.FINEST, "Select purchase option for " + type);
     double totalEfficiency = 0;
     for (final Double efficiency : purchaseEfficiencies.values()) {
       totalEfficiency += efficiency;
@@ -181,11 +183,11 @@ public class ProPurchaseUtils {
       final double chance = purchaseEfficiencies.get(ppo) / totalEfficiency * 100;
       upperBound += chance;
       purchasePercentages.put(ppo, upperBound);
-      LogUtils
-          .log(Level.FINEST, ppo.getUnitType().getName() + ", probability=" + chance + ", upperBound=" + upperBound);
+      ProLogUtils.log(Level.FINEST, ppo.getUnitType().getName() + ", probability=" + chance + ", upperBound="
+          + upperBound);
     }
     final double randomNumber = Math.random() * 100;
-    LogUtils.log(Level.FINEST, "Random number: " + randomNumber);
+    ProLogUtils.log(Level.FINEST, "Random number: " + randomNumber);
     for (final ProPurchaseOption ppo : purchasePercentages.keySet()) {
       if (randomNumber <= purchasePercentages.get(ppo)) {
         return ppo;
@@ -197,7 +199,7 @@ public class ProPurchaseUtils {
   public List<Unit> findMaxPurchaseDefenders(final PlayerID player, final Territory t,
       final List<ProPurchaseOption> landPurchaseOptions) {
 
-    LogUtils.log(Level.FINE, "Find max purchase defenders for " + t.getName());
+    ProLogUtils.log(Level.FINE, "Find max purchase defenders for " + t.getName());
     final GameData data = ai.getGameData();
 
     // Determine most cost efficient defender that can be produced in this territory
@@ -217,7 +219,7 @@ public class ProPurchaseUtils {
     // Determine number of defenders I can purchase
     final List<Unit> placeUnits = new ArrayList<Unit>();
     if (bestDefenseOption != null) {
-      LogUtils.log(Level.FINER, "Best defense option: " + bestDefenseOption.getUnitType().getName());
+      ProLogUtils.log(Level.FINER, "Best defense option: " + bestDefenseOption.getUnitType().getName());
       int remainingUnitProduction = getUnitProduction(t, data, player);
       int PUsSpent = 0;
       while (true) {
@@ -233,7 +235,7 @@ public class ProPurchaseUtils {
         remainingUnitProduction -= bestDefenseOption.getQuantity();
         placeUnits.addAll(bestDefenseOption.getUnitType().create(bestDefenseOption.getQuantity(), player, true));
       }
-      LogUtils.log(Level.FINER, "Potential purchased defenders: " + placeUnits);
+      ProLogUtils.log(Level.FINER, "Potential purchased defenders: " + placeUnits);
     }
     return placeUnits;
   }
@@ -252,7 +254,7 @@ public class ProPurchaseUtils {
 
   public Map<Territory, ProPurchaseTerritory> findPurchaseTerritories(final PlayerID player) {
 
-    LogUtils.log(Level.FINE, "Find all purchase territories");
+    ProLogUtils.log(Level.FINE, "Find all purchase territories");
     final GameData data = ai.getGameData();
 
     // Find all territories that I can place units on
@@ -275,7 +277,7 @@ public class ProPurchaseUtils {
       final int unitProduction = getUnitProduction(t, data, player);
       final ProPurchaseTerritory ppt = new ProPurchaseTerritory(t, data, player, unitProduction);
       purchaseTerritories.put(t, ppt);
-      LogUtils.log(Level.FINER, ppt.toString());
+      ProLogUtils.log(Level.FINER, ppt.toString());
     }
     return purchaseTerritories;
   }

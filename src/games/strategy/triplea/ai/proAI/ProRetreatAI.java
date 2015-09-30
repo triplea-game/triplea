@@ -5,7 +5,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.net.GUID;
-import games.strategy.triplea.ai.proAI.util.LogUtils;
+import games.strategy.triplea.ai.proAI.util.ProLogUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -117,12 +117,12 @@ public class ProRetreatAI {
           maxStrength = strength;
         }
       }
-      LogUtils.log(Level.FINER, player.getName() + " retreating from territory " + battleTerritory + " to "
+      ProLogUtils.log(Level.FINER, player.getName() + " retreating from territory " + battleTerritory + " to "
           + retreatTerritory + " because AttackValue=" + battleValue + ", TUVSwing=" + result.getTUVSwing()
           + ", possibleTerritories=" + possibleTerritories.size());
       return retreatTerritory;
     }
-    LogUtils.log(Level.FINER, player.getName() + " not retreating from territory " + battleTerritory
+    ProLogUtils.log(Level.FINER, player.getName() + " not retreating from territory " + battleTerritory
         + " with AttackValue=" + battleValue + ", TUVSwing=" + result.getTUVSwing());
 
     return null;

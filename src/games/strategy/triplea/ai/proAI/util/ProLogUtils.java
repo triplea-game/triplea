@@ -9,7 +9,7 @@ import games.strategy.triplea.ai.proAI.logging.LogUI;
 /**
  * Class to log messages to log window and console.
  */
-public class LogUtils {
+public class ProLogUtils {
 
   /**
    * Some notes on using the Pro AI logger:

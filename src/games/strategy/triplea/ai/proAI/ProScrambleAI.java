@@ -15,7 +15,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.ai.proAI.util.LogUtils;
+import games.strategy.triplea.ai.proAI.util.ProLogUtils;
 import games.strategy.triplea.ai.proAI.util.ProAttackOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
@@ -62,7 +62,7 @@ public class ProScrambleAI {
     final Set<Unit> bombardingUnits = new HashSet<Unit>(battle.getBombardingUnits());
     final ProBattleResultData minResult =
         battleUtils.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
-    LogUtils.log(Level.FINER,
+    ProLogUtils.log(Level.FINER,
         scrambleTo + ", minTUVSwing=" + minResult.getTUVSwing() + ", minWin%=" + minResult.getWinPercentage());
     if (minResult.getTUVSwing() <= 0 && minResult.getWinPercentage() < (100 - MIN_WIN_PERCENTAGE)) {
       return null;
@@ -95,7 +95,7 @@ public class ProScrambleAI {
     defenders.addAll(allScramblers);
     final ProBattleResultData maxResult =
         battleUtils.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
-    LogUtils.log(Level.FINER,
+    ProLogUtils.log(Level.FINER,
         scrambleTo + ", maxTUVSwing=" + maxResult.getTUVSwing() + ", maxWin%=" + maxResult.getWinPercentage());
     if (maxResult.getTUVSwing() >= minResult.getTUVSwing()) {
       return null;
@@ -133,7 +133,7 @@ public class ProScrambleAI {
       currentDefenders.addAll(unitsToScramble);
       result =
           battleUtils.calculateBattleResults(player, scrambleTo, attackers, currentDefenders, bombardingUnits, false);
-      LogUtils.log(Level.FINER,
+      ProLogUtils.log(Level.FINER,
           scrambleTo + ", TUVSwing=" + result.getTUVSwing() + ", Win%=" + result.getWinPercentage() + ", addedUnit="
               + u);
       if (result.getTUVSwing() <= 0 && result.getWinPercentage() < (100 - MIN_WIN_PERCENTAGE)) {

@@ -285,7 +285,7 @@ public class ProBattleUtils {
 
       // Determine strength difference
       final double strengthDifference = estimateStrengthDifference(t, enemyUnits, alliedUnits);
-      LogUtils.log(Level.FINEST, t + ", current enemy land strengthDifference=" + strengthDifference + ", distance="
+      ProLogUtils.log(Level.FINEST, t + ", current enemy land strengthDifference=" + strengthDifference + ", distance="
           + i + ", enemySize=" + enemyUnits.size() + ", alliedSize=" + alliedUnits.size());
       if (strengthDifference > 50) {
         return false;
@@ -321,7 +321,7 @@ public class ProBattleUtils {
 
     // Determine strength difference
     final double strengthDifference = estimateStrengthDifference(t, enemyUnits, alliedUnits);
-    LogUtils.log(Level.FINEST, t + ", current enemy land strengthDifference=" + strengthDifference + ", enemySize="
+    ProLogUtils.log(Level.FINEST, t + ", current enemy land strengthDifference=" + strengthDifference + ", enemySize="
         + enemyUnits.size() + ", alliedSize=" + alliedUnits.size());
     if (strengthDifference > 50) {
       return false;
@@ -381,7 +381,7 @@ public class ProBattleUtils {
       alliedUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(
           ProMatches.unitIsAlliedNotOwned(player, data)));
     }
-    LogUtils.log(Level.FINEST, t + ", enemyDistance=" + enemyDistance + ", alliedDistance=" + alliedDistance
+    ProLogUtils.log(Level.FINEST, t + ", enemyDistance=" + enemyDistance + ", alliedDistance=" + alliedDistance
         + ", enemyAirUnits=" + enemyUnitsInLandTerritories + ", enemySeaUnits=" + enemyUnitsInSeaTerritories
         + ", mySeaUnits=" + myUnitsInSeaTerritories);
 
@@ -392,14 +392,14 @@ public class ProBattleUtils {
     final List<Unit> enemyAttackers = new ArrayList<Unit>(enemyUnitsInSeaTerritories);
     enemyAttackers.addAll(enemyUnitsInLandTerritories);
     final double defenseStrengthDifference = estimateStrengthDifference(t, enemyAttackers, myUnits);
-    LogUtils.log(Level.FINEST, t + ", current enemy naval attack strengthDifference=" + defenseStrengthDifference
+    ProLogUtils.log(Level.FINEST, t + ", current enemy naval attack strengthDifference=" + defenseStrengthDifference
         + ", enemySize=" + enemyAttackers.size() + ", alliedSize=" + myUnits.size());
 
     // Find current naval attack strength
     double attackStrengthDifference = estimateStrengthDifference(t, myUnits, enemyUnitsInSeaTerritories);
     attackStrengthDifference +=
         0.5 * estimateStrengthDifference(t, alliedUnitsInSeaTerritories, enemyUnitsInSeaTerritories);
-    LogUtils.log(Level.FINEST, t + ", current allied naval attack strengthDifference=" + attackStrengthDifference
+    ProLogUtils.log(Level.FINEST, t + ", current allied naval attack strengthDifference=" + attackStrengthDifference
         + ", alliedSize=" + myUnits.size() + ", enemySize=" + enemyUnitsInSeaTerritories.size());
 
     // If I have naval attack/defense superiority then break

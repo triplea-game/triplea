@@ -13,6 +13,6 @@ public class ProMetricUtils {
 
   public static void collectPurchaseStats(final IntegerMap<ProductionRule> purchaseMap) {
     totalPurchaseMap.add(purchaseMap);
-    LogUtils.log(Level.FINER, totalPurchaseMap.toString());
+    ProLogUtils.log(Level.FINER, totalPurchaseMap.toString());
   }
 }

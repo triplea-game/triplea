@@ -108,7 +108,7 @@ public class ProMoveUtils {
                   ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, isCombatMove));
         }
         if (route == null) {
-          LogUtils.log(Level.WARNING, data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
+          ProLogUtils.log(Level.WARNING, data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
               + ": route is null " + startTerritory + " to " + t + ", units=" + unitList);
         }
         moveRoutes.add(route);
@@ -227,7 +227,7 @@ public class ProMoveUtils {
           movesLeft--;
         }
         if (!remainingUnitsToLoad.isEmpty()) {
-          LogUtils.log(Level.WARNING, data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
+          ProLogUtils.log(Level.WARNING, data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
               + ": " + t + ", remainingUnitsToLoad=" + remainingUnitsToLoad);
         }
 
@@ -311,7 +311,7 @@ public class ProMoveUtils {
         utils.pause();
       }
       if (moveRoutes.get(i) == null || moveRoutes.get(i).getEnd() == null || moveRoutes.get(i).getStart() == null) {
-        LogUtils.log(Level.WARNING, data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
+        ProLogUtils.log(Level.WARNING, data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
             + ": route not valid " + moveRoutes.get(i) + " units: " + moveUnits.get(i));
         continue;
       }
@@ -322,7 +322,7 @@ public class ProMoveUtils {
         result = moveDel.move(moveUnits.get(i), moveRoutes.get(i), transportsToLoad.get(i));
       }
       if (result != null) {
-        LogUtils.log(Level.WARNING, data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
+        ProLogUtils.log(Level.WARNING, data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
             + ": could not move " + moveUnits.get(i) + " over " + moveRoutes.get(i) + " because: " + result);
       }
     }

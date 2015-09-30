@@ -25,7 +25,7 @@ import games.strategy.triplea.ai.AbstractAI;
 import games.strategy.triplea.ai.proAI.logging.LogUI;
 import games.strategy.triplea.ai.proAI.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.ai.proAI.simulate.ProSimulateTurnUtils;
-import games.strategy.triplea.ai.proAI.util.LogUtils;
+import games.strategy.triplea.ai.proAI.util.ProLogUtils;
 import games.strategy.triplea.ai.proAI.util.ProAttackOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMoveUtils;
@@ -121,11 +121,11 @@ public class ProAI extends AbstractAI {
 
   public static void Initialize(final TripleAFrame frame) {
     LogUI.initialize(frame); // Must be done first
-    LogUtils.log(Level.FINE, "Initialized Hard AI");
+    ProLogUtils.log(Level.FINE, "Initialized Hard AI");
   }
 
   public static void ShowSettingsWindow() {
-    LogUtils.log(Level.FINE, "Showing Hard AI settings window");
+    ProLogUtils.log(Level.FINE, "Showing Hard AI settings window");
     LogUI.showSettingsWindow();
   }
 
@@ -175,7 +175,7 @@ public class ProAI extends AbstractAI {
         storedCombatMoveMap = null;
       }
     }
-    LogUtils.log(Level.FINE,
+    ProLogUtils.log(Level.FINE,
         player.getName() + " time for nonCombat=" + nonCombat + " time=" + (System.currentTimeMillis() - start));
   }
 
@@ -198,10 +198,10 @@ public class ProAI extends AbstractAI {
       // Check if any place territories exist
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories = purchaseUtils.findPurchaseTerritories(player);
       if (purchaseTerritories.isEmpty()) {
-        LogUtils.log(Level.FINE, "No possible place territories owned so exiting purchase logic");
+        ProLogUtils.log(Level.FINE, "No possible place territories owned so exiting purchase logic");
         return;
       }
-      LogUtils.log(Level.FINE, "Starting simulation for purchase phase");
+      ProLogUtils.log(Level.FINE, "Starting simulation for purchase phase");
 
       // Setup data copy and delegates
       GameData dataCopy;
@@ -209,7 +209,7 @@ public class ProAI extends AbstractAI {
         data.acquireReadLock();
         dataCopy = GameDataUtils.cloneGameData(data, true);
       } catch (final Throwable t) {
-        LogUtils.log(Level.WARNING, "Error trying to clone game data for simulating phases", t);
+        ProLogUtils.log(Level.WARNING, "Error trying to clone game data for simulating phases", t);
         return;
       } finally {
         data.releaseReadLock();
@@ -238,7 +238,7 @@ public class ProAI extends AbstractAI {
         dataCopy.getSequence().setRoundAndStep(dataCopy.getSequence().getRound(), step.getDisplayName(),
             step.getPlayerID());
         final String stepName = step.getName();
-        LogUtils.log(Level.FINE, "Simulating phase: " + stepName);
+        ProLogUtils.log(Level.FINE, "Simulating phase: " + stepName);
         if (stepName.endsWith("NonCombatMove")) {
           final Map<Territory, ProAttackTerritoryData> factoryMoveMap =
               nonCombatMoveAI.doNonCombatMove(null, null, moveDel, dataCopy, playerCopy, true);
@@ -268,7 +268,7 @@ public class ProAI extends AbstractAI {
         }
       }
     }
-    LogUtils.log(Level.FINE, player.getName() + " time for purchase=" + (System.currentTimeMillis() - start));
+    ProLogUtils.log(Level.FINE, player.getName() + " time for purchase=" + (System.currentTimeMillis() - start));
   }
 
   @Override
@@ -283,7 +283,7 @@ public class ProAI extends AbstractAI {
       purchaseAI.place(storedPurchaseTerritories, placeDelegate, data, player);
       storedPurchaseTerritories = null;
     }
-    LogUtils.log(Level.FINE, player.getName() + " time for place=" + (System.currentTimeMillis() - start));
+    ProLogUtils.log(Level.FINE, player.getName() + " time for place=" + (System.currentTimeMillis() - start));
   }
 
   @Override
@@ -348,7 +348,7 @@ public class ProAI extends AbstractAI {
     final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
     final double strengthDifference = battleUtils.estimateStrengthDifference(battleTerritory, attackers, defenders);
-    LogUtils.log(Level.FINE, player.getName() + " checking retreat from territory " + battleTerritory + ", attackers="
+    ProLogUtils.log(Level.FINE, player.getName() + " checking retreat from territory " + battleTerritory + ", attackers="
         + attackers.size() + ", defenders=" + defenders.size() + ", submerge=" + submerge + ", attacker=" + isAttacker);
     if (isAttacker && strengthDifference > 50
         && (battleTerritory.isWater() || Match.someMatch(attackers, Matches.UnitIsLand))) {
@@ -471,7 +471,7 @@ public class ProAI extends AbstractAI {
     }
     final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
-    LogUtils.log(Level.FINE,
+    ProLogUtils.log(Level.FINE,
         player.getName() + " checking scramble to " + scrambleTo + ", attackers=" + attackers.size() + ", defenders="
             + defenders.size() + ", possibleScramblers=" + possibleScramblers);
     s_battleCalculator.setGameData(getGameData());
@@ -493,14 +493,14 @@ public class ProAI extends AbstractAI {
     }
     final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
-    LogUtils.log(Level.FINE, player.getName() + " checking sub attack in " + unitTerritory + ", attackers=" + attackers
+    ProLogUtils.log(Level.FINE, player.getName() + " checking sub attack in " + unitTerritory + ", attackers=" + attackers
         + ", defenders=" + defenders);
     s_battleCalculator.setGameData(getGameData());
 
     // Calculate battle results
     final ProBattleResultData result =
         battleUtils.calculateBattleResults(player, unitTerritory, attackers, defenders, new HashSet<Unit>(), true);
-    LogUtils.log(Level.FINER, player.getName() + " sub attack TUVSwing=" + result.getTUVSwing());
+    ProLogUtils.log(Level.FINER, player.getName() + " sub attack TUVSwing=" + result.getTUVSwing());
     if (result.getTUVSwing() > 0) {
       return true;
     }

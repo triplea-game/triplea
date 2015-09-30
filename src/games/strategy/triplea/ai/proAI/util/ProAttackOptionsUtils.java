@@ -1110,7 +1110,7 @@ public class ProAttackOptionsUtils {
   public List<ProAttackTerritoryData> removeTerritoriesThatCantBeConquered(final PlayerID player,
       final Map<Territory, ProAttackTerritoryData> attackMap, final Map<Unit, Set<Territory>> unitAttackMap,
       final Map<Unit, Set<Territory>> transportAttackMap, final boolean isIgnoringRelationships) {
-    LogUtils.log(Level.FINE, "Removing territories that can't be conquered");
+    ProLogUtils.log(Level.FINE, "Removing territories that can't be conquered");
     final GameData data = ai.getGameData();
     if (!games.strategy.triplea.Properties.getLow_Luck(data)) // Set optimal and min win percentage lower if not LL
     {
@@ -1153,7 +1153,7 @@ public class ProAttackOptionsUtils {
       final ProAttackTerritoryData patd = attackMap.get(t);
       final Set<Unit> combinedUnits = new HashSet<Unit>(patd.getMaxUnits());
       combinedUnits.addAll(patd.getMaxAmphibUnits());
-      LogUtils.log(Level.FINER, "Removing territory that we can't successfully attack: " + t + ", maxWin%="
+      ProLogUtils.log(Level.FINER, "Removing territory that we can't successfully attack: " + t + ", maxWin%="
           + patd.getMaxBattleResult().getWinPercentage() + ", maxAttackers=" + combinedUnits.size());
       attackMap.remove(t);
       for (final Set<Territory> territories : unitAttackMap.values()) {
