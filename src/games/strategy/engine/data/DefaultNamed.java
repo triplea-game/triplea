@@ -1,6 +1,11 @@
 package games.strategy.engine.data;
 
 import java.io.Serializable;
+import java.util.Objects;
+
+import com.google.common.base.MoreObjects;
+
+import games.strategy.debug.ClientLogger;
 
 public class DefaultNamed extends GameDataComponent implements Named, Serializable {
   private static final long serialVersionUID = -5737716450699952621L;
@@ -31,11 +36,21 @@ public class DefaultNamed extends GameDataComponent implements Named, Serializab
 
   @Override
   public int hashCode() {
-    return m_name.hashCode();
+    if( m_name == null )  {
+      logSerializationWarning();
+    }
+    return Objects.hash(m_name);
+  }
+
+  private static void logSerializationWarning() {
+    ClientLogger.logQuietly("Warning: serialization de-serializatoin error, m_name in DefaultNamed.java is null.");
   }
 
   @Override
   public String toString() {
-    return this.getClass().getName() + " called " + m_name;
+    if( m_name == null )  {
+      logSerializationWarning();
+    }
+    return MoreObjects.toStringHelper(getClass()).add("name", m_name).toString();
   }
 }
