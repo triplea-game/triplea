@@ -1,6 +1,9 @@
 package games.strategy.engine.data;
 
 import java.io.Serializable;
+import java.util.Objects;
+
+import com.google.common.base.MoreObjects;
 
 public class DefaultNamed extends GameDataComponent implements Named, Serializable {
   private static final long serialVersionUID = -5737716450699952621L;
@@ -31,11 +34,11 @@ public class DefaultNamed extends GameDataComponent implements Named, Serializab
 
   @Override
   public int hashCode() {
-    return m_name.hashCode();
+    return Objects.hash(m_name);
   }
 
   @Override
   public String toString() {
-    return this.getClass().getName() + " called " + m_name;
+    return MoreObjects.toStringHelper(getClass()).add("name", m_name).toString();
   }
 }
