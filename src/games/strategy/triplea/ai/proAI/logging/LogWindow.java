@@ -306,8 +306,7 @@ public class LogWindow extends javax.swing.JDialog {
         JOptionPane.showConfirmDialog(rootPane, "Are you sure you want to reset all Dynamix AI settings?",
             "Reset Default Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
     if (result == JOptionPane.OK_OPTION) {
-      // Default settings are already contained in a new DSettings instance
-      final LogSettings defaultSettings = new LogSettings();
+      final LogSettings defaultSettings = new LogSettings(); // Default settings are already contained in a new DSettings instance
       loadSettings(defaultSettings);
       JOptionPane.showMessageDialog(rootPane,
           "Default settings restored.\r\n\r\n(If you don't want to keep these default settings, just hit cancel)",
@@ -430,8 +429,7 @@ public class LogWindow extends javax.swing.JDialog {
     }
     // Now remove round logging that has 'expired'.
     // Note that this method will also trim all but the first and last log panels if logging is turned off
-    // (We always keep first round's log panel, and we keep last because the user might turn logging back on in the
-    // middle of the round)
+    // (We always keep first round's log panel, and we keep last because the user might turn logging back on in the middle of the round)
     trimLogRoundPanels();
   }
 
@@ -443,8 +441,7 @@ public class LogWindow extends javax.swing.JDialog {
       if (LogSettings.loadSettings().EnableAILogging) {
         maxHistoryRounds = LogSettings.loadSettings().LimitLogHistoryTo;
       } else {
-        // If we're not logging, trim to 1
-        maxHistoryRounds = 1;
+        maxHistoryRounds = 1; // If we're not logging, trim to 1
       }
       try {
         final Runnable runner = new Runnable() {

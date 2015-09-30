@@ -28,6 +28,7 @@ import games.strategy.util.Match;
  * Pro AI transport utilities.
  */
 public class ProTransportUtils {
+
   private final ProAI ai;
   private final ProUtils utils;
 
@@ -62,15 +63,18 @@ public class ProTransportUtils {
       final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore,
       final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Unit, Set<Territory>> unitMoveMap,
       final double value) {
+
     final List<Unit> unitsToIgnoreOrHaveBetterLandMove = new ArrayList<Unit>(unitsToIgnore);
     if (!TransportTracker.isTransporting(transport)) {
+
       // Get all units that can be transported
       final List<Unit> units = new ArrayList<Unit>();
       for (final Territory loadFrom : territoriesToLoadFrom) {
-        units.addAll(
-            loadFrom.getUnits().getMatches(ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, true)));
+        units.addAll(loadFrom.getUnits()
+            .getMatches(ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, true)));
       }
       units.removeAll(unitsToIgnore);
+
       // Check to see which have higher land move value
       for (final Unit u : units) {
         if (unitMoveMap.get(u) != null) {
@@ -97,20 +101,24 @@ public class ProTransportUtils {
   public List<Unit> getUnitsToTransportFromTerritories(final PlayerID player, final Unit transport,
       final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore, final Match<Unit> validUnitMatch) {
     final List<Unit> selectedUnits = new ArrayList<Unit>();
+
     // Get units if transport already loaded
     if (TransportTracker.isTransporting(transport)) {
       selectedUnits.addAll(TransportTracker.transporting(transport));
     } else {
+
       // Get all units that can be transported
       final List<Unit> units = new ArrayList<Unit>();
       for (final Territory loadFrom : territoriesToLoadFrom) {
         units.addAll(loadFrom.getUnits().getMatches(validUnitMatch));
       }
       units.removeAll(unitsToIgnore);
+
       // Sort units by attack
       Collections.sort(units, new Comparator<Unit>() {
         @Override
         public int compare(final Unit o1, final Unit o2) {
+
           // Very rough way to add support power
           final Set<UnitSupportAttachment> supportAttachments1 = UnitSupportAttachment.get(o1.getType());
           int maxSupport1 = 0;
@@ -131,6 +139,7 @@ public class ProTransportUtils {
           return attack2 - attack1;
         }
       });
+
       // Get best units that can be loaded
       selectedUnits.addAll(selectUnitsToTransportFromList(transport, units));
     }
@@ -183,6 +192,7 @@ public class ProTransportUtils {
 
   public boolean validateCarrierCapacity(final PlayerID player, final Territory t, final List<Unit> existingUnits,
       final Unit newUnit) {
+
     final GameData data = ai.getGameData();
     int capacity = AirMovementValidator.carrierCapacity(existingUnits, t);
     final Collection<Unit> airUnits = Match.getMatches(existingUnits, ProMatches.unitIsAlliedAir(player, data));
@@ -202,6 +212,7 @@ public class ProTransportUtils {
 
   public int getUnusedLocalCarrierCapacity(final PlayerID player, final Territory t, final List<Unit> unitsToPlace) {
     final GameData data = ai.getGameData();
+
     // Find nearby carrier capacity
     final Set<Territory> nearbyTerritories =
         data.getMap().getNeighbors(t, 2, ProMatches.territoryCanMoveAirUnits(player, data, false));
@@ -216,6 +227,7 @@ public class ProTransportUtils {
       ownedNearbyUnits.addAll(units);
       capacity += AirMovementValidator.carrierCapacity(units, t);
     }
+
     // Find nearby air unit carrier cost
     final Collection<Unit> airUnits = Match.getMatches(ownedNearbyUnits, ProMatches.unitIsOwnedAir(player));
     for (final Unit airUnit : airUnits) {
@@ -243,11 +255,11 @@ public class ProTransportUtils {
     return capacity;
   }
 
-  public static List<Unit> InterleaveUnits_CarriersAndPlanes(final List<Unit> units,
-      final int planesThatDontNeedToLand) {
+  public static List<Unit> InterleaveUnits_CarriersAndPlanes(final List<Unit> units, final int planesThatDontNeedToLand) {
     if (!(Match.someMatch(units, Matches.UnitIsCarrier) && Match.someMatch(units, Matches.UnitCanLandOnCarrier))) {
       return units;
     }
+
     // Clone the current list
     final ArrayList<Unit> result = new ArrayList<Unit>(units);
     Unit seekedCarrier = null;
@@ -255,67 +267,70 @@ public class ProTransportUtils {
     int spaceLeftOnSeekedCarrier = -1;
     int processedPlaneCount = 0;
     final List<Unit> filledCarriers = new ArrayList<Unit>();
+
     // Loop through all units, starting from the right, and rearrange units
     for (int i = result.size() - 1; i >= 0; i--) {
       final Unit unit = result.get(i);
       final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
       if (ua.getCarrierCost() > 0 || i == 0) // If this is a plane or last unit
       {
+
         // If we haven't ignored enough trailing planes and not last unit
         if (processedPlaneCount < planesThatDontNeedToLand && i > 0) {
-          // Increase number of trailing planes ignored
-          processedPlaneCount++;
-          // And skip any processing
-          continue;
+          processedPlaneCount++; // Increase number of trailing planes ignored
+          continue; // And skip any processing
         }
+
         // If this is the first carrier seek and not last unit
         if (seekedCarrier == null && i > 0) {
-          final int seekedCarrierIndex = AdvancedUtils.getIndexOfLastUnitMatching(result,
-              new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
-              result.size() - 1);
+          final int seekedCarrierIndex =
+              AdvancedUtils.getIndexOfLastUnitMatching(result, new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier,
+                  Matches.isNotInList(filledCarriers)), result.size() - 1);
           if (seekedCarrierIndex == -1) {
-            // No carriers left
-            break;
+            break; // No carriers left
           }
           seekedCarrier = result.get(seekedCarrierIndex);
-          // Tell the code to insert carrier to the right of this plane
-          indexToPlaceCarrierAt = i + 1;
+          indexToPlaceCarrierAt = i + 1; // Tell the code to insert carrier to the right of this plane
           spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getUnitType()).getCarrierCapacity();
         }
         if (ua.getCarrierCost() > 0) {
           spaceLeftOnSeekedCarrier -= ua.getCarrierCost();
         }
+
         // If the carrier has been filled or overflowed or last unit
         if (indexToPlaceCarrierAt > 0 && (spaceLeftOnSeekedCarrier <= 0 || i == 0)) {
           if (spaceLeftOnSeekedCarrier < 0) {
-            // Move current unit index up one, so we re-process this unit (since it can't fit on the current seeked
-            // carrier)
-            i++;
+            i++; // Increment current unit index, so we re-process this unit (since it can't fit on the current carrier)
           }
+
           // If the seeked carrier is earlier in the list
           if (result.indexOf(seekedCarrier) < i) {
+
             // Move the carrier up to the planes by: removing carrier, then reinserting it
             // (index decreased cause removal of carrier reduced indexes)
             result.remove(seekedCarrier);
             result.add(indexToPlaceCarrierAt - 1, seekedCarrier);
-            // We removed carrier in earlier part of list, so decrease index
-            i--;
+            i--; // We removed carrier in earlier part of list, so decrease index
             filledCarriers.add(seekedCarrier);
+
             // Find the next carrier
-            seekedCarrier = AdvancedUtils.getLastUnitMatching(result,
-                new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
-                result.size() - 1);
+            seekedCarrier =
+                AdvancedUtils.getLastUnitMatching(result,
+                    new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
+                    result.size() - 1);
             if (seekedCarrier == null) {
-              // No carriers left
-              break;
+              break; // No carriers left
             }
+
             // Place next carrier right before this plane (which just filled the old carrier that was just moved)
             indexToPlaceCarrierAt = i;
             spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getUnitType()).getCarrierCapacity();
           } else {
+
             // If it's later in the list
             final int oldIndex = result.indexOf(seekedCarrier);
             int carrierPlaceLocation = indexToPlaceCarrierAt;
+
             // Place carrier where it's supposed to go
             result.remove(seekedCarrier);
             if (oldIndex < indexToPlaceCarrierAt) {
@@ -323,6 +338,7 @@ public class ProTransportUtils {
             }
             result.add(carrierPlaceLocation, seekedCarrier);
             filledCarriers.add(seekedCarrier);
+
             // Move the planes down to the carrier
             final List<Unit> planesBetweenHereAndCarrier = new ArrayList<Unit>();
             for (int i2 = i; i2 < carrierPlaceLocation; i2++) {
@@ -332,23 +348,25 @@ public class ProTransportUtils {
                 planesBetweenHereAndCarrier.add(unit2);
               }
             }
-            // Invert list, so they are inserted in the same order
-            Collections.reverse(planesBetweenHereAndCarrier);
+            Collections.reverse(planesBetweenHereAndCarrier); // Invert list, so they are inserted in the same order
             int planeMoveCount = 0;
             for (final Unit plane : planesBetweenHereAndCarrier) {
               result.remove(plane);
+
               // Insert each plane right before carrier (index decreased cause removal of carrier reduced indexes)
               result.add(carrierPlaceLocation - 1, plane);
               planeMoveCount++;
             }
+
             // Find the next carrier
-            seekedCarrier = AdvancedUtils.getLastUnitMatching(result,
-                new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
-                result.size() - 1);
+            seekedCarrier =
+                AdvancedUtils.getLastUnitMatching(result,
+                    new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
+                    result.size() - 1);
             if (seekedCarrier == null) {
-              // No carriers left
-              break;
+              break; // No carriers left
             }
+
             // Since we only moved planes up, just reduce next carrier place index by plane move count
             indexToPlaceCarrierAt = carrierPlaceLocation - planeMoveCount;
             spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getUnitType()).getCarrierCapacity();

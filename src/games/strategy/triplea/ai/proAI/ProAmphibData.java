@@ -10,6 +10,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 
 public class ProAmphibData {
+
   private Unit transport;
   private Map<Territory, Set<Territory>> transportMap;
   private Map<Territory, Set<Territory>> seaTransportMap;
@@ -42,7 +43,6 @@ public class ProAmphibData {
         territories.addAll(myUnitsToLoadTerritories);
         seaTransportMap.put(attackTerritory, territories);
       }
-      // seaTransportMap.get(attackTerritory).removeAll(data.getMap().getNeighbors(attackTerritory));
     }
   }
 
@@ -69,4 +69,5 @@ public class ProAmphibData {
   public Map<Territory, Set<Territory>> getSeaTransportMap() {
     return seaTransportMap;
   }
+
 }

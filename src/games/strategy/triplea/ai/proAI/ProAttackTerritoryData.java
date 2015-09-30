@@ -18,6 +18,7 @@ import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.Match;
 
 public class ProAttackTerritoryData {
+
   private Territory territory;
   private List<Unit> maxUnits;
   private List<Unit> units;
@@ -27,6 +28,7 @@ public class ProAttackTerritoryData {
   private boolean canHold;
   private boolean canAttack;
   private double strengthEstimate;
+
   // Amphib variables
   private List<Unit> maxAmphibUnits;
   private Map<Unit, List<Unit>> amphibAttackMap;
@@ -36,9 +38,11 @@ public class ProAttackTerritoryData {
   private Set<Unit> maxBombardUnits;
   private Map<Unit, Set<Territory>> bombardOptionsMap;
   private final Map<Unit, Territory> bombardTerritoryMap;
+
   // Determine territory to attack variables
   private boolean currentlyWins;
   private ProBattleResultData battleResult;
+
   // Non-combat move variables
   private List<Unit> cantMoveUnits;
   private List<Unit> maxEnemyUnits;
@@ -47,6 +51,7 @@ public class ProAttackTerritoryData {
   private final List<Unit> tempUnits;
   private final Map<Unit, List<Unit>> tempAmphibAttackMap;
   private double loadValue;
+
   // Scramble variables
   private List<Unit> maxScrambleUnits;
 
@@ -264,8 +269,8 @@ public class ProAttackTerritoryData {
     this.battleResult = battleResult;
     if (battleResult == null) {
       currentlyWins = false;
-    } else
-      if (battleResult.getWinPercentage() >= ProCombatMoveAI.WIN_PERCENTAGE && battleResult.isHasLandUnitRemaining()) {
+    } else if (battleResult.getWinPercentage() >= ProCombatMoveAI.WIN_PERCENTAGE
+        && battleResult.isHasLandUnitRemaining()) {
       currentlyWins = true;
     }
   }

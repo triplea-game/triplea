@@ -11,6 +11,7 @@ import games.strategy.triplea.ai.proAI.util.ProMatches;
 import games.strategy.triplea.delegate.Matches;
 
 public class ProPurchaseTerritory {
+
   private Territory territory;
   private int unitProduction;
   private List<ProPlaceTerritory> canPlaceTerritories;

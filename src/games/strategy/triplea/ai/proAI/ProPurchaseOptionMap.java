@@ -16,6 +16,7 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 
 public class ProPurchaseOptionMap {
+
   private final List<ProPurchaseOption> landFodderOptions;
   private final List<ProPurchaseOption> landAttackOptions;
   private final List<ProPurchaseOption> landDefenseOptions;
@@ -29,7 +30,9 @@ public class ProPurchaseOptionMap {
   private final List<ProPurchaseOption> specialOptions;
 
   public ProPurchaseOptionMap(final PlayerID player, final GameData data) {
+
     LogUtils.log(Level.FINE, "Purchase Options");
+
     // Initialize lists
     landFodderOptions = new ArrayList<ProPurchaseOption>();
     landAttackOptions = new ArrayList<ProPurchaseOption>();
@@ -42,18 +45,20 @@ public class ProPurchaseOptionMap {
     aaOptions = new ArrayList<ProPurchaseOption>();
     factoryOptions = new ArrayList<ProPurchaseOption>();
     specialOptions = new ArrayList<ProPurchaseOption>();
+
     // Add each production rule to appropriate list(s)
     final List<ProductionRule> rules = player.getProductionFrontier().getRules();
     for (final ProductionRule rule : rules) {
+
       // Check if rule is for a unit
       final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
       if (!(resourceOrUnit instanceof UnitType)) {
         continue;
       }
       final UnitType unitType = (UnitType) resourceOrUnit;
+
       // Add rule to appropriate purchase option list
-      if ((UnitAttachment.get(unitType).getMovement(player) <= 0
-          && !(UnitAttachment.get(unitType).getCanProduceUnits()))
+      if ((UnitAttachment.get(unitType).getMovement(player) <= 0 && !(UnitAttachment.get(unitType).getCanProduceUnits()))
           || Matches.UnitTypeConsumesUnitsOnCreation.match(unitType) || UnitAttachment.get(unitType).getIsSuicide()) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         specialOptions.add(ppo);
@@ -103,6 +108,7 @@ public class ProPurchaseOptionMap {
     if (landDefenseOptions.isEmpty()) {
       landDefenseOptions.addAll(landAttackOptions);
     }
+
     // Print categorized options
     LogUtils.log(Level.FINE, "Purchase Categories");
     logOptions(landFodderOptions, "Land Fodder Options: ");

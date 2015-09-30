@@ -41,6 +41,7 @@ import games.strategy.util.Match;
  * Pro AI simulate turn utilities.
  */
 public class ProSimulateTurnUtils {
+
   private final ProAI ai;
   private final ProUtils utils;
   private final ProBattleUtils battleUtils;
@@ -55,7 +56,9 @@ public class ProSimulateTurnUtils {
   }
 
   public void simulateBattles(final GameData data, final PlayerID player, final IDelegateBridge delegateBridge) {
+
     LogUtils.log(Level.FINE, "Starting battle simulation phase");
+
     final BattleDelegate battleDelegate = DelegateFinder.battleDelegate(data);
     final Map<BattleType, Collection<Territory>> battleTerritories = battleDelegate.getBattles().getBattles();
     for (final Entry<BattleType, Collection<Territory>> entry : battleTerritories.entrySet()) {
@@ -75,6 +78,7 @@ public class ProSimulateTurnUtils {
             battleUtils.callBattleCalculator(player, t, attackers, defenders, bombardingUnits, true);
         final List<Unit> remainingUnits = result.getAverageUnitsRemaining();
         LogUtils.log(Level.FINER, "remainingUnits=" + remainingUnits);
+
         // Make updates to data
         final List<Unit> attackersToRemove = new ArrayList<Unit>(attackers);
         attackersToRemove.removeAll(remainingUnits);
@@ -94,16 +98,17 @@ public class ProSimulateTurnUtils {
         battleDelegate.getBattleTracker().getConquered().add(t);
         battleDelegate.getBattleTracker().removeBattle(battle);
         final Territory updatedTerritory = data.getMap().getTerritory(t.getName());
-        LogUtils.log(Level.FINER,
-            "after changes owner=" + updatedTerritory.getOwner() + ", units=" + updatedTerritory.getUnits().getUnits());
+        LogUtils.log(Level.FINER, "after changes owner=" + updatedTerritory.getOwner() + ", units="
+            + updatedTerritory.getUnits().getUnits());
       }
     }
   }
 
   public Map<Territory, ProAttackTerritoryData> transferMoveMap(final Map<Territory, ProAttackTerritoryData> moveMap,
-      final Map<Unit, Territory> unitTerritoryMap, final GameData fromData, final GameData toData,
-      final PlayerID player) {
+      final Map<Unit, Territory> unitTerritoryMap, final GameData fromData, final GameData toData, final PlayerID player) {
+
     LogUtils.log(Level.FINE, "Transferring move map");
+
     final Map<Territory, ProAttackTerritoryData> result = new HashMap<Territory, ProAttackTerritoryData>();
     final List<Unit> usedUnits = new ArrayList<Unit>();
     for (final Territory fromTerritory : moveMap.keySet()) {
@@ -120,8 +125,9 @@ public class ProSimulateTurnUtils {
         Unit toTransport = null;
         final List<Unit> toUnits = new ArrayList<Unit>();
         if (isTransportingMap.get(transport)) {
-          toTransport = transferLoadedTransport(transport, amphibAttackMap.get(transport), unitTerritoryMap, usedUnits,
-              toData, player);
+          toTransport =
+              transferLoadedTransport(transport, amphibAttackMap.get(transport), unitTerritoryMap, usedUnits, toData,
+                  player);
           toUnits.addAll(TransportTracker.transporting(toTransport));
         } else {
           toTransport = transferUnit(transport, unitTerritoryMap, usedUnits, toData, player);
@@ -159,14 +165,16 @@ public class ProSimulateTurnUtils {
     return result;
   }
 
-  private boolean checkIfCapturedTerritoryIsAlliedCapital(final Territory t, final GameData data, final PlayerID player,
-      final IDelegateBridge delegateBridge) {
+  private boolean checkIfCapturedTerritoryIsAlliedCapital(final Territory t, final GameData data,
+      final PlayerID player, final IDelegateBridge delegateBridge) {
+
     final PlayerID terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(t);
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
     if (ta != null && ta.getCapital() != null && terrOrigOwner != null
         && TerritoryAttachment.getAllCapitals(terrOrigOwner, data).contains(t)
         && relationshipTracker.isAllied(terrOrigOwner, player)) {
+
       // Give capital and any allied territories back to original owner
       final Collection<Territory> originallyOwned = OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
       final List<Territory> friendlyTerritories =
@@ -191,9 +199,11 @@ public class ProSimulateTurnUtils {
 
   private Unit transferUnit(final Unit u, final Map<Unit, Territory> unitTerritoryMap, final List<Unit> usedUnits,
       final GameData toData, final PlayerID player) {
+
     final Territory unitTerritory = unitTerritoryMap.get(u);
-    final List<Unit> toUnits = toData.getMap().getTerritory(unitTerritory.getName()).getUnits()
-        .getMatches(ProMatches.unitIsOwnedAndMatchesTypeAndNotTransporting(player, u.getType()));
+    final List<Unit> toUnits =
+        toData.getMap().getTerritory(unitTerritory.getName()).getUnits()
+            .getMatches(ProMatches.unitIsOwnedAndMatchesTypeAndNotTransporting(player, u.getType()));
     for (final Unit toUnit : toUnits) {
       if (!usedUnits.contains(toUnit)) {
         usedUnits.add(toUnit);
@@ -206,9 +216,11 @@ public class ProSimulateTurnUtils {
   private Unit transferLoadedTransport(final Unit transport, final List<Unit> transportingUnits,
       final Map<Unit, Territory> unitTerritoryMap, final List<Unit> usedUnits, final GameData toData,
       final PlayerID player) {
+
     final Territory unitTerritory = unitTerritoryMap.get(transport);
-    final List<Unit> toTransports = toData.getMap().getTerritory(unitTerritory.getName()).getUnits()
-        .getMatches(ProMatches.unitIsOwnedAndMatchesTypeAndIsTransporting(player, transport.getType()));
+    final List<Unit> toTransports =
+        toData.getMap().getTerritory(unitTerritory.getName()).getUnits()
+            .getMatches(ProMatches.unitIsOwnedAndMatchesTypeAndIsTransporting(player, transport.getType()));
     for (final Unit toTransport : toTransports) {
       if (!usedUnits.contains(toTransport)) {
         final List<Unit> toTransportingUnits = (List<Unit>) TransportTracker.transporting(toTransport);

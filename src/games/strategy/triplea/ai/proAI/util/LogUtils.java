@@ -10,6 +10,7 @@ import games.strategy.triplea.ai.proAI.logging.LogUI;
  * Class to log messages to log window and console.
  */
 public class LogUtils {
+
   /**
    * Some notes on using the Pro AI logger:
    * First, to make the logs easily readable even when there are hundreds of lines, I want every considerable step down
@@ -31,6 +32,7 @@ public class LogUtils {
    * Just keep these things in mind while adding new logging code.
    */
   public static void log(final Level level, final String message, final Throwable t) {
+
     // We always log to the AI logger, though it only shows up if the developer has the logger enabled in
     // logging.properties
     if (t == null) {
@@ -39,13 +41,11 @@ public class LogUtils {
       ProAI.getLogger().log(level, addIndentationCompensation(message, level), t);
     }
     if (!LogSettings.loadSettings().EnableAILogging) {
-      // Skip displaying to settings window if settings window option is turned off
-      return;
+      return; // Skip displaying to settings window if settings window option is turned off
     }
     final Level logDepth = LogSettings.loadSettings().AILoggingDepth;
     if (logDepth.equals(Level.FINE) && (level.equals(Level.FINER) || level.equals(Level.FINEST))) {
-      // If the settings window log depth is a higher level than this messages, skip
-      return;
+      return; // If the settings window log depth is a higher level than this messages, skip
     }
     if (logDepth.equals(Level.FINER) && level.equals(Level.FINEST)) {
       return;
