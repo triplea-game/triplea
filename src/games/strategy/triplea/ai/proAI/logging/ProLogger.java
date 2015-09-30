@@ -1,15 +1,33 @@
-package games.strategy.triplea.ai.proAI.util;
+package games.strategy.triplea.ai.proAI.logging;
 
 import java.util.logging.Level;
 
 import games.strategy.triplea.ai.proAI.ProAI;
-import games.strategy.triplea.ai.proAI.logging.LogSettings;
-import games.strategy.triplea.ai.proAI.logging.LogUI;
 
 /**
  * Class to log messages to log window and console.
  */
-public class ProLogUtils {
+public class ProLogger {
+
+  public static void warn(String message) {
+    log(Level.WARNING, message);
+  }
+
+  public static void info(String message) {
+    log(Level.FINE, message);
+  }
+
+  public static void debug(String message) {
+    log(Level.FINER, message);
+  }
+
+  public static void trace(String message) {
+    log(Level.FINEST, message);
+  }
+
+  private static void log(final Level level, final String message) {
+    log(level, message, null);
+  }
 
   /**
    * Some notes on using the Pro AI logger:
@@ -40,21 +58,17 @@ public class ProLogUtils {
     } else {
       ProAI.getLogger().log(level, addIndentationCompensation(message, level), t);
     }
-    if (!LogSettings.loadSettings().EnableAILogging) {
+    if (!ProLogSettings.loadSettings().EnableAILogging) {
       return; // Skip displaying to settings window if settings window option is turned off
     }
-    final Level logDepth = LogSettings.loadSettings().AILoggingDepth;
+    final Level logDepth = ProLogSettings.loadSettings().AILoggingDepth;
     if (logDepth.equals(Level.FINE) && (level.equals(Level.FINER) || level.equals(Level.FINEST))) {
       return; // If the settings window log depth is a higher level than this messages, skip
     }
     if (logDepth.equals(Level.FINER) && level.equals(Level.FINEST)) {
       return;
     }
-    LogUI.notifyAILogMessage(level, addIndentationCompensation(message, level));
-  }
-
-  public static void log(final Level level, final String message) {
-    log(level, message, null);
+    ProLogUI.notifyAILogMessage(level, addIndentationCompensation(message, level));
   }
 
   /**

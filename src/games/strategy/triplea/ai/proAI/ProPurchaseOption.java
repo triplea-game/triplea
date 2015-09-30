@@ -15,7 +15,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.ai.proAI.util.ProLogUtils;
+import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -360,12 +360,12 @@ public class ProPurchaseOption {
         // Find support factor value
         final double supportFactor = Math.pow(numAddedSupport * 0.9, 0.9) * bonus * ratio;
         totalSupportFactor += supportFactor;
-        ProLogUtils.log(Level.FINEST, unitType.getName() + ", bonusType=" + usa.getBonusType() + ", supportFactor="
+        ProLogger.trace(unitType.getName() + ", bonusType=" + usa.getBonusType() + ", supportFactor="
             + supportFactor + ", numSupportProvided=" + numSupportProvided + ", numSupportableUnits="
             + numSupportableUnits + ", numAddedSupport=" + numAddedSupport + ", ratio=" + ratio + ", bonus=" + bonus);
       }
     }
-    ProLogUtils.log(Level.FINER, unitType.getName() + ", defense=" + defense + ", totalSupportFactor="
+    ProLogger.debug(unitType.getName() + ", defense=" + defense + ", totalSupportFactor="
         + totalSupportFactor);
     return totalSupportFactor;
   }

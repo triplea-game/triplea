@@ -25,6 +25,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.proAI.ProAmphibData;
 import games.strategy.triplea.ai.proAI.ProAttackTerritoryData;
+import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -1110,7 +1111,7 @@ public class ProAttackOptionsUtils {
   public List<ProAttackTerritoryData> removeTerritoriesThatCantBeConquered(final PlayerID player,
       final Map<Territory, ProAttackTerritoryData> attackMap, final Map<Unit, Set<Territory>> unitAttackMap,
       final Map<Unit, Set<Territory>> transportAttackMap, final boolean isIgnoringRelationships) {
-    ProLogUtils.log(Level.FINE, "Removing territories that can't be conquered");
+    ProLogger.info("Removing territories that can't be conquered");
     final GameData data = ai.getGameData();
     if (!games.strategy.triplea.Properties.getLow_Luck(data)) // Set optimal and min win percentage lower if not LL
     {
@@ -1153,7 +1154,7 @@ public class ProAttackOptionsUtils {
       final ProAttackTerritoryData patd = attackMap.get(t);
       final Set<Unit> combinedUnits = new HashSet<Unit>(patd.getMaxUnits());
       combinedUnits.addAll(patd.getMaxAmphibUnits());
-      ProLogUtils.log(Level.FINER, "Removing territory that we can't successfully attack: " + t + ", maxWin%="
+      ProLogger.debug("Removing territory that we can't successfully attack: " + t + ", maxWin%="
           + patd.getMaxBattleResult().getWinPercentage() + ", maxAttackers=" + combinedUnits.size());
       attackMap.remove(t);
       for (final Set<Territory> territories : unitAttackMap.values()) {

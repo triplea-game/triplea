@@ -17,6 +17,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.proAI.ProAttackTerritoryData;
+import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
@@ -108,7 +109,7 @@ public class ProMoveUtils {
                   ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, isCombatMove));
         }
         if (route == null) {
-          ProLogUtils.log(Level.WARNING, data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
+          ProLogger.warn(data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
               + ": route is null " + startTerritory + " to " + t + ", units=" + unitList);
         }
         moveRoutes.add(route);
@@ -227,8 +228,8 @@ public class ProMoveUtils {
           movesLeft--;
         }
         if (!remainingUnitsToLoad.isEmpty()) {
-          ProLogUtils.log(Level.WARNING, data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
-              + ": " + t + ", remainingUnitsToLoad=" + remainingUnitsToLoad);
+          ProLogger.warn(data.getSequence().getRound() + "-" + data.getSequence().getStep().getName() + ": " + t
+              + ", remainingUnitsToLoad=" + remainingUnitsToLoad);
         }
 
         // Set territory transport is moving to
@@ -311,7 +312,7 @@ public class ProMoveUtils {
         utils.pause();
       }
       if (moveRoutes.get(i) == null || moveRoutes.get(i).getEnd() == null || moveRoutes.get(i).getStart() == null) {
-        ProLogUtils.log(Level.WARNING, data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
+        ProLogger.warn(data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
             + ": route not valid " + moveRoutes.get(i) + " units: " + moveUnits.get(i));
         continue;
       }
@@ -322,7 +323,7 @@ public class ProMoveUtils {
         result = moveDel.move(moveUnits.get(i), moveRoutes.get(i), transportsToLoad.get(i));
       }
       if (result != null) {
-        ProLogUtils.log(Level.WARNING, data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
+        ProLogger.warn(data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
             + ": could not move " + moveUnits.get(i) + " over " + moveRoutes.get(i) + " because: " + result);
       }
     }

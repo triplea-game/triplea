@@ -1,4 +1,4 @@
-package games.strategy.triplea.ai.proAI.util;
+package games.strategy.triplea.ai.proAI.logging;
 
 import java.util.logging.Level;
 
@@ -13,6 +13,6 @@ public class ProMetricUtils {
 
   public static void collectPurchaseStats(final IntegerMap<ProductionRule> purchaseMap) {
     totalPurchaseMap.add(purchaseMap);
-    ProLogUtils.log(Level.FINER, totalPurchaseMap.toString());
+    ProLogger.debug(totalPurchaseMap.toString());
   }
 }
