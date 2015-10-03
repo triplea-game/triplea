@@ -16,7 +16,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.BasicPoliticalAI;
-import games.strategy.triplea.ai.proAI.util.LogUtils;
+import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.ai.proAI.util.ProAttackOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
@@ -49,18 +49,18 @@ public class ProPoliticsAI {
     final double round = data.getSequence().getRound();
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
     final List<PoliticalActionAttachment> results = new ArrayList<PoliticalActionAttachment>();
-    LogUtils.log(Level.FINE, "Politics for " + player.getName());
+    ProLogger.info("Politics for " + player.getName());
 
     // Find valid war actions
     final List<PoliticalActionAttachment> actionChoicesTowardsWar =
         BasicPoliticalAI.getPoliticalActionsTowardsWar(player, politicsDelegate.getTestedConditions(), data);
-    LogUtils.log(Level.FINEST, "War options: " + actionChoicesTowardsWar);
+    ProLogger.trace("War options: " + actionChoicesTowardsWar);
     final List<PoliticalActionAttachment> validWarActions =
         Match.getMatches(
             actionChoicesTowardsWar,
             new CompositeMatchAnd<PoliticalActionAttachment>(Matches
                 .AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())));
-    LogUtils.log(Level.FINEST, "Valid War options: " + validWarActions);
+    ProLogger.trace("Valid War options: " + validWarActions);
 
     // Divide war actions into enemy and neutral
     final Map<PoliticalActionAttachment, List<PlayerID>> enemyMap =
@@ -92,8 +92,8 @@ public class ProPoliticsAI {
         }
       }
     }
-    LogUtils.log(Level.FINER, "Neutral options: " + neutralMap);
-    LogUtils.log(Level.FINER, "Enemy options: " + enemyMap);
+    ProLogger.debug("Neutral options: " + neutralMap);
+    ProLogger.debug("Enemy options: " + enemyMap);
     if (!enemyMap.isEmpty()) {
 
       // Find all attack options
@@ -110,7 +110,7 @@ public class ProPoliticsAI {
       final List<ProAttackTerritoryData> prioritizedTerritories =
           attackOptionsUtils.removeTerritoriesThatCantBeConquered(player, attackMap, unitAttackMap, transportAttackMap,
               true);
-      LogUtils.log(Level.FINEST, player.getName() + ", numAttackOptions=" + prioritizedTerritories.size()
+      ProLogger.trace(player.getName() + ", numAttackOptions=" + prioritizedTerritories.size()
           + ", options=" + prioritizedTerritories);
 
       // Find attack options per war action
@@ -127,7 +127,7 @@ public class ProPoliticsAI {
         }
         final double attackPercentage = count / (prioritizedTerritories.size() + 1.0);
         attackPercentageMap.put(action, attackPercentage);
-        LogUtils.log(Level.FINEST, enemyPlayers + ", count=" + count + ", attackPercentage=" + attackPercentage);
+        ProLogger.trace(enemyPlayers + ", count=" + count + ", attackPercentage=" + attackPercentage);
       }
 
       // Decide whether to declare war on an enemy
@@ -138,10 +138,10 @@ public class ProPoliticsAI {
         final double roundFactor = (round - 1) * .05; // 0, .05, .1, .15, etc
         final double warChance = roundFactor + attackPercentageMap.get(action) * (1 + 10 * roundFactor);
         final double random = Math.random();
-        LogUtils.log(Level.FINEST, enemyMap.get(action) + ", warChance=" + warChance + ", random=" + random);
+        ProLogger.trace(enemyMap.get(action) + ", warChance=" + warChance + ", random=" + random);
         if (random <= warChance) {
           results.add(action);
-          LogUtils.log(Level.FINER, "---Declared war on " + enemyMap.get(action));
+          ProLogger.debug("---Declared war on " + enemyMap.get(action));
           break;
         }
       }
@@ -152,10 +152,10 @@ public class ProPoliticsAI {
       Collections.shuffle(options);
       final double random = Math.random();
       final double warChance = .01;
-      LogUtils.log(Level.FINER, "warChance=" + warChance + ", random=" + random);
+      ProLogger.debug("warChance=" + warChance + ", random=" + random);
       if (random <= warChance) {
         results.add(options.get(0));
-        LogUtils.log(Level.FINER, "Declared war on " + enemyMap.get(options.get(0)));
+        ProLogger.debug("Declared war on " + enemyMap.get(options.get(0)));
       }
     }
 
@@ -194,7 +194,7 @@ public class ProPoliticsAI {
     final GameData data = ai.getGameData();
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
     for (final PoliticalActionAttachment action : actions) {
-      LogUtils.log(Level.FINER, "Performing action: " + action);
+      ProLogger.debug("Performing action: " + action);
       politicsDelegate.attemptAction(action);
     }
   }

@@ -22,10 +22,10 @@ import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.AbstractAI;
-import games.strategy.triplea.ai.proAI.logging.LogUI;
+import games.strategy.triplea.ai.proAI.logging.ProLogUI;
+import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.ai.proAI.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.ai.proAI.simulate.ProSimulateTurnUtils;
-import games.strategy.triplea.ai.proAI.util.LogUtils;
 import games.strategy.triplea.ai.proAI.util.ProAttackOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMoveUtils;
@@ -120,13 +120,13 @@ public class ProAI extends AbstractAI {
   }
 
   public static void Initialize(final TripleAFrame frame) {
-    LogUI.initialize(frame); // Must be done first
-    LogUtils.log(Level.FINE, "Initialized Hard AI");
+    ProLogUI.initialize(frame); // Must be done first
+    ProLogger.info("Initialized Hard AI");
   }
 
   public static void ShowSettingsWindow() {
-    LogUtils.log(Level.FINE, "Showing Hard AI settings window");
-    LogUI.showSettingsWindow();
+    ProLogger.info("Showing Hard AI settings window");
+    ProLogUI.showSettingsWindow();
   }
 
   public static Logger getLogger() {
@@ -136,7 +136,7 @@ public class ProAI extends AbstractAI {
   public static void gameOverClearCache() {
     // Is static, set to null so that we don't keep the data around after a game is exited
     s_battleCalculator.setGameData(null);
-    LogUI.clearCachedInstances();
+    ProLogUI.clearCachedInstances();
   }
 
   public IOddsCalculator getCalc() {
@@ -162,7 +162,7 @@ public class ProAI extends AbstractAI {
   protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player) {
     final long start = System.currentTimeMillis();
     BattleCalculator.clearOOLCache();
-    LogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
+    ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     s_battleCalculator.setGameData(data);
     if (nonCombat) {
       nonCombatMoveAI.doNonCombatMove(storedFactoryMoveMap, storedPurchaseTerritories, moveDel, data, player, false);
@@ -175,8 +175,8 @@ public class ProAI extends AbstractAI {
         storedCombatMoveMap = null;
       }
     }
-    LogUtils.log(Level.FINE,
-        player.getName() + " time for nonCombat=" + nonCombat + " time=" + (System.currentTimeMillis() - start));
+    ProLogger.info(player.getName() + " time for nonCombat=" + nonCombat + " time="
+        + (System.currentTimeMillis() - start));
   }
 
   @Override
@@ -184,7 +184,7 @@ public class ProAI extends AbstractAI {
       final GameData data, final PlayerID player) {
     final long start = System.currentTimeMillis();
     BattleCalculator.clearOOLCache();
-    LogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
+    ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     if (PUsToSpend <= 0) {
       return;
     }
@@ -198,10 +198,10 @@ public class ProAI extends AbstractAI {
       // Check if any place territories exist
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories = purchaseUtils.findPurchaseTerritories(player);
       if (purchaseTerritories.isEmpty()) {
-        LogUtils.log(Level.FINE, "No possible place territories owned so exiting purchase logic");
+        ProLogger.info("No possible place territories owned so exiting purchase logic");
         return;
       }
-      LogUtils.log(Level.FINE, "Starting simulation for purchase phase");
+      ProLogger.info("Starting simulation for purchase phase");
 
       // Setup data copy and delegates
       GameData dataCopy;
@@ -209,7 +209,7 @@ public class ProAI extends AbstractAI {
         data.acquireReadLock();
         dataCopy = GameDataUtils.cloneGameData(data, true);
       } catch (final Throwable t) {
-        LogUtils.log(Level.WARNING, "Error trying to clone game data for simulating phases", t);
+        ProLogger.log(Level.WARNING, "Error trying to clone game data for simulating phases", t);
         return;
       } finally {
         data.releaseReadLock();
@@ -238,7 +238,7 @@ public class ProAI extends AbstractAI {
         dataCopy.getSequence().setRoundAndStep(dataCopy.getSequence().getRound(), step.getDisplayName(),
             step.getPlayerID());
         final String stepName = step.getName();
-        LogUtils.log(Level.FINE, "Simulating phase: " + stepName);
+        ProLogger.info("Simulating phase: " + stepName);
         if (stepName.endsWith("NonCombatMove")) {
           final Map<Territory, ProAttackTerritoryData> factoryMoveMap =
               nonCombatMoveAI.doNonCombatMove(null, null, moveDel, dataCopy, playerCopy, true);
@@ -268,7 +268,7 @@ public class ProAI extends AbstractAI {
         }
       }
     }
-    LogUtils.log(Level.FINE, player.getName() + " time for purchase=" + (System.currentTimeMillis() - start));
+    ProLogger.info(player.getName() + " time for purchase=" + (System.currentTimeMillis() - start));
   }
 
   @Override
@@ -276,14 +276,14 @@ public class ProAI extends AbstractAI {
       final PlayerID player) {
     final long start = System.currentTimeMillis();
     BattleCalculator.clearOOLCache();
-    LogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
+    ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     if (bid) {
       purchaseAI.bidPlace(storedPurchaseTerritories, placeDelegate, data, player);
     } else {
       purchaseAI.place(storedPurchaseTerritories, placeDelegate, data, player);
       storedPurchaseTerritories = null;
     }
-    LogUtils.log(Level.FINE, player.getName() + " time for place=" + (System.currentTimeMillis() - start));
+    ProLogger.info(player.getName() + " time for place=" + (System.currentTimeMillis() - start));
   }
 
   @Override
@@ -348,7 +348,7 @@ public class ProAI extends AbstractAI {
     final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
     final double strengthDifference = battleUtils.estimateStrengthDifference(battleTerritory, attackers, defenders);
-    LogUtils.log(Level.FINE, player.getName() + " checking retreat from territory " + battleTerritory + ", attackers="
+    ProLogger.info(player.getName() + " checking retreat from territory " + battleTerritory + ", attackers="
         + attackers.size() + ", defenders=" + defenders.size() + ", submerge=" + submerge + ", attacker=" + isAttacker);
     if (isAttacker && strengthDifference > 50
         && (battleTerritory.isWater() || Match.someMatch(attackers, Matches.UnitIsLand))) {
@@ -471,9 +471,8 @@ public class ProAI extends AbstractAI {
     }
     final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
-    LogUtils.log(Level.FINE,
-        player.getName() + " checking scramble to " + scrambleTo + ", attackers=" + attackers.size() + ", defenders="
-            + defenders.size() + ", possibleScramblers=" + possibleScramblers);
+    ProLogger.info(player.getName() + " checking scramble to " + scrambleTo + ", attackers=" + attackers.size()
+        + ", defenders=" + defenders.size() + ", possibleScramblers=" + possibleScramblers);
     s_battleCalculator.setGameData(getGameData());
     return scrambleAI.scrambleUnitsQuery(scrambleTo, possibleScramblers);
   }
@@ -493,14 +492,14 @@ public class ProAI extends AbstractAI {
     }
     final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
-    LogUtils.log(Level.FINE, player.getName() + " checking sub attack in " + unitTerritory + ", attackers=" + attackers
+    ProLogger.info(player.getName() + " checking sub attack in " + unitTerritory + ", attackers=" + attackers
         + ", defenders=" + defenders);
     s_battleCalculator.setGameData(getGameData());
 
     // Calculate battle results
     final ProBattleResultData result =
         battleUtils.calculateBattleResults(player, unitTerritory, attackers, defenders, new HashSet<Unit>(), true);
-    LogUtils.log(Level.FINER, player.getName() + " sub attack TUVSwing=" + result.getTUVSwing());
+    ProLogger.debug(player.getName() + " sub attack TUVSwing=" + result.getTUVSwing());
     if (result.getTUVSwing() > 0) {
       return true;
     }

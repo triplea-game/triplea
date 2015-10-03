@@ -6,12 +6,12 @@ import games.strategy.engine.data.Resource;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
-public class ProResourceData {
+public class ProResourceTracker {
 
   private IntegerMap<Resource> resources;
   private IntegerMap<Resource> tempPurchases;
 
-  public ProResourceData(PlayerID player) {
+  public ProResourceTracker(PlayerID player) {
     resources = player.getResources().getResourcesCopy();
     tempPurchases = new IntegerMap<Resource>();
   }

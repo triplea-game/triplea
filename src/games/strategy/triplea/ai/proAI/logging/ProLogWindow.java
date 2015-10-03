@@ -21,11 +21,11 @@ import games.strategy.triplea.ui.TripleAFrame;
 /**
  * GUI class used to display logging window and logging settings.
  */
-public class LogWindow extends javax.swing.JDialog {
+public class ProLogWindow extends javax.swing.JDialog {
   private static final long serialVersionUID = -5989598624017028122L;
 
   /** Creates new form SettingsWindow */
-  public LogWindow(final TripleAFrame frame) {
+  public ProLogWindow(final TripleAFrame frame) {
     super(frame);
     initComponents();
   }
@@ -264,7 +264,7 @@ public class LogWindow extends javax.swing.JDialog {
   }
 
   private void formWindowOpened(final java.awt.event.WindowEvent evt) {
-    loadSettings(LogSettings.loadSettings());
+    loadSettings(ProLogSettings.loadSettings());
     this.pack();
   }
 
@@ -273,7 +273,7 @@ public class LogWindow extends javax.swing.JDialog {
    *
    * @param settings
    */
-  private void loadSettings(final LogSettings settings) {
+  private void loadSettings(final ProLogSettings settings) {
     v_enableAILogging.setSelected(settings.EnableAILogging);
     if (settings.AILoggingDepth.equals(Level.FINE)) {
       v_logDepth.setSelectedIndex(0);
@@ -286,8 +286,8 @@ public class LogWindow extends javax.swing.JDialog {
     v_limitLogHistoryToSpinner.setValue(settings.LimitLogHistoryTo);
   }
 
-  public LogSettings createSettings() {
-    final LogSettings settings = new LogSettings();
+  public ProLogSettings createSettings() {
+    final ProLogSettings settings = new ProLogSettings();
     settings.EnableAILogging = v_enableAILogging.isSelected();
     if (v_logDepth.getSelectedIndex() == 0) {
       settings.AILoggingDepth = Level.FINE;
@@ -306,7 +306,7 @@ public class LogWindow extends javax.swing.JDialog {
         JOptionPane.showConfirmDialog(rootPane, "Are you sure you want to reset all Dynamix AI settings?",
             "Reset Default Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
     if (result == JOptionPane.OK_OPTION) {
-      final LogSettings defaultSettings = new LogSettings(); // Default settings are already contained in a new DSettings instance
+      final ProLogSettings defaultSettings = new ProLogSettings(); // Default settings are already contained in a new DSettings instance
       loadSettings(defaultSettings);
       JOptionPane.showMessageDialog(rootPane,
           "Default settings restored.\r\n\r\n(If you don't want to keep these default settings, just hit cancel)",
@@ -328,13 +328,13 @@ public class LogWindow extends javax.swing.JDialog {
   }
 
   private void v_okButtonActionPerformed(final java.awt.event.ActionEvent evt) {
-    final LogSettings settings = createSettings();
-    LogSettings.saveSettings(settings);
+    final ProLogSettings settings = createSettings();
+    ProLogSettings.saveSettings(settings);
     this.setVisible(false);
   }
 
   private void v_cancelButtonActionPerformed(final java.awt.event.ActionEvent evt) {
-    final LogSettings settings = LogSettings.loadSettings();
+    final ProLogSettings settings = ProLogSettings.loadSettings();
     loadSettings(settings);
     this.setVisible(false);
   }
@@ -435,11 +435,11 @@ public class LogWindow extends javax.swing.JDialog {
 
   private void trimLogRoundPanels() {
     // If we're logging and we have trimming enabled, or if we have logging turned off
-    if ((LogSettings.loadSettings().EnableAILogging && LogSettings.loadSettings().LimitLogHistory)
-        || !LogSettings.loadSettings().EnableAILogging) {
+    if ((ProLogSettings.loadSettings().EnableAILogging && ProLogSettings.loadSettings().LimitLogHistory)
+        || !ProLogSettings.loadSettings().EnableAILogging) {
       final int maxHistoryRounds;
-      if (LogSettings.loadSettings().EnableAILogging) {
-        maxHistoryRounds = LogSettings.loadSettings().LimitLogHistoryTo;
+      if (ProLogSettings.loadSettings().EnableAILogging) {
+        maxHistoryRounds = ProLogSettings.loadSettings().LimitLogHistoryTo;
       } else {
         maxHistoryRounds = 1; // If we're not logging, trim to 1
       }

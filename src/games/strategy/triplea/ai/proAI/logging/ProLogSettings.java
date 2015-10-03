@@ -14,27 +14,27 @@ import games.strategy.triplea.ai.proAI.ProAI;
 /**
  * Class to manage log settings.
  */
-public class LogSettings implements Serializable {
+public class ProLogSettings implements Serializable {
   private static final long serialVersionUID = 2696071717784800413L;
   public boolean LimitLogHistory = true;
   public int LimitLogHistoryTo = 5;
   public boolean EnableAILogging = true;
   public Level AILoggingDepth = Level.FINEST;
-  private static LogSettings s_lastSettings = null;
+  private static ProLogSettings s_lastSettings = null;
   private static String PROGRAM_SETTINGS = "Program Settings";
 
-  public static LogSettings loadSettings() {
+  public static ProLogSettings loadSettings() {
     if (s_lastSettings == null) {
-      LogSettings result = new LogSettings();
+      ProLogSettings result = new ProLogSettings();
       try {
         final byte[] pool = Preferences.userNodeForPackage(ProAI.class).getByteArray(PROGRAM_SETTINGS, null);
         if (pool != null) {
-          result = (LogSettings) new ObjectInputStream(new ByteArrayInputStream(pool)).readObject();
+          result = (ProLogSettings) new ObjectInputStream(new ByteArrayInputStream(pool)).readObject();
         }
       } catch (final Exception ex) {
       }
       if (result == null) {
-        result = new LogSettings();
+        result = new ProLogSettings();
       }
       s_lastSettings = result;
       return result;
@@ -43,7 +43,7 @@ public class LogSettings implements Serializable {
     }
   }
 
-  public static void saveSettings(final LogSettings settings) {
+  public static void saveSettings(final ProLogSettings settings) {
     s_lastSettings = settings;
     ObjectOutputStream outputStream = null;
     try {

@@ -9,9 +9,9 @@ import games.strategy.triplea.ui.TripleAFrame;
 /**
  * Class to manage log window display.
  */
-public class LogUI {
+public class ProLogUI {
   private static TripleAFrame s_frame = null;
-  private static LogWindow s_settingsWindow = null;
+  private static ProLogWindow s_settingsWindow = null;
   private static String currentName = "";
   private static int currentRound = 0;
 
@@ -20,7 +20,7 @@ public class LogUI {
       throw new IllegalStateException("Wrong thread, should be running on AWT thread.");
     }
     s_frame = frame;
-    s_settingsWindow = new LogWindow(frame);
+    s_settingsWindow = new ProLogWindow(frame);
   }
 
   public static void clearCachedInstances() {
