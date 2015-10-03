@@ -18,6 +18,9 @@
 MacOS_users_read_this_first.txt eol=lf
 
 # Denote all files that are truly binary and should not be modified.
+*.docx binary
+*.pdf binary
+*.exe binary
 *.png binary
 *.jpeg binary
 *.jpg binary
@@ -38,3 +41,11 @@ MacOS_users_read_this_first.txt eol=lf
 *.xls binary
 *.xlsx binary
 
+# Git LFS
+*.png filter=lfs diff=lfs merge=lfs -text
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+*.wav filter=lfs diff=lfs merge=lfs -text
+*.bmp filter=lfs diff=lfs merge=lfs -text
+*.jar filter=lfs diff=lfs merge=lfs -text
+*.docx filter=lfs diff=lfs merge=lfs -text
+*.pdf filter=lfs diff=lfs merge=lfs -text
