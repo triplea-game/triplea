@@ -941,7 +941,7 @@ public class GameRunner2 {
   }
 
   private static String getTripleaJarWithEngineVersionStringPath() {
-    return "triplea_" + EngineVersion.VERSION.toStringFull("_") + ".jar!";
+    return "triplea-" + EngineVersion.VERSION.toStringFull(".") + "-all.jar!";
   }
 
   public static Image getGameIcon(final Window frame) {
@@ -992,12 +992,12 @@ public class GameRunner2 {
     final String fileName = getGameRunnerFileLocation("GameRunner2.class");
 
     final String tripleaJarName = "triplea.jar!";
-    if (fileName.indexOf(tripleaJarName) != -1) {
+    if (fileName.contains(tripleaJarName)) {
       return getRootFolderRelativeToJar(fileName, tripleaJarName);
     }
 
     final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
-    if (fileName.indexOf(tripleaJarNameWithEngineVersion) != -1) {
+    if (fileName.contains(tripleaJarNameWithEngineVersion)) {
       return getRootFolderRelativeToJar(fileName, tripleaJarNameWithEngineVersion);
     }
 

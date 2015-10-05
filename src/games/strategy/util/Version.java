@@ -161,12 +161,12 @@ public class Version implements Serializable, Comparable {
     };
   }
 
-  public String toStringFull(final String seperator) {
-    return toStringFull(seperator, false);
+  public String toStringFull(final String separator) {
+    return toStringFull(separator, false);
   }
 
-  public String toStringFull(final String seperator, final boolean noMicro) {
-    return m_major + seperator + m_minor + seperator + m_point + (noMicro ? "" : (seperator + m_micro));
+  public String toStringFull(final String separator, final boolean noMicro) {
+    return m_major + separator + m_minor + separator + m_point + (noMicro ? "" : (separator + m_micro));
   }
 
   @Override
