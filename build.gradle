@@ -73,10 +73,6 @@ dependencies {
 	testCompile 'org.mockito:mockito-all:1.10.19'
 }
 
-task wrapper(type: Wrapper, group: 'gradle') {
-	distributionUrl = "http://services.gradle.org/distributions/gradle-2.6-all.zip"
-}
-
 task allPlatform(type: Zip, group: 'release', dependsOn: ':shadowJar') {
 	classifier 'all_platforms'
 	['assets', 'dice_servers', 'doc', 'license', 'maps', 'old'].each { folder ->
