@@ -254,9 +254,9 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     // per-thread, per-calc
     // caching
     final List<Unit> attackerOrderOfLosses =
-        OddsCalculator.getUnitListByOOL(m_attackerOrderOfLosses, m_attackingUnits, m_data);
+        OddsCalculator.getUnitListByOrderOfLoss(m_attackerOrderOfLosses, m_attackingUnits, m_data);
     final List<Unit> defenderOrderOfLosses =
-        OddsCalculator.getUnitListByOOL(m_defenderOrderOfLosses, m_defendingUnits, m_data);
+        OddsCalculator.getUnitListByOrderOfLoss(m_defenderOrderOfLosses, m_defendingUnits, m_data);
     for (int i = 0; i < count && !m_cancelled; i++) {
       final CompositeChange allChanges = new CompositeChange();
       final DummyDelegateBridge bridge1 = new DummyDelegateBridge(m_attacker, m_data, allChanges, attackerOrderOfLosses,
@@ -284,17 +284,17 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     return rVal;
   }
 
-  public static boolean isValidOOL(final String ool, final GameData data) {
-    if (ool == null || ool.trim().length() == 0) {
+  public static boolean isValidOrderOfLoss(final String orderOfLoss, final GameData data) {
+    if (orderOfLoss == null || orderOfLoss.trim().length() == 0) {
       return true;
     }
     try {
       final String[] sections;
-      if (ool.indexOf(OOL_SEPARATOR) != -1) {
-        sections = ool.trim().split(OOL_SEPARATOR_REGEX);
+      if (orderOfLoss.indexOf(OOL_SEPARATOR) != -1) {
+        sections = orderOfLoss.trim().split(OOL_SEPARATOR_REGEX);
       } else {
         sections = new String[1];
-        sections[0] = ool.trim();
+        sections[0] = orderOfLoss.trim();
       }
       final UnitTypeList unitTypes;
       try {
@@ -328,7 +328,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     return true;
   }
 
-  public static List<Unit> getUnitListByOOL(final String ool, final Collection<Unit> units, final GameData data) {
+  public static List<Unit> getUnitListByOrderOfLoss(final String ool, final Collection<Unit> units, final GameData data) {
     if (ool == null || ool.trim().length() == 0) {
       return null;
     }

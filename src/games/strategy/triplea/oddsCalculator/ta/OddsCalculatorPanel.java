@@ -354,10 +354,10 @@ public class OddsCalculatorPanel extends JPanel {
             m_landBattleCheckBox.isSelected(), m_context, m_data);
         if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(OddsCalculatorPanel.this, oolPanel,
             "Create Order Of Losses for each side", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE)) {
-          if (OddsCalculator.isValidOOL(oolPanel.getAttackerOrder(), m_data)) {
+          if (OddsCalculator.isValidOrderOfLoss(oolPanel.getAttackerOrder(), m_data)) {
             m_attackerOrderOfLosses = oolPanel.getAttackerOrder();
           }
-          if (OddsCalculator.isValidOOL(oolPanel.getDefenderOrder(), m_data)) {
+          if (OddsCalculator.isValidOrderOfLoss(oolPanel.getDefenderOrder(), m_data)) {
             m_defenderOrderOfLosses = oolPanel.getDefenderOrder();
           }
         }
@@ -1175,7 +1175,7 @@ class OrderOfLossesInputPanel extends JPanel {
     m_attackerTextField.getDocument().addDocumentListener(new DocumentListener() {
       @Override
       public void insertUpdate(final DocumentEvent e) {
-        if (!OddsCalculator.isValidOOL(m_attackerTextField.getText(), m_data)) {
+        if (!OddsCalculator.isValidOrderOfLoss(m_attackerTextField.getText(), m_data)) {
           m_attackerLabel.setForeground(Color.red);
         } else {
           m_attackerLabel.setForeground(null);
@@ -1184,7 +1184,7 @@ class OrderOfLossesInputPanel extends JPanel {
 
       @Override
       public void removeUpdate(final DocumentEvent e) {
-        if (!OddsCalculator.isValidOOL(m_attackerTextField.getText(), m_data)) {
+        if (!OddsCalculator.isValidOrderOfLoss(m_attackerTextField.getText(), m_data)) {
           m_attackerLabel.setForeground(Color.red);
         } else {
           m_attackerLabel.setForeground(null);
@@ -1193,7 +1193,7 @@ class OrderOfLossesInputPanel extends JPanel {
 
       @Override
       public void changedUpdate(final DocumentEvent e) {
-        if (!OddsCalculator.isValidOOL(m_attackerTextField.getText(), m_data)) {
+        if (!OddsCalculator.isValidOrderOfLoss(m_attackerTextField.getText(), m_data)) {
           m_attackerLabel.setForeground(Color.red);
         } else {
           m_attackerLabel.setForeground(null);
@@ -1204,7 +1204,7 @@ class OrderOfLossesInputPanel extends JPanel {
     m_defenderTextField.getDocument().addDocumentListener(new DocumentListener() {
       @Override
       public void insertUpdate(final DocumentEvent e) {
-        if (!OddsCalculator.isValidOOL(m_defenderTextField.getText(), m_data)) {
+        if (!OddsCalculator.isValidOrderOfLoss(m_defenderTextField.getText(), m_data)) {
           m_defenderLabel.setForeground(Color.red);
         } else {
           m_defenderLabel.setForeground(null);
@@ -1213,7 +1213,7 @@ class OrderOfLossesInputPanel extends JPanel {
 
       @Override
       public void removeUpdate(final DocumentEvent e) {
-        if (!OddsCalculator.isValidOOL(m_defenderTextField.getText(), m_data)) {
+        if (!OddsCalculator.isValidOrderOfLoss(m_defenderTextField.getText(), m_data)) {
           m_defenderLabel.setForeground(Color.red);
         } else {
           m_defenderLabel.setForeground(null);
@@ -1222,7 +1222,7 @@ class OrderOfLossesInputPanel extends JPanel {
 
       @Override
       public void changedUpdate(final DocumentEvent e) {
-        if (!OddsCalculator.isValidOOL(m_defenderTextField.getText(), m_data)) {
+        if (!OddsCalculator.isValidOrderOfLoss(m_defenderTextField.getText(), m_data)) {
           m_defenderLabel.setForeground(Color.red);
         } else {
           m_defenderLabel.setForeground(null);
