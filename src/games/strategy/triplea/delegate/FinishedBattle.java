@@ -38,8 +38,7 @@ public class FinishedBattle extends AbstractBattle {
 
   public FinishedBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
       final boolean isBombingRun, final BattleType battleType, final GameData data,
-      final BattleResultDescription battleResultDescription, final WhoWon whoWon,
-      final Collection<Unit> attackingUnits) {
+      final BattleResultDescription battleResultDescription, final WhoWon whoWon) {
     super(battleSite, attacker, battleTracker, isBombingRun, battleType, data);
     m_battleResultDescription = battleResultDescription;
     m_whoWon = whoWon;
