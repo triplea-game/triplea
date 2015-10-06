@@ -23,40 +23,37 @@ import games.strategy.engine.framework.startup.ui.MainFrame;
  * change the file.
  */
 public class FileProperty extends AEditableProperty {
-  // compatible with 0.9.0.2 saved games
   private static final long serialVersionUID = 6826763550643504789L;
-  /** The file associated with this property. */
-  private File m_file;
+  private static final String[] defaultImageSuffixes = { "png", "jpg", "jpeg", "gif" };
+
   private final String[] m_acceptableSuffixes;
+  private File m_file;
 
   /**
    * Construct a new file property.
    *
-   * @param name
-   *        The name of the property
-   * @param fileName
-   *        The name of the file to be associated with this property
+   * @param name - The name of the property
+   * @param fileName - The name of the file to be associated with this property
    */
   public FileProperty(final String name, final String description, final String fileName) {
-    super(name, description);
-    m_file = new File(fileName);
-    if (!m_file.exists()) {
-      m_file = null;
-    }
-    m_acceptableSuffixes = new String[] {"png", "jpg", "jpeg", "gif"};
+    this(name, description, getFileIfExists(new File(fileName)));
   }
 
+  private static File getFileIfExists( File file ) {
+    if( file.exists()) {
+      return file;
+    }
+    return null;
+  }
+
+
   public FileProperty(final String name, final String description, final File file) {
-    this(name, description, file, new String[] {"png", "jpg", "jpeg", "gif"});
+    this(name, description, file, defaultImageSuffixes );
   }
 
   public FileProperty(final String name, final String description, final File file, final String[] acceptableSuffixes) {
     super(name, description);
-    if (file.exists()) {
-      m_file = file;
-    } else {
-      m_file = null;
-    }
+    m_file = getFileIfExists( file );
     m_acceptableSuffixes = acceptableSuffixes;
   }
 
