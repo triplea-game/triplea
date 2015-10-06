@@ -1,18 +1,21 @@
 buildscript {
 	repositories {
 		maven { url "https://plugins.gradle.org/m2/" }
+		jcenter()
 		mavenCentral()
 		maven { url 'http://maven.ej-technologies.com/repository' }
 	}
 	dependencies {
 		classpath "com.github.jengelman.gradle.plugins:shadow:1.2.2"
-		classpath group: 'com.install4j', name: 'gradle-plugin', version: '6.0'
+		classpath group: 'com.install4j', name: 'gradle-plugin', version: '6.0.4'
+		classpath 'com.github.ben-manes:gradle-versions-plugin:0.11.3'
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: 'com.github.ben-manes.versions'
 
 group = 'triplea'
 
@@ -48,9 +51,9 @@ repositories {
 
 dependencies {
 	compile 'javax.activation:activation:1.1.1'
-	compile 'commons-codec:commons-codec:1.9'
+	compile 'commons-codec:commons-codec:1.10'
 	compile 'commons-httpclient:commons-httpclient:3.1'
-	compile 'commons-logging:commons-logging:1.1.3'
+	compile 'commons-logging:commons-logging:1.2'
 
 	compile 'com.github.insubstantial:flamingo:7.3'
 	compile 'com.github.insubstantial:laf-plugin:7.3'
@@ -60,15 +63,15 @@ dependencies {
 	compile 'com.github.insubstantial:substance-flamingo:7.3'
 	compile 'com.github.insubstantial:trident:7.3'
 
-	compile 'org.swinglabs.swingx:swingx-all:1.6.4'
-	compile 'com.sun.mail:mailapi:1.5.1'
-	compile 'com.sun.mail:smtp:1.5.1'
+	compile 'org.swinglabs.swingx:swingx-all:1.6.5-1'
+	compile 'com.sun.mail:mailapi:1.5.4'
+	compile 'com.sun.mail:smtp:1.5.4'
 	compile 'com.google.guava:guava:18.0'
 
 	compile files('lib/upnp.jar')
 	compile files('lib/AppleJavaExtensions-1.6.jar')
 
-	testCompile 'org.apache.derby:derby:10.10.1.1'
+	testCompile 'org.apache.derby:derby:10.11.1.1'
 	testCompile 'org.hamcrest:hamcrest-all:1.3'
 	testCompile 'junit:junit:4.12'
 	testCompile 'org.mockito:mockito-all:1.10.19'
