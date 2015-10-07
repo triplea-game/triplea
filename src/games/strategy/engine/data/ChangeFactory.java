@@ -174,8 +174,8 @@ public class ChangeFactory {
    * list rather than overwriting.
    */
   public static Change attachmentPropertyChange(final IAttachment attachment, final Object newValue,
-      final String property, final boolean getRaw, final boolean resetFirst) {
-    return new ChangeAttachmentChange(attachment, newValue, property, getRaw, resetFirst);
+      final String property, final boolean resetFirst) {
+    return new ChangeAttachmentChange(attachment, newValue, property, resetFirst);
   }
 
   /**

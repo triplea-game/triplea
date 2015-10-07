@@ -74,7 +74,7 @@ public class ClientSetupPanel extends SetupPanel {
       final PlayerRow playerRow = new PlayerRow(name, playerNamesAndAlliancesInTurnOrder.get(name),
           IGameLoader.CLIENT_PLAYER_TYPE, enabledPlayers.get(name));
       m_playerRows.add(playerRow);
-      playerRow.update(players.get(name), enabledPlayers.get(name), disableable.contains(name));
+      playerRow.update(players.get(name), disableable.contains(name));
     }
     layoutComponents();
   }
@@ -224,7 +224,7 @@ public class ClientSetupPanel extends SetupPanel {
       return m_enabledCheckBox;
     }
 
-    public void update(final String playerName, final boolean enabled, final boolean disableable) {
+    public void update(final String playerName, final boolean disableable) {
       if (playerName == null) {
         m_playerLabel.setText("-");
         final JButton button = new JButton(m_takeAction);
