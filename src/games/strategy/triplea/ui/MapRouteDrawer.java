@@ -81,7 +81,7 @@ public class MapRouteDrawer {
           shapes.add(oval);
         }
         if (i + 2 < points.length) {
-          drawCurvedLineWithNextPoint(graphics, points[i].x - xOffset, points[i].y - yOffset, points[i + 1].x - xOffset,
+          drawCurvedLineWithNextPoint(points[i].x - xOffset, points[i].y - yOffset, points[i + 1].x - xOffset,
               points[i + 1].y - yOffset, points[i + 2].x - xOffset, points[i + 2].y - yOffset, shapes);
         } else if (i + 1 < points.length) {
           drawLineSegment(points[i].x - xOffset, points[i].y - yOffset, points[i + 1].x - xOffset,
@@ -229,7 +229,7 @@ public class MapRouteDrawer {
    * (x,y) - the first point to draw from (xx, yy) - the point to draw too
    * (xxx, yyy) - the next point that the line segment will be drawn to
    */
-  private static void drawCurvedLineWithNextPoint(final Graphics2D graphics, final double x, final double y,
+  private static void drawCurvedLineWithNextPoint(final double x, final double y,
       final double xx, final double yy, final double xxx, final double yyy, final List<Shape> shapes) {
     final int maxControlLength = 150;
     double controlDiffx = xx - xxx;
