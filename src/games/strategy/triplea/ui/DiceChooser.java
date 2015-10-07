@@ -34,7 +34,7 @@ public class DiceChooser extends JPanel {
   private int m_diceSides = 6;
 
   public DiceChooser(final IUIContext uiContext, final int numRolls, final int hitAt, final boolean hitOnlyIfEquals,
-      final int diceSides, final GameData data) {
+      final int diceSides) {
     m_uiContext = uiContext;
     m_numRolls = numRolls;
     m_diceSides = diceSides;
