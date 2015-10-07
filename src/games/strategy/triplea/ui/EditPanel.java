@@ -536,11 +536,10 @@ public class EditPanel extends ActionPanel {
       return;
     }
     // sort units based on which transports are allowed to unload
-    Collections.sort(units, getRemovableUnitsOrder(units, /* mustMoveWith, */territory, true));
+    Collections.sort(units, getRemovableUnitsOrder());
   }
 
-  public static Comparator<Unit> getRemovableUnitsOrder(final List<Unit> units, final Territory territory,
-      final boolean noTies) {
+  public static Comparator<Unit> getRemovableUnitsOrder() {
     final Comparator<Unit> removableUnitsOrder = new Comparator<Unit>() {
       @Override
       public int compare(final Unit unit1, final Unit unit2) {
@@ -569,12 +568,8 @@ public class EditPanel extends ActionPanel {
         if (left1 != left2) {
           return left1 - left2;
         }
-        // if noTies is set, sort by hashcode so that result is deterministic
-        if (noTies) {
-          return u1.hashCode() - u2.hashCode();
-        } else {
-          return 0;
-        }
+        // sort by hashcode so that result is deterministic
+        return u1.hashCode() - u2.hashCode();
       }
     };
     return removableUnitsOrder;
