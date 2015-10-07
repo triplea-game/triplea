@@ -100,7 +100,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     }
   }
 
-  public void resetDefendingUnits(final Territory battleSite, final PlayerID attacker, final GameData data) {
+  public void resetDefendingUnits(final PlayerID attacker, final GameData data) {
     m_defendingUnits.clear();
     m_defendingUnits.addAll(m_battleSite.getUnits().getMatches(Matches.enemyUnit(attacker, data)));
   }
