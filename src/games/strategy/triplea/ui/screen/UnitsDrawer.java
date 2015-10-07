@@ -107,7 +107,7 @@ public class UnitsDrawer implements IDrawable {
         }
       }
     }
-    displayHitDamage(bounds, data, graphics, type, img);
+    displayHitDamage(bounds, graphics);
     // Display Factory Damage
     if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data) && Matches.UnitTypeCanBeDamaged.match(type)) {
       displayFactoryDamage(bounds, data, graphics, type, img);
@@ -126,8 +126,7 @@ public class UnitsDrawer implements IDrawable {
     }
   }
 
-  private void displayHitDamage(final Rectangle bounds, final GameData data, final Graphics2D graphics,
-      final UnitType type, final Image img) {
+  private void displayHitDamage(final Rectangle bounds, final Graphics2D graphics) {
     final Font font = MapImage.getPropertyMapFont();
     if (m_territoryName.length() != 0 && font.getSize() > 0 && m_damaged > 1) {
       graphics.setColor(MapImage.getPropertyUnitHitDamageColor());
