@@ -257,7 +257,7 @@ public class TileManager {
       drawTerritoryEffects(territory, data, mapData, drawnOn, drawing);
     }
     if (m_uiContext.getShowUnits()) {
-      drawUnits(territory, data, mapData, drawnOn, drawing);
+      drawUnits(territory, mapData, drawnOn, drawing);
     }
     drawing.add(new BattleDrawable(territory.getName()));
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
@@ -317,7 +317,7 @@ public class TileManager {
     }
   }
 
-  private void drawUnits(final Territory territory, final GameData data, final MapData mapData, final Set<Tile> drawnOn,
+  private void drawUnits(final Territory territory, final MapData mapData, final Set<Tile> drawnOn,
       final Set<IDrawable> drawing) {
     final Iterator<Point> placementPoints = mapData.getPlacementPoints(territory).iterator();
     if (placementPoints == null || !placementPoints.hasNext()) {
