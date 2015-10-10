@@ -1709,7 +1709,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               continue;
             }
             if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
+              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
@@ -1724,7 +1724,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               continue;
             }
             if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
+              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
@@ -1740,7 +1740,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               continue;
             }
             if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
+              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
@@ -1755,7 +1755,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               continue;
             }
             if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
+              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
@@ -1771,7 +1771,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               continue;
             }
             if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
+              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
@@ -1787,7 +1787,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               continue;
             }
             if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
+              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
@@ -1841,7 +1841,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               continue;
             }
             if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
+              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
@@ -1900,7 +1900,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               continue;
             }
             if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
+              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
@@ -1916,7 +1916,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               continue;
             }
             if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
+              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
@@ -1973,7 +1973,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               continue;
             }
             if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
+              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
@@ -2026,7 +2026,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               continue;
             }
             if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
+              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
@@ -2042,7 +2042,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               continue;
             }
             if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
+              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));

@@ -91,7 +91,7 @@ public class ProSimulateTurnUtils {
         delegateBridge.addChange(attackerskilledChange);
         final Change defenderskilledChange = ChangeFactory.removeUnits(t, defendersToRemove);
         delegateBridge.addChange(defenderskilledChange);
-        BattleTracker.captureOrDestroyUnits(t, player, player, delegateBridge, null, remainingUnits);
+        BattleTracker.captureOrDestroyUnits(t, player, player, delegateBridge, null);
         if (!checkIfCapturedTerritoryIsAlliedCapital(t, data, player, delegateBridge)) {
           delegateBridge.addChange(ChangeFactory.changeOwner(t, player));
         }
