@@ -97,7 +97,7 @@ public class AdvancedUtils {
       final PlayerID player, final GameData data, final Match<Territory> match) {
     final List<Territory> newTers = new ArrayList<Territory>();
     int i = 0;
-    for (final Territory ter : route.getTerritories()) {
+    for (final Territory ter : route.getAllTerritories()) {
       newTers.add(ter);
       if (match.match(ter) && i != 0) {
         break;
@@ -120,7 +120,7 @@ public class AdvancedUtils {
       final PlayerID player, final GameData data, final Match<Territory> match) {
     final List<Territory> newTers = new ArrayList<Territory>();
     int i = 0;
-    for (final Territory ter : route.getTerritories()) {
+    for (final Territory ter : route.getAllTerritories()) {
       if (match.match(ter) && i != 0) {
         break;
       }
