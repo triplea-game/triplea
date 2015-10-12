@@ -274,11 +274,7 @@ public class MetaSetupPanel extends SetupPanel {
               + "<br>Please make sure you are using the latest version of TripleA: http://triplea.sourceforge.net/</html>",
           null);
     }
-    // for development, ignore what we read,
-    // connect instead to localhost
-    if (System.getProperties().getProperty("triplea.lobby.debug") != null) {
-      props = new LobbyServerProperties("127.0.0.1", 3304, "", "the server says");
-    }
+
     final LobbyLogin login = new LobbyLogin(JOptionPane.getFrameForComponent(this), props);
     final LobbyClient client = login.login();
     if (client == null) {
