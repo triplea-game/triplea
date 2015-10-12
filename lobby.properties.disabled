@@ -1,0 +1,4 @@
+## rename this file to lobby.properties to have local game runners connect
+## to localhost for the lobby instead of connecting to the actual online lobby
+HOST=localhost
+PORT=3303
