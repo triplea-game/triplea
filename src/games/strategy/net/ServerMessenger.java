@@ -723,9 +723,6 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     NotifyPlayerRemoval(node);
     SocketChannel channel = m_nodeToChannel.remove(node);
     if (channel == null) {
-      channel = m_nodeToChannel.remove(node);
-    }
-    if (channel == null) {
       s_logger.info("Could not remove connection to node:" + node);
       return;
     }
