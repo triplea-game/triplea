@@ -116,17 +116,6 @@ public class AirBattle extends AbstractBattle {
     return;
   }
 
-  public static boolean shouldAirBattleUseAirCombatAttDefValues(final boolean isForBombingRun) {
-    // TODO: do we want to use the airAttack and airDefense values, or the normal attack and defense values?
-    // for m_isBombingRun we definitely want to
-    // but for a non bombing run, not so sure yet
-    if (isForBombingRun) {
-      return true;
-    } else {
-      return true;
-    }
-  }
-
   public boolean shouldFightAirBattle() {
     if (m_isBombingRun) {
       return Match.someMatch(m_attackingUnits, Matches.UnitIsStrategicBomber) && !m_defendingUnits.isEmpty();
@@ -577,13 +566,7 @@ public class AirBattle extends AbstractBattle {
           final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<Unit>();
           allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingUnits);
           allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingWaitingToDie);
-          if (shouldAirBattleUseAirCombatAttDefValues(m_isBombingRun)) {
-            m_dice =
-                DiceRoll.airBattle(m_attackingUnits, false, m_attacker, bridge, "Attackers Fire, ");
-          } else {
-            m_dice = DiceRoll.rollDice(m_attackingUnits, false, m_attacker, bridge, AirBattle.this, "Attackers Fire, ",
-                m_territoryEffects, allEnemyUnitsAliveOrWaitingToDie);
-          }
+          m_dice = DiceRoll.airBattle(m_attackingUnits, false, m_attacker, bridge, AirBattle.this, "Attackers Fire, ");
         }
       };
       final IExecutable calculateCasualties = new IExecutable() {
@@ -630,12 +613,7 @@ public class AirBattle extends AbstractBattle {
           final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<Unit>();
           allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingUnits);
           allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingWaitingToDie);
-          if (shouldAirBattleUseAirCombatAttDefValues(m_isBombingRun)) {
-            m_dice = DiceRoll.airBattle(m_defendingUnits, true, m_defender, bridge, "Defenders Fire, ");
-          } else {
-            m_dice = DiceRoll.rollDice(m_defendingUnits, true, m_defender, bridge, AirBattle.this, "Defenders Fire, ",
-                m_territoryEffects, allEnemyUnitsAliveOrWaitingToDie);
-          }
+          m_dice = DiceRoll.airBattle(m_defendingUnits, true, m_defender, bridge, AirBattle.this, "Defenders Fire, ");
         }
       };
       final IExecutable calculateCasualties = new IExecutable() {
