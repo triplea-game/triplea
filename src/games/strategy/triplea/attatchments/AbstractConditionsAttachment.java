@@ -190,7 +190,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
         this.getConditionType()) != this.getInvert();
   }
 
-  public static Match<AbstractConditionsAttachment> isSatisfiedAbstractConditionsAttachmentMatch(
+  private static Match<AbstractConditionsAttachment> isSatisfiedAbstractConditionsAttachmentMatch(
       final HashMap<ICondition, Boolean> testedConditions) {
     return new Match<AbstractConditionsAttachment>() {
       @Override

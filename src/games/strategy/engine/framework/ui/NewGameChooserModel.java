@@ -60,7 +60,7 @@ public class NewGameChooserModel extends DefaultListModel {
     return (NewGameChooserEntry) super.get(i);
   }
 
-  public static Collection<String> getDefaultMapNames() {
+  private static Collection<String> getDefaultMapNames() {
     final Collection<String> rVal = new ArrayList<String>();
     for (final File f : getDefaultMapsDir().listFiles()) {
       if (f.getName().toLowerCase().endsWith(".zip")) {

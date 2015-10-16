@@ -63,7 +63,7 @@ public class BattleRecords extends GameDataComponent implements Serializable {
     return playerRecords;
   }
 
-  public static Collection<BattleRecord> getRecordsForPlayers(final Collection<PlayerID> players,
+  private static Collection<BattleRecord> getRecordsForPlayers(final Collection<PlayerID> players,
       final BattleRecords brs) {
     final Collection<BattleRecord> playersRecords = new ArrayList<BattleRecord>();
     for (final PlayerID player : players) {

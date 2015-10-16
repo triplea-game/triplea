@@ -436,7 +436,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     }
   }
 
-  public static void getMyselfOutOfAlliance(final PoliticalActionAttachment paa, final PlayerID player,
+  private static void getMyselfOutOfAlliance(final PoliticalActionAttachment paa, final PlayerID player,
       final IDelegateBridge aBridge) {
     final GameData data = aBridge.getData();
     if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data)) {
@@ -478,7 +478,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     }
   }
 
-  public static void getNeutralOutOfWarWithAllies(final PoliticalActionAttachment paa, final PlayerID player,
+  private static void getNeutralOutOfWarWithAllies(final PoliticalActionAttachment paa, final PlayerID player,
       final IDelegateBridge aBridge) {
     final GameData data = aBridge.getData();
     if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data)) {

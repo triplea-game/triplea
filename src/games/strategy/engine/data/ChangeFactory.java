@@ -69,7 +69,7 @@ public class ChangeFactory {
     return new PlayerOwnerChange(list, owner, location);
   }
 
-  public static Change changeUnitProduction(final Territory terr, final int value) {
+  private static Change changeUnitProduction(final Territory terr, final int value) {
     return new ChangeUnitProduction(terr, value);
   }
 
@@ -101,7 +101,7 @@ public class ChangeFactory {
     return new ProductionFrontierChange(frontier, player);
   }
 
-  public static Change changeProductionFrontierChange(final PlayerID player, final ProductionFrontier newFrontier) {
+  private static Change changeProductionFrontierChange(final PlayerID player, final ProductionFrontier newFrontier) {
     return new ProductionFrontierChange(newFrontier, player);
   }
 
@@ -113,7 +113,7 @@ public class ChangeFactory {
     return new ChangeResourceChange(player, resource, quantity);
   }
 
-  public static Change addResourceCollection(final PlayerID id, final ResourceCollection rCollection) {
+  private static Change addResourceCollection(final PlayerID id, final ResourceCollection rCollection) {
     final CompositeChange cChange = new CompositeChange();
     for (final Resource r : rCollection.getResourcesCopy().keySet()) {
       cChange.add(new ChangeResourceChange(id, r, rCollection.getQuantity(r)));
@@ -201,7 +201,7 @@ public class ChangeFactory {
     return new GenericTechChange(attachment, value, property);
   }
 
-  public static Change changeGameSteps(final GameSequence oldSequence, final GameStep[] newSteps) {
+  private static Change changeGameSteps(final GameSequence oldSequence, final GameStep[] newSteps) {
     return new GameSequenceChange(oldSequence, newSteps);
   }
 
@@ -209,12 +209,12 @@ public class ChangeFactory {
     return new ObjectPropertyChange(unit, propertyName, newValue);
   }
 
-  public static Change addAttachmentChange(final IAttachment attachment, final Attachable attachable,
+  private static Change addAttachmentChange(final IAttachment attachment, final Attachable attachable,
       final String name) {
     return new AddAttachmentChange(attachment, attachable, name);
   }
 
-  public static Change addGridGameMapChange(final GameMap map, final String gridType, final String name, final int xs,
+  private static Change addGridGameMapChange(final GameMap map, final String gridType, final String name, final int xs,
       final int ys, final Set<String> water, final String horizontalConnections, final String verticalConnections,
       final String diagonalConnections) {
     return new AddGridGameMapChange(map, gridType, name, xs, ys, water, horizontalConnections, verticalConnections,

@@ -52,7 +52,7 @@ public class DiceRoll implements Externalizable {
   // since for low luck we get many hits with few dice
   private int m_hits;
 
-  public static void sortAAHighToLow(final List<Unit> units, final GameData data, final boolean defending) {
+  private static void sortAAHighToLow(final List<Unit> units, final GameData data, final boolean defending) {
     final Comparator<Unit> comparator = new Comparator<Unit>() {
       @Override
       public int compare(final Unit u1, final Unit u2) {
@@ -644,7 +644,7 @@ public class DiceRoll implements Externalizable {
    * @param defending
    * @param player
    */
-  public static int getArtillerySupportAvailable(final List<Unit> units, final boolean defending,
+  private static int getArtillerySupportAvailable(final List<Unit> units, final boolean defending,
       final PlayerID player) {
     int artillerySupportAvailable = 0;
     if (!defending) {
@@ -663,7 +663,7 @@ public class DiceRoll implements Externalizable {
     return artillerySupportAvailable;
   }
 
-  public static int getArtillerySupportAvailable(final Unit u, final boolean defending, final PlayerID player) {
+  private static int getArtillerySupportAvailable(final Unit u, final boolean defending, final PlayerID player) {
     if (Matches.UnitIsArtillery.match(u) && !defending) {
       final UnitAttachment ua = UnitAttachment.get(u.getType());
       int artillerySupportAvailable = ua.getUnitSupportCount();
@@ -1095,7 +1095,7 @@ public class DiceRoll implements Externalizable {
     return rVal;
   }
 
-  public static boolean isFirstTurnLimitedRoll(final PlayerID player, final GameData data) {
+  private static boolean isFirstTurnLimitedRoll(final PlayerID player, final GameData data) {
     // If player is null, Round > 1, or player has negate rule set: return false
     if (player.isNull() || data.getSequence().getRound() != 1 || isNegateDominatingFirstRoundAttack(player)) {
       return false;

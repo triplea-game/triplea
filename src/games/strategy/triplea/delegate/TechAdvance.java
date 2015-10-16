@@ -194,7 +194,7 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
     throw new IllegalArgumentException(propertyString + " is not a valid technology");
   }
 
-  public static TechAdvance findTechnologyFromAllTechs(final String name, final GameData data, final boolean mustFind) {
+  private static TechAdvance findTechnologyFromAllTechs(final String name, final GameData data, final boolean mustFind) {
     TechAdvance type;
     data.acquireReadLock();
     try {
@@ -215,7 +215,7 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
    * @param data
    * @return first is air&naval, second is land&production
    */
-  public static Tuple<List<TechAdvance>, List<TechAdvance>> getWW2v3CategoriesWithTheirAdvances(final GameData data) {
+  private static Tuple<List<TechAdvance>, List<TechAdvance>> getWW2v3CategoriesWithTheirAdvances(final GameData data) {
     List<TechAdvance> allAdvances;
     data.acquireReadLock();
     try {

@@ -147,7 +147,7 @@ public class ProMatches {
     };
   }
 
-  public static Match<Territory> territoryCanMoveLandUnitsAndIsEnemy(final PlayerID player, final GameData data) {
+  private static Match<Territory> territoryCanMoveLandUnitsAndIsEnemy(final PlayerID player, final GameData data) {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
@@ -207,7 +207,7 @@ public class ProMatches {
     };
   }
 
-  public static Match<Territory> territoryIsBlitzable(final PlayerID player, final GameData data, final Unit u) {
+  private static Match<Territory> territoryIsBlitzable(final PlayerID player, final GameData data, final Unit u) {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
@@ -756,7 +756,7 @@ public class ProMatches {
     };
   }
 
-  public static Match<Unit> unitIsAlliedNotLand(final PlayerID player, final GameData data) {
+  private static Match<Unit> unitIsAlliedNotLand(final PlayerID player, final GameData data) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
@@ -830,7 +830,7 @@ public class ProMatches {
     };
   }
 
-  public static Match<Unit> unitIsEnemyLand(final PlayerID player, final GameData data) {
+  private static Match<Unit> unitIsEnemyLand(final PlayerID player, final GameData data) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
@@ -861,7 +861,7 @@ public class ProMatches {
     };
   }
 
-  public static Match<Unit> unitIsEnemySea(final PlayerID player, final GameData data) {
+  private static Match<Unit> unitIsEnemySea(final PlayerID player, final GameData data) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
@@ -871,7 +871,7 @@ public class ProMatches {
     };
   }
 
-  public static Match<Unit> unitIsNeutral() {
+  private static Match<Unit> unitIsNeutral() {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
@@ -927,7 +927,7 @@ public class ProMatches {
     };
   }
 
-  public static Match<Unit> unitIsOwnedLand(final PlayerID player) {
+  private static Match<Unit> unitIsOwnedLand(final PlayerID player) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {

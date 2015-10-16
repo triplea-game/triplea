@@ -9,7 +9,7 @@ import java.util.Stack;
  * Currently, minimax and alpha-beta algorithms are implemented.
  */
 public class AIAlgorithm {
-  public static <Play> Stack<Play> depthFirstSearch(final GameState<Play> state, final int maxDepth) {
+  private static <Play> Stack<Play> depthFirstSearch(final GameState<Play> state, final int maxDepth) {
     final Stack<Play> stack = new Stack<Play>();
     try {
       if (state.gameIsOver()) {
@@ -75,7 +75,7 @@ public class AIAlgorithm {
    *        current game state
    * @return the optimal next play
    */
-  public static <Play> Play alphaBetaSearch(final GameState<Play> state) {
+  private static <Play> Play alphaBetaSearch(final GameState<Play> state) {
     final Pair<Float, Play> m = maxValue(state, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
     return m.getSecond();
   }
@@ -140,7 +140,7 @@ public class AIAlgorithm {
    *        current game state
    * @return the optimal next play
    */
-  public static <Play> Play minimaxSearch(final GameState<Play> state) {
+  private static <Play> Play minimaxSearch(final GameState<Play> state) {
     final Pair<Float, Play> m = maxValue(state);
     return m.getSecond();
   }

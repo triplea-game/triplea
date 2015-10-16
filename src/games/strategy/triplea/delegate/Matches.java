@@ -380,7 +380,7 @@ public class Matches {
     };
   }
 
-  public static Match<Unit> UnitDestroyedWhenCapturedBy(final PlayerID playerBY) {
+  private static Match<Unit> UnitDestroyedWhenCapturedBy(final PlayerID playerBY) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
@@ -398,7 +398,7 @@ public class Matches {
     };
   }
 
-  public static Match<Unit> UnitDestroyedWhenCapturedFrom() {
+  private static Match<Unit> UnitDestroyedWhenCapturedFrom() {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
@@ -551,7 +551,7 @@ public class Matches {
    * @param player
    * @param data
    */
-  public static final Match<UnitType> UnitTypeIsSupporterOrHasCombatAbility(final boolean attack, final PlayerID player,
+  private static final Match<UnitType> UnitTypeIsSupporterOrHasCombatAbility(final boolean attack, final PlayerID player,
       final GameData data) {
     return new Match<UnitType>() {
       @Override
@@ -932,7 +932,7 @@ public class Matches {
     }
   };
 
-  public static final Match<Unit> UnitIsAAthatWillNotFireIfPresentEnemyUnits(final Collection<Unit> enemyUnitsPresent) {
+  private static final Match<Unit> UnitIsAAthatWillNotFireIfPresentEnemyUnits(final Collection<Unit> enemyUnitsPresent) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit obj) {
@@ -947,7 +947,7 @@ public class Matches {
     };
   }
 
-  public static final Match<UnitType> UnitTypeIsAAthatCanFireOnRound(final int battleRoundNumber) {
+  private static final Match<UnitType> UnitTypeIsAAthatCanFireOnRound(final int battleRoundNumber) {
     return new Match<UnitType>() {
       @Override
       public boolean match(final UnitType obj) {
@@ -957,7 +957,7 @@ public class Matches {
     };
   }
 
-  public static final Match<Unit> UnitIsAAthatCanFireOnRound(final int battleRoundNumber) {
+  private static final Match<Unit> UnitIsAAthatCanFireOnRound(final int battleRoundNumber) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit obj) {
@@ -1258,7 +1258,7 @@ public class Matches {
     };
   }
 
-  public static Match<Territory> TerritoryHasOwnedDestroyer(final PlayerID player) {
+  private static Match<Territory> TerritoryHasOwnedDestroyer(final PlayerID player) {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
@@ -1478,7 +1478,7 @@ public class Matches {
     };
   }
 
-  public static Match<Territory> territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnits(final GameData data,
+  private static Match<Territory> territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnits(final GameData data,
       final PlayerID player) {
     return new Match<Territory>() {
       @Override
@@ -1551,7 +1551,7 @@ public class Matches {
   /**
    * If water, returns false.
    */
-  public static Match<Territory> TerritoryIsLandAndHasProductionValueAtLeast(final int prodVal) {
+  private static Match<Territory> TerritoryIsLandAndHasProductionValueAtLeast(final int prodVal) {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
@@ -1764,7 +1764,7 @@ public class Matches {
    * @return units match that have at least lower limit movement
    */
   @Deprecated
-  public static Match<Unit> unitHasEnoughMovement(final int lowerLimit, final IntegerMap<Unit> movement) {
+  private static Match<Unit> unitHasEnoughMovement(final int lowerLimit, final IntegerMap<Unit> movement) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit o) {
@@ -1857,7 +1857,7 @@ public class Matches {
     }
   };
 
-  public static final Match<UnitType> UnitTypeCanMove(final PlayerID player) {
+  private static final Match<UnitType> UnitTypeCanMove(final PlayerID player) {
     return new Match<UnitType>() {
       @Override
       public boolean match(final UnitType obj) {
@@ -1928,7 +1928,7 @@ public class Matches {
     };
   }
 
-  public static Match<Unit> unitHasEnoughTransportSpaceLeft(final int spaceNeeded) {
+  private static Match<Unit> unitHasEnoughTransportSpaceLeft(final int spaceNeeded) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit unit) {
@@ -2016,21 +2016,21 @@ public class Matches {
     };
   }
 
-  public static Match<Unit> unitIsEnemyAAforAnything(final PlayerID player, final GameData data) {
+  private static Match<Unit> unitIsEnemyAAforAnything(final PlayerID player, final GameData data) {
     final CompositeMatch<Unit> comp = new CompositeMatchAnd<Unit>();
     comp.add(UnitIsAAforAnything);
     comp.add(enemyUnit(player, data));
     return comp;
   }
 
-  public static Match<Unit> unitIsEnemyAAforCombat(final PlayerID player, final GameData data) {
+  private static Match<Unit> unitIsEnemyAAforCombat(final PlayerID player, final GameData data) {
     final CompositeMatch<Unit> comp = new CompositeMatchAnd<Unit>();
     comp.add(UnitIsAAforCombatOnly);
     comp.add(enemyUnit(player, data));
     return comp;
   }
 
-  public static Match<Unit> unitIsEnemyAAforBombing(final PlayerID player, final GameData data) {
+  private static Match<Unit> unitIsEnemyAAforBombing(final PlayerID player, final GameData data) {
     final CompositeMatch<Unit> comp = new CompositeMatchAnd<Unit>();
     comp.add(UnitIsAAforBombingThisUnitOnly);
     comp.add(enemyUnit(player, data));
@@ -2187,7 +2187,7 @@ public class Matches {
     };
   }
 
-  public static Match<Unit> carrierOwnedBy(final PlayerID player) {
+  private static Match<Unit> carrierOwnedBy(final PlayerID player) {
     return new CompositeMatchAnd<Unit>(unitOwnedBy(player), Matches.UnitIsCarrier);
   }
 
@@ -2288,7 +2288,7 @@ public class Matches {
     };
   }
 
-  public static Match<Territory> territoryHasEnemyAAforBombing(final PlayerID player, final GameData data) {
+  private static Match<Territory> territoryHasEnemyAAforBombing(final PlayerID player, final GameData data) {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
@@ -2590,7 +2590,7 @@ public class Matches {
     };
   }
 
-  public static Match<Unit> unitIsNotInTerritories(final Collection<Territory> list) {
+  private static Match<Unit> unitIsNotInTerritories(final Collection<Territory> list) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
@@ -3645,7 +3645,7 @@ public class Matches {
     };
   }
 
-  public static <T> Match<T> isInList(final List<T> list) {
+  private static <T> Match<T> isInList(final List<T> list) {
     return new Match<T>() {
       @Override
       public boolean match(final T ter) {

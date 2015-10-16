@@ -104,7 +104,7 @@ public class MapProperties {
     return buf.toString();
   }
 
-  public static String colorToHex(final Color color) {
+  private static String colorToHex(final Color color) {
     String hexString = Integer.toHexString(color.getRGB() & 0x00FFFFFF);
     while (hexString.length() < 6) {
       hexString = "0" + hexString;

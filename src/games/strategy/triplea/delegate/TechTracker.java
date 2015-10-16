@@ -131,7 +131,7 @@ public class TechTracker implements java.io.Serializable {
     return TechAttachment.get(player).getIndustrialTechnology();
   }
 
-  public static boolean hasDestroyerBombard(final PlayerID player) {
+  private static boolean hasDestroyerBombard(final PlayerID player) {
     return TechAttachment.get(player).getDestroyerBombard();
   }
 
@@ -147,11 +147,11 @@ public class TechTracker implements java.io.Serializable {
     return TechAttachment.get(player).getIncreasedFactoryProduction();
   }
 
-  public static boolean hasWarBonds(final PlayerID player) {
+  private static boolean hasWarBonds(final PlayerID player) {
     return TechAttachment.get(player).getWarBonds();
   }
 
-  public static boolean hasMechanizedInfantry(final PlayerID player) {
+  private static boolean hasMechanizedInfantry(final PlayerID player) {
     return TechAttachment.get(player).getMechanizedInfantry();
   }
 
@@ -159,7 +159,7 @@ public class TechTracker implements java.io.Serializable {
     return TechAttachment.get(player).getAARadar();
   }
 
-  public static boolean hasShipyards(final PlayerID player) {
+  private static boolean hasShipyards(final PlayerID player) {
     return TechAttachment.get(player).getShipyards();
   }
 }

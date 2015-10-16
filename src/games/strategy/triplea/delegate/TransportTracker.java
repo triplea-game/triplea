@@ -201,7 +201,7 @@ public class TransportTracker {
     return change;
   }
 
-  public static Change combatTransportChange(final TripleAUnit transport, final PlayerID id) {
+  private static Change combatTransportChange(final TripleAUnit transport, final PlayerID id) {
     assertTransport(transport);
     final CompositeChange change = new CompositeChange();
     change.add(ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.WAS_IN_COMBAT));

@@ -671,7 +671,7 @@ public class AirBattle extends AbstractBattle {
     };
   }
 
-  public static Match<Unit> defendingGroundSeaBattleInterceptors(final PlayerID attacker, final GameData data) {
+  private static Match<Unit> defendingGroundSeaBattleInterceptors(final PlayerID attacker, final GameData data) {
     final boolean canScrambleIntoAirBattles = games.strategy.triplea.Properties.getCanScrambleIntoAirBattles(data);
     return new Match<Unit>() {
       @Override
@@ -686,7 +686,7 @@ public class AirBattle extends AbstractBattle {
     };
   }
 
-  public static Match<Unit> defendingBombingRaidInterceptors(final PlayerID attacker, final GameData data) {
+  private static Match<Unit> defendingBombingRaidInterceptors(final PlayerID attacker, final GameData data) {
     final boolean canScrambleIntoAirBattles = games.strategy.triplea.Properties.getCanScrambleIntoAirBattles(data);
     return new Match<Unit>() {
       @Override

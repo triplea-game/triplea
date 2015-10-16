@@ -52,7 +52,7 @@ public class UnitComparator {
     return getCapacityComparator(transports, true);
   }
 
-  public static Comparator<Unit> getDecreasingCapacityComparator(final List<Unit> transports) {
+  private static Comparator<Unit> getDecreasingCapacityComparator(final List<Unit> transports) {
     return getCapacityComparator(transports, false);
   }
 

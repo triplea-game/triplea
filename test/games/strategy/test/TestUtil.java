@@ -36,7 +36,7 @@ public class TestUtil {
    * Task is accomplished by adding a do-nothing event with SwingUtilities
    * to the event thread and then blocking until the do-nothing event is done.
    */
-  public static void waitForSwingThreads() {
+  private static void waitForSwingThreads() {
     try {
       SwingUtilities.invokeAndWait(new Runnable() {
         @Override
@@ -51,7 +51,7 @@ public class TestUtil {
     }
   }
 
-  public static void closeFrame(JFrame frame) {
+  private static void closeFrame(JFrame frame) {
     frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
   }
 }

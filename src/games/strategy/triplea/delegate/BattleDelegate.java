@@ -1494,7 +1494,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     bridge.addChange(damagedChange);
   }
 
-  public static Collection<Territory> whereCanAirLand(final Collection<Unit> strandedAir, final Territory currentTerr,
+  private static Collection<Territory> whereCanAirLand(final Collection<Unit> strandedAir, final Territory currentTerr,
       final PlayerID alliedPlayer, final GameData data, final BattleTracker battleTracker,
       final int carrierCostForCurrentTerr, final int allowedMovement, final boolean byMovementCost,
       final boolean useMaxScrambleDistance, final boolean landInConquered) {

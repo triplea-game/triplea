@@ -119,7 +119,7 @@ public class RandomStatsDetails implements Serializable {
     // it should never reach this part.
   }
 
-  public static String getStatsString(final IntegerMap<Integer> diceRolls, final DiceStatistic diceStats,
+  private static String getStatsString(final IntegerMap<Integer> diceRolls, final DiceStatistic diceStats,
       final String title, final String indentation) {
     final StringBuilder sb = new StringBuilder();
     sb.append(indentation + title + "\n");
@@ -163,7 +163,7 @@ public class RandomStatsDetails implements Serializable {
     return getAllStatsString(this, indentation);
   }
 
-  public static JPanel getStatsDisplay(final IntegerMap<Integer> diceRolls, final DiceStatistic diceStats,
+  private static JPanel getStatsDisplay(final IntegerMap<Integer> diceRolls, final DiceStatistic diceStats,
       final String title) {
     final JPanel panel = new JPanel();
     panel.setBorder(BorderFactory.createEtchedBorder());

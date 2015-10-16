@@ -96,7 +96,7 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
     return joined;
   }
 
-  public static Route subRoute(final Route route, final Territory end) {
+  private static Route subRoute(final Route route, final Territory end) {
     if (!route.getAllTerritories().contains(end)) {
       throw new IllegalArgumentException("Cannot take subroute if route does not contain end");
     }

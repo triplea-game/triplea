@@ -86,7 +86,7 @@ public class RemoteMethodCall implements Externalizable {
     return stringsToClasses(m_argTypes, m_args);
   }
 
-  public static Class<?>[] stringsToClasses(final String[] strings, final Object[] args) {
+  private static Class<?>[] stringsToClasses(final String[] strings, final Object[] args) {
     final Class<?>[] rVal = new Class[strings.length];
     for (int i = 0; i < strings.length; i++) {
       try {
@@ -119,7 +119,7 @@ public class RemoteMethodCall implements Externalizable {
     return rVal;
   }
 
-  public static String[] classesToString(final Class<?>[] classes, final Object[] args) {
+  private static String[] classesToString(final Class<?>[] classes, final Object[] args) {
     // as an optimization, if args[i].getClass == classes[i] then leave classes[i] as null
     // this will reduce the amount of info we write over the network in the common
     // case where the object is the same type as its arg

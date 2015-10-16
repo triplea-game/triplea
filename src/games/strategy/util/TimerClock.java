@@ -24,7 +24,7 @@ public class TimerClock<T> extends Observable {
 
   public TimerClock() {}
 
-  public static void startTask(final Runnable task, final int interruptAfterSecondsIfNotFinished,
+  private static void startTask(final Runnable task, final int interruptAfterSecondsIfNotFinished,
       final int delaySeconds, final Collection<Class<? extends RuntimeException>> exceptionsToIgnoreOnInterrupt,
       final Observer observer) {
     new TimerClock<Object>().start(task, null, interruptAfterSecondsIfNotFinished, delaySeconds,

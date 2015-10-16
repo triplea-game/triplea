@@ -54,7 +54,7 @@ public class LocalizeHTML {
   /* Match the src attribute */
   public static final String PATTERN_HTML_IMG_SRC_TAG = "\\s*(?i)src\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
 
-  public static List<String> getAllAhrefLinksFromHTML(final String htmlText) {
+  private static List<String> getAllAhrefLinksFromHTML(final String htmlText) {
     final List<String> result = new ArrayList<String>();
     final Pattern patternTag = Pattern.compile(PATTERN_HTML_A_TAG);
     final Pattern patternLink = Pattern.compile(PATTERN_HTML_A_HREF_TAG);
@@ -74,7 +74,7 @@ public class LocalizeHTML {
     return result;
   }
 
-  public static List<String> getAllImgSrcLinksFromHTML(final String htmlText) {
+  private static List<String> getAllImgSrcLinksFromHTML(final String htmlText) {
     final List<String> result = new ArrayList<String>();
     final Pattern patternTag = Pattern.compile(PATTERN_HTML_IMG_TAG);
     final Pattern patternLink = Pattern.compile(PATTERN_HTML_IMG_SRC_TAG);

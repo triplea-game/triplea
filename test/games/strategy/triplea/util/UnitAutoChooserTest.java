@@ -56,7 +56,7 @@ class TestUnit {
     return m_map.get(unit);
   }
 
-  public static List<TestUnit> createList(final Collection<Unit> units) {
+  private static List<TestUnit> createList(final Collection<Unit> units) {
     final List<TestUnit> testUnitList = new ArrayList<TestUnit>();
     for (final Unit unit : units) {
       TestUnit testUnit = TestUnit.get(unit);
@@ -68,7 +68,7 @@ class TestUnit {
     return testUnitList;
   }
 
-  public static Set<TestUnit> createSet(final Collection<Unit> units) {
+  protected static Set<TestUnit> createSet(final Collection<Unit> units) {
     final Set<TestUnit> testUnitSet = new HashSet<TestUnit>();
     for (final Unit unit : units) {
       TestUnit testUnit = TestUnit.get(unit);

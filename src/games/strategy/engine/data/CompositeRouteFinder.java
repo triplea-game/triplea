@@ -15,7 +15,7 @@ import games.strategy.util.Match;
 public class CompositeRouteFinder {
   private final static Logger s_logger = Logger.getLogger(CompositeRouteFinder.class.getName());
 
-  public static Logger GetStaticLogger() {
+  private static Logger GetStaticLogger() {
     return s_logger;
   }
 

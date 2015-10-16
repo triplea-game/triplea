@@ -214,14 +214,14 @@ public class OddsCalculatorPanel extends JPanel {
     super.finalize();
   }
 
-  public static double percentageOfFreeMemoryAvailable() {
+  private static double percentageOfFreeMemoryAvailable() {
     final Runtime runtime = Runtime.getRuntime();
     final long maxMemory = runtime.maxMemory();
     final long memoryAvailable = Math.min(maxMemory, maxMemory - (runtime.totalMemory() - runtime.freeMemory()));
     return (((double) memoryAvailable) / ((double) maxMemory));
   }
 
-  public static long freeMemoryAvailable() {
+  private static long freeMemoryAvailable() {
     final Runtime runtime = Runtime.getRuntime();
     final long maxMemory = runtime.maxMemory();
     return Math.min(maxMemory, maxMemory - (runtime.totalMemory() - runtime.freeMemory()));

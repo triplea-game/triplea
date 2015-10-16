@@ -110,7 +110,7 @@ public class BattleCalculator {
     return (2 * hitpoints) + (power * 6 / diceSides);
   }
 
-  public static int getAAHits(final Collection<Unit> units, final IDelegateBridge bridge, final int[] dice) {
+  private static int getAAHits(final Collection<Unit> units, final IDelegateBridge bridge, final int[] dice) {
     final int attackingAirCount = Match.countMatches(units, Matches.UnitIsAir);
     int hitCount = 0;
     for (int i = 0; i < attackingAirCount; i++) {
@@ -165,7 +165,7 @@ public class BattleCalculator {
    * radar)
    * the second list is all the air units that do not fit in the first list
    */
-  public static Tuple<List<List<Unit>>, List<Unit>> categorizeLowLuckAirUnits(final Collection<Unit> units,
+  private static Tuple<List<List<Unit>>, List<Unit>> categorizeLowLuckAirUnits(final Collection<Unit> units,
       final Territory location, final int diceSides, final int groupSize) {
     final Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(units, null, false, true);
     final List<List<Unit>> groupsOfSize = new ArrayList<List<Unit>>();
@@ -418,7 +418,7 @@ public class BattleCalculator {
   /**
    * Choose plane casualties based on individual AA shots at each aircraft.
    */
-  public static CasualtyDetails IndividuallyFiredAACasualties(final boolean defending, final Collection<Unit> planes,
+  private static CasualtyDetails IndividuallyFiredAACasualties(final boolean defending, final Collection<Unit> planes,
       final Collection<Unit> defendingAA, final DiceRoll dice, final Territory location, final IDelegateBridge bridge,
       final boolean allowMultipleHitsPerUnit) {
     // if we have aa guns that are not infinite, then we need to randomly decide the aa casualties since there are not
@@ -717,7 +717,7 @@ public class BattleCalculator {
    * provided.
    * (Veqryn)
    */
-  public static List<Unit> sortUnitsForCasualtiesWithSupport(final Collection<Unit> targetsToPickFrom, final int hits,
+  private static List<Unit> sortUnitsForCasualtiesWithSupport(final Collection<Unit> targetsToPickFrom, final int hits,
       final boolean defending, final PlayerID player, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
       final Territory battlesite, final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects,
@@ -1380,7 +1380,7 @@ public class BattleCalculator {
    *
    * @param data
    */
-  public static Map<UnitType, ResourceCollection> getResourceCostsForTUVForAllPlayersMergedAndAveraged(
+  private static Map<UnitType, ResourceCollection> getResourceCostsForTUVForAllPlayersMergedAndAveraged(
       final GameData data) {
     final Map<UnitType, ResourceCollection> average = new HashMap<UnitType, ResourceCollection>();
     final Resource PUS;

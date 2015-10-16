@@ -292,17 +292,17 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
     return result;
   }
 
-  public static Match<Unit> getAirborneTypesMatch(final PlayerID player, final GameData data) {
+  private static Match<Unit> getAirborneTypesMatch(final PlayerID player, final GameData data) {
     return getAirborneMatch(player, TechAbilityAttachment.getAirborneTypes(player, data),
         Collections.singleton(player));
   }
 
-  public static Match<Unit> getAirborneBaseMatch(final PlayerID player, final GameData data) {
+  private static Match<Unit> getAirborneBaseMatch(final PlayerID player, final GameData data) {
     return getAirborneMatch(player, TechAbilityAttachment.getAirborneBases(player, data),
         data.getRelationshipTracker().getAllies(player, true));
   }
 
-  public static Match<Unit> getAirborneMatch(final PlayerID player, final Set<UnitType> types,
+  private static Match<Unit> getAirborneMatch(final PlayerID player, final Set<UnitType> types,
       final Collection<PlayerID> unitOwners) {
     return new CompositeMatchAnd<Unit>(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners),
         Matches.unitIsOfTypes(types), Matches.UnitIsNotDisabled, Matches.unitHasNotMoved,
@@ -332,7 +332,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
     return launchedChange;
   }
 
-  public static int getNumberOfAirborneAlreadyLaunchedBy(final Collection<Unit> bases, final GameData data) {
+  private static int getNumberOfAirborneAlreadyLaunchedBy(final Collection<Unit> bases, final GameData data) {
     int rVal = 0;
     for (final Unit u : bases) {
       rVal += getNumberOfAirborneAlreadyLaunchedBy(u, data);
@@ -340,11 +340,11 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
     return rVal;
   }
 
-  public static int getNumberOfAirborneAlreadyLaunchedBy(final Unit base, final GameData data) {
+  private static int getNumberOfAirborneAlreadyLaunchedBy(final Unit base, final GameData data) {
     return Math.max(0, (((TripleAUnit) base).getLaunched()));
   }
 
-  public static boolean allowAirborne(final PlayerID player, final GameData data) {
+  private static boolean allowAirborne(final PlayerID player, final GameData data) {
     if (!TechAbilityAttachment.getAllowAirborneForces(player, data)) {
       return false;
     }

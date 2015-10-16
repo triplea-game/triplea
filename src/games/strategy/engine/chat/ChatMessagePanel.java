@@ -57,7 +57,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   private final SimpleAttributeSet normal = new SimpleAttributeSet();
   public static final String ME = "/me ";
 
-  public static boolean isThirdPerson(final String msg) {
+  private static boolean isThirdPerson(final String msg) {
     return msg.toLowerCase().startsWith(ME);
   }
 

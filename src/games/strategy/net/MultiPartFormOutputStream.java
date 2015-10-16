@@ -375,7 +375,7 @@ public class MultiPartFormOutputStream {
    * @throws java.io.IOException
    *         on input/output errors
    */
-  public static URLConnection createConnection(final URL url) throws java.io.IOException {
+  private static URLConnection createConnection(final URL url) throws java.io.IOException {
     final URLConnection urlConn = url.openConnection();
     if (urlConn instanceof HttpURLConnection) {
       final HttpURLConnection httpConn = (HttpURLConnection) urlConn;
@@ -395,7 +395,7 @@ public class MultiPartFormOutputStream {
    *
    * @return a multipart boundary string
    */
-  public static String createBoundary() {
+  private static String createBoundary() {
     return "--------------------" + Long.toString(System.currentTimeMillis(), 16);
   }
 
@@ -414,7 +414,7 @@ public class MultiPartFormOutputStream {
    *        the boundary string
    * @return the content type string
    */
-  public static String getContentType(final String boundary) {
+  private static String getContentType(final String boundary) {
     return "multipart/form-data; boundary=" + boundary;
   }
 }

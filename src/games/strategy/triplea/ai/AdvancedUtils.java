@@ -36,7 +36,7 @@ public class AdvancedUtils {
     return -1;
   }
 
-  public static Unit getFirstUnitMatching(final List<Unit> units, final Match<Unit> match, final int startIndex) {
+  private static Unit getFirstUnitMatching(final List<Unit> units, final Match<Unit> match, final int startIndex) {
     final int index = getIndexOfFirstUnitMatching(units, match, startIndex);
     if (index == -1) {
       return null;
@@ -44,7 +44,7 @@ public class AdvancedUtils {
     return units.get(index);
   }
 
-  public static int getIndexOfFirstUnitMatching(final List<Unit> units, final Match<Unit> match, final int startIndex) {
+  private static int getIndexOfFirstUnitMatching(final List<Unit> units, final Match<Unit> match, final int startIndex) {
     for (int i = startIndex; i < units.size(); i++) {
       final Unit unit = units.get(i);
       if (match.match(unit)) {
@@ -72,7 +72,7 @@ public class AdvancedUtils {
     return lowestMovement;
   }
 
-  public static int getFastestMovementUnitInList(final Collection<Unit> list) {
+  private static int getFastestMovementUnitInList(final Collection<Unit> list) {
     int fastestMovement = Integer.MIN_VALUE;
     for (final Unit unit : list) {
       final TripleAUnit tu = TripleAUnit.get(unit);
@@ -86,7 +86,7 @@ public class AdvancedUtils {
     return fastestMovement;
   }
 
-  public static Route trimRouteAtFirstTerWithEnemyUnits(final Route route, final int newRouteJumpCount,
+  private static Route trimRouteAtFirstTerWithEnemyUnits(final Route route, final int newRouteJumpCount,
       final PlayerID player, final GameData data) {
     return trimRouteAtFirstTerMatchingX(route, newRouteJumpCount,
         Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1),
@@ -110,7 +110,7 @@ public class AdvancedUtils {
     return new Route(newTers);
   }
 
-  public static Route trimRouteAtLastFriendlyTer(final Route route, final int newRouteJumpCount, final PlayerID player,
+  private static Route trimRouteAtLastFriendlyTer(final Route route, final int newRouteJumpCount, final PlayerID player,
       final GameData data) {
     return trimRouteBeforeFirstTerMatching(route, newRouteJumpCount,
         Matches.isTerritoryEnemyAndNotUnownedWater(player, data));
@@ -144,7 +144,7 @@ public class AdvancedUtils {
   }
 
 
-  public static List<Territory> getTerritoriesWithinXDistanceOfY(final GameData data, final Territory start,
+  private static List<Territory> getTerritoriesWithinXDistanceOfY(final GameData data, final Territory start,
       final int maxDistance) {
     return getTerritoriesWithinXDistanceOfYMatchingZ(data, start, maxDistance, Match.ALWAYS_MATCH);
   }
@@ -155,7 +155,7 @@ public class AdvancedUtils {
         Match.ALWAYS_MATCH);
   }
 
-  public static List<Territory> getTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(final GameData data,
+  private static List<Territory> getTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(final GameData data,
       final Territory start, final int maxDistance, final Match<Territory> match, final Match<Territory> routeMatch) {
     final HashSet<Territory> processed = new HashSet<Territory>();
     processed.add(start);

@@ -89,7 +89,7 @@ public class Util {
         JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler(true));
   }
 
-  // public static Image createVolatileImage(int width, int height)
+  // private static Image createVolatileImage(int width, int height)
   // {
   // GraphicsConfiguration localGraphicSystem =
   // GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()

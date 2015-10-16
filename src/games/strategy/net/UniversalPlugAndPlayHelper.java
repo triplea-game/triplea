@@ -33,7 +33,7 @@ public class UniversalPlugAndPlayHelper {
     m_port = port;
   }
 
-  public static UniversalPlugAndPlayHelper getLastInstance() {
+  private static UniversalPlugAndPlayHelper getLastInstance() {
     return s_lastInstance;
   }
 
