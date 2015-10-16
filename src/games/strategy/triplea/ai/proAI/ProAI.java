@@ -109,8 +109,7 @@ public class ProAI extends AbstractAI {
         new ProNonCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils,
             purchaseUtils);
     purchaseAI =
-        new ProPurchaseAI(this, utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils,
-            purchaseUtils);
+        new ProPurchaseAI(utils, battleUtils, transportUtils, attackOptionsUtils, territoryValueUtils, purchaseUtils);
     retreatAI = new ProRetreatAI(this, battleUtils);
     scrambleAI = new ProScrambleAI(this, battleUtils, attackOptionsUtils);
     politicsAI = new ProPoliticsAI(this, utils, attackOptionsUtils);

@@ -75,10 +75,9 @@ public class ProPurchaseAI {
   private double minCostPerHitPoint;
   private ProResourceTracker resourceTracker;
 
-  public ProPurchaseAI(final ProAI ai, final ProUtils utils, final ProBattleUtils battleUtils,
+  public ProPurchaseAI(final ProUtils utils, final ProBattleUtils battleUtils,
       final ProTransportUtils transportUtils, final ProAttackOptionsUtils attackOptionsUtils,
-      final ProMoveUtils moveUtils, final ProTerritoryValueUtils territoryValueUtils,
-      final ProPurchaseUtils purchaseUtils) {
+      final ProTerritoryValueUtils territoryValueUtils, final ProPurchaseUtils purchaseUtils) {
     this.utils = utils;
     this.battleUtils = battleUtils;
     this.transportUtils = transportUtils;
