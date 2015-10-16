@@ -16,9 +16,9 @@ public class MessengerTest extends TestCase {
   private IServerMessenger m_server;
   private IMessenger m_client1;
   private IMessenger m_client2;
-  private final MessageListener m_serverListener = new MessageListener("server");
-  private final MessageListener m_client1Listener = new MessageListener("client1");
-  private final MessageListener m_client2Listener = new MessageListener("client2");
+  private final MessageListener m_serverListener = new MessageListener();
+  private final MessageListener m_client1Listener = new MessageListener();
+  private final MessageListener m_client2Listener = new MessageListener();
 
   /** Creates a new instance of MangerTest */
   public MessengerTest(final String name) {
@@ -266,7 +266,7 @@ public class MessengerTest extends TestCase {
       final String name = "newClient" + i;
       final String mac = MacFinder.GetHashedMacAddress();
       final ClientMessenger messenger = new ClientMessenger("localhost", SERVER_PORT, name, mac);
-      final MessageListener listener = new MessageListener(name);
+      final MessageListener listener = new MessageListener();
       messenger.addMessageListener(listener);
       clients.add(messenger);
       listeners.add(listener);
@@ -295,7 +295,7 @@ class MessageListener implements IMessageListener {
   private final ArrayList<INode> senders = new ArrayList<INode>();
   private final Object lock = new Object();
 
-  public MessageListener(final String name) {}
+  public MessageListener() {}
 
   @Override
   public void messageReceived(final Serializable msg, final INode from) {
