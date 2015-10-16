@@ -277,7 +277,7 @@ public class ProAI extends AbstractAI {
     BattleCalculator.clearOOLCache();
     ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     if (bid) {
-      purchaseAI.bidPlace(storedPurchaseTerritories, placeDelegate, data, player);
+      purchaseAI.bidPlace(placeDelegate, data, player);
     } else {
       purchaseAI.place(storedPurchaseTerritories, placeDelegate, data, player);
       storedPurchaseTerritories = null;
