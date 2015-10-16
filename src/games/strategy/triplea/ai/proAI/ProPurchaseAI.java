@@ -523,8 +523,7 @@ public class ProPurchaseAI {
     // Prioritize land place options purchase AA then land units
     final List<ProPlaceTerritory> prioritizedLandTerritories = prioritizeLandTerritories(purchaseTerritories);
     purchaseAAUnits(purchaseTerritories, enemyAttackMap, prioritizedLandTerritories, purchaseOptions.getAAOptions());
-    purchaseLandUnits(purchaseTerritories, enemyAttackMap, prioritizedLandTerritories, purchaseOptions,
-        territoryValueMap);
+    purchaseLandUnits(purchaseTerritories, prioritizedLandTerritories, purchaseOptions, territoryValueMap);
 
     // Prioritize sea territories that need defended and purchase additional defenders
     final List<ProPlaceTerritory> needToDefendSeaTerritories =
@@ -1281,7 +1280,6 @@ public class ProPurchaseAI {
   }
 
   private void purchaseLandUnits(final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
-      final Map<Territory, ProAttackTerritoryData> enemyAttackMap,
       final List<ProPlaceTerritory> prioritizedLandTerritories, final ProPurchaseOptionMap purchaseOptions,
       final Map<Territory, Double> territoryValueMap) {
 
