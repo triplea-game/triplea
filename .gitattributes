@@ -3,38 +3,46 @@
 
 # Declare files that will always have CRLF line endings on checkout.
 *.bat eol=crlf
-*.txt eol=crlf
-*.ini eol=crlf
-*.properties eol=crlf
-*.xml eol=crlf
-*.html eol=crlf
 *.css eol=crlf
 *.dtd eol=crlf
+*.html eol=crlf
+*.ini eol=crlf
+*.properties eol=crlf
+*.txt eol=crlf
+*.xml eol=crlf
 *.xslt eol=crlf
 
 # Declare files that will always have LF line endings on checkout.
-*.sh eol=lf
 *.plist eol=lf
+*.sh eol=lf
 MacOS_users_read_this_first.txt eol=lf
 
 # Denote all files that are truly binary and should not be modified.
-*.png binary
-*.jpeg binary
-*.jpg binary
-*.gif binary
 *.bmp binary
-*.ico binary
-*.icns binary
-*.pdn binary
-*.wav binary
-*.mp3 binary
-*.zip binary
-*.jar binary
-*.exe binary
-*.nsi binary
-*.pdf binary
 *.doc binary
 *.docx binary
+*.exe binary
+*.gif binary
+*.icns binary
+*.ico binary
+*.jar binary
+*.jpeg binary
+*.jpg binary
+*.mp3 binary
+*.nsi binary
+*.pdf binary
+*.png binary
+*.pdn binary
+*.wav binary
 *.xls binary
 *.xlsx binary
+*.zip binary
 
+# Git LFS
+*.bmp filter=lfs diff=lfs merge=lfs -text
+*.docx filter=lfs diff=lfs merge=lfs -text
+*.jar filter=lfs diff=lfs merge=lfs -text
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+*.pdf filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.wav filter=lfs diff=lfs merge=lfs -text
