@@ -326,7 +326,7 @@ public class ProPurchaseAI {
       }
     }
     final boolean buyAttack = Math.random() > 0.25;
-    int buyThese = 0, numBought = 0;
+    int buyThese = 0;
     for (final ProductionRule rule1 : processRules) {
       final int cost = rule1.getCosts().getInt(pus);
       if (goTransports) {
@@ -344,7 +344,6 @@ public class ProPurchaseAI {
         PUsToSpend += cost;
       }
       if (buyThese > 0) {
-        numBought += buyThese;
         purchase.add(rule1, buyThese);
       }
     }
