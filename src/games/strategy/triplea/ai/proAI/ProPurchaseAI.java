@@ -60,12 +60,10 @@ public class ProPurchaseAI {
   public final static double WIN_PERCENTAGE = 95.0;
 
   // Utilities
-  private final ProAI ai;
   private final ProUtils utils;
   private final ProBattleUtils battleUtils;
   private final ProTransportUtils transportUtils;
   private final ProAttackOptionsUtils attackOptionsUtils;
-  private final ProMoveUtils moveUtils;
   private final ProTerritoryValueUtils territoryValueUtils;
   private final ProPurchaseUtils purchaseUtils;
 
@@ -75,20 +73,16 @@ public class ProPurchaseAI {
   private PlayerID player;
   private Territory myCapital;
   private double minCostPerHitPoint;
-  private List<Territory> allTerritories;
-  private Map<Unit, Territory> unitTerritoryMap;
   private ProResourceTracker resourceTracker;
 
   public ProPurchaseAI(final ProAI ai, final ProUtils utils, final ProBattleUtils battleUtils,
       final ProTransportUtils transportUtils, final ProAttackOptionsUtils attackOptionsUtils,
       final ProMoveUtils moveUtils, final ProTerritoryValueUtils territoryValueUtils,
       final ProPurchaseUtils purchaseUtils) {
-    this.ai = ai;
     this.utils = utils;
     this.battleUtils = battleUtils;
     this.transportUtils = transportUtils;
     this.attackOptionsUtils = attackOptionsUtils;
-    this.moveUtils = moveUtils;
     this.territoryValueUtils = territoryValueUtils;
     this.purchaseUtils = purchaseUtils;
   }
@@ -101,7 +95,6 @@ public class ProPurchaseAI {
     this.data = data;
     this.player = player;
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
-    allTerritories = data.getMap().getTerritories();
     if (PUsToSpend == 0 && player.getResources().getQuantity(data.getResourceList().getResource(Constants.PUS)) == 0) {
       return;
     }
@@ -425,7 +418,6 @@ public class ProPurchaseAI {
     this.data = data;
     this.player = player;
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
-    allTerritories = data.getMap().getTerritories();
     final CompositeMatch<Unit> ourFactories =
         new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanProduceUnits,
             Matches.UnitIsInfrastructure);
@@ -485,7 +477,6 @@ public class ProPurchaseAI {
     this.startOfTurnData = startOfTurnData;
     this.player = player;
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
-    allTerritories = data.getMap().getTerritories();
     resourceTracker = new ProResourceTracker(player);
 
     ProLogger.info("Starting purchase phase with resources: " + resourceTracker);
@@ -887,7 +878,6 @@ public class ProPurchaseAI {
     this.data = data;
     this.player = player;
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
-    allTerritories = data.getMap().getTerritories();
 
     // Find all place territories
     final Map<Territory, ProPurchaseTerritory> placeNonConstructionTerritories =
