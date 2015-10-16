@@ -13,7 +13,7 @@ package games.strategy.net.nio;
 public abstract class QuarantineConversation {
   public static enum ACTION {
     NONE, TERMINATE, UNQUARANTINE
-  };
+  }
 
   /**
    * A message has been read. What should we do?

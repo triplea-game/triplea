@@ -28,7 +28,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
 
   private enum STEP {
     READ_NAME, READ_MAC, CHALLENGE, ACK_ERROR
-  };
+  }
 
   private final ILoginValidator m_validator;
   private final SocketChannel m_channel;

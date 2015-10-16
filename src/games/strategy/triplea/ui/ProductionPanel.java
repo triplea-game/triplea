@@ -93,7 +93,7 @@ public class ProductionPanel extends JPanel {
   // this method can be accessed by subclasses
   protected List<Rule> getRules() {
     return m_rules;
-  };
+  }
 
   private void initDialog(final JFrame root) {
     m_dialog = new JDialog(root, "Produce", true);

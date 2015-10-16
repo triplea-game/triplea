@@ -17,7 +17,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
 
   private enum STEP {
     READ_CHALLENGE, READ_ERROR, READ_NAMES, READ_ADDRESS
-  };
+  }
 
   private final IConnectionLogin m_login;
   private final SocketChannel m_channel;

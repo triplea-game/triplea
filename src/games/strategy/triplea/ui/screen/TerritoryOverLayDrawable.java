@@ -15,7 +15,7 @@ import games.strategy.triplea.ui.MapData;
 public class TerritoryOverLayDrawable implements IDrawable {
   public static enum OP {
     FILL, DRAW
-  };
+  }
 
   private final String m_territoryName;
   private final Color m_color;

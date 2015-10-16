@@ -622,7 +622,7 @@ class ObjectivePanelDummyDelegateBridge implements IDelegateBridge {
 
   @Override
   public void stopGameSequence() {}
-};
+}
 
 
 class DummyGameModifiedChannel implements IGameModifiedChannel {
