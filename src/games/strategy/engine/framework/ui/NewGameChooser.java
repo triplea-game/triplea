@@ -39,6 +39,7 @@ public class NewGameChooser extends JDialog {
   // the Swing AWT event thread and also background threads (which pre-load games in the background)
   private static NewGameChooserModel s_cachedGameModel = null;
   private static volatile boolean mapParsingInProgress = false;
+  private static final Object mapParsingInProgressLock = new Object();
   private static ClearGameChooserCacheMessenger cacheClearedMessenger;
 
   private JButton m_okButton;
@@ -251,17 +252,22 @@ public class NewGameChooser extends JDialog {
     cacheClearedMessenger = new ClearGameChooserCacheMessenger();
 
     NewGameChooserModel model = new NewGameChooserModel(cacheClearedMessenger);
-      // Cache might not be populated if another thread has cleared
-      // the cache while we were loading.
-    if (mapParsingInProgress) {
-      s_cachedGameModel = model;
+      // Grab a lock before checking the map parsing flag.
+      // If the flag is unset then we still want the cached game model object, otherwise
+      // a game has started and it can be discarded to save memory.
+    synchronized( mapParsingInProgressLock ) {
+      if (mapParsingInProgress) {
+        s_cachedGameModel = model;
+      }
     }
     mapParsingInProgress = false;
   }
 
   /** (Non-blocking) Clears the game chooser cache and cancels any in-progress updates of the cache */
   public static void clearNewGameChooserModel() {
-    mapParsingInProgress = false;
+    synchronized( mapParsingInProgressLock ) {
+      mapParsingInProgress = false;
+    }
     cacheClearedMessenger.sendCancel();
     cacheClearedMessenger = null;
     s_cachedGameModel = null;
