@@ -912,7 +912,7 @@ public class DiceRoll implements Externalizable {
   }
 
   public static DiceRoll airBattle(final List<Unit> unitsList, final boolean defending, final PlayerID player,
-      final IDelegateBridge bridge, final IBattle battle, final String annotation) {
+      final IDelegateBridge bridge, final String annotation) {
     {
       final Set<Unit> duplicatesCheckSet1 = new HashSet<Unit>(unitsList);
       if (unitsList.size() != duplicatesCheckSet1.size()) {
