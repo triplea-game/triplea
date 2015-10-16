@@ -9,77 +9,6 @@ import java.util.Stack;
  * Currently, minimax and alpha-beta algorithms are implemented.
  */
 public class AIAlgorithm {
-  private static <Play> Stack<Play> depthFirstSearch(final GameState<Play> state, final int maxDepth) {
-    final Stack<Play> stack = new Stack<Play>();
-    try {
-      if (state.gameIsOver()) {
-        // System.out.println("The given state is a solution!");
-        return stack;
-      } else {
-        // System.out.println("Starting with " + state);
-        final Set<GameState<Play>> visitedStates = new HashSet<GameState<Play>>();
-        visitedStates.add(state);
-        return dfs(state, visitedStates, stack, 0, maxDepth);
-      }
-    } catch (final StackOverflowError e) {
-      return null;
-    }
-  }
-
-  private static <Play> Stack<Play> dfs(final GameState<Play> state, final Set<GameState<Play>> visitedStates,
-      Stack<Play> plays, final int depth, final int maxDepth) {
-    final int playsSoFar = plays.size();
-    if (depth < maxDepth) {
-      int childCounter = -1;
-      // Find all of the possible next states
-      for (final GameState<Play> child : state.successors()) {
-        childCounter++;
-        // Have we seen this child state before?
-        if (!visitedStates.contains(child)) {
-          // System.out.println("Considering child " + child + " #"+childCounter + " at depth " + depth + " created by
-          // move " +
-          // child.getMove());
-          // Mark that we've now seen this child state
-          // System.out.println("We have now seen " + child + " at depth " + depth + " created by move " +
-          // child.getMove());
-          visitedStates.add(child);
-          // Is the child state a win state?
-          if (child.gameIsOver()) {
-            // System.out.println("Success! at level " + depth + " " + child);
-            plays.push(child.getMove());
-            return plays;
-          } else {
-            plays = dfs(child, visitedStates, plays, depth + 1, maxDepth);
-            if (plays.size() > playsSoFar) {
-              // System.out.println("Pushing play at " + depth + " " + child);
-              plays.push(child.getMove());
-              return plays;
-            }
-          }
-        }
-        // else System.out.println("HAVE already seen " + child + " #"+childCounter + " now at depth " + depth+ "
-        // created by move " +
-        // child.getMove());
-      }
-    }
-    return plays;
-  }
-
-  /**
-   * Find the optimal next play to perform from the given game state,
-   * using the alpha-beta algorithm.
-   *
-   * @param <Play>
-   *        class capable of representing a game play
-   * @param state
-   *        current game state
-   * @return the optimal next play
-   */
-  private static <Play> Play alphaBetaSearch(final GameState<Play> state) {
-    final Pair<Float, Play> m = maxValue(state, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
-    return m.getSecond();
-  }
-
   private static <Play> Pair<Float, Play> maxValue(final GameState<Play> state, float alpha, final float beta) {
     float value = Float.NEGATIVE_INFINITY;
     Play bestMove = null;
@@ -128,21 +57,6 @@ public class AIAlgorithm {
       }
     }
     return new Pair<Float, Play>(value, bestMove);
-  }
-
-  /**
-   * Find the optimal next play to perform from the given game state,
-   * using the minimax algorithm.
-   *
-   * @param <Play>
-   *        class capable of representing a game play
-   * @param state
-   *        current game state
-   * @return the optimal next play
-   */
-  private static <Play> Play minimaxSearch(final GameState<Play> state) {
-    final Pair<Float, Play> m = maxValue(state);
-    return m.getSecond();
   }
 
   private static <Play> Pair<Float, Play> maxValue(final GameState<Play> state) {

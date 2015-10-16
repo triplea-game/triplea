@@ -190,16 +190,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
         this.getConditionType()) != this.getInvert();
   }
 
-  private static Match<AbstractConditionsAttachment> isSatisfiedAbstractConditionsAttachmentMatch(
-      final HashMap<ICondition, Boolean> testedConditions) {
-    return new Match<AbstractConditionsAttachment>() {
-      @Override
-      public boolean match(final AbstractConditionsAttachment ca) {
-        return ca.isSatisfied(testedConditions);
-      }
-    };
-  }
-
   /**
    * Anything that implements ICondition (currently RulesAttachment, TriggerAttachment, and PoliticalActionAttachment)
    * can use this to get all the conditions that must be checked for the object to be 'satisfied'. <br>

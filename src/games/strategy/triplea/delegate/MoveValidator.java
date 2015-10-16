@@ -1009,20 +1009,6 @@ public class MoveValidator {
     return least;
   }
 
-  private static int getTransportCapacityFree(final Territory territory, final PlayerID id, final GameData data,
-      final TransportTracker tracker) {
-    final Match<Unit> friendlyTransports =
-        new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.alliedUnit(id, data));
-    final Collection<Unit> transports = territory.getUnits().getMatches(friendlyTransports);
-    int sum = 0;
-    final Iterator<Unit> iter = transports.iterator();
-    while (iter.hasNext()) {
-      final Unit transport = iter.next();
-      sum += TransportTracker.getAvailableCapacity(transport);
-    }
-    return sum;
-  }
-
   // Determines whether we can pay the neutral territory charge for a
   // given route for air units. We can't cross neutral territories
   // in WW2V2.

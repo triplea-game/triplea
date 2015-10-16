@@ -640,42 +640,6 @@ public class DiceRoll implements Externalizable {
   }
 
   /**
-   * @param units
-   * @param defending
-   * @param player
-   */
-  private static int getArtillerySupportAvailable(final List<Unit> units, final boolean defending,
-      final PlayerID player) {
-    int artillerySupportAvailable = 0;
-    if (!defending) {
-      final Collection<Unit> arty = Match.getMatches(units, Matches.UnitIsArtillery);
-      final Iterator<Unit> iter = arty.iterator();
-      while (iter.hasNext()) {
-        final Unit current = iter.next();
-        final UnitAttachment ua = UnitAttachment.get(current.getType());
-        artillerySupportAvailable += ua.getUnitSupportCount();
-      }
-      // If ImprovedArtillery, double number of units to support
-      if (isImprovedArtillerySupport(player)) {
-        artillerySupportAvailable *= 2;
-      }
-    }
-    return artillerySupportAvailable;
-  }
-
-  private static int getArtillerySupportAvailable(final Unit u, final boolean defending, final PlayerID player) {
-    if (Matches.UnitIsArtillery.match(u) && !defending) {
-      final UnitAttachment ua = UnitAttachment.get(u.getType());
-      int artillerySupportAvailable = ua.getUnitSupportCount();
-      if (isImprovedArtillerySupport(player)) {
-        artillerySupportAvailable *= 2;
-      }
-      return artillerySupportAvailable;
-    }
-    return 0;
-  }
-
-  /**
    * Fills a set and map with the support possibly given by these units.
    *
    * @param unitsGivingTheSupport
@@ -1131,14 +1095,6 @@ public class DiceRoll implements Externalizable {
       }
     }
     return false;
-  }
-
-  private static boolean isImprovedArtillerySupport(final PlayerID player) {
-    final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-    if (ta == null) {
-      return false;
-    }
-    return ta.getImprovedArtillerySupport();
   }
 
   public static String getAnnotation(final List<Unit> units, final PlayerID player, final IBattle battle) {

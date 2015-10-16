@@ -37,10 +37,6 @@ public class TerritoryEffectHelper {
     return combatBonus;
   }
 
-  private static boolean unitLoosesBlitz(final Unit unit, final Territory location) {
-    return unitTypeLoosesBlitz(unit.getType(), location);
-  }
-
   private static boolean unitTypeLoosesBlitz(final UnitType type, final Territory location) {
     if (location == null || type == null) {
       throw new IllegalStateException("Location and UnitType can not be null");

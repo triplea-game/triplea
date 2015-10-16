@@ -96,24 +96,6 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
     return joined;
   }
 
-  private static Route subRoute(final Route route, final Territory end) {
-    if (!route.getAllTerritories().contains(end)) {
-      throw new IllegalArgumentException("Cannot take subroute if route does not contain end");
-    }
-    if (route.getStart().equals(end)) {
-      return new RouteScripted(end);
-    }
-    final Route subRoute = new Route();
-    subRoute.setStart(route.getStart());
-    for (final Territory t : route.getSteps()) {
-      subRoute.add(t);
-      if (t.equals(end)) {
-        return subRoute;
-      }
-    }
-    return subRoute;
-  }
-
   @Override
   public boolean equals(final Object o) {
     if (o == null) {

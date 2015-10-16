@@ -575,14 +575,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
     return neutral;
   }
 
-  private static Change ensureCanMoveOneSpaceChange(final Unit unit) {
-    final int alreadyMoved = TripleAUnit.get(unit).getAlreadyMoved();
-    final int maxMovement = UnitAttachment.get(unit.getType()).getMovement(unit.getOwner());
-    final int bonusMovement = TripleAUnit.get(unit).getBonusMovement();
-    return ChangeFactory.unitPropertyChange(unit, Math.min(alreadyMoved, (maxMovement + bonusMovement) - 1),
-        TripleAUnit.ALREADY_MOVED);
-  }
-
   private void removeAirThatCantLand() {
     final GameData data = getData();
     final boolean lhtrCarrierProd = AirThatCantLandUtil.isLHTRCarrierProduction(data)

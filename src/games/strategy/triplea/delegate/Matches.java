@@ -1258,20 +1258,6 @@ public class Matches {
     };
   }
 
-  private static Match<Territory> TerritoryHasOwnedDestroyer(final PlayerID player) {
-    return new Match<Territory>() {
-      @Override
-      public boolean match(final Territory t) {
-        final CompositeMatch<Unit> destroyerUnit =
-            new CompositeMatchAnd<Unit>(Matches.UnitIsDestroyer, Matches.unitIsOwnedBy(player));
-        if (Matches.TerritoryIsWater.match(t) && t.getUnits().someMatch(destroyerUnit)) {
-          return true;
-        }
-        return false;
-      }
-    };
-  }
-
   public static Match<Territory> territoryHasAlliedNeighborWithAlliedUnitMatching(final GameData data,
       final PlayerID player, final Match<Unit> unitMatch) {
     return new Match<Territory>() {
@@ -1548,25 +1534,6 @@ public class Matches {
     };
   }
 
-  /**
-   * If water, returns false.
-   */
-  private static Match<Territory> TerritoryIsLandAndHasProductionValueAtLeast(final int prodVal) {
-    return new Match<Territory>() {
-      @Override
-      public boolean match(final Territory t) {
-        if (t.isWater()) {
-          return false;
-        }
-        final int terrProd = TerritoryAttachment.getProduction(t);
-        if (terrProd >= prodVal) {
-          return true;
-        }
-        return false;
-      }
-    };
-  }
-
   public static final Match<Territory> TerritoryIsNeutralButNotWater = new Match<Territory>() {
     @Override
     public boolean match(final Territory t) {
@@ -1756,24 +1723,6 @@ public class Matches {
   };
 
   /**
-   * @param lowerLimit
-   *        lower limit for movement
-   * @param movement
-   *        referring movement
-   * @deprecated we can't trust on ints to see if we have enough movement, use hasEnnoughMovementforRoute()
-   * @return units match that have at least lower limit movement
-   */
-  @Deprecated
-  private static Match<Unit> unitHasEnoughMovement(final int lowerLimit, final IntegerMap<Unit> movement) {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit o) {
-        return movement.getInt(o) >= lowerLimit;
-      }
-    };
-  }
-
-  /**
    * @deprecated we can't trust on ints to see if we have enough movement, use hasEnnoughMovementforRoute()
    */
   @Deprecated
@@ -1928,24 +1877,6 @@ public class Matches {
     };
   }
 
-  private static Match<Unit> unitHasEnoughTransportSpaceLeft(final int spaceNeeded) {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit unit) {
-        final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-        int loadCost = 0;
-        for (final Unit cargo : TripleAUnit.get(unit).getTransporting()) {
-          loadCost += UnitAttachment.get(cargo.getUnitType()).getTransportCost();
-        }
-        if (ua.getTransportCapacity() - loadCost >= spaceNeeded) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    };
-  }
-
   public static Match<Unit> unitIsTransportingSomeCategories(final Collection<Unit> units) {
     final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(units);
     return new Match<Unit>() {
@@ -2026,13 +1957,6 @@ public class Matches {
   private static Match<Unit> unitIsEnemyAAforCombat(final PlayerID player, final GameData data) {
     final CompositeMatch<Unit> comp = new CompositeMatchAnd<Unit>();
     comp.add(UnitIsAAforCombatOnly);
-    comp.add(enemyUnit(player, data));
-    return comp;
-  }
-
-  private static Match<Unit> unitIsEnemyAAforBombing(final PlayerID player, final GameData data) {
-    final CompositeMatch<Unit> comp = new CompositeMatchAnd<Unit>();
-    comp.add(UnitIsAAforBombingThisUnitOnly);
     comp.add(enemyUnit(player, data));
     return comp;
   }
@@ -2187,10 +2111,6 @@ public class Matches {
     };
   }
 
-  private static Match<Unit> carrierOwnedBy(final PlayerID player) {
-    return new CompositeMatchAnd<Unit>(unitOwnedBy(player), Matches.UnitIsCarrier);
-  }
-
   public static Match<Unit> unitOwnedBy(final List<PlayerID> players) {
     return new Match<Unit>() {
       @Override
@@ -2284,15 +2204,6 @@ public class Matches {
       @Override
       public boolean match(final Territory t) {
         return t.getUnits().someMatch(Matches.unitIsEnemyAAforCombat(player, data));
-      }
-    };
-  }
-
-  private static Match<Territory> territoryHasEnemyAAforBombing(final PlayerID player, final GameData data) {
-    return new Match<Territory>() {
-      @Override
-      public boolean match(final Territory t) {
-        return t.getUnits().someMatch(Matches.unitIsEnemyAAforBombing(player, data));
       }
     };
   }
@@ -2586,26 +2497,6 @@ public class Matches {
       @Override
       public boolean match(final Unit u) {
         return TechTracker.hasImprovedArtillerySupport(u.getOwner());
-      }
-    };
-  }
-
-  private static Match<Unit> unitIsNotInTerritories(final Collection<Territory> list) {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit u) {
-        if (u == null) {
-          return false;
-        }
-        if (list.isEmpty()) {
-          return true;
-        }
-        for (final Territory t : list) {
-          if (t.getUnits().getUnits().contains(u)) {
-            return false;
-          }
-        }
-        return true;
       }
     };
   }
@@ -3641,15 +3532,6 @@ public class Matches {
       @Override
       public boolean match(final T ter) {
         return !list.contains(ter);
-      }
-    };
-  }
-
-  private static <T> Match<T> isInList(final List<T> list) {
-    return new Match<T>() {
-      @Override
-      public boolean match(final T ter) {
-        return list.contains(ter);
       }
     };
   }

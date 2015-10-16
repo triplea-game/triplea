@@ -292,11 +292,6 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
     return result;
   }
 
-  private static Match<Unit> getAirborneTypesMatch(final PlayerID player, final GameData data) {
-    return getAirborneMatch(player, TechAbilityAttachment.getAirborneTypes(player, data),
-        Collections.singleton(player));
-  }
-
   private static Match<Unit> getAirborneBaseMatch(final PlayerID player, final GameData data) {
     return getAirborneMatch(player, TechAbilityAttachment.getAirborneBases(player, data),
         data.getRelationshipTracker().getAllies(player, true));
@@ -330,18 +325,6 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
       launchedChange.add(ChangeFactory.unitPropertyChange(u, (toAdd + numberLaunchedAlready), TripleAUnit.LAUNCHED));
     }
     return launchedChange;
-  }
-
-  private static int getNumberOfAirborneAlreadyLaunchedBy(final Collection<Unit> bases, final GameData data) {
-    int rVal = 0;
-    for (final Unit u : bases) {
-      rVal += getNumberOfAirborneAlreadyLaunchedBy(u, data);
-    }
-    return rVal;
-  }
-
-  private static int getNumberOfAirborneAlreadyLaunchedBy(final Unit base, final GameData data) {
-    return Math.max(0, (((TripleAUnit) base).getLaunched()));
   }
 
   private static boolean allowAirborne(final PlayerID player, final GameData data) {

@@ -194,23 +194,6 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
     throw new IllegalArgumentException(propertyString + " is not a valid technology");
   }
 
-  private static TechAdvance findTechnologyFromAllTechs(final String name, final GameData data, final boolean mustFind) {
-    TechAdvance type;
-    data.acquireReadLock();
-    try {
-      type = data.getTechnologyFrontier().getAdvanceByName(name);
-      if (type == null) {
-        type = data.getTechnologyFrontier().getAdvanceByProperty(name);
-      }
-      if (type == null && mustFind) {
-        throw new IllegalStateException("Could not find technology. name:" + name);
-      }
-    } finally {
-      data.releaseReadLock();
-    }
-    return type;
-  }
-
   /**
    * @param data
    * @return first is air&naval, second is land&production

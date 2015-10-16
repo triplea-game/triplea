@@ -36,24 +36,6 @@ public class AdvancedUtils {
     return -1;
   }
 
-  private static Unit getFirstUnitMatching(final List<Unit> units, final Match<Unit> match, final int startIndex) {
-    final int index = getIndexOfFirstUnitMatching(units, match, startIndex);
-    if (index == -1) {
-      return null;
-    }
-    return units.get(index);
-  }
-
-  private static int getIndexOfFirstUnitMatching(final List<Unit> units, final Match<Unit> match, final int startIndex) {
-    for (int i = startIndex; i < units.size(); i++) {
-      final Unit unit = units.get(i);
-      if (match.match(unit)) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
   public static int getSlowestMovementUnitInList(final Collection<Unit> list) {
     int lowestMovement = Integer.MAX_VALUE;
     for (final Unit unit : list) {
@@ -70,50 +52,6 @@ public class AdvancedUtils {
       return -1;
     }
     return lowestMovement;
-  }
-
-  private static int getFastestMovementUnitInList(final Collection<Unit> list) {
-    int fastestMovement = Integer.MIN_VALUE;
-    for (final Unit unit : list) {
-      final TripleAUnit tu = TripleAUnit.get(unit);
-      if (tu.getMovementLeft() > fastestMovement) {
-        fastestMovement = tu.getMovementLeft();
-      }
-    }
-    if (fastestMovement == Integer.MIN_VALUE) {
-      return -1;
-    }
-    return fastestMovement;
-  }
-
-  private static Route trimRouteAtFirstTerWithEnemyUnits(final Route route, final int newRouteJumpCount,
-      final PlayerID player, final GameData data) {
-    return trimRouteAtFirstTerMatchingX(route, newRouteJumpCount,
-        Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1),
-            Matches.unitIsEnemyOf(data, player))));
-  }
-
-  private static Route trimRouteAtFirstTerMatchingX(final Route route, final int newRouteJumpCount,
-      final Match<Territory> match) {
-    final List<Territory> newTers = new ArrayList<Territory>();
-    int i = 0;
-    for (final Territory ter : route.getAllTerritories()) {
-      newTers.add(ter);
-      if (match.match(ter) && i != 0) {
-        break;
-      }
-      i++;
-      if (i > newRouteJumpCount) {
-        break;
-      }
-    }
-    return new Route(newTers);
-  }
-
-  private static Route trimRouteAtLastFriendlyTer(final Route route, final int newRouteJumpCount, final PlayerID player,
-      final GameData data) {
-    return trimRouteBeforeFirstTerMatching(route, newRouteJumpCount,
-        Matches.isTerritoryEnemyAndNotUnownedWater(player, data));
   }
 
   private static Route trimRouteBeforeFirstTerMatching(final Route route, final int newRouteJumpCount,
@@ -143,11 +81,6 @@ public class AdvancedUtils {
             Matches.unitIsEnemyOf(data, player))));
   }
 
-
-  private static List<Territory> getTerritoriesWithinXDistanceOfY(final GameData data, final Territory start,
-      final int maxDistance) {
-    return getTerritoriesWithinXDistanceOfYMatchingZ(data, start, maxDistance, Match.ALWAYS_MATCH);
-  }
 
   public static List<Territory> getTerritoriesWithinXDistanceOfYMatchingZ(final GameData data, final Territory start,
       final int maxDistance, final Match<Territory> match) {
