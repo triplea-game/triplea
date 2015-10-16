@@ -31,16 +31,6 @@ public class UnitsThatCantFightUtilTest extends TestCase {
     assertTrue(territories.contains(sz12));
   }
 
-  public void testSuicideAttackInAA50WithTransportedUnits() {
-    final GameData data = LoadGameUtil.loadGame("World War II v3 1941 Test", "ww2v3_1941_test.xml");
-    // add a german sub to sz 12
-    final Territory sz12 = territory("12 Sea Zone", data);
-    addTo(sz12, transports(data).create(1, germans(data)));
-    final Collection<Territory> territories =
-        new UnitsThatCantFightUtil(data).getTerritoriesWhereUnitsCantFight(germans(data));
-    assertTrue(territories.contains(sz12));
-  }
-
   public void testSuicideAttackInRevised() {
     final GameData data = LoadGameUtil.loadGame("World War II Revised Test", "revised_test.xml");
     final Territory sz15 = territory("15 Sea Zone", data);
