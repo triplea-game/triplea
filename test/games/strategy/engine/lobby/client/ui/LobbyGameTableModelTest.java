@@ -61,8 +61,8 @@ public class LobbyGameTableModelTest {
     Mockito.verify(mockLobbyController, Mockito.times(1)).listGames();
 
 
-    MessageContext.setSenderNodeForThread( serverNode);
-    Mockito.when(mockMessenger.getServerNode()).thenReturn( serverNode );
+    MessageContext.setSenderNodeForThread(serverNode);
+    Mockito.when(mockMessenger.getServerNode()).thenReturn(serverNode);
     TestUtil.waitForSwingThreads();
   }
 
@@ -73,8 +73,8 @@ public class LobbyGameTableModelTest {
 
   @Test
   public void updateGame() {
-    int commentColumnIndex = testObj.getColumnIndex(LobbyGameTableModel.Column.Comments );
-    assertThat((String) testObj.getValueAt(0, commentColumnIndex),nullValue());
+    int commentColumnIndex = testObj.getColumnIndex(LobbyGameTableModel.Column.Comments);
+    assertThat((String) testObj.getValueAt(0, commentColumnIndex), nullValue());
 
     String newComment = "comment";
     GameDescription newDescription = new GameDescription();
@@ -82,7 +82,7 @@ public class LobbyGameTableModelTest {
 
     testObj.getLobbyGameBroadcaster().gameUpdated(fakeGame.getFirst(), newDescription);
     TestUtil.waitForSwingThreads();
-    assertThat( testObj.getRowCount(), is(1));
+    assertThat(testObj.getRowCount(), is(1));
     assertThat((String) testObj.getValueAt(0, commentColumnIndex), is(newComment));
   }
 
@@ -90,14 +90,14 @@ public class LobbyGameTableModelTest {
   public void updateGameAddsIfDoesNotExist() {
     testObj.getLobbyGameBroadcaster().gameUpdated(new GUID(), new GameDescription());
     TestUtil.waitForSwingThreads();
-    assertThat( testObj.getRowCount(), is(2));
+    assertThat(testObj.getRowCount(), is(2));
   }
 
   @Test
   public void updateGameWithNullGuidIsIgnored() {
     testObj.getLobbyGameBroadcaster().gameUpdated(null, new GameDescription());
     TestUtil.waitForSwingThreads();
-    assertThat( "expect row count to remain 1, null guid is bogus data",
+    assertThat("expect row count to remain 1, null guid is bogus data",
         testObj.getRowCount(), is(1));
   }
 
@@ -105,13 +105,13 @@ public class LobbyGameTableModelTest {
   public void removeGame() {
     testObj.getLobbyGameBroadcaster().gameRemoved(fakeGame.getFirst());
     TestUtil.waitForSwingThreads();
-    assertThat( testObj.getRowCount(), is(0));
+    assertThat(testObj.getRowCount(), is(0));
   }
 
   @Test
   public void removeGameThatDoesNotExistIsIgnored() {
     testObj.getLobbyGameBroadcaster().gameRemoved(new GUID());
     TestUtil.waitForSwingThreads();
-    assertThat( testObj.getRowCount(), is(1));
+    assertThat(testObj.getRowCount(), is(1));
   }
 }
