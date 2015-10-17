@@ -41,7 +41,7 @@ public class UndoableMove extends AbstractUndoableMove {
   // transports loaded by this move
   private final Set<Unit> m_loaded = new HashSet<Unit>();
   // transports unloaded by this move
-  private final Set<Unit> m_unloaded = new HashSet<Unit>();;
+  private final Set<Unit> m_unloaded = new HashSet<Unit>();
   private final Route m_route;
 
   public void addToConquered(final Territory t) {

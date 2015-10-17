@@ -500,7 +500,7 @@ class DummyDelegateBridge implements IDelegateBridge {
   public void setBattle(final MustFightBattle battle) {
     m_battle = battle;
   }
-};
+}
 
 
 class DummyGameModifiedChannel implements IGameModifiedChannel {

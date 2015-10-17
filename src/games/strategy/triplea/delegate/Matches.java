@@ -3147,7 +3147,7 @@ public class Matches {
         return data.getRelationshipTypeList().getRelationshipType(relationshipName) != null;
       }
     };
-  };
+  }
 
   public static final Match<PlayerID> isAtWar(final PlayerID player, final GameData data) {
     return new Match<PlayerID>() {
@@ -3157,7 +3157,7 @@ public class Matches {
             .match(data.getRelationshipTracker().getRelationshipType(player, player2));
       }
     };
-  };
+  }
 
   public static final Match<PlayerID> isAtWarWithAnyOfThesePlayers(final Collection<PlayerID> players,
       final GameData data) {
@@ -3167,7 +3167,7 @@ public class Matches {
         return data.getRelationshipTracker().isAtWarWithAnyOfThesePlayers(player2, players);
       }
     };
-  };
+  }
 
   public static final Match<PlayerID> isAllied(final PlayerID player, final GameData data) {
     return new Match<PlayerID>() {
@@ -3177,7 +3177,7 @@ public class Matches {
             .match(data.getRelationshipTracker().getRelationshipType(player, player2));
       }
     };
-  };
+  }
 
   public static final Match<PlayerID> isAlliedWithAnyOfThesePlayers(final Collection<PlayerID> players,
       final GameData data) {
@@ -3187,7 +3187,7 @@ public class Matches {
         return data.getRelationshipTracker().isAlliedWithAnyOfThesePlayers(player2, players);
       }
     };
-  };
+  }
 
   public static final Match<PlayerID> isNeutral(final PlayerID player, final GameData data) {
     return new Match<PlayerID>() {
@@ -3197,7 +3197,7 @@ public class Matches {
             .match(data.getRelationshipTracker().getRelationshipType(player, player2));
       }
     };
-  };
+  }
 
   public static final Match<PlayerID> isNeutralWithAnyOfThesePlayers(final Collection<PlayerID> players,
       final GameData data) {
@@ -3207,7 +3207,7 @@ public class Matches {
         return data.getRelationshipTracker().isNeutralWithAnyOfThesePlayers(player2, players);
       }
     };
-  };
+  }
 
   public static final Match<Unit> UnitIsOwnedAndIsFactoryOrCanProduceUnits(final PlayerID player) {
     return new Match<Unit>() {

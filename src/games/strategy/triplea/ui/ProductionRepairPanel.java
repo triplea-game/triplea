@@ -96,7 +96,7 @@ public class ProductionRepairPanel extends JPanel {
   // this method can be accessed by subclasses
   public List<Rule> getRules() {
     return this.m_rules;
-  };
+  }
 
   public static HashMap<Unit, Integer> getUnitRepairs() {
     return m_repairCount;

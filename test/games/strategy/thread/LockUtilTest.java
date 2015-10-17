@@ -81,4 +81,4 @@ class TestErrorReporter extends ErrorReporter {
   public boolean errorOccured() {
     return m_errorOccured;
   }
-};
+}
