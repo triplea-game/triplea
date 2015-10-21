@@ -15,6 +15,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -32,6 +37,7 @@ import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.triplea.util.Stopwatch;
 import games.strategy.util.ClassLoaderUtil;
 
 public class NewGameChooserModel extends DefaultListModel {
@@ -84,17 +90,42 @@ public class NewGameChooserModel extends DefaultListModel {
   }
 
   private void populate() {
-    final List<NewGameChooserEntry> entries = new ArrayList<NewGameChooserEntry>();
+    List<File> mapFileList = allMapFiles();
+    final Set<NewGameChooserEntry> set = Collections.newSetFromMap(new ConcurrentHashMap(mapFileList.size()));
+
+    // Half the total number of cores being used as a generic sweet spot. @DanVanAtta found with 6 cores that 2 to 4 threads were best.
+    int halfCoreCount = (int) Math.ceil(Runtime.getRuntime().availableProcessors()/2);
+    ExecutorService threadPool = Executors.newFixedThreadPool(halfCoreCount);
+
     for (final File map : allMapFiles()) {
       if (map.isDirectory()) {
-        entries.addAll(populateFromDirectory(map));
+        threadPool.submit(new Runnable() {
+          @Override
+          public void run() {
+            set.addAll(populateFromDirectory(map));
+          }
+        });
       } else if (map.isFile() && map.getName().toLowerCase().endsWith(".zip")) {
-        entries.addAll(populateFromZip(map));
+        threadPool.submit(new Runnable() {
+          @Override
+          public void run() {
+            set.addAll(populateFromZip(map));
+          }
+        });
       }
     }
-    // remove any null entries
-    do {
-    } while (entries.remove(null));
+    try {
+      threadPool.shutdown();
+      threadPool.awaitTermination(5,TimeUnit.MINUTES);
+    } catch (InterruptedException e) {
+      ClientLogger.logQuietly(e);
+    }
+
+    List<NewGameChooserEntry> entries = Lists.newArrayList();
+    for(NewGameChooserEntry entry: set ) {
+      entries.add(entry);
+    }
+
     Collections.sort(entries, new Comparator<NewGameChooserEntry>() {
       @Override
       public int compare(final NewGameChooserEntry o1, final NewGameChooserEntry o2) {
@@ -195,7 +226,7 @@ public class NewGameChooserModel extends DefaultListModel {
   private static void addNewGameChooserEntry(final List<NewGameChooserEntry> entries, final URI uri) {
     try {
       final NewGameChooserEntry newEntry = createEntry(uri);
-      if (!entries.contains(newEntry)) {
+      if (newEntry != null && !entries.contains(newEntry)) {
         entries.add(newEntry);
       }
     } catch (final EngineVersionException e) {
