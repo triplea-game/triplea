@@ -54,8 +54,7 @@ public class LobbyLoginValidator implements ILoginValidator {
   public String verifyConnection(final Map<String, String> propertiesSentToClient,
       final Map<String, String> propertiesReadFromClient, final String clientName, final String clientMac,
       final SocketAddress remoteAddress) {
-    final String error = verifyConnectionInternal(propertiesSentToClient, propertiesReadFromClient, clientName,
-        clientMac, remoteAddress);
+    final String error = verifyConnectionInternal(propertiesReadFromClient, clientName, clientMac, remoteAddress);
     if (error != null) {
       s_logger.info("Bad login attemp from " + remoteAddress + " for user " + clientName + " error:" + error);
       AccessLog.failedLogin(clientName, ((InetSocketAddress) remoteAddress).getAddress(), error);
@@ -66,9 +65,8 @@ public class LobbyLoginValidator implements ILoginValidator {
     return error;
   }
 
-  private String verifyConnectionInternal(final Map<String, String> propertiesSentToClient,
-      final Map<String, String> propertiesReadFromClient, final String clientName, final String hashedMac,
-      final SocketAddress remoteAddress) {
+  private String verifyConnectionInternal(final Map<String, String> propertiesReadFromClient, final String clientName,
+      final String hashedMac, final SocketAddress remoteAddress) {
     if (propertiesReadFromClient == null) {
       return "No Client Properties";
     }
@@ -116,7 +114,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     if (propertiesReadFromClient.containsKey(ANONYMOUS_LOGIN)) {
       return anonymousLogin(propertiesReadFromClient, clientName);
     } else {
-      return validatePassword(propertiesSentToClient, propertiesReadFromClient, clientName);
+      return validatePassword(propertiesReadFromClient, clientName);
     }
   }
 
@@ -137,13 +135,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     final long hours = seconds / hoursInSeconds;
     seconds -= hours * hoursInSeconds;
     final long minutes = Math.max(1, seconds / minutesInSeconds);
-    /*
-     * final long days = TimeUnit.MILLISECONDS.toDays(millis);
-     * millis -= TimeUnit.DAYS.toMillis(days);
-     * final long hours = TimeUnit.MILLISECONDS.toHours(millis);
-     * millis -= TimeUnit.HOURS.toMillis(hours);
-     * final long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) + 1;
-     */
+
     final StringBuilder sb = new StringBuilder(64);
     sb.append("Ban time left: ");
     if (days > 0) {
@@ -165,8 +157,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     return new BadWordController().list();
   }
 
-  private String validatePassword(final Map<String, String> propertiesSentToClient,
-      final Map<String, String> propertiesReadFromClient, final String clientName) {
+  private static String validatePassword(final Map<String, String> propertiesReadFromClient, final String clientName) {
     final DBUserController userController = new DBUserController();
     if (!userController.login(clientName, propertiesReadFromClient.get(HASHED_PASSWORD_KEY))) {
       if (userController.doesUserExist(clientName)) {
