@@ -14,8 +14,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import javax.swing.DefaultListModel;
@@ -34,7 +36,10 @@ import games.strategy.util.ClassLoaderUtil;
 
 public class NewGameChooserModel extends DefaultListModel {
   private static final long serialVersionUID = -2044689419834812524L;
-  private final ClearGameChooserCacheMessenger clearCacheMessenger;
+
+  private enum ZipProcessingResult {
+    SUCCESS, ERROR
+  }
 
   public NewGameChooserModel(ClearGameChooserCacheMessenger clearCacheMessenger) {
     this.clearCacheMessenger = clearCacheMessenger;
@@ -104,36 +109,23 @@ public class NewGameChooserModel extends DefaultListModel {
     }
   }
 
-  private enum ZipProcessingResult  { SUCCESS, ERROR }
-
   private void populateFromZip(final File map, final List<NewGameChooserEntry> entries) {
     boolean badMapZip = false;
-    try {
-      final FileInputStream fis = new FileInputStream(map);
-      try {
-        final ZipInputStream zis = new ZipInputStream(fis);
-        try {
-          ZipEntry entry = zis.getNextEntry();
-          final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()});
-          while (entry != null) {
-            if (entry.getName().startsWith("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
-              ZipProcessingResult result = processZipEntry(loader, entry, entries);
-              if( result == ZipProcessingResult.ERROR ) {
-                badMapZip = true;
-                break;
-              }
-            }
-            zis.closeEntry();
-            entry = zis.getNextEntry();
+    try (ZipFile zipFile = new ZipFile(map)) {
+      final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()});
+      Enumeration<? extends ZipEntry> zipEntryEnumeration = zipFile.entries();
+      while (zipEntryEnumeration.hasMoreElements()) {
+        ZipEntry entry = zipEntryEnumeration.nextElement();
+        if (entry.getName().startsWith("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
+          ZipProcessingResult result = processZipEntry(loader, entry, entries);
+          if (result == ZipProcessingResult.ERROR) {
+            badMapZip = true;
+            break;
           }
-          // we have to close the loader to allow files to be deleted on windows
-          ClassLoaderUtil.closeLoader(loader);
-        } finally {
-          zis.close();
         }
-      } finally {
-        fis.close();
       }
+      // we have to close the loader to allow files to be deleted on windows
+      ClassLoaderUtil.closeLoader(loader);
     } catch (final IOException ioe) {
       ClientLogger.logQuietly(ioe);
     }
@@ -143,7 +135,8 @@ public class NewGameChooserModel extends DefaultListModel {
     }
   }
 
-  private ZipProcessingResult processZipEntry(final URLClassLoader loader, final ZipEntry entry,  final List<NewGameChooserEntry> entries) {
+  private ZipProcessingResult processZipEntry(final URLClassLoader loader, final ZipEntry entry,
+      final List<NewGameChooserEntry> entries) {
     final URL url = loader.getResource(entry.getName());
     if (url == null) {
       // not loading the URL means the XML is truncated or otherwise in bad shape
