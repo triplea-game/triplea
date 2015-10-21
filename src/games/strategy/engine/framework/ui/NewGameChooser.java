@@ -36,10 +36,9 @@ public class NewGameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
 
   // Use synchronization when accessing s_cachedGameModel, it is accessed by both
-  // the Swing AWT event thread and also background threads (which pre-load games in the background)
+  // the Swing AWT event thread and also background threads, which parses available
+  // maps in the background when a game is not playing
   private static NewGameChooserModel s_cachedGameModel = null;
-  private static volatile boolean mapParsingInProgress = false;
-  private static final Object mapParsingInProgressLock = new Object();
   private static ClearGameChooserCacheMessenger cacheClearedMessenger;
 
   private JButton m_okButton;
@@ -177,7 +176,7 @@ public class NewGameChooser extends JDialog {
     });
   }
 
-  private void appendListItem(final String title, final String value, final StringBuilder builder) {
+  private static void appendListItem(final String title, final String value, final StringBuilder builder) {
     builder.append("<b>").append(title).append("</b>").append(": ").append(value).append("<br>");
   }
 
@@ -225,16 +224,16 @@ public class NewGameChooser extends JDialog {
       }
 
       @Override
-      public void mousePressed(final MouseEvent e) {} // ignore
+      public void mousePressed(final MouseEvent e) {}
 
       @Override
-      public void mouseReleased(final MouseEvent e) {} // ignore
+      public void mouseReleased(final MouseEvent e) {}
 
       @Override
-      public void mouseEntered(final MouseEvent e) {} // ignore
+      public void mouseEntered(final MouseEvent e) {}
 
       @Override
-      public void mouseExited(final MouseEvent e) {} // ignore
+      public void mouseExited(final MouseEvent e) {}
     });
   }
 
@@ -246,35 +245,26 @@ public class NewGameChooser extends JDialog {
     return s_cachedGameModel;
   }
 
-  /** Starts updating the NewGameChooserModel cache, this can be a lengthy process (seconds) */
   public synchronized static void refreshNewGameChooserModel() {
-    mapParsingInProgress = true;
+    clearNewGameChooserModel();
     cacheClearedMessenger = new ClearGameChooserCacheMessenger();
-
-    NewGameChooserModel model = new NewGameChooserModel(cacheClearedMessenger);
-      // Grab a lock before checking the map parsing flag.
-      // If the flag is unset then we still want the cached game model object, otherwise
-      // a game has started and it can be discarded to save memory.
-    synchronized( mapParsingInProgressLock ) {
-      if (mapParsingInProgress) {
-        s_cachedGameModel = model;
-      }
-    }
-    mapParsingInProgress = false;
+    s_cachedGameModel = new NewGameChooserModel(cacheClearedMessenger);
   }
 
-  /** (Non-blocking) Clears the game chooser cache and cancels any in-progress updates of the cache */
   public static void clearNewGameChooserModel() {
-    synchronized( mapParsingInProgressLock ) {
-      mapParsingInProgress = false;
-    }
     if (cacheClearedMessenger != null) {
       cacheClearedMessenger.sendCancel();
+      cacheClearedMessenger = null;
     }
-    cacheClearedMessenger = null;
-    s_cachedGameModel = null;
+    synchronizedClear();
   }
 
+  private synchronized static void synchronizedClear() {
+    if (s_cachedGameModel != null) {
+      s_cachedGameModel.clear();
+      s_cachedGameModel = null;
+    }
+  }
 
   /**
    * Refreshes the game list (from disk) then caches the new list
