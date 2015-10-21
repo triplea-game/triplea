@@ -362,7 +362,7 @@ public class MapPanel extends ImageScrollerLargeView {
       if (!m_unitSelectionListeners.isEmpty()) {
         Tuple<Territory, List<Unit>> tuple = m_tileManager.getUnitsAtPoint(x, y, m_data);
         if (tuple == null) {
-          tuple = new Tuple<Territory, List<Unit>>(getTerritory(x, y), new ArrayList<Unit>(0));
+          tuple = Tuple.of(getTerritory(x, y), (List<Unit>) new ArrayList<Unit>(0));
         }
         notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), md);
       }

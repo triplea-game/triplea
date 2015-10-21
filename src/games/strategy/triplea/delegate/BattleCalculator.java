@@ -184,7 +184,7 @@ public class BattleCalculator {
       }
       toRoll.addAll(uc.getUnits().subList(splitPosition, uc.getUnits().size()));
     }
-    return new Tuple<List<List<Unit>>, List<Unit>>(groupsOfSize, toRoll);
+    return Tuple.of(groupsOfSize, toRoll);
   }
 
   private static CasualtyDetails getLowLuckAACasualties(final boolean defending, final Collection<Unit> planes,
@@ -682,7 +682,7 @@ public class BattleCalculator {
       for (final Unit unit : sorted) {
         // Stop if we have already selected as many hits as there are targets
         if (numSelectedCasualties >= hits) {
-          return new Tuple<CasualtyList, List<Unit>>(defaultCasualtySelection, sorted);
+          return Tuple.of(defaultCasualtySelection, sorted);
         }
         final UnitAttachment ua = UnitAttachment.get(unit.getType());
         final int extraHP = Math.min((hits - numSelectedCasualties), (ua.getHitPoints() - (1 + unit.getHits())));
@@ -696,12 +696,12 @@ public class BattleCalculator {
     for (final Unit unit : sorted) {
       // Stop if we have already selected as many hits as there are targets
       if (numSelectedCasualties >= hits) {
-        return new Tuple<CasualtyList, List<Unit>>(defaultCasualtySelection, sorted);
+        return Tuple.of(defaultCasualtySelection, sorted);
       }
       defaultCasualtySelection.addToKilled(unit);
       numSelectedCasualties++;
     }
-    return new Tuple<CasualtyList, List<Unit>>(defaultCasualtySelection, sorted);
+    return Tuple.of(defaultCasualtySelection, sorted);
   }
 
   /**
@@ -821,7 +821,7 @@ public class BattleCalculator {
             // Remove any rolls provided by this support so they aren't counted twice
             final IntegerMap<Unit> unitSupportRollsMapForUnit = unitSupportRollsMap.get(u);
             if (unitSupportRollsMapForUnit != null) {
-              strengthAndRolls = new Tuple<Integer, Integer>(strengthAndRolls.getFirst(),
+              strengthAndRolls = Tuple.of(strengthAndRolls.getFirst(),
                   strengthAndRolls.getSecond() - unitSupportRollsMapForUnit.getInt(supportedUnit));
             }
             // If one roll then just add the power
@@ -837,7 +837,7 @@ public class BattleCalculator {
             final int strengthWithoutSupport =
                 strengthAndRolls.getFirst() - unitSupportPowerMapForUnit.getInt(supportedUnit);
             final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
-                new Tuple<Integer, Integer>(strengthWithoutSupport, strengthAndRolls.getSecond());
+                Tuple.of(strengthWithoutSupport, strengthAndRolls.getSecond());
             supportedUnitMap.put(supportedUnit, strengthAndRollsWithoutSupport);
             final int powerWithoutSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
             // Add the actual power provided by the support
@@ -861,7 +861,7 @@ public class BattleCalculator {
             final int rollsWithoutSupport =
                 strengthAndRolls.getSecond() - unitSupportRollsMap.get(u).getInt(supportedUnit);
             final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
-                new Tuple<Integer, Integer>(strengthAndRolls.getFirst(), rollsWithoutSupport);
+                Tuple.of(strengthAndRolls.getFirst(), rollsWithoutSupport);
             supportedUnitMap.put(supportedUnit, strengthAndRollsWithoutSupport);
             final int powerWithoutSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
             // Add the actual power provided by the support
@@ -886,7 +886,7 @@ public class BattleCalculator {
           final int strengthWithoutSupport =
               strengthAndRolls.getFirst() - unitSupportPowerMapForUnit.getInt(supportedUnit);
           final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
-              new Tuple<Integer, Integer>(strengthWithoutSupport, strengthAndRolls.getSecond());
+              Tuple.of(strengthWithoutSupport, strengthAndRolls.getSecond());
           unitPowerAndRollsMap.put(supportedUnit, strengthAndRollsWithoutSupport);
           sortedUnitsList.remove(supportedUnit);
           sortedUnitsList.add(0, supportedUnit);
@@ -902,7 +902,7 @@ public class BattleCalculator {
           final int rollsWithoutSupport =
               strengthAndRolls.getSecond() - unitSupportRollsMapForUnit.getInt(supportedUnit);
           final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
-              new Tuple<Integer, Integer>(strengthAndRolls.getFirst(), rollsWithoutSupport);
+              Tuple.of(strengthAndRolls.getFirst(), rollsWithoutSupport);
           unitPowerAndRollsMap.put(supportedUnit, strengthAndRollsWithoutSupport);
           sortedUnitsList.remove(supportedUnit);
           sortedUnitsList.add(0, supportedUnit);
@@ -1012,7 +1012,7 @@ public class BattleCalculator {
             // Remove any rolls provided by this support so they aren't counted twice
             final IntegerMap<Unit> unitSupportRollsMapForUnit = unitSupportRollsMap.get(u);
             if (unitSupportRollsMapForUnit != null) {
-              strengthAndRolls = new Tuple<Integer, Integer>(strengthAndRolls.getFirst(),
+              strengthAndRolls = Tuple.of(strengthAndRolls.getFirst(),
                   strengthAndRolls.getSecond() - unitSupportRollsMapForUnit.getInt(supportedUnit));
             }
             // If one roll then just add the power
@@ -1028,7 +1028,7 @@ public class BattleCalculator {
             final int strengthWithoutSupport =
                 strengthAndRolls.getFirst() - unitSupportPowerMapForUnit.getInt(supportedUnit);
             final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
-                new Tuple<Integer, Integer>(strengthWithoutSupport, strengthAndRolls.getSecond());
+                Tuple.of(strengthWithoutSupport, strengthAndRolls.getSecond());
             supportedUnitMap.put(supportedUnit, strengthAndRollsWithoutSupport);
             final int powerWithoutSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
             // Add the actual power provided by the support
@@ -1052,7 +1052,7 @@ public class BattleCalculator {
             final int rollsWithoutSupport =
                 strengthAndRolls.getSecond() - unitSupportRollsMap.get(u).getInt(supportedUnit);
             final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
-                new Tuple<Integer, Integer>(strengthAndRolls.getFirst(), rollsWithoutSupport);
+                Tuple.of(strengthAndRolls.getFirst(), rollsWithoutSupport);
             supportedUnitMap.put(supportedUnit, strengthAndRollsWithoutSupport);
             final int powerWithoutSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
             // Add the actual power provided by the support
@@ -1077,7 +1077,7 @@ public class BattleCalculator {
           final int strengthWithoutSupport =
               strengthAndRolls.getFirst() - unitSupportPowerMapForUnit.getInt(supportedUnit);
           final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
-              new Tuple<Integer, Integer>(strengthWithoutSupport, strengthAndRolls.getSecond());
+              Tuple.of(strengthWithoutSupport, strengthAndRolls.getSecond());
           unitPowerAndRollsMap.put(supportedUnit, strengthAndRollsWithoutSupport);
           sortedUnitsList.remove(supportedUnit);
           sortedUnitsList.add(0, supportedUnit);
@@ -1093,7 +1093,7 @@ public class BattleCalculator {
           final int rollsWithoutSupport =
               strengthAndRolls.getSecond() - unitSupportRollsMapForUnit.getInt(supportedUnit);
           final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
-              new Tuple<Integer, Integer>(strengthAndRolls.getFirst(), rollsWithoutSupport);
+              Tuple.of(strengthAndRolls.getFirst(), rollsWithoutSupport);
           unitPowerAndRollsMap.put(supportedUnit, strengthAndRollsWithoutSupport);
           sortedUnitsList.remove(supportedUnit);
           sortedUnitsList.add(0, supportedUnit);

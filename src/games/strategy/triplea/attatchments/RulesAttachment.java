@@ -213,7 +213,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
       }
       terrs.add(t);
     }
-    m_battle.add(new Tuple<String, ArrayList<Territory>>((s[0] + ":" + s[1] + ":" + s[2] + ":" + s[3]), terrs));
+    m_battle.add(Tuple.of((s[0] + ":" + s[1] + ":" + s[2] + ":" + s[3]), terrs));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)

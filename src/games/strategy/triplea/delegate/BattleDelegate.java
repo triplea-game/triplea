@@ -754,13 +754,13 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                 Matches.UnitIsNotDisabled, Matches.UnitWasScrambled.invert(),
                 Matches.unitCanScrambleOnRouteDistance(toBattleRoute)));
         if (maxCanScramble > 0 && !canScrambleAir.isEmpty()) {
-          scramblers.put(from, new Tuple<Collection<Unit>, Collection<Unit>>(airbases, canScrambleAir));
+          scramblers.put(from, Tuple.of(airbases, canScrambleAir));
         }
       }
       if (defender == null || scramblers.isEmpty()) {
         continue;
       }
-      final Tuple<Territory, PlayerID> terrPlayer = new Tuple<Territory, PlayerID>(to, defender);
+      final Tuple<Territory, PlayerID> terrPlayer = Tuple.of(to, defender);
       Collection<HashMap<Territory, Tuple<Collection<Unit>, Collection<Unit>>>> tempScrambleList =
           scramblersByTerritoryPlayer.get(terrPlayer);
       if (tempScrambleList == null) {

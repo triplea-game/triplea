@@ -159,7 +159,7 @@ public class IndividualUnitPanelGrouped extends JPanel {
       panelChooser.add(new JLabel(" "));
       final IndividualUnitPanel chooser = new IndividualUnitPanel(possibleTargets, miniTitle, m_data, m_uiContext,
           m_max, m_showMinAndMax, m_showSelectAll, m_textFieldListener);
-      m_entries.add(new Tuple<String, IndividualUnitPanel>(miniTitle, chooser));
+      m_entries.add(Tuple.of(miniTitle, chooser));
       panelChooser.add(chooser);
       final JScrollPane chooserScrollPane = new JScrollPane(panelChooser);
       chooserScrollPane.setMaximumSize(new Dimension(220, 520));

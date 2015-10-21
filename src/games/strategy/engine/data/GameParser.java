@@ -1330,7 +1330,7 @@ public class GameParser {
         final ArrayList<Tuple<String, String>> attachmentOptionValues = setValues(attachment, options);
         // keep a list of attachment references in the order they were added
         data.addToAttachmentOrderAndValues(
-            new Tuple<IAttachment, ArrayList<Tuple<String, String>>>(attachment, attachmentOptionValues));
+            Tuple.of(attachment, attachmentOptionValues));
       } catch (final InstantiationException e) {
         throw new GameParseException(
             "Attachment of type " + className + " could not be instanciated: " + e.getMessage());
@@ -1413,7 +1413,7 @@ public class GameParser {
         ite.getCause().printStackTrace(System.out);
         throw new GameParseException("Error setting property:" + name + " cause:" + ite.getCause().getMessage());
       }
-      options.add(new Tuple<String, String>(name, itemValues));
+      options.add(Tuple.of(name, itemValues));
     }
     return options;
   }

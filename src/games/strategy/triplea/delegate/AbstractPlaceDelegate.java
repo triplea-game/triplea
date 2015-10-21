@@ -413,7 +413,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
           } else {
             // potentialNewProducerTerritory can take over ONLY parts of the production
             // remember placement and potentialNewProducerTerritory but try to avoid splitting a placement
-            splitPlacements.add(new Tuple<UndoablePlacement, Territory>(placement, potentialNewProducerTerritory));
+            splitPlacements.add(Tuple.of(placement, potentialNewProducerTerritory));
           }
           if (spaceAlreadyFree >= maxSpaceToBeFree) {
             break;

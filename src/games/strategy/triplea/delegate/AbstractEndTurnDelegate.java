@@ -307,7 +307,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
                     Matches.UnitCanBeGivenByTerritoryTo(terrNewOwner)));
             if (!units.isEmpty()) {
               change.add(ChangeFactory.changeOwner(units, terrNewOwner, currTerritory));
-              changeList.add(new Tuple<Territory, Collection<Unit>>(currTerritory, units));
+              changeList.add(Tuple.of(currTerritory, units));
             }
           }
         }
@@ -421,7 +421,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
         continue;
       }
       final int lossForBlockade = Math.min(maxLoss, loss);
-      damagePerBlockadeZone.put(b, new Tuple<Integer, List<Territory>>(lossForBlockade, viableNeighbors));
+      damagePerBlockadeZone.put(b, Tuple.of(lossForBlockade, viableNeighbors));
       totalLoss += lossForBlockade;
     }
     if (totalLoss <= 0 && !rolledDice) {

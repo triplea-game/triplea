@@ -63,38 +63,30 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
   private IntegerMap<UnitType> m_purchase = null;
   private String m_resource = null;
   private int m_resourceCount = 0;
-  // never use a map of other attachments, inside of an attachment. java will not
-  // be able to deserialize it.
-  private LinkedHashMap<String, Boolean> m_support = null;
-  // List of relationshipChanges that should be executed when this
-  // trigger hits.
-  private ArrayList<String> m_relationshipChange = new ArrayList<String>();
+  private LinkedHashMap<String, Boolean> m_support = null; // never use a map of other attachments, inside of an attachment. java will not
+                                                           // be able to deserialize it.
+  private ArrayList<String> m_relationshipChange = new ArrayList<String>(); // List of relationshipChanges that should be executed when this
+                                                                            // trigger hits.
   private String m_victory = null;
   private ArrayList<Tuple<String, String>> m_activateTrigger = new ArrayList<Tuple<String, String>>();
   private ArrayList<String> m_changeOwnership = new ArrayList<String>();
   // raw property changes below:
-  // really m_unitTypes, but we are not going to rename because it will
-  // break all existing maps
-  private ArrayList<UnitType> m_unitType = new ArrayList<UnitType>();
-  // covers UnitAttachment, UnitSupportAttachment
-  private Tuple<String, String> m_unitAttachmentName = null;
+  private ArrayList<UnitType> m_unitType = new ArrayList<UnitType>(); // really m_unitTypes, but we are not going to rename because it will
+                                                                      // break all existing maps
+  private Tuple<String, String> m_unitAttachmentName = null; // covers UnitAttachment, UnitSupportAttachment
   private ArrayList<Tuple<String, String>> m_unitProperty = null;
   private ArrayList<Territory> m_territories = new ArrayList<Territory>();
-  // covers TerritoryAttachment, CanalAttachment
-  private Tuple<String, String> m_territoryAttachmentName = null;
+  private Tuple<String, String> m_territoryAttachmentName = null; // covers TerritoryAttachment, CanalAttachment
   private ArrayList<Tuple<String, String>> m_territoryProperty = null;
   private ArrayList<PlayerID> m_players = new ArrayList<PlayerID>();
-  // covers PlayerAttachment, TriggerAttachment, RulesAttachment,
-  // TechAttachment, UserActionAttachment
-  private Tuple<String, String> m_playerAttachmentName = null;
+  private Tuple<String, String> m_playerAttachmentName = null; // covers PlayerAttachment, TriggerAttachment, RulesAttachment,
+                                                               // TechAttachment, UserActionAttachment
   private ArrayList<Tuple<String, String>> m_playerProperty = null;
   private ArrayList<RelationshipType> m_relationshipTypes = new ArrayList<RelationshipType>();
-  // covers RelationshipTypeAttachment
-  private Tuple<String, String> m_relationshipTypeAttachmentName = null;
+  private Tuple<String, String> m_relationshipTypeAttachmentName = null; // covers RelationshipTypeAttachment
   private ArrayList<Tuple<String, String>> m_relationshipTypeProperty = null;
   private ArrayList<TerritoryEffect> m_territoryEffects = new ArrayList<TerritoryEffect>();
-  // covers TerritoryEffectAttachment
-  private Tuple<String, String> m_territoryEffectAttachmentName = null;
+  private Tuple<String, String> m_territoryEffectAttachmentName = null; // covers TerritoryEffectAttachment
   private ArrayList<Tuple<String, String>> m_territoryEffectProperty = null;
 
   public TriggerAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -142,8 +134,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
    * @param player
    * @param data
    * @param cond
-   * @return set of trigger attachments (If you use null for the match condition, you will get all triggers for this
-   *         player)
+   * @return set of trigger attachments (If you use null for the match condition, you will get all triggers for this player)
    */
   public static Set<TriggerAttachment> getTriggers(final PlayerID player, final GameData data,
       final Match<TriggerAttachment> cond) {
@@ -212,8 +203,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
   }
 
   /**
-   * This will fire all triggers, and it will not test to see if they are satisfied or not first. Please use
-   * collectAndFireTriggers instead
+   * This will fire all triggers, and it will not test to see if they are satisfied or not first. Please use collectAndFireTriggers instead
    * of using this directly.
    * To see if they are satisfied, first create the list of triggers using Matches + TriggerAttachment.getTriggers.
    * Then test the triggers using RulesAttachment.getAllConditionsRecursive, and RulesAttachment.testAllConditions
@@ -228,8 +218,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
     // all triggers at this point have their conditions satisfied
-    // so we now test chance (because we test chance last), and remove any conditions that do not succeed in their dice
-    // rolls
+    // so we now test chance (because we test chance last), and remove any conditions that do not succeed in their dice rolls
     final HashSet<TriggerAttachment> triggersToFire = new HashSet<TriggerAttachment>();
     for (final TriggerAttachment t : triggersToBeFired) {
       if (testChance && !t.testChance(aBridge)) {
@@ -237,8 +226,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
       }
       triggersToFire.add(t);
     }
-    // Order: Notifications, Attachment Property Changes (Player, Relationship, Territory, TerritoryEffect, Unit),
-    // Relationship,
+    // Order: Notifications, Attachment Property Changes (Player, Relationship, Territory, TerritoryEffect, Unit), Relationship,
     // AvailableTech, Tech, ProductionFrontier, ProductionEdit, Support, Purchase, UnitPlacement, Resource, Victory
     // Notifications to current player
     triggerNotifications(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
@@ -260,20 +248,17 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
         testWhen);
     triggerSupportChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
     triggerChangeOwnership(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    // Misc changes that can happen multiple times, because they add or subtract, something from the game (and therefore
-    // can use "each")
+    // Misc changes that can happen multiple times, because they add or subtract, something from the game (and therefore can use "each")
     triggerUnitRemoval(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
     triggerPurchase(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
     triggerUnitPlacement(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
     triggerResourceChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
     // Activating other triggers, and trigger victory, should ALWAYS be LAST in this list!
     triggerActivateTriggerOther(testedConditionsSoFar, triggersToFire, aBridge, beforeOrAfter, stepName, useUses,
-        // Triggers firing other triggers
-        testUses, false, testWhen);
+        testUses, false, testWhen); // Triggers firing other triggers
     // Victory messages and recording of winners
     triggerVictory(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    // for both 'when' and 'activated triggers', we can change the uses now. (for other triggers, we change at end of
-    // each round)
+    // for both 'when' and 'activated triggers', we can change the uses now. (for other triggers, we change at end of each round)
     if (useUses) {
       setUsesForWhenTriggers(triggersToFire, aBridge, useUses);
     }
@@ -345,7 +330,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     getBool(s[3]);
     getBool(s[4]);
     getBool(s[5]);
-    m_activateTrigger.add(new Tuple<String, String>(s[0], options));
+    m_activateTrigger.add(Tuple.of(s[0], options));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -761,7 +746,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     if (s[1].equals("UnitSupportAttachment") && !s[0].startsWith(Constants.SUPPORT_ATTACHMENT_PREFIX)) {
       throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
     }
-    m_unitAttachmentName = new Tuple<String, String>(s[1], s[0]);
+    m_unitAttachmentName = Tuple.of(s[1], s[0]);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -771,7 +756,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 
   public Tuple<String, String> getUnitAttachmentName() {
     if (m_unitAttachmentName == null) {
-      return new Tuple<String, String>("UnitAttachment", Constants.UNIT_ATTACHMENT_NAME);
+      return Tuple.of("UnitAttachment", Constants.UNIT_ATTACHMENT_NAME);
     }
     return m_unitAttachmentName;
   }
@@ -796,10 +781,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     if (m_unitProperty == null) {
       m_unitProperty = new ArrayList<Tuple<String, String>>();
     }
-    // the last one is the property we are changing, while the rest is the string we are changing
-    // it to
-    final String property = s[s.length - 1];
-    m_unitProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
+    final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing
+                                             // it to
+    m_unitProperty.add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -881,7 +865,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     if (s[1].equals("CanalAttachment") && !s[0].startsWith(Constants.CANAL_ATTACHMENT_PREFIX)) {
       throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
     }
-    m_territoryAttachmentName = new Tuple<String, String>(s[1], s[0]);
+    m_territoryAttachmentName = Tuple.of(s[1], s[0]);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -891,7 +875,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 
   public Tuple<String, String> getTerritoryAttachmentName() {
     if (m_territoryAttachmentName == null) {
-      return new Tuple<String, String>("TerritoryAttachment", Constants.TERRITORY_ATTACHMENT_NAME);
+      return Tuple.of("TerritoryAttachment", Constants.TERRITORY_ATTACHMENT_NAME);
     }
     return m_territoryAttachmentName;
   }
@@ -916,10 +900,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     if (m_territoryProperty == null) {
       m_territoryProperty = new ArrayList<Tuple<String, String>>();
     }
-    // the last one is the property we are changing, while the rest is the string we are changing
-    // it to
-    final String property = s[s.length - 1];
-    m_territoryProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
+    final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing
+                                             // it to
+    m_territoryProperty.add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1021,7 +1004,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     if (s[1].equals("UserActionAttachment") && !s[0].startsWith(Constants.USERACTION_ATTACHMENT_PREFIX)) {
       throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
     }
-    m_playerAttachmentName = new Tuple<String, String>(s[1], s[0]);
+    m_playerAttachmentName = Tuple.of(s[1], s[0]);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1031,7 +1014,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 
   public Tuple<String, String> getPlayerAttachmentName() {
     if (m_playerAttachmentName == null) {
-      return new Tuple<String, String>("PlayerAttachment", Constants.PLAYER_ATTACHMENT_NAME);
+      return Tuple.of("PlayerAttachment", Constants.PLAYER_ATTACHMENT_NAME);
     }
     return m_playerAttachmentName;
   }
@@ -1056,10 +1039,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     if (m_playerProperty == null) {
       m_playerProperty = new ArrayList<Tuple<String, String>>();
     }
-    // the last one is the property we are changing, while the rest is the string we are changing
-    // it to
-    final String property = s[s.length - 1];
-    m_playerProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
+    final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing
+                                             // it to
+    m_playerProperty.add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1139,7 +1121,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     if (s[1].equals("RelationshipTypeAttachment") && !s[0].startsWith(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME)) {
       throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
     }
-    m_relationshipTypeAttachmentName = new Tuple<String, String>(s[1], s[0]);
+    m_relationshipTypeAttachmentName = Tuple.of(s[1], s[0]);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1149,7 +1131,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 
   public Tuple<String, String> getRelationshipTypeAttachmentName() {
     if (m_relationshipTypeAttachmentName == null) {
-      return new Tuple<String, String>("RelationshipTypeAttachment", Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME);
+      return Tuple.of("RelationshipTypeAttachment", Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME);
     }
     return m_relationshipTypeAttachmentName;
   }
@@ -1174,11 +1156,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     if (m_relationshipTypeProperty == null) {
       m_relationshipTypeProperty = new ArrayList<Tuple<String, String>>();
     }
-    // the last one is the property we are changing, while the rest is the string we are changing
-    // it to
-    final String property = s[s.length - 1];
+    final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing
+                                             // it to
     m_relationshipTypeProperty
-        .add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
+        .add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1258,7 +1239,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     if (s[1].equals("TerritoryEffectAttachment") && !s[0].startsWith(Constants.TERRITORYEFFECT_ATTACHMENT_NAME)) {
       throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
     }
-    m_territoryEffectAttachmentName = new Tuple<String, String>(s[1], s[0]);
+    m_territoryEffectAttachmentName = Tuple.of(s[1], s[0]);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1268,7 +1249,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 
   public Tuple<String, String> getTerritoryEffectAttachmentName() {
     if (m_territoryEffectAttachmentName == null) {
-      return new Tuple<String, String>("TerritoryEffectAttachment", Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
+      return Tuple.of("TerritoryEffectAttachment", Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
     }
     return m_territoryEffectAttachmentName;
   }
@@ -1293,11 +1274,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     if (m_territoryEffectProperty == null) {
       m_territoryEffectProperty = new ArrayList<Tuple<String, String>>();
     }
-    // the last one is the property we are changing, while the rest is the string we are changing
-    // it to
-    final String property = s[s.length - 1];
+    final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing
+                                             // it to
     m_territoryEffectProperty
-        .add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
+        .add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1622,8 +1602,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
   }
 
   // And now for the actual triggers, as called throughout the engine.
-  // Each trigger should be called exactly twice, once in BaseDelegate (for use with 'when'), and a second time as the
-  // default location for
+  // Each trigger should be called exactly twice, once in BaseDelegate (for use with 'when'), and a second time as the default location for
   // when 'when' is not used.
   // Should be void.
   public static void triggerNotifications(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge,
@@ -1652,8 +1631,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
         if (sounds != null) {
           aBridge.getSoundChannelBroadcaster().playSoundToPlayers(
               SoundPath.CLIP_TRIGGERED_NOTIFICATION_SOUND + sounds.trim(), null, t.getPlayers(), null,
-              // play to observers if we are playing to everyone
-              t.getPlayers().containsAll(data.getPlayerList().getPlayers()));
+              t.getPlayers().containsAll(data.getPlayerList().getPlayers())); // play to observers if we are playing to everyone
         }
         final String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
         if (message != null) {
@@ -1893,8 +1871,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
             final TerritoryAttachment attachment =
                 TerritoryAttachment.get(aTerritory, t.getTerritoryAttachmentName().getSecond());
             if (attachment == null) {
-              // water territories may not have an attachment, so this could be null
-              throw new IllegalStateException("Triggers: No territory attachment for:" + aTerritory.getName());
+              throw new IllegalStateException("Triggers: No territory attachment for:" + aTerritory.getName()); // water territories may not
+                                                                                                                // have an attachment, so
+                                                                                                                // this could be null
             }
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
@@ -2102,8 +2081,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
           AbstractMoveDelegate.getBattleTracker(data).addRelationshipChangesThisTurn(player1, player2, currentRelation,
               triggerNewRelation);
           /*
-           * creation of new battles is handled at the beginning of the battle delegate, in
-           * "setupUnitsInSameTerritoryBattles", not here.
+           * creation of new battles is handled at the beginning of the battle delegate, in "setupUnitsInSameTerritoryBattles", not here.
            * if (Matches.RelationshipTypeIsAtWar.match(triggerNewRelation))
            * triggerMustFightBattle(player1, player2, aBridge);
            */
@@ -2262,8 +2240,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
       }
     }
     if (!change.isEmpty()) {
-      // TODO: we should sort the frontier list if we make changes to it...
-      aBridge.addChange(change);
+      aBridge.addChange(change); // TODO: we should sort the frontier list if we make changes to it...
     }
   }
 
@@ -2350,15 +2327,13 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
           final Territory territorySet = data.getMap().getTerritory(s[0]);
           territories.add(territorySet);
         }
-        // if null, then is must be "any", so then any player
-        final PlayerID oldOwner = data.getPlayerList().getPlayerID(s[1]);
+        final PlayerID oldOwner = data.getPlayerList().getPlayerID(s[1]); // if null, then is must be "any", so then any player
         final PlayerID newOwner = data.getPlayerList().getPlayerID(s[2]);
         final boolean captured = getBool(s[3]);
         for (final Territory terr : territories) {
           final PlayerID currentOwner = terr.getOwner();
           if (TerritoryAttachment.get(terr) == null) {
-            // any territory that has no territory attachment should definitely not be changed
-            continue;
+            continue; // any territory that has no territory attachment should definitely not be changed
           }
           if (oldOwner != null && !oldOwner.equals(currentOwner)) {
             continue;
@@ -2462,8 +2437,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
       for (final PlayerID aPlayer : t.getPlayers()) {
         for (final Territory ter : t.getPlacement().keySet()) {
           for (int i = 0; i < eachMultiple; ++i) {
-            // aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " +
-            // aPlayer.getName() + " places " +
+            // aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName() + " places " +
             // t.getPlacement().get(ter).toString() + " in territory " + ter.getName());
             placeUnits(t, ter, t.getPlacement().get(ter), aPlayer, data, aBridge);
           }
@@ -2629,11 +2603,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
   }
 
   // All triggers can be activated in only 1 of 2 places: default or when
-  // default = t.getWhen.isEmpty() (this means when was not set, and so the trigger should activate in its default
-  // place, like before
+  // default = t.getWhen.isEmpty() (this means when was not set, and so the trigger should activate in its default place, like before
   // purchase phase for production frontier trigger changes
-  // when = !t.getWhen.isEmpty() (this means when was set, and so the trigger should not activate in its default place,
-  // and instead should
+  // when = !t.getWhen.isEmpty() (this means when was set, and so the trigger should not activate in its default place, and instead should
   // activate before or after a specific stepName
   public static Match<TriggerAttachment> prodMatch() {
     return new Match<TriggerAttachment>() {

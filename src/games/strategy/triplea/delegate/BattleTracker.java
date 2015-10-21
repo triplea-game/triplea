@@ -140,9 +140,9 @@ public class BattleTracker implements java.io.Serializable {
 
   public void addRelationshipChangesThisTurn(final PlayerID p1, final PlayerID p2, final RelationshipType oldRelation,
       final RelationshipType newRelation) {
-    m_relationshipChangesThisTurn.add(new Tuple<Tuple<PlayerID, PlayerID>, Tuple<RelationshipType, RelationshipType>>(
-        new Tuple<PlayerID, PlayerID>(p1, p2),
-        new Tuple<RelationshipType, RelationshipType>(oldRelation, newRelation)));
+    m_relationshipChangesThisTurn.add(Tuple.of(
+        Tuple.of(p1, p2),
+        Tuple.of(oldRelation, newRelation)));
   }
 
   public boolean didAllThesePlayersJustGoToWarThisTurn(final PlayerID p1, final Collection<Unit> enemyUnits,

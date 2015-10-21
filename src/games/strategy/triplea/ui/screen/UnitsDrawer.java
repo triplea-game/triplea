@@ -156,7 +156,7 @@ public class UnitsDrawer implements IDrawable {
       selectedUnits.add(Matches.UnitHasNotTakenAnyBombingUnitDamage);
     }
     final List<Unit> rVal = t.getUnits().getMatches(selectedUnits);
-    return new Tuple<Territory, List<Unit>>(t, rVal);
+    return Tuple.of(t, rVal);
   }
 
   @Override

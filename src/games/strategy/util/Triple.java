@@ -1,53 +1,61 @@
 package games.strategy.util;
 
-public class Triple<F, S, T> extends Tuple<F, S> {
-  private static final long serialVersionUID = 4326718231392107904L;
-  private final T m_third;
+import java.io.Serializable;
+import java.util.Objects;
 
-  public Triple(final F first, final S second, final T third) {
-    super(first, second);
-    m_third = third;
+import com.google.common.base.MoreObjects;
+
+public class Triple<F, S, T> implements Serializable  {
+  private static final long serialVersionUID = -8188046743232005918L;
+  private final Tuple<F,S> tuple;
+  private final T third;
+
+  public static <F,S,T> Triple<F, S, T> of( F first, S second, T third ) {
+    return new Triple(first,second,third);
+  }
+
+  private Triple(final F first, final S second, final T third) {
+    tuple = Tuple.of(first, second);
+    this.third = third;
+  }
+
+  public F getFirst() {
+    return tuple.getFirst();
+  }
+  public S getSecond() {
+    return tuple.getSecond();
   }
 
   public T getThird() {
-    return m_third;
+    return third;
   }
 
   @Override
   public String toString() {
-    return "[" + (super.getFirst() == null ? "null" : super.getFirst().toString()) + ", "
-        + (super.getSecond() == null ? "null" : super.getSecond().toString()) + ", "
-        + (m_third == null ? "null" : m_third.toString()) + "]";
+    return MoreObjects.toStringHelper(this)
+        .add("first", getFirst())
+        .add("second", getSecond())
+        .add("third", getThird())
+        .toString();
   }
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = super.hashCode();
-    result = prime * result + ((m_third == null) ? 0 : m_third.hashCode());
-    return result;
+    return Objects.hash(tuple, third);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public boolean equals(final Object obj) {
     if (this == obj) {
       return true;
     }
-    if (!super.equals(obj)) {
+
+    if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
+
     final Triple other = (Triple) obj;
-    if (m_third == null) {
-      if (other.m_third != null) {
-        return false;
-      }
-    } else if (!m_third.equals(other.m_third)) {
-      return false;
-    }
-    return true;
+    return Objects.equals(tuple, other.tuple) &&
+        Objects.equals(getThird(), other.getThird() );
   }
 }

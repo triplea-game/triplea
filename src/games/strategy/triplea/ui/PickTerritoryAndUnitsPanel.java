@@ -107,7 +107,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
       }
     });
     waitForRelease();
-    return new Tuple<Territory, Set<Unit>>(this.m_pickedTerritory, this.m_pickedUnits);
+    return Tuple.of(this.m_pickedTerritory, this.m_pickedUnits);
   }
 
   private void setWidgetActivation() {

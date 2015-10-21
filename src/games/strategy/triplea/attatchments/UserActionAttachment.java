@@ -118,7 +118,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
     getBool(s[3]);
     getBool(s[4]);
     getBool(s[5]);
-    m_activateTrigger.add(new Tuple<String, String>(s[0], options));
+    m_activateTrigger.add(Tuple.of(s[0], options));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)

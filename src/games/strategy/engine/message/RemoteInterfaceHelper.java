@@ -46,7 +46,7 @@ public class RemoteInterfaceHelper {
     if (s_logger.isLoggable(Level.FINEST)) {
       s_logger.fine("Sorted methods:" + Arrays.asList(methods));
     }
-    return new Tuple<String, Class<?>[]>(methods[methodNumber].getName(), methods[methodNumber].getParameterTypes());
+    return Tuple.of(methods[methodNumber].getName(), methods[methodNumber].getParameterTypes());
   }
 
   /**

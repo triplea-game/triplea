@@ -182,13 +182,13 @@ public class TabbedProductionPanel extends ProductionPanel {
         resourceRules.add(rule);
       }
     }
-    ruleLists.add(new Tuple<String, List<Rule>>("All", allRules));
-    ruleLists.add(new Tuple<String, List<Rule>>("Land", landRules));
-    ruleLists.add(new Tuple<String, List<Rule>>("Air", airRules));
-    ruleLists.add(new Tuple<String, List<Rule>>("Sea", seaRules));
-    ruleLists.add(new Tuple<String, List<Rule>>("Construction", constructRules));
-    ruleLists.add(new Tuple<String, List<Rule>>("Upgrades/Consumes", upgradeConsumesRules));
-    ruleLists.add(new Tuple<String, List<Rule>>("Resources", resourceRules));
+    ruleLists.add(Tuple.of("All", (List<Rule>) allRules));
+    ruleLists.add(Tuple.of("Land", (List<Rule>) landRules));
+    ruleLists.add(Tuple.of("Air", (List<Rule>) airRules));
+    ruleLists.add(Tuple.of("Sea", (List<Rule>) seaRules));
+    ruleLists.add(Tuple.of("Construction", (List<Rule>) constructRules));
+    ruleLists.add(Tuple.of("Upgrades/Consumes", (List<Rule>) upgradeConsumesRules));
+    ruleLists.add(Tuple.of("Resources", (List<Rule>) resourceRules));
     return ruleLists;
   }
 

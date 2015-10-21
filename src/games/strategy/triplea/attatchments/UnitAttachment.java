@@ -466,7 +466,7 @@ public class UnitAttachment extends DefaultAttachment {
       final int howMany = getInt(s[i]);
       unitsToMake.put(ut, howMany);
     }
-    m_whenCapturedChangesInto.put(s[0] + ":" + s[1], new Tuple<String, IntegerMap<UnitType>>(s[2], unitsToMake));
+    m_whenCapturedChangesInto.put(s[0] + ":" + s[1], Tuple.of(s[2], unitsToMake));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -509,7 +509,7 @@ public class UnitAttachment extends DefaultAttachment {
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
       if (tempPlayer != null) {
-        m_destroyedWhenCapturedBy.add(new Tuple<String, PlayerID>(byOrFrom, tempPlayer));
+        m_destroyedWhenCapturedBy.add(Tuple.of(byOrFrom, tempPlayer));
       } else {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
       }
@@ -989,14 +989,14 @@ public class UnitAttachment extends DefaultAttachment {
           "whenCombatDamaged damaged integers must be positive, and the second integer must be equal to or greater than the first"
               + thisErrorMsg());
     }
-    final Tuple<Integer, Integer> fromTo = new Tuple<Integer, Integer>(from, to);
+    final Tuple<Integer, Integer> fromTo = Tuple.of(from, to);
     Tuple<String, String> effectNum;
     if (s.length == 3) {
-      effectNum = new Tuple<String, String>(s[2], null);
+      effectNum = Tuple.of(s[2], null);
     } else {
-      effectNum = new Tuple<String, String>(s[2], s[3]);
+      effectNum = Tuple.of(s[2], s[3]);
     }
-    m_whenCombatDamaged.add(new Tuple<Tuple<Integer, Integer>, Tuple<String, String>>(fromTo, effectNum));
+    m_whenCombatDamaged.add(Tuple.of(fromTo, effectNum));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1055,7 +1055,7 @@ public class UnitAttachment extends DefaultAttachment {
         if (filterForAbility != null && !filterForAbility.equals(s[0])) {
           continue;
         }
-        map.put(new Tuple<String, String>(s[0], s[1]),
+        map.put(Tuple.of(s[0], s[1]),
             Match.countMatches(units, Matches.unitIsOfType(data.getUnitTypeList().getUnitType(s[1]))));
       }
     }
@@ -2507,7 +2507,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total"))) {
       throw new GameParseException("movementLimit value must owned, allied, or total" + thisErrorMsg());
     }
-    m_movementLimit = new Tuple<Integer, String>(max, s[1]);
+    m_movementLimit = Tuple.of(max, s[1]);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2544,7 +2544,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total"))) {
       throw new GameParseException("attackingLimit value must owned, allied, or total" + thisErrorMsg());
     }
-    m_attackingLimit = new Tuple<Integer, String>(max, s[1]);
+    m_attackingLimit = Tuple.of(max, s[1]);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2581,7 +2581,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total"))) {
       throw new GameParseException("placementLimit value must owned, allied, or total" + thisErrorMsg());
     }
-    m_placementLimit = new Tuple<Integer, String>(max, s[1]);
+    m_placementLimit = Tuple.of(max, s[1]);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)

@@ -14,6 +14,8 @@ import javax.swing.AbstractAction;
 import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
 
+import com.google.common.collect.Sets;
+
 import games.strategy.common.player.AbstractHumanPlayer;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -776,7 +778,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
   public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices,
       final List<Unit> unitChoices, final int unitsPerPick) {
     if (territoryChoices == null || territoryChoices.isEmpty() || unitsPerPick < 1) {
-      return new Tuple<Territory, Set<Unit>>(null, new HashSet<Unit>());
+      return Tuple.of((Territory) null, (Set<Unit>) new HashSet<Unit>());
     }
     return m_ui.pickTerritoryAndUnits(this.getPlayerID(), territoryChoices, unitChoices, unitsPerPick);
   }

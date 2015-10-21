@@ -76,7 +76,7 @@ public class ProductionTabsProperties {
           ruleList.add(rule);
         }
       }
-      m_ruleLists.add(new Tuple<String, List<Rule>>(tabName, ruleList));
+      m_ruleLists.add(Tuple.of(tabName, ruleList));
     }
     return m_ruleLists;
   }

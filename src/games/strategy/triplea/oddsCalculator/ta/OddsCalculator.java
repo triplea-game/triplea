@@ -347,7 +347,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
       final String[] amountThenType = section.split(OOL_AMOUNT_DESCRIPTOR_REGEX);
       final int amount = amountThenType[0].equals(OOL_ALL) ? Integer.MAX_VALUE : Integer.parseInt(amountThenType[0]);
       final UnitType type = data.getUnitTypeList().getUnitType(amountThenType[1]);
-      map.add(new Tuple<Integer, UnitType>(amount, type));
+      map.add(Tuple.of(amount, type));
     }
     Collections.reverse(map);
     final Set<Unit> unitsLeft = new HashSet<Unit>(units);

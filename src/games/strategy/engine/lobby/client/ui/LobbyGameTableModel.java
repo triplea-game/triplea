@@ -105,7 +105,7 @@ public class LobbyGameTableModel extends AbstractTableModel {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
-        gameList.add( new Tuple<GUID,GameDescription>( gameId, description ));
+        gameList.add(Tuple.of(gameId, description));
         fireTableRowsInserted(gameList.size() - 1, gameList.size() - 1);
       }
     });
@@ -123,7 +123,7 @@ public class LobbyGameTableModel extends AbstractTableModel {
       public void run() {
         Tuple<GUID,GameDescription> toReplace = findGame(gameId);
         int replaceIndex = gameList.indexOf(toReplace);
-        gameList.set(replaceIndex, new Tuple<GUID,GameDescription>(gameId, description));
+        gameList.set(replaceIndex, Tuple.of(gameId, description));
         fireTableRowsUpdated(replaceIndex, replaceIndex);
       }
     });
