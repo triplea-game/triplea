@@ -104,6 +104,8 @@ public class NewGameChooserModel extends DefaultListModel {
     }
   }
 
+  private enum ZipProcessingResult  { SUCCESS, ERROR }
+
   private void populateFromZip(final File map, final List<NewGameChooserEntry> entries) {
     boolean badMapZip = false;
     try {
@@ -112,26 +114,20 @@ public class NewGameChooserModel extends DefaultListModel {
         final ZipInputStream zis = new ZipInputStream(fis);
         try {
           ZipEntry entry = zis.getNextEntry();
+          final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()});
           while (entry != null) {
             if (entry.getName().startsWith("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
-              final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()});
-              final URL url = loader.getResource(entry.getName());
-              // we have to close the loader to allow files to be deleted on windows
-              ClassLoaderUtil.closeLoader(loader);
-              if (url == null) {
-                // not loading the URL means the XML is truncated or otherwise in bad shape
+              ZipProcessingResult result = processZipEntry(loader, entry, entries);
+              if( result == ZipProcessingResult.ERROR ) {
                 badMapZip = true;
                 break;
-              }
-              try {
-                addNewGameChooserEntry(entries, new URI(url.toString().replace(" ", "%20")));
-              } catch (final URISyntaxException e) {
-                // only happens when URI couldn't be build and therefore no entry was added. That's fine
               }
             }
             zis.closeEntry();
             entry = zis.getNextEntry();
           }
+          // we have to close the loader to allow files to be deleted on windows
+          ClassLoaderUtil.closeLoader(loader);
         } finally {
           zis.close();
         }
@@ -145,6 +141,20 @@ public class NewGameChooserModel extends DefaultListModel {
     if (badMapZip) {
       confirmWithUserAndThenDeleteCorruptZipFile(map);
     }
+  }
+
+  private ZipProcessingResult processZipEntry(final URLClassLoader loader, final ZipEntry entry,  final List<NewGameChooserEntry> entries) {
+    final URL url = loader.getResource(entry.getName());
+    if (url == null) {
+      // not loading the URL means the XML is truncated or otherwise in bad shape
+      return ZipProcessingResult.ERROR;
+    }
+    try {
+      addNewGameChooserEntry(entries, new URI(url.toString().replace(" ", "%20")));
+    } catch (final URISyntaxException e) {
+      // only happens when URI couldn't be build and therefore no entry was added. That's fine ..
+    }
+    return ZipProcessingResult.SUCCESS;
   }
 
   /*
