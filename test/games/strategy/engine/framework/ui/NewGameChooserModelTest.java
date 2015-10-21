@@ -1,11 +1,14 @@
 package games.strategy.engine.framework.ui;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class NewGameChooserModelTest extends TestCase {
+public class NewGameChooserModelTest  {
+
+
   /** Simply create the object to see that we can do that without exception */
   @SuppressWarnings("unused")
+  @Test
   public void testCreate() {
-    new NewGameChooserModel();
+    new NewGameChooserModel(new ClearGameChooserCacheMessenger());
   }
 }

@@ -30,10 +30,17 @@ import javax.swing.event.ListSelectionListener;
 import games.strategy.engine.data.GameData;
 import games.strategy.util.LocalizeHTML;
 
+
 public class NewGameChooser extends JDialog {
+
   private static final long serialVersionUID = -3223711652118741132L;
-  // any methods touching s_cachedGameModel should be both static and synchronized
+
+  // Use synchronization when accessing s_cachedGameModel, it is accessed by both
+  // the Swing AWT event thread and also background threads, which parses available
+  // maps in the background when a game is not playing
   private static NewGameChooserModel s_cachedGameModel = null;
+  private static ClearGameChooserCacheMessenger cacheClearedMessenger;
+
   private JButton m_okButton;
   private JButton m_cancelButton;
   private JButton m_refreshGamesButton;
@@ -169,7 +176,7 @@ public class NewGameChooser extends JDialog {
     });
   }
 
-  private void appendListItem(final String title, final String value, final StringBuilder builder) {
+  private static void appendListItem(final String title, final String value, final StringBuilder builder) {
     builder.append("<b>").append(title).append("</b>").append(": ").append(value).append("<br>");
   }
 
@@ -217,20 +224,20 @@ public class NewGameChooser extends JDialog {
       }
 
       @Override
-      public void mousePressed(final MouseEvent e) {} // ignore
+      public void mousePressed(final MouseEvent e) {}
 
       @Override
-      public void mouseReleased(final MouseEvent e) {} // ignore
+      public void mouseReleased(final MouseEvent e) {}
 
       @Override
-      public void mouseEntered(final MouseEvent e) {} // ignore
+      public void mouseEntered(final MouseEvent e) {}
 
       @Override
-      public void mouseExited(final MouseEvent e) {} // ignore
+      public void mouseExited(final MouseEvent e) {}
     });
   }
 
-  // any methods touching s_cachedGameModel should be both static and synchronized
+  /** Populates the NewGameChooserModel cache if empty, then returns the cached instance */
   public synchronized static NewGameChooserModel getNewGameChooserModel() {
     if (s_cachedGameModel == null) {
       refreshNewGameChooserModel();
@@ -238,14 +245,21 @@ public class NewGameChooser extends JDialog {
     return s_cachedGameModel;
   }
 
-  // any methods touching s_cachedGameModel should be both static and synchronized
   public synchronized static void refreshNewGameChooserModel() {
     clearNewGameChooserModel();
-    s_cachedGameModel = new NewGameChooserModel();
+    cacheClearedMessenger = new ClearGameChooserCacheMessenger();
+    s_cachedGameModel = new NewGameChooserModel(cacheClearedMessenger);
   }
 
-  // any methods touching s_cachedGameModel should be both static and synchronized
-  public synchronized static void clearNewGameChooserModel() {
+  public static void clearNewGameChooserModel() {
+    if (cacheClearedMessenger != null) {
+      cacheClearedMessenger.sendCancel();
+      cacheClearedMessenger = null;
+    }
+    synchronizedClear();
+  }
+
+  private synchronized static void synchronizedClear() {
     if (s_cachedGameModel != null) {
       s_cachedGameModel.clear();
       s_cachedGameModel = null;
