@@ -2,7 +2,6 @@ package games.strategy.engine.framework.ui;
 
 import java.awt.Component;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
@@ -18,7 +17,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -26,6 +24,8 @@ import javax.swing.SwingUtilities;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import com.google.common.collect.Lists;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.EngineVersionException;
@@ -41,8 +41,7 @@ public class NewGameChooserModel extends DefaultListModel {
     SUCCESS, ERROR
   }
 
-  public NewGameChooserModel(ClearGameChooserCacheMessenger clearCacheMessenger) {
-    this.clearCacheMessenger = clearCacheMessenger;
+  public NewGameChooserModel() {
     populate();
   }
 
@@ -63,7 +62,8 @@ public class NewGameChooserModel extends DefaultListModel {
     return rVal;
   }
 
-  private List<File> allMapFiles() {
+
+  private static List<File> allMapFiles() {
     final List<File> rVal = new ArrayList<File>();
     // prioritize user maps folder over root folder
     rVal.addAll(safeListFiles(GameRunner2.getUserMapsFolder()));
@@ -75,7 +75,7 @@ public class NewGameChooserModel extends DefaultListModel {
     return new File(GameRunner2.getRootFolder(), "maps");
   }
 
-  private List<File> safeListFiles(final File f) {
+  private static List<File> safeListFiles(final File f) {
     final File[] files = f.listFiles();
     if (files == null) {
       return Collections.emptyList();
@@ -86,13 +86,10 @@ public class NewGameChooserModel extends DefaultListModel {
   private void populate() {
     final List<NewGameChooserEntry> entries = new ArrayList<NewGameChooserEntry>();
     for (final File map : allMapFiles()) {
-      if(clearCacheMessenger.isCancelled()) {
-        return;
-      }
       if (map.isDirectory()) {
-        populateFromDirectory(map, entries);
+        entries.addAll(populateFromDirectory(map));
       } else if (map.isFile() && map.getName().toLowerCase().endsWith(".zip")) {
-        populateFromZip(map, entries);
+        entries.addAll(populateFromZip(map));
       }
     }
     // remove any null entries
@@ -109,8 +106,10 @@ public class NewGameChooserModel extends DefaultListModel {
     }
   }
 
-  private void populateFromZip(final File map, final List<NewGameChooserEntry> entries) {
+  private static final List<NewGameChooserEntry> populateFromZip(final File map) {
     boolean badMapZip = false;
+    final List<NewGameChooserEntry> entries = Lists.newArrayList();
+
     try (ZipFile zipFile = new ZipFile(map)) {
       final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()});
       Enumeration<? extends ZipEntry> zipEntryEnumeration = zipFile.entries();
@@ -133,9 +132,10 @@ public class NewGameChooserModel extends DefaultListModel {
     if (badMapZip) {
       confirmWithUserAndThenDeleteCorruptZipFile(map);
     }
+    return entries;
   }
 
-  private ZipProcessingResult processZipEntry(final URLClassLoader loader, final ZipEntry entry,
+  private static ZipProcessingResult processZipEntry(final URLClassLoader loader, final ZipEntry entry,
       final List<NewGameChooserEntry> entries) {
     final URL url = loader.getResource(entry.getName());
     if (url == null) {
@@ -192,7 +192,7 @@ public class NewGameChooserModel extends DefaultListModel {
    * @param uri
    *        URI of the new entry
    */
-  private void addNewGameChooserEntry(final List<NewGameChooserEntry> entries, final URI uri) {
+  private static void addNewGameChooserEntry(final List<NewGameChooserEntry> entries, final URI uri) {
     try {
       final NewGameChooserEntry newEntry = createEntry(uri);
       if (!entries.contains(newEntry)) {
@@ -219,22 +219,25 @@ public class NewGameChooserModel extends DefaultListModel {
     return null;
   }
 
-  private NewGameChooserEntry createEntry(final URI uri)
+  private static NewGameChooserEntry createEntry(final URI uri)
       throws IOException, GameParseException, SAXException, EngineVersionException {
     return new NewGameChooserEntry(uri);
   }
 
-  private void populateFromDirectory(final File mapDir, final List<NewGameChooserEntry> entries) {
+  private static List<NewGameChooserEntry> populateFromDirectory(final File mapDir) {
+    final List<NewGameChooserEntry> entries = Lists.newArrayList();
+
     final File games = new File(mapDir, "games");
     if (!games.exists()) {
       // no games in this map dir
-      return;
+      return entries;
     }
     for (final File game : games.listFiles()) {
       if (game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
         addNewGameChooserEntry(entries, game.toURI());
       }
     }
+    return entries;
   }
 
   public boolean removeEntry(final NewGameChooserEntry entryToBeRemoved) {
