@@ -2,6 +2,8 @@ package games.strategy.debug;
 
 import java.io.PrintStream;
 
+import games.strategy.triplea.util.Stopwatch;
+
 public class ClientLogger {
   private static final PrintStream developerOutputStream = System.out;
   private static final PrintStream userOutputStream = System.err;
@@ -38,4 +40,9 @@ public class ClientLogger {
     logError(msg);
     logError(e);
   }
+
+  public static Stopwatch stopWatch(String description) {
+    return new Stopwatch(description);
+  }
+
 }
