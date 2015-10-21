@@ -268,7 +268,9 @@ public class NewGameChooser extends JDialog {
     synchronized( mapParsingInProgressLock ) {
       mapParsingInProgress = false;
     }
-    cacheClearedMessenger.sendCancel();
+    if (cacheClearedMessenger != null) {
+      cacheClearedMessenger.sendCancel();
+    }
     cacheClearedMessenger = null;
     s_cachedGameModel = null;
   }
