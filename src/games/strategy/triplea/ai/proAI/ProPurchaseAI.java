@@ -60,12 +60,10 @@ public class ProPurchaseAI {
   public final static double WIN_PERCENTAGE = 95.0;
 
   // Utilities
-  private final ProAI ai;
   private final ProUtils utils;
   private final ProBattleUtils battleUtils;
   private final ProTransportUtils transportUtils;
   private final ProAttackOptionsUtils attackOptionsUtils;
-  private final ProMoveUtils moveUtils;
   private final ProTerritoryValueUtils territoryValueUtils;
   private final ProPurchaseUtils purchaseUtils;
 
@@ -75,20 +73,15 @@ public class ProPurchaseAI {
   private PlayerID player;
   private Territory myCapital;
   private double minCostPerHitPoint;
-  private List<Territory> allTerritories;
-  private Map<Unit, Territory> unitTerritoryMap;
   private ProResourceTracker resourceTracker;
 
-  public ProPurchaseAI(final ProAI ai, final ProUtils utils, final ProBattleUtils battleUtils,
+  public ProPurchaseAI(final ProUtils utils, final ProBattleUtils battleUtils,
       final ProTransportUtils transportUtils, final ProAttackOptionsUtils attackOptionsUtils,
-      final ProMoveUtils moveUtils, final ProTerritoryValueUtils territoryValueUtils,
-      final ProPurchaseUtils purchaseUtils) {
-    this.ai = ai;
+      final ProTerritoryValueUtils territoryValueUtils, final ProPurchaseUtils purchaseUtils) {
     this.utils = utils;
     this.battleUtils = battleUtils;
     this.transportUtils = transportUtils;
     this.attackOptionsUtils = attackOptionsUtils;
-    this.moveUtils = moveUtils;
     this.territoryValueUtils = territoryValueUtils;
     this.purchaseUtils = purchaseUtils;
   }
@@ -101,7 +94,6 @@ public class ProPurchaseAI {
     this.data = data;
     this.player = player;
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
-    allTerritories = data.getMap().getTerritories();
     if (PUsToSpend == 0 && player.getResources().getQuantity(data.getResourceList().getResource(Constants.PUS)) == 0) {
       return;
     }
@@ -333,7 +325,7 @@ public class ProPurchaseAI {
       }
     }
     final boolean buyAttack = Math.random() > 0.25;
-    int buyThese = 0, numBought = 0;
+    int buyThese = 0;
     for (final ProductionRule rule1 : processRules) {
       final int cost = rule1.getCosts().getInt(pus);
       if (goTransports) {
@@ -351,7 +343,6 @@ public class ProPurchaseAI {
         PUsToSpend += cost;
       }
       if (buyThese > 0) {
-        numBought += buyThese;
         purchase.add(rule1, buyThese);
       }
     }
@@ -425,7 +416,6 @@ public class ProPurchaseAI {
     this.data = data;
     this.player = player;
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
-    allTerritories = data.getMap().getTerritories();
     final CompositeMatch<Unit> ourFactories =
         new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanProduceUnits,
             Matches.UnitIsInfrastructure);
@@ -485,7 +475,6 @@ public class ProPurchaseAI {
     this.startOfTurnData = startOfTurnData;
     this.player = player;
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
-    allTerritories = data.getMap().getTerritories();
     resourceTracker = new ProResourceTracker(player);
 
     ProLogger.info("Starting purchase phase with resources: " + resourceTracker);
@@ -534,8 +523,7 @@ public class ProPurchaseAI {
     // Prioritize land place options purchase AA then land units
     final List<ProPlaceTerritory> prioritizedLandTerritories = prioritizeLandTerritories(purchaseTerritories);
     purchaseAAUnits(purchaseTerritories, enemyAttackMap, prioritizedLandTerritories, purchaseOptions.getAAOptions());
-    purchaseLandUnits(purchaseTerritories, enemyAttackMap, prioritizedLandTerritories, purchaseOptions,
-        territoryValueMap);
+    purchaseLandUnits(purchaseTerritories, prioritizedLandTerritories, purchaseOptions, territoryValueMap);
 
     // Prioritize sea territories that need defended and purchase additional defenders
     final List<ProPlaceTerritory> needToDefendSeaTerritories =
@@ -582,8 +570,7 @@ public class ProPurchaseAI {
   }
 
   // TODO: Rewrite this as its from the Moore AI
-  public void bidPlace(final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
-      final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player) {
+  public void bidPlace(final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player) {
     ProLogger.info("Starting bid place phase");
     // if we have purchased a factory, it will be a priority for placing units
     // should place most expensive on it
@@ -887,7 +874,6 @@ public class ProPurchaseAI {
     this.data = data;
     this.player = player;
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
-    allTerritories = data.getMap().getTerritories();
 
     // Find all place territories
     final Map<Territory, ProPurchaseTerritory> placeNonConstructionTerritories =
@@ -1293,7 +1279,6 @@ public class ProPurchaseAI {
   }
 
   private void purchaseLandUnits(final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
-      final Map<Territory, ProAttackTerritoryData> enemyAttackMap,
       final List<ProPlaceTerritory> prioritizedLandTerritories, final ProPurchaseOptionMap purchaseOptions,
       final Map<Territory, Double> territoryValueMap) {
 
