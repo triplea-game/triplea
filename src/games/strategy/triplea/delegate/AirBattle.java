@@ -99,11 +99,11 @@ public class AirBattle extends AbstractBattle {
     BattleCalculator.sortPreBattle(m_defendingUnits, m_data);
     m_steps = determineStepStrings(true, bridge);
     showBattle(bridge);
-    pushFightLoopOnStack(true, bridge);
+    pushFightLoopOnStack(true);
     m_stack.execute(bridge);
   }
 
-  private void pushFightLoopOnStack(final boolean firstRun, final IDelegateBridge bridge) {
+  private void pushFightLoopOnStack(final boolean firstRun) {
     if (m_isOver) {
       return;
     }
@@ -248,7 +248,7 @@ public class AirBattle extends AbstractBattle {
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        pushFightLoopOnStack(false, bridge);
+        pushFightLoopOnStack(false);
       }
     };
     steps.add(new IExecutable() {
@@ -293,7 +293,7 @@ public class AirBattle extends AbstractBattle {
     return steps;
   }
 
-  private void recordUnitsWereInAirBattle(final Collection<Unit> units, final IDelegateBridge bridge) {
+  private static void recordUnitsWereInAirBattle(final Collection<Unit> units, final IDelegateBridge bridge) {
     final CompositeChange wasInAirBattleChange = new CompositeChange();
     for (final Unit u : units) {
       wasInAirBattleChange.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_IN_AIR_BATTLE));
@@ -579,7 +579,7 @@ public class AirBattle extends AbstractBattle {
           allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingWaitingToDie);
           if (shouldAirBattleUseAirCombatAttDefValues(m_isBombingRun)) {
             m_dice =
-                DiceRoll.airBattle(m_attackingUnits, false, m_attacker, bridge, AirBattle.this, "Attackers Fire, ");
+                DiceRoll.airBattle(m_attackingUnits, false, m_attacker, bridge, "Attackers Fire, ");
           } else {
             m_dice = DiceRoll.rollDice(m_attackingUnits, false, m_attacker, bridge, AirBattle.this, "Attackers Fire, ",
                 m_territoryEffects, allEnemyUnitsAliveOrWaitingToDie);
@@ -631,7 +631,7 @@ public class AirBattle extends AbstractBattle {
           allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingUnits);
           allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingWaitingToDie);
           if (shouldAirBattleUseAirCombatAttDefValues(m_isBombingRun)) {
-            m_dice = DiceRoll.airBattle(m_defendingUnits, true, m_defender, bridge, AirBattle.this, "Defenders Fire, ");
+            m_dice = DiceRoll.airBattle(m_defendingUnits, true, m_defender, bridge, "Defenders Fire, ");
           } else {
             m_dice = DiceRoll.rollDice(m_defendingUnits, true, m_defender, bridge, AirBattle.this, "Defenders Fire, ",
                 m_territoryEffects, allEnemyUnitsAliveOrWaitingToDie);

@@ -675,20 +675,6 @@ public class DiceRoll implements Externalizable {
     return 0;
   }
 
-  public static int getSupportableAvailable(final List<Unit> units, final boolean defending, final PlayerID player) {
-    if (!defending) {
-      return Match.countMatches(units, Matches.UnitIsArtillerySupportable);
-    }
-    return 0;
-  }
-
-  public static int getSupportableAvailable(final Unit u, final boolean defending, final PlayerID player) {
-    if (Matches.UnitIsArtillerySupportable.match(u) && !defending) {
-      return 1;
-    }
-    return 0;
-  }
-
   /**
    * Fills a set and map with the support possibly given by these units.
    *
@@ -926,7 +912,7 @@ public class DiceRoll implements Externalizable {
   }
 
   public static DiceRoll airBattle(final List<Unit> unitsList, final boolean defending, final PlayerID player,
-      final IDelegateBridge bridge, final IBattle battle, final String annotation) {
+      final IDelegateBridge bridge, final String annotation) {
     {
       final Set<Unit> duplicatesCheckSet1 = new HashSet<Unit>(unitsList);
       if (unitsList.size() != duplicatesCheckSet1.size()) {
