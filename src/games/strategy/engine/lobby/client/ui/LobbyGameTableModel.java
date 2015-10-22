@@ -129,10 +129,10 @@ public class LobbyGameTableModel extends AbstractTableModel {
 
         final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
         if (toReplace == null) {
-          gameList.add(new Tuple<GUID, GameDescription>(gameId, description));
+          gameList.add(Tuple.of(gameId, description));
         } else {
           final int replaceIndex = gameList.indexOf(toReplace);
-          gameList.set(replaceIndex, new Tuple<GUID, GameDescription>(gameId, description));
+          gameList.set(replaceIndex, Tuple.of(gameId, description));
           fireTableRowsUpdated(replaceIndex, replaceIndex);
         }
       }

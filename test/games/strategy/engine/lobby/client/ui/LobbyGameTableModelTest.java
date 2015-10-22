@@ -51,7 +51,7 @@ public class LobbyGameTableModelTest {
   @Before
   public void setUp() {
     fakeGameMap = new HashMap<GUID, GameDescription>();
-    fakeGame = new Tuple<GUID, GameDescription>(new GUID(), mockGameDescription);
+    fakeGame = Tuple.of(new GUID(), mockGameDescription);
     fakeGameMap.put(fakeGame.getFirst(), fakeGame.getSecond());
 
     Mockito.when(mockRemoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE))
