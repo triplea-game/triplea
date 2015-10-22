@@ -566,7 +566,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     m_connectionListeners.remove(listener);
   }
 
-  private void notifyConnectionsChanged(final boolean added, final INode node) {
+  public void notifyConnectionsChanged(final boolean added, final INode node) {
     final Iterator<IConnectionChangeListener> iter = m_connectionListeners.iterator();
     while (iter.hasNext()) {
       if (added) {
