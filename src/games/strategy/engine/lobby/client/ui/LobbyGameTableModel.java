@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby.client.ui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +28,10 @@ public class LobbyGameTableModel extends AbstractTableModel {
   private final IMessenger m_messenger;
   private final IChannelMessenger m_channelMessenger;
   private final IRemoteMessenger m_remoteMessenger;
+
   // these must only be accessed in the swing event thread
   private final List<Tuple<GUID,GameDescription>> gameList;
+  private final ILobbyGameBroadcaster lobbyGameBroadcaster;
 
   public LobbyGameTableModel(final IMessenger messenger, final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger) {
@@ -40,7 +41,7 @@ public class LobbyGameTableModel extends AbstractTableModel {
     m_messenger = messenger;
     m_channelMessenger = channelMessenger;
     m_remoteMessenger = remoteMessenger;
-    m_channelMessenger.registerChannelSubscriber(new ILobbyGameBroadcaster() {
+    lobbyGameBroadcaster = new ILobbyGameBroadcaster() {
       @Override
       public void gameUpdated(final GUID gameId, final GameDescription description) {
         assertSentFromServer();
@@ -50,7 +51,7 @@ public class LobbyGameTableModel extends AbstractTableModel {
       @Override
       public void gameAdded(final GUID gameId, final GameDescription description) {
         assertSentFromServer();
-        addGame(gameId, description);
+        updateGame(gameId, description);
       }
 
       @Override
@@ -58,12 +59,46 @@ public class LobbyGameTableModel extends AbstractTableModel {
         assertSentFromServer();
         removeGame(gameId);
       }
-    }, ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL);
+    };
+    m_channelMessenger.registerChannelSubscriber(lobbyGameBroadcaster, ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL);
+
     final Map<GUID, GameDescription> games =
         ((ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE)).listGames();
     for (final GUID id : games.keySet()) {
-      addGame(id, games.get(id));
+      updateGame(id, games.get(id));
     }
+  }
+
+  private void removeGame(final GUID gameId) {
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        if (gameId == null) {
+          return;
+        }
+
+        final Tuple<GUID, GameDescription> gameToRemove = findGame(gameId);
+        if (gameToRemove != null) {
+          final int index = gameList.indexOf(gameToRemove);
+          gameList.remove(gameToRemove);
+          fireTableRowsDeleted(index, index);
+        }
+      }
+    });
+  }
+
+  private Tuple<GUID, GameDescription> findGame(final GUID gameId) {
+    for (final Tuple<GUID, GameDescription> game : gameList) {
+      if (game.getFirst().equals(gameId)) {
+        return game;
+      }
+    }
+    return null;
+  }
+
+
+  protected ILobbyGameBroadcaster getLobbyGameBroadcaster() {
+    return lobbyGameBroadcaster;
   }
 
   public GameDescription get(final int i) {
@@ -78,39 +113,6 @@ public class LobbyGameTableModel extends AbstractTableModel {
     return Object.class;
   }
 
-  private void removeGame(final GUID gameId) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        Tuple<GUID, GameDescription> gameToRemove = findGame( gameId );
-        if( gameToRemove != null ) {
-          int index = gameList.indexOf(gameToRemove);
-          gameList.remove(gameToRemove);
-          fireTableRowsDeleted(index, index);
-        }
-      }
-    });
-  }
-
-  private Tuple<GUID, GameDescription> findGame( final GUID gameId ) {
-    for(Tuple<GUID, GameDescription> game : gameList ) {
-      if( game.getFirst().equals(gameId)) {
-        return game;
-      }
-    }
-    return null;
-  }
-
-  private void addGame(final GUID gameId, final GameDescription description) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        gameList.add(Tuple.of(gameId, description));
-        fireTableRowsInserted(gameList.size() - 1, gameList.size() - 1);
-      }
-    });
-  }
-
   private void assertSentFromServer() {
     if (!MessageContext.getSender().equals(m_messenger.getServerNode())) {
       throw new IllegalStateException("Invalid sender");
@@ -121,10 +123,18 @@ public class LobbyGameTableModel extends AbstractTableModel {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
-        Tuple<GUID,GameDescription> toReplace = findGame(gameId);
-        int replaceIndex = gameList.indexOf(toReplace);
-        gameList.set(replaceIndex, Tuple.of(gameId, description));
-        fireTableRowsUpdated(replaceIndex, replaceIndex);
+        if (gameId == null) {
+          return;
+        }
+
+        final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
+        if (toReplace == null) {
+          gameList.add(new Tuple<GUID, GameDescription>(gameId, description));
+        } else {
+          final int replaceIndex = gameList.indexOf(toReplace);
+          gameList.set(replaceIndex, new Tuple<GUID, GameDescription>(gameId, description));
+          fireTableRowsUpdated(replaceIndex, replaceIndex);
+        }
       }
     });
   }
