@@ -32,6 +32,7 @@ import org.xml.sax.SAXParseException;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.EngineVersionException;
@@ -77,8 +78,7 @@ public class NewGameChooserModel extends DefaultListModel {
 
 
   private void populate() {
-    final List<File> mapFileList = allMapFiles();
-    final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles(mapFileList);
+    final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
 
     final List<NewGameChooserEntry> entries = Lists.newArrayList(parsedMapSet);
     Collections.sort(entries, NewGameChooserEntry.getComparator());
@@ -105,16 +105,17 @@ public class NewGameChooserModel extends DefaultListModel {
   }
 
 
-  private Set<NewGameChooserEntry> parseMapFiles(List<File> mapFileList) {
-    final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles(mapFileList);
+  private Set<NewGameChooserEntry> parseMapFiles() {
+    List<File> allMapFiles = allMapFiles();
+    final Set<NewGameChooserEntry> parsedMapSet = Sets.newHashSet();
 
-    Collections.newSetFromMap(new ConcurrentHashMap(mapFileList.size()));
+    Collections.newSetFromMap(new ConcurrentHashMap(allMapFiles.size()));
 
     // Half the total number of cores being used as a generic sweet spot. @DanVanAtta found with 6 cores that 2 to 4 threads were best.
     final int halfCoreCount = (int) Math.ceil(Runtime.getRuntime().availableProcessors()/2);
     final ExecutorService threadPool = Executors.newFixedThreadPool(halfCoreCount);
 
-    for (final File map : allMapFiles()) {
+    for (final File map : allMapFiles) {
       if (clearCacheMessenger.isCancelled()) {
         return ImmutableSet.of();
       }
