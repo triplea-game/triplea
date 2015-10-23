@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.util.ClassLoaderUtil;
 import games.strategy.util.Match;
@@ -89,10 +90,8 @@ public class ResourceLoader {
     final List<String> rVal = new ArrayList<String>();
     rVal.add(match.getAbsolutePath());
     // find dependencies
-    try {
-      final URLClassLoader url = new URLClassLoader(new URL[] {match.toURI().toURL()});
+    try (final URLClassLoader url = new URLClassLoader(new URL[] {match.toURI().toURL()})) {
       final URL dependencesURL = url.getResource("dependencies.txt");
-      ClassLoaderUtil.closeLoader(url);
       if (dependencesURL != null) {
         final java.util.Properties dependenciesFile = new java.util.Properties();
 
@@ -107,14 +106,18 @@ public class ResourceLoader {
         }
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(e.getMessage());
     }
     return rVal;
   }
 
   public void close() {
-    ClassLoaderUtil.closeLoader(m_loader);
+    try {
+      m_loader.close();
+    } catch (IOException e) {
+      ClientLogger.logQuietly(e);
+    }
   }
 
   private ResourceLoader(final String[] paths) {
@@ -122,10 +125,10 @@ public class ResourceLoader {
     for (int i = 0; i < paths.length; i++) {
       final File f = new File(paths[i]);
       if (!f.exists()) {
-        System.err.println(f + " does not exist");
+        ClientLogger.logQuietly(f + " does not exist");
       }
       if (!f.isDirectory() && !f.getName().endsWith(".zip")) {
-        System.err.println(f + " is not a directory or a zip file");
+        ClientLogger.logQuietly(f + " is not a directory or a zip file");
       }
       try {
         urls[i] = f.toURI().toURL();

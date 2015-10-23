@@ -136,8 +136,8 @@ public class NewGameChooserModel extends DefaultListModel {
     boolean badMapZip = false;
     final List<NewGameChooserEntry> entries = Lists.newArrayList();
 
-    try (ZipFile zipFile = new ZipFile(map)) {
-      final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()});
+    try (ZipFile zipFile = new ZipFile(map);
+        final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
       Enumeration<? extends ZipEntry> zipEntryEnumeration = zipFile.entries();
       while (zipEntryEnumeration.hasMoreElements()) {
         ZipEntry entry = zipEntryEnumeration.nextElement();
@@ -149,8 +149,6 @@ public class NewGameChooserModel extends DefaultListModel {
           }
         }
       }
-      // we have to close the loader to allow files to be deleted on windows
-      ClassLoaderUtil.closeLoader(loader);
     } catch (final IOException ioe) {
       ClientLogger.logQuietly(ioe);
     }

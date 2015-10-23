@@ -116,37 +116,28 @@ public class AvailableGames {
 
   private static void populateFromZip(final File map, final Map<String, URI> availableGames,
       final Set<String> availableMapFolderOrZipNames, final Set<String> mapNamePropertyList) {
-    try {
-      final FileInputStream fis = new FileInputStream(map);
-      try {
+    try (
+        final FileInputStream fis = new FileInputStream(map);
         final ZipInputStream zis = new ZipInputStream(fis);
-        try {
-          ZipEntry entry = zis.getNextEntry();
-          while (entry != null) {
-            if (entry.getName().startsWith("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
-              final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()});
-              final URL url = loader.getResource(entry.getName());
-              // we have to close the loader to allow files to be deleted on windows
-              ClassLoaderUtil.closeLoader(loader);
-              try {
-                final boolean added = addToAvailableGames(new URI(url.toString().replace(" ", "%20")), availableGames,
-                    mapNamePropertyList);
-                if (added && map.getName().length() > 4) {
-                  availableMapFolderOrZipNames
-                      .add(map.getName().substring(0, map.getName().length() - ZIP_EXTENSION.length()));
-                }
-              } catch (final URISyntaxException e) {
-                // only happens when URI couldn't be build and therefore no entry was added. That's fine
-              }
+        final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()});) {
+      ZipEntry entry = zis.getNextEntry();
+      while (entry != null) {
+        if (entry.getName().startsWith("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
+          final URL url = loader.getResource(entry.getName());
+          // we have to close the loader to allow files to be deleted on windows
+          try {
+            final boolean added = addToAvailableGames(new URI(url.toString().replace(" ", "%20")), availableGames,
+                mapNamePropertyList);
+            if (added && map.getName().length() > 4) {
+              availableMapFolderOrZipNames
+                  .add(map.getName().substring(0, map.getName().length() - ZIP_EXTENSION.length()));
             }
-            zis.closeEntry();
-            entry = zis.getNextEntry();
+          } catch (final URISyntaxException e) {
+            // only happens when URI couldn't be build and therefore no entry was added. That's fine
           }
-        } finally {
-          zis.close();
         }
-      } finally {
-        fis.close();
+        zis.closeEntry();
+        entry = zis.getNextEntry();
       }
     } catch (final IOException ioe) {
       ioe.printStackTrace();
