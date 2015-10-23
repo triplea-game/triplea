@@ -30,6 +30,7 @@ import javax.swing.SwingUtilities;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
 import games.strategy.debug.ClientLogger;
@@ -92,8 +93,30 @@ public class NewGameChooserModel extends DefaultListModel {
   }
 
   private void populate() {
+
     final List<File> mapFileList = allMapFiles();
-    final Set<NewGameChooserEntry> parsedMapSet = Collections.newSetFromMap(new ConcurrentHashMap(mapFileList.size()));
+    final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles(mapFileList);
+    final List<NewGameChooserEntry> entries = Lists.newArrayList(parsedMapSet);
+
+    Collections.sort(entries, new Comparator<NewGameChooserEntry>() {
+      @Override
+      public int compare(final NewGameChooserEntry o1, final NewGameChooserEntry o2) {
+        return getLowerCaseComparable(o1).compareTo(getLowerCaseComparable(o2));
+      }
+      private String getLowerCaseComparable(NewGameChooserEntry newGameChooserEntry) {
+        return newGameChooserEntry.getGameData().getGameName().toLowerCase();
+      }
+    });
+
+    for (final NewGameChooserEntry entry : entries) {
+      addElement(entry);
+    }
+  }
+
+  private Set<NewGameChooserEntry> parseMapFiles(List<File> mapFileList) {
+    final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles(mapFileList);
+
+    Collections.newSetFromMap(new ConcurrentHashMap(mapFileList.size()));
 
     // Half the total number of cores being used as a generic sweet spot. @DanVanAtta found with 6 cores that 2 to 4 threads were best.
     final int halfCoreCount = (int) Math.ceil(Runtime.getRuntime().availableProcessors()/2);
@@ -101,7 +124,7 @@ public class NewGameChooserModel extends DefaultListModel {
 
     for (final File map : allMapFiles()) {
       if (clearCacheMessenger.isCancelled()) {
-        return;
+        return ImmutableSet.of();
       }
       if (map.isDirectory()) {
         threadPool.submit(new Runnable() {
@@ -126,22 +149,9 @@ public class NewGameChooserModel extends DefaultListModel {
       ClientLogger.logQuietly(e);
     }
 
-    final List<NewGameChooserEntry> entries = Lists.newArrayList(parsedMapSet);
-
-    Collections.sort(entries, new Comparator<NewGameChooserEntry>() {
-      @Override
-      public int compare(final NewGameChooserEntry o1, final NewGameChooserEntry o2) {
-        return getLowerCaseComparable(o1).compareTo(getLowerCaseComparable(o2));
-      }
-      private String getLowerCaseComparable(NewGameChooserEntry newGameChooserEntry) {
-        return newGameChooserEntry.getGameData().getGameName().toLowerCase();
-      }
-    });
-
-    for (final NewGameChooserEntry entry : entries) {
-      addElement(entry);
-    }
+    return parsedMapSet;
   }
+
 
   private static final List<NewGameChooserEntry> populateFromZip(final File map) {
     boolean badMapZip = false;
