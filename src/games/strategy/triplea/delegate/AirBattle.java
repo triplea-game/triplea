@@ -566,7 +566,7 @@ public class AirBattle extends AbstractBattle {
           final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<Unit>();
           allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingUnits);
           allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingWaitingToDie);
-          m_dice = DiceRoll.airBattle(m_attackingUnits, false, m_attacker, bridge, AirBattle.this, "Attackers Fire, ");
+          m_dice = DiceRoll.airBattle(m_attackingUnits, false, m_attacker, bridge, "Attackers Fire, ");
         }
       };
       final IExecutable calculateCasualties = new IExecutable() {
@@ -613,7 +613,7 @@ public class AirBattle extends AbstractBattle {
           final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<Unit>();
           allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingUnits);
           allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingWaitingToDie);
-          m_dice = DiceRoll.airBattle(m_defendingUnits, true, m_defender, bridge, AirBattle.this, "Defenders Fire, ");
+          m_dice = DiceRoll.airBattle(m_defendingUnits, true, m_defender, bridge, "Defenders Fire, ");
         }
       };
       final IExecutable calculateCasualties = new IExecutable() {
