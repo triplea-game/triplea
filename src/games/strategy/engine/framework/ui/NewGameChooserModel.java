@@ -92,12 +92,12 @@ public class NewGameChooserModel extends DefaultListModel {
   }
 
   private void populate() {
-    List<File> mapFileList = allMapFiles();
-    final Set<NewGameChooserEntry> set = Collections.newSetFromMap(new ConcurrentHashMap(mapFileList.size()));
+    final List<File> mapFileList = allMapFiles();
+    final Set<NewGameChooserEntry> parsedMapSet = Collections.newSetFromMap(new ConcurrentHashMap(mapFileList.size()));
 
     // Half the total number of cores being used as a generic sweet spot. @DanVanAtta found with 6 cores that 2 to 4 threads were best.
-    int halfCoreCount = (int) Math.ceil(Runtime.getRuntime().availableProcessors()/2);
-    ExecutorService threadPool = Executors.newFixedThreadPool(halfCoreCount);
+    final int halfCoreCount = (int) Math.ceil(Runtime.getRuntime().availableProcessors()/2);
+    final ExecutorService threadPool = Executors.newFixedThreadPool(halfCoreCount);
 
     for (final File map : allMapFiles()) {
       if (clearCacheMessenger.isCancelled()) {
@@ -107,14 +107,14 @@ public class NewGameChooserModel extends DefaultListModel {
         threadPool.submit(new Runnable() {
           @Override
           public void run() {
-            set.addAll(populateFromDirectory(map));
+            parsedMapSet.addAll(populateFromDirectory(map));
           }
         });
       } else if (map.isFile() && map.getName().toLowerCase().endsWith(".zip")) {
         threadPool.submit(new Runnable() {
           @Override
           public void run() {
-            set.addAll(populateFromZip(map));
+            parsedMapSet.addAll(populateFromZip(map));
           }
         });
       }
@@ -126,17 +126,18 @@ public class NewGameChooserModel extends DefaultListModel {
       ClientLogger.logQuietly(e);
     }
 
-    List<NewGameChooserEntry> entries = Lists.newArrayList();
-    for(NewGameChooserEntry entry: set ) {
-      entries.add(entry);
-    }
+    final List<NewGameChooserEntry> entries = Lists.newArrayList(parsedMapSet);
 
     Collections.sort(entries, new Comparator<NewGameChooserEntry>() {
       @Override
       public int compare(final NewGameChooserEntry o1, final NewGameChooserEntry o2) {
-        return o1.getGameData().getGameName().toLowerCase().compareTo(o2.getGameData().getGameName().toLowerCase());
+        return getLowerCaseComparable(o1).compareTo(getLowerCaseComparable(o2));
+      }
+      private String getLowerCaseComparable(NewGameChooserEntry newGameChooserEntry) {
+        return newGameChooserEntry.getGameData().getGameName().toLowerCase();
       }
     });
+
     for (final NewGameChooserEntry entry : entries) {
       addElement(entry);
     }
