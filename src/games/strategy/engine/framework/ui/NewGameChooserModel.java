@@ -37,17 +37,19 @@ import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.ui.MainFrame;
-import games.strategy.triplea.util.Stopwatch;
 import games.strategy.util.ClassLoaderUtil;
 
 public class NewGameChooserModel extends DefaultListModel {
   private static final long serialVersionUID = -2044689419834812524L;
+  private final ClearGameChooserCacheMessenger clearCacheMessenger;
 
   private enum ZipProcessingResult {
     SUCCESS, ERROR
   }
 
-  public NewGameChooserModel() {
+
+  public NewGameChooserModel(ClearGameChooserCacheMessenger clearCacheMessenger) {
+    this.clearCacheMessenger = clearCacheMessenger;
     populate();
   }
 
@@ -98,6 +100,9 @@ public class NewGameChooserModel extends DefaultListModel {
     ExecutorService threadPool = Executors.newFixedThreadPool(halfCoreCount);
 
     for (final File map : allMapFiles()) {
+      if (clearCacheMessenger.isCancelled()) {
+        return;
+      }
       if (map.isDirectory()) {
         threadPool.submit(new Runnable() {
           @Override
