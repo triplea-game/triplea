@@ -71,26 +71,10 @@ public class NewGameChooserModel extends DefaultListModel {
     return rVal;
   }
 
-
-  private static List<File> allMapFiles() {
-    final List<File> rVal = new ArrayList<File>();
-    // prioritize user maps folder over root folder
-    rVal.addAll(safeListFiles(GameRunner2.getUserMapsFolder()));
-    rVal.addAll(safeListFiles(getDefaultMapsDir()));
-    return rVal;
-  }
-
   public static File getDefaultMapsDir() {
     return new File(GameRunner2.getRootFolder(), "maps");
   }
 
-  private static List<File> safeListFiles(final File f) {
-    final File[] files = f.listFiles();
-    if (files == null) {
-      return Collections.emptyList();
-    }
-    return Arrays.asList(files);
-  }
 
   private void populate() {
     final List<File> mapFileList = allMapFiles();
@@ -102,6 +86,22 @@ public class NewGameChooserModel extends DefaultListModel {
     for (final NewGameChooserEntry entry : entries) {
       addElement(entry);
     }
+  }
+
+  private static List<File> allMapFiles() {
+    final List<File> rVal = new ArrayList<File>();
+    // prioritize user maps folder over root folder
+    rVal.addAll(safeListFiles(GameRunner2.getUserMapsFolder()));
+    rVal.addAll(safeListFiles(getDefaultMapsDir()));
+    return rVal;
+  }
+
+  private static List<File> safeListFiles(final File f) {
+    final File[] files = f.listFiles();
+    if (files == null) {
+      return Collections.emptyList();
+    }
+    return Arrays.asList(files);
   }
 
 
