@@ -97,24 +97,13 @@ public class NewGameChooserModel extends DefaultListModel {
     final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles(mapFileList);
 
     final List<NewGameChooserEntry> entries = Lists.newArrayList(parsedMapSet);
-    Collections.sort(entries, getNewGameChooserEntryComparator());
+    Collections.sort(entries, NewGameChooserEntry.getComparator());
 
     for (final NewGameChooserEntry entry : entries) {
       addElement(entry);
     }
   }
 
-  private static Comparator<NewGameChooserEntry> getNewGameChooserEntryComparator() {
-    return new Comparator<NewGameChooserEntry>() {
-      @Override
-      public int compare(final NewGameChooserEntry o1, final NewGameChooserEntry o2) {
-        return getLowerCaseComparable(o1).compareTo(getLowerCaseComparable(o2));
-      }
-      private String getLowerCaseComparable(NewGameChooserEntry newGameChooserEntry) {
-        return newGameChooserEntry.getGameData().getGameName().toLowerCase();
-      }
-    };
-  }
 
   private Set<NewGameChooserEntry> parseMapFiles(List<File> mapFileList) {
     final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles(mapFileList);
