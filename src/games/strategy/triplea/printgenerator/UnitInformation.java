@@ -24,7 +24,7 @@ class UnitInformation {
   private GameData m_data;
   private PrintGenerationData m_printData;
 
-  private String capitalizeFirst(final String s) {
+  private static String capitalizeFirst(final String s) {
     return (s.length() > 0) ? Character.toUpperCase(s.charAt(0)) + s.substring(1) : s;
   }
 

@@ -1370,13 +1370,13 @@ public class GameParser {
     return returnVal;
   }
 
-  private String capitalizeFirstLetter(final String aString) {
+  private static String capitalizeFirstLetter(final String aString) {
     char first = aString.charAt(0);
     first = Character.toUpperCase(first);
     return first + aString.substring(1);
   }
 
-  private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)
+  private static ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)
       throws GameParseException {
     final ArrayList<Tuple<String, String>> options = new ArrayList<Tuple<String, String>>();
     for (final Element current : values) {

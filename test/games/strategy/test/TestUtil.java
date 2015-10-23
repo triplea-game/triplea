@@ -1,9 +1,5 @@
 package games.strategy.test;
 
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.Matchers.is;
-
-import java.awt.Component;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 

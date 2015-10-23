@@ -136,7 +136,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
   }
 
   // Return string representing all advances in collection
-  private String advancesAsString(final Collection<TechAdvance> advances) {
+  private static String advancesAsString(final Collection<TechAdvance> advances) {
     final Iterator<TechAdvance> iter = advances.iterator();
     int count = advances.size();
     final StringBuilder text = new StringBuilder();

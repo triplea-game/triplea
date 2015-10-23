@@ -1,7 +1,6 @@
 package games.strategy.triplea.image;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Composite;
 import java.awt.CompositeContext;
 import java.awt.Graphics;

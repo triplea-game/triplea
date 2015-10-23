@@ -14,8 +14,6 @@ import javax.swing.AbstractAction;
 import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
 
-import com.google.common.collect.Sets;
-
 import games.strategy.common.player.AbstractHumanPlayer;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;

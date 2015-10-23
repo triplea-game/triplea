@@ -127,7 +127,7 @@ public class ChannelMessengerTest extends TestCase {
     assertTrue(hub.hasImplementors(descriptor.getName()));
   }
 
-  private void assertCallCountIs(final ChannelSubscribor subscribor, final int expected) {
+  private static void assertCallCountIs(final ChannelSubscribor subscribor, final int expected) {
     // since the method call happens in a seperate thread,
     // wait for the call to go through, but dont wait too long
     int waitCount = 0;

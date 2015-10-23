@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.TripleAUnit;
