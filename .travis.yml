@@ -9,7 +9,7 @@ before_deploy:
 - git config --global user.name "tripleabuilderbot"
 - export TAGGED_VERSION="$BUILD_VERSION.$TRAVIS_BUILD_NUMBER"
 - git tag $TAGGED_VERSION -a -m "$TAGGED_VERSION"
-- git push -q https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-triplea/triplea --tags
+- git push -q https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea --tags
 deploy:
   provider: releases
   api_key:
