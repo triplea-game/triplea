@@ -3,6 +3,7 @@ jdk:
 - oraclejdk8
 install: true
 script:
+- gradle test
 - gradle shadowjar
 before_deploy:
 - git config --global user.email "tripleabuilderbot@gmail.com"
