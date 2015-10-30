@@ -19,5 +19,6 @@ deploy:
   skip_cleanup: true
   prerelease: true
   on:
+    repo: triplea-game/triplea
     tags: false
     all_branches: true
