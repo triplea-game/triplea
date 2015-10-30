@@ -164,8 +164,13 @@ public abstract class AbstractMovePanel extends ActionPanel {
       }
     }
 
-    List<Integer> moveIndexes = getSortedMoveIndexes(movesToUndo);
+    if( movesToUndo.size() == 0 ) {
+      String error = "Could not undo any moves, check that the unit has moved and that you can undo the move normally";
+      JOptionPane.showMessageDialog(getTopLevelAncestor(), error, "Could not undo move", JOptionPane.ERROR_MESSAGE);
+      return;
+   }
 
+    List<Integer> moveIndexes = getSortedMoveIndexes(movesToUndo);
     // Undo moves in reverse order, from largest index to smallest. Undo will reorder
     // move index numbers, so going top down avoids this renumbering.
     for( int i = moveIndexes.size()-1; i >= 0; i -- ) {
