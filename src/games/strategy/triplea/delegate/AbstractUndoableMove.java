@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Set;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -26,9 +27,31 @@ abstract public class AbstractUndoableMove implements Serializable {
   protected int m_index;
   protected final Collection<Unit> m_units;
 
+  public AbstractUndoableMove(final Collection<Unit> units) {
+    m_change = new CompositeChange();
+    m_units = units;
+  }
+
+
   public AbstractUndoableMove(final CompositeChange change, final Collection<Unit> units) {
     m_change = change;
     m_units = units;
+  }
+
+  public boolean containsAnyUnit(Set<Unit> units) {
+    if (units == null) {
+      return false;
+    }
+    for (Unit unit : units) {
+      if (containsUnit(unit)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean containsUnit(Unit unit) {
+    return m_units.contains(unit);
   }
 
   final public void undo(final GameData data, final IDelegateBridge delegateBridge) {
