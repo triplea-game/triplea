@@ -90,17 +90,9 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
   @Override
   public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) throws Exception {
     try {
-      /*
-       * Retreive the map name from xml file
-       * This is the key for triplea to find the maps
-       */
       m_game = game;
-      // final String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
       if (game.getData().getDelegateList().getDelegate("edit") == null) {
-        // an evil awful hack
-        // we don't want to change the game xml
-        // and invalidate mods so hack it
-        // and force the addition here
+        // An evil hack: instead of modifying the XML, force an EditDelegate by adding one here
         final EditDelegate delegate = new EditDelegate();
         delegate.initialize("edit", "edit");
         m_game.getData().getDelegateList().addDelegate(delegate);
@@ -112,7 +104,6 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
       if (headless) {
         final IUIContext uiContext = new HeadlessUIContext();
         uiContext.setDefaultMapDir(game.getData());
-        // uiContext.getMapData().verify(game.getData());
         uiContext.setLocalPlayers(localPlayers);
         final boolean useServerUI = HeadlessGameServer.getUseGameServerUI();
         final HeadlessGameServerUI headlessFrameUI;
@@ -176,7 +167,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
     }
   }
 
-  private void connectPlayers(final Set<IGamePlayer> players, final TripleAFrame frame) {
+  private static void connectPlayers(final Set<IGamePlayer> players, final TripleAFrame frame) {
     for (final IGamePlayer player : players) {
       if (player instanceof TripleAPlayer) {
         ((TripleAPlayer) player).setFrame(frame);
