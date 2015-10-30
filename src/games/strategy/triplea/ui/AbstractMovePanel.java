@@ -151,10 +151,22 @@ public abstract class AbstractMovePanel extends ActionPanel {
    * failure rather than just one)
    */
   public void undoMoves(Set<Unit> units) {
+    Set<UndoableMove> movesToUndo = getMovesToUndo(units, getDelegate().getMovesMade());
+
+    if (movesToUndo.size() == 0) {
+      String error = "Could not undo any moves, check that the unit has moved and that you can undo the move normally";
+      JOptionPane.showMessageDialog(getTopLevelAncestor(), error, "Could not undo move", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+
+    undoMovesInReverseOrder(movesToUndo);
+  }
+
+  private static Set<UndoableMove> getMovesToUndo(Set<Unit> units, List<Object> movesMade) {
     Set<UndoableMove> movesToUndo = Sets.newHashSet();
 
-    if (getDelegate().getMovesMade() != null) {
-      for (Object undoableMoveObject : getDelegate().getMovesMade()) {
+    if (movesMade != null) {
+      for (Object undoableMoveObject : movesMade) {
         if (undoableMoveObject != null) {
           UndoableMove move = (UndoableMove) undoableMoveObject;
           if (move.containsAnyUnit(units) && move.getcanUndo()) {
@@ -163,16 +175,15 @@ public abstract class AbstractMovePanel extends ActionPanel {
         }
       }
     }
+    return movesToUndo;
+  }
 
-    if (movesToUndo.size() == 0) {
-      String error = "Could not undo any moves, check that the unit has moved and that you can undo the move normally";
-      JOptionPane.showMessageDialog(getTopLevelAncestor(), error, "Could not undo move", JOptionPane.ERROR_MESSAGE);
-      return;
-    }
-
+  /*
+   * Undo moves in reverse order, from largest index to smallest. Undo will reorder move index numbers, so going top
+   * down avoids this renumbering.
+   */
+  private void undoMovesInReverseOrder(Set<UndoableMove> movesToUndo) {
     List<Integer> moveIndexes = getSortedMoveIndexes(movesToUndo);
-    // Undo moves in reverse order, from largest index to smallest. Undo will reorder
-    // move index numbers, so going top down avoids this renumbering.
     for (int i = moveIndexes.size() - 1; i >= 0; i--) {
       undoMove(moveIndexes.get(i));
     }
