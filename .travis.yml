@@ -4,8 +4,8 @@ jdk:
 install: true
 script:
 - gradle test
-- gradle shadowjar
 before_deploy:
+- gradle shadowjar
 - git config --global user.email "tripleabuilderbot@gmail.com"
 - git config --global user.name "tripleabuilderbot"
 - export TAGGED_VERSION="$BUILD_VERSION.$TRAVIS_BUILD_NUMBER"
