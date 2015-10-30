@@ -937,12 +937,10 @@ public class MovePanel extends AbstractMovePanel {
         minTransportCost = Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
       }
       final Collection<Unit> airTransportsToLoad = new ArrayList<Unit>();
-      int ttlCapacity = 0;
       for (final Unit bomber : capableTransportsToLoad) {
         final int capacity = TransportTracker.getAvailableCapacity(bomber);
         if (capacity >= minTransportCost) {
           airTransportsToLoad.add(bomber);
-          ttlCapacity += capacity;
         }
       }
       // If no airTransports can be loaded, return the empty set
