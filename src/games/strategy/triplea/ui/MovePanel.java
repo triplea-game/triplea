@@ -1432,7 +1432,7 @@ public class MovePanel extends AbstractMovePanel {
   private final KeyListener undoUnitMoveKeyListener = new KeyListener() {
     @Override
     public void keyTyped(KeyEvent e) {
-      if (e.getKeyChar() == 'u' && getMap().getHighlightUnits() != null && !getMap().getHighlightUnits().isEmpty()) {
+      if (e.getKeyCode() == KeyEvent.VK_U && getMap().getHighlightUnits() != null&& !getMap().getHighlightUnits().isEmpty()) {
         m_undoableMovesPanel.undoMoves(getMap().getHighlightUnits());
       }
     }
