@@ -237,7 +237,5 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
     }
   }
 
-  protected void specificViewAction(final AbstractUndoableMove move) {
-    // do nothing if not overwritten in child class
-  }
+  protected abstract void specificViewAction(final AbstractUndoableMove move);
 }
