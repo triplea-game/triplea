@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -17,8 +18,12 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
@@ -137,6 +142,46 @@ public abstract class AbstractMovePanel extends ActionPanel {
   public final String undoMove(final int moveIndex) {
     return undoMove(moveIndex, false);
   }
+
+  /**
+   * Executes an undo move for any of the units passed in as a parameter.
+   *
+   * "Cannot undo" Error messages are suppressed if any moves cannot be undone
+   * (at least until we come up with a way to deal with "n" reasons for an undo
+   * failure rather than just one)
+   */
+  public void undoMoves(Set<Unit> units) {
+    Set<UndoableMove> movesToUndo = Sets.newHashSet();
+
+    if (getDelegate().getMovesMade() != null) {
+      for (Object undoableMoveObject : getDelegate().getMovesMade()) {
+        if(undoableMoveObject != null) {
+          UndoableMove move = (UndoableMove) undoableMoveObject;
+          if (move.containsAnyUnit(units) && move.getcanUndo()) {
+            movesToUndo.add(move);
+          }
+        }
+      }
+    }
+
+    List<Integer> moveIndexes = getSortedMoveIndexes(movesToUndo);
+
+    // Undo moves in reverse order, from largest index to smallest. Undo will reorder
+    // move index numbers, so going top down avoids this renumbering.
+    for( int i = moveIndexes.size()-1; i >= 0; i -- ) {
+      undoMove(moveIndexes.get(i));
+    }
+  }
+
+  private static List<Integer> getSortedMoveIndexes(Set<UndoableMove> moves ) {
+    List<Integer> moveIndexes = Lists.newArrayList();
+    for(UndoableMove move : moves ) {
+      moveIndexes.add(move.getIndex());
+    }
+    Collections.sort(moveIndexes);
+    return moveIndexes;
+  }
+
 
   protected final String undoMove(final int moveIndex, final boolean suppressError) {
     // clean up any state we may have
