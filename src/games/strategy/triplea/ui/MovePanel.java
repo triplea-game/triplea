@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1382,6 +1383,7 @@ public class MovePanel extends AbstractMovePanel {
     getMap().removeMapSelectionListener(m_MAP_SELECTION_LISTENER);
     getMap().removeUnitSelectionListener(m_UNIT_SELECTION_LISTENER);
     getMap().removeMouseOverUnitListener(m_MOUSE_OVER_UNIT_LISTENER);
+    getMap().removeKeyListener(undoUnitMoveKeyListener);
     getMap().setUnitHighlight(null);
     m_selectedUnits.clear();
     updateRouteAndMouseShadowUnits(null);
@@ -1426,7 +1428,24 @@ public class MovePanel extends AbstractMovePanel {
     getMap().addMapSelectionListener(m_MAP_SELECTION_LISTENER);
     getMap().addUnitSelectionListener(m_UNIT_SELECTION_LISTENER);
     getMap().addMouseOverUnitListener(m_MOUSE_OVER_UNIT_LISTENER);
+    getMap().addKeyListener(undoUnitMoveKeyListener);
   }
+
+  private final KeyListener undoUnitMoveKeyListener = new KeyListener() {
+    @Override
+    public void keyTyped(KeyEvent e) {
+      if (e.getKeyChar() == 'u' && getMap().getHighlightUnits() != null && !getMap().getHighlightUnits().isEmpty()) {
+        m_undoableMovesPanel.undoMoves(getMap().getHighlightUnits());
+      }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {}
+
+    @Override
+    public void keyReleased(KeyEvent e) {}
+  };
+
 
   @Override
   protected boolean doneMoveAction() {

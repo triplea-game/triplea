@@ -10,6 +10,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
@@ -24,8 +27,13 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import com.google.common.collect.Sets;
+
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.AbstractUndoableMove;
+import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 
@@ -53,6 +61,15 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
       }
     });
   }
+
+  public void undoMoves(Map<Territory, List<Unit>> highlightUnits) {
+    Set<Unit> units = Sets.newHashSet();
+    for( Entry<Territory,List<Unit>> unitEntry : highlightUnits.entrySet() ) {
+      units.addAll(unitEntry.getValue());
+    }
+    m_movePanel.undoMoves(units);
+  }
+
 
   private void initLayout() {
     removeAll();

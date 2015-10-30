@@ -193,6 +193,10 @@ public class MapPanel extends ImageScrollerLargeView {
     });
   }
 
+  public Map<Territory, List<Unit>> getHighlightUnits() {
+    return m_highlightUnits;
+  }
+
   public void centerOn(final Territory territory) {
     if (territory == null || m_uiContext.getLockMap()) {
       return;
