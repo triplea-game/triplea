@@ -155,7 +155,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
     if (getDelegate().getMovesMade() != null) {
       for (Object undoableMoveObject : getDelegate().getMovesMade()) {
-        if(undoableMoveObject != null) {
+        if (undoableMoveObject != null) {
           UndoableMove move = (UndoableMove) undoableMoveObject;
           if (move.containsAnyUnit(units) && move.getcanUndo()) {
             movesToUndo.add(move);
@@ -164,23 +164,23 @@ public abstract class AbstractMovePanel extends ActionPanel {
       }
     }
 
-    if( movesToUndo.size() == 0 ) {
+    if (movesToUndo.size() == 0) {
       String error = "Could not undo any moves, check that the unit has moved and that you can undo the move normally";
       JOptionPane.showMessageDialog(getTopLevelAncestor(), error, "Could not undo move", JOptionPane.ERROR_MESSAGE);
       return;
-   }
+    }
 
     List<Integer> moveIndexes = getSortedMoveIndexes(movesToUndo);
     // Undo moves in reverse order, from largest index to smallest. Undo will reorder
     // move index numbers, so going top down avoids this renumbering.
-    for( int i = moveIndexes.size()-1; i >= 0; i -- ) {
+    for (int i = moveIndexes.size() - 1; i >= 0; i--) {
       undoMove(moveIndexes.get(i));
     }
   }
 
-  private static List<Integer> getSortedMoveIndexes(Set<UndoableMove> moves ) {
+  private static List<Integer> getSortedMoveIndexes(Set<UndoableMove> moves) {
     List<Integer> moveIndexes = Lists.newArrayList();
-    for(UndoableMove move : moves ) {
+    for (UndoableMove move : moves) {
       moveIndexes.add(move.getIndex());
     }
     Collections.sort(moveIndexes);
