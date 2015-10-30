@@ -12,11 +12,10 @@ public interface IAbstractMoveDelegate extends IRemote, IDelegate {
   /**
    * Get the moves already made
    *
-   * @return a list of UndoableMoves
+   * @return a list of UndoableMoves or UndoablePlacements
    */
-  @SuppressWarnings("rawtypes")
-  // need to be able to handle different Move types e.g. Placement and Movement
   public abstract List getMovesMade();
+
 
   /**
    * @param moveIndex
