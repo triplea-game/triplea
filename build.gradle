@@ -152,7 +152,10 @@ task generateZipReleases(group: 'release', dependsOn: [allPlatform, bots, lobbyS
 apply plugin: 'install4j'
 task generateInstallers(type: com.install4j.gradle.Install4jTask, dependsOn: ':shadowJar', group: 'release') {
 	projectFile = file('build.install4j')
-	release version
+	release project.version
+	doFirst {
+		logger.lifecycle("building installer release of version '${project.version}'")
+	}
 }
 
 task setRunnableLinux(dependsOn:[generateInstallers]){
@@ -171,7 +174,9 @@ gradle.taskGraph.whenReady { graph ->
 				File propertiesFile = file("${System.getProperty('user.home')}/.gradle/gradle.properties")
 				throw new RuntimeException("Specify install4jHomeDir in $propertiesFile")
 			}
-			it.project.install4j.installDir = file(project.install4jHomeDir)
+			def p = file(project.install4jHomeDir)
+			logger.lifecycle('using install4j home directory ' + p.getAbsolutePath())
+			it.project.install4j.installDir = new File(project.install4jHomeDir)
 		}
 	})
 }
