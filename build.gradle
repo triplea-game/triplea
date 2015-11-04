@@ -19,7 +19,7 @@ apply plugin: 'com.github.ben-manes.versions'
 
 group = 'triplea'
 
-version = System.getenv("TRAVIS_TAG") ?: ""
+version = System.getenv("TAGGED_VERSION") ?: ""
 
 description = 'TripleA is a free online turn based strategy game and board game engine, similar to such board games as Axis & Allies or Risk.'
 mainClassName = "games.strategy.engine.framework.GameRunner"
