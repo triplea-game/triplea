@@ -40,4 +40,6 @@ deploy:
   on:
     repo: triplea-game/triplea
     tags: false
-    all_branches: true
+    branches:
+      only:
+        - master
