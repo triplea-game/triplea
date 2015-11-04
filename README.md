@@ -1,7 +1,7 @@
 Build system
 ============
 
-[Gradle](www.gradle.org) is used. The gradlew (on Windows gradlew.bat) file is a proxy to execute build commands. 
+[Gradle](http://gradle.org) is used. The gradlew (on Windows gradlew.bat) file is a proxy to execute build commands. 
 On first call these files will install the correct version of Gradle on your system. Most commonly used commands:
 
 * creates a jar file from the project, dependencies are not added:
