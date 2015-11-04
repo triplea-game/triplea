@@ -6,6 +6,7 @@ logs/
 release/
 apidoc/
 classes/
+temp/
 temp-build/
 testclasses/
 test-results/
