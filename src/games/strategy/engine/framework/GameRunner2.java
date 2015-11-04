@@ -941,7 +941,7 @@ public class GameRunner2 {
   }
 
   private static String getTripleaJarWithEngineVersionStringPath() {
-    return "triplea-" + EngineVersion.VERSION.toStringFull(".") + "-all.jar!";
+    return "triplea_" + EngineVersion.VERSION.toStringFull("_") + ".jar!";
   }
 
   public static Image getGameIcon(final Window frame) {
