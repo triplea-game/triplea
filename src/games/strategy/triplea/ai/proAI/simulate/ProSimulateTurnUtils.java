@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.Level;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
@@ -164,7 +162,7 @@ public class ProSimulateTurnUtils {
     return result;
   }
 
-  private boolean checkIfCapturedTerritoryIsAlliedCapital(final Territory t, final GameData data,
+  private static boolean checkIfCapturedTerritoryIsAlliedCapital(final Territory t, final GameData data,
       final PlayerID player, final IDelegateBridge delegateBridge) {
 
     final PlayerID terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(t);

@@ -112,7 +112,7 @@ public class HeadlessLobbyConsole {
     out.println(DebugUtils.getMemory());
   }
 
-  private void backup() {
+  private static void backup() {
     Database.backup();
   }
 

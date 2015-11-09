@@ -1,7 +1,5 @@
 package games.strategy.triplea.ai.proAI.logging;
 
-import java.util.logging.Level;
-
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.util.IntegerMap;
 

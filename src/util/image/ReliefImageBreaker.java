@@ -201,7 +201,6 @@ public class ReliefImageBreaker {
     } else {
       outFileName += ".png";
     }
-    // outFileName = outFileName.replace(' ', '_');
     ImageIO.write(relief, "png", new File(outFileName));
     System.out.println("wrote " + outFileName);
   }
@@ -209,7 +208,7 @@ public class ReliefImageBreaker {
   /**
    * Sets the alpha channel to the same as that of the base image
    */
-  private void blankOutline(final Image alphaChannelImage, final BufferedImage relief) {
+  private static void blankOutline(final Image alphaChannelImage, final BufferedImage relief) {
     final Graphics2D gc = (Graphics2D) relief.getGraphics();
 
     final Composite prevComposite = gc.getComposite();

@@ -1,6 +1,5 @@
 package games.strategy.ui;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;

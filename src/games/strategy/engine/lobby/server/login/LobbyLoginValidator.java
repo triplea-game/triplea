@@ -170,7 +170,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     }
   }
 
-  private String anonymousLogin(final Map<String, String> propertiesReadFromClient, final String userName) {
+  private static String anonymousLogin(final Map<String, String> propertiesReadFromClient, final String userName) {
     if (new DBUserController().doesUserExist(userName)) {
       return "Can't login anonymously, username already exists";
     }
@@ -197,7 +197,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     return null;
   }
 
-  private String createUser(final Map<String, String> propertiesReadFromClient, final String userName) {
+  private static String createUser(final Map<String, String> propertiesReadFromClient, final String userName) {
     final String email = propertiesReadFromClient.get(EMAIL_KEY);
     final String hashedPassword = propertiesReadFromClient.get(HASHED_PASSWORD_KEY);
     final DBUserController controller = new DBUserController();

@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.Die.DieType;
 
 public class DiceChooser extends JPanel {

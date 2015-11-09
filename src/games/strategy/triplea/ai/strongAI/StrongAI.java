@@ -4388,7 +4388,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
    * don't let planes stay in territory alone if it can be attacked
    * we've already check Carriers in moveNonComPlanes
    */
-  private void CheckPlanes(final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
+  private static void CheckPlanes(final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
       final PlayerID player) {
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final Match<Territory> canLand =
@@ -5651,7 +5651,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
     }
   }
 
-  private void bomberNonComMove(final GameData data, final List<Collection<Unit>> moveUnits,
+  private static void bomberNonComMove(final GameData data, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final PlayerID player) {
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final CompositeMatch<Unit> myBomberUnit =

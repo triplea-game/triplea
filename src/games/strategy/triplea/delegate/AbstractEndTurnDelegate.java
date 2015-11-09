@@ -286,7 +286,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return transcriptText + "<br />";
   }
 
-  private void changeUnitOwnership(final IDelegateBridge aBridge) {
+  private static void changeUnitOwnership(final IDelegateBridge aBridge) {
     final PlayerID Player = aBridge.getPlayerID();
     final PlayerAttachment pa = PlayerAttachment.get(Player);
     final Collection<PlayerID> PossibleNewOwners = pa.getGiveUnitControl();

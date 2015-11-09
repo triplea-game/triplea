@@ -463,7 +463,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
   /**
    * @param parentMenu
    */
-  private void addShowEnemyCasualties(final JMenu parentMenu) {
+  private static void addShowEnemyCasualties(final JMenu parentMenu) {
     final JCheckBoxMenuItem showEnemyCasualties = new JCheckBoxMenuItem("Confirm Enemy Casualties");
     showEnemyCasualties.setMnemonic(KeyEvent.VK_E);
     showEnemyCasualties.setSelected(BattleDisplay.getShowEnemyCasualtyNotification());
@@ -478,7 +478,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     parentMenu.add(showEnemyCasualties);
   }
 
-  private void addFocusOnCasualties(final JMenu parentMenu) {
+  private static void addFocusOnCasualties(final JMenu parentMenu) {
     final JCheckBoxMenuItem focusOnCasualties = new JCheckBoxMenuItem("Focus On Own Casualties");
     focusOnCasualties.setSelected(BattleDisplay.getFocusOnOwnCasualtiesNotification());
     focusOnCasualties.addActionListener(new AbstractAction() {
@@ -492,7 +492,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     parentMenu.add(focusOnCasualties);
   }
 
-  private void addTabbedProduction(final JMenu parentMenu) {
+  private static void addTabbedProduction(final JMenu parentMenu) {
     final JCheckBoxMenuItem tabbedProduction = new JCheckBoxMenuItem("Show Production Tabs");
     tabbedProduction.setMnemonic(KeyEvent.VK_P);
     tabbedProduction.setSelected(PurchasePanel.isTabbedProduction());
