@@ -2,7 +2,6 @@ package games.strategy.engine.framework.ui;
 
 import java.awt.Component;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
@@ -14,9 +13,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.zip.ZipFile;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -24,6 +29,10 @@ import javax.swing.SwingUtilities;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.EngineVersionException;
@@ -35,6 +44,11 @@ import games.strategy.util.ClassLoaderUtil;
 public class NewGameChooserModel extends DefaultListModel {
   private static final long serialVersionUID = -2044689419834812524L;
   private final ClearGameChooserCacheMessenger clearCacheMessenger;
+
+  private enum ZipProcessingResult {
+    SUCCESS, ERROR
+  }
+
 
   public NewGameChooserModel(ClearGameChooserCacheMessenger clearCacheMessenger) {
     this.clearCacheMessenger = clearCacheMessenger;
@@ -58,7 +72,23 @@ public class NewGameChooserModel extends DefaultListModel {
     return rVal;
   }
 
-  private List<File> allMapFiles() {
+  public static File getDefaultMapsDir() {
+    return new File(GameRunner2.getRootFolder(), "maps");
+  }
+
+
+  private void populate() {
+    final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
+
+    final List<NewGameChooserEntry> entries = Lists.newArrayList(parsedMapSet);
+    Collections.sort(entries, NewGameChooserEntry.getComparator());
+
+    for (final NewGameChooserEntry entry : entries) {
+      addElement(entry);
+    }
+  }
+
+  private static List<File> allMapFiles() {
     final List<File> rVal = new ArrayList<File>();
     // prioritize user maps folder over root folder
     rVal.addAll(safeListFiles(GameRunner2.getUserMapsFolder()));
@@ -66,11 +96,7 @@ public class NewGameChooserModel extends DefaultListModel {
     return rVal;
   }
 
-  public static File getDefaultMapsDir() {
-    return new File(GameRunner2.getRootFolder(), "maps");
-  }
-
-  private List<File> safeListFiles(final File f) {
+  private static List<File> safeListFiles(final File f) {
     final File[] files = f.listFiles();
     if (files == null) {
       return Collections.emptyList();
@@ -78,66 +104,67 @@ public class NewGameChooserModel extends DefaultListModel {
     return Arrays.asList(files);
   }
 
-  private void populate() {
-    final List<NewGameChooserEntry> entries = new ArrayList<NewGameChooserEntry>();
-    for (final File map : allMapFiles()) {
-      if(clearCacheMessenger.isCancelled()) {
-        return;
+
+  private Set<NewGameChooserEntry> parseMapFiles() {
+    List<File> allMapFiles = allMapFiles();
+    final Set<NewGameChooserEntry> parsedMapSet = Sets.newHashSet();
+
+    Collections.newSetFromMap(new ConcurrentHashMap(allMapFiles.size()));
+
+    // Half the total number of cores being used as a generic sweet spot. @DanVanAtta found with 6 cores that 2 to 4 threads were best.
+    final int halfCoreCount = (int) Math.ceil(Runtime.getRuntime().availableProcessors()/2);
+    final ExecutorService threadPool = Executors.newFixedThreadPool(halfCoreCount);
+
+    for (final File map : allMapFiles) {
+      if (clearCacheMessenger.isCancelled()) {
+        return ImmutableSet.of();
       }
       if (map.isDirectory()) {
-        populateFromDirectory(map, entries);
+        threadPool.submit(new Runnable() {
+          @Override
+          public void run() {
+            parsedMapSet.addAll(populateFromDirectory(map));
+          }
+        });
       } else if (map.isFile() && map.getName().toLowerCase().endsWith(".zip")) {
-        populateFromZip(map, entries);
+        threadPool.submit(new Runnable() {
+          @Override
+          public void run() {
+            parsedMapSet.addAll(populateFromZip(map));
+          }
+        });
       }
     }
-    // remove any null entries
-    do {
-    } while (entries.remove(null));
-    Collections.sort(entries, new Comparator<NewGameChooserEntry>() {
-      @Override
-      public int compare(final NewGameChooserEntry o1, final NewGameChooserEntry o2) {
-        return o1.getGameData().getGameName().toLowerCase().compareTo(o2.getGameData().getGameName().toLowerCase());
-      }
-    });
-    for (final NewGameChooserEntry entry : entries) {
-      addElement(entry);
+    try {
+      threadPool.shutdown();
+      threadPool.awaitTermination(5,TimeUnit.MINUTES);
+    } catch (InterruptedException e) {
+      ClientLogger.logQuietly(e);
     }
+
+    return parsedMapSet;
   }
 
-  private void populateFromZip(final File map, final List<NewGameChooserEntry> entries) {
+
+  private static final List<NewGameChooserEntry> populateFromZip(final File map) {
     boolean badMapZip = false;
-    try {
-      final FileInputStream fis = new FileInputStream(map);
-      try {
-        final ZipInputStream zis = new ZipInputStream(fis);
-        try {
-          ZipEntry entry = zis.getNextEntry();
-          while (entry != null) {
-            if (entry.getName().startsWith("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
-              final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()});
-              final URL url = loader.getResource(entry.getName());
-              // we have to close the loader to allow files to be deleted on windows
-              ClassLoaderUtil.closeLoader(loader);
-              if (url == null) {
-                // not loading the URL means the XML is truncated or otherwise in bad shape
-                badMapZip = true;
-                break;
-              }
-              try {
-                addNewGameChooserEntry(entries, new URI(url.toString().replace(" ", "%20")));
-              } catch (final URISyntaxException e) {
-                // only happens when URI couldn't be build and therefore no entry was added. That's fine
-              }
-            }
-            zis.closeEntry();
-            entry = zis.getNextEntry();
+    final List<NewGameChooserEntry> entries = Lists.newArrayList();
+
+    try (ZipFile zipFile = new ZipFile(map)) {
+      final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()});
+      Enumeration<? extends ZipEntry> zipEntryEnumeration = zipFile.entries();
+      while (zipEntryEnumeration.hasMoreElements()) {
+        ZipEntry entry = zipEntryEnumeration.nextElement();
+        if (entry.getName().startsWith("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
+          ZipProcessingResult result = processZipEntry(loader, entry, entries);
+          if (result == ZipProcessingResult.ERROR) {
+            badMapZip = true;
+            break;
           }
-        } finally {
-          zis.close();
         }
-      } finally {
-        fis.close();
       }
+      // we have to close the loader to allow files to be deleted on windows
+      ClassLoaderUtil.closeLoader(loader);
     } catch (final IOException ioe) {
       ClientLogger.logQuietly(ioe);
     }
@@ -145,6 +172,22 @@ public class NewGameChooserModel extends DefaultListModel {
     if (badMapZip) {
       confirmWithUserAndThenDeleteCorruptZipFile(map);
     }
+    return entries;
+  }
+
+  private static ZipProcessingResult processZipEntry(final URLClassLoader loader, final ZipEntry entry,
+      final List<NewGameChooserEntry> entries) {
+    final URL url = loader.getResource(entry.getName());
+    if (url == null) {
+      // not loading the URL means the XML is truncated or otherwise in bad shape
+      return ZipProcessingResult.ERROR;
+    }
+    try {
+      addNewGameChooserEntry(entries, new URI(url.toString().replace(" ", "%20")));
+    } catch (final URISyntaxException e) {
+      // only happens when URI couldn't be build and therefore no entry was added. That's fine ..
+    }
+    return ZipProcessingResult.SUCCESS;
   }
 
   /*
@@ -189,10 +232,10 @@ public class NewGameChooserModel extends DefaultListModel {
    * @param uri
    *        URI of the new entry
    */
-  private void addNewGameChooserEntry(final List<NewGameChooserEntry> entries, final URI uri) {
+  private static void addNewGameChooserEntry(final List<NewGameChooserEntry> entries, final URI uri) {
     try {
       final NewGameChooserEntry newEntry = createEntry(uri);
-      if (!entries.contains(newEntry)) {
+      if (newEntry != null && !entries.contains(newEntry)) {
         entries.add(newEntry);
       }
     } catch (final EngineVersionException e) {
@@ -216,22 +259,25 @@ public class NewGameChooserModel extends DefaultListModel {
     return null;
   }
 
-  private NewGameChooserEntry createEntry(final URI uri)
+  private static NewGameChooserEntry createEntry(final URI uri)
       throws IOException, GameParseException, SAXException, EngineVersionException {
     return new NewGameChooserEntry(uri);
   }
 
-  private void populateFromDirectory(final File mapDir, final List<NewGameChooserEntry> entries) {
+  private static List<NewGameChooserEntry> populateFromDirectory(final File mapDir) {
+    final List<NewGameChooserEntry> entries = Lists.newArrayList();
+
     final File games = new File(mapDir, "games");
     if (!games.exists()) {
       // no games in this map dir
-      return;
+      return entries;
     }
     for (final File game : games.listFiles()) {
       if (game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
         addNewGameChooserEntry(entries, game.toURI());
       }
     }
+    return entries;
   }
 
   public boolean removeEntry(final NewGameChooserEntry entryToBeRemoved) {

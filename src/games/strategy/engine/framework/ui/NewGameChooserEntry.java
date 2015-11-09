@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.xml.sax.SAXException;
@@ -21,6 +22,20 @@ public class NewGameChooserEntry {
   private GameData m_data;
   private boolean m_gameDataFullyLoaded = false;
   private final String m_gameNameAndMapNameProperty;
+
+
+  public static Comparator<NewGameChooserEntry> getComparator() {
+    return new Comparator<NewGameChooserEntry>() {
+      @Override
+      public int compare(final NewGameChooserEntry o1, final NewGameChooserEntry o2) {
+        return getLowerCaseComparable(o1).compareTo(getLowerCaseComparable(o2));
+      }
+      private String getLowerCaseComparable(NewGameChooserEntry newGameChooserEntry) {
+        return newGameChooserEntry.getGameData().getGameName().toLowerCase();
+      }
+    };
+  }
+
 
   public NewGameChooserEntry(final URI uri)
       throws IOException, GameParseException, SAXException, EngineVersionException {
