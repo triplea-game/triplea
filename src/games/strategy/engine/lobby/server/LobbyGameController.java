@@ -66,10 +66,10 @@ public class LobbyGameController implements ILobbyGameController {
     synchronized (m_mutex) {
       m_allGames.put(gameID, description);
     }
-    m_broadcaster.gameAdded(gameID, description);
+    m_broadcaster.gameUpdated(gameID, description);
   }
 
-  private void assertCorrectHost(final GameDescription description, final INode from) {
+  private static void assertCorrectHost(final GameDescription description, final INode from) {
     if (!from.getAddress().getHostAddress().equals(description.getHostedBy().getAddress().getHostAddress())) {
       s_logger.severe("Game modified from wrong host, from:" + from + " game host:" + description.getHostedBy());
       throw new IllegalStateException("Game from the wrong host");
