@@ -28,6 +28,7 @@ import games.strategy.triplea.ai.proAI.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.ai.proAI.simulate.ProSimulateTurnUtils;
 import games.strategy.triplea.ai.proAI.util.ProAttackOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
+import games.strategy.triplea.ai.proAI.util.ProMatches;
 import games.strategy.triplea.ai.proAI.util.ProMoveUtils;
 import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
 import games.strategy.triplea.ai.proAI.util.ProTerritoryValueUtils;
@@ -196,8 +197,11 @@ public class ProAI extends AbstractAI {
 
       // Check if any place territories exist
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories = purchaseUtils.findPurchaseTerritories(player);
-      if (purchaseTerritories.isEmpty()) {
-        ProLogger.info("No possible place territories owned so exiting purchase logic");
+      final List<Territory> possibleFactoryTerritories =
+          Match.getMatches(data.getMap().getTerritories(),
+              ProMatches.territoryHasNoInfraFactoryAndIsNotConqueredOwnedLand(player, data));
+      if (purchaseTerritories.isEmpty() && possibleFactoryTerritories.isEmpty()) {
+        ProLogger.info("No possible place or factory territories owned so exiting purchase logic");
         return;
       }
       ProLogger.info("Starting simulation for purchase phase");
