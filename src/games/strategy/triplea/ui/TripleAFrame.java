@@ -213,7 +213,7 @@ public class TripleAFrame extends MainGameFrame {
     super("TripleA - " + game.getData().getGameName(), players);
     m_game = game;
     m_data = game.getData();
-    m_messageAndDialogThreadPool = new ThreadPool(1, "Message And Dialog Thread Pool");
+    m_messageAndDialogThreadPool = new ThreadPool(1);
     addZoomKeyboardShortcuts();
     this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     this.addWindowListener(WINDOW_LISTENER);

@@ -1,95 +1,55 @@
 package games.strategy.thread;
 
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.ArrayDeque;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import games.strategy.debug.ClientLogger;
 
 /**
- * A simple thread pool.
+ * An ExecutorService backed thread pool.
  */
 public class ThreadPool {
-  private final String m_name;
-  // the max number of threads we can have
-  private final int m_maxThreadCount;
-  // how many threads we have
-  private final AtomicInteger m_threadCount = new AtomicInteger();
-  // how many threads arent busy
-  private final AtomicInteger m_availableThreads = new AtomicInteger();
-  // how many tasks are queued or running,
-  // usually = m_threadCount - m_availableThreads + m_pendingTasks.size()
-  // but since we dont synchronize we need another atomic variable to hold this value
-  private final AtomicInteger m_unfinishedTaskCount = new AtomicInteger();
-  // queued tasks
-  private final LinkedBlockingQueue<Runnable> m_pendingTasks = new LinkedBlockingQueue<Runnable>();
-  // is the thread pool active
-  private volatile boolean m_isRunning = true;
+  private final ExecutorService executorService;
+  private ArrayDeque<Future> futuresStack = new ArrayDeque<Future>();
 
   /**
    * Creates a new instance of ThreadPool max is the maximum number of threads the pool can have. The pool may have
    * fewer threads at any
    * given time.
    */
-  public ThreadPool(final int max, final String name) {
+  public ThreadPool(final int max) {
     if (max < 1) {
       throw new IllegalArgumentException("Max must be >= 1, instead its:" + max);
     }
-    if (name == null) {
-      m_name = "Unamed";
-    } else {
-      m_name = name;
-    }
-    m_maxThreadCount = max;
+    executorService = Executors.newFixedThreadPool(max);
   }
 
-  /**
-   * Create a new thread.
-   */
-  private void grow() {
-    final int threadCount = m_threadCount.incrementAndGet();
-    // we cant grow
-    if (threadCount > m_maxThreadCount) {
-      m_threadCount.decrementAndGet();
-      return;
-    }
-    final ThreadTracker tracker = new ThreadTracker();
-    final Thread thread = new Thread(tracker, getClass().getName() + ":" + m_name + ":" + threadCount);
-    thread.start();
-  }
 
   /**
-   * Run the given task. This method returns immediatly
-   * If the thread pool has been shut down the task will not
-   * run.
+   * Run the given task.
    */
   public void runTask(final Runnable task) {
-    if (!m_isRunning) {
-      return;
-    }
-    m_unfinishedTaskCount.incrementAndGet();
-    if (m_availableThreads.get() == 0 && m_threadCount.get() < m_maxThreadCount) {
-      grow();
-    }
-    if (!m_pendingTasks.offer(task)) {
-      // this should never happen, but if it does, we should
-      // do something
-      throw new IllegalStateException("Could not offer to queue");
-    }
+    futuresStack.push(executorService.submit(task));
   }
+
 
   /**
-   * returns when all tasks run through the runTask method have finished.
+   * Returns when all tasks run through the runTask method have finished.
    */
   public void waitForAll() {
-    while (m_unfinishedTaskCount.get() != 0) {
-      try {
-        Thread.sleep(5);
-      } catch (final InterruptedException e) {
-        // ignore
+    try {
+      while (!futuresStack.isEmpty()) {
+        if (futuresStack.peek().isDone()) {
+          futuresStack.pop();
+        } else {
+          Thread.sleep(5);
+        }
       }
+    } catch (InterruptedException e) {
+      ClientLogger.logQuietly(e);
     }
-  }
-
-  int getThreadCount() {
-    return m_threadCount.get();
   }
 
   /**
@@ -98,58 +58,7 @@ public class ThreadPool {
    * A call to shutDown() followed by waitForAll() will ensure that no threads are running.
    */
   public void shutDown() {
-    m_isRunning = false;
-    // remove whats in the queue
-    while (m_pendingTasks.poll() != null) {
-      m_unfinishedTaskCount.decrementAndGet();
-    }
-    final Runnable dummy = new Runnable() {
-      @Override
-      public void run() {}
-    };
-    // we need to wake up the threads so that they will notice that m_run is false
-    // add dummy elements so that the threads will wake
-    for (int i = 0; i < m_maxThreadCount; i++) {
-      m_pendingTasks.offer(dummy);
-    }
+    executorService.shutdown();
   }
 
-  private class ThreadTracker implements Runnable {
-    @Override
-    public void run() {
-      while (m_isRunning) {
-        final Runnable task = getTask();
-        if (task == null) {
-          continue;
-        }
-        // clear the interupted state of this thread
-        Thread.interrupted();
-        if (m_isRunning) {
-          runTask(task);
-        }
-      } // end while run
-      m_threadCount.decrementAndGet();
-    }
-
-    private void runTask(final Runnable task) {
-      try {
-        task.run();
-      } catch (final Throwable t) {
-        t.printStackTrace();
-      }
-      m_unfinishedTaskCount.decrementAndGet();
-    }
-
-    private Runnable getTask() {
-      m_availableThreads.incrementAndGet();
-      Runnable task;
-      try {
-        task = m_pendingTasks.take();
-      } catch (final InterruptedException e) {
-        return null;
-      }
-      m_availableThreads.decrementAndGet();
-      return task;
-    }
-  }
 }

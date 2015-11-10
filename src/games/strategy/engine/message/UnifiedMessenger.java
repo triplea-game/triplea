@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,8 +32,8 @@ import games.strategy.thread.ThreadPool;
  */
 public class UnifiedMessenger {
   private final static Logger s_logger = Logger.getLogger(UnifiedMessenger.class.getName());
-  // a thread pool to run the invoke on
-  private static ThreadPool m_threadPool = new ThreadPool(15, "UnifiedMessengerPool");
+
+  private static final ExecutorService threadPool = Executors.newFixedThreadPool(15);
   // the messenger we are based on
   private final IMessenger m_messenger;
   // lock on this for modifications to create or remove local end points
@@ -335,7 +337,7 @@ public class UnifiedMessenger {
           }
         }
       };
-      m_threadPool.runTask(task);
+      threadPool.execute(task);
     }
     // a remote machine is returning results
     else if (msg instanceof SpokeInvocationResults) {
@@ -362,10 +364,6 @@ public class UnifiedMessenger {
       stream.println("Remote nodes with implementors:" + m_results);
       stream.println("Remote nodes with implementors:" + m_pendingInvocations);
     }
-  }
-
-  public void waitForAllJobs() {
-    m_threadPool.waitForAll();
   }
 
   @Override
