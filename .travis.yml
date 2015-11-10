@@ -22,7 +22,7 @@ before_deploy:
 - git config --global user.email "tripleabuilderbot@gmail.com"
 - git config --global user.name "tripleabuilderbot"
 - git tag $TAGGED_VERSION -a -m "$TAGGED_VERSION"
-- git push -q https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea --tags
+- git push -q https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea --tags 2>&1 | sed 's|https://.*github|https://[secure]@github|'
 deploy:
   provider: releases
   api_key:
