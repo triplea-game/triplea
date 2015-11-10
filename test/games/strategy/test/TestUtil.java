@@ -36,7 +36,7 @@ public class TestUtil {
    * Task is accomplished by adding a do-nothing event with SwingUtilities
    * to the event thread and then blocking until the do-nothing event is done.
    */
-  private static void waitForSwingThreads() {
+  public static void waitForSwingThreads() {
     try {
       SwingUtilities.invokeAndWait(new Runnable() {
         @Override

@@ -2,7 +2,6 @@ package games.strategy.engine.framework.ui;
 
 import java.awt.Component;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
@@ -11,9 +10,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +19,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.zip.ZipFile;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -59,18 +56,6 @@ public class NewGameChooserModel extends DefaultListModel {
   @Override
   public NewGameChooserEntry get(final int i) {
     return (NewGameChooserEntry) super.get(i);
-  }
-
-  private static Collection<String> getDefaultMapNames() {
-    final Collection<String> rVal = new ArrayList<String>();
-    for (final File f : getDefaultMapsDir().listFiles()) {
-      if (f.getName().toLowerCase().endsWith(".zip")) {
-        rVal.add(f.getName().substring(0, f.getName().length() - ".zip".length()));
-      } else {
-        rVal.add(f.getName());
-      }
-    }
-    return rVal;
   }
 
   public static File getDefaultMapsDir() {
