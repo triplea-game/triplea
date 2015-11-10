@@ -182,7 +182,7 @@
 	<target name="compile" description="Compile the source files"
 		depends="checkBuildEnv,copyResources">
 		<javac srcdir="${src}" destdir="${classes}" debug="true"
-			deprecation="true" classpathref="src.classpath" target="1.7" source="1.7"
+			deprecation="true" classpathref="src.classpath" target="1.8" source="1.8"
 			encoding="utf8" includeantruntime="false" />
 
 		<!-- to check the correct java version, we need to compile the startup 
