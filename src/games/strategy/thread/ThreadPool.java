@@ -1,6 +1,6 @@
 package games.strategy.thread;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -12,7 +12,7 @@ import games.strategy.debug.ClientLogger;
  */
 public class ThreadPool {
   private final ExecutorService executorService;
-  private Stack<Future> futuresStack = new Stack<Future>();
+  private ArrayDeque<Future> futuresStack = new ArrayDeque<Future>();
 
   /**
    * Creates a new instance of ThreadPool max is the maximum number of threads the pool can have. The pool may have
