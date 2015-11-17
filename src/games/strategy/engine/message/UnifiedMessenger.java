@@ -362,6 +362,7 @@ public class UnifiedMessenger {
       stream.println("Remote nodes with implementors:" + m_results);
       stream.println("Remote nodes with implementors:" + m_pendingInvocations);
     }
+  }
 
   @Override
   public String toString() {
