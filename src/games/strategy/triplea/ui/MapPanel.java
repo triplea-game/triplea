@@ -10,6 +10,8 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -140,7 +142,6 @@ public class MapPanel extends ImageScrollerLargeView {
       }
     });
   }
-
   LinkedBlockingQueue<Tile> getUndrawnTiles() {
     return m_undrawnTiles;
   }

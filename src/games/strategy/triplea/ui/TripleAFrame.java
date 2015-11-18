@@ -83,6 +83,9 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+
 import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.common.ui.MacWrapper;
@@ -241,8 +244,6 @@ public class TripleAFrame extends MainGameFrame {
     m_mapPanel = new MapPanel(m_data, m_smallView, m_uiContext, model);
     m_mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
     m_mapPanel.addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
-    this.addKeyListener(m_arrowKeyActionListener);
-    m_mapPanel.addKeyListener(m_arrowKeyActionListener);
     // link the small and large images
     m_mapPanel.initSmallMap();
     m_mapAndChatPanel = new JPanel();
@@ -323,7 +324,15 @@ public class TripleAFrame extends MainGameFrame {
     m_rightHandSidePanel.add(m_smallView, BorderLayout.NORTH);
     m_tabsPanel.setBorder(null);
     m_rightHandSidePanel.add(m_tabsPanel, BorderLayout.CENTER);
-    m_actionButtons = new ActionButtons(m_data, m_mapPanel, this);
+
+    MovePanel movePanel = new MovePanel(m_data, m_mapPanel, this);
+    m_actionButtons = new ActionButtons(m_data, m_mapPanel, movePanel, this);
+
+    // set up key listeners
+    m_mapPanel.addKeyListener(this.getArrowKeyListener());
+    m_mapPanel.addKeyListener(movePanel.getUndoMoveKeyListener());
+
+
     m_tabsPanel.addTab("Actions", m_actionButtons);
     m_actionButtons.setBorder(null);
     m_statsPanel = new StatPanel(m_data, m_uiContext);
@@ -1715,9 +1724,12 @@ public class TripleAFrame extends MainGameFrame {
       }
     }
   };
-  final KeyListener m_arrowKeyActionListener = new KeyListener() {
-    @Override
-    public void keyPressed(final KeyEvent e) {
+
+  private KeyListener getArrowKeyListener() {
+    return new KeyListener() {
+      @Override
+      public void keyPressed(final KeyEvent e) {
+
       // scroll map according to wasd/arrowkeys
       final int diffPixel = computeScrollSpeed(e);
       final int x = m_mapPanel.getXOffset();
@@ -1788,6 +1800,7 @@ public class TripleAFrame extends MainGameFrame {
     @Override
     public void keyReleased(final KeyEvent e) {}
   };
+  }
 
   private static int computeScrollSpeed(final KeyEvent e) {
     int multiplier = 1;
