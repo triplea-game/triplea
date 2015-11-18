@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipTracker;
@@ -44,6 +45,26 @@ public class ProUtils {
       }
     }
     return unitTerritoryMap;
+  }
+
+  public List<PlayerID> getEnemyPlayersInTurnOrder(final PlayerID player) {
+    final GameData data = ai.getGameData();
+    final List<PlayerID> enemyPlayers = new ArrayList<PlayerID>();
+    GameSequence sequence = data.getSequence();
+    int startIndex = sequence.getStepIndex();
+    for (int i = 0; i < sequence.size(); i++) {
+      int currentIndex = startIndex + i;
+      if (currentIndex >= sequence.size()) {
+        currentIndex -= sequence.size();
+      }
+      GameStep step = sequence.getStep(currentIndex);
+      PlayerID stepPlayer = step.getPlayerID();
+      if (step.getName().endsWith("CombatMove") && stepPlayer != null && !enemyPlayers.contains(stepPlayer)
+          && !data.getRelationshipTracker().isAllied(player, stepPlayer)) {
+        enemyPlayers.add(step.getPlayerID());
+      }
+    }
+    return enemyPlayers;
   }
 
   public List<PlayerID> getEnemyPlayers(final PlayerID player) {
