@@ -126,12 +126,12 @@ public abstract class AbstractMovePanel extends ActionPanel {
     return m_bridge.getGameData();
   }
 
-  private IAbstractMoveDelegate getDelegate() {
+  private IAbstractMoveDelegate getMoveDelegate() {
     return (IAbstractMoveDelegate) m_bridge.getRemoteDelegate();
   }
 
   protected final void updateMoves() {
-    m_undoableMoves = getDelegate().getMovesMade();
+    m_undoableMoves = getMoveDelegate().getMovesMade();
     m_undoableMovesPanel.setMoves(m_undoableMoves);
   }
 
@@ -151,7 +151,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
    * failure rather than just one)
    */
   public void undoMoves(Set<Unit> units) {
-    Set<UndoableMove> movesToUndo = getMovesToUndo(units, getDelegate().getMovesMade());
+    Set<UndoableMove> movesToUndo = getMovesToUndo(units, getMoveDelegate().getMovesMade());
 
     if (movesToUndo.size() == 0) {
       String error = "Could not undo any moves, check that the unit has moved and that you can undo the move normally";
@@ -203,7 +203,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
     // clean up any state we may have
     m_CANCEL_MOVE_ACTION.actionPerformed(null);
     // undo the move
-    final String error = getDelegate().undoMove(moveIndex);
+    final String error = getMoveDelegate().undoMove(moveIndex);
     if (error != null && !suppressError) {
       JOptionPane.showMessageDialog(getTopLevelAncestor(), error, "Could not undo move", JOptionPane.ERROR_MESSAGE);
     } else {
