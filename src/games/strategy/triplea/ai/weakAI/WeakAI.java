@@ -140,7 +140,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
     moveUnits.clear();
     transportsToLoad.clear();
     // unload the transports that can be unloaded
-    populateTransportUnloadNonCom(true, data, moveUnits, moveRoutes, player);
+    populateTransportUnloadNonCom(data, moveUnits, moveRoutes, player);
     doMove(moveUnits, moveRoutes, null, moveDel);
   }
 
@@ -218,7 +218,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
     }
   }
 
-  private void populateTransportUnloadNonCom(final boolean nonCombat, final GameData data,
+  private void populateTransportUnloadNonCom(final GameData data,
       final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player) {
     final Route amphibRoute = getAmphibRoute(player, data);
     if (amphibRoute == null) {
