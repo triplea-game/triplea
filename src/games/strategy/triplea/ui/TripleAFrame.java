@@ -84,7 +84,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.common.ui.BasicGameMenuBar;
@@ -328,10 +327,12 @@ public class TripleAFrame extends MainGameFrame {
     MovePanel movePanel = new MovePanel(m_data, m_mapPanel, this);
     m_actionButtons = new ActionButtons(m_data, m_mapPanel, movePanel, this);
 
-    // set up key listeners
-    m_mapPanel.addKeyListener(this.getArrowKeyListener());
-    m_mapPanel.addKeyListener(movePanel.getUndoMoveKeyListener());
-
+    List<KeyListener> keyListeners = ImmutableList.of(this.getArrowKeyListener(), movePanel.getUndoMoveKeyListener());
+    for( KeyListener keyListener : keyListeners ) {
+      m_mapPanel.addKeyListener(keyListener );
+      // TODO: figure out if it is really needed to double add the key listener to both the frame and also the map panel
+      this.addKeyListener(keyListener);
+    }
 
     m_tabsPanel.addTab("Actions", m_actionButtons);
     m_actionButtons.setBorder(null);
