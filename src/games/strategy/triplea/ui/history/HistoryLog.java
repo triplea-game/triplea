@@ -77,7 +77,6 @@ public class HistoryLog extends JFrame {
     m_textArea.setText("");
   }
 
-  @SuppressWarnings("null")
   public void printFullTurn(final GameData data, final boolean verbose, final Collection<PlayerID> playersAllowed) {
     final HistoryNode printNode = data.getHistory().getLastNode();
     HistoryNode curNode = printNode;

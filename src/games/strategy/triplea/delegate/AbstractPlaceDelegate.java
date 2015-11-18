@@ -1491,7 +1491,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   protected Comparator<Unit> getHardestToPlaceWithRequiresUnitsRestrictions(final boolean sortConstructionsToFront) {
     return new Comparator<Unit>() {
       @Override
-      @SuppressWarnings("null")
       public int compare(final Unit u1, final Unit u2) {
         if (u1 == u2 || u1.equals(u2)) {
           return 0;
