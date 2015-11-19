@@ -1,5 +1,7 @@
 package games.strategy.engine.framework.headlessGameServer;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -28,9 +30,9 @@ public class HeadlessConsoleController {
   private boolean m_chatMode = false;
 
   public HeadlessConsoleController(final HeadlessGameServer server, final InputStream in, final PrintStream out) {
-    this.out = out;
-    this.in = new BufferedReader(new InputStreamReader(in));
-    this.server = server;
+    this.out = checkNotNull(out);
+    this.in = new BufferedReader(new InputStreamReader(checkNotNull(in)));
+    this.server = checkNotNull(server);
   }
 
   protected void process(final String command) {
