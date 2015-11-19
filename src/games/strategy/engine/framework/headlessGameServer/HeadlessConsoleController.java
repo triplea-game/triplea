@@ -80,7 +80,7 @@ public class HeadlessConsoleController {
 
 
   private void send(final String command) {
-    if (server == null || command == null) {
+    if (command == null) {
       return;
     }
     final Chat chat = server.getChat();
@@ -153,7 +153,7 @@ public class HeadlessConsoleController {
 
 
   private void mute(final String command) {
-    if (server == null || server.getServerModel() == null) {
+    if (server.getServerModel() == null) {
       return;
     }
     final IServerMessenger messenger = server.getServerModel().getMessenger();
@@ -210,7 +210,7 @@ public class HeadlessConsoleController {
   }
 
   private void boot(final String command) {
-    if (server == null || server.getServerModel() == null) {
+    if (server.getServerModel() == null) {
       return;
     }
     final IServerMessenger messenger = server.getServerModel().getMessenger();
@@ -247,7 +247,7 @@ public class HeadlessConsoleController {
   }
 
   private void ban(final String command) {
-    if (server == null || server.getServerModel() == null) {
+    if (server.getServerModel() == null) {
       return;
     }
     final IServerMessenger messenger = server.getServerModel().getMessenger();
@@ -389,7 +389,7 @@ public class HeadlessConsoleController {
     try {
       final String readin = in.readLine();
       if (readin != null && readin.toLowerCase().startsWith("y")) {
-        if (server != null && server.getSetupPanelModel() != null) {
+        if (server.getSetupPanelModel() != null) {
           final ISetupPanel setup = server.getSetupPanelModel().getPanel();
           if (setup != null && setup instanceof ServerSetupPanel) {
             ((ServerSetupPanel) setup).shutDown();// this is causing a deadlock when in a shutdown hook, due to swing/awt. so we will shut
@@ -409,7 +409,7 @@ public class HeadlessConsoleController {
 
   private String getConnections() {
     final StringBuilder sb = new StringBuilder();
-    if (server != null && server.getServerModel() != null && server.getServerModel().getMessenger() != null) {
+    if (server.getServerModel() != null && server.getServerModel().getMessenger() != null) {
       sb.append("Connected: " + server.getServerModel().getMessenger().isConnected() + "\n" + "Nodes: \n");
       final Set<INode> nodes = server.getServerModel().getMessenger().getNodes();
       if (nodes == null) {
@@ -430,7 +430,7 @@ public class HeadlessConsoleController {
   }
 
   private String getStatus() {
-    return server == null ? "null" : server.getStatus();
+    return server.getStatus();
   }
 
   private void showHelp() {
