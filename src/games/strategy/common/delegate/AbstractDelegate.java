@@ -127,7 +127,8 @@ public abstract class AbstractDelegate implements IDelegate {
   }
 
   /**
-   * You should override this class with some variation of the following code (changing the AI to be something meaningful if needed)
+   * You should override this class with some variation of the following code (changing the AI to be something
+   * meaningful if needed)
    * because otherwise an "isNull" (ie: the static "Neutral" player) will not have any remote:
    * <p>
    * if (player.isNull()) {
@@ -141,13 +142,14 @@ public abstract class AbstractDelegate implements IDelegate {
   }
 }
 /*
- * All overriding classes should use the following format for saveState and loadState, in order to save and load the superstate
+ * All overriding classes should use the following format for saveState and loadState, in order to save and load the
+ * superstate
  * class ExtendedDelegateState implements Serializable
  * {
  * Serializable superState;
  * // add other variables here:
  * }
- * 
+ *
  * @Override
  * public Serializable saveState()
  * {
@@ -156,7 +158,7 @@ public abstract class AbstractDelegate implements IDelegate {
  * // add other variables to state here:
  * return state;
  * }
- * 
+ *
  * @Override
  * public void loadState(Serializable state)
  * {
