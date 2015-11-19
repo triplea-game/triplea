@@ -17,12 +17,11 @@ public class HeadlessGameServerConsole {
   private final HeadlessConsoleController commandController;
 
   public HeadlessGameServerConsole(final HeadlessGameServer server, final InputStream in, final PrintStream out) {
-    this(server, new BufferedReader(new InputStreamReader(in)),
-        out, new HeadlessConsoleController(server, in, out));
+    this(new BufferedReader(new InputStreamReader(in)), out, new HeadlessConsoleController(server, in, out));
   }
 
-  protected HeadlessGameServerConsole(final HeadlessGameServer server, final BufferedReader in,
-      final PrintStream out, final HeadlessConsoleController commandController) {
+  protected HeadlessGameServerConsole(final BufferedReader in, final PrintStream out,
+      final HeadlessConsoleController commandController) {
     this.out = out;
     this.in = in;
     this.commandController = commandController;
