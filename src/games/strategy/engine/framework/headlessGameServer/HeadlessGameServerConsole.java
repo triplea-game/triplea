@@ -13,8 +13,8 @@ public class HeadlessGameServerConsole {
 
   private final PrintStream out;
   private final BufferedReader in;
-
   private final HeadlessConsoleController commandController;
+  private boolean shutdown = false;
 
   public HeadlessGameServerConsole(final HeadlessGameServer server, final InputStream in, final PrintStream out) {
     this(new BufferedReader(new InputStreamReader(in)), out, new HeadlessConsoleController(server, in, out));
@@ -46,7 +46,7 @@ public class HeadlessGameServerConsole {
 
   private void printEvalLoop() {
     out.println();
-    while (true) {
+    while (!shutdown) {
       out.print(">>>>");
       out.flush();
       try {
@@ -66,5 +66,9 @@ public class HeadlessGameServerConsole {
         e.printStackTrace(out);
       }
     }
+  }
+
+  protected void shutdown() {
+    this.shutdown = true;
   }
 }
