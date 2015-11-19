@@ -389,6 +389,7 @@ public class HeadlessConsoleController {
     try {
       final String readin = in.readLine();
       if (readin != null && readin.toLowerCase().startsWith("y")) {
+        server.shutdown();
         if (server.getSetupPanelModel() != null) {
           final ISetupPanel setup = server.getSetupPanelModel().getPanel();
           if (setup != null && setup instanceof ServerSetupPanel) {
