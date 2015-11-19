@@ -20,9 +20,6 @@ public class HeadlessGameServerConsoleTest {
   private HeadlessGameServerConsole testObj;
 
   @Mock
-  private HeadlessGameServer mockHeadlessGameServer;
-
-  @Mock
   private BufferedReader mockBufferedReader;
 
   @Mock
@@ -33,8 +30,7 @@ public class HeadlessGameServerConsoleTest {
 
   @Before
   public void setUp() {
-    testObj = new HeadlessGameServerConsole(mockHeadlessGameServer,
-        mockBufferedReader, mockPrintStream, mockHeadlessConsoleController);
+    testObj = new HeadlessGameServerConsole(mockBufferedReader, mockPrintStream, mockHeadlessConsoleController);
   }
 
   /**
