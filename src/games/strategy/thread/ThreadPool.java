@@ -16,8 +16,7 @@ public class ThreadPool {
 
   /**
    * Creates a new instance of ThreadPool max is the maximum number of threads the pool can have. The pool may have
-   * fewer threads at any
-   * given time.
+   * fewer threads at any given time.
    */
   public ThreadPool(final int max) {
     if (max < 1) {

@@ -55,7 +55,7 @@ public class ThreadPoolTest extends TestCase {
 
   public void testBlocked() {
     final Collection<Thread> threads = new ArrayList<Thread>();
-    for (int j = 0; j < 15; j++) {
+    for (int j = 0; j < 50; j++) {
       final Runnable r = new Runnable() {
         @Override
         public void run() {
@@ -77,9 +77,9 @@ public class ThreadPoolTest extends TestCase {
   }
 
   private static void threadTestBlock() {
-    final ThreadPool pool = new ThreadPool(8);
+    final ThreadPool pool = new ThreadPool(2);
     final ArrayList<BlockedTask> blockedTasks = new ArrayList<BlockedTask>();
-    for (int i = 0; i < 40; i++) {
+    for (int i = 0; i < 10; i++) {
       final BlockedTask task = new BlockedTask();
       blockedTasks.add(task);
       pool.runTask(task);
@@ -117,7 +117,7 @@ class BlockedTask extends Task {
   public void run() {
     synchronized (this) {
       try {
-        wait(400);
+        wait(10);
       } catch (final InterruptedException ie) {
       }
       super.run();
