@@ -36,7 +36,8 @@ public class PointFileReaderWriter {
     }
     final Map<String, Point> mapping = new HashMap<String, Point>();
 
-    try (LineNumberReader reader = new LineNumberReader(new InputStreamReader(stream))) {
+    try (InputStreamReader inputStreamReader = new InputStreamReader(stream);
+        LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
       String current = reader.readLine();
       while (current != null) {
         if (current.trim().length() != 0) {
@@ -54,7 +55,8 @@ public class PointFileReaderWriter {
   public static Map<String, Point> readOneToOneCenters(final InputStream stream) throws IOException {
     final Map<String, Point> mapping = new HashMap<String, Point>();
 
-    try(LineNumberReader reader = new LineNumberReader(new InputStreamReader(stream)); ) {
+    try (InputStreamReader inputStreamReader = new InputStreamReader(stream);
+        LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
       String current = reader.readLine();
       while (current != null) {
         if (current.trim().length() != 0) {
@@ -157,7 +159,8 @@ public class PointFileReaderWriter {
     }
 
     final HashMap<String, List<Point>> mapping = new HashMap<String, List<Point>>();
-    try( LineNumberReader reader = new LineNumberReader(new InputStreamReader(stream));) {
+    try (InputStreamReader inputStreamReader = new InputStreamReader(stream);
+        LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
       String current = reader.readLine();
       while (current != null) {
         if (current.trim().length() != 0) {
@@ -177,7 +180,8 @@ public class PointFileReaderWriter {
    */
   public static Map<String, List<Polygon>> readOneToManyPolygons(final InputStream stream) throws IOException {
     final HashMap<String, List<Polygon>> mapping = new HashMap<String, List<Polygon>>();
-    try (LineNumberReader reader = new LineNumberReader(new InputStreamReader(stream))) {
+    try (InputStreamReader inputStreamReader = new InputStreamReader(stream);
+        LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
       String current = reader.readLine();
       while (current != null) {
         if (current.trim().length() != 0) {

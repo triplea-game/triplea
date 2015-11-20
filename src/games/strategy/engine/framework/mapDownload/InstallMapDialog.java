@@ -342,7 +342,9 @@ public class InstallMapDialog extends JDialog {
 
   private static void validateZip(final DownloadRunnable download) throws IOException {
     // try to unzip it to make sure it is valid
-    try ( final ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(download.getContents()))) {
+    try (
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(download.getContents());
+        final ZipInputStream zis = new ZipInputStream(byteArrayInputStream)) {
       ZipEntry ze;
       while ((ze = zis.getNextEntry()) != null) {
         // make sure we can read something from each stream

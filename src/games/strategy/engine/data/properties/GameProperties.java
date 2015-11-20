@@ -133,7 +133,7 @@ public class GameProperties extends GameDataComponent {
     // write internally first in case of error
     try (ByteArrayOutputStream bos = new ByteArrayOutputStream(5000);
         ObjectOutputStream outStream = new ObjectOutputStream(bos);
-        GZIPOutputStream zippedOut = new GZIPOutputStream(sink);) {
+        GZIPOutputStream zippedOut = new GZIPOutputStream(sink)) {
 
       outStream.writeObject(editableProperties);
       zippedOut.write(bos.toByteArray());
@@ -148,7 +148,8 @@ public class GameProperties extends GameDataComponent {
 
     try (ByteArrayInputStream byteStream = new ByteArrayInputStream(byteArray);
         InputStream inputStream = new BufferedInputStream(byteStream);
-        ObjectInputStream objectStream = new ObjectInputStream(new GZIPInputStream(inputStream));) {
+        GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream);
+        ObjectInputStream objectStream = new ObjectInputStream(gzipInputStream)) {
 
       editableProperties = (List<IEditableProperty>) objectStream.readObject();
     }
