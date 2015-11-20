@@ -41,7 +41,9 @@ public class GameDataManager {
   public GameDataManager() {}
 
   public GameData loadGame(final File savedGameFile) throws IOException {
-    try (InputStream input = new BufferedInputStream(new FileInputStream(savedGameFile))) {
+    try (
+        FileInputStream fileInputStream = new FileInputStream(savedGameFile);
+        InputStream input = new BufferedInputStream(fileInputStream)) {
       String path;
       try {
         path = savedGameFile.getCanonicalPath();

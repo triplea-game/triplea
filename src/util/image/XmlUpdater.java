@@ -36,7 +36,9 @@ public class XmlUpdater {
     final Transformer trans = TransformerFactory.newInstance().newTransformer(new StreamSource(source));
 
     ByteArrayOutputStream resultBuf;
-    try (final InputStream gameXmlStream = new BufferedInputStream(new FileInputStream(gameXmlFile))) {
+    try (
+        final FileInputStream fileInputStream = new FileInputStream(gameXmlFile);
+        final InputStream gameXmlStream = new BufferedInputStream(fileInputStream)) {
       final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
       factory.setValidating(true);
       // use a dummy game.dtd, this prevents the xml parser from adding default values
