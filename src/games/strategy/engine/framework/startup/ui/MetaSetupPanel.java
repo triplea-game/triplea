@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
 
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
@@ -28,9 +30,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.mapDownload.DownloadFileDescription;
 import games.strategy.engine.framework.mapDownload.DownloadMapDialog;
+import games.strategy.engine.framework.mapDownload.DownloadRunnable;
+import games.strategy.engine.framework.mapDownload.InstallMapDialog;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
@@ -39,6 +45,7 @@ import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.ui.Util;
 
 public class MetaSetupPanel extends SetupPanel {
   private static final long serialVersionUID = 3926503672972937677L;
@@ -196,7 +203,15 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   private void downloadMaps() {
-    DownloadMapDialog.downloadGames(this);
+    final String downloadSite = "http://downloads.sourceforge.net/project/tripleamaps/triplea_maps.xml";
+    final DownloadRunnable download = new DownloadRunnable(downloadSite, true);
+    BackgroundTaskRunner.runInBackground(getRootPane(), "Downloading list of availabe maps....", download);
+    if (download.getError() != null) {
+      ClientLogger.logError(download.getError());
+      return;
+    }
+    final Frame parentFrame = JOptionPane.getFrameForComponent(this);
+    InstallMapDialog.installGames(parentFrame, download.getDownloads());
   }
 
   private void ruleBook() {
