@@ -20,7 +20,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.LogManager;
 import java.util.prefs.BackingStoreException;
@@ -37,10 +36,10 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.mapDownload.DownloadFileDescription;
-import games.strategy.engine.framework.mapDownload.DownloadMapDialog;
 import games.strategy.engine.framework.mapDownload.DownloadRunnable;
 import games.strategy.engine.framework.mapDownload.InstallMapDialog;
 import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.triplea.ui.ErrorHandler;
@@ -839,15 +838,8 @@ public class GameRunner2 {
       } catch (final BackingStoreException e) {
       }
       // System.out.println("Checking for latest maps");
-      final Vector<String> sites = DownloadMapDialog.getStoredDownloadSites();
-      if (sites == null || sites.isEmpty()) {
-        return false;
-      }
-      final String selectedUrl = sites.get(0);
-      if (selectedUrl == null || selectedUrl.trim().length() == 0) {
-        return false;
-      }
-      final DownloadRunnable download = new DownloadRunnable(selectedUrl, true);
+      final String site = MetaSetupPanel.MAP_LIST_DOWNLOAD_SITE;
+      final DownloadRunnable download = new DownloadRunnable(site, true);
       BackgroundTaskRunner.runInBackground(null, "Checking for out-of-date Maps.", download,
           new CountDownLatchHandler(true));
       if (download.getError() != null) {
