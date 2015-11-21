@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.BackingStoreException;
 
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
@@ -33,8 +32,6 @@ import javax.swing.ScrollPaneConstants;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.GameRunner2;
-import games.strategy.engine.framework.mapDownload.DownloadFileDescription;
-import games.strategy.engine.framework.mapDownload.DownloadMapDialog;
 import games.strategy.engine.framework.mapDownload.DownloadRunnable;
 import games.strategy.engine.framework.mapDownload.InstallMapDialog;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
@@ -45,9 +42,10 @@ import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
-import games.strategy.ui.Util;
 
 public class MetaSetupPanel extends SetupPanel {
+  public static final String MAP_LIST_DOWNLOAD_SITE="http://downloads.sourceforge.net/project/tripleamaps/triplea_maps.xml";
+
   private static final long serialVersionUID = 3926503672972937677L;
   private static final Logger s_logger = Logger.getLogger(MetaSetupPanel.class.getName());
   private static String s_serverPropertiesName = "server_" + EngineVersion.VERSION.toString() + ".properties";
@@ -203,7 +201,7 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   private void downloadMaps() {
-    final String downloadSite = "http://downloads.sourceforge.net/project/tripleamaps/triplea_maps.xml";
+    final String downloadSite = MAP_LIST_DOWNLOAD_SITE;
     final DownloadRunnable download = new DownloadRunnable(downloadSite, true);
     BackgroundTaskRunner.runInBackground(getRootPane(), "Downloading list of availabe maps....", download);
     if (download.getError() != null) {
