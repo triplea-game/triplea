@@ -14,7 +14,6 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.GameRunner2;
-import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
@@ -32,10 +31,9 @@ public class MapDownloadController {
 
   /** Opens a new window dialog where a user can select maps to download or update */
   public void openDownloadMapScreen(JComponent parentComponent) {
-    final String downloadSite = mapDownloadProperties.getMapListDownloadSite();
-    final DownloadRunnable download = new DownloadRunnable(downloadSite, true);
-    BackgroundTaskRunner.runInBackground(parentComponent.getRootPane(), "Downloading list of availabe maps....",
-        download);
+    MapDownloadAction downloadAction = new MapDownloadAction(mapDownloadProperties);
+    final DownloadRunnable download = downloadAction.downloadAvailableMapsInForeground(parentComponent);
+
     if (download.getError() != null) {
       ClientLogger.logError(download.getError());
       return;
@@ -69,10 +67,8 @@ public class MapDownloadController {
       } catch (final BackingStoreException e) {
       }
 
-      final String site = mapDownloadProperties.getMapListDownloadSite();
-      final DownloadRunnable download = new DownloadRunnable(site, true);
-      BackgroundTaskRunner.runInBackground(null, "Checking for out-of-date Maps.", download,
-          new CountDownLatchHandler(true));
+      MapDownloadAction downloadAction = new MapDownloadAction(mapDownloadProperties);
+      final DownloadRunnable download = downloadAction.downloadAvailableMapsInBackground();
       if (download.getError() != null) {
         return false;
       }
