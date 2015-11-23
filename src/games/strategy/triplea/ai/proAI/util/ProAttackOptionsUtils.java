@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -22,6 +23,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.proAI.ProAmphibData;
+import games.strategy.triplea.ai.proAI.ProAttackOptions;
 import games.strategy.triplea.ai.proAI.ProAttackTerritoryData;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -467,8 +469,8 @@ public class ProAttackOptionsUtils {
         Matches.isTerritoryAllied(player, data), new ArrayList<Territory>(), false, false, false);
   }
 
-  public void findEnemyAttackOptions(final PlayerID player, final List<Territory> myConqueredTerritories,
-      final List<Territory> territoriesToCheck, final Map<Territory, ProAttackTerritoryData> enemyAttackMap) {
+  public ProAttackOptions findEnemyAttackOptions(final PlayerID player, final List<Territory> myConqueredTerritories,
+      final List<Territory> territoriesToCheck) {
     final GameData data = ai.getGameData();
 
     // Get enemy players in order of turn
@@ -500,37 +502,7 @@ public class ProAttackOptionsUtils {
       enemyTerritories.removeAll(alliedTerritories);
     }
 
-    // Consolidate enemy player attack maps into one attack map with max units a single enemy can attack with
-    for (final Map<Territory, ProAttackTerritoryData> attackMap2 : enemyAttackMaps) {
-      for (final Territory t : attackMap2.keySet()) {
-        if (!enemyAttackMap.containsKey(t)) {
-          enemyAttackMap.put(t, attackMap2.get(t));
-        } else {
-          final Set<Unit> maxUnits = new HashSet<Unit>(enemyAttackMap.get(t).getMaxUnits());
-          maxUnits.addAll(enemyAttackMap.get(t).getMaxAmphibUnits());
-          double maxStrength = 0;
-          if (!maxUnits.isEmpty()) {
-            maxStrength =
-                battleUtils.estimateStrength(maxUnits.iterator().next().getOwner(), t, new ArrayList<Unit>(maxUnits),
-                    new ArrayList<Unit>(), true);
-          }
-          final Set<Unit> currentUnits = new HashSet<Unit>(attackMap2.get(t).getMaxUnits());
-          currentUnits.addAll(attackMap2.get(t).getMaxAmphibUnits());
-          double currentStrength = 0;
-          if (!currentUnits.isEmpty()) {
-            currentStrength =
-                battleUtils.estimateStrength(currentUnits.iterator().next().getOwner(), t, new ArrayList<Unit>(
-                    currentUnits), new ArrayList<Unit>(), true);
-          }
-          final boolean currentHasLandUnits = Match.someMatch(currentUnits, Matches.UnitIsLand);
-          final boolean maxHasLandUnits = Match.someMatch(maxUnits, Matches.UnitIsLand);
-          if ((currentHasLandUnits && ((!maxHasLandUnits && !t.isWater()) || currentStrength > maxStrength))
-              || ((!maxHasLandUnits || t.isWater()) && currentStrength > maxStrength)) {
-            enemyAttackMap.put(t, attackMap2.get(t));
-          }
-        }
-      }
-    }
+    return new ProAttackOptions(battleUtils, enemyAttackMaps);
   }
 
   private void findNavalMoveOptions(final PlayerID player, final List<Territory> myUnitTerritories,
