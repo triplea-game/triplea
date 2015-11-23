@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -34,6 +35,7 @@ import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.mapDownload.DownloadRunnable;
 import games.strategy.engine.framework.mapDownload.InstallMapDialog;
+import games.strategy.engine.framework.mapDownload.MapDownloadController;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
@@ -44,7 +46,6 @@ import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 
 public class MetaSetupPanel extends SetupPanel {
-  public static final String MAP_LIST_DOWNLOAD_SITE="http://downloads.sourceforge.net/project/tripleamaps/triplea_maps.xml";
 
   private static final long serialVersionUID = 3926503672972937677L;
   private static final Logger s_logger = Logger.getLogger(MetaSetupPanel.class.getName());
@@ -59,10 +60,14 @@ public class MetaSetupPanel extends SetupPanel {
   private JButton m_ruleBook;
   private JButton m_donate;
   private JButton m_about;
+
   private final SetupPanelModel m_model;
+  private final MapDownloadController mapDownloadController;
 
   public MetaSetupPanel(final SetupPanelModel model) {
-    m_model = model;
+    this.m_model = model;
+    this.mapDownloadController = new MapDownloadController();
+
     createComponents();
     layoutComponents();
     setupListeners();
@@ -201,15 +206,8 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   private void downloadMaps() {
-    final String downloadSite = MAP_LIST_DOWNLOAD_SITE;
-    final DownloadRunnable download = new DownloadRunnable(downloadSite, true);
-    BackgroundTaskRunner.runInBackground(getRootPane(), "Downloading list of availabe maps....", download);
-    if (download.getError() != null) {
-      ClientLogger.logError(download.getError());
-      return;
-    }
-    final Frame parentFrame = JOptionPane.getFrameForComponent(this);
-    InstallMapDialog.installGames(parentFrame, download.getDownloads());
+    JComponent parentWindow = this;
+    mapDownloadController.openDownloadMapScreen(parentWindow);
   }
 
   private void ruleBook() {

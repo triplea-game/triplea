@@ -14,7 +14,6 @@ import java.net.ProxySelector;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -35,12 +34,8 @@ import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.EngineVersion;
-import games.strategy.engine.framework.mapDownload.DownloadFileDescription;
-import games.strategy.engine.framework.mapDownload.DownloadRunnable;
-import games.strategy.engine.framework.mapDownload.InstallMapDialog;
+import games.strategy.engine.framework.mapDownload.MapDownloadController;
 import games.strategy.engine.framework.startup.ui.MainFrame;
-import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
-import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.util.CountDownLatchHandler;
@@ -91,7 +86,6 @@ public class GameRunner2 {
   private static final String TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY =
       "triplea.firstTimeThisVersion" + EngineVersion.VERSION.toString();
   private static final String TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE = "triplea.lastCheckForEngineUpdate";
-  private static final String TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES = "triplea.lastCheckForMapUpdates";
   // only for Online?
   public static final String TRIPLEA_MEMORY_ONLINE_ONLY = "triplea.memory.onlineOnly";
   // what should our xmx be approximately?
@@ -818,61 +812,8 @@ public class GameRunner2 {
    * @return true if we have any out of date maps
    */
   private static boolean checkForUpdatedMaps() {
-    try {
-      final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
-      // check at most once per month
-      final Calendar calendar = Calendar.getInstance();
-      final int year = calendar.get(Calendar.YEAR);
-      final int month = calendar.get(Calendar.MONTH);
-      // format year:month
-      final String lastCheckTime = pref.get(TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, "");
-      if (lastCheckTime != null && lastCheckTime.trim().length() > 0) {
-        final String[] yearMonth = lastCheckTime.split(":");
-        if (Integer.parseInt(yearMonth[0]) >= year && Integer.parseInt(yearMonth[1]) >= month) {
-          return false;
-        }
-      }
-      pref.put(TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, year + ":" + month);
-      try {
-        pref.sync();
-      } catch (final BackingStoreException e) {
-      }
-      // System.out.println("Checking for latest maps");
-      final String site = MetaSetupPanel.MAP_LIST_DOWNLOAD_SITE;
-      final DownloadRunnable download = new DownloadRunnable(site, true);
-      BackgroundTaskRunner.runInBackground(null, "Checking for out-of-date Maps.", download,
-          new CountDownLatchHandler(true));
-      if (download.getError() != null) {
-        return false;
-      }
-      final List<DownloadFileDescription> downloads = download.getDownloads();
-      if (downloads == null || downloads.isEmpty()) {
-        return false;
-      }
-      final List<String> outOfDateMaps = new ArrayList<String>();
-      InstallMapDialog.populateOutOfDateMapsListing(outOfDateMaps, downloads);
-      if (!outOfDateMaps.isEmpty()) {
-        final StringBuilder text =
-            new StringBuilder("<html>Some of the maps you have are out of date, and newer versions of those maps exist."
-                + "<br>You should update (re-download) the following maps:<br><ul>");
-        for (final String map : outOfDateMaps) {
-          text.append("<li> " + map + "</li>");
-        }
-        text.append(
-            "</ul><br><br>You can update them by clicking on the 'Download Maps' button on the start screen of TripleA.</html>");
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            EventThreadJOptionPane.showMessageDialog(null, text, "Update Your Maps", JOptionPane.INFORMATION_MESSAGE,
-                false, new CountDownLatchHandler(true));
-          }
-        });
-        return true;
-      }
-    } catch (final Exception e) {
-      System.out.println("Error while checking for map updates: " + e.getMessage());
-    }
-    return false;
+    MapDownloadController downloadController = new MapDownloadController();
+    return downloadController.checkDownloadedMapsAreLatest();
   }
 
   /**
