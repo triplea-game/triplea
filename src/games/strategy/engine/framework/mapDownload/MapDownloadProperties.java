@@ -42,7 +42,8 @@ public class MapDownloadProperties {
 
 
   /** Return the URL where we can download a file that lists each map that is available */
-  public String getMapListDownloadSite() {
+  protected String getMapListDownloadSite() {
     return mapListDownloadSite;
   }
+
 }
