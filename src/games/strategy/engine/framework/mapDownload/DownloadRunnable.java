@@ -68,8 +68,6 @@ public class DownloadRunnable implements Runnable {
   private void downloadFile() {
     URL url;
     try {
-      // System.out.println(System.getProperty("http.proxyHost"));
-      // System.out.println(System.getProperty("http.proxyPort"));
       url = new URL(urlString.trim());
     } catch (final MalformedURLException e1) {
       error = "invalid url";
