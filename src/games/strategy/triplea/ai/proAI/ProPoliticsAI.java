@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
@@ -16,6 +17,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.BasicPoliticalAI;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.ai.proAI.util.ProAttackOptionsUtils;
+import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.DelegateFinder;
@@ -31,11 +33,14 @@ public class ProPoliticsAI {
 
   private final ProAI ai;
   private final ProUtils utils;
+  private final ProBattleUtils battleUtils;
   private final ProAttackOptionsUtils attackOptionsUtils;
 
-  public ProPoliticsAI(final ProAI ai, final ProUtils utils, final ProAttackOptionsUtils attackOptionsUtils) {
+  public ProPoliticsAI(final ProAI ai, final ProUtils utils, final ProBattleUtils battleUtils,
+      final ProAttackOptionsUtils attackOptionsUtils) {
     this.ai = ai;
     this.utils = utils;
+    this.battleUtils = battleUtils;
     this.attackOptionsUtils = attackOptionsUtils;
   }
 
@@ -107,9 +112,9 @@ public class ProPoliticsAI {
           transportAttackMap, bombardMap, landRoutesMap, transportMapList);
       final List<ProAttackTerritoryData> prioritizedTerritories =
           attackOptionsUtils.removeTerritoriesThatCantBeConquered(player, attackMap, unitAttackMap, transportAttackMap,
-              true);
-      ProLogger.trace(player.getName() + ", numAttackOptions=" + prioritizedTerritories.size()
-          + ", options=" + prioritizedTerritories);
+              new ProAttackOptions(utils, battleUtils), true);
+      ProLogger.trace(player.getName() + ", numAttackOptions=" + prioritizedTerritories.size() + ", options="
+          + prioritizedTerritories);
 
       // Find attack options per war action
       final Map<PoliticalActionAttachment, Double> attackPercentageMap =

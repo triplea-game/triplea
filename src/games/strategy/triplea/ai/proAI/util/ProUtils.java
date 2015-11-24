@@ -1,12 +1,5 @@
 package games.strategy.triplea.ai.proAI.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameStep;
@@ -21,6 +14,13 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.AbstractUIContext;
 import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Pro AI utilities (these are very general and maybe should be moved into delegate or engine).
@@ -47,24 +47,48 @@ public class ProUtils {
     return unitTerritoryMap;
   }
 
-  public List<PlayerID> getEnemyPlayersInTurnOrder(final PlayerID player) {
+  public List<PlayerID> getOtherPlayersInTurnOrder(final PlayerID player) {
     final GameData data = ai.getGameData();
-    final List<PlayerID> enemyPlayers = new ArrayList<PlayerID>();
-    GameSequence sequence = data.getSequence();
-    int startIndex = sequence.getStepIndex();
+    final List<PlayerID> players = new ArrayList<PlayerID>();
+    final GameSequence sequence = data.getSequence();
+    final int startIndex = sequence.getStepIndex();
     for (int i = 0; i < sequence.size(); i++) {
       int currentIndex = startIndex + i;
       if (currentIndex >= sequence.size()) {
         currentIndex -= sequence.size();
       }
-      GameStep step = sequence.getStep(currentIndex);
-      PlayerID stepPlayer = step.getPlayerID();
-      if (step.getName().endsWith("CombatMove") && stepPlayer != null && !enemyPlayers.contains(stepPlayer)
-          && !data.getRelationshipTracker().isAllied(player, stepPlayer)) {
-        enemyPlayers.add(step.getPlayerID());
+      final GameStep step = sequence.getStep(currentIndex);
+      final PlayerID stepPlayer = step.getPlayerID();
+      if (step.getName().endsWith("CombatMove") && stepPlayer != null && !stepPlayer.equals(player)
+          && !players.contains(stepPlayer)) {
+        players.add(step.getPlayerID());
       }
     }
-    return enemyPlayers;
+    return players;
+  }
+
+  public List<PlayerID> getAlliedPlayersInTurnOrder(final PlayerID player) {
+    final GameData data = ai.getGameData();
+    final List<PlayerID> players = getOtherPlayersInTurnOrder(player);
+    for (final Iterator<PlayerID> it = players.iterator(); it.hasNext();) {
+      final PlayerID currentPlayer = it.next();
+      if (!data.getRelationshipTracker().isAllied(player, currentPlayer)) {
+        it.remove();
+      }
+    }
+    return players;
+  }
+
+  public List<PlayerID> getEnemyPlayersInTurnOrder(final PlayerID player) {
+    final GameData data = ai.getGameData();
+    final List<PlayerID> players = getOtherPlayersInTurnOrder(player);
+    for (final Iterator<PlayerID> it = players.iterator(); it.hasNext();) {
+      final PlayerID currentPlayer = it.next();
+      if (data.getRelationshipTracker().isAllied(player, currentPlayer)) {
+        it.remove();
+      }
+    }
+    return players;
   }
 
   public List<PlayerID> getEnemyPlayers(final PlayerID player) {

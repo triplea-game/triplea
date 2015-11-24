@@ -113,7 +113,7 @@ public class ProAI extends AbstractAI {
         new ProPurchaseAI(utils, battleUtils, transportUtils, attackOptionsUtils, territoryValueUtils, purchaseUtils);
     retreatAI = new ProRetreatAI(this, battleUtils);
     scrambleAI = new ProScrambleAI(this, battleUtils, attackOptionsUtils);
-    politicsAI = new ProPoliticsAI(this, utils, attackOptionsUtils);
+    politicsAI = new ProPoliticsAI(this, utils, battleUtils, attackOptionsUtils);
     data = null;
     storedCombatMoveMap = null;
     storedPurchaseTerritories = null;

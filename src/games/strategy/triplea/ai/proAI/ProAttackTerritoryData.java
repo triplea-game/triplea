@@ -34,6 +34,7 @@ public class ProAttackTerritoryData {
   private Map<Unit, List<Unit>> amphibAttackMap;
   private final Map<Unit, Territory> transportTerritoryMap;
   private boolean needAmphibUnits;
+  private boolean strafing;
   private Map<Unit, Boolean> isTransportingMap;
   private Set<Unit> maxBombardUnits;
   private Map<Unit, Set<Territory>> bombardOptionsMap;
@@ -69,6 +70,7 @@ public class ProAttackTerritoryData {
     maxAmphibUnits = new ArrayList<Unit>();
     maxBombardUnits = new HashSet<Unit>();
     needAmphibUnits = false;
+    strafing = false;
     amphibAttackMap = new HashMap<Unit, List<Unit>>();
     isTransportingMap = new HashMap<Unit, Boolean>();
     transportTerritoryMap = new HashMap<Unit, Territory>();
@@ -99,6 +101,7 @@ public class ProAttackTerritoryData {
     maxAmphibUnits = new ArrayList<Unit>(patd.getMaxAmphibUnits());
     maxBombardUnits = new HashSet<Unit>(patd.getMaxBombardUnits());
     needAmphibUnits = patd.isNeedAmphibUnits();
+    strafing = patd.isStrafing();
     amphibAttackMap = new HashMap<Unit, List<Unit>>(patd.getAmphibAttackMap());
     isTransportingMap = new HashMap<Unit, Boolean>(patd.getIsTransportingMap());
     transportTerritoryMap = new HashMap<Unit, Territory>(patd.getTransportTerritoryMap());
@@ -224,6 +227,14 @@ public class ProAttackTerritoryData {
 
   public boolean isNeedAmphibUnits() {
     return needAmphibUnits;
+  }
+
+  public boolean isStrafing() {
+    return strafing;
+  }
+
+  public void setStrafing(boolean strafing) {
+    this.strafing = strafing;
   }
 
   public Map<Unit, List<Unit>> getAmphibAttackMap() {

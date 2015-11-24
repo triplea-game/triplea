@@ -10,23 +10,26 @@ public class ProBattleResultData {
   private double winPercentage;
   private double TUVSwing;
   private boolean hasLandUnitRemaining;
-  private List<Unit> averageUnitsRemaining;
+  private List<Unit> averageAttackersRemaining;
+  private List<Unit> averageDefendersRemaining;
   private double battleRounds;
 
   public ProBattleResultData() {
     winPercentage = 0;
     TUVSwing = -1;
     hasLandUnitRemaining = false;
-    averageUnitsRemaining = new ArrayList<Unit>();
+    averageAttackersRemaining = new ArrayList<Unit>();
+    averageDefendersRemaining = new ArrayList<Unit>();
     battleRounds = 0;
   }
 
   public ProBattleResultData(final double winPercentage, final double TUVSwing, final boolean hasLandUnitRemaining,
-      final List<Unit> averageUnitsRemaining, final double battleRounds) {
+      final List<Unit> averageAttackersRemaining, final List<Unit> averageDefendersRemaining, final double battleRounds) {
     this.winPercentage = winPercentage;
     this.TUVSwing = TUVSwing;
     this.hasLandUnitRemaining = hasLandUnitRemaining;
-    this.averageUnitsRemaining = averageUnitsRemaining;
+    this.averageAttackersRemaining = averageAttackersRemaining;
+    this.averageDefendersRemaining = averageDefendersRemaining;
     this.battleRounds = battleRounds;
   }
 
@@ -34,39 +37,30 @@ public class ProBattleResultData {
     return winPercentage;
   }
 
-  public void setWinPercentage(final double winPercentage) {
-    this.winPercentage = winPercentage;
-  }
-
   public double getTUVSwing() {
     return TUVSwing;
-  }
-
-  public void setTUVSwing(final double tUVSwing) {
-    TUVSwing = tUVSwing;
   }
 
   public boolean isHasLandUnitRemaining() {
     return hasLandUnitRemaining;
   }
 
-  public void setHasLandUnitRemaining(final boolean hasLandUnitRemaining) {
-    this.hasLandUnitRemaining = hasLandUnitRemaining;
+  public List<Unit> getAverageAttackersRemaining() {
+    return averageAttackersRemaining;
   }
 
-  public void setAverageUnitsRemaining(final List<Unit> averageUnitsRemaining) {
-    this.averageUnitsRemaining = averageUnitsRemaining;
-  }
-
-  public List<Unit> getAverageUnitsRemaining() {
-    return averageUnitsRemaining;
-  }
-
-  public void setBattleRounds(final double battleRounds) {
-    this.battleRounds = battleRounds;
+  public List<Unit> getAverageDefendersRemaining() {
+    return averageDefendersRemaining;
   }
 
   public double getBattleRounds() {
     return battleRounds;
+  }
+
+  @Override
+  public String toString() {
+    return "winPercentage=" + winPercentage + ", TUVSwing=" + TUVSwing + ", hasLandUnitRemaining="
+        + hasLandUnitRemaining + ", averageAttackersRemaining=" + averageAttackersRemaining
+        + ", averageDefendersRemaining=" + averageDefendersRemaining + ", battleRounds=" + battleRounds;
   }
 }
