@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -73,11 +74,25 @@ public class DownloadRunnable implements Runnable {
       error = "invalid url";
       return;
     }
+    InputStream stream;
+    try {
+      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+      int status = conn.getResponseCode();
+      if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
+          || status == HttpURLConnection.HTTP_SEE_OTHER) {
 
-    try (InputStream stream = url.openStream();
-        ByteArrayOutputStream sink = new ByteArrayOutputStream()) {
-      InstallMapDialog.copy(sink, stream);
-      contents = sink.toByteArray();
+        String newUrl = conn.getHeaderField("Location");
+        conn = (HttpURLConnection) new URL(newUrl).openConnection();
+      }
+
+      stream = conn.getInputStream();
+      try {
+        final ByteArrayOutputStream sink = new ByteArrayOutputStream();
+        InstallMapDialog.copy(sink, stream);
+        contents = sink.toByteArray();
+      } finally {
+        stream.close();
+      }
     } catch (final Exception e) {
       error = e.getMessage();
     }
