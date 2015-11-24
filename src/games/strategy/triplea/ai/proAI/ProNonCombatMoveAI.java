@@ -140,7 +140,7 @@ public class ProNonCombatMoveAI {
         moveOneDefenderToLandTerritoriesBorderingEnemy(moveMap, unitMoveMap);
 
     // Determine max enemy attack units and if territories can be held
-    attackOptionsUtils.findMaxEnemyAttackUnits(player, movedOneDefenderToTerritories,
+    attackOptionsUtils.findEnemyAttackOptions(player, movedOneDefenderToTerritories,
         new ArrayList<Territory>(moveMap.keySet()), enemyAttackMap);
     determineIfMoveTerritoriesCanBeHeld(moveMap, enemyAttackMap);
 

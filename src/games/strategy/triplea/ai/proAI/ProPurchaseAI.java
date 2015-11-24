@@ -72,9 +72,9 @@ public class ProPurchaseAI {
   private double minCostPerHitPoint;
   private ProResourceTracker resourceTracker;
 
-  public ProPurchaseAI(final ProUtils utils, final ProBattleUtils battleUtils,
-      final ProTransportUtils transportUtils, final ProAttackOptionsUtils attackOptionsUtils,
-      final ProTerritoryValueUtils territoryValueUtils, final ProPurchaseUtils purchaseUtils) {
+  public ProPurchaseAI(final ProUtils utils, final ProBattleUtils battleUtils, final ProTransportUtils transportUtils,
+      final ProAttackOptionsUtils attackOptionsUtils, final ProTerritoryValueUtils territoryValueUtils,
+      final ProPurchaseUtils purchaseUtils) {
     this.utils = utils;
     this.battleUtils = battleUtils;
     this.transportUtils = transportUtils;
@@ -495,7 +495,7 @@ public class ProPurchaseAI {
 
     // Determine max enemy attack units and current allied defenders
     final Map<Territory, ProAttackTerritoryData> enemyAttackMap = new HashMap<Territory, ProAttackTerritoryData>();
-    attackOptionsUtils.findMaxEnemyAttackUnits(player, new ArrayList<Territory>(), new ArrayList<Territory>(
+    attackOptionsUtils.findEnemyAttackOptions(player, new ArrayList<Territory>(), new ArrayList<Territory>(
         placeTerritories), enemyAttackMap);
     findDefendersInPlaceTerritories(purchaseTerritories);
 
@@ -878,7 +878,7 @@ public class ProPurchaseAI {
 
     // Determine max enemy attack units and current allied defenders
     final Map<Territory, ProAttackTerritoryData> enemyAttackMap = new HashMap<Territory, ProAttackTerritoryData>();
-    attackOptionsUtils.findMaxEnemyAttackUnits(player, new ArrayList<Territory>(), new ArrayList<Territory>(
+    attackOptionsUtils.findEnemyAttackOptions(player, new ArrayList<Territory>(), new ArrayList<Territory>(
         placeNonConstructionTerritories.keySet()), enemyAttackMap);
     findDefendersInPlaceTerritories(placeNonConstructionTerritories);
 

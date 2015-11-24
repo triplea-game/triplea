@@ -131,7 +131,7 @@ public class ProCombatMoveAI {
     for (final ProAttackTerritoryData patd : prioritizedTerritories) {
       territoriesToAttack.add(patd.getTerritory());
     }
-    attackOptionsUtils.findMaxEnemyAttackUnits(player, territoriesToAttack, new ArrayList<Territory>(), enemyAttackMap);
+    attackOptionsUtils.findEnemyAttackOptions(player, territoriesToAttack, new ArrayList<Territory>(), enemyAttackMap);
     Map<Territory, Double> territoryValueMap =
         territoryValueUtils.findTerritoryValues(player, minCostPerHitPoint, new ArrayList<Territory>(),
             territoriesToAttack);
@@ -153,7 +153,7 @@ public class ProCombatMoveAI {
         possibleTransportTerritories.addAll(data.getMap().getNeighbors(patd.getTerritory(), Matches.TerritoryIsWater));
       }
     }
-    attackOptionsUtils.findMaxEnemyAttackUnits(player, territoriesToAttack, new ArrayList<Territory>(
+    attackOptionsUtils.findEnemyAttackOptions(player, territoriesToAttack, new ArrayList<Territory>(
         possibleTransportTerritories), enemyAttackMap);
     territoryValueMap =
         territoryValueUtils.findTerritoryValues(player, minCostPerHitPoint, new ArrayList<Territory>(),
@@ -1488,7 +1488,7 @@ public class ProCombatMoveAI {
       final List<Territory> territoriesToCheck = new ArrayList<Territory>();
       territoriesToCheck.add(myCapital);
       final Map<Territory, ProAttackTerritoryData> enemyAttackMap = new HashMap<Territory, ProAttackTerritoryData>();
-      attackOptionsUtils.findMaxEnemyAttackUnits(player, territoriesToAttack, territoriesToCheck, enemyAttackMap);
+      attackOptionsUtils.findEnemyAttackOptions(player, territoriesToAttack, territoriesToCheck, enemyAttackMap);
       if (enemyAttackMap.get(myCapital) == null) {
         break;
       }
