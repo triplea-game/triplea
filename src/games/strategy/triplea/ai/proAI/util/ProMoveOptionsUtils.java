@@ -425,8 +425,7 @@ public class ProMoveOptionsUtils {
 
     // Get enemy players in order of turn
     final List<PlayerID> alliedPlayers = utils.getAlliedPlayersInTurnOrder(player);
-    final List<Map<Territory, ProTerritory>> alliedAttackMaps =
-        new ArrayList<Map<Territory, ProTerritory>>();
+    final List<Map<Territory, ProTerritory>> alliedAttackMaps = new ArrayList<Map<Territory, ProTerritory>>();
 
     // Loop through each enemy to determine the maximum number of enemy units that can attack each territory
     for (final PlayerID alliedPlayer : alliedPlayers) {
@@ -452,8 +451,7 @@ public class ProMoveOptionsUtils {
 
     // Get enemy players in order of turn
     final List<PlayerID> enemyPlayers = utils.getEnemyPlayersInTurnOrder(player);
-    final List<Map<Territory, ProTerritory>> enemyAttackMaps =
-        new ArrayList<Map<Territory, ProTerritory>>();
+    final List<Map<Territory, ProTerritory>> enemyAttackMaps = new ArrayList<Map<Territory, ProTerritory>>();
     final Set<Territory> alliedTerritories = new HashSet<Territory>();
     final List<Territory> enemyTerritories = new ArrayList<Territory>(myConqueredTerritories);
 
@@ -524,8 +522,7 @@ public class ProMoveOptionsUtils {
 
     // Get enemy players in order of turn
     final List<PlayerID> enemyPlayers = utils.getEnemyPlayersInTurnOrder(player);
-    final List<Map<Territory, ProTerritory>> enemyMoveMaps =
-        new ArrayList<Map<Territory, ProTerritory>>();
+    final List<Map<Territory, ProTerritory>> enemyMoveMaps = new ArrayList<Map<Territory, ProTerritory>>();
     final List<Territory> clearedTerritories =
         Match.getMatches(data.getMap().getTerritories(), Matches.isTerritoryAllied(player, data));
 
@@ -1179,12 +1176,12 @@ public class ProMoveOptionsUtils {
       }
 
       // Check strafing and using allied attack if enemy capital
-      boolean isEnemyCapital = false;
+      boolean isEnemyCapitalOrFactory = false;
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      if (ta != null && ta.isCapital()) {
-        isEnemyCapital = true;
+      if ((ta != null && ta.isCapital()) || ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t)) {
+        isEnemyCapitalOrFactory = true;
       }
-      if (patd.getMaxBattleResult().getWinPercentage() < MIN_WIN_PERCENTAGE && isEnemyCapital
+      if (patd.getMaxBattleResult().getWinPercentage() < MIN_WIN_PERCENTAGE && isEnemyCapitalOrFactory
           && alliedAttackOptions.getMax(t) != null) {
 
         // Check for allied attack
@@ -1215,8 +1212,9 @@ public class ProMoveOptionsUtils {
               battleUtils.estimateAttackBattleResults(alliedPlayer, t, new ArrayList<Unit>(alliedUnits),
                   new ArrayList<Unit>(enemyDefendersBeforeStrafe), alliedAttack.getMaxBombardUnits());
           if (result.getWinPercentage() < WIN_PERCENTAGE) {
+            patd.setStrafing(true);
 
-            // Try to strafe to allow allies to conquer capital
+            // Try to strafe to allow allies to conquer territory
             final Set<Unit> combinedUnits = new HashSet<Unit>(patd.getMaxUnits());
             combinedUnits.addAll(patd.getMaxAmphibUnits());
             final ProBattleResult strafeResult =
@@ -1228,7 +1226,7 @@ public class ProMoveOptionsUtils {
             enemyDefendersAfterStrafe.addAll(additionalEnemyDefenders);
             patd.setMaxBattleResult(battleUtils.estimateAttackBattleResults(alliedPlayer, t, new ArrayList<Unit>(
                 alliedUnits), new ArrayList<Unit>(enemyDefendersAfterStrafe), alliedAttack.getMaxBombardUnits()));
-            patd.setStrafing(true);
+
 
             ProLogger.debug("Checking strafing territory: " + t + ", alliedPlayer="
                 + alliedUnits.iterator().next().getOwner().getName() + ", maxWin%="

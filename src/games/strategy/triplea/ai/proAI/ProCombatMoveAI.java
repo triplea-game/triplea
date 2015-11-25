@@ -14,9 +14,9 @@ import games.strategy.triplea.ai.proAI.data.ProPurchaseOption;
 import games.strategy.triplea.ai.proAI.data.ProTerritory;
 import games.strategy.triplea.ai.proAI.data.ProTransport;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
-import games.strategy.triplea.ai.proAI.util.ProMoveOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
+import games.strategy.triplea.ai.proAI.util.ProMoveOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProMoveUtils;
 import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
 import games.strategy.triplea.ai.proAI.util.ProTerritoryValueUtils;
@@ -51,6 +51,7 @@ public class ProCombatMoveAI {
   public static double MIN_WIN_PERCENTAGE = 75;
 
   // Utilities
+  private final ProAI ai;
   private final ProUtils utils;
   private final ProBattleUtils battleUtils;
   private final ProTransportUtils transportUtils;
@@ -69,10 +70,11 @@ public class ProCombatMoveAI {
   private boolean isDefensive;
   private double minCostPerHitPoint;
 
-  public ProCombatMoveAI(final ProUtils utils, final ProBattleUtils battleUtils,
+  public ProCombatMoveAI(final ProAI ai, final ProUtils utils, final ProBattleUtils battleUtils,
       final ProTransportUtils transportUtils, final ProMoveOptionsUtils attackOptionsUtils,
       final ProMoveUtils moveUtils, final ProTerritoryValueUtils territoryValueUtils,
       final ProPurchaseUtils purchaseUtils) {
+    this.ai = ai;
     this.utils = utils;
     this.battleUtils = battleUtils;
     this.transportUtils = transportUtils;
@@ -193,14 +195,25 @@ public class ProCombatMoveAI {
     // Calculate attack routes and perform moves
     doMove(attackMap, moveDel, data, player, isSimulation);
 
+    // Set strafing territories to avoid retreats
+    final List<Territory> strafingTerritories = new ArrayList<Territory>();
+    for (final Territory t : attackMap.keySet()) {
+      if (attackMap.get(t).isStrafing()) {
+        strafingTerritories.add(t);
+      }
+    }
+    ai.setStoredStrafingTerritories(strafingTerritories);
+    ProLogger.info("Strafing territories: " + strafingTerritories);
+
     // Log results
     ProLogger.info("Logging results");
     logAttackMoves(attackMap, unitAttackMap, transportMapList, prioritizedTerritories);
+
     return attackMap;
   }
 
-  public void doMove(final Map<Territory, ProTerritory> attackMap, final IMoveDelegate moveDel,
-      final GameData data, final PlayerID player, final boolean isSimulation) {
+  public void doMove(final Map<Territory, ProTerritory> attackMap, final IMoveDelegate moveDel, final GameData data,
+      final PlayerID player, final boolean isSimulation) {
     this.data = data;
     this.player = player;
     areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
@@ -377,12 +390,8 @@ public class ProCombatMoveAI {
         final double estimate =
             battleUtils.estimateStrengthDifference(t, patd.getUnits(), patd.getMaxEnemyDefenders(player, data));
         final ProBattleResult result = patd.getBattleResult();
-        double winPercentage = WIN_PERCENTAGE;
-        if (patd.isCanAttack() || territoriesToTryToAttack.size() == 1) {
-          winPercentage = MIN_WIN_PERCENTAGE;
-        }
         if (!patd.isStrafing() && estimate < patd.getStrengthEstimate()
-            && (result.getWinPercentage() < winPercentage || !result.isHasLandUnitRemaining())) {
+            && (result.getWinPercentage() < MIN_WIN_PERCENTAGE || !result.isHasLandUnitRemaining())) {
           areSuccessful = false;
         }
       }
@@ -598,9 +607,9 @@ public class ProCombatMoveAI {
     }
   }
 
-  private List<Unit> moveOneDefenderToLandTerritoriesBorderingEnemy(
-      final Map<Territory, ProTerritory> attackMap, final Map<Unit, Set<Territory>> unitAttackMap,
-      final List<ProTerritory> prioritizedTerritories, final List<Territory> myUnitTerritories) {
+  private List<Unit> moveOneDefenderToLandTerritoriesBorderingEnemy(final Map<Territory, ProTerritory> attackMap,
+      final Map<Unit, Set<Territory>> unitAttackMap, final List<ProTerritory> prioritizedTerritories,
+      final List<Territory> myUnitTerritories) {
 
     ProLogger.info("Determine which territories to defend with one land unit");
 
@@ -1337,7 +1346,7 @@ public class ProCombatMoveAI {
       Territory minUnloadFromTerritory = null;
       for (final Territory t : amphibAttackOptions.get(transport)) {
         final ProTerritory patd = attackMap.get(t);
-        if (!patd.isCurrentlyWins() && !patd.isStrafing()) {
+        if (!patd.isCurrentlyWins()) {
           if (patd.getBattleResult() == null) {
             patd.setBattleResult(battleUtils.estimateAttackBattleResults(player, t, patd.getUnits(),
                 patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));

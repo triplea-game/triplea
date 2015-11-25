@@ -149,8 +149,8 @@ public class ProBattleUtils {
     final double strengthDifference = estimateStrengthDifference(t, attackingUnits, defendingUnits);
     if (strengthDifference > 55) {
       final boolean isLandAndCanOnlyBeAttackedByAir = !t.isWater() && Match.allMatch(attackingUnits, Matches.UnitIsAir);
-      return new ProBattleResult(100 + strengthDifference, 999 + strengthDifference,
-          !isLandAndCanOnlyBeAttackedByAir, attackingUnits, new ArrayList<Unit>(), 1);
+      return new ProBattleResult(100 + strengthDifference, 999 + strengthDifference, !isLandAndCanOnlyBeAttackedByAir,
+          attackingUnits, new ArrayList<Unit>(), 1);
     }
     return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits, false);
   }
@@ -194,7 +194,7 @@ public class ProBattleUtils {
 
   public ProBattleResult callBattleCalculator(final PlayerID player, final Territory t,
       final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits,
-      final boolean isAttacker, final boolean retreatWhenMetaPowerIsLower) {
+      final boolean isAttacker, final boolean retreatWhenOnlyAirLeft) {
 
     if (ai.isGameStopped()) {
       return new ProBattleResult();
@@ -206,14 +206,14 @@ public class ProBattleUtils {
     final int minArmySize = Math.min(attackingUnits.size(), defendingUnits.size());
     final int runCount = Math.max(16, 100 - minArmySize);
     if (isAttacker) {
-      if (retreatWhenMetaPowerIsLower) {
-        ai.getCalc().setRetreatWhenMetaPowerIsLower(true);
+      if (retreatWhenOnlyAirLeft) {
+        ai.getCalc().setRetreatWhenOnlyAirLeft(true);
       }
       results =
           ai.getCalc().setCalculateDataAndCalculate(player, t.getOwner(), t, attackingUnits, defendingUnits,
               new ArrayList<Unit>(bombardingUnits), TerritoryEffectHelper.getEffects(t), runCount);
-      if (retreatWhenMetaPowerIsLower) {
-        ai.getCalc().setRetreatWhenMetaPowerIsLower(false);
+      if (retreatWhenOnlyAirLeft) {
+        ai.getCalc().setRetreatWhenOnlyAirLeft(false);
       }
     } else {
       results =
@@ -249,9 +249,9 @@ public class ProBattleUtils {
     final List<Territory> tList = new ArrayList<Territory>();
     tList.add(t);
     if (Match.allMatch(tList, Matches.TerritoryIsLand)) {
-      return new ProBattleResult(winPercentage, TUVswing, Match.someMatch(averageAttackersRemaining,
-          Matches.UnitIsLand), averageAttackersRemaining, averageDefendersRemaining,
-          results.getAverageBattleRoundsFought());
+      return new ProBattleResult(winPercentage, TUVswing,
+          Match.someMatch(averageAttackersRemaining, Matches.UnitIsLand), averageAttackersRemaining,
+          averageDefendersRemaining, results.getAverageBattleRoundsFought());
     } else {
       return new ProBattleResult(winPercentage, TUVswing, !averageAttackersRemaining.isEmpty(),
           averageAttackersRemaining, averageDefendersRemaining, results.getAverageBattleRoundsFought());
