@@ -17,8 +17,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.ai.proAI.ProAI;
-import games.strategy.triplea.ai.proAI.ProAttackTerritoryData;
-import games.strategy.triplea.ai.proAI.ProBattleResultData;
+import games.strategy.triplea.ai.proAI.ProTerritory;
+import games.strategy.triplea.ai.proAI.ProBattleResult;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
@@ -72,7 +72,7 @@ public class ProSimulateTurnUtils {
         ProLogger.debug("attackers=" + attackers);
         ProLogger.debug("defenders=" + defenders);
         ProLogger.debug("bombardingUnits=" + bombardingUnits);
-        final ProBattleResultData result =
+        final ProBattleResult result =
             battleUtils.callBattleCalculator(player, t, attackers, defenders, bombardingUnits, true);
         final List<Unit> remainingUnits = result.getAverageAttackersRemaining();
         ProLogger.debug("remainingUnits=" + remainingUnits);
@@ -102,16 +102,16 @@ public class ProSimulateTurnUtils {
     }
   }
 
-  public Map<Territory, ProAttackTerritoryData> transferMoveMap(final Map<Territory, ProAttackTerritoryData> moveMap,
+  public Map<Territory, ProTerritory> transferMoveMap(final Map<Territory, ProTerritory> moveMap,
       final Map<Unit, Territory> unitTerritoryMap, final GameData fromData, final GameData toData, final PlayerID player) {
 
     ProLogger.info("Transferring move map");
 
-    final Map<Territory, ProAttackTerritoryData> result = new HashMap<Territory, ProAttackTerritoryData>();
+    final Map<Territory, ProTerritory> result = new HashMap<Territory, ProTerritory>();
     final List<Unit> usedUnits = new ArrayList<Unit>();
     for (final Territory fromTerritory : moveMap.keySet()) {
       final Territory toTerritory = toData.getMap().getTerritory(fromTerritory.getName());
-      final ProAttackTerritoryData patd = new ProAttackTerritoryData(toTerritory);
+      final ProTerritory patd = new ProTerritory(toTerritory);
       result.put(toTerritory, patd);
       final Map<Unit, List<Unit>> amphibAttackMap = moveMap.get(fromTerritory).getAmphibAttackMap();
       final Map<Unit, Boolean> isTransportingMap = moveMap.get(fromTerritory).getIsTransportingMap();

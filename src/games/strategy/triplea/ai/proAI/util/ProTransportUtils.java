@@ -14,7 +14,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.AdvancedUtils;
 import games.strategy.triplea.ai.proAI.ProAI;
-import games.strategy.triplea.ai.proAI.ProAttackTerritoryData;
+import games.strategy.triplea.ai.proAI.ProTerritory;
 import games.strategy.triplea.ai.proAI.ProPurchaseOption;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitSupportAttachment;
@@ -61,7 +61,7 @@ public class ProTransportUtils {
 
   public List<Unit> getUnitsToTransportThatCantMoveToHigherValue(final PlayerID player, final Unit transport,
       final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore,
-      final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Unit, Set<Territory>> unitMoveMap,
+      final Map<Territory, ProTerritory> moveMap, final Map<Unit, Set<Territory>> unitMoveMap,
       final double value) {
 
     final List<Unit> unitsToIgnoreOrHaveBetterLandMove = new ArrayList<Unit>(unitsToIgnore);

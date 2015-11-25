@@ -5,7 +5,7 @@ import java.util.List;
 
 import games.strategy.engine.data.Unit;
 
-public class ProBattleResultData {
+public class ProBattleResult {
 
   private double winPercentage;
   private double TUVSwing;
@@ -14,7 +14,7 @@ public class ProBattleResultData {
   private List<Unit> averageDefendersRemaining;
   private double battleRounds;
 
-  public ProBattleResultData() {
+  public ProBattleResult() {
     winPercentage = 0;
     TUVSwing = -1;
     hasLandUnitRemaining = false;
@@ -23,7 +23,7 @@ public class ProBattleResultData {
     battleRounds = 0;
   }
 
-  public ProBattleResultData(final double winPercentage, final double TUVSwing, final boolean hasLandUnitRemaining,
+  public ProBattleResult(final double winPercentage, final double TUVSwing, final boolean hasLandUnitRemaining,
       final List<Unit> averageAttackersRemaining, final List<Unit> averageDefendersRemaining, final double battleRounds) {
     this.winPercentage = winPercentage;
     this.TUVSwing = TUVSwing;

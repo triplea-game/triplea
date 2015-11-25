@@ -65,7 +65,7 @@ public class ProRetreatAI {
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
 
     // Calculate battle results
-    final ProBattleResultData result =
+    final ProBattleResult result =
         battleUtils.calculateBattleResults(player, battleTerritory, attackers, defenders, new HashSet<Unit>(),
             isAttacker);
 

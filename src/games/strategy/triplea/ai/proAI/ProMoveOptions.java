@@ -19,28 +19,28 @@ public class ProMoveOptions {
 
   private final ProUtils utils;
   private final ProBattleUtils battleUtils;
-  private final Map<Territory, ProAttackTerritoryData> maxMoveMap;
-  private final Map<Territory, List<ProAttackTerritoryData>> moveMaps;
+  private final Map<Territory, ProTerritory> maxMoveMap;
+  private final Map<Territory, List<ProTerritory>> moveMaps;
 
   public ProMoveOptions(final ProUtils utils, final ProBattleUtils battleUtils) {
     this.utils = utils;
     this.battleUtils = battleUtils;
-    maxMoveMap = new HashMap<Territory, ProAttackTerritoryData>();
-    moveMaps = new HashMap<Territory, List<ProAttackTerritoryData>>();
+    maxMoveMap = new HashMap<Territory, ProTerritory>();
+    moveMaps = new HashMap<Territory, List<ProTerritory>>();
   }
 
   public ProMoveOptions(final ProUtils utils, final ProBattleUtils battleUtils,
-      final List<Map<Territory, ProAttackTerritoryData>> moveMapList, final PlayerID player, final boolean isAttacker) {
+      final List<Map<Territory, ProTerritory>> moveMapList, final PlayerID player, final boolean isAttacker) {
     this(utils, battleUtils);
     populateMaxMoveMap(moveMapList, player, isAttacker);
     populateMoveMaps(moveMapList);
   }
 
-  public ProAttackTerritoryData getMax(final Territory t) {
+  public ProTerritory getMax(final Territory t) {
     return maxMoveMap.get(t);
   }
 
-  public List<ProAttackTerritoryData> getAll(final Territory t) {
+  public List<ProTerritory> getAll(final Territory t) {
     return moveMaps.get(t);
   }
 
@@ -49,13 +49,13 @@ public class ProMoveOptions {
     return maxMoveMap.toString();
   }
 
-  private void populateMaxMoveMap(final List<Map<Territory, ProAttackTerritoryData>> moveMaps, final PlayerID player,
+  private void populateMaxMoveMap(final List<Map<Territory, ProTerritory>> moveMaps, final PlayerID player,
       final boolean isAttacker) {
 
     // Get players in turn order
     final List<PlayerID> players = utils.getOtherPlayersInTurnOrder(player);
 
-    for (final Map<Territory, ProAttackTerritoryData> moveMap : moveMaps) {
+    for (final Map<Territory, ProTerritory> moveMap : moveMaps) {
       for (final Territory t : moveMap.keySet()) {
 
         // Get current player
@@ -99,11 +99,11 @@ public class ProMoveOptions {
     }
   }
 
-  private void populateMoveMaps(final List<Map<Territory, ProAttackTerritoryData>> moveMapList) {
-    for (final Map<Territory, ProAttackTerritoryData> moveMap : moveMapList) {
+  private void populateMoveMaps(final List<Map<Territory, ProTerritory>> moveMapList) {
+    for (final Map<Territory, ProTerritory> moveMap : moveMapList) {
       for (final Territory t : moveMap.keySet()) {
         if (!moveMaps.containsKey(t)) {
-          final List<ProAttackTerritoryData> list = new ArrayList<ProAttackTerritoryData>();
+          final List<ProTerritory> list = new ArrayList<ProTerritory>();
           list.add(moveMap.get(t));
           moveMaps.put(t, list);
         } else {

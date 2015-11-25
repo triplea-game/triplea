@@ -25,7 +25,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.ai.proAI.logging.ProMetricUtils;
-import games.strategy.triplea.ai.proAI.util.ProAttackOptionsUtils;
+import games.strategy.triplea.ai.proAI.util.ProMoveOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
 import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
@@ -60,7 +60,7 @@ public class ProPurchaseAI {
   private final ProUtils utils;
   private final ProBattleUtils battleUtils;
   private final ProTransportUtils transportUtils;
-  private final ProAttackOptionsUtils attackOptionsUtils;
+  private final ProMoveOptionsUtils attackOptionsUtils;
   private final ProTerritoryValueUtils territoryValueUtils;
   private final ProPurchaseUtils purchaseUtils;
 
@@ -73,7 +73,7 @@ public class ProPurchaseAI {
   private ProResourceTracker resourceTracker;
 
   public ProPurchaseAI(final ProUtils utils, final ProBattleUtils battleUtils, final ProTransportUtils transportUtils,
-      final ProAttackOptionsUtils attackOptionsUtils, final ProTerritoryValueUtils territoryValueUtils,
+      final ProMoveOptionsUtils attackOptionsUtils, final ProTerritoryValueUtils territoryValueUtils,
       final ProPurchaseUtils purchaseUtils) {
     this.utils = utils;
     this.battleUtils = battleUtils;
@@ -951,7 +951,7 @@ public class ProPurchaseAI {
         // Find current battle result
         final Set<Unit> enemyAttackingUnits = new HashSet<Unit>(enemyAttackOptions.getMax(t).getMaxUnits());
         enemyAttackingUnits.addAll(enemyAttackOptions.getMax(t).getMaxAmphibUnits());
-        final ProBattleResultData result =
+        final ProBattleResult result =
             battleUtils.calculateBattleResults(player, t, new ArrayList<Unit>(enemyAttackingUnits),
                 placeTerritory.getDefendingUnits(), enemyAttackOptions.getMax(t).getMaxBombardUnits(), false);
         placeTerritory.setMinBattleResult(result);
@@ -1070,7 +1070,7 @@ public class ProPurchaseAI {
 
       // Find all purchase territories for place territory
       final List<Unit> unitsToPlace = new ArrayList<Unit>();
-      ProBattleResultData finalResult = new ProBattleResultData();
+      ProBattleResult finalResult = new ProBattleResult();
       final List<ProPurchaseTerritory> selectedPurchaseTerritories =
           getPurchaseTerritories(placeTerritory, purchaseTerritories);
       for (final ProPurchaseTerritory purchaseTerritory : selectedPurchaseTerritories) {
@@ -1435,7 +1435,7 @@ public class ProPurchaseAI {
         final List<Unit> defenders = t.getUnits().getMatches(Matches.isUnitAllied(player, data));
         final Set<Unit> enemyAttackingUnits = new HashSet<Unit>(enemyAttackOptions.getMax(t).getMaxUnits());
         enemyAttackingUnits.addAll(enemyAttackOptions.getMax(t).getMaxAmphibUnits());
-        final ProBattleResultData result =
+        final ProBattleResult result =
             battleUtils.estimateDefendBattleResults(player, t, new ArrayList<Unit>(enemyAttackingUnits), defenders,
                 enemyAttackOptions.getMax(t).getMaxBombardUnits());
 
@@ -1668,7 +1668,7 @@ public class ProPurchaseAI {
         final List<Unit> unitsToPlace = new ArrayList<Unit>();
         final List<Unit> initialDefendingUnits = new ArrayList<Unit>(placeTerritory.getDefendingUnits());
         initialDefendingUnits.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
-        ProBattleResultData result =
+        ProBattleResult result =
             battleUtils.calculateBattleResults(player, t, enemyAttackOptions.getMax(t).getMaxUnits(),
                 initialDefendingUnits, enemyAttackOptions.getMax(t).getMaxBombardUnits(), false);
         boolean hasOnlyRetreatingSubs =
@@ -2365,7 +2365,7 @@ public class ProPurchaseAI {
       final List<Unit> unitsThatCanBePlaced = new ArrayList<Unit>(placeableUnits.getUnits());
       final int landPlaceCount = Math.min(remainingUnitProduction, unitsThatCanBePlaced.size());
       final List<Unit> unitsToPlace = new ArrayList<Unit>();
-      ProBattleResultData finalResult = new ProBattleResultData();
+      ProBattleResult finalResult = new ProBattleResult();
       for (int i = 0; i < landPlaceCount; i++) {
 
         // Add defender

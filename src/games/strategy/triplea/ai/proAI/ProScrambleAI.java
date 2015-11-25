@@ -14,7 +14,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
-import games.strategy.triplea.ai.proAI.util.ProAttackOptionsUtils;
+import games.strategy.triplea.ai.proAI.util.ProMoveOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
 import games.strategy.triplea.delegate.BattleDelegate;
@@ -32,9 +32,9 @@ public class ProScrambleAI {
   public static double MIN_WIN_PERCENTAGE = 80;
   private final ProAI ai;
   private final ProBattleUtils battleUtils;
-  private final ProAttackOptionsUtils attackOptionsUtils;
+  private final ProMoveOptionsUtils attackOptionsUtils;
 
-  public ProScrambleAI(final ProAI ai, final ProBattleUtils battleUtils, final ProAttackOptionsUtils attackOptionsUtils) {
+  public ProScrambleAI(final ProAI ai, final ProBattleUtils battleUtils, final ProMoveOptionsUtils attackOptionsUtils) {
     this.ai = ai;
     this.battleUtils = battleUtils;
     this.attackOptionsUtils = attackOptionsUtils;
@@ -58,7 +58,7 @@ public class ProScrambleAI {
     final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
     final Set<Unit> bombardingUnits = new HashSet<Unit>(battle.getBombardingUnits());
-    final ProBattleResultData minResult =
+    final ProBattleResult minResult =
         battleUtils.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
     ProLogger.debug(scrambleTo + ", minTUVSwing=" + minResult.getTUVSwing() + ", minWin%="
         + minResult.getWinPercentage());
@@ -91,7 +91,7 @@ public class ProScrambleAI {
       possibleMaxScramblerMap.put(t, canScrambleAir);
     }
     defenders.addAll(allScramblers);
-    final ProBattleResultData maxResult =
+    final ProBattleResult maxResult =
         battleUtils.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
     ProLogger.debug(scrambleTo + ", maxTUVSwing=" + maxResult.getTUVSwing() + ", maxWin%="
         + maxResult.getWinPercentage());
@@ -124,7 +124,7 @@ public class ProScrambleAI {
 
     // Add one scramble unit at a time and check if final result is better than min result
     final List<Unit> unitsToScramble = new ArrayList<Unit>();
-    ProBattleResultData result = minResult;
+    ProBattleResult result = minResult;
     for (final Unit u : sortedUnitDefendOptions.keySet()) {
       unitsToScramble.add(u);
       final List<Unit> currentDefenders = (List<Unit>) battle.getDefendingUnits();

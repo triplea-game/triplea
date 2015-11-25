@@ -17,12 +17,12 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.Match;
 
-public class ProAttackTerritoryData {
+public class ProTerritory {
 
   private Territory territory;
   private List<Unit> maxUnits;
   private List<Unit> units;
-  private ProBattleResultData maxBattleResult;
+  private ProBattleResult maxBattleResult;
   private double value;
   private double seaValue;
   private boolean canHold;
@@ -42,13 +42,13 @@ public class ProAttackTerritoryData {
 
   // Determine territory to attack variables
   private boolean currentlyWins;
-  private ProBattleResultData battleResult;
+  private ProBattleResult battleResult;
 
   // Non-combat move variables
   private List<Unit> cantMoveUnits;
   private List<Unit> maxEnemyUnits;
   private Set<Unit> maxEnemyBombardUnits;
-  private ProBattleResultData minBattleResult;
+  private ProBattleResult minBattleResult;
   private final List<Unit> tempUnits;
   private final Map<Unit, List<Unit>> tempAmphibAttackMap;
   private double loadValue;
@@ -56,14 +56,14 @@ public class ProAttackTerritoryData {
   // Scramble variables
   private List<Unit> maxScrambleUnits;
 
-  public ProAttackTerritoryData(final Territory territory) {
+  public ProTerritory(final Territory territory) {
     this.territory = territory;
     maxUnits = new ArrayList<Unit>();
     units = new ArrayList<Unit>();
     cantMoveUnits = new ArrayList<Unit>();
     maxEnemyUnits = new ArrayList<Unit>();
     maxEnemyBombardUnits = new HashSet<Unit>();
-    maxBattleResult = new ProBattleResultData();
+    maxBattleResult = new ProBattleResult();
     canHold = true;
     canAttack = false;
     strengthEstimate = Double.POSITIVE_INFINITY;
@@ -78,7 +78,7 @@ public class ProAttackTerritoryData {
     bombardTerritoryMap = new HashMap<Unit, Territory>();
     currentlyWins = false;
     battleResult = null;
-    minBattleResult = new ProBattleResultData();
+    minBattleResult = new ProBattleResult();
     tempUnits = new ArrayList<Unit>();
     tempAmphibAttackMap = new HashMap<Unit, List<Unit>>();
     loadValue = 0;
@@ -87,7 +87,7 @@ public class ProAttackTerritoryData {
     maxScrambleUnits = new ArrayList<Unit>();
   }
 
-  public ProAttackTerritoryData(final ProAttackTerritoryData patd) {
+  public ProTerritory(final ProTerritory patd) {
     this.territory = patd.getTerritory();
     maxUnits = new ArrayList<Unit>(patd.getMaxUnits());
     units = new ArrayList<Unit>(patd.getUnits());
@@ -276,7 +276,7 @@ public class ProAttackTerritoryData {
     return currentlyWins;
   }
 
-  public void setBattleResult(final ProBattleResultData battleResult) {
+  public void setBattleResult(final ProBattleResult battleResult) {
     this.battleResult = battleResult;
     if (battleResult == null) {
       currentlyWins = false;
@@ -286,7 +286,7 @@ public class ProAttackTerritoryData {
     }
   }
 
-  public ProBattleResultData getBattleResult() {
+  public ProBattleResult getBattleResult() {
     return battleResult;
   }
 
@@ -319,11 +319,11 @@ public class ProAttackTerritoryData {
     return maxEnemyUnits;
   }
 
-  public void setMinBattleResult(final ProBattleResultData minBattleResult) {
+  public void setMinBattleResult(final ProBattleResult minBattleResult) {
     this.minBattleResult = minBattleResult;
   }
 
-  public ProBattleResultData getMinBattleResult() {
+  public ProBattleResult getMinBattleResult() {
     return minBattleResult;
   }
 
@@ -417,11 +417,11 @@ public class ProAttackTerritoryData {
     return maxEnemyBombardUnits;
   }
 
-  public void setMaxBattleResult(final ProBattleResultData maxBattleResult) {
+  public void setMaxBattleResult(final ProBattleResult maxBattleResult) {
     this.maxBattleResult = maxBattleResult;
   }
 
-  public ProBattleResultData getMaxBattleResult() {
+  public ProBattleResult getMaxBattleResult() {
     return maxBattleResult;
   }
 
