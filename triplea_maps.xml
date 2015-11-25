@@ -1,67 +1,9 @@
 <?xml version="1.0"?>
 <games>
   <game>
-    <url>!</url>
-    <mapName>ABOUT THIS MOD LIST</mapName>
-    <description><![CDATA[
-        <div style="text-align: center;">
-        <!-- A preview picture. Web located to provide an ABSOLUTE path. If using Picasa, use size 288 or 400 and choose to exclude "album link" -->
-        <img src="http://tripleamaps.sourceforge.net/images/TripleA_Banner.png" />
-        <br>
-        <table border="1"bgcolor="BDBDBD">
-    <tr>
-    <th style="font-size:117%;000000">========================<br>Veqryn & Rolf's Quality MOD List<br>========================</th>
-    </tr>
-    </table>
-        <br>This list and hosted files are maintained by <b>Veqryn</b> and <b>Rolf</b>
-        <br>
-        <br>This is a slowly expanding list of hand-picked quality maps and mods.
-        <br>
-        <br>For Manual Installation, please visit:
-        <br><b>https://sourceforge.net/projects/tripleamaps/files/</b>
-        <br>
-        <br>For a How-To source on how to host, how to play, rules, etc:
-        <br><b>http://tinyurl.com/tripleaFAQ</b>
-        <br>
-        <br>For the TripleA Forums:
-        <br><b>http://triplea.sourceforge.net/mywiki/Forum</b>
-        <br>
-        <br>Where to download latest version of TripleA:
-        <br><b>https://sourceforge.net/projects/triplea/files/</b>
-        <br>
-        <br><img src="http://tripleamaps.sourceforge.net/images/TripleA_iconVeqryn_256withfighter.png" />
-        <br>
-        <br>Contact info:
-        <br>VEQRYN *at* hotmail *dot* com
-        <br>
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName/>
-    <description><![CDATA[
-    <br>
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName>HIGH QUALITY MAPS</mapName>
-    <description><![CDATA[
-        <br>Maps here feature good to excellent balance, high replay value, good documentation and good visuals.
-        <br>
-        <br>Maps failing in any of the above are thus not included here. 
-        <br>However, since we -  by far - have not checked all the available maps, not being listed at the top doesnt mean anything for a given map.
-        <br>New sections featuring untested but very promising candidates have been added below.
-        <br>The WW2 maps are in the list now too.
-        <br>
-        <br>Again, Only Maps meeting all above listed high quality requirements and having undergone extensive testing are located here. Maps from this section can be 
-            considered classics, and it should usually be no problem finding an opponent for any of them.
-    ]]></description>
-  </game>
-  <game>
     <!-- "!" given as first character of an URL causes the "Install Map" button to be disabled, and the mapname does not have to be unique anymore. Use to  format.-->
     <url>!</url>
-    <mapName>------------------------</mapName>
+    <mapName/>
     <description><![CDATA[
     <br>
     ]]></description>
@@ -139,11 +81,8 @@
     <version>2.7.7.2</version>
   </game>
   <game>
-    <!-- this is where your game zip file is -->
     <url>https://github.com/triplea-maps/270BC/releases/download/0.1/270BC.zip</url>
-    <!-- the name of the map (EXACTLY as used in the "mapName" property of the maps xml-file! Defines the maps installation directory name) -->
     <mapName>270BC</mapName>
-    <!-- Describe your game here (supports html, but no RELATIVE pathnames) -->
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_270BC_mini.png" />
     <br>
