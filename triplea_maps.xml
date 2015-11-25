@@ -735,7 +735,7 @@
     <version>1.2</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/starwarsgalacticwar/releases/download/0.1/starwarsgalacticwar.zip</url>
+    <url>https://github.com/triplea-maps/star_wars_galactic_war/releases/download/0.1/star_wars_galactic_war.zip</url>
     <mapName>StarWarsGalacticWar</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_starwars_galactic_war_mini.png" />
@@ -1081,7 +1081,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.4.9</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/worldwar2010/releases/download/0.1/worldwar2010.zip</url>
+    <url>https://github.com/triplea-maps/world_war_2010/releases/download/0.1/world_war_2010.zip</url>
     <mapName>WorldWar2010</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_world_war_2010_mini.png" />
@@ -1328,7 +1328,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>0.4</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/coldwarasia1948/releases/download/0.1/coldwarasia1948.zip</url>
+    <url>https://github.com/triplea-maps/cold_war_asia_1948/releases/download/0.1/cold_war_asia_1948.zip</url>
     <mapName>ColdWarAsia1948</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_cold_war_asia_1948_mini.png" />
@@ -1341,7 +1341,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.0</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/campdavid/releases/download/0.1/campdavid.zip</url>
+    <url>https://github.com/triplea-maps/camp_david/releases/download/0.1/camp_david.zip</url>
     <mapName>CampDavid</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_camp_david_mini2.png" />
@@ -1379,7 +1379,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>0.1</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/thegreatnorthernwar/releases/download/0.1/thegreatnorthernwar.zip</url>
+    <url>https://github.com/triplea-maps/the_great_norther_nwar/releases/download/0.1/the_great_northern_war.zip</url>
     <mapName>TheGreatNorthernWar</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_the_great_northern_war_mini.png" />
