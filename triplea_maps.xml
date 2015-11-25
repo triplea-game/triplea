@@ -218,7 +218,7 @@
     ]]></description>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/World%20War%20II%20Classic/releases/download/0.1/World%20War%20II%20Classic.zip</url>
+    <url>https://github.com/triplea-maps/World_War_II_Classic/releases/download/0.1/World_War_II_Classic.zip</url>
     <mapName>World War II Classic</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v1_classic_mini.png" />
@@ -233,7 +233,7 @@
     <version>2.0</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/World%20War%20II%20Revised/releases/download/0.1/World%20War%20II%20Revised.zip</url>
+    <url>https://github.com/triplea-maps/World_War_II_Revised/releases/download/0.1/World_War_II_Revised.zip</url>
     <mapName>World War II Revised</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v2_revised_mini.png" />
@@ -248,7 +248,7 @@
     <version>1.4.1</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/World%20War%20II%20v3/releases/download/0.1/World%20War%20II%20v3.zip</url>
+    <url>https://github.com/triplea-maps/World_War_II_v3/releases/download/0.1/World_War_II_v3.zip</url>
     <mapName>World War II v3</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v3_1941_mini.png" />
@@ -260,7 +260,7 @@
     <version>1.7</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/World%20War%20II%20v4/releases/download/0.1/World%20War%20II%20v4.zip</url>
+    <url>https://github.com/triplea-maps/World_War_II_v4/releases/download/0.1/World_War_II_v4.zip</url>
     <mapName>World War II v4</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v4_1942_mini.png" />
@@ -273,7 +273,7 @@
     <version>2.8</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/World%20War%20II%20Pacific/releases/download/0.1/World%20War%20II%20Pacific.zip</url>
+    <url>https://github.com/triplea-maps/World_War_II_Pacific/releases/download/0.1/World_War_II_Pacific.zip</url>
     <mapName>World War II Pacific</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_pacific_1940_mini.png" />
@@ -295,7 +295,7 @@
     <version>3.1</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/World%20War%20II%20Europe/releases/download/0.1/World%20War%20II%20Europe.zip</url>
+    <url>https://github.com/triplea-maps/World_War_II_Europe/releases/download/0.1/World_War_II_Europe.zip</url>
     <mapName>World War II Europe</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_europe_1940_mini.png" />
@@ -315,7 +315,7 @@
     <version>3.0</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/World%20War%20II%20Global/releases/download/0.1/World%20War%20II%20Global.zip</url>
+    <url>https://github.com/triplea-maps/World_War_II_Global/releases/download/0.1/World_War_II_Global.zip</url>
     <mapName>World War II Global</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_global_1940_mini.png" />
@@ -338,7 +338,7 @@
     <version>3.9</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/World%20War%20II%20v5%201942/releases/download/0.1/World%20War%20II%20v5%201942.zip</url>
+    <url>https://github.com/triplea-maps/World_War_II_v5_1942/releases/download/0.1/World_War_II_v5_1942.zip</url>
     <mapName>World War II v5 1942</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v5_1942_mini.png" />
@@ -359,7 +359,7 @@
     <version>1.9</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/World%20War%20II%20v6%201941/releases/download/0.1/World%20War%20II%20v6%201941.zip</url>
+    <url>https://github.com/triplea-maps/World_War_II_v6_1941/releases/download/0.1/World_War_II_v6_1941.zip</url>
     <mapName>World War II v6 1941</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v6_1941_mini.png" />
@@ -643,7 +643,7 @@
     <version>1.5</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/Battle%20of%20Aventurica/releases/download/0.1/Battle%20of%20Aventurica.zip</url>
+    <url>https://github.com/triplea-maps/Battle_of_Aventurica/releases/download/0.1/Battle_of_Aventurica.zip</url>
     <mapName>Battle of Aventurica</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_battle_of_aventurica_mini2.png" />
@@ -840,7 +840,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.3</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/World%20War%20II%20Revised%20Variations/releases/download/0.1/World%20War%20II%20Revised%20Variations.zip</url>
+    <url>https://github.com/triplea-maps/World_War_II_Revised_Variations/releases/download/0.1/World_War_II_Revised_Variations.zip</url>
     <mapName>World War II Revised Variations</mapName>
     <description><![CDATA[
     <br>6 army ffa
@@ -930,7 +930,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     ]]></description>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/World%20War%20II%20Global-battlemap_skin/releases/download/0.1/World%20War%20II%20Global-battlemap_skin.zip</url>
+    <url>https://github.com/triplea-maps/World_War_II_Global-battlemap_skin/releases/download/0.1/World_War_II_Global-battlemap_skin.zip</url>
     <mapName>World War II Global-battlemap_skin</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_global_1940_battlemap_skin_mini.png" />
@@ -1138,7 +1138,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.1.2</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/New%20World%20Order%20LebowskiEdition/releases/download/0.1/New%20World%20Order%20LebowskiEdition.zip</url>
+    <url>https://github.com/triplea-maps/New_World_Order_LebowskiEdition/releases/download/0.1/New_World_Order_LebowskiEdition.zip</url>
     <mapName>New World Order LebowskiEdition</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_nwo_1939_lebowski_mini.png" />
@@ -1149,7 +1149,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.0.3</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/WW2%20NEW%20WORLD%20ORDER/releases/download/0.1/WW2%20NEW%20WORLD%20ORDER.zip</url>
+    <url>https://github.com/triplea-maps/WW2_NEW_WORLD_ORDER/releases/download/0.1/WW2_NEW_WORLD_ORDER.zip</url>
     <mapName>WW2 NEW WORLD ORDER</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_nwo_mini.png" />
@@ -1233,7 +1233,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.3.2</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/WW2%20Phillipines/releases/download/0.1/WW2%20Phillipines.zip</url>
+    <url>https://github.com/triplea-maps/WW2_Phillipines/releases/download/0.1/WW2_Phillipines.zip</url>
     <mapName>WW2 Phillipines</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_atari_mini2.png" />
@@ -1419,7 +1419,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.0.1</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/Ancient%20Times/releases/download/0.1/Ancient%20Times.zip</url>
+    <url>https://github.com/triplea-maps/Ancient_Times/releases/download/0.1/Ancient_Times.zip</url>
     <mapName>Ancient Times</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ancient_times_mini.png" />
@@ -1429,7 +1429,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.0</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/War%20of%20the%20Lance/releases/download/0.1/War%20of%20the%20Lance.zip</url>
+    <url>https://github.com/triplea-maps/War_of_the_Lance/releases/download/0.1/War_of_the_Lance.zip</url>
     <mapName>War of the Lance</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_war_of_the_lance_mini.png" />
@@ -2009,7 +2009,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     ]]></description>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/developer%20resources/map%20makers/TripleA_Map_Creator/releases/download/0.1/developer%20resources/map%20makers/TripleA_Map_Creator.zip</url>
+    <url>https://github.com/triplea-maps/developer_resources/map_makers/TripleA_Map_Creator/releases/download/0.1/developer_resources/map_makers/TripleA_Map_Creator.zip</url>
     <mapName>TripleA_Map_Creator</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_Map_Creator_mini.png" />
@@ -2062,7 +2062,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.0.1.6</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/developer%20resources/map%20makers/Map_Making_Tutorial_Map/releases/download/0.1/developer%20resources/map%20makers/Map_Making_Tutorial_Map.zip</url>
+    <url>https://github.com/triplea-maps/developer_resources/map_makers/Map_Making_Tutorial_Map/releases/download/0.1/developer_resources/map_makers/Map_Making_Tutorial_Map.zip</url>
     <mapName>Map_Making_Tutorial_Map</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_map_making_tutorial_map_mini.png" />
