@@ -977,7 +977,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.8.6</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/diplomacy-mapskin1/releases/download/0.1/diplomacy-mapskin1.zip</url>
+    <url>https://github.com/triplea-maps/diplomacy-map_skin1/releases/download/0.1/diplomacy-map_skin1.zip</url>
     <mapName>Diplomacy-MapSkin1</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_diplomacy_mapskin1_mini.png" />
@@ -987,7 +987,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.0</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/diplomacy-mapskin2/releases/download/0.1/diplomacy-mapskin2.zip</url>
+    <url>https://github.com/triplea-maps/diplomacy-map_skin2/releases/download/0.1/diplomacy-map_skin2.zip</url>
     <mapName>Diplomacy-MapSkin2</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_diplomacy_mapskin2_mini.png" />
@@ -997,7 +997,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.0</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/diplomacy-mapskin3/releases/download/0.1/diplomacy-mapskin3.zip</url>
+    <url>https://github.com/triplea-maps/diplomacy-map_skin3/releases/download/0.1/diplomacy-map_skin3.zip</url>
     <mapName>Diplomacy-MapSkin3</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_diplomacy_mapskin3_mini.png" />
@@ -1806,7 +1806,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.3</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/new_world_order_1915_lebowski/releases/download/0.1/new_world_order_1915_lebowski.zip</url>
+    <url>https://github.com/triplea-maps/new_world_order1915lebowski/releases/download/0.1/new_world_order1915lebowski.zip</url>
     <mapName>NewWorldOrder1915Lebowski</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_nwo_1915_lebowski_mini.png" />
