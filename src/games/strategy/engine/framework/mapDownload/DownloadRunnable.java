@@ -68,6 +68,7 @@ public class DownloadRunnable implements Runnable {
 
   private void downloadFile() {
     URL url;
+
     try {
       url = new URL(urlString.trim());
     } catch (final MalformedURLException e1) {
@@ -77,6 +78,7 @@ public class DownloadRunnable implements Runnable {
     InputStream stream;
     try {
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
       int status = conn.getResponseCode();
       if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
           || status == HttpURLConnection.HTTP_SEE_OTHER) {
@@ -95,10 +97,11 @@ public class DownloadRunnable implements Runnable {
       }
     } catch (final Exception e) {
       error = e.getMessage();
+      return;
     }
     if (parse && getError() == null) {
       try {
-        downloads = new DownloadFileParser().parse(new ByteArrayInputStream(getContents()), urlString);
+        downloads = DownloadFileParser.parse(new ByteArrayInputStream(getContents()), urlString);
         if (downloads == null || downloads.isEmpty()) {
           error = "No games listed.";
         }
@@ -112,7 +115,7 @@ public class DownloadRunnable implements Runnable {
     File targetFile = new File(GameRunner2.getRootFolder(), urlString);
     try {
       contents = Files.readAllBytes(targetFile.toPath());
-      downloads = new DownloadFileParser().parse(new ByteArrayInputStream(getContents()), urlString);
+      downloads = DownloadFileParser.parse(new ByteArrayInputStream(getContents()), urlString);
     } catch (IOException e) {
       ClientLogger.logError("Failed to read file at: " + targetFile.getAbsolutePath(), e);
     }
