@@ -1,4 +1,4 @@
-package games.strategy.triplea.ai.proAI;
+package games.strategy.triplea.ai.proAI.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +12,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.ai.proAI.ProCombatMoveAI;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;

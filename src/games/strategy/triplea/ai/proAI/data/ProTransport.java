@@ -1,4 +1,4 @@
-package games.strategy.triplea.ai.proAI;
+package games.strategy.triplea.ai.proAI.data;
 
 import java.util.HashMap;
 import java.util.HashSet;
