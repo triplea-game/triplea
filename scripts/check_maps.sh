@@ -15,7 +15,7 @@ FAIL_COUNT=0
 
 for i in $(grep "<url>" "$MAP_FILE"  | grep -v "<\!--" | sed 's| *</*url>||g' | grep -v "^\!" | sort | uniq | sed 's///g');  do
     # curl each URL with an HTTP header request and check if we get a 404
-  curl -I "$i" 2>&1 | grep -q "404" && {
+  curl -I "$i" 2>&1 | grep -q "302 Found" || {
    echo "FAILED $i"
    FAIL_COUNT=$((FAIL_COUNT+1))
   }
