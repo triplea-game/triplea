@@ -40,6 +40,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.google.common.io.Files;
+
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
@@ -138,7 +141,6 @@ public class InstallMapDialog extends JDialog {
     }
     m_gamesList = new JList(gameNames);
     m_gamesList.setSelectedIndex(0);
-    // m_gamesList.setSelectionMode(ListSelectionModel.);
     // correctly handle empty names
     final ListCellRenderer oldRenderer = m_gamesList.getCellRenderer();
     m_gamesList.setCellRenderer(new ListCellRenderer() {
@@ -280,16 +282,14 @@ public class InstallMapDialog extends JDialog {
   }
 
   private void install(final DownloadFileDescription selected, final int count, final int total) {
-    // get the destination file
-    final File destination = new File(GameRunner2.getUserMapsFolder(), selected.getMapName() + ".zip");
+    String destinationFileName = Files.getNameWithoutExtension(selected.getUrl()) + ".zip";
+    final File destination = new File(GameRunner2.getUserMapsFolder(), destinationFileName);
+
     if (destination.exists()) {
       if (!destination.delete()) {
-        // TODO
-        // we can't delete the file on windows
-        // something is leaking a file descriptor to it
-        // the source seems to be some caching in the java url libraries
-        // called from the constructor of NewGameChooserEntry
-        // we will overwrite, rather than delete the file
+        // TODO we can't delete the file on windows something is leaking a file descriptor to it the source seems to be
+        // some caching in the java url libraries called from the constructor of NewGameChooserEntry we will overwrite,
+        // rather than delete the file
       }
     }
     final File tempFile = new File(System.getProperty("java.io.tmpdir"), "tadownload:" + UUID.randomUUID().toString());
@@ -302,9 +302,10 @@ public class InstallMapDialog extends JDialog {
       Util.notifyError(this, download.getError());
       return;
     }
-
-    try ( FileOutputStream sink = new FileOutputStream(tempFile)){
+    FileOutputStream sink = null;
+    try {
       validateZip(download);
+      sink = new FileOutputStream(tempFile);
       sink.write(download.getContents());
       sink.getFD().sync();
       final DownloadFileProperties props = new DownloadFileProperties();
@@ -313,12 +314,24 @@ public class InstallMapDialog extends JDialog {
     } catch (final IOException e) {
       Util.notifyError(this, "Could not create write to temp file:" + e.getMessage());
       return;
+    } finally {
+      if (sink != null) {
+        try {
+          sink.close();
+        } catch (final IOException e) {
+          ClientLogger.logQuietly(e);
+        }
+      }
     }
     // try to make sure it is a valid zip file
-    try (final FileInputStream fileInputStream = new FileInputStream(tempFile);
-        final ZipInputStream zis = new ZipInputStream(fileInputStream)) {
-      while (zis.getNextEntry() != null) {
-        zis.read(new byte[128]);
+    try {
+      final ZipInputStream zis = new ZipInputStream(new FileInputStream(tempFile));
+      try {
+        while (zis.getNextEntry() != null) {
+          zis.read(new byte[128]);
+        }
+      } finally {
+        zis.close();
       }
     } catch (final IOException e) {
       Util.notifyError(this, "Invalid zip file:" + e.getMessage());
@@ -327,15 +340,23 @@ public class InstallMapDialog extends JDialog {
     // move it to the games folder
     // try to rename first
     if (!tempFile.renameTo(destination)) {
-      try (final FileInputStream source = new FileInputStream(tempFile);
-          final FileOutputStream destSink = new FileOutputStream(destination);) {
-        copy(destSink, source);
-        destSink.getFD().sync();
+      try {
+        final FileInputStream source = new FileInputStream(tempFile);
+        try {
+          final FileOutputStream destSink = new FileOutputStream(destination);
+          try {
+            copy(destSink, source);
+            destSink.getFD().sync();
+          } finally {
+            destSink.close();
+          }
+        } finally {
+          source.close();
+          tempFile.delete();
+        }
       } catch (final IOException e) {
         Util.notifyError(this, e.getMessage());
         return;
-      } finally {
-        tempFile.delete();
       }
     }
   }
@@ -408,7 +429,7 @@ public class InstallMapDialog extends JDialog {
     return selected;
   }
 
-  public static void installGames(final Component parent, final List<DownloadFileDescription> games) {
+  protected static void installGames(final Component parent, final List<DownloadFileDescription> games) {
     final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
     final InstallMapDialog dia = new InstallMapDialog(parentFrame, games);
     dia.setSize(800, 620);
