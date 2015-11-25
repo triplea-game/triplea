@@ -466,25 +466,6 @@
     <version>1.7.8</version>
   </game>
   <game>
-    <url>http://triplea.ballcgi.com/download/coldwar-1965.zip</url>
-    <mapName>ColdWar-1965</mapName>
-    <description><![CDATA[
-    <img src="http://tripleamaps.sourceforge.net/images/TripleA_coldwar1965_mini.png" />
-    <br>Cold War 1965, by Dave Ball (Conarymor).  
-    <br>
-    <br>It is a global scenario for the Cold War in 1965.  
-    <br>It is designed for two alliances and up to six players.  
-    <br>If you are having any problems with the direct download, the ZIP install file can be found here: 
-    <br>http://triplea.ballcgi.com/download/ColdWar-1965.zip
-    <br>
-    <br>External Link used
-    <br>If link does not work, download manually from:
-    <br>https://sourceforge.net/projects/tripleamaps/files/maps/
-    <br>
-    ]]></description>
-    <version>0.7</version>
-  </game>
-  <game>
     <url>https://github.com/triplea-maps/battle_of_jutland/releases/download/0.1/battle_of_jutland.zip</url>
     <mapName>Battle_of_Jutland</mapName>
     <description><![CDATA[
@@ -618,28 +599,6 @@
         </p>
     ]]></description>
     <version>4.2</version>
-  </game>
-  <game>
-    <url>http://area51.xcomufo.com/invasion_usa.zip</url>
-    <mapName>Invasion_USA</mapName>
-    <description><![CDATA[
-    <img src="http://tripleamaps.sourceforge.net/images/TripleA_invasion_usa_mini.png" />
-    <br>Invasion USA by Hobbes, Ghost Rider, and Dagon81
-    <br>
-    <br>In the future an unknown enemy sets off a series of nuclear bombs on space above the U.S. provoking an electromagnetic pulse (E.M.P.) 
-        that shuts down nearly all electrical devices, bringing the economy to a halt.
-    <br>The few operational military forces quickly move to the cities to maintain order but hostile military forces are soon detected on 
-        both Eastern and Western coasts while enemy armies mass on the Southern border.
-    <br>Martial law is declared and militia forces called up to help defending the Northern Command.
-    <br>After sinking the remaining ships of the U.S. Navy, the forces of the Asian Alliance, the People's Liberation Front and the Euro Hegemony prepare for their next strikes.
-    <br>The invasion of the USA has begun...
-    <br>
-    <br>External Link used
-    <br>If link does not work, download manually from:
-    <br>https://sourceforge.net/projects/tripleamaps/files/maps/
-    <br>
-    ]]></description>
-    <version>1.5</version>
   </game>
   <game>
     <url>https://github.com/triplea-maps/battle_of_aventurica/releases/download/0.1/battle_of_aventurica.zip</url>
@@ -1906,27 +1865,6 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <br>
     ]]></description>
     <version>1.0</version>
-  </game>
-  <game>
-    <url>https://sites.google.com/site/uboataaa/home/iwo_jima.zip</url>
-    <mapName>Iwo_Jima</mapName>
-    <description><![CDATA[
-    <img src="http://tripleamaps.sourceforge.net/images/TripleA_iwo_jima_mini.png" />
-    <br>Battle of Iwo Jima
-    <br>by U-Boat
-    <br>
-    <br>From February 19th to March 26th of the year 1945 many brave men from the Japanese Imperial Army and 
-        United States Marine Corps lost their lives to protect and capture an 8 sq mi volcanic island named Iwo Jima.
-    <br>
-    <br>abandoned
-    <br>
-    <br>
-    <br>External Link used
-    <br>If link does not work, download manually from:
-    <br>https://sourceforge.net/projects/tripleamaps/files/maps/
-    <br>
-    ]]></description>
-    <version>0.3</version>
   </game>
   <game>
     <url>https://github.com/triplea-maps/hex_globe10/releases/download/0.1/hex_globe10.zip</url>
