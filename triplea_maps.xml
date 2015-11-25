@@ -67,7 +67,7 @@
     ]]></description>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Total_World_War/releases/download/0.1/Total_World_War.zip</url>
+    <url>https://github.com/triplea-maps/Total_World_War/releases/download/0.1/Total_World_War.zip</url>
     <mapName>Total_World_War</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_total_world_war_mini.png" />
@@ -140,7 +140,7 @@
   </game>
   <game>
     <!-- this is where your game zip file is -->
-    <url>http://github.com/triplea-maps/270BC/releases/download/0.1/270BC.zip</url>
+    <url>https://github.com/triplea-maps/270BC/releases/download/0.1/270BC.zip</url>
     <!-- the name of the map (EXACTLY as used in the "mapName" property of the maps xml-file! Defines the maps installation directory name) -->
     <mapName>270BC</mapName>
     <!-- Describe your game here (supports html, but no RELATIVE pathnames) -->
@@ -156,7 +156,7 @@
     <version>1.6</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Civil_War/releases/download/0.1/Civil_War.zip</url>
+    <url>https://github.com/triplea-maps/Civil_War/releases/download/0.1/Civil_War.zip</url>
     <mapName>Civil_War</mapName>
     <description><![CDATA[
           <img src="http://tripleamaps.sourceforge.net/images/TripleA_civil_war_mini.png" />
@@ -201,7 +201,7 @@
   </game>
   <game>
     <!-- alt download link: http://sourceforge.net/projects/tripleamaps/files/maps/World_At_War/releases/download/0.1/files/maps/World_At_War.zip  -->
-    <url>http://github.com/triplea-maps/world_at_war/releases/download/0.1/world_at_war/releases/download/0.1/world_at_war/releases/download/0.1/world_at_war.zip</url>
+    <url>https://github.com/triplea-maps/world_at_war/releases/download/0.1/world_at_war/releases/download/0.1/world_at_war/releases/download/0.1/world_at_war.zip</url>
     <mapName>World_At_War</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_world_at_war_mini.png" />
@@ -218,7 +218,7 @@
     <version>1.1.9</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/The_Rising_Sun/releases/download/0.1/The_Rising_Sun.zip</url>
+    <url>https://github.com/triplea-maps/The_Rising_Sun/releases/download/0.1/The_Rising_Sun.zip</url>
     <mapName>The_Rising_Sun</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_the_rising_sun_mini.png" />
@@ -236,7 +236,7 @@
     <version>1.9.3</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Diplomacy/releases/download/0.1/Diplomacy.zip</url>
+    <url>https://github.com/triplea-maps/Diplomacy/releases/download/0.1/Diplomacy.zip</url>
     <mapName>Diplomacy</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_diplomacy_mini.png" />
@@ -279,7 +279,7 @@
     ]]></description>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/World%20War%20II%20Classic/releases/download/0.1/World%20War%20II%20Classic.zip</url>
+    <url>https://github.com/triplea-maps/World%20War%20II%20Classic/releases/download/0.1/World%20War%20II%20Classic.zip</url>
     <mapName>World War II Classic</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v1_classic_mini.png" />
@@ -294,7 +294,7 @@
     <version>2.0</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/World%20War%20II%20Revised/releases/download/0.1/World%20War%20II%20Revised.zip</url>
+    <url>https://github.com/triplea-maps/World%20War%20II%20Revised/releases/download/0.1/World%20War%20II%20Revised.zip</url>
     <mapName>World War II Revised</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v2_revised_mini.png" />
@@ -309,7 +309,7 @@
     <version>1.4.1</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/World%20War%20II%20v3/releases/download/0.1/World%20War%20II%20v3.zip</url>
+    <url>https://github.com/triplea-maps/World%20War%20II%20v3/releases/download/0.1/World%20War%20II%20v3.zip</url>
     <mapName>World War II v3</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v3_1941_mini.png" />
@@ -321,7 +321,7 @@
     <version>1.7</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/World%20War%20II%20v4/releases/download/0.1/World%20War%20II%20v4.zip</url>
+    <url>https://github.com/triplea-maps/World%20War%20II%20v4/releases/download/0.1/World%20War%20II%20v4.zip</url>
     <mapName>World War II v4</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v4_1942_mini.png" />
@@ -334,7 +334,7 @@
     <version>2.8</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/World%20War%20II%20Pacific/releases/download/0.1/World%20War%20II%20Pacific.zip</url>
+    <url>https://github.com/triplea-maps/World%20War%20II%20Pacific/releases/download/0.1/World%20War%20II%20Pacific.zip</url>
     <mapName>World War II Pacific</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_pacific_1940_mini.png" />
@@ -356,7 +356,7 @@
     <version>3.1</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/World%20War%20II%20Europe/releases/download/0.1/World%20War%20II%20Europe.zip</url>
+    <url>https://github.com/triplea-maps/World%20War%20II%20Europe/releases/download/0.1/World%20War%20II%20Europe.zip</url>
     <mapName>World War II Europe</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_europe_1940_mini.png" />
@@ -376,7 +376,7 @@
     <version>3.0</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/World%20War%20II%20Global/releases/download/0.1/World%20War%20II%20Global.zip</url>
+    <url>https://github.com/triplea-maps/World%20War%20II%20Global/releases/download/0.1/World%20War%20II%20Global.zip</url>
     <mapName>World War II Global</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_global_1940_mini.png" />
@@ -399,7 +399,7 @@
     <version>3.9</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/World%20War%20II%20v5%201942/releases/download/0.1/World%20War%20II%20v5%201942.zip</url>
+    <url>https://github.com/triplea-maps/World%20War%20II%20v5%201942/releases/download/0.1/World%20War%20II%20v5%201942.zip</url>
     <mapName>World War II v5 1942</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v5_1942_mini.png" />
@@ -420,7 +420,7 @@
     <version>1.9</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/World%20War%20II%20v6%201941/releases/download/0.1/World%20War%20II%20v6%201941.zip</url>
+    <url>https://github.com/triplea-maps/World%20War%20II%20v6%201941/releases/download/0.1/World%20War%20II%20v6%201941.zip</url>
     <mapName>World War II v6 1941</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v6_1941_mini.png" />
@@ -474,7 +474,7 @@
     ]]></description>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/big_world_2/releases/download/0.1/big_world_2.zip</url>
+    <url>https://github.com/triplea-maps/big_world_2/releases/download/0.1/big_world_2.zip</url>
     <mapName>big_world_2</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_big_world2_mini.png" />
@@ -513,7 +513,7 @@
     <version>6.1.2</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Ultimate_World/releases/download/0.1/Ultimate_World.zip</url>
+    <url>https://github.com/triplea-maps/ultimate_world/releases/download/0.1/ultimate_world.zip</url>
     <mapName>Ultimate_World</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ultimate_world_mini.png" />
@@ -547,7 +547,7 @@
     <version>0.7</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Battle_of_Jutland/releases/download/0.1/Battle_of_Jutland.zip</url>
+    <url>https://github.com/triplea-maps/Battle_of_Jutland/releases/download/0.1/Battle_of_Jutland.zip</url>
     <mapName>Battle_of_Jutland</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_battle_of_jutland_mini.png" />
@@ -640,7 +640,7 @@
     <version>1.8</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Red_Sun_Over_China/releases/download/0.1/Red_Sun_Over_China.zip</url>
+    <url>https://github.com/triplea-maps/red_sun_over_china/releases/download/0.1/red_sun_over_china.zip</url>
     <mapName>Red_Sun_Over_China</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_red_sun_over_china_mini.png" />
@@ -655,7 +655,7 @@
     <version>2.3.1</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/FeudalJapan/releases/download/0.1/FeudalJapan.zip</url>
+    <url>https://github.com/triplea-maps/FeudalJapan/releases/download/0.1/FeudalJapan.zip</url>
     <mapName>FeudalJapan</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_feudal_japan_mini.png" />
@@ -704,7 +704,7 @@
     <version>1.5</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Battle%20of%20Aventurica/releases/download/0.1/Battle%20of%20Aventurica.zip</url>
+    <url>https://github.com/triplea-maps/Battle%20of%20Aventurica/releases/download/0.1/Battle%20of%20Aventurica.zip</url>
     <mapName>Battle of Aventurica</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_battle_of_aventurica_mini2.png" />
@@ -718,7 +718,7 @@
     <version>1.1.2</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Greyhawk_Wars/releases/download/0.1/Greyhawk_Wars.zip</url>
+    <url>https://github.com/triplea-maps/Greyhawk_Wars/releases/download/0.1/Greyhawk_Wars.zip</url>
     <mapName>Greyhawk_Wars</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_greyhawk_wars_mini.png" />
@@ -741,7 +741,7 @@
     <version>1.0</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Greyhawk/releases/download/0.1/Greyhawk.zip</url>
+    <url>https://github.com/triplea-maps/Greyhawk/releases/download/0.1/Greyhawk.zip</url>
     <mapName>Greyhawk</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_greyhawk_mini.png" />
@@ -757,7 +757,7 @@
     <version>0.9.9</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/domination/releases/download/0.1/domination.zip</url>
+    <url>https://github.com/triplea-maps/domination/releases/download/0.1/domination.zip</url>
     <mapName>domination</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_domination_mini.png" />
@@ -776,7 +776,7 @@
     <version>1.6</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/twilight_imperium/releases/download/0.1/twilight_imperium.zip</url>
+    <url>https://github.com/triplea-maps/twilight_imperium/releases/download/0.1/twilight_imperium.zip</url>
     <mapName>twilight_imperium</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_twilight_imperium_mini2.png" />
@@ -796,7 +796,7 @@
     <version>1.2</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/StarWarsGalacticWar/releases/download/0.1/StarWarsGalacticWar.zip</url>
+    <url>https://github.com/triplea-maps/StarWarsGalacticWar/releases/download/0.1/StarWarsGalacticWar.zip</url>
     <mapName>StarWarsGalacticWar</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_starwars_galactic_war_mini.png" />
@@ -810,7 +810,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.2</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/StarWarsTatooineWar/releases/download/0.1/StarWarsTatooineWar.zip</url>
+    <url>https://github.com/triplea-maps/StarWarsTatooineWar/releases/download/0.1/StarWarsTatooineWar.zip</url>
     <mapName>StarWarsTatooineWar</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_starwars_tatooine_war_mini.png" />
@@ -824,7 +824,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.2</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Pacific_Challenge/releases/download/0.1/Pacific_Challenge.zip</url>
+    <url>https://github.com/triplea-maps/Pacific_Challenge/releases/download/0.1/Pacific_Challenge.zip</url>
     <mapName>Pacific_Challenge</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_pacific_challenge_mini.png" />
@@ -844,7 +844,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     ]]></description>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/big_world_variations/releases/download/0.1/big_world_variations.zip</url>
+    <url>https://github.com/triplea-maps/big_world_variations/releases/download/0.1/big_world_variations.zip</url>
     <mapName>big_world_variations</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_big_world_mini.png" />
@@ -861,7 +861,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>3.6.6</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/NWO_Variants/releases/download/0.1/NWO_Variants.zip</url>
+    <url>https://github.com/triplea-maps/NWO_Variants/releases/download/0.1/NWO_Variants.zip</url>
     <mapName>NWO_Variants</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_new_world_order_mini.png" />
@@ -884,7 +884,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.4.1</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/pact_of_steel_variations/releases/download/0.1/pact_of_steel_variations.zip</url>
+    <url>https://github.com/triplea-maps/pact_of_steel_variations/releases/download/0.1/pact_of_steel_variations.zip</url>
     <mapName>pact_of_steel_variations</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_pact_of_steel_china_added_mini.png" />
@@ -901,7 +901,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.3</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/World%20War%20II%20Revised%20Variations/releases/download/0.1/World%20War%20II%20Revised%20Variations.zip</url>
+    <url>https://github.com/triplea-maps/World%20War%20II%20Revised%20Variations/releases/download/0.1/World%20War%20II%20Revised%20Variations.zip</url>
     <mapName>World War II Revised Variations</mapName>
     <description><![CDATA[
     <br>6 army ffa
@@ -937,7 +937,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.3.5</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Classic_variations/releases/download/0.1/Classic_variations.zip</url>
+    <url>https://github.com/triplea-maps/Classic_variations/releases/download/0.1/Classic_variations.zip</url>
     <mapName>Classic_variations</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v1_classic_mini.png" />
@@ -991,7 +991,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     ]]></description>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/World%20War%20II%20Global-battlemap_skin/releases/download/0.1/World%20War%20II%20Global-battlemap_skin.zip</url>
+    <url>https://github.com/triplea-maps/World%20War%20II%20Global-battlemap_skin/releases/download/0.1/World%20War%20II%20Global-battlemap_skin.zip</url>
     <mapName>World War II Global-battlemap_skin</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_global_1940_battlemap_skin_mini.png" />
@@ -1005,7 +1005,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>3.6</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/new_world_order-skin_sieg_2/releases/download/0.1/new_world_order-skin_sieg_2.zip</url>
+    <url>https://github.com/triplea-maps/new_world_order-skin_sieg_2/releases/download/0.1/new_world_order-skin_sieg_2.zip</url>
     <mapName>new_world_order-skin_sieg_2</mapName>
     <description><![CDATA[
 
@@ -1022,7 +1022,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.8.6</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/new_world_order-skin_pulicat_1/releases/download/0.1/new_world_order-skin_pulicat_1.zip</url>
+    <url>https://github.com/triplea-maps/new_world_order-skin_pulicat_1/releases/download/0.1/new_world_order-skin_pulicat_1.zip</url>
     <mapName>new_world_order-skin_pulicat_1</mapName>
     <description><![CDATA[
      
@@ -1039,7 +1039,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.8.6</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/new_world_order-skin_gudkarma_1/releases/download/0.1/new_world_order-skin_gudkarma_1.zip</url>
+    <url>https://github.com/triplea-maps/new_world_order-skin_gudkarma_1/releases/download/0.1/new_world_order-skin_gudkarma_1.zip</url>
     <mapName>new_world_order-skin_gudkarma_1</mapName>
     <description><![CDATA[
 
@@ -1056,7 +1056,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.8.6</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Diplomacy-MapSkin1/releases/download/0.1/Diplomacy-MapSkin1.zip</url>
+    <url>https://github.com/triplea-maps/Diplomacy-MapSkin1/releases/download/0.1/Diplomacy-MapSkin1.zip</url>
     <mapName>Diplomacy-MapSkin1</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_diplomacy_mapskin1_mini.png" />
@@ -1066,7 +1066,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.0</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Diplomacy-MapSkin2/releases/download/0.1/Diplomacy-MapSkin2.zip</url>
+    <url>https://github.com/triplea-maps/Diplomacy-MapSkin2/releases/download/0.1/Diplomacy-MapSkin2.zip</url>
     <mapName>Diplomacy-MapSkin2</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_diplomacy_mapskin2_mini.png" />
@@ -1076,7 +1076,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.0</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Diplomacy-MapSkin3/releases/download/0.1/Diplomacy-MapSkin3.zip</url>
+    <url>https://github.com/triplea-maps/Diplomacy-MapSkin3/releases/download/0.1/Diplomacy-MapSkin3.zip</url>
     <mapName>Diplomacy-MapSkin3</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_diplomacy_mapskin3_mini.png" />
@@ -1110,7 +1110,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     ]]></description>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/World_At_War_Variants/releases/download/0.1/World_At_War_Variants.zip</url>
+    <url>https://github.com/triplea-maps/World_At_War_Variants/releases/download/0.1/World_At_War_Variants.zip</url>
     <mapName>World_At_War_Variants</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_world_at_war_mini.png" />
@@ -1159,7 +1159,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.4.9</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/WorldWar2010/releases/download/0.1/WorldWar2010.zip</url>
+    <url>https://github.com/triplea-maps/WorldWar2010/releases/download/0.1/WorldWar2010.zip</url>
     <mapName>WorldWar2010</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_world_war_2010_mini.png" />
@@ -1184,7 +1184,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.3.0</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Global_War/releases/download/0.1/Global_War.zip</url>
+    <url>https://github.com/triplea-maps/Global_War/releases/download/0.1/Global_War.zip</url>
     <mapName>Global_War</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_global_war_mini.png" />
@@ -1202,7 +1202,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.3</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Global_War2/releases/download/0.1/Global_War2.zip</url>
+    <url>https://github.com/triplea-maps/Global_War2/releases/download/0.1/Global_War2.zip</url>
     <mapName>Global_War2</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_global_war_2_mini.png" />
@@ -1216,7 +1216,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.1.2</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/New%20World%20Order%20LebowskiEdition/releases/download/0.1/New%20World%20Order%20LebowskiEdition.zip</url>
+    <url>https://github.com/triplea-maps/New%20World%20Order%20LebowskiEdition/releases/download/0.1/New%20World%20Order%20LebowskiEdition.zip</url>
     <mapName>New World Order LebowskiEdition</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_nwo_1939_lebowski_mini.png" />
@@ -1227,7 +1227,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.0.3</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/WW2%20NEW%20WORLD%20ORDER/releases/download/0.1/WW2%20NEW%20WORLD%20ORDER.zip</url>
+    <url>https://github.com/triplea-maps/WW2%20NEW%20WORLD%20ORDER/releases/download/0.1/WW2%20NEW%20WORLD%20ORDER.zip</url>
     <mapName>WW2 NEW WORLD ORDER</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_nwo_mini.png" />
@@ -1243,7 +1243,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.0.1</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/WW2v3_11N/releases/download/0.1/WW2v3_11N.zip</url>
+    <url>https://github.com/triplea-maps/WW2v3_11N/releases/download/0.1/WW2v3_11N.zip</url>
     <mapName>WW2v3_11N</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v3_11nation_mini.png" />
@@ -1258,7 +1258,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.1.0</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/WW2v3_Variants/releases/download/0.1/WW2v3_Variants.zip</url>
+    <url>https://github.com/triplea-maps/WW2v3_Variants/releases/download/0.1/WW2v3_Variants.zip</url>
     <mapName>WW2v3_Variants</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v3_11nation_mini.png" />
@@ -1297,7 +1297,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     ]]></description>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Atari/releases/download/0.1/Atari.zip</url>
+    <url>https://github.com/triplea-maps/atari/releases/download/0.1/atari.zip</url>
     <mapName>Atari</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_atari_mini2.png" />
@@ -1311,7 +1311,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.3.2</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/WW2%20Phillipines/releases/download/0.1/WW2%20Phillipines.zip</url>
+    <url>https://github.com/triplea-maps/WW2%20Phillipines/releases/download/0.1/WW2%20Phillipines.zip</url>
     <mapName>WW2 Phillipines</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_atari_mini2.png" />
@@ -1324,7 +1324,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.3.2</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Eastern_Front/releases/download/0.1/Eastern_Front.zip</url>
+    <url>https://github.com/triplea-maps/Eastern_Front/releases/download/0.1/Eastern_Front.zip</url>
     <mapName>Eastern_Front</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_eastern_front_mini.png" />
@@ -1335,7 +1335,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.3.3</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/D-Day/releases/download/0.1/D-Day.zip</url>
+    <url>https://github.com/triplea-maps/D-Day/releases/download/0.1/D-Day.zip</url>
     <mapName>D-Day</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_d-day_mini.png" />
@@ -1351,7 +1351,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.1</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/D-Day2/releases/download/0.1/D-Day2.zip</url>
+    <url>https://github.com/triplea-maps/D-Day2/releases/download/0.1/D-Day2.zip</url>
     <mapName>D-Day2</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_d-day_mini.png" />
@@ -1364,7 +1364,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.2</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Arnhem/releases/download/0.1/Arnhem.zip</url>
+    <url>https://github.com/triplea-maps/Arnhem/releases/download/0.1/Arnhem.zip</url>
     <mapName>Arnhem</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_arnhem_mini2.png" />
@@ -1376,7 +1376,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.1.1</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Tactics_Campaign/releases/download/0.1/Tactics_Campaign.zip</url>
+    <url>https://github.com/triplea-maps/Tactics_Campaign/releases/download/0.1/Tactics_Campaign.zip</url>
     <mapName>Tactics_Campaign</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_tactics_campaign_mini2.png" />
@@ -1393,7 +1393,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.1</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Neuschwabenland/releases/download/0.1/Neuschwabenland.zip</url>
+    <url>https://github.com/triplea-maps/Neuschwabenland/releases/download/0.1/Neuschwabenland.zip</url>
     <mapName>Neuschwabenland</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_neuschwabenland_mini.png" />
@@ -1406,7 +1406,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>0.4</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/ColdWarAsia1948/releases/download/0.1/ColdWarAsia1948.zip</url>
+    <url>https://github.com/triplea-maps/ColdWarAsia1948/releases/download/0.1/ColdWarAsia1948.zip</url>
     <mapName>ColdWarAsia1948</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_cold_war_asia_1948_mini.png" />
@@ -1419,7 +1419,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.0</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/CampDavid/releases/download/0.1/CampDavid.zip</url>
+    <url>https://github.com/triplea-maps/CampDavid/releases/download/0.1/CampDavid.zip</url>
     <mapName>CampDavid</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_camp_david_mini2.png" />
@@ -1441,7 +1441,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>0.6.2</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/cold_war/releases/download/0.1/cold_war.zip</url>
+    <url>https://github.com/triplea-maps/cold_war/releases/download/0.1/cold_war.zip</url>
     <mapName>cold_war</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_cold_war_mini.png" />
@@ -1457,7 +1457,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>0.1</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/TheGreatNorthernWar/releases/download/0.1/TheGreatNorthernWar.zip</url>
+    <url>https://github.com/triplea-maps/TheGreatNorthernWar/releases/download/0.1/TheGreatNorthernWar.zip</url>
     <mapName>TheGreatNorthernWar</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_the_great_northern_war_mini.png" />
@@ -1474,7 +1474,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>0.3.1</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Age_Of_The_Sturlungs/releases/download/0.1/Age_Of_The_Sturlungs.zip</url>
+    <url>https://github.com/triplea-maps/Age_Of_The_Sturlungs/releases/download/0.1/Age_Of_The_Sturlungs.zip</url>
     <mapName>Age_Of_The_Sturlungs</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_age_of_the_sturlungs_mini.png" />
@@ -1487,7 +1487,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>0.0.2</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/FirstPunicWar/releases/download/0.1/FirstPunicWar.zip</url>
+    <url>https://github.com/triplea-maps/FirstPunicWar/releases/download/0.1/FirstPunicWar.zip</url>
     <mapName>FirstPunicWar</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_first_punic_war_mini.png" />
@@ -1497,7 +1497,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.0.1</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Ancient%20Times/releases/download/0.1/Ancient%20Times.zip</url>
+    <url>https://github.com/triplea-maps/Ancient%20Times/releases/download/0.1/Ancient%20Times.zip</url>
     <mapName>Ancient Times</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ancient_times_mini.png" />
@@ -1507,7 +1507,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.0</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/War%20of%20the%20Lance/releases/download/0.1/War%20of%20the%20Lance.zip</url>
+    <url>https://github.com/triplea-maps/War%20of%20the%20Lance/releases/download/0.1/War%20of%20the%20Lance.zip</url>
     <mapName>War of the Lance</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_war_of_the_lance_mini.png" />
@@ -1521,7 +1521,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.2</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Rome_Total_War/releases/download/0.1/Rome_Total_War.zip</url>
+    <url>https://github.com/triplea-maps/Rome_Total_War/releases/download/0.1/Rome_Total_War.zip</url>
     <mapName>Rome_Total_War</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_rome_total_war_mini.png" />
@@ -1535,7 +1535,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.0.4</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Large_Middle_Earth/releases/download/0.1/Large_Middle_Earth.zip</url>
+    <url>https://github.com/triplea-maps/Large_Middle_Earth/releases/download/0.1/Large_Middle_Earth.zip</url>
     <mapName>Large_Middle_Earth</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_large_middle_earth_mini.png" />
@@ -1564,7 +1564,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.0</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/1914-COW-Empires/releases/download/0.1/1914-COW-Empires.zip</url>
+    <url>https://github.com/triplea-maps/1914-COW-Empires/releases/download/0.1/1914-COW-Empires.zip</url>
     <mapName>1914-COW-Empires</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_1914_cow_empires_mini.png" />
@@ -1588,7 +1588,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.0</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/blue_vs_gray/releases/download/0.1/blue_vs_gray.zip</url>
+    <url>https://github.com/triplea-maps/blue_vs_gray/releases/download/0.1/blue_vs_gray.zip</url>
     <mapName>blue_vs_gray</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_blue_vs_gray_mini.png" />
@@ -1626,7 +1626,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.0.4</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Caribbean_Trade_War/releases/download/0.1/Caribbean_Trade_War.zip</url>
+    <url>https://github.com/triplea-maps/Caribbean_Trade_War/releases/download/0.1/Caribbean_Trade_War.zip</url>
     <mapName>Caribbean_Trade_War</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_caribbean_trade_war_mini.png" />
@@ -1657,7 +1657,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.1</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/UrQuanWarMastersEdition/releases/download/0.1/UrQuanWarMastersEdition.zip</url>
+    <url>https://github.com/triplea-maps/ur_quan_war_masters_edition/releases/download/0.1/ur_quan_war_masters_edition.zip</url>
     <mapName>UrQuanWarMastersEdition</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_ur-quan_slave_war_masters_edition_mini.png" /> 
@@ -1686,7 +1686,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.0</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Steampunk/releases/download/0.1/Steampunk.zip</url>
+    <url>https://github.com/triplea-maps/Steampunk/releases/download/0.1/Steampunk.zip</url>
     <mapName>Steampunk</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_Steampunk_mini.png" /> 
@@ -1713,7 +1713,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.1</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Domination_1914_Blood_And_Steel/releases/download/0.1/Domination_1914_Blood_And_Steel.zip</url>
+    <url>https://github.com/triplea-maps/Domination_1914_Blood_And_Steel/releases/download/0.1/Domination_1914_Blood_And_Steel.zip</url>
     <mapName>Domination_1914_Blood_And_Steel</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_domination_1914_blood_and_steel_mini.png" /> 
@@ -1758,7 +1758,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     ]]></description>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/FeudalJapanWarlords/releases/download/0.1/FeudalJapanWarlords.zip</url>
+    <url>https://github.com/triplea-maps/FeudalJapanWarlords/releases/download/0.1/FeudalJapanWarlords.zip</url>
     <mapName>FeudalJapanWarlords</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_feudal_japan_warlords_mini.png" />
@@ -1787,7 +1787,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.5</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/war_of_the_relics/releases/download/0.1/war_of_the_relics.zip</url>
+    <url>https://github.com/triplea-maps/war_of_the_relics/releases/download/0.1/war_of_the_relics.zip</url>
     <mapName>war_of_the_relics</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_war_of_the_relics_mini.png" />
@@ -1805,7 +1805,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.0.3</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Empire/releases/download/0.1/Empire.zip</url>
+    <url>https://github.com/triplea-maps/Empire/releases/download/0.1/Empire.zip</url>
     <mapName>Empire</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_empire_mini.png" />
@@ -1823,7 +1823,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.0</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Total_Ancient_War/releases/download/0.1/Total_Ancient_War.zip</url>
+    <url>https://github.com/triplea-maps/Total_Ancient_War/releases/download/0.1/Total_Ancient_War.zip</url>
     <mapName>Total_Ancient_War</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_total_ancient_war_mini.png" />
@@ -1849,7 +1849,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.0</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Elemental_Forces/releases/download/0.1/Elemental_Forces.zip</url>
+    <url>https://github.com/triplea-maps/Elemental_Forces/releases/download/0.1/Elemental_Forces.zip</url>
     <mapName>Elemental_Forces</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_elemental_forces_mini.png" />
@@ -1870,7 +1870,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.0</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Game_of_Thrones/releases/download/0.1/Game_of_Thrones.zip</url>
+    <url>https://github.com/triplea-maps/Game_of_Thrones/releases/download/0.1/Game_of_Thrones.zip</url>
     <mapName>Game_of_Thrones</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_game_of_thrones_mini.png" />
@@ -1885,7 +1885,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.3</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/NewWorldOrder1915Lebowski/releases/download/0.1/NewWorldOrder1915Lebowski.zip</url>
+    <url>https://github.com/triplea-maps/new_world_order_1915_lebowski/releases/download/0.1/new_world_order_1915_lebowski.zip</url>
     <mapName>NewWorldOrder1915Lebowski</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_nwo_1915_lebowski_mini.png" />
@@ -1898,7 +1898,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.1</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Stellar_Forces/releases/download/0.1/Stellar_Forces.zip</url>
+    <url>https://github.com/triplea-maps/Stellar_Forces/releases/download/0.1/Stellar_Forces.zip</url>
     <mapName>Stellar_Forces</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_stellar_forces_mini.png" />
@@ -1912,7 +1912,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>0.8.3</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/pacific/releases/download/0.1/pacific.zip</url>
+    <url>https://github.com/triplea-maps/pacific/releases/download/0.1/pacific.zip</url>
     <mapName>pacific</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_pacific_mini.png" />
@@ -1928,7 +1928,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.4</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/europe/releases/download/0.1/europe.zip</url>
+    <url>https://github.com/triplea-maps/europe/releases/download/0.1/europe.zip</url>
     <mapName>europe</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_europe_mini.png" />
@@ -1943,7 +1943,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.3</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/pacific_1942/releases/download/0.1/pacific_1942.zip</url>
+    <url>https://github.com/triplea-maps/pacific_1942/releases/download/0.1/pacific_1942.zip</url>
     <mapName>pacific_1942</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_pacific_1942_mini.png" />
@@ -1957,7 +1957,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.0.1</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Zombieland/releases/download/0.1/Zombieland.zip</url>
+    <url>https://github.com/triplea-maps/Zombieland/releases/download/0.1/Zombieland.zip</url>
     <mapName>Zombieland</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_zombieland_mini.png" />
@@ -1972,7 +1972,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.2.1</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Caravan/releases/download/0.1/Caravan.zip</url>
+    <url>https://github.com/triplea-maps/Caravan/releases/download/0.1/Caravan.zip</url>
     <mapName>Caravan</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_caravan_mini2.png" />
@@ -2008,7 +2008,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>0.3</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/HexGlobe10/releases/download/0.1/HexGlobe10.zip</url>
+    <url>https://github.com/triplea-maps/HexGlobe10/releases/download/0.1/HexGlobe10.zip</url>
     <mapName>HexGlobe10</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_hexglobe_mini2.png" />
@@ -2018,7 +2018,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.5</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Domination_1914_No_Mans_Land/releases/download/0.1/Domination_1914_No_Mans_Land.zip</url>
+    <url>https://github.com/triplea-maps/Domination_1914_No_Mans_Land/releases/download/0.1/Domination_1914_No_Mans_Land.zip</url>
     <mapName>Domination_1914_No_Mans_Land</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_domination_1914_mini.png" />
@@ -2032,7 +2032,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.0</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/Jurassic/releases/download/0.1/Jurassic.zip</url>
+    <url>https://github.com/triplea-maps/Jurassic/releases/download/0.1/Jurassic.zip</url>
     <mapName>Jurassic</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_jurassic_mini.png" />
@@ -2087,7 +2087,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     ]]></description>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/developer%20resources/map%20makers/TripleA_Map_Creator/releases/download/0.1/developer%20resources/map%20makers/TripleA_Map_Creator.zip</url>
+    <url>https://github.com/triplea-maps/developer%20resources/map%20makers/TripleA_Map_Creator/releases/download/0.1/developer%20resources/map%20makers/TripleA_Map_Creator.zip</url>
     <mapName>TripleA_Map_Creator</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_Map_Creator_mini.png" />
@@ -2140,7 +2140,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.0.1.6</version>
   </game>
   <game>
-    <url>http://github.com/triplea-maps/developer%20resources/map%20makers/Map_Making_Tutorial_Map/releases/download/0.1/developer%20resources/map%20makers/Map_Making_Tutorial_Map.zip</url>
+    <url>https://github.com/triplea-maps/developer%20resources/map%20makers/Map_Making_Tutorial_Map/releases/download/0.1/developer%20resources/map%20makers/Map_Making_Tutorial_Map.zip</url>
     <mapName>Map_Making_Tutorial_Map</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_map_making_tutorial_map_mini.png" />
