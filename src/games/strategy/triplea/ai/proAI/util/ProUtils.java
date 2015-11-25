@@ -91,6 +91,17 @@ public class ProUtils {
     return players;
   }
 
+  public boolean isPlayersTurnFirst(final List<PlayerID> playersInOrder, final PlayerID player1, final PlayerID player2) {
+    for (final PlayerID p : playersInOrder) {
+      if (p.equals(player1)) {
+        return true;
+      } else if (p.equals(player2)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   public List<PlayerID> getEnemyPlayers(final PlayerID player) {
     final GameData data = ai.getGameData();
     final List<PlayerID> enemyPlayers = new ArrayList<PlayerID>();

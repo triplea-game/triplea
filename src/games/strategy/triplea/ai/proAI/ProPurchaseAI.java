@@ -494,7 +494,7 @@ public class ProPurchaseAI {
     }
 
     // Determine max enemy attack units and current allied defenders
-    ProAttackOptions enemyAttackOptions =
+    ProMoveOptions enemyAttackOptions =
         attackOptionsUtils.findEnemyAttackOptions(player, new ArrayList<Territory>(), new ArrayList<Territory>(
             placeTerritories));
     findDefendersInPlaceTerritories(purchaseTerritories);
@@ -877,7 +877,7 @@ public class ProPurchaseAI {
         purchaseUtils.findPurchaseTerritories(player);
 
     // Determine max enemy attack units and current allied defenders
-    ProAttackOptions enemyAttackOptions =
+    ProMoveOptions enemyAttackOptions =
         attackOptionsUtils.findEnemyAttackOptions(player, new ArrayList<Territory>(), new ArrayList<Territory>(
             placeNonConstructionTerritories.keySet()));
     findDefendersInPlaceTerritories(placeNonConstructionTerritories);
@@ -930,7 +930,7 @@ public class ProPurchaseAI {
   }
 
   private List<ProPlaceTerritory> prioritizeTerritoriesToDefend(
-      final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final ProAttackOptions enemyAttackOptions,
+      final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final ProMoveOptions enemyAttackOptions,
       final boolean isLand) {
 
     ProLogger.info("Prioritize territories to defend with isLand=" + isLand);
@@ -1037,7 +1037,7 @@ public class ProPurchaseAI {
   }
 
   private void purchaseDefenders(final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
-      final ProAttackOptions enemyAttackOptions, final List<ProPlaceTerritory> needToDefendTerritories,
+      final ProMoveOptions enemyAttackOptions, final List<ProPlaceTerritory> needToDefendTerritories,
       final List<ProPurchaseOption> defensePurchaseOptions, final List<ProPurchaseOption> airPurchaseOptions,
       final boolean isLand) {
 
@@ -1204,7 +1204,7 @@ public class ProPurchaseAI {
   }
 
   private void purchaseAAUnits(final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
-      final ProAttackOptions enemyAttackOptions, final List<ProPlaceTerritory> prioritizedLandTerritories,
+      final ProMoveOptions enemyAttackOptions, final List<ProPlaceTerritory> prioritizedLandTerritories,
       final List<ProPurchaseOption> specialPurchaseOptions) {
 
     if (resourceTracker.isEmpty()) {
@@ -1391,7 +1391,7 @@ public class ProPurchaseAI {
   }
 
   private void purchaseFactory(final Map<Territory, ProPurchaseTerritory> factoryPurchaseTerritories,
-      final ProAttackOptions enemyAttackOptions, final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
+      final ProMoveOptions enemyAttackOptions, final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final List<ProPlaceTerritory> prioritizedLandTerritories, final ProPurchaseOptionMap purchaseOptions,
       final boolean hasExtraPUs) {
 
@@ -1554,7 +1554,7 @@ public class ProPurchaseAI {
   }
 
   private List<ProPlaceTerritory> prioritizeSeaTerritories(
-      final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final ProAttackOptions enemyAttackOptions) {
+      final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final ProMoveOptions enemyAttackOptions) {
 
     ProLogger.info("Prioritize sea territories");
 
@@ -1623,7 +1623,7 @@ public class ProPurchaseAI {
   }
 
   private void purchaseSeaAndAmphibUnits(final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
-      final ProAttackOptions enemyAttackOptions, final List<ProPlaceTerritory> prioritizedSeaTerritories,
+      final ProMoveOptions enemyAttackOptions, final List<ProPlaceTerritory> prioritizedSeaTerritories,
       final Map<Territory, Double> territoryValueMap, final ProPurchaseOptionMap purchaseOptions) {
 
     if (resourceTracker.isEmpty()) {
@@ -2334,7 +2334,7 @@ public class ProPurchaseAI {
   }
 
   private void placeDefenders(final Map<Territory, ProPurchaseTerritory> placeNonConstructionTerritories,
-      final ProAttackOptions enemyAttackOptions, final List<ProPlaceTerritory> needToDefendTerritories,
+      final ProMoveOptions enemyAttackOptions, final List<ProPlaceTerritory> needToDefendTerritories,
       final IAbstractPlaceDelegate placeDelegate) {
 
     ProLogger.info("Place defenders with units=" + player.getUnits().getUnits());

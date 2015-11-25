@@ -129,7 +129,7 @@ public class ProNonCombatMoveAI {
         Matches.territoryHasUnitsThatMatch(ProMatches.unitCanBeMovedAndIsOwned(player));
     final List<Territory> myUnitTerritories = Match.getMatches(allTerritories, myUnitTerritoriesMatch);
     attackOptionsUtils.findDefendOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap,
-        landRoutesMap, transportMapList, new ArrayList<Territory>());
+        landRoutesMap, transportMapList, new ArrayList<Territory>(), false);
 
     // Find number of units in each move territory that can't move and all infra units
     findUnitsThatCantMove(moveMap, unitMoveMap, purchaseTerritories, landPurchaseOptions, transportMapList);
@@ -140,7 +140,7 @@ public class ProNonCombatMoveAI {
         moveOneDefenderToLandTerritoriesBorderingEnemy(moveMap, unitMoveMap);
 
     // Determine max enemy attack units and if territories can be held
-    ProAttackOptions enemyAttackOptions =
+    final ProMoveOptions enemyAttackOptions =
         attackOptionsUtils.findEnemyAttackOptions(player, movedOneDefenderToTerritories, new ArrayList<Territory>(
             moveMap.keySet()));
     determineIfMoveTerritoriesCanBeHeld(moveMap, enemyAttackOptions);
@@ -390,7 +390,7 @@ public class ProNonCombatMoveAI {
   }
 
   private void determineIfMoveTerritoriesCanBeHeld(final Map<Territory, ProAttackTerritoryData> moveMap,
-      final ProAttackOptions enemyAttackOptions) {
+      final ProMoveOptions enemyAttackOptions) {
 
     ProLogger.info("Find max enemy attackers and if territories can be held");
 
@@ -465,7 +465,7 @@ public class ProNonCombatMoveAI {
 
   private List<ProAttackTerritoryData> prioritizeDefendOptions(final Map<Territory, ProAttackTerritoryData> moveMap,
       final Map<Territory, ProAttackTerritoryData> factoryMoveMap, final Map<Territory, Double> territoryValueMap,
-      final ProAttackOptions enemyAttackOptions) {
+      final ProMoveOptions enemyAttackOptions) {
 
     ProLogger.info("Prioritizing territories to try to defend");
 

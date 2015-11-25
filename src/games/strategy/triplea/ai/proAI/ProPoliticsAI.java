@@ -1,13 +1,5 @@
 package games.strategy.triplea.ai.proAI;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
@@ -25,6 +17,14 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Pro politics AI.
@@ -112,7 +112,7 @@ public class ProPoliticsAI {
           transportAttackMap, bombardMap, landRoutesMap, transportMapList);
       final List<ProAttackTerritoryData> prioritizedTerritories =
           attackOptionsUtils.removeTerritoriesThatCantBeConquered(player, attackMap, unitAttackMap, transportAttackMap,
-              new ProAttackOptions(utils, battleUtils), true);
+              new ProMoveOptions(utils, battleUtils), new ProMoveOptions(utils, battleUtils), true);
       ProLogger.trace(player.getName() + ", numAttackOptions=" + prioritizedTerritories.size() + ", options="
           + prioritizedTerritories);
 
