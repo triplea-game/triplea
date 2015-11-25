@@ -139,7 +139,7 @@
     <version>3.2.4</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/world_at_war/releases/download/0.1/world_at_war/releases/download/0.1/world_at_war/releases/download/0.1/world_at_war.zip</url>
+    <url>https://github.com/triplea-maps/world_at_war/releases/download/0.1/world_at_war.zip</url>
     <mapName>World_At_War</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_world_at_war_mini.png" />
@@ -1039,7 +1039,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.4.9</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/world_war_2010/releases/download/0.1/world_war_2010.zip</url>
+    <url>https://github.com/triplea-maps/world_war2010/releases/download/0.1/world_war2010.zip</url>
     <mapName>WorldWar2010</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_world_war_2010_mini.png" />
