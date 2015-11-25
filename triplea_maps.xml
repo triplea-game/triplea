@@ -1039,23 +1039,6 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.8.6</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/new_world_order-skin_gudkarma_1/releases/download/0.1/new_world_order-skin_gudkarma_1.zip</url>
-    <mapName>new_world_order-skin_gudkarma_1</mapName>
-    <description><![CDATA[
-
-        <div style="text-align: left;">
-    <img src="http://tripleamaps.sourceforge.net/images/TripleA_new_world_order_gudkarmaSkin_mini.png" />
-    <br>
-    <h1 style="text-align: left;font-size:120%;color:000000">#NEW WORLD ORDER#</h1>
-    <br>Alternative Relief Tiles for NWO
-    <br>by gudkarma
-    <br>
-    <div style="text-align: left;">
-    <br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
-    ]]></description>
-    <version>1.8.6</version>
-  </game>
-  <game>
     <url>https://github.com/triplea-maps/Diplomacy-MapSkin1/releases/download/0.1/Diplomacy-MapSkin1.zip</url>
     <mapName>Diplomacy-MapSkin1</mapName>
     <description><![CDATA[
