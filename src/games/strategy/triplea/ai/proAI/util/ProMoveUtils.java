@@ -28,7 +28,7 @@ import java.util.Set;
  */
 public class ProMoveUtils {
 
-  public void calculateMoveRoutes(final PlayerID player, final boolean areNeutralsPassableByAir,
+  public static void calculateMoveRoutes(final PlayerID player, final boolean areNeutralsPassableByAir,
       final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
       final Map<Territory, ProTerritory> attackMap, final boolean isCombatMove) {
 
@@ -108,7 +108,7 @@ public class ProMoveUtils {
     }
   }
 
-  public void calculateAmphibRoutes(final PlayerID player, final List<Collection<Unit>> moveUnits,
+  public static void calculateAmphibRoutes(final PlayerID player, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final List<Collection<Unit>> transportsToLoad,
       final Map<Territory, ProTerritory> attackMap, final boolean isCombatMove) {
 
@@ -237,7 +237,7 @@ public class ProMoveUtils {
     }
   }
 
-  public void calculateBombardMoveRoutes(final PlayerID player, final List<Collection<Unit>> moveUnits,
+  public static void calculateBombardMoveRoutes(final PlayerID player, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final Map<Territory, ProTerritory> attackMap) {
 
     final GameData data = ProData.getData();
@@ -275,7 +275,7 @@ public class ProMoveUtils {
     }
   }
 
-  public void doMove(final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
+  public static void doMove(final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
       final List<Collection<Unit>> transportsToLoad, final IMoveDelegate moveDel, final boolean isSimulation) {
 
     final GameData data = ProData.getData();

@@ -61,7 +61,6 @@ public class ProNonCombatMoveAI {
   // Utilities
   private final ProTransportUtils transportUtils;
   private final ProMoveOptionsUtils attackOptionsUtils;
-  private final ProMoveUtils moveUtils;
   private final ProTerritoryValueUtils territoryValueUtils;
 
   // Current map settings
@@ -77,10 +76,9 @@ public class ProNonCombatMoveAI {
   private double minCostPerHitPoint;
 
   public ProNonCombatMoveAI(final ProTransportUtils transportUtils, final ProMoveOptionsUtils attackOptionsUtils,
-      final ProMoveUtils moveUtils, final ProTerritoryValueUtils territoryValueUtils) {
+      final ProTerritoryValueUtils territoryValueUtils) {
     this.transportUtils = transportUtils;
     this.attackOptionsUtils = attackOptionsUtils;
-    this.moveUtils = moveUtils;
     this.territoryValueUtils = territoryValueUtils;
   }
 
@@ -242,15 +240,15 @@ public class ProNonCombatMoveAI {
     // Calculate move routes and perform moves
     final List<Collection<Unit>> moveUnits = new ArrayList<Collection<Unit>>();
     final List<Route> moveRoutes = new ArrayList<Route>();
-    moveUtils.calculateMoveRoutes(player, areNeutralsPassableByAir, moveUnits, moveRoutes, moveMap, false);
-    moveUtils.doMove(moveUnits, moveRoutes, null, moveDel, isSimulation);
+    ProMoveUtils.calculateMoveRoutes(player, areNeutralsPassableByAir, moveUnits, moveRoutes, moveMap, false);
+    ProMoveUtils.doMove(moveUnits, moveRoutes, null, moveDel, isSimulation);
 
     // Calculate amphib move routes and perform moves
     moveUnits.clear();
     moveRoutes.clear();
     final List<Collection<Unit>> transportsToLoad = new ArrayList<Collection<Unit>>();
-    moveUtils.calculateAmphibRoutes(player, moveUnits, moveRoutes, transportsToLoad, moveMap, false);
-    moveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel, isSimulation);
+    ProMoveUtils.calculateAmphibRoutes(player, moveUnits, moveRoutes, transportsToLoad, moveMap, false);
+    ProMoveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel, isSimulation);
   }
 
   private void findUnitsThatCantMove(final Map<Territory, ProTerritory> moveMap,
@@ -1392,7 +1390,7 @@ public class ProNonCombatMoveAI {
       }
 
       // Get all transport final territories
-      moveUtils.calculateAmphibRoutes(player, new ArrayList<Collection<Unit>>(), new ArrayList<Route>(),
+      ProMoveUtils.calculateAmphibRoutes(player, new ArrayList<Collection<Unit>>(), new ArrayList<Route>(),
           new ArrayList<Collection<Unit>>(), moveMap, false);
       for (final Territory t : moveMap.keySet()) {
         for (final Unit u : moveMap.get(t).getTransportTerritoryMap().keySet()) {

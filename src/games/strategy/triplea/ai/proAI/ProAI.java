@@ -22,7 +22,6 @@ import games.strategy.triplea.ai.proAI.simulate.ProSimulateTurnUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
 import games.strategy.triplea.ai.proAI.util.ProMoveOptionsUtils;
-import games.strategy.triplea.ai.proAI.util.ProMoveUtils;
 import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
 import games.strategy.triplea.ai.proAI.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
@@ -69,7 +68,6 @@ public class ProAI extends AbstractAI {
   // Utilities
   private final ProTransportUtils transportUtils;
   private final ProMoveOptionsUtils attackOptionsUtils;
-  private final ProMoveUtils moveUtils;
   private final ProTerritoryValueUtils territoryValueUtils;
   private final ProSimulateTurnUtils simulateTurnUtils;
 
@@ -92,11 +90,10 @@ public class ProAI extends AbstractAI {
     super(name, type);
     transportUtils = new ProTransportUtils();
     attackOptionsUtils = new ProMoveOptionsUtils(transportUtils);
-    moveUtils = new ProMoveUtils();
     territoryValueUtils = new ProTerritoryValueUtils();
     simulateTurnUtils = new ProSimulateTurnUtils();
-    combatMoveAI = new ProCombatMoveAI(this, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils);
-    nonCombatMoveAI = new ProNonCombatMoveAI(transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils);
+    combatMoveAI = new ProCombatMoveAI(this, transportUtils, attackOptionsUtils, territoryValueUtils);
+    nonCombatMoveAI = new ProNonCombatMoveAI(transportUtils, attackOptionsUtils, territoryValueUtils);
     purchaseAI = new ProPurchaseAI(transportUtils, attackOptionsUtils, territoryValueUtils);
     retreatAI = new ProRetreatAI();
     scrambleAI = new ProScrambleAI(attackOptionsUtils);
