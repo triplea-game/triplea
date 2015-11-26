@@ -63,7 +63,6 @@ public class ProNonCombatMoveAI {
   private final ProMoveOptionsUtils attackOptionsUtils;
   private final ProMoveUtils moveUtils;
   private final ProTerritoryValueUtils territoryValueUtils;
-  private final ProPurchaseUtils purchaseUtils;
 
   // Current map settings
   private boolean areNeutralsPassableByAir;
@@ -78,13 +77,11 @@ public class ProNonCombatMoveAI {
   private double minCostPerHitPoint;
 
   public ProNonCombatMoveAI(final ProTransportUtils transportUtils, final ProMoveOptionsUtils attackOptionsUtils,
-      final ProMoveUtils moveUtils, final ProTerritoryValueUtils territoryValueUtils,
-      final ProPurchaseUtils purchaseUtils) {
+      final ProMoveUtils moveUtils, final ProTerritoryValueUtils territoryValueUtils) {
     this.transportUtils = transportUtils;
     this.attackOptionsUtils = attackOptionsUtils;
     this.moveUtils = moveUtils;
     this.territoryValueUtils = territoryValueUtils;
-    this.purchaseUtils = purchaseUtils;
   }
 
   public Map<Territory, ProTerritory> doNonCombatMove(Map<Territory, ProTerritory> factoryMoveMap,
@@ -122,9 +119,9 @@ public class ProNonCombatMoveAI {
     final List<ProPurchaseOption> landPurchaseOptions = new ArrayList<ProPurchaseOption>();
     final List<ProPurchaseOption> airPurchaseOptions = new ArrayList<ProPurchaseOption>();
     final List<ProPurchaseOption> seaPurchaseOptions = new ArrayList<ProPurchaseOption>();
-    purchaseUtils.findPurchaseOptions(player, landPurchaseOptions, airPurchaseOptions, seaPurchaseOptions,
+    ProPurchaseUtils.findPurchaseOptions(player, landPurchaseOptions, airPurchaseOptions, seaPurchaseOptions,
         factoryPurchaseOptions, specialPurchaseOptions);
-    minCostPerHitPoint = purchaseUtils.getMinCostPerHitPoint(player, landPurchaseOptions);
+    minCostPerHitPoint = ProPurchaseUtils.getMinCostPerHitPoint(player, landPurchaseOptions);
 
     // Find the max number of units that can move to each allied territory
     final Match<Territory> myUnitTerritoriesMatch =
@@ -313,7 +310,7 @@ public class ProNonCombatMoveAI {
       for (final Territory t : moveMap.keySet()) {
         if (ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data).match(t)) {
           moveMap.get(t).getCantMoveUnits()
-              .addAll(purchaseUtils.findMaxPurchaseDefenders(player, t, landPurchaseOptions));
+              .addAll(ProPurchaseUtils.findMaxPurchaseDefenders(player, t, landPurchaseOptions));
         }
       }
     }

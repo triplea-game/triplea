@@ -56,7 +56,6 @@ public class ProCombatMoveAI {
   private final ProMoveOptionsUtils attackOptionsUtils;
   private final ProMoveUtils moveUtils;
   private final ProTerritoryValueUtils territoryValueUtils;
-  private final ProPurchaseUtils purchaseUtils;
 
   // Current map settings
   private boolean areNeutralsPassableByAir;
@@ -70,13 +69,12 @@ public class ProCombatMoveAI {
 
   public ProCombatMoveAI(final ProAI ai, final ProTransportUtils transportUtils,
       final ProMoveOptionsUtils attackOptionsUtils, final ProMoveUtils moveUtils,
-      final ProTerritoryValueUtils territoryValueUtils, final ProPurchaseUtils purchaseUtils) {
+      final ProTerritoryValueUtils territoryValueUtils) {
     this.ai = ai;
     this.transportUtils = transportUtils;
     this.attackOptionsUtils = attackOptionsUtils;
     this.moveUtils = moveUtils;
     this.territoryValueUtils = territoryValueUtils;
-    this.purchaseUtils = purchaseUtils;
   }
 
   public Map<Territory, ProTerritory> doCombatMove(final IMoveDelegate moveDel, final GameData data,
@@ -112,9 +110,9 @@ public class ProCombatMoveAI {
     final List<ProPurchaseOption> landPurchaseOptions = new ArrayList<ProPurchaseOption>();
     final List<ProPurchaseOption> airPurchaseOptions = new ArrayList<ProPurchaseOption>();
     final List<ProPurchaseOption> seaPurchaseOptions = new ArrayList<ProPurchaseOption>();
-    purchaseUtils.findPurchaseOptions(player, landPurchaseOptions, airPurchaseOptions, seaPurchaseOptions,
+    ProPurchaseUtils.findPurchaseOptions(player, landPurchaseOptions, airPurchaseOptions, seaPurchaseOptions,
         factoryPurchaseOptions, specialPurchaseOptions);
-    minCostPerHitPoint = purchaseUtils.getMinCostPerHitPoint(player, landPurchaseOptions);
+    minCostPerHitPoint = ProPurchaseUtils.getMinCostPerHitPoint(player, landPurchaseOptions);
 
     // Find the maximum number of units that can attack each territory and max enemy defenders
     final List<Territory> myUnitTerritories =
@@ -1502,7 +1500,7 @@ public class ProCombatMoveAI {
     ProLogger.info("Determine if capital can be held");
 
     // Determine max number of defenders I can purchase
-    final List<Unit> placeUnits = purchaseUtils.findMaxPurchaseDefenders(player, myCapital, landPurchaseOptions);
+    final List<Unit> placeUnits = ProPurchaseUtils.findMaxPurchaseDefenders(player, myCapital, landPurchaseOptions);
 
     // Remove attack until capital can be defended
     final Map<Unit, Territory> unitTerritoryMap = ProUtils.createUnitTerritoryMap(player);

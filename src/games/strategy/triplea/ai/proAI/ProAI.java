@@ -72,7 +72,6 @@ public class ProAI extends AbstractAI {
   private final ProMoveUtils moveUtils;
   private final ProTerritoryValueUtils territoryValueUtils;
   private final ProSimulateTurnUtils simulateTurnUtils;
-  private final ProPurchaseUtils purchaseUtils;
 
   // Phases
   private final ProCombatMoveAI combatMoveAI;
@@ -92,16 +91,13 @@ public class ProAI extends AbstractAI {
   public ProAI(final String name, final String type) {
     super(name, type);
     transportUtils = new ProTransportUtils();
-    purchaseUtils = new ProPurchaseUtils();
     attackOptionsUtils = new ProMoveOptionsUtils(transportUtils);
     moveUtils = new ProMoveUtils();
     territoryValueUtils = new ProTerritoryValueUtils();
     simulateTurnUtils = new ProSimulateTurnUtils();
-    combatMoveAI =
-        new ProCombatMoveAI(this, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
-    nonCombatMoveAI =
-        new ProNonCombatMoveAI(transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
-    purchaseAI = new ProPurchaseAI(transportUtils, attackOptionsUtils, territoryValueUtils, purchaseUtils);
+    combatMoveAI = new ProCombatMoveAI(this, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils);
+    nonCombatMoveAI = new ProNonCombatMoveAI(transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils);
+    purchaseAI = new ProPurchaseAI(transportUtils, attackOptionsUtils, territoryValueUtils);
     retreatAI = new ProRetreatAI();
     scrambleAI = new ProScrambleAI(attackOptionsUtils);
     politicsAI = new ProPoliticsAI(attackOptionsUtils);
@@ -185,7 +181,7 @@ public class ProAI extends AbstractAI {
       PUsToSpend = purchaseAI.repair(PUsToSpend, purchaseDelegate, data, player);
 
       // Check if any place territories exist
-      final Map<Territory, ProPurchaseTerritory> purchaseTerritories = purchaseUtils.findPurchaseTerritories(player);
+      final Map<Territory, ProPurchaseTerritory> purchaseTerritories = ProPurchaseUtils.findPurchaseTerritories(player);
       final List<Territory> possibleFactoryTerritories =
           Match.getMatches(data.getMap().getTerritories(),
               ProMatches.territoryHasNoInfraFactoryAndIsNotConqueredOwnedLand(player, data));
