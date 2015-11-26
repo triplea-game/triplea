@@ -12,7 +12,6 @@ import games.strategy.triplea.ai.proAI.data.ProTerritory;
 import games.strategy.triplea.ai.proAI.data.ProTransport;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.ai.proAI.util.ProMoveOptionsUtils;
-import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.DelegateFinder;
@@ -34,23 +33,16 @@ import java.util.Set;
  */
 public class ProPoliticsAI {
 
-  private final ProAI ai;
-  private final ProUtils utils;
-  private final ProBattleUtils battleUtils;
   private final ProMoveOptionsUtils attackOptionsUtils;
 
-  public ProPoliticsAI(final ProAI ai, final ProUtils utils, final ProBattleUtils battleUtils,
-      final ProMoveOptionsUtils attackOptionsUtils) {
-    this.ai = ai;
-    this.utils = utils;
-    this.battleUtils = battleUtils;
+  public ProPoliticsAI(final ProMoveOptionsUtils attackOptionsUtils) {
     this.attackOptionsUtils = attackOptionsUtils;
   }
 
   public List<PoliticalActionAttachment> politicalActions() {
 
-    final GameData data = ai.getGameData();
-    final PlayerID player = ai.getPlayerID();
+    final GameData data = ProData.getData();
+    final PlayerID player = ProData.getProAI().getPlayerID();
     final float numPlayers = data.getPlayerList().getPlayers().size();
     final double round = data.getSequence().getRound();
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
@@ -91,7 +83,7 @@ public class ProPoliticsAI {
         }
       }
       if (!warPlayers.isEmpty()) {
-        if (utils.isNeutralPlayer(warPlayers.get(0))) {
+        if (ProUtils.isNeutralPlayer(warPlayers.get(0))) {
           neutralMap.put(action, warPlayers);
         } else {
           enemyMap.put(action, warPlayers);
@@ -115,7 +107,7 @@ public class ProPoliticsAI {
           transportAttackMap, bombardMap, landRoutesMap, transportMapList);
       final List<ProTerritory> prioritizedTerritories =
           attackOptionsUtils.removeTerritoriesThatCantBeConquered(player, attackMap, unitAttackMap, transportAttackMap,
-              new ProMoveOptions(utils, battleUtils), new ProMoveOptions(utils, battleUtils), true);
+              new ProMoveOptions(), new ProMoveOptions(), true);
       ProLogger.trace(player.getName() + ", numAttackOptions=" + prioritizedTerritories.size() + ", options="
           + prioritizedTerritories);
 
@@ -197,7 +189,7 @@ public class ProPoliticsAI {
   }
 
   public void doActions(final List<PoliticalActionAttachment> actions) {
-    final GameData data = ai.getGameData();
+    final GameData data = ProData.getData();
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
     for (final PoliticalActionAttachment action : actions) {
       ProLogger.debug("Performing action: " + action);

@@ -1,19 +1,11 @@
 package games.strategy.triplea.ai.proAI.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.AdvancedUtils;
-import games.strategy.triplea.ai.proAI.ProAI;
+import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseOption;
 import games.strategy.triplea.ai.proAI.data.ProTerritory;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -24,17 +16,21 @@ import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Pro AI transport utilities.
  */
 public class ProTransportUtils {
 
-  private final ProAI ai;
-  private final ProUtils utils;
+  public ProTransportUtils() {
 
-  public ProTransportUtils(final ProAI ai, final ProUtils utils) {
-    this.ai = ai;
-    this.utils = utils;
   }
 
   public int findMaxMovementForTransports(final List<ProPurchaseOption> seaTransportPurchaseOptions) {
@@ -49,7 +45,7 @@ public class ProTransportUtils {
   }
 
   public int findNumUnitsThatCanBeTransported(final PlayerID player, final Territory t) {
-    final GameData data = ai.getGameData();
+    final GameData data = ProData.getData();
     int numUnitsToLoad = 0;
     final Set<Territory> neighbors = data.getMap().getNeighbors(t, Matches.TerritoryIsLand);
     for (final Territory neighbor : neighbors) {
@@ -61,8 +57,7 @@ public class ProTransportUtils {
 
   public List<Unit> getUnitsToTransportThatCantMoveToHigherValue(final PlayerID player, final Unit transport,
       final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore,
-      final Map<Territory, ProTerritory> moveMap, final Map<Unit, Set<Territory>> unitMoveMap,
-      final double value) {
+      final Map<Territory, ProTerritory> moveMap, final Map<Unit, Set<Territory>> unitMoveMap, final double value) {
 
     final List<Unit> unitsToIgnoreOrHaveBetterLandMove = new ArrayList<Unit>(unitsToIgnore);
     if (!TransportTracker.isTransporting(transport)) {
@@ -172,10 +167,11 @@ public class ProTransportUtils {
   }
 
   public List<Unit> getAirThatCantLandOnCarrier(final PlayerID player, final Territory t, final List<Unit> units) {
-    final GameData data = ai.getGameData();
+    final GameData data = ProData.getData();
+
     int capacity = AirMovementValidator.carrierCapacity(units, t);
     final Collection<Unit> airUnits = Match.getMatches(units, ProMatches.unitIsAlliedAir(player, data));
-    List<Unit> airThatCantLand = new ArrayList<Unit>();
+    final List<Unit> airThatCantLand = new ArrayList<Unit>();
     for (final Unit airUnit : airUnits) {
       final UnitAttachment ua = UnitAttachment.get(airUnit.getType());
       final int cost = ua.getCarrierCost();
@@ -192,8 +188,8 @@ public class ProTransportUtils {
 
   public boolean validateCarrierCapacity(final PlayerID player, final Territory t, final List<Unit> existingUnits,
       final Unit newUnit) {
+    final GameData data = ProData.getData();
 
-    final GameData data = ai.getGameData();
     int capacity = AirMovementValidator.carrierCapacity(existingUnits, t);
     final Collection<Unit> airUnits = Match.getMatches(existingUnits, ProMatches.unitIsAlliedAir(player, data));
     airUnits.add(newUnit);
@@ -211,7 +207,7 @@ public class ProTransportUtils {
   }
 
   public int getUnusedLocalCarrierCapacity(final PlayerID player, final Territory t, final List<Unit> unitsToPlace) {
-    final GameData data = ai.getGameData();
+    final GameData data = ProData.getData();
 
     // Find nearby carrier capacity
     final Set<Territory> nearbyTerritories =

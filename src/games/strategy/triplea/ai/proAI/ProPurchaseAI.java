@@ -1,16 +1,5 @@
 package games.strategy.triplea.ai.proAI;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -33,9 +22,9 @@ import games.strategy.triplea.ai.proAI.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.proAI.data.ProResourceTracker;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.ai.proAI.logging.ProMetricUtils;
-import games.strategy.triplea.ai.proAI.util.ProMoveOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
+import games.strategy.triplea.ai.proAI.util.ProMoveOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
 import games.strategy.triplea.ai.proAI.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
@@ -57,6 +46,17 @@ import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Pro purchase AI.
  */
@@ -65,8 +65,6 @@ public class ProPurchaseAI {
   public final static double WIN_PERCENTAGE = 95.0;
 
   // Utilities
-  private final ProUtils utils;
-  private final ProBattleUtils battleUtils;
   private final ProTransportUtils transportUtils;
   private final ProMoveOptionsUtils attackOptionsUtils;
   private final ProTerritoryValueUtils territoryValueUtils;
@@ -80,11 +78,8 @@ public class ProPurchaseAI {
   private double minCostPerHitPoint;
   private ProResourceTracker resourceTracker;
 
-  public ProPurchaseAI(final ProUtils utils, final ProBattleUtils battleUtils, final ProTransportUtils transportUtils,
-      final ProMoveOptionsUtils attackOptionsUtils, final ProTerritoryValueUtils territoryValueUtils,
-      final ProPurchaseUtils purchaseUtils) {
-    this.utils = utils;
-    this.battleUtils = battleUtils;
+  public ProPurchaseAI(final ProTransportUtils transportUtils, final ProMoveOptionsUtils attackOptionsUtils,
+      final ProTerritoryValueUtils territoryValueUtils, final ProPurchaseUtils purchaseUtils) {
     this.transportUtils = transportUtils;
     this.attackOptionsUtils = attackOptionsUtils;
     this.territoryValueUtils = territoryValueUtils;
@@ -502,7 +497,7 @@ public class ProPurchaseAI {
     }
 
     // Determine max enemy attack units and current allied defenders
-    ProMoveOptions enemyAttackOptions =
+    final ProMoveOptions enemyAttackOptions =
         attackOptionsUtils.findEnemyAttackOptions(player, new ArrayList<Territory>(), new ArrayList<Territory>(
             placeTerritories));
     findDefendersInPlaceTerritories(purchaseTerritories);
@@ -885,7 +880,7 @@ public class ProPurchaseAI {
         purchaseUtils.findPurchaseTerritories(player);
 
     // Determine max enemy attack units and current allied defenders
-    ProMoveOptions enemyAttackOptions =
+    final ProMoveOptions enemyAttackOptions =
         attackOptionsUtils.findEnemyAttackOptions(player, new ArrayList<Territory>(), new ArrayList<Territory>(
             placeNonConstructionTerritories.keySet()));
     findDefendersInPlaceTerritories(placeNonConstructionTerritories);
@@ -960,7 +955,7 @@ public class ProPurchaseAI {
         final Set<Unit> enemyAttackingUnits = new HashSet<Unit>(enemyAttackOptions.getMax(t).getMaxUnits());
         enemyAttackingUnits.addAll(enemyAttackOptions.getMax(t).getMaxAmphibUnits());
         final ProBattleResult result =
-            battleUtils.calculateBattleResults(player, t, new ArrayList<Unit>(enemyAttackingUnits),
+            ProBattleUtils.calculateBattleResults(player, t, new ArrayList<Unit>(enemyAttackingUnits),
                 placeTerritory.getDefendingUnits(), enemyAttackOptions.getMax(t).getMaxBombardUnits(), false);
         placeTerritory.setMinBattleResult(result);
         double holdValue = 0;
@@ -1138,7 +1133,7 @@ public class ProPurchaseAI {
           final List<Unit> defenders = new ArrayList<Unit>(placeTerritory.getDefendingUnits());
           defenders.addAll(unitsToPlace);
           finalResult =
-              battleUtils.calculateBattleResults(player, t, new ArrayList<Unit>(enemyAttackingUnits), defenders,
+              ProBattleUtils.calculateBattleResults(player, t, new ArrayList<Unit>(enemyAttackingUnits), defenders,
                   enemyAttackOptions.getMax(t).getMaxBombardUnits(), false);
 
           // Break if it can be held
@@ -1152,7 +1147,7 @@ public class ProPurchaseAI {
 
       // Check to see if its worth trying to defend the territory
       final boolean hasLocalSuperiority =
-          battleUtils.territoryHasLocalLandSuperiority(t, 2, player, purchaseTerritories);
+          ProBattleUtils.territoryHasLocalLandSuperiority(t, 2, player, purchaseTerritories);
       if (!finalResult.isHasLandUnitRemaining()
           || (finalResult.getTUVSwing() - resourceTracker.getTempPUs(data) / 2) < placeTerritory.getMinBattleResult()
               .getTUVSwing() || t.equals(myCapital) || (!t.isWater() && hasLocalSuperiority)) {
@@ -1187,8 +1182,8 @@ public class ProPurchaseAI {
               data.getMap().getNeighbors(t, 9, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, false));
           final int numNearbyEnemyTerritories =
               Match.countMatches(nearbyLandTerritories,
-                  Matches.isTerritoryOwnedBy(utils.getPotentialEnemyPlayers(player)));
-          final boolean hasLocalLandSuperiority = battleUtils.territoryHasLocalLandSuperiority(t, 2, player);
+                  Matches.isTerritoryOwnedBy(ProUtils.getPotentialEnemyPlayers(player)));
+          final boolean hasLocalLandSuperiority = ProBattleUtils.territoryHasLocalLandSuperiority(t, 2, player);
           if (hasEnemyNeighbors || numNearbyEnemyTerritories >= 3 || !hasLocalLandSuperiority) {
             prioritizedLandTerritories.add(placeTerritory);
           }
@@ -1318,7 +1313,7 @@ public class ProPurchaseAI {
           purchaseUtils.findPurchaseOptionsForTerritory(player, purchaseOptions.getLandDefenseOptions(), t);
 
       // Determine enemy distance and locally owned units
-      int enemyDistance = utils.getClosestEnemyOrNeutralLandTerritoryDistance(data, player, t, territoryValueMap);
+      int enemyDistance = ProUtils.getClosestEnemyOrNeutralLandTerritoryDistance(data, player, t, territoryValueMap);
       if (enemyDistance <= 0) {
         enemyDistance = 10;
       }
@@ -1444,7 +1439,7 @@ public class ProPurchaseAI {
         final Set<Unit> enemyAttackingUnits = new HashSet<Unit>(enemyAttackOptions.getMax(t).getMaxUnits());
         enemyAttackingUnits.addAll(enemyAttackOptions.getMax(t).getMaxAmphibUnits());
         final ProBattleResult result =
-            battleUtils.estimateDefendBattleResults(player, t, new ArrayList<Unit>(enemyAttackingUnits), defenders,
+            ProBattleUtils.estimateDefendBattleResults(player, t, new ArrayList<Unit>(enemyAttackingUnits), defenders,
                 enemyAttackOptions.getMax(t).getMaxBombardUnits());
 
         // Check if it can't be held or if it can then that it wasn't conquered this turn
@@ -1467,7 +1462,7 @@ public class ProPurchaseAI {
     if (!hasExtraPUs) {
       for (final Iterator<Territory> it = purchaseFactoryTerritories.iterator(); it.hasNext();) {
         final Territory t = it.next();
-        if (!battleUtils.territoryHasLocalLandSuperiority(t, 3, player, purchaseTerritories)) {
+        if (!ProBattleUtils.territoryHasLocalLandSuperiority(t, 3, player, purchaseTerritories)) {
           it.remove();
         }
       }
@@ -1593,13 +1588,13 @@ public class ProPurchaseAI {
       int needDefenders = 0;
       if (enemyAttackOptions.getMax(t) != null) {
         final double strengthDifference =
-            battleUtils.estimateStrengthDifference(t, enemyAttackOptions.getMax(t).getMaxUnits(), units);
+            ProBattleUtils.estimateStrengthDifference(t, enemyAttackOptions.getMax(t).getMaxUnits(), units);
         if (strengthDifference > 50) {
           needDefenders = 1;
         }
       }
       final boolean hasLocalNavalSuperiority =
-          battleUtils.territoryHasLocalNavalSuperiority(t, player, null, new ArrayList<Unit>());
+          ProBattleUtils.territoryHasLocalNavalSuperiority(t, player, null, new ArrayList<Unit>());
       if (!hasLocalNavalSuperiority) {
         needDefenders = 1;
       }
@@ -1677,7 +1672,7 @@ public class ProPurchaseAI {
         final List<Unit> initialDefendingUnits = new ArrayList<Unit>(placeTerritory.getDefendingUnits());
         initialDefendingUnits.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
         ProBattleResult result =
-            battleUtils.calculateBattleResults(player, t, enemyAttackOptions.getMax(t).getMaxUnits(),
+            ProBattleUtils.calculateBattleResults(player, t, enemyAttackOptions.getMax(t).getMaxUnits(),
                 initialDefendingUnits, enemyAttackOptions.getMax(t).getMaxBombardUnits(), false);
         boolean hasOnlyRetreatingSubs =
             Properties.getSubRetreatBeforeBattle(data) && Match.allMatch(initialDefendingUnits, Matches.UnitIsSub)
@@ -1742,7 +1737,7 @@ public class ProPurchaseAI {
             defendingUnits.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
             defendingUnits.addAll(unitsToPlace);
             result =
-                battleUtils.estimateDefendBattleResults(player, t, enemyAttackOptions.getMax(t).getMaxUnits(),
+                ProBattleUtils.estimateDefendBattleResults(player, t, enemyAttackOptions.getMax(t).getMaxUnits(),
                     defendingUnits, enemyAttackOptions.getMax(t).getMaxBombardUnits());
             hasOnlyRetreatingSubs =
                 Properties.getSubRetreatBeforeBattle(data) && Match.allMatch(defendingUnits, Matches.UnitIsSub)
@@ -1766,9 +1761,9 @@ public class ProPurchaseAI {
         }
       }
 
-      // TODO: update to use battleUtils method
+      // TODO: update to use ProBattleUtils method
       // Check to see if local naval superiority
-      int landDistance = utils.getClosestEnemyLandTerritoryDistanceOverWater(data, player, t);
+      int landDistance = ProUtils.getClosestEnemyLandTerritoryDistanceOverWater(data, player, t);
       if (landDistance <= 0) {
         landDistance = 10;
       }
@@ -1853,7 +1848,7 @@ public class ProPurchaseAI {
           }
 
           // If I have naval attack/defense superiority then break
-          if (battleUtils.territoryHasLocalNavalSuperiority(t, player, purchaseTerritories, unitsToPlace)) {
+          if (ProBattleUtils.territoryHasLocalNavalSuperiority(t, player, purchaseTerritories, unitsToPlace)) {
             break;
           }
 
@@ -2385,7 +2380,7 @@ public class ProPurchaseAI {
         final List<Unit> defenders = new ArrayList<Unit>(placeTerritory.getDefendingUnits());
         defenders.addAll(unitsToPlace);
         finalResult =
-            battleUtils.calculateBattleResults(player, t, new ArrayList<Unit>(enemyAttackingUnits), defenders,
+            ProBattleUtils.calculateBattleResults(player, t, new ArrayList<Unit>(enemyAttackingUnits), defenders,
                 enemyAttackOptions.getMax(t).getMaxBombardUnits(), false);
 
         // Break if it can be held
@@ -2507,6 +2502,6 @@ public class ProPurchaseAI {
         ProLogger.warn("Attempt was at: " + t + " with: " + unit);
       }
     }
-    utils.pause();
+    ProUtils.pause();
   }
 }

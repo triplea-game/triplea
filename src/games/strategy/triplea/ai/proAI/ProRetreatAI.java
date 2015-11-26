@@ -43,20 +43,12 @@ import java.util.List;
  */
 public class ProRetreatAI {
 
-  private final ProAI ai;
-  private final ProBattleUtils battleUtils;
-
-  public ProRetreatAI(final ProAI ai, final ProBattleUtils battleUtils) {
-    this.ai = ai;
-    this.battleUtils = battleUtils;
-  }
-
   public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory,
       final Collection<Territory> possibleTerritories, final String message) {
 
     // Get battle data
-    final GameData data = ai.getGameData();
-    final PlayerID player = ai.getPlayerID();
+    final GameData data = ProData.getData();
+    final PlayerID player = ProData.getProAI().getPlayerID();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleID);
 
@@ -67,7 +59,7 @@ public class ProRetreatAI {
 
     // Calculate battle results
     final ProBattleResult result =
-        battleUtils.calculateBattleResults(player, battleTerritory, attackers, defenders, new HashSet<Unit>(),
+        ProBattleUtils.calculateBattleResults(player, battleTerritory, attackers, defenders, new HashSet<Unit>(),
             isAttacker);
 
     // Determine if it has a factory
@@ -110,20 +102,20 @@ public class ProRetreatAI {
           break;
         }
         final double strength =
-            battleUtils.estimateStrength(player, t, t.getUnits().getMatches(Matches.isUnitAllied(player, data)),
+            ProBattleUtils.estimateStrength(player, t, t.getUnits().getMatches(Matches.isUnitAllied(player, data)),
                 new ArrayList<Unit>(), false);
         if (strength > maxStrength) {
           retreatTerritory = t;
           maxStrength = strength;
         }
       }
-      ProLogger.debug(player.getName() + " retreating from territory " + battleTerritory + " to "
-          + retreatTerritory + " because AttackValue=" + battleValue + ", TUVSwing=" + result.getTUVSwing()
-          + ", possibleTerritories=" + possibleTerritories.size());
+      ProLogger.debug(player.getName() + " retreating from territory " + battleTerritory + " to " + retreatTerritory
+          + " because AttackValue=" + battleValue + ", TUVSwing=" + result.getTUVSwing() + ", possibleTerritories="
+          + possibleTerritories.size());
       return retreatTerritory;
     }
-    ProLogger.debug(player.getName() + " not retreating from territory " + battleTerritory
-        + " with AttackValue=" + battleValue + ", TUVSwing=" + result.getTUVSwing());
+    ProLogger.debug(player.getName() + " not retreating from territory " + battleTerritory + " with AttackValue="
+        + battleValue + ", TUVSwing=" + result.getTUVSwing());
 
     return null;
   }

@@ -1,5 +1,16 @@
 package games.strategy.triplea.ai.proAI.util;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.triplea.ai.proAI.ProData;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MoveValidator;
+import games.strategy.util.Match;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,39 +19,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Route;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-import games.strategy.triplea.ai.proAI.ProAI;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MoveValidator;
-import games.strategy.util.Match;
-
 /**
  * Pro AI battle utilities.
  */
 public class ProTerritoryValueUtils {
 
-  private final ProAI ai;
-  private final ProUtils utils;
-  private final ProBattleUtils battleUtils;
-
-  public ProTerritoryValueUtils(final ProAI ai, final ProUtils utils, final ProBattleUtils battleUtils) {
-    this.ai = ai;
-    this.utils = utils;
-    this.battleUtils = battleUtils;
-  }
-
   public double findTerritoryAttackValue(final PlayerID player, final Territory t, final double minCostPerHitPoint) {
-    final GameData data = ai.getGameData();
+    final GameData data = ProData.getData();
+
     final int isEnemyFactory = ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).match(t) ? 1 : 0;
     double value = 3 * TerritoryAttachment.getProduction(t) * (isEnemyFactory + 1);
     if (!t.isWater() && t.getOwner().isNull()) {
       final double strength =
-          battleUtils.estimateStrength(t.getOwner(), t, new ArrayList<Unit>(t.getUnits().getUnits()),
+          ProBattleUtils.estimateStrength(t.getOwner(), t, new ArrayList<Unit>(t.getUnits().getUnits()),
               new ArrayList<Unit>(), false);
       final double TUVSwing = -(strength / 8) * minCostPerHitPoint; // estimate TUV swing as number of casualties * cost
       value += TUVSwing;
@@ -50,8 +41,7 @@ public class ProTerritoryValueUtils {
 
   public Map<Territory, Double> findTerritoryValues(final PlayerID player, final double minCostPerHitPoint,
       final List<Territory> territoriesThatCantBeHeld, final List<Territory> territoriesToAttack) {
-
-    final GameData data = ai.getGameData();
+    final GameData data = ProData.getData();
     final List<Territory> allTerritories = data.getMap().getTerritories();
 
     // Get all enemy factories and capitals (check if most territories have factories and if so remove them)
@@ -59,13 +49,13 @@ public class ProTerritoryValueUtils {
     enemyCapitalsAndFactories.addAll(Match.getMatches(
         allTerritories,
         ProMatches.territoryHasInfraFactoryAndIsOwnedByPlayersOrCantBeHeld(player, data,
-            utils.getPotentialEnemyPlayers(player), territoriesThatCantBeHeld)));
+            ProUtils.getPotentialEnemyPlayers(player), territoriesThatCantBeHeld)));
     final int numPotentialEnemyTerritories =
-        Match.countMatches(allTerritories, Matches.isTerritoryOwnedBy(utils.getPotentialEnemyPlayers(player)));
+        Match.countMatches(allTerritories, Matches.isTerritoryOwnedBy(ProUtils.getPotentialEnemyPlayers(player)));
     if (enemyCapitalsAndFactories.size() * 2 >= numPotentialEnemyTerritories) {
       enemyCapitalsAndFactories.clear();
     }
-    enemyCapitalsAndFactories.addAll(utils.getLiveEnemyCapitals(data, player));
+    enemyCapitalsAndFactories.addAll(ProUtils.getLiveEnemyCapitals(data, player));
     enemyCapitalsAndFactories.removeAll(territoriesToAttack);
 
     // Find max land mass size
@@ -95,7 +85,7 @@ public class ProTerritoryValueUtils {
       double playerProduction = 0;
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
       if (ta != null && ta.isCapital()) {
-        playerProduction = utils.getPlayerProduction(t.getOwner(), data);
+        playerProduction = ProUtils.getPlayerProduction(t.getOwner(), data);
       }
 
       // Check if neutral
@@ -232,8 +222,7 @@ public class ProTerritoryValueUtils {
 
   public Map<Territory, Double> findSeaTerritoryValues(final PlayerID player,
       final List<Territory> territoriesThatCantBeHeld) {
-
-    final GameData data = ai.getGameData();
+    final GameData data = ProData.getData();
     final List<Territory> allTerritories = data.getMap().getTerritories();
 
     // Determine value for water territories

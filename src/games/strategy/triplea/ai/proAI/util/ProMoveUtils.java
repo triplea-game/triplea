@@ -1,20 +1,12 @@
 package games.strategy.triplea.ai.proAI.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.ai.proAI.ProAI;
+import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.ai.proAI.data.ProTerritory;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.delegate.Matches;
@@ -23,25 +15,25 @@ import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.util.Match;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Pro AI move utilities.
  */
 public class ProMoveUtils {
 
-  private final ProAI ai;
-  private final ProUtils utils;
-
-  public ProMoveUtils(final ProAI ai, final ProUtils utils) {
-    this.ai = ai;
-    this.utils = utils;
-  }
-
   public void calculateMoveRoutes(final PlayerID player, final boolean areNeutralsPassableByAir,
       final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
       final Map<Territory, ProTerritory> attackMap, final boolean isCombatMove) {
 
-    final GameData data = ai.getGameData();
-    final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(player);
+    final GameData data = ProData.getData();
+    final Map<Unit, Territory> unitTerritoryMap = ProUtils.createUnitTerritoryMap(player);
 
     // Find all amphib units
     final Set<Unit> amphibUnits = new HashSet<Unit>();
@@ -120,8 +112,8 @@ public class ProMoveUtils {
       final List<Route> moveRoutes, final List<Collection<Unit>> transportsToLoad,
       final Map<Territory, ProTerritory> attackMap, final boolean isCombatMove) {
 
-    final GameData data = ai.getGameData();
-    final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(player);
+    final GameData data = ProData.getData();
+    final Map<Unit, Territory> unitTerritoryMap = ProUtils.createUnitTerritoryMap(player);
 
     // Loop through all territories to attack
     for (final Territory t : attackMap.keySet()) {
@@ -248,8 +240,8 @@ public class ProMoveUtils {
   public void calculateBombardMoveRoutes(final PlayerID player, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final Map<Territory, ProTerritory> attackMap) {
 
-    final GameData data = ai.getGameData();
-    final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(player);
+    final GameData data = ProData.getData();
+    final Map<Unit, Territory> unitTerritoryMap = ProUtils.createUnitTerritoryMap(player);
 
     // Loop through all territories to attack
     for (final Territory t : attackMap.keySet()) {
@@ -286,7 +278,7 @@ public class ProMoveUtils {
   public void doMove(final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
       final List<Collection<Unit>> transportsToLoad, final IMoveDelegate moveDel, final boolean isSimulation) {
 
-    final GameData data = ai.getGameData();
+    final GameData data = ProData.getData();
 
     // Group non-amphib units of the same type moving on the same route
     if (transportsToLoad == null) {
@@ -308,7 +300,7 @@ public class ProMoveUtils {
     // Move units
     for (int i = 0; i < moveRoutes.size(); i++) {
       if (!isSimulation) {
-        utils.pause();
+        ProUtils.pause();
       }
       if (moveRoutes.get(i) == null || moveRoutes.get(i).getEnd() == null || moveRoutes.get(i).getStart() == null) {
         ProLogger.warn(data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()

@@ -17,21 +17,17 @@ import java.util.Set;
 
 public class ProMoveOptions {
 
-  private final ProUtils utils;
-  private final ProBattleUtils battleUtils;
   private final Map<Territory, ProTerritory> maxMoveMap;
   private final Map<Territory, List<ProTerritory>> moveMaps;
 
-  public ProMoveOptions(final ProUtils utils, final ProBattleUtils battleUtils) {
-    this.utils = utils;
-    this.battleUtils = battleUtils;
+  public ProMoveOptions() {
     maxMoveMap = new HashMap<Territory, ProTerritory>();
     moveMaps = new HashMap<Territory, List<ProTerritory>>();
   }
 
-  public ProMoveOptions(final ProUtils utils, final ProBattleUtils battleUtils,
-      final List<Map<Territory, ProTerritory>> moveMapList, final PlayerID player, final boolean isAttacker) {
-    this(utils, battleUtils);
+  public ProMoveOptions(final List<Map<Territory, ProTerritory>> moveMapList, final PlayerID player,
+      final boolean isAttacker) {
+    this();
     populateMaxMoveMap(moveMapList, player, isAttacker);
     populateMoveMaps(moveMapList);
   }
@@ -53,7 +49,7 @@ public class ProMoveOptions {
       final boolean isAttacker) {
 
     // Get players in turn order
-    final List<PlayerID> players = utils.getOtherPlayersInTurnOrder(player);
+    final List<PlayerID> players = ProUtils.getOtherPlayersInTurnOrder(player);
 
     for (final Map<Territory, ProTerritory> moveMap : moveMaps) {
       for (final Territory t : moveMap.keySet()) {
@@ -69,7 +65,7 @@ public class ProMoveOptions {
         }
 
         // Check if mover's turn comes before territory owner's
-        if (!utils.isPlayersTurnFirst(players, movePlayer, t.getOwner())) {
+        if (!ProUtils.isPlayersTurnFirst(players, movePlayer, t.getOwner())) {
           continue;
         }
 
@@ -82,11 +78,11 @@ public class ProMoveOptions {
           double maxStrength = 0;
           if (!maxUnits.isEmpty()) {
             maxStrength =
-                battleUtils.estimateStrength(maxUnits.iterator().next().getOwner(), t, new ArrayList<Unit>(maxUnits),
-                    new ArrayList<Unit>(), isAttacker);
+                ProBattleUtils.estimateStrength(maxUnits.iterator().next().getOwner(), t,
+                    new ArrayList<Unit>(maxUnits), new ArrayList<Unit>(), isAttacker);
           }
           final double currentStrength =
-              battleUtils.estimateStrength(currentUnits.iterator().next().getOwner(), t, new ArrayList<Unit>(
+              ProBattleUtils.estimateStrength(currentUnits.iterator().next().getOwner(), t, new ArrayList<Unit>(
                   currentUnits), new ArrayList<Unit>(), isAttacker);
           final boolean currentHasLandUnits = Match.someMatch(currentUnits, Matches.UnitIsLand);
           final boolean maxHasLandUnits = Match.someMatch(maxUnits, Matches.UnitIsLand);

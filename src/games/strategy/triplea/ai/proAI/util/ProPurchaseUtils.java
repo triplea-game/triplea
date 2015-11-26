@@ -1,14 +1,5 @@
 package games.strategy.triplea.ai.proAI.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -21,7 +12,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.ai.proAI.ProAI;
+import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.ai.proAI.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseOption;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseTerritory;
@@ -40,22 +31,26 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Pro AI purchase utilities.
  */
 public class ProPurchaseUtils {
 
-  private final ProAI ai;
-
-  public ProPurchaseUtils(final ProAI proAI) {
-    ai = proAI;
-  }
-
   public void findPurchaseOptions(final PlayerID player, final List<ProPurchaseOption> landPurchaseOptions,
       final List<ProPurchaseOption> airPurchaseOptions, final List<ProPurchaseOption> seaPurchaseOptions,
       final List<ProPurchaseOption> factoryPurchaseOptions, final List<ProPurchaseOption> specialPurchaseOptions) {
     ProLogger.info("Find all purchase options");
-    final GameData data = ai.getGameData();
+    final GameData data = ProData.getData();
+
     final List<ProductionRule> rules = player.getProductionFrontier().getRules();
     for (final ProductionRule rule : rules) {
 
@@ -114,9 +109,10 @@ public class ProPurchaseUtils {
   }
 
   public boolean canUnitsBePlaced(final List<Unit> units, final PlayerID player, final Territory t) {
-    final GameData data = ai.getGameData();
+    final GameData data = ProData.getData();
+
     final AbstractPlaceDelegate placeDelegate = (AbstractPlaceDelegate) data.getDelegateList().getDelegate("place");
-    final IDelegateBridge bridge = new ProDummyDelegateBridge(ai, player, data);
+    final IDelegateBridge bridge = new ProDummyDelegateBridge(ProData.getProAI(), player, data);
     placeDelegate.setDelegateBridgeAndPlayer(bridge);
     final String s = placeDelegate.canUnitsBePlaced(t, units, player);
     if (s == null) {
@@ -126,7 +122,7 @@ public class ProPurchaseUtils {
   }
 
   public List<ProPurchaseOption> removeInvalidPurchaseOptions(final PlayerID player, final GameData data,
-      final List<ProPurchaseOption> purchaseOptions, ProResourceTracker resourceTracker,
+      final List<ProPurchaseOption> purchaseOptions, final ProResourceTracker resourceTracker,
       final int remainingUnitProduction, final List<Unit> unitsToPlace,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
@@ -183,8 +179,7 @@ public class ProPurchaseUtils {
       final double chance = purchaseEfficiencies.get(ppo) / totalEfficiency * 100;
       upperBound += chance;
       purchasePercentages.put(ppo, upperBound);
-      ProLogger.trace(ppo.getUnitType().getName() + ", probability=" + chance + ", upperBound="
-          + upperBound);
+      ProLogger.trace(ppo.getUnitType().getName() + ", probability=" + chance + ", upperBound=" + upperBound);
     }
     final double randomNumber = Math.random() * 100;
     ProLogger.trace("Random number: " + randomNumber);
@@ -200,7 +195,7 @@ public class ProPurchaseUtils {
       final List<ProPurchaseOption> landPurchaseOptions) {
 
     ProLogger.info("Find max purchase defenders for " + t.getName());
-    final GameData data = ai.getGameData();
+    final GameData data = ProData.getData();
 
     // Determine most cost efficient defender that can be produced in this territory
     final Resource PUs = data.getResourceList().getResource(Constants.PUS);
@@ -255,7 +250,7 @@ public class ProPurchaseUtils {
   public Map<Territory, ProPurchaseTerritory> findPurchaseTerritories(final PlayerID player) {
 
     ProLogger.info("Find all purchase territories");
-    final GameData data = ai.getGameData();
+    final GameData data = ProData.getData();
 
     // Find all territories that I can place units on
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
