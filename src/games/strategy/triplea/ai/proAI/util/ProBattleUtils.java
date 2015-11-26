@@ -7,7 +7,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.ai.proAI.ProAI;
+import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.ai.proAI.data.ProBattleResult;
 import games.strategy.triplea.ai.proAI.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseTerritory;
@@ -20,6 +20,8 @@ import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
+import games.strategy.triplea.oddsCalculator.ta.ConcurrentOddsCalculator;
+import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -35,18 +37,24 @@ import java.util.Set;
  */
 public class ProBattleUtils {
 
-  private final ProAI ai;
-  private final ProUtils utils;
+  // If non-static, then only need 1 for the entire AI instance and must be shutdown when AI is gc'ed.
+  private final static IOddsCalculator calc = new ConcurrentOddsCalculator("ProAI");
+  private static boolean isCanceled = false;
 
-  public ProBattleUtils(final ProAI proAI, final ProUtils utils) {
-    ai = proAI;
-    this.utils = utils;
+  public static void setData(final GameData data) {
+    // Is static, set to null so that we don't keep the data around after a game is exited
+    calc.setGameData(data);
   }
 
-  public boolean checkForOverwhelmingWin(final PlayerID player, final Territory t, final List<Unit> attackingUnits,
-      final List<Unit> defendingUnits) {
+  public static void cancel() {
+    calc.cancel(); // cancel any current calcing
+    isCanceled = true;
+  }
 
-    final GameData data = ai.getGameData();
+  public static boolean checkForOverwhelmingWin(final PlayerID player, final Territory t,
+      final List<Unit> attackingUnits, final List<Unit> defendingUnits) {
+    final GameData data = ProData.getData();
+
     if (defendingUnits.isEmpty() && !attackingUnits.isEmpty()) {
       return true;
     }
@@ -72,7 +80,7 @@ public class ProBattleUtils {
     return ((attackPower / data.getDiceSides()) >= totalDefenderHitPoints);
   }
 
-  public double estimateStrengthDifference(final Territory t, final List<Unit> attackingUnits,
+  public static double estimateStrengthDifference(final Territory t, final List<Unit> attackingUnits,
       final List<Unit> defendingUnits) {
 
     if (attackingUnits.size() == 0) {
@@ -89,10 +97,10 @@ public class ProBattleUtils {
     return ((attackerStrength - defenderStrength) / Math.pow(defenderStrength, 0.85) * 50 + 50);
   }
 
-  public double estimateStrength(final PlayerID player, final Territory t, final List<Unit> myUnits,
+  public static double estimateStrength(final PlayerID player, final Territory t, final List<Unit> myUnits,
       final List<Unit> enemyUnits, final boolean attacking) {
+    final GameData data = ProData.getData();
 
-    final GameData data = ai.getGameData();
     List<Unit> unitsThatCanFight =
         Match.getMatches(myUnits, Matches.UnitCanBeInBattle(attacking, !t.isWater(), data, 1, false, true, true));
     if (Properties.getTransportCasualtiesRestricted(data)) {
@@ -103,10 +111,10 @@ public class ProBattleUtils {
     return (2 * myHP) + myPower;
   }
 
-  private double estimatePower(final PlayerID player, final Territory t, final List<Unit> myUnits,
+  private static double estimatePower(final PlayerID player, final Territory t, final List<Unit> myUnits,
       final List<Unit> enemyUnits, final boolean attacking) {
+    final GameData data = ProData.getData();
 
-    final GameData data = ai.getGameData();
     final List<Unit> unitsThatCanFight =
         Match.getMatches(myUnits, Matches.UnitCanBeInBattle(attacking, !t.isWater(), data, 1, false, true, true));
     final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
@@ -121,7 +129,7 @@ public class ProBattleUtils {
     return (myPower * 6.0 / data.getDiceSides());
   }
 
-  public ProBattleResult estimateAttackBattleResults(final PlayerID player, final Territory t,
+  public static ProBattleResult estimateAttackBattleResults(final PlayerID player, final Territory t,
       final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits) {
 
     final ProBattleResult result = checkIfNoAttackersOrDefenders(t, attackingUnits, defendingUnits);
@@ -137,7 +145,7 @@ public class ProBattleUtils {
     return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits, true);
   }
 
-  public ProBattleResult estimateDefendBattleResults(final PlayerID player, final Territory t,
+  public static ProBattleResult estimateDefendBattleResults(final PlayerID player, final Territory t,
       final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits) {
 
     final ProBattleResult result = checkIfNoAttackersOrDefenders(t, attackingUnits, defendingUnits);
@@ -155,7 +163,7 @@ public class ProBattleUtils {
     return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits, false);
   }
 
-  public ProBattleResult calculateBattleResults(final PlayerID player, final Territory t,
+  public static ProBattleResult calculateBattleResults(final PlayerID player, final Territory t,
       final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits,
       final boolean isAttacker) {
 
@@ -166,10 +174,10 @@ public class ProBattleUtils {
     return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits, isAttacker);
   }
 
-  private ProBattleResult checkIfNoAttackersOrDefenders(final Territory t, final List<Unit> attackingUnits,
+  private static ProBattleResult checkIfNoAttackersOrDefenders(final Territory t, final List<Unit> attackingUnits,
       final List<Unit> defendingUnits) {
+    final GameData data = ProData.getData();
 
-    final GameData data = ai.getGameData();
     final boolean hasNoDefenders = Match.noneMatch(defendingUnits, Matches.UnitIsNotInfrastructure);
     final boolean isLandAndCanOnlyBeAttackedByAir = !t.isWater() && Match.allMatch(attackingUnits, Matches.UnitIsAir);
     if (attackingUnits.size() == 0) {
@@ -186,20 +194,20 @@ public class ProBattleUtils {
   }
 
 
-  public ProBattleResult callBattleCalculator(final PlayerID player, final Territory t,
+  public static ProBattleResult callBattleCalculator(final PlayerID player, final Territory t,
       final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits,
       final boolean isAttacker) {
-    return this.callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits, isAttacker, false);
+    return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits, isAttacker, false);
   }
 
-  public ProBattleResult callBattleCalculator(final PlayerID player, final Territory t,
+  public static ProBattleResult callBattleCalculator(final PlayerID player, final Territory t,
       final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits,
       final boolean isAttacker, final boolean retreatWhenOnlyAirLeft) {
 
-    if (ai.isGameStopped()) {
+    if (isCanceled) {
       return new ProBattleResult();
     }
-    final GameData data = ai.getGameData();
+    final GameData data = ProData.getData();
 
     // Use battle calculator (hasLandUnitRemaining is always true for naval territories)
     AggregateResults results = null;
@@ -207,17 +215,17 @@ public class ProBattleUtils {
     final int runCount = Math.max(16, 100 - minArmySize);
     if (isAttacker) {
       if (retreatWhenOnlyAirLeft) {
-        ai.getCalc().setRetreatWhenOnlyAirLeft(true);
+        calc.setRetreatWhenOnlyAirLeft(true);
       }
       results =
-          ai.getCalc().setCalculateDataAndCalculate(player, t.getOwner(), t, attackingUnits, defendingUnits,
+          calc.setCalculateDataAndCalculate(player, t.getOwner(), t, attackingUnits, defendingUnits,
               new ArrayList<Unit>(bombardingUnits), TerritoryEffectHelper.getEffects(t), runCount);
       if (retreatWhenOnlyAirLeft) {
-        ai.getCalc().setRetreatWhenOnlyAirLeft(false);
+        calc.setRetreatWhenOnlyAirLeft(false);
       }
     } else {
       results =
-          ai.getCalc().setCalculateDataAndCalculate(attackingUnits.get(0).getOwner(), player, t, attackingUnits,
+          calc.setCalculateDataAndCalculate(attackingUnits.get(0).getOwner(), player, t, attackingUnits,
               defendingUnits, new ArrayList<Unit>(bombardingUnits), TerritoryEffectHelper.getEffects(t), runCount);
     }
 
@@ -258,14 +266,14 @@ public class ProBattleUtils {
     }
   }
 
-  public boolean territoryHasLocalLandSuperiority(final Territory t, final int distance, final PlayerID player) {
+  public static boolean territoryHasLocalLandSuperiority(final Territory t, final int distance, final PlayerID player) {
     return territoryHasLocalLandSuperiority(t, distance, player, new HashMap<Territory, ProPurchaseTerritory>());
   }
 
-  public boolean territoryHasLocalLandSuperiority(final Territory t, final int distance, final PlayerID player,
+  public static boolean territoryHasLocalLandSuperiority(final Territory t, final int distance, final PlayerID player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
-    final GameData data = ai.getGameData();
+    final GameData data = ProData.getData();
     if (t == null) {
       return true;
     }
@@ -308,10 +316,9 @@ public class ProBattleUtils {
     return true;
   }
 
-  public boolean territoryHasLocalLandSuperiorityAfterMoves(final Territory t, final int distance,
+  public static boolean territoryHasLocalLandSuperiorityAfterMoves(final Territory t, final int distance,
       final PlayerID player, final Map<Territory, ProTerritory> moveMap) {
-
-    final GameData data = ai.getGameData();
+    final GameData data = ProData.getData();
 
     // Find enemy strength
     final Set<Territory> nearbyTerritoriesForEnemy =
@@ -344,11 +351,11 @@ public class ProBattleUtils {
     }
   }
 
-  public boolean territoryHasLocalNavalSuperiority(final Territory t, final PlayerID player,
+  public static boolean territoryHasLocalNavalSuperiority(final Territory t, final PlayerID player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final List<Unit> unitsToPlace) {
+    final GameData data = ProData.getData();
 
-    final GameData data = ai.getGameData();
-    int landDistance = utils.getClosestEnemyLandTerritoryDistanceOverWater(data, player, t);
+    int landDistance = ProUtils.getClosestEnemyLandTerritoryDistanceOverWater(data, player, t);
     if (landDistance <= 0) {
       landDistance = 10;
     }
