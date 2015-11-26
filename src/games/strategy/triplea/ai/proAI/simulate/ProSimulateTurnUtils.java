@@ -38,7 +38,7 @@ import java.util.Set;
  */
 public class ProSimulateTurnUtils {
 
-  public void simulateBattles(final GameData data, final PlayerID player, final IDelegateBridge delegateBridge) {
+  public static void simulateBattles(final GameData data, final PlayerID player, final IDelegateBridge delegateBridge) {
 
     ProLogger.info("Starting battle simulation phase");
 
@@ -87,7 +87,7 @@ public class ProSimulateTurnUtils {
     }
   }
 
-  public Map<Territory, ProTerritory> transferMoveMap(final Map<Territory, ProTerritory> moveMap,
+  public static Map<Territory, ProTerritory> transferMoveMap(final Map<Territory, ProTerritory> moveMap,
       final Map<Unit, Territory> unitTerritoryMap, final GameData fromData, final GameData toData, final PlayerID player) {
 
     ProLogger.info("Transferring move map");
@@ -179,8 +179,8 @@ public class ProSimulateTurnUtils {
     return false;
   }
 
-  private Unit transferUnit(final Unit u, final Map<Unit, Territory> unitTerritoryMap, final List<Unit> usedUnits,
-      final GameData toData, final PlayerID player) {
+  private static Unit transferUnit(final Unit u, final Map<Unit, Territory> unitTerritoryMap,
+      final List<Unit> usedUnits, final GameData toData, final PlayerID player) {
 
     final Territory unitTerritory = unitTerritoryMap.get(u);
     final List<Unit> toUnits =
@@ -195,7 +195,7 @@ public class ProSimulateTurnUtils {
     return null;
   }
 
-  private Unit transferLoadedTransport(final Unit transport, final List<Unit> transportingUnits,
+  private static Unit transferLoadedTransport(final Unit transport, final List<Unit> transportingUnits,
       final Map<Unit, Territory> unitTerritoryMap, final List<Unit> usedUnits, final GameData toData,
       final PlayerID player) {
 

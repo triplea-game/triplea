@@ -69,7 +69,6 @@ public class ProAI extends AbstractAI {
   private final ProTransportUtils transportUtils;
   private final ProMoveOptionsUtils attackOptionsUtils;
   private final ProTerritoryValueUtils territoryValueUtils;
-  private final ProSimulateTurnUtils simulateTurnUtils;
 
   // Phases
   private final ProCombatMoveAI combatMoveAI;
@@ -91,7 +90,6 @@ public class ProAI extends AbstractAI {
     transportUtils = new ProTransportUtils();
     attackOptionsUtils = new ProMoveOptionsUtils(transportUtils);
     territoryValueUtils = new ProTerritoryValueUtils();
-    simulateTurnUtils = new ProSimulateTurnUtils();
     combatMoveAI = new ProCombatMoveAI(this, transportUtils, attackOptionsUtils, territoryValueUtils);
     nonCombatMoveAI = new ProNonCombatMoveAI(transportUtils, attackOptionsUtils, territoryValueUtils);
     purchaseAI = new ProPurchaseAI(transportUtils, attackOptionsUtils, territoryValueUtils);
@@ -229,15 +227,16 @@ public class ProAI extends AbstractAI {
               nonCombatMoveAI.doNonCombatMove(null, null, moveDel, dataCopy, playerCopy, true);
           if (storedFactoryMoveMap == null) {
             storedFactoryMoveMap =
-                simulateTurnUtils.transferMoveMap(factoryMoveMap, unitTerritoryMap, dataCopy, data, player);
+                ProSimulateTurnUtils.transferMoveMap(factoryMoveMap, unitTerritoryMap, dataCopy, data, player);
           }
         } else if (stepName.endsWith("CombatMove") && !stepName.endsWith("AirborneCombatMove")) {
           final Map<Territory, ProTerritory> moveMap = combatMoveAI.doCombatMove(moveDel, dataCopy, playerCopy, true);
           if (storedCombatMoveMap == null) {
-            storedCombatMoveMap = simulateTurnUtils.transferMoveMap(moveMap, unitTerritoryMap, dataCopy, data, player);
+            storedCombatMoveMap =
+                ProSimulateTurnUtils.transferMoveMap(moveMap, unitTerritoryMap, dataCopy, data, player);
           }
         } else if (stepName.endsWith("Battle")) {
-          simulateTurnUtils.simulateBattles(dataCopy, playerCopy, bridge);
+          ProSimulateTurnUtils.simulateBattles(dataCopy, playerCopy, bridge);
         } else if (stepName.endsWith("Place") || stepName.endsWith("EndTurn")) {
           storedPurchaseTerritories = purchaseAI.purchase(purchaseDelegate, dataCopy, data, player);
           ProData.setData(data);
