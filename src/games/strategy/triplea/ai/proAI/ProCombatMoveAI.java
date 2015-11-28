@@ -95,7 +95,6 @@ public class ProCombatMoveAI {
     final Map<Unit, Set<Territory>> transportAttackMap = new HashMap<Unit, Set<Territory>>();
     final Map<Unit, Set<Territory>> bombardMap = new HashMap<Unit, Set<Territory>>();
     final List<ProTransport> transportMapList = new ArrayList<ProTransport>();
-    final Map<Territory, Set<Territory>> landRoutesMap = new HashMap<Territory, Set<Territory>>();
 
     // Determine whether capital is threatened and I should be in a defensive stance
     isDefensive = !ProBattleUtils.territoryHasLocalLandSuperiority(myCapital, 3, player);
@@ -115,7 +114,7 @@ public class ProCombatMoveAI {
     final List<Territory> myUnitTerritories =
         Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
     attackOptionsUtils.findAttackOptions(player, myUnitTerritories, attackMap, unitAttackMap, transportAttackMap,
-        bombardMap, landRoutesMap, transportMapList, new ArrayList<Territory>(), new ArrayList<Territory>(),
+        bombardMap, transportMapList, new ArrayList<Territory>(), new ArrayList<Territory>(),
         new ArrayList<Territory>(), false, false);
     attackOptionsUtils.findScrambleOptions(player, attackMap);
     final ProMoveOptions alliedAttackOptions = attackOptionsUtils.findAlliedAttackOptions(player);
@@ -658,9 +657,8 @@ public class ProCombatMoveAI {
     final Map<Unit, Set<Territory>> unitMoveMap = new HashMap<Unit, Set<Territory>>();
     final Map<Unit, Set<Territory>> transportMoveMap = new HashMap<Unit, Set<Territory>>();
     final List<ProTransport> transportMapList = new ArrayList<ProTransport>();
-    final Map<Territory, Set<Territory>> landRoutesMap = new HashMap<Territory, Set<Territory>>();
     attackOptionsUtils.findDefendOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap,
-        landRoutesMap, transportMapList, clearedTerritories, false);
+        transportMapList, clearedTerritories, false);
 
     // Remove units that have already attacked
     final Set<Unit> alreadyAttackedWithUnits = new HashSet<Unit>();

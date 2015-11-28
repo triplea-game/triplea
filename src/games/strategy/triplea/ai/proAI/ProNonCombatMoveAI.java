@@ -106,10 +106,13 @@ public class ProNonCombatMoveAI {
     Map<Unit, Set<Territory>> unitMoveMap = new HashMap<Unit, Set<Territory>>();
     Map<Unit, Set<Territory>> transportMoveMap = new HashMap<Unit, Set<Territory>>();
     List<ProTransport> transportMapList = new ArrayList<ProTransport>();
-    final Map<Territory, Set<Territory>> landRoutesMap = new HashMap<Territory, Set<Territory>>();
 
-    Map<Unit, Set<Territory>> infraUnitMoveMap = new HashMap<Unit, Set<Territory>>();
-    List<ProTerritory> prioritizedTerritories = new ArrayList<ProTerritory>();
+    // Find the max number of units that can move to each allied territory
+    final Match<Territory> myUnitTerritoriesMatch =
+        Matches.territoryHasUnitsThatMatch(ProMatches.unitCanBeMovedAndIsOwned(player));
+    final List<Territory> myUnitTerritories = Match.getMatches(allTerritories, myUnitTerritoriesMatch);
+    attackOptionsUtils.findDefendOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap,
+        transportMapList, new ArrayList<Territory>(), false);
 
     // Find all purchase options
     final List<ProPurchaseOption> specialPurchaseOptions = new ArrayList<ProPurchaseOption>();
@@ -121,16 +124,9 @@ public class ProNonCombatMoveAI {
         factoryPurchaseOptions, specialPurchaseOptions);
     minCostPerHitPoint = ProPurchaseUtils.getMinCostPerHitPoint(player, landPurchaseOptions);
 
-    // Find the max number of units that can move to each allied territory
-    final Match<Territory> myUnitTerritoriesMatch =
-        Matches.territoryHasUnitsThatMatch(ProMatches.unitCanBeMovedAndIsOwned(player));
-    final List<Territory> myUnitTerritories = Match.getMatches(allTerritories, myUnitTerritoriesMatch);
-    attackOptionsUtils.findDefendOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap,
-        landRoutesMap, transportMapList, new ArrayList<Territory>(), false);
-
     // Find number of units in each move territory that can't move and all infra units
     findUnitsThatCantMove(moveMap, unitMoveMap, purchaseTerritories, landPurchaseOptions, transportMapList);
-    infraUnitMoveMap = findInfraUnitsThatCanMove(unitMoveMap);
+    final Map<Unit, Set<Territory>> infraUnitMoveMap = findInfraUnitsThatCanMove(unitMoveMap);
 
     // Try to have one land unit in each territory that is bordering an enemy territory
     final List<Territory> movedOneDefenderToTerritories =
@@ -156,7 +152,8 @@ public class ProNonCombatMoveAI {
         territoryValueUtils.findSeaTerritoryValues(player, territoriesThatCantBeHeld);
 
     // Prioritize territories to defend
-    prioritizedTerritories = prioritizeDefendOptions(moveMap, factoryMoveMap, territoryValueMap, enemyAttackOptions);
+    final List<ProTerritory> prioritizedTerritories =
+        prioritizeDefendOptions(moveMap, factoryMoveMap, territoryValueMap, enemyAttackOptions);
 
     // Determine which territories to defend and how many units each one needs
     final int enemyDistance = ProUtils.getClosestEnemyLandTerritoryDistance(data, player, myCapital);
