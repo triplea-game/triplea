@@ -333,10 +333,7 @@ public class ProAI extends AbstractAI {
     final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
     final double strengthDifference = ProBattleUtils.estimateStrengthDifference(battleTerritory, attackers, defenders);
-    boolean isStrafing = false;
-    if (isAttacker && storedStrafingTerritories.contains(battleTerritory)) {
-      isStrafing = true;
-    }
+    final boolean isStrafing = isAttacker && storedStrafingTerritories.contains(battleTerritory);
     ProLogger.info(player.getName() + " checking retreat from territory " + battleTerritory + ", attackers="
         + attackers.size() + ", defenders=" + defenders.size() + ", submerge=" + submerge + ", attacker=" + isAttacker
         + ", isStrafing=" + isStrafing);

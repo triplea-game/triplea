@@ -27,9 +27,8 @@ public class ProMoveOptions {
 
   public ProMoveOptions(final List<Map<Territory, ProTerritory>> moveMapList, final PlayerID player,
       final boolean isAttacker) {
-    this();
-    populateMaxMoveMap(moveMapList, player, isAttacker);
-    populateMoveMaps(moveMapList);
+    maxMoveMap = createMaxMoveMap(moveMapList, player, isAttacker);
+    moveMaps = createMoveMaps(moveMapList);
   }
 
   public ProTerritory getMax(final Territory t) {
@@ -45,12 +44,11 @@ public class ProMoveOptions {
     return maxMoveMap.toString();
   }
 
-  private void populateMaxMoveMap(final List<Map<Territory, ProTerritory>> moveMaps, final PlayerID player,
-      final boolean isAttacker) {
+  private static Map<Territory, ProTerritory> createMaxMoveMap(final List<Map<Territory, ProTerritory>> moveMaps,
+      final PlayerID player, final boolean isAttacker) {
 
-    // Get players in turn order
+    final Map<Territory, ProTerritory> result = new HashMap<Territory, ProTerritory>();
     final List<PlayerID> players = ProUtils.getOtherPlayersInTurnOrder(player);
-
     for (final Map<Territory, ProTerritory> moveMap : moveMaps) {
       for (final Territory t : moveMap.keySet()) {
 
@@ -70,11 +68,11 @@ public class ProMoveOptions {
         }
 
         // Add to max move map if its empty or its strength is greater than existing
-        if (!maxMoveMap.containsKey(t)) {
-          maxMoveMap.put(t, moveMap.get(t));
+        if (!result.containsKey(t)) {
+          result.put(t, moveMap.get(t));
         } else {
-          final Set<Unit> maxUnits = new HashSet<Unit>(maxMoveMap.get(t).getMaxUnits());
-          maxUnits.addAll(maxMoveMap.get(t).getMaxAmphibUnits());
+          final Set<Unit> maxUnits = new HashSet<Unit>(result.get(t).getMaxUnits());
+          maxUnits.addAll(result.get(t).getMaxAmphibUnits());
           double maxStrength = 0;
           if (!maxUnits.isEmpty()) {
             maxStrength =
@@ -88,25 +86,29 @@ public class ProMoveOptions {
           final boolean maxHasLandUnits = Match.someMatch(maxUnits, Matches.UnitIsLand);
           if ((currentHasLandUnits && ((!maxHasLandUnits && !t.isWater()) || currentStrength > maxStrength))
               || ((!maxHasLandUnits || t.isWater()) && currentStrength > maxStrength)) {
-            maxMoveMap.put(t, moveMap.get(t));
+            result.put(t, moveMap.get(t));
           }
         }
       }
     }
+    return result;
   }
 
-  private void populateMoveMaps(final List<Map<Territory, ProTerritory>> moveMapList) {
+  private static Map<Territory, List<ProTerritory>> createMoveMaps(final List<Map<Territory, ProTerritory>> moveMapList) {
+
+    final Map<Territory, List<ProTerritory>> result = new HashMap<Territory, List<ProTerritory>>();
     for (final Map<Territory, ProTerritory> moveMap : moveMapList) {
       for (final Territory t : moveMap.keySet()) {
-        if (!moveMaps.containsKey(t)) {
+        if (!result.containsKey(t)) {
           final List<ProTerritory> list = new ArrayList<ProTerritory>();
           list.add(moveMap.get(t));
-          moveMaps.put(t, list);
+          result.put(t, list);
         } else {
-          moveMaps.get(t).add(moveMap.get(t));
+          result.get(t).add(moveMap.get(t));
         }
       }
     }
+    return result;
   }
 
 }
