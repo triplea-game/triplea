@@ -1,4 +1,4 @@
-package games.strategy.triplea.ai.proAI;
+package games.strategy.triplea.ai.proAI.data;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,13 +9,13 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 
-public class ProAmphibData {
+public class ProTransport {
 
   private Unit transport;
   private Map<Territory, Set<Territory>> transportMap;
   private Map<Territory, Set<Territory>> seaTransportMap;
 
-  public ProAmphibData(final Unit transport) {
+  public ProTransport(final Unit transport) {
     this.transport = transport;
     transportMap = new HashMap<Territory, Set<Territory>>();
     seaTransportMap = new HashMap<Territory, Set<Territory>>();

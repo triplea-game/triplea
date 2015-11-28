@@ -1,15 +1,5 @@
 package games.strategy.triplea.ai.proAI;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
@@ -22,13 +12,16 @@ import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.AbstractAI;
+import games.strategy.triplea.ai.proAI.data.ProBattleResult;
+import games.strategy.triplea.ai.proAI.data.ProPurchaseTerritory;
+import games.strategy.triplea.ai.proAI.data.ProTerritory;
 import games.strategy.triplea.ai.proAI.logging.ProLogUI;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.ai.proAI.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.ai.proAI.simulate.ProSimulateTurnUtils;
-import games.strategy.triplea.ai.proAI.util.ProAttackOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
+import games.strategy.triplea.ai.proAI.util.ProMoveOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProMoveUtils;
 import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
 import games.strategy.triplea.ai.proAI.util.ProTerritoryValueUtils;
@@ -58,6 +51,16 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Pro AI.
  */
@@ -72,7 +75,7 @@ public class ProAI extends AbstractAI {
   private final ProUtils utils;
   private final ProBattleUtils battleUtils;
   private final ProTransportUtils transportUtils;
-  private final ProAttackOptionsUtils attackOptionsUtils;
+  private final ProMoveOptionsUtils attackOptionsUtils;
   private final ProMoveUtils moveUtils;
   private final ProTerritoryValueUtils territoryValueUtils;
   private final ProSimulateTurnUtils simulateTurnUtils;
@@ -88,10 +91,11 @@ public class ProAI extends AbstractAI {
 
   // Data
   private GameData data;
-  private Map<Territory, ProAttackTerritoryData> storedCombatMoveMap;
-  private Map<Territory, ProAttackTerritoryData> storedFactoryMoveMap;
+  private Map<Territory, ProTerritory> storedCombatMoveMap;
+  private Map<Territory, ProTerritory> storedFactoryMoveMap;
   private Map<Territory, ProPurchaseTerritory> storedPurchaseTerritories;
   private List<PoliticalActionAttachment> storedPoliticalActions;
+  private List<Territory> storedStrafingTerritories;
 
   public ProAI(final String name, final String type) {
     super(name, type);
@@ -99,13 +103,13 @@ public class ProAI extends AbstractAI {
     battleUtils = new ProBattleUtils(this, utils);
     transportUtils = new ProTransportUtils(this, utils);
     purchaseUtils = new ProPurchaseUtils(this);
-    attackOptionsUtils = new ProAttackOptionsUtils(this, utils, battleUtils, transportUtils, purchaseUtils);
+    attackOptionsUtils = new ProMoveOptionsUtils(this, utils, battleUtils, transportUtils, purchaseUtils);
     moveUtils = new ProMoveUtils(this, utils);
     territoryValueUtils = new ProTerritoryValueUtils(this, utils, battleUtils);
     simulateTurnUtils = new ProSimulateTurnUtils(this, utils, battleUtils, moveUtils);
     combatMoveAI =
-        new ProCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils,
-            purchaseUtils);
+        new ProCombatMoveAI(this, utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils,
+            territoryValueUtils, purchaseUtils);
     nonCombatMoveAI =
         new ProNonCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils,
             purchaseUtils);
@@ -113,10 +117,11 @@ public class ProAI extends AbstractAI {
         new ProPurchaseAI(utils, battleUtils, transportUtils, attackOptionsUtils, territoryValueUtils, purchaseUtils);
     retreatAI = new ProRetreatAI(this, battleUtils);
     scrambleAI = new ProScrambleAI(this, battleUtils, attackOptionsUtils);
-    politicsAI = new ProPoliticsAI(this, utils, attackOptionsUtils);
+    politicsAI = new ProPoliticsAI(this, utils, battleUtils, attackOptionsUtils);
     data = null;
     storedCombatMoveMap = null;
     storedPurchaseTerritories = null;
+    storedStrafingTerritories = new ArrayList<Territory>();
   }
 
   public static void Initialize(final TripleAFrame frame) {
@@ -156,6 +161,10 @@ public class ProAI extends AbstractAI {
   public void stopGame() {
     super.stopGame(); // absolutely MUST call super.stopGame() first
     s_battleCalculator.cancel(); // cancel any current calcing
+  }
+
+  public void setStoredStrafingTerritories(final List<Territory> strafingTerritories) {
+    storedStrafingTerritories = strafingTerritories;
   }
 
   @Override
@@ -243,15 +252,14 @@ public class ProAI extends AbstractAI {
         final String stepName = step.getName();
         ProLogger.info("Simulating phase: " + stepName);
         if (stepName.endsWith("NonCombatMove")) {
-          final Map<Territory, ProAttackTerritoryData> factoryMoveMap =
+          final Map<Territory, ProTerritory> factoryMoveMap =
               nonCombatMoveAI.doNonCombatMove(null, null, moveDel, dataCopy, playerCopy, true);
           if (storedFactoryMoveMap == null) {
             storedFactoryMoveMap =
                 simulateTurnUtils.transferMoveMap(factoryMoveMap, unitTerritoryMap, dataCopy, data, player);
           }
         } else if (stepName.endsWith("CombatMove") && !stepName.endsWith("AirborneCombatMove")) {
-          final Map<Territory, ProAttackTerritoryData> moveMap =
-              combatMoveAI.doCombatMove(moveDel, dataCopy, playerCopy, true);
+          final Map<Territory, ProTerritory> moveMap = combatMoveAI.doCombatMove(moveDel, dataCopy, playerCopy, true);
           if (storedCombatMoveMap == null) {
             storedCombatMoveMap = simulateTurnUtils.transferMoveMap(moveMap, unitTerritoryMap, dataCopy, data, player);
           }
@@ -346,14 +354,19 @@ public class ProAI extends AbstractAI {
       return null;
     }
 
-    // If I'm attacker, have more unit strength, and isn't land battle with only air left then don't retreat
+    // If attacker with more unit strength or strafing and isn't land battle with only air left then don't retreat
     final boolean isAttacker = player.equals(battle.getAttacker());
     final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
     final double strengthDifference = battleUtils.estimateStrengthDifference(battleTerritory, attackers, defenders);
+    boolean isStrafing = false;
+    if (isAttacker && storedStrafingTerritories.contains(battleTerritory)) {
+      isStrafing = true;
+    }
     ProLogger.info(player.getName() + " checking retreat from territory " + battleTerritory + ", attackers="
-        + attackers.size() + ", defenders=" + defenders.size() + ", submerge=" + submerge + ", attacker=" + isAttacker);
-    if (isAttacker && strengthDifference > 50
+        + attackers.size() + ", defenders=" + defenders.size() + ", submerge=" + submerge + ", attacker=" + isAttacker
+        + ", isStrafing=" + isStrafing);
+    if ((isStrafing || (isAttacker && strengthDifference > 50))
         && (battleTerritory.isWater() || Match.someMatch(attackers, Matches.UnitIsLand))) {
       return null;
     }
@@ -500,7 +513,7 @@ public class ProAI extends AbstractAI {
     s_battleCalculator.setGameData(getGameData());
 
     // Calculate battle results
-    final ProBattleResultData result =
+    final ProBattleResult result =
         battleUtils.calculateBattleResults(player, unitTerritory, attackers, defenders, new HashSet<Unit>(), true);
     ProLogger.debug(player.getName() + " sub attack TUVSwing=" + result.getTUVSwing());
     if (result.getTUVSwing() > 0) {

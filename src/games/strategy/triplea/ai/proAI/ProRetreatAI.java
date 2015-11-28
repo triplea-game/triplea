@@ -5,6 +5,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.net.GUID;
+import games.strategy.triplea.ai.proAI.data.ProBattleResult;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
@@ -65,7 +66,7 @@ public class ProRetreatAI {
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
 
     // Calculate battle results
-    final ProBattleResultData result =
+    final ProBattleResult result =
         battleUtils.calculateBattleResults(player, battleTerritory, attackers, defenders, new HashSet<Unit>(),
             isAttacker);
 

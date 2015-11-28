@@ -1,4 +1,4 @@
-package games.strategy.triplea.ai.proAI;
+package games.strategy.triplea.ai.proAI.data;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;

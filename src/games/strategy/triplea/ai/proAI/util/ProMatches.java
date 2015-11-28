@@ -186,22 +186,22 @@ public class ProMatches {
 
   public static Match<Territory> territoryCanMoveLandUnitsThroughIgnoreEnemyUnits(final PlayerID player,
       final GameData data, final Unit u, final Territory startTerritory, final boolean isCombatMove,
-      final List<Territory> enemyTerritories, final List<Territory> alliedTerritories) {
+      final List<Territory> blockedTerritories, final List<Territory> clearedTerritories) {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
         Match<Territory> alliedMatch =
             new CompositeMatchOr<Territory>(Matches.isTerritoryAllied(player, data),
-                Matches.territoryIsInList(alliedTerritories));
+                Matches.territoryIsInList(clearedTerritories));
         if (isCombatMove && Matches.UnitCanBlitz.match(u) && TerritoryEffectHelper.unitKeepsBlitz(u, startTerritory)) {
           alliedMatch =
               new CompositeMatchOr<Territory>(Matches.isTerritoryAllied(player, data),
-                  Matches.territoryIsInList(alliedTerritories), territoryIsBlitzable(player, data, u));
+                  Matches.territoryIsInList(clearedTerritories), territoryIsBlitzable(player, data, u));
         }
         Match<Territory> match =
             new CompositeMatchAnd<Territory>(
                 ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, u), alliedMatch, Matches
-                    .territoryIsInList(enemyTerritories).invert());
+                    .territoryIsInList(blockedTerritories).invert());
         return match.match(t);
       }
     };

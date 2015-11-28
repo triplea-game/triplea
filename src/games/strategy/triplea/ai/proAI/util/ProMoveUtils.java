@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -14,7 +15,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.ProAI;
-import games.strategy.triplea.ai.proAI.ProAttackTerritoryData;
+import games.strategy.triplea.ai.proAI.data.ProTerritory;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
@@ -37,7 +38,7 @@ public class ProMoveUtils {
 
   public void calculateMoveRoutes(final PlayerID player, final boolean areNeutralsPassableByAir,
       final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
-      final Map<Territory, ProAttackTerritoryData> attackMap, final boolean isCombatMove) {
+      final Map<Territory, ProTerritory> attackMap, final boolean isCombatMove) {
 
     final GameData data = ai.getGameData();
     final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(player);
@@ -117,7 +118,7 @@ public class ProMoveUtils {
 
   public void calculateAmphibRoutes(final PlayerID player, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final List<Collection<Unit>> transportsToLoad,
-      final Map<Territory, ProAttackTerritoryData> attackMap, final boolean isCombatMove) {
+      final Map<Territory, ProTerritory> attackMap, final boolean isCombatMove) {
 
     final GameData data = ai.getGameData();
     final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(player);
@@ -245,7 +246,7 @@ public class ProMoveUtils {
   }
 
   public void calculateBombardMoveRoutes(final PlayerID player, final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes, final Map<Territory, ProAttackTerritoryData> attackMap) {
+      final List<Route> moveRoutes, final Map<Territory, ProTerritory> attackMap) {
 
     final GameData data = ai.getGameData();
     final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(player);
