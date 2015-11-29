@@ -30,8 +30,6 @@ import java.util.Set;
  */
 public class ProScrambleAI {
 
-  public static double WIN_PERCENTAGE = 95;
-  public static double MIN_WIN_PERCENTAGE = 80;
   private final ProMoveOptionsUtils attackOptionsUtils;
 
   public ProScrambleAI(final ProMoveOptionsUtils attackOptionsUtils) {
@@ -46,11 +44,6 @@ public class ProScrambleAI {
     final PlayerID player = ProData.getProAI().getPlayerID();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(scrambleTo, false, BattleType.NORMAL);
-    if (!games.strategy.triplea.Properties.getLow_Luck(data)) // Set optimal and min win percentage lower if not LL
-    {
-      WIN_PERCENTAGE = 90;
-      MIN_WIN_PERCENTAGE = 65;
-    }
 
     // Check if defense already wins
     final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
@@ -60,7 +53,7 @@ public class ProScrambleAI {
         ProBattleUtils.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
     ProLogger.debug(scrambleTo + ", minTUVSwing=" + minResult.getTUVSwing() + ", minWin%="
         + minResult.getWinPercentage());
-    if (minResult.getTUVSwing() <= 0 && minResult.getWinPercentage() < (100 - MIN_WIN_PERCENTAGE)) {
+    if (minResult.getTUVSwing() <= 0 && minResult.getWinPercentage() < (100 - ProData.minWinPercentage)) {
       return null;
     }
 
@@ -132,7 +125,7 @@ public class ProScrambleAI {
               .calculateBattleResults(player, scrambleTo, attackers, currentDefenders, bombardingUnits, false);
       ProLogger.debug(scrambleTo + ", TUVSwing=" + result.getTUVSwing() + ", Win%=" + result.getWinPercentage()
           + ", addedUnit=" + u);
-      if (result.getTUVSwing() <= 0 && result.getWinPercentage() < (100 - MIN_WIN_PERCENTAGE)) {
+      if (result.getTUVSwing() <= 0 && result.getWinPercentage() < (100 - ProData.minWinPercentage)) {
         break;
       }
     }

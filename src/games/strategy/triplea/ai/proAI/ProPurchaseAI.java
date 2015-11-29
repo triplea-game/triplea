@@ -62,8 +62,6 @@ import java.util.Set;
  */
 public class ProPurchaseAI {
 
-  public final static double WIN_PERCENTAGE = 95.0;
-
   // Utilities
   private final ProTransportUtils transportUtils;
   private final ProMoveOptionsUtils attackOptionsUtils;
@@ -972,7 +970,7 @@ public class ProPurchaseAI {
             !t.isWater() && Match.allMatch(enemyAttackingUnits, Matches.UnitIsAir);
         if ((!t.isWater() && result.isHasLandUnitRemaining())
             || result.getTUVSwing() > holdValue
-            || (t.equals(myCapital) && !isLandAndCanOnlyBeAttackedByAir && result.getWinPercentage() > (100 - WIN_PERCENTAGE))) {
+            || (t.equals(myCapital) && !isLandAndCanOnlyBeAttackedByAir && result.getWinPercentage() > (100 - ProData.winPercentage))) {
           needToDefendTerritories.add(placeTerritory);
         }
       }
@@ -1136,7 +1134,7 @@ public class ProPurchaseAI {
 
           // Break if it can be held
           if ((!t.equals(myCapital) && !finalResult.isHasLandUnitRemaining() && finalResult.getTUVSwing() <= 0)
-              || (t.equals(myCapital) && finalResult.getWinPercentage() < (100 - WIN_PERCENTAGE) && finalResult
+              || (t.equals(myCapital) && finalResult.getWinPercentage() < (100 - ProData.winPercentage) && finalResult
                   .getTUVSwing() <= 0)) {
             break;
           }
@@ -1701,7 +1699,8 @@ public class ProPurchaseAI {
             }
 
             // If it can be held then break
-            if (!hasOnlyRetreatingSubs && (result.getTUVSwing() < -1 || result.getWinPercentage() < WIN_PERCENTAGE)) {
+            if (!hasOnlyRetreatingSubs
+                && (result.getTUVSwing() < -1 || result.getWinPercentage() < ProData.winPercentage)) {
               break;
             }
 
@@ -1744,7 +1743,7 @@ public class ProPurchaseAI {
         }
 
         // Check to see if its worth trying to defend the territory
-        if (result.getTUVSwing() < 0 || result.getWinPercentage() < WIN_PERCENTAGE) {
+        if (result.getTUVSwing() < 0 || result.getWinPercentage() < ProData.winPercentage) {
           resourceTracker.confirmTempPurchases();
           ProLogger.trace(t + ", placedUnits=" + unitsToPlace + ", TUVSwing=" + result.getTUVSwing()
               + ", hasLandUnitRemaining=" + result.isHasLandUnitRemaining());
@@ -2385,7 +2384,7 @@ public class ProPurchaseAI {
 
         // Break if it can be held
         if ((!t.equals(myCapital) && !finalResult.isHasLandUnitRemaining() && finalResult.getTUVSwing() <= 0)
-            || (t.equals(myCapital) && finalResult.getWinPercentage() < (100 - WIN_PERCENTAGE) && finalResult
+            || (t.equals(myCapital) && finalResult.getWinPercentage() < (100 - ProData.winPercentage) && finalResult
                 .getTUVSwing() <= 0)) {
           break;
         }

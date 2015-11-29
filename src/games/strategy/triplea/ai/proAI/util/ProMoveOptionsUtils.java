@@ -46,8 +46,6 @@ import java.util.Set;
  */
 public class ProMoveOptionsUtils {
 
-  public static double WIN_PERCENTAGE = 95;
-  public static double MIN_WIN_PERCENTAGE = 75;
   private final ProTransportUtils transportUtils;
 
   public ProMoveOptionsUtils(final ProTransportUtils transportUtils) {
@@ -1134,11 +1132,6 @@ public class ProMoveOptionsUtils {
 
     ProLogger.info("Removing territories that can't be conquered");
     final GameData data = ProData.getData();
-    if (!games.strategy.triplea.Properties.getLow_Luck(data)) // Set optimal and min win percentage lower if not LL
-    {
-      WIN_PERCENTAGE = 90;
-      MIN_WIN_PERCENTAGE = 65;
-    }
 
     // Determine if territory can be successfully attacked with max possible attackers
     final List<Territory> territoriesToRemove = new ArrayList<Territory>();
@@ -1155,7 +1148,7 @@ public class ProMoveOptionsUtils {
           new HashSet<Unit>()));
 
       // Add in amphib units if I can't win without them
-      if (patd.getMaxBattleResult().getWinPercentage() < WIN_PERCENTAGE && !patd.getMaxAmphibUnits().isEmpty()) {
+      if (patd.getMaxBattleResult().getWinPercentage() < ProData.winPercentage && !patd.getMaxAmphibUnits().isEmpty()) {
         final Set<Unit> combinedUnits = new HashSet<Unit>(patd.getMaxUnits());
         combinedUnits.addAll(patd.getMaxAmphibUnits());
         patd.setMaxBattleResult(ProBattleUtils.estimateAttackBattleResults(player, t,
@@ -1169,7 +1162,7 @@ public class ProMoveOptionsUtils {
       if ((ta != null && ta.isCapital()) || ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t)) {
         isEnemyCapitalOrFactory = true;
       }
-      if (patd.getMaxBattleResult().getWinPercentage() < MIN_WIN_PERCENTAGE && isEnemyCapitalOrFactory
+      if (patd.getMaxBattleResult().getWinPercentage() < ProData.minWinPercentage && isEnemyCapitalOrFactory
           && alliedAttackOptions.getMax(t) != null) {
 
         // Check for allied attackers
@@ -1203,7 +1196,7 @@ public class ProMoveOptionsUtils {
             final ProBattleResult result =
                 ProBattleUtils.estimateAttackBattleResults(alliedPlayer, t, new ArrayList<Unit>(alliedUnits),
                     new ArrayList<Unit>(enemyDefendersBeforeStrafe), alliedAttack.getMaxBombardUnits());
-            if (result.getWinPercentage() < WIN_PERCENTAGE) {
+            if (result.getWinPercentage() < ProData.winPercentage) {
               patd.setStrafing(true);
 
               // Try to strafe to allow allies to conquer territory
@@ -1226,7 +1219,7 @@ public class ProMoveOptionsUtils {
                   + patd.getMaxBattleResult().getWinPercentage() + ", maxAttackers=" + alliedUnits.size()
                   + ", maxDefenders=" + enemyDefendersAfterStrafe.size());
 
-              if (patd.getMaxBattleResult().getWinPercentage() >= WIN_PERCENTAGE) {
+              if (patd.getMaxBattleResult().getWinPercentage() >= ProData.winPercentage) {
                 System.out.println(data.getSequence().getRound() + ". strafing territory: " + t + ", alliedPlayer="
                     + alliedUnits.iterator().next().getOwner().getName() + ", maxWin%="
                     + patd.getMaxBattleResult().getWinPercentage() + ", maxAttackers=" + alliedUnits.size()
@@ -1237,8 +1230,8 @@ public class ProMoveOptionsUtils {
         }
       }
 
-      if (patd.getMaxBattleResult().getWinPercentage() < MIN_WIN_PERCENTAGE
-          || (patd.isStrafing() && (patd.getMaxBattleResult().getWinPercentage() < WIN_PERCENTAGE || !patd
+      if (patd.getMaxBattleResult().getWinPercentage() < ProData.minWinPercentage
+          || (patd.isStrafing() && (patd.getMaxBattleResult().getWinPercentage() < ProData.winPercentage || !patd
               .getMaxBattleResult().isHasLandUnitRemaining()))) {
         territoriesToRemove.add(t);
       }

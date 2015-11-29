@@ -47,17 +47,12 @@ import java.util.TreeMap;
  * Pro combat move AI.
  */
 public class ProCombatMoveAI {
-  public static double WIN_PERCENTAGE = 95;
-  public static double MIN_WIN_PERCENTAGE = 75;
 
   // Utilities
   private final ProAI ai;
   private final ProTransportUtils transportUtils;
   private final ProMoveOptionsUtils attackOptionsUtils;
   private final ProTerritoryValueUtils territoryValueUtils;
-
-  // Current map settings
-  private boolean areNeutralsPassableByAir;
 
   // Current data
   private GameData data;
@@ -81,13 +76,8 @@ public class ProCombatMoveAI {
     // Current data at the start of combat move
     this.data = data;
     this.player = player;
-    areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
+
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
-    if (!games.strategy.triplea.Properties.getLow_Luck(data)) // Set optimal and min win percentage lower if not LL
-    {
-      WIN_PERCENTAGE = 90;
-      MIN_WIN_PERCENTAGE = 65;
-    }
 
     // Initialize data containers
     final Map<Territory, ProTerritory> attackMap = new HashMap<Territory, ProTerritory>();
@@ -205,12 +195,11 @@ public class ProCombatMoveAI {
       final PlayerID player, final boolean isSimulation) {
     this.data = data;
     this.player = player;
-    areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
 
     // Calculate attack routes and perform moves
     final List<Collection<Unit>> moveUnits = new ArrayList<Collection<Unit>>();
     final List<Route> moveRoutes = new ArrayList<Route>();
-    ProMoveUtils.calculateMoveRoutes(player, areNeutralsPassableByAir, moveUnits, moveRoutes, attackMap, true);
+    ProMoveUtils.calculateMoveRoutes(player, moveUnits, moveRoutes, attackMap, true);
     ProMoveUtils.doMove(moveUnits, moveRoutes, null, moveDel, isSimulation);
 
     // Calculate amphib attack routes and perform moves
@@ -380,7 +369,7 @@ public class ProCombatMoveAI {
             ProBattleUtils.estimateStrengthDifference(t, patd.getUnits(), patd.getMaxEnemyDefenders(player, data));
         final ProBattleResult result = patd.getBattleResult();
         if (!patd.isStrafing() && estimate < patd.getStrengthEstimate()
-            && (result.getWinPercentage() < MIN_WIN_PERCENTAGE || !result.isHasLandUnitRemaining())) {
+            && (result.getWinPercentage() < ProData.minWinPercentage || !result.isHasLandUnitRemaining())) {
           areSuccessful = false;
         }
       }
@@ -499,7 +488,7 @@ public class ProCombatMoveAI {
                 enemyAttackOptions.getMax(t).getMaxBombardUnits(), false);
         final boolean canHold =
             (!result2.isHasLandUnitRemaining() && !t.isWater()) || (result2.getTUVSwing() < 0)
-                || (result2.getWinPercentage() < MIN_WIN_PERCENTAGE);
+                || (result2.getWinPercentage() < ProData.minWinPercentage);
         patd.setCanHold(canHold);
         ProLogger
             .debug(t + ", CanHold=" + canHold + ", MyDefenders=" + remainingUnitsToDefendWith.size()
@@ -941,7 +930,7 @@ public class ProCombatMoveAI {
           }
           canHold =
               (!result2.isHasLandUnitRemaining() && !t.isWater()) || (result2.getTUVSwing() < 0)
-                  || (result2.getWinPercentage() < MIN_WIN_PERCENTAGE);
+                  || (result2.getWinPercentage() < ProData.minWinPercentage);
           if (result2.getTUVSwing() > 0) {
             enemyCounterTUVSwing = result2.getTUVSwing();
           }
@@ -993,7 +982,7 @@ public class ProCombatMoveAI {
 
         // Determine whether to remove attack
         if (!patd.isStrafing()
-            && (result.getWinPercentage() < MIN_WIN_PERCENTAGE || !result.isHasLandUnitRemaining()
+            && (result.getWinPercentage() < ProData.minWinPercentage || !result.isHasLandUnitRemaining()
                 || (isNeutral && !canHold) || (attackValue < 0 && (!isNeutral || allUnitsCanAttackOtherTerritory || result
                 .getBattleRounds() >= 4)))) {
           territoryToRemove = patd;
@@ -1113,7 +1102,7 @@ public class ProCombatMoveAI {
         continue; // skip air units
       }
       Territory minWinTerritory = null;
-      double minWinPercentage = WIN_PERCENTAGE;
+      double minWinPercentage = ProData.winPercentage;
       for (final Territory t : sortedUnitAttackOptions.get(unit)) {
         final ProTerritory patd = attackMap.get(t);
         if (!attackMap.get(t).isCurrentlyWins() && attackMap.get(t).isCanHold()) {
@@ -1150,7 +1139,7 @@ public class ProCombatMoveAI {
         continue; // skip non-air units
       }
       Territory minWinTerritory = null;
-      double minWinPercentage = WIN_PERCENTAGE;
+      double minWinPercentage = ProData.winPercentage;
       for (final Territory t : sortedUnitAttackOptions.get(unit)) {
         final ProTerritory patd = attackMap.get(t);
         if (!patd.isCurrentlyWins() && !patd.isCanHold()) {
@@ -1210,7 +1199,7 @@ public class ProCombatMoveAI {
       final Unit unit = it.next();
       final boolean isAirUnit = UnitAttachment.get(unit.getType()).getIsAir();
       Territory minWinTerritory = null;
-      double minWinPercentage = WIN_PERCENTAGE;
+      double minWinPercentage = ProData.winPercentage;
       for (final Territory t : sortedUnitAttackOptions.get(unit)) {
         final ProTerritory patd = attackMap.get(t);
         if (!patd.isCurrentlyWins()) {
@@ -1293,7 +1282,7 @@ public class ProCombatMoveAI {
                   patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
             }
             final ProBattleResult result = patd.getBattleResult();
-            if (result.getWinPercentage() < WIN_PERCENTAGE || !result.isHasLandUnitRemaining()) {
+            if (result.getWinPercentage() < ProData.winPercentage || !result.isHasLandUnitRemaining()) {
               patd.addUnit(transport);
               patd.setBattleResult(null);
               alreadyAttackedWithTransports.add(transport);
@@ -1331,7 +1320,7 @@ public class ProCombatMoveAI {
 
       // Find current land battle results for territories that unit can amphib attack
       Territory minWinTerritory = null;
-      double minWinPercentage = WIN_PERCENTAGE;
+      double minWinPercentage = ProData.winPercentage;
       List<Unit> minAmphibUnitsToAdd = null;
       Territory minUnloadFromTerritory = null;
       for (final Territory t : amphibAttackOptions.get(transport)) {

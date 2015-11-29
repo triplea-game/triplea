@@ -55,16 +55,10 @@ import java.util.TreeMap;
  */
 public class ProNonCombatMoveAI {
 
-  public static double WIN_PERCENTAGE = 95;
-  public static double MIN_WIN_PERCENTAGE = 75;
-
   // Utilities
   private final ProTransportUtils transportUtils;
   private final ProMoveOptionsUtils attackOptionsUtils;
   private final ProTerritoryValueUtils territoryValueUtils;
-
-  // Current map settings
-  private boolean areNeutralsPassableByAir;
 
   // Current data
   private GameData data;
@@ -90,16 +84,10 @@ public class ProNonCombatMoveAI {
     // Current data at the start of combat move
     this.data = data;
     this.player = player;
-    areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     allTerritories = data.getMap().getTerritories();
     unitTerritoryMap = createUnitTerritoryMap(player);
     playerCostMap = BattleCalculator.getCostsForTUV(player, data);
-    if (!games.strategy.triplea.Properties.getLow_Luck(data)) // Set optimal and min win percentage lower if not LL
-    {
-      WIN_PERCENTAGE = 90;
-      MIN_WIN_PERCENTAGE = 65;
-    }
 
     // Initialize data containers
     Map<Territory, ProTerritory> moveMap = new HashMap<Territory, ProTerritory>();
@@ -232,12 +220,11 @@ public class ProNonCombatMoveAI {
 
     this.data = data;
     this.player = player;
-    areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
 
     // Calculate move routes and perform moves
     final List<Collection<Unit>> moveUnits = new ArrayList<Collection<Unit>>();
     final List<Route> moveRoutes = new ArrayList<Route>();
-    ProMoveUtils.calculateMoveRoutes(player, areNeutralsPassableByAir, moveUnits, moveRoutes, moveMap, false);
+    ProMoveUtils.calculateMoveRoutes(player, moveUnits, moveRoutes, moveMap, false);
     ProMoveUtils.doMove(moveUnits, moveRoutes, null, moveDel, isSimulation);
 
     // Calculate amphib move routes and perform moves
@@ -545,7 +532,7 @@ public class ProNonCombatMoveAI {
       final boolean isNotFactoryAndShouldHold =
           !hasFactory && (minResult.getTUVSwing() <= 0 || !minResult.isHasLandUnitRemaining());
       final boolean canAlreadyBeHeld =
-          minResult.getTUVSwing() <= 0 && minResult.getWinPercentage() < (100 - WIN_PERCENTAGE);
+          minResult.getTUVSwing() <= 0 && minResult.getWinPercentage() < (100 - ProData.winPercentage);
       final boolean isNotFactoryAndHasNoEnemyNeighbors =
           !t.isWater()
               && !hasFactory
@@ -705,8 +692,9 @@ public class ProNonCombatMoveAI {
           final ProBattleResult result = moveMap.get(t).getBattleResult();
           final boolean hasFactory = ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t);
           if (result.getWinPercentage() > maxWinPercentage
-              && ((t.equals(myCapital) && result.getWinPercentage() > (100 - WIN_PERCENTAGE))
-                  || (hasFactory && result.getWinPercentage() > (100 - MIN_WIN_PERCENTAGE)) || result.getTUVSwing() >= 0)) {
+              && ((t.equals(myCapital) && result.getWinPercentage() > (100 - ProData.winPercentage))
+                  || (hasFactory && result.getWinPercentage() > (100 - ProData.minWinPercentage)) || result
+                  .getTUVSwing() >= 0)) {
             maxWinTerritory = t;
             maxWinPercentage = result.getWinPercentage();
           }
@@ -758,8 +746,9 @@ public class ProNonCombatMoveAI {
           final ProBattleResult result = moveMap.get(t).getBattleResult();
           final boolean hasFactory = ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t);
           if (result.getWinPercentage() > maxWinPercentage
-              && ((t.equals(myCapital) && result.getWinPercentage() > (100 - WIN_PERCENTAGE))
-                  || (hasFactory && result.getWinPercentage() > (100 - MIN_WIN_PERCENTAGE)) || result.getTUVSwing() >= 0)) {
+              && ((t.equals(myCapital) && result.getWinPercentage() > (100 - ProData.winPercentage))
+                  || (hasFactory && result.getWinPercentage() > (100 - ProData.minWinPercentage)) || result
+                  .getTUVSwing() >= 0)) {
             maxWinTerritory = t;
             maxWinPercentage = result.getWinPercentage();
           }
@@ -848,7 +837,7 @@ public class ProNonCombatMoveAI {
           }
           final ProBattleResult result = moveMap.get(t).getBattleResult();
           final boolean hasFactory = ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t);
-          if ((hasFactory && (result.getWinPercentage() > (100 - WIN_PERCENTAGE))) || result.getTUVSwing() > 0) {
+          if ((hasFactory && (result.getWinPercentage() > (100 - ProData.winPercentage))) || result.getTUVSwing() > 0) {
 
             // Get all units that have already moved
             final List<Unit> alreadyMovedUnits = new ArrayList<Unit>();
@@ -986,7 +975,7 @@ public class ProNonCombatMoveAI {
 
         // Check capital defense
         if (containsCapital && !currentTerritory.equals(myCapital)
-            && moveMap.get(myCapital).getBattleResult().getWinPercentage() > (100 - WIN_PERCENTAGE)) {
+            && moveMap.get(myCapital).getBattleResult().getWinPercentage() > (100 - ProData.winPercentage)) {
           if (!Collections.disjoint(moveMap.get(currentTerritory).getAllDefenders(), moveMap.get(myCapital)
               .getMaxDefenders())) {
             areSuccessful = false;
@@ -1416,7 +1405,7 @@ public class ProNonCombatMoveAI {
               ProLogger.trace(t.getName() + " TUVSwing=" + result.getTUVSwing() + ", Win%=" + result.getWinPercentage()
                   + ", enemyAttackers=" + moveMap.get(t).getMaxEnemyUnits().size() + ", defenders="
                   + defendingUnits.size());
-              if (result.getWinPercentage() > (100 - WIN_PERCENTAGE) || result.getTUVSwing() > 0) {
+              if (result.getWinPercentage() > (100 - ProData.winPercentage) || result.getTUVSwing() > 0) {
                 ProLogger.trace(u + " added sea to defend transport at " + t);
                 moveMap.get(t).addTempUnit(u);
                 moveMap.get(t).setBattleResult(null);
@@ -1462,7 +1451,7 @@ public class ProNonCombatMoveAI {
               ProLogger.trace(t.getName() + " TUVSwing=" + result.getTUVSwing() + ", Win%=" + result.getWinPercentage()
                   + ", enemyAttackers=" + moveMap.get(t).getMaxEnemyUnits().size() + ", defenders="
                   + defendingUnits.size());
-              if (result.getWinPercentage() > (100 - WIN_PERCENTAGE) || result.getTUVSwing() > 0) {
+              if (result.getWinPercentage() > (100 - ProData.winPercentage) || result.getTUVSwing() > 0) {
                 ProLogger.trace(u + " added air to defend transport at " + t);
                 moveMap.get(t).addTempUnit(u);
                 moveMap.get(t).setBattleResult(null);
@@ -1826,7 +1815,7 @@ public class ProNonCombatMoveAI {
         final ProBattleResult result = moveMap.get(t).getBattleResult();
         ProLogger.trace(t + ", TUVSwing=" + result.getTUVSwing() + ", win%=" + result.getWinPercentage()
             + ", defendingUnits=" + defendingUnits + ", enemyAttackers=" + moveMap.get(t).getMaxEnemyUnits());
-        if (result.getWinPercentage() >= MIN_WIN_PERCENTAGE || result.getTUVSwing() > 0) {
+        if (result.getWinPercentage() >= ProData.minWinPercentage || result.getTUVSwing() > 0) {
           moveMap.get(t).setCanHold(false);
           continue;
         }
@@ -1837,7 +1826,7 @@ public class ProNonCombatMoveAI {
             ProBattleUtils.calculateBattleResults(player, t, moveMap.get(t).getMaxEnemyUnits(), myDefenders, moveMap
                 .get(t).getMaxEnemyBombardUnits(), false);
         int cantHoldWithoutAllies = 0;
-        if (result2.getWinPercentage() >= MIN_WIN_PERCENTAGE || result2.getTUVSwing() > 0) {
+        if (result2.getWinPercentage() >= ProData.minWinPercentage || result2.getTUVSwing() > 0) {
           cantHoldWithoutAllies = 1;
         }
 

@@ -28,9 +28,8 @@ import java.util.Set;
  */
 public class ProMoveUtils {
 
-  public static void calculateMoveRoutes(final PlayerID player, final boolean areNeutralsPassableByAir,
-      final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
-      final Map<Territory, ProTerritory> attackMap, final boolean isCombatMove) {
+  public static void calculateMoveRoutes(final PlayerID player, final List<Collection<Unit>> moveUnits,
+      final List<Route> moveRoutes, final Map<Territory, ProTerritory> attackMap, final boolean isCombatMove) {
 
     final GameData data = ProData.getData();
     final Map<Unit, Territory> unitTerritoryMap = ProUtils.createUnitTerritoryMap(player);
