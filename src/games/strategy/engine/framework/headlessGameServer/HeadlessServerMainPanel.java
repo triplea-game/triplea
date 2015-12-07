@@ -213,7 +213,6 @@ public class HeadlessServerMainPanel extends JPanel implements Observer {
   }
 
   private void play() {
-    ErrorHandler.setGameOver(false);
     System.out.println("Starting Game: " + m_gameSelectorModel.getGameData().getGameName() + ", Round: "
         + m_gameSelectorModel.getGameData().getSequence().getRound());
     m_gameSetupPanel.preStartGame();

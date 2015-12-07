@@ -299,7 +299,6 @@ public class ServerGame extends AbstractGame {
       System.out.println("Attempting to stop game.");
     }
     m_isGameOver = true;
-    ErrorHandler.setGameOver(true);
     m_delegateExecutionStoppedLatch.countDown();
     // tell the players (especially the AI's) that the game is stopping, so stop doing stuff.
     for (final IGamePlayer player : m_gamePlayers.values()) {
