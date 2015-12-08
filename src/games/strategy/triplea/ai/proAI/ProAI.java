@@ -116,15 +116,15 @@ public class ProAI extends AbstractAI {
   }
 
   public static void gameOverClearCache() {
-    // Is static, set to null so that we don't keep the data around after a game is exited
-    ProBattleUtils.setData(null);
+    // Is static, clear so that we don't keep the data around after a game is exited
+    ProBattleUtils.clearData();
     ProLogUI.clearCachedInstances();
   }
 
   @Override
   public void stopGame() {
     super.stopGame(); // absolutely MUST call super.stopGame() first
-    ProBattleUtils.cancel(); // cancel any current calcing
+    ProBattleUtils.cancelCalcs();
   }
 
   public void setStoredStrafingTerritories(final List<Territory> strafingTerritories) {

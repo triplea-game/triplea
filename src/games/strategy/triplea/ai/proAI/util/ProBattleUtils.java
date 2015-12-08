@@ -37,18 +37,20 @@ import java.util.Set;
  */
 public class ProBattleUtils {
 
-  // If non-static, then only need 1 for the entire AI instance and must be shutdown when AI is gc'ed.
   private final static IOddsCalculator calc = new ConcurrentOddsCalculator("ProAI");
   private static boolean isCanceled = false;
 
   public static void setData(final GameData data) {
-    // Is static, set to null so that we don't keep the data around after a game is exited
     calc.setGameData(data);
   }
 
-  public static void cancel() {
-    calc.cancel(); // cancel any current calcing
+  public static void cancelCalcs() {
+    calc.cancel();
     isCanceled = true;
+  }
+
+  public static void clearData() {
+    calc.setGameData(null);
   }
 
   public static boolean checkForOverwhelmingWin(final PlayerID player, final Territory t,
