@@ -1,11 +1,24 @@
 Changes for 2.0.1
+* Minimum Java version is now Java 1.8
+
 * Removing all "Grid" games (Chess, Checkers, Go, Kings Table) as well as inaccessible puzzle games (N-Puzzle and Tic-Tac-Toe). (veqryn)
+
+* Performance improvement for bot servers to reduce CPU usage when hosting games, PR#53. (lafayette)
+
+* Performance improvement that allows games to start more quickly, background map parsing is halted when a game is launched, PR#74
+
+* PNG files made 17MB smaller with lossless compression 'optipng', PR#146 (lafayette)
+
+* Install4j now used to create installer packages, PR#218 (gaborbernat)
+
+* Installer packages automatically built and deployed to github whenever code is merged, PR#261 (lafayette)
+
 
 
 Changes for 1.8.0.9
 * Bug fix, retreat from naval combat was not possible, now fixed. (redrum)
 
-* Fixed possible infinite loop bug when a corrupt map exists in the map downloads. (lafayette)
+* Fixed possible infinite loop bug when a corrupt map exists in the map downloads, PR#76. (lafayette)
 
 * Increase scroll speed when using arrow keys. Holding down control speeds up arrow key scroll. (lafayette)
 
@@ -14,6 +27,7 @@ Changes for 1.8.0.9
 * Hard AI - Fixed calculating defenses on maps with air/naval bases to properly calculate enemy range. (redrum)
 
 * Hard AI - Fixed bug around not defending against enemy units that were transported the previous turn as they were being marked as already transported when potential enemy attacks were calculated. (redrum)
+
 
 
 Changes for 1.8.0.7
@@ -59,9 +73,9 @@ Changes for 1.8.0.7
 
 * Source code migrated to github - http://github.com/triplea-game/triplea (veqryn)
 
-* Fixed maxBuilt to include unplaced units. (LaFayette)
+* Fixed maxBuilt to include unplaced units, PR#62. (LaFayette)
 
-* Added a convenience button to undo all moves during a phase. (LaFayette)
+* Added a convenience button to undo all moves during a phase, PR#61. (LaFayette)
 
 * Removed obsolete Dynamix (land-only) AI. (veqryn)
 
