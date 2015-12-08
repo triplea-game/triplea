@@ -12,6 +12,7 @@ import games.strategy.triplea.ai.proAI.data.ProBattleResult;
 import games.strategy.triplea.ai.proAI.data.ProMoveOptions;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseOption;
 import games.strategy.triplea.ai.proAI.data.ProTerritory;
+import games.strategy.triplea.ai.proAI.data.ProTerritoryManager;
 import games.strategy.triplea.ai.proAI.data.ProTransport;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
@@ -60,6 +61,7 @@ public class ProCombatMoveAI {
   private Territory myCapital;
   private boolean isDefensive;
   private double minCostPerHitPoint;
+  private ProTerritoryManager territoryManager;
 
   public ProCombatMoveAI(final ProAI ai, final ProTransportUtils transportUtils,
       final ProMoveOptionsUtils attackOptionsUtils, final ProTerritoryValueUtils territoryValueUtils) {
@@ -76,8 +78,8 @@ public class ProCombatMoveAI {
     // Current data at the start of combat move
     this.data = data;
     this.player = player;
-
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+    territoryManager = new ProTerritoryManager(attackOptionsUtils);
 
     // Initialize data containers
     final Map<Territory, ProTerritory> attackMap = new HashMap<Territory, ProTerritory>();
