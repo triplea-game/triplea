@@ -315,8 +315,8 @@ public class InstallMapDialog extends JDialog {
       return;
     }
     // try to make sure it is a valid zip file
-
-    try (final ZipInputStream zis = new ZipInputStream(new FileInputStream(tempFile))) {
+    try (final FileInputStream fileInputStream = new FileInputStream(tempFile);
+        final ZipInputStream zis = new ZipInputStream(fileInputStream)) {
       while (zis.getNextEntry() != null) {
         zis.read(new byte[128]);
       }
