@@ -358,6 +358,7 @@ public class ServerGame extends AbstractGame {
   }
 
   private void autoSave() {
+    SaveGameFileChooser.ensureDefaultDirExists();
     final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
     final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
     final File f;
@@ -368,7 +369,6 @@ public class ServerGame extends AbstractGame {
     }
 
     try (FileOutputStream out = new FileOutputStream(f)) {
-      SaveGameFileChooser.ensureDefaultDirExists();
       saveGame(out);
     } catch (final Exception e) {
       e.printStackTrace();
