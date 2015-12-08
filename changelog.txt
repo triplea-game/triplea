@@ -13,6 +13,8 @@ Changes for 2.0.1
 
 * Installer packages automatically built and deployed to github whenever code is merged, PR#261 (lafayette)
 
+* Performance improvement to speed up map parsing time, read only the game XML data and do not read the entire Zip file from disk. This speeds up map parsing to be typically under 100ms when before it could be a few seconds for largers maps. (lafayette)
+
 
 
 Changes for 1.8.0.9
