@@ -1,5 +1,20 @@
 package games.strategy.triplea.ai.proAI;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.triplea.ai.proAI.data.ProBattleResult;
+import games.strategy.triplea.ai.proAI.logging.ProLogger;
+import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
+import games.strategy.triplea.ai.proAI.util.ProMatches;
+import games.strategy.triplea.ai.proAI.util.ProMoveOptionsUtils;
+import games.strategy.triplea.delegate.BattleDelegate;
+import games.strategy.triplea.delegate.DelegateFinder;
+import games.strategy.triplea.delegate.IBattle;
+import games.strategy.triplea.delegate.IBattle.BattleType;
+import games.strategy.util.Tuple;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,35 +25,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-import games.strategy.triplea.ai.proAI.data.ProBattleResult;
-import games.strategy.triplea.ai.proAI.logging.ProLogger;
-import games.strategy.triplea.ai.proAI.util.ProMoveOptionsUtils;
-import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
-import games.strategy.triplea.ai.proAI.util.ProMatches;
-import games.strategy.triplea.delegate.BattleDelegate;
-import games.strategy.triplea.delegate.DelegateFinder;
-import games.strategy.triplea.delegate.IBattle;
-import games.strategy.triplea.delegate.IBattle.BattleType;
-import games.strategy.util.Tuple;
-
 /**
  * Pro scramble AI.
  */
 public class ProScrambleAI {
 
-  public static double WIN_PERCENTAGE = 95;
-  public static double MIN_WIN_PERCENTAGE = 80;
-  private final ProAI ai;
-  private final ProBattleUtils battleUtils;
   private final ProMoveOptionsUtils attackOptionsUtils;
 
-  public ProScrambleAI(final ProAI ai, final ProBattleUtils battleUtils, final ProMoveOptionsUtils attackOptionsUtils) {
-    this.ai = ai;
-    this.battleUtils = battleUtils;
+  public ProScrambleAI(final ProMoveOptionsUtils attackOptionsUtils) {
     this.attackOptionsUtils = attackOptionsUtils;
   }
 
@@ -46,25 +40,20 @@ public class ProScrambleAI {
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
 
     // Get battle data
-    final GameData data = ai.getGameData();
-    final PlayerID player = ai.getPlayerID();
+    final GameData data = ProData.getData();
+    final PlayerID player = ProData.getProAI().getPlayerID();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(scrambleTo, false, BattleType.NORMAL);
-    if (!games.strategy.triplea.Properties.getLow_Luck(data)) // Set optimal and min win percentage lower if not LL
-    {
-      WIN_PERCENTAGE = 90;
-      MIN_WIN_PERCENTAGE = 65;
-    }
 
     // Check if defense already wins
     final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
     final Set<Unit> bombardingUnits = new HashSet<Unit>(battle.getBombardingUnits());
     final ProBattleResult minResult =
-        battleUtils.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
+        ProBattleUtils.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
     ProLogger.debug(scrambleTo + ", minTUVSwing=" + minResult.getTUVSwing() + ", minWin%="
         + minResult.getWinPercentage());
-    if (minResult.getTUVSwing() <= 0 && minResult.getWinPercentage() < (100 - MIN_WIN_PERCENTAGE)) {
+    if (minResult.getTUVSwing() <= 0 && minResult.getWinPercentage() < (100 - ProData.minWinPercentage)) {
       return null;
     }
 
@@ -79,11 +68,11 @@ public class ProScrambleAI {
           @Override
           public int compare(final Unit o1, final Unit o2) {
             final double strength1 =
-                battleUtils.estimateStrength(player, scrambleTo, Collections.singletonList(o1), new ArrayList<Unit>(),
-                    false);
+                ProBattleUtils.estimateStrength(player, scrambleTo, Collections.singletonList(o1),
+                    new ArrayList<Unit>(), false);
             final double strength2 =
-                battleUtils.estimateStrength(player, scrambleTo, Collections.singletonList(o2), new ArrayList<Unit>(),
-                    false);
+                ProBattleUtils.estimateStrength(player, scrambleTo, Collections.singletonList(o2),
+                    new ArrayList<Unit>(), false);
             return Double.compare(strength2, strength1);
           }
         });
@@ -94,7 +83,7 @@ public class ProScrambleAI {
     }
     defenders.addAll(allScramblers);
     final ProBattleResult maxResult =
-        battleUtils.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
+        ProBattleUtils.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
     ProLogger.debug(scrambleTo + ", maxTUVSwing=" + maxResult.getTUVSwing() + ", maxWin%="
         + maxResult.getWinPercentage());
     if (maxResult.getTUVSwing() >= minResult.getTUVSwing()) {
@@ -132,10 +121,11 @@ public class ProScrambleAI {
       final List<Unit> currentDefenders = (List<Unit>) battle.getDefendingUnits();
       currentDefenders.addAll(unitsToScramble);
       result =
-          battleUtils.calculateBattleResults(player, scrambleTo, attackers, currentDefenders, bombardingUnits, false);
+          ProBattleUtils
+              .calculateBattleResults(player, scrambleTo, attackers, currentDefenders, bombardingUnits, false);
       ProLogger.debug(scrambleTo + ", TUVSwing=" + result.getTUVSwing() + ", Win%=" + result.getWinPercentage()
           + ", addedUnit=" + u);
-      if (result.getTUVSwing() <= 0 && result.getWinPercentage() < (100 - MIN_WIN_PERCENTAGE)) {
+      if (result.getTUVSwing() <= 0 && result.getWinPercentage() < (100 - ProData.minWinPercentage)) {
         break;
       }
     }

@@ -1,22 +1,22 @@
 package games.strategy.triplea.ai.proAI.data;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Properties;
+import games.strategy.triplea.ai.proAI.ProData;
+import games.strategy.triplea.ai.proAI.util.ProMatches;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.util.Match;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-import games.strategy.triplea.Properties;
-import games.strategy.triplea.ai.proAI.ProCombatMoveAI;
-import games.strategy.triplea.ai.proAI.util.ProMatches;
-import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.util.Match;
 
 public class ProTerritory {
 
@@ -234,7 +234,7 @@ public class ProTerritory {
     return strafing;
   }
 
-  public void setStrafing(boolean strafing) {
+  public void setStrafing(final boolean strafing) {
     this.strafing = strafing;
   }
 
@@ -281,8 +281,7 @@ public class ProTerritory {
     this.battleResult = battleResult;
     if (battleResult == null) {
       currentlyWins = false;
-    } else if (battleResult.getWinPercentage() >= ProCombatMoveAI.WIN_PERCENTAGE
-        && battleResult.isHasLandUnitRemaining()) {
+    } else if (battleResult.getWinPercentage() >= ProData.winPercentage && battleResult.isHasLandUnitRemaining()) {
       currentlyWins = true;
     }
   }
