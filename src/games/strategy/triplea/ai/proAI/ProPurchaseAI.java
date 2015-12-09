@@ -72,7 +72,6 @@ public class ProPurchaseAI {
   private GameData startOfTurnData; // Used to count current units on map for maxBuiltPerPlayer
   private PlayerID player;
   private Territory myCapital;
-  private double minCostPerHitPoint;
   private ProResourceTracker resourceTracker;
 
   public ProPurchaseAI(final ProTransportUtils transportUtils, final ProMoveOptionsUtils attackOptionsUtils,
@@ -472,15 +471,12 @@ public class ProPurchaseAI {
     this.player = player;
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     resourceTracker = new ProResourceTracker(player);
+    final ProPurchaseOptionMap purchaseOptions = ProData.purchaseOptions;
 
     ProLogger.info("Starting purchase phase with resources: " + resourceTracker);
     if (!player.getUnits().getUnits().isEmpty()) {
       ProLogger.info("Starting purchase phase with unplaced units=" + player.getUnits().getUnits());
     }
-
-    // Find all purchase options
-    final ProPurchaseOptionMap purchaseOptions = new ProPurchaseOptionMap(player, data);
-    minCostPerHitPoint = ProPurchaseUtils.getMinCostPerHitPoint(player, purchaseOptions.getLandOptions());
 
     // Find all purchase/place territories
     final Map<Territory, ProPurchaseTerritory> purchaseTerritories = ProPurchaseUtils.findPurchaseTerritories(player);
@@ -507,8 +503,7 @@ public class ProPurchaseAI {
     // Find strategic value for each territory
     ProLogger.info("Find strategic value for place territories");
     final Map<Territory, Double> territoryValueMap =
-        territoryValueUtils.findTerritoryValues(player, minCostPerHitPoint, new ArrayList<Territory>(),
-            new ArrayList<Territory>());
+        territoryValueUtils.findTerritoryValues(player, new ArrayList<Territory>(), new ArrayList<Territory>());
     for (final Territory t : purchaseTerritories.keySet()) {
       for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories()) {
         ppt.setStrategicValue(territoryValueMap.get(ppt.getTerritory()));
@@ -889,8 +884,7 @@ public class ProPurchaseAI {
     // Find strategic value for each territory
     ProLogger.info("Find strategic value for place territories");
     final Map<Territory, Double> territoryValueMap =
-        territoryValueUtils.findTerritoryValues(player, minCostPerHitPoint, new ArrayList<Territory>(),
-            new ArrayList<Territory>());
+        territoryValueUtils.findTerritoryValues(player, new ArrayList<Territory>(), new ArrayList<Territory>());
     for (final Territory t : placeNonConstructionTerritories.keySet()) {
       for (final ProPlaceTerritory ppt : placeNonConstructionTerritories.get(t).getCanPlaceTerritories()) {
         ppt.setStrategicValue(territoryValueMap.get(ppt.getTerritory()));
@@ -1467,8 +1461,7 @@ public class ProPurchaseAI {
 
     // Find strategic value for each territory
     final Map<Territory, Double> territoryValueMap =
-        territoryValueUtils.findTerritoryValues(player, minCostPerHitPoint, territoriesThatCantBeHeld,
-            new ArrayList<Territory>());
+        territoryValueUtils.findTerritoryValues(player, territoriesThatCantBeHeld, new ArrayList<Territory>());
     double maxValue = 0.0;
     Territory maxTerritory = null;
     for (final Territory t : purchaseFactoryTerritories) {

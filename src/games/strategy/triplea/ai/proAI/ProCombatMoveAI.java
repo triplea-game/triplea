@@ -11,7 +11,6 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.data.ProBattleResult;
 import games.strategy.triplea.ai.proAI.data.ProMoveOptions;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseOption;
-import games.strategy.triplea.ai.proAI.data.ProPurchaseOptionMap;
 import games.strategy.triplea.ai.proAI.data.ProTerritory;
 import games.strategy.triplea.ai.proAI.data.ProTerritoryManager;
 import games.strategy.triplea.ai.proAI.data.ProTransport;
@@ -60,7 +59,6 @@ public class ProCombatMoveAI {
   private GameData data;
   private PlayerID player;
   private boolean isDefensive;
-  private double minCostPerHitPoint;
   private ProTerritoryManager territoryManager;
 
   public ProCombatMoveAI(final ProAI ai, final ProTransportUtils transportUtils,
@@ -83,10 +81,6 @@ public class ProCombatMoveAI {
     isDefensive = !ProBattleUtils.territoryHasLocalLandSuperiority(ProData.myCapital, 3, player);
     ProLogger.debug("Currently in defensive stance: " + isDefensive);
 
-    // Find all purchase options and min cost per hit point
-    final ProPurchaseOptionMap purchaseOptions = new ProPurchaseOptionMap(player, data);
-    minCostPerHitPoint = ProPurchaseUtils.getMinCostPerHitPoint(player, purchaseOptions.getLandOptions());
-
     // Find the maximum number of units that can attack each territory and max enemy defenders
     territoryManager.populateAttackOptions();
     territoryManager.populateEnemyDefenseOptions();
@@ -99,8 +93,7 @@ public class ProCombatMoveAI {
     }
     territoryManager.populateEnemyAttackOptions(clearedTerritories, new ArrayList<Territory>());
     Map<Territory, Double> territoryValueMap =
-        territoryValueUtils.findTerritoryValues(player, minCostPerHitPoint, new ArrayList<Territory>(),
-            clearedTerritories);
+        territoryValueUtils.findTerritoryValues(player, new ArrayList<Territory>(), clearedTerritories);
     determineTerritoriesThatCanBeHeld(attackOptions, territoryValueMap);
     prioritizeAttackOptions(player, attackOptions);
     removeTerritoriesThatArentWorthAttacking(attackOptions);
@@ -119,9 +112,7 @@ public class ProCombatMoveAI {
     }
     territoryManager.populateEnemyAttackOptions(clearedTerritories, new ArrayList<Territory>(
         possibleTransportTerritories));
-    territoryValueMap =
-        territoryValueUtils.findTerritoryValues(player, minCostPerHitPoint, new ArrayList<Territory>(),
-            clearedTerritories);
+    territoryValueMap = territoryValueUtils.findTerritoryValues(player, new ArrayList<Territory>(), clearedTerritories);
     determineTerritoriesThatCanBeHeld(attackOptions, territoryValueMap);
     removeTerritoriesThatArentWorthAttacking(attackOptions);
 
@@ -138,7 +129,7 @@ public class ProCombatMoveAI {
 
     // Determine if capital can be held if I still own it
     if (ProData.myCapital != null && ProData.myCapital.getOwner().equals(player)) {
-      determineIfCapitalCanBeHeld(attackOptions, purchaseOptions.getLandOptions());
+      determineIfCapitalCanBeHeld(attackOptions, ProData.purchaseOptions.getLandOptions());
     }
 
     // Check if any subs in contested territory that's not being attacked
@@ -254,8 +245,7 @@ public class ProCombatMoveAI {
             }
           }
           if (!allAlliedNeighborsHaveRoute) {
-            final double value =
-                territoryValueUtils.findTerritoryAttackValue(player, nearbyEnemyTerritory, minCostPerHitPoint);
+            final double value = territoryValueUtils.findTerritoryAttackValue(player, nearbyEnemyTerritory);
             if (value > 0) {
               nearbyEnemyValue += value;
             }

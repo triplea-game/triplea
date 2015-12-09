@@ -24,7 +24,7 @@ import java.util.Set;
  */
 public class ProTerritoryValueUtils {
 
-  public double findTerritoryAttackValue(final PlayerID player, final Territory t, final double minCostPerHitPoint) {
+  public double findTerritoryAttackValue(final PlayerID player, final Territory t) {
     final GameData data = ProData.getData();
 
     final int isEnemyFactory = ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).match(t) ? 1 : 0;
@@ -33,13 +33,15 @@ public class ProTerritoryValueUtils {
       final double strength =
           ProBattleUtils.estimateStrength(t.getOwner(), t, new ArrayList<Unit>(t.getUnits().getUnits()),
               new ArrayList<Unit>(), false);
-      final double TUVSwing = -(strength / 8) * minCostPerHitPoint; // estimate TUV swing as number of casualties * cost
+
+      // Estimate TUV swing as number of casualties * cost
+      final double TUVSwing = -(strength / 8) * ProData.minCostPerHitPoint;
       value += TUVSwing;
     }
     return value;
   }
 
-  public Map<Territory, Double> findTerritoryValues(final PlayerID player, final double minCostPerHitPoint,
+  public Map<Territory, Double> findTerritoryValues(final PlayerID player,
       final List<Territory> territoriesThatCantBeHeld, final List<Territory> territoriesToAttack) {
     final GameData data = ProData.getData();
     final List<Territory> allTerritories = data.getMap().getTerritories();
@@ -137,8 +139,7 @@ public class ProTerritoryValueUtils {
           if (distance > 0) {
             double value = TerritoryAttachment.getProduction(nearbyEnemyTerritory);
             if (nearbyEnemyTerritory.getOwner().isNull()) {
-              value = findTerritoryAttackValue(player, nearbyEnemyTerritory, minCostPerHitPoint) / 3; // find neutral
-                                                                                                      // value
+              value = findTerritoryAttackValue(player, nearbyEnemyTerritory) / 3; // find neutral value
             } else if (ProMatches.territoryIsAlliedLandAndHasNoEnemyNeighbors(player, data).match(nearbyEnemyTerritory)) {
               value *= 0.1; // reduce value for can't hold amphib allied territories
             }
@@ -204,7 +205,7 @@ public class ProTerritoryValueUtils {
                 nearbyLandTerritory)) {
               double value = TerritoryAttachment.getProduction(nearbyLandTerritory);
               if (nearbyLandTerritory.getOwner().isNull()) {
-                value = findTerritoryAttackValue(player, nearbyLandTerritory, minCostPerHitPoint);
+                value = findTerritoryAttackValue(player, nearbyLandTerritory);
               }
               nearbyLandValue += value;
             }

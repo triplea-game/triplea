@@ -12,7 +12,6 @@ import games.strategy.triplea.ai.proAI.data.ProBattleResult;
 import games.strategy.triplea.ai.proAI.data.ProMoveOptions;
 import games.strategy.triplea.ai.proAI.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseOption;
-import games.strategy.triplea.ai.proAI.data.ProPurchaseOptionMap;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.proAI.data.ProTerritory;
 import games.strategy.triplea.ai.proAI.data.ProTransport;
@@ -68,7 +67,6 @@ public class ProNonCombatMoveAI {
   private List<Territory> allTerritories;
   private Map<Unit, Territory> unitTerritoryMap;
   private IntegerMap<UnitType> playerCostMap;
-  private double minCostPerHitPoint;
 
   public ProNonCombatMoveAI(final ProTransportUtils transportUtils, final ProMoveOptionsUtils attackOptionsUtils,
       final ProTerritoryValueUtils territoryValueUtils) {
@@ -103,12 +101,9 @@ public class ProNonCombatMoveAI {
     attackOptionsUtils.findDefendOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap,
         transportMapList, new ArrayList<Territory>(), false);
 
-    // Find all purchase options and min cost per hit point
-    final ProPurchaseOptionMap purchaseOptions = new ProPurchaseOptionMap(player, data);
-    minCostPerHitPoint = ProPurchaseUtils.getMinCostPerHitPoint(player, purchaseOptions.getLandOptions());
-
     // Find number of units in each move territory that can't move and all infra units
-    findUnitsThatCantMove(moveMap, unitMoveMap, purchaseTerritories, purchaseOptions.getLandOptions(), transportMapList);
+    findUnitsThatCantMove(moveMap, unitMoveMap, purchaseTerritories, ProData.purchaseOptions.getLandOptions(),
+        transportMapList);
     final Map<Unit, Set<Territory>> infraUnitMoveMap = findInfraUnitsThatCanMove(unitMoveMap);
 
     // Try to have one land unit in each territory that is bordering an enemy territory
@@ -129,8 +124,7 @@ public class ProNonCombatMoveAI {
       }
     }
     final Map<Territory, Double> territoryValueMap =
-        territoryValueUtils.findTerritoryValues(player, minCostPerHitPoint, territoriesThatCantBeHeld,
-            new ArrayList<Territory>());
+        territoryValueUtils.findTerritoryValues(player, territoriesThatCantBeHeld, new ArrayList<Territory>());
     final Map<Territory, Double> seaTerritoryValueMap =
         territoryValueUtils.findSeaTerritoryValues(player, territoriesThatCantBeHeld);
 
