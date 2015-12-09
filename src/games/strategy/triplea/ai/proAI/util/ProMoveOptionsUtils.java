@@ -16,7 +16,6 @@ import games.strategy.triplea.ai.proAI.data.ProTransport;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
@@ -25,7 +24,6 @@ import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
-import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
@@ -54,9 +52,7 @@ public class ProMoveOptionsUtils {
 
   public Map<Unit, Set<Territory>> sortUnitMoveOptions(final PlayerID player,
       final Map<Unit, Set<Territory>> unitAttackOptions) {
-    final GameData data = ProData.getData();
 
-    final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
     final List<Map.Entry<Unit, Set<Territory>>> list =
         new LinkedList<Map.Entry<Unit, Set<Territory>>>(unitAttackOptions.entrySet());
     Collections.sort(list, new Comparator<Map.Entry<Unit, Set<Territory>>>() {
@@ -66,8 +62,10 @@ public class ProMoveOptionsUtils {
         // Sort by number of move options then cost of unit then unit type
         if (o1.getValue().size() != o2.getValue().size()) {
           return (o1.getValue().size() - o2.getValue().size());
-        } else if (playerCostMap.getInt(o1.getKey().getType()) != playerCostMap.getInt(o2.getKey().getType())) {
-          return (playerCostMap.getInt(o1.getKey().getType()) - playerCostMap.getInt(o2.getKey().getType()));
+        } else if (ProData.playerCostMap.getInt(o1.getKey().getType()) != ProData.playerCostMap.getInt(o2.getKey()
+            .getType())) {
+          return (ProData.playerCostMap.getInt(o1.getKey().getType()) - ProData.playerCostMap.getInt(o2.getKey()
+              .getType()));
         }
         return o1.getKey().getType().getName().compareTo(o2.getKey().getType().getName());
       }
@@ -83,7 +81,6 @@ public class ProMoveOptionsUtils {
       final Map<Unit, Set<Territory>> unitAttackOptions, final Map<Territory, ProTerritory> attackMap) {
     final GameData data = ProData.getData();
 
-    final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
     final List<Map.Entry<Unit, Set<Territory>>> list =
         new LinkedList<Map.Entry<Unit, Set<Territory>>>(unitAttackOptions.entrySet());
     Collections.sort(list, new Comparator<Map.Entry<Unit, Set<Territory>>>() {
@@ -118,8 +115,9 @@ public class ProMoveOptionsUtils {
         if (numOptions1 != numOptions2) {
           return (numOptions1 - numOptions2);
         }
-        if (playerCostMap.getInt(o1.getKey().getType()) != playerCostMap.getInt(o2.getKey().getType())) {
-          return (playerCostMap.getInt(o1.getKey().getType()) - playerCostMap.getInt(o2.getKey().getType()));
+        if (ProData.playerCostMap.getInt(o1.getKey().getType()) != ProData.playerCostMap.getInt(o2.getKey().getType())) {
+          return (ProData.playerCostMap.getInt(o1.getKey().getType()) - ProData.playerCostMap.getInt(o2.getKey()
+              .getType()));
         }
         return o1.getKey().getType().getName().compareTo(o2.getKey().getType().getName());
       }
@@ -136,7 +134,6 @@ public class ProMoveOptionsUtils {
       final Map<Unit, Territory> unitTerritoryMap) {
     final GameData data = ProData.getData();
 
-    final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
     final List<Map.Entry<Unit, Set<Territory>>> list =
         new LinkedList<Map.Entry<Unit, Set<Territory>>>(unitAttackOptions.entrySet());
     Collections.sort(list, new Comparator<Map.Entry<Unit, Set<Territory>>>() {
@@ -179,8 +176,8 @@ public class ProMoveOptionsUtils {
           if (!attackMap.get(t).isCurrentlyWins()) {
             final List<Unit> defendingUnits = t.getUnits().getMatches(Matches.enemyUnit(player, data));
             final List<Unit> sortedUnitsList = new ArrayList<Unit>(attackMap.get(t).getUnits());
-            Collections.sort(sortedUnitsList,
-                new UnitBattleComparator(false, playerCostMap, TerritoryEffectHelper.getEffects(t), data, false, false));
+            Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.playerCostMap,
+                TerritoryEffectHelper.getEffects(t), data, false, false));
             Collections.reverse(sortedUnitsList);
             final int powerWithout =
                 DiceRoll.getTotalPowerAndRolls(
@@ -188,8 +185,8 @@ public class ProMoveOptionsUtils {
                         false, false, player, data, t, TerritoryEffectHelper.getEffects(t), false, null), data)
                     .getFirst();
             sortedUnitsList.add(o1.getKey());
-            Collections.sort(sortedUnitsList,
-                new UnitBattleComparator(false, playerCostMap, TerritoryEffectHelper.getEffects(t), data, false, false));
+            Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.playerCostMap,
+                TerritoryEffectHelper.getEffects(t), data, false, false));
             Collections.reverse(sortedUnitsList);
             final int powerWith =
                 DiceRoll.getTotalPowerAndRolls(
@@ -206,14 +203,14 @@ public class ProMoveOptionsUtils {
         if (ua1.getIsAir()) {
           minPower1 *= 10;
         }
-        final double attackEfficiency1 = (double) minPower1 / playerCostMap.getInt(o1.getKey().getType());
+        final double attackEfficiency1 = (double) minPower1 / ProData.playerCostMap.getInt(o1.getKey().getType());
         int minPower2 = Integer.MAX_VALUE;
         for (final Territory t : o2.getValue()) {
           if (!attackMap.get(t).isCurrentlyWins()) {
             final List<Unit> defendingUnits = t.getUnits().getMatches(Matches.enemyUnit(player, data));
             final List<Unit> sortedUnitsList = new ArrayList<Unit>(attackMap.get(t).getUnits());
-            Collections.sort(sortedUnitsList,
-                new UnitBattleComparator(false, playerCostMap, TerritoryEffectHelper.getEffects(t), data, false, false));
+            Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.playerCostMap,
+                TerritoryEffectHelper.getEffects(t), data, false, false));
             Collections.reverse(sortedUnitsList);
             final int powerWithout =
                 DiceRoll.getTotalPowerAndRolls(
@@ -221,8 +218,8 @@ public class ProMoveOptionsUtils {
                         false, false, player, data, t, TerritoryEffectHelper.getEffects(t), false, null), data)
                     .getFirst();
             sortedUnitsList.add(o2.getKey());
-            Collections.sort(sortedUnitsList,
-                new UnitBattleComparator(false, playerCostMap, TerritoryEffectHelper.getEffects(t), data, false, false));
+            Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.playerCostMap,
+                TerritoryEffectHelper.getEffects(t), data, false, false));
             Collections.reverse(sortedUnitsList);
             final int powerWith =
                 DiceRoll.getTotalPowerAndRolls(
@@ -239,7 +236,7 @@ public class ProMoveOptionsUtils {
         if (ua2.getIsAir()) {
           minPower2 *= 10;
         }
-        final double attackEfficiency2 = (double) minPower2 / playerCostMap.getInt(o2.getKey().getType());
+        final double attackEfficiency2 = (double) minPower2 / ProData.playerCostMap.getInt(o2.getKey().getType());
         if (attackEfficiency1 != attackEfficiency2) {
           if (attackEfficiency1 < attackEfficiency2) {
             return 1;
@@ -656,7 +653,6 @@ public class ProMoveOptionsUtils {
       final boolean isCheckingEnemyAttacks, final boolean isIgnoringRelationships) {
     final GameData data = ProData.getData();
 
-    final Map<Unit, Territory> unitTerritoryMap = ProUtils.createUnitTerritoryMap(player);
     for (final Territory myUnitTerritory : myUnitTerritories) {
 
       // Find my land units that have movement left
@@ -665,7 +661,7 @@ public class ProMoveOptionsUtils {
 
       // Check each land unit individually since they can have different ranges
       for (final Unit myLandUnit : myLandUnits) {
-        final Territory startTerritory = unitTerritoryMap.get(myLandUnit);
+        final Territory startTerritory = ProData.unitTerritoryMap.get(myLandUnit);
         final int range = TripleAUnit.get(myLandUnit).getMovementLeft();
         Set<Territory> possibleMoveTerritories =
             data.getMap().getNeighbors(myUnitTerritory, range,

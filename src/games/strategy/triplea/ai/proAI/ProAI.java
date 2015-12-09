@@ -25,7 +25,6 @@ import games.strategy.triplea.ai.proAI.util.ProMoveOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
 import games.strategy.triplea.ai.proAI.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
-import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.ai.strongAI.SUtils;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -143,7 +142,7 @@ public class ProAI extends AbstractAI {
     initializeData();
     ProBattleUtils.setData(data);
     if (nonCombat) {
-      nonCombatMoveAI.doNonCombatMove(storedFactoryMoveMap, storedPurchaseTerritories, moveDel, data, player, false);
+      nonCombatMoveAI.doNonCombatMove(storedFactoryMoveMap, storedPurchaseTerritories, moveDel, false);
       storedFactoryMoveMap = null;
     } else {
       if (storedCombatMoveMap == null) {
@@ -211,7 +210,6 @@ public class ProAI extends AbstractAI {
 
       // Simulate the next phases until place/end of turn is reached then use simulated data for purchase
       final int nextStepIndex = dataCopy.getSequence().getStepIndex() + 1;
-      final Map<Unit, Territory> unitTerritoryMap = ProUtils.createUnitTerritoryMap(playerCopy);
       for (int i = nextStepIndex; i < gameSteps.size(); i++) {
         final GameStep step = gameSteps.get(i);
         if (!playerCopy.equals(step.getPlayerID())) {
@@ -223,16 +221,16 @@ public class ProAI extends AbstractAI {
         ProLogger.info("Simulating phase: " + stepName);
         if (stepName.endsWith("NonCombatMove")) {
           final Map<Territory, ProTerritory> factoryMoveMap =
-              nonCombatMoveAI.doNonCombatMove(null, null, moveDel, dataCopy, playerCopy, true);
+              nonCombatMoveAI.doNonCombatMove(null, null, moveDel, true);
           if (storedFactoryMoveMap == null) {
             storedFactoryMoveMap =
-                ProSimulateTurnUtils.transferMoveMap(factoryMoveMap, unitTerritoryMap, dataCopy, data, player);
+                ProSimulateTurnUtils.transferMoveMap(factoryMoveMap, ProData.unitTerritoryMap, dataCopy, data, player);
           }
         } else if (stepName.endsWith("CombatMove") && !stepName.endsWith("AirborneCombatMove")) {
           final Map<Territory, ProTerritory> moveMap = combatMoveAI.doCombatMove(moveDel, true);
           if (storedCombatMoveMap == null) {
             storedCombatMoveMap =
-                ProSimulateTurnUtils.transferMoveMap(moveMap, unitTerritoryMap, dataCopy, data, player);
+                ProSimulateTurnUtils.transferMoveMap(moveMap, ProData.unitTerritoryMap, dataCopy, data, player);
           }
         } else if (stepName.endsWith("Battle")) {
           ProSimulateTurnUtils.simulateBattles(dataCopy, playerCopy, bridge);

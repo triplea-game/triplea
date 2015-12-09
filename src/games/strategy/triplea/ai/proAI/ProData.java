@@ -3,15 +3,22 @@ package games.strategy.triplea.ai.proAI;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseOptionMap;
 import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
+import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Pro AI data.
@@ -28,6 +35,8 @@ public class ProData {
   public static boolean areNeutralsPassableByAir = false;
   public static Territory myCapital = null;
   public static List<Territory> myUnitTerritories = new ArrayList<Territory>();
+  public static Map<Unit, Territory> unitTerritoryMap = new HashMap<Unit, Territory>();
+  public static IntegerMap<UnitType> playerCostMap = new IntegerMap<UnitType>();
   public static ProPurchaseOptionMap purchaseOptions = null;
   public static double minCostPerHitPoint = Double.MAX_VALUE;
 
@@ -43,6 +52,8 @@ public class ProData {
     areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     myUnitTerritories = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
+    unitTerritoryMap = ProUtils.createUnitTerritoryMap(player);
+    playerCostMap = BattleCalculator.getCostsForTUV(player, data);
     purchaseOptions = new ProPurchaseOptionMap(player, data);
     minCostPerHitPoint = ProPurchaseUtils.getMinCostPerHitPoint(player, purchaseOptions.getLandOptions());
   }

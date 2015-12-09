@@ -28,12 +28,8 @@ import java.util.Set;
 public class ProUtils {
 
   public static Map<Unit, Territory> createUnitTerritoryMap(final PlayerID player) {
-    final GameData data = ProData.getData();
-    final List<Territory> allTerritories = data.getMap().getTerritories();
-    final List<Territory> myUnitTerritories =
-        Match.getMatches(allTerritories, Matches.territoryHasUnitsOwnedBy(player));
     final Map<Unit, Territory> unitTerritoryMap = new HashMap<Unit, Territory>();
-    for (final Territory t : myUnitTerritories) {
+    for (final Territory t : ProData.myUnitTerritories) {
       final List<Unit> myUnits = t.getUnits().getMatches(Matches.unitIsOwnedBy(player));
       for (final Unit u : myUnits) {
         unitTerritoryMap.put(u, t);

@@ -45,24 +45,35 @@ public class ProTerritoryManager {
     enemyAttackOptions = new ProMoveOptions();
   }
 
+  public ProTerritoryManager(final ProMoveOptionsUtils attackOptionsUtils, final ProTerritoryManager territoryManager) {
+    this(attackOptionsUtils);
+    for (final Territory t : territoryManager.getTerritoryMap().keySet()) {
+      territoryMap.put(t, new ProTerritory(territoryManager.getTerritoryMap().get(t)));
+    }
+    unitMoveMap.putAll(territoryManager.getUnitMoveMap());
+    transportMoveMap.putAll(territoryManager.getTransportMoveMap());
+    bombardMap.putAll(territoryManager.getBombardMap());
+    transportList.addAll(territoryManager.getTransportList());
+    alliedAttackOptions = territoryManager.getAlliedAttackOptions();
+    enemyDefendOptions = territoryManager.getEnemyDefendOptions();
+    enemyAttackOptions = territoryManager.getEnemyAttackOptions();
+  }
+
   public void populateAttackOptions() {
-    final List<Territory> myUnitTerritories =
-        Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
-    attackOptionsUtils.findAttackOptions(player, myUnitTerritories, territoryMap, unitMoveMap, transportMoveMap,
-        bombardMap, transportList, new ArrayList<Territory>(), new ArrayList<Territory>(), new ArrayList<Territory>(),
-        false, false);
+    attackOptionsUtils.findAttackOptions(player, ProData.myUnitTerritories, territoryMap, unitMoveMap,
+        transportMoveMap, bombardMap, transportList, new ArrayList<Territory>(), new ArrayList<Territory>(),
+        new ArrayList<Territory>(), false, false);
     alliedAttackOptions = attackOptionsUtils.findAlliedAttackOptions(player);
   }
 
   public void populatePotentialAttackOptions() {
-    final List<Territory> myUnitTerritories =
-        Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
-    attackOptionsUtils.findPotentialAttackOptions(player, myUnitTerritories, territoryMap, unitMoveMap,
+    attackOptionsUtils.findPotentialAttackOptions(player, ProData.myUnitTerritories, territoryMap, unitMoveMap,
         transportMoveMap, bombardMap, transportList);
   }
 
   public void populateDefenseOptions() {
-
+    attackOptionsUtils.findDefendOptions(player, ProData.myUnitTerritories, territoryMap, unitMoveMap,
+        transportMoveMap, transportList, new ArrayList<Territory>(), false);
   }
 
   public void populateEnemyAttackOptions(final List<Territory> clearedTerritories,
@@ -109,8 +120,20 @@ public class ProTerritoryManager {
     return transportList;
   }
 
+  public ProMoveOptions getAlliedAttackOptions() {
+    return alliedAttackOptions;
+  }
+
+  public ProMoveOptions getEnemyDefendOptions() {
+    return enemyDefendOptions;
+  }
+
   public ProMoveOptions getEnemyAttackOptions() {
     return enemyAttackOptions;
+  }
+
+  public List<Territory> getTerritories() {
+    return new ArrayList<Territory>(territoryMap.keySet());
   }
 
   public List<Territory> getStrafingTerritories() {
@@ -121,6 +144,16 @@ public class ProTerritoryManager {
       }
     }
     return strafingTerritories;
+  }
+
+  public List<Territory> getCantHoldTerritories() {
+    final List<Territory> territoriesThatCantBeHeld = new ArrayList<Territory>();
+    for (final Territory t : territoryMap.keySet()) {
+      if (!territoryMap.get(t).isCanHold()) {
+        territoriesThatCantBeHeld.add(t);
+      }
+    }
+    return territoriesThatCantBeHeld;
   }
 
   public boolean haveUsedAllTransports() {

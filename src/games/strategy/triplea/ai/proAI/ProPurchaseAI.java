@@ -929,7 +929,6 @@ public class ProPurchaseAI {
     ProLogger.info("Prioritize territories to defend with isLand=" + isLand);
 
     // Determine which territories need defended
-    final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
     final Set<ProPlaceTerritory> needToDefendTerritories = new HashSet<ProPlaceTerritory>();
     for (final ProPurchaseTerritory ppt : purchaseTerritories.values()) {
 
@@ -952,7 +951,8 @@ public class ProPurchaseAI {
         if (t.isWater()) {
           final double unitValue =
               BattleCalculator.getTUV(
-                  Match.getMatches(placeTerritory.getDefendingUnits(), Matches.unitIsOwnedBy(player)), playerCostMap);
+                  Match.getMatches(placeTerritory.getDefendingUnits(), Matches.unitIsOwnedBy(player)),
+                  ProData.playerCostMap);
           holdValue = unitValue / 8;
         }
         ProLogger.trace(t.getName() + " TUVSwing=" + result.getTUVSwing() + ", win%=" + result.getWinPercentage()
@@ -994,7 +994,7 @@ public class ProPurchaseAI {
       }
 
       // Determine defending unit value
-      double defendingUnitValue = BattleCalculator.getTUV(placeTerritory.getDefendingUnits(), playerCostMap);
+      double defendingUnitValue = BattleCalculator.getTUV(placeTerritory.getDefendingUnits(), ProData.playerCostMap);
       if (t.isWater() && Match.noneMatch(placeTerritory.getDefendingUnits(), Matches.unitIsOwnedBy(player))) {
         defendingUnitValue = 0;
       }

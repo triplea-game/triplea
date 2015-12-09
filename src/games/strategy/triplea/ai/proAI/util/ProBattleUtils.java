@@ -5,7 +5,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.ai.proAI.data.ProBattleResult;
@@ -22,7 +21,6 @@ import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.ConcurrentOddsCalculator;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
-import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
@@ -68,10 +66,11 @@ public class ProBattleUtils {
     }
 
     // Determine if enough attack power to win in 1 round
-    final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
     final List<Unit> sortedUnitsList = new ArrayList<Unit>(attackingUnits);
-    Collections.sort(sortedUnitsList,
-        new UnitBattleComparator(false, playerCostMap, TerritoryEffectHelper.getEffects(t), data, false, false));
+    Collections
+        .sort(sortedUnitsList,
+            new UnitBattleComparator(false, ProData.playerCostMap, TerritoryEffectHelper.getEffects(t), data, false,
+                false));
     Collections.reverse(sortedUnitsList);
     final int attackPower =
         DiceRoll.getTotalPowerAndRolls(
@@ -119,10 +118,10 @@ public class ProBattleUtils {
 
     final List<Unit> unitsThatCanFight =
         Match.getMatches(myUnits, Matches.UnitCanBeInBattle(attacking, !t.isWater(), data, 1, false, true, true));
-    final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
     final List<Unit> sortedUnitsList = new ArrayList<Unit>(unitsThatCanFight);
     Collections.sort(sortedUnitsList,
-        new UnitBattleComparator(!attacking, playerCostMap, TerritoryEffectHelper.getEffects(t), data, false, false));
+        new UnitBattleComparator(!attacking, ProData.playerCostMap, TerritoryEffectHelper.getEffects(t), data, false,
+            false));
     Collections.reverse(sortedUnitsList);
     final int myPower =
         DiceRoll.getTotalPowerAndRolls(
@@ -242,16 +241,15 @@ public class ProBattleUtils {
     double TUVswing = results.getAverageTUVswing(player, mainCombatAttackers, t.getOwner(), mainCombatDefenders, data);
     if (isAttacker && Matches.TerritoryIsNeutralButNotWater.match(t)) // Set TUV swing for neutrals
     {
-      final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
-      final double attackingUnitValue = BattleCalculator.getTUV(mainCombatAttackers, playerCostMap);
-      final double remainingUnitValue = results.getAverageTUVofUnitsLeftOver(playerCostMap, playerCostMap).getFirst();
+      final double attackingUnitValue = BattleCalculator.getTUV(mainCombatAttackers, ProData.playerCostMap);
+      final double remainingUnitValue =
+          results.getAverageTUVofUnitsLeftOver(ProData.playerCostMap, ProData.playerCostMap).getFirst();
       TUVswing = remainingUnitValue - attackingUnitValue;
     }
     final List<Unit> defendingTransportedUnits = Match.getMatches(defendingUnits, Matches.unitIsBeingTransported());
     if (t.isWater() && !defendingTransportedUnits.isEmpty()) // Add TUV swing for transported units
     {
-      final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
-      final double transportedUnitValue = BattleCalculator.getTUV(defendingTransportedUnits, playerCostMap);
+      final double transportedUnitValue = BattleCalculator.getTUV(defendingTransportedUnits, ProData.playerCostMap);
       TUVswing += transportedUnitValue * winPercentage / 100;
     }
 

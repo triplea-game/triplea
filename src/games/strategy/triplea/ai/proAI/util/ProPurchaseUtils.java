@@ -21,12 +21,10 @@ import games.strategy.triplea.ai.proAI.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.AbstractPlaceDelegate;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
@@ -307,8 +305,7 @@ public class ProPurchaseUtils {
     final Resource PUs = data.getResourceList().getResource(Constants.PUS);
     final ProductionRule rule = getProductionRule(unitType, player, data);
     if (rule == null) {
-      final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
-      return playerCostMap.getInt(unitType);
+      return ProData.playerCostMap.getInt(unitType);
     } else {
       return ((double) rule.getCosts().getInt(PUs)) / rule.getResults().totalValues();
     }
