@@ -1,7 +1,6 @@
 package games.strategy.triplea.ai.proAI.util;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
@@ -21,7 +20,6 @@ import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.ai.proAI.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
@@ -44,50 +42,6 @@ import java.util.Map;
  * Pro AI purchase utilities.
  */
 public class ProPurchaseUtils {
-
-  public static void findPurchaseOptions(final PlayerID player, final List<ProPurchaseOption> landPurchaseOptions,
-      final List<ProPurchaseOption> airPurchaseOptions, final List<ProPurchaseOption> seaPurchaseOptions,
-      final List<ProPurchaseOption> factoryPurchaseOptions, final List<ProPurchaseOption> specialPurchaseOptions) {
-    ProLogger.info("Find all purchase options");
-    final GameData data = ProData.getData();
-
-    final List<ProductionRule> rules = player.getProductionFrontier().getRules();
-    for (final ProductionRule rule : rules) {
-
-      // Check if rule is for a unit
-      final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
-      if (!(resourceOrUnit instanceof UnitType)) {
-        continue;
-      }
-      final UnitType unitType = (UnitType) resourceOrUnit;
-
-      // Add rule to appropriate purchase option list
-      if ((UnitAttachment.get(unitType).getMovement(player) <= 0 && !(UnitAttachment.get(unitType).getCanProduceUnits()))
-          || Matches.UnitTypeHasMaxBuildRestrictions.match(unitType)
-          || Matches.UnitTypeConsumesUnitsOnCreation.match(unitType)
-          || Matches.UnitTypeCanNotMoveDuringCombatMove.match(unitType) || UnitAttachment.get(unitType).getIsSuicide()) {
-        final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
-        specialPurchaseOptions.add(purchaseOption);
-        ProLogger.debug("Special: " + purchaseOption);
-      } else if (Matches.UnitTypeCanProduceUnits.match(unitType) && Matches.UnitTypeIsInfrastructure.match(unitType)) {
-        final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
-        factoryPurchaseOptions.add(purchaseOption);
-        ProLogger.debug("Factory: " + purchaseOption);
-      } else if (Matches.UnitTypeIsLand.match(unitType)) {
-        final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
-        landPurchaseOptions.add(purchaseOption);
-        ProLogger.debug("Land: " + purchaseOption);
-      } else if (Matches.UnitTypeIsAir.match(unitType)) {
-        final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
-        airPurchaseOptions.add(purchaseOption);
-        ProLogger.debug("Air: " + purchaseOption);
-      } else if (Matches.UnitTypeIsSea.match(unitType)) {
-        final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
-        seaPurchaseOptions.add(purchaseOption);
-        ProLogger.debug("Sea: " + purchaseOption);
-      }
-    }
-  }
 
   public static List<ProPurchaseOption> findPurchaseOptionsForTerritory(final PlayerID player,
       final List<ProPurchaseOption> purchaseOptions, final Territory t) {

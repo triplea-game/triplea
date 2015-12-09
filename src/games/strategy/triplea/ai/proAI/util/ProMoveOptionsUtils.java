@@ -433,7 +433,7 @@ public class ProMoveOptionsUtils {
     return new ProMoveOptions(alliedAttackMaps, player, true);
   }
 
-  public ProMoveOptions findEnemyAttackOptions(final PlayerID player, final List<Territory> myConqueredTerritories,
+  public ProMoveOptions findEnemyAttackOptions(final PlayerID player, final List<Territory> clearedTerritories,
       final List<Territory> territoriesToCheck) {
     final GameData data = ProData.getData();
 
@@ -441,13 +441,13 @@ public class ProMoveOptionsUtils {
     final List<PlayerID> enemyPlayers = ProUtils.getEnemyPlayersInTurnOrder(player);
     final List<Map<Territory, ProTerritory>> enemyAttackMaps = new ArrayList<Map<Territory, ProTerritory>>();
     final Set<Territory> alliedTerritories = new HashSet<Territory>();
-    final List<Territory> enemyTerritories = new ArrayList<Territory>(myConqueredTerritories);
+    final List<Territory> enemyTerritories = new ArrayList<Territory>(clearedTerritories);
 
     // Loop through each enemy to determine the maximum number of enemy units that can attack each territory
     for (final PlayerID enemyPlayer : enemyPlayers) {
       final List<Territory> enemyUnitTerritories =
           Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(enemyPlayer));
-      enemyUnitTerritories.removeAll(myConqueredTerritories);
+      enemyUnitTerritories.removeAll(clearedTerritories);
       final Map<Territory, ProTerritory> attackMap = new HashMap<Territory, ProTerritory>();
       final Map<Unit, Set<Territory>> unitAttackMap = new HashMap<Unit, Set<Territory>>();
       final Map<Unit, Set<Territory>> transportAttackMap = new HashMap<Unit, Set<Territory>>();
@@ -466,9 +466,10 @@ public class ProMoveOptionsUtils {
   public void findPotentialAttackOptions(final PlayerID player, final List<Territory> myUnitTerritories,
       final Map<Territory, ProTerritory> moveMap, final Map<Unit, Set<Territory>> unitMoveMap,
       final Map<Unit, Set<Territory>> transportMoveMap, final Map<Unit, Set<Territory>> bombardMap,
-      final Map<Territory, Set<Territory>> landRoutesMap, final List<ProTransport> transportMapList) {
+      final List<ProTransport> transportMapList) {
     final GameData data = ProData.getData();
 
+    final Map<Territory, Set<Territory>> landRoutesMap = new HashMap<Territory, Set<Territory>>();
     final List<PlayerID> otherPlayers = ProUtils.getPotentialEnemyPlayers(player);
     findNavalMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap,
         ProMatches.territoryIsPotentialEnemyOrHasPotentialEnemyUnits(player, data, otherPlayers),

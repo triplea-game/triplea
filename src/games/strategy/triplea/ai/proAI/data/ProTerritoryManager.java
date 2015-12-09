@@ -11,6 +11,7 @@ import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +29,7 @@ public class ProTerritoryManager {
   private final List<ProTransport> transportList;
   private ProMoveOptions alliedAttackOptions;
   private ProMoveOptions enemyDefendOptions;
+  private ProMoveOptions enemyAttackOptions;
 
   public ProTerritoryManager(final ProMoveOptionsUtils attackOptionsUtils) {
     data = ProData.getData();
@@ -38,6 +40,9 @@ public class ProTerritoryManager {
     transportMoveMap = new HashMap<Unit, Set<Territory>>();
     bombardMap = new HashMap<Unit, Set<Territory>>();
     transportList = new ArrayList<ProTransport>();
+    alliedAttackOptions = new ProMoveOptions();
+    enemyDefendOptions = new ProMoveOptions();
+    enemyAttackOptions = new ProMoveOptions();
   }
 
   public void populateAttackOptions() {
@@ -49,12 +54,20 @@ public class ProTerritoryManager {
     alliedAttackOptions = attackOptionsUtils.findAlliedAttackOptions(player);
   }
 
+  public void populatePotentialAttackOptions() {
+    final List<Territory> myUnitTerritories =
+        Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
+    attackOptionsUtils.findPotentialAttackOptions(player, myUnitTerritories, territoryMap, unitMoveMap,
+        transportMoveMap, bombardMap, transportList);
+  }
+
   public void populateDefenseOptions() {
 
   }
 
-  public void populateEnemyAttackOptions() {
-
+  public void populateEnemyAttackOptions(final List<Territory> clearedTerritories,
+      final List<Territory> territoriesToCheck) {
+    enemyAttackOptions = attackOptionsUtils.findEnemyAttackOptions(player, clearedTerritories, territoriesToCheck);
   }
 
   public void populateEnemyDefenseOptions() {
@@ -62,8 +75,42 @@ public class ProTerritoryManager {
     enemyDefendOptions = attackOptionsUtils.findEnemyDefendOptions(player);
   }
 
+  public List<ProTerritory> removeTerritoriesThatCantBeConquered() {
+    return attackOptionsUtils.removeTerritoriesThatCantBeConquered(player, territoryMap, unitMoveMap, transportMoveMap,
+        alliedAttackOptions, enemyDefendOptions, false);
+  }
+
+  public List<ProTerritory> removePotentialTerritoriesThatCantBeConquered() {
+    return attackOptionsUtils.removeTerritoriesThatCantBeConquered(player, territoryMap, unitMoveMap, transportMoveMap,
+        alliedAttackOptions, enemyDefendOptions, true);
+  }
+
   public ProTerritory get(final Territory t) {
     return territoryMap.get(t);
+  }
+
+  public Map<Territory, ProTerritory> getTerritoryMap() {
+    return territoryMap;
+  }
+
+  public Map<Unit, Set<Territory>> getUnitMoveMap() {
+    return unitMoveMap;
+  }
+
+  public Map<Unit, Set<Territory>> getTransportMoveMap() {
+    return transportMoveMap;
+  }
+
+  public Map<Unit, Set<Territory>> getBombardMap() {
+    return bombardMap;
+  }
+
+  public List<ProTransport> getTransportList() {
+    return transportList;
+  }
+
+  public ProMoveOptions getEnemyAttackOptions() {
+    return enemyAttackOptions;
   }
 
   public List<Territory> getStrafingTerritories() {
@@ -74,6 +121,15 @@ public class ProTerritoryManager {
       }
     }
     return strafingTerritories;
+  }
+
+  public boolean haveUsedAllTransports() {
+    final Set<Unit> movedTransports = new HashSet<Unit>();
+    for (final ProTerritory patd : territoryMap.values()) {
+      movedTransports.addAll(patd.getAmphibAttackMap().keySet());
+      movedTransports.addAll(Match.getMatches(patd.getUnits(), Matches.UnitIsTransport));
+    }
+    return movedTransports.size() >= transportList.size();
   }
 
 }

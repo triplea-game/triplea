@@ -41,7 +41,7 @@ public class ProScrambleAI {
 
     // Get battle data
     final GameData data = ProData.getData();
-    final PlayerID player = ProData.getProAI().getPlayerID();
+    final PlayerID player = ProData.getPlayer();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(scrambleTo, false, BattleType.NORMAL);
 

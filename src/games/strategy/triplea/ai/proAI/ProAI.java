@@ -102,7 +102,7 @@ public class ProAI extends AbstractAI {
   }
 
   public static void Initialize(final TripleAFrame frame) {
-    ProLogUI.initialize(frame); // Must be done first
+    ProLogUI.initialize(frame);
     ProLogger.info("Initialized Hard AI");
   }
 
@@ -116,7 +116,7 @@ public class ProAI extends AbstractAI {
   }
 
   public static void gameOverClearCache() {
-    // Is static, clear so that we don't keep the data around after a game is exited
+    // Are static, clear so that we don't keep the data around after a game is exited
     ProBattleUtils.clearData();
     ProLogUI.clearCachedInstances();
   }
@@ -132,8 +132,7 @@ public class ProAI extends AbstractAI {
   }
 
   private void initializeData() {
-    ProData.setData(getGameData());
-    ProData.setProAI(this);
+    ProData.initialize(this, getGameData(), this.getPlayerID());
   }
 
   @Override
@@ -148,7 +147,7 @@ public class ProAI extends AbstractAI {
       storedFactoryMoveMap = null;
     } else {
       if (storedCombatMoveMap == null) {
-        combatMoveAI.doCombatMove(moveDel, data, player, false);
+        combatMoveAI.doCombatMove(moveDel, false);
       } else {
         combatMoveAI.doMove(storedCombatMoveMap, moveDel, data, player, false);
         storedCombatMoveMap = null;
@@ -197,9 +196,9 @@ public class ProAI extends AbstractAI {
       } finally {
         data.releaseReadLock();
       }
-      ProData.setData(dataCopy);
       ProBattleUtils.setData(dataCopy);
       final PlayerID playerCopy = dataCopy.getPlayerList().getPlayerID(player.getName());
+      ProData.initialize(this, dataCopy, playerCopy);
       final IMoveDelegate moveDel = DelegateFinder.moveDelegate(dataCopy);
       final IDelegateBridge bridge = new ProDummyDelegateBridge(this, playerCopy, dataCopy);
       moveDel.setDelegateBridgeAndPlayer(bridge);
@@ -230,7 +229,7 @@ public class ProAI extends AbstractAI {
                 ProSimulateTurnUtils.transferMoveMap(factoryMoveMap, unitTerritoryMap, dataCopy, data, player);
           }
         } else if (stepName.endsWith("CombatMove") && !stepName.endsWith("AirborneCombatMove")) {
-          final Map<Territory, ProTerritory> moveMap = combatMoveAI.doCombatMove(moveDel, dataCopy, playerCopy, true);
+          final Map<Territory, ProTerritory> moveMap = combatMoveAI.doCombatMove(moveDel, true);
           if (storedCombatMoveMap == null) {
             storedCombatMoveMap =
                 ProSimulateTurnUtils.transferMoveMap(moveMap, unitTerritoryMap, dataCopy, data, player);
@@ -239,7 +238,6 @@ public class ProAI extends AbstractAI {
           ProSimulateTurnUtils.simulateBattles(dataCopy, playerCopy, bridge);
         } else if (stepName.endsWith("Place") || stepName.endsWith("EndTurn")) {
           storedPurchaseTerritories = purchaseAI.purchase(purchaseDelegate, dataCopy, data, player);
-          ProData.setData(data);
           break;
         } else if (stepName.endsWith("Politics")) {
           final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(dataCopy);

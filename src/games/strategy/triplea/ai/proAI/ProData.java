@@ -2,47 +2,54 @@ package games.strategy.triplea.ai.proAI;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Pro AI data.
  */
 public class ProData {
 
+  private static ProAI proAI;
+  private static GameData data;
+  private static PlayerID player;
+
   public static double winPercentage = 95;
   public static double minWinPercentage = 75;
   public static boolean areNeutralsPassableByAir = false;
+  public static Territory myCapital = null;
+  public static List<Territory> myUnitTerritories = new ArrayList<Territory>();
 
-  private static GameData data;
-  private static ProAI proAI;
-
-  public static void setData(final GameData data) {
+  public static void initialize(final ProAI proAI, final GameData data, final PlayerID player) {
+    ProData.proAI = proAI;
     ProData.data = data;
+    ProData.player = player;
 
-    // Set optimal and win percentages lower if not LL
     if (!games.strategy.triplea.Properties.getLow_Luck(data)) {
       winPercentage = 90;
       minWinPercentage = 65;
     }
-
-    // Set map properties
     areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
-  }
-
-  public static void setProAI(final ProAI proAI) {
-    ProData.proAI = proAI;
-  }
-
-  public static GameData getData() {
-    return data;
+    myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+    myUnitTerritories = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
   }
 
   public static ProAI getProAI() {
     return proAI;
   }
 
+  public static GameData getData() {
+    return data;
+  }
+
   public static PlayerID getPlayer() {
-    return proAI.getPlayerID();
+    return player;
   }
 
 }
