@@ -952,7 +952,7 @@ public class ProPurchaseAI {
           final double unitValue =
               BattleCalculator.getTUV(
                   Match.getMatches(placeTerritory.getDefendingUnits(), Matches.unitIsOwnedBy(player)),
-                  ProData.playerCostMap);
+                  ProData.unitValueMap);
           holdValue = unitValue / 8;
         }
         ProLogger.trace(t.getName() + " TUVSwing=" + result.getTUVSwing() + ", win%=" + result.getWinPercentage()
@@ -994,7 +994,7 @@ public class ProPurchaseAI {
       }
 
       // Determine defending unit value
-      double defendingUnitValue = BattleCalculator.getTUV(placeTerritory.getDefendingUnits(), ProData.playerCostMap);
+      double defendingUnitValue = BattleCalculator.getTUV(placeTerritory.getDefendingUnits(), ProData.unitValueMap);
       if (t.isWater() && Match.noneMatch(placeTerritory.getDefendingUnits(), Matches.unitIsOwnedBy(player))) {
         defendingUnitValue = 0;
       }

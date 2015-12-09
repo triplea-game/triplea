@@ -27,11 +27,10 @@ import java.util.Set;
  */
 public class ProUtils {
 
-  public static Map<Unit, Territory> createUnitTerritoryMap(final PlayerID player) {
+  public static Map<Unit, Territory> createUnitTerritoryMap() {
     final Map<Unit, Territory> unitTerritoryMap = new HashMap<Unit, Territory>();
-    for (final Territory t : ProData.myUnitTerritories) {
-      final List<Unit> myUnits = t.getUnits().getMatches(Matches.unitIsOwnedBy(player));
-      for (final Unit u : myUnits) {
+    for (final Territory t : ProData.getData().getMap().getTerritories()) {
+      for (final Unit u : t.getUnits().getUnits()) {
         unitTerritoryMap.put(u, t);
       }
     }

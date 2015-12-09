@@ -556,8 +556,8 @@ public class ProCombatMoveAI {
         int minCost = Integer.MAX_VALUE;
         Unit minUnit = null;
         for (final Unit u : t.getUnits().getMatches(Matches.unitIsOwnedBy(player))) {
-          if (ProData.playerCostMap.getInt(u.getType()) < minCost) {
-            minCost = ProData.playerCostMap.getInt(u.getType());
+          if (ProData.unitValueMap.getInt(u.getType()) < minCost) {
+            minCost = ProData.unitValueMap.getInt(u.getType());
             minUnit = u;
           }
         }
@@ -823,7 +823,7 @@ public class ProCombatMoveAI {
           final ProBattleResult result2 =
               ProBattleUtils.estimateAttackBattleResults(player, t, attackers, patd.getMaxEnemyDefenders(player, data),
                   patd.getBombardTerritoryMap().keySet());
-          final double unitValue = ProData.playerCostMap.getInt(unit.getType());
+          final double unitValue = ProData.unitValueMap.getInt(unit.getType());
           if ((result2.getTUVSwing() - unitValue / 3) > result.getTUVSwing()) {
             attackMap.get(t).addUnit(unit);
             attackMap.get(t).setBattleResult(null);
@@ -1159,7 +1159,7 @@ public class ProCombatMoveAI {
                   ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, true));
           final boolean usesMoreThanHalfOfRange = distance > range / 2;
           final boolean territoryValueIsLessThanUnitValue =
-              patd.getValue() < ProData.playerCostMap.getInt(unit.getType());
+              patd.getValue() < ProData.unitValueMap.getInt(unit.getType());
           if (isAirUnit && !isAdjacentToAlliedFactory && usesMoreThanHalfOfRange
               && (territoryValueIsLessThanUnitValue || (!t.isWater() && !patd.isCanHold()))) {
             continue;

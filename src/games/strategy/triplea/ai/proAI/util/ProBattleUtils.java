@@ -69,7 +69,7 @@ public class ProBattleUtils {
     final List<Unit> sortedUnitsList = new ArrayList<Unit>(attackingUnits);
     Collections
         .sort(sortedUnitsList,
-            new UnitBattleComparator(false, ProData.playerCostMap, TerritoryEffectHelper.getEffects(t), data, false,
+            new UnitBattleComparator(false, ProData.unitValueMap, TerritoryEffectHelper.getEffects(t), data, false,
                 false));
     Collections.reverse(sortedUnitsList);
     final int attackPower =
@@ -120,7 +120,7 @@ public class ProBattleUtils {
         Match.getMatches(myUnits, Matches.UnitCanBeInBattle(attacking, !t.isWater(), data, 1, false, true, true));
     final List<Unit> sortedUnitsList = new ArrayList<Unit>(unitsThatCanFight);
     Collections.sort(sortedUnitsList,
-        new UnitBattleComparator(!attacking, ProData.playerCostMap, TerritoryEffectHelper.getEffects(t), data, false,
+        new UnitBattleComparator(!attacking, ProData.unitValueMap, TerritoryEffectHelper.getEffects(t), data, false,
             false));
     Collections.reverse(sortedUnitsList);
     final int myPower =
@@ -241,15 +241,15 @@ public class ProBattleUtils {
     double TUVswing = results.getAverageTUVswing(player, mainCombatAttackers, t.getOwner(), mainCombatDefenders, data);
     if (isAttacker && Matches.TerritoryIsNeutralButNotWater.match(t)) // Set TUV swing for neutrals
     {
-      final double attackingUnitValue = BattleCalculator.getTUV(mainCombatAttackers, ProData.playerCostMap);
+      final double attackingUnitValue = BattleCalculator.getTUV(mainCombatAttackers, ProData.unitValueMap);
       final double remainingUnitValue =
-          results.getAverageTUVofUnitsLeftOver(ProData.playerCostMap, ProData.playerCostMap).getFirst();
+          results.getAverageTUVofUnitsLeftOver(ProData.unitValueMap, ProData.unitValueMap).getFirst();
       TUVswing = remainingUnitValue - attackingUnitValue;
     }
     final List<Unit> defendingTransportedUnits = Match.getMatches(defendingUnits, Matches.unitIsBeingTransported());
     if (t.isWater() && !defendingTransportedUnits.isEmpty()) // Add TUV swing for transported units
     {
-      final double transportedUnitValue = BattleCalculator.getTUV(defendingTransportedUnits, ProData.playerCostMap);
+      final double transportedUnitValue = BattleCalculator.getTUV(defendingTransportedUnits, ProData.unitValueMap);
       TUVswing += transportedUnitValue * winPercentage / 100;
     }
 

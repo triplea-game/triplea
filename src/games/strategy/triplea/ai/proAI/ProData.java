@@ -6,8 +6,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.ai.proAI.data.ProPurchaseOption;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseOptionMap;
-import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
@@ -36,7 +36,7 @@ public class ProData {
   public static Territory myCapital = null;
   public static List<Territory> myUnitTerritories = new ArrayList<Territory>();
   public static Map<Unit, Territory> unitTerritoryMap = new HashMap<Unit, Territory>();
-  public static IntegerMap<UnitType> playerCostMap = new IntegerMap<UnitType>();
+  public static IntegerMap<UnitType> unitValueMap = new IntegerMap<UnitType>();
   public static ProPurchaseOptionMap purchaseOptions = null;
   public static double minCostPerHitPoint = Double.MAX_VALUE;
 
@@ -52,10 +52,10 @@ public class ProData {
     areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     myUnitTerritories = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
-    unitTerritoryMap = ProUtils.createUnitTerritoryMap(player);
-    playerCostMap = BattleCalculator.getCostsForTUV(player, data);
+    unitTerritoryMap = ProUtils.createUnitTerritoryMap();
+    unitValueMap = BattleCalculator.getCostsForTUV(player, data);
     purchaseOptions = new ProPurchaseOptionMap(player, data);
-    minCostPerHitPoint = ProPurchaseUtils.getMinCostPerHitPoint(player, purchaseOptions.getLandOptions());
+    minCostPerHitPoint = getMinCostPerHitPoint(player, purchaseOptions.getLandOptions());
   }
 
   public static ProAI getProAI() {
@@ -68,6 +68,16 @@ public class ProData {
 
   public static PlayerID getPlayer() {
     return player;
+  }
+
+  private static double getMinCostPerHitPoint(final PlayerID player, final List<ProPurchaseOption> landPurchaseOptions) {
+    double minCostPerHitPoint = Double.MAX_VALUE;
+    for (final ProPurchaseOption ppo : landPurchaseOptions) {
+      if (ppo.getCostPerHitPoint() < minCostPerHitPoint) {
+        minCostPerHitPoint = ppo.getCostPerHitPoint();
+      }
+    }
+    return minCostPerHitPoint;
   }
 
 }
