@@ -197,7 +197,6 @@ public class ProAI extends AbstractAI {
       }
       ProBattleUtils.setData(dataCopy);
       final PlayerID playerCopy = dataCopy.getPlayerList().getPlayerID(player.getName());
-      ProData.initialize(this, dataCopy, playerCopy);
       final IMoveDelegate moveDel = DelegateFinder.moveDelegate(dataCopy);
       final IDelegateBridge bridge = new ProDummyDelegateBridge(this, playerCopy, dataCopy);
       moveDel.setDelegateBridgeAndPlayer(bridge);
@@ -220,6 +219,7 @@ public class ProAI extends AbstractAI {
         final String stepName = step.getName();
         ProLogger.info("Simulating phase: " + stepName);
         if (stepName.endsWith("NonCombatMove")) {
+          ProData.initialize(this, dataCopy, playerCopy);
           final Map<Territory, ProTerritory> factoryMoveMap =
               nonCombatMoveAI.doNonCombatMove(null, null, moveDel, true);
           if (storedFactoryMoveMap == null) {
@@ -227,17 +227,21 @@ public class ProAI extends AbstractAI {
                 ProSimulateTurnUtils.transferMoveMap(factoryMoveMap, ProData.unitTerritoryMap, dataCopy, data, player);
           }
         } else if (stepName.endsWith("CombatMove") && !stepName.endsWith("AirborneCombatMove")) {
+          ProData.initialize(this, dataCopy, playerCopy);
           final Map<Territory, ProTerritory> moveMap = combatMoveAI.doCombatMove(moveDel, true);
           if (storedCombatMoveMap == null) {
             storedCombatMoveMap =
                 ProSimulateTurnUtils.transferMoveMap(moveMap, ProData.unitTerritoryMap, dataCopy, data, player);
           }
         } else if (stepName.endsWith("Battle")) {
+          ProData.initialize(this, dataCopy, playerCopy);
           ProSimulateTurnUtils.simulateBattles(dataCopy, playerCopy, bridge);
         } else if (stepName.endsWith("Place") || stepName.endsWith("EndTurn")) {
+          ProData.initialize(this, dataCopy, player);
           storedPurchaseTerritories = purchaseAI.purchase(purchaseDelegate, dataCopy, data, player);
           break;
         } else if (stepName.endsWith("Politics")) {
+          ProData.initialize(this, dataCopy, player);
           final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(dataCopy);
           politicsDelegate.setDelegateBridgeAndPlayer(bridge);
           final List<PoliticalActionAttachment> actions = politicsAI.politicalActions();
