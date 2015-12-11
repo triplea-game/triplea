@@ -58,7 +58,7 @@ public class ProSimulateTurnUtils {
         ProLogger.debug("defenders=" + defenders);
         ProLogger.debug("bombardingUnits=" + bombardingUnits);
         final ProBattleResult result =
-            ProBattleUtils.callBattleCalculator(player, t, attackers, defenders, bombardingUnits, true);
+            ProBattleUtils.callBattleCalculator(player, t, attackers, defenders, bombardingUnits);
         final List<Unit> remainingUnits = result.getAverageAttackersRemaining();
         ProLogger.debug("remainingUnits=" + remainingUnits);
 

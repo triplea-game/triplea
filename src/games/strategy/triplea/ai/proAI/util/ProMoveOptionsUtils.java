@@ -1201,7 +1201,7 @@ public class ProMoveOptionsUtils {
               combinedUnits.addAll(patd.getMaxAmphibUnits());
               final ProBattleResult strafeResult =
                   ProBattleUtils.callBattleCalculator(player, t, new ArrayList<Unit>(combinedUnits), defenders,
-                      patd.getMaxBombardUnits(), true, true);
+                      patd.getMaxBombardUnits(), true);
 
               // Check allied result with strafe
               final Set<Unit> enemyDefendersAfterStrafe =
@@ -1217,8 +1217,8 @@ public class ProMoveOptionsUtils {
                   + ", maxDefenders=" + enemyDefendersAfterStrafe.size());
 
               if (patd.getMaxBattleResult().getWinPercentage() >= ProData.winPercentage) {
-                System.out.println(data.getSequence().getRound() + ". strafing territory: " + t + ", alliedPlayer="
-                    + alliedUnits.iterator().next().getOwner().getName() + ", maxWin%="
+                System.out.println(data.getSequence().getRound() + " - " + player.getName() + ". strafing territory: "
+                    + t + ", alliedPlayer=" + alliedUnits.iterator().next().getOwner().getName() + ", maxWin%="
                     + patd.getMaxBattleResult().getWinPercentage() + ", maxAttackers=" + alliedUnits.size()
                     + ", maxDefenders=" + enemyDefendersAfterStrafe.size());
               }
