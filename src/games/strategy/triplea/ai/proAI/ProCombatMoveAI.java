@@ -1450,8 +1450,8 @@ public class ProCombatMoveAI {
       ProLogger.trace("Remaining territories to attack=" + territoriesToAttack);
       final List<Territory> territoriesToCheck = new ArrayList<Territory>();
       territoriesToCheck.add(myCapital);
-      final ProMoveOptions enemyAttackOptions =
-          attackOptionsUtils.findEnemyAttackOptions(player, territoriesToAttack, territoriesToCheck);
+      territoryManager.populateEnemyAttackOptions(territoriesToAttack, territoriesToCheck);
+      final ProMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
       if (enemyAttackOptions.getMax(myCapital) == null) {
         break;
       }

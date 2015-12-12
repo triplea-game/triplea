@@ -238,7 +238,7 @@ public class ProAI extends AbstractAI {
           ProSimulateTurnUtils.simulateBattles(dataCopy, playerCopy, bridge);
         } else if (stepName.endsWith("Place") || stepName.endsWith("EndTurn")) {
           ProData.initialize(this, dataCopy, player);
-          storedPurchaseTerritories = purchaseAI.purchase(purchaseDelegate, dataCopy, data, player);
+          storedPurchaseTerritories = purchaseAI.purchase(purchaseDelegate, data);
           break;
         } else if (stepName.endsWith("Politics")) {
           ProData.initialize(this, dataCopy, player);
@@ -264,7 +264,7 @@ public class ProAI extends AbstractAI {
     if (bid) {
       purchaseAI.bidPlace(placeDelegate, data, player);
     } else {
-      purchaseAI.place(storedPurchaseTerritories, placeDelegate, data, player);
+      purchaseAI.place(storedPurchaseTerritories, placeDelegate);
       storedPurchaseTerritories = null;
     }
     ProLogger.info(player.getName() + " time for place=" + (System.currentTimeMillis() - start));
