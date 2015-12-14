@@ -21,9 +21,7 @@ import games.strategy.triplea.ai.proAI.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.ai.proAI.simulate.ProSimulateTurnUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
-import games.strategy.triplea.ai.proAI.util.ProMoveOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
-import games.strategy.triplea.ai.proAI.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
 import games.strategy.triplea.ai.strongAI.SUtils;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
@@ -64,11 +62,6 @@ public class ProAI extends AbstractAI {
 
   private final static Logger s_logger = Logger.getLogger(ProAI.class.getName());
 
-  // Utilities
-  private final ProTransportUtils transportUtils;
-  private final ProMoveOptionsUtils attackOptionsUtils;
-  private final ProTerritoryValueUtils territoryValueUtils;
-
   // Phases
   private final ProCombatMoveAI combatMoveAI;
   private final ProNonCombatMoveAI nonCombatMoveAI;
@@ -86,15 +79,12 @@ public class ProAI extends AbstractAI {
 
   public ProAI(final String name, final String type) {
     super(name, type);
-    transportUtils = new ProTransportUtils();
-    attackOptionsUtils = new ProMoveOptionsUtils(transportUtils);
-    territoryValueUtils = new ProTerritoryValueUtils();
-    combatMoveAI = new ProCombatMoveAI(this, transportUtils, attackOptionsUtils, territoryValueUtils);
-    nonCombatMoveAI = new ProNonCombatMoveAI(transportUtils, attackOptionsUtils, territoryValueUtils);
-    purchaseAI = new ProPurchaseAI(transportUtils, attackOptionsUtils, territoryValueUtils);
+    combatMoveAI = new ProCombatMoveAI(this);
+    nonCombatMoveAI = new ProNonCombatMoveAI();
+    purchaseAI = new ProPurchaseAI();
     retreatAI = new ProRetreatAI();
-    scrambleAI = new ProScrambleAI(attackOptionsUtils);
-    politicsAI = new ProPoliticsAI(transportUtils);
+    scrambleAI = new ProScrambleAI();
+    politicsAI = new ProPoliticsAI();
     storedCombatMoveMap = null;
     storedPurchaseTerritories = null;
     storedStrafingTerritories = new ArrayList<Territory>();

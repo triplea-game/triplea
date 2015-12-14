@@ -25,7 +25,6 @@ import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.ai.proAI.logging.ProMetricUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
-import games.strategy.triplea.ai.proAI.util.ProMoveOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
 import games.strategy.triplea.ai.proAI.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
@@ -63,24 +62,11 @@ import java.util.Set;
  */
 public class ProPurchaseAI {
 
-  // Utilities
-  private final ProTransportUtils transportUtils;
-  private final ProMoveOptionsUtils attackOptionsUtils;
-  private final ProTerritoryValueUtils territoryValueUtils;
-
-  // Current data
   private GameData data;
   private GameData startOfTurnData; // Used to count current units on map for maxBuiltPerPlayer
   private PlayerID player;
   private ProResourceTracker resourceTracker;
   private ProTerritoryManager territoryManager;
-
-  public ProPurchaseAI(final ProTransportUtils transportUtils, final ProMoveOptionsUtils attackOptionsUtils,
-      final ProTerritoryValueUtils territoryValueUtils) {
-    this.transportUtils = transportUtils;
-    this.attackOptionsUtils = attackOptionsUtils;
-    this.territoryValueUtils = territoryValueUtils;
-  }
 
   public void bid(int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data, final PlayerID player) {
     ProLogger.info("Starting bid purchase phase");
@@ -468,7 +454,7 @@ public class ProPurchaseAI {
     this.startOfTurnData = startOfTurnData;
     player = ProData.getPlayer();
     resourceTracker = new ProResourceTracker(player);
-    territoryManager = new ProTerritoryManager(transportUtils);
+    territoryManager = new ProTerritoryManager();
     final ProPurchaseOptionMap purchaseOptions = ProData.purchaseOptions;
 
     ProLogger.info("Starting purchase phase with resources: " + resourceTracker);
@@ -499,7 +485,7 @@ public class ProPurchaseAI {
     // Find strategic value for each territory
     ProLogger.info("Find strategic value for place territories");
     final Map<Territory, Double> territoryValueMap =
-        territoryValueUtils.findTerritoryValues(player, new ArrayList<Territory>(), new ArrayList<Territory>());
+        ProTerritoryValueUtils.findTerritoryValues(player, new ArrayList<Territory>(), new ArrayList<Territory>());
     for (final Territory t : purchaseTerritories.keySet()) {
       for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories()) {
         ppt.setStrategicValue(territoryValueMap.get(ppt.getTerritory()));
@@ -808,7 +794,7 @@ public class ProPurchaseAI {
 
     data = ProData.getData();
     player = ProData.getPlayer();
-    territoryManager = new ProTerritoryManager(transportUtils);
+    territoryManager = new ProTerritoryManager();
 
     if (purchaseTerritories != null) {
 
@@ -874,7 +860,7 @@ public class ProPurchaseAI {
     // Find strategic value for each territory
     ProLogger.info("Find strategic value for place territories");
     final Map<Territory, Double> territoryValueMap =
-        territoryValueUtils.findTerritoryValues(player, new ArrayList<Territory>(), new ArrayList<Territory>());
+        ProTerritoryValueUtils.findTerritoryValues(player, new ArrayList<Territory>(), new ArrayList<Territory>());
     for (final Territory t : placeNonConstructionTerritories.keySet()) {
       for (final ProPlaceTerritory ppt : placeNonConstructionTerritories.get(t).getCanPlaceTerritories()) {
         ppt.setStrategicValue(territoryValueMap.get(ppt.getTerritory()));
@@ -1041,8 +1027,9 @@ public class ProPurchaseAI {
       // Find local owned units
       final List<Unit> ownedLocalUnits = t.getUnits().getMatches(Matches.unitIsOwnedBy(player));
       int unusedCarrierCapacity =
-          Math.min(0, transportUtils.getUnusedCarrierCapacity(player, t, new ArrayList<Unit>()));
-      int unusedLocalCarrierCapacity = transportUtils.getUnusedLocalCarrierCapacity(player, t, new ArrayList<Unit>());
+          Math.min(0, ProTransportUtils.getUnusedCarrierCapacity(player, t, new ArrayList<Unit>()));
+      int unusedLocalCarrierCapacity =
+          ProTransportUtils.getUnusedLocalCarrierCapacity(player, t, new ArrayList<Unit>());
       ProLogger.trace(t + ", unusedCarrierCapacity=" + unusedCarrierCapacity + ", unusedLocalCarrierCapacity="
           + unusedLocalCarrierCapacity);
 
@@ -1103,8 +1090,8 @@ public class ProPurchaseAI {
           remainingUnitProduction -= selectedOption.getQuantity();
           unitsToPlace.addAll(selectedOption.getUnitType().create(selectedOption.getQuantity(), player, true));
           if (selectedOption.isCarrier() || selectedOption.isAir()) {
-            unusedCarrierCapacity = transportUtils.getUnusedCarrierCapacity(player, t, unitsToPlace);
-            unusedLocalCarrierCapacity = transportUtils.getUnusedLocalCarrierCapacity(player, t, unitsToPlace);
+            unusedCarrierCapacity = ProTransportUtils.getUnusedCarrierCapacity(player, t, unitsToPlace);
+            unusedLocalCarrierCapacity = ProTransportUtils.getUnusedLocalCarrierCapacity(player, t, unitsToPlace);
           }
           ProLogger.trace("Selected unit=" + selectedOption.getUnitType().getName() + ", unusedCarrierCapacity="
               + unusedCarrierCapacity + ", unusedLocalCarrierCapacity=" + unusedLocalCarrierCapacity);
@@ -1456,7 +1443,7 @@ public class ProPurchaseAI {
 
     // Find strategic value for each territory
     final Map<Territory, Double> territoryValueMap =
-        territoryValueUtils.findTerritoryValues(player, territoriesThatCantBeHeld, new ArrayList<Territory>());
+        ProTerritoryValueUtils.findTerritoryValues(player, territoriesThatCantBeHeld, new ArrayList<Territory>());
     double maxValue = 0.0;
     Territory maxTerritory = null;
     for (final Territory t : purchaseFactoryTerritories) {
@@ -1640,8 +1627,9 @@ public class ProPurchaseAI {
         ownedLocalUnits.addAll(neighbor.getUnits().getMatches(Matches.unitIsOwnedBy(player)));
       }
       int unusedCarrierCapacity =
-          Math.min(0, transportUtils.getUnusedCarrierCapacity(player, t, new ArrayList<Unit>()));
-      int unusedLocalCarrierCapacity = transportUtils.getUnusedLocalCarrierCapacity(player, t, new ArrayList<Unit>());
+          Math.min(0, ProTransportUtils.getUnusedCarrierCapacity(player, t, new ArrayList<Unit>()));
+      int unusedLocalCarrierCapacity =
+          ProTransportUtils.getUnusedLocalCarrierCapacity(player, t, new ArrayList<Unit>());
       boolean needDestroyer = false;
       ProLogger.trace(t + ", unusedCarrierCapacity=" + unusedCarrierCapacity + ", unusedLocalCarrierCapacity="
           + unusedLocalCarrierCapacity);
@@ -1713,8 +1701,8 @@ public class ProPurchaseAI {
             remainingUnitProduction -= selectedOption.getQuantity();
             unitsToPlace.addAll(selectedOption.getUnitType().create(selectedOption.getQuantity(), player, true));
             if (selectedOption.isCarrier() || selectedOption.isAir()) {
-              unusedCarrierCapacity = transportUtils.getUnusedCarrierCapacity(player, t, unitsToPlace);
-              unusedLocalCarrierCapacity = transportUtils.getUnusedLocalCarrierCapacity(player, t, unitsToPlace);
+              unusedCarrierCapacity = ProTransportUtils.getUnusedCarrierCapacity(player, t, unitsToPlace);
+              unusedLocalCarrierCapacity = ProTransportUtils.getUnusedLocalCarrierCapacity(player, t, unitsToPlace);
             }
             ProLogger.trace(t + ", added sea defender for defense: " + selectedOption.getUnitType().getName()
                 + ", TUVSwing=" + result.getTUVSwing() + ", win%=" + result.getWinPercentage()
@@ -1858,8 +1846,8 @@ public class ProPurchaseAI {
           remainingUnitProduction -= selectedOption.getQuantity();
           unitsToPlace.addAll(selectedOption.getUnitType().create(selectedOption.getQuantity(), player, true));
           if (selectedOption.isCarrier() || selectedOption.isAir()) {
-            unusedCarrierCapacity = transportUtils.getUnusedCarrierCapacity(player, t, unitsToPlace);
-            unusedLocalCarrierCapacity = transportUtils.getUnusedLocalCarrierCapacity(player, t, unitsToPlace);
+            unusedCarrierCapacity = ProTransportUtils.getUnusedCarrierCapacity(player, t, unitsToPlace);
+            unusedLocalCarrierCapacity = ProTransportUtils.getUnusedLocalCarrierCapacity(player, t, unitsToPlace);
           }
           ProLogger.trace(t + ", added sea defender for naval superiority: " + selectedOption.getUnitType().getName()
               + ", unusedCarrierCapacity=" + unusedCarrierCapacity + ", unusedLocalCarrierCapacity="
@@ -1871,7 +1859,7 @@ public class ProPurchaseAI {
       addUnitsToPlaceTerritory(placeTerritory, unitsToPlace, purchaseTerritories);
 
       // Loop through adjacent purchase territories and purchase transport/amphib units
-      final int distance = transportUtils.findMaxMovementForTransports(purchaseOptions.getSeaTransportOptions());
+      final int distance = ProTransportUtils.findMaxMovementForTransports(purchaseOptions.getSeaTransportOptions());
       ProLogger.trace(t + ", transportMovement=" + distance);
       for (final ProPurchaseTerritory purchaseTerritory : selectedPurchaseTerritories) {
         final Territory landTerritory = purchaseTerritory.getTerritory();
@@ -1914,7 +1902,7 @@ public class ProPurchaseAI {
               }
             }
             final List<Unit> units =
-                transportUtils.getUnitsToTransportFromTerritories(player, transport, territoriesToLoadFrom,
+                ProTransportUtils.getUnitsToTransportFromTerritories(player, transport, territoriesToLoadFrom,
                     new ArrayList<Unit>(potentialUnitsToLoad), ProMatches.unitIsOwnedCombatTransportableUnit(player));
             potentialUnitsToLoad.addAll(units);
           }
@@ -1945,10 +1933,10 @@ public class ProPurchaseAI {
 
             // Find any existing units that can be transported
             final List<Unit> selectedUnits =
-                transportUtils.selectUnitsToTransportFromList(transport, new ArrayList<Unit>(potentialUnitsToLoad));
+                ProTransportUtils.selectUnitsToTransportFromList(transport, new ArrayList<Unit>(potentialUnitsToLoad));
             if (!selectedUnits.isEmpty()) {
               potentialUnitsToLoad.removeAll(selectedUnits);
-              transportCapacity -= transportUtils.findUnitsTransportCost(selectedUnits);
+              transportCapacity -= ProTransportUtils.findUnitsTransportCost(selectedUnits);
             }
 
             // Purchase units until transport is full
@@ -2251,7 +2239,7 @@ public class ProPurchaseAI {
             }
             if (ppo.getCarrierCost() > 0) {
               final int unusedLocalCarrierCapacity =
-                  transportUtils.getUnusedLocalCarrierCapacity(player, t, placeTerritory.getPlaceUnits());
+                  ProTransportUtils.getUnusedLocalCarrierCapacity(player, t, placeTerritory.getPlaceUnits());
               final int neededFighters = unusedLocalCarrierCapacity / ppo.getCarrierCost();
               attackEfficiency *= (1 + neededFighters);
             }

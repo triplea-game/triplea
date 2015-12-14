@@ -41,7 +41,6 @@ import java.util.Set;
 public class ProTerritoryManager {
 
   private final PlayerID player;
-  private final ProTransportUtils transportUtils;
 
   private ProMyMoveOptions attackOptions;
   private ProMyMoveOptions potentialAttackOptions;
@@ -50,9 +49,8 @@ public class ProTerritoryManager {
   private ProOtherMoveOptions enemyDefendOptions;
   private ProOtherMoveOptions enemyAttackOptions;
 
-  public ProTerritoryManager(final ProTransportUtils transportUtils) {
+  public ProTerritoryManager() {
     player = ProData.getPlayer();
-    this.transportUtils = transportUtils;
     attackOptions = new ProMyMoveOptions();
     potentialAttackOptions = new ProMyMoveOptions();
     defendOptions = new ProMyMoveOptions();
@@ -61,8 +59,8 @@ public class ProTerritoryManager {
     enemyAttackOptions = new ProOtherMoveOptions();
   }
 
-  public ProTerritoryManager(final ProTransportUtils transportUtils, final ProTerritoryManager territoryManager) {
-    this(transportUtils);
+  public ProTerritoryManager(final ProTerritoryManager territoryManager) {
+    this();
     attackOptions = new ProMyMoveOptions(territoryManager.attackOptions);
     potentialAttackOptions = new ProMyMoveOptions(territoryManager.potentialAttackOptions);
     defendOptions = new ProMyMoveOptions(territoryManager.defendOptions);
@@ -907,11 +905,11 @@ public class ProTerritoryManager {
           alreadyAddedToMaxAmphibUnits = moveMap.get(moveTerritory).getMaxAmphibUnits();
         }
         List<Unit> amphibUnits =
-            transportUtils.getUnitsToTransportFromTerritories(player, transport, territoriesCanLoadFrom,
+            ProTransportUtils.getUnitsToTransportFromTerritories(player, transport, territoriesCanLoadFrom,
                 alreadyAddedToMaxAmphibUnits);
         if (isCheckingEnemyAttacks) {
           amphibUnits =
-              transportUtils.getUnitsToTransportFromTerritories(player, transport, territoriesCanLoadFrom,
+              ProTransportUtils.getUnitsToTransportFromTerritories(player, transport, territoriesCanLoadFrom,
                   alreadyAddedToMaxAmphibUnits, ProMatches.unitIsOwnedCombatTransportableUnit(player));
         }
 

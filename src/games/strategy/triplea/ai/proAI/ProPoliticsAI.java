@@ -8,7 +8,6 @@ import games.strategy.triplea.ai.BasicPoliticalAI;
 import games.strategy.triplea.ai.proAI.data.ProTerritory;
 import games.strategy.triplea.ai.proAI.data.ProTerritoryManager;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
-import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.DelegateFinder;
@@ -29,19 +28,13 @@ import java.util.Map;
  */
 public class ProPoliticsAI {
 
-  private final ProTransportUtils transportUtils;
-
-  public ProPoliticsAI(final ProTransportUtils transportUtils) {
-    this.transportUtils = transportUtils;
-  }
-
   public List<PoliticalActionAttachment> politicalActions() {
 
     final GameData data = ProData.getData();
     final PlayerID player = ProData.getPlayer();
     final float numPlayers = data.getPlayerList().getPlayers().size();
     final double round = data.getSequence().getRound();
-    final ProTerritoryManager territoryManager = new ProTerritoryManager(transportUtils);
+    final ProTerritoryManager territoryManager = new ProTerritoryManager();
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
     final List<PoliticalActionAttachment> results = new ArrayList<PoliticalActionAttachment>();
     ProLogger.info("Politics for " + player.getName());

@@ -24,15 +24,9 @@ import java.util.Set;
 /**
  * Pro AI attack options utilities.
  */
-public class ProMoveOptionsUtils {
+public class ProSortMoveOptionsUtils {
 
-  private final ProTransportUtils transportUtils;
-
-  public ProMoveOptionsUtils(final ProTransportUtils transportUtils) {
-    this.transportUtils = transportUtils;
-  }
-
-  public Map<Unit, Set<Territory>> sortUnitMoveOptions(final PlayerID player,
+  public static Map<Unit, Set<Territory>> sortUnitMoveOptions(final PlayerID player,
       final Map<Unit, Set<Territory>> unitAttackOptions) {
 
     final List<Map.Entry<Unit, Set<Territory>>> list =
@@ -59,7 +53,7 @@ public class ProMoveOptionsUtils {
     return sortedUnitAttackOptions;
   }
 
-  public Map<Unit, Set<Territory>> sortUnitNeededOptions(final PlayerID player,
+  public static Map<Unit, Set<Territory>> sortUnitNeededOptions(final PlayerID player,
       final Map<Unit, Set<Territory>> unitAttackOptions, final Map<Territory, ProTerritory> attackMap) {
     final GameData data = ProData.getData();
 
@@ -111,7 +105,7 @@ public class ProMoveOptionsUtils {
     return sortedUnitAttackOptions;
   }
 
-  public Map<Unit, Set<Territory>> sortUnitNeededOptionsThenAttack(final PlayerID player,
+  public static Map<Unit, Set<Territory>> sortUnitNeededOptionsThenAttack(final PlayerID player,
       final Map<Unit, Set<Territory>> unitAttackOptions, final Map<Territory, ProTerritory> attackMap,
       final Map<Unit, Territory> unitTerritoryMap) {
     final GameData data = ProData.getData();

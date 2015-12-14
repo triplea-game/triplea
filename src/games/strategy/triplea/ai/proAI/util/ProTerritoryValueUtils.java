@@ -24,7 +24,7 @@ import java.util.Set;
  */
 public class ProTerritoryValueUtils {
 
-  public double findTerritoryAttackValue(final PlayerID player, final Territory t) {
+  public static double findTerritoryAttackValue(final PlayerID player, final Territory t) {
     final GameData data = ProData.getData();
 
     final int isEnemyFactory = ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).match(t) ? 1 : 0;
@@ -41,7 +41,7 @@ public class ProTerritoryValueUtils {
     return value;
   }
 
-  public Map<Territory, Double> findTerritoryValues(final PlayerID player,
+  public static Map<Territory, Double> findTerritoryValues(final PlayerID player,
       final List<Territory> territoriesThatCantBeHeld, final List<Territory> territoriesToAttack) {
     final GameData data = ProData.getData();
     final List<Territory> allTerritories = data.getMap().getTerritories();
@@ -221,7 +221,7 @@ public class ProTerritoryValueUtils {
     return territoryValueMap;
   }
 
-  public Map<Territory, Double> findSeaTerritoryValues(final PlayerID player,
+  public static Map<Territory, Double> findSeaTerritoryValues(final PlayerID player,
       final List<Territory> territoriesThatCantBeHeld) {
     final GameData data = ProData.getData();
     final List<Territory> allTerritories = data.getMap().getTerritories();
