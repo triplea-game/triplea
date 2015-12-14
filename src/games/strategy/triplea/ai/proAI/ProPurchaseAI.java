@@ -14,7 +14,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.data.ProBattleResult;
-import games.strategy.triplea.ai.proAI.data.ProMoveOptions;
+import games.strategy.triplea.ai.proAI.data.ProOtherMoveOptions;
 import games.strategy.triplea.ai.proAI.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseOption;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseOptionMap;
@@ -468,7 +468,7 @@ public class ProPurchaseAI {
     this.startOfTurnData = startOfTurnData;
     player = ProData.getPlayer();
     resourceTracker = new ProResourceTracker(player);
-    territoryManager = new ProTerritoryManager(attackOptionsUtils);
+    territoryManager = new ProTerritoryManager(transportUtils);
     final ProPurchaseOptionMap purchaseOptions = ProData.purchaseOptions;
 
     ProLogger.info("Starting purchase phase with resources: " + resourceTracker);
@@ -808,7 +808,7 @@ public class ProPurchaseAI {
 
     data = ProData.getData();
     player = ProData.getPlayer();
-    territoryManager = new ProTerritoryManager(attackOptionsUtils);
+    territoryManager = new ProTerritoryManager(transportUtils);
 
     if (purchaseTerritories != null) {
 
@@ -917,7 +917,7 @@ public class ProPurchaseAI {
 
     ProLogger.info("Prioritize territories to defend with isLand=" + isLand);
 
-    final ProMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
+    final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
 
     // Determine which territories need defended
     final Set<ProPlaceTerritory> needToDefendTerritories = new HashSet<ProPlaceTerritory>();
@@ -1029,7 +1029,7 @@ public class ProPurchaseAI {
     }
     ProLogger.info("Purchase defenders with resources: " + resourceTracker + ", isLand=" + isLand);
 
-    final ProMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
+    final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
 
     // Loop through prioritized territories and purchase defenders
     for (final ProPlaceTerritory placeTerritory : needToDefendTerritories) {
@@ -1196,7 +1196,7 @@ public class ProPurchaseAI {
     }
     ProLogger.info("Purchase AA units with resources: " + resourceTracker);
 
-    final ProMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
+    final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
 
     // Loop through prioritized territories and purchase AA units
     for (final ProPlaceTerritory placeTerritory : prioritizedLandTerritories) {
@@ -1386,7 +1386,7 @@ public class ProPurchaseAI {
     }
     ProLogger.info("Purchase factory with resources: " + resourceTracker + ", hasExtraPUs=" + hasExtraPUs);
 
-    final ProMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
+    final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
 
     // Only try to purchase a factory if all production was used in prioritized land territories
     for (final ProPlaceTerritory placeTerritory : prioritizedLandTerritories) {
@@ -1545,7 +1545,7 @@ public class ProPurchaseAI {
 
     ProLogger.info("Prioritize sea territories");
 
-    final ProMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
+    final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
 
     // Determine which sea territories can be placed in
     final Set<ProPlaceTerritory> seaPlaceTerritories = new HashSet<ProPlaceTerritory>();
@@ -1620,7 +1620,7 @@ public class ProPurchaseAI {
     }
     ProLogger.info("Purchase sea and amphib units with resources: " + resourceTracker);
 
-    final ProMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
+    final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
 
     // Loop through prioritized territories and purchase sea units
     for (final ProPlaceTerritory placeTerritory : prioritizedSeaTerritories) {
@@ -2332,7 +2332,7 @@ public class ProPurchaseAI {
 
     ProLogger.info("Place defenders with units=" + player.getUnits().getUnits());
 
-    final ProMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
+    final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
 
     // Loop through prioritized territories and purchase defenders
     for (final ProPlaceTerritory placeTerritory : needToDefendTerritories) {

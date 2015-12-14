@@ -15,17 +15,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ProMoveOptions {
+public class ProOtherMoveOptions {
 
   private final Map<Territory, ProTerritory> maxMoveMap;
   private final Map<Territory, List<ProTerritory>> moveMaps;
 
-  public ProMoveOptions() {
+  public ProOtherMoveOptions() {
     maxMoveMap = new HashMap<Territory, ProTerritory>();
     moveMaps = new HashMap<Territory, List<ProTerritory>>();
   }
 
-  public ProMoveOptions(final List<Map<Territory, ProTerritory>> moveMapList, final PlayerID player,
+  public ProOtherMoveOptions(final List<Map<Territory, ProTerritory>> moveMapList, final PlayerID player,
       final boolean isAttacker) {
     maxMoveMap = createMaxMoveMap(moveMapList, player, isAttacker);
     moveMaps = createMoveMaps(moveMapList);

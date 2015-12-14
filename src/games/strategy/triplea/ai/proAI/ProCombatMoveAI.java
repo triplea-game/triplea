@@ -8,7 +8,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.data.ProBattleResult;
-import games.strategy.triplea.ai.proAI.data.ProMoveOptions;
+import games.strategy.triplea.ai.proAI.data.ProOtherMoveOptions;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseOption;
 import games.strategy.triplea.ai.proAI.data.ProTerritory;
 import games.strategy.triplea.ai.proAI.data.ProTerritoryManager;
@@ -72,7 +72,7 @@ public class ProCombatMoveAI {
     // Current data at the start of combat move
     data = ProData.getData();
     player = ProData.getPlayer();
-    territoryManager = new ProTerritoryManager(attackOptionsUtils);
+    territoryManager = new ProTerritoryManager(transportUtils);
 
     // Determine whether capital is threatened and I should be in a defensive stance
     isDefensive = !ProBattleUtils.territoryHasLocalLandSuperiority(ProData.myCapital, 3, player);
@@ -119,7 +119,7 @@ public class ProCombatMoveAI {
 
     // Get all transport final territories
     ProMoveUtils.calculateAmphibRoutes(player, new ArrayList<Collection<Unit>>(), new ArrayList<Route>(),
-        new ArrayList<Collection<Unit>>(), territoryManager.getTerritoryMap(), true);
+        new ArrayList<Collection<Unit>>(), territoryManager.getAttackOptions().getTerritoryMap(), true);
 
     // Determine max enemy counter attack units and remove territories where transports are exposed
     removeTerritoriesWhereTransportsAreExposed();
@@ -133,7 +133,7 @@ public class ProCombatMoveAI {
     checkContestedSeaTerritories();
 
     // Calculate attack routes and perform moves
-    doMove(territoryManager.getTerritoryMap(), moveDel, data, player, isSimulation);
+    doMove(territoryManager.getAttackOptions().getTerritoryMap(), moveDel, data, player, isSimulation);
 
     // Set strafing territories to avoid retreats
     ai.setStoredStrafingTerritories(territoryManager.getStrafingTerritories());
@@ -143,7 +143,7 @@ public class ProCombatMoveAI {
     ProLogger.info("Logging results");
     logAttackMoves(attackOptions);
 
-    return territoryManager.getTerritoryMap();
+    return territoryManager.getAttackOptions().getTerritoryMap();
   }
 
   public void doMove(final Map<Territory, ProTerritory> attackMap, final IMoveDelegate moveDel, final GameData data,
@@ -338,7 +338,7 @@ public class ProCombatMoveAI {
 
         // If already used all transports then remove any remaining amphib territories
         if (!haveRemovedAllAmphibTerritories) {
-          if (territoryManager.haveUsedAllTransports()) {
+          if (territoryManager.haveUsedAllAttackTransports()) {
             final List<ProTerritory> amphibTerritoriesToRemove = new ArrayList<ProTerritory>();
             for (int i = numToAttack; i < prioritizedTerritories.size(); i++) {
               if (prioritizedTerritories.get(i).isNeedAmphibUnits()) {
@@ -373,7 +373,8 @@ public class ProCombatMoveAI {
 
     ProLogger.info("Check if we should try to hold attack territories");
 
-    final ProMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
+    final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
+    final Map<Territory, ProTerritory> attackMap = territoryManager.getAttackOptions().getTerritoryMap();
 
     // Determine which territories to try and hold
     for (final ProTerritory patd : prioritizedTerritories) {
@@ -409,7 +410,7 @@ public class ProCombatMoveAI {
       final double averageValue = totalValue / nonAirAttackers.size() * 0.75;
       final double territoryValue = territoryValueMap.get(t) * (1 + 4 * isFactory);
       if (!t.isWater() && territoryValue < averageValue) {
-        territoryManager.get(t).setCanHold(false);
+        attackMap.get(t).setCanHold(false);
         ProLogger.debug(t + ", CanHold=false, value=" + territoryValueMap.get(t) + ", averageAttackFromValue="
             + averageValue);
         continue;
@@ -441,7 +442,7 @@ public class ProCombatMoveAI {
                 + ", EnemyTUVSwing=" + result2.getTUVSwing() + ", hasLandUnitRemaining="
                 + result2.isHasLandUnitRemaining());
       } else {
-        territoryManager.get(t).setCanHold(true);
+        attackMap.get(t).setCanHold(true);
         ProLogger.debug(t + ", CanHold=true since no enemy counter attackers, value=" + territoryValueMap.get(t)
             + ", averageAttackFromValue=" + averageValue);
       }
@@ -451,7 +452,7 @@ public class ProCombatMoveAI {
   private void removeTerritoriesThatArentWorthAttacking(final List<ProTerritory> prioritizedTerritories) {
     ProLogger.info("Remove territories that aren't worth attacking");
 
-    final ProMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
+    final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
 
     // Loop through all prioritized territories
     for (final Iterator<ProTerritory> it = prioritizedTerritories.iterator(); it.hasNext();) {
@@ -534,7 +535,7 @@ public class ProCombatMoveAI {
 
     ProLogger.info("Determine which territories to defend with one land unit");
 
-    final Map<Unit, Set<Territory>> unitMoveMap = territoryManager.getUnitMoveMap();
+    final Map<Unit, Set<Territory>> unitMoveMap = territoryManager.getAttackOptions().getUnitMoveMap();
 
     // Get list of territories to attack
     final List<Territory> territoriesToAttack = new ArrayList<Territory>();
@@ -575,8 +576,8 @@ public class ProCombatMoveAI {
 
     ProLogger.info("Remove territories where transports are exposed");
 
-    final Map<Territory, ProTerritory> attackMap = territoryManager.getTerritoryMap();
-    final ProMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
+    final Map<Territory, ProTerritory> attackMap = territoryManager.getAttackOptions().getTerritoryMap();
+    final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
 
     // Find maximum defenders for each transport territory
     final List<Territory> clearedTerritories = new ArrayList<Territory>();
@@ -585,15 +586,8 @@ public class ProCombatMoveAI {
         clearedTerritories.add(t);
       }
     }
-    final Match<Territory> myUnitTerritoriesMatch =
-        Matches.territoryHasUnitsThatMatch(ProMatches.unitCanBeMovedAndIsOwned(player));
-    final List<Territory> myUnitTerritories = Match.getMatches(data.getMap().getTerritories(), myUnitTerritoriesMatch);
-    final Map<Territory, ProTerritory> moveMap = new HashMap<Territory, ProTerritory>();
-    final Map<Unit, Set<Territory>> unitMoveMap = new HashMap<Unit, Set<Territory>>();
-    final Map<Unit, Set<Territory>> transportMoveMap = new HashMap<Unit, Set<Territory>>();
-    final List<ProTransport> transportMapList = new ArrayList<ProTransport>();
-    attackOptionsUtils.findDefendOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap,
-        transportMapList, clearedTerritories, false);
+    territoryManager.populateDefenseOptions(clearedTerritories);
+    final Map<Territory, ProTerritory> defendMap = territoryManager.getDefendOptions().getTerritoryMap();
 
     // Remove units that have already attacked
     final Set<Unit> alreadyAttackedWithUnits = new HashSet<Unit>();
@@ -601,8 +595,8 @@ public class ProCombatMoveAI {
       alreadyAttackedWithUnits.addAll(attackMap.get(t).getUnits());
       alreadyAttackedWithUnits.addAll(attackMap.get(t).getAmphibAttackMap().keySet());
     }
-    for (final Territory t : moveMap.keySet()) {
-      moveMap.get(t).getMaxUnits().removeAll(alreadyAttackedWithUnits);
+    for (final Territory t : defendMap.keySet()) {
+      defendMap.get(t).getMaxUnits().removeAll(alreadyAttackedWithUnits);
     }
 
     // Loop through all prioritized territories
@@ -645,8 +639,8 @@ public class ProCombatMoveAI {
             final Set<Unit> defenders =
                 new HashSet<Unit>(unloadTerritory.getUnits().getMatches(ProMatches.unitIsAlliedNotOwned(player, data)));
             defenders.addAll(territoryTransportAndBombardMap.get(unloadTerritory));
-            if (moveMap.get(unloadTerritory) != null) {
-              defenders.addAll(moveMap.get(unloadTerritory).getMaxUnits());
+            if (defendMap.get(unloadTerritory) != null) {
+              defenders.addAll(defendMap.get(unloadTerritory).getMaxUnits());
             }
             final ProBattleResult result =
                 ProBattleUtils.calculateBattleResults(player, unloadTerritory,
@@ -698,9 +692,9 @@ public class ProCombatMoveAI {
 
     ProLogger.info("Determine units to attack each territory with");
 
-    final Map<Territory, ProTerritory> attackMap = territoryManager.getTerritoryMap();
-    final ProMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
-    final Map<Unit, Set<Territory>> unitAttackMap = territoryManager.getUnitMoveMap();
+    final Map<Territory, ProTerritory> attackMap = territoryManager.getAttackOptions().getTerritoryMap();
+    final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
+    final Map<Unit, Set<Territory>> unitAttackMap = territoryManager.getAttackOptions().getUnitMoveMap();
 
     // Assign units to territories by prioritization
     while (true) {
@@ -949,12 +943,12 @@ public class ProCombatMoveAI {
   private Map<Unit, Set<Territory>> tryToAttackTerritories(final List<ProTerritory> prioritizedTerritories,
       final List<Unit> alreadyMovedUnits) {
 
-    final Map<Territory, ProTerritory> attackMap = territoryManager.getTerritoryMap();
-    final ProMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
-    final Map<Unit, Set<Territory>> unitAttackMap = territoryManager.getUnitMoveMap();
-    final Map<Unit, Set<Territory>> transportAttackMap = territoryManager.getTransportMoveMap();
-    final Map<Unit, Set<Territory>> bombardMap = territoryManager.getBombardMap();
-    final List<ProTransport> transportMapList = territoryManager.getTransportList();
+    final Map<Territory, ProTerritory> attackMap = territoryManager.getAttackOptions().getTerritoryMap();
+    final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
+    final Map<Unit, Set<Territory>> unitAttackMap = territoryManager.getAttackOptions().getUnitMoveMap();
+    final Map<Unit, Set<Territory>> transportAttackMap = territoryManager.getAttackOptions().getTransportMoveMap();
+    final Map<Unit, Set<Territory>> bombardMap = territoryManager.getAttackOptions().getBombardMap();
+    final List<ProTransport> transportMapList = territoryManager.getAttackOptions().getTransportList();
 
     // Reset lists
     for (final Territory t : attackMap.keySet()) {
@@ -1429,7 +1423,7 @@ public class ProCombatMoveAI {
 
     ProLogger.info("Determine if capital can be held");
 
-    final Map<Territory, ProTerritory> attackMap = territoryManager.getTerritoryMap();
+    final Map<Territory, ProTerritory> attackMap = territoryManager.getAttackOptions().getTerritoryMap();
 
     final Territory myCapital = ProData.myCapital;
 
@@ -1451,7 +1445,7 @@ public class ProCombatMoveAI {
       final List<Territory> territoriesToCheck = new ArrayList<Territory>();
       territoriesToCheck.add(myCapital);
       territoryManager.populateEnemyAttackOptions(territoriesToAttack, territoriesToCheck);
-      final ProMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
+      final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
       if (enemyAttackOptions.getMax(myCapital) == null) {
         break;
       }
@@ -1515,7 +1509,7 @@ public class ProCombatMoveAI {
 
   private void checkContestedSeaTerritories() {
 
-    final Map<Territory, ProTerritory> attackMap = territoryManager.getTerritoryMap();
+    final Map<Territory, ProTerritory> attackMap = territoryManager.getAttackOptions().getTerritoryMap();
 
     for (final Territory t : ProData.myUnitTerritories) {
       if (t.isWater() && Matches.territoryHasEnemyUnits(player, data).match(t)
@@ -1542,7 +1536,7 @@ public class ProCombatMoveAI {
 
   private void logAttackMoves(final List<ProTerritory> prioritizedTerritories) {
 
-    final Map<Territory, ProTerritory> attackMap = territoryManager.getTerritoryMap();
+    final Map<Territory, ProTerritory> attackMap = territoryManager.getAttackOptions().getTerritoryMap();
 
     // Print prioritization
     ProLogger.debug("Prioritized territories:");
