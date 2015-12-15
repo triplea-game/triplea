@@ -8,7 +8,7 @@ import games.strategy.triplea.ai.proAI.data.ProBattleResult;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
-import games.strategy.triplea.ai.proAI.util.ProMoveOptionsUtils;
+import games.strategy.triplea.ai.proAI.util.ProSortMoveOptionsUtils;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.IBattle;
@@ -30,18 +30,12 @@ import java.util.Set;
  */
 public class ProScrambleAI {
 
-  private final ProMoveOptionsUtils attackOptionsUtils;
-
-  public ProScrambleAI(final ProMoveOptionsUtils attackOptionsUtils) {
-    this.attackOptionsUtils = attackOptionsUtils;
-  }
-
   public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
 
     // Get battle data
     final GameData data = ProData.getData();
-    final PlayerID player = ProData.getProAI().getPlayerID();
+    final PlayerID player = ProData.getPlayer();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(scrambleTo, false, BattleType.NORMAL);
 
@@ -111,7 +105,7 @@ public class ProScrambleAI {
 
     // Sort units by number of defend options and cost
     final Map<Unit, Set<Territory>> sortedUnitDefendOptions =
-        attackOptionsUtils.sortUnitMoveOptions(player, unitDefendOptions);
+        ProSortMoveOptionsUtils.sortUnitMoveOptions(player, unitDefendOptions);
 
     // Add one scramble unit at a time and check if final result is better than min result
     final List<Unit> unitsToScramble = new ArrayList<Unit>();

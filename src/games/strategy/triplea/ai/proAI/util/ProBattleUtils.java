@@ -5,7 +5,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.ai.proAI.data.ProBattleResult;
@@ -22,7 +21,6 @@ import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.ConcurrentOddsCalculator;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
-import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
@@ -37,18 +35,23 @@ import java.util.Set;
  */
 public class ProBattleUtils {
 
-  // If non-static, then only need 1 for the entire AI instance and must be shutdown when AI is gc'ed.
+  public final static int SHORT_RANGE = 2;
+  public final static int MEDIUM_RANGE = 3;
+
   private final static IOddsCalculator calc = new ConcurrentOddsCalculator("ProAI");
   private static boolean isCanceled = false;
 
   public static void setData(final GameData data) {
-    // Is static, set to null so that we don't keep the data around after a game is exited
     calc.setGameData(data);
   }
 
-  public static void cancel() {
-    calc.cancel(); // cancel any current calcing
+  public static void cancelCalcs() {
+    calc.cancel();
     isCanceled = true;
+  }
+
+  public static void clearData() {
+    calc.setGameData(null);
   }
 
   public static boolean checkForOverwhelmingWin(final PlayerID player, final Territory t,
@@ -66,10 +69,9 @@ public class ProBattleUtils {
     }
 
     // Determine if enough attack power to win in 1 round
-    final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
     final List<Unit> sortedUnitsList = new ArrayList<Unit>(attackingUnits);
     Collections.sort(sortedUnitsList,
-        new UnitBattleComparator(false, playerCostMap, TerritoryEffectHelper.getEffects(t), data, false, false));
+        new UnitBattleComparator(false, ProData.unitValueMap, TerritoryEffectHelper.getEffects(t), data, false, false));
     Collections.reverse(sortedUnitsList);
     final int attackPower =
         DiceRoll.getTotalPowerAndRolls(
@@ -117,10 +119,10 @@ public class ProBattleUtils {
 
     final List<Unit> unitsThatCanFight =
         Match.getMatches(myUnits, Matches.UnitCanBeInBattle(attacking, !t.isWater(), data, 1, false, true, true));
-    final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
     final List<Unit> sortedUnitsList = new ArrayList<Unit>(unitsThatCanFight);
     Collections.sort(sortedUnitsList,
-        new UnitBattleComparator(!attacking, playerCostMap, TerritoryEffectHelper.getEffects(t), data, false, false));
+        new UnitBattleComparator(!attacking, ProData.unitValueMap, TerritoryEffectHelper.getEffects(t), data, false,
+            false));
     Collections.reverse(sortedUnitsList);
     final int myPower =
         DiceRoll.getTotalPowerAndRolls(
@@ -142,7 +144,7 @@ public class ProBattleUtils {
     if (strengthDifference < 45) {
       return new ProBattleResult(0, -999, false, new ArrayList<Unit>(), defendingUnits, 1);
     }
-    return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits, true);
+    return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits);
   }
 
   public static ProBattleResult estimateDefendBattleResults(final PlayerID player, final Territory t,
@@ -160,7 +162,7 @@ public class ProBattleUtils {
       return new ProBattleResult(100 + strengthDifference, 999 + strengthDifference, !isLandAndCanOnlyBeAttackedByAir,
           attackingUnits, new ArrayList<Unit>(), 1);
     }
-    return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits, false);
+    return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits);
   }
 
   public static ProBattleResult calculateBattleResults(final PlayerID player, final Territory t,
@@ -171,7 +173,7 @@ public class ProBattleUtils {
     if (result != null) {
       return result;
     }
-    return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits, isAttacker);
+    return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits);
   }
 
   private static ProBattleResult checkIfNoAttackersOrDefenders(final Territory t, final List<Unit> attackingUnits,
@@ -195,38 +197,33 @@ public class ProBattleUtils {
 
 
   public static ProBattleResult callBattleCalculator(final PlayerID player, final Territory t,
-      final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits,
-      final boolean isAttacker) {
-    return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits, isAttacker, false);
+      final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits) {
+    return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits, false);
   }
 
   public static ProBattleResult callBattleCalculator(final PlayerID player, final Territory t,
       final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits,
-      final boolean isAttacker, final boolean retreatWhenOnlyAirLeft) {
+      final boolean retreatWhenOnlyAirLeft) {
+    final GameData data = ProData.getData();
 
-    if (isCanceled) {
+    if (isCanceled || attackingUnits.isEmpty() || defendingUnits.isEmpty()) {
       return new ProBattleResult();
     }
-    final GameData data = ProData.getData();
 
     // Use battle calculator (hasLandUnitRemaining is always true for naval territories)
     AggregateResults results = null;
     final int minArmySize = Math.min(attackingUnits.size(), defendingUnits.size());
     final int runCount = Math.max(16, 100 - minArmySize);
-    if (isAttacker) {
-      if (retreatWhenOnlyAirLeft) {
-        calc.setRetreatWhenOnlyAirLeft(true);
-      }
-      results =
-          calc.setCalculateDataAndCalculate(player, t.getOwner(), t, attackingUnits, defendingUnits,
-              new ArrayList<Unit>(bombardingUnits), TerritoryEffectHelper.getEffects(t), runCount);
-      if (retreatWhenOnlyAirLeft) {
-        calc.setRetreatWhenOnlyAirLeft(false);
-      }
-    } else {
-      results =
-          calc.setCalculateDataAndCalculate(attackingUnits.get(0).getOwner(), player, t, attackingUnits,
-              defendingUnits, new ArrayList<Unit>(bombardingUnits), TerritoryEffectHelper.getEffects(t), runCount);
+    final PlayerID attacker = attackingUnits.get(0).getOwner();
+    final PlayerID defender = defendingUnits.get(0).getOwner();
+    if (retreatWhenOnlyAirLeft) {
+      calc.setRetreatWhenOnlyAirLeft(true);
+    }
+    results =
+        calc.setCalculateDataAndCalculate(attacker, defender, t, attackingUnits, defendingUnits, new ArrayList<Unit>(
+            bombardingUnits), TerritoryEffectHelper.getEffects(t), runCount);
+    if (retreatWhenOnlyAirLeft) {
+      calc.setRetreatWhenOnlyAirLeft(false);
     }
 
     // Find battle result statistics
@@ -237,19 +234,18 @@ public class ProBattleUtils {
         Match.getMatches(attackingUnits, Matches.UnitCanBeInBattle(true, !t.isWater(), data, 1, false, true, true));
     final List<Unit> mainCombatDefenders =
         Match.getMatches(defendingUnits, Matches.UnitCanBeInBattle(false, !t.isWater(), data, 1, false, true, true));
-    double TUVswing = results.getAverageTUVswing(player, mainCombatAttackers, t.getOwner(), mainCombatDefenders, data);
-    if (isAttacker && Matches.TerritoryIsNeutralButNotWater.match(t)) // Set TUV swing for neutrals
+    double TUVswing = results.getAverageTUVswing(attacker, mainCombatAttackers, defender, mainCombatDefenders, data);
+    if (Matches.TerritoryIsNeutralButNotWater.match(t)) // Set TUV swing for neutrals
     {
-      final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
-      final double attackingUnitValue = BattleCalculator.getTUV(mainCombatAttackers, playerCostMap);
-      final double remainingUnitValue = results.getAverageTUVofUnitsLeftOver(playerCostMap, playerCostMap).getFirst();
+      final double attackingUnitValue = BattleCalculator.getTUV(mainCombatAttackers, ProData.unitValueMap);
+      final double remainingUnitValue =
+          results.getAverageTUVofUnitsLeftOver(ProData.unitValueMap, ProData.unitValueMap).getFirst();
       TUVswing = remainingUnitValue - attackingUnitValue;
     }
     final List<Unit> defendingTransportedUnits = Match.getMatches(defendingUnits, Matches.unitIsBeingTransported());
     if (t.isWater() && !defendingTransportedUnits.isEmpty()) // Add TUV swing for transported units
     {
-      final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
-      final double transportedUnitValue = BattleCalculator.getTUV(defendingTransportedUnits, playerCostMap);
+      final double transportedUnitValue = BattleCalculator.getTUV(defendingTransportedUnits, ProData.unitValueMap);
       TUVswing += transportedUnitValue * winPercentage / 100;
     }
 

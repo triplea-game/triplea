@@ -3,15 +3,11 @@ package games.strategy.triplea.ai.proAI;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.BasicPoliticalAI;
-import games.strategy.triplea.ai.proAI.data.ProMoveOptions;
 import games.strategy.triplea.ai.proAI.data.ProTerritory;
-import games.strategy.triplea.ai.proAI.data.ProTransport;
+import games.strategy.triplea.ai.proAI.data.ProTerritoryManager;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
-import games.strategy.triplea.ai.proAI.util.ProMoveOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.DelegateFinder;
@@ -26,25 +22,19 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Pro politics AI.
  */
 public class ProPoliticsAI {
 
-  private final ProMoveOptionsUtils attackOptionsUtils;
-
-  public ProPoliticsAI(final ProMoveOptionsUtils attackOptionsUtils) {
-    this.attackOptionsUtils = attackOptionsUtils;
-  }
-
   public List<PoliticalActionAttachment> politicalActions() {
 
     final GameData data = ProData.getData();
-    final PlayerID player = ProData.getProAI().getPlayerID();
+    final PlayerID player = ProData.getPlayer();
     final float numPlayers = data.getPlayerList().getPlayers().size();
     final double round = data.getSequence().getRound();
+    final ProTerritoryManager territoryManager = new ProTerritoryManager();
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
     final List<PoliticalActionAttachment> results = new ArrayList<PoliticalActionAttachment>();
     ProLogger.info("Politics for " + player.getName());
@@ -95,21 +85,9 @@ public class ProPoliticsAI {
     if (!enemyMap.isEmpty()) {
 
       // Find all attack options
-      final Map<Territory, ProTerritory> attackMap = new HashMap<Territory, ProTerritory>();
-      final Map<Unit, Set<Territory>> unitAttackMap = new HashMap<Unit, Set<Territory>>();
-      final Map<Unit, Set<Territory>> transportAttackMap = new HashMap<Unit, Set<Territory>>();
-      final Map<Unit, Set<Territory>> bombardMap = new HashMap<Unit, Set<Territory>>();
-      final List<ProTransport> transportMapList = new ArrayList<ProTransport>();
-      final Map<Territory, Set<Territory>> landRoutesMap = new HashMap<Territory, Set<Territory>>();
-      final List<Territory> myUnitTerritories =
-          Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
-      attackOptionsUtils.findPotentialAttackOptions(player, myUnitTerritories, attackMap, unitAttackMap,
-          transportAttackMap, bombardMap, landRoutesMap, transportMapList);
-      final List<ProTerritory> prioritizedTerritories =
-          attackOptionsUtils.removeTerritoriesThatCantBeConquered(player, attackMap, unitAttackMap, transportAttackMap,
-              new ProMoveOptions(), new ProMoveOptions(), true);
-      ProLogger.trace(player.getName() + ", numAttackOptions=" + prioritizedTerritories.size() + ", options="
-          + prioritizedTerritories);
+      territoryManager.populatePotentialAttackOptions();
+      final List<ProTerritory> attackOptions = territoryManager.removePotentialTerritoriesThatCantBeConquered();
+      ProLogger.trace(player.getName() + ", numAttackOptions=" + attackOptions.size() + ", options=" + attackOptions);
 
       // Find attack options per war action
       final Map<PoliticalActionAttachment, Double> attackPercentageMap =
@@ -117,13 +95,13 @@ public class ProPoliticsAI {
       for (final PoliticalActionAttachment action : enemyMap.keySet()) {
         int count = 0;
         final List<PlayerID> enemyPlayers = enemyMap.get(action);
-        for (final ProTerritory patd : prioritizedTerritories) {
+        for (final ProTerritory patd : attackOptions) {
           if (Matches.isTerritoryOwnedBy(enemyPlayers).match(patd.getTerritory())
               || Matches.territoryHasUnitsThatMatch(Matches.unitOwnedBy(enemyPlayers)).match(patd.getTerritory())) {
             count++;
           }
         }
-        final double attackPercentage = count / (prioritizedTerritories.size() + 1.0);
+        final double attackPercentage = count / (attackOptions.size() + 1.0);
         attackPercentageMap.put(action, attackPercentage);
         ProLogger.trace(enemyPlayers + ", count=" + count + ", attackPercentage=" + attackPercentage);
       }

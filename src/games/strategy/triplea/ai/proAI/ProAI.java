@@ -21,11 +21,8 @@ import games.strategy.triplea.ai.proAI.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.ai.proAI.simulate.ProSimulateTurnUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
-import games.strategy.triplea.ai.proAI.util.ProMoveOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
-import games.strategy.triplea.ai.proAI.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
-import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.ai.strongAI.SUtils;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -65,11 +62,6 @@ public class ProAI extends AbstractAI {
 
   private final static Logger s_logger = Logger.getLogger(ProAI.class.getName());
 
-  // Utilities
-  private final ProTransportUtils transportUtils;
-  private final ProMoveOptionsUtils attackOptionsUtils;
-  private final ProTerritoryValueUtils territoryValueUtils;
-
   // Phases
   private final ProCombatMoveAI combatMoveAI;
   private final ProNonCombatMoveAI nonCombatMoveAI;
@@ -78,7 +70,7 @@ public class ProAI extends AbstractAI {
   private final ProScrambleAI scrambleAI;
   private final ProPoliticsAI politicsAI;
 
-  // Data
+  // Data shared across phases
   private Map<Territory, ProTerritory> storedCombatMoveMap;
   private Map<Territory, ProTerritory> storedFactoryMoveMap;
   private Map<Territory, ProPurchaseTerritory> storedPurchaseTerritories;
@@ -87,26 +79,25 @@ public class ProAI extends AbstractAI {
 
   public ProAI(final String name, final String type) {
     super(name, type);
-    transportUtils = new ProTransportUtils();
-    attackOptionsUtils = new ProMoveOptionsUtils(transportUtils);
-    territoryValueUtils = new ProTerritoryValueUtils();
-    combatMoveAI = new ProCombatMoveAI(this, transportUtils, attackOptionsUtils, territoryValueUtils);
-    nonCombatMoveAI = new ProNonCombatMoveAI(transportUtils, attackOptionsUtils, territoryValueUtils);
-    purchaseAI = new ProPurchaseAI(transportUtils, attackOptionsUtils, territoryValueUtils);
+    combatMoveAI = new ProCombatMoveAI(this);
+    nonCombatMoveAI = new ProNonCombatMoveAI();
+    purchaseAI = new ProPurchaseAI();
     retreatAI = new ProRetreatAI();
-    scrambleAI = new ProScrambleAI(attackOptionsUtils);
-    politicsAI = new ProPoliticsAI(attackOptionsUtils);
+    scrambleAI = new ProScrambleAI();
+    politicsAI = new ProPoliticsAI();
     storedCombatMoveMap = null;
+    storedFactoryMoveMap = null;
     storedPurchaseTerritories = null;
+    storedPoliticalActions = null;
     storedStrafingTerritories = new ArrayList<Territory>();
   }
 
-  public static void Initialize(final TripleAFrame frame) {
-    ProLogUI.initialize(frame); // Must be done first
+  public static void initialize(final TripleAFrame frame) {
+    ProLogUI.initialize(frame);
     ProLogger.info("Initialized Hard AI");
   }
 
-  public static void ShowSettingsWindow() {
+  public static void showSettingsWindow() {
     ProLogger.info("Showing Hard AI settings window");
     ProLogUI.showSettingsWindow();
   }
@@ -116,24 +107,23 @@ public class ProAI extends AbstractAI {
   }
 
   public static void gameOverClearCache() {
-    // Is static, set to null so that we don't keep the data around after a game is exited
-    ProBattleUtils.setData(null);
+    // Are static, clear so that we don't keep the data around after a game is exited
+    ProBattleUtils.clearData();
     ProLogUI.clearCachedInstances();
   }
 
   @Override
   public void stopGame() {
     super.stopGame(); // absolutely MUST call super.stopGame() first
-    ProBattleUtils.cancel(); // cancel any current calcing
+    ProBattleUtils.cancelCalcs();
+  }
+
+  private void initializeData() {
+    ProData.initialize(this);
   }
 
   public void setStoredStrafingTerritories(final List<Territory> strafingTerritories) {
     storedStrafingTerritories = strafingTerritories;
-  }
-
-  private void initializeData() {
-    ProData.setData(getGameData());
-    ProData.setProAI(this);
   }
 
   @Override
@@ -144,13 +134,13 @@ public class ProAI extends AbstractAI {
     initializeData();
     ProBattleUtils.setData(data);
     if (nonCombat) {
-      nonCombatMoveAI.doNonCombatMove(storedFactoryMoveMap, storedPurchaseTerritories, moveDel, data, player, false);
+      nonCombatMoveAI.doNonCombatMove(storedFactoryMoveMap, storedPurchaseTerritories, moveDel);
       storedFactoryMoveMap = null;
     } else {
       if (storedCombatMoveMap == null) {
-        combatMoveAI.doCombatMove(moveDel, data, player, false);
+        combatMoveAI.doCombatMove(moveDel);
       } else {
-        combatMoveAI.doMove(storedCombatMoveMap, moveDel, data, player, false);
+        combatMoveAI.doMove(storedCombatMoveMap, moveDel, data, player);
         storedCombatMoveMap = null;
       }
     }
@@ -197,7 +187,6 @@ public class ProAI extends AbstractAI {
       } finally {
         data.releaseReadLock();
       }
-      ProData.setData(dataCopy);
       ProBattleUtils.setData(dataCopy);
       final PlayerID playerCopy = dataCopy.getPlayerList().getPlayerID(player.getName());
       final IMoveDelegate moveDel = DelegateFinder.moveDelegate(dataCopy);
@@ -212,7 +201,6 @@ public class ProAI extends AbstractAI {
 
       // Simulate the next phases until place/end of turn is reached then use simulated data for purchase
       final int nextStepIndex = dataCopy.getSequence().getStepIndex() + 1;
-      final Map<Unit, Territory> unitTerritoryMap = ProUtils.createUnitTerritoryMap(playerCopy);
       for (int i = nextStepIndex; i < gameSteps.size(); i++) {
         final GameStep step = gameSteps.get(i);
         if (!playerCopy.equals(step.getPlayerID())) {
@@ -223,25 +211,26 @@ public class ProAI extends AbstractAI {
         final String stepName = step.getName();
         ProLogger.info("Simulating phase: " + stepName);
         if (stepName.endsWith("NonCombatMove")) {
-          final Map<Territory, ProTerritory> factoryMoveMap =
-              nonCombatMoveAI.doNonCombatMove(null, null, moveDel, dataCopy, playerCopy, true);
+          ProData.initializeSimulation(this, dataCopy, playerCopy);
+          final Map<Territory, ProTerritory> factoryMoveMap = nonCombatMoveAI.simulateNonCombatMove(moveDel);
           if (storedFactoryMoveMap == null) {
-            storedFactoryMoveMap =
-                ProSimulateTurnUtils.transferMoveMap(factoryMoveMap, unitTerritoryMap, dataCopy, data, player);
+            storedFactoryMoveMap = ProSimulateTurnUtils.transferMoveMap(factoryMoveMap, data, player);
           }
         } else if (stepName.endsWith("CombatMove") && !stepName.endsWith("AirborneCombatMove")) {
-          final Map<Territory, ProTerritory> moveMap = combatMoveAI.doCombatMove(moveDel, dataCopy, playerCopy, true);
+          ProData.initializeSimulation(this, dataCopy, playerCopy);
+          final Map<Territory, ProTerritory> moveMap = combatMoveAI.doCombatMove(moveDel);
           if (storedCombatMoveMap == null) {
-            storedCombatMoveMap =
-                ProSimulateTurnUtils.transferMoveMap(moveMap, unitTerritoryMap, dataCopy, data, player);
+            storedCombatMoveMap = ProSimulateTurnUtils.transferMoveMap(moveMap, data, player);
           }
         } else if (stepName.endsWith("Battle")) {
+          ProData.initializeSimulation(this, dataCopy, playerCopy);
           ProSimulateTurnUtils.simulateBattles(dataCopy, playerCopy, bridge);
         } else if (stepName.endsWith("Place") || stepName.endsWith("EndTurn")) {
-          storedPurchaseTerritories = purchaseAI.purchase(purchaseDelegate, dataCopy, data, player);
-          ProData.setData(data);
+          ProData.initializeSimulation(this, dataCopy, player);
+          storedPurchaseTerritories = purchaseAI.purchase(purchaseDelegate, data);
           break;
         } else if (stepName.endsWith("Politics")) {
+          ProData.initializeSimulation(this, dataCopy, player);
           final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(dataCopy);
           politicsDelegate.setDelegateBridgeAndPlayer(bridge);
           final List<PoliticalActionAttachment> actions = politicsAI.politicalActions();
@@ -264,7 +253,7 @@ public class ProAI extends AbstractAI {
     if (bid) {
       purchaseAI.bidPlace(placeDelegate, data, player);
     } else {
-      purchaseAI.place(storedPurchaseTerritories, placeDelegate, data, player);
+      purchaseAI.place(storedPurchaseTerritories, placeDelegate);
       storedPurchaseTerritories = null;
     }
     ProLogger.info(player.getName() + " time for place=" + (System.currentTimeMillis() - start));

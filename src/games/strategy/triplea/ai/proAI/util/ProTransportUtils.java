@@ -29,11 +29,7 @@ import java.util.Set;
  */
 public class ProTransportUtils {
 
-  public ProTransportUtils() {
-
-  }
-
-  public int findMaxMovementForTransports(final List<ProPurchaseOption> seaTransportPurchaseOptions) {
+  public static int findMaxMovementForTransports(final List<ProPurchaseOption> seaTransportPurchaseOptions) {
     int maxMovement = 2;
     final int maxTransportEfficiency = 0;
     for (final ProPurchaseOption ppo : seaTransportPurchaseOptions) {
@@ -44,7 +40,7 @@ public class ProTransportUtils {
     return maxMovement;
   }
 
-  public int findNumUnitsThatCanBeTransported(final PlayerID player, final Territory t) {
+  public static int findNumUnitsThatCanBeTransported(final PlayerID player, final Territory t) {
     final GameData data = ProData.getData();
     int numUnitsToLoad = 0;
     final Set<Territory> neighbors = data.getMap().getNeighbors(t, Matches.TerritoryIsLand);
@@ -55,7 +51,7 @@ public class ProTransportUtils {
     return numUnitsToLoad;
   }
 
-  public List<Unit> getUnitsToTransportThatCantMoveToHigherValue(final PlayerID player, final Unit transport,
+  public static List<Unit> getUnitsToTransportThatCantMoveToHigherValue(final PlayerID player, final Unit transport,
       final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore,
       final Map<Territory, ProTerritory> moveMap, final Map<Unit, Set<Territory>> unitMoveMap, final double value) {
 
@@ -86,14 +82,14 @@ public class ProTransportUtils {
         unitsToIgnoreOrHaveBetterLandMove);
   }
 
-  public List<Unit> getUnitsToTransportFromTerritories(final PlayerID player, final Unit transport,
+  public static List<Unit> getUnitsToTransportFromTerritories(final PlayerID player, final Unit transport,
       final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore) {
     return getUnitsToTransportFromTerritories(player, transport, territoriesToLoadFrom, unitsToIgnore,
         ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, true));
   }
 
   // TODO: this needs fixed to consider whether a valid route exists to load all units
-  public List<Unit> getUnitsToTransportFromTerritories(final PlayerID player, final Unit transport,
+  public static List<Unit> getUnitsToTransportFromTerritories(final PlayerID player, final Unit transport,
       final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore, final Match<Unit> validUnitMatch) {
     final List<Unit> selectedUnits = new ArrayList<Unit>();
 
@@ -141,7 +137,7 @@ public class ProTransportUtils {
     return selectedUnits;
   }
 
-  public List<Unit> selectUnitsToTransportFromList(final Unit transport, final List<Unit> units) {
+  public static List<Unit> selectUnitsToTransportFromList(final Unit transport, final List<Unit> units) {
     final List<Unit> selectedUnits = new ArrayList<Unit>();
     final int capacity = UnitAttachment.get(transport.getType()).getTransportCapacity();
     int capacityCount = 0;
@@ -158,7 +154,7 @@ public class ProTransportUtils {
     return selectedUnits;
   }
 
-  public int findUnitsTransportCost(final List<Unit> units) {
+  public static int findUnitsTransportCost(final List<Unit> units) {
     int transportCost = 0;
     for (final Unit unit : units) {
       transportCost += UnitAttachment.get(unit.getType()).getTransportCost();
@@ -166,7 +162,7 @@ public class ProTransportUtils {
     return transportCost;
   }
 
-  public List<Unit> getAirThatCantLandOnCarrier(final PlayerID player, final Territory t, final List<Unit> units) {
+  public static List<Unit> getAirThatCantLandOnCarrier(final PlayerID player, final Territory t, final List<Unit> units) {
     final GameData data = ProData.getData();
 
     int capacity = AirMovementValidator.carrierCapacity(units, t);
@@ -186,8 +182,8 @@ public class ProTransportUtils {
     return airThatCantLand;
   }
 
-  public boolean validateCarrierCapacity(final PlayerID player, final Territory t, final List<Unit> existingUnits,
-      final Unit newUnit) {
+  public static boolean validateCarrierCapacity(final PlayerID player, final Territory t,
+      final List<Unit> existingUnits, final Unit newUnit) {
     final GameData data = ProData.getData();
 
     int capacity = AirMovementValidator.carrierCapacity(existingUnits, t);
@@ -206,7 +202,8 @@ public class ProTransportUtils {
     return true;
   }
 
-  public int getUnusedLocalCarrierCapacity(final PlayerID player, final Territory t, final List<Unit> unitsToPlace) {
+  public static int getUnusedLocalCarrierCapacity(final PlayerID player, final Territory t,
+      final List<Unit> unitsToPlace) {
     final GameData data = ProData.getData();
 
     // Find nearby carrier capacity
@@ -236,7 +233,7 @@ public class ProTransportUtils {
     return capacity;
   }
 
-  public int getUnusedCarrierCapacity(final PlayerID player, final Territory t, final List<Unit> unitsToPlace) {
+  public static int getUnusedCarrierCapacity(final PlayerID player, final Territory t, final List<Unit> unitsToPlace) {
     final List<Unit> units = new ArrayList<Unit>(unitsToPlace);
     units.addAll(t.getUnits().getUnits());
     int capacity = AirMovementValidator.carrierCapacity(units, t);

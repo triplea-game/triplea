@@ -8,6 +8,7 @@ import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.ai.proAI.data.ProBattleResult;
 import games.strategy.triplea.ai.proAI.data.ProTerritory;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
@@ -58,7 +59,7 @@ public class ProSimulateTurnUtils {
         ProLogger.debug("defenders=" + defenders);
         ProLogger.debug("bombardingUnits=" + bombardingUnits);
         final ProBattleResult result =
-            ProBattleUtils.callBattleCalculator(player, t, attackers, defenders, bombardingUnits, true);
+            ProBattleUtils.callBattleCalculator(player, t, attackers, defenders, bombardingUnits);
         final List<Unit> remainingUnits = result.getAverageAttackersRemaining();
         ProLogger.debug("remainingUnits=" + remainingUnits);
 
@@ -88,9 +89,11 @@ public class ProSimulateTurnUtils {
   }
 
   public static Map<Territory, ProTerritory> transferMoveMap(final Map<Territory, ProTerritory> moveMap,
-      final Map<Unit, Territory> unitTerritoryMap, final GameData fromData, final GameData toData, final PlayerID player) {
+      final GameData toData, final PlayerID player) {
 
     ProLogger.info("Transferring move map");
+
+    final Map<Unit, Territory> unitTerritoryMap = ProData.unitTerritoryMap;
 
     final Map<Territory, ProTerritory> result = new HashMap<Territory, ProTerritory>();
     final List<Unit> usedUnits = new ArrayList<Unit>();
