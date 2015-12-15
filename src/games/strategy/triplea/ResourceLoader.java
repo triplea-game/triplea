@@ -100,8 +100,8 @@ public class ResourceLoader {
       ClassLoaderUtil.closeLoader(url);
       if (dependencesURL != null) {
         final java.util.Properties dependenciesFile = new java.util.Properties();
-        final InputStream stream = dependencesURL.openStream();
-        try {
+
+        try (final InputStream stream = dependencesURL.openStream()) {
           dependenciesFile.load(stream);
           final String dependencies = dependenciesFile.getProperty("dependencies");
           final StringTokenizer tokens = new StringTokenizer(dependencies, ",", false);
@@ -109,8 +109,6 @@ public class ResourceLoader {
             // add the dependencies recursivly
             rVal.addAll(getPaths(tokens.nextToken(), allowNoneFound));
           }
-        } finally {
-          stream.close();
         }
       }
     } catch (final Exception e) {

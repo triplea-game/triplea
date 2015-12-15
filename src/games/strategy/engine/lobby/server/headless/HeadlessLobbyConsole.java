@@ -129,8 +129,7 @@ public class HeadlessLobbyConsole {
   }
 
   private void executeSql(final String sql) {
-    final Connection con = Database.getConnection();
-    try {
+    try (final Connection con = Database.getConnection()) {
       final Statement ps = con.createStatement();
       if (DBExplorerPanel.isNotQuery(sql)) {
         final int rs = ps.executeUpdate(sql);
@@ -143,19 +142,11 @@ public class HeadlessLobbyConsole {
     } catch (final SQLException sqle) {
       sqle.printStackTrace();
       out.println(sqle.getMessage());
-    } finally {
-      try {
-        con.close();
-      } catch (final SQLException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
     }
   }
 
   private void print(final ResultSet rs) {
-    try {
-      final Formatter f = new Formatter(out);
+    try (final Formatter f = new Formatter(out)) {
       final String itemFormat = "%20s ";
       f.format(itemFormat, "Count");
       final int count = rs.getMetaData().getColumnCount();

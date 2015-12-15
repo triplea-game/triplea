@@ -67,8 +67,7 @@ public class DBExplorerPanel extends JPanel {
   }
 
   private void execute() {
-    final Connection con = Database.getConnection();
-    try {
+    try (final Connection con = Database.getConnection()) {
       String sql = m_sql.getSelectedText();
       if (sql == null || sql.length() == 0) {
         sql = m_sql.getText();
@@ -89,13 +88,6 @@ public class DBExplorerPanel extends JPanel {
       }
     } catch (final SQLException sqle) {
       sqle.printStackTrace();
-    } finally {
-      try {
-        con.close();
-      } catch (final SQLException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
     }
   }
 

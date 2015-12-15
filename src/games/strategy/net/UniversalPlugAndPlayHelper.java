@@ -93,9 +93,7 @@ public class UniversalPlugAndPlayHelper {
     final int internalPort = m_port;
     boolean connection = false;
     // boolean bytes = false;
-    ServerSocket ss = null;
-    try {
-      ss = new ServerSocket(internalPort);
+    try (ServerSocket ss = new ServerSocket(internalPort)) {
       ss.setSoTimeout(5000);
       try {
         final Socket s = ss.accept();
@@ -108,21 +106,12 @@ public class UniversalPlugAndPlayHelper {
       } catch (final SocketTimeoutException stoe) {
         System.out.println("Connection Test Timed Out. Port Forward may still work anyway.");
         return "Connection Test Timed Out. Port Forward may still work anyway.";
-      } finally {
-        ss.close();
       }
     } catch (final IOException e) {
       System.out.println("Connection Test Timed Out. Port Forward may still work anyway. \r\n " + e.getMessage());
       return "Connection Test Timed Out. Port Forward may still work anyway. \r\n " + e.getMessage();
-    } finally {
-      if (ss != null) {
-        try {
-          ss.close();
-        } catch (final IOException e) {
-          e.printStackTrace();
-        }
-      }
     }
+
     if (!connection) {
       System.out.println("Connection Test Timed Out. Port Forward may still work anyway.");
       return "Connection Test Timed Out. Port Forward may still work anyway.";

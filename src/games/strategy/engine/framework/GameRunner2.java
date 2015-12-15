@@ -448,22 +448,10 @@ public class GameRunner2 {
     final Properties rVal = new Properties();
     final File systemIni = new File(GameRunner2.getRootFolder(), SYSTEM_INI);
     if (systemIni != null && systemIni.exists()) {
-      FileInputStream fis = null;
-      try {
-        fis = new FileInputStream(systemIni);
+      try (FileInputStream fis = new FileInputStream(systemIni)) {
         rVal.load(fis);
-        // rVal.loadFromXML(fis);
-      } catch (final FileNotFoundException e) {
-        e.printStackTrace();
       } catch (final IOException e) {
-        e.printStackTrace();
-      } finally {
-        if (fis != null) {
-          try {
-            fis.close();
-          } catch (final IOException e) {
-          }
-        }
+        ClientLogger.logQuietly(e);
       }
     }
     return rVal;
@@ -479,21 +467,13 @@ public class GameRunner2 {
         toWrite.put(entry.getKey(), entry.getValue());
       }
     }
-    FileOutputStream fos = null;
-    try {
-      final File systemIni = new File(GameRunner2.getRootFolder(), SYSTEM_INI);
-      fos = new FileOutputStream(systemIni);
+
+    final File systemIni = new File(GameRunner2.getRootFolder(), SYSTEM_INI);
+
+    try (FileOutputStream fos = new FileOutputStream(systemIni)) {
       toWrite.store(fos, SYSTEM_INI);
-      // toWrite.storeToXML(fos, SYSTEM_INI);
     } catch (final IOException e) {
-      e.printStackTrace();
-    } finally {
-      if (fos != null) {
-        try {
-          fos.close();
-        } catch (final IOException e) {
-        }
-      }
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -509,12 +489,10 @@ public class GameRunner2 {
       proxyPortArgument = System.getProperty(HTTP_PROXYPORT);
     }
     // arguments should override and set user preferences
-    // host
     String proxyHost = null;
     if (proxyHostArgument != null && proxyHostArgument.trim().length() > 0) {
       proxyHost = proxyHostArgument;
     }
-    // port
     String proxyPort = null;
     if (proxyPortArgument != null && proxyPortArgument.trim().length() > 0) {
       try {
@@ -582,13 +560,9 @@ public class GameRunner2 {
         pref.flush();
         pref.sync();
       } catch (final BackingStoreException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
-    /*
-     * System.out.println(System.getProperty(HTTP_PROXYHOST));
-     * System.out.println(System.getProperty(HTTP_PROXYPORT));
-     */
   }
 
   private static void setToUseSystemProxies() {

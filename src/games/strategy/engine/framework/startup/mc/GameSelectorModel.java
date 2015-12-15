@@ -147,14 +147,8 @@ public class GameSelectorModel extends Observable {
     try {
       // if the file name is xml, load it as a new game
       if (file.getName().toLowerCase().endsWith("xml")) {
-        FileInputStream fis = null;
-        try {
-          fis = new FileInputStream(file);
+        try (FileInputStream fis = new FileInputStream(file)) {
           newData = (new GameParser()).parse(fis, gameName, false);
-        } finally {
-          if (fis != null) {
-            fis.close();
-          }
         }
       }
       // the extension should be tsvg, but

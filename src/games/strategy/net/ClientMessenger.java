@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.message.HubInvoke;
@@ -296,20 +297,11 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
     }
     // Create the byte array to hold the data
     final byte[] bytes = new byte[(int) length];
-    InputStream is = null;
-    try {
-      is = new FileInputStream(file);
+    try (InputStream is = new FileInputStream(file)) {
       is.read(bytes);
     } catch (final IOException e) {
-      e.printStackTrace();
-    } finally {
-      // Close the input stream and return bytes
-      if (is != null) {
-        try {
-          is.close();
-        } catch (final IOException e) {
-        }
-      }
+      ClientLogger.logQuietly("Failed to read file: " + file);
+      ClientLogger.logQuietly(e);
     }
     return bytes;
   }

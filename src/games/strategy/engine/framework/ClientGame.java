@@ -215,21 +215,11 @@ public class ClientGame extends AbstractGame {
   public void saveGame(final File f) {
     final IServerRemote server = (IServerRemote) m_remoteMessenger.getRemote(ServerGame.SERVER_REMOTE);
     final byte[] bytes = server.getSavedGame();
-    FileOutputStream fout = null;
-    try {
-      fout = new FileOutputStream(f);
+    try (FileOutputStream fout = new FileOutputStream(f)) {
       fout.write(bytes);
     } catch (final IOException e) {
       e.printStackTrace();
       throw new IllegalStateException(e.getMessage());
-    } finally {
-      if (fout != null) {
-        try {
-          fout.close();
-        } catch (final IOException e) {
-          e.printStackTrace();
-        }
-      }
     }
   }
 }

@@ -45,10 +45,9 @@ public class ProLogSettings implements Serializable {
 
   public static void saveSettings(final ProLogSettings settings) {
     s_lastSettings = settings;
-    ObjectOutputStream outputStream = null;
-    try {
-      final ByteArrayOutputStream pool = new ByteArrayOutputStream(10000);
-      outputStream = new ObjectOutputStream(pool);
+    try (final ByteArrayOutputStream pool = new ByteArrayOutputStream(10000);
+        ObjectOutputStream outputStream = new ObjectOutputStream(pool);) {
+
       outputStream.writeObject(settings);
       final Preferences prefs = Preferences.userNodeForPackage(ProAI.class);
       prefs.putByteArray(PROGRAM_SETTINGS, pool.toByteArray());
@@ -59,14 +58,6 @@ public class ProLogSettings implements Serializable {
       }
     } catch (final Exception ex) {
       ex.printStackTrace();
-    } finally {
-      try {
-        if (outputStream != null) {
-          outputStream.close();
-        }
-      } catch (final Exception ex) {
-        ex.printStackTrace();
-      }
     }
   }
 }

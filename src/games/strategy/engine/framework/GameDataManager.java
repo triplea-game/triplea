@@ -41,9 +41,9 @@ public class GameDataManager {
   public GameDataManager() {}
 
   public GameData loadGame(final File savedGameFile) throws IOException {
-    InputStream input = null;
-    try {
-      input = new BufferedInputStream(new FileInputStream(savedGameFile));
+    try (
+        FileInputStream fileInputStream = new FileInputStream(savedGameFile);
+        InputStream input = new BufferedInputStream(fileInputStream)) {
       String path;
       try {
         path = savedGameFile.getCanonicalPath();
@@ -51,13 +51,6 @@ public class GameDataManager {
         path = savedGameFile.getPath();
       }
       return loadGame(input, path);
-    } finally {
-      try {
-        if (input != null) {
-          input.close();
-        }
-      } catch (final Exception e) {
-      }
     }
   }
 
@@ -217,19 +210,10 @@ public class GameDataManager {
   }
 
   public void saveGame(final File destination, final GameData data) throws IOException {
-    BufferedOutputStream out = null;
-    try {
-      final OutputStream fileStream = new FileOutputStream(destination);
-      out = new BufferedOutputStream(fileStream);
+    try (final OutputStream fileStream = new FileOutputStream(destination);
+        BufferedOutputStream out = new BufferedOutputStream(fileStream);) {
+
       saveGame(fileStream, data);
-    } finally {
-      try {
-        if (out != null) {
-          out.close();
-        }
-      } catch (final Exception e) {
-        e.printStackTrace();
-      }
     }
   }
 
@@ -254,11 +238,10 @@ public class GameDataManager {
     } finally {
       data.releaseReadLock();
     }
-    final GZIPOutputStream zippedOut = new GZIPOutputStream(sink);
-    // now write to file
-    zippedOut.write(bytes.toByteArray());
-    zippedOut.flush();
-    zippedOut.close();
+    try (final GZIPOutputStream zippedOut = new GZIPOutputStream(sink)) {
+      // now write to file
+      zippedOut.write(bytes.toByteArray());
+    }
   }
 
   private void writeDelegates(final GameData data, final ObjectOutputStream out) throws IOException {

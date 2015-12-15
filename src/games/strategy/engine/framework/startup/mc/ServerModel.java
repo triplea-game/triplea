@@ -331,19 +331,14 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     @Override
     public byte[] getSaveGame() {
       System.out.println("Sending save game");
-      final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000);
+
       byte[] bytes = null;
-      try {
+      try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000)) {
         new GameDataManager().saveGame(sink, m_data);
         bytes = sink.toByteArray();
       } catch (final IOException e) {
         e.printStackTrace();
         throw new IllegalStateException(e);
-      } finally {
-        try {
-          sink.close();
-        } catch (final IOException e) {
-        }
       }
       return bytes;
     }
@@ -356,18 +351,12 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         return bytes;
       }
       final List<IEditableProperty> currentEditableProperties = m_data.getProperties().getEditableProperties();
-      final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000);
-      try {
+
+      try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000)) {
         GameProperties.toOutputStream(sink, currentEditableProperties);
         bytes = sink.toByteArray();
       } catch (final IOException e) {
         e.printStackTrace();
-        // throw new IllegalStateException(e);
-      } finally {
-        try {
-          sink.close();
-        } catch (final IOException e) {
-        }
       }
       return bytes;
     }
@@ -425,29 +414,11 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         return;
       }
       System.out.println("Changing to user savegame: " + fileName);
-      ByteArrayInputStream input = null;
-      InputStream oinput = null;
-      try {
-        input = new ByteArrayInputStream(bytes);
-        oinput = new BufferedInputStream(input);
+      try (ByteArrayInputStream input = new ByteArrayInputStream(bytes);
+          InputStream oinput = new BufferedInputStream(input);) {
         headless.loadGameSave(oinput, fileName);
       } catch (final Exception e) {
         e.printStackTrace();
-      } finally {
-        if (input != null) {
-          try {
-            input.close();
-          } catch (final IOException e) {
-            e.printStackTrace();
-          }
-        }
-        if (oinput != null) {
-          try {
-            oinput.close();
-          } catch (final IOException e) {
-            e.printStackTrace();
-          }
-        }
       }
     }
 

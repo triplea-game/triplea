@@ -15,15 +15,13 @@ public class DBUserControllerTest extends TestCase {
     final DBUserController controller = new DBUserController();
     controller.createUser(name, email, password, false);
     assertTrue(controller.doesUserExist(name));
-    final Connection con = Database.getConnection();
-    try {
+
+    try (final Connection con = Database.getConnection()) {
       final String sql = " select * from TA_USERS where userName = '" + name + "'";
       final ResultSet rs = con.createStatement().executeQuery(sql);
       assertTrue(rs.next());
       assertEquals(email, rs.getString("email"));
       assertEquals(password, rs.getString("password"));
-    } finally {
-      con.close();
     }
   }
 
@@ -70,14 +68,12 @@ public class DBUserControllerTest extends TestCase {
     }
     loginTimeMustBeAfter = System.currentTimeMillis();
     assertTrue(controller.login(name, password));
-    final Connection con = Database.getConnection();
-    try {
+
+    try (final Connection con = Database.getConnection()) {
       final String sql = " select * from TA_USERS where userName = '" + name + "'";
       final ResultSet rs = con.createStatement().executeQuery(sql);
       assertTrue(rs.next());
       assertTrue(rs.getTimestamp("lastLogin").getTime() >= loginTimeMustBeAfter);
-    } finally {
-      con.close();
     }
     // make sure last login time was updated
   }
@@ -92,15 +88,12 @@ public class DBUserControllerTest extends TestCase {
     final String password2 = MD5Crypt.crypt("foo");
     final String email2 = "foo@foo.foo";
     controller.updateUser(name, email2, password2, false);
-    final Connection con = Database.getConnection();
-    try {
+    try (final Connection con = Database.getConnection()) {
       final String sql = " select * from TA_USERS where userName = '" + name + "'";
       final ResultSet rs = con.createStatement().executeQuery(sql);
       assertTrue(rs.next());
       assertEquals(email2, rs.getString("email"));
       assertEquals(password2, rs.getString("password"));
-    } finally {
-      con.close();
     }
   }
 }

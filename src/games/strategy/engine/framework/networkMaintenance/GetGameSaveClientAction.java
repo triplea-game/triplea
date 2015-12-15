@@ -30,20 +30,10 @@ public class GetGameSaveClientAction extends AbstractAction {
     final File f = BasicGameMenuBar.getSaveGameLocationDialog(frame);
     if (f != null) {
       final byte[] bytes = m_serverRemote.getSaveGame();
-      FileOutputStream fout = null;
-      try {
-        fout = new FileOutputStream(f);
+      try (FileOutputStream fout = new FileOutputStream(f)) {
         fout.write(bytes);
       } catch (final IOException exception) {
         exception.printStackTrace();
-      } finally {
-        if (fout != null) {
-          try {
-            fout.close();
-          } catch (final IOException exception) {
-            exception.printStackTrace();
-          }
-        }
       }
       JOptionPane.showMessageDialog(frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
     }

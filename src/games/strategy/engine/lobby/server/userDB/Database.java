@@ -241,8 +241,7 @@ public class Database {
       return;
     }
     s_logger.log(Level.INFO, "Backing up database to " + backupDir.getAbsolutePath());
-    final Connection con = getConnection();
-    try {
+    try (final Connection con = getConnection()) {
       // http://www-128.ibm.com/developerworks/db2/library/techarticle/dm-0502thalamati/
       final String sqlstmt = "CALL SYSCS_UTIL.SYSCS_BACKUP_DATABASE(?)";
       final CallableStatement cs = con.prepareCall(sqlstmt);
@@ -251,12 +250,6 @@ public class Database {
       cs.close();
     } catch (final Exception e) {
       s_logger.log(Level.SEVERE, "Could not back up database", e);
-    } finally {
-      try {
-        con.close();
-      } catch (final SQLException e) {
-        e.printStackTrace();
-      }
     }
     s_logger.log(Level.INFO, "Done backing up database");
   }

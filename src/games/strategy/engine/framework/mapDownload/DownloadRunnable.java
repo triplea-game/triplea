@@ -61,16 +61,11 @@ public class DownloadRunnable implements Runnable {
       error = "invalid url";
       return;
     }
-    InputStream stream;
-    try {
-      stream = url.openStream();
-      try {
-        final ByteArrayOutputStream sink = new ByteArrayOutputStream();
-        InstallMapDialog.copy(sink, stream);
-        contents = sink.toByteArray();
-      } finally {
-        stream.close();
-      }
+
+    try (InputStream stream = url.openStream();
+        ByteArrayOutputStream sink = new ByteArrayOutputStream()) {
+      InstallMapDialog.copy(sink, stream);
+      contents = sink.toByteArray();
     } catch (final Exception e) {
       error = e.getMessage();
     }
