@@ -1116,7 +1116,7 @@ public class ProPurchaseAI {
 
       // Check to see if its worth trying to defend the territory
       final boolean hasLocalSuperiority =
-          ProBattleUtils.territoryHasLocalLandSuperiority(t, 2, player, purchaseTerritories);
+          ProBattleUtils.territoryHasLocalLandSuperiority(t, ProBattleUtils.SHORT_RANGE, player, purchaseTerritories);
       if (!finalResult.isHasLandUnitRemaining()
           || (finalResult.getTUVSwing() - resourceTracker.getTempPUs(data) / 2) < placeTerritory.getMinBattleResult()
               .getTUVSwing() || t.equals(ProData.myCapital) || (!t.isWater() && hasLocalSuperiority)) {
@@ -1152,7 +1152,8 @@ public class ProPurchaseAI {
           final int numNearbyEnemyTerritories =
               Match.countMatches(nearbyLandTerritories,
                   Matches.isTerritoryOwnedBy(ProUtils.getPotentialEnemyPlayers(player)));
-          final boolean hasLocalLandSuperiority = ProBattleUtils.territoryHasLocalLandSuperiority(t, 2, player);
+          final boolean hasLocalLandSuperiority =
+              ProBattleUtils.territoryHasLocalLandSuperiority(t, ProBattleUtils.SHORT_RANGE, player);
           if (hasEnemyNeighbors || numNearbyEnemyTerritories >= 3 || !hasLocalLandSuperiority) {
             prioritizedLandTerritories.add(placeTerritory);
           }
@@ -1434,7 +1435,8 @@ public class ProPurchaseAI {
     if (!hasExtraPUs) {
       for (final Iterator<Territory> it = purchaseFactoryTerritories.iterator(); it.hasNext();) {
         final Territory t = it.next();
-        if (!ProBattleUtils.territoryHasLocalLandSuperiority(t, 3, player, purchaseTerritories)) {
+        if (!ProBattleUtils.territoryHasLocalLandSuperiority(t, ProBattleUtils.MEDIUM_RANGE, player,
+            purchaseTerritories)) {
           it.remove();
         }
       }

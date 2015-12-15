@@ -35,6 +35,9 @@ import java.util.Set;
  */
 public class ProBattleUtils {
 
+  public final static int SHORT_RANGE = 2;
+  public final static int MEDIUM_RANGE = 3;
+
   private final static IOddsCalculator calc = new ConcurrentOddsCalculator("ProAI");
   private static boolean isCanceled = false;
 

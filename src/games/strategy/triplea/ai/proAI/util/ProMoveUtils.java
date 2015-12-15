@@ -272,7 +272,7 @@ public class ProMoveUtils {
   }
 
   public static void doMove(final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
-      final List<Collection<Unit>> transportsToLoad, final IMoveDelegate moveDel, final boolean isSimulation) {
+      final List<Collection<Unit>> transportsToLoad, final IMoveDelegate moveDel) {
 
     final GameData data = ProData.getData();
 
@@ -295,7 +295,7 @@ public class ProMoveUtils {
 
     // Move units
     for (int i = 0; i < moveRoutes.size(); i++) {
-      if (!isSimulation) {
+      if (!ProData.isSimulation) {
         ProUtils.pause();
       }
       if (moveRoutes.get(i) == null || moveRoutes.get(i).getEnd() == null || moveRoutes.get(i).getStart() == null) {

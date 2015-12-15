@@ -59,9 +59,12 @@ public class ProNonCombatMoveAI {
   private Map<Unit, Territory> unitTerritoryMap;
   private ProTerritoryManager territoryManager;
 
+  public Map<Territory, ProTerritory> simulateNonCombatMove(final IMoveDelegate moveDel) {
+    return doNonCombatMove(null, null, moveDel);
+  }
+
   public Map<Territory, ProTerritory> doNonCombatMove(Map<Territory, ProTerritory> factoryMoveMap,
-      final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final IMoveDelegate moveDel,
-      final boolean isSimulation) {
+      final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final IMoveDelegate moveDel) {
     ProLogger.info("Starting non-combat move phase");
 
     // Current data at the start of non-combat move
@@ -153,7 +156,7 @@ public class ProNonCombatMoveAI {
     }
 
     // Calculate move routes and perform moves
-    doMove(territoryManager.getDefendOptions().getTerritoryMap(), moveDel, data, player, isSimulation);
+    doMove(territoryManager.getDefendOptions().getTerritoryMap(), moveDel, data, player);
 
     // Log results
     ProLogger.info("Logging results");
@@ -163,7 +166,7 @@ public class ProNonCombatMoveAI {
   }
 
   public void doMove(final Map<Territory, ProTerritory> moveMap, final IMoveDelegate moveDel, final GameData data,
-      final PlayerID player, final boolean isSimulation) {
+      final PlayerID player) {
 
     this.data = data;
     this.player = player;
@@ -172,14 +175,14 @@ public class ProNonCombatMoveAI {
     final List<Collection<Unit>> moveUnits = new ArrayList<Collection<Unit>>();
     final List<Route> moveRoutes = new ArrayList<Route>();
     ProMoveUtils.calculateMoveRoutes(player, moveUnits, moveRoutes, moveMap, false);
-    ProMoveUtils.doMove(moveUnits, moveRoutes, null, moveDel, isSimulation);
+    ProMoveUtils.doMove(moveUnits, moveRoutes, null, moveDel);
 
     // Calculate amphib move routes and perform moves
     moveUnits.clear();
     moveRoutes.clear();
     final List<Collection<Unit>> transportsToLoad = new ArrayList<Collection<Unit>>();
     ProMoveUtils.calculateAmphibRoutes(player, moveUnits, moveRoutes, transportsToLoad, moveMap, false);
-    ProMoveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel, isSimulation);
+    ProMoveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
   }
 
   private void findUnitsThatCantMove(final Map<Territory, ProPurchaseTerritory> purchaseTerritories,

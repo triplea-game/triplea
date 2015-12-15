@@ -30,6 +30,7 @@ public class ProData {
   private static PlayerID player;
 
   // Default values
+  public static boolean isSimulation = false;
   public static double winPercentage = 95;
   public static double minWinPercentage = 75;
   public static boolean areNeutralsPassableByAir = false;
@@ -40,10 +41,20 @@ public class ProData {
   public static ProPurchaseOptionMap purchaseOptions = null;
   public static double minCostPerHitPoint = Double.MAX_VALUE;
 
-  public static void initialize(final ProAI proAI, final GameData data, final PlayerID player) {
+  public static void initialize(final ProAI proAI) {
+    hiddenInitialize(proAI, proAI.getGameData(), proAI.getPlayerID(), false);
+  }
+
+  public static void initializeSimulation(final ProAI proAI, final GameData data, final PlayerID player) {
+    hiddenInitialize(proAI, data, player, true);
+  }
+
+  private static void hiddenInitialize(final ProAI proAI, final GameData data, final PlayerID player,
+      final boolean isSimulation) {
     ProData.proAI = proAI;
     ProData.data = data;
     ProData.player = player;
+    ProData.isSimulation = isSimulation;
 
     if (!games.strategy.triplea.Properties.getLow_Luck(data)) {
       winPercentage = 90;

@@ -788,14 +788,14 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
       }
     }
     if (areThereProAIs) {
-      ProAI.Initialize(m_frame);
+      ProAI.initialize(m_frame);
       parentMenu.addSeparator();
       parentMenu.add(new AbstractAction("Show Hard AI Logs") {
         private static final long serialVersionUID = 3457295609477283292L;
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-          ProAI.ShowSettingsWindow();
+          ProAI.showSettingsWindow();
         }
       }).setMnemonic(KeyEvent.VK_X);
       parentMenu.addSeparator();
