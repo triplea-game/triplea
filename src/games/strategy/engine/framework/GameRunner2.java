@@ -304,7 +304,7 @@ public class GameRunner2 {
     }
   }
 
-  public static String getDefaultLookAndFeel() {
+  private static String getDefaultLookAndFeel() {
     final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
     // substance 7.x
     String defaultLookAndFeel = "org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel";
@@ -710,7 +710,7 @@ public class GameRunner2 {
     }
   }
 
-  public static void checkForUpdates() {
+  private static void checkForUpdates() {
     final Thread t = new Thread(new Runnable() {
       @Override
       public void run() {

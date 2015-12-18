@@ -88,10 +88,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
     m_onOffense = value;
   }
 
-  private boolean get_onOffense() {
-    return m_onOffense;
-  }
-
   private void getEdition() {
     final GameData data = getPlayerBridge().getGameData();
     // m_AE = games.strategy.triplea.Properties.getWW2V3(data);

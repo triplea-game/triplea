@@ -10,9 +10,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
@@ -58,18 +56,6 @@ public class NewGameChooserModel extends DefaultListModel {
   @Override
   public NewGameChooserEntry get(final int i) {
     return (NewGameChooserEntry) super.get(i);
-  }
-
-  public static Collection<String> getDefaultMapNames() {
-    final Collection<String> rVal = new ArrayList<String>();
-    for (final File f : getDefaultMapsDir().listFiles()) {
-      if (f.getName().toLowerCase().endsWith(".zip")) {
-        rVal.add(f.getName().substring(0, f.getName().length() - ".zip".length()));
-      } else {
-        rVal.add(f.getName());
-      }
-    }
-    return rVal;
   }
 
   public static File getDefaultMapsDir() {

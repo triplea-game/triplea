@@ -121,7 +121,7 @@ public class UnitType extends NamedAttachable implements Serializable {
     return rVal;
   }
 
-  public static List<UnitType> getPlayerUnitsWithImages(final PlayerID player, final GameData data,
+  private static List<UnitType> getPlayerUnitsWithImages(final PlayerID player, final GameData data,
       final IUIContext uiContext) {
     final ArrayList<UnitType> rVal = new ArrayList<UnitType>();
     data.acquireReadLock();

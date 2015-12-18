@@ -33,10 +33,6 @@ public class UniversalPlugAndPlayHelper {
     m_port = port;
   }
 
-  public static UniversalPlugAndPlayHelper getLastInstance() {
-    return s_lastInstance;
-  }
-
   public static boolean attemptAddingPortForwarding(final Component parent, final int port) {
     final UniversalPlugAndPlayHelper upnpHelper = new UniversalPlugAndPlayHelper(port);
     final JTextArea textArea = new JTextArea();

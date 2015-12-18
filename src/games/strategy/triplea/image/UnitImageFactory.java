@@ -190,7 +190,7 @@ public class UnitImageFactory {
     return icon;
   }
 
-  public static String getBaseImageName(final UnitType type, final PlayerID id, final GameData data,
+  private static String getBaseImageName(final UnitType type, final PlayerID id, final GameData data,
       final boolean damaged, final boolean disabled) {
     StringBuilder name = new StringBuilder(32);
     name.append(type.getName());

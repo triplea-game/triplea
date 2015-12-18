@@ -216,7 +216,7 @@ public class Database {
    * @param backupDir
    * @throws SQLException
    */
-  public static void restoreFromBackup(final File backupDir) throws SQLException {
+  private static void restoreFromBackup(final File backupDir) throws SQLException {
     // http://www-128.ibm.com/developerworks/db2/library/techarticle/dm-0502thalamati/
     final String url = "jdbc:derby:ta_users;restoreFrom=" + backupDir.getAbsolutePath();
     final Properties props = getDbProps();
@@ -254,7 +254,7 @@ public class Database {
     s_logger.log(Level.INFO, "Done backing up database");
   }
 
-  public static File getBackupDir() {
+  private static File getBackupDir() {
     return new File(getDBRoot(), "backups");
   }
 

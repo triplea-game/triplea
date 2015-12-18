@@ -142,7 +142,7 @@ public class Unit extends GameDataComponent implements Serializable {
   public static class UnitDeserializationErrorLazyMessage {
     private static transient boolean s_shownError = false;
 
-    public static void printError(final String errorMessage) {
+    private static void printError(final String errorMessage) {
       if (s_shownError == false) {
         s_shownError = true;
         System.err.println(errorMessage);

@@ -537,7 +537,7 @@ public class EditPanel extends ActionPanel {
     Collections.sort(units, getRemovableUnitsOrder());
   }
 
-  public static Comparator<Unit> getRemovableUnitsOrder() {
+  private static Comparator<Unit> getRemovableUnitsOrder() {
     final Comparator<Unit> removableUnitsOrder = new Comparator<Unit>() {
       @Override
       public int compare(final Unit unit1, final Unit unit2) {

@@ -233,7 +233,7 @@ public class MacFinder {
     return macStringBuilder.toString();
   }
 
-  public static boolean isMacValid(final String mac) {
+  private static boolean isMacValid(final String mac) {
     if (mac == null) {
       return false;
     }

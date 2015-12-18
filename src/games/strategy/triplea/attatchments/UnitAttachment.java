@@ -63,7 +63,7 @@ public class UnitAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  public static Collection<UnitType> getUnitTypesFromUnitList(final Collection<Unit> units) {
+  private static Collection<UnitType> getUnitTypesFromUnitList(final Collection<Unit> units) {
     final Collection<UnitType> types = new ArrayList<UnitType>();
     for (final Unit u : units) {
       if (!types.contains(u.getType())) {
@@ -1043,7 +1043,7 @@ public class UnitAttachment extends DefaultAttachment {
     m_receivesAbilityWhenWith = new ArrayList<String>();
   }
 
-  public static IntegerMap<Tuple<String, String>> getReceivesAbilityWhenWithMap(final Collection<Unit> units,
+  private static IntegerMap<Tuple<String, String>> getReceivesAbilityWhenWithMap(final Collection<Unit> units,
       final String filterForAbility, final GameData data) {
     final IntegerMap<Tuple<String, String>> map = new IntegerMap<Tuple<String, String>>();
     final Collection<UnitType> canReceive =

@@ -351,7 +351,7 @@ public class ServerLauncher extends AbstractLauncher {
     m_serverGame.addObserver(blockingObserver, nonBlockingObserver, newNode);
   }
 
-  public static byte[] gameDataToBytes(final GameData data) throws IOException {
+  private static byte[] gameDataToBytes(final GameData data) throws IOException {
     final ByteArrayOutputStream sink = new ByteArrayOutputStream(25000);
     new GameDataManager().saveGame(sink, data);
     sink.flush();

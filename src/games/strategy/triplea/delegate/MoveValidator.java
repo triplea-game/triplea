@@ -817,7 +817,7 @@ public class MoveValidator {
     return validMove;
   }
 
-  public static boolean enemyDestroyerOnPath(final Route route, final PlayerID player, final GameData data) {
+  private static boolean enemyDestroyerOnPath(final Route route, final PlayerID player, final GameData data) {
     final Match<Unit> enemyDestroyer =
         new CompositeMatchAnd<Unit>(Matches.UnitIsDestroyer, Matches.enemyUnit(player, data));
     for (final Territory current : route.getMiddleSteps()) {
@@ -832,7 +832,7 @@ public class MoveValidator {
     return BaseEditDelegate.getEditMode(data);
   }
 
-  public static boolean hasConqueredNonBlitzedNonWaterOnRoute(final Route route, final GameData data) {
+  private static boolean hasConqueredNonBlitzedNonWaterOnRoute(final Route route, final GameData data) {
     for (final Territory current : route.getMiddleSteps()) {
       if (!Matches.TerritoryIsWater.match(current) && AbstractMoveDelegate.getBattleTracker(data).wasConquered(current)
           && !AbstractMoveDelegate.getBattleTracker(data).wasBlitzed(current)) {
@@ -937,7 +937,7 @@ public class MoveValidator {
     return cost;
   }
 
-  public static Collection<Unit> getUnitsThatCantGoOnWater(final Collection<Unit> units) {
+  private static Collection<Unit> getUnitsThatCantGoOnWater(final Collection<Unit> units) {
     final Collection<Unit> retUnits = new ArrayList<Unit>();
     for (final Unit unit : units) {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
@@ -970,7 +970,7 @@ public class MoveValidator {
     return route.hasLand();
   }
 
-  public static Collection<Unit> getNonLand(final Collection<Unit> units) {
+  private static Collection<Unit> getNonLand(final Collection<Unit> units) {
     final CompositeMatch<Unit> match = new CompositeMatchOr<Unit>();
     match.add(Matches.UnitIsAir);
     match.add(Matches.UnitIsSea);
@@ -1007,20 +1007,6 @@ public class MoveValidator {
       least = Math.min(left, least);
     }
     return least;
-  }
-
-  public static int getTransportCapacityFree(final Territory territory, final PlayerID id, final GameData data,
-      final TransportTracker tracker) {
-    final Match<Unit> friendlyTransports =
-        new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.alliedUnit(id, data));
-    final Collection<Unit> transports = territory.getUnits().getMatches(friendlyTransports);
-    int sum = 0;
-    final Iterator<Unit> iter = transports.iterator();
-    while (iter.hasNext()) {
-      final Unit transport = iter.next();
-      sum += TransportTracker.getAvailableCapacity(transport);
-    }
-    return sum;
   }
 
   // Determines whether we can pay the neutral territory charge for a

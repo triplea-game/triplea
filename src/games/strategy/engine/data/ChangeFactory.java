@@ -69,10 +69,6 @@ public class ChangeFactory {
     return new PlayerOwnerChange(list, owner, location);
   }
 
-  public static Change changeUnitProduction(final Territory terr, final int value) {
-    return new ChangeUnitProduction(terr, value);
-  }
-
   public static Change addUnits(final Territory territory, final Collection<Unit> units) {
     return new AddUnits(territory.getUnits(), units);
   }
@@ -101,10 +97,6 @@ public class ChangeFactory {
     return new ProductionFrontierChange(frontier, player);
   }
 
-  public static Change changeProductionFrontierChange(final PlayerID player, final ProductionFrontier newFrontier) {
-    return new ProductionFrontierChange(newFrontier, player);
-  }
-
   public static Change changePlayerWhoAmIChange(final PlayerID player, final String humanOrAI_colon_playerName) {
     return new PlayerWhoAmIChange(humanOrAI_colon_playerName, player);
   }
@@ -113,7 +105,8 @@ public class ChangeFactory {
     return new ChangeResourceChange(player, resource, quantity);
   }
 
-  public static Change addResourceCollection(final PlayerID id, final ResourceCollection rCollection) {
+  /** TODO: unused code, kept per @veqryn */
+  private static Change addResourceCollection(final PlayerID id, final ResourceCollection rCollection) {
     final CompositeChange cChange = new CompositeChange();
     for (final Resource r : rCollection.getResourcesCopy().keySet()) {
       cChange.add(new ChangeResourceChange(id, r, rCollection.getQuantity(r)));
@@ -201,24 +194,8 @@ public class ChangeFactory {
     return new GenericTechChange(attachment, value, property);
   }
 
-  public static Change changeGameSteps(final GameSequence oldSequence, final GameStep[] newSteps) {
-    return new GameSequenceChange(oldSequence, newSteps);
-  }
-
   public static Change unitPropertyChange(final Unit unit, final Object newValue, final String propertyName) {
     return new ObjectPropertyChange(unit, propertyName, newValue);
-  }
-
-  public static Change addAttachmentChange(final IAttachment attachment, final Attachable attachable,
-      final String name) {
-    return new AddAttachmentChange(attachment, attachable, name);
-  }
-
-  public static Change addGridGameMapChange(final GameMap map, final String gridType, final String name, final int xs,
-      final int ys, final Set<String> water, final String horizontalConnections, final String verticalConnections,
-      final String diagonalConnections) {
-    return new AddGridGameMapChange(map, gridType, name, xs, ys, water, horizontalConnections, verticalConnections,
-        diagonalConnections);
   }
 
   public static Change addBattleRecords(final BattleRecords records, final GameData data) {
@@ -604,47 +581,6 @@ class PlayerOwnerChange extends Change {
     return "Some units change owners in territory " + m_location;
   }
 }
-
-
-/**
- * Changes unit production of a territory.
- */
-class ChangeUnitProduction extends Change {
-  private static final long serialVersionUID = -1485932997086849018L;
-  private final int m_unitProduction;
-  private final int m_old;
-  private final Territory m_location;
-
-  ChangeUnitProduction(final Territory terr, final int quantity, final int oldQuantity) {
-    m_location = terr;
-    m_unitProduction = quantity;
-    m_old = oldQuantity;
-  }
-
-  ChangeUnitProduction(final Territory terr, final int quantity) {
-    m_location = terr;
-    m_unitProduction = quantity;
-    m_old = TerritoryAttachment.get(terr).getUnitProduction();
-  }
-
-  @Override
-  public Change invert() {
-    return new ChangeUnitProduction(m_location, m_old, m_unitProduction);
-  }
-
-  @Override
-  protected void perform(final GameData data) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(m_location);
-    ta.setUnitProduction(m_unitProduction);
-    m_location.notifyChanged();
-  }
-
-  @Override
-  public String toString() {
-    return "Change unit production.  Quantity:" + m_unitProduction + " Territory:" + m_location;
-  }
-}
-
 
 /**
  * Adds/removes resource from a player.

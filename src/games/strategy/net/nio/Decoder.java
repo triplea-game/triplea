@@ -172,7 +172,7 @@ public class Decoder {
     return new MessageHeader(to, from, message);
   }
 
-  public static Externalizable getTemplate(final byte type) {
+  private static Externalizable getTemplate(final byte type) {
     switch (type) {
       case 1:
         return new HubInvoke();

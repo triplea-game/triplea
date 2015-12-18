@@ -93,7 +93,7 @@ public class DBExplorerPanel extends JPanel {
 
   private void setWidgetActivation() {}
 
-  public static TableModel createTableModel(final ResultSet rs) {
+  private static TableModel createTableModel(final ResultSet rs) {
     try {
       final DefaultTableModel model = new DefaultTableModel();
       final List<String> columnNames = new ArrayList<String>();

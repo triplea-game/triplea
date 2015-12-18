@@ -535,7 +535,7 @@ public class AirMovementValidator {
     return ownedAir;
   }
 
-  public static Comparator<Unit> getLowestToHighestMovementComparatorIncludingUnitsNotYetMoved(final Route route) {
+  private static Comparator<Unit> getLowestToHighestMovementComparatorIncludingUnitsNotYetMoved(final Route route) {
     return new Comparator<Unit>() {
       @Override
       public int compare(final Unit u1, final Unit u2) {
@@ -552,7 +552,7 @@ public class AirMovementValidator {
     };
   }
 
-  public static boolean canAirReachThisSpot(final GameData data, final PlayerID player, final Unit unit,
+  private static boolean canAirReachThisSpot(final GameData data, final PlayerID player, final Unit unit,
       final Territory currentSpot, final int movementLeft, final Territory landingSpot,
       final boolean areNeutralsPassableByAir) {
     if (areNeutralsPassableByAir) {
@@ -610,7 +610,7 @@ public class AirMovementValidator {
     return false;
   }
 
-  public static Match<Unit> UnitCanFindLand(final GameData data, final Territory current) {
+  private static Match<Unit> UnitCanFindLand(final GameData data, final Territory current) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {

@@ -51,7 +51,7 @@ public class TestUtil {
     }
   }
 
-  public static void closeFrame(JFrame frame) {
+  private static void closeFrame(JFrame frame) {
     frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
   }
 }

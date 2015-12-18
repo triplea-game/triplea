@@ -96,17 +96,6 @@ public class MovePanel extends AbstractMovePanel {
     m_currentCursorImage = null;
   }
 
-  // TODO: oh my fucking god this code is awefull. only the local computer has access to the UI. why the fuck did
-  // someone think they could
-  // do this?
-  // The host has no access to the client's UI, and therefore does not know what dependent units there are.
-  // TODO: rewrite this fucking garbage! None of this s_dependentUnits shit should be in the move panel! (fixed by
-  // sending a copy of this
-  // with the move details)
-  private static Map<Unit, Collection<Unit>> getDependents() {
-    return s_dependentUnits;
-  }
-
   // Same as above! Delete this crap after refactoring.
   public static void clearDependents(final Collection<Unit> units) {
     for (final Unit unit : units) {

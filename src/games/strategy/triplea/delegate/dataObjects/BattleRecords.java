@@ -63,20 +63,6 @@ public class BattleRecords extends GameDataComponent implements Serializable {
     return playerRecords;
   }
 
-  public static Collection<BattleRecord> getRecordsForPlayers(final Collection<PlayerID> players,
-      final BattleRecords brs) {
-    final Collection<BattleRecord> playersRecords = new ArrayList<BattleRecord>();
-    for (final PlayerID player : players) {
-      if (brs.m_records.get(player) == null) {
-        continue;
-      }
-      for (final Entry<GUID, BattleRecord> entry : brs.m_records.get(player).entrySet()) {
-        playersRecords.add(entry.getValue());
-      }
-    }
-    return playersRecords;
-  }
-
   public static int getLostTUVforBattleRecords(final Collection<BattleRecord> brs, final boolean attackerLostTUV,
       final boolean includeNullPlayer) {
     int totalLostTUV = 0;

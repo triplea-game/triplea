@@ -180,7 +180,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     }
   }
 
-  public static List<MapPropertyWrapper> createProperties(final Object object) {
+  private static List<MapPropertyWrapper> createProperties(final Object object) {
     final List<MapPropertyWrapper> properties = new ArrayList<MapPropertyWrapper>();
     for (final Method setter : object.getClass().getMethods()) {
       final boolean startsWithSet = setter.getName().startsWith("set");

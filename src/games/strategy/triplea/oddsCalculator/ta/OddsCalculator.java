@@ -328,7 +328,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     return true;
   }
 
-  public static List<Unit> getUnitListByOrderOfLoss(final String ool, final Collection<Unit> units, final GameData data) {
+  private static List<Unit> getUnitListByOrderOfLoss(final String ool, final Collection<Unit> units, final GameData data) {
     if (ool == null || ool.trim().length() == 0) {
       return null;
     }

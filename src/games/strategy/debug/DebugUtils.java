@@ -114,7 +114,7 @@ public class DebugUtils {
     return result.toString();
   }
 
-  public static String getOpenAppWindows() {
+  private static String getOpenAppWindows() {
     final StringBuilder builder = new StringBuilder("WINDOWS\n");
     for (final Frame f : Frame.getFrames()) {
       if (f.isVisible()) {

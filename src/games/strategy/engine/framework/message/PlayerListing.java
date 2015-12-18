@@ -101,14 +101,6 @@ public class PlayerListing implements Serializable {
     return m_gameRound;
   }
 
-  public static Map<String, Collection<String>> collectPlayerNamesAndAlliancesInTurnOrder(final GameData data) {
-    final LinkedHashMap<String, Collection<String>> map = new LinkedHashMap<String, Collection<String>>();
-    for (final PlayerID player : data.getPlayerList().getPlayers()) {
-      map.put(player.getName(), data.getAllianceTracker().getAlliancesPlayerIsIn(player));
-    }
-    return map;
-  }
-
   public Map<String, String> getLocalPlayerTypes() {
     return m_localPlayerTypes;
   }

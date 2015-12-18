@@ -468,7 +468,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
   /**
    * This has to be the exact same as Matches.UnitCanBeRepairedByFacilitiesInItsTerritory()
    */
-  public static int getLargestRepairRateForThisUnit(final Unit unitToBeRepaired, final Territory territoryUnitIsIn,
+  private static int getLargestRepairRateForThisUnit(final Unit unitToBeRepaired, final Territory territoryUnitIsIn,
       final GameData data) {
     if (!games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(data)) {
       return 1;
@@ -573,14 +573,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
         new CompositeMatchAnd<Territory>(Matches.TerritoryIsEmpty, Matches.TerritoryIsNeutralButNotWater);
     final Collection<Territory> neutral = route.getMatches(emptyNeutral);
     return neutral;
-  }
-
-  public static Change ensureCanMoveOneSpaceChange(final Unit unit) {
-    final int alreadyMoved = TripleAUnit.get(unit).getAlreadyMoved();
-    final int maxMovement = UnitAttachment.get(unit.getType()).getMovement(unit.getOwner());
-    final int bonusMovement = TripleAUnit.get(unit).getBonusMovement();
-    return ChangeFactory.unitPropertyChange(unit, Math.min(alreadyMoved, (maxMovement + bonusMovement) - 1),
-        TripleAUnit.ALREADY_MOVED);
   }
 
   private void removeAirThatCantLand() {

@@ -220,14 +220,6 @@ public class ClipPlayer {
     return clipPlayer.m_beSilent;
   }
 
-  public static boolean isSilencedClip(final String clipName) {
-    final ClipPlayer clipPlayer = getInstance();
-    if (clipPlayer == null || clipPlayer.m_beSilent || clipPlayer.isMuted(clipName)) {
-      return true;
-    }
-    return false;
-  }
-
   public boolean isMuted(final String clipName) {
     if (m_mutedClips.contains(clipName)) {
       return true;

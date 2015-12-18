@@ -31,7 +31,7 @@ public class DoubleProperty extends AEditableProperty {
     m_value = roundToPlace(def, numberOfPlaces, BigDecimal.ROUND_FLOOR);
   }
 
-  public static double roundToPlace(final double number, final int places, final int BigDecimalRoundingMode) {
+  private static double roundToPlace(final double number, final int places, final int BigDecimalRoundingMode) {
     BigDecimal bd = new BigDecimal(number);
     bd = bd.setScale(places, BigDecimalRoundingMode);
     return bd.doubleValue();

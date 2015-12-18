@@ -398,7 +398,7 @@ public class AutoPlacementFinder {
    * @param java
    *        .util.Collection shapes
    */
-  public static boolean containedIn(final Rectangle2D r, final Collection<Polygon> shapes) {
+  private static boolean containedIn(final Rectangle2D r, final Collection<Polygon> shapes) {
     for (final Shape item : shapes) {
       if (item.contains(r)) {
         return true;
@@ -418,7 +418,7 @@ public class AutoPlacementFinder {
    * @param java
    *        .util.Collection shapes
    */
-  public static boolean intersectsOneOf(final Rectangle2D r, final Collection<? extends Shape> shapes) {
+  private static boolean intersectsOneOf(final Rectangle2D r, final Collection<? extends Shape> shapes) {
     if (shapes.isEmpty()) {
       return false;
     }

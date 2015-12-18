@@ -128,7 +128,7 @@ public class TileImageReconstructor {
     createMap();
   }
 
-  public static void createMap() {
+  private static void createMap() {
     textOptionPane.show();
     final GraphicsConfiguration localGraphicSystem =
         GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();

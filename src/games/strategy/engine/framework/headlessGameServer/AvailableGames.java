@@ -153,7 +153,7 @@ public class AvailableGames {
     }
   }
 
-  public static boolean addToAvailableGames(final URI uri, final Map<String, URI> availableGames,
+  private static boolean addToAvailableGames(final URI uri, final Map<String, URI> availableGames,
       final Set<String> mapNamePropertyList) {
     if (uri == null) {
       return false;
@@ -190,7 +190,7 @@ public class AvailableGames {
     return false;
   }
 
-  public static String getGameXMLLocation(final URI uri) {
+  private static String getGameXMLLocation(final URI uri) {
     if (uri == null) {
       return null;
     }
@@ -205,7 +205,7 @@ public class AvailableGames {
     return raw;
   }
 
-  public static GameData getGameDataFromXML(final URI uri) {
+  private static GameData getGameDataFromXML(final URI uri) {
     if (uri == null) {
       return null;
     }

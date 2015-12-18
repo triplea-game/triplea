@@ -71,11 +71,11 @@ public final class TileImageFactory {
     return s_showMapBlends;
   }
 
-  public static String getShowMapBlendMode() {
+  private static String getShowMapBlendMode() {
     return s_showMapBlendMode.toUpperCase();
   }
 
-  public static float getShowMapBlendAlpha() {
+  private static float getShowMapBlendAlpha() {
     return s_showMapBlendAlpha;
   }
 
@@ -359,12 +359,12 @@ public final class TileImageFactory {
     return this.composite;
   }
 
-  public static BufferedImage loadCompatibleImage(final URL resource) throws IOException {
+  private static BufferedImage loadCompatibleImage(final URL resource) throws IOException {
     final BufferedImage image = ImageIO.read(resource);
     return toCompatibleImage(image);
   }
 
-  public static BufferedImage toCompatibleImage(final BufferedImage image) {
+  private static BufferedImage toCompatibleImage(final BufferedImage image) {
     final BufferedImage compatibleImage =
         configuration.createCompatibleImage(image.getWidth(), image.getHeight(), Transparency.TRANSLUCENT);
     final Graphics g = compatibleImage.getGraphics();
@@ -554,7 +554,7 @@ class BlendComposite implements java.awt.Composite {
   static abstract class Blender {
     public abstract int[] blend(int[] src, int[] dst);
 
-    public static Blender getBlenderFor(final BlendComposite composite) {
+    private static Blender getBlenderFor(final BlendComposite composite) {
       switch (composite.getMode()) {
         case NORMAL:
           return new Blender() {

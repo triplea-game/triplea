@@ -18,7 +18,7 @@ public class PlainRandomSource implements IRandomSource {
    * if the excecution is always the same then
    * this may vary depending on the vm
    */
-  public static long getSeed() {
+  private static long getSeed() {
     final Object seedObj = new Object();
     // hash code is an int, 32 bits
     long seed = seedObj.hashCode();

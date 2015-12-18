@@ -938,7 +938,7 @@ enum ImagePointType {
   private final String m_description;
   private final String m_instructions;
 
-  public static ImagePointType[] getTypes() {
+  protected static ImagePointType[] getTypes() {
     return new ImagePointType[] {decorations, name_place, pu_place, capitols, vc, blockade, convoy, comments,
         kamikaze_place, territory_effects};
   }

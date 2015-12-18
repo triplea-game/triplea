@@ -8,7 +8,7 @@ public class ClientPasswodScrambler {
    * All we are really doing is not sending the password over the network in plaintext, but if this
    * string is captured, then it could be used to log in, just as well as the original password.
    */
-  public static String scramble(final String password) {
+  private static String scramble(final String password) {
     return MD5Crypt.crypt(password, "testring", "by");
   }
 

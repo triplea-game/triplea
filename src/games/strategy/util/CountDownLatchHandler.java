@@ -67,7 +67,7 @@ public class CountDownLatchHandler {
   /**
    * Utility method to fully release any CountDownLatch.
    */
-  public static void releaseLatch(final CountDownLatch latch) {
+  private static void releaseLatch(final CountDownLatch latch) {
     if (latch == null) {
       return;
     }
