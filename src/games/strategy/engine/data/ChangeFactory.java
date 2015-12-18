@@ -582,47 +582,6 @@ class PlayerOwnerChange extends Change {
   }
 }
 
-
-/**
- * Changes unit production of a territory.
- */
-class ChangeUnitProduction extends Change {
-  private static final long serialVersionUID = -1485932997086849018L;
-  private final int m_unitProduction;
-  private final int m_old;
-  private final Territory m_location;
-
-  ChangeUnitProduction(final Territory terr, final int quantity, final int oldQuantity) {
-    m_location = terr;
-    m_unitProduction = quantity;
-    m_old = oldQuantity;
-  }
-
-  ChangeUnitProduction(final Territory terr, final int quantity) {
-    m_location = terr;
-    m_unitProduction = quantity;
-    m_old = TerritoryAttachment.get(terr).getUnitProduction();
-  }
-
-  @Override
-  public Change invert() {
-    return new ChangeUnitProduction(m_location, m_old, m_unitProduction);
-  }
-
-  @Override
-  protected void perform(final GameData data) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(m_location);
-    ta.setUnitProduction(m_unitProduction);
-    m_location.notifyChanged();
-  }
-
-  @Override
-  public String toString() {
-    return "Change unit production.  Quantity:" + m_unitProduction + " Territory:" + m_location;
-  }
-}
-
-
 /**
  * Adds/removes resource from a player.
  */
