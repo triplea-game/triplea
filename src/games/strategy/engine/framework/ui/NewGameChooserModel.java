@@ -182,7 +182,7 @@ public class NewGameChooserModel extends DefaultListModel {
    */
   private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map) {
     try {
-      SwingUtilities.invokeAndWait(new Runnable() {
+      Runnable deleteMapRunnable = new Runnable() {
         @Override
         public void run() {
           final Component parentComponent = MainFrame.getInstance();
@@ -204,7 +204,13 @@ public class NewGameChooserModel extends DefaultListModel {
             JOptionPane.showMessageDialog(parentComponent, message, title, messageType);
           }
         }
-      });
+      };
+
+      if( SwingUtilities.isEventDispatchThread() ) {
+        deleteMapRunnable.run();
+      } else {
+        SwingUtilities.invokeAndWait(deleteMapRunnable);
+      }
     } catch (final InvocationTargetException e) {
       ClientLogger.logError(e);
     } catch (final InterruptedException e) {
