@@ -803,23 +803,25 @@ public class UnitAttachment extends DefaultAttachment {
   // m_unitPlacementRestrictions
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setUnitPlacementOnlyAllowedIn(final String value) throws GameParseException {
-    String valueRestricted = new String();
+    StringBuilder valueRestricted = new StringBuilder();
     final String valueAllowed[] = value.split(":");
     if (valueAllowed != null) {
       getListedTerritories(valueAllowed);
       for (final Territory item : getData().getMap().getTerritories()) {
         boolean match = false;
         for (final String allowed : valueAllowed) {
-          if (allowed.matches(item.getName())) {
+          if (allowed.equals(item.getName())) {
             match = true;
+            break;
           }
         }
         if (!match) {
-          valueRestricted = valueRestricted + ":" + item.getName();
+          valueRestricted.append(":").append(item.getName());
         }
       }
-      valueRestricted = valueRestricted.replaceFirst(":", "");
-      m_unitPlacementRestrictions = valueRestricted.split(":");
+
+      String newValue = valueRestricted.toString().replaceFirst(":", "");
+      m_unitPlacementRestrictions = newValue.split(":");
     }
   }
 
