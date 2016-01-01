@@ -25,7 +25,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
 import games.strategy.sound.ClipPlayer;
-import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
@@ -66,7 +65,7 @@ import games.strategy.util.Tuple;
  * It should be using a Change done in a delegate, and done through an IDelegate, which we get through
  * getPlayerBridge().getRemote()
  */
-public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements IGamePlayer, ITripleaPlayer {
+public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements IGamePlayer, ITripleaPlayer {
   private boolean m_soundPlayedAlreadyCombatMove = false;
   private boolean m_soundPlayedAlreadyNonCombatMove = false;
   private boolean m_soundPlayedAlreadyPurchase = false;
@@ -307,10 +306,17 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     }
 
     final PlayerID id = getPlayerID();
-    if ((nonCombat && !m_soundPlayedAlreadyNonCombatMove) || (!nonCombat && !m_soundPlayedAlreadyCombatMove)) {
+
+    if (nonCombat && !m_soundPlayedAlreadyNonCombatMove) {
       ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_NONCOMBAT, id);
       m_soundPlayedAlreadyNonCombatMove = true;
     }
+
+    if (!nonCombat && !m_soundPlayedAlreadyCombatMove) {
+      ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_NONCOMBAT, id);
+      m_soundPlayedAlreadyCombatMove = true;
+    }
+
     final MoveDescription moveDescription = m_ui.getMove(id, getPlayerBridge(), nonCombat, stepName);
     if (moveDescription == null) {
       if (GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData())) {
