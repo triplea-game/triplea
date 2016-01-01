@@ -143,7 +143,7 @@ public class ClipPlayer {
   private ClipPlayer(final ResourceLoader resourceLoader) {
     this.resourceLoader = resourceLoader;
     final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
-    this.beSilent = Boolean.parseBoolean(System.getProperty(HeadlessGameServer.TRIPLEA_HEADLESS, "false"))
+    beSilent = Boolean.parseBoolean(System.getProperty(HeadlessGameServer.TRIPLEA_HEADLESS, "false"))
         || prefs.getBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, DEFAULT_SOUND_SILENCED_SWITCH_SETTING);
     final HashSet<String> choices = SoundPath.getAllSoundOptions();
 
