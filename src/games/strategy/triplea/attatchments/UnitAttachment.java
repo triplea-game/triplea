@@ -187,10 +187,9 @@ public class UnitAttachment extends DefaultAttachment {
   private ArrayList<String[]> m_requiresUnits = new ArrayList<String[]>();
   private IntegerMap<UnitType> m_consumesUnits = new IntegerMap<UnitType>();
   // a colon delimited list of territories where this unit may not be placed
+  // also an allowed setter is "setUnitPlacementOnlyAllowedIn",
+  // which just creates m_unitPlacementRestrictions with an inverted list of territories
   private String[] m_unitPlacementRestrictions = null;
-  // also an allowed setter is "setUnitPlacementOnlyAllowedIn", which just creates m_unitPlacementRestrictions with an
-  // inverted list of
-  // territories
   // -1 if infinite (infinite is default)
   private int m_maxBuiltPerPlayer = -1;
   private Tuple<Integer, String> m_placementLimit = null;
@@ -799,30 +798,16 @@ public class UnitAttachment extends DefaultAttachment {
     m_unitPlacementRestrictions = null;
   }
 
-  // no m_ variable for this, since it is the inverse of m_unitPlacementRestrictions we might as well just use
-  // m_unitPlacementRestrictions
+  // no m_ variable for this, since it is the inverse of m_unitPlacementRestrictions
+  // we might as well just use m_unitPlacementRestrictions
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setUnitPlacementOnlyAllowedIn(final String value) throws GameParseException {
-    StringBuilder valueRestricted = new StringBuilder();
-    final String valueAllowed[] = value.split(":");
-    if (valueAllowed != null) {
-      getListedTerritories(valueAllowed);
-      for (final Territory item : getData().getMap().getTerritories()) {
-        boolean match = false;
-        for (final String allowed : valueAllowed) {
-          if (allowed.equals(item.getName())) {
-            match = true;
-            break;
-          }
-        }
-        if (!match) {
-          valueRestricted.append(":").append(item.getName());
-        }
-      }
-
-      String newValue = valueRestricted.toString().replaceFirst(":", "");
-      m_unitPlacementRestrictions = newValue.split(":");
-    }
+    final Collection<Territory> allowedTerritories = getListedTerritories(value.split(":"));
+    final Collection<Territory> restrictedTerritories = new HashSet<>(getData().getMap().getTerritories());
+    restrictedTerritories.removeAll(allowedTerritories);
+    m_unitPlacementRestrictions = restrictedTerritories.stream()
+        .map(Territory::getName)
+        .toArray(size -> new String[size]);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
