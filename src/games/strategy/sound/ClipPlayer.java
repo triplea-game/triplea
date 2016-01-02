@@ -21,6 +21,8 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.AudioFormat.Encoding;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -449,17 +451,26 @@ public class ClipPlayer {
   protected static Clip createClip(final URL clipFile) {
     try {
       final AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(clipFile);
-      final AudioFormat format = audioInputStream.getFormat();
-      AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), 16, format.getChannels(), format.getChannels() * 2, format.getSampleRate(), false);
+      final AudioFormat audioFormat = audioInputStream.getFormat();
+      final AudioFormat decodedFormat = decodeFormat(audioFormat);
       final DataLine.Info info = new DataLine.Info(Clip.class, decodedFormat);
-      Clip clip = (Clip) AudioSystem.getLine(info);
-      AudioInputStream audioStream2 = AudioSystem.getAudioInputStream(decodedFormat, audioInputStream);
+      final Clip clip = (Clip) AudioSystem.getLine(info);
+      final AudioInputStream audioStream2 = AudioSystem.getAudioInputStream(decodedFormat, audioInputStream);
       clip.open(audioStream2);
       return clip;
     } catch (final Exception e) {
       ClientLogger.logQuietly("failed to create clip: " + clipFile.toString(), e);
       return null;
     }
+  }
+
+  private static AudioFormat decodeFormat(AudioFormat format) throws LineUnavailableException {
+    final float sampleRate = format.getSampleRate();
+    final int sampleSizeInBits = 16; // format.getSampleSizeInBits();
+    final int channelCount = format.getChannels();
+    final int frameSize = channelCount * 2; // format.getFrameSize();
+    final boolean bigEndian = false; // format.isBigEndian();
+    return new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, sampleSizeInBits, channelCount, frameSize, format.getSampleRate(), bigEndian);
   }
 
   private static synchronized boolean testClipSuccessful(final URL clipFile) {
