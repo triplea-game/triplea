@@ -421,9 +421,7 @@ public class ClipPlayer {
     }
 
     if (!thisSoundFile.isDirectory()) {
-      if (!(thisSoundFile.getName().endsWith(".wav") || thisSoundFile.getName().endsWith(".au")
-          || thisSoundFile.getName().endsWith(".aiff") || thisSoundFile.getName().endsWith(".midi")
-          || thisSoundFile.getName().endsWith(".mp3"))) {
+      if (!isSoundFileNamed(thisSoundFile)) {
         return availableSounds;
       }
       if (testClipSuccessful(thisSoundURL)) {
@@ -431,8 +429,7 @@ public class ClipPlayer {
       }
     } else {
       for (final File sound : thisSoundFile.listFiles()) {
-        if (sound.getName().endsWith(".wav") || sound.getName().endsWith(".au") || sound.getName().endsWith(".aiff")
-            || sound.getName().endsWith(".midi") || sound.getName().endsWith(".mp3")) {
+        if (isSoundFileNamed(sound)) {
           try {
             final URL individualSoundURL = sound.toURI().toURL();
             if (testClipSuccessful(individualSoundURL)) {
@@ -447,6 +444,12 @@ public class ClipPlayer {
     }
     return availableSounds;
   }
+
+  private static boolean isSoundFileNamed(final File soundFile) {
+    return soundFile.getName().endsWith(".wav") || soundFile.getName().endsWith(".au") || soundFile.getName().endsWith(".aiff")
+        || soundFile.getName().endsWith(".midi") || soundFile.getName().endsWith(".mp3");
+  }
+
 
   protected static Clip createClip(final URL clipFile) {
     try {
