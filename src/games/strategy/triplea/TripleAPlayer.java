@@ -313,7 +313,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     }
 
     if (!nonCombat && !m_soundPlayedAlreadyCombatMove) {
-      ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_NONCOMBAT, id);
+      ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_COMBAT, id);
       m_soundPlayedAlreadyCombatMove = true;
     }
 
