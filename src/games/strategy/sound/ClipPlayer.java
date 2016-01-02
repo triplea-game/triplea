@@ -466,10 +466,10 @@ public class ClipPlayer {
 
   private static AudioFormat decodeFormat(AudioFormat format) throws LineUnavailableException {
     final float sampleRate = format.getSampleRate();
-    final int sampleSizeInBits = 16; // format.getSampleSizeInBits();
+    final int sampleSizeInBits = format.getSampleSizeInBits();
     final int channelCount = format.getChannels();
-    final int frameSize = channelCount * 2; // format.getFrameSize();
-    final boolean bigEndian = false; // format.isBigEndian();
+    final int frameSize = format.getFrameSize();
+    final boolean bigEndian = format.isBigEndian();
     return new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, sampleSizeInBits, channelCount, frameSize, format.getSampleRate(), bigEndian);
   }
 
