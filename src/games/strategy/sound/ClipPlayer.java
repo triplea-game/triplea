@@ -276,7 +276,7 @@ public class ClipPlayer {
         try {
           String subFolder = null;
           if( playerId != null ) {
-            subFolder = playerId.toString();
+            subFolder = playerId.getName();
           }
 
           final Clip clip = loadClip(clipName, subFolder, false);
