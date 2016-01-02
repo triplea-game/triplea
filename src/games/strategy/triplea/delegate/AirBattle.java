@@ -343,13 +343,6 @@ public class AirBattle extends AbstractBattle {
           m_battleTracker.addDependency(dependentAirBattle, battle);
         }
       }
-    } else {
-      if (!m_attackingUnits.isEmpty()) {
-        // currently we already have the battle setup
-        // m_battleTracker.addBattle(new RouteScripted(m_battleSite), new ArrayList<Unit>(m_attackingUnits), false,
-        // m_attacker, bridge,
-        // null, null, null, true);
-      }
     }
   }
 
@@ -366,33 +359,31 @@ public class AirBattle extends AbstractBattle {
             m_battleResultDescription = BattleRecord.BattleResultDescription.WON_WITH_ENEMY_LEFT;
           }
           text = "Air Battle is over, the remaining bombers go on to their targets";
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL,
-              m_attacker.getName());
+          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, m_attacker);
         } else {
           m_whoWon = WhoWon.DRAW;
           m_battleResultDescription = BattleRecord.BattleResultDescription.STALEMATE;
           text = "Air Battle is over, the bombers have all died";
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_FAILURE, m_attacker.getName());
+          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_FAILURE, m_attacker);
         }
       } else {
         if (m_defendingUnits.isEmpty()) {
           m_whoWon = WhoWon.ATTACKER;
           m_battleResultDescription = BattleRecord.BattleResultDescription.WON_WITHOUT_CONQUERING;
           text = "Air Battle is over, the defenders have all died";
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL,
-              m_attacker.getName());
+          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, m_attacker);
         } else {
           m_whoWon = WhoWon.DRAW;
           m_battleResultDescription = BattleRecord.BattleResultDescription.STALEMATE;
           text = "Air Battle is over, neither side is eliminated";
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_STALEMATE, m_attacker.getName());
+          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_STALEMATE, m_attacker);
         }
       }
     } else {
       m_whoWon = WhoWon.DEFENDER;
       m_battleResultDescription = BattleRecord.BattleResultDescription.LOST;
       text = "Air Battle is over, the attackers have all died";
-      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_FAILURE, m_attacker.getName());
+      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_FAILURE, m_attacker);
     }
     bridge.getHistoryWriter().addChildToEvent(text);
     m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
@@ -457,7 +448,7 @@ public class AirBattle extends AbstractBattle {
     }
     if (retreatTo != null) {
       if (!m_headless) {
-        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker.getName());
+        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker);
       }
       retreat(units, defender, bridge);
       final String messageShort = retreatingPlayer.getName() + " retreats";
@@ -498,7 +489,7 @@ public class AirBattle extends AbstractBattle {
       if (!m_defendingUnits.isEmpty()) {
         m_intercept = true;
         // play a sound
-        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR, m_attacker.getName());
+        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR, m_attacker);
       }
     }
 

@@ -386,16 +386,15 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
           || Match.someMatch(m_defendingUnits, Matches.UnitIsSea)) {
         if (Match.allMatch(m_attackingUnits, Matches.UnitIsSub) || (Match.someMatch(m_attackingUnits, Matches.UnitIsSub)
             && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))) {
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_SUBS, m_attacker.getName());
+          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_SUBS, m_attacker);
         } else {
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_NORMAL, m_attacker.getName());
+          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_NORMAL, m_attacker);
         }
       } else if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir)
           && Match.allMatch(m_defendingUnits, Matches.UnitIsAir)) {
-        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR, m_attacker.getName());
+        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR, m_attacker);
       } else {
-        // must be land battle
-        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_LAND, m_attacker.getName());
+        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_LAND, m_attacker);
       }
     }
     // push on stack in opposite order of execution
@@ -1469,15 +1468,14 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       }
       if (subs && m_battleSite.equals(retreatTo) && (submerge || canDefendingSubsSubmergeOrRetreat)) {
         if (!m_headless) {
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_SUBMERGE,
-              m_attacker.getName());
+          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_SUBMERGE, m_attacker);
         }
         submergeUnits(units, defender, bridge);
         final String messageShort = retreatingPlayer.getName() + " submerges subs";
         getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
       } else if (planes) {
         if (!m_headless) {
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker.getName());
+          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker);
         }
         retreatPlanes(units, defender, bridge);
         final String messageShort = retreatingPlayer.getName() + " retreats planes";
@@ -1485,14 +1483,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       } else if (partialAmphib) {
         if (!m_headless) {
           if (Match.someMatch(units, Matches.UnitIsSea)) {
-            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_SEA,
-                m_attacker.getName());
+            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_SEA, m_attacker);
           } else if (Match.someMatch(units, Matches.UnitIsLand)) {
-            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_LAND,
-                m_attacker.getName());
+            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_LAND, m_attacker);
           } else {
-            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR,
-                m_attacker.getName());
+            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker);
           }
         }
         // remove amphib units from those retreating
@@ -1503,14 +1498,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       } else {
         if (!m_headless) {
           if (Match.someMatch(units, Matches.UnitIsSea)) {
-            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_SEA,
-                m_attacker.getName());
+            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_SEA, m_attacker);
           } else if (Match.someMatch(units, Matches.UnitIsLand)) {
-            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_LAND,
-                m_attacker.getName());
+            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_LAND, m_attacker);
           } else {
-            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR,
-                m_attacker.getName());
+            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker);
           }
         }
         retreatUnits(units, retreatTo, defender, bridge);
@@ -2041,9 +2033,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       final Change change = ChangeFactory.markNoMovementChange(bombard);
       bridge.addChange(change);
     }
-    // TODO
     /**
-     * This code is actually a bug- the property is intended to tell if the return fire is
+     * TODO  This code is actually a bug- the property is intended to tell if the return fire is
      * RESTRICTED- but it's used as if it's ALLOWED. The reason is the default values on the
      * property definition. However, fixing this will entail a fix to the XML to reverse
      * all values. We'll leave it as is for now and try to figure out a patch strategy later.
@@ -2051,7 +2042,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     final boolean canReturnFire = (isNavalBombardCasualtiesReturnFire());
     if (bombard.size() > 0 && attacked.size() > 0) {
       if (!m_headless) {
-        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_BOMBARD, m_attacker.getName());
+        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_BOMBARD, m_attacker);
       }
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<Unit>();
       allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingUnits);
@@ -2235,20 +2226,20 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
                 if (currentTypeAA.equals("AA")) {
                   if (m_dice.getHits() > 0) {
                     bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
-                        (m_defending ? m_defender.getName() : m_attacker.getName()));
+                        (m_defending ? m_defender : m_attacker));
                   } else {
                     bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS,
-                        (m_defending ? m_defender.getName() : m_attacker.getName()));
+                        (m_defending ? m_defender : m_attacker));
                   }
                 } else {
                   if (m_dice.getHits() > 0) {
                     bridge.getSoundChannelBroadcaster().playSoundForAll(
                         SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
-                        (m_defending ? m_defender.getName() : m_attacker.getName()));
+                        (m_defending ? m_defender : m_attacker));
                   } else {
                     bridge.getSoundChannelBroadcaster().playSoundForAll(
                         SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
-                        (m_defending ? m_defender.getName() : m_attacker.getName()));
+                        (m_defending ? m_defender : m_attacker));
                   }
                 }
               }
@@ -2370,7 +2361,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     unitList.removeAll(Match.getMatches(unitList,
         Matches.UnitCanBeInBattle(attacking, !m_battleSite.isWater(), m_data,
             (removeForNextRound ? m_round + 1 : m_round), true, doNotIncludeAA, doNotIncludeSeaBombardmentUnits)
-            .invert()));
+        .invert()));
     // remove any disabled units from combat
     unitList.removeAll(Match.getMatches(unitList, Matches.UnitIsDisabled));
     // remove capturableOnEntering units (veqryn)
@@ -2527,14 +2518,12 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
               abandonedToPlayer.getName() + " takes over " + m_battleSite.getName() + " as there are no defenders left",
               allyOfAttackerUnits);
           // should we create a new battle records to show the ally capturing the territory (in the case where they
-          // didn't already
-          // own/allied it)?
+          // didn't already own/allied it)?
           m_battleTracker.takeOver(m_battleSite, abandonedToPlayer, bridge, null, allyOfAttackerUnits);
         }
       } else {
         // should we create a new battle records to show the defender capturing the territory (in the case where they
-        // didn't already
-        // own/allied it)?
+        // didn't already own/allied it)?
         m_battleTracker.takeOver(m_battleSite, m_defender, bridge, null, m_defendingUnits);
       }
     }
@@ -2548,7 +2537,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     checkDefendingPlanesCanLand(bridge, m_defender);
     BattleTracker.captureOrDestroyUnits(m_battleSite, m_defender, m_defender, bridge, null);
     if (!m_headless) {
-      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_FAILURE, m_attacker.getName());
+      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_FAILURE, m_attacker);
     }
   }
 
@@ -2562,7 +2551,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     if (!m_headless) {
       m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
           m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), 0);
-      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_STALEMATE, m_attacker.getName());
+      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_STALEMATE, m_attacker);
     }
     checkDefendingPlanesCanLand(bridge, m_defender);
   }
@@ -2608,11 +2597,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       if (Matches.TerritoryIsWater.match(m_battleSite)) {
         if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir)) {
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL,
-              m_attacker.getName());
+              m_attacker);
         } else {
           // assume some naval
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_SUCCESSFUL,
-              m_attacker.getName());
+              m_attacker);
         }
       } else {
         // no sounds for a successful land battle, because land battle means we are going to capture a territory, and we
@@ -2620,7 +2609,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
         // for that
         if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir)) {
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL,
-              m_attacker.getName());
+              m_attacker);
         }
       }
     }

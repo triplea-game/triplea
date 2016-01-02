@@ -16,6 +16,7 @@ import games.strategy.engine.message.RemoteName;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.SoundPath;
 import games.strategy.util.Tuple;
@@ -332,7 +333,7 @@ public class Chat {
         for (final IChatListener listener : m_listeners) {
           listener.addStatusMessage(node.getName() + " has joined");
           if (m_chatSoundProfile == CHAT_SOUND_PROFILE.GAME_CHATROOM) {
-            DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_CHAT_JOIN_GAME, null);
+            ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME);
           }
         }
       }

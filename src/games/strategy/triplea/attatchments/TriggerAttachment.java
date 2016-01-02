@@ -1630,7 +1630,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
         final String sounds = NotificationMessages.getInstance().getSoundsKey(notificationMessageKey);
         if (sounds != null) {
           aBridge.getSoundChannelBroadcaster().playSoundToPlayers(
-              SoundPath.CLIP_TRIGGERED_NOTIFICATION_SOUND + sounds.trim(), null, t.getPlayers(), null,
+              SoundPath.CLIP_TRIGGERED_NOTIFICATION_SOUND + sounds.trim(), t.getPlayers(), null,
               t.getPlayers().containsAll(data.getPlayerList().getPlayers())); // play to observers if we are playing to everyone
         }
         final String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
@@ -2578,9 +2578,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
       if (victoryMessage != null) {
         if (sounds != null) { // only play the sound if we are also notifying everyone
           aBridge.getSoundChannelBroadcaster().playSoundToPlayers(
-              SoundPath.CLIP_TRIGGERED_VICTORY_SOUND + sounds.trim(), null, t.getPlayers(), null, true);
+              SoundPath.CLIP_TRIGGERED_VICTORY_SOUND + sounds.trim(), t.getPlayers(), null, true);
           aBridge.getSoundChannelBroadcaster().playSoundToPlayers(SoundPath.CLIP_TRIGGERED_DEFEAT_SOUND + sounds.trim(),
-              null, data.getPlayerList().getPlayers(), t.getPlayers(), false);
+              data.getPlayerList().getPlayers(), t.getPlayers(), false);
         }
         String messageForRecord = victoryMessage.trim();
         if (messageForRecord.length() > 150) {

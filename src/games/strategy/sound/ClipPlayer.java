@@ -1,25 +1,20 @@
 package games.strategy.sound;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -27,13 +22,11 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.AudioFormat.Encoding;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.triplea.ResourceLoader;
 
@@ -114,61 +107,52 @@ import games.strategy.triplea.ResourceLoader;
  * 6. Randomize the list's order, then pick one, and play the sound.
  */
 public class ClipPlayer {
-  private static ClipPlayer s_clipPlayer;
-  private boolean m_beSilent = false;
-  private final HashSet<String> m_mutedClips = new HashSet<String>();
-  private final HashMap<String, List<URL>> m_sounds = new HashMap<String, List<URL>>();
-  private final ResourceLoader m_resourceLoader;
-  private final Set<String> m_subFolders = new HashSet<String>();
-  // MacOS and Linux can only handle 30 or 32 sound files being open at same time,
-  // so we'll be safe and pick 24
-  private final ClipCache m_clipCache = new ClipCache(24);
-  // standard settings
-  private static final String ASSETS_SOUNDS_FOLDER = "sounds";
+  protected static final String ASSETS_SOUNDS_FOLDER = "sounds";
   private static final String SOUND_PREFERENCE_GLOBAL_SWITCH = "beSilent2";
   private static final String SOUND_PREFERENCE_PREFIX = "sound_";
   private static final boolean DEFAULT_SOUND_SILENCED_SWITCH_SETTING = false;
 
+  protected final Map<String, List<URL>> sounds = new HashMap<String, List<URL>>();
+  private final Set<String> mutedClips = new HashSet<String>();
+  private final Set<String> subFolders = new HashSet<String>();
+  private final ClipCache clipCache = new ClipCache();
+  private boolean beSilent = false;
+  private final ResourceLoader resourceLoader;
+  private static ClipPlayer clipPlayer;
+
   public static synchronized ClipPlayer getInstance() {
-    if (s_clipPlayer == null) {
-      s_clipPlayer = new ClipPlayer(ResourceLoader.getMapResourceLoader(null, true));
+    if (clipPlayer == null) {
+      clipPlayer = new ClipPlayer(ResourceLoader.getMapResourceLoader(null, true));
       SoundPath.preLoadSounds(SoundPath.SoundType.GENERAL);
     }
-    return s_clipPlayer;
+    return clipPlayer;
   }
 
   public static synchronized ClipPlayer getInstance(final ResourceLoader resourceLoader, final GameData data) {
     // make a new clip player if we switch resource loaders (ie: if we switch maps)
-    if (s_clipPlayer == null || s_clipPlayer.m_resourceLoader != resourceLoader) {
+    if (clipPlayer == null || clipPlayer.resourceLoader != resourceLoader) {
       // stop and close any playing clips
-      if (s_clipPlayer != null) {
-        s_clipPlayer.m_clipCache.removeAll();
+      if (clipPlayer != null) {
+        clipPlayer.clipCache.removeAll();
       }
       // make a new clip player with our new resource loader
-      s_clipPlayer = new ClipPlayer(resourceLoader, data);
+      clipPlayer = new ClipPlayer(resourceLoader, data);
       SoundPath.preLoadSounds(SoundPath.SoundType.GENERAL);
     }
-    return s_clipPlayer;
+    return clipPlayer;
   }
 
   private ClipPlayer(final ResourceLoader resourceLoader) {
-    m_resourceLoader = resourceLoader;
+    this.resourceLoader = resourceLoader;
     final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
-    m_beSilent = Boolean.parseBoolean(System.getProperty(HeadlessGameServer.TRIPLEA_HEADLESS, "false"))
+    beSilent = Boolean.parseBoolean(System.getProperty(HeadlessGameServer.TRIPLEA_HEADLESS, "false"))
         || prefs.getBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, DEFAULT_SOUND_SILENCED_SWITCH_SETTING);
     final HashSet<String> choices = SoundPath.getAllSoundOptions();
-    /*
-     * until we get better sounds, all sounds start as muted, except for Slapping
-     * choices.remove(SoundPath.CLIP_CHAT_SLAP);
-     * final boolean slapMuted = prefs.getBoolean(SOUND_PREFERENCE_PREFIX + SoundPath.CLIP_CHAT_SLAP, false);
-     * if (slapMuted)
-     * m_mutedClips.add(SoundPath.CLIP_CHAT_SLAP);
-     */
+
     for (final String sound : choices) {
-      // true until we get better sounds
       final boolean muted = prefs.getBoolean(SOUND_PREFERENCE_PREFIX + sound, false);
       if (muted) {
-        m_mutedClips.add(sound);
+        mutedClips.add(sound);
       }
     }
   }
@@ -176,21 +160,19 @@ public class ClipPlayer {
   private ClipPlayer(final ResourceLoader resourceLoader, final GameData data) {
     this(resourceLoader);
     for (final PlayerID p : data.getPlayerList().getPlayers()) {
-      m_subFolders.add(p.getName());
+      subFolders.add(p.getName());
     }
   }
 
   /**
    * If set to true, no sounds will play.
-   * This property is persisted using the java.util.prefs API, and will
-   * persist after the vm has stopped.
+   * This property is persisted using the java.util.prefs API, and will persist after the vm has stopped.
    *
-   * @param aBool
-   *        new value for m_beSilent
+   * @param aBool new value for m_beSilent
    */
-  public static void setBeSilent(final boolean aBool) {
+  protected static void setBeSilent(final boolean aBool) {
     final ClipPlayer clipPlayer = getInstance();
-    clipPlayer.m_beSilent = aBool;
+    clipPlayer.beSilent = aBool;
     setBeSilentInPreferencesWithoutAffectingCurrent(aBool);
   }
 
@@ -202,95 +184,91 @@ public class ClipPlayer {
       try {
         setPref = !Arrays.asList(prefs.keys()).contains(SOUND_PREFERENCE_GLOBAL_SWITCH);
       } catch (final BackingStoreException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
     if (setPref) {
       prefs.putBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, silentBool);
       try {
         prefs.flush();
-      } catch (final BackingStoreException ex) {
-        ex.printStackTrace();
+      } catch (final BackingStoreException e) {
+        ClientLogger.logQuietly(e);
       }
     }
   }
 
-  public static boolean getBeSilent() {
+  protected static boolean getBeSilent() {
     final ClipPlayer clipPlayer = getInstance();
-    return clipPlayer.m_beSilent;
+    return clipPlayer.beSilent;
   }
 
-  public boolean isMuted(final String clipName) {
-    if (m_mutedClips.contains(clipName)) {
+
+  protected boolean isMuted(final String clipName) {
+    if (mutedClips.contains(clipName)) {
       return true;
     }
     if (!SoundPath.getAllSoundOptions().contains(clipName)) {
       // for custom sound clips, with custom paths, silence based on more similar sound clip settings
       if (clipName.startsWith(SoundPath.CLIP_BATTLE_X_PREFIX) && clipName.endsWith(SoundPath.CLIP_BATTLE_X_HIT)) {
-        return m_mutedClips.contains(SoundPath.CLIP_BATTLE_AA_HIT);
+        return mutedClips.contains(SoundPath.CLIP_BATTLE_AA_HIT);
       }
       if (clipName.startsWith(SoundPath.CLIP_BATTLE_X_PREFIX) && clipName.endsWith(SoundPath.CLIP_BATTLE_X_MISS)) {
-        return m_mutedClips.contains(SoundPath.CLIP_BATTLE_AA_MISS);
+        return mutedClips.contains(SoundPath.CLIP_BATTLE_AA_MISS);
       }
       if (clipName.startsWith(SoundPath.CLIP_TRIGGERED_NOTIFICATION_SOUND)) {
-        return m_mutedClips.contains(SoundPath.CLIP_TRIGGERED_NOTIFICATION_SOUND);
+        return mutedClips.contains(SoundPath.CLIP_TRIGGERED_NOTIFICATION_SOUND);
       }
       if (clipName.startsWith(SoundPath.CLIP_TRIGGERED_DEFEAT_SOUND)) {
-        return m_mutedClips.contains(SoundPath.CLIP_TRIGGERED_DEFEAT_SOUND);
+        return mutedClips.contains(SoundPath.CLIP_TRIGGERED_DEFEAT_SOUND);
       }
       if (clipName.startsWith(SoundPath.CLIP_TRIGGERED_VICTORY_SOUND)) {
-        return m_mutedClips.contains(SoundPath.CLIP_TRIGGERED_VICTORY_SOUND);
+        return mutedClips.contains(SoundPath.CLIP_TRIGGERED_VICTORY_SOUND);
       }
     }
     return false;
   }
 
-  public void setMute(final String clipName, final boolean value) {
+  protected void setMute(final String clipName, final boolean value) {
     // we want to avoid unnecessary calls to preferences
-    final boolean isCurrentCorrect = m_mutedClips.contains(clipName) == value;
+    final boolean isCurrentCorrect = mutedClips.contains(clipName) == value;
     if (isCurrentCorrect) {
       return;
     }
     if (value == true) {
-      m_mutedClips.add(clipName);
+      mutedClips.add(clipName);
     } else {
-      m_mutedClips.remove(clipName);
+      mutedClips.remove(clipName);
     }
-    putSoundInPreferences(clipName, value);
+    final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
+    prefs.putBoolean(SOUND_PREFERENCE_PREFIX + clipName, value);
   }
 
-  // please avoid unnecessary calls of this
-  private void putSoundInPreferences(final String clip, final boolean isMuted) {
-    // final ClipPlayer clipPlayer = getInstance();
+
+  /** Flushes sounds preferences to persisted data store. This method is *slow* and resource expensive. */
+  protected void saveSoundPreferences() {
     final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
-    prefs.putBoolean(SOUND_PREFERENCE_PREFIX + clip, isMuted);
     try {
       prefs.flush();
-    } catch (final BackingStoreException ex) {
-      ex.printStackTrace();
+    } catch (final BackingStoreException e) {
+      ClientLogger.logQuietly(e);
     }
   }
 
-  public ArrayList<IEditableProperty> getSoundOptions(final SoundPath.SoundType sounds) {
-    return SoundPath.getSoundOptions(sounds);
+  public static void play(final String clipName) {
+    play(clipName, null);
   }
 
   /**
-   * @param clipName
-   *        String - the file name of the clip
-   * @param subFolder
-   *        String - the name of the player, or null
+   * @param clipName - the file name of the clip
+   * @param playerId - the name of the player, or null
    */
-  static void play(final String clipName, final String subFolder) {
-    getInstance().playClip(clipName, subFolder);
+  public static void play(String clipPath, PlayerID playerId) {
+    getInstance().playClip(clipPath, playerId);
   }
 
-  /**
-   * @param clipName
-   *        String - the file name of the clip
-   */
-  private void playClip(final String clipName, final String subFolder) {
-    if (m_beSilent || isMuted(clipName)) {
+
+  private void playClip(final String clipName, final PlayerID playerId) {
+    if (beSilent || isMuted(clipName)) {
       return;
     }
     // run in a new thread, so that we do not delay the game
@@ -298,13 +276,18 @@ public class ClipPlayer {
       @Override
       public void run() {
         try {
+          String subFolder = null;
+          if (playerId != null) {
+            subFolder = playerId.getName();
+          }
+
           final Clip clip = loadClip(clipName, subFolder, false);
           if (clip != null) {
             clip.setFramePosition(0);
             clip.loop(0);
           }
         } catch (final Exception e) {
-          e.printStackTrace();
+          ClientLogger.logQuietly(e);
         }
       }
     };
@@ -314,18 +297,17 @@ public class ClipPlayer {
   /**
    * To reduce the delay when the clip is first played, we can preload clips here.
    *
-   * @param clipName
-   *        name of the clip
+   * @param clipName name of the clip
    */
-  public void preLoadClip(final String clipName) {
+  protected void preLoadClip(final String clipName) {
     loadClip(clipName, null, true);
-    for (final String sub : m_subFolders) {
+    for (final String sub : subFolders) {
       loadClip(clipName, sub, true);
     }
   }
 
   private synchronized Clip loadClip(final String clipName, final String subFolder, final boolean parseThenTestOnly) {
-    if (m_beSilent || isMuted(clipName)) {
+    if (beSilent || isMuted(clipName)) {
       return null;
     }
     try {
@@ -340,17 +322,17 @@ public class ClipPlayer {
         return loadClipPath(clipName, false, parseThenTestOnly);
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
     return null;
   }
 
   private Clip loadClipPath(final String pathName, final boolean subFolder, final boolean parseThenTestOnly) {
-    if (!m_sounds.containsKey(pathName)) {
+    if (!sounds.containsKey(pathName)) {
       // parse sounds for the first time
       parseClipPaths(pathName, subFolder);
     }
-    final List<URL> availableSounds = m_sounds.get(pathName);
+    final List<URL> availableSounds = sounds.get(pathName);
     if (parseThenTestOnly || availableSounds == null || availableSounds.isEmpty()) {
       return null;
     }
@@ -358,7 +340,7 @@ public class ClipPlayer {
     // and over again
     Collections.shuffle(availableSounds);
     final URL clipFile = availableSounds.get(0);
-    return m_clipCache.get(clipFile);
+    return clipCache.get(clipFile);
   }
 
   /**
@@ -382,17 +364,14 @@ public class ClipPlayer {
    * @param subFolder
    */
   private void parseClipPaths(final String pathName, final boolean subFolder) {
-    String resourcePath = SoundProperties.getInstance(m_resourceLoader).getProperty(pathName);
+    String resourcePath = SoundProperties.getInstance(resourceLoader).getProperty(pathName);
     if (resourcePath == null) {
-      resourcePath = SoundProperties.getInstance(m_resourceLoader).getDefaultEraFolder() + "/" + pathName;
+      resourcePath = SoundProperties.getInstance(resourceLoader).getDefaultEraFolder() + "/" + pathName;
     }
-    // URL uses "/", not File.separator or "\"
-    // resourcePath = resourcePath.replace('/', File.separatorChar);
-    // resourcePath = resourcePath.replace('\\', File.separatorChar);
     resourcePath = resourcePath.replace('\\', '/');
     final List<URL> availableSounds = new ArrayList<URL>();
     if ("NONE".equals(resourcePath)) {
-      m_sounds.put(pathName, availableSounds);
+      sounds.put(pathName, availableSounds);
       return;
     }
     for (final String path : resourcePath.split(";")) {
@@ -402,19 +381,17 @@ public class ClipPlayer {
       final String genericPath = SoundProperties.GENERIC_FOLDER + "/" + pathName;
       availableSounds.addAll(createAndAddClips(ASSETS_SOUNDS_FOLDER + "/" + genericPath));
     }
-    m_sounds.put(pathName, availableSounds);
+    sounds.put(pathName, availableSounds);
   }
 
   /**
    * @param resourceAndPathURL
    *        (URL uses '/', not File.separator or '\')
    */
-  private List<URL> createAndAddClips(final String resourceAndPathURL) {
+  protected List<URL> createAndAddClips(final String resourceAndPathURL) {
     final List<URL> availableSounds = new ArrayList<URL>();
-    final URL thisSoundURL = m_resourceLoader.getResource(resourceAndPathURL);
+    final URL thisSoundURL = resourceLoader.getResource(resourceAndPathURL);
     if (thisSoundURL == null) {
-      // if (!subFolder)
-      // System.out.println("No Sounds Found For: " + path);
       return availableSounds;
     }
     URI thisSoundURI;
@@ -442,239 +419,67 @@ public class ClipPlayer {
     } catch (final Exception e2) {
       thisSoundFile = null;
     }
-    if (thisSoundFile == null || !thisSoundFile.exists()) {
-      // final long startTime = System.currentTimeMillis();
-      // we are probably using zipped sounds. there might be a better way to do this...
-      final String soundFilePath = thisSoundURL.getPath();
-      if (soundFilePath != null && soundFilePath.length() > 5 && soundFilePath.indexOf(".zip!") != -1) {
-        // so the URL with a zip or jar in it, will start with "file:", and unfortunately when you make a file and test
-        // if it exists, if it
-        // starts with that it doesn't exist
-        final int index1 = Math.max(0, Math.min(soundFilePath.length(),
-            soundFilePath.indexOf("file:") != -1 ? soundFilePath.indexOf("file:") + 5 : 0));
-        final String zipFilePath = soundFilePath.substring(index1,
-            Math.max(index1, Math.min(soundFilePath.length(), soundFilePath.lastIndexOf("!"))));
-        if (zipFilePath.length() > 5 && zipFilePath.endsWith(".zip")) {
-          String decoded;
-          try {
-            decoded = URLDecoder.decode(zipFilePath, "UTF-8"); // the file path may have spaces, which in a URL are equal to %20, but if
-                                                               // we make a file using that it will fail, so we need to decode
-          } catch (final UnsupportedEncodingException uee) {
-            decoded = zipFilePath.replaceAll("%20", " ");
-          }
 
-          try {
-            final File zipFile = new File(decoded);
-            if (zipFile != null && zipFile.exists()) {
-              try (ZipFile zf = new ZipFile(zipFile)) {
-                if (zf != null) {
-                  final Enumeration<? extends ZipEntry> zipEnumeration = zf.entries();
-                  while (zipEnumeration.hasMoreElements()) {
-                    final ZipEntry zipElement = zipEnumeration.nextElement();
-                    if (zipElement != null && zipElement.getName() != null
-                        && zipElement.getName().indexOf(resourceAndPathURL) != -1
-                        && (zipElement.getName().endsWith(".wav") || zipElement.getName().endsWith(".au")
-                            || zipElement.getName().endsWith(".aiff") || zipElement.getName().endsWith(".midi"))) {
-                      try {
-                        final URL zipSoundURL = m_resourceLoader.getResource(zipElement.getName());
-                        if (zipSoundURL == null) {
-                          continue;
-                        }
-                        if (testClipSuccessful(zipSoundURL)) {
-                          availableSounds.add(zipSoundURL);
-                        }
-                      } catch (final Exception e) {
-                        ClientLogger.logQuietly(e);
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          } catch (final Exception e) {
-            ClientLogger.logQuietly(e);
-          }
-        }
-      }
-    } else {
-      // we must be using unzipped sounds
-      if (!thisSoundFile.isDirectory()) {
-        if (!(thisSoundFile.getName().endsWith(".wav") || thisSoundFile.getName().endsWith(".au")
-            || thisSoundFile.getName().endsWith(".aiff") || thisSoundFile.getName().endsWith(".midi"))) {
-          return availableSounds;
-        }
-        if (testClipSuccessful(thisSoundURL)) {
-          availableSounds.add(thisSoundURL);
-        }
-      } else {
-        for (final File sound : thisSoundFile.listFiles()) {
-          if (!(sound.getName().endsWith(".wav") || sound.getName().endsWith(".au") || sound.getName().endsWith(".aiff")
-              || sound.getName().endsWith(".midi"))) {
-            continue;
-          }
+    if (thisSoundFile.isDirectory()) {
+      for (final File sound : thisSoundFile.listFiles()) {
+        if (isSoundFileNamed(sound)) {
           try {
             final URL individualSoundURL = sound.toURI().toURL();
             if (testClipSuccessful(individualSoundURL)) {
               availableSounds.add(individualSoundURL);
             }
           } catch (final MalformedURLException e) {
-            System.out.println("Error " + e.getMessage() + " with sound file: " + sound.getPath());
+            String msg = "Error " + e.getMessage() + " with sound file: " + sound.getPath();
+            ClientLogger.logQuietly(msg, e);
           }
         }
+      }
+    } else {
+      if (!isSoundFileNamed(thisSoundFile)) {
+        return availableSounds;
+      }
+      if (testClipSuccessful(thisSoundURL)) {
+        availableSounds.add(thisSoundURL);
       }
     }
     return availableSounds;
   }
 
-  static synchronized Clip createClip(final URL clipFile, final boolean testOnly) {
+  private static boolean isSoundFileNamed(final File soundFile) {
+    return soundFile.getName().endsWith(".wav") || soundFile.getName().endsWith(".au")
+        || soundFile.getName().endsWith(".aiff")
+        || soundFile.getName().endsWith(".midi") || soundFile.getName().endsWith(".mp3");
+  }
+
+
+  protected static Clip createClip(final URL clipFile) {
     try {
       final AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(clipFile);
-      final AudioFormat format = audioInputStream.getFormat();
-      final DataLine.Info info = new DataLine.Info(Clip.class, format);
+      final AudioFormat audioFormat = audioInputStream.getFormat();
+      final AudioFormat decodedFormat = decodeFormat(audioFormat);
+      final DataLine.Info info = new DataLine.Info(Clip.class, decodedFormat);
       final Clip clip = (Clip) AudioSystem.getLine(info);
-      clip.open(audioInputStream);
-      if (!testOnly) {
-        return clip;
-      }
-      clip.close();
+      final AudioInputStream audioStream2 = AudioSystem.getAudioInputStream(decodedFormat, audioInputStream);
+      clip.open(audioStream2);
+      return clip;
+    } catch (final Exception e) {
+      ClientLogger.logQuietly("failed to create clip: " + clipFile.toString(), e);
       return null;
     }
-    // these can happen if the sound isnt configured, its not that bad.
-    catch (final LineUnavailableException e) {
-      e.printStackTrace(System.out);
-    } catch (final IOException e) {
-      e.printStackTrace(System.out);
-    } catch (final UnsupportedAudioFileException e) {
-      e.printStackTrace(System.out);
-    } catch (final RuntimeException re) {
-      re.printStackTrace(System.out);
-    }
-    return null;
   }
 
-  static synchronized boolean testClipSuccessful(final URL clipFile) {
-    Clip clip = null;
-    boolean successful = false;
-    try {
-      final AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(clipFile);
-      final AudioFormat format = audioInputStream.getFormat();
-      final DataLine.Info info = new DataLine.Info(Clip.class, format);
-      clip = (Clip) AudioSystem.getLine(info);
-      clip.open(audioInputStream);
-      successful = true;
-    }
-    // these can happen if the sound isnt configured, its not that bad.
-    catch (final LineUnavailableException e) {
-      e.printStackTrace(System.out);
-    } catch (final IOException e) {
-      e.printStackTrace(System.out);
-    } catch (final UnsupportedAudioFileException e) {
-      e.printStackTrace(System.out);
-    } catch (final RuntimeException e) {
-      e.printStackTrace(System.out);
-    } catch (final Exception e) {
-      e.printStackTrace(System.out);
-    } finally {
-      if (clip != null) {
-        clip.close();
-        if (successful) {
-          return true;
-        }
-      }
-    }
-    return false;
+  private static AudioFormat decodeFormat(AudioFormat format) throws LineUnavailableException {
+    final float sampleRate = format.getSampleRate();
+    final int sampleSizeInBits = format.getSampleSizeInBits();
+    final int channelCount = format.getChannels();
+    final int frameSize = format.getFrameSize();
+    final boolean bigEndian = format.isBigEndian();
+    return new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, sampleSizeInBits, channelCount, frameSize,
+        format.getSampleRate(), bigEndian);
   }
 
-  /**
-   * Simple stupid test to see if it works (and to see if our cache stays at or below its max), and to make sure there
-   * are no memory leaks.
-   *
-   * @param args
-   */
-  public static void main(final String[] args) {
-    getInstance();
-    final File root = new File(GameRunner2.getRootFolder(), "assets" + File.separator + "sounds");
-    for (final File folder : root.listFiles()) {
-      if (!(folder.getName().equals("ww2") || folder.getName().equals("preindustrial")
-          || folder.getName().equals("classical"))) {
-        continue;
-      }
-      for (final File file : folder.listFiles()) {
-        if (file.getName().indexOf("svn") != -1) {
-          continue;
-        }
-        final String name = folder.getName() + "/" + file.getName();
-        final List<URL> availableSounds = new ArrayList<URL>();
-        availableSounds.addAll(getInstance().createAndAddClips(ASSETS_SOUNDS_FOLDER + "/" + name));
-        getInstance().m_sounds.put(name, availableSounds);
-      }
-    }
-    while (true) {
-      for (final File folder : root.listFiles()) {
-        if (!(folder.getName().equals("ww2") || folder.getName().equals("preindustrial")
-            || folder.getName().equals("classical"))) {
-          continue;
-        }
-        for (final File file : folder.listFiles()) {
-          if (file.getName().indexOf("svn") != -1) {
-            continue;
-          }
-          final String soundPath = folder.getName() + "/" + file.getName();
-          System.out.println(soundPath);
-          play(soundPath, null);
-          try {
-            Thread.sleep(4000);
-          } catch (final InterruptedException e) {
-            e.printStackTrace();
-          }
-        }
-      }
-    }
-  }
-}
-
-
-class ClipCache {
-  private final HashMap<URL, Clip> m_clipMap = new HashMap<URL, Clip>();
-  private final List<URL> m_cacheOrder = new ArrayList<URL>();
-  private final int MAXSIZE;
-
-  ClipCache(final int max) {
-    if (max < 1) {
-      throw new IllegalArgumentException("ClipCache max must be at least 1");
-    }
-    MAXSIZE = max;
-  }
-
-  public synchronized Clip get(final URL file) {
-    Clip clip = m_clipMap.get(file);
-    if (clip != null) {
-      m_cacheOrder.remove(file);
-      m_cacheOrder.add(file);
-      return clip;
-    }
-    if (m_clipMap.size() >= MAXSIZE) {
-      final URL leastPlayed = m_cacheOrder.get(0);
-      // System.out.println("Removing " + leastPlayed + " and adding " + file);
-      final Clip leastClip = m_clipMap.remove(leastPlayed);
-      leastClip.stop();
-      leastClip.flush();
-      leastClip.close();
-      m_cacheOrder.remove(leastPlayed);
-    }
-    clip = ClipPlayer.createClip(file, false);
-    m_clipMap.put(file, clip);
-    m_cacheOrder.add(file);
-    return clip;
-  }
-
-  public synchronized void removeAll() {
-    for (final Clip clip : m_clipMap.values()) {
-      clip.stop();
-      clip.flush();
-      clip.close();
-    }
-    m_clipMap.clear();
-    m_cacheOrder.clear();
+  private static synchronized boolean testClipSuccessful(final URL clipFile) {
+    Clip clip = createClip(clipFile);
+    return clip != null;
   }
 }

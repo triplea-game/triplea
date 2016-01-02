@@ -25,19 +25,18 @@ public class ResourceLoader {
   public static String RESOURCE_FOLDER = "assets";
 
   public static ResourceLoader getMapResourceLoader(final String mapName, final boolean allowNoneFound) {
-    final List<String> dirs = getPaths(mapName, allowNoneFound);
-    addAssets(dirs);
-    return new ResourceLoader(dirs.toArray(new String[dirs.size()]));
-  }
-
-  private static void addAssets(final List<String> dirs) {
     File atFolder = GameRunner2.getRootFolder();
-    File resourceFolder;
-    do {
-      resourceFolder = new File(atFolder, RESOURCE_FOLDER);
+    File resourceFolder = new File(atFolder,RESOURCE_FOLDER);
+
+    while (!resourceFolder.exists() && !resourceFolder.isDirectory()) {
       atFolder = atFolder.getParentFile();
-    } while (!resourceFolder.exists() && !resourceFolder.isDirectory());
+      resourceFolder = new File(atFolder, RESOURCE_FOLDER);
+    }
+
+    final List<String> dirs = getPaths(mapName, allowNoneFound);
     dirs.add(resourceFolder.getAbsolutePath());
+
+    return new ResourceLoader(dirs.toArray(new String[dirs.size()]));
   }
 
   private static List<String> getPaths(final String mapName, final boolean allowNoneFound) {
@@ -65,10 +64,6 @@ public class ResourceLoader {
     });
     if (existing.size() > 1) {
       System.out.println("INFO: Found too many files for: " + mapName + "  found: " + existing);
-      // we no longer throw this error message, instead we simply use the first one we find (prioritizing the user maps
-      // folder over the root
-      // folder)
-      // throw new IllegalStateException("Found too many files for: " + mapName + " found: " + existing);
     }
     // At least one must exist
     if (existing.isEmpty()) {

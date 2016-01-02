@@ -29,6 +29,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.RelationshipTypeList;
+import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
@@ -103,7 +104,7 @@ public class PoliticsPanel extends ActionPanel {
       return null;
     } else {
       if (m_firstRun) {
-        DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_PHASE_POLITICS, getCurrentPlayer().getName());
+        ClipPlayer.play(SoundPath.CLIP_PHASE_POLITICS, getCurrentPlayer());
       }
       SwingUtilities.invokeLater(new Runnable() {
         @Override

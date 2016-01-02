@@ -164,7 +164,6 @@ abstract public class AbstractGame implements IGame {
 
   @Override
   public void addSoundChannel(final ISound soundChannel) {
-    soundChannel.initialize();
     m_channelMessenger.registerChannelSubscriber(soundChannel, getSoundChannel(getData()));
   }
 

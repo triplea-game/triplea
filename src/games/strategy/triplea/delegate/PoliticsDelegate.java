@@ -307,8 +307,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    *        the political action attachment that just failed.
    */
   private void notifyFailure(final PoliticalActionAttachment paa) {
-    // play a sound
-    getSoundChannel().playSoundForAll(SoundPath.CLIP_POLITICAL_ACTION_FAILURE, m_player.getName());
+    getSoundChannel().playSoundForAll(SoundPath.CLIP_POLITICAL_ACTION_FAILURE, m_player);
     final String transcriptText =
         m_bridge.getPlayerID().getName() + " fails on action: " + MyFormatter.attachmentNameToText(paa.getName());
     m_bridge.getHistoryWriter().addChildToEvent(transcriptText);
@@ -319,12 +318,10 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   /**
    * Let all players involved in this action know the action was successful
    *
-   * @param paa
-   *        the political action attachment that just succeeded.
+   * @param paa the political action attachment that just succeeded.
    */
   private void notifySuccess(final PoliticalActionAttachment paa) {
-    // play a sound
-    getSoundChannel().playSoundForAll(SoundPath.CLIP_POLITICAL_ACTION_SUCCESSFUL, m_player.getName());
+    getSoundChannel().playSoundForAll(SoundPath.CLIP_POLITICAL_ACTION_SUCCESSFUL, m_player);
     sendNotification(PoliticsText.getInstance().getNotificationSucccess(paa.getText()));
     notifyOtherPlayers(paa, PoliticsText.getInstance().getNotificationSuccessOthers(paa.getText()));
   }
@@ -332,9 +329,6 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   /**
    * Send a notification to the other players involved in this action (all
    * players except the player starting the action)
-   *
-   * @param paa
-   * @param notification
    */
   private void notifyOtherPlayers(final PoliticalActionAttachment paa, final String notification) {
     if (!"NONE".equals(notification)) {
@@ -355,8 +349,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    */
   private void sendNotification(final String text) {
     if (!"NONE".equals(text)) {
-      // "To " + m_player.getName() + ": " +
-      this.getRemotePlayer().reportMessage(text, text);
+      this.getRemotePlayer().reportMessage(text, text); 
     }
   }
 

@@ -356,21 +356,19 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               m_dice = DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAA, bridge, m_battleSite, true);
               if (currentTypeAA.equals("AA")) {
                 if (m_dice.getHits() > 0) {
-                  bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
-                      m_defender.getName());
+                  bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT, m_defender);
                 } else {
-                  bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS,
-                      m_defender.getName());
+                  bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS, m_defender);
                 }
               } else {
                 if (m_dice.getHits() > 0) {
                   bridge.getSoundChannelBroadcaster().playSoundForAll(
                       SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
-                      m_defender.getName());
+                      m_defender);
                 } else {
                   bridge.getSoundChannelBroadcaster().playSoundForAll(
                       SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
-                      m_defender.getName());
+                      m_defender);
                 }
               }
             }
@@ -600,8 +598,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               int maxDice = ua.getBombingMaxDieSides();
               int bonus = ua.getBombingBonus();
               // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for
-              // the map, and zero for
-              // the bonus.
+              // the map, and zero for the bonus.
               if (maxDice < 0) {
                 maxDice = diceSides;
               }
@@ -779,9 +776,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           // display the results
           getDisplay(bridge).bombingResults(m_battleID, dice, currentUnitCost);
           if (currentUnitCost > 0) {
-            // play a sound
-            // play sound
-            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker.getName());
+            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker);
           }
           // Record production lost
           DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, currentUnitCost);
@@ -805,9 +800,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         cost *= Properties.getPU_Multiplier(m_data);
         getDisplay(bridge).bombingResults(m_battleID, dice, cost);
         if (cost > 0) {
-          // play a sound
-          // play sound
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker.getName());
+          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker);
         }
         // get resources
         final Resource PUs = m_data.getResourceList().getResource(Constants.PUS);
@@ -826,8 +819,5 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units,
       final IDelegateBridge bridge, final boolean withdrawn) {
     // should never happen
-    // throw new IllegalStateException("StrategicBombingRaidBattle should not have any preceding battle with which to
-    // possibly remove
-    // dependents from");
   }
 }

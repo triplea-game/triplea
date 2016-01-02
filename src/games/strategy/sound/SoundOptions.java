@@ -56,7 +56,8 @@ public final class SoundOptions {
     final String cancel = "Cancel";
     final String selectAll = "All";
     final String selectNone = "None";
-    final ArrayList<IEditableProperty> properties = m_clipPlayer.getSoundOptions(soundType);
+    
+    final ArrayList<IEditableProperty> properties = SoundPath.getSoundOptions(soundType);
     final Object pressedButton = PropertiesSelector.getButton(parent, "Sound Options", properties,
         new Object[] {ok, selectAll, selectNone, cancel});
     if (pressedButton == null || pressedButton.equals(cancel)) {
@@ -64,16 +65,19 @@ public final class SoundOptions {
       for (final IEditableProperty property : properties) {
         m_clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), !(Boolean) property.getValue());
       }
+      m_clipPlayer.saveSoundPreferences();
     } else if (pressedButton.equals(selectAll)) {
       for (final IEditableProperty property : properties) {
         property.setValue(true);
         m_clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), false);
       }
+      m_clipPlayer.saveSoundPreferences();
     } else if (pressedButton.equals(selectNone)) {
       for (final IEditableProperty property : properties) {
         property.setValue(false);
         m_clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), true);
       }
+      m_clipPlayer.saveSoundPreferences();
     }
   }
 

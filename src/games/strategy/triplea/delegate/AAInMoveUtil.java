@@ -217,22 +217,22 @@ class AAInMoveUtil implements Serializable {
             if (hitCount == 0) {
               if (currentTypeAA.equals("AA")) {
                 m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS,
-                    findDefender(currentPossibleAA, territory).getName());
+                    findDefender(currentPossibleAA, territory));
               } else {
                 m_bridge.getSoundChannelBroadcaster().playSoundForAll(
                     SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
-                    findDefender(currentPossibleAA, territory).getName());
+                    findDefender(currentPossibleAA, territory));
               }
               getRemotePlayer().reportMessage("No " + currentTypeAA + " hits in " + territory.getName(),
                   "No " + currentTypeAA + " hits in " + territory.getName());
             } else {
               if (currentTypeAA.equals("AA")) {
                 m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
-                    findDefender(currentPossibleAA, territory).getName());
+                    findDefender(currentPossibleAA, territory));
               } else {
                 m_bridge.getSoundChannelBroadcaster().playSoundForAll(
                     SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
-                    findDefender(currentPossibleAA, territory).getName());
+                    findDefender(currentPossibleAA, territory));
               }
               selectCasualties(dice[0], units, validTargetedUnitsForThisRoll, currentPossibleAA, defendingAA, territory,
                   currentTypeAA);
