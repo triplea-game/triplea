@@ -120,37 +120,6 @@ public class ClassLoaderUtil {
     return result;
   }
 
-  public static void closeLoader(final URLClassLoader loader) {
-    try {
-      try {
-        // java 1.7 has a close method, thanks guys
-        // Method close = loader.getClass().getMethod("close", null);
-        // close.invoke(loader, null);
-        final Method close = loader.getClass().getMethod("close");
-        close.invoke(loader);
-        return;
-      } catch (final Exception e) {
-        // ignore
-      }
-      releaseLoader(loader);
-    } catch (final Exception e) {
-      e.printStackTrace(System.out);
-    }
-  }
-
-  /**
-   * Releases resources held by the URLClassLoader. Notably, close the jars
-   * opened by the loader. This does not prevent the class loader from
-   * continuing to return classes it has already resolved.
-   *
-   * @param classLoader
-   *        the instance of URLClassLoader (or a subclass)
-   * @return array of IOExceptions reporting jars that failed to close
-   */
-  private static void releaseLoader(final URLClassLoader classLoader) {
-    releaseLoader(classLoader, null);
-  }
-
   /**
    * Releases resources held by the URLClassLoader. Notably, close the jars
    * opened by the loader. This does not prevent the class loader from
