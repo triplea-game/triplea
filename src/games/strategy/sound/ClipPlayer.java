@@ -277,7 +277,7 @@ public class ClipPlayer {
       public void run() {
         try {
           String subFolder = null;
-          if( playerId != null ) {
+          if (playerId != null) {
             subFolder = playerId.getName();
           }
 
@@ -420,14 +420,7 @@ public class ClipPlayer {
       thisSoundFile = null;
     }
 
-    if (!thisSoundFile.isDirectory()) {
-      if (!isSoundFileNamed(thisSoundFile)) {
-        return availableSounds;
-      }
-      if (testClipSuccessful(thisSoundURL)) {
-        availableSounds.add(thisSoundURL);
-      }
-    } else {
+    if (thisSoundFile.isDirectory()) {
       for (final File sound : thisSoundFile.listFiles()) {
         if (isSoundFileNamed(sound)) {
           try {
@@ -441,12 +434,20 @@ public class ClipPlayer {
           }
         }
       }
+    } else {
+      if (!isSoundFileNamed(thisSoundFile)) {
+        return availableSounds;
+      }
+      if (testClipSuccessful(thisSoundURL)) {
+        availableSounds.add(thisSoundURL);
+      }
     }
     return availableSounds;
   }
 
   private static boolean isSoundFileNamed(final File soundFile) {
-    return soundFile.getName().endsWith(".wav") || soundFile.getName().endsWith(".au") || soundFile.getName().endsWith(".aiff")
+    return soundFile.getName().endsWith(".wav") || soundFile.getName().endsWith(".au")
+        || soundFile.getName().endsWith(".aiff")
         || soundFile.getName().endsWith(".midi") || soundFile.getName().endsWith(".mp3");
   }
 
@@ -473,7 +474,8 @@ public class ClipPlayer {
     final int channelCount = format.getChannels();
     final int frameSize = format.getFrameSize();
     final boolean bigEndian = format.isBigEndian();
-    return new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, sampleSizeInBits, channelCount, frameSize, format.getSampleRate(), bigEndian);
+    return new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, sampleSizeInBits, channelCount, frameSize,
+        format.getSampleRate(), bigEndian);
   }
 
   private static synchronized boolean testClipSuccessful(final URL clipFile) {
