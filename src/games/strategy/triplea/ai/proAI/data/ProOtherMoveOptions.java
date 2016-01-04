@@ -36,7 +36,11 @@ public class ProOtherMoveOptions {
   }
 
   public List<ProTerritory> getAll(final Territory t) {
-    return moveMaps.get(t);
+    final List<ProTerritory> result = moveMaps.get(t);
+    if (result != null) {
+      return result;
+    }
+    return new ArrayList<ProTerritory>();
   }
 
   @Override

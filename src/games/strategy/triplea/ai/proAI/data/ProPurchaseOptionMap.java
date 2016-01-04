@@ -1,17 +1,19 @@
 package games.strategy.triplea.ai.proAI.data;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ProPurchaseOptionMap {
 
@@ -45,8 +47,10 @@ public class ProPurchaseOptionMap {
     specialOptions = new ArrayList<ProPurchaseOption>();
 
     // Add each production rule to appropriate list(s)
-    final List<ProductionRule> rules = player.getProductionFrontier().getRules();
-    for (final ProductionRule rule : rules) {
+    final ProductionFrontier productionFrontier = player.getProductionFrontier();
+    if (productionFrontier == null || productionFrontier.getRules() == null)
+      return;
+    for (final ProductionRule rule : productionFrontier.getRules()) {
 
       // Check if rule is for a unit
       final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
