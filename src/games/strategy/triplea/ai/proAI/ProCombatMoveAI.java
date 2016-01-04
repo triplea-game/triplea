@@ -660,11 +660,15 @@ public class ProCombatMoveAI {
             ProBattleUtils.calculateBattleResults(player, t, patd.getUnits(), patd.getMaxEnemyDefenders(player, data),
                 patd.getBombardTerritoryMap().keySet(), true);
         int production = 0;
+        int isEnemyCapital = 0;
         final TerritoryAttachment ta = TerritoryAttachment.get(t);
         if (ta != null) {
           production = ta.getProduction();
+          if (ta.isCapital()) {
+            isEnemyCapital = 1;
+          }
         }
-        final double attackValue = result.getTUVSwing() + production;
+        final double attackValue = result.getTUVSwing() + production * (1 + 3 * isEnemyCapital);
         if (!patd.isStrafing() && (0.75 * totalEnemyTUVSwing) > attackValue) {
           ProLogger.debug("Removing amphib territory: " + patd.getTerritory() + ", totalEnemyTUVSwing="
               + totalEnemyTUVSwing + ", attackValue=" + attackValue);
