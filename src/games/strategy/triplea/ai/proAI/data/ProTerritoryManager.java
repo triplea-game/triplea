@@ -1044,7 +1044,8 @@ public class ProTerritoryManager {
       // Check strafing and using allied attack if enemy capital/factory
       boolean isEnemyCapitalOrFactory = false;
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      if ((ta != null && ta.isCapital()) || ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t)) {
+      if (!t.getOwner().isNull()
+          && ((ta != null && ta.isCapital()) || ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t))) {
         isEnemyCapitalOrFactory = true;
       }
       if (patd.getMaxBattleResult().getWinPercentage() < ProData.minWinPercentage && isEnemyCapitalOrFactory
