@@ -17,6 +17,9 @@ abstract public class AbstractGameLoader implements IGameLoader {
   public void shutDown() {
     if (m_game != null && m_soundChannel != null) {
       m_game.removeSoundChannel(m_soundChannel);
+      // set sound channel to null to handle the case of shutdown being called multiple times.
+      // If/when shutdown is called exactly once, then the null assignment should be unnecessary.
+      m_soundChannel = null;
     }
   }
 }
