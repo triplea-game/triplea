@@ -15,7 +15,7 @@ abstract public class AbstractGameLoader implements IGameLoader {
 
   @Override
   public void shutDown() {
-    if (m_game != null) {
+    if (m_game != null && m_soundChannel != null) {
       m_game.removeSoundChannel(m_soundChannel);
     }
   }
