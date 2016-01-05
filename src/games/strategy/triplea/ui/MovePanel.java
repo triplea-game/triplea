@@ -128,8 +128,11 @@ public class MovePanel extends AbstractMovePanel {
    * Sort the specified units in preferred movement or unload order.
    */
   private void sortUnitsToMove(final List<Unit> units, final Route route) {
-    if (units.isEmpty()) {
+    if (units == null || units.isEmpty()) {
       return;
+    } else if ( route == null ) {
+      Exception nullRouteError = (new IllegalArgumentException("route is not supposed to be null"));
+      ClientLogger.logQuietly("Programming error, route should not be null here. Aborting sort operation and returning.",  nullRouteError );
     }
 
     final Comparator<Unit> unitComparator;
