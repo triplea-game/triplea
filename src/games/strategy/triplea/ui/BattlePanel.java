@@ -521,12 +521,12 @@ public class BattlePanel extends ActionPanel {
     }
 
     class MyTimerTask extends TimerTask {
-      Territory m_territory;
-      Timer m_stopTimer;
-      int m_count = 0;
+      private Territory territory;
+      private Timer m_stopTimer;
+      private int m_count = 0;
 
       MyTimerTask(final Territory battleSite, final Timer stopTimer) {
-        m_territory = battleSite;
+        territory = battleSite;
         m_stopTimer = stopTimer;
       }
 
@@ -536,13 +536,13 @@ public class BattlePanel extends ActionPanel {
           m_stopTimer.cancel();
         }
         if ((m_count % 3) == 0) {
-          getMap().setTerritoryOverlayForBorder(m_territory, Color.white);
+          getMap().setTerritoryOverlayForBorder(territory, Color.white);
           getMap().paintImmediately(getMap().getBounds());
           // TODO: getUIContext().getMapData().getBoundingRect(m_territory)); what kind of additional transformation
           // needed here?
           // TODO: setTerritoryOverlayForBorder is causing invalid ordered lock acquire atempt, why?
         } else {
-          getMap().clearTerritoryOverlay(m_territory);
+          getMap().clearTerritoryOverlay(territory);
           getMap().paintImmediately(getMap().getBounds());
           // TODO: getUIContext().getMapData().getBoundingRect(m_territory)); what kind of additional transformation
           // needed here?
