@@ -5,16 +5,25 @@ Changes for 2.0.1
 
 * Performance improvement for bot servers to reduce CPU usage when hosting games, PR#53. (lafayette)
 
-* Performance improvement that allows games to start more quickly, background map parsing is halted when a game is launched, PR#74
+* Performance improvement that allows games to start more quickly, background map parsing is halted when a game is launched, PR#74 (lafayette)
 
 * PNG files made 17MB smaller with lossless compression 'optipng', PR#146 (lafayette)
 
 * Install4j now used to create installer packages, PR#218 (gaborbernat)
 
-* Installer packages automatically built and deployed to github whenever code is merged, PR#261 (lafayette)
+* Installer packages automatically deployed to github whenever code is merged, PR#261 (lafayette)
 
 * Performance improvement to speed up map parsing time, read only the game XML data and do not read the entire Zip file from disk. This speeds up map parsing to be typically under 100ms when before it could be a few seconds for largers maps. (lafayette)
 
+* Add support for to play mp3 audio files in addition to wav files. PR#201 (lafayette)
+
+* Bugfix - 'delete corrupt map' game crash when the confirmation dialog window was shown. PR#304 (lafayette)
+
+* Map parsing performance improvement, some maps with long territory lists will now loader faster. PR#293 (lafayette)
+
+* Code improvement - Unit test runtime reduced from 31s to 21s. PR#115 (lafayette)
+
+* Map parsing improvement - map zip data is read more efficiently, map data is loaded 10x faster. P$ #240 (lafayette)
 
 
 Changes for 1.8.0.9
