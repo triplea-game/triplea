@@ -549,28 +549,28 @@ class ChooserEntry {
     return m_hasMultipleHits;
   }
 
-  class UnitChooserEntryIcon extends JComponent {
+  private class UnitChooserEntryIcon extends JComponent {
     private static final long serialVersionUID = 591598594559651745L;
     private final boolean m_forceDamaged;
-    private final IUIContext m_uiContext;
+    private final IUIContext uiContext;
 
     UnitChooserEntryIcon(final boolean forceDamaged, final IUIContext uiContext) {
       m_forceDamaged = forceDamaged;
-      m_uiContext = uiContext;
+      this.uiContext = uiContext;
     }
 
     @Override
     public void paint(final Graphics g) {
       super.paint(g);
-      g.drawImage(m_uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
+      g.drawImage(uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
           m_forceDamaged || m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled()), 0, 0, this);
       final Iterator<UnitOwner> iter = m_category.getDependents().iterator();
       int index = 1;
       while (iter.hasNext()) {
         final UnitOwner holder = iter.next();
-        final int x = m_uiContext.getUnitImageFactory().getUnitImageWidth() * index;
+        final int x = uiContext.getUnitImageFactory().getUnitImageWidth() * index;
         final Image unitImg =
-            m_uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), m_data, false, false);
+            uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), m_data, false, false);
         g.drawImage(unitImg, x, 0, this);
         index++;
       }
@@ -579,12 +579,12 @@ class ChooserEntry {
     @Override
     public int getWidth() {
       // we draw a unit symbol for each dependent
-      return m_uiContext.getUnitImageFactory().getUnitImageWidth() * (1 + m_category.getDependents().size());
+      return uiContext.getUnitImageFactory().getUnitImageWidth() * (1 + m_category.getDependents().size());
     }
 
     @Override
     public int getHeight() {
-      return m_uiContext.getUnitImageFactory().getUnitImageHeight();
+      return uiContext.getUnitImageFactory().getUnitImageHeight();
     }
 
     @Override
