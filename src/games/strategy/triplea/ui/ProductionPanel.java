@@ -263,7 +263,7 @@ public class ProductionPanel extends JPanel {
     private final IntegerMap<Resource> m_cost;
     private int m_quantity;
     private final ProductionRule m_rule;
-    private final PlayerID m_id;
+    private final PlayerID id;
     private final Set<ScrollableTextField> m_textFields = new HashSet<ScrollableTextField>();
 
     protected JPanel getPanelComponent() {
@@ -282,13 +282,13 @@ public class ProductionPanel extends JPanel {
         final NamedAttachable resourceOrUnit = iter.next();
         if (resourceOrUnit instanceof UnitType) {
           final UnitType type = (UnitType) resourceOrUnit;
-          icon = m_uiContext.getUnitImageFactory().getIcon(type, m_id, m_data, false, false);
+          icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, false, false);
           final UnitAttachment attach = UnitAttachment.get(type);
-          final int attack = attach.getAttack(m_id);
-          final int movement = attach.getMovement(m_id);
-          final int defense = attach.getDefense(m_id);
+          final int attack = attach.getAttack(id);
+          final int movement = attach.getMovement(id);
+          final int defense = attach.getDefense(id);
           info.setText(attack + "/" + defense + "/" + movement);
-          tooltip.append(type.getName() + ": " + type.getTooltip(m_id, true));
+          tooltip.append(type.getName() + ": " + type.getTooltip(id, true));
           name.setText(type.getName());
           if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() == 1) {
             name.setForeground(Color.CYAN);
@@ -340,7 +340,7 @@ public class ProductionPanel extends JPanel {
     Rule(final ProductionRule rule, final PlayerID id) {
       m_rule = rule;
       m_cost = rule.getCosts();
-      m_id = id;
+      this.id = id;
     }
 
     IntegerMap<Resource> getCost() {
