@@ -23,6 +23,7 @@ import javax.swing.Action;
 import javax.swing.JOptionPane;
 
 import games.strategy.common.delegate.BaseEditDelegate;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -130,12 +131,16 @@ public class MovePanel extends AbstractMovePanel {
     if (units.isEmpty()) {
       return;
     }
+
+    final Comparator<Unit> unitComparator;
     // sort units based on which transports are allowed to unload
     if (route.isUnload() && Match.someMatch(units, Matches.UnitIsLand)) {
-      Collections.sort(units, UnitComparator.getUnloadableUnitsComparator(units, route, getUnitOwner(units), true));
+      unitComparator = UnitComparator.getUnloadableUnitsComparator(units, route, getUnitOwner(units), true);
     } else {
-      Collections.sort(units, UnitComparator.getMovableUnitsComparator(units, route, getUnitOwner(units), true));
+      unitComparator = UnitComparator.getMovableUnitsComparator(units, route, getUnitOwner(units), true);
     }
+
+    Collections.sort(units, unitComparator);
   }
 
   /**
