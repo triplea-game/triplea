@@ -7,7 +7,7 @@ import java.util.List;
  * A Change made of several changes.
  */
 public class CompositeChange extends Change {
-  static final long serialVersionUID = 8152962976769419486L;
+  private static final long serialVersionUID = 8152962976769419486L;
   private final List<Change> m_changes;
 
   public CompositeChange(final Change... changes) {
