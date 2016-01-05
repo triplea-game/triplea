@@ -44,6 +44,12 @@ public class UndoableMove extends AbstractUndoableMove {
   private final Set<Unit> m_unloaded = new HashSet<Unit>();
   private final Route m_route;
 
+
+  public UndoableMove(final GameData data, final Collection<Unit> units, final Route route) {
+    super(units);
+    m_route = route;
+  }
+
   public void addToConquered(final Territory t) {
     m_conquered.add(t);
   }
@@ -76,11 +82,6 @@ public class UndoableMove extends AbstractUndoableMove {
 
   public void setDescription(final String description) {
     m_description = description;
-  }
-
-  public UndoableMove(final GameData data, final Collection<Unit> units, final Route route) {
-    super(new CompositeChange(), units);
-    m_route = route;
   }
 
   public void load(final Unit transport) {

@@ -160,7 +160,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
             + "<br><b> Other Things</b><br>"
             + "Press 'N' to cycle through units with movement left (move phases only).<br>"
             + "Press 'F' to highlight all units you own that have movement left (move phases only).<br>"
-            + "Press 'I' or 'V' to popup info on whatever territory and unit your mouse is currently over.<br>";
+            + "Press 'I' or 'V' to popup info on whatever territory and unit your mouse is currently over.<br>"
+            + "Press 'u' while mousing over a unit to undo all moves that unit has made (beta).<br>";
         final JEditorPane editorPane = new JEditorPane();
         editorPane.setEditable(false);
         editorPane.setContentType("text/html");
