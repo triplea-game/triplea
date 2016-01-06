@@ -80,7 +80,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
   public void shutDown() {
     super.shutDown();
     if (m_display != null) {
-      m_game.removeDisplay(m_display);
+      game.removeDisplay(m_display);
       m_display.shutDown();
       m_display = null;
     }
@@ -91,12 +91,12 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
   @Override
   public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) throws Exception {
     try {
-      m_game = game;
+      super.game = game;
       if (game.getData().getDelegateList().getDelegate("edit") == null) {
         // An evil hack: instead of modifying the XML, force an EditDelegate by adding one here
         final EditDelegate delegate = new EditDelegate();
         delegate.initialize("edit", "edit");
-        m_game.getData().getDelegateList().addDelegate(delegate);
+        super.game.getData().getDelegateList().addDelegate(delegate);
         if (game instanceof ServerGame) {
           ((ServerGame) game).addDelegateMessenger(delegate);
         }
@@ -114,9 +114,9 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
           headlessFrameUI = null;
         }
         m_display = new DummyTripleaDisplay(headlessFrameUI);
-        m_soundChannel = new DummySoundChannel();
+        soundChannel = new DummySoundChannel();
         game.addDisplay(m_display);
-        game.addSoundChannel(m_soundChannel);
+        game.addSoundChannel(soundChannel);
         initializeGame();
         // technically not needed because we won't have any "local human players" in a headless game.
         connectPlayers(players, null);
@@ -140,8 +140,8 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
             }
             m_display = new TripleaDisplay(frame);
             game.addDisplay(m_display);
-            m_soundChannel = new DefaultSoundChannel(localPlayers);
-            game.addSoundChannel(m_soundChannel);
+            soundChannel = new DefaultSoundChannel(localPlayers);
+            game.addSoundChannel(soundChannel);
             frame.setSize(700, 400);
             frame.setVisible(true);
             ClipPlayer.play(SoundPath.CLIP_GAME_START);
