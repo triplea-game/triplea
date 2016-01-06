@@ -397,7 +397,7 @@ class RelationshipChange extends Change {
  * Add units
  */
 class AddUnits extends Change {
-  static final long serialVersionUID = 2694342784633196289L;
+  private static final long serialVersionUID = 2694342784633196289L;
   private final String m_name;
   private final Collection<Unit> m_units;
   private final String m_type;
@@ -433,7 +433,7 @@ class AddUnits extends Change {
 
 
 class RemoveUnits extends Change {
-  static final long serialVersionUID = -6410444472951010568L;
+  private static final long serialVersionUID = -6410444472951010568L;
   private final String m_name;
   private final Collection<Unit> m_units;
   private final String m_type;
@@ -474,7 +474,7 @@ class RemoveUnits extends Change {
  * Changes ownership of a territory.
  */
 class OwnerChange extends Change {
-  static final long serialVersionUID = -5938125380623744929L;
+  private static final long serialVersionUID = -5938125380623744929L;
   /**
    * Either new or old owner can be null.
    */
@@ -586,7 +586,7 @@ class PlayerOwnerChange extends Change {
  * Adds/removes resource from a player.
  */
 class ChangeResourceChange extends Change {
-  static final long serialVersionUID = -2304294240555842126L;
+  private static final long serialVersionUID = -2304294240555842126L;
   private final String m_player;
   private final String m_resource;
   private final int m_quantity;
