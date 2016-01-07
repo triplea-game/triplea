@@ -53,7 +53,6 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
   private JButton m_loadNewGame;
   private JButton m_gameOptions;
   private final GameSelectorModel m_model;
-  // private final IGamePropertiesCache m_gamePropertiesCache = new FileBackedGamePropertiesCache();
   private final Map<String, Object> m_originalPropertiesMap = new HashMap<String, Object>();
   private final AvailableGames m_availableGames;
 
@@ -93,7 +92,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
     m_fileNameText.setToolTipText(fileName);
   }
 
-  private String getLimitedFileNameText(final String fileName) {
+  private static String getLimitedFileNameText(final String fileName) {
     final int maxLength = 25;
     if (fileName.length() <= maxLength) {
       return fileName;
