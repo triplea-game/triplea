@@ -9,15 +9,19 @@ import java.util.prefs.Preferences;
 public class PerformanceLogger {
 
   private static final String LOG_PERFORMANCE_KEY = "logPerformance";
-  private static boolean enabled = false;
+  private static boolean enabled;
+
+  static {
+    enabled = isEnabled();
+    if(enabled) {
+      PerformanceConsole.getInstance().setVisible(true);
+    }
+  }
 
   public static void setEnabled(final boolean isEnabled) {
-    if (isEnabled != PerformanceConsole.getInstance().isVisible()) {
-      PerformanceConsole.getInstance().setVisible(isEnabled);
-    }
-
     if (enabled != isEnabled) {
       enabled = isEnabled;
+      PerformanceConsole.getInstance().setVisible(enabled);
       storeEnabledPreference();
     }
   }
