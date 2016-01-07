@@ -52,7 +52,11 @@ public class Perf {
     }
 
     long elapsed = timer.stop();
-
+    // TODO: make sure this won't interfere with performance of nested timers, for example:
+    // Timer a = ..
+    // Timer b = ..
+    // a.stop(); // << important to make sure this won't impact Timer b
+    // b.stop()
     PerformanceConsole.getInstance().append( "Timer - " + elapsed + "ms  :  " + timer.title);
   }
 }
