@@ -6,7 +6,7 @@ import java.util.prefs.Preferences;
  * Provides a high level API to the game engine for performance measurements.
  * This class handles the library details and sends output to 'PerformanceConsole.java'
  */
-public class PerformanceLogger {
+public class Perf {
 
   private static final String LOG_PERFORMANCE_KEY = "logPerformance";
   private static boolean enabled;
