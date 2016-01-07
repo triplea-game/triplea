@@ -13,7 +13,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import games.strategy.common.ui.InGameLobbyWatcherWrapper;
-import games.strategy.debug.Console;
+import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
@@ -311,7 +311,7 @@ public class ServerGame extends AbstractGame {
         if (HeadlessGameServer.getInstance() != null) {
           HeadlessGameServer.getInstance().printThreadDumpsAndStatus();
         } else {
-          Console.getConsole().dumpStacks();
+          ErrorConsole.getConsole().dumpStacks();
         }
         // Try one more time
         if (!m_delegateExecutionManager.blockDelegateExecution(16000)) {

@@ -34,7 +34,7 @@ import org.apache.commons.httpclient.HostConfiguration;
 
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.debug.ClientLogger;
-import games.strategy.debug.Console;
+import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.mapDownload.DownloadFileDescription;
 import games.strategy.engine.framework.mapDownload.DownloadMapDialog;
@@ -147,8 +147,8 @@ public class GameRunner2 {
 
   public static void main(final String[] args) {
     setupLogging();
-    Console.getConsole().displayStandardError();
-    Console.getConsole().displayStandardOutput();
+    ErrorConsole.getConsole().displayStandardError();
+    ErrorConsole.getConsole().displayStandardOutput();
     ErrorHandler.registerExceptionHandler();
     System.setProperty("triplea.engine.version", EngineVersion.VERSION.toString());
     handleCommandLineArgs(args);

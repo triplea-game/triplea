@@ -142,8 +142,8 @@ class ThreadReader implements Runnable {
   public void run() {
     while (true) {
       m_text.append(m_in.readFully());
-      if (m_displayConsoleOnWrite && !Console.getConsole().isVisible()) {
-        Console.getConsole().setVisible(true);
+      if (m_displayConsoleOnWrite && !ErrorConsole.getConsole().isVisible()) {
+        ErrorConsole.getConsole().setVisible(true);
       }
       try {
         Thread.sleep(CONSOLE_UPDATE_INTERVAL_MS);
