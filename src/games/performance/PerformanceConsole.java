@@ -7,7 +7,8 @@ public class PerformanceConsole extends GenericConsole {
 
   private static PerformanceConsole consoleInstance;
 
-  public static PerformanceConsole getConsole() {
+  @Override
+  public PerformanceConsole getConsoleInstance() {
     if (consoleInstance == null) {
       consoleInstance = new PerformanceConsole();
     }

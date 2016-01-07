@@ -4,11 +4,17 @@ public class ErrorConsole extends GenericConsole {
   private static final long serialVersionUID = -3489030525309243438L;
   private static ErrorConsole s_console;
 
+
   public static ErrorConsole getConsole() {
     if (s_console == null) {
       s_console = new ErrorConsole();
     }
     return s_console;
+  }
+
+  @Override
+  public GenericConsole getConsoleInstance() {
+    return getConsole();
   }
 
   /** Creates a new instance of Console */
