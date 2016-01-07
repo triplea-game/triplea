@@ -45,11 +45,16 @@ public class Console extends JFrame {
     m_actions.add(m_memoryAction);
     m_actions.add(m_propertiesAction);
     m_actions.add(m_copyAction);
+    m_actions.add(m_clearAction);
     pack();
   }
 
   public void append(final String s) {
     m_text.append(s);
+  }
+
+  public void clear() {
+    m_text.setText("");
   }
 
   public void dumpStacks() {
@@ -116,6 +121,14 @@ public class Console extends JFrame {
     public void actionPerformed(final ActionEvent e) {
       final String s = DebugUtils.getProperties();
       append(s);
+    }
+  };
+  private final AbstractAction m_clearAction = new AbstractAction("Clear") {
+    private static final long serialVersionUID = -6041425265177989146L;
+
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      clear();
     }
   };
 }
