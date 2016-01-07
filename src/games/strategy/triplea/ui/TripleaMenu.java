@@ -61,6 +61,7 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import games.performance.EnablePerformanceLoggingCheckBox;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -304,6 +305,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     addShowVerifiedDice(menuGame);
     SoundOptions.addGlobalSoundSwitchMenu(menuGame);
     SoundOptions.addToMenu(menuGame, SoundPath.SoundType.TRIPLEA);
+    menuGame.addSeparator();
+    menuGame.add(new EnablePerformanceLoggingCheckBox());
     menuGame.addSeparator();
     addGameOptionsMenu(menuGame);
     addPoliticsMenu(menuGame);
