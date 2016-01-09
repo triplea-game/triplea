@@ -1,26 +1,21 @@
 buildscript {
 	repositories {
-		maven { url "https://plugins.gradle.org/m2/" }
-		jcenter()
-		mavenCentral()
 		maven { url 'http://maven.ej-technologies.com/repository' }
 	}
 	dependencies {
-		classpath "com.github.jengelman.gradle.plugins:shadow:1.2.2"
 		classpath group: 'com.install4j', name: 'gradle-plugin', version: '6.0.4'
-		classpath 'com.github.ben-manes:gradle-versions-plugin:0.11.3'
 	}
 }
 
-apply plugin: 'java'
-apply plugin: 'application'
-apply plugin: "com.github.johnrengelman.shadow"
-apply plugin: 'com.github.ben-manes.versions'
-
-group = 'triplea'
+plugins {
+	id 'java'
+	id 'application'
+	id 'com.github.ben-manes.versions' version '0.11.3'
+	id 'com.github.johnrengelman.shadow' version '1.2.2'
+}
 
 version = System.getenv("TAGGED_VERSION") ?: ""
-
+group = 'triplea'
 description = 'TripleA is a free online turn based strategy game and board game engine, similar to such board games as Axis & Allies or Risk.'
 mainClassName = "games.strategy.engine.framework.GameRunner"
 
@@ -149,8 +144,10 @@ task lobbyServer(type: Zip, group: 'release', dependsOn: ':shadowJar') {
 
 task generateZipReleases(group: 'release', dependsOn: [allPlatform, bots, lobbyServer]) {}
 
+import com.install4j.gradle.Install4jTask
+
 apply plugin: 'install4j'
-task generateInstallers(type: com.install4j.gradle.Install4jTask, dependsOn: ':shadowJar', group: 'release') {
+task generateInstallers(type: Install4jTask, dependsOn: ':shadowJar', group: 'release') {
 	projectFile = file('build.install4j')
 	release project.version
 	doFirst {
@@ -158,10 +155,10 @@ task generateInstallers(type: com.install4j.gradle.Install4jTask, dependsOn: ':s
 	}
 }
 
-task setRunnableLinux(dependsOn:[generateInstallers]){
-	doLast{
+task setRunnableLinux(dependsOn: [generateInstallers]) {
+	doLast {
 		def linuxFile = "triplea_unix_${project.version}.sh"
-		ant.chmod(dir: "$buildDir/releases", perm: "0755", includes: linuxFile)	
+		ant.chmod(dir: "$buildDir/releases", perm: "0755", includes: linuxFile)
 	}
 }
 
@@ -176,7 +173,7 @@ gradle.taskGraph.whenReady { graph ->
 			}
 			def p = file(project.install4jHomeDir)
 			logger.lifecycle('using install4j home directory ' + p.getAbsolutePath())
-			it.project.install4j.installDir = new File(project.install4jHomeDir)
+			it.project.install4j.installDir = file(project.install4jHomeDir)
 		}
 	})
 }
