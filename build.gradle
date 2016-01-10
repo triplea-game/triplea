@@ -72,7 +72,14 @@ dependencies {
 	testCompile 'org.mockito:mockito-all:2.0.2-beta'
 }
 
-task allPlatform(type: Zip, group: 'release', dependsOn: ':shadowJar') {
+task renameShadowJar(type: Copy, group: 'release', dependsOn: [shadowJar]) {
+	ext.output = file("$project.buildDir/libs/all/triplea.jar")
+	from shadowJar.archivePath
+	into ext.output.parent
+	rename shadowJar.archivePath.name, output.name
+}
+
+task allPlatform(type: Zip, group: 'release', dependsOn: renameShadowJar) {
 	classifier 'all_platforms'
 	['assets', 'dice_servers', 'doc', 'license', 'maps', 'old'].each { folder ->
 		from(folder) {
@@ -89,13 +96,12 @@ task allPlatform(type: Zip, group: 'release', dependsOn: ':shadowJar') {
 	 'triplea_unix.sh', 'triplea_windows.bat', 'triplea_mac_os_x.sh'].each { fileName ->
 		from(fileName)
 	}
-	from("build/libs/triplea-${project.version}-all.jar") {
+	from(renameShadowJar.output) {
 		into('bin')
-		rename "triplea-${project.version}-all.jar", 'triplea.jar'
 	}
 }
 
-task bots(type: Zip, group: 'release', dependsOn: ':shadowJar') {
+task bots(type: Zip, group: 'release', dependsOn: renameShadowJar) {
 	classifier 'bots'
 	from('assets') {
 		exclude('resources')
@@ -117,13 +123,12 @@ task bots(type: Zip, group: 'release', dependsOn: ':shadowJar') {
 	 'triplea_unix.sh', 'triplea_windows.bat', 'triplea_mac_os_x.sh'].each { fileName ->
 		from(fileName)
 	}
-	from("build/libs/triplea-${project.version}-all.jar") {
+	from(renameShadowJar.output) {
 		into('bin')
-		rename "triplea-${project.version}-all.jar", 'triplea.jar'
 	}
 }
 
-task lobbyServer(type: Zip, group: 'release', dependsOn: ':shadowJar') {
+task lobbyServer(type: Zip, group: 'release', dependsOn: renameShadowJar) {
 	classifier 'server'
 	['license'].each { folder ->
 		from(folder) {
@@ -136,34 +141,23 @@ task lobbyServer(type: Zip, group: 'release', dependsOn: ':shadowJar') {
 	from(configurations.testCompile.files { dep -> dep.name == 'derby' }) {
 		into('lib')
 	}
-	from("build/libs/triplea-${project.version}-all.jar") {
+	from(renameShadowJar.output) {
 		into('bin')
-		rename "triplea-${project.version}-all.jar", 'triplea.jar'
 	}
 }
 
 task generateZipReleases(group: 'release', dependsOn: [allPlatform, bots, lobbyServer]) {}
 
-task shadowJarCopy(type: Copy) {
-	from "build/libs/triplea-${project.version}-all.jar"
-	into 'build/libs'
-	rename { String fileName ->
-		fileName.replace("triplea-${project.version}-all.jar", "triplea.jar")
-	}
-}
-
-
 import com.install4j.gradle.Install4jTask
-apply plugin: 'install4j'
 
-task generateInstallers(type: Install4jTask, dependsOn: [ ':shadowJar', shadowJarCopy ],  group: 'release') {
+apply plugin: 'install4j'
+task generateInstallers(type: Install4jTask, dependsOn: renameShadowJar, group: 'release') {
 	projectFile = file('build.install4j')
 	release project.version
 	doFirst {
 		logger.lifecycle("building installer release of version '${project.version}'")
 	}
 }
-
 
 task setRunnableLinux(dependsOn: [generateInstallers]) {
 	doLast {
