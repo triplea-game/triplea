@@ -28,8 +28,7 @@ abstract public class AbstractUndoableMove implements Serializable {
   protected final Collection<Unit> m_units;
 
   public AbstractUndoableMove(final Collection<Unit> units) {
-    m_change = new CompositeChange();
-    m_units = units;
+    this(new CompositeChange(), units);
   }
 
 
