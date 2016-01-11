@@ -1425,7 +1425,7 @@ public class MoveValidator {
     String failureMessage = null;
     final Set<CanalAttachment> canalAttachments = CanalAttachment.get(territory);
     for (final CanalAttachment canalAttachment : canalAttachments) {
-      if (!needToCheckCanal(canalAttachment, route, data)) {
+      if (!isCanalOnRoute(canalAttachment, route, data)) {
         continue;
       }
       failureMessage = canPassThroughCanal(canalAttachment, units, player, data);
@@ -1439,7 +1439,7 @@ public class MoveValidator {
   /*
    * Checks if route is either null or includes both canal territories so needs to be checked.
    */
-  private static boolean needToCheckCanal(final CanalAttachment canalAttachment, final Route route, final GameData data) {
+  private static boolean isCanalOnRoute(final CanalAttachment canalAttachment, final Route route, final GameData data) {
     if (route == null) {
       return true;
     }
