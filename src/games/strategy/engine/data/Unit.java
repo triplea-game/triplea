@@ -1,7 +1,6 @@
 package games.strategy.engine.data;
 
 import java.io.Serializable;
-import java.util.List;
 
 import com.google.common.base.Preconditions;
 
@@ -16,8 +15,7 @@ public class Unit extends GameDataComponent implements Serializable {
   private final UnitType m_type;
 
   /**
-   * Creates new Unit. Should use a call to UnitType.create() or Unit.create(..) instead.
-   * owner can be null
+   * Creates new Unit. Should use a call to UnitType.create(). Owner can be null
    */
   protected Unit(final UnitType type, final PlayerID owner, final GameData data) {
     super(data);
