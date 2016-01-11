@@ -1436,7 +1436,7 @@ public class MoveValidator {
     return failureMessage;
   }
 
-  /**
+  /*
    * Checks if route is either null or includes both canal territories so needs to be checked.
    */
   private static boolean needToCheckCanal(final CanalAttachment canalAttachment, final Route route, final GameData data) {
@@ -1459,7 +1459,7 @@ public class MoveValidator {
     return false;
   }
 
-  /**
+  /*
    * Checks if units can pass through canal and returns null if true or a failure message if false.
    */
   private static String canPassThroughCanal(final CanalAttachment canalAttachment, final Collection<Unit> units,
