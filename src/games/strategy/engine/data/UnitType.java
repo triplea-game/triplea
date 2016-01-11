@@ -45,6 +45,7 @@ public class UnitType extends NamedAttachable implements Serializable {
   }
 
   private Unit create(final PlayerID owner, final boolean isTemp, final int hitsTaken, final int bombingUnitDamage) {
+    
     final Unit u = getData().getGameLoader().getUnitFactory().createUnit(this, owner, getData());
     u.setHits(hitsTaken);
     if (u instanceof TripleAUnit) {

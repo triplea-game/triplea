@@ -15,26 +15,8 @@ public class Unit extends GameDataComponent implements Serializable {
   private int m_hits = 0;
   private final UnitType m_type;
 
-
-  public static Unit createUnit(final UnitType unitType) {
-    return createUnit(unitType, null);
-  }
-
-  public static Unit createUnit(final UnitType unitType, final PlayerID player) {
-    return unitType.create(player);
-  }
-
-  public static Unit createUnit(final String typeName, final GameData data) {
-    return createUnit(typeName, data, null);
-  }
-
-  public static Unit createUnit(final String typeName, final GameData data, final PlayerID owner) {
-    return createUnit( (new UnitType(typeName, data)), owner);
-  }
-
   /**
-   * Creates new Unit. Should use a call to UnitType.create() or Unit.create(..) instead.
-   * owner can be null
+   * Creates new Unit. Should use a call to UnitType.create() instead. Owner can be null
    */
   protected Unit(final UnitType type, final PlayerID owner, final GameData data) {
     super(data);
