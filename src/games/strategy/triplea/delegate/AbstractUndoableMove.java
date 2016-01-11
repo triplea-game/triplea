@@ -37,7 +37,7 @@ abstract public class AbstractUndoableMove implements Serializable {
     m_units = units;
   }
 
-  public boolean containsAnyUnit(Set<Unit> units) {
+  public boolean containsAnyOf(Set<Unit> units) {
     if (units == null) {
       return false;
     }
