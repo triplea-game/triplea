@@ -1398,16 +1398,16 @@ public class MoveValidator {
   public static String validateCanal(final Route route, final Collection<Unit> units, final PlayerID player,
       final GameData data) {
     for (final Territory routeTerritory : route.getAllTerritories()) {
-      final String result = validateCanal(routeTerritory, route, units, player, data);
-      if (result != null) {
-        return result;
+      final Optional<String> result = validateCanal(routeTerritory, route, units, player, data);
+      if (result.isPresent()) {
+        return result.get();
       }
     }
     return null;
   }
 
   /**
-   * Used for testing a single territory, either as part of a route, or just by itself. Returns null if either
+   * Used for testing a single territory, either as part of a route, or just by itself. Returns Optional.empty if either
    * there are no canals or there is at least 1 canal that can be passed through otherwise returns a failure message
    * indicating why the canal can't be passed through.
    *
@@ -1421,8 +1421,8 @@ public class MoveValidator {
    * @param player
    * @param data
    */
-  public static String validateCanal(final Territory territory, final Route route, final Collection<Unit> units,
-      final PlayerID player, final GameData data) {
+  public static Optional<String> validateCanal(final Territory territory, final Route route,
+      final Collection<Unit> units, final PlayerID player, final GameData data) {
     Optional<String> failureMessage = Optional.empty();
     final Set<CanalAttachment> canalAttachments = CanalAttachment.get(territory);
     for (final CanalAttachment canalAttachment : canalAttachments) {
@@ -1431,10 +1431,10 @@ public class MoveValidator {
       }
       failureMessage = canPassThroughCanal(canalAttachment, units, player, data);
       if (!failureMessage.isPresent()) {
-        return null;
+        return Optional.empty();
       }
     }
-    return failureMessage.get();
+    return failureMessage;
   }
 
   /*
