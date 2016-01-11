@@ -1673,14 +1673,10 @@ public class MoveValidator {
     // any route
     if (defaultRoute == null) {
       // at least try for a route without impassible territories, but allowing restricted territories, since there is a
-      // chance politics may
-      // change in the future.
-      defaultRoute =
-          data.getMap().getRoute_IgnoreEnd(
-              start,
-              end,
-              (isNeutralsImpassable ? new CompositeMatchAnd<Territory>(noNeutral, Matches.TerritoryIsImpassable)
-                  : Matches.TerritoryIsImpassable));
+      // chance politics may change in the future.
+      defaultRoute = data.getMap().getRoute_IgnoreEnd(start, end,
+          (isNeutralsImpassable ? new CompositeMatchAnd<Territory>(noNeutral, Matches.TerritoryIsImpassable)
+              : Matches.TerritoryIsImpassable));
       // ok, so there really is nothing, so just return any route, without conditions
       if (defaultRoute == null) {
         return data.getMap().getRoute(start, end);
@@ -1699,18 +1695,16 @@ public class MoveValidator {
     if (!start.isWater() && !end.isWater()) {
       Route landRoute;
       if (isNeutralsImpassable) {
-        landRoute =
-            data.getMap().getRoute_IgnoreEnd(start, end,
-                new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, noNeutral, noImpassible));
+        landRoute = data.getMap().getRoute_IgnoreEnd(start, end,
+            new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, noNeutral, noImpassible));
       } else {
-        landRoute =
-            data.getMap().getRoute_IgnoreEnd(start, end,
-                new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, noImpassible));
+        landRoute = data.getMap().getRoute_IgnoreEnd(start, end,
+            new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, noImpassible));
       }
       if (landRoute != null
           && ((landRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) <= defaultRoute
-              .getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent)) || (forceLandOrSeaRoute && Match
-              .someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsLand)))) {
+              .getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent))
+          || (forceLandOrSeaRoute && Match.someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsLand)))) {
         defaultRoute = landRoute;
         mustGoLand = true;
       }
@@ -1734,13 +1728,13 @@ public class MoveValidator {
     List<Match<Territory>> tests;
     if (isNeutralsImpassable) {
       tests = new ArrayList<Match<Territory>>(Arrays.asList(
-      // best if no enemy and no neutral
+          // best if no enemy and no neutral
           new CompositeMatchAnd<Territory>(noEnemy, noNeutral),
           // we will be satisfied if no aa and no neutral
           new CompositeMatchAnd<Territory>(noAA, noNeutral)));
     } else {
       tests = new ArrayList<Match<Territory>>(Arrays.asList(
-      // best if no enemy and no neutral
+          // best if no enemy and no neutral
           new CompositeMatchAnd<Territory>(noEnemy, noNeutral),
           // we will be satisfied if no aa and no neutral
           new CompositeMatchAnd<Territory>(noAA, noNeutral),
