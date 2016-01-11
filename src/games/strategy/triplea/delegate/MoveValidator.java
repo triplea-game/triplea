@@ -35,6 +35,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -1422,18 +1423,18 @@ public class MoveValidator {
    */
   public static String validateCanal(final Territory territory, final Route route, final Collection<Unit> units,
       final PlayerID player, final GameData data) {
-    String failureMessage = null;
+    Optional<String> failureMessage = Optional.empty();
     final Set<CanalAttachment> canalAttachments = CanalAttachment.get(territory);
     for (final CanalAttachment canalAttachment : canalAttachments) {
       if (!isCanalOnRoute(canalAttachment, route, data)) {
         continue;
       }
       failureMessage = canPassThroughCanal(canalAttachment, units, player, data);
-      if (failureMessage == null) {
+      if (!failureMessage.isPresent()) {
         return null;
       }
     }
-    return failureMessage;
+    return failureMessage.get();
   }
 
   /*
@@ -1460,23 +1461,24 @@ public class MoveValidator {
   }
 
   /*
-   * Checks if units can pass through canal and returns null if true or a failure message if false.
+   * Checks if units can pass through canal and returns Optional.empty() if true or a failure message if false.
    */
-  private static String canPassThroughCanal(final CanalAttachment canalAttachment, final Collection<Unit> units,
-      final PlayerID player, final GameData data) {
+  private static Optional<String> canPassThroughCanal(final CanalAttachment canalAttachment,
+      final Collection<Unit> units, final PlayerID player, final GameData data) {
     if (units != null && Match.allMatch(units, Matches.unitIsOfTypes(canalAttachment.getExcludedUnits(data)))) {
-      return null;
+      return Optional.empty();
     }
     for (final Territory borderTerritory : canalAttachment.getLandTerritories()) {
       if (!data.getRelationshipTracker().canMoveThroughCanals(player, borderTerritory.getOwner())) {
-        return "Must own " + borderTerritory.getName() + " to go through " + canalAttachment.getCanalName();
+        return Optional.of("Must own " + borderTerritory.getName() + " to go through "
+            + canalAttachment.getCanalName());
       }
       if (AbstractMoveDelegate.getBattleTracker(data).wasConquered(borderTerritory)) {
-        return "Cannot move through " + canalAttachment.getCanalName() + " without owning " + borderTerritory.getName()
-            + " for an entire turn";
+        return Optional.of("Cannot move through " + canalAttachment.getCanalName() + " without owning "
+            + borderTerritory.getName() + " for an entire turn");
       }
     }
-    return null;
+    return Optional.empty();
   }
 
   public static MustMoveWithDetails getMustMoveWith(final Territory start, final Collection<Unit> units,
