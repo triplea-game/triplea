@@ -194,7 +194,7 @@ public class MapPanel extends ImageScrollerLargeView {
     });
   }
 
-  public Map<Territory, List<Unit>> getHighlightUnits() {
+  protected Map<Territory, List<Unit>> getHighlightedUnits() {
     return m_highlightedUnits;
   }
 

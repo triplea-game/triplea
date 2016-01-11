@@ -1435,8 +1435,8 @@ public class MovePanel extends AbstractMovePanel {
       @Override
       public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_U &&
-            getMap().getHighlightUnits() != null && !getMap().getHighlightUnits().isEmpty()) {
-          m_undoableMovesPanel.undoMoves(getMap().getHighlightUnits());
+            getMap().getHighlightedUnits() != null && !getMap().getHighlightedUnits().isEmpty()) {
+          m_undoableMovesPanel.undoMoves(getMap().getHighlightedUnits());
         }
       }
 
