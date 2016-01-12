@@ -5,16 +5,11 @@ package games.strategy.engine.random;
  */
 public class PlainRandomSource implements IRandomSource {
   /**
-   * Knowing the seed gives a player an advantage.
-   * Do something a little more clever than current time.
-   * which could potentially be guessed
-   * If the execution path is different before the first random
-   * call is made then the object will have a somewhat random
-   * adress in the virtual machine, especially if
-   * a lot of ui and networking objects are created
-   * in response to semi random mouse motion etc.
-   * if the excecution is always the same then
-   * this may vary depending on the vm
+   * Knowing the seed gives a player an advantage. Do something a little more clever than current time. which could
+   * potentially be guessed If the execution path is different before the first random call is made then the object will
+   * have a somewhat random address in the virtual machine, especially if a lot of UI and networking objects are created
+   * in response to semi-random mouse motion etc. if the execution is always the same then this may vary depending on
+   * the VM
    */
   private static long getSeed() {
     final Object seedObj = new Object();
