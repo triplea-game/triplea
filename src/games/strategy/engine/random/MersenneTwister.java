@@ -64,15 +64,15 @@ public class MersenneTwister extends java.util.Random implements Serializable {
   // the array for the state vector
   private int m_mt[];
   // mti==N+1 means mt[N] is not initialized
-  private int m_mti;
-  private int m_mag01[];
+  private int mti;
+  private int mag01[];
   /*
    * implemented here because there's a bug in Random's implementation
    * of the Gaussian code (divide by zero, and log(0), ugh!), yet its
    * gaussian variables are private so we can't access them here. :-(
    */
-  private double __nextNextGaussian;
-  private boolean __haveNextNextGaussian;
+  private double nextNextGaussian;
+  private boolean haveNextNextGaussian;
 
   /**
    * Constructor using the default seed.
@@ -109,19 +109,19 @@ public class MersenneTwister extends java.util.Random implements Serializable {
     super.setSeed(seed);
     // Due to a bug in java.util.Random clear up to 1.2, we're
     // doing our own Gaussian variable.
-    __haveNextNextGaussian = false;
+    haveNextNextGaussian = false;
     m_mt = new int[N];
-    m_mag01 = new int[2];
-    m_mag01[0] = 0x0;
-    m_mag01[1] = MATRIX_A;
+    mag01 = new int[2];
+    mag01[0] = 0x0;
+    mag01[1] = MATRIX_A;
     m_mt[0] = (int) (seed & 0xffffffff);
-    for (m_mti = 1; m_mti < N; m_mti++) {
-      m_mt[m_mti] = (1812433253 * (m_mt[m_mti - 1] ^ (m_mt[m_mti - 1] >>> 30)) + m_mti);
+    for (mti = 1; mti < N; mti++) {
+      m_mt[mti] = (1812433253 * (m_mt[mti - 1] ^ (m_mt[mti - 1] >>> 30)) + mti);
       /* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
       /* In the previous versions, MSBs of the seed affect */
       /* only MSBs of the array mt[]. */
       /* 2002/01/09 modified by Makoto Matsumoto */
-      m_mt[m_mti] &= 0xffffffff;
+      m_mt[mti] &= 0xffffffff;
       /* for >32 bit machines */
     }
   }
@@ -169,13 +169,13 @@ public class MersenneTwister extends java.util.Random implements Serializable {
   @Override
   synchronized protected int next(final int bits) {
     int y;
-    if (m_mti >= N) // generate N words at one time
+    if (mti >= N) // generate N words at one time
     {
       int kk;
       // locals are slightly faster
       final int[] mt = this.m_mt;
       // locals are slightly faster
-      final int[] mag01 = this.m_mag01;
+      final int[] mag01 = this.mag01;
       for (kk = 0; kk < N - M; kk++) {
         y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
         mt[kk] = mt[kk + M] ^ (y >>> 1) ^ mag01[y & 0x1];
@@ -186,9 +186,9 @@ public class MersenneTwister extends java.util.Random implements Serializable {
       }
       y = (mt[N - 1] & UPPER_MASK) | (mt[0] & LOWER_MASK);
       mt[N - 1] = mt[M - 1] ^ (y >>> 1) ^ mag01[y & 0x1];
-      m_mti = 0;
+      mti = 0;
     }
-    y = m_mt[m_mti++];
+    y = m_mt[mti++];
     // TEMPERING_SHIFT_U(y)
     y ^= y >>> 11;
     // TEMPERING_SHIFT_S(y)
@@ -355,9 +355,9 @@ public class MersenneTwister extends java.util.Random implements Serializable {
    */
   @Override
   synchronized public double nextGaussian() {
-    if (__haveNextNextGaussian) {
-      __haveNextNextGaussian = false;
-      return __nextNextGaussian;
+    if (haveNextNextGaussian) {
+      haveNextNextGaussian = false;
+      return nextNextGaussian;
     } else {
       double v1, v2, s;
       do {
@@ -368,8 +368,8 @@ public class MersenneTwister extends java.util.Random implements Serializable {
         s = v1 * v1 + v2 * v2;
       } while (s >= 1 || s == 0);
       final double multiplier = /* Strict */Math.sqrt(-2 * /* Strict */Math.log(s) / s);
-      __nextNextGaussian = v2 * multiplier;
-      __haveNextNextGaussian = true;
+      nextNextGaussian = v2 * multiplier;
+      haveNextNextGaussian = true;
       return v1 * multiplier;
     }
   }
