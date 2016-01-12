@@ -1,7 +1,5 @@
 package games.strategy.engine.random;
 
-import games.strategy.util.IntegerMap;
-
 /**
  * Gets random numbers from javas random number generators.
  */
@@ -50,15 +48,5 @@ public class PlainRandomSource implements IRandomSource {
       s_random = new MersenneTwister(getSeed());
     }
     return s_random.nextInt(max);
-  }
-
-  public static void main(final String[] args) {
-    final IntegerMap<Integer> results = new IntegerMap<Integer>();
-    // TODO: does this need to be updated to take data.getDiceSides() ?
-    final int[] random = new PlainRandomSource().getRandom(6, 100000, "Test");
-    for (final int element : random) {
-      results.add(Integer.valueOf(element + 1), 1);
-    }
-    System.out.println(results);
   }
 }
