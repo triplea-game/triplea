@@ -53,7 +53,6 @@ public class MersenneTwister extends java.util.Random implements Serializable {
   // Period parameters
   private static final int N = 624;
   private static final int M = 397;
-  // private static final * constant vector a
   private static final int MATRIX_A = 0x9908b0df;
   // most significant w-r bits
   private static final int UPPER_MASK = 0x80000000;
@@ -67,8 +66,6 @@ public class MersenneTwister extends java.util.Random implements Serializable {
   // mti==N+1 means mt[N] is not initialized
   private int m_mti;
   private int m_mag01[];
-  // a good initial seed (of int size, though stored in a long)
-  // private static final long GOOD_SEED = 4357;
   /*
    * implemented here because there's a bug in Random's implementation
    * of the Gaussian code (divide by zero, and log(0), ugh!), yet its
