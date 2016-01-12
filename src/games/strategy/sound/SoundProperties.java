@@ -3,9 +3,7 @@ package games.strategy.sound;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
-import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 
 import games.strategy.triplea.ResourceLoader;
 
@@ -57,11 +55,7 @@ public class SoundProperties {
     return m_properties.getProperty(key);
   }
 
-  public String getProperty(final String key, final String defaultValue) {
+  private String getProperty(final String key, final String defaultValue) {
     return m_properties.getProperty(key, defaultValue);
-  }
-
-  public Set<Entry<Object, Object>> entrySet() {
-    return m_properties.entrySet();
   }
 }
