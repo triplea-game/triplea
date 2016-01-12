@@ -201,20 +201,6 @@ public class MersenneTwister extends java.util.Random implements Serializable {
     return y >>> (32 - bits);
   }
 
-  /*
-   * If you've got a truly old version of Java, you can omit these
-   * two next methods.
-   */
-  private synchronized void writeObject(final ObjectOutputStream out) throws IOException {
-    // just so we're synchronized.
-    out.defaultWriteObject();
-  }
-
-  private synchronized void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-    // just so we're synchronized.
-    in.defaultReadObject();
-  }
-
   /**
    * This method is missing from jdk 1.0.x and below. JDK 1.1
    * includes this for us, but what the heck.
