@@ -201,6 +201,7 @@ public class MersenneTwister extends java.util.Random implements Serializable {
     return y >>> (32 - bits);
   }
 
+
   /**
    * This method is missing from jdk 1.0.x and below. JDK 1.1
    * includes this for us, but what the heck.
@@ -210,45 +211,6 @@ public class MersenneTwister extends java.util.Random implements Serializable {
     return next(1) != 0;
   }
 
-  /**
-   * This generates a coin flip with a probability <tt>probability</tt> of returning true, else returning false.
-   * <tt>probability</tt> must
-   * be between 0.0 and 1.0, inclusive. Not as precise a random real
-   * event as nextBoolean(double), but twice as fast. To explicitly
-   * use this, remember you may need to cast to float first.
-   */
-  public boolean nextBoolean(final float probability) {
-    if (probability < 0.0f || probability > 1.0f) {
-      throw new IllegalArgumentException("probability must be between 0.0 and 1.0 inclusive.");
-    }
-    if (probability == 0.0f) {
-      // fix half-open issues
-      return false;
-    } else if (probability == 1.0f) {
-      // fix half-open issues
-      return true;
-    }
-    return nextFloat() < probability;
-  }
-
-  /**
-   * This generates a coin flip with a probability <tt>probability</tt> of returning true, else returning false.
-   * <tt>probability</tt> must
-   * be between 0.0 and 1.0, inclusive.
-   */
-  public boolean nextBoolean(final double probability) {
-    if (probability < 0.0 || probability > 1.0) {
-      throw new IllegalArgumentException("probability must be between 0.0 and 1.0 inclusive.");
-    }
-    if (probability == 0.0) {
-      // fix half-open issues
-      return false;
-    } else if (probability == 1.0) {
-      // fix half-open issues
-      return true;
-    }
-    return nextDouble() < probability;
-  }
 
   /**
    * This method is missing from JDK 1.1 and below. JDK 1.2
@@ -265,23 +227,6 @@ public class MersenneTwister extends java.util.Random implements Serializable {
     int bits, val;
     do {
       bits = next(31);
-      val = bits % n;
-    } while (bits - val + (n - 1) < 0);
-    return val;
-  }
-
-  /**
-   * This method is for completness' sake.
-   * Returns a long drawn uniformly from 0 to n-1. Suffice it to say,
-   * n must be > 0, or an IllegalArgumentException is raised.
-   */
-  public long nextLong(final long n) {
-    if (n <= 0) {
-      throw new IllegalArgumentException("n must be >= 0");
-    }
-    long bits, val;
-    do {
-      bits = (nextLong() >>> 1);
       val = bits % n;
     } while (bits - val + (n - 1) < 0);
     return val;
@@ -317,21 +262,6 @@ public class MersenneTwister extends java.util.Random implements Serializable {
     }
   }
 
-  /** For completeness' sake, though it's not in java.util.Random. */
-  public char nextChar() {
-    // chars are 16-bit UniCode values
-    return (char) (next(16));
-  }
-
-  /** For completeness' sake, though it's not in java.util.Random. */
-  public short nextShort() {
-    return (short) (next(16));
-  }
-
-  /** For completeness' sake, though it's not in java.util.Random. */
-  public byte nextByte() {
-    return (byte) (next(8));
-  }
 
   /**
    * A bug fix for all JDK code including 1.2. nextGaussian can theoretically
