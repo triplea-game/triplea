@@ -256,7 +256,7 @@ public class WW2V3_41_Test extends TestCase {
 
   public void testTechTokens() {
     // Set up the test
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final ITestDelegateBridge delegateBridge = getDelegateBridge(germans);
     delegateBridge.setStepName("germanTech");
     final TechnologyDelegate techDelegate = techDelegate(m_data);
@@ -475,7 +475,7 @@ public class WW2V3_41_Test extends TestCase {
     final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
     map.add(aaGun, 1);
     // Set up the test
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final PlaceDelegate placeDelegate = placeDelegate(m_data);
     delegateBridge.setStepName("Place");
     delegateBridge.setPlayerID(germans);
@@ -489,7 +489,7 @@ public class WW2V3_41_Test extends TestCase {
 
   public void testMechanizedInfantry() {
     // Set up tech
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final ITestDelegateBridge delegateBridge = getDelegateBridge(germans(m_data));
     TechTracker.addAdvance(germans, delegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_MECHANIZED_INFANTRY, m_data, germans));
@@ -532,7 +532,7 @@ public class WW2V3_41_Test extends TestCase {
 
   public void testJetPower() {
     // Set up tech
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final ITestDelegateBridge delegateBridge = getDelegateBridge(germans(m_data));
     TechTracker.addAdvance(germans, delegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_JET_POWER, m_data, germans));
@@ -675,7 +675,7 @@ public class WW2V3_41_Test extends TestCase {
 
   public void testPlaceInOccupiedSZ() {
     // Set up game
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final ITestDelegateBridge delegateBridge = getDelegateBridge(british(m_data));
     // Clear all units from the SZ and add an enemy unit
     final Territory sz5 = territory("5 Sea Zone", m_data);
@@ -1533,7 +1533,7 @@ public class WW2V3_41_Test extends TestCase {
     del.setDelegateBridgeAndPlayer(getDelegateBridge(germans(m_data)));
     del.start();
     // Set up player
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final int initPUs = germans.getResources().getQuantity("PUs");
     // damage a factory
     IntegerMap<Unit> startHits = new IntegerMap<Unit>();

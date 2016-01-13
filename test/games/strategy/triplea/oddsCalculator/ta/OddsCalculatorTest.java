@@ -35,7 +35,7 @@ public class OddsCalculatorTest extends TestCase {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final List<Unit> defendingUnits = new ArrayList<Unit>(germany.getUnits().getUnits());
     final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final List<Unit> attackingUnits = m_data.getUnitTypeList().getUnitType("infantry").create(100, russians);
     final List<Unit> bombardingUnits = Collections.emptyList();
     final IOddsCalculator calculator = new OddsCalculator(m_data);
@@ -52,7 +52,7 @@ public class OddsCalculatorTest extends TestCase {
     // odds for win/loss/tie are all equal
     final Territory eastCanada = m_data.getMap().getTerritory("Eastern Canada");
     final List<Unit> defendingUnits = new ArrayList<Unit>(eastCanada.getUnits().getUnits());
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final PlayerID british = m_data.getPlayerList().getPlayerID("British");
     final List<Unit> attackingUnits = m_data.getUnitTypeList().getUnitType("armour").create(1, germans, false);
     final List<Unit> bombardingUnits = Collections.emptyList();
@@ -71,7 +71,7 @@ public class OddsCalculatorTest extends TestCase {
     // 1 fighter
     // if one attacking inf must live, the odds
     // much worse
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final PlayerID british = m_data.getPlayerList().getPlayerID("British");
     final Territory eastCanada = m_data.getMap().getTerritory("Eastern Canada");
     final List<Unit> defendingUnits = m_data.getUnitTypeList().getUnitType("fighter").create(1, british, false);
@@ -92,7 +92,7 @@ public class OddsCalculatorTest extends TestCase {
     // where none of the defending units are in the territry
     // and we ignore some units that are in the territory
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final List<Unit> attackingUnits = m_data.getUnitTypeList().getUnitType("armour").create(1, germans);
     final List<Unit> bombardingUnits = Collections.emptyList();
     final PlayerID british = m_data.getPlayerList().getPlayerID("British");
@@ -109,7 +109,7 @@ public class OddsCalculatorTest extends TestCase {
   public void testSeaBattleWithTransport() {
     // Attack a battleship with a battleship and a transport
     final Territory sz2 = m_data.getMap().getTerritory("2 Sea Zone");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final List<Unit> attackingUnits = m_data.getUnitTypeList().getUnitType("battleship").create(1, germans);
     attackingUnits.addAll(m_data.getUnitTypeList().getUnitType("transport").create(1, germans));
     final List<Unit> bombardingUnits = Collections.emptyList();

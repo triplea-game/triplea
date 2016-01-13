@@ -97,7 +97,7 @@ public class DelegateTest extends TestCase {
     japanese.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
     russians = m_data.getPlayerList().getPlayerID("Russians");
     russians.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
-    germans = m_data.getPlayerList().getPlayerID("Germans");
+    germans = GameDataTestUtil.germans(m_data);
     germans.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
     northSea = m_data.getMap().getTerritory("North Sea Zone");
     blackSea = m_data.getMap().getTerritory("Black Sea Zone");

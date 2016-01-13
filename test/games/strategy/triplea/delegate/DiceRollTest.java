@@ -223,7 +223,7 @@ public class DiceRollTest extends TestCase {
   public void testAA() {
     final Territory westRussia = m_data.getMap().getTerritory("West Russia");
     final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final UnitType aaGunType = m_data.getUnitTypeList().getUnitType("aaGun");
     final List<Unit> aaGunList = aaGunType.create(1, germans);
     GameDataTestUtil.addTo(westRussia, aaGunList);
@@ -244,7 +244,7 @@ public class DiceRollTest extends TestCase {
     makeGameLowLuck();
     final Territory westRussia = m_data.getMap().getTerritory("West Russia");
     final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final UnitType aaGunType = m_data.getUnitTypeList().getUnitType("aaGun");
     final List<Unit> aaGunList = aaGunType.create(1, germans);
     GameDataTestUtil.addTo(westRussia, aaGunList);
@@ -288,7 +288,7 @@ public class DiceRollTest extends TestCase {
     makeGameLowLuck();
     final Territory westRussia = m_data.getMap().getTerritory("West Russia");
     final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final UnitType aaGunType = m_data.getUnitTypeList().getUnitType("aaGun");
     final List<Unit> aaGunList = aaGunType.create(1, germans);
     GameDataTestUtil.addTo(westRussia, aaGunList);
@@ -313,7 +313,7 @@ public class DiceRollTest extends TestCase {
     makeGameLowLuck();
     final Territory finnland = m_data.getMap().getTerritory("Finland");
     final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final UnitType aaGunType = m_data.getUnitTypeList().getUnitType("aaGun");
     final List<Unit> aaGunList = aaGunType.create(1, germans);
     GameDataTestUtil.addTo(finnland, aaGunList);
