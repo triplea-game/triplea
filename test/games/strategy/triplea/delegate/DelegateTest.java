@@ -144,7 +144,7 @@ public class DelegateTest extends TestCase {
     karelia = m_data.getMap().getTerritory("Karelia S.S.R.");
     westEurope = m_data.getMap().getTerritory("West Europe");
     finlandNorway = m_data.getMap().getTerritory("Finland Norway");
-    armour = m_data.getUnitTypeList().getUnitType("armour");
+    armour = GameDataTestUtil.armour(m_data);
     infantry = m_data.getUnitTypeList().getUnitType("infantry");
     transport = m_data.getUnitTypeList().getUnitType("transport");
     submarine = m_data.getUnitTypeList().getUnitType("submarine");

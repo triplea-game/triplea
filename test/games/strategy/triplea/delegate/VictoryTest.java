@@ -50,7 +50,7 @@ public class VictoryTest extends TestCase {
   public void testNoBlitzThroughMountain() {
     final Territory libya = m_data.getMap().getTerritory("Libya");
     final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
-    final UnitType armour = m_data.getUnitTypeList().getUnitType("armour");
+    final UnitType armour = GameDataTestUtil.armour(m_data);
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(libya, armour.create(1, m_italians)));
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     m_bridge.setStepName("CombatMove");
@@ -64,7 +64,7 @@ public class VictoryTest extends TestCase {
   public void testBlitzNormal() {
     final Territory fw_africa = m_data.getMap().getTerritory("French West Africa");
     final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
-    final UnitType armour = m_data.getUnitTypeList().getUnitType("armour");
+    final UnitType armour = GameDataTestUtil.armour(m_data);
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(fw_africa, armour.create(1, m_italians)));
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     m_bridge.setStepName("CombatMove");
@@ -80,7 +80,7 @@ public class VictoryTest extends TestCase {
     final Territory libya = m_data.getMap().getTerritory("Libya");
     final Territory a_egypt = m_data.getMap().getTerritory("Anglo Egypt");
     final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
-    final UnitType armour = m_data.getUnitTypeList().getUnitType("armour");
+    final UnitType armour = GameDataTestUtil.armour(m_data);
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(libya, armour.create(1, m_italians)));
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     m_bridge.setStepName("CombatMove");
@@ -99,7 +99,7 @@ public class VictoryTest extends TestCase {
     final Territory fw_africa = m_data.getMap().getTerritory("French West Africa");
     final Territory fe_africa = m_data.getMap().getTerritory("French Equatorial Africa");
     final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
-    final UnitType armour = m_data.getUnitTypeList().getUnitType("armour");
+    final UnitType armour = GameDataTestUtil.armour(m_data);
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(fw_africa, armour.create(1, m_italians)));
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     m_bridge.setStepName("CombatMove");
@@ -132,7 +132,7 @@ public class VictoryTest extends TestCase {
     final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
     final Territory kenya = m_data.getMap().getTerritory("Kenya");
     final Territory fe_africa = m_data.getMap().getTerritory("French Equatorial Africa");
-    final UnitType armour = m_data.getUnitTypeList().getUnitType("armour");
+    final UnitType armour = GameDataTestUtil.armour(m_data);
     final UnitType motorized = m_data.getUnitTypeList().getUnitType("motorized");
     new ChangePerformer(m_data).perform(ChangeFactory.changeOwner(fe_africa, m_italians));
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(fe_africa, armour.create(1, m_italians)));
@@ -155,7 +155,7 @@ public class VictoryTest extends TestCase {
     final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
     final Territory kenya = m_data.getMap().getTerritory("Kenya");
     final UnitType motorized = m_data.getUnitTypeList().getUnitType("motorized");
-    final UnitType armour = m_data.getUnitTypeList().getUnitType("armour");
+    final UnitType armour = GameDataTestUtil.armour(m_data);
     new ChangePerformer(m_data).perform(ChangeFactory.changeOwner(kenya, m_italians));
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(kenya, motorized.create(1, m_italians)));
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");

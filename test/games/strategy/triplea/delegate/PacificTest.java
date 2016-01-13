@@ -69,7 +69,7 @@ public class PacificTest extends DelegateTest {
     m_data = LoadGameUtil.loadGame("pacific test", "pacific_incomplete_test.xml");
     // Define units
     infantry = m_data.getUnitTypeList().getUnitType("infantry");
-    armor = m_data.getUnitTypeList().getUnitType("armour");
+    armor = GameDataTestUtil.armour(m_data);
     artillery = m_data.getUnitTypeList().getUnitType("artillery");
     marine = m_data.getUnitTypeList().getUnitType("marine");
     fighter = m_data.getUnitTypeList().getUnitType("fighter");
