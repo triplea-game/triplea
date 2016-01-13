@@ -609,7 +609,7 @@ public class WW2V3_41_Test extends TestCase {
      * with up to 3 Chinese units in them.
      */
     // Set up game
-    final PlayerID chinese = m_data.getPlayerList().getPlayerID("Chinese");
+    final PlayerID chinese = GameDataTestUtil.chinese(m_data);
     final ITestDelegateBridge delegateBridge = getDelegateBridge(chinese(m_data));
     delegateBridge.setPlayerID(chinese);
     delegateBridge.setStepName("CombatMove");

@@ -81,7 +81,7 @@ public class PacificTest extends DelegateTest {
     transport = m_data.getUnitTypeList().getUnitType("transport");
     // Define players
     americans = GameDataTestUtil.americans(m_data);
-    chinese = m_data.getPlayerList().getPlayerID("Chinese");
+    chinese = GameDataTestUtil.chinese(m_data);
     british = GameDataTestUtil.british(m_data);
     japanese = GameDataTestUtil.japanese(m_data);
     // Define territories
