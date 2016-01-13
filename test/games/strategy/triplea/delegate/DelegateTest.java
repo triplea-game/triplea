@@ -91,13 +91,13 @@ public class DelegateTest extends TestCase {
     final InputStream input = url.openStream();
     m_data = (new GameParser()).parse(input, new AtomicReference<String>(), false);
     input.close();
-    british = m_data.getPlayerList().getPlayerID("British");
+    british = GameDataTestUtil.british(m_data);
     british.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
-    japanese = m_data.getPlayerList().getPlayerID("Japanese");
+    japanese = GameDataTestUtil.japanese(m_data);
     japanese.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
-    russians = m_data.getPlayerList().getPlayerID("Russians");
+    russians = GameDataTestUtil.russians(m_data);
     russians.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
-    germans = m_data.getPlayerList().getPlayerID("Germans");
+    germans = GameDataTestUtil.germans(m_data);
     germans.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
     northSea = m_data.getMap().getTerritory("North Sea Zone");
     blackSea = m_data.getMap().getTerritory("Black Sea Zone");
@@ -144,15 +144,15 @@ public class DelegateTest extends TestCase {
     karelia = m_data.getMap().getTerritory("Karelia S.S.R.");
     westEurope = m_data.getMap().getTerritory("West Europe");
     finlandNorway = m_data.getMap().getTerritory("Finland Norway");
-    armour = m_data.getUnitTypeList().getUnitType("armour");
-    infantry = m_data.getUnitTypeList().getUnitType("infantry");
-    transport = m_data.getUnitTypeList().getUnitType("transport");
-    submarine = m_data.getUnitTypeList().getUnitType("submarine");
-    factory = m_data.getUnitTypeList().getUnitType("factory");
-    aaGun = m_data.getUnitTypeList().getUnitType("aaGun");
-    fighter = m_data.getUnitTypeList().getUnitType("fighter");
-    bomber = m_data.getUnitTypeList().getUnitType("bomber");
-    carrier = m_data.getUnitTypeList().getUnitType("carrier");
+    armour = GameDataTestUtil.armour(m_data);
+    infantry = GameDataTestUtil.infantry(m_data);
+    transport = GameDataTestUtil.transport(m_data);
+    submarine = GameDataTestUtil.submarine(m_data);
+    factory = GameDataTestUtil.factory(m_data);
+    aaGun = GameDataTestUtil.aaGun(m_data);
+    fighter = GameDataTestUtil.fighter(m_data);
+    bomber = GameDataTestUtil.bomber(m_data);
+    carrier = GameDataTestUtil.carrier(m_data);
     PUs = m_data.getResourceList().getResource("PUs");
   }
 

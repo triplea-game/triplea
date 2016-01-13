@@ -10,6 +10,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ai.AIUtils;
+import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 
@@ -27,8 +28,8 @@ public class AIUtilsTest extends TestCase {
   }
 
   public void testCost() {
-    final UnitType infantry = m_data.getUnitTypeList().getUnitType("infantry");
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final UnitType infantry = GameDataTestUtil.infantry(m_data);
+    final PlayerID british = GameDataTestUtil.british(m_data);
     assertEquals(3, AIUtils.getCost(infantry, british, m_data));
   }
 

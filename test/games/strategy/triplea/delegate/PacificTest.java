@@ -68,22 +68,22 @@ public class PacificTest extends DelegateTest {
     super.setUp();
     m_data = LoadGameUtil.loadGame("pacific test", "pacific_incomplete_test.xml");
     // Define units
-    infantry = m_data.getUnitTypeList().getUnitType("infantry");
-    armor = m_data.getUnitTypeList().getUnitType("armour");
+    infantry = GameDataTestUtil.infantry(m_data);
+    armor = GameDataTestUtil.armour(m_data);
     artillery = m_data.getUnitTypeList().getUnitType("artillery");
     marine = m_data.getUnitTypeList().getUnitType("marine");
-    fighter = m_data.getUnitTypeList().getUnitType("fighter");
-    bomber = m_data.getUnitTypeList().getUnitType("bomber");
-    sub = m_data.getUnitTypeList().getUnitType("submarine");
-    destroyer = m_data.getUnitTypeList().getUnitType("destroyer");
-    carrier = m_data.getUnitTypeList().getUnitType("carrier");
-    battleship = m_data.getUnitTypeList().getUnitType("battleship");
-    transport = m_data.getUnitTypeList().getUnitType("transport");
+    fighter = GameDataTestUtil.fighter(m_data);
+    bomber = GameDataTestUtil.bomber(m_data);
+    sub = GameDataTestUtil.submarine(m_data);
+    destroyer = GameDataTestUtil.destroyer(m_data);
+    carrier = GameDataTestUtil.carrier(m_data);
+    battleship = GameDataTestUtil.battleship(m_data);
+    transport = GameDataTestUtil.transport(m_data);
     // Define players
-    americans = m_data.getPlayerList().getPlayerID("Americans");
-    chinese = m_data.getPlayerList().getPlayerID("Chinese");
-    british = m_data.getPlayerList().getPlayerID("British");
-    japanese = m_data.getPlayerList().getPlayerID("Japanese");
+    americans = GameDataTestUtil.americans(m_data);
+    chinese = GameDataTestUtil.chinese(m_data);
+    british = GameDataTestUtil.british(m_data);
+    japanese = GameDataTestUtil.japanese(m_data);
     // Define territories
     queensland = m_data.getMap().getTerritory("Queensland");
     japan = m_data.getMap().getTerritory("Japan");

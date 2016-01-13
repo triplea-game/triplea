@@ -47,19 +47,19 @@ public class LHTRTest extends TestCase {
   public void testFightersCanLandOnNewPlacedCarrier() {
     final MoveDelegate delegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("germanNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
     final Territory baltic = m_data.getMap().getTerritory("5 Sea Zone");
     final Territory easternEurope = m_data.getMap().getTerritory("Eastern Europe");
-    final UnitType carrirType = m_data.getUnitTypeList().getUnitType("carrier");
+    final UnitType carrirType = GameDataTestUtil.carrier(m_data);
     // move a fighter to the baltic
     final Route route = new Route();
     route.setStart(easternEurope);
     route.add(baltic);
-    final UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
+    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     delegate.move(easternEurope.getUnits().getMatches(Matches.unitIsOfType(fighterType)), route);
     // add a carrier to be produced in germany
     final TripleAUnit carrier = new TripleAUnit(carrirType, germans, m_data);
@@ -74,7 +74,7 @@ public class LHTRTest extends TestCase {
   public void testFightersDestroyedWhenNoPendingCarriers() {
     final MoveDelegate delegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("germanNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
@@ -85,7 +85,7 @@ public class LHTRTest extends TestCase {
     final Route route = new Route();
     route.setStart(easternEurope);
     route.add(baltic);
-    final UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
+    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     delegate.move(easternEurope.getUnits().getMatches(Matches.unitIsOfType(fighterType)), route);
     // end the move phase
     delegate.end();
@@ -97,7 +97,7 @@ public class LHTRTest extends TestCase {
   public void testAAGunsDontFireNonCombat() {
     final MoveDelegate delegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("germanNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
@@ -125,9 +125,9 @@ public class LHTRTest extends TestCase {
   }
 
   public void testSubDefenseBonus() {
-    final UnitType sub = m_data.getUnitTypeList().getUnitType("submarine");
+    final UnitType sub = GameDataTestUtil.submarine(m_data);
     final UnitAttachment attachment = UnitAttachment.get(sub);
-    final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
+    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     // before the advance, subs defend and attack at 2
     assertEquals(2, attachment.getDefense(japanese));
     assertEquals(2, attachment.getAttack(japanese));
@@ -138,7 +138,7 @@ public class LHTRTest extends TestCase {
     assertEquals(3, attachment.getDefense(japanese));
     assertEquals(3, attachment.getAttack(japanese));
     // make sure this only changes for the player with the tech
-    final PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+    final PlayerID americans = GameDataTestUtil.americans(m_data);
     assertEquals(2, attachment.getDefense(americans));
     assertEquals(2, attachment.getAttack(americans));
   }
@@ -146,8 +146,8 @@ public class LHTRTest extends TestCase {
   public void testLHTRBombingRaid() {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany),
@@ -181,10 +181,10 @@ public class LHTRTest extends TestCase {
   public void testLHTRBombingRaid2Bombers() {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
+    final PlayerID british = GameDataTestUtil.british(m_data);
     // add a unit
-    final Unit bomber = m_data.getUnitTypeList().getUnitType("bomber").create(british);
+    final Unit bomber = GameDataTestUtil.bomber(m_data).create(british);
     final Change change = ChangeFactory.addUnits(uk, Collections.singleton(bomber));
     new ChangePerformer(m_data).perform(change);
     final BattleTracker tracker = new BattleTracker();

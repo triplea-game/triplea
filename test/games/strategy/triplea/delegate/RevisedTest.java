@@ -34,7 +34,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.techDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
-import static games.strategy.triplea.delegate.GameDataTestUtil.transports;
+import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -107,7 +107,7 @@ public class RevisedTest extends TestCase {
   }
 
   public void testMoveBadRoute() {
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final Territory sz1 = m_data.getMap().getTerritory("1 Sea Zone");
     final Territory sz11 = m_data.getMap().getTerritory("11 Sea Zone");
     final Territory sz9 = m_data.getMap().getTerritory("9 Sea Zone");
@@ -128,9 +128,9 @@ public class RevisedTest extends TestCase {
   }
 
   public void testSubAdvance() {
-    final UnitType sub = m_data.getUnitTypeList().getUnitType("submarine");
+    final UnitType sub = GameDataTestUtil.submarine(m_data);
     final UnitAttachment attachment = UnitAttachment.get(sub);
-    final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
+    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     // before the advance, subs defend and attack at 2
     assertEquals(2, attachment.getDefense(japanese));
     assertEquals(2, attachment.getAttack(japanese));
@@ -143,7 +143,7 @@ public class RevisedTest extends TestCase {
   }
 
   public void testMoveThroughSubmergedSubs() {
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final Territory sz1 = m_data.getMap().getTerritory("1 Sea Zone");
     final Territory sz7 = m_data.getMap().getTerritory("7 Sea Zone");
     final Territory sz8 = m_data.getMap().getTerritory("8 Sea Zone");
@@ -166,8 +166,8 @@ public class RevisedTest extends TestCase {
   }
 
   public void testRetreatBug() {
-    final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
-    final PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+    final PlayerID russians = GameDataTestUtil.russians(m_data);
+    final PlayerID americans = GameDataTestUtil.americans(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
@@ -178,9 +178,9 @@ public class RevisedTest extends TestCase {
     // make sinkian japanese owned, put one infantry in it
     final Territory sinkiang = m_data.getMap().getTerritory("Sinkiang");
     new ChangePerformer(m_data).perform(ChangeFactory.removeUnits(sinkiang, sinkiang.getUnits().getUnits()));
-    final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
+    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     sinkiang.setOwner(japanese);
-    final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
+    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sinkiang, infantryType.create(1, japanese)));
     // now move to attack it
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
@@ -219,8 +219,8 @@ public class RevisedTest extends TestCase {
   }
 
   public void testContinuedBattles() {
-    final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID russians = GameDataTestUtil.russians(m_data);
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
@@ -231,9 +231,9 @@ public class RevisedTest extends TestCase {
     final Territory karelia = m_data.getMap().getTerritory("Karelia S.S.R.");
     final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
     new ChangePerformer(m_data).perform(ChangeFactory.removeUnits(sz5, sz5.getUnits().getUnits()));
-    final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
-    final UnitType subType = m_data.getUnitTypeList().getUnitType("submarine");
-    final UnitType trnType = m_data.getUnitTypeList().getUnitType("transport");
+    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
+    final UnitType subType = GameDataTestUtil.submarine(m_data);
+    final UnitType trnType = GameDataTestUtil.transport(m_data);
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz5, subType.create(1, germans)));
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz5, trnType.create(1, germans)));
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz5, subType.create(1, russians)));
@@ -405,7 +405,7 @@ public class RevisedTest extends TestCase {
     final Territory egypt = territory("Anglo Egypt", m_data);
     // start a battle in se
     removeFrom(sz14, sz14.getUnits().getUnits());
-    addTo(sz15, transports(m_data).create(1, british));
+    addTo(sz15, transport(m_data).create(1, british));
     load(egypt.getUnits().getMatches(Matches.UnitIsInfantry), new Route(egypt, sz15));
     move(sz15.getUnits().getUnits(), new Route(sz15, sz14));
     move(sz14.getUnits().getMatches(Matches.UnitIsInfantry), new Route(sz14, se));
@@ -420,7 +420,7 @@ public class RevisedTest extends TestCase {
   public void testTransportAttack() {
     final Territory sz14 = m_data.getMap().getTerritory("14 Sea Zone");
     final Territory sz13 = m_data.getMap().getTerritory("13 Sea Zone");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("CombatMove");
@@ -438,8 +438,8 @@ public class RevisedTest extends TestCase {
   public void testLoadUndo() {
     final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
     final Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
-    final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("CombatMove");
@@ -470,8 +470,8 @@ public class RevisedTest extends TestCase {
     final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
     final Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
     final Territory norway = m_data.getMap().getTerritory("Norway");
-    final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("CombatMove");
@@ -515,8 +515,8 @@ public class RevisedTest extends TestCase {
   public void testLoadUndoInWrongOrder() {
     final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
     final Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
-    final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("CombatMove");
@@ -548,10 +548,10 @@ public class RevisedTest extends TestCase {
 
   public void testLoadUnloadAlliedTransport() {
     // you cant load and unload an allied transport the same turn
-    final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
+    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
     final Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
     // add japanese infantry to eastern europe
-    final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
+    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     final Change change = ChangeFactory.addUnits(eastEurope, infantryType.create(1, japanese));
     new ChangePerformer(m_data).perform(change);
     final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
@@ -582,8 +582,8 @@ public class RevisedTest extends TestCase {
     // in revised a transport may only unload to 1 territory.
     final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
     final Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
-    final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("CombatMove");
@@ -634,8 +634,8 @@ public class RevisedTest extends TestCase {
     // a transport may not unload in both combat and non combat
     final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
     final Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
-    final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("CombatMove");
@@ -721,10 +721,10 @@ public class RevisedTest extends TestCase {
   public void testMoveSubAwayFromSubmergedSubsInBattleZone() {
     final Territory sz45 = m_data.getMap().getTerritory("45 Sea Zone");
     final Territory sz50 = m_data.getMap().getTerritory("50 Sea Zone");
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
-    final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
+    final PlayerID british = GameDataTestUtil.british(m_data);
+    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     // put 1 british sub in sz 45, this simulates a submerged enemy sub
-    final UnitType sub = m_data.getUnitTypeList().getUnitType("submarine");
+    final UnitType sub = GameDataTestUtil.submarine(m_data);
     final Change c = ChangeFactory.addUnits(sz45, sub.create(1, british));
     new ChangePerformer(m_data).perform(c);
     // new move delegate
@@ -762,17 +762,17 @@ public class RevisedTest extends TestCase {
 
   public void testAAOwnership() {
     // Set up players
-    // PlayerID british = m_data.getPlayerList().getPlayerID("British");
-    final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
-    // PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+    // PlayerID british = GameDataTestUtil.british(m_data);
+    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
+    // PlayerID americans = GameDataTestUtil.americans(m_data);
     // Set up the territories
     final Territory india = territory("India", m_data);
     final Territory fic = territory("French Indochina", m_data);
     final Territory china = territory("China", m_data);
     final Territory kwang = territory("Kwantung", m_data);
     // Preset units in FIC
-    final UnitType infType = m_data.getUnitTypeList().getUnitType("infantry");
-    // UnitType aaType = m_data.getUnitTypeList().getUnitType("aaGun");
+    final UnitType infType = GameDataTestUtil.infantry(m_data);
+    // UnitType aaType = GameDataTestUtil.aaGun(m_data);
     removeFrom(fic, fic.getUnits().getUnits());
     addTo(fic, aaGun(m_data).create(1, japanese));
     addTo(fic, infantry(m_data).create(1, japanese));
@@ -858,8 +858,8 @@ public class RevisedTest extends TestCase {
   public void testStratBombCasualties() {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
     final List<Unit> bombers = uk.getUnits().getMatches(Matches.UnitIsStrategicBomber);
@@ -883,8 +883,8 @@ public class RevisedTest extends TestCase {
     makeGameLowLuck(m_data);
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
     final List<Unit> bombers = bomber(m_data).create(2, british);
@@ -911,8 +911,8 @@ public class RevisedTest extends TestCase {
     makeGameLowLuck(m_data);
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
     final List<Unit> bombers = bomber(m_data).create(7, british);
@@ -935,8 +935,8 @@ public class RevisedTest extends TestCase {
   public void testStratBombRaidWithHeavyBombers() {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany),
@@ -1304,7 +1304,7 @@ public class RevisedTest extends TestCase {
     final PlaceDelegate del = placeDelegate(m_data);
     del.setDelegateBridgeAndPlayer(getDelegateBridge(british(m_data)));
     del.start();
-    addTo(british(m_data), transports(m_data).create(1, british(m_data)), m_data);
+    addTo(british(m_data), transport(m_data).create(1, british(m_data)), m_data);
     del.end();
     // unplaced units die
     assertTrue(british(m_data).getUnits().isEmpty());
@@ -1330,7 +1330,7 @@ public class RevisedTest extends TestCase {
 
   public void testTechRolls() {
     // Set up the test
-    final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+    final PlayerID germans = GameDataTestUtil.germans(m_data);
     final ITestDelegateBridge delegateBridge = getDelegateBridge(germans);
     delegateBridge.setStepName("germanTech");
     final TechnologyDelegate techDelegate = techDelegate(m_data);
@@ -1383,7 +1383,7 @@ public class RevisedTest extends TestCase {
     final Territory we = territory("Western Europe", m_data);
     final Territory uk = territory("United Kingdom", m_data);
     addTo(sz6, destroyer(m_data).create(2, british));
-    addTo(sz5, transports(m_data).create(3, germans));
+    addTo(sz5, transport(m_data).create(3, germans));
     addTo(germany, armour(m_data).create(3, germans));
     final ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
     bridge.setStepName("CombatMove");
@@ -1448,7 +1448,7 @@ public class RevisedTest extends TestCase {
   }
 
   public void testTransportIsTransport() {
-    assertTrue(Matches.UnitIsTransport.match(transports(m_data).create(british(m_data))));
+    assertTrue(Matches.UnitIsTransport.match(transport(m_data).create(british(m_data))));
     assertFalse(Matches.UnitIsTransport.match(infantry(m_data).create(british(m_data))));
   }
 }

@@ -66,7 +66,7 @@ public class GameDataTestUtil {
     return unitType("aaGun", data);
   }
 
-  public static UnitType transports(final GameData data) {
+  public static UnitType transport(final GameData data) {
     return unitType("transport", data);
   }
 
