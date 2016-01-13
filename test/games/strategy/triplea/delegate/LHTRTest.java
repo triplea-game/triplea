@@ -184,7 +184,7 @@ public class LHTRTest extends TestCase {
     final PlayerID germans = GameDataTestUtil.germans(m_data);
     final PlayerID british = GameDataTestUtil.british(m_data);
     // add a unit
-    final Unit bomber = m_data.getUnitTypeList().getUnitType("bomber").create(british);
+    final Unit bomber = GameDataTestUtil.bomber(m_data).create(british);
     final Change change = ChangeFactory.addUnits(uk, Collections.singleton(bomber));
     new ChangePerformer(m_data).perform(change);
     final BattleTracker tracker = new BattleTracker();
