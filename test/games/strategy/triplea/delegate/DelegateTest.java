@@ -152,7 +152,7 @@ public class DelegateTest extends TestCase {
     aaGun = GameDataTestUtil.aaGun(m_data);
     fighter = m_data.getUnitTypeList().getUnitType("fighter");
     bomber = m_data.getUnitTypeList().getUnitType("bomber");
-    carrier = m_data.getUnitTypeList().getUnitType("carrier");
+    carrier = GameDataTestUtil.carrier(m_data);
     PUs = m_data.getResourceList().getResource("PUs");
   }
 

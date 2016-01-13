@@ -54,7 +54,7 @@ public class LHTRTest extends TestCase {
     delegate.start();
     final Territory baltic = m_data.getMap().getTerritory("5 Sea Zone");
     final Territory easternEurope = m_data.getMap().getTerritory("Eastern Europe");
-    final UnitType carrirType = m_data.getUnitTypeList().getUnitType("carrier");
+    final UnitType carrirType = GameDataTestUtil.carrier(m_data);
     // move a fighter to the baltic
     final Route route = new Route();
     route.setStart(easternEurope);
