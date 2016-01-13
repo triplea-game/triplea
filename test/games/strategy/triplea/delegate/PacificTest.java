@@ -72,7 +72,7 @@ public class PacificTest extends DelegateTest {
     armor = GameDataTestUtil.armour(m_data);
     artillery = m_data.getUnitTypeList().getUnitType("artillery");
     marine = m_data.getUnitTypeList().getUnitType("marine");
-    fighter = m_data.getUnitTypeList().getUnitType("fighter");
+    fighter = GameDataTestUtil.fighter(m_data);
     bomber = m_data.getUnitTypeList().getUnitType("bomber");
     sub = m_data.getUnitTypeList().getUnitType("submarine");
     destroyer = m_data.getUnitTypeList().getUnitType("destroyer");

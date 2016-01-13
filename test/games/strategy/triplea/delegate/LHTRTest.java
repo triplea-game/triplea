@@ -59,7 +59,7 @@ public class LHTRTest extends TestCase {
     final Route route = new Route();
     route.setStart(easternEurope);
     route.add(baltic);
-    final UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
+    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     delegate.move(easternEurope.getUnits().getMatches(Matches.unitIsOfType(fighterType)), route);
     // add a carrier to be produced in germany
     final TripleAUnit carrier = new TripleAUnit(carrirType, germans, m_data);
@@ -85,7 +85,7 @@ public class LHTRTest extends TestCase {
     final Route route = new Route();
     route.setStart(easternEurope);
     route.add(baltic);
-    final UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
+    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     delegate.move(easternEurope.getUnits().getMatches(Matches.unitIsOfType(fighterType)), route);
     // end the move phase
     delegate.end();

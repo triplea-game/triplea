@@ -248,7 +248,7 @@ public class DiceRollTest extends TestCase {
     final UnitType aaGunType = GameDataTestUtil.aaGun(m_data);
     final List<Unit> aaGunList = aaGunType.create(1, germans);
     GameDataTestUtil.addTo(westRussia, aaGunList);
-    final UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
+    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     List<Unit> fighterList = fighterType.create(1, russians);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
     // aa hits at 0 (0 based)
@@ -292,7 +292,7 @@ public class DiceRollTest extends TestCase {
     final UnitType aaGunType = GameDataTestUtil.aaGun(m_data);
     final List<Unit> aaGunList = aaGunType.create(1, germans);
     GameDataTestUtil.addTo(westRussia, aaGunList);
-    final UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
+    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     final List<Unit> fighterList = fighterType.create(6, russians);
     TripleAUnit.get(fighterList.get(0)).setAlreadyMoved(1);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
@@ -317,7 +317,7 @@ public class DiceRollTest extends TestCase {
     final UnitType aaGunType = GameDataTestUtil.aaGun(m_data);
     final List<Unit> aaGunList = aaGunType.create(1, germans);
     GameDataTestUtil.addTo(finnland, aaGunList);
-    final UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
+    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     List<Unit> fighterList = fighterType.create(1, russians);
     TechAttachment.get(germans).setAARadar("true");
     final ITestDelegateBridge bridge = getDelegateBridge(russians);

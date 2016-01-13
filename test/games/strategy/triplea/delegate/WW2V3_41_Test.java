@@ -540,7 +540,7 @@ public class WW2V3_41_Test extends TestCase {
     final Territory poland = territory("Poland", m_data);
     final Territory eastPoland = territory("East Poland", m_data);
     // Set up the unit types
-    final UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
+    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     delegateBridge.setStepName("germanBattle");
     while (!m_data.getSequence().getStep().getName().equals("germanBattle")) {
       m_data.getSequence().next();

@@ -74,7 +74,7 @@ public class OddsCalculatorTest extends TestCase {
     final PlayerID germans = GameDataTestUtil.germans(m_data);
     final PlayerID british = GameDataTestUtil.british(m_data);
     final Territory eastCanada = m_data.getMap().getTerritory("Eastern Canada");
-    final List<Unit> defendingUnits = m_data.getUnitTypeList().getUnitType("fighter").create(1, british, false);
+    final List<Unit> defendingUnits = GameDataTestUtil.fighter(m_data).create(1, british, false);
     final List<Unit> attackingUnits = m_data.getUnitTypeList().getUnitType("infantry").create(1, germans, false);
     attackingUnits.addAll(m_data.getUnitTypeList().getUnitType("bomber").create(1, germans, false));
     final List<Unit> bombardingUnits = Collections.emptyList();

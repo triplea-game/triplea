@@ -29,7 +29,7 @@ public class AirThatCantLandUtilTest extends TestCase {
   protected void setUp() throws Exception {
     m_data = LoadGameUtil.loadGame("World War II Revised Test", "revised_test.xml");
     m_americans = GameDataTestUtil.americans(m_data);
-    m_fighter = m_data.getUnitTypeList().getUnitType("fighter");
+    m_fighter = GameDataTestUtil.fighter(m_data);
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
@@ -128,7 +128,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     final Territory sz_52 = m_data.getMap().getTerritory("52 Sea Zone");
     final UnitType subType = m_data.getUnitTypeList().getUnitType("submarine");
     final UnitType carrierType = GameDataTestUtil.carrier(m_data);
-    final UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
+    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     // Add units for the test
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_45, subType.create(1, japanese)));
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_44, carrierType.create(1, americans)));
@@ -175,7 +175,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     final Territory sz_52 = m_data.getMap().getTerritory("52 Sea Zone");
     final UnitType subType = m_data.getUnitTypeList().getUnitType("submarine");
     final UnitType carrierType = GameDataTestUtil.carrier(m_data);
-    final UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
+    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     // Add units for the test
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_45, subType.create(1, japanese)));
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_44, carrierType.create(1, americans)));
@@ -225,7 +225,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     final Territory sz_11 = m_data.getMap().getTerritory("11 Sea Zone");
     final UnitType subType = m_data.getUnitTypeList().getUnitType("submarine");
     final UnitType carrierType = GameDataTestUtil.carrier(m_data);
-    final UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
+    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     // Add units for the test
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_11, subType.create(1, japanese)));
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_9, carrierType.create(1, americans)));
@@ -265,7 +265,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     final Territory sz_11 = m_data.getMap().getTerritory("11 Sea Zone");
     final UnitType subType = m_data.getUnitTypeList().getUnitType("submarine");
     final UnitType carrierType = GameDataTestUtil.carrier(m_data);
-    final UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
+    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     final UnitType transportType = GameDataTestUtil.transport(m_data);
     final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
     // Add units for the test
