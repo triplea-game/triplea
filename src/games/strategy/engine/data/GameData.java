@@ -109,6 +109,20 @@ public class GameData implements java.io.Serializable {
     m_lockUtil = new LockUtil();
   }
 
+  public Territory getMapTerritory(String territoryName ) {
+    return getMap().getTerritory(territoryName);
+  }
+
+  public PlayerID getPlayerID(String playerName) {
+    return getPlayerList().getPlayerID(playerName);
+  }
+
+  public List<Unit> createUnits(String unitType, int count, PlayerID player) {
+    return getUnitTypeList().getUnitType(unitType).create(count, player);
+  }
+
+
+
   /**
    * Return the GameMap. The game map allows you to list the territories in the game, and
    * to see which territory is connected to which.
