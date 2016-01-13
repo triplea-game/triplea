@@ -31,7 +31,7 @@ public class VictoryTest extends TestCase {
   public void setUp() throws Exception {
     super.setUp();
     m_data = LoadGameUtil.loadGame("victory_test", "victory_test.xml");
-    m_italians = m_data.getPlayerList().getPlayerID("Italians");
+    m_italians = GameDataTestUtil.italians(m_data);
     m_bridge = GameDataTestUtil.getDelegateBridge(m_italians, m_data);
     // we need to initialize the original owner
     final InitializationDelegate initDel =

@@ -1000,7 +1000,7 @@ public class WW2V3_41_Test extends TestCase {
     final PlayerID british = m_data.getPlayerList().getPlayerID("British");
     addTo(eg, infantry(m_data).create(2, british));
     // create/load the destroyers and transports
-    final PlayerID italians = m_data.getPlayerList().getPlayerID("Italians");
+    final PlayerID italians = GameDataTestUtil.italians(m_data);
     addTo(sz14, transports(m_data).create(1, italians));
     addTo(sz14, destroyer(m_data).create(2, italians));
     // load the transports
