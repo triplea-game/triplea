@@ -75,7 +75,7 @@ public class PacificTest extends DelegateTest {
     fighter = GameDataTestUtil.fighter(m_data);
     bomber = m_data.getUnitTypeList().getUnitType("bomber");
     sub = m_data.getUnitTypeList().getUnitType("submarine");
-    destroyer = m_data.getUnitTypeList().getUnitType("destroyer");
+    destroyer = GameDataTestUtil.destroyer(m_data);
     carrier = GameDataTestUtil.carrier(m_data);
     battleship = GameDataTestUtil.battleship(m_data);
     transport = GameDataTestUtil.transport(m_data);
