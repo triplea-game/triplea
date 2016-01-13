@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
 
+import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 

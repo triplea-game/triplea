@@ -10,6 +10,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ai.AIUtils;
+import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 
