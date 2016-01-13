@@ -53,7 +53,7 @@ public class OddsCalculatorTest extends TestCase {
     final Territory eastCanada = m_data.getMap().getTerritory("Eastern Canada");
     final List<Unit> defendingUnits = new ArrayList<Unit>(eastCanada.getUnits().getUnits());
     final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final List<Unit> attackingUnits = m_data.getUnitTypeList().getUnitType("armour").create(1, germans, false);
     final List<Unit> bombardingUnits = Collections.emptyList();
     final IOddsCalculator calculator = new ConcurrentOddsCalculator("Test");
@@ -72,7 +72,7 @@ public class OddsCalculatorTest extends TestCase {
     // if one attacking inf must live, the odds
     // much worse
     final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final Territory eastCanada = m_data.getMap().getTerritory("Eastern Canada");
     final List<Unit> defendingUnits = m_data.getUnitTypeList().getUnitType("fighter").create(1, british, false);
     final List<Unit> attackingUnits = m_data.getUnitTypeList().getUnitType("infantry").create(1, germans, false);
@@ -95,7 +95,7 @@ public class OddsCalculatorTest extends TestCase {
     final PlayerID germans = GameDataTestUtil.germans(m_data);
     final List<Unit> attackingUnits = m_data.getUnitTypeList().getUnitType("armour").create(1, germans);
     final List<Unit> bombardingUnits = Collections.emptyList();
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final List<Unit> defendingUnits = m_data.getUnitTypeList().getUnitType("armour").create(1, british);
     final OddsCalculator calculator = new OddsCalculator(m_data);
     final AggregateResults results = calculator.setCalculateDataAndCalculate(germans, british, uk, attackingUnits,
@@ -113,7 +113,7 @@ public class OddsCalculatorTest extends TestCase {
     final List<Unit> attackingUnits = m_data.getUnitTypeList().getUnitType("battleship").create(1, germans);
     attackingUnits.addAll(m_data.getUnitTypeList().getUnitType("transport").create(1, germans));
     final List<Unit> bombardingUnits = Collections.emptyList();
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final List<Unit> defendingUnits = m_data.getUnitTypeList().getUnitType("battleship").create(1, british);
     final OddsCalculator calculator = new OddsCalculator(m_data);
     final AggregateResults results = calculator.setCalculateDataAndCalculate(germans, british, sz2, attackingUnits,

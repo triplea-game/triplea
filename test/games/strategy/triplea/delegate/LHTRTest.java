@@ -147,7 +147,7 @@ public class LHTRTest extends TestCase {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");
     final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany),
@@ -182,7 +182,7 @@ public class LHTRTest extends TestCase {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");
     final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     // add a unit
     final Unit bomber = m_data.getUnitTypeList().getUnitType("bomber").create(british);
     final Change change = ChangeFactory.addUnits(uk, Collections.singleton(bomber));

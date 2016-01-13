@@ -356,7 +356,7 @@ public class DiceRollTest extends TestCase {
 
   public void testHeavyBombers() {
     m_data = LoadGameUtil.loadGame("Classic: Iron Blitz 3rd Edition Test", "iron_blitz_test.xml");
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, testDelegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
@@ -372,7 +372,7 @@ public class DiceRollTest extends TestCase {
 
   public void testHeavyBombersDefend() {
     m_data = LoadGameUtil.loadGame("Classic: Iron Blitz 3rd Edition Test", "iron_blitz_test.xml");
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, testDelegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
@@ -387,7 +387,7 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testLHTRBomberDefend() {
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, true);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     final List<Unit> bombers =
@@ -402,7 +402,7 @@ public class DiceRollTest extends TestCase {
 
   public void testHeavyBombersLHTR() {
     m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, testDelegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
@@ -419,7 +419,7 @@ public class DiceRollTest extends TestCase {
 
   public void testHeavyBombersLHTR2() {
     m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, testDelegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
@@ -436,7 +436,7 @@ public class DiceRollTest extends TestCase {
 
   public void testHeavyBombersDefendLHTR() {
     m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, testDelegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
@@ -453,7 +453,7 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testDiceRollCount() {
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final Territory location = m_data.getMap().getTerritory("United Kingdom");
     final Unit bombers =
         m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber).get(0);

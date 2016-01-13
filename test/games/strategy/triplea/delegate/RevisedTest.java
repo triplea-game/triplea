@@ -107,7 +107,7 @@ public class RevisedTest extends TestCase {
   }
 
   public void testMoveBadRoute() {
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final Territory sz1 = m_data.getMap().getTerritory("1 Sea Zone");
     final Territory sz11 = m_data.getMap().getTerritory("11 Sea Zone");
     final Territory sz9 = m_data.getMap().getTerritory("9 Sea Zone");
@@ -143,7 +143,7 @@ public class RevisedTest extends TestCase {
   }
 
   public void testMoveThroughSubmergedSubs() {
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final Territory sz1 = m_data.getMap().getTerritory("1 Sea Zone");
     final Territory sz7 = m_data.getMap().getTerritory("7 Sea Zone");
     final Territory sz8 = m_data.getMap().getTerritory("8 Sea Zone");
@@ -721,7 +721,7 @@ public class RevisedTest extends TestCase {
   public void testMoveSubAwayFromSubmergedSubsInBattleZone() {
     final Territory sz45 = m_data.getMap().getTerritory("45 Sea Zone");
     final Territory sz50 = m_data.getMap().getTerritory("50 Sea Zone");
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
     // put 1 british sub in sz 45, this simulates a submerged enemy sub
     final UnitType sub = m_data.getUnitTypeList().getUnitType("submarine");
@@ -762,7 +762,7 @@ public class RevisedTest extends TestCase {
 
   public void testAAOwnership() {
     // Set up players
-    // PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    // PlayerID british = GameDataTestUtil.british(m_data);
     final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
     // PlayerID americans = GameDataTestUtil.americans(m_data);
     // Set up the territories
@@ -859,7 +859,7 @@ public class RevisedTest extends TestCase {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");
     final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
     final List<Unit> bombers = uk.getUnits().getMatches(Matches.UnitIsStrategicBomber);
@@ -884,7 +884,7 @@ public class RevisedTest extends TestCase {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");
     final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
     final List<Unit> bombers = bomber(m_data).create(2, british);
@@ -912,7 +912,7 @@ public class RevisedTest extends TestCase {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");
     final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
     final List<Unit> bombers = bomber(m_data).create(7, british);
@@ -936,7 +936,7 @@ public class RevisedTest extends TestCase {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");
     final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany),

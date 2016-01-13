@@ -42,7 +42,7 @@ public class Pact_of_Steel_2_Test extends TestCase {
     final Territory East_Balkans = m_data.getMap().getTerritory("East Balkans");
     final Territory Ukraine_S_S_R_ = m_data.getMap().getTerritory("Ukraine S.S.R.");
     final Territory Belorussia = m_data.getMap().getTerritory("Belorussia");
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final PlayerID germans = GameDataTestUtil.germans(m_data);
     final PlayerID russians = GameDataTestUtil.russians(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);

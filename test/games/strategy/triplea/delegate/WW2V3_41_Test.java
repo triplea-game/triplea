@@ -117,7 +117,7 @@ public class WW2V3_41_Test extends TestCase {
 
   public void testAACasualtiesLowLuckMixedRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final ITestDelegateBridge m_bridge = getDelegateBridge(british);
     makeGameLowLuck(m_data);
     // setSelectAACasualties(data, false);
@@ -146,7 +146,7 @@ public class WW2V3_41_Test extends TestCase {
 
   public void testAACasualtiesLowLuckMixedWithRollingRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final ITestDelegateBridge m_bridge = getDelegateBridge(british);
     makeGameLowLuck(m_data);
     // setSelectAACasualties(data, false);
@@ -179,7 +179,7 @@ public class WW2V3_41_Test extends TestCase {
 
   public void testAACasualtiesLowLuckMixedWithRollingMissRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final ITestDelegateBridge m_bridge = getDelegateBridge(british);
     makeGameLowLuck(m_data);
     // setSelectAACasualties(data, false);
@@ -216,7 +216,7 @@ public class WW2V3_41_Test extends TestCase {
   public void testDefendingTrasnportsAutoKilled() {
     final Territory sz13 = m_data.getMap().getTerritory("13 Sea Zone");
     final Territory sz12 = m_data.getMap().getTerritory("12 Sea Zone");
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final MoveDelegate moveDelegate = moveDelegate(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setStepName("CombatMove");
@@ -577,7 +577,7 @@ public class WW2V3_41_Test extends TestCase {
 
   public void testFactoryPlace() {
     // Set up game
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final ITestDelegateBridge delegateBridge = getDelegateBridge(british(m_data));
     // Set up the territories
     final Territory egypt = territory("Union of South Africa", m_data);
@@ -946,7 +946,7 @@ public class WW2V3_41_Test extends TestCase {
     // Clear all units from the attacked terr
     removeFrom(eg, eg.getUnits().getUnits());
     // Add 2 inf
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     addTo(eg, infantry(m_data).create(2, british));
     // load the transports
     load(balkans.getUnits().getMatches(Matches.UnitIsInfantry), new Route(balkans, sz14));
@@ -997,7 +997,7 @@ public class WW2V3_41_Test extends TestCase {
     removeFrom(eg, eg.getUnits().getUnits());
     removeFrom(sz14, sz14.getUnits().getUnits());
     // Add 2 inf to the attacked terr
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     addTo(eg, infantry(m_data).create(2, british));
     // create/load the destroyers and transports
     final PlayerID italians = GameDataTestUtil.italians(m_data);
@@ -1598,7 +1598,7 @@ public class WW2V3_41_Test extends TestCase {
 
   public void testOccupiedTerrOfAttachment() {
     // Set up test
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final ITestDelegateBridge delegateBridge = getDelegateBridge(british(m_data));
     // Set up the move delegate
     final MoveDelegate moveDelegate = moveDelegate(m_data);
@@ -1630,7 +1630,7 @@ public class WW2V3_41_Test extends TestCase {
 
   public void testOccupiedTerrOfAttachmentWithCapital() {
     // Set up test
-    final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    final PlayerID british = GameDataTestUtil.british(m_data);
     final ITestDelegateBridge delegateBridge = getDelegateBridge(british(m_data));
     // Set up the move delegate
     final MoveDelegate moveDelegate = moveDelegate(m_data);

@@ -91,7 +91,7 @@ public class DelegateTest extends TestCase {
     final InputStream input = url.openStream();
     m_data = (new GameParser()).parse(input, new AtomicReference<String>(), false);
     input.close();
-    british = m_data.getPlayerList().getPlayerID("British");
+    british = GameDataTestUtil.british(m_data);
     british.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
     japanese = m_data.getPlayerList().getPlayerID("Japanese");
     japanese.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
