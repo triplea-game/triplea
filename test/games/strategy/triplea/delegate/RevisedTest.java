@@ -772,7 +772,7 @@ public class RevisedTest extends TestCase {
     final Territory kwang = territory("Kwantung", m_data);
     // Preset units in FIC
     final UnitType infType = m_data.getUnitTypeList().getUnitType("infantry");
-    // UnitType aaType = m_data.getUnitTypeList().getUnitType("aaGun");
+    // UnitType aaType = GameDataTestUtil.aaGun(m_data);
     removeFrom(fic, fic.getUnits().getUnits());
     addTo(fic, aaGun(m_data).create(1, japanese));
     addTo(fic, infantry(m_data).create(1, japanese));

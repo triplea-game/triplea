@@ -471,7 +471,7 @@ public class WW2V3_41_Test extends TestCase {
     /*
      * Test Building one
      */
-    final UnitType aaGun = m_data.getUnitTypeList().getUnitType("aaGun");
+    final UnitType aaGun = GameDataTestUtil.aaGun(m_data);
     final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
     map.add(aaGun, 1);
     // Set up the test
