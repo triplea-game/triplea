@@ -166,7 +166,7 @@ public class RevisedTest extends TestCase {
   }
 
   public void testRetreatBug() {
-    final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
+    final PlayerID russians = GameDataTestUtil.russians(m_data);
     final PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
     // we need to initialize the original owner
@@ -219,7 +219,7 @@ public class RevisedTest extends TestCase {
   }
 
   public void testContinuedBattles() {
-    final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
+    final PlayerID russians = GameDataTestUtil.russians(m_data);
     final PlayerID germans = GameDataTestUtil.germans(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");

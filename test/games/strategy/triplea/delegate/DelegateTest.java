@@ -95,7 +95,7 @@ public class DelegateTest extends TestCase {
     british.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
     japanese = m_data.getPlayerList().getPlayerID("Japanese");
     japanese.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
-    russians = m_data.getPlayerList().getPlayerID("Russians");
+    russians = GameDataTestUtil.russians(m_data);
     russians.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
     germans = GameDataTestUtil.germans(m_data);
     germans.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());

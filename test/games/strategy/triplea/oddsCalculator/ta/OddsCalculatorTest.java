@@ -34,7 +34,7 @@ public class OddsCalculatorTest extends TestCase {
   public void testUnbalancedFight() {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final List<Unit> defendingUnits = new ArrayList<Unit>(germany.getUnits().getUnits());
-    final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
+    final PlayerID russians = GameDataTestUtil.russians(m_data);
     final PlayerID germans = GameDataTestUtil.germans(m_data);
     final List<Unit> attackingUnits = m_data.getUnitTypeList().getUnitType("infantry").create(100, russians);
     final List<Unit> bombardingUnits = Collections.emptyList();
