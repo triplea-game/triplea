@@ -266,7 +266,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     final UnitType subType = m_data.getUnitTypeList().getUnitType("submarine");
     final UnitType carrierType = m_data.getUnitTypeList().getUnitType("carrier");
     final UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
-    final UnitType transportType = m_data.getUnitTypeList().getUnitType("transport");
+    final UnitType transportType = GameDataTestUtil.transport(m_data);
     final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
     // Add units for the test
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_11, subType.create(1, japanese)));

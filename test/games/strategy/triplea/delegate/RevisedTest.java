@@ -233,7 +233,7 @@ public class RevisedTest extends TestCase {
     new ChangePerformer(m_data).perform(ChangeFactory.removeUnits(sz5, sz5.getUnits().getUnits()));
     final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
     final UnitType subType = m_data.getUnitTypeList().getUnitType("submarine");
-    final UnitType trnType = m_data.getUnitTypeList().getUnitType("transport");
+    final UnitType trnType = GameDataTestUtil.transport(m_data);
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz5, subType.create(1, germans)));
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz5, trnType.create(1, germans)));
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz5, subType.create(1, russians)));

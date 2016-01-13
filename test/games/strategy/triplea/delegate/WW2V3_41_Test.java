@@ -682,7 +682,7 @@ public class WW2V3_41_Test extends TestCase {
     removeFrom(sz5, sz5.getUnits().getUnits());
     addTo(sz5, destroyer(m_data).create(1, british(m_data)));
     // Set up the unit types
-    final UnitType transportType = m_data.getUnitTypeList().getUnitType("transport");
+    final UnitType transportType = GameDataTestUtil.transport(m_data);
     // Set up the move delegate
     final PlaceDelegate placeDelegate = placeDelegate(m_data);
     delegateBridge.setStepName("Place");
