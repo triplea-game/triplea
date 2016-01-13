@@ -4,7 +4,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
-import static games.strategy.triplea.delegate.GameDataTestUtil.transports;
+import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +14,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
@@ -125,7 +126,7 @@ public class OddsCalculatorTest extends TestCase {
 
   public void testAttackingTransports() {
     final Territory sz1 = territory("1 Sea Zone", m_data);
-    final List<Unit> attacking = transports(m_data).create(2, americans(m_data));
+    final List<Unit> attacking = transport(m_data).create(2, americans(m_data));
     final List<Unit> defending = submarine(m_data).create(2, germans(m_data));
     final OddsCalculator calculator = new OddsCalculator(m_data);
     calculator.setKeepOneAttackingLandUnit(false);
@@ -141,7 +142,7 @@ public class OddsCalculatorTest extends TestCase {
     m_data = LoadGameUtil.loadTestGame("ww2v3_1942_test.xml");
     final Territory sz1 = territory("1 Sea Zone", m_data);
     final List<Unit> attacking = submarine(m_data).create(2, americans(m_data));
-    final List<Unit> defending = transports(m_data).create(2, germans(m_data));
+    final List<Unit> defending = transport(m_data).create(2, germans(m_data));
     final OddsCalculator calculator = new OddsCalculator(m_data);
     calculator.setKeepOneAttackingLandUnit(false);
     final AggregateResults results = calculator.setCalculateDataAndCalculate(americans(m_data), germans(m_data), sz1,

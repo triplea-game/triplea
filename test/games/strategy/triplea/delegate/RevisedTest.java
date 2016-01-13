@@ -34,7 +34,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.techDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
-import static games.strategy.triplea.delegate.GameDataTestUtil.transports;
+import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -405,7 +405,7 @@ public class RevisedTest extends TestCase {
     final Territory egypt = territory("Anglo Egypt", m_data);
     // start a battle in se
     removeFrom(sz14, sz14.getUnits().getUnits());
-    addTo(sz15, transports(m_data).create(1, british));
+    addTo(sz15, transport(m_data).create(1, british));
     load(egypt.getUnits().getMatches(Matches.UnitIsInfantry), new Route(egypt, sz15));
     move(sz15.getUnits().getUnits(), new Route(sz15, sz14));
     move(sz14.getUnits().getMatches(Matches.UnitIsInfantry), new Route(sz14, se));
@@ -1304,7 +1304,7 @@ public class RevisedTest extends TestCase {
     final PlaceDelegate del = placeDelegate(m_data);
     del.setDelegateBridgeAndPlayer(getDelegateBridge(british(m_data)));
     del.start();
-    addTo(british(m_data), transports(m_data).create(1, british(m_data)), m_data);
+    addTo(british(m_data), transport(m_data).create(1, british(m_data)), m_data);
     del.end();
     // unplaced units die
     assertTrue(british(m_data).getUnits().isEmpty());
@@ -1383,7 +1383,7 @@ public class RevisedTest extends TestCase {
     final Territory we = territory("Western Europe", m_data);
     final Territory uk = territory("United Kingdom", m_data);
     addTo(sz6, destroyer(m_data).create(2, british));
-    addTo(sz5, transports(m_data).create(3, germans));
+    addTo(sz5, transport(m_data).create(3, germans));
     addTo(germany, armour(m_data).create(3, germans));
     final ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
     bridge.setStepName("CombatMove");
@@ -1448,7 +1448,7 @@ public class RevisedTest extends TestCase {
   }
 
   public void testTransportIsTransport() {
-    assertTrue(Matches.UnitIsTransport.match(transports(m_data).create(british(m_data))));
+    assertTrue(Matches.UnitIsTransport.match(transport(m_data).create(british(m_data))));
     assertFalse(Matches.UnitIsTransport.match(infantry(m_data).create(british(m_data))));
   }
 }

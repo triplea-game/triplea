@@ -36,7 +36,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
 import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.techDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
-import static games.strategy.triplea.delegate.GameDataTestUtil.transports;
+import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -239,7 +239,7 @@ public class WW2V3_41_Test extends TestCase {
     final PlaceDelegate del = placeDelegate(m_data);
     del.setDelegateBridgeAndPlayer(getDelegateBridge(british(m_data)));
     del.start();
-    addTo(british(m_data), transports(m_data).create(1, british(m_data)), m_data);
+    addTo(british(m_data), transport(m_data).create(1, british(m_data)), m_data);
     del.end();
     // unplaced units die
     assertEquals(1, british(m_data).getUnits().size());
@@ -249,7 +249,7 @@ public class WW2V3_41_Test extends TestCase {
     final PlaceDelegate del = placeDelegate(m_data);
     del.setDelegateBridgeAndPlayer(getDelegateBridge(british(m_data)));
     del.start();
-    addTo(british(m_data), transports(m_data).create(1, british(m_data)), m_data);
+    addTo(british(m_data), transport(m_data).create(1, british(m_data)), m_data);
     final String error = del.placeUnits(Collections.<Unit>emptyList(), territory("United Kingdom", m_data));
     assertNull(error);
   }
@@ -692,7 +692,7 @@ public class WW2V3_41_Test extends TestCase {
     // Add the transport
     final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
     map.add(transportType, 1);
-    addTo(germans(m_data), transports(m_data).create(1, germans(m_data)), m_data);
+    addTo(germans(m_data), transport(m_data).create(1, germans(m_data)), m_data);
     // Place it
     final String response = placeDelegate.placeUnits(getUnits(map, germans), sz5);
     assertValid(response);
@@ -744,7 +744,7 @@ public class WW2V3_41_Test extends TestCase {
     final Territory sz6 = territory("6 Sea Zone", m_data);
     final Territory uk = territory("United Kingdom", m_data);
     // add a transport
-    addTo(sz8, transports(m_data).create(1, british(m_data)));
+    addTo(sz8, transport(m_data).create(1, british(m_data)));
     // move the transport where to the sub is
     assertValid(moveDelegate.move(sz8.getUnits().getUnits(), new Route(sz8, sz7)));
     // load the transport
@@ -1001,7 +1001,7 @@ public class WW2V3_41_Test extends TestCase {
     addTo(eg, infantry(m_data).create(2, british));
     // create/load the destroyers and transports
     final PlayerID italians = GameDataTestUtil.italians(m_data);
-    addTo(sz14, transports(m_data).create(1, italians));
+    addTo(sz14, transport(m_data).create(1, italians));
     addTo(sz14, destroyer(m_data).create(2, italians));
     // load the transports
     load(balkans.getUnits().getMatches(Matches.UnitIsInfantry), new Route(balkans, sz14));
