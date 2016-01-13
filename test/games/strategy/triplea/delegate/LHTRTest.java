@@ -138,7 +138,7 @@ public class LHTRTest extends TestCase {
     assertEquals(3, attachment.getDefense(japanese));
     assertEquals(3, attachment.getAttack(japanese));
     // make sure this only changes for the player with the tech
-    final PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+    final PlayerID americans = GameDataTestUtil.americans(m_data);
     assertEquals(2, attachment.getDefense(americans));
     assertEquals(2, attachment.getAttack(americans));
   }

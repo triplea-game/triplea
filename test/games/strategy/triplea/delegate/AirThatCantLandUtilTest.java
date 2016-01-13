@@ -28,7 +28,7 @@ public class AirThatCantLandUtilTest extends TestCase {
   @Override
   protected void setUp() throws Exception {
     m_data = LoadGameUtil.loadGame("World War II Revised Test", "revised_test.xml");
-    m_americans = m_data.getPlayerList().getPlayerID("Americans");
+    m_americans = GameDataTestUtil.americans(m_data);
     m_fighter = m_data.getUnitTypeList().getUnitType("fighter");
   }
 
@@ -114,7 +114,7 @@ public class AirThatCantLandUtilTest extends TestCase {
 
   public void testCanLandNeighborCarrier() {
     final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
-    final PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+    final PlayerID americans = GameDataTestUtil.americans(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
@@ -160,7 +160,7 @@ public class AirThatCantLandUtilTest extends TestCase {
 
   public void testCanLandMultiNeighborCarriers() {
     final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
-    final PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+    final PlayerID americans = GameDataTestUtil.americans(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
@@ -211,7 +211,7 @@ public class AirThatCantLandUtilTest extends TestCase {
 
   public void testCanLandNeighborLandV2() {
     final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
-    final PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+    final PlayerID americans = GameDataTestUtil.americans(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
@@ -257,7 +257,7 @@ public class AirThatCantLandUtilTest extends TestCase {
 
   public void testCanLandNeighborLandWithRetreatedBattleV2() {
     final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
-    final PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+    final PlayerID americans = GameDataTestUtil.americans(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     // Get necessary sea zones and unit types for this test
     final Territory sz_9 = m_data.getMap().getTerritory("9 Sea Zone");

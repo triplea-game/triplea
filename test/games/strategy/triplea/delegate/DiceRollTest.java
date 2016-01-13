@@ -174,7 +174,7 @@ public class DiceRollTest extends TestCase {
   public void testMarineAttackPlus1() throws Exception {
     m_data = LoadGameUtil.loadGame("Classic: Iron Blitz 3rd Edition Test", "iron_blitz_test.xml");
     final Territory algeria = m_data.getMap().getTerritory("Algeria");
-    final PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+    final PlayerID americans = GameDataTestUtil.americans(m_data);
     final UnitType marine = m_data.getUnitTypeList().getUnitType("marine");
     final List<Unit> attackers = marine.create(1, americans);
     final ITestDelegateBridge bridge = getDelegateBridge(americans);
@@ -191,7 +191,7 @@ public class DiceRollTest extends TestCase {
     m_data = LoadGameUtil.loadGame("Classic: Iron Blitz 3rd Edition Test", "iron_blitz_test.xml");
     makeGameLowLuck();
     final Territory algeria = m_data.getMap().getTerritory("Algeria");
-    final PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+    final PlayerID americans = GameDataTestUtil.americans(m_data);
     final UnitType marine = m_data.getUnitTypeList().getUnitType("marine");
     final List<Unit> attackers = marine.create(3, americans);
     final ITestDelegateBridge bridge = getDelegateBridge(americans);
@@ -207,7 +207,7 @@ public class DiceRollTest extends TestCase {
   public void testMarineAttacNormalIfNotAmphibious() throws Exception {
     m_data = LoadGameUtil.loadGame("Classic: Iron Blitz 3rd Edition Test", "iron_blitz_test.xml");
     final Territory algeria = m_data.getMap().getTerritory("Algeria");
-    final PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+    final PlayerID americans = GameDataTestUtil.americans(m_data);
     final UnitType marine = m_data.getUnitTypeList().getUnitType("marine");
     final List<Unit> attackers = marine.create(1, americans);
     final ITestDelegateBridge bridge = getDelegateBridge(americans);

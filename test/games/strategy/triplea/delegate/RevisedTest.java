@@ -167,7 +167,7 @@ public class RevisedTest extends TestCase {
 
   public void testRetreatBug() {
     final PlayerID russians = GameDataTestUtil.russians(m_data);
-    final PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+    final PlayerID americans = GameDataTestUtil.americans(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
@@ -764,7 +764,7 @@ public class RevisedTest extends TestCase {
     // Set up players
     // PlayerID british = m_data.getPlayerList().getPlayerID("British");
     final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
-    // PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+    // PlayerID americans = GameDataTestUtil.americans(m_data);
     // Set up the territories
     final Territory india = territory("India", m_data);
     final Territory fic = territory("French Indochina", m_data);
