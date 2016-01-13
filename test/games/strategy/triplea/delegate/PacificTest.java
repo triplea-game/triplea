@@ -83,7 +83,7 @@ public class PacificTest extends DelegateTest {
     americans = GameDataTestUtil.americans(m_data);
     chinese = m_data.getPlayerList().getPlayerID("Chinese");
     british = GameDataTestUtil.british(m_data);
-    japanese = m_data.getPlayerList().getPlayerID("Japanese");
+    japanese = GameDataTestUtil.japanese(m_data);
     // Define territories
     queensland = m_data.getMap().getTerritory("Queensland");
     japan = m_data.getMap().getTerritory("Japan");

@@ -113,7 +113,7 @@ public class AirThatCantLandUtilTest extends TestCase {
   }
 
   public void testCanLandNeighborCarrier() {
-    final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
+    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     final PlayerID americans = GameDataTestUtil.americans(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     // we need to initialize the original owner
@@ -159,7 +159,7 @@ public class AirThatCantLandUtilTest extends TestCase {
   }
 
   public void testCanLandMultiNeighborCarriers() {
-    final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
+    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     final PlayerID americans = GameDataTestUtil.americans(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     // we need to initialize the original owner
@@ -210,7 +210,7 @@ public class AirThatCantLandUtilTest extends TestCase {
   }
 
   public void testCanLandNeighborLandV2() {
-    final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
+    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     final PlayerID americans = GameDataTestUtil.americans(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     // we need to initialize the original owner
@@ -256,7 +256,7 @@ public class AirThatCantLandUtilTest extends TestCase {
   }
 
   public void testCanLandNeighborLandWithRetreatedBattleV2() {
-    final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
+    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     final PlayerID americans = GameDataTestUtil.americans(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     // Get necessary sea zones and unit types for this test

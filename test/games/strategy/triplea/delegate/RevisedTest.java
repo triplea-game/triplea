@@ -130,7 +130,7 @@ public class RevisedTest extends TestCase {
   public void testSubAdvance() {
     final UnitType sub = m_data.getUnitTypeList().getUnitType("submarine");
     final UnitAttachment attachment = UnitAttachment.get(sub);
-    final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
+    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     // before the advance, subs defend and attack at 2
     assertEquals(2, attachment.getDefense(japanese));
     assertEquals(2, attachment.getAttack(japanese));
@@ -178,7 +178,7 @@ public class RevisedTest extends TestCase {
     // make sinkian japanese owned, put one infantry in it
     final Territory sinkiang = m_data.getMap().getTerritory("Sinkiang");
     new ChangePerformer(m_data).perform(ChangeFactory.removeUnits(sinkiang, sinkiang.getUnits().getUnits()));
-    final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
+    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     sinkiang.setOwner(japanese);
     final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sinkiang, infantryType.create(1, japanese)));
@@ -551,7 +551,7 @@ public class RevisedTest extends TestCase {
     final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
     final Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
     // add japanese infantry to eastern europe
-    final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
+    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     final Change change = ChangeFactory.addUnits(eastEurope, infantryType.create(1, japanese));
     new ChangePerformer(m_data).perform(change);
     final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
@@ -722,7 +722,7 @@ public class RevisedTest extends TestCase {
     final Territory sz45 = m_data.getMap().getTerritory("45 Sea Zone");
     final Territory sz50 = m_data.getMap().getTerritory("50 Sea Zone");
     final PlayerID british = GameDataTestUtil.british(m_data);
-    final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
+    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     // put 1 british sub in sz 45, this simulates a submerged enemy sub
     final UnitType sub = m_data.getUnitTypeList().getUnitType("submarine");
     final Change c = ChangeFactory.addUnits(sz45, sub.create(1, british));
@@ -763,7 +763,7 @@ public class RevisedTest extends TestCase {
   public void testAAOwnership() {
     // Set up players
     // PlayerID british = GameDataTestUtil.british(m_data);
-    final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
+    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     // PlayerID americans = GameDataTestUtil.americans(m_data);
     // Set up the territories
     final Territory india = territory("India", m_data);
