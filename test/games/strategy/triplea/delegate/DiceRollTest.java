@@ -70,7 +70,7 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testSimpleLowLuck() {
-    makeGameLowLuck();
+    GameDataTestUtil.makeGameLowLuck(m_data);
     final Territory westRussia = m_data.getMap().getTerritory("West Russia");
     final MockBattle battle = new MockBattle(westRussia);
     final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
@@ -136,7 +136,7 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testLowLuck() {
-    makeGameLowLuck();
+    GameDataTestUtil.makeGameLowLuck(m_data);
     final Territory westRussia = m_data.getMap().getTerritory("West Russia");
     final MockBattle battle = new MockBattle(westRussia);
     final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
@@ -163,14 +163,6 @@ public class DiceRollTest extends TestCase {
     }
   }
 
-  private void makeGameLowLuck() {
-    for (final IEditableProperty property : m_data.getProperties().getEditableProperties()) {
-      if (property.getName().equals(Constants.LOW_LUCK)) {
-        ((BooleanProperty) property).setValue(true);
-      }
-    }
-  }
-
   public void testMarineAttackPlus1() throws Exception {
     m_data = LoadGameUtil.loadGame("Classic: Iron Blitz 3rd Edition Test", "iron_blitz_test.xml");
     final Territory algeria = m_data.getMap().getTerritory("Algeria");
@@ -189,7 +181,7 @@ public class DiceRollTest extends TestCase {
 
   public void testMarineAttackPlus1LowLuck() throws Exception {
     m_data = LoadGameUtil.loadGame("Classic: Iron Blitz 3rd Edition Test", "iron_blitz_test.xml");
-    makeGameLowLuck();
+    GameDataTestUtil.makeGameLowLuck(m_data);
     final Territory algeria = m_data.getMap().getTerritory("Algeria");
     final PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
     final UnitType marine = m_data.getUnitTypeList().getUnitType("marine");
@@ -241,7 +233,7 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testAALowLuck() {
-    makeGameLowLuck();
+    GameDataTestUtil.makeGameLowLuck(m_data);
     final Territory westRussia = m_data.getMap().getTerritory("West Russia");
     final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
     final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
@@ -285,7 +277,7 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testAALowLuckDifferentMovement() {
-    makeGameLowLuck();
+    GameDataTestUtil.makeGameLowLuck(m_data);
     final Territory westRussia = m_data.getMap().getTerritory("West Russia");
     final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
     final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
@@ -310,7 +302,7 @@ public class DiceRollTest extends TestCase {
 
   public void testAALowLuckWithRadar() {
     m_data = LoadGameUtil.loadGame("World War II v3 1941 Test", "ww2v3_1941_test.xml");
-    makeGameLowLuck();
+    GameDataTestUtil.makeGameLowLuck(m_data);
     final Territory finnland = m_data.getMap().getTerritory("Finland");
     final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
     final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
