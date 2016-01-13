@@ -43,7 +43,7 @@ public class ChangeTripleATest extends TestCase {
     assertEquals(can.getUnits().getUnitCount(), 2);
     // add some units
     final Change change =
-        ChangeFactory.addUnits(can, m_data.getUnitTypeList().getUnitType("infantry").create(10, null));
+        ChangeFactory.addUnits(can, GameDataTestUtil.infantry(m_data).create(10, null));
     final ChangePerformer changePerformer = new ChangePerformer(m_data);
     changePerformer.perform(change);
     assertEquals(can.getUnits().getUnitCount(), 12);
@@ -57,7 +57,7 @@ public class ChangeTripleATest extends TestCase {
     final Territory can = m_data.getMap().getTerritory("Western Canada");
     assertEquals(can.getUnits().getUnitCount(), 2);
     // remove some units
-    final Collection<Unit> units = can.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("infantry"), 1);
+    final Collection<Unit> units = can.getUnits().getUnits(GameDataTestUtil.infantry(m_data), 1);
     final Change change = ChangeFactory.removeUnits(can, units);
     final ChangePerformer changePerformer = new ChangePerformer(m_data);
     changePerformer.perform(change);
@@ -72,7 +72,7 @@ public class ChangeTripleATest extends TestCase {
     final Territory can = m_data.getMap().getTerritory("Western Canada");
     assertEquals(can.getUnits().getUnitCount(), 2);
     // remove some units
-    final Collection<Unit> units = can.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("infantry"), 1);
+    final Collection<Unit> units = can.getUnits().getUnits(GameDataTestUtil.infantry(m_data), 1);
     Change change = ChangeFactory.removeUnits(can, units);
     change = serialize(change);
     final ChangePerformer changePerformer = new ChangePerformer(m_data);

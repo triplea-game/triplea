@@ -27,7 +27,7 @@ public class AIUtilsTest extends TestCase {
   }
 
   public void testCost() {
-    final UnitType infantry = m_data.getUnitTypeList().getUnitType("infantry");
+    final UnitType infantry = GameDataTestUtil.infantry(m_data);
     final PlayerID british = GameDataTestUtil.british(m_data);
     assertEquals(3, AIUtils.getCost(infantry, british, m_data));
   }

@@ -48,7 +48,7 @@ public class DiceRollTest extends TestCase {
     final MockBattle battle = new MockBattle(westRussia);
     final PlayerID russians = GameDataTestUtil.russians(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
-    final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
+    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
     final List<Unit> infantry = infantryType.create(1, russians);
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(westRussia);
     // infantry defends and hits at 1 (0 based)
@@ -75,7 +75,7 @@ public class DiceRollTest extends TestCase {
     final MockBattle battle = new MockBattle(westRussia);
     final PlayerID russians = GameDataTestUtil.russians(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
-    final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
+    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
     final List<Unit> infantry = infantryType.create(1, russians);
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(westRussia);
     // infantry defends and hits at 1 (0 based)
@@ -101,7 +101,7 @@ public class DiceRollTest extends TestCase {
     final MockBattle battle = new MockBattle(westRussia);
     final PlayerID russians = GameDataTestUtil.russians(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
-    final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
+    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
     final List<Unit> units = infantryType.create(1, russians);
     final UnitType artillery = m_data.getUnitTypeList().getUnitType("artillery");
     units.addAll(artillery.create(1, russians));
@@ -126,7 +126,7 @@ public class DiceRollTest extends TestCase {
       ua.setUnitSupportCount("2");
     }
     // Now add the infantry
-    final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
+    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
     units.addAll(infantryType.create(2, russians));
     // artillery supported infantry and art attack at 1 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1, 1, 1}));
@@ -141,7 +141,7 @@ public class DiceRollTest extends TestCase {
     final MockBattle battle = new MockBattle(westRussia);
     final PlayerID russians = GameDataTestUtil.russians(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
-    final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
+    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
     final List<Unit> units = infantryType.create(3, russians);
     // 3 infantry on defense should produce exactly one hit, without rolling the dice
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));

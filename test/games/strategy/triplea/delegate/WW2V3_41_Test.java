@@ -503,7 +503,7 @@ public class WW2V3_41_Test extends TestCase {
     final Territory eastPoland = territory("East Poland", m_data);
     final Territory belorussia = territory("Belorussia", m_data);
     // Set up the unit types
-    final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
+    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
     // Remove all units from east poland
     removeFrom(eastPoland, eastPoland.getUnits().getUnits());
     // Get total number of units in territories to start
@@ -621,7 +621,7 @@ public class WW2V3_41_Test extends TestCase {
     final Territory kiangsu = territory("Kiangsu", m_data);
     final Territory hupeh = territory("Hupeh", m_data);
     // Set up the unit types
-    final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
+    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
     // Remove all units
     removeFrom(kiangsu, kiangsu.getUnits().getUnits());
     // add a VALID attack
@@ -1305,7 +1305,7 @@ public class WW2V3_41_Test extends TestCase {
     move(bomber, new Route(germany, poland));
     // Pick up a paratrooper
     final List<Unit> bomberAndParatroop = new ArrayList<Unit>(bomber);
-    bomberAndParatroop.addAll(poland.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("infantry"), 1));
+    bomberAndParatroop.addAll(poland.getUnits().getUnits(GameDataTestUtil.infantry(m_data), 1));
     // move them
     final String error = moveDelegate(m_data).move(bomberAndParatroop, new Route(poland, bulgaria, ukraine));
     assertError(error);
@@ -1326,7 +1326,7 @@ public class WW2V3_41_Test extends TestCase {
     final List<Unit> bomberAndParatroop = new ArrayList<Unit>();
     bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsAirTransport));
     // add 2 infantry
-    bomberAndParatroop.addAll(germany.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("infantry"), 2));
+    bomberAndParatroop.addAll(germany.getUnits().getUnits(GameDataTestUtil.infantry(m_data), 2));
     // move the units to east poland
     final String error = moveDelegate(m_data).move(bomberAndParatroop, new Route(germany, poland, eastPoland));
     assertError(error);
