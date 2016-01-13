@@ -147,7 +147,7 @@ public class DelegateTest extends TestCase {
     armour = GameDataTestUtil.armour(m_data);
     infantry = m_data.getUnitTypeList().getUnitType("infantry");
     transport = GameDataTestUtil.transport(m_data);
-    submarine = m_data.getUnitTypeList().getUnitType("submarine");
+    submarine = GameDataTestUtil.submarine(m_data);
     factory = m_data.getUnitTypeList().getUnitType("factory");
     aaGun = GameDataTestUtil.aaGun(m_data);
     fighter = GameDataTestUtil.fighter(m_data);

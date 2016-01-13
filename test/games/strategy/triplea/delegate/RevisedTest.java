@@ -128,7 +128,7 @@ public class RevisedTest extends TestCase {
   }
 
   public void testSubAdvance() {
-    final UnitType sub = m_data.getUnitTypeList().getUnitType("submarine");
+    final UnitType sub = GameDataTestUtil.submarine(m_data);
     final UnitAttachment attachment = UnitAttachment.get(sub);
     final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     // before the advance, subs defend and attack at 2
@@ -232,7 +232,7 @@ public class RevisedTest extends TestCase {
     final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
     new ChangePerformer(m_data).perform(ChangeFactory.removeUnits(sz5, sz5.getUnits().getUnits()));
     final UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
-    final UnitType subType = m_data.getUnitTypeList().getUnitType("submarine");
+    final UnitType subType = GameDataTestUtil.submarine(m_data);
     final UnitType trnType = GameDataTestUtil.transport(m_data);
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz5, subType.create(1, germans)));
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz5, trnType.create(1, germans)));
@@ -724,7 +724,7 @@ public class RevisedTest extends TestCase {
     final PlayerID british = GameDataTestUtil.british(m_data);
     final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     // put 1 british sub in sz 45, this simulates a submerged enemy sub
-    final UnitType sub = m_data.getUnitTypeList().getUnitType("submarine");
+    final UnitType sub = GameDataTestUtil.submarine(m_data);
     final Change c = ChangeFactory.addUnits(sz45, sub.create(1, british));
     new ChangePerformer(m_data).perform(c);
     // new move delegate

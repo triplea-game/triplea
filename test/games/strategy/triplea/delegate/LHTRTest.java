@@ -125,7 +125,7 @@ public class LHTRTest extends TestCase {
   }
 
   public void testSubDefenseBonus() {
-    final UnitType sub = m_data.getUnitTypeList().getUnitType("submarine");
+    final UnitType sub = GameDataTestUtil.submarine(m_data);
     final UnitAttachment attachment = UnitAttachment.get(sub);
     final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     // before the advance, subs defend and attack at 2

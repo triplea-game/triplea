@@ -126,7 +126,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     final Territory sz_44 = m_data.getMap().getTerritory("44 Sea Zone");
     final Territory sz_45 = m_data.getMap().getTerritory("45 Sea Zone");
     final Territory sz_52 = m_data.getMap().getTerritory("52 Sea Zone");
-    final UnitType subType = m_data.getUnitTypeList().getUnitType("submarine");
+    final UnitType subType = GameDataTestUtil.submarine(m_data);
     final UnitType carrierType = GameDataTestUtil.carrier(m_data);
     final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     // Add units for the test
@@ -173,7 +173,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     final Territory sz_44 = m_data.getMap().getTerritory("44 Sea Zone");
     final Territory sz_45 = m_data.getMap().getTerritory("45 Sea Zone");
     final Territory sz_52 = m_data.getMap().getTerritory("52 Sea Zone");
-    final UnitType subType = m_data.getUnitTypeList().getUnitType("submarine");
+    final UnitType subType = GameDataTestUtil.submarine(m_data);
     final UnitType carrierType = GameDataTestUtil.carrier(m_data);
     final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     // Add units for the test
@@ -223,7 +223,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     final Territory sz_9 = m_data.getMap().getTerritory("9 Sea Zone");
     final Territory eastCanada = m_data.getMap().getTerritory("Eastern Canada");
     final Territory sz_11 = m_data.getMap().getTerritory("11 Sea Zone");
-    final UnitType subType = m_data.getUnitTypeList().getUnitType("submarine");
+    final UnitType subType = GameDataTestUtil.submarine(m_data);
     final UnitType carrierType = GameDataTestUtil.carrier(m_data);
     final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     // Add units for the test
@@ -263,7 +263,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     final Territory sz_9 = m_data.getMap().getTerritory("9 Sea Zone");
     final Territory eastCanada = m_data.getMap().getTerritory("Eastern Canada");
     final Territory sz_11 = m_data.getMap().getTerritory("11 Sea Zone");
-    final UnitType subType = m_data.getUnitTypeList().getUnitType("submarine");
+    final UnitType subType = GameDataTestUtil.submarine(m_data);
     final UnitType carrierType = GameDataTestUtil.carrier(m_data);
     final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     final UnitType transportType = GameDataTestUtil.transport(m_data);
