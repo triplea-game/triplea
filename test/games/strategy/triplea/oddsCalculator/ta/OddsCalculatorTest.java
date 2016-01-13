@@ -110,11 +110,11 @@ public class OddsCalculatorTest extends TestCase {
     // Attack a battleship with a battleship and a transport
     final Territory sz2 = m_data.getMap().getTerritory("2 Sea Zone");
     final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final List<Unit> attackingUnits = m_data.getUnitTypeList().getUnitType("battleship").create(1, germans);
+    final List<Unit> attackingUnits = GameDataTestUtil.battleship(m_data).create(1, germans);
     attackingUnits.addAll(GameDataTestUtil.transport(m_data).create(1, germans));
     final List<Unit> bombardingUnits = Collections.emptyList();
     final PlayerID british = GameDataTestUtil.british(m_data);
-    final List<Unit> defendingUnits = m_data.getUnitTypeList().getUnitType("battleship").create(1, british);
+    final List<Unit> defendingUnits = GameDataTestUtil.battleship(m_data).create(1, british);
     final OddsCalculator calculator = new OddsCalculator(m_data);
     final AggregateResults results = calculator.setCalculateDataAndCalculate(germans, british, sz2, attackingUnits,
         defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(sz2), 500);
