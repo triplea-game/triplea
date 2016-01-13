@@ -582,7 +582,7 @@ public class WW2V3_41_Test extends TestCase {
     // Set up the territories
     final Territory egypt = territory("Union of South Africa", m_data);
     // Set up the unit types
-    final UnitType factoryType = m_data.getUnitTypeList().getUnitType("factory");
+    final UnitType factoryType = GameDataTestUtil.factory(m_data);
     // Set up the move delegate
     final PlaceDelegate placeDelegate = placeDelegate(m_data);
     delegateBridge.setStepName("Place");
