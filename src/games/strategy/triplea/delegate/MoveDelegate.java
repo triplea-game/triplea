@@ -525,7 +525,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
     boolean isKamikaze = false;
     final boolean getKamikazeAir = games.strategy.triplea.Properties.getKamikaze_Airplanes(data);
     Collection<Unit> kamikazeUnits = new ArrayList<Unit>();
-    // boolean isHariKari = false;
+
     // confirm kamikaze moves, and remove them from unresolved units
     if (getKamikazeAir || Match.someMatch(units, Matches.UnitIsKamikaze)) {
       kamikazeUnits = result.getUnresolvedUnits(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
@@ -559,8 +559,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
       m_bridge.getHistoryWriter().addChildToEvent("This was a kamikaze move, for at least some of the units",
           kamikazeUnits);
     }
-    // MoveDescription description = new MoveDescription(units, route);
-    // m_bridge.getHistoryWriter().setRenderingData(description);
     m_tempMovePerformer = new MovePerformer();
     m_tempMovePerformer.initialize(this);
     m_tempMovePerformer.moveUnits(units, route, player, transportsThatCanBeLoaded, newDependents, currentMove);
