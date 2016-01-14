@@ -21,7 +21,8 @@ before_deploy:
 - echo "Setup environment for execution of install4j through gradle"
 - mkdir -p ~/.gradle
 - grep -q "install4jHomeDir" ~/.gradle/gradle.properties 2> /dev/null || echo "install4jHomeDir=$(cd ~ && pwd)/install4j6" >> ~/.gradle/gradle.properties
-- echo "Now Running Install4j to build OS specific installers ##"
+
+- echo "Now Running Install4j to build OS specific installers"
 - ~/install4j6/bin/install4jc -L $INSTALL4J_LICENSE
 
 - echo "Now executing gradle to build the rest of the deployment artifacts, for lobby, bot servers, etc.."
