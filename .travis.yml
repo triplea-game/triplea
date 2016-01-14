@@ -6,19 +6,23 @@ script:
 - gradle test
 before_deploy:
 - export TAGGED_VERSION="$BUILD_VERSION.$TRAVIS_BUILD_NUMBER"
-- echo "BUILDING INSTALLERS"
+- echo "## Downloading and installing install4j ##"
 - wget -O install4j_unix.sh http://github.com/triplea-game/assets/blob/master/install4j/install4j_unix_6_0_4.sh?raw=true
 - chmod +x install4j_unix.sh
 - ./install4j_unix.sh -q
+- echo "## Now downloading OS specific JRE bundles to be included as needed by install4j ##"
 - wget -O jre-8u66-macosx-x64.tar.gz http://github.com/triplea-game/assets/blob/master/install4j/jre-8u66-macosx-x64.tar.gz?raw=true
 - mv jre-8u66-macosx-x64.tar.gz ~/install4j6/jres/
 - wget -O jre-8u66-windows-x86.tar.gz http://github.com/triplea-game/assets/blob/master/install4j/jre-8u66-windows-x64.tar.gz?raw=true
 - mv jre-8u66-windows-x86.tar.gz ~/install4j6/jres/
+- echo "## Setup environment for execution of install4j through gradle ##"
 - mkdir -p ~/.gradle
 - grep -q "install4jHomeDir" ~/.gradle/gradle.properties 2> /dev/null || echo "install4jHomeDir=$(cd ~ && pwd)/install4j6" >> ~/.gradle/gradle.properties
+- echo "## Now Running Install4j to build OS specific installers ##"
 - ~/install4j6/bin/install4jc -L $INSTALL4J_LICENSE
+- Echo "## Now executing gradle to build the rest of the deployment artifacts, for lobby, bot servers, etc.. ##"
 - gradle release
-- echo "PUSHING GIT TAG"
+- echo "## Configure Git and PUSH A TAG - once this tag is pushed this same build file will trigger again and execute the 'deploy' section, which will deploy to build artifacts to github releases ##"
 - git config --global user.email "tripleabuilderbot@gmail.com"
 - git config --global user.name "tripleabuilderbot"
 - git tag $TAGGED_VERSION -a -m "$TAGGED_VERSION"
@@ -27,6 +31,7 @@ deploy:
   provider: releases
   api_key:
     secure: nxaqYrkXLGL3W20/eCnf63DLjMrQAhEuW44jggh1/nI383goa+u6w0bBtWCxRdVzos7t4dpVfS6+kv6oIHacm9zVA+RYrqy5opzCJhq8lmXVVRijbALzUeiFif2HURMaKWj0ynRNVlAyBHzazPTLZVWywifpdSubSkuMWkl20cmuKu/Hg3c1EC9se3OYhhTHx3Hya7xSrctrDEYLsEBAUZzkKfscqRVqwwltS88CgIMtRISDpSBGrtH0t1uAH6NitTSguGgb+QEpqnELcRLymX2G1yzMA4Xr5c/L34MfbBKf8vIuG9t411xYuLoyKoUbroTWxSnPwlSy6PHz+QJ7UCXbDkATOGO3chxlKxglppvI/G3n2YP5Zf2dAaDlHblpvarh55i/4i4sKB2AbvvzkIHrQJwUgmLCbpN8/Vp9GWcGkd6i5U7F8tNInCs6ttX3oGvGOfYEXs02Ctyiea4LAqk4S7GZTuV2QXqxXglL4eRIwZ4UETiwgoAAtHma63Eq7+9t2ykMlk7zAK96FGwJrB97wa08aPuSxL94IYEBmn9Ht/vKXRiNQMvpnfp4rWQtL3cqbVyYAg5EjKb4PsBmnb91+RXtnWFOY1RpZGt8sPXYd+KZYzN1BXTFJEpaLLsIDN6r7nMcAvJDUmucaM+m7giPXz1ZBGAic3UBM1qMCgI=
+  ## This is the list of files to be deployed to github releases
   file:
     - build/libs/triplea-${TAGGED_VERSION}-all.jar
     - build/releases/triplea_windows_${TAGGED_VERSION}.exe
