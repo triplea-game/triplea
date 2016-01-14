@@ -137,7 +137,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
       }
     }
     // do the move
-    final UndoableMove currentMove = new UndoableMove(data, units, route);
+    final UndoableMove currentMove = new UndoableMove(units, route);
     // add dependencies (any move that came before this, from this start territory, is a dependency)
     for (final UndoableMove otherMove : m_movesToUndo) {
       if (otherMove.getStart().equals(route.getStart())) {

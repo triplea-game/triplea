@@ -78,7 +78,7 @@ public class UndoableMove extends AbstractUndoableMove {
     m_description = description;
   }
 
-  public UndoableMove(final GameData data, final Collection<Unit> units, final Route route) {
+  public UndoableMove(final Collection<Unit> units, final Route route) {
     super(new CompositeChange(), units);
     m_route = route;
   }
