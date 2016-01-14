@@ -551,7 +551,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
       }
     }
     // do the move
-    final UndoableMove currentMove = new UndoableMove(data, units, route);
+    final UndoableMove currentMove = new UndoableMove(units, route);
     final String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName()
         + " to " + route.getEnd().getName();
     m_bridge.getHistoryWriter().startEvent(transcriptText, currentMove.getDescriptionObject());
