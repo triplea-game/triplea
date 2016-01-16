@@ -2,7 +2,6 @@ package games.strategy.engine.framework.ui;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicReference;

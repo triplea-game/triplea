@@ -17,7 +17,6 @@ import games.strategy.engine.random.IRemoteRandom;
 import games.strategy.engine.random.RemoteRandom;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
-import games.strategy.triplea.ui.ErrorHandler;
 
 public class ClientGame extends AbstractGame {
   public static final RemoteName getRemoteStepAdvancerName(final INode node) {

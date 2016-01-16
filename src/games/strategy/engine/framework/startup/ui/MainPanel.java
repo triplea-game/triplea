@@ -30,7 +30,6 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
-import games.strategy.triplea.ui.ErrorHandler;
 
 /**
  * When the game launches, the MainFrame is loaded which will contain

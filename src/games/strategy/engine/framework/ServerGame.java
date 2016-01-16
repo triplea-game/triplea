@@ -48,7 +48,6 @@ import games.strategy.engine.random.RandomStats;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
-import games.strategy.triplea.ui.ErrorHandler;
 
 /**
  * Represents a running game.

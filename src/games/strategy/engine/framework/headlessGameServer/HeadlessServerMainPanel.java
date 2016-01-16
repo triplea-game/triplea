@@ -30,7 +30,6 @@ import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
-import games.strategy.triplea.ui.ErrorHandler;
 
 /**
  * Main panel for headless server.

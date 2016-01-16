@@ -16,7 +16,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.Match;
 
 /**
  * This class is designed to hold common code for holding "conditions". Any attachment that can hold conditions (ie:

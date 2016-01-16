@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.EngineVersion;
 import games.strategy.util.Version;
 

@@ -17,7 +17,6 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.ServerMessenger;
 import games.strategy.sound.ClipPlayer;
-import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.SoundPath;
 
 /**
