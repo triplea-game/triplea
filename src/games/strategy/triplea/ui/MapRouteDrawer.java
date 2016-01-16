@@ -62,13 +62,15 @@ public class MapRouteDrawer {
       if (routeDescription.getEnd() != null && numTerritories > 1) {
         points[numTerritories - 1] = new Point(routeDescription.getEnd());
       }
-      // adjust points for wrapping around the edge
-      for (int i = 1; i < points.length; i++) {
-        if (Math.abs(points[i].x - points[i - 1].x) > view.getImageWidth() / 2) {
-          if (points[i].x < points[i - 1].x) {
-            points[i].x += view.getImageWidth();
-          } else {
-            points[i].x -= view.getImageWidth();
+      if( routeDescription.getStart() != null && routeDescription.getEnd() != null ) {
+        // adjust points for wrapping around the edge
+        for (int i = 1; i < points.length; i++) {
+          if (Math.abs(points[i].x - points[i - 1].x) > view.getImageWidth() / 2) {
+            if (points[i].x < points[i - 1].x) {
+              points[i].x += view.getImageWidth();
+            } else {
+              points[i].x -= view.getImageWidth();
+            }
           }
         }
       }
