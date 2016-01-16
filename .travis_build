@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ -z "$INSTALL4J_LICENSE" ]; then
+ echo "Error: required license environment variable: INSTALL4J_LICENSE, was not set"
+ exit -1
+fi
+
 export WINDOWS_32_JRE="windows-x86-1.8.0_66.tar.gz"
 export WINDOWS_64_JRE="windows-amd64-1.8.0_66.tar.gz"
 export MAC_JRE="macosx-amd64-1.8.0_66.tar.gz"
