@@ -144,16 +144,26 @@ task lobbyServer(type: Zip, group: 'release', dependsOn: ':shadowJar') {
 
 task generateZipReleases(group: 'release', dependsOn: [allPlatform, bots, lobbyServer]) {}
 
-import com.install4j.gradle.Install4jTask
+task shadowJarCopy(type: Copy) {
+	from "build/libs/triplea-${project.version}-all.jar"
+	into 'build/libs'
+	rename { String fileName ->
+		fileName.replace("triplea-${project.version}-all.jar", "triplea.jar")
+	}
+}
 
+
+import com.install4j.gradle.Install4jTask
 apply plugin: 'install4j'
-task generateInstallers(type: Install4jTask, dependsOn: ':shadowJar', group: 'release') {
+
+task generateInstallers(type: Install4jTask, dependsOn: [ ':shadowJar', shadowJarCopy ],  group: 'release') {
 	projectFile = file('build.install4j')
 	release project.version
 	doFirst {
 		logger.lifecycle("building installer release of version '${project.version}'")
 	}
 }
+
 
 task setRunnableLinux(dependsOn: [generateInstallers]) {
 	doLast {
