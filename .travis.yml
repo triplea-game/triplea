@@ -5,43 +5,11 @@ install: true
 script:
 - gradle test
 before_deploy:
-- export TAGGED_VERSION="$BUILD_VERSION.$TRAVIS_BUILD_NUMBER"
-- export WINDOWS_32_JRE="windows-x86-1.8.0_66.tar.gz"
-- export WINDOWS_64_JRE="windows-amd64-1.8.0_66.tar.gz"
-- export MAC_JRE="macosx-amd64-1.8.0_66.tar.gz"
-- export ASSET_URL="http://github.com/triplea-game/assets/blob/master/install4j"
-- export JRE_HOME="~isntall4j6/jres"
-
-- echo "Downloading and installing install4j"
-- wget -O install4j_unix.sh $ASSET_URL/install4j_unix_6_0_4.sh?raw=true
-- chmod +x install4j_unix.sh
-- ./install4j_unix.sh -q
-
-- echo "Downloading JREs that will be bundled with installers"
-- wget -O $MAC_JRE $ASSET_URL/$MAC_JRE?raw=true
-- mv $MAC_JRE $JRE_HOME
-
-- wget -O $WINDOWS_32_JRE_JRE $ASSET_URL/$WINDOWS_32_JRE_JRE?raw=true
-- mv $WINDOWS_32_JRE_JRE $JRE_HOME
-
-- wget -O $WINDOWS_64_JRE_JRE $ASSET_URL/$WINDOWS_64_JRE_JRE?raw=true
-- mv $WINDOWS_64_JRE_JRE $JRE_HOME
-
-
-- mkdir -p ~/.gradle
-- grep -q "install4jHomeDir" ~/.gradle/gradle.properties 2> /dev/null || echo "install4jHomeDir=$(cd ~ && pwd)/install4j6" >> ~/.gradle/gradle.properties
-
-- echo "Now Running Install4j to build OS specific installers"
-- ~/install4j6/bin/install4jc -L $INSTALL4J_LICENSE
-
-- echo "Now executing gradle to build the rest of the deployment artifacts, for lobby, bot servers, etc.."
+- wget .travis_build https://github.com/triplea-game/triplea/blob/master/.travis_build.yml?raw=true
+- chmod +x .travis_build && ./.travis_build
 - gradle release
-
-- echo "Configure Git and PUSH A TAG - this trigger and execute the deploy section of this same build file, in the same travis linux container (skip_cleanup setting below is important)"
-- git config --global user.email "tripleabuilderbot@gmail.com"
-- git config --global user.name "tripleabuilderbot"
-- git tag $TAGGED_VERSION -a -m "$TAGGED_VERSION"
-- git push -q https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea --tags 2>&1 | sed 's|https://.*github|https://[secure]@github|'
+- wget .travis_tag_push https://github.com/triplea-game/triplea/blob/master/.travis_tag_push.yml?raw=true
+- chmod +x .travis_tag_push && ./.travis_tag_push
 deploy:
   provider: releases
   api_key:
