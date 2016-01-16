@@ -1,4 +1,4 @@
-Changes for 2.0.1
+Changes for 1.8.0.13
 * Minimum Java version is now Java 1.8
 
 * Removing all "Grid" games (Chess, Checkers, Go, Kings Table) as well as inaccessible puzzle games (N-Puzzle and Tic-Tac-Toe). (veqryn)
