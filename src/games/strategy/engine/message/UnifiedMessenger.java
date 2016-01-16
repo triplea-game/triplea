@@ -24,7 +24,6 @@ import games.strategy.net.IMessageListener;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
-import games.strategy.thread.ThreadPool;
 
 /**
  * A messenger general enough that both Channel and Remote messenger can be

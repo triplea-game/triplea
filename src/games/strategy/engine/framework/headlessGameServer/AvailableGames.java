@@ -25,7 +25,6 @@ import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.ui.NewGameChooserModel;
 import games.strategy.triplea.Constants;
-import games.strategy.util.ClassLoaderUtil;
 
 /**
  * A list of all available games. We make sure we can parse them all, but we don't keep them in memory.

@@ -2,7 +2,6 @@ package games.strategy.util;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URLClassLoader;
 import java.text.MessageFormat;
 import java.util.ArrayList;

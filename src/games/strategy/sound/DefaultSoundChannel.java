@@ -2,7 +2,6 @@ package games.strategy.sound;
 
 import java.util.Collection;
 
-
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.LocalPlayers;
 

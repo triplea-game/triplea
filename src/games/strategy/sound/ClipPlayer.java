@@ -22,7 +22,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.AudioFormat.Encoding;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;

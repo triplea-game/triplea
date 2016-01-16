@@ -1,9 +1,5 @@
 package games.strategy.common.player.ai;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Stack;
-
 /**
  * Utility class implementing AI game algorithms.
  * Currently, minimax and alpha-beta algorithms are implemented.

@@ -37,7 +37,6 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.triplea.util.LoggingPrintStream;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
