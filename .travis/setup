@@ -20,11 +20,11 @@ echo "Downloading JREs that will be bundled with installers"
 wget -O $MAC_JRE $ASSET_URL/$MAC_JRE?raw=true
 mv $MAC_JRE $JRE_HOME
 
-wget -O $WINDOWS_32_JRE_JRE $ASSET_URL/$WINDOWS_32_JRE_JRE?raw=true
-mv $WINDOWS_32_JRE_JRE $JRE_HOME
+wget -O $WINDOWS_32_JRE $ASSET_URL/$WINDOWS_32_JRE?raw=true
+mv $WINDOWS_32_JRE $JRE_HOME
 
-wget -O $WINDOWS_64_JRE_JRE $ASSET_URL/$WINDOWS_64_JRE_JRE?raw=true
-mv $WINDOWS_64_JRE_JRE $JRE_HOME
+wget -O $WINDOWS_64_JRE $ASSET_URL/$WINDOWS_64_JRE?raw=true
+mv $WINDOWS_64_JRE $JRE_HOME
 
 
 mkdir -p ~/.gradle
