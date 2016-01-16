@@ -9,7 +9,7 @@ export WINDOWS_32_JRE="windows-x86-1.8.0_66.tar.gz"
 export WINDOWS_64_JRE="windows-amd64-1.8.0_66.tar.gz"
 export MAC_JRE="macosx-amd64-1.8.0_66.tar.gz"
 export ASSET_URL="http://github.com/triplea-game/assets/blob/master/install4j"
-export JRE_HOME="~isntall4j6/jres"
+export JRE_HOME="~/install4j6/jres"
 
 echo "Downloading and installing install4j"
 wget -O install4j_unix.sh $ASSET_URL/install4j_unix_6_0_4.sh?raw=true
