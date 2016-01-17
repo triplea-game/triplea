@@ -31,6 +31,9 @@ import java.util.prefs.Preferences;
 
 import javax.imageio.ImageIO;
 
+import com.sun.javafx.iio.ImageStorage.ImageType;
+
+import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.BlendComposite.BlendingMode;
 import games.strategy.triplea.util.Stopwatch;
@@ -346,7 +349,8 @@ public final class TileImageFactory {
       fromFile.flush();
       copyingImage.done();
     } catch (final IOException e) {
-      throw new IllegalStateException(e.getMessage());
+      ClientLogger.logError("Could not load image, url: "+ imageLocation.toString(), e);
+      image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
     }
     final ImageRef ref = new ImageRef(image);
     if (cache) {
