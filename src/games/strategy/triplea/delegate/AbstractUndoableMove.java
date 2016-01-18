@@ -49,7 +49,7 @@ abstract public class AbstractUndoableMove implements Serializable {
     return false;
   }
 
-  public boolean containsUnit(Unit unit) {
+  private boolean containsUnit(Unit unit) {
     return m_units.contains(unit);
   }
 
