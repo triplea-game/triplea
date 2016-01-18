@@ -28,6 +28,13 @@ mv $WINDOWS_64_JRE $JRE_HOME/
 
 
 mkdir -p ~/.gradle
+
+## Next, append install4jHomeDir property to ~/.gradle/gradle.properties, 
+## iff the property is not already present in the file
+## Detailed explanation of the commands:
+## The grep simply does the check if the property is there, the echo then 
+## does the append, the CD subshell gets us the absolute path to the home folder,
+## and last this is appended to the gradle properties file
 grep -q "install4jHomeDir" ~/.gradle/gradle.properties 2> /dev/null || echo "install4jHomeDir=$(cd ~ && pwd)/install4j6" >> ~/.gradle/gradle.properties
 
 echo "Now Running Install4j to build OS specific installers"
