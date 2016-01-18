@@ -151,9 +151,6 @@ task generateZipReleases(group: 'release', dependsOn: [allPlatform, bots, lobbyS
 import com.install4j.gradle.Install4jTask
 
 apply plugin: 'install4j'
-task downloadJres(){
-
-}
 
 task generateInstallers(type: Install4jTask, dependsOn: renameShadowJar, group: 'release') {
 	projectFile = file('build.install4j')
