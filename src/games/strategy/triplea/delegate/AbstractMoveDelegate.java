@@ -97,7 +97,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     if (!moveToUndo.getcanUndo()) {
       return moveToUndo.getReasonCantUndo();
     }
-    moveToUndo.undo(getData(), m_bridge);
+    moveToUndo.undo(m_bridge);
     m_movesToUndo.remove(moveIndex);
     updateUndoableMoveIndexes();
     return null;
