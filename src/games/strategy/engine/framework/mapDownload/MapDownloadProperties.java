@@ -13,7 +13,11 @@ import games.strategy.debug.ClientLogger;
 
 
 /**
- * Class that stores property keys and values associated with the in-game map download feature.
+ * Immutable data class that reads a configuration file and stores the location of where
+ *  to find the "triplea_map.xml" file, whether that be a URL, or a local file path relative to
+ *  the game root folder.
+ *
+ * Can be used to create a <code>MapDownloadAction</code>
  */
 public class MapDownloadProperties {
 
