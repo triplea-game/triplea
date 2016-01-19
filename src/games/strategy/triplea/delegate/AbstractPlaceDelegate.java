@@ -172,7 +172,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   public String undoMove(final int moveIndex) {
     if (moveIndex < m_placements.size() && moveIndex >= 0) {
       final UndoablePlacement undoPlace = m_placements.get(moveIndex);
-      undoPlace.undo(getData(), m_bridge);
+      undoPlace.undo(m_bridge);
       m_placements.remove(moveIndex);
       updateUndoablePlacementIndexes();
     }
