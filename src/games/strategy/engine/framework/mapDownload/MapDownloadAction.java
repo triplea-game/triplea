@@ -13,14 +13,14 @@ public class MapDownloadAction {
     this.properties = properties;
   }
 
-  public DownloadRunnable downloadAvailableMapsInBackground() {
+  public DownloadRunnable downloadForLatestMapsCheck() {
     final DownloadRunnable runnable = new DownloadRunnable(properties.getMapListDownloadSite(), true);
     BackgroundTaskRunner.runInBackground(null, "Checking for out-of-date Maps.", runnable,
         new CountDownLatchHandler(true));
     return runnable;
   }
 
-  public DownloadRunnable downloadAvailableMapsInForeground(JComponent parentComponent) {
+  public DownloadRunnable downloadForAvailableMaps(JComponent parentComponent) {
     final DownloadRunnable download = new DownloadRunnable(properties.getMapListDownloadSite(), true);
     // despite "BackgroundTaskRunner.runInBackground" saying runInBackground, it runs in a modal window in the
     // foreground.
