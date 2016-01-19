@@ -32,7 +32,7 @@ public class MapDownloadController {
   /** Opens a new window dialog where a user can select maps to download or update */
   public void openDownloadMapScreen(JComponent parentComponent) {
     MapDownloadAction downloadAction = new MapDownloadAction(mapDownloadProperties);
-    final DownloadRunnable download = downloadAction.downloadAvailableMapsInForeground(parentComponent);
+    final DownloadRunnable download = downloadAction.downloadForAvailableMaps(parentComponent);
 
     if (download.getError() != null) {
       ClientLogger.logError(download.getError());
@@ -68,7 +68,7 @@ public class MapDownloadController {
       }
 
       MapDownloadAction downloadAction = new MapDownloadAction(mapDownloadProperties);
-      final DownloadRunnable download = downloadAction.downloadAvailableMapsInBackground();
+      final DownloadRunnable download = downloadAction.downloadForLatestMapsCheck();
       if (download.getError() != null) {
         return false;
       }
