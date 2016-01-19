@@ -22,11 +22,11 @@ import games.strategy.util.EventThreadJOptionPane;
 public class MapDownloadController {
 
   private static final String TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES = "triplea.lastCheckForMapUpdates";
-  private final MapDownloadProperties mapDownloadProperties;
+  private final MapListingSource mapDownloadProperties;
 
   public MapDownloadController() {
     File mapDownloadPropertiesFile = new File(GameRunner2.getRootFolder(), "mapDownload.properties");
-    mapDownloadProperties = new MapDownloadProperties(mapDownloadPropertiesFile);
+    mapDownloadProperties = new MapListingSource(mapDownloadPropertiesFile);
   }
 
   /** Opens a new window dialog where a user can select maps to download or update */

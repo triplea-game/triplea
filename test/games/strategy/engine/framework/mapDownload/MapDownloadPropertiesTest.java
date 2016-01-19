@@ -21,18 +21,18 @@ public class MapDownloadPropertiesTest {
 
   private final static String SAMPLE_VALUE = "http://this is a test value.txt";
 
-  private MapDownloadProperties testObj;
+  private MapListingSource testObj;
 
   @Before
   public void setUp() throws Exception {
-    assertThat(MapDownloadProperties.MAP_LIST_DOWNLOAD_SITE_PROPERTY_KEY, notNullValue());
-    String mapListProp = MapDownloadProperties.MAP_LIST_DOWNLOAD_SITE_PROPERTY_KEY + " = " + SAMPLE_VALUE;
+    assertThat(MapListingSource.MAP_LIST_DOWNLOAD_SITE_PROPERTY_KEY, notNullValue());
+    String mapListProp = MapListingSource.MAP_LIST_DOWNLOAD_SITE_PROPERTY_KEY + " = " + SAMPLE_VALUE;
 
     File testPropertiesFile = new File("mapDownload.test.properties");
     testPropertiesFile.deleteOnExit();
     Files.write(Paths.get(testPropertiesFile.getPath()), ImmutableList.of(mapListProp));
 
-    testObj = new MapDownloadProperties(testPropertiesFile);
+    testObj = new MapListingSource(testPropertiesFile);
   }
 
   @Test
