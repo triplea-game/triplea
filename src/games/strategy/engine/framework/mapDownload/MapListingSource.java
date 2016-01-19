@@ -19,13 +19,13 @@ import games.strategy.debug.ClientLogger;
  *
  * Can be used to create a <code>MapDownloadAction</code>
  */
-public class MapDownloadProperties {
+public class MapListingSource {
 
   public static final String MAP_LIST_DOWNLOAD_SITE_PROPERTY_KEY = "Map_List_File";
   private final String mapListDownloadSite;
 
 
-  public MapDownloadProperties(File mapDownloadPropertiesFile) {
+  public MapListingSource(File mapDownloadPropertiesFile) {
     checkState(checkNotNull(mapDownloadPropertiesFile).isFile());
     mapListDownloadSite = readMapListDownloadSitePropertyValue(mapDownloadPropertiesFile);
   }

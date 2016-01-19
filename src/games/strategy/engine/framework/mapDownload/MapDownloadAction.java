@@ -12,21 +12,21 @@ import games.strategy.util.CountDownLatchHandler;
  */
 public class MapDownloadAction {
 
-  private final MapDownloadProperties properties;
+  private final MapListingSource mapListingSource;
 
-  public MapDownloadAction(final MapDownloadProperties properties) {
-    this.properties = properties;
+  public MapDownloadAction(final MapListingSource properties) {
+    this.mapListingSource = properties;
   }
 
   public DownloadRunnable downloadForLatestMapsCheck() {
-    final DownloadRunnable runnable = new DownloadRunnable(properties.getMapListDownloadSite(), true);
+    final DownloadRunnable runnable = new DownloadRunnable(mapListingSource.getMapListDownloadSite(), true);
     BackgroundTaskRunner.runInBackground(null, "Checking for out-of-date Maps.", runnable,
         new CountDownLatchHandler(true));
     return runnable;
   }
 
   public DownloadRunnable downloadForAvailableMaps(JComponent parentComponent) {
-    final DownloadRunnable download = new DownloadRunnable(properties.getMapListDownloadSite(), true);
+    final DownloadRunnable download = new DownloadRunnable(mapListingSource.getMapListDownloadSite(), true);
     // despite "BackgroundTaskRunner.runInBackground" saying runInBackground, it runs in a modal window in the
     // foreground.
     String popupWindowTitle = "Downloading list of availabe maps....";
