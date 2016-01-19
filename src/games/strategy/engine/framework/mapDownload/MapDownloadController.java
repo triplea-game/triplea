@@ -97,7 +97,7 @@ public class MapDownloadController {
         return true;
       }
     } catch (final Exception e) {
-      System.out.println("Error while checking for map updates: " + e.getMessage());
+      ClientLogger.logError("Error while checking for map updates", e);
     }
     return false;
   }
