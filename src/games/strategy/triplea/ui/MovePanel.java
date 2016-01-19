@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -936,12 +937,10 @@ public class MovePanel extends AbstractMovePanel {
         minTransportCost = Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
       }
       final Collection<Unit> airTransportsToLoad = new ArrayList<Unit>();
-      int ttlCapacity = 0;
       for (final Unit bomber : capableTransportsToLoad) {
         final int capacity = TransportTracker.getAvailableCapacity(bomber);
         if (capacity >= minTransportCost) {
           airTransportsToLoad.add(bomber);
-          ttlCapacity += capacity;
         }
       }
       // If no airTransports can be loaded, return the empty set
@@ -1427,6 +1426,26 @@ public class MovePanel extends AbstractMovePanel {
     getMap().addUnitSelectionListener(m_UNIT_SELECTION_LISTENER);
     getMap().addMouseOverUnitListener(m_MOUSE_OVER_UNIT_LISTENER);
   }
+
+  public KeyListener getUndoMoveKeyListener() {
+    return new KeyListener() {
+      @Override
+      public void keyTyped(KeyEvent e) {}
+
+      @Override
+      public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_U &&
+            getMap().getHighlightedUnits() != null && !getMap().getHighlightedUnits().isEmpty()) {
+          m_undoableMovesPanel.undoMoves(getMap().getHighlightedUnits());
+        }
+      }
+
+      @Override
+      public void keyReleased(KeyEvent e) {}
+    };
+
+  }
+
 
   @Override
   protected boolean doneMoveAction() {

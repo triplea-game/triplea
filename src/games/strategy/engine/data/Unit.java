@@ -2,6 +2,8 @@ package games.strategy.engine.data;
 
 import java.io.Serializable;
 
+import com.google.common.base.Preconditions;
+
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.net.GUID;
 
@@ -13,15 +15,11 @@ public class Unit extends GameDataComponent implements Serializable {
   private final UnitType m_type;
 
   /**
-   * Creates new Unit. Should use a call to UnitType.create() instead.
-   * owner can be null
+   * Creates new Unit. Should use a call to UnitType.create(). Owner can be null
    */
   protected Unit(final UnitType type, final PlayerID owner, final GameData data) {
     super(data);
-    if (type == null) {
-      throw new IllegalArgumentException();
-    }
-    m_type = type;
+    m_type = Preconditions.checkNotNull(type);
     m_uid = new GUID();
     setOwner(owner);
   }

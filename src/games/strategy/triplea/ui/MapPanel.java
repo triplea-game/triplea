@@ -10,6 +10,8 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -96,7 +98,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private String m_movementLeftForCurrentUnits = "";
   private final IUIContext m_uiContext;
   private final LinkedBlockingQueue<Tile> m_undrawnTiles = new LinkedBlockingQueue<Tile>();
-  private Map<Territory, List<Unit>> m_highlightUnits;
+  private Map<Territory, List<Unit>> m_highlightedUnits;
   private Cursor m_hiddenCursor = null;
 
   /** Creates new MapPanel */
@@ -140,7 +142,6 @@ public class MapPanel extends ImageScrollerLargeView {
       }
     });
   }
-
   LinkedBlockingQueue<Tile> getUndrawnTiles() {
     return m_undrawnTiles;
   }
@@ -184,13 +185,17 @@ public class MapPanel extends ImageScrollerLargeView {
    * call with an null args
    */
   public void setUnitHighlight(final Map<Territory, List<Unit>> units) {
-    m_highlightUnits = units;
+    m_highlightedUnits = units;
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
         repaint();
       }
     });
+  }
+
+  protected Map<Territory, List<Unit>> getHighlightedUnits() {
+    return m_highlightedUnits;
   }
 
   public void centerOn(final Territory territory) {
@@ -598,8 +603,8 @@ public class MapPanel extends ImageScrollerLargeView {
     // other references to the images are weak references
     m_images.clear();
     m_images.addAll(images);
-    if (m_highlightUnits != null) {
-      for (final Entry<Territory, List<Unit>> entry : m_highlightUnits.entrySet()) {
+    if (m_highlightedUnits != null) {
+      for (final Entry<Territory, List<Unit>> entry : m_highlightedUnits.entrySet()) {
         final Set<UnitCategory> categories = UnitSeperator.categorize(entry.getValue());
         for (final UnitCategory category : categories) {
           final List<Unit> territoryUnitsOfSameCategory = category.getUnits();

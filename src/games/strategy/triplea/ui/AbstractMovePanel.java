@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -17,8 +18,12 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
@@ -121,12 +126,12 @@ public abstract class AbstractMovePanel extends ActionPanel {
     return m_bridge.getGameData();
   }
 
-  private IAbstractMoveDelegate getDelegate() {
+  private IAbstractMoveDelegate getMoveDelegate() {
     return (IAbstractMoveDelegate) m_bridge.getRemoteDelegate();
   }
 
   protected final void updateMoves() {
-    m_undoableMoves = getDelegate().getMovesMade();
+    m_undoableMoves = getMoveDelegate().getMovesMade();
     m_undoableMovesPanel.setMoves(m_undoableMoves);
   }
 
@@ -138,11 +143,67 @@ public abstract class AbstractMovePanel extends ActionPanel {
     return undoMove(moveIndex, false);
   }
 
+  /**
+   * Executes an undo move for any of the units passed in as a parameter.
+   *
+   * "Cannot undo" Error messages are suppressed if any moves cannot be undone
+   * (at least until we come up with a way to deal with "n" reasons for an undo
+   * failure rather than just one)
+   */
+  public void undoMoves(Set<Unit> units) {
+    Set<UndoableMove> movesToUndo = getMovesToUndo(units, getMoveDelegate().getMovesMade());
+
+    if (movesToUndo.size() == 0) {
+      String error = "Could not undo any moves, check that the unit has moved and that you can undo the move normally";
+      JOptionPane.showMessageDialog(getTopLevelAncestor(), error, "Could not undo move", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+
+    undoMovesInReverseOrder(movesToUndo);
+  }
+
+  private static Set<UndoableMove> getMovesToUndo(Set<Unit> units, List<Object> movesMade) {
+    Set<UndoableMove> movesToUndo = Sets.newHashSet();
+
+    if (movesMade != null) {
+      for (Object undoableMoveObject : movesMade) {
+        if (undoableMoveObject != null) {
+          UndoableMove move = (UndoableMove) undoableMoveObject;
+          if (move.containsAnyOf(units) && move.getcanUndo()) {
+            movesToUndo.add(move);
+          }
+        }
+      }
+    }
+    return movesToUndo;
+  }
+
+  /*
+   * Undo moves in reverse order, from largest index to smallest. Undo will reorder move index numbers, so going top
+   * down avoids this renumbering.
+   */
+  private void undoMovesInReverseOrder(Set<UndoableMove> movesToUndo) {
+    List<Integer> moveIndexes = getSortedMoveIndexes(movesToUndo);
+    for (int i = moveIndexes.size() - 1; i >= 0; i--) {
+      undoMove(moveIndexes.get(i));
+    }
+  }
+
+  private static List<Integer> getSortedMoveIndexes(Set<UndoableMove> moves) {
+    List<Integer> moveIndexes = Lists.newArrayList();
+    for (UndoableMove move : moves) {
+      moveIndexes.add(move.getIndex());
+    }
+    Collections.sort(moveIndexes);
+    return moveIndexes;
+  }
+
+
   protected final String undoMove(final int moveIndex, final boolean suppressError) {
     // clean up any state we may have
     m_CANCEL_MOVE_ACTION.actionPerformed(null);
     // undo the move
-    final String error = getDelegate().undoMove(moveIndex);
+    final String error = getMoveDelegate().undoMove(moveIndex);
     if (error != null && !suppressError) {
       JOptionPane.showMessageDialog(getTopLevelAncestor(), error, "Could not undo move", JOptionPane.ERROR_MESSAGE);
     } else {
@@ -220,7 +281,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   abstract protected boolean setCancelButton();
 
-  protected final JComponent leftBox(final JComponent c) {
+  protected static final JComponent leftBox(final JComponent c) {
     final Box b = new Box(BoxLayout.X_AXIS);
     b.add(c);
     b.add(Box.createHorizontalGlue());

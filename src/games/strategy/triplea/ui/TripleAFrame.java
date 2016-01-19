@@ -83,6 +83,8 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.google.common.collect.ImmutableList;
+
 import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.common.ui.MacWrapper;
@@ -241,8 +243,6 @@ public class TripleAFrame extends MainGameFrame {
     m_mapPanel = new MapPanel(m_data, m_smallView, m_uiContext, model);
     m_mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
     m_mapPanel.addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
-    this.addKeyListener(m_arrowKeyActionListener);
-    m_mapPanel.addKeyListener(m_arrowKeyActionListener);
     // link the small and large images
     m_mapPanel.initSmallMap();
     m_mapAndChatPanel = new JPanel();
@@ -323,7 +323,17 @@ public class TripleAFrame extends MainGameFrame {
     m_rightHandSidePanel.add(m_smallView, BorderLayout.NORTH);
     m_tabsPanel.setBorder(null);
     m_rightHandSidePanel.add(m_tabsPanel, BorderLayout.CENTER);
-    m_actionButtons = new ActionButtons(m_data, m_mapPanel, this);
+
+    MovePanel movePanel = new MovePanel(m_data, m_mapPanel, this);
+    m_actionButtons = new ActionButtons(m_data, m_mapPanel, movePanel, this);
+
+    List<KeyListener> keyListeners = ImmutableList.of(this.getArrowKeyListener(), movePanel.getUndoMoveKeyListener());
+    for( KeyListener keyListener : keyListeners ) {
+      m_mapPanel.addKeyListener(keyListener );
+      // TODO: figure out if it is really needed to double add the key listener to both the frame and also the map panel
+      this.addKeyListener(keyListener);
+    }
+
     m_tabsPanel.addTab("Actions", m_actionButtons);
     m_actionButtons.setBorder(null);
     m_statsPanel = new StatPanel(m_data, m_uiContext);
@@ -1715,79 +1725,83 @@ public class TripleAFrame extends MainGameFrame {
       }
     }
   };
-  final KeyListener m_arrowKeyActionListener = new KeyListener() {
-    @Override
-    public void keyPressed(final KeyEvent e) {
-      // scroll map according to wasd/arrowkeys
-      final int diffPixel = computeScrollSpeed(e);
-      final int x = m_mapPanel.getXOffset();
-      final int y = m_mapPanel.getYOffset();
-      final int keyCode = e.getKeyCode();
 
-      if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D) {
-        getMapPanel().setTopLeft(x + diffPixel, y);
-      } else if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A) {
-        getMapPanel().setTopLeft(x - diffPixel, y);
-      } else if (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_S) {
-        getMapPanel().setTopLeft(x, y + diffPixel);
-      } else if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W) {
-        getMapPanel().setTopLeft(x, y - diffPixel);
-      }
-      // I for info
-      if (keyCode == KeyEvent.VK_I || keyCode == KeyEvent.VK_V) {
-        String unitInfo = "";
-        if (m_unitsBeingMousedOver != null && !m_unitsBeingMousedOver.isEmpty()) {
-          final Unit unit = m_unitsBeingMousedOver.get(0);
-          final UnitAttachment ua = UnitAttachment.get(unit.getType());
-          if (ua != null) {
-            unitInfo = "<b>Unit:</b><br>" + unit.getType().getName() + ": "
-                + ua.toStringShortAndOnlyImportantDifferences(unit.getOwner(), true, false);
-          }
+  private KeyListener getArrowKeyListener() {
+    return new KeyListener() {
+      @Override
+      public void keyPressed(final KeyEvent e) {
+
+        // scroll map according to wasd/arrowkeys
+        final int diffPixel = computeScrollSpeed(e);
+        final int x = m_mapPanel.getXOffset();
+        final int y = m_mapPanel.getYOffset();
+        final int keyCode = e.getKeyCode();
+
+        if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D) {
+          getMapPanel().setTopLeft(x + diffPixel, y);
+        } else if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A) {
+          getMapPanel().setTopLeft(x - diffPixel, y);
+        } else if (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_S) {
+          getMapPanel().setTopLeft(x, y + diffPixel);
+        } else if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W) {
+          getMapPanel().setTopLeft(x, y - diffPixel);
         }
-        String terrInfo = "";
-        if (m_territoryLastEntered != null) {
-          final TerritoryAttachment ta = TerritoryAttachment.get(m_territoryLastEntered);
-          if (ta != null) {
-            terrInfo = "<b>Territory:</b><br>" + ta.toStringForInfo(true, true) + "<br>";
-          } else {
-            terrInfo = "<b>Territory:</b><br>" + m_territoryLastEntered.getName() + "<br>Water Territory";
-          }
-        }
-        String tipText = unitInfo;
-        if (unitInfo.length() > 0 && terrInfo.length() > 0) {
-          tipText = tipText + "<br><br><br><br><br>";
-        }
-        tipText = tipText + terrInfo;
-        if (tipText.length() > 0) {
-          final Point currentPoint = MouseInfo.getPointerInfo().getLocation();
-          final PopupFactory popupFactory = PopupFactory.getSharedInstance();
-          final JToolTip info = new JToolTip();
-          info.setTipText("<html>" + tipText + "</html>");
-          final Popup popup = popupFactory.getPopup(m_mapPanel, info, currentPoint.x, currentPoint.y);
-          popup.show();
-          final Runnable disposePopup = new Runnable() {
-            @Override
-            public void run() {
-              try {
-                Thread.sleep(5000);
-              } catch (final InterruptedException e) {
-              }
-              popup.hide();
+        // I for info
+        if (keyCode == KeyEvent.VK_I || keyCode == KeyEvent.VK_V) {
+          String unitInfo = "";
+          if (m_unitsBeingMousedOver != null && !m_unitsBeingMousedOver.isEmpty()) {
+            final Unit unit = m_unitsBeingMousedOver.get(0);
+            final UnitAttachment ua = UnitAttachment.get(unit.getType());
+            if (ua != null) {
+              unitInfo = "<b>Unit:</b><br>" + unit.getType().getName() + ": "
+                  + ua.toStringShortAndOnlyImportantDifferences(unit.getOwner(), true, false);
             }
-          };
-          new Thread(disposePopup, "popup waiter").start();
+          }
+          String terrInfo = "";
+          if (m_territoryLastEntered != null) {
+            final TerritoryAttachment ta = TerritoryAttachment.get(m_territoryLastEntered);
+            if (ta != null) {
+              terrInfo = "<b>Territory:</b><br>" + ta.toStringForInfo(true, true) + "<br>";
+            } else {
+              terrInfo = "<b>Territory:</b><br>" + m_territoryLastEntered.getName() + "<br>Water Territory";
+            }
+          }
+          String tipText = unitInfo;
+          if (unitInfo.length() > 0 && terrInfo.length() > 0) {
+            tipText = tipText + "<br><br><br><br><br>";
+          }
+          tipText = tipText + terrInfo;
+          if (tipText.length() > 0) {
+            final Point currentPoint = MouseInfo.getPointerInfo().getLocation();
+            final PopupFactory popupFactory = PopupFactory.getSharedInstance();
+            final JToolTip info = new JToolTip();
+            info.setTipText("<html>" + tipText + "</html>");
+            final Popup popup = popupFactory.getPopup(m_mapPanel, info, currentPoint.x, currentPoint.y);
+            popup.show();
+            final Runnable disposePopup = new Runnable() {
+              @Override
+              public void run() {
+                try {
+                  Thread.sleep(5000);
+                } catch (final InterruptedException e) {
+                }
+                popup.hide();
+              }
+            };
+            new Thread(disposePopup, "popup waiter").start();
+          }
         }
+        // and then we do stuff for any custom current action tab
+        m_actionButtons.keyPressed(e);
       }
-      // and then we do stuff for any custom current action tab
-      m_actionButtons.keyPressed(e);
-    }
 
-    @Override
-    public void keyTyped(final KeyEvent e) {}
+      @Override
+      public void keyTyped(final KeyEvent e) {}
 
-    @Override
-    public void keyReleased(final KeyEvent e) {}
-  };
+      @Override
+      public void keyReleased(final KeyEvent e) {}
+    };
+  }
 
   private static int computeScrollSpeed(final KeyEvent e) {
     int multiplier = 1;
