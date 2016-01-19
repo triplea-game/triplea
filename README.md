@@ -8,6 +8,8 @@ On first call these files will install the correct version of Gradle on your sys
 ```
 ./gradlew jar
 # creates into build/libs/triplea-<version>.jar
+./gradlew test
+# compiles the project and runs the unit tests
 ```
 
 * creates a self contained jar file from the project, all JAR dependencies are included
@@ -26,7 +28,9 @@ Tooling and IDE setup
  
 With the help of the Gradle system any modern IDE support is provided out of box, such as:
 
-* Eclipse - use the [Buildship plugin](https://github.com/eclipse/buildship/blob/master/docs/user/Installation.md)
+* Eclipse:
+  - use the [Buildship plugin](https://github.com/eclipse/buildship/blob/master/docs/user/Installation.md)
+  - [Gradle integration plugin](https://marketplace.eclipse.org/content/buildship-gradle-integration)
 * Intellij IDEA - out of box integration support (just import project, and specify the settings.gradle file)
 * Netbeans - use the [Gradle plugin](http://plugins.netbeans.org/plugin/44510/gradle-support)
  
