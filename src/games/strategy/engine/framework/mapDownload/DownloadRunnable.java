@@ -75,7 +75,6 @@ public class DownloadRunnable implements Runnable {
       error = "invalid url";
       return;
     }
-    InputStream stream;
     try {
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -87,13 +86,10 @@ public class DownloadRunnable implements Runnable {
         conn = (HttpURLConnection) new URL(newUrl).openConnection();
       }
 
-      stream = conn.getInputStream();
-      try {
+      try (InputStream stream = conn.getInputStream()) {
         final ByteArrayOutputStream sink = new ByteArrayOutputStream();
         InstallMapDialog.copy(sink, stream);
         contents = sink.toByteArray();
-      } finally {
-        stream.close();
       }
     } catch (final Exception e) {
       error = e.getMessage();
