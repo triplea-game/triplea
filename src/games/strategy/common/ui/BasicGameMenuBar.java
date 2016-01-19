@@ -54,7 +54,7 @@ import com.apple.eawt.ApplicationAdapter;
 import com.apple.eawt.ApplicationEvent;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.debug.Console;
+import games.strategy.debug.ErrorConsole;
 import games.strategy.debug.DebugUtils;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
@@ -405,8 +405,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 
       @Override
       public void actionPerformed(final ActionEvent e) {
-        Console.getConsole().setVisible(true);
-        Console.getConsole().append(DebugUtils.getMemory());
+        ErrorConsole.getConsole().setVisible(true);
+        ErrorConsole.getConsole().append(DebugUtils.getMemory());
       }
     }).setMnemonic(KeyEvent.VK_C);
   }

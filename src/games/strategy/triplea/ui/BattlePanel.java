@@ -28,7 +28,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import games.strategy.debug.Console;
+import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -207,7 +207,7 @@ public class BattlePanel extends ActionPanel {
       }
       // something is wrong, we shouldnt have to wait this long
       if (count > 200) {
-        Console.getConsole().dumpStacks();
+        ErrorConsole.getConsole().dumpStacks();
         new IllegalStateException(
             "battle not displayed, looking for:" + battleID + " showing:" + m_currentBattleDisplayed).printStackTrace();
         return false;

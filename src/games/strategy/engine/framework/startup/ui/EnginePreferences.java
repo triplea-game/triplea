@@ -30,7 +30,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import games.strategy.common.ui.BasicGameMenuBar;
-import games.strategy.debug.Console;
+import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
@@ -420,7 +420,7 @@ public class EnginePreferences extends JDialog {
 
       @Override
       public void actionPerformed(final ActionEvent e) {
-        Console.getConsole().setVisible(true);
+        ErrorConsole.getConsole().setVisible(true);
         reportMemoryUsageToConsole();
       }
     });

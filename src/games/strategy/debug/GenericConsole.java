@@ -17,22 +17,14 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-public class Console extends JFrame {
-  private static final long serialVersionUID = -3489030525309243438L;
-  private static Console s_console;
+public class GenericConsole extends JFrame {
+  private static final long serialVersionUID = 5754914217052820386L;
+
   private final JTextArea m_text = new JTextArea(20, 50);
   private final JToolBar m_actions = new JToolBar(SwingConstants.HORIZONTAL);
 
-  public static Console getConsole() {
-    if (s_console == null) {
-      s_console = new Console();
-    }
-    return s_console;
-  }
-
-  /** Creates a new instance of Console */
-  public Console() {
-    super("An error has occured!");
+  public GenericConsole(String title) {
+    super(title);
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout());
     m_text.setLineWrap(true);
@@ -150,8 +142,8 @@ class ThreadReader implements Runnable {
   public void run() {
     while (true) {
       m_text.append(m_in.readFully());
-      if (m_displayConsoleOnWrite && !Console.getConsole().isVisible()) {
-        Console.getConsole().setVisible(true);
+      if (m_displayConsoleOnWrite && !ErrorConsole.getConsole().isVisible()) {
+        ErrorConsole.getConsole().setVisible(true);
       }
       try {
         Thread.sleep(CONSOLE_UPDATE_INTERVAL_MS);

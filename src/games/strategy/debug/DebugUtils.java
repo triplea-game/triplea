@@ -104,7 +104,7 @@ public class DebugUtils {
   public static String getDebugReportWithFramesAndWindows() {
     final StringBuilder result = new StringBuilder(500);
     result.append("CONSOLE_OUTPUT:\n");
-    result.append(Console.getConsole().getText());
+    result.append(ErrorConsole.getConsole().getText());
     result.append("\n");
     result.append(getThreadDumps());
     result.append(getProperties());
