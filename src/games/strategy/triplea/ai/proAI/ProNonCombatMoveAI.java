@@ -800,7 +800,9 @@ public class ProNonCombatMoveAI {
           }
           final ProBattleResult result = moveMap.get(t).getBattleResult();
           final boolean hasFactory = ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t);
-          if ((hasFactory && (result.getWinPercentage() > (100 - ProData.winPercentage))) || result.getTUVSwing() > 0) {
+          if ((t.equals(ProData.myCapital) && result.getWinPercentage() > (100 - ProData.winPercentage))
+              || (hasFactory && result.getWinPercentage() > (100 - ProData.minWinPercentage))
+              || result.getTUVSwing() > 0) {
 
             // Get all units that have already moved
             final List<Unit> alreadyMovedUnits = new ArrayList<Unit>();
