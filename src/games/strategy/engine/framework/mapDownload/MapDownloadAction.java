@@ -5,6 +5,11 @@ import javax.swing.JComponent;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.util.CountDownLatchHandler;
 
+/**
+ * Wraps a MapDownloadProperties object and allows us to launch these map related actions:
+ * - check if maps are up to date
+ * - get the list of available maps
+ */
 public class MapDownloadAction {
 
   private final MapDownloadProperties properties;
@@ -29,5 +34,4 @@ public class MapDownloadAction {
 
     return download;
   }
-
 }
