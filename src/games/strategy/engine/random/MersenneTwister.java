@@ -7,95 +7,52 @@ import java.io.Serializable;
 
 /**
  * <h3>MersenneTwister and MersenneTwisterFast</h3>
- * <p>
- * <b>Version 9</b>, based on version MT199937(99/10/29) of the Mersenne Twister algorithm found at
+ *
+ * Version 9, based on version MT199937(99/10/29) of the Mersenne Twister algorithm found at
  * <a href="http://www.math.keio.ac.jp/matumoto/emt.html"> The Mersenne Twister Home Page</a>, with the initialization
- * improved using the
- * new 2002/1/26 initialization algorithm By Sean Luke, October 2004.
- * <p>
- * <b>MersenneTwister</b> is a drop-in subclass replacement for java.util.Random. It is properly synchronized and can be
- * used in a
- * multithreaded environment. On modern VMs such as HotSpot, it is approximately 1/3 slower than java.util.Random.
- * <p>
- * <b>MersenneTwisterFast</b> is not a subclass of java.util.Random. It has the same public methods as Random does,
- * however, and it is
+ * improved using the new 2002/1/26 initialization algorithm By Sean Luke, October 2004.
+ *
+ *
+ * MersenneTwister is a drop-in subclass replacement for java.util.Random. It is properly synchronized and can be
+ * used in a multithreaded environment. On modern VMs such as HotSpot, it is approximately 1/3 slower than
+ * java.util.Random.
+ *
+ * MersenneTwisterFast is not a subclass of java.util.Random. It has the same public methods as Random does, however,
+ * and it is
  * algorithmically identical to MersenneTwister. MersenneTwisterFast has hard-code inlined all of its methods directly,
  * and made all of them
  * final (well, the ones of consequence anyway). Further, these methods are <i>not</i> synchronized, so the same
+ *
  * MersenneTwisterFast
  * instance cannot be shared by multiple threads. But all this helps MersenneTwisterFast achieve well over twice the
  * speed of
  * MersenneTwister. java.util.Random is about 1/3 slower than MersenneTwisterFast.
+ *
+ *
  * <h3>About the Mersenne Twister</h3>
- * <p>
+ *
  * This is a Java version of the C-program for MT19937: Integer version. The MT19937 algorithm was created by Makoto
  * Matsumoto and Takuji
  * Nishimura, who ask:
  * "When you use this, send an email to: matumoto@math.keio.ac.jp with an appropriate reference to your work". Indicate
  * that this is a translation of their algorithm into Java.
- * <p>
+ *
+ *
  * <b>Reference. </b> Makato Matsumoto and Takuji Nishimura,
  * "Mersenne Twister: A 623-Dimensionally Equidistributed Uniform Pseudo-Random Number Generator", <i>ACM Transactions
- * on Modeling and
- * Computer Simulation,</i> Vol. 8, No. 1, January 1998, pp 3--30.
- * <h3>About this Version</h3>
- * <p>
- * <b>Changes Since V8:</b> setSeed(int) was only using the first 28 bits of the seed; it should have been 32 bits. For
- * small-number seeds
- * the behavior is identical.
- * <p>
- * <b>Changes Since V7:</b> A documentation error in MersenneTwisterFast (but not MersenneTwister) stated that
- * nextDouble selects uniformly
- * from the full-open interval [0,1]. It does not. nextDouble's contract is identical across MersenneTwisterFast,
- * MersenneTwister, and
- * java.util.Random, namely, selection in the half-open interval [0,1). That is, 1.0 should not be returned. A similar
- * contract exists in
- * nextFloat.
- * <p>
- * <b>Changes Since V6:</b> License has changed from LGPL to BSD. New timing information to compare against
- * java.util.Random. Recent
- * versions of HotSpot have helped Random increase in speed to the point where it is faster than MersenneTwister but
- * slower than
- * MersenneTwisterFast (which should be the case, as it's a less complex algorithm but is synchronized).
- * <p>
- * <b>Changes Since V5:</b> New empty constructor made to work the same as java.util.Random -- namely, it seeds based on
- * the current time in
- * milliseconds.
- * <p>
- * <b>Changes Since V4:</b> New initialization algorithms. See (see <a
- * href="http://www.math.keio.ac.jp/matumoto/MT2002/emt19937ar.html"</a>
- * http://www.math.keio.ac.jp/matumoto/MT2002/emt19937ar.html</a>)
- * <p>
+ * on Modeling and Computer Simulation,</i> Vol. 8, No. 1, January 1998, pp 3--30.
+ *
+ *
  * The MersenneTwister code is based on standard MT19937 C/C++ code by Takuji Nishimura, with suggestions from Topher
- * Cooper and Marc
- * Rieffel, July 1997. The code was originally translated into Java by Michael Lecuyer, January 1999, and the original
- * code is Copyright (c)
- * 1999 by Michael Lecuyer.
- * <h3>Java notes</h3>
- * <p>
- * This implementation implements the bug fixes made in Java 1.2's version of Random, which means it can be used with
- * earlier versions of
- * Java. See <a href="http://www.javasoft.com/products/jdk/1.2/docs/api/java/util/Random.html"> the JDK 1.2
- * java.util.Random
- * documentation</a> for further documentation on the random-number generation contracts made. Additionally, there's an
- * undocumented bug in
- * the JDK java.util.Random.nextBytes() method, which this code fixes.
- * <p>
- * Just like java.util.Random, this generator accepts a long seed but doesn't use all of it. java.util.Random uses 48
- * bits. The Mersenne
- * Twister instead uses 32 bits (int size). So it's best if your seed does not exceed the int range.
- * <p>
- * MersenneTwister can be used reliably on JDK version 1.1.5 or above. Earlier Java versions have serious bugs in
- * java.util.Random; only
- * MersenneTwisterFast (and not MersenneTwister nor java.util.Random) should be used with them.
- * <h3>License</h3>
+ * Cooper and Marc Rieffel, July 1997. The code was originally translated into Java by Michael Lecuyer, January 1999,
+ * and the original code is Copyright (c) 1999 by Michael Lecuyer.
+ *
  */
 public class MersenneTwister extends java.util.Random implements Serializable {
   private static final long serialVersionUID = -6946159560323874784L;
   // Period parameters
   private static final int N = 624;
   private static final int M = 397;
-  // private static final * constant vector a
   private static final int MATRIX_A = 0x9908b0df;
   // most significant w-r bits
   private static final int UPPER_MASK = 0x80000000;
@@ -107,17 +64,15 @@ public class MersenneTwister extends java.util.Random implements Serializable {
   // the array for the state vector
   private int m_mt[];
   // mti==N+1 means mt[N] is not initialized
-  private int m_mti;
-  private int m_mag01[];
-  // a good initial seed (of int size, though stored in a long)
-  // private static final long GOOD_SEED = 4357;
+  private int mti;
+  private int mag01[];
   /*
    * implemented here because there's a bug in Random's implementation
    * of the Gaussian code (divide by zero, and log(0), ugh!), yet its
    * gaussian variables are private so we can't access them here. :-(
    */
-  private double __nextNextGaussian;
-  private boolean __haveNextNextGaussian;
+  private double nextNextGaussian;
+  private boolean haveNextNextGaussian;
 
   /**
    * Constructor using the default seed.
@@ -154,19 +109,19 @@ public class MersenneTwister extends java.util.Random implements Serializable {
     super.setSeed(seed);
     // Due to a bug in java.util.Random clear up to 1.2, we're
     // doing our own Gaussian variable.
-    __haveNextNextGaussian = false;
+    haveNextNextGaussian = false;
     m_mt = new int[N];
-    m_mag01 = new int[2];
-    m_mag01[0] = 0x0;
-    m_mag01[1] = MATRIX_A;
+    mag01 = new int[2];
+    mag01[0] = 0x0;
+    mag01[1] = MATRIX_A;
     m_mt[0] = (int) (seed & 0xffffffff);
-    for (m_mti = 1; m_mti < N; m_mti++) {
-      m_mt[m_mti] = (1812433253 * (m_mt[m_mti - 1] ^ (m_mt[m_mti - 1] >>> 30)) + m_mti);
+    for (mti = 1; mti < N; mti++) {
+      m_mt[mti] = (1812433253 * (m_mt[mti - 1] ^ (m_mt[mti - 1] >>> 30)) + mti);
       /* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
       /* In the previous versions, MSBs of the seed affect */
       /* only MSBs of the array mt[]. */
       /* 2002/01/09 modified by Makoto Matsumoto */
-      m_mt[m_mti] &= 0xffffffff;
+      m_mt[mti] &= 0xffffffff;
       /* for >32 bit machines */
     }
   }
@@ -214,13 +169,13 @@ public class MersenneTwister extends java.util.Random implements Serializable {
   @Override
   synchronized protected int next(final int bits) {
     int y;
-    if (m_mti >= N) // generate N words at one time
+    if (mti >= N) // generate N words at one time
     {
       int kk;
       // locals are slightly faster
       final int[] mt = this.m_mt;
       // locals are slightly faster
-      final int[] mag01 = this.m_mag01;
+      final int[] mag01 = this.mag01;
       for (kk = 0; kk < N - M; kk++) {
         y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
         mt[kk] = mt[kk + M] ^ (y >>> 1) ^ mag01[y & 0x1];
@@ -231,9 +186,9 @@ public class MersenneTwister extends java.util.Random implements Serializable {
       }
       y = (mt[N - 1] & UPPER_MASK) | (mt[0] & LOWER_MASK);
       mt[N - 1] = mt[M - 1] ^ (y >>> 1) ^ mag01[y & 0x1];
-      m_mti = 0;
+      mti = 0;
     }
-    y = m_mt[m_mti++];
+    y = m_mt[mti++];
     // TEMPERING_SHIFT_U(y)
     y ^= y >>> 11;
     // TEMPERING_SHIFT_S(y)
@@ -246,19 +201,6 @@ public class MersenneTwister extends java.util.Random implements Serializable {
     return y >>> (32 - bits);
   }
 
-  /*
-   * If you've got a truly old version of Java, you can omit these
-   * two next methods.
-   */
-  private synchronized void writeObject(final ObjectOutputStream out) throws IOException {
-    // just so we're synchronized.
-    out.defaultWriteObject();
-  }
-
-  private synchronized void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-    // just so we're synchronized.
-    in.defaultReadObject();
-  }
 
   /**
    * This method is missing from jdk 1.0.x and below. JDK 1.1
@@ -269,45 +211,6 @@ public class MersenneTwister extends java.util.Random implements Serializable {
     return next(1) != 0;
   }
 
-  /**
-   * This generates a coin flip with a probability <tt>probability</tt> of returning true, else returning false.
-   * <tt>probability</tt> must
-   * be between 0.0 and 1.0, inclusive. Not as precise a random real
-   * event as nextBoolean(double), but twice as fast. To explicitly
-   * use this, remember you may need to cast to float first.
-   */
-  public boolean nextBoolean(final float probability) {
-    if (probability < 0.0f || probability > 1.0f) {
-      throw new IllegalArgumentException("probability must be between 0.0 and 1.0 inclusive.");
-    }
-    if (probability == 0.0f) {
-      // fix half-open issues
-      return false;
-    } else if (probability == 1.0f) {
-      // fix half-open issues
-      return true;
-    }
-    return nextFloat() < probability;
-  }
-
-  /**
-   * This generates a coin flip with a probability <tt>probability</tt> of returning true, else returning false.
-   * <tt>probability</tt> must
-   * be between 0.0 and 1.0, inclusive.
-   */
-  public boolean nextBoolean(final double probability) {
-    if (probability < 0.0 || probability > 1.0) {
-      throw new IllegalArgumentException("probability must be between 0.0 and 1.0 inclusive.");
-    }
-    if (probability == 0.0) {
-      // fix half-open issues
-      return false;
-    } else if (probability == 1.0) {
-      // fix half-open issues
-      return true;
-    }
-    return nextDouble() < probability;
-  }
 
   /**
    * This method is missing from JDK 1.1 and below. JDK 1.2
@@ -324,23 +227,6 @@ public class MersenneTwister extends java.util.Random implements Serializable {
     int bits, val;
     do {
       bits = next(31);
-      val = bits % n;
-    } while (bits - val + (n - 1) < 0);
-    return val;
-  }
-
-  /**
-   * This method is for completness' sake.
-   * Returns a long drawn uniformly from 0 to n-1. Suffice it to say,
-   * n must be > 0, or an IllegalArgumentException is raised.
-   */
-  public long nextLong(final long n) {
-    if (n <= 0) {
-      throw new IllegalArgumentException("n must be >= 0");
-    }
-    long bits, val;
-    do {
-      bits = (nextLong() >>> 1);
       val = bits % n;
     } while (bits - val + (n - 1) < 0);
     return val;
@@ -376,21 +262,6 @@ public class MersenneTwister extends java.util.Random implements Serializable {
     }
   }
 
-  /** For completeness' sake, though it's not in java.util.Random. */
-  public char nextChar() {
-    // chars are 16-bit UniCode values
-    return (char) (next(16));
-  }
-
-  /** For completeness' sake, though it's not in java.util.Random. */
-  public short nextShort() {
-    return (short) (next(16));
-  }
-
-  /** For completeness' sake, though it's not in java.util.Random. */
-  public byte nextByte() {
-    return (byte) (next(8));
-  }
 
   /**
    * A bug fix for all JDK code including 1.2. nextGaussian can theoretically
@@ -400,9 +271,9 @@ public class MersenneTwister extends java.util.Random implements Serializable {
    */
   @Override
   synchronized public double nextGaussian() {
-    if (__haveNextNextGaussian) {
-      __haveNextNextGaussian = false;
-      return __nextNextGaussian;
+    if (haveNextNextGaussian) {
+      haveNextNextGaussian = false;
+      return nextNextGaussian;
     } else {
       double v1, v2, s;
       do {
@@ -413,215 +284,9 @@ public class MersenneTwister extends java.util.Random implements Serializable {
         s = v1 * v1 + v2 * v2;
       } while (s >= 1 || s == 0);
       final double multiplier = /* Strict */Math.sqrt(-2 * /* Strict */Math.log(s) / s);
-      __nextNextGaussian = v2 * multiplier;
-      __haveNextNextGaussian = true;
+      nextNextGaussian = v2 * multiplier;
+      haveNextNextGaussian = true;
       return v1 * multiplier;
-    }
-  }
-
-  /**
-   * Tests the code.
-   */
-  public static void main(final String args[]) {
-    int j;
-    MersenneTwister r;
-    // CORRECTNESS TEST
-    // COMPARE WITH http://www.math.keio.ac.jp/matumoto/CODES/MT2002/mt19937ar.out
-    r = new MersenneTwister(new int[] {0x123, 0x234, 0x345, 0x456});
-    System.out.println("Output of MersenneTwister with new (2002/1/26) seeding mechanism");
-    for (j = 0; j < 1000; j++) {
-      // first, convert the int from signed to "unsigned"
-      long l = r.nextInt();
-      if (l < 0) {
-        // max int value
-        l += 4294967296L;
-      }
-      String s = String.valueOf(l);
-      while (s.length() < 10) {
-        // buffer
-        s = " " + s;
-      }
-      System.out.print(s + " ");
-      if (j % 5 == 4) {
-        System.out.println();
-      }
-    }
-    // SPEED TEST
-    final long SEED = 4357;
-    int xx;
-    long ms;
-    System.out.println("\nTime to test grabbing 100000000 ints");
-    r = new MersenneTwister(SEED);
-    ms = System.currentTimeMillis();
-    xx = 0;
-    for (j = 0; j < 100000000; j++) {
-      xx += r.nextInt();
-    }
-    System.out.println("Mersenne Twister: " + (System.currentTimeMillis() - ms) + "          Ignore this: " + xx);
-    System.out.println("To compare this with java.util.Random, run this same test on MersenneTwisterFast.");
-    System.out.println("The comparison with Random is removed from MersenneTwister because it is a proper");
-    System.out.println("subclass of Random and this unfairly makes some of Random's methods un-inlinable,");
-    System.out.println("so it would make Random look worse than it is.");
-    // TEST TO COMPARE TYPE CONVERSION BETWEEN
-    // MersenneTwisterFast.java AND MersenneTwister.java
-    System.out.println("\nGrab the first 1000 booleans");
-    r = new MersenneTwister(SEED);
-    for (j = 0; j < 1000; j++) {
-      System.out.print(r.nextBoolean() + " ");
-      if (j % 8 == 7) {
-        System.out.println();
-      }
-    }
-    if (!(j % 8 == 7)) {
-      System.out.println();
-    }
-    System.out.println("\nGrab 1000 booleans of increasing probability using nextBoolean(double)");
-    r = new MersenneTwister(SEED);
-    for (j = 0; j < 1000; j++) {
-      System.out.print(r.nextBoolean((j / 999.0)) + " ");
-      if (j % 8 == 7) {
-        System.out.println();
-      }
-    }
-    if (!(j % 8 == 7)) {
-      System.out.println();
-    }
-    System.out.println("\nGrab 1000 booleans of increasing probability using nextBoolean(float)");
-    r = new MersenneTwister(SEED);
-    for (j = 0; j < 1000; j++) {
-      System.out.print(r.nextBoolean((j / 999.0f)) + " ");
-      if (j % 8 == 7) {
-        System.out.println();
-      }
-    }
-    if (!(j % 8 == 7)) {
-      System.out.println();
-    }
-    final byte[] bytes = new byte[1000];
-    System.out.println("\nGrab the first 1000 bytes using nextBytes");
-    r = new MersenneTwister(SEED);
-    r.nextBytes(bytes);
-    for (j = 0; j < 1000; j++) {
-      System.out.print(bytes[j] + " ");
-      if (j % 16 == 15) {
-        System.out.println();
-      }
-    }
-    if (!(j % 16 == 15)) {
-      System.out.println();
-    }
-    byte b;
-    System.out.println("\nGrab the first 1000 bytes -- must be same as nextBytes");
-    r = new MersenneTwister(SEED);
-    for (j = 0; j < 1000; j++) {
-      System.out.print((b = r.nextByte()) + " ");
-      if (b != bytes[j]) {
-        System.out.print("BAD ");
-      }
-      if (j % 16 == 15) {
-        System.out.println();
-      }
-    }
-    if (!(j % 16 == 15)) {
-      System.out.println();
-    }
-    System.out.println("\nGrab the first 1000 shorts");
-    r = new MersenneTwister(SEED);
-    for (j = 0; j < 1000; j++) {
-      System.out.print(r.nextShort() + " ");
-      if (j % 8 == 7) {
-        System.out.println();
-      }
-    }
-    if (!(j % 8 == 7)) {
-      System.out.println();
-    }
-    System.out.println("\nGrab the first 1000 ints");
-    r = new MersenneTwister(SEED);
-    for (j = 0; j < 1000; j++) {
-      System.out.print(r.nextInt() + " ");
-      if (j % 4 == 3) {
-        System.out.println();
-      }
-    }
-    if (!(j % 4 == 3)) {
-      System.out.println();
-    }
-    System.out.println("\nGrab the first 1000 ints of different sizes");
-    r = new MersenneTwister(SEED);
-    int max = 1;
-    for (j = 0; j < 1000; j++) {
-      System.out.print(r.nextInt(max) + " ");
-      max *= 2;
-      if (max <= 0) {
-        max = 1;
-      }
-      if (j % 4 == 3) {
-        System.out.println();
-      }
-    }
-    if (!(j % 4 == 3)) {
-      System.out.println();
-    }
-    System.out.println("\nGrab the first 1000 longs");
-    r = new MersenneTwister(SEED);
-    for (j = 0; j < 1000; j++) {
-      System.out.print(r.nextLong() + " ");
-      if (j % 3 == 2) {
-        System.out.println();
-      }
-    }
-    if (!(j % 3 == 2)) {
-      System.out.println();
-    }
-    System.out.println("\nGrab the first 1000 longs of different sizes");
-    r = new MersenneTwister(SEED);
-    long max2 = 1;
-    for (j = 0; j < 1000; j++) {
-      System.out.print(r.nextLong(max2) + " ");
-      max2 *= 2;
-      if (max2 <= 0) {
-        max2 = 1;
-      }
-      if (j % 4 == 3) {
-        System.out.println();
-      }
-    }
-    if (!(j % 4 == 3)) {
-      System.out.println();
-    }
-    System.out.println("\nGrab the first 1000 floats");
-    r = new MersenneTwister(SEED);
-    for (j = 0; j < 1000; j++) {
-      System.out.print(r.nextFloat() + " ");
-      if (j % 4 == 3) {
-        System.out.println();
-      }
-    }
-    if (!(j % 4 == 3)) {
-      System.out.println();
-    }
-    System.out.println("\nGrab the first 1000 doubles");
-    r = new MersenneTwister(SEED);
-    for (j = 0; j < 1000; j++) {
-      System.out.print(r.nextDouble() + " ");
-      if (j % 3 == 2) {
-        System.out.println();
-      }
-    }
-    if (!(j % 3 == 2)) {
-      System.out.println();
-    }
-    System.out.println("\nGrab the first 1000 gaussian doubles");
-    r = new MersenneTwister(SEED);
-    for (j = 0; j < 1000; j++) {
-      System.out.print(r.nextGaussian() + " ");
-      if (j % 3 == 2) {
-        System.out.println();
-      }
-    }
-    if (!(j % 3 == 2)) {
-      System.out.println();
     }
   }
 }
