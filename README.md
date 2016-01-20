@@ -4,6 +4,7 @@ TripleA Game Features
 =====================
 - Various multiplayer gameplay options:
   - live online lobby
+  - direct network connection
   - play by email
   - play by forum
 - AI for single player play
@@ -13,7 +14,7 @@ TripleA Game Features
 Installing TripleA and Playing
 ===============================
 
-Download the installer appropriate for your operating system here: http://github.com/triplea-game/triplea/releases/tag/1.8.0.9, then run the installer, it will guide you through the rest of the game installation.
+Download the installer appropriate for your operating system here: http://github.com/triplea-game/triplea/releases/latest, then run the installer, it will guide you through the rest of the game installation.
 
 
 Learning to Play
@@ -35,7 +36,7 @@ TripleA Maps
 ============
 
 Maps are hosted in: http://github.com/triplea-maps
-For issues global to all maps, please refer to the map adminstrative project: http://github.com/triplea-maps/Project
+For issues global to all maps, please refer to the map adminstration project: http://github.com/triplea-maps/Project
 
 
 Build system
