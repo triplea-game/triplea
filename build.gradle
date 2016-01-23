@@ -12,6 +12,7 @@ plugins {
 	id 'application'
 	id 'com.github.ben-manes.versions' version '0.11.3'
 	id 'com.github.johnrengelman.shadow' version '1.2.2'
+	id "de.qaware.seu.as.code.git" version "2.2.0"
 }
 
 version = System.getenv("TAGGED_VERSION") ?: ""
@@ -72,6 +73,21 @@ dependencies {
 	testCompile 'org.mockito:mockito-all:2.0.2-beta'
 }
 
+def assetsDirectory = file("${buildDir}/assets")
+git {
+	assets {
+		url 'https://github.com/triplea-game/assets.git'
+		directory assetsDirectory
+		branch 'master'
+		singleBranch true
+	}
+}
+import com.install4j.gradle.Install4jTask
+
+task updateAssets(dependsOn: ['gitCloneAssets', 'gitPullAssets']) {
+}
+
+
 task renameShadowJar(type: Copy, group: 'release', dependsOn: [shadowJar]) {
 	ext.output = file("$project.buildDir/libs/all/triplea.jar")
 	from shadowJar.archivePath
@@ -79,17 +95,19 @@ task renameShadowJar(type: Copy, group: 'release', dependsOn: [shadowJar]) {
 	rename shadowJar.archivePath.name, output.name
 }
 
-task allPlatform(type: Zip, group: 'release', dependsOn: renameShadowJar) {
+task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets]) {
 	classifier 'all_platforms'
-	['assets', 'dice_servers', 'doc', 'license', 'maps', 'old'].each { folder ->
+	['assets', 'dice_servers', 'license', 'maps', 'old'].each { folder ->
 		from(folder) {
 			into(folder)
 		}
 	}
-	from('icons') {
+	from("${assetsDirectory}/doc"){
+		into('doc')
+	}
+	from("${assetsDirectory}/icons") {
 		into('icons')
-		exclude('Icon.zip')
-		exclude('icon.icns')
+		exclude("icon.icns")
 	}
 	['readme.html', 'changelog.txt', 'system.ini', 'TripleA_RuleBook.pdf',
 	 'run-headless-game-host-mac-os.sh', 'run-headless-game-host.sh', 'run-headless-game-host-windows.bat',
@@ -101,19 +119,21 @@ task allPlatform(type: Zip, group: 'release', dependsOn: renameShadowJar) {
 	}
 }
 
-task bots(type: Zip, group: 'release', dependsOn: renameShadowJar) {
+task bots(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets]) {
 	classifier 'bots'
 	from('assets') {
 		exclude('resources')
 		exclude('sounds')
 		exclude('territoryEffects')
 	}
-	from('icons') {
+	from("${assetsDirectory}/icons") {
 		into('icons')
-		exclude('Icon.zip')
-		exclude('icon.icns')
+		exclude("icon.icns")
 	}
-	['dice_servers', 'doc', 'icons', 'license'].each { folder ->
+	from("${assetsDirectory}/doc"){
+		into('doc')
+	}
+	['dice_servers', 'license'].each { folder ->
 		from(folder) {
 			into(folder)
 		}
@@ -148,11 +168,16 @@ task lobbyServer(type: Zip, group: 'release', dependsOn: renameShadowJar) {
 
 task generateZipReleases(group: 'release', dependsOn: [allPlatform, bots, lobbyServer]) {}
 
-import com.install4j.gradle.Install4jTask
-
 apply plugin: 'install4j'
 
-task generateInstallers(type: Install4jTask, dependsOn: renameShadowJar, group: 'release') {
+task copyJRE(type: Copy, dependsOn: [updateAssets]) {
+	from "${assetsDirectory}/install4j/windows-x86-1.8.0_66.tar.gz"
+	from "${assetsDirectory}/install4j/macosx-amd64-1.8.0_66.tar.gz"
+	from "${assetsDirectory}/install4j/windows-amd64-1.8.0_66.tar.gz"
+	into "${System.properties['user.home']}/.install4j6/jres"
+}
+
+task generateInstallers(type: Install4jTask, dependsOn: [renameShadowJar, copyJRE], group: 'release') {
 	projectFile = file('build.install4j')
 	release project.version
 	doFirst {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="6.0.4" transformSequenceNumber="5">
-  <directoryPresets config="./icons" />
+  <directoryPresets config="./build/assets" />
   <application name="TripleA" distributionSourceDir="" applicationId="5978-7304-8769-5296" mediaDir="build/releases" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}" compression="6" lzmaCompression="false" pack200Compression="false" excludeSignedFromPacking="true" commonExternalFiles="false" createMd5Sums="true" shrinkRuntime="true" shortName="triplea" publisher="TripleA Developer Team" publisherWeb="triplea-game.github.io" version="${compiler:sys.version}" allPathsRelative="true" backupOnSave="false" autoSave="true" convertDotsToUnderscores="false" macSignature="????" macVolumeId="af9346379363d40e" javaMinVersion="1.8" javaMaxVersion="" allowBetaVM="true" jdkMode="jdk" jdkName="">
     <languages skipLanguageSelection="false" languageSelectionInPrincipalLanguage="false">
       <principalLanguage id="en" customLocalizationFile="" />
@@ -37,10 +37,10 @@
       <dirEntry mountPoint="27" file="dice_servers" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="dice_servers" excludeSuffixes="" dirMode="755" overrideDirMode="false">
         <exclude />
       </dirEntry>
-      <dirEntry mountPoint="30" file="doc" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="doc" excludeSuffixes="" dirMode="755" overrideDirMode="false">
+      <dirEntry mountPoint="30" file="./build/assets/doc" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="doc" excludeSuffixes="" dirMode="755" overrideDirMode="false">
         <exclude />
       </dirEntry>
-      <dirEntry mountPoint="26" file="icons" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="icons" excludeSuffixes="" dirMode="755" overrideDirMode="false">
+      <dirEntry mountPoint="26" file="./build/assets/icons" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="icons" excludeSuffixes="" dirMode="755" overrideDirMode="false">
         <exclude />
       </dirEntry>
       <dirEntry mountPoint="29" file="license" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="license" excludeSuffixes="" dirMode="755" overrideDirMode="false">
@@ -63,7 +63,7 @@
       <executable name="TripleA" type="1" iconSet="true" iconFile="" executableDir="" redirectStderr="true" stderrFile="error.log" stderrMode="append" redirectStdout="false" stdoutFile="output.log" stdoutMode="overwrite" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="asInvoker" checkConsoleParameter="true" globalSingleInstance="false" singleInstanceActivate="true" dpiAware="false">
         <versionInfo include="false" fileVersion="" fileDescription="" legalCopyright="" internalName="TripelA" productName="" />
       </executable>
-      <splashScreen show="true" width="256" height="256" bitmapFile="icons/triplea_icon_256_256.png" windowsNative="false" textOverlay="true">
+      <splashScreen show="true" width="256" height="256" bitmapFile="build/assets/icons/triplea_icon_256_256.png" windowsNative="false" textOverlay="true">
         <text>
           <statusLine x="142" y="5" text="TripleA" fontSize="8" fontColor="0,0,0" bold="false" />
           <versionLine x="144" y="22" text="version ${compiler:sys.version}" fontSize="8" fontColor="0,0,0" bold="false" />
@@ -87,12 +87,12 @@
         <content />
       </infoPlist>
       <iconImageFiles>
-        <file path="./icons/triplea_icon_16_16.png" />
-        <file path="./icons/triplea_icon_32_32.png" />
-        <file path="./icons/triplea_icon_48_48.png" />
-        <file path="./icons/triplea_icon_64_64.png" />
-        <file path="./icons/triplea_icon_128_128.png" />
-        <file path="./icons/triplea_icon_256_256.png" />
+        <file path="./build/assets/icons/triplea_icon_16_16.png" />
+        <file path="./build/assets/icons/triplea_icon_32_32.png" />
+        <file path="./build/assets/icons/triplea_icon_48_48.png" />
+        <file path="./build/assets/icons/triplea_icon_64_64.png" />
+        <file path="./build/assets/icons/triplea_icon_128_128.png" />
+        <file path="./build/assets/icons/triplea_icon_256_256.png" />
       </iconImageFiles>
     </launcher>
     <launcher name="triplea-headless" id="39" customizedId="" external="false" excludeFromMenu="false" unixMode="755" menuName="triplea-headless${compiler:sys.version}" icnsFile="" customMacBundleIdentifier="false" macBundleIdentifier="" swtApp="false" fileset="" macBundleBinary="JavaApplicationStub" addMacEntitlements="false" macEntitlementsFile="" useCustomMacosExecutableName="false" customMacosExecutableName="">
@@ -121,12 +121,12 @@
         <content />
       </infoPlist>
       <iconImageFiles>
-        <file path="./icons/triplea_icon_16_16.png" />
-        <file path="./icons/triplea_icon_32_32.png" />
-        <file path="./icons/triplea_icon_48_48.png" />
-        <file path="./icons/triplea_icon_64_64.png" />
-        <file path="./icons/triplea_icon_128_128.png" />
-        <file path="./icons/triplea_icon_256_256.png" />
+        <file path="./build/assets/icons/triplea_icon_16_16.png" />
+        <file path="./build/assets/icons/triplea_icon_32_32.png" />
+        <file path="./build/assets/icons/triplea_icon_48_48.png" />
+        <file path="./build/assets/icons/triplea_icon_64_64.png" />
+        <file path="./build/assets/icons/triplea_icon_128_128.png" />
+        <file path="./build/assets/icons/triplea_icon_256_256.png" />
       </iconImageFiles>
     </launcher>
   </launchers>
@@ -144,38 +144,38 @@
             <object class="com.install4j.runtime.beans.applications.InstallerApplication" id="InstallerApplication0">
               <void property="customHeaderImage">
                 <object class="com.install4j.api.beans.ExternalFile">
-                  <string>./icons/triplea_icon_16_16.png</string>
+                  <string>./build/assets/icons/triplea_icon_16_16.png</string>
                 </object>
               </void>
               <void property="customIconImageFiles">
                 <void method="add">
                   <object class="com.install4j.api.beans.ExternalFile">
-                    <string>./icons/triplea_icon_16_16.png</string>
+                    <string>./build/assets/icons/triplea_icon_16_16.png</string>
                   </object>
                 </void>
                 <void method="add">
                   <object class="com.install4j.api.beans.ExternalFile">
-                    <string>./icons/triplea_icon_32_32.png</string>
+                    <string>./build/assets/icons/triplea_icon_32_32.png</string>
                   </object>
                 </void>
                 <void method="add">
                   <object class="com.install4j.api.beans.ExternalFile">
-                    <string>./icons/triplea_icon_48_48.png</string>
+                    <string>./build/assets/icons/triplea_icon_48_48.png</string>
                   </object>
                 </void>
                 <void method="add">
                   <object class="com.install4j.api.beans.ExternalFile">
-                    <string>./icons/triplea_icon_64_64.png</string>
+                    <string>./build/assets/icons/triplea_icon_64_64.png</string>
                   </object>
                 </void>
                 <void method="add">
                   <object class="com.install4j.api.beans.ExternalFile">
-                    <string>./icons/triplea_icon_128_128.png</string>
+                    <string>./build/assets/icons/triplea_icon_128_128.png</string>
                   </object>
                 </void>
                 <void method="add">
                   <object class="com.install4j.api.beans.ExternalFile">
-                    <string>./icons/triplea_icon_256_256.png</string>
+                    <string>./build/assets/icons/triplea_icon_256_256.png</string>
                   </object>
                 </void>
               </void>
@@ -241,7 +241,7 @@
                   </void>
                   <void property="bannerImageFile">
                     <object class="com.install4j.api.beans.ExternalFile">
-                      <string>./icons/triplea_icon_256_256.png</string>
+                      <string>./build/assets/icons/triplea_icon_256_256.png</string>
                     </object>
                   </void>
                 </object>
@@ -416,7 +416,7 @@
                   </void>
                   <void property="bannerImageFile">
                     <object class="com.install4j.api.beans.ExternalFile">
-                      <string>./icons/triplea_icon_256_256.png</string>
+                      <string>./build/assets/icons/triplea_icon_256_256.png</string>
                     </object>
                   </void>
                 </object>
@@ -470,13 +470,13 @@
             <object class="com.install4j.runtime.beans.applications.UninstallerApplication" id="UninstallerApplication0">
               <void property="customHeaderImage">
                 <object class="com.install4j.api.beans.ExternalFile">
-                  <string>./icons/triplea_icon_16_16.png</string>
+                  <string>./build/assets/icons/triplea_icon_16_16.png</string>
                 </object>
               </void>
               <void property="customIconImageFiles">
                 <void method="add">
                   <object class="com.install4j.api.beans.ExternalFile">
-                    <string>./icons/triplea_icon_256_256.png</string>
+                    <string>./build/assets/icons/triplea_icon_256_256.png</string>
                   </object>
                 </void>
               </void>
@@ -550,7 +550,7 @@
                   </void>
                   <void property="bannerImageFile">
                     <object class="com.install4j.api.beans.ExternalFile">
-                      <string>./icons/triplea_icon_256_256.png</string>
+                      <string>./build/assets/icons/triplea_icon_256_256.png</string>
                     </object>
                   </void>
                 </object>
@@ -618,7 +618,7 @@
                   </void>
                   <void property="bannerImageFile">
                     <object class="com.install4j.api.beans.ExternalFile">
-                      <string>./icons/triplea_icon_256_256.png</string>
+                      <string>./build/assets/icons/triplea_icon_256_256.png</string>
                     </object>
                   </void>
                 </object>
@@ -643,7 +643,7 @@
       <excludedBeans />
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
       <exclude>
-        <entry location="icons/icon.icns" fileType="regular" />
+        <entry location="build/assets/icons/icon.icns" fileType="regular" />
       </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
@@ -658,7 +658,7 @@
       <excludedBeans />
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
       <exclude>
-        <entry location="icons/icon.icns" fileType="regular" />
+        <entry location="build/assets/icons/icon.icns" fileType="regular" />
       </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
@@ -686,7 +686,7 @@
       <excludedBeans />
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
       <exclude>
-        <entry location="icons/icon.icns" fileType="regular" />
+        <entry location="build/assets/icons/icon.icns" fileType="regular" />
       </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
