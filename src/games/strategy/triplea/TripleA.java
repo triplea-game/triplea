@@ -1,14 +1,5 @@
 package games.strategy.triplea;
 
-import java.awt.Frame;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.swing.SwingUtilities;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.PlayerID;
@@ -29,6 +20,7 @@ import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.DummySoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.sound.SoundPath;
+import games.strategy.triplea.ai.fastAI.FastAI;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.strongAI.StrongAI;
 import games.strategy.triplea.ai.weakAI.DoesNothingAI;
@@ -42,12 +34,22 @@ import games.strategy.triplea.ui.display.DummyTripleaDisplay;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.triplea.ui.display.TripleaDisplay;
 
+import java.awt.Frame;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.SwingUtilities;
+
 public class TripleA extends AbstractGameLoader implements IGameLoader {
   // compatible with 0.9.0.2 saved games
   private static final long serialVersionUID = -8374315848374732436L;
   public static final String HUMAN_PLAYER_TYPE = "Human";
   public static final String WEAK_COMPUTER_PLAYER_TYPE = "Easy (AI)";
   public static final String STRONG_COMPUTER_PLAYER_TYPE = "Medium (AI)";
+  public static final String FAST_COMPUTER_PLAYER_TYPE = "Fast (AI)";
   public static final String PRO_COMPUTER_PLAYER_TYPE = "Hard (AI)";
   public static final String DOESNOTHINGAI_COMPUTER_PLAYER_TYPE = "Does Nothing (AI)";
   // public static final String NONE = "None (AI)";
@@ -62,6 +64,8 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
         players.add(new WeakAI(name, type));
       } else if (type.equals(STRONG_COMPUTER_PLAYER_TYPE)) {
         players.add(new StrongAI(name, type));
+      } else if (type.equals(FAST_COMPUTER_PLAYER_TYPE)) {
+        players.add(new FastAI(name, type));
       } else if (type.equals(PRO_COMPUTER_PLAYER_TYPE)) {
         players.add(new ProAI(name, type));
       } else if (type.equals(DOESNOTHINGAI_COMPUTER_PLAYER_TYPE)) {
@@ -182,7 +186,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
   @Override
   public String[] getServerPlayerTypes() {
     return new String[] {HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, STRONG_COMPUTER_PLAYER_TYPE,
-        PRO_COMPUTER_PLAYER_TYPE, DOESNOTHINGAI_COMPUTER_PLAYER_TYPE};
+        FAST_COMPUTER_PLAYER_TYPE, PRO_COMPUTER_PLAYER_TYPE, DOESNOTHINGAI_COMPUTER_PLAYER_TYPE};
   }
 
   @Override
