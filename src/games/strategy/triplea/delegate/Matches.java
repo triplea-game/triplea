@@ -1,14 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
@@ -42,6 +33,15 @@ import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 import games.strategy.util.Util;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Useful match interfaces.
@@ -364,7 +364,7 @@ public class Matches {
         }
         final boolean unitOwnerCanLetUnitsBeCapturedByPlayer = pa.getCaptureUnitOnEnteringBy().contains(player);
         return (unitCanBeCapturedByPlayer && territoryCanHaveUnitsThatCanBeCapturedByPlayer
-            && unitOwnerCanLetUnitsBeCapturedByPlayer);
+        && unitOwnerCanLetUnitsBeCapturedByPlayer);
       }
     };
   }
@@ -551,7 +551,8 @@ public class Matches {
    * @param player
    * @param data
    */
-  private static final Match<UnitType> UnitTypeIsSupporterOrHasCombatAbility(final boolean attack, final PlayerID player,
+  private static final Match<UnitType> UnitTypeIsSupporterOrHasCombatAbility(final boolean attack,
+      final PlayerID player,
       final GameData data) {
     return new Match<UnitType>() {
       @Override
@@ -2506,7 +2507,7 @@ public class Matches {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
-        return MoveValidator.validateCanal(t, null, unitsMoving, player, data) != null;
+        return MoveValidator.validateCanal(t, null, unitsMoving, player, data).isPresent();
       }
     };
   }
@@ -2762,7 +2763,8 @@ public class Matches {
     }
   };
 
-  public static Match<Unit> UnitWhichConsumesUnitsHasRequiredUnits(final Collection<Unit> unitsInTerritoryAtStartOfTurn,
+  public static Match<Unit> UnitWhichConsumesUnitsHasRequiredUnits(
+      final Collection<Unit> unitsInTerritoryAtStartOfTurn,
       final Territory territory) {
     return new Match<Unit>() {
       @Override
