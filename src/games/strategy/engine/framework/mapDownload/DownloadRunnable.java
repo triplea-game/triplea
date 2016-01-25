@@ -59,11 +59,15 @@ public class DownloadRunnable implements Runnable {
 
   @Override
   public void run() {
-    if (urlString.startsWith("http")) {
+    if (beginsWithHttpProtocol(urlString)) {
       downloadFile();
     } else {
       readLocalFile();
     }
+  }
+
+  private static boolean beginsWithHttpProtocol(String urlString) {
+    return urlString.startsWith("http://") || urlString.startsWith("https://");
   }
 
   private void downloadFile() {
