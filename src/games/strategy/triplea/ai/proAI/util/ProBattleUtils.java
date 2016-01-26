@@ -1,12 +1,5 @@
 package games.strategy.triplea.ai.proAI.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -26,9 +19,15 @@ import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
-import games.strategy.triplea.oddsCalculator.ta.ConcurrentOddsCalculator;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Pro AI battle utilities.
@@ -38,8 +37,12 @@ public class ProBattleUtils {
   public final static int SHORT_RANGE = 2;
   public final static int MEDIUM_RANGE = 3;
 
-  private final static IOddsCalculator calc = new ConcurrentOddsCalculator("ProAI");
+  private static IOddsCalculator calc;
   private static boolean isCanceled = false;
+
+  public static void setOddsCalculator(final IOddsCalculator calc) {
+    ProBattleUtils.calc = calc;
+  }
 
   public static void setData(final GameData data) {
     calc.setGameData(data);
@@ -51,7 +54,9 @@ public class ProBattleUtils {
   }
 
   public static void clearData() {
-    calc.setGameData(null);
+    if (calc != null) {
+      calc.setGameData(null);
+    }
   }
 
   public static boolean checkForOverwhelmingWin(final PlayerID player, final Territory t,
