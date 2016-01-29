@@ -82,6 +82,7 @@ import games.strategy.engine.history.Step;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.engine.stats.IStat;
+import games.strategy.performance.EnablePerformanceLoggingCheckBox;
 import games.strategy.sound.SoundOptions;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ai.proAI.ProAI;
@@ -304,6 +305,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     addShowVerifiedDice(menuGame);
     SoundOptions.addGlobalSoundSwitchMenu(menuGame);
     SoundOptions.addToMenu(menuGame, SoundPath.SoundType.TRIPLEA);
+    menuGame.addSeparator();
+    menuGame.add(new EnablePerformanceLoggingCheckBox());
     menuGame.addSeparator();
     addGameOptionsMenu(menuGame);
     addPoliticsMenu(menuGame);

@@ -17,7 +17,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-public class GenericConsole extends JFrame {
+public abstract class GenericConsole extends JFrame {
   private static final long serialVersionUID = 5754914217052820386L;
 
   private final JTextArea m_text = new JTextArea(20, 50);
@@ -41,7 +41,9 @@ public class GenericConsole extends JFrame {
     pack();
   }
 
-  public void append(final String s) {
+  public abstract GenericConsole getConsoleInstance();
+
+    public void append(final String s) {
     m_text.append(s);
   }
 
@@ -62,7 +64,7 @@ public class GenericConsole extends JFrame {
    */
   public void displayStandardError() {
     final SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream(System.err);
-    final ThreadReader reader = new ThreadReader(out, m_text, true);
+    final ThreadReader reader = new ThreadReader(out, m_text, true, getConsoleInstance());
     final Thread thread = new Thread(reader, "Console std err reader");
     thread.setDaemon(true);
     thread.start();
@@ -72,7 +74,7 @@ public class GenericConsole extends JFrame {
 
   public void displayStandardOutput() {
     final SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream(System.out);
-    final ThreadReader reader = new ThreadReader(out, m_text, false);
+    final ThreadReader reader = new ThreadReader(out, m_text, false, getConsoleInstance());
     final Thread thread = new Thread(reader, "Console std out reader");
     thread.setDaemon(true);
     thread.start();
@@ -131,19 +133,21 @@ class ThreadReader implements Runnable {
   private final JTextArea m_text;
   private final SynchedByteArrayOutputStream m_in;
   private final boolean m_displayConsoleOnWrite;
+  private final GenericConsole parentConsole;
 
-  ThreadReader(final SynchedByteArrayOutputStream in, final JTextArea text, final boolean displayConsoleOnWrite) {
+  ThreadReader(final SynchedByteArrayOutputStream in, final JTextArea text, final boolean displayConsoleOnWrite, GenericConsole parentConsole) {
     m_in = in;
     m_text = text;
     m_displayConsoleOnWrite = displayConsoleOnWrite;
+    this.parentConsole = parentConsole;
   }
 
   @Override
   public void run() {
     while (true) {
       m_text.append(m_in.readFully());
-      if (m_displayConsoleOnWrite && !ErrorConsole.getConsole().isVisible()) {
-        ErrorConsole.getConsole().setVisible(true);
+      if (m_displayConsoleOnWrite && !parentConsole.isVisible()) {
+        parentConsole.setVisible(true);
       }
       try {
         Thread.sleep(CONSOLE_UPDATE_INTERVAL_MS);
