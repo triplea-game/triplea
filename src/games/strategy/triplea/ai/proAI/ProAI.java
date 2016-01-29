@@ -71,6 +71,7 @@ public class ProAI extends AbstractAI {
   private final ProScrambleAI scrambleAI;
   private final ProPoliticsAI politicsAI;
   private final ProTechAI techAI;
+  private final ProBidAI bidAI;
 
   // Data shared across phases
   private Map<Territory, ProTerritory> storedCombatMoveMap;
@@ -89,6 +90,7 @@ public class ProAI extends AbstractAI {
     scrambleAI = new ProScrambleAI(this);
     politicsAI = new ProPoliticsAI(this);
     techAI = new ProTechAI();
+    bidAI = new ProBidAI();
     storedCombatMoveMap = null;
     storedFactoryMoveMap = null;
     storedPurchaseTerritories = null;
@@ -171,7 +173,7 @@ public class ProAI extends AbstractAI {
       return;
     }
     if (purchaseForBid) {
-      purchaseAI.bid(PUsToSpend, purchaseDelegate, data, player);
+      bidAI.bid(PUsToSpend, purchaseDelegate, data, player);
     } else {
 
       // Repair factories
@@ -263,7 +265,7 @@ public class ProAI extends AbstractAI {
     ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
     if (bid) {
-      purchaseAI.bidPlace(placeDelegate, data, player);
+      bidAI.bidPlace(placeDelegate, data, player);
     } else {
       purchaseAI.place(storedPurchaseTerritories, placeDelegate);
       storedPurchaseTerritories = null;
