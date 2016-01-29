@@ -1,13 +1,14 @@
 <?xml version="1.0"?>
 <games>
-  <game>
-    <!-- "!" given as first character of an URL causes the "Install Map" button to be disabled, and the mapname does not have to be unique anymore. Use to  format.-->
+  <!-- "!" given as first character of an URL causes the "Install Map" button to be disabled, and the mapname does not have to be unique anymore. Use to  format.-->
+  <!-- <game>
     <url>!</url>
     <mapName/>
     <description><![CDATA[
     <br>
     ]]></description>
-  </game>
+  </game> 
+ -->
   <game>
     <url>https://github.com/triplea-maps/total_world_war/releases/download/0.1/total_world_war.zip</url>
     <mapName>Total_World_War</mapName>
