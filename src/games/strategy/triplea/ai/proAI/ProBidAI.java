@@ -42,14 +42,12 @@ import java.util.List;
 public class ProBidAI {
 
   private GameData data;
-  private PlayerID player;
 
   public void bid(int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data, final PlayerID player) {
     ProLogger.info("Starting bid purchase phase");
 
     // Current data at the start of combat move
     this.data = data;
-    this.player = player;
     if (PUsToSpend == 0 && player.getResources().getQuantity(data.getResourceList().getResource(Constants.PUS)) == 0) {
       return;
     }
