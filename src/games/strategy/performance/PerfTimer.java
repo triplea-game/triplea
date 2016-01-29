@@ -1,4 +1,4 @@
-package games.performance;
+package games.strategy.performance;
 
 public class PerfTimer {
 

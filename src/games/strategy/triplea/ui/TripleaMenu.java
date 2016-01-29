@@ -61,7 +61,6 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import games.performance.EnablePerformanceLoggingCheckBox;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -83,6 +82,7 @@ import games.strategy.engine.history.Step;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.engine.stats.IStat;
+import games.strategy.performance.EnablePerformanceLoggingCheckBox;
 import games.strategy.sound.SoundOptions;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ai.proAI.ProAI;

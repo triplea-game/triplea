@@ -1,4 +1,4 @@
-package games.performance;
+package games.strategy.performance;
 
 import java.util.prefs.Preferences;
 

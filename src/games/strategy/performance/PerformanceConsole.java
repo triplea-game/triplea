@@ -1,4 +1,4 @@
-package games.performance;
+package games.strategy.performance;
 
 import games.strategy.debug.GenericConsole;
 
