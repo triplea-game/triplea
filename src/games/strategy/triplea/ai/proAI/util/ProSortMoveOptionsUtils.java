@@ -1,14 +1,5 @@
 package games.strategy.triplea.ai.proAI.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -20,6 +11,15 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Pro AI attack options utilities.
@@ -54,7 +54,8 @@ public class ProSortMoveOptionsUtils {
   }
 
   public static Map<Unit, Set<Territory>> sortUnitNeededOptions(final PlayerID player,
-      final Map<Unit, Set<Territory>> unitAttackOptions, final Map<Territory, ProTerritory> attackMap) {
+      final Map<Unit, Set<Territory>> unitAttackOptions, final Map<Territory, ProTerritory> attackMap,
+      final ProOddsCalculator calc) {
     final GameData data = ProData.getData();
 
     final List<Map.Entry<Unit, Set<Territory>>> list =
@@ -68,7 +69,7 @@ public class ProSortMoveOptionsUtils {
         for (final Territory t : o1.getValue()) {
           final ProTerritory patd = attackMap.get(t);
           if (patd.getBattleResult() == null) {
-            patd.setBattleResult(ProBattleUtils.estimateAttackBattleResults(player, t, patd.getUnits(),
+            patd.setBattleResult(calc.estimateAttackBattleResults(player, t, patd.getUnits(),
                 patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
           }
           if (!patd.isCurrentlyWins()) {
@@ -79,7 +80,7 @@ public class ProSortMoveOptionsUtils {
         for (final Territory t : o2.getValue()) {
           final ProTerritory patd = attackMap.get(t);
           if (patd.getBattleResult() == null) {
-            patd.setBattleResult(ProBattleUtils.estimateAttackBattleResults(player, t, patd.getUnits(),
+            patd.setBattleResult(calc.estimateAttackBattleResults(player, t, patd.getUnits(),
                 patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
           }
           if (!patd.isCurrentlyWins()) {
@@ -107,7 +108,7 @@ public class ProSortMoveOptionsUtils {
 
   public static Map<Unit, Set<Territory>> sortUnitNeededOptionsThenAttack(final PlayerID player,
       final Map<Unit, Set<Territory>> unitAttackOptions, final Map<Territory, ProTerritory> attackMap,
-      final Map<Unit, Territory> unitTerritoryMap) {
+      final Map<Unit, Territory> unitTerritoryMap, final ProOddsCalculator calc) {
     final GameData data = ProData.getData();
 
     final List<Map.Entry<Unit, Set<Territory>>> list =
@@ -121,7 +122,7 @@ public class ProSortMoveOptionsUtils {
         for (final Territory t : o1.getValue()) {
           final ProTerritory patd = attackMap.get(t);
           if (patd.getBattleResult() == null) {
-            patd.setBattleResult(ProBattleUtils.estimateAttackBattleResults(player, t, patd.getUnits(),
+            patd.setBattleResult(calc.estimateAttackBattleResults(player, t, patd.getUnits(),
                 patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
           }
           if (!patd.isCurrentlyWins()) {
@@ -132,7 +133,7 @@ public class ProSortMoveOptionsUtils {
         for (final Territory t : o2.getValue()) {
           final ProTerritory patd = attackMap.get(t);
           if (patd.getBattleResult() == null) {
-            patd.setBattleResult(ProBattleUtils.estimateAttackBattleResults(player, t, patd.getUnits(),
+            patd.setBattleResult(calc.estimateAttackBattleResults(player, t, patd.getUnits(),
                 patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
           }
           if (!patd.isCurrentlyWins()) {

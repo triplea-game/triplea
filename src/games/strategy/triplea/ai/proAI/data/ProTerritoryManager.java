@@ -1,16 +1,5 @@
 package games.strategy.triplea.ai.proAI.data;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -23,6 +12,7 @@ import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
+import games.strategy.triplea.ai.proAI.util.ProOddsCalculator;
 import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -35,11 +25,23 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Manages info about territories.
  */
 public class ProTerritoryManager {
 
+  private final ProOddsCalculator calc;
   private final PlayerID player;
 
   private ProMyMoveOptions attackOptions;
@@ -49,7 +51,8 @@ public class ProTerritoryManager {
   private ProOtherMoveOptions enemyDefendOptions;
   private ProOtherMoveOptions enemyAttackOptions;
 
-  public ProTerritoryManager() {
+  public ProTerritoryManager(final ProOddsCalculator calc) {
+    this.calc = calc;
     player = ProData.getPlayer();
     attackOptions = new ProMyMoveOptions();
     potentialAttackOptions = new ProMyMoveOptions();
@@ -59,8 +62,8 @@ public class ProTerritoryManager {
     enemyAttackOptions = new ProOtherMoveOptions();
   }
 
-  public ProTerritoryManager(final ProTerritoryManager territoryManager) {
-    this();
+  public ProTerritoryManager(final ProOddsCalculator calc, final ProTerritoryManager territoryManager) {
+    this(calc);
     attackOptions = new ProMyMoveOptions(territoryManager.attackOptions);
     potentialAttackOptions = new ProMyMoveOptions(territoryManager.potentialAttackOptions);
     defendOptions = new ProMyMoveOptions(territoryManager.defendOptions);
@@ -1029,14 +1032,14 @@ public class ProTerritoryManager {
       if (isIgnoringRelationships) {
         defenders = new ArrayList<Unit>(t.getUnits().getUnits());
       }
-      patd.setMaxBattleResult(ProBattleUtils.estimateAttackBattleResults(player, t, patd.getMaxUnits(), defenders,
+      patd.setMaxBattleResult(calc.estimateAttackBattleResults(player, t, patd.getMaxUnits(), defenders,
           new HashSet<Unit>()));
 
       // Add in amphib units if I can't win without them
       if (patd.getMaxBattleResult().getWinPercentage() < ProData.winPercentage && !patd.getMaxAmphibUnits().isEmpty()) {
         final Set<Unit> combinedUnits = new HashSet<Unit>(patd.getMaxUnits());
         combinedUnits.addAll(patd.getMaxAmphibUnits());
-        patd.setMaxBattleResult(ProBattleUtils.estimateAttackBattleResults(player, t,
+        patd.setMaxBattleResult(calc.estimateAttackBattleResults(player, t,
             new ArrayList<Unit>(combinedUnits), defenders, patd.getMaxBombardUnits()));
         patd.setNeedAmphibUnits(true);
       }
@@ -1080,7 +1083,7 @@ public class ProTerritoryManager {
             final Set<Unit> enemyDefendersBeforeStrafe = new HashSet<Unit>(defenders);
             enemyDefendersBeforeStrafe.addAll(additionalEnemyDefenders);
             final ProBattleResult result =
-                ProBattleUtils.estimateAttackBattleResults(alliedPlayer, t, new ArrayList<Unit>(alliedUnits),
+                calc.estimateAttackBattleResults(alliedPlayer, t, new ArrayList<Unit>(alliedUnits),
                     new ArrayList<Unit>(enemyDefendersBeforeStrafe), alliedAttack.getMaxBombardUnits());
             if (result.getWinPercentage() < ProData.winPercentage) {
               patd.setStrafing(true);
@@ -1089,14 +1092,14 @@ public class ProTerritoryManager {
               final Set<Unit> combinedUnits = new HashSet<Unit>(patd.getMaxUnits());
               combinedUnits.addAll(patd.getMaxAmphibUnits());
               final ProBattleResult strafeResult =
-                  ProBattleUtils.callBattleCalculator(player, t, new ArrayList<Unit>(combinedUnits), defenders,
+                  calc.callBattleCalculator(player, t, new ArrayList<Unit>(combinedUnits), defenders,
                       patd.getMaxBombardUnits(), true);
 
               // Check allied result with strafe
               final Set<Unit> enemyDefendersAfterStrafe =
                   new HashSet<Unit>(strafeResult.getAverageDefendersRemaining());
               enemyDefendersAfterStrafe.addAll(additionalEnemyDefenders);
-              patd.setMaxBattleResult(ProBattleUtils.estimateAttackBattleResults(alliedPlayer, t, new ArrayList<Unit>(
+              patd.setMaxBattleResult(calc.estimateAttackBattleResults(alliedPlayer, t, new ArrayList<Unit>(
                   alliedUnits), new ArrayList<Unit>(enemyDefendersAfterStrafe), alliedAttack.getMaxBombardUnits()));
 
 
