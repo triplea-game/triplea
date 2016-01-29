@@ -18,13 +18,10 @@ import java.util.List;
  */
 public class ProTechAI {
 
-  protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {
+  public void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {
     if (!games.strategy.triplea.Properties.getWW2V3TechModel(data)) {
       return;
     }
-    long last, now;
-    last = System.currentTimeMillis();
-    s_logger.fine("Doing Tech ");
     final Territory myCapitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     final float eStrength = SUtils.getStrengthOfPotentialAttackers(myCapitol, data, player, false, true, null);
     float myStrength = SUtils.strength(myCapitol.getUnits().getUnits(), false, false, false);
@@ -55,8 +52,6 @@ public class ProTechAI {
         techDelegate.rollTech(TechTokens + TokensToBuy, cats.get(rand), TokensToBuy, null);
       }
     }
-    now = System.currentTimeMillis();
-    s_logger.finest("Time Taken " + (now - last));
   }
 
 }
