@@ -87,7 +87,7 @@ public class ProTechAI {
    * @param ignoreOnlyPlanes
    *        - if true, returns 0.0F if only planes can attack the territory
    */
-  public static float getStrengthOfPotentialAttackers(final Territory location, final GameData data,
+  private static float getStrengthOfPotentialAttackers(final Territory location, final GameData data,
       final PlayerID player, final boolean tFirst, final boolean ignoreOnlyPlanes, final List<Territory> ignoreTerr) {
     PlayerID ePlayer = null;
     final List<PlayerID> qID = getEnemyPlayers(data, player);
@@ -287,7 +287,7 @@ public class ProTechAI {
    * @param attacking - are the units on attack or defense
    * @param sea - calculate the strength of the units in a sea or land battle?
    */
-  public static float strength(final Collection<Unit> units, final boolean attacking, final boolean sea,
+  private static float strength(final Collection<Unit> units, final boolean attacking, final boolean sea,
       final boolean transportsFirst) {
     float strength = 0.0F;
     if (units.isEmpty()) {
@@ -341,7 +341,7 @@ public class ProTechAI {
   /**
    * Returns a list of all enemy players
    */
-  public static List<PlayerID> getEnemyPlayers(final GameData data, final PlayerID player) {
+  private static List<PlayerID> getEnemyPlayers(final GameData data, final PlayerID player) {
     final List<PlayerID> enemyPlayers = new ArrayList<PlayerID>();
     for (final PlayerID players : data.getPlayerList().getPlayers()) {
       if (!data.getRelationshipTracker().isAllied(player, players)) {
@@ -363,7 +363,7 @@ public class ProTechAI {
    *        - the enemy Player
    * @return actual strength of enemy units (armor)
    */
-  public static float determineEnemyBlitzStrength(final Territory blitzHere, final List<Route> blitzTerrRoutes,
+  private static float determineEnemyBlitzStrength(final Territory blitzHere, final List<Route> blitzTerrRoutes,
       final List<Territory> blockTerr, final GameData data, final PlayerID ePlayer) {
     final HashSet<Integer> ignore = new HashSet<Integer>();
     ignore.add(Integer.valueOf(1));
@@ -382,7 +382,7 @@ public class ProTechAI {
     return strength(blitzUnits, true, false, true);
   }
 
-  public static List<Unit> findAttackers(final Territory start, final int maxDistance,
+  private static List<Unit> findAttackers(final Territory start, final int maxDistance,
       final HashSet<Integer> ignoreDistance, final PlayerID player, final GameData data,
       final Match<Unit> unitCondition, final Match<Territory> routeCondition, final List<Territory> blocked,
       final List<Route> routes, final boolean sea) {
@@ -512,7 +512,7 @@ public class ProTechAI {
    * Determine the strength of a collection of airUnits
    * Caller should guarantee units are all air.
    */
-  public static float allairstrength(final Collection<Unit> units, final boolean attacking) {
+  private static float allairstrength(final Collection<Unit> units, final boolean attacking) {
     float airstrength = 0.0F;
     for (final Unit u : units) {
       final UnitAttachment unitAttachment = UnitAttachment.get(u.getType());
@@ -526,7 +526,7 @@ public class ProTechAI {
     return airstrength;
   }
 
-  public static Route getMaxSeaRoute(final GameData data, final Territory start, final Territory destination,
+  private static Route getMaxSeaRoute(final GameData data, final Territory start, final Territory destination,
       final PlayerID player, final boolean attacking, final int maxDistance) {
     // note this does not care if subs are submerged or not
     // should it? does submerging affect movement of enemies?
@@ -584,7 +584,7 @@ public class ProTechAI {
    * All Allied Territories which neighbor a territory
    * This duplicates getNeighbors(check, Matches.isTerritoryAllied(player, data))
    */
-  public static List<Territory> getNeighboringLandTerritories(final GameData data, final PlayerID player,
+  private static List<Territory> getNeighboringLandTerritories(final GameData data, final PlayerID player,
       final Territory check) {
     final ArrayList<Territory> rVal = new ArrayList<Territory>();
     final List<Territory> checkList = getExactNeighbors(check, 1, player, data, false);
@@ -603,7 +603,8 @@ public class ProTechAI {
    * neutral - whether to include neutral countries
    */
   @SuppressWarnings("unchecked")
-  public static List<Territory> getExactNeighbors(final Territory territory, final int distance, final PlayerID player,
+  private static List<Territory> getExactNeighbors(final Territory territory, final int distance,
+      final PlayerID player,
       final GameData data, final boolean neutral) {
     // old functionality retained, i.e. no route condition is imposed.
     // feel free to change, if you are confortable all calls to this function conform.
@@ -664,7 +665,7 @@ public class ProTechAI {
    * Return Territories containing any unit depending on unitCondition
    * Differs from findCertainShips because it doesn't require the units be owned
    */
-  public static List<Territory> findUnitTerr(final GameData data, final PlayerID player,
+  private static List<Territory> findUnitTerr(final GameData data, final PlayerID player,
       final Match<Unit> unitCondition) {
     // Return territories containing a certain unit or set of Units
     final CompositeMatch<Unit> limitShips = new CompositeMatchAnd<Unit>(unitCondition);
@@ -681,7 +682,7 @@ public class ProTechAI {
   /**
    * Interleave infantry and artillery/armor for loading on transports
    */
-  public static List<Unit> sortTransportUnits(final List<Unit> transUnits) {
+  private static List<Unit> sortTransportUnits(final List<Unit> transUnits) {
     final List<Unit> sorted = new ArrayList<Unit>();
     final List<Unit> infantry = new ArrayList<Unit>();
     final List<Unit> artillery = new ArrayList<Unit>();
@@ -735,7 +736,7 @@ public class ProTechAI {
     return sorted;
   }
 
-  public final static Match<Territory> TerritoryIsNotImpassableToAirUnits(final GameData data) {
+  private final static Match<Territory> TerritoryIsNotImpassableToAirUnits(final GameData data) {
     return new InverseMatch<Territory>(TerritoryIsImpassableToAirUnits(data));
   }
 
