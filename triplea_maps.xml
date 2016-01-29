@@ -10,6 +10,21 @@
   </game> 
  -->
   <game>
+    <url>!</url>
+    <mapName>HIGH QUALITY MAPS</mapName>
+    <description><![CDATA[
+         <br>Maps here feature good to excellent balance, high replay value, good documentation and good visuals.
+         <br>
+         <br>Maps failing in any of the above are thus not included here. 
+         <br>However, since we -  by far - have not checked all the available maps, not being listed at the top doesnt mean anything for a given map.
+         <br>New sections featuring untested but very promising candidates have been added below.
+         <br>The WW2 maps are in the list now too.
+         <br>
+         <br>Again, Only Maps meeting all above listed high quality requirements and having undergone extensive testing are located here. Maps from this section can be 
+             considered classics, and it should usually be no problem finding an opponent for any of them.
+     ]]></description>
+  </game>
+  <game>
     <url>https://github.com/triplea-maps/total_world_war/releases/download/0.1/total_world_war.zip</url>
     <mapName>Total_World_War</mapName>
     <description><![CDATA[
