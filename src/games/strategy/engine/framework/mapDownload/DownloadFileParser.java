@@ -20,7 +20,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import games.strategy.util.Version;
 
 public class DownloadFileParser {
-  public List<DownloadFileDescription> parse(final InputStream is, final String hostedUrl) {
+  public static List<DownloadFileDescription> parse(final InputStream is, final String hostedUrl) {
     final List<DownloadFileDescription> rVal = new ArrayList<DownloadFileDescription>();
     try {
       final SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
@@ -67,7 +67,7 @@ public class DownloadFileParser {
     return rVal;
   }
 
-  private void validate(final List<DownloadFileDescription> downloads) {
+  private static void validate(final List<DownloadFileDescription> downloads) {
     final Set<String> urls = new HashSet<String>();
     final Set<String> names = new HashSet<String>();
     for (final DownloadFileDescription d : downloads) {
@@ -100,7 +100,7 @@ public class DownloadFileParser {
     }
   }
 
-  public boolean isEmpty(final String s) {
+  private static boolean isEmpty(final String s) {
     return s == null || s.trim().length() == 0;
   }
 }

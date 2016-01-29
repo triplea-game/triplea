@@ -15,13 +15,13 @@ public class DownloadFileParserTest {
   @Test
   public void testParse() {
     final ByteArrayInputStream inputStream = new ByteArrayInputStream(buildTestXml().getBytes());
-    final List<DownloadFileDescription> games = new DownloadFileParser().parse(inputStream, "hostedurl");
+    final List<DownloadFileDescription> games = DownloadFileParser.parse(inputStream, "hostedurl");
 
     assertThat(games.size(), is(2));
 
     DownloadFileDescription desc = games.get(0);
     assertThat(desc.getUrl(), is("http://example.com/games/game.zip"));
-    assertThat( desc.getDescription(), Matchers.containsString("Some notes"));
+    assertThat(desc.getDescription(), Matchers.containsString("Some notes"));
     assertThat(desc.getMapName(), is("myGame"));
 
     desc = games.get(1);
@@ -56,12 +56,12 @@ public class DownloadFileParserTest {
   }
 
 
-    // TODO we probably should do clientLogger.logError( ) to handle this, show an error
-    // to the user and abort, rather than sending a stack trace and exception to the user.
-  @Test(expected=IllegalStateException.class)
+  // TODO we probably should do clientLogger.logError( ) to handle this, show an error
+  // to the user and abort, rather than sending a stack trace and exception to the user.
+  @Test(expected = IllegalStateException.class)
   public void testParseBadData() {
     final ByteArrayInputStream inputStream = new ByteArrayInputStream(buildBadTestXml().getBytes());
-    final List<DownloadFileDescription> games = new DownloadFileParser().parse(inputStream, "hostedurl");
+    final List<DownloadFileDescription> games = DownloadFileParser.parse(inputStream, "hostedurl");
     assertThat(games.size(), is(0));
   }
 

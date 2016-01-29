@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -22,15 +23,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.GameRunner2;
-import games.strategy.engine.framework.mapDownload.DownloadMapDialog;
+import games.strategy.engine.framework.mapDownload.DownloadRunnable;
+import games.strategy.engine.framework.mapDownload.InstallMapDialog;
+import games.strategy.engine.framework.mapDownload.MapDownloadController;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
@@ -41,6 +46,7 @@ import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 
 public class MetaSetupPanel extends SetupPanel {
+
   private static final long serialVersionUID = 3926503672972937677L;
   private static final Logger s_logger = Logger.getLogger(MetaSetupPanel.class.getName());
   private static String s_serverPropertiesName = "server_" + EngineVersion.VERSION.toString() + ".properties";
@@ -54,10 +60,14 @@ public class MetaSetupPanel extends SetupPanel {
   private JButton m_ruleBook;
   private JButton m_donate;
   private JButton m_about;
+
   private final SetupPanelModel m_model;
+  private final MapDownloadController mapDownloadController;
 
   public MetaSetupPanel(final SetupPanelModel model) {
-    m_model = model;
+    this.m_model = model;
+    this.mapDownloadController = new MapDownloadController();
+
     createComponents();
     layoutComponents();
     setupListeners();
@@ -196,7 +206,8 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   private void downloadMaps() {
-    DownloadMapDialog.downloadGames(this);
+    JComponent parentWindow = this;
+    mapDownloadController.openDownloadMapScreen(parentWindow);
   }
 
   private void ruleBook() {

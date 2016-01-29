@@ -16,6 +16,7 @@
 *.sh eol=lf
 *.plist eol=lf
 MacOS_users_read_this_first.txt eol=lf
+triplea_maps.xml eol=lf
 
 # Denote all files that are truly binary and should not be modified.
 *.png binary

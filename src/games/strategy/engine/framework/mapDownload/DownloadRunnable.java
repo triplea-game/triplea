@@ -2,10 +2,17 @@ package games.strategy.engine.framework.mapDownload;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.List;
+
+import games.strategy.debug.ClientLogger;
+import games.strategy.engine.framework.GameRunner2;
 
 public class DownloadRunnable implements Runnable {
   private final String urlString;
@@ -52,26 +59,49 @@ public class DownloadRunnable implements Runnable {
 
   @Override
   public void run() {
+    if (beginsWithHttpProtocol(urlString)) {
+      downloadFile();
+    } else {
+      readLocalFile();
+    }
+  }
+
+  private static boolean beginsWithHttpProtocol(String urlString) {
+    return urlString.startsWith("http://") || urlString.startsWith("https://");
+  }
+
+  private void downloadFile() {
     URL url;
+
     try {
-      // System.out.println(System.getProperty("http.proxyHost"));
-      // System.out.println(System.getProperty("http.proxyPort"));
       url = new URL(urlString.trim());
     } catch (final MalformedURLException e1) {
       error = "invalid url";
       return;
     }
+    try {
+      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-    try (InputStream stream = url.openStream();
-        ByteArrayOutputStream sink = new ByteArrayOutputStream()) {
-      InstallMapDialog.copy(sink, stream);
-      contents = sink.toByteArray();
+      int status = conn.getResponseCode();
+      if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
+          || status == HttpURLConnection.HTTP_SEE_OTHER) {
+
+        String newUrl = conn.getHeaderField("Location");
+        conn = (HttpURLConnection) new URL(newUrl).openConnection();
+      }
+
+      try (InputStream stream = conn.getInputStream()) {
+        final ByteArrayOutputStream sink = new ByteArrayOutputStream();
+        InstallMapDialog.copy(sink, stream);
+        contents = sink.toByteArray();
+      }
     } catch (final Exception e) {
       error = e.getMessage();
+      return;
     }
     if (parse && getError() == null) {
       try {
-        downloads = new DownloadFileParser().parse(new ByteArrayInputStream(getContents()), urlString);
+        downloads = DownloadFileParser.parse(new ByteArrayInputStream(getContents()), urlString);
         if (downloads == null || downloads.isEmpty()) {
           error = "No games listed.";
         }
@@ -80,4 +110,15 @@ public class DownloadRunnable implements Runnable {
       }
     }
   }
+
+  private void readLocalFile() {
+    File targetFile = new File(GameRunner2.getRootFolder(), urlString);
+    try {
+      contents = Files.readAllBytes(targetFile.toPath());
+      downloads = DownloadFileParser.parse(new ByteArrayInputStream(getContents()), urlString);
+    } catch (IOException e) {
+      ClientLogger.logError("Failed to read file at: " + targetFile.getAbsolutePath(), e);
+    }
+  }
+
 }
