@@ -1484,29 +1484,7 @@ public class MovePanel extends AbstractMovePanel {
       centerOnNextMoveableUnit();
     }
     if (keyCode == KeyEvent.VK_F) {
-      final List<Territory> allTerritories;
-      getData().acquireReadLock();
-      try {
-        allTerritories = new ArrayList<Territory>(getData().getMap().getTerritories());
-      } finally {
-        getData().releaseReadLock();
-      }
-      final CompositeMatchAnd<Unit> moveableUnitOwnedByMe =
-          new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getCurrentPlayer()), Matches.unitHasMovementLeft);
-      if (!m_nonCombat) {
-        // if not non combat, can not move aa units
-        moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
-      }
-      final Map<Territory, List<Unit>> highlight = new HashMap<Territory, List<Unit>>();
-      for (final Territory t : allTerritories) {
-        final List<Unit> moveableUnits = t.getUnits().getMatches(moveableUnitOwnedByMe);
-        if (!moveableUnits.isEmpty()) {
-          highlight.put(t, moveableUnits);
-        }
-      }
-      if (!highlight.isEmpty()) {
-        getMap().setUnitHighlight(highlight);
-      }
+      highlightMoveableUnits();
     }
   }
 
@@ -1557,6 +1535,33 @@ public class MovePanel extends AbstractMovePanel {
       getMap().centerOn(newFocusedTerritory);
     }
   }
+
+  private void highlightMoveableUnits() {
+    final List<Territory> allTerritories;
+    getData().acquireReadLock();
+    try {
+      allTerritories = new ArrayList<Territory>(getData().getMap().getTerritories());
+    } finally {
+      getData().releaseReadLock();
+    }
+    final CompositeMatchAnd<Unit> moveableUnitOwnedByMe =
+        new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getCurrentPlayer()), Matches.unitHasMovementLeft);
+    if (!m_nonCombat) {
+      // if not non combat, can not move aa units
+      moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
+    }
+    final Map<Territory, List<Unit>> highlight = new HashMap<Territory, List<Unit>>();
+    for (final Territory t : allTerritories) {
+      final List<Unit> moveableUnits = t.getUnits().getMatches(moveableUnitOwnedByMe);
+      if (!moveableUnits.isEmpty()) {
+        highlight.put(t, moveableUnits);
+      }
+    }
+    if (!highlight.isEmpty()) {
+      getMap().setUnitHighlight(highlight);
+    }
+  }
+
 }
 
 
