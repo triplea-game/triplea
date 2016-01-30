@@ -1,5 +1,21 @@
 package games.strategy.triplea.ai.proAI;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.triplea.ai.proAI.data.ProBattleResult;
+import games.strategy.triplea.ai.proAI.logging.ProLogger;
+import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
+import games.strategy.triplea.ai.proAI.util.ProMatches;
+import games.strategy.triplea.ai.proAI.util.ProOddsCalculator;
+import games.strategy.triplea.ai.proAI.util.ProSortMoveOptionsUtils;
+import games.strategy.triplea.delegate.BattleDelegate;
+import games.strategy.triplea.delegate.DelegateFinder;
+import games.strategy.triplea.delegate.IBattle;
+import games.strategy.triplea.delegate.IBattle.BattleType;
+import games.strategy.util.Tuple;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,25 +26,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-import games.strategy.triplea.ai.proAI.data.ProBattleResult;
-import games.strategy.triplea.ai.proAI.logging.ProLogger;
-import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
-import games.strategy.triplea.ai.proAI.util.ProMatches;
-import games.strategy.triplea.ai.proAI.util.ProSortMoveOptionsUtils;
-import games.strategy.triplea.delegate.BattleDelegate;
-import games.strategy.triplea.delegate.DelegateFinder;
-import games.strategy.triplea.delegate.IBattle;
-import games.strategy.triplea.delegate.IBattle.BattleType;
-import games.strategy.util.Tuple;
-
 /**
  * Pro scramble AI.
  */
 public class ProScrambleAI {
+
+  private final ProOddsCalculator calc;
+
+  public ProScrambleAI(final ProAI ai) {
+    calc = ai.getCalc();
+  }
 
   public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
@@ -44,7 +51,7 @@ public class ProScrambleAI {
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
     final Set<Unit> bombardingUnits = new HashSet<Unit>(battle.getBombardingUnits());
     final ProBattleResult minResult =
-        ProBattleUtils.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
+        calc.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
     ProLogger.debug(scrambleTo + ", minTUVSwing=" + minResult.getTUVSwing() + ", minWin%="
         + minResult.getWinPercentage());
     if (minResult.getTUVSwing() <= 0 && minResult.getWinPercentage() < (100 - ProData.minWinPercentage)) {
@@ -77,7 +84,7 @@ public class ProScrambleAI {
     }
     defenders.addAll(allScramblers);
     final ProBattleResult maxResult =
-        ProBattleUtils.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
+        calc.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
     ProLogger.debug(scrambleTo + ", maxTUVSwing=" + maxResult.getTUVSwing() + ", maxWin%="
         + maxResult.getWinPercentage());
     if (maxResult.getTUVSwing() >= minResult.getTUVSwing()) {
@@ -115,8 +122,7 @@ public class ProScrambleAI {
       final List<Unit> currentDefenders = (List<Unit>) battle.getDefendingUnits();
       currentDefenders.addAll(unitsToScramble);
       result =
-          ProBattleUtils
-              .calculateBattleResults(player, scrambleTo, attackers, currentDefenders, bombardingUnits, false);
+          calc.calculateBattleResults(player, scrambleTo, attackers, currentDefenders, bombardingUnits, false);
       ProLogger.debug(scrambleTo + ", TUVSwing=" + result.getTUVSwing() + ", Win%=" + result.getWinPercentage()
           + ", addedUnit=" + u);
       if (result.getTUVSwing() <= 0 && result.getWinPercentage() < (100 - ProData.minWinPercentage)) {

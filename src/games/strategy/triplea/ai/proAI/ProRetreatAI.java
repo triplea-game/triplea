@@ -1,10 +1,5 @@
 package games.strategy.triplea.ai.proAI;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -14,12 +9,18 @@ import games.strategy.triplea.ai.proAI.data.ProBattleResult;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
+import games.strategy.triplea.ai.proAI.util.ProOddsCalculator;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Pro retreat AI.
@@ -43,6 +44,12 @@ import games.strategy.util.Match;
  */
 public class ProRetreatAI {
 
+  private final ProOddsCalculator calc;
+
+  public ProRetreatAI(final ProAI ai) {
+    calc = ai.getCalc();
+  }
+
   public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory,
       final Collection<Territory> possibleTerritories, final String message) {
 
@@ -59,7 +66,7 @@ public class ProRetreatAI {
 
     // Calculate battle results
     final ProBattleResult result =
-        ProBattleUtils.calculateBattleResults(player, battleTerritory, attackers, defenders, new HashSet<Unit>(),
+        calc.calculateBattleResults(player, battleTerritory, attackers, defenders, new HashSet<Unit>(),
             isAttacker);
 
     // Determine if it has a factory

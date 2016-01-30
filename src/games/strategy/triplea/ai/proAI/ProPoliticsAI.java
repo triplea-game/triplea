@@ -1,12 +1,5 @@
 package games.strategy.triplea.ai.proAI;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
@@ -15,6 +8,7 @@ import games.strategy.triplea.ai.BasicPoliticalAI;
 import games.strategy.triplea.ai.proAI.data.ProTerritory;
 import games.strategy.triplea.ai.proAI.data.ProTerritoryManager;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
+import games.strategy.triplea.ai.proAI.util.ProOddsCalculator;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.DelegateFinder;
@@ -23,10 +17,23 @@ import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Pro politics AI.
  */
 public class ProPoliticsAI {
+
+  private final ProOddsCalculator calc;
+
+  public ProPoliticsAI(final ProAI ai) {
+    calc = ai.getCalc();
+  }
 
   public List<PoliticalActionAttachment> politicalActions() {
 
@@ -34,7 +41,7 @@ public class ProPoliticsAI {
     final PlayerID player = ProData.getPlayer();
     final float numPlayers = data.getPlayerList().getPlayers().size();
     final double round = data.getSequence().getRound();
-    final ProTerritoryManager territoryManager = new ProTerritoryManager();
+    final ProTerritoryManager territoryManager = new ProTerritoryManager(calc);
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
     final List<PoliticalActionAttachment> results = new ArrayList<PoliticalActionAttachment>();
     ProLogger.info("Politics for " + player.getName());

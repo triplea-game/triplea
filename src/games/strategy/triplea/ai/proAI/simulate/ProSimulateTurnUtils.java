@@ -1,14 +1,5 @@
 package games.strategy.triplea.ai.proAI.simulate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
@@ -21,8 +12,8 @@ import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.ai.proAI.data.ProBattleResult;
 import games.strategy.triplea.ai.proAI.data.ProTerritory;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
-import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
+import games.strategy.triplea.ai.proAI.util.ProOddsCalculator;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.BattleTracker;
@@ -34,12 +25,22 @@ import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.Match;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 /**
  * Pro AI simulate turn utilities.
  */
 public class ProSimulateTurnUtils {
 
-  public static void simulateBattles(final GameData data, final PlayerID player, final IDelegateBridge delegateBridge) {
+  public static void simulateBattles(final GameData data, final PlayerID player, final IDelegateBridge delegateBridge,
+      final ProOddsCalculator calc) {
 
     ProLogger.info("Starting battle simulation phase");
 
@@ -59,7 +60,7 @@ public class ProSimulateTurnUtils {
         ProLogger.debug("defenders=" + defenders);
         ProLogger.debug("bombardingUnits=" + bombardingUnits);
         final ProBattleResult result =
-            ProBattleUtils.callBattleCalculator(player, t, attackers, defenders, bombardingUnits);
+            calc.callBattleCalculator(player, t, attackers, defenders, bombardingUnits);
         final List<Unit> remainingUnits = result.getAverageAttackersRemaining();
         ProLogger.debug("remainingUnits=" + remainingUnits);
 
