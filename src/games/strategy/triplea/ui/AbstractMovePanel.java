@@ -65,6 +65,13 @@ public abstract class AbstractMovePanel extends ActionPanel {
     }
   };
 
+  public AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
+    super(data, map);
+    m_frame = frame;
+    m_CANCEL_MOVE_ACTION.setEnabled(false);
+    m_undoableMoves = Collections.emptyList();
+  }
+
   /*
    * sub-classes method for done handling
    */
@@ -81,13 +88,6 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   protected IPlayerBridge getPlayerBridge() {
     return m_bridge;
-  }
-
-  public AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
-    super(data, map);
-    m_frame = frame;
-    m_CANCEL_MOVE_ACTION.setEnabled(false);
-    m_undoableMoves = Collections.emptyList();
   }
 
   // m_frame methods
