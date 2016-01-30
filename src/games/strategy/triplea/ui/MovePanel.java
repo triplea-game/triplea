@@ -1551,12 +1551,13 @@ public class MovePanel extends AbstractMovePanel {
       moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
     }
     final Map<Territory, List<Unit>> highlight = new HashMap<Territory, List<Unit>>();
-    for (final Territory t : allTerritories) {
+
+    allTerritories.forEach(t -> {
       final List<Unit> moveableUnits = t.getUnits().getMatches(moveableUnitOwnedByMe);
       if (!moveableUnits.isEmpty()) {
         highlight.put(t, moveableUnits);
       }
-    }
+    });
     if (!highlight.isEmpty()) {
       getMap().setUnitHighlight(highlight);
     }
