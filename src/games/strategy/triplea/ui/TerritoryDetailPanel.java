@@ -144,7 +144,6 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
       labelText = "<html>" + ta.toStringForInfo(true, true) + "<br></html>";
     }
     add(new JLabel(labelText));
-    add(new JLabel("Units:"));
     Collection<Unit> unitsInTerritory;
     m_data.acquireReadLock();
     try {
@@ -152,6 +151,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     } finally {
       m_data.releaseReadLock();
     }
+    add(new JLabel("Units: " + unitsInTerritory.size()));
     final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(unitsInTerritory, m_uiContext, m_data));
     scroll.setBorder(BorderFactory.createEmptyBorder());
     add(scroll);
