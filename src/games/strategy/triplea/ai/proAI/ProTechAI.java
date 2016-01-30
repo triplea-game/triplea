@@ -37,9 +37,9 @@ import java.util.Set;
 /**
  * Pro tech AI.
  */
-public class ProTechAI {
+public final class ProTechAI {
 
-  public void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {
+  public static void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {
     if (!games.strategy.triplea.Properties.getWW2V3TechModel(data)) {
       return;
     }
