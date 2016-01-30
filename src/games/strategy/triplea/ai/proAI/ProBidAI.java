@@ -637,7 +637,7 @@ public class ProBidAI {
   /**
    * All the territories that border one of our territories
    */
-  public static List<Territory> getNeighboringEnemyLandTerritories(final GameData data, final PlayerID player) {
+  private static List<Territory> getNeighboringEnemyLandTerritories(final GameData data, final PlayerID player) {
     final ArrayList<Territory> rVal = new ArrayList<Territory>();
     for (final Territory t : data.getMap()) {
       if (Matches.isTerritoryEnemy(player, data).match(t) && Matches.TerritoryIsLand.match(t)
@@ -654,7 +654,7 @@ public class ProBidAI {
    * Take the mix of Production Rules and determine the best purchase set for attack, defense or transport
    * So much more that can be done with this...track units and try to minimize or maximize the # purchased
    */
-  public static boolean findPurchaseMix(final IntegerMap<ProductionRule> bestAttack,
+  private static boolean findPurchaseMix(final IntegerMap<ProductionRule> bestAttack,
       final IntegerMap<ProductionRule> bestDefense, final IntegerMap<ProductionRule> bestTransport,
       final IntegerMap<ProductionRule> bestMaxUnits, final IntegerMap<ProductionRule> bestMobileAttack,
       final List<ProductionRule> rules, final int totPU, final int maxUnits, final GameData data,
@@ -1067,7 +1067,7 @@ public class ProBidAI {
    *
    * @return List of territories
    */
-  public static List<Territory> findTersWithUnitsMatching(final GameData data, final PlayerID player,
+  private static List<Territory> findTersWithUnitsMatching(final GameData data, final PlayerID player,
       final Match<Unit> unitCondition) {
     final CompositeMatch<Unit> unitMatch = new CompositeMatchAnd<Unit>(unitCondition, Matches.unitIsOwnedBy(player));
     final List<Territory> result = new ArrayList<Territory>();
@@ -1085,7 +1085,7 @@ public class ProBidAI {
    *
    * @param allTerr - List of Territories
    */
-  public static List<Territory> stripLandLockedTerr(final GameData data, final List<Territory> allTerr) {
+  private static List<Territory> stripLandLockedTerr(final GameData data, final List<Territory> allTerr) {
     final List<Territory> waterTerrs = new ArrayList<Territory>(allTerr);
     final Iterator<Territory> wFIter = waterTerrs.iterator();
     while (wFIter.hasNext()) {
@@ -1100,7 +1100,7 @@ public class ProBidAI {
   /**
    * true or false...does a land route exist from territory to any enemy owned capitol?
    */
-  public static boolean hasLandRouteToEnemyOwnedCapitol(final Territory t, final PlayerID player, final GameData data) {
+  private static boolean hasLandRouteToEnemyOwnedCapitol(final Territory t, final PlayerID player, final GameData data) {
     for (final PlayerID ePlayer : data.getPlayerList().getPlayers()) {
       for (final Territory capital : TerritoryAttachment.getAllCapitals(ePlayer, data)) {
         if (data.getRelationshipTracker().isAtWar(player, capital.getOwner())
@@ -1116,7 +1116,7 @@ public class ProBidAI {
    * Return Territories containing any unit depending on unitCondition
    * Differs from findCertainShips because it doesn't require the units be owned
    */
-  public static List<Territory> findUnitTerr(final GameData data, final PlayerID player,
+  private static List<Territory> findUnitTerr(final GameData data, final PlayerID player,
       final Match<Unit> unitCondition) {
     // Return territories containing a certain unit or set of Units
     final CompositeMatch<Unit> limitShips = new CompositeMatchAnd<Unit>(unitCondition);
@@ -1133,7 +1133,7 @@ public class ProBidAI {
   /**
    * Territories we actually own in a modifiable List
    */
-  public static List<Territory> allOurTerritories(final GameData data, final PlayerID player) {
+  private static List<Territory> allOurTerritories(final GameData data, final PlayerID player) {
     final Collection<Territory> ours = data.getMap().getTerritoriesOwnedBy(player);
     final List<Territory> ours2 = new ArrayList<Territory>();
     ours2.addAll(ours);
@@ -1147,13 +1147,10 @@ public class ProBidAI {
    * @param nonCombat - if nonCombat, emphasize threatened factories over their neighbors
    * @return HashMap ranking of Territories
    */
-  public static HashMap<Territory, Float> rankTerritories(final GameData data, final List<Territory> ourFriendlyTerr,
+  private static HashMap<Territory, Float> rankTerritories(final GameData data, final List<Territory> ourFriendlyTerr,
       final List<Territory> ourEnemyTerr, final List<Territory> ignoreTerr, final PlayerID player,
       final boolean tFirst,
       final boolean waterBased, final boolean nonCombat) {
-    long last, now, start;
-    last = System.currentTimeMillis();
-    start = last;
     final HashMap<Territory, Float> landRankMap = new HashMap<Territory, Float>();
     final HashMap<Territory, Float> landStrengthMap = new HashMap<Territory, Float>();
     final CompositeMatch<Territory> noEnemyOrWater = new CompositeMatchAnd<Territory>(
@@ -1348,15 +1345,13 @@ public class ProBidAI {
         }
       }
     }
-    now = System.currentTimeMillis();
-    s_logger.finest("Time Takenrank " + (now - start));
     return landRankMap;
   }
 
   /**
    * Returns a list of all enemy players
    */
-  public static List<PlayerID> getEnemyPlayers(final GameData data, final PlayerID player) {
+  private static List<PlayerID> getEnemyPlayers(final GameData data, final PlayerID player) {
     final List<PlayerID> enemyPlayers = new ArrayList<PlayerID>();
     for (final PlayerID players : data.getPlayerList().getPlayers()) {
       if (!data.getRelationshipTracker().isAllied(player, players)) {
@@ -1403,7 +1398,7 @@ public class ProBidAI {
    * @param ignoreOnlyPlanes
    *        - if true, returns 0.0F if only planes can attack the territory
    */
-  public static float getStrengthOfPotentialAttackers(final Territory location, final GameData data,
+  private static float getStrengthOfPotentialAttackers(final Territory location, final GameData data,
       final PlayerID player, final boolean tFirst, final boolean ignoreOnlyPlanes, final List<Territory> ignoreTerr) {
     PlayerID ePlayer = null;
     final List<PlayerID> qID = getEnemyPlayers(data, player);
@@ -1603,7 +1598,7 @@ public class ProBidAI {
    * @param endCondition - condition for the ending Territory
    * @param routeCondition - condition for each Territory in Route
    */
-  public static Route findNearest(final Territory start, final Match<Territory> endCondition,
+  private static Route findNearest(final Territory start, final Match<Territory> endCondition,
       final Match<Territory> routeCondition, final GameData data) {
     final Match<Territory> canGo = new CompositeMatchOr<Territory>(endCondition, routeCondition);
     final Map<Territory, Territory> visited = new HashMap<Territory, Territory>();
@@ -1646,7 +1641,7 @@ public class ProBidAI {
    * @param attacking - are the units on attack or defense
    * @param sea - calculate the strength of the units in a sea or land battle?
    */
-  public static float strength(final Collection<Unit> units, final boolean attacking, final boolean sea,
+  private static float strength(final Collection<Unit> units, final boolean attacking, final boolean sea,
       final boolean transportsFirst) {
     float strength = 0.0F;
     if (units.isEmpty()) {
@@ -1709,7 +1704,7 @@ public class ProBidAI {
    *        - the enemy Player
    * @return actual strength of enemy units (armor)
    */
-  public static float determineEnemyBlitzStrength(final Territory blitzHere, final List<Route> blitzTerrRoutes,
+  private static float determineEnemyBlitzStrength(final Territory blitzHere, final List<Route> blitzTerrRoutes,
       final List<Territory> blockTerr, final GameData data, final PlayerID ePlayer) {
     final HashSet<Integer> ignore = new HashSet<Integer>();
     ignore.add(Integer.valueOf(1));
@@ -1728,7 +1723,7 @@ public class ProBidAI {
     return strength(blitzUnits, true, false, true);
   }
 
-  public static List<Unit> findAttackers(final Territory start, final int maxDistance,
+  private static List<Unit> findAttackers(final Territory start, final int maxDistance,
       final HashSet<Integer> ignoreDistance, final PlayerID player, final GameData data,
       final Match<Unit> unitCondition, final Match<Territory> routeCondition, final List<Territory> blocked,
       final List<Route> routes, final boolean sea) {
@@ -1858,7 +1853,7 @@ public class ProBidAI {
    * Determine the strength of a collection of airUnits
    * Caller should guarantee units are all air.
    */
-  public static float allairstrength(final Collection<Unit> units, final boolean attacking) {
+  private static float allairstrength(final Collection<Unit> units, final boolean attacking) {
     float airstrength = 0.0F;
     for (final Unit u : units) {
       final UnitAttachment unitAttachment = UnitAttachment.get(u.getType());
@@ -1872,7 +1867,7 @@ public class ProBidAI {
     return airstrength;
   }
 
-  public static Route getMaxSeaRoute(final GameData data, final Territory start, final Territory destination,
+  private static Route getMaxSeaRoute(final GameData data, final Territory start, final Territory destination,
       final PlayerID player, final boolean attacking, final int maxDistance) {
     // note this does not care if subs are submerged or not
     // should it? does submerging affect movement of enemies?
@@ -1933,7 +1928,7 @@ public class ProBidAI {
    * @allied - include allied territories
    *         return - List of territories
    */
-  public static List<Territory> getTerritoriesWithEnemyNeighbor(final GameData data, final PlayerID player,
+  private static List<Territory> getTerritoriesWithEnemyNeighbor(final GameData data, final PlayerID player,
       final boolean allied, final boolean neutral) {
     final List<Territory> ourTerr = new ArrayList<Territory>();
     final List<Territory> enemyLandTerr = allEnemyTerritories(data, player);
@@ -1966,7 +1961,7 @@ public class ProBidAI {
     return ourTerr;
   }
 
-  public static void reorder(final List<?> reorder, final Map<?, ? extends Number> map, final boolean greaterThan) {
+  private static void reorder(final List<?> reorder, final Map<?, ? extends Number> map, final boolean greaterThan) {
     Collections.sort(reorder, new Comparator<Object>() {
       @Override
       public int compare(final Object o1, final Object o2) {
@@ -2012,7 +2007,7 @@ public class ProBidAI {
    * returns all territories that are water territories. used to remove convoy zones from places the ai will put a
    * factory
    */
-  public static List<Territory> onlyWaterTerr(final GameData data, final List<Territory> allTerr) {
+  private static List<Territory> onlyWaterTerr(final GameData data, final List<Territory> allTerr) {
     final List<Territory> water = new ArrayList<Territory>(allTerr);
     final Iterator<Territory> wFIter = water.iterator();
     while (wFIter.hasNext()) {
@@ -2035,7 +2030,7 @@ public class ProBidAI {
    *        - can transports be killed during battle
    *        Should be modified to include the list of units which will be dropped (for strength measurement)
    */
-  public static Territory findASeaTerritoryToPlaceOn(final Territory landTerr, final GameData data,
+  private static Territory findASeaTerritoryToPlaceOn(final Territory landTerr, final GameData data,
       final PlayerID player, final boolean tFirst) {
     final CompositeMatch<Territory> ourSeaTerr =
         new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasUnitsOwnedBy(player));
@@ -2102,7 +2097,7 @@ public class ProBidAI {
    * distance to the closest enemy
    * just uses findNearest
    */
-  public static int distanceToEnemy(final Territory t, final GameData data, final PlayerID player, final boolean sea) {
+  private static int distanceToEnemy(final Territory t, final GameData data, final PlayerID player, final boolean sea) {
     // note: neutrals are enemies
     // also note: if sea, you are finding distance to enemy sea units, not to enemy land over sea
     if (Matches.TerritoryIsImpassable.match(t)) {
@@ -2134,7 +2129,7 @@ public class ProBidAI {
    * @param attacking - attacking strength or defending
    * @param allied - allied = true - all allied units --> false - owned units only
    */
-  public static float strengthOfTerritory(final GameData data, final Territory thisTerr, final PlayerID player,
+  private static float strengthOfTerritory(final GameData data, final Territory thisTerr, final PlayerID player,
       final boolean attacking, final boolean sea, final boolean tFirst, final boolean allied) {
     final List<Unit> theUnits = new ArrayList<Unit>();
     if (allied) {
@@ -2152,11 +2147,11 @@ public class ProBidAI {
    * @neutral - count an attackable neutral as a land neighbor
    * @return boolean (true if a land territory is a neighbor to t
    */
-  public static boolean doesLandExistAt(final Territory t, final GameData data, final boolean neutral) { // simply: is
-                                                                                                         // this
-                                                                                                         // territory
-                                                                                                         // surrounded
-                                                                                                         // by water
+  private static boolean doesLandExistAt(final Territory t, final GameData data, final boolean neutral) { // simply: is
+                                                                                                          // this
+                                                                                                          // territory
+                                                                                                          // surrounded
+                                                                                                          // by water
     boolean isLand = false;
     final Set<Territory> checkList = data.getMap().getNeighbors(t, Matches.TerritoryIsLand);
     if (!neutral) {
@@ -2179,7 +2174,7 @@ public class ProBidAI {
   /**
    * Interleave infantry and artillery/armor for loading on transports
    */
-  public static List<Unit> sortTransportUnits(final List<Unit> transUnits) {
+  private static List<Unit> sortTransportUnits(final List<Unit> transUnits) {
     final List<Unit> sorted = new ArrayList<Unit>();
     final List<Unit> infantry = new ArrayList<Unit>();
     final List<Unit> artillery = new ArrayList<Unit>();
@@ -2233,7 +2228,7 @@ public class ProBidAI {
     return sorted;
   }
 
-  public final static Match<Territory> TerritoryIsNotImpassableToAirUnits(final GameData data) {
+  private final static Match<Territory> TerritoryIsNotImpassableToAirUnits(final GameData data) {
     return new InverseMatch<Territory>(TerritoryIsImpassableToAirUnits(data));
   }
 
@@ -2256,7 +2251,7 @@ public class ProBidAI {
    * All Allied Territories which neighbor a territory
    * This duplicates getNeighbors(check, Matches.isTerritoryAllied(player, data))
    */
-  public static List<Territory> getNeighboringLandTerritories(final GameData data, final PlayerID player,
+  private static List<Territory> getNeighboringLandTerritories(final GameData data, final PlayerID player,
       final Territory check) {
     final ArrayList<Territory> rVal = new ArrayList<Territory>();
     final List<Territory> checkList = getExactNeighbors(check, 1, player, data, false);
@@ -2275,7 +2270,8 @@ public class ProBidAI {
    * neutral - whether to include neutral countries
    */
   @SuppressWarnings("unchecked")
-  public static List<Territory> getExactNeighbors(final Territory territory, final int distance, final PlayerID player,
+  private static List<Territory> getExactNeighbors(final Territory territory, final int distance,
+      final PlayerID player,
       final GameData data, final boolean neutral) {
     // old functionality retained, i.e. no route condition is imposed.
     // feel free to change, if you are confortable all calls to this function conform.
