@@ -43,7 +43,7 @@ public class ProBattleUtils {
     }
 
     // Check that defender has at least 1 power
-    final double power = estimatePower(defendingUnits.get(0).getOwner(), t, defendingUnits, attackingUnits, false);
+    final double power = estimatePower(t, defendingUnits, attackingUnits, false);
     if (power == 0 && !attackingUnits.isEmpty()) {
       return true;
     }
@@ -56,7 +56,7 @@ public class ProBattleUtils {
     final int attackPower =
         DiceRoll.getTotalPower(
             DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, sortedUnitsList, defendingUnits, false,
-                false, player, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+                false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
     final List<Unit> defendersWithHitPoints = Match.getMatches(defendingUnits, Matches.UnitIsInfrastructure.invert());
     final int totalDefenderHitPoints = BattleCalculator.getTotalHitpointsLeft(defendersWithHitPoints);
     return ((attackPower / data.getDiceSides()) >= totalDefenderHitPoints);
@@ -73,13 +73,13 @@ public class ProBattleUtils {
       return 100;
     }
     final double attackerStrength =
-        estimateStrength(attackingUnits.get(0).getOwner(), t, attackingUnits, actualDefenders, true);
+        estimateStrength(t, attackingUnits, actualDefenders, true);
     final double defenderStrength =
-        estimateStrength(actualDefenders.get(0).getOwner(), t, actualDefenders, attackingUnits, false);
+        estimateStrength(t, actualDefenders, attackingUnits, false);
     return ((attackerStrength - defenderStrength) / Math.pow(defenderStrength, 0.85) * 50 + 50);
   }
 
-  public static double estimateStrength(final PlayerID player, final Territory t, final List<Unit> myUnits,
+  public static double estimateStrength(final Territory t, final List<Unit> myUnits,
       final List<Unit> enemyUnits, final boolean attacking) {
     final GameData data = ProData.getData();
 
@@ -89,11 +89,11 @@ public class ProBattleUtils {
       unitsThatCanFight = Match.getMatches(unitsThatCanFight, Matches.UnitIsTransportButNotCombatTransport.invert());
     }
     final int myHP = BattleCalculator.getTotalHitpointsLeft(unitsThatCanFight);
-    final double myPower = estimatePower(player, t, myUnits, enemyUnits, attacking);
+    final double myPower = estimatePower(t, myUnits, enemyUnits, attacking);
     return (2 * myHP) + myPower;
   }
 
-  private static double estimatePower(final PlayerID player, final Territory t, final List<Unit> myUnits,
+  private static double estimatePower(final Territory t, final List<Unit> myUnits,
       final List<Unit> enemyUnits, final boolean attacking) {
     final GameData data = ProData.getData();
 
@@ -107,7 +107,7 @@ public class ProBattleUtils {
     final int myPower =
         DiceRoll.getTotalPower(
             DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, sortedUnitsList, enemyUnits, !attacking,
-                false, player, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+                false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
     return (myPower * 6.0 / data.getDiceSides());
   }
 

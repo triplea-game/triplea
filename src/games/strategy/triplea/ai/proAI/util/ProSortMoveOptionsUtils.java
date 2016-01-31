@@ -159,7 +159,7 @@ public class ProSortMoveOptionsUtils {
             final int powerWithout =
                 DiceRoll.getTotalPower(
                     DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, sortedUnitsList, defendingUnits,
-                        false, false, player, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+                        false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
             sortedUnitsList.add(o1.getKey());
             Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.unitValueMap,
                 TerritoryEffectHelper.getEffects(t), data, false, false));
@@ -167,7 +167,7 @@ public class ProSortMoveOptionsUtils {
             final int powerWith =
                 DiceRoll.getTotalPower(
                     DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, sortedUnitsList, defendingUnits,
-                        false, false, player, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+                        false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
             final int power = powerWith - powerWithout;
             if (power < minPower1) {
               minPower1 = power;
@@ -190,7 +190,7 @@ public class ProSortMoveOptionsUtils {
             final int powerWithout =
                 DiceRoll.getTotalPower(
                     DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, sortedUnitsList, defendingUnits,
-                        false, false, player, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+                        false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
             sortedUnitsList.add(o2.getKey());
             Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.unitValueMap,
                 TerritoryEffectHelper.getEffects(t), data, false, false));
@@ -198,7 +198,7 @@ public class ProSortMoveOptionsUtils {
             final int powerWith =
                 DiceRoll.getTotalPower(
                     DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, sortedUnitsList, defendingUnits,
-                        false, false, player, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+                        false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
             final int power = powerWith - powerWithout;
             if (power < minPower2) {
               minPower2 = power;

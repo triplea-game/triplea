@@ -846,14 +846,14 @@ public class OddsCalculatorPanel extends JPanel {
       Collections.sort(attackers, new UnitBattleComparator(false, costs, territoryEffects, m_data, false, false));
       Collections.reverse(attackers);
       final int attackPower = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(attackers,
-          attackers, defenders, false, false, getAttacker(), m_data, m_location, territoryEffects, isAmphibiousBattle,
+          attackers, defenders, false, false, m_data, m_location, territoryEffects, isAmphibiousBattle,
           (isAmphibiousBattle ? attackers : new ArrayList<Unit>())), m_data);
       // defender is never amphibious
       final int defensePower =
           DiceRoll
               .getTotalPower(
                   DiceRoll.getUnitPowerAndRollsForNormalBattles(defenders, defenders, attackers, true, false,
-                      getDefender(), m_data, m_location, territoryEffects, isAmphibiousBattle, new ArrayList<Unit>()),
+                      m_data, m_location, territoryEffects, isAmphibiousBattle, new ArrayList<Unit>()),
                   m_data);
       m_attackerUnitsTotalPower.setText("Power: " + attackPower);
       m_defenderUnitsTotalPower.setText("Power: " + defensePower);
