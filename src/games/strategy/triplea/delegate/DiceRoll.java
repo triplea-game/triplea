@@ -14,9 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.google.common.collect.Lists;
-
 import java.util.Set;
 
 import com.google.common.collect.Lists;
@@ -413,10 +410,7 @@ public class DiceRoll implements Externalizable {
       final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibiousBattle,
       final Collection<Unit> amphibiousLandAttackers) {
 
-      // TODO:   See if the next function called can be simplified so we do not need to duplicate a parameter value.
-    List<Unit> allFriendlyUnitsAliveOrWaitingToDie = unitsGettingPowerFor;
-
-    return getUnitPowerAndRollsForNormalBattles(unitsGettingPowerFor, allFriendlyUnitsAliveOrWaitingToDie,
+    return getUnitPowerAndRollsForNormalBattles(unitsGettingPowerFor,
         allEnemyUnitsAliveOrWaitingToDie, defending, bombing, data, location, territoryEffects,
         isAmphibiousBattle, amphibiousLandAttackers, new HashMap<Unit, IntegerMap<Unit>>(),
         new HashMap<Unit, IntegerMap<Unit>>());
@@ -427,7 +421,7 @@ public class DiceRoll implements Externalizable {
    *        should be sorted from weakest to strongest, before the method is called, for the actual battle
    */
   protected static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
-      final List<Unit> unitsGettingPowerFor, final List<Unit> allFriendlyUnitsAliveOrWaitingToDie,
+      final List<Unit> unitsGettingPowerFor,
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defending, final boolean bombing,
       final GameData data, final Territory location,
       final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibiousBattle,
@@ -442,7 +436,7 @@ public class DiceRoll implements Externalizable {
     final IntegerMap<UnitSupportAttachment> supportLeftFriendly = new IntegerMap<UnitSupportAttachment>();
     final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftFriendly =
         new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
-    getSupport(allFriendlyUnitsAliveOrWaitingToDie, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly,
+    getSupport(unitsGettingPowerFor, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly,
         data, defending, true);
     final Set<List<UnitSupportAttachment>> supportRulesEnemy = new HashSet<List<UnitSupportAttachment>>();
     final IntegerMap<UnitSupportAttachment> supportLeftEnemy = new IntegerMap<UnitSupportAttachment>();
