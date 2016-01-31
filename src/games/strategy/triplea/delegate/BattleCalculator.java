@@ -498,7 +498,7 @@ public class BattleCalculator {
     if (headLess) {
       dependents = Collections.emptyMap();
     } else {
-      dependents = getDependents(targetsToPickFrom, data);
+      dependents = getDependents(targetsToPickFrom);
     }
     if (isEditMode && !headLess) {
       final CasualtyDetails editSelection = tripleaPlayer.selectCasualties(targetsToPickFrom, dependents, 0, text, dice,
@@ -709,9 +709,9 @@ public class BattleCalculator {
       final Territory battlesite, final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects,
       final GameData data, final boolean allowMultipleHitsPerUnit, final boolean bonus) {
     if (!GameRunner2.getCasualtySelectionSlow()) {
-      return sortUnitsForCasualtiesWithSupportNewWithCaching(targetsToPickFrom, hits, defending, player, friendlyUnits,
-          enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs, territoryEffects, data,
-          allowMultipleHitsPerUnit, bonus);
+      return sortUnitsForCasualtiesWithSupportNewWithCaching(targetsToPickFrom, defending, player,
+          enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs, territoryEffects, data,
+          bonus);
     } else {
       return sortUnitsForCasualtiesWithSupportBruteForce(targetsToPickFrom, hits, defending, player, friendlyUnits,
           enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs, territoryEffects, data,
@@ -720,10 +720,10 @@ public class BattleCalculator {
   }
 
   private static List<Unit> sortUnitsForCasualtiesWithSupportNewWithCaching(final Collection<Unit> targetsToPickFrom,
-      final int hits, final boolean defending, final PlayerID player, final Collection<Unit> friendlyUnits,
-      final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious,
+      final boolean defending, final PlayerID player,
+      final Collection<Unit> enemyUnits, final boolean amphibious,
       final Collection<Unit> amphibiousLandAttackers, final Territory battlesite, final IntegerMap<UnitType> costs,
-      final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
+      final Collection<TerritoryEffect> territoryEffects, final GameData data,
       final boolean bonus) {
     // Convert unit lists to unit type lists
     final List<UnitType> targetTypes = new ArrayList<UnitType>();
@@ -1006,7 +1006,7 @@ public class BattleCalculator {
     return sortedWellEnoughUnitsList;
   }
 
-  public static Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> targets, final GameData data) {
+  public static Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> targets) {
     // just worry about transports
     final Map<Unit, Collection<Unit>> dependents = new HashMap<Unit, Collection<Unit>>();
     for (final Unit target : targets) {

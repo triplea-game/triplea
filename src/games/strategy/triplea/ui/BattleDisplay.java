@@ -219,7 +219,7 @@ public class BattleDisplay extends JPanel {
     Map<Unit, Collection<Unit>> dependentsMap;
     m_data.acquireReadLock();
     try {
-      dependentsMap = BattleCalculator.getDependents(aKilledUnits, m_data);
+      dependentsMap = BattleCalculator.getDependents(aKilledUnits);
     } finally {
       m_data.releaseReadLock();
     }
