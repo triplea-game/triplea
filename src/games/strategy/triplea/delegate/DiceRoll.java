@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -388,18 +390,14 @@ public class DiceRoll implements Externalizable {
   public static DiceRoll rollNDice(final IDelegateBridge bridge, final int rollCount, final int sides,
       final PlayerID playerRolling, final DiceType diceType, final String annotation) {
     if (rollCount == 0) {
-      return new DiceRoll(new ArrayList<Die>(), 0);
+      return new DiceRoll(Lists.newArrayList(), 0);
     }
-    int[] random;
-    random = bridge.getRandom(sides, rollCount, playerRolling, diceType, annotation);
+    int[] random = bridge.getRandom(sides, rollCount, playerRolling, diceType, annotation);
     final List<Die> dice = new ArrayList<Die>();
-    int diceIndex = 0;
     for (int i = 0; i < rollCount; i++) {
-      dice.add(new Die(random[diceIndex], 1, DieType.IGNORED));
-      diceIndex++;
+      dice.add(new Die(random[i], 1, DieType.IGNORED));
     }
-    final DiceRoll rVal = new DiceRoll(dice, rollCount);
-    return rVal;
+    return new DiceRoll(dice, rollCount);
   }
 
   /**
