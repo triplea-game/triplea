@@ -545,10 +545,6 @@ public class DiceRoll implements Externalizable {
     return getTotalPowerAndRolls( unitPowerAndRollsMap, data).getFirst();
   }
 
-  public static Integer getTotalRolls( final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap, final GameData data) {
-    return getTotalPowerAndRolls( unitPowerAndRollsMap, data).getSecond();
-  }
-
 
   private static Tuple<Integer, Integer> getTotalPowerAndRolls(
       final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap, final GameData data) {
@@ -598,6 +594,7 @@ public class DiceRoll implements Externalizable {
         }
       }
     }
+
     return Tuple.of(totalPower, totalRolls);
   }
 
@@ -622,8 +619,7 @@ public class DiceRoll implements Externalizable {
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =
         DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, allEnemyUnitsAliveOrWaitingToDie, defending, false,
             player, data, location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers);
-    final Tuple<Integer, Integer> totalPowerAndRolls = getTotalPowerAndRolls(unitPowerAndRollsMap, data);
-    final int power = totalPowerAndRolls.getFirst();
+    final int power = getTotalPower(unitPowerAndRollsMap, data);
     if (power == 0) {
       return new DiceRoll(new ArrayList<Die>(0), 0);
     }
