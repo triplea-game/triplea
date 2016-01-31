@@ -550,7 +550,7 @@ public class DiceRoll implements Externalizable {
   }
 
 
-  public static Tuple<Integer, Integer> getTotalPowerAndRolls(
+  private static Tuple<Integer, Integer> getTotalPowerAndRolls(
       final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap, final GameData data) {
     final int diceSides = data.getDiceSides();
     final boolean lowLuck = games.strategy.triplea.Properties.getLow_Luck(data);

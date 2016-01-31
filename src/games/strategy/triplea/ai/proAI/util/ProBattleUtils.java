@@ -54,9 +54,9 @@ public class ProBattleUtils {
         new UnitBattleComparator(false, ProData.unitValueMap, TerritoryEffectHelper.getEffects(t), data, false, false));
     Collections.reverse(sortedUnitsList);
     final int attackPower =
-        DiceRoll.getTotalPowerAndRolls(
+        DiceRoll.getTotalPower(
             DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, sortedUnitsList, defendingUnits, false,
-                false, player, data, t, TerritoryEffectHelper.getEffects(t), false, null), data).getFirst();
+                false, player, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
     final List<Unit> defendersWithHitPoints = Match.getMatches(defendingUnits, Matches.UnitIsInfrastructure.invert());
     final int totalDefenderHitPoints = BattleCalculator.getTotalHitpointsLeft(defendersWithHitPoints);
     return ((attackPower / data.getDiceSides()) >= totalDefenderHitPoints);
@@ -105,9 +105,9 @@ public class ProBattleUtils {
             false));
     Collections.reverse(sortedUnitsList);
     final int myPower =
-        DiceRoll.getTotalPowerAndRolls(
+        DiceRoll.getTotalPower(
             DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, sortedUnitsList, enemyUnits, !attacking,
-                false, player, data, t, TerritoryEffectHelper.getEffects(t), false, null), data).getFirst();
+                false, player, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
     return (myPower * 6.0 / data.getDiceSides());
   }
 

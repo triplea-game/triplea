@@ -795,7 +795,7 @@ public class BattleCalculator {
         // Find unit power
         final Map<Unit, Tuple<Integer, Integer>> currentUnitMap = new HashMap<Unit, Tuple<Integer, Integer>>();
         currentUnitMap.put(u, unitPowerAndRollsMap.get(u));
-        int power = DiceRoll.getTotalPowerAndRolls(currentUnitMap, data).getFirst();
+        int power = DiceRoll.getTotalPower(currentUnitMap, data);
         // Add any support power that it provides to other units
         final IntegerMap<Unit> unitSupportPowerMapForUnit = unitSupportPowerMap.get(u);
         if (unitSupportPowerMapForUnit != null) {
@@ -818,14 +818,14 @@ public class BattleCalculator {
             // Find supported unit power with support
             final Map<Unit, Tuple<Integer, Integer>> supportedUnitMap = new HashMap<Unit, Tuple<Integer, Integer>>();
             supportedUnitMap.put(supportedUnit, strengthAndRolls);
-            final int powerWithSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
+            final int powerWithSupport = DiceRoll.getTotalPower(supportedUnitMap, data);
             // Find supported unit power without support
             final int strengthWithoutSupport =
                 strengthAndRolls.getFirst() - unitSupportPowerMapForUnit.getInt(supportedUnit);
             final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
                 Tuple.of(strengthWithoutSupport, strengthAndRolls.getSecond());
             supportedUnitMap.put(supportedUnit, strengthAndRollsWithoutSupport);
-            final int powerWithoutSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
+            final int powerWithoutSupport = DiceRoll.getTotalPower(supportedUnitMap, data);
             // Add the actual power provided by the support
             final int addedPower = powerWithSupport - powerWithoutSupport;
             power += addedPower;
@@ -842,14 +842,14 @@ public class BattleCalculator {
             // Find supported unit power with support
             final Map<Unit, Tuple<Integer, Integer>> supportedUnitMap = new HashMap<Unit, Tuple<Integer, Integer>>();
             supportedUnitMap.put(supportedUnit, strengthAndRolls);
-            final int powerWithSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
+            final int powerWithSupport = DiceRoll.getTotalPower(supportedUnitMap, data);
             // Find supported unit power without support
             final int rollsWithoutSupport =
                 strengthAndRolls.getSecond() - unitSupportRollsMap.get(u).getInt(supportedUnit);
             final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
                 Tuple.of(strengthAndRolls.getFirst(), rollsWithoutSupport);
             supportedUnitMap.put(supportedUnit, strengthAndRollsWithoutSupport);
-            final int powerWithoutSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
+            final int powerWithoutSupport = DiceRoll.getTotalPower(supportedUnitMap, data);
             // Add the actual power provided by the support
             final int addedPower = powerWithSupport - powerWithoutSupport;
             power += addedPower;
@@ -980,17 +980,15 @@ public class BattleCalculator {
         final List<Unit> enemyUnitList = new ArrayList<Unit>(enemyUnits);
         Collections.reverse(units);
         final int power = DiceRoll
-            .getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, enemyUnitList, defending,
-                false, player, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers), data)
-            .getFirst();
+            .getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, enemyUnitList, defending,
+                false, player, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers), data);
         // Find enemy power without current unit (need to consider this since supports can decrease enemy
         // attack/defense)
         final int enemyPower = DiceRoll
-            .getTotalPowerAndRolls(
+            .getTotalPower(
                 DiceRoll.getUnitPowerAndRollsForNormalBattles(enemyUnitList, enemyUnitList, units, !defending, false,
                     enemyPlayer, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers),
-                data)
-            .getFirst();
+                data);
         // Check if unit has higher power
         final int powerDifference = power - enemyPower;
         if (powerDifference > maxPowerDifference
