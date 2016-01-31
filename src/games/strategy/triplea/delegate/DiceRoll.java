@@ -541,6 +541,15 @@ public class DiceRoll implements Externalizable {
     return rVal;
   }
 
+  public static Integer getTotalPower( final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap, final GameData data) {
+    return getTotalPowerAndRolls( unitPowerAndRollsMap, data).getFirst();
+  }
+
+  public static Integer getTotalRolls( final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap, final GameData data) {
+    return getTotalPowerAndRolls( unitPowerAndRollsMap, data).getSecond();
+  }
+
+
   public static Tuple<Integer, Integer> getTotalPowerAndRolls(
       final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap, final GameData data) {
     final int diceSides = data.getDiceSides();
