@@ -136,14 +136,12 @@ public class BattleCalculator {
         // priority goes: choose -> individually -> random
         // if none are set, we roll individually
         if (isRollAAIndividually(data)) {
-          return IndividuallyFiredAACasualties(defending, planes, defendingAA, dice, terr, bridge,
-              allowMultipleHitsPerUnit);
+          return IndividuallyFiredAACasualties(defending, planes, defendingAA, dice, bridge, allowMultipleHitsPerUnit);
         }
         if (isRandomAACasualties(data)) {
           return RandomAACasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
         }
-        return IndividuallyFiredAACasualties(defending, planes, defendingAA, dice, terr, bridge,
-            allowMultipleHitsPerUnit);
+        return IndividuallyFiredAACasualties(defending, planes, defendingAA, dice, bridge, allowMultipleHitsPerUnit);
       }
     }
   }
@@ -408,7 +406,7 @@ public class BattleCalculator {
    * Choose plane casualties based on individual AA shots at each aircraft.
    */
   private static CasualtyDetails IndividuallyFiredAACasualties(final boolean defending, final Collection<Unit> planes,
-      final Collection<Unit> defendingAA, final DiceRoll dice, final Territory location, final IDelegateBridge bridge,
+      final Collection<Unit> defendingAA, final DiceRoll dice, final IDelegateBridge bridge,
       final boolean allowMultipleHitsPerUnit) {
     // if we have aa guns that are not infinite, then we need to randomly decide the aa casualties since there are not
     // enough rolls to have
