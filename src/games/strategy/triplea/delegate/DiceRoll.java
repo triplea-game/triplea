@@ -51,32 +51,7 @@ public class DiceRoll implements Externalizable {
   // since for low luck we get many hits with few dice
   private int m_hits;
 
-  private static void sortAAHighToLow(final List<Unit> units, final GameData data, final boolean defending) {
-    final Comparator<Unit> comparator = new Comparator<Unit>() {
-      @Override
-      public int compare(final Unit u1, final Unit u2) {
-        final Tuple<Integer, Integer> tuple1 = getAAattackAndMaxDiceSides(Collections.singleton(u1), data, defending);
-        final Tuple<Integer, Integer> tuple2 = getAAattackAndMaxDiceSides(Collections.singleton(u2), data, defending);
-        if (tuple1.getFirst() == 0) {
-          if (tuple2.getFirst() == 0) {
-            return 0;
-          }
-          return 1;
-        } else if (tuple2.getFirst() == 0) {
-          return -1;
-        }
-        final float value1 = ((float) tuple1.getFirst()) / ((float) tuple1.getSecond());
-        final float value2 = ((float) tuple2.getFirst()) / ((float) tuple2.getSecond());
-        if (value1 < value2) {
-          return 1;
-        } else if (value1 > value2) {
-          return -1;
-        }
-        return 0;
-      }
-    };
-    Collections.sort(units, comparator);
-  }
+
 
   /**
    * Returns a Tuple with 2 values, the first is the max attack, the second is the max dice sides for the AA unit with
@@ -341,6 +316,33 @@ public class DiceRoll implements Externalizable {
       }
     }
     return Triple.of(totalPower, hits, (rolledAt.size() == 1));
+  }
+
+  private static void sortAAHighToLow(final List<Unit> units, final GameData data, final boolean defending) {
+    final Comparator<Unit> comparator = new Comparator<Unit>() {
+      @Override
+      public int compare(final Unit u1, final Unit u2) {
+        final Tuple<Integer, Integer> tuple1 = getAAattackAndMaxDiceSides(Collections.singleton(u1), data, defending);
+        final Tuple<Integer, Integer> tuple2 = getAAattackAndMaxDiceSides(Collections.singleton(u2), data, defending);
+        if (tuple1.getFirst() == 0) {
+          if (tuple2.getFirst() == 0) {
+            return 0;
+          }
+          return 1;
+        } else if (tuple2.getFirst() == 0) {
+          return -1;
+        }
+        final float value1 = ((float) tuple1.getFirst()) / ((float) tuple1.getSecond());
+        final float value2 = ((float) tuple2.getFirst()) / ((float) tuple2.getSecond());
+        if (value1 < value2) {
+          return 1;
+        } else if (value1 > value2) {
+          return -1;
+        }
+        return 0;
+      }
+    };
+    Collections.sort(units, comparator);
   }
 
   private static int getLowLuckHits(final IDelegateBridge bridge, final List<Die> sortedDice, final int totalPower,
