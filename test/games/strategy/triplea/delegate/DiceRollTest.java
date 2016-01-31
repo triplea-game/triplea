@@ -29,7 +29,7 @@ public class DiceRollTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    m_data = LoadGameUtil.loadGame("World War II Revised LHTR Test", "lhtr_test.xml");
+    m_data = LoadGameUtil.loadTestGame("lhtr_test.xml");
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
@@ -162,7 +162,7 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testMarineAttackPlus1() throws Exception {
-    m_data = LoadGameUtil.loadGame("Classic: Iron Blitz 3rd Edition Test", "iron_blitz_test.xml");
+    m_data = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
     final Territory algeria = m_data.getMap().getTerritory("Algeria");
     final PlayerID americans = GameDataTestUtil.americans(m_data);
     final UnitType marine = m_data.getUnitTypeList().getUnitType("marine");
@@ -178,7 +178,7 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testMarineAttackPlus1LowLuck() throws Exception {
-    m_data = LoadGameUtil.loadGame("Classic: Iron Blitz 3rd Edition Test", "iron_blitz_test.xml");
+    m_data = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
     GameDataTestUtil.makeGameLowLuck(m_data);
     final Territory algeria = m_data.getMap().getTerritory("Algeria");
     final PlayerID americans = GameDataTestUtil.americans(m_data);
@@ -195,7 +195,7 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testMarineAttacNormalIfNotAmphibious() throws Exception {
-    m_data = LoadGameUtil.loadGame("Classic: Iron Blitz 3rd Edition Test", "iron_blitz_test.xml");
+    m_data = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
     final Territory algeria = m_data.getMap().getTerritory("Algeria");
     final PlayerID americans = GameDataTestUtil.americans(m_data);
     final UnitType marine = m_data.getUnitTypeList().getUnitType("marine");
@@ -299,7 +299,7 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testAALowLuckWithRadar() {
-    m_data = LoadGameUtil.loadGame("World War II v3 1941 Test", "ww2v3_1941_test.xml");
+    m_data = LoadGameUtil.loadTestGame("ww2v3_1941_test.xml");
     GameDataTestUtil.makeGameLowLuck(m_data);
     final Territory finnland = m_data.getMap().getTerritory("Finland");
     final PlayerID russians = GameDataTestUtil.russians(m_data);
@@ -345,7 +345,7 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testHeavyBombers() {
-    m_data = LoadGameUtil.loadGame("Classic: Iron Blitz 3rd Edition Test", "iron_blitz_test.xml");
+    m_data = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
     final PlayerID british = GameDataTestUtil.british(m_data);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, testDelegateBridge,
