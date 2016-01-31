@@ -131,7 +131,7 @@ public class BattleCalculator {
           dice.getHits(), allowMultipleHitsPerUnit);
     } else {
       if (Properties.getLow_Luck(data) || Properties.getLL_AA_ONLY(data)) {
-        return getLowLuckAACasualties(defending, planes, defendingAA, dice, terr, bridge, allowMultipleHitsPerUnit);
+        return getLowLuckAACasualties(defending, planes, defendingAA, dice, bridge, allowMultipleHitsPerUnit);
       } else {
         // priority goes: choose -> individually -> random
         // if none are set, we roll individually
@@ -175,7 +175,7 @@ public class BattleCalculator {
   }
 
   private static CasualtyDetails getLowLuckAACasualties(final boolean defending, final Collection<Unit> planes,
-      final Collection<Unit> defendingAA, final DiceRoll dice, final Territory location, final IDelegateBridge bridge,
+      final Collection<Unit> defendingAA, final DiceRoll dice, final IDelegateBridge bridge,
       final boolean allowMultipleHitsPerUnit) {
     {
       final Set<Unit> duplicatesCheckSet1 = new HashSet<Unit>(planes);
