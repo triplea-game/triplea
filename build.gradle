@@ -82,17 +82,15 @@ git {
 		singleBranch true
 	}
 }
-import com.install4j.gradle.Install4jTask
-
-task updateAssets(dependsOn: ['gitCloneAssets', 'gitPullAssets']) {
-}
-
 
 task renameShadowJar(type: Copy, group: 'release', dependsOn: [shadowJar]) {
 	ext.output = file("$project.buildDir/libs/all/triplea.jar")
 	from shadowJar.archivePath
 	into ext.output.parent
 	rename shadowJar.archivePath.name, output.name
+}
+
+task updateAssets(dependsOn: ['gitCloneAssets', 'gitPullAssets']) {
 }
 
 task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets]) {
@@ -102,7 +100,7 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updat
 			into(folder)
 		}
 	}
-	from("${assetsDirectory}/doc"){
+	from("${assetsDirectory}/doc") {
 		into('doc')
 	}
 	from("${assetsDirectory}/icons") {
@@ -130,10 +128,7 @@ task bots(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets
 		into('icons')
 		exclude("icon.icns")
 	}
-	from("${assetsDirectory}/doc"){
-		into('doc')
-	}
-	['dice_servers', 'license'].each { folder ->
+	['license'].each { folder ->
 		from(folder) {
 			into(folder)
 		}
@@ -177,6 +172,7 @@ task copyJRE(type: Copy, dependsOn: [updateAssets]) {
 	into "${System.properties['user.home']}/.install4j6/jres"
 }
 
+import com.install4j.gradle.Install4jTask
 task generateInstallers(type: Install4jTask, dependsOn: [renameShadowJar, copyJRE], group: 'release') {
 	projectFile = file('build.install4j')
 	release project.version
