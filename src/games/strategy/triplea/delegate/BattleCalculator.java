@@ -153,7 +153,7 @@ public class BattleCalculator {
    * the second list is all the air units that do not fit in the first list
    */
   private static Tuple<List<List<Unit>>, List<Unit>> categorizeLowLuckAirUnits(final Collection<Unit> units,
-      final Territory location, final int diceSides, final int groupSize) {
+      final int groupSize) {
     final Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(units, null, false, true);
     final List<List<Unit>> groupsOfSize = new ArrayList<List<Unit>>();
     final List<Unit> toRoll = new ArrayList<Unit>();
@@ -245,8 +245,7 @@ public class BattleCalculator {
       // (ie: attack is 2, and
       // we have 3 fighters and 2 bombers, we would want 1 fighter to die for sure).
       // categorize with groupSize
-      final Tuple<List<List<Unit>>, List<Unit>> airSplit =
-          categorizeLowLuckAirUnits(planesList, location, chosenDiceSize, groupSize);
+      final Tuple<List<List<Unit>>, List<Unit>> airSplit = categorizeLowLuckAirUnits(planesList, groupSize);
       // the non rolling air units
       // if we are less hits than the number of groups, OR we have equal hits to number of groups but we also have a
       // remainder that is equal
