@@ -14,6 +14,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import com.google.common.collect.Lists;
+
 import java.util.Set;
 
 import com.google.common.collect.Lists;
@@ -405,11 +408,14 @@ public class DiceRoll implements Externalizable {
    *        should be sorted from weakest to strongest, before the method is called, for the actual battle
    */
   public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
-      final List<Unit> unitsGettingPowerFor, final List<Unit> allFriendlyUnitsAliveOrWaitingToDie,
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defending, final boolean bombing,
-      final GameData data, final Territory location,
+      final List<Unit> unitsGettingPowerFor, final List<Unit> allEnemyUnitsAliveOrWaitingToDie,
+      final boolean defending, final boolean bombing, final GameData data, final Territory location,
       final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibiousBattle,
       final Collection<Unit> amphibiousLandAttackers) {
+
+      // TODO:   See if the next function called can be simplified so we do not need to duplicate a parameter value.
+    List<Unit> allFriendlyUnitsAliveOrWaitingToDie = unitsGettingPowerFor;
+
     return getUnitPowerAndRollsForNormalBattles(unitsGettingPowerFor, allFriendlyUnitsAliveOrWaitingToDie,
         allEnemyUnitsAliveOrWaitingToDie, defending, bombing, data, location, territoryEffects,
         isAmphibiousBattle, amphibiousLandAttackers, new HashMap<Unit, IntegerMap<Unit>>(),
@@ -594,7 +600,7 @@ public class DiceRoll implements Externalizable {
     final boolean isAmphibiousBattle = battle.isAmphibious();
     final Collection<Unit> amphibiousLandAttackers = battle.getAmphibiousLandAttackers();
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =
-        DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, allEnemyUnitsAliveOrWaitingToDie, defending, false,
+        DiceRoll.getUnitPowerAndRollsForNormalBattles(units, allEnemyUnitsAliveOrWaitingToDie, defending, false,
             data, location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers);
     final int power = getTotalPower(unitPowerAndRollsMap, data);
     if (power == 0) {
@@ -983,7 +989,7 @@ public class DiceRoll implements Externalizable {
     final boolean isAmphibiousBattle = battle.isAmphibious();
     final Collection<Unit> amphibiousLandAttackers = battle.getAmphibiousLandAttackers();
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =
-        DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, allEnemyUnitsAliveOrWaitingToDie, defending, false,
+        DiceRoll.getUnitPowerAndRollsForNormalBattles(units, allEnemyUnitsAliveOrWaitingToDie, defending, false,
             data, location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers);
     final Tuple<Integer, Integer> totalPowerAndRolls = getTotalPowerAndRolls(unitPowerAndRollsMap, data);
     final int rollCount = totalPowerAndRolls.getSecond();

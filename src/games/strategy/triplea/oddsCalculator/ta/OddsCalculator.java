@@ -661,13 +661,13 @@ class DummyPlayer extends AbstractAI {
           // assume we are attacker
           final int ourHP = BattleCalculator.getTotalHitpointsLeft(ourUnits);
           final int enemyHP = BattleCalculator.getTotalHitpointsLeft(enemyUnits);
-          final int ourPower = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(ourUnits, ourUnits,
+          final int ourPower = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(ourUnits,
               enemyUnits, !m_isAttacker, false, m_bridge.getData(), battle.getTerritory(), battle.getTerritoryEffects(),
               battle.isAmphibious(), (battle.isAmphibious() && m_isAttacker ? ourUnits : new ArrayList<Unit>())),
               m_bridge.getData());
           final int enemyPower =
               DiceRoll.getTotalPower(
-                  DiceRoll.getUnitPowerAndRollsForNormalBattles(enemyUnits, enemyUnits, ourUnits, m_isAttacker, false,
+                  DiceRoll.getUnitPowerAndRollsForNormalBattles(enemyUnits, ourUnits, m_isAttacker, false,
                       m_bridge.getData(), battle.getTerritory(), battle.getTerritoryEffects(), battle.isAmphibious(),
                       (battle.isAmphibious() && !m_isAttacker ? enemyUnits : new ArrayList<Unit>())),
               m_bridge.getData());
