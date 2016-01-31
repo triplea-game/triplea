@@ -532,7 +532,7 @@ public class BattleCalculator {
     // Create production cost map, Maybe should do this elsewhere, but in case prices change, we do it here.
     final IntegerMap<UnitType> costs = getCostsForTUV(player, data);
     final Tuple<CasualtyList, List<Unit>> defaultCasualtiesAndSortedTargets = getDefaultCasualties(targetsToPickFrom,
-        hitsRemaining, defending, player, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers,
+        hitsRemaining, defending, player, enemyUnits, amphibious, amphibiousLandAttackers,
         battlesite, costs, territoryEffects, data, allowMultipleHitsPerUnit, true);
     final CasualtyList defaultCasualties = defaultCasualtiesAndSortedTargets.getFirst();
     final List<Unit> sortedTargetsToPickFrom = defaultCasualtiesAndSortedTargets.getSecond();
@@ -652,15 +652,14 @@ public class BattleCalculator {
    * are listed, it is dead.
    */
   private static Tuple<CasualtyList, List<Unit>> getDefaultCasualties(final Collection<Unit> targetsToPickFrom,
-      final int hits, final boolean defending, final PlayerID player,
-      final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious,
-      final Collection<Unit> amphibiousLandAttackers, final Territory battlesite, final IntegerMap<UnitType> costs,
-      final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
-      final boolean bonus) {
+      final int hits, final boolean defending, final PlayerID player, final Collection<Unit> enemyUnits,
+      final boolean amphibious, final Collection<Unit> amphibiousLandAttackers, final Territory battlesite,
+      final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects, final GameData data,
+      final boolean allowMultipleHitsPerUnit, final boolean bonus) {
     final CasualtyList defaultCasualtySelection = new CasualtyList();
     // Sort units by power and cost in ascending order
     final List<Unit> sorted = sortUnitsForCasualtiesWithSupport(targetsToPickFrom, hits, defending, player,
-        enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs,
+        enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs,
         territoryEffects, data, allowMultipleHitsPerUnit, bonus);
     // Remove two hit bb's selecting them first for default casualties
     int numSelectedCasualties = 0;
@@ -704,17 +703,17 @@ public class BattleCalculator {
    * (Veqryn)
    */
   private static List<Unit> sortUnitsForCasualtiesWithSupport(final Collection<Unit> targetsToPickFrom, final int hits,
-      final boolean defending, final PlayerID player, final PlayerID enemyPlayer,
-      final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
-      final Territory battlesite, final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects,
-      final GameData data, final boolean allowMultipleHitsPerUnit, final boolean bonus) {
+      final boolean defending, final PlayerID player, final Collection<Unit> enemyUnits, final boolean amphibious,
+      final Collection<Unit> amphibiousLandAttackers, final Territory battlesite, final IntegerMap<UnitType> costs,
+      final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
+      final boolean bonus) {
     if (!GameRunner2.getCasualtySelectionSlow()) {
       return sortUnitsForCasualtiesWithSupportNewWithCaching(targetsToPickFrom, defending, player,
           enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs, territoryEffects, data,
           bonus);
     } else {
-      return sortUnitsForCasualtiesWithSupportBruteForce(targetsToPickFrom, hits, defending, player,
-          enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs, territoryEffects, data,
+      return sortUnitsForCasualtiesWithSupportBruteForce(targetsToPickFrom, hits, defending, enemyUnits, amphibious,
+          amphibiousLandAttackers, battlesite, costs, territoryEffects, data,
           allowMultipleHitsPerUnit, bonus);
     }
   }
@@ -931,8 +930,7 @@ public class BattleCalculator {
   }
 
   private static List<Unit> sortUnitsForCasualtiesWithSupportBruteForce(final Collection<Unit> targetsToPickFrom,
-      final int hits, final boolean defending, final PlayerID player,
-      final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious,
+      final int hits, final boolean defending, final Collection<Unit> enemyUnits, final boolean amphibious,
       final Collection<Unit> amphibiousLandAttackers, final Territory battlesite, final IntegerMap<UnitType> costs,
       final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
       final boolean bonus) {
