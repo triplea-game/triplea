@@ -183,7 +183,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       endBeforeRolling(bridge);
       return;
     }
-    BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
+    BattleCalculator.sortPreBattle(m_attackingUnits);
     // TODO: determine if the target has the property, not just any unit with the property isAAforBombingThisUnitOnly
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);

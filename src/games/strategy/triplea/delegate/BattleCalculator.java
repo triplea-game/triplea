@@ -68,7 +68,7 @@ public class BattleCalculator {
   // can tell what dice is for who
   // we also want to sort by movement, so casualties will be choosen as the
   // units with least movement
-  public static void sortPreBattle(final List<Unit> units, final GameData data) {
+  public static void sortPreBattle(final List<Unit> units) {
     final Comparator<Unit> comparator = new Comparator<Unit>() {
       @Override
       public int compare(final Unit u1, final Unit u2) {

@@ -95,8 +95,8 @@ public class AirBattle extends AbstractBattle {
     }
     updateDefendingUnits();
     bridge.getHistoryWriter().startEvent("Air Battle in " + m_battleSite, m_battleSite);
-    BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
-    BattleCalculator.sortPreBattle(m_defendingUnits, m_data);
+    BattleCalculator.sortPreBattle(m_attackingUnits);
+    BattleCalculator.sortPreBattle(m_defendingUnits);
     m_steps = determineStepStrings(true, bridge);
     showBattle(bridge);
     pushFightLoopOnStack(true);
