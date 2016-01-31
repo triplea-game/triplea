@@ -405,16 +405,6 @@ public class DiceRoll implements Externalizable {
   /**
    * @param unitsGettingPowerFor
    *        should be sorted from weakest to strongest, before the method is called, for the actual battle
-   * @param allFriendlyUnitsAliveOrWaitingToDie
-   * @param allEnemyUnitsAliveOrWaitingToDie
-   * @param defending
-   * @param bombing
-   * @param player
-   * @param data
-   * @param location
-   * @param territoryEffects
-   * @param isAmphibiousBattle
-   * @param amphibiousLandAttackers
    */
   public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
       final List<Unit> unitsGettingPowerFor, final List<Unit> allFriendlyUnitsAliveOrWaitingToDie,
@@ -431,18 +421,6 @@ public class DiceRoll implements Externalizable {
   /**
    * @param unitsGettingPowerFor
    *        should be sorted from weakest to strongest, before the method is called, for the actual battle
-   * @param allFriendlyUnitsAliveOrWaitingToDie
-   * @param allEnemyUnitsAliveOrWaitingToDie
-   * @param defending
-   * @param bombing
-   * @param player
-   * @param data
-   * @param location
-   * @param territoryEffects
-   * @param isAmphibiousBattle
-   * @param amphibiousLandAttackers
-   * @param unitSupportPowerMap
-   * @param unitSupportRollsMap
    */
   public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
       final List<Unit> unitsGettingPowerFor, final List<Unit> allFriendlyUnitsAliveOrWaitingToDie,
