@@ -3,14 +3,11 @@ package games.strategy.triplea.ai.proAI;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.net.GUID;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.AbstractAI;
 import games.strategy.triplea.ai.proAI.data.ProBattleResult;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseTerritory;
@@ -24,9 +21,7 @@ import games.strategy.triplea.ai.proAI.util.ProMatches;
 import games.strategy.triplea.ai.proAI.util.ProOddsCalculator;
 import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
 import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
-import games.strategy.triplea.ai.strongAI.SUtils;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
@@ -35,7 +30,6 @@ import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
-import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
@@ -76,6 +70,8 @@ public class ProAI extends AbstractAI {
   private final ProRetreatAI retreatAI;
   private final ProScrambleAI scrambleAI;
   private final ProPoliticsAI politicsAI;
+  private final ProTechAI techAI;
+  private final ProBidAI bidAI;
 
   // Data shared across phases
   private Map<Territory, ProTerritory> storedCombatMoveMap;
@@ -93,6 +89,8 @@ public class ProAI extends AbstractAI {
     retreatAI = new ProRetreatAI(this);
     scrambleAI = new ProScrambleAI(this);
     politicsAI = new ProPoliticsAI(this);
+    techAI = new ProTechAI();
+    bidAI = new ProBidAI();
     storedCombatMoveMap = null;
     storedFactoryMoveMap = null;
     storedPurchaseTerritories = null;
@@ -175,7 +173,7 @@ public class ProAI extends AbstractAI {
       return;
     }
     if (purchaseForBid) {
-      purchaseAI.bid(PUsToSpend, purchaseDelegate, data, player);
+      bidAI.bid(PUsToSpend, purchaseDelegate, data, player);
     } else {
 
       // Repair factories
@@ -267,7 +265,7 @@ public class ProAI extends AbstractAI {
     ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
     if (bid) {
-      purchaseAI.bidPlace(placeDelegate, data, player);
+      bidAI.bidPlace(placeDelegate, data, player);
     } else {
       purchaseAI.place(storedPurchaseTerritories, placeDelegate);
       storedPurchaseTerritories = null;
@@ -277,44 +275,7 @@ public class ProAI extends AbstractAI {
 
   @Override
   protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {
-    if (!games.strategy.triplea.Properties.getWW2V3TechModel(data)) {
-      return;
-    }
-    long last, now;
-    last = System.currentTimeMillis();
-    s_logger.fine("Doing Tech ");
-    final Territory myCapitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
-    final float eStrength = SUtils.getStrengthOfPotentialAttackers(myCapitol, data, player, false, true, null);
-    float myStrength = SUtils.strength(myCapitol.getUnits().getUnits(), false, false, false);
-    final List<Territory> areaStrength = SUtils.getNeighboringLandTerritories(data, player, myCapitol);
-    for (final Territory areaTerr : areaStrength) {
-      myStrength += SUtils.strength(areaTerr.getUnits().getUnits(), false, false, false) * 0.75F;
-    }
-    final boolean capDanger = myStrength < (eStrength * 1.25F + 3.0F);
-    final Resource pus = data.getResourceList().getResource(Constants.PUS);
-    final int PUs = player.getResources().getQuantity(pus);
-    final Resource techtokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
-    final int TechTokens = player.getResources().getQuantity(techtokens);
-    int TokensToBuy = 0;
-    if (!capDanger && TechTokens < 3 && PUs > Math.random() * 160) {
-      TokensToBuy = 1;
-    }
-    if (TechTokens > 0 || TokensToBuy > 0) {
-      final List<TechnologyFrontier> cats = TechAdvance.getPlayerTechCategories(data, player);
-      // retaining 65% chance of choosing land advances using basic ww2v3 model.
-      if (data.getTechnologyFrontier().isEmpty()) {
-        if (Math.random() > 0.35) {
-          techDelegate.rollTech(TechTokens + TokensToBuy, cats.get(1), TokensToBuy, null);
-        } else {
-          techDelegate.rollTech(TechTokens + TokensToBuy, cats.get(0), TokensToBuy, null);
-        }
-      } else {
-        final int rand = (int) (Math.random() * cats.size());
-        techDelegate.rollTech(TechTokens + TokensToBuy, cats.get(rand), TokensToBuy, null);
-      }
-    }
-    now = System.currentTimeMillis();
-    s_logger.finest("Time Taken " + (now - last));
+    techAI.tech(techDelegate, data, player);
   }
 
   @Override

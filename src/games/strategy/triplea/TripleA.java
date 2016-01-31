@@ -22,7 +22,6 @@ import games.strategy.sound.ISound;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ai.fastAI.FastAI;
 import games.strategy.triplea.ai.proAI.ProAI;
-import games.strategy.triplea.ai.strongAI.StrongAI;
 import games.strategy.triplea.ai.weakAI.DoesNothingAI;
 import games.strategy.triplea.ai.weakAI.WeakAI;
 import games.strategy.triplea.delegate.EditDelegate;
@@ -48,7 +47,6 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
   private static final long serialVersionUID = -8374315848374732436L;
   public static final String HUMAN_PLAYER_TYPE = "Human";
   public static final String WEAK_COMPUTER_PLAYER_TYPE = "Easy (AI)";
-  public static final String STRONG_COMPUTER_PLAYER_TYPE = "Medium (AI)";
   public static final String FAST_COMPUTER_PLAYER_TYPE = "Fast (AI)";
   public static final String PRO_COMPUTER_PLAYER_TYPE = "Hard (AI)";
   public static final String DOESNOTHINGAI_COMPUTER_PLAYER_TYPE = "Does Nothing (AI)";
@@ -62,8 +60,6 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
       final String type = playerNames.get(name);
       if (type.equals(WEAK_COMPUTER_PLAYER_TYPE)) {
         players.add(new WeakAI(name, type));
-      } else if (type.equals(STRONG_COMPUTER_PLAYER_TYPE)) {
-        players.add(new StrongAI(name, type));
       } else if (type.equals(FAST_COMPUTER_PLAYER_TYPE)) {
         players.add(new FastAI(name, type));
       } else if (type.equals(PRO_COMPUTER_PLAYER_TYPE)) {
@@ -185,8 +181,8 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
    */
   @Override
   public String[] getServerPlayerTypes() {
-    return new String[] {HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, STRONG_COMPUTER_PLAYER_TYPE,
-        FAST_COMPUTER_PLAYER_TYPE, PRO_COMPUTER_PLAYER_TYPE, DOESNOTHINGAI_COMPUTER_PLAYER_TYPE};
+    return new String[] {HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, FAST_COMPUTER_PLAYER_TYPE,
+        PRO_COMPUTER_PLAYER_TYPE, DOESNOTHINGAI_COMPUTER_PLAYER_TYPE};
   }
 
   @Override
