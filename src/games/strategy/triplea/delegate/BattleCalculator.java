@@ -778,7 +778,7 @@ public class BattleCalculator {
     final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<Unit, IntegerMap<Unit>>();
     final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<Unit, IntegerMap<Unit>>();
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(
-        sortedUnitsList, sortedUnitsList, new ArrayList<Unit>(enemyUnits), defending, false, player, data, battlesite,
+        sortedUnitsList, sortedUnitsList, new ArrayList<Unit>(enemyUnits), defending, false, data, battlesite,
         territoryEffects, amphibious, amphibiousLandAttackers, unitSupportPowerMap, unitSupportRollsMap);
     // Sort units starting with weakest for finding the worst units
     Collections.reverse(sortedUnitsList);

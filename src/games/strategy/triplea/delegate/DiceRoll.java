@@ -413,7 +413,7 @@ public class DiceRoll implements Externalizable {
       final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibiousBattle,
       final Collection<Unit> amphibiousLandAttackers) {
     return getUnitPowerAndRollsForNormalBattles(unitsGettingPowerFor, allFriendlyUnitsAliveOrWaitingToDie,
-        allEnemyUnitsAliveOrWaitingToDie, defending, bombing, player, data, location, territoryEffects,
+        allEnemyUnitsAliveOrWaitingToDie, defending, bombing, data, location, territoryEffects,
         isAmphibiousBattle, amphibiousLandAttackers, new HashMap<Unit, IntegerMap<Unit>>(),
         new HashMap<Unit, IntegerMap<Unit>>());
   }
@@ -422,10 +422,10 @@ public class DiceRoll implements Externalizable {
    * @param unitsGettingPowerFor
    *        should be sorted from weakest to strongest, before the method is called, for the actual battle
    */
-  public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
+  protected static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
       final List<Unit> unitsGettingPowerFor, final List<Unit> allFriendlyUnitsAliveOrWaitingToDie,
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defending, final boolean bombing,
-      final PlayerID player, final GameData data, final Territory location,
+      final GameData data, final Territory location,
       final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibiousBattle,
       final Collection<Unit> amphibiousLandAttackers, final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
