@@ -416,7 +416,7 @@ public class BattleCalculator {
     // normal behavior is instant kill, which means planes.size()
     final int planeHP = (allowMultipleHitsPerUnit ? getTotalHitpointsLeft(planes) : planes.size());
 
-    if (DiceRoll.getTotalAAattacks(defendingAA, planes, bridge.getData()) != planeHP) {
+    if (DiceRoll.getTotalAAattacks(defendingAA, planes) != planeHP) {
       return RandomAACasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
     final Triple<Integer, Integer, Boolean> triple =

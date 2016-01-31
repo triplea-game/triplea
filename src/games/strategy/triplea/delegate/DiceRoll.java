@@ -86,7 +86,7 @@ public class DiceRoll implements Externalizable {
   }
 
   public static int getTotalAAattacks(final Collection<Unit> defendingEnemyAA,
-      final Collection<Unit> validAttackingUnitsForThisRoll, final GameData data) {
+      final Collection<Unit> validAttackingUnitsForThisRoll) {
     if (defendingEnemyAA.isEmpty() || validAttackingUnitsForThisRoll.isEmpty()) {
       return 0;
     }
@@ -130,7 +130,7 @@ public class DiceRoll implements Externalizable {
       return new DiceRoll(new ArrayList<Die>(0), 0);
     }
     final GameData data = bridge.getData();
-    final int totalAAattacksTotal = getTotalAAattacks(defendingAA, validAttackingUnitsForThisRoll, data);
+    final int totalAAattacksTotal = getTotalAAattacks(defendingAA, validAttackingUnitsForThisRoll);
     if (totalAAattacksTotal <= 0) {
       return new DiceRoll(new ArrayList<Die>(0), 0);
     }
@@ -217,14 +217,14 @@ public class DiceRoll implements Externalizable {
     normalNonInfiniteAA.removeAll(infiniteAA);
     normalNonInfiniteAA.removeAll(overstackAA);
     // determine maximum total attacks
-    final int totalAAattacksTotal = getTotalAAattacks(defendingAA, validAttackingUnitsForThisRoll, data);
+    final int totalAAattacksTotal = getTotalAAattacks(defendingAA, validAttackingUnitsForThisRoll);
     // determine individual totals
     final int normalNonInfiniteAAtotalAAattacks =
-        getTotalAAattacks(normalNonInfiniteAA, validAttackingUnitsForThisRoll, data);
+        getTotalAAattacks(normalNonInfiniteAA, validAttackingUnitsForThisRoll);
     final int infiniteAAtotalAAattacks =
         Math.min((validAttackingUnitsForThisRoll.size() - normalNonInfiniteAAtotalAAattacks),
-            getTotalAAattacks(infiniteAA, validAttackingUnitsForThisRoll, data));
-    final int overstackAAtotalAAattacks = getTotalAAattacks(overstackAA, validAttackingUnitsForThisRoll, data);
+            getTotalAAattacks(infiniteAA, validAttackingUnitsForThisRoll));
+    final int overstackAAtotalAAattacks = getTotalAAattacks(overstackAA, validAttackingUnitsForThisRoll);
     if (totalAAattacksTotal != (normalNonInfiniteAAtotalAAattacks + infiniteAAtotalAAattacks
         + overstackAAtotalAAattacks)) {
       throw new IllegalStateException("Total attacks should be: " + totalAAattacksTotal + " but instead is: "
