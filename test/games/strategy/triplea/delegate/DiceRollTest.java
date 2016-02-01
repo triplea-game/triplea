@@ -52,11 +52,11 @@ public class DiceRollTest {
     // infantry defends and hits at 1 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
     final DiceRoll roll = DiceRoll.rollDice(infantry, true, russians, bridge, battle, "", territoryEffects, null);
-    assertThat(roll.getHits(),is(1));
+    assertThat(roll.getHits(), is(1));
     // infantry does not hit at 2 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {2}));
     final DiceRoll roll2 = DiceRoll.rollDice(infantry, true, russians, bridge, battle, "", territoryEffects, null);
-    assertThat(roll2.getHits(),is(0));
+    assertThat(roll2.getHits(), is(0));
     // infantry attacks and hits at 0 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0}));
     final DiceRoll roll3 = DiceRoll.rollDice(infantry, false, russians, bridge, battle, "", territoryEffects, null);
@@ -80,11 +80,11 @@ public class DiceRollTest {
     // infantry defends and hits at 1 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
     final DiceRoll roll = DiceRoll.rollDice(infantry, true, russians, bridge, battle, "", territoryEffects, null);
-    assertThat(roll.getHits(),is(1));
+    assertThat(roll.getHits(), is(1));
     // infantry does not hit at 2 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {2}));
     final DiceRoll roll2 = DiceRoll.rollDice(infantry, true, russians, bridge, battle, "", territoryEffects, null);
-    assertThat(roll2.getHits(),is(0));
+    assertThat(roll2.getHits(), is(0));
     // infantry attacks and hits at 0 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0}));
     final DiceRoll roll3 = DiceRoll.rollDice(infantry, false, russians, bridge, battle, "", territoryEffects, null);
@@ -392,7 +392,7 @@ public class DiceRollTest {
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, new MockBattle(germany), "",
         TerritoryEffectHelper.getEffects(germany), null);
-    assertThat(dice.getRolls(1).size(),is(1));
+    assertThat(dice.getRolls(1).size(), is(1));
     assertThat(dice.getRolls(1).get(0).getType(), is(Die.DieType.HIT));
   }
 
@@ -408,7 +408,7 @@ public class DiceRollTest {
     final DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, new MockBattle(germany), "",
         TerritoryEffectHelper.getEffects(germany), null);
 
-    assertThat(dice.getRolls(1).size(),is(1));
+    assertThat(dice.getRolls(1).size(), is(1));
     assertThat(dice.getRolls(1).get(0).getType(), is(Die.DieType.HIT));
   }
 
@@ -495,23 +495,23 @@ public class DiceRollTest {
     final Territory territory = gameData.getMap().getTerritory("Finland");
 
 
-    assertThat(DiceRoll.getTotalOffensivePower( null, gameData, territory), is(0));
-    assertThat(DiceRoll.getTotalOffensivePower( Collections.EMPTY_LIST, gameData, territory), is(0));
+    assertThat(DiceRoll.getTotalOffensivePower(null, gameData, territory), is(0));
+    assertThat(DiceRoll.getTotalOffensivePower(Collections.EMPTY_LIST, gameData, territory), is(0));
 
-    List<Unit> units = GameDataTestUtil.infantry(1,gameData);
-    assertThat( DiceRoll.getTotalOffensivePower(units, gameData,  territory), is(1));
+    List<Unit> units = GameDataTestUtil.infantry(1, gameData);
+    assertThat(DiceRoll.getTotalOffensivePower(units, gameData, territory), is(1));
 
-    units.addAll(GameDataTestUtil.infantry(2,gameData));
-    assertThat( DiceRoll.getTotalOffensivePower(units, gameData,  territory), is(3));
+    units.addAll(GameDataTestUtil.infantry(2, gameData));
+    assertThat(DiceRoll.getTotalOffensivePower(units, gameData, territory), is(3));
 
-    units.addAll(GameDataTestUtil.tank(1,gameData));
-    assertThat( DiceRoll.getTotalOffensivePower(units, gameData,  territory), is(6));
+    units.addAll(GameDataTestUtil.tank(1, gameData));
+    assertThat(DiceRoll.getTotalOffensivePower(units, gameData, territory), is(6));
 
-    units.addAll(GameDataTestUtil.tank(2,gameData));
-    assertThat( DiceRoll.getTotalOffensivePower(units, gameData,  territory), is(12));
+    units.addAll(GameDataTestUtil.tank(2, gameData));
+    assertThat(DiceRoll.getTotalOffensivePower(units, gameData, territory), is(12));
 
-    units.addAll(GameDataTestUtil.fighter(1,gameData));
-    assertThat( DiceRoll.getTotalOffensivePower(units, gameData,  territory), is(15));
+    units.addAll(GameDataTestUtil.fighter(1, gameData));
+    assertThat(DiceRoll.getTotalOffensivePower(units, gameData, territory), is(15));
   }
 
   @Test
@@ -519,23 +519,23 @@ public class DiceRollTest {
     gameData = LoadGameUtil.loadTestGame("ww2v3_1941_test.xml");
     final Territory territory = gameData.getMap().getTerritory("Finland");
 
-    assertThat(DiceRoll.getTotalDefensivePower( null, gameData, territory), is(0));
-    assertThat(DiceRoll.getTotalDefensivePower( Collections.EMPTY_LIST, gameData, territory), is(0));
+    assertThat(DiceRoll.getTotalDefensivePower(null, gameData, territory), is(0));
+    assertThat(DiceRoll.getTotalDefensivePower(Collections.EMPTY_LIST, gameData, territory), is(0));
 
-    List<Unit> units = GameDataTestUtil.infantry(1,gameData);
-    assertThat( DiceRoll.getTotalDefensivePower(units, gameData,  territory), is(2));
+    List<Unit> units = GameDataTestUtil.infantry(1, gameData);
+    assertThat(DiceRoll.getTotalDefensivePower(units, gameData, territory), is(2));
 
-    units.addAll(GameDataTestUtil.infantry(2,gameData));
-    assertThat( DiceRoll.getTotalDefensivePower(units, gameData,  territory), is(6));
+    units.addAll(GameDataTestUtil.infantry(2, gameData));
+    assertThat(DiceRoll.getTotalDefensivePower(units, gameData, territory), is(6));
 
-    units.addAll(GameDataTestUtil.tank(1,gameData));
-    assertThat( DiceRoll.getTotalDefensivePower(units, gameData,  territory), is(9));
+    units.addAll(GameDataTestUtil.tank(1, gameData));
+    assertThat(DiceRoll.getTotalDefensivePower(units, gameData, territory), is(9));
 
-    units.addAll(GameDataTestUtil.tank(2,gameData));
-    assertThat( DiceRoll.getTotalDefensivePower(units, gameData,  territory), is(15));
+    units.addAll(GameDataTestUtil.tank(2, gameData));
+    assertThat(DiceRoll.getTotalDefensivePower(units, gameData, territory), is(15));
 
-    units.addAll(GameDataTestUtil.fighter(1,gameData));
-    assertThat( DiceRoll.getTotalDefensivePower(units, gameData,  territory), is(19));
+    units.addAll(GameDataTestUtil.fighter(1, gameData));
+    assertThat(DiceRoll.getTotalDefensivePower(units, gameData, territory), is(19));
 
   }
 }
