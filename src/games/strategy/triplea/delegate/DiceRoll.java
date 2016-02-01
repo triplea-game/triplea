@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -446,6 +447,10 @@ public class DiceRoll implements Externalizable {
 
   private static Integer getTotalPower(final Collection<Unit> units, final GameData gameData, Territory territory,
       boolean defending) {
+    if( units == null || units.size() == 0) {
+      return 0;
+    }
+
     final List<Unit> unitsGettingPowerFor = Lists.newArrayList(units);
     final List<Unit> allEnemyUnitsAliveOrWaitingToDie = Collections.EMPTY_LIST;
     final boolean bombing = false;
@@ -458,7 +463,7 @@ public class DiceRoll implements Externalizable {
 
     final Map<Unit, Tuple<Integer, Integer>> value = getUnitPowerAndRollsForNormalBattles(unitsGettingPowerFor,
         allEnemyUnitsAliveOrWaitingToDie, defending, bombing, data, location, territoryEffects,
-        isAmphibiousBattle, amphibiousLandAttackers, Collections.EMPTY_MAP, Collections.EMPTY_MAP);
+        isAmphibiousBattle, amphibiousLandAttackers, Maps.newHashMap(), Maps.newHashMap());
 
     int sum = 0;
     for (Tuple<Integer, Integer> entry : value.values()) {
