@@ -425,7 +425,7 @@ public class DiceRoll implements Externalizable {
    * @param gameData GameData object for looking up unit values
    * @param territory Used to determine if any territory effects apply to the units defensive power
    */
-  public static Integer getTotalDefensivePower(final List<Unit> units, final GameData gameData, Territory territory) {
+  public static Integer getTotalDefensivePower(final Collection<Unit> units, final GameData gameData, Territory territory) {
     boolean defending = true;
     return getTotalPower(units, gameData, territory, defending);
   }
@@ -439,14 +439,14 @@ public class DiceRoll implements Externalizable {
    * @param gameData GameData object for looking up unit values
    * @param territory Used to determine if any territory effects apply to the units offensive power
    */
-  public static Integer getTotalOffensivePower(final List<Unit> units, final GameData gameData, Territory territory) {
+  public static Integer getTotalOffensivePower(final Collection<Unit> units, final GameData gameData, Territory territory) {
     boolean defending = false;
     return getTotalPower(units, gameData, territory, defending);
   }
 
-  private static Integer getTotalPower(final List<Unit> units, final GameData gameData, Territory territory,
+  private static Integer getTotalPower(final Collection<Unit> units, final GameData gameData, Territory territory,
       boolean defending) {
-    final List<Unit> unitsGettingPowerFor = units;
+    final List<Unit> unitsGettingPowerFor = Lists.newArrayList(units);
     final List<Unit> allEnemyUnitsAliveOrWaitingToDie = Collections.EMPTY_LIST;
     final boolean bombing = false;
     final GameData data = gameData;
@@ -460,10 +460,9 @@ public class DiceRoll implements Externalizable {
         allEnemyUnitsAliveOrWaitingToDie, defending, bombing, data, location, territoryEffects,
         isAmphibiousBattle, amphibiousLandAttackers, Collections.EMPTY_MAP, Collections.EMPTY_MAP);
 
-    // power of any unit is multiplied if they can roll multiple dice.
-    // TODO: we should test this with LHTR, verify that works.
     int sum = 0;
     for (Tuple<Integer, Integer> entry : value.values()) {
+      // power of any unit is multiplied if they can roll multiple dice.
       sum += entry.getFirst() * entry.getSecond();
     }
     return sum;

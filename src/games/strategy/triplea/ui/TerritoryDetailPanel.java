@@ -29,6 +29,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
@@ -152,6 +153,13 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
       m_data.releaseReadLock();
     }
     add(new JLabel("Units: " + unitsInTerritory.size()));
+
+    if( unitsInTerritory.size() > 0 ) {
+      add(new JLabel("Attack: " +     DiceRoll.getTotalOffensivePower( territory.getUnits().getUnits(), m_data, territory)));
+      add(new JLabel("Defense: " +     DiceRoll.getTotalDefensivePower( territory.getUnits().getUnits(), m_data, territory)));
+    }
+
+
     final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(unitsInTerritory, m_uiContext, m_data));
     scroll.setBorder(BorderFactory.createEmptyBorder());
     add(scroll);
