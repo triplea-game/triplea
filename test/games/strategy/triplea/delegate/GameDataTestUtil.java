@@ -109,6 +109,11 @@ public class GameDataTestUtil {
     return type.create(count, PlayerID.NULL_PLAYERID);
   }
 
+  public static List<Unit> artillery(int count, GameData data) {
+    UnitType type = unitType("artillery", data);
+    return type.create(count, PlayerID.NULL_PLAYERID);
+  }
+
   public static List<Unit> tank(int count, GameData data) {
     UnitType type = armour(data);
     return type.create(count, PlayerID.NULL_PLAYERID);

@@ -499,19 +499,31 @@ public class DiceRollTest {
     assertThat(DiceRoll.getTotalOffensivePower(Collections.EMPTY_LIST, gameData, territory), is(0));
 
     List<Unit> units = GameDataTestUtil.infantry(1, gameData);
-    assertThat(DiceRoll.getTotalOffensivePower(units, gameData, territory), is(1));
+    assertThat("1 inf attacking", DiceRoll.getTotalOffensivePower(units, gameData, territory), is(1));
 
     units.addAll(GameDataTestUtil.infantry(2, gameData));
-    assertThat(DiceRoll.getTotalOffensivePower(units, gameData, territory), is(3));
+    assertThat("3 inf", DiceRoll.getTotalOffensivePower(units, gameData, territory), is(3));
 
     units.addAll(GameDataTestUtil.tank(1, gameData));
-    assertThat(DiceRoll.getTotalOffensivePower(units, gameData, territory), is(6));
+    assertThat("3 inf + 1 tank", DiceRoll.getTotalOffensivePower(units, gameData, territory), is(6));
 
     units.addAll(GameDataTestUtil.tank(2, gameData));
-    assertThat(DiceRoll.getTotalOffensivePower(units, gameData, territory), is(12));
+    assertThat("3 inf + 3 tanks", DiceRoll.getTotalOffensivePower(units, gameData, territory), is(12));
 
     units.addAll(GameDataTestUtil.fighter(1, gameData));
-    assertThat(DiceRoll.getTotalOffensivePower(units, gameData, territory), is(15));
+    assertThat("3 inf + 3 tanks(9) + 1 fig(3) = 3+3*3+3 = 15",
+        DiceRoll.getTotalOffensivePower(units, gameData, territory), is(15));
+
+    units = GameDataTestUtil.artillery(1, gameData);
+    assertThat("1 arty attacks at 2", DiceRoll.getTotalOffensivePower(units, gameData, territory), is(2));
+
+    units.addAll(GameDataTestUtil.infantry(1, gameData));
+    assertThat("1 arty + 1 inf, arty supports inf, attacks at 4",
+        DiceRoll.getTotalOffensivePower(units, gameData, territory), is(4));
+
+    units.addAll(GameDataTestUtil.infantry(1, gameData));
+    assertThat("1 arty + 2 inf, second infantry not supported, attack at 5",
+        DiceRoll.getTotalOffensivePower(units, gameData, territory), is(5));
   }
 
   @Test
@@ -523,19 +535,27 @@ public class DiceRollTest {
     assertThat(DiceRoll.getTotalDefensivePower(Collections.EMPTY_LIST, gameData, territory), is(0));
 
     List<Unit> units = GameDataTestUtil.infantry(1, gameData);
-    assertThat(DiceRoll.getTotalDefensivePower(units, gameData, territory), is(2));
+    assertThat("1 inf on defense", DiceRoll.getTotalDefensivePower(units, gameData, territory), is(2));
 
     units.addAll(GameDataTestUtil.infantry(2, gameData));
-    assertThat(DiceRoll.getTotalDefensivePower(units, gameData, territory), is(6));
+    assertThat("2 inf", DiceRoll.getTotalDefensivePower(units, gameData, territory), is(6));
 
     units.addAll(GameDataTestUtil.tank(1, gameData));
-    assertThat(DiceRoll.getTotalDefensivePower(units, gameData, territory), is(9));
+    assertThat("2 inf + 1 tank", DiceRoll.getTotalDefensivePower(units, gameData, territory), is(9));
 
     units.addAll(GameDataTestUtil.tank(2, gameData));
-    assertThat(DiceRoll.getTotalDefensivePower(units, gameData, territory), is(15));
+    assertThat("2 inf + 3 tanks", DiceRoll.getTotalDefensivePower(units, gameData, territory), is(15));
 
     units.addAll(GameDataTestUtil.fighter(1, gameData));
-    assertThat(DiceRoll.getTotalDefensivePower(units, gameData, territory), is(19));
+    assertThat("2 inf + 3 tanks + 1 fig", DiceRoll.getTotalDefensivePower(units, gameData, territory), is(19));
 
+    units = GameDataTestUtil.artillery(1, gameData);
+    assertThat("Reset to: 1 artillery defending", DiceRoll.getTotalDefensivePower(units, gameData, territory), is(2));
+
+    units.addAll(GameDataTestUtil.infantry(1, gameData));
+    assertThat("1 arty + 1 inf", DiceRoll.getTotalDefensivePower(units, gameData, territory), is(4));
+
+    units.addAll(GameDataTestUtil.infantry(1, gameData));
+    assertThat("2 inf + 1 arty defending", DiceRoll.getTotalDefensivePower(units, gameData, territory), is(6));
   }
 }
