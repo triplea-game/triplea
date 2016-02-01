@@ -32,7 +32,7 @@ public class DiceRollTest {
   private GameData gameData;
 
   @Before
-  protected void setUp() {
+  public void setUp() {
     gameData = LoadGameUtil.loadTestGame("lhtr_test.xml");
   }
 
