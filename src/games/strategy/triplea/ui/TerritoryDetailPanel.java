@@ -145,20 +145,19 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
       labelText = "<html>" + ta.toStringForInfo(true, true) + "<br></html>";
     }
     add(new JLabel(labelText));
-    Collection<Unit> unitsInTerritory;
+    final Collection<Unit> unitsInTerritory;
     m_data.acquireReadLock();
     try {
       unitsInTerritory = territory.getUnits().getUnits();
     } finally {
       m_data.releaseReadLock();
     }
-    add(new JLabel("Units: " + unitsInTerritory.size()));
 
-    if( unitsInTerritory.size() > 0 ) {
-      add(new JLabel("Attack: " +     DiceRoll.getTotalOffensivePower( territory.getUnits().getUnits(), m_data, territory)));
-      add(new JLabel("Defense: " +     DiceRoll.getTotalDefensivePower( territory.getUnits().getUnits(), m_data, territory)));
+    if( unitsInTerritory != null  && unitsInTerritory.size() > 0 ) {
+      add(new JLabel("Units: " + unitsInTerritory.size()));
+      add(new JLabel("Attack: " +     DiceRoll.getTotalOffensivePower(unitsInTerritory, m_data, territory)));
+      add(new JLabel("Defense: " +     DiceRoll.getTotalDefensivePower(unitsInTerritory, m_data, territory)));
     }
-
 
     final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(unitsInTerritory, m_uiContext, m_data));
     scroll.setBorder(BorderFactory.createEmptyBorder());
