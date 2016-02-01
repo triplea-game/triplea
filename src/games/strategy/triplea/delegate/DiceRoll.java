@@ -416,6 +416,60 @@ public class DiceRoll implements Externalizable {
         new HashMap<Unit, IntegerMap<Unit>>());
   }
 
+
+  /**
+   * For a given set of units, returns their total defensive power, as if they were to defend in the territory in which
+   * are currently located.
+   *
+   * @param units The List of units we wish to consider, and sum their defensive power
+   * @param gameData GameData object for looking up unit values
+   * @param territory Used to determine if any territory effects apply to the units defensive power
+   */
+  public static Integer getTotalDefensivePower(final List<Unit> units, final GameData gameData, Territory territory) {
+    boolean defending = true;
+    return getTotalPower(units, gameData, territory, defending);
+  }
+
+
+  /**
+   * For a given set of units, returns their total offensive power, as if they were to attack the territory in which are
+   * currently located.
+   *
+   * @param units The List of units we wish to consider, and sum their offensive power
+   * @param gameData GameData object for looking up unit values
+   * @param territory Used to determine if any territory effects apply to the units offensive power
+   */
+  public static Integer getTotalOffensivePower(final List<Unit> units, final GameData gameData, Territory territory) {
+    boolean defending = false;
+    return getTotalPower(units, gameData, territory, defending);
+  }
+
+  private static Integer getTotalPower(final List<Unit> units, final GameData gameData, Territory territory,
+      boolean defending) {
+    final List<Unit> unitsGettingPowerFor = units;
+    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = Collections.EMPTY_LIST;
+    final boolean bombing = false;
+    final GameData data = gameData;
+    final Territory location = territory;
+
+    final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(territory);
+    final boolean isAmphibiousBattle = false;
+    final Collection<Unit> amphibiousLandAttackers = Collections.EMPTY_LIST;
+
+    final Map<Unit, Tuple<Integer, Integer>> value = getUnitPowerAndRollsForNormalBattles(unitsGettingPowerFor,
+        allEnemyUnitsAliveOrWaitingToDie, defending, bombing, data, location, territoryEffects,
+        isAmphibiousBattle, amphibiousLandAttackers, Collections.EMPTY_MAP, Collections.EMPTY_MAP);
+
+    // power of any unit is multiplied if they can roll multiple dice.
+    // TODO: we should test this with LHTR, verify that works.
+    int sum = 0;
+    for (Tuple<Integer, Integer> entry : value.values()) {
+      sum += entry.getFirst() * entry.getSecond();
+    }
+    return sum;
+  }
+
+
   /**
    * @param unitsGettingPowerFor
    *        should be sorted from weakest to strongest, before the method is called, for the actual battle
