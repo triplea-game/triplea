@@ -154,9 +154,16 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     }
 
     if( unitsInTerritory != null  && unitsInTerritory.size() > 0 ) {
-      add(new JLabel("Units: " + unitsInTerritory.size()));
-      add(new JLabel("Attack: " +     DiceRoll.getTotalOffensivePower(unitsInTerritory, m_data, territory)));
-      add(new JLabel("Defense: " +     DiceRoll.getTotalDefensivePower(unitsInTerritory, m_data, territory)));
+
+      int totalAttackPower =  DiceRoll.getTotalOffensivePower(unitsInTerritory, m_data, territory);
+      int totalDefensePower =  DiceRoll.getTotalDefensivePower(unitsInTerritory, m_data, territory);
+
+      final String indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
+
+      String unitsLabel = "<html>Units: " + unitsInTerritory.size() + "<br>";
+      unitsLabel += indent + "Attack:  " + totalAttackPower + "<br>";
+      unitsLabel += indent + "Defense: " +totalDefensePower + "</html>";
+      add(new JLabel(unitsLabel));
     }
 
     final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(unitsInTerritory, m_uiContext, m_data));
