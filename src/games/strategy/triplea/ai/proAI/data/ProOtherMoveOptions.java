@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
+
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -80,12 +82,10 @@ public class ProOtherMoveOptions {
           double maxStrength = 0;
           if (!maxUnits.isEmpty()) {
             maxStrength =
-                ProBattleUtils.estimateStrength(maxUnits.iterator().next().getOwner(), t,
-                    new ArrayList<Unit>(maxUnits), new ArrayList<Unit>(), isAttacker);
+                ProBattleUtils.estimateStrength(t, Lists.newArrayList(maxUnits), Lists.newArrayList(), isAttacker);
           }
           final double currentStrength =
-              ProBattleUtils.estimateStrength(currentUnits.iterator().next().getOwner(), t, new ArrayList<Unit>(
-                  currentUnits), new ArrayList<Unit>(), isAttacker);
+              ProBattleUtils.estimateStrength(t, Lists.newArrayList(currentUnits), Lists.newArrayList(), isAttacker);
           final boolean currentHasLandUnits = Match.someMatch(currentUnits, Matches.UnitIsLand);
           final boolean maxHasLandUnits = Match.someMatch(maxUnits, Matches.UnitIsLand);
           if ((currentHasLandUnits && ((!maxHasLandUnits && !t.isWater()) || currentStrength > maxStrength))
