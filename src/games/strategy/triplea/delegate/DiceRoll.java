@@ -18,6 +18,7 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -426,7 +427,8 @@ public class DiceRoll implements Externalizable {
    * @param gameData GameData object for looking up unit values
    * @param territory Used to determine if any territory effects apply to the units defensive power
    */
-  public static Integer getTotalDefensivePower(final Collection<Unit> units, final GameData gameData, Territory territory) {
+  public static Integer getTotalDefensivePower(final Collection<Unit> units, final GameData gameData,
+      Territory territory) {
     boolean defending = true;
     return getTotalPower(units, gameData, territory, defending);
   }
@@ -440,14 +442,15 @@ public class DiceRoll implements Externalizable {
    * @param gameData GameData object for looking up unit values
    * @param territory Used to determine if any territory effects apply to the units offensive power
    */
-  public static Integer getTotalOffensivePower(final Collection<Unit> units, final GameData gameData, Territory territory) {
+  public static Integer getTotalOffensivePower(final Collection<Unit> units, final GameData gameData,
+      Territory territory) {
     boolean defending = false;
     return getTotalPower(units, gameData, territory, defending);
   }
 
   private static Integer getTotalPower(final Collection<Unit> units, final GameData gameData, Territory territory,
       boolean defending) {
-    if( units == null || units.size() == 0) {
+    if (units == null || units.size() == 0) {
       return 0;
     }
 
@@ -485,43 +488,46 @@ public class DiceRoll implements Externalizable {
       final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibiousBattle,
       final Collection<Unit> amphibiousLandAttackers, final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
-    final Map<Unit, Tuple<Integer, Integer>> rVal = new HashMap<Unit, Tuple<Integer, Integer>>();
+
+
+    final Map<Unit, Tuple<Integer, Integer>> rVal = Maps.newHashMap();
     if (unitsGettingPowerFor == null || unitsGettingPowerFor.isEmpty()) {
       return rVal;
     }
+
+
     // get all supports, friendly and enemy
-    final Set<List<UnitSupportAttachment>> supportRulesFriendly = new HashSet<List<UnitSupportAttachment>>();
-    final IntegerMap<UnitSupportAttachment> supportLeftFriendly = new IntegerMap<UnitSupportAttachment>();
-    final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftFriendly =
-        new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
+    final Set<List<UnitSupportAttachment>> supportRulesFriendly = Sets.newHashSet();
+    final IntegerMap<UnitSupportAttachment> supportLeftFriendly = new IntegerMap<>();
+    final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftFriendly = Maps.newHashMap();
     getSupport(unitsGettingPowerFor, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly,
         data, defending, true);
+
     final Set<List<UnitSupportAttachment>> supportRulesEnemy = new HashSet<List<UnitSupportAttachment>>();
     final IntegerMap<UnitSupportAttachment> supportLeftEnemy = new IntegerMap<UnitSupportAttachment>();
     final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftEnemy =
         new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
     getSupport(allEnemyUnitsAliveOrWaitingToDie, supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, data,
         !defending, false);
+
     // copy for rolls
-    final IntegerMap<UnitSupportAttachment> supportLeftFriendlyRolls =
-        new IntegerMap<UnitSupportAttachment>(supportLeftFriendly);
-    final IntegerMap<UnitSupportAttachment> supportLeftEnemyRolls =
-        new IntegerMap<UnitSupportAttachment>(supportLeftEnemy);
-    final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftFriendlyRolls =
-        new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
+    final IntegerMap<UnitSupportAttachment> supportLeftFriendlyRolls = new IntegerMap<>(supportLeftFriendly);
+    final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftFriendlyRolls = new HashMap<>();
     for (final UnitSupportAttachment usa : supportUnitsLeftFriendly.keySet()) {
       supportUnitsLeftFriendlyRolls.put(usa, new LinkedIntegerMap<Unit>(supportUnitsLeftFriendly.get(usa)));
     }
-    final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftEnemyRolls =
-        new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
+
+    final IntegerMap<UnitSupportAttachment> supportLeftEnemyRolls = new IntegerMap<>(supportLeftEnemy);
+    final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftEnemyRolls = new HashMap<>();
     for (final UnitSupportAttachment usa : supportUnitsLeftEnemy.keySet()) {
       supportUnitsLeftEnemyRolls.put(usa, new LinkedIntegerMap<Unit>(supportUnitsLeftEnemy.get(usa)));
     }
-    final int diceSides = data.getDiceSides();
+
     for (final Unit current : unitsGettingPowerFor) {
+
       // find our initial strength
-      int strength;
       final UnitAttachment ua = UnitAttachment.get(current.getType());
+      int strength = 0;
       if (defending) {
         strength = ua.getDefense(current.getOwner());
         if (isFirstTurnLimitedRoll(current.getOwner(), data)) {
@@ -550,7 +556,11 @@ public class DiceRoll implements Externalizable {
             true, false);
       }
       strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
+
+      final int diceSides = data.getDiceSides();
       strength = Math.min(Math.max(strength, 0), diceSides);
+
+
       // now determine our rolls
       int rolls;
       if (!bombing && strength == 0) {
@@ -574,6 +584,8 @@ public class DiceRoll implements Externalizable {
     }
     return rVal;
   }
+
+
 
   public static Integer getTotalPower(final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap,
       final GameData data) {
