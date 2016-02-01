@@ -1480,89 +1480,80 @@ public class MovePanel extends AbstractMovePanel {
   public void keyPressed(final KeyEvent e) {
     super.keyPressed(e);
     final int keyCode = e.getKeyCode();
+    // N for center on next unit with movement left
     if (keyCode == KeyEvent.VK_N) {
-      centerOnNextMoveableUnit();
+      final List<Territory> allTerritories;
+      getData().acquireReadLock();
+      try {
+        allTerritories = new ArrayList<Territory>(getData().getMap().getTerritories());
+      } finally {
+        getData().releaseReadLock();
+      }
+      final CompositeMatchAnd<Unit> moveableUnitOwnedByMe =
+          new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getCurrentPlayer()), Matches.unitHasMovementLeft);
+      if (!m_nonCombat) {
+        // if not non combat, can not move aa units
+        moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
+      }
+      final int size = allTerritories.size();
+      // new focused index is 1 greater
+      int newFocusedIndex = m_lastFocusedTerritory == null ? 0 : allTerritories.indexOf(m_lastFocusedTerritory) + 1;
+      if (newFocusedIndex >= size) {
+        // if we are larger than the number of territories, we must start back at zero
+        newFocusedIndex = 0;
+      }
+      Territory newFocusedTerritory = null;
+      // make sure we go through every single territory on the board
+      int i = 0;
+      while (i < size) {
+        final Territory t = allTerritories.get(newFocusedIndex);
+        final List<Unit> matchedUnits = t.getUnits().getMatches(moveableUnitOwnedByMe);
+        if (matchedUnits.size() > 0) {
+          newFocusedTerritory = t;
+          final Map<Territory, List<Unit>> highlight = new HashMap<Territory, List<Unit>>();
+          highlight.put(t, matchedUnits);
+          getMap().setUnitHighlight(highlight);
+          break;
+        }
+        // make sure to cycle through the front half of territories
+        if ((newFocusedIndex + 1) >= size) {
+          newFocusedIndex = 0;
+        } else {
+          newFocusedIndex++;
+        }
+        i++;
+      }
+      if (newFocusedTerritory != null) {
+        m_lastFocusedTerritory = newFocusedTerritory;
+        getMap().centerOn(newFocusedTerritory);
+      }
     }
     if (keyCode == KeyEvent.VK_F) {
-      highlightMoveableUnits();
-    }
-  }
-
-  private void centerOnNextMoveableUnit() {
-    final List<Territory> allTerritories;
-    getData().acquireReadLock();
-    try {
-      allTerritories = new ArrayList<Territory>(getData().getMap().getTerritories());
-    } finally {
-      getData().releaseReadLock();
-    }
-    final CompositeMatchAnd<Unit> moveableUnitOwnedByMe =
-        new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getCurrentPlayer()), Matches.unitHasMovementLeft);
-    if (!m_nonCombat) {
-      // if not non combat, can not move aa units
-      moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
-    }
-    final int size = allTerritories.size();
-    // new focused index is 1 greater
-    int newFocusedIndex = m_lastFocusedTerritory == null ? 0 : allTerritories.indexOf(m_lastFocusedTerritory) + 1;
-    if (newFocusedIndex >= size) {
-      // if we are larger than the number of territories, we must start back at zero
-      newFocusedIndex = 0;
-    }
-    Territory newFocusedTerritory = null;
-    // make sure we go through every single territory on the board
-    int i = 0;
-    while (i < size) {
-      final Territory t = allTerritories.get(newFocusedIndex);
-      final List<Unit> matchedUnits = t.getUnits().getMatches(moveableUnitOwnedByMe);
-      if (matchedUnits.size() > 0) {
-        newFocusedTerritory = t;
-        final Map<Territory, List<Unit>> highlight = new HashMap<Territory, List<Unit>>();
-        highlight.put(t, matchedUnits);
+      final List<Territory> allTerritories;
+      getData().acquireReadLock();
+      try {
+        allTerritories = new ArrayList<Territory>(getData().getMap().getTerritories());
+      } finally {
+        getData().releaseReadLock();
+      }
+      final CompositeMatchAnd<Unit> moveableUnitOwnedByMe =
+          new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getCurrentPlayer()), Matches.unitHasMovementLeft);
+      if (!m_nonCombat) {
+        // if not non combat, can not move aa units
+        moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
+      }
+      final Map<Territory, List<Unit>> highlight = new HashMap<Territory, List<Unit>>();
+      for (final Territory t : allTerritories) {
+        final List<Unit> moveableUnits = t.getUnits().getMatches(moveableUnitOwnedByMe);
+        if (!moveableUnits.isEmpty()) {
+          highlight.put(t, moveableUnits);
+        }
+      }
+      if (!highlight.isEmpty()) {
         getMap().setUnitHighlight(highlight);
-        break;
       }
-      // make sure to cycle through the front half of territories
-      if ((newFocusedIndex + 1) >= size) {
-        newFocusedIndex = 0;
-      } else {
-        newFocusedIndex++;
-      }
-      i++;
-    }
-    if (newFocusedTerritory != null) {
-      m_lastFocusedTerritory = newFocusedTerritory;
-      getMap().centerOn(newFocusedTerritory);
     }
   }
-
-  private void highlightMoveableUnits() {
-    final List<Territory> allTerritories;
-    getData().acquireReadLock();
-    try {
-      allTerritories = new ArrayList<Territory>(getData().getMap().getTerritories());
-    } finally {
-      getData().releaseReadLock();
-    }
-    final CompositeMatchAnd<Unit> moveableUnitOwnedByMe =
-        new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getCurrentPlayer()), Matches.unitHasMovementLeft);
-    if (!m_nonCombat) {
-      // if not non combat, can not move aa units
-      moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
-    }
-    final Map<Territory, List<Unit>> highlight = new HashMap<Territory, List<Unit>>();
-
-    allTerritories.forEach(t -> {
-      final List<Unit> moveableUnits = t.getUnits().getMatches(moveableUnitOwnedByMe);
-      if (!moveableUnits.isEmpty()) {
-        highlight.put(t, moveableUnits);
-      }
-    });
-    if (!highlight.isEmpty()) {
-      getMap().setUnitHighlight(highlight);
-    }
-  }
-
 }
 
 
