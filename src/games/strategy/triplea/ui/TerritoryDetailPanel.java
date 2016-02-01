@@ -100,8 +100,8 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
         }
       }
     };
-    final String unfreeze_panel = "unfreeze_panel";
-    final Action unfreezePanel = new AbstractAction(unfreeze_panel) {
+    final String unfreezePanelActionLabel = "unfreeze_panel";
+    final Action unfreezePanelAction = new AbstractAction(unfreezePanelActionLabel) {
       private static final long serialVersionUID = -1863748437390486994L;
 
       @Override
@@ -117,9 +117,11 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
         .put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK, false), freeze_panel);
     contentPane.getActionMap().put(freeze_panel, freezePanel);
-    contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, 0, true),
-        unfreeze_panel);
-    contentPane.getActionMap().put(unfreeze_panel, unfreezePanel);
+
+    boolean onKeyUp = true;
+    contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, 0, onKeyUp),
+        unfreezePanelActionLabel);
+    contentPane.getActionMap().put(unfreezePanelActionLabel, unfreezePanelAction);
   }
 
   @Override
