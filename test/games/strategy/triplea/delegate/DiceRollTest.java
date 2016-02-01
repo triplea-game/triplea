@@ -25,28 +25,23 @@ import games.strategy.util.Match;
 import junit.framework.TestCase;
 
 public class DiceRollTest extends TestCase {
-  private GameData m_data;
+  private GameData gameData;
 
   @Override
   protected void setUp() throws Exception {
-    m_data = LoadGameUtil.loadTestGame("lhtr_test.xml");
+    gameData = LoadGameUtil.loadTestGame("lhtr_test.xml");
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
-    return GameDataTestUtil.getDelegateBridge(player, m_data);
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    m_data = null;
+    return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
   public void testSimple() {
-    final Territory westRussia = m_data.getMap().getTerritory("West Russia");
+    final Territory westRussia = gameData.getMap().getTerritory("West Russia");
     final MockBattle battle = new MockBattle(westRussia);
-    final PlayerID russians = GameDataTestUtil.russians(m_data);
+    final PlayerID russians = GameDataTestUtil.russians(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
-    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
+    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final List<Unit> infantry = infantryType.create(1, russians);
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(westRussia);
     // infantry defends and hits at 1 (0 based)
@@ -68,12 +63,12 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testSimpleLowLuck() {
-    GameDataTestUtil.makeGameLowLuck(m_data);
-    final Territory westRussia = m_data.getMap().getTerritory("West Russia");
+    GameDataTestUtil.makeGameLowLuck(gameData);
+    final Territory westRussia = gameData.getMap().getTerritory("West Russia");
     final MockBattle battle = new MockBattle(westRussia);
-    final PlayerID russians = GameDataTestUtil.russians(m_data);
+    final PlayerID russians = GameDataTestUtil.russians(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
-    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
+    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final List<Unit> infantry = infantryType.create(1, russians);
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(westRussia);
     // infantry defends and hits at 1 (0 based)
@@ -95,13 +90,13 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testArtillerySupport() {
-    final Territory westRussia = m_data.getMap().getTerritory("West Russia");
+    final Territory westRussia = gameData.getMap().getTerritory("West Russia");
     final MockBattle battle = new MockBattle(westRussia);
-    final PlayerID russians = GameDataTestUtil.russians(m_data);
+    final PlayerID russians = GameDataTestUtil.russians(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
-    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
+    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final List<Unit> units = infantryType.create(1, russians);
-    final UnitType artillery = m_data.getUnitTypeList().getUnitType("artillery");
+    final UnitType artillery = gameData.getUnitTypeList().getUnitType("artillery");
     units.addAll(artillery.create(1, russians));
     // artillery supported infantry and art attack at 1 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1, 1}));
@@ -111,12 +106,12 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testVariableArtillerySupport() {
-    final Territory westRussia = m_data.getMap().getTerritory("West Russia");
+    final Territory westRussia = gameData.getMap().getTerritory("West Russia");
     final MockBattle battle = new MockBattle(westRussia);
-    final PlayerID russians = GameDataTestUtil.russians(m_data);
+    final PlayerID russians = GameDataTestUtil.russians(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
     // Add 1 artillery
-    final UnitType artillery = m_data.getUnitTypeList().getUnitType("artillery");
+    final UnitType artillery = gameData.getUnitTypeList().getUnitType("artillery");
     final List<Unit> units = artillery.create(1, russians);
     // Set the supported unit count
     for (final Unit unit : units) {
@@ -124,7 +119,7 @@ public class DiceRollTest extends TestCase {
       ua.setUnitSupportCount("2");
     }
     // Now add the infantry
-    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
+    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     units.addAll(infantryType.create(2, russians));
     // artillery supported infantry and art attack at 1 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1, 1, 1}));
@@ -134,12 +129,12 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testLowLuck() {
-    GameDataTestUtil.makeGameLowLuck(m_data);
-    final Territory westRussia = m_data.getMap().getTerritory("West Russia");
+    GameDataTestUtil.makeGameLowLuck(gameData);
+    final Territory westRussia = gameData.getMap().getTerritory("West Russia");
     final MockBattle battle = new MockBattle(westRussia);
-    final PlayerID russians = GameDataTestUtil.russians(m_data);
+    final PlayerID russians = GameDataTestUtil.russians(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
-    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
+    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final List<Unit> units = infantryType.create(3, russians);
     // 3 infantry on defense should produce exactly one hit, without rolling the dice
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
@@ -162,10 +157,10 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testMarineAttackPlus1() throws Exception {
-    m_data = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
-    final Territory algeria = m_data.getMap().getTerritory("Algeria");
-    final PlayerID americans = GameDataTestUtil.americans(m_data);
-    final UnitType marine = m_data.getUnitTypeList().getUnitType("marine");
+    gameData = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
+    final Territory algeria = gameData.getMap().getTerritory("Algeria");
+    final PlayerID americans = GameDataTestUtil.americans(gameData);
+    final UnitType marine = gameData.getUnitTypeList().getUnitType("marine");
     final List<Unit> attackers = marine.create(1, americans);
     final ITestDelegateBridge bridge = getDelegateBridge(americans);
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
@@ -178,11 +173,11 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testMarineAttackPlus1LowLuck() throws Exception {
-    m_data = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
-    GameDataTestUtil.makeGameLowLuck(m_data);
-    final Territory algeria = m_data.getMap().getTerritory("Algeria");
-    final PlayerID americans = GameDataTestUtil.americans(m_data);
-    final UnitType marine = m_data.getUnitTypeList().getUnitType("marine");
+    gameData = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
+    GameDataTestUtil.makeGameLowLuck(gameData);
+    final Territory algeria = gameData.getMap().getTerritory("Algeria");
+    final PlayerID americans = GameDataTestUtil.americans(gameData);
+    final UnitType marine = gameData.getUnitTypeList().getUnitType("marine");
     final List<Unit> attackers = marine.create(3, americans);
     final ITestDelegateBridge bridge = getDelegateBridge(americans);
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
@@ -195,10 +190,10 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testMarineAttacNormalIfNotAmphibious() throws Exception {
-    m_data = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
-    final Territory algeria = m_data.getMap().getTerritory("Algeria");
-    final PlayerID americans = GameDataTestUtil.americans(m_data);
-    final UnitType marine = m_data.getUnitTypeList().getUnitType("marine");
+    gameData = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
+    final Territory algeria = gameData.getMap().getTerritory("Algeria");
+    final PlayerID americans = GameDataTestUtil.americans(gameData);
+    final UnitType marine = gameData.getUnitTypeList().getUnitType("marine");
     final List<Unit> attackers = marine.create(1, americans);
     final ITestDelegateBridge bridge = getDelegateBridge(americans);
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
@@ -211,18 +206,18 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testAA() {
-    final Territory westRussia = m_data.getMap().getTerritory("West Russia");
-    final PlayerID russians = GameDataTestUtil.russians(m_data);
-    final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final UnitType aaGunType = GameDataTestUtil.aaGun(m_data);
+    final Territory westRussia = gameData.getMap().getTerritory("West Russia");
+    final PlayerID russians = GameDataTestUtil.russians(gameData);
+    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final UnitType aaGunType = GameDataTestUtil.aaGun(gameData);
     final List<Unit> aaGunList = aaGunType.create(1, germans);
     GameDataTestUtil.addTo(westRussia, aaGunList);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
-    final List<Unit> bombers = bomber(m_data).create(1, british(m_data));
+    final List<Unit> bombers = bomber(gameData).create(1, british(gameData));
     // aa hits at 0 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0}));
     final DiceRoll hit =
-        DiceRoll.rollAA(bomber(m_data).create(1, british(m_data)), aaGunList, bridge, westRussia, true);
+        DiceRoll.rollAA(bomber(gameData).create(1, british(gameData)), aaGunList, bridge, westRussia, true);
     assertEquals(hit.getHits(), 1);
     // aa missses at 1 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
@@ -231,14 +226,14 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testAALowLuck() {
-    GameDataTestUtil.makeGameLowLuck(m_data);
-    final Territory westRussia = m_data.getMap().getTerritory("West Russia");
-    final PlayerID russians = GameDataTestUtil.russians(m_data);
-    final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final UnitType aaGunType = GameDataTestUtil.aaGun(m_data);
+    GameDataTestUtil.makeGameLowLuck(gameData);
+    final Territory westRussia = gameData.getMap().getTerritory("West Russia");
+    final PlayerID russians = GameDataTestUtil.russians(gameData);
+    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final UnitType aaGunType = GameDataTestUtil.aaGun(gameData);
     final List<Unit> aaGunList = aaGunType.create(1, germans);
     GameDataTestUtil.addTo(westRussia, aaGunList);
-    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
+    final UnitType fighterType = GameDataTestUtil.fighter(gameData);
     List<Unit> fighterList = fighterType.create(1, russians);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
     // aa hits at 0 (0 based)
@@ -248,7 +243,7 @@ public class DiceRollTest extends TestCase {
             .rollAA(
                 Match.getMatches(fighterList,
                     Matches
-                        .unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data))),
+                        .unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
                 aaGunList, bridge, westRussia, true);
     assertEquals(hit.getHits(), 1);
     // aa missses at 1 (0 based)
@@ -258,7 +253,7 @@ public class DiceRollTest extends TestCase {
             .rollAA(
                 Match.getMatches(fighterList,
                     Matches
-                        .unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data))),
+                        .unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
                 aaGunList, bridge, westRussia, true);
     assertEquals(miss.getHits(), 0);
     // 6 bombers, 1 should hit, and nothing should be rolled
@@ -269,20 +264,20 @@ public class DiceRollTest extends TestCase {
             .rollAA(
                 Match.getMatches(fighterList,
                     Matches
-                        .unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data))),
+                        .unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
                 aaGunList, bridge, westRussia, true);
     assertEquals(hitNoRoll.getHits(), 1);
   }
 
   public void testAALowLuckDifferentMovement() {
-    GameDataTestUtil.makeGameLowLuck(m_data);
-    final Territory westRussia = m_data.getMap().getTerritory("West Russia");
-    final PlayerID russians = GameDataTestUtil.russians(m_data);
-    final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final UnitType aaGunType = GameDataTestUtil.aaGun(m_data);
+    GameDataTestUtil.makeGameLowLuck(gameData);
+    final Territory westRussia = gameData.getMap().getTerritory("West Russia");
+    final PlayerID russians = GameDataTestUtil.russians(gameData);
+    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final UnitType aaGunType = GameDataTestUtil.aaGun(gameData);
     final List<Unit> aaGunList = aaGunType.create(1, germans);
     GameDataTestUtil.addTo(westRussia, aaGunList);
-    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
+    final UnitType fighterType = GameDataTestUtil.fighter(gameData);
     final List<Unit> fighterList = fighterType.create(6, russians);
     TripleAUnit.get(fighterList.get(0)).setAlreadyMoved(1);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
@@ -293,21 +288,21 @@ public class DiceRollTest extends TestCase {
             .rollAA(
                 Match.getMatches(fighterList,
                     Matches
-                        .unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data))),
+                        .unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
                 aaGunList, bridge, westRussia, true);
     assertEquals(hit.getHits(), 1);
   }
 
   public void testAALowLuckWithRadar() {
-    m_data = LoadGameUtil.loadTestGame("ww2v3_1941_test.xml");
-    GameDataTestUtil.makeGameLowLuck(m_data);
-    final Territory finnland = m_data.getMap().getTerritory("Finland");
-    final PlayerID russians = GameDataTestUtil.russians(m_data);
-    final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final UnitType aaGunType = GameDataTestUtil.aaGun(m_data);
+    gameData = LoadGameUtil.loadTestGame("ww2v3_1941_test.xml");
+    GameDataTestUtil.makeGameLowLuck(gameData);
+    final Territory finnland = gameData.getMap().getTerritory("Finland");
+    final PlayerID russians = GameDataTestUtil.russians(gameData);
+    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final UnitType aaGunType = GameDataTestUtil.aaGun(gameData);
     final List<Unit> aaGunList = aaGunType.create(1, germans);
     GameDataTestUtil.addTo(finnland, aaGunList);
-    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
+    final UnitType fighterType = GameDataTestUtil.fighter(gameData);
     List<Unit> fighterList = fighterType.create(1, russians);
     TechAttachment.get(germans).setAARadar("true");
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
@@ -318,7 +313,7 @@ public class DiceRollTest extends TestCase {
             .rollAA(
                 Match.getMatches(fighterList,
                     Matches
-                        .unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data))),
+                        .unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
                 aaGunList, bridge, finnland, true);
     assertEquals(hit.getHits(), 1);
     // aa missses at 2 (0 based)
@@ -328,7 +323,7 @@ public class DiceRollTest extends TestCase {
             .rollAA(
                 Match.getMatches(fighterList,
                     Matches
-                        .unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data))),
+                        .unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
                 aaGunList, bridge, finnland, true);
     assertEquals(miss.getHits(), 0);
     // 6 bombers, 2 should hit, and nothing should be rolled
@@ -339,21 +334,21 @@ public class DiceRollTest extends TestCase {
             .rollAA(
                 Match.getMatches(fighterList,
                     Matches
-                        .unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data))),
+                        .unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
                 aaGunList, bridge, finnland, true);
     assertEquals(hitNoRoll.getHits(), 2);
   }
 
   public void testHeavyBombers() {
-    m_data = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
-    final PlayerID british = GameDataTestUtil.british(m_data);
+    gameData = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
+    final PlayerID british = GameDataTestUtil.british(gameData);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, testDelegateBridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
+        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     final List<Unit> bombers =
-        m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
     testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {2, 3}));
-    final Territory germany = m_data.getMap().getTerritory("Germany");
+    final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, new MockBattle(germany), "",
         TerritoryEffectHelper.getEffects(germany), null);
     assertEquals(Die.DieType.HIT, dice.getRolls(4).get(0).getType());
@@ -361,15 +356,15 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testHeavyBombersDefend() {
-    m_data = LoadGameUtil.loadGame("Classic: Iron Blitz 3rd Edition Test", "iron_blitz_test.xml");
-    final PlayerID british = GameDataTestUtil.british(m_data);
+    gameData = LoadGameUtil.loadGame("Classic: Iron Blitz 3rd Edition Test", "iron_blitz_test.xml");
+    final PlayerID british = GameDataTestUtil.british(gameData);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, testDelegateBridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
+        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     final List<Unit> bombers =
-        m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
     testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 1}));
-    final Territory germany = m_data.getMap().getTerritory("Germany");
+    final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, new MockBattle(germany), "",
         TerritoryEffectHelper.getEffects(germany), null);
     assertEquals(1, dice.getRolls(1).size());
@@ -377,13 +372,13 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testLHTRBomberDefend() {
-    final PlayerID british = GameDataTestUtil.british(m_data);
-    m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, true);
+    final PlayerID british = GameDataTestUtil.british(gameData);
+    gameData.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, true);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     final List<Unit> bombers =
-        m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
     testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 1}));
-    final Territory germany = m_data.getMap().getTerritory("Germany");
+    final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, new MockBattle(germany), "",
         TerritoryEffectHelper.getEffects(germany), null);
     assertEquals(1, dice.getRolls(1).size());
@@ -391,15 +386,15 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testHeavyBombersLHTR() {
-    m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
-    final PlayerID british = GameDataTestUtil.british(m_data);
+    gameData.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
+    final PlayerID british = GameDataTestUtil.british(gameData);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, testDelegateBridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
+        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     final List<Unit> bombers =
-        m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
     testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {2, 3}));
-    final Territory germany = m_data.getMap().getTerritory("Germany");
+    final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, new MockBattle(germany), "",
         TerritoryEffectHelper.getEffects(germany), null);
     assertEquals(Die.DieType.HIT, dice.getRolls(4).get(0).getType());
@@ -408,15 +403,15 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testHeavyBombersLHTR2() {
-    m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
-    final PlayerID british = GameDataTestUtil.british(m_data);
+    gameData.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
+    final PlayerID british = GameDataTestUtil.british(gameData);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, testDelegateBridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
+        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     final List<Unit> bombers =
-        m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
     testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {3, 2}));
-    final Territory germany = m_data.getMap().getTerritory("Germany");
+    final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, new MockBattle(germany), "",
         TerritoryEffectHelper.getEffects(germany), null);
     assertEquals(Die.DieType.HIT, dice.getRolls(4).get(0).getType());
@@ -425,15 +420,15 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testHeavyBombersDefendLHTR() {
-    m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
-    final PlayerID british = GameDataTestUtil.british(m_data);
+    gameData.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
+    final PlayerID british = GameDataTestUtil.british(gameData);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, testDelegateBridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
+        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     final List<Unit> bombers =
-        m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
     testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 1}));
-    final Territory germany = m_data.getMap().getTerritory("Germany");
+    final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, new MockBattle(germany), "",
         TerritoryEffectHelper.getEffects(germany), null);
     assertEquals(2, dice.getRolls(1).size());
@@ -443,10 +438,10 @@ public class DiceRollTest extends TestCase {
   }
 
   public void testDiceRollCount() {
-    final PlayerID british = GameDataTestUtil.british(m_data);
-    final Territory location = m_data.getMap().getTerritory("United Kingdom");
+    final PlayerID british = GameDataTestUtil.british(gameData);
+    final Territory location = gameData.getMap().getTerritory("United Kingdom");
     final Unit bombers =
-        m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber).get(0);
+        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber).get(0);
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(location);
     // default 1 roll
     assertEquals(1, BattleCalculator.getRolls(bombers, british, false, true, territoryEffects));
@@ -454,9 +449,9 @@ public class DiceRollTest extends TestCase {
     // hb, for revised 2 on attack, 1 on defence
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, testDelegateBridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
+        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // lhtr hb, 2 for both
-    m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
+    gameData.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
     assertEquals(2, BattleCalculator.getRolls(bombers, british, false, true, territoryEffects));
     assertEquals(2, BattleCalculator.getRolls(bombers, british, true, true, territoryEffects));
     // non-lhtr, only 1 for defense.
