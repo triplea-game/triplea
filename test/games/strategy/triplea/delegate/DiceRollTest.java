@@ -468,6 +468,7 @@ public class DiceRollTest {
     assertThat(dice.getRolls(1).get(1).getType(), is(Die.DieType.IGNORED));
   }
 
+  @Test
   public void testDiceRollCount() {
     final PlayerID british = GameDataTestUtil.british(gameData);
     final Territory location = gameData.getMap().getTerritory("United Kingdom");
@@ -486,4 +487,7 @@ public class DiceRollTest {
     assertThat(BattleCalculator.getRolls(bombers, british, false, true, territoryEffects), is(2));
     assertThat(BattleCalculator.getRolls(bombers, british, true, true, territoryEffects), is(2));
   }
+
+
+
 }
