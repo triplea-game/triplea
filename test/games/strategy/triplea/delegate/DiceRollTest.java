@@ -381,7 +381,7 @@ public class DiceRollTest {
 
   @Test
   public void testHeavyBombersDefend() {
-    gameData = LoadGameUtil.loadGame("Classic: Iron Blitz 3rd Edition Test", "iron_blitz_test.xml");
+    gameData = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
     final PlayerID british = GameDataTestUtil.british(gameData);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, testDelegateBridge,
