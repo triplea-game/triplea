@@ -3,6 +3,8 @@ package games.strategy.triplea.delegate;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
@@ -100,6 +102,21 @@ public class GameDataTestUtil {
 
   public static UnitType factory(final GameData data) {
     return unitType("factory", data);
+  }
+
+  public static List<Unit> infantry(int count, GameData data) {
+    UnitType type = infantry(data);
+    return type.create(count, PlayerID.NULL_PLAYERID);
+  }
+
+  public static List<Unit> tank(int count, GameData data) {
+    UnitType type = armour(data);
+    return type.create(count, PlayerID.NULL_PLAYERID);
+  }
+
+  public static List<Unit> fighter(int count, GameData data) {
+    UnitType type = fighter(data);
+    return type.create(count, PlayerID.NULL_PLAYERID);
   }
 
   private static UnitType unitType(final String name, final GameData data) {
