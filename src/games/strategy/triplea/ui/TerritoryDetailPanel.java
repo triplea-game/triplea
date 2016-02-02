@@ -2,8 +2,6 @@ package games.strategy.triplea.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
@@ -40,8 +38,6 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
   private final JButton m_showOdds = new JButton("Battle Calculator (Ctrl-B)");
   private Territory m_currentTerritory;
   private final TripleAFrame m_frame;
-  // if not null, shift is pressed
-  private Territory m_new_territory = null;
 
   public TerritoryDetailPanel(final MapPanel mapPanel, final GameData data, final IUIContext uiContext,
       final TripleAFrame frame) {
@@ -51,13 +47,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     mapPanel.addMapSelectionListener(new DefaultMapSelectionListener() {
       @Override
       public void mouseEntered(final Territory territory) {
-        if (m_new_territory != null) {
-          if (territory != null) {
-            m_new_territory = territory;
-          }
-        } else {
           territoryChanged(territory);
-        }
       }
     });
     initLayout();
@@ -88,40 +78,6 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
         .put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.CTRL_MASK), show_battle_calc);
     contentPane.getActionMap().put(show_battle_calc, showBattleCalc);
-    // freeze/unfreeze this panel when shift is pressed/released
-    final String freeze_panel = "freeze_panel";
-    final Action freezePanel = new AbstractAction(freeze_panel) {
-      private static final long serialVersionUID = -1863748437390486994L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (m_new_territory == null && m_currentTerritory != null) {
-          m_new_territory = m_currentTerritory;
-        }
-      }
-    };
-    final String unfreezePanelActionLabel = "unfreeze_panel";
-    final Action unfreezePanelAction = new AbstractAction(unfreezePanelActionLabel) {
-      private static final long serialVersionUID = -1863748437390486994L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (m_new_territory != null) {
-          if (m_new_territory != null) {
-            territoryChanged(m_new_territory);
-          }
-          m_new_territory = null;
-        }
-      }
-    };
-    contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK, false), freeze_panel);
-    contentPane.getActionMap().put(freeze_panel, freezePanel);
-
-    boolean onKeyUp = true;
-    contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, 0, onKeyUp),
-        unfreezePanelActionLabel);
-    contentPane.getActionMap().put(unfreezePanelActionLabel, unfreezePanelAction);
   }
 
   @Override
