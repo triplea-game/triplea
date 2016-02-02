@@ -26,7 +26,6 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -528,34 +527,22 @@ public class ClipPlayer {
   private static boolean isSoundFileNamed(final File soundFile) {
     return soundFile.getName().endsWith(".wav") || soundFile.getName().endsWith(".au")
         || soundFile.getName().endsWith(".aiff")
-        || soundFile.getName().endsWith(".midi") || soundFile.getName().endsWith(".mp3");
+        || soundFile.getName().endsWith(".midi");
   }
 
 
   protected static Clip createClip(final URL clipFile) {
     try {
       final AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(clipFile);
-      final AudioFormat audioFormat = audioInputStream.getFormat();
-      final AudioFormat decodedFormat = decodeFormat(audioFormat);
-      final DataLine.Info info = new DataLine.Info(Clip.class, decodedFormat);
+      final AudioFormat format = audioInputStream.getFormat();
+      final DataLine.Info info = new DataLine.Info(Clip.class, format);
       final Clip clip = (Clip) AudioSystem.getLine(info);
-      final AudioInputStream audioStream2 = AudioSystem.getAudioInputStream(decodedFormat, audioInputStream);
-      clip.open(audioStream2);
+      clip.open(audioInputStream);
       return clip;
     } catch (final Exception e) {
       ClientLogger.logQuietly("failed to create clip: " + clipFile.toString(), e);
       return null;
     }
-  }
-
-  private static AudioFormat decodeFormat(AudioFormat format) throws LineUnavailableException {
-    final float sampleRate = format.getSampleRate();
-    final int sampleSizeInBits = format.getSampleSizeInBits();
-    final int channelCount = format.getChannels();
-    final int frameSize = format.getFrameSize();
-    final boolean bigEndian = format.isBigEndian();
-    return new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, sampleSizeInBits, channelCount, frameSize,
-        format.getSampleRate(), bigEndian);
   }
 
   private static synchronized boolean testClipSuccessful(final URL clipFile) {
