@@ -1,13 +1,16 @@
 package games.strategy.sound;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +18,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -419,16 +424,91 @@ public class ClipPlayer {
       thisSoundFile = null;
     }
 
-    if (thisSoundFile.isDirectory()) {
-      for (final File sound : thisSoundFile.listFiles()) {
-        if (isSoundFileNamed(sound)) {
+    if (thisSoundFile == null || !thisSoundFile.exists()) {
+      // final long startTime = System.currentTimeMillis();
+      // we are probably using zipped sounds. there might be a better way to do this...
+      final String soundFilePath = thisSoundURL.getPath();
+      if (soundFilePath != null && soundFilePath.length() > 5 && soundFilePath.indexOf(".zip!") != -1) {
+        // so the URL with a zip or jar in it, will start with "file:", and unfortunately when you make a file and test
+        // if it exists, if it
+        // starts with that it doesn't exist
+        final int index1 = Math.max(0, Math.min(soundFilePath.length(),
+            soundFilePath.indexOf("file:") != -1 ? soundFilePath.indexOf("file:") + 5 : 0));
+        final String zipFilePath = soundFilePath.substring(index1,
+            Math.max(index1, Math.min(soundFilePath.length(), soundFilePath.lastIndexOf("!"))));
+        if (zipFilePath.length() > 5 && zipFilePath.endsWith(".zip")) {
+          String decoded;
           try {
-            final URL individualSoundURL = sound.toURI().toURL();
+            decoded = URLDecoder.decode(zipFilePath, "UTF-8"); // the file path may have spaces, which in a URL are
+                                                               // equal to %20, but if
+                                                               // we make a file using that it will fail, so we need to
+                                                               // decode
+          } catch (final UnsupportedEncodingException uee) {
+            decoded = zipFilePath.replaceAll("%20", " ");
+          }
+
+          try {
+            final File zipFile = new File(decoded);
+            if (zipFile != null && zipFile.exists()) {
+              try (ZipFile zf = new ZipFile(zipFile)) {
+                if (zf != null) {
+                  final Enumeration<? extends ZipEntry> zipEnumeration = zf.entries();
+                  while (zipEnumeration.hasMoreElements()) {
+                    final ZipEntry zipElement = zipEnumeration.nextElement();
+                    if (zipElement != null && zipElement.getName() != null
+                        && zipElement.getName().indexOf(resourceAndPathURL) != -1
+                        && (zipElement.getName().endsWith(".wav") || zipElement.getName().endsWith(".au")
+                            || zipElement.getName().endsWith(".aiff") || zipElement.getName().endsWith(".midi"))) {
+                      try {
+                        final URL zipSoundURL = resourceLoader.getResource(zipElement.getName());
+                        if (zipSoundURL == null) {
+                          continue;
+                        }
+                        if (testClipSuccessful(zipSoundURL)) {
+                          availableSounds.add(zipSoundURL);
+                        }
+                      } catch (final Exception e) {
+                        ClientLogger.logQuietly(e);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          } catch (final Exception e) {
+            ClientLogger.logQuietly(e);
+          }
+        }
+      }
+    } else {
+      // we must be using unzipped sounds
+      if (!thisSoundFile.isDirectory()) {
+        if (!(thisSoundFile.getName().endsWith(".wav") || thisSoundFile.getName().endsWith(".au")
+            || thisSoundFile.getName().endsWith(".aiff") || thisSoundFile.getName().endsWith(".midi"))) {
+          return availableSounds;
+        }
+        if (testClipSuccessful(thisSoundURL)) {
+          availableSounds.add(thisSoundURL);
+        }
+      } else {
+        for (final File sound : thisSoundFile.listFiles()) {
+          if (!(sound.getName().endsWith(".wav") || sound.getName().endsWith(".au") || sound.getName().endsWith(".aiff")
+              || sound.getName().endsWith(".midi"))) {
+            continue;
+          }
+        }
+      }
+    }
+    if (thisSoundFile.isDirectory()) {
+      for (final File soundFile : thisSoundFile.listFiles()) {
+        if (isSoundFileNamed(soundFile)) {
+          try {
+            final URL individualSoundURL = soundFile.toURI().toURL();
             if (testClipSuccessful(individualSoundURL)) {
               availableSounds.add(individualSoundURL);
             }
           } catch (final MalformedURLException e) {
-            String msg = "Error " + e.getMessage() + " with sound file: " + sound.getPath();
+            String msg = "Error " + e.getMessage() + " with sound file: " + soundFile.getPath();
             ClientLogger.logQuietly(msg, e);
           }
         }
@@ -443,6 +523,7 @@ public class ClipPlayer {
     }
     return availableSounds;
   }
+
 
   private static boolean isSoundFileNamed(final File soundFile) {
     return soundFile.getName().endsWith(".wav") || soundFile.getName().endsWith(".au")
