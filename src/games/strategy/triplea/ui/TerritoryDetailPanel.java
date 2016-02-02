@@ -29,6 +29,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
@@ -144,14 +145,27 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
       labelText = "<html>" + ta.toStringForInfo(true, true) + "<br></html>";
     }
     add(new JLabel(labelText));
-    Collection<Unit> unitsInTerritory;
+    final Collection<Unit> unitsInTerritory;
     m_data.acquireReadLock();
     try {
       unitsInTerritory = territory.getUnits().getUnits();
     } finally {
       m_data.releaseReadLock();
     }
-    add(new JLabel("Units: " + unitsInTerritory.size()));
+
+    if( unitsInTerritory != null  && unitsInTerritory.size() > 0 ) {
+
+      int totalAttackPower =  DiceRoll.getTotalOffensivePower(unitsInTerritory, m_data, territory);
+      int totalDefensePower =  DiceRoll.getTotalDefensivePower(unitsInTerritory, m_data, territory);
+
+      final String indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
+
+      String unitsLabel = "<html>Units: " + unitsInTerritory.size() + "<br>";
+      unitsLabel += indent + "Attack:  " + totalAttackPower + "<br>";
+      unitsLabel += indent + "Defense: " +totalDefensePower + "</html>";
+      add(new JLabel(unitsLabel));
+    }
+
     final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(unitsInTerritory, m_uiContext, m_data));
     scroll.setBorder(BorderFactory.createEmptyBorder());
     add(scroll);

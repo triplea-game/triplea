@@ -69,10 +69,10 @@ public class ProScrambleAI {
           @Override
           public int compare(final Unit o1, final Unit o2) {
             final double strength1 =
-                ProBattleUtils.estimateStrength(player, scrambleTo, Collections.singletonList(o1),
+                ProBattleUtils.estimateStrength(scrambleTo, Collections.singletonList(o1),
                     new ArrayList<Unit>(), false);
             final double strength2 =
-                ProBattleUtils.estimateStrength(player, scrambleTo, Collections.singletonList(o2),
+                ProBattleUtils.estimateStrength(scrambleTo, Collections.singletonList(o2),
                     new ArrayList<Unit>(), false);
             return Double.compare(strength2, strength1);
           }

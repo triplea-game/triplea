@@ -16,6 +16,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -51,32 +55,7 @@ public class DiceRoll implements Externalizable {
   // since for low luck we get many hits with few dice
   private int m_hits;
 
-  private static void sortAAHighToLow(final List<Unit> units, final GameData data, final boolean defending) {
-    final Comparator<Unit> comparator = new Comparator<Unit>() {
-      @Override
-      public int compare(final Unit u1, final Unit u2) {
-        final Tuple<Integer, Integer> tuple1 = getAAattackAndMaxDiceSides(Collections.singleton(u1), data, defending);
-        final Tuple<Integer, Integer> tuple2 = getAAattackAndMaxDiceSides(Collections.singleton(u2), data, defending);
-        if (tuple1.getFirst() == 0) {
-          if (tuple2.getFirst() == 0) {
-            return 0;
-          }
-          return 1;
-        } else if (tuple2.getFirst() == 0) {
-          return -1;
-        }
-        final float value1 = ((float) tuple1.getFirst()) / ((float) tuple1.getSecond());
-        final float value2 = ((float) tuple2.getFirst()) / ((float) tuple2.getSecond());
-        if (value1 < value2) {
-          return 1;
-        } else if (value1 > value2) {
-          return -1;
-        }
-        return 0;
-      }
-    };
-    Collections.sort(units, comparator);
-  }
+
 
   /**
    * Returns a Tuple with 2 values, the first is the max attack, the second is the max dice sides for the AA unit with
@@ -111,7 +90,7 @@ public class DiceRoll implements Externalizable {
   }
 
   public static int getTotalAAattacks(final Collection<Unit> defendingEnemyAA,
-      final Collection<Unit> validAttackingUnitsForThisRoll, final GameData data) {
+      final Collection<Unit> validAttackingUnitsForThisRoll) {
     if (defendingEnemyAA.isEmpty() || validAttackingUnitsForThisRoll.isEmpty()) {
       return 0;
     }
@@ -155,7 +134,7 @@ public class DiceRoll implements Externalizable {
       return new DiceRoll(new ArrayList<Die>(0), 0);
     }
     final GameData data = bridge.getData();
-    final int totalAAattacksTotal = getTotalAAattacks(defendingAA, validAttackingUnitsForThisRoll, data);
+    final int totalAAattacksTotal = getTotalAAattacks(defendingAA, validAttackingUnitsForThisRoll);
     if (totalAAattacksTotal <= 0) {
       return new DiceRoll(new ArrayList<Die>(0), 0);
     }
@@ -242,14 +221,14 @@ public class DiceRoll implements Externalizable {
     normalNonInfiniteAA.removeAll(infiniteAA);
     normalNonInfiniteAA.removeAll(overstackAA);
     // determine maximum total attacks
-    final int totalAAattacksTotal = getTotalAAattacks(defendingAA, validAttackingUnitsForThisRoll, data);
+    final int totalAAattacksTotal = getTotalAAattacks(defendingAA, validAttackingUnitsForThisRoll);
     // determine individual totals
     final int normalNonInfiniteAAtotalAAattacks =
-        getTotalAAattacks(normalNonInfiniteAA, validAttackingUnitsForThisRoll, data);
+        getTotalAAattacks(normalNonInfiniteAA, validAttackingUnitsForThisRoll);
     final int infiniteAAtotalAAattacks =
         Math.min((validAttackingUnitsForThisRoll.size() - normalNonInfiniteAAtotalAAattacks),
-            getTotalAAattacks(infiniteAA, validAttackingUnitsForThisRoll, data));
-    final int overstackAAtotalAAattacks = getTotalAAattacks(overstackAA, validAttackingUnitsForThisRoll, data);
+            getTotalAAattacks(infiniteAA, validAttackingUnitsForThisRoll));
+    final int overstackAAtotalAAattacks = getTotalAAattacks(overstackAA, validAttackingUnitsForThisRoll);
     if (totalAAattacksTotal != (normalNonInfiniteAAtotalAAattacks + infiniteAAtotalAAattacks
         + overstackAAtotalAAattacks)) {
       throw new IllegalStateException("Total attacks should be: " + totalAAattacksTotal + " but instead is: "
@@ -343,6 +322,33 @@ public class DiceRoll implements Externalizable {
     return Triple.of(totalPower, hits, (rolledAt.size() == 1));
   }
 
+  private static void sortAAHighToLow(final List<Unit> units, final GameData data, final boolean defending) {
+    final Comparator<Unit> comparator = new Comparator<Unit>() {
+      @Override
+      public int compare(final Unit u1, final Unit u2) {
+        final Tuple<Integer, Integer> tuple1 = getAAattackAndMaxDiceSides(Collections.singleton(u1), data, defending);
+        final Tuple<Integer, Integer> tuple2 = getAAattackAndMaxDiceSides(Collections.singleton(u2), data, defending);
+        if (tuple1.getFirst() == 0) {
+          if (tuple2.getFirst() == 0) {
+            return 0;
+          }
+          return 1;
+        } else if (tuple2.getFirst() == 0) {
+          return -1;
+        }
+        final float value1 = ((float) tuple1.getFirst()) / ((float) tuple1.getSecond());
+        final float value2 = ((float) tuple2.getFirst()) / ((float) tuple2.getSecond());
+        if (value1 < value2) {
+          return 1;
+        } else if (value1 > value2) {
+          return -1;
+        }
+        return 0;
+      }
+    };
+    Collections.sort(units, comparator);
+  }
+
   private static int getLowLuckHits(final IDelegateBridge bridge, final List<Die> sortedDice, final int totalPower,
       final int chosenDiceSize, final PlayerID playerRolling, final String annotation) {
     int hits = totalPower / chosenDiceSize;
@@ -386,106 +392,142 @@ public class DiceRoll implements Externalizable {
   public static DiceRoll rollNDice(final IDelegateBridge bridge, final int rollCount, final int sides,
       final PlayerID playerRolling, final DiceType diceType, final String annotation) {
     if (rollCount == 0) {
-      return new DiceRoll(new ArrayList<Die>(), 0);
+      return new DiceRoll(Lists.newArrayList(), 0);
     }
-    int[] random;
-    random = bridge.getRandom(sides, rollCount, playerRolling, diceType, annotation);
+    int[] random = bridge.getRandom(sides, rollCount, playerRolling, diceType, annotation);
     final List<Die> dice = new ArrayList<Die>();
-    int diceIndex = 0;
     for (int i = 0; i < rollCount; i++) {
-      dice.add(new Die(random[diceIndex], 1, DieType.IGNORED));
-      diceIndex++;
+      dice.add(new Die(random[i], 1, DieType.IGNORED));
     }
-    final DiceRoll rVal = new DiceRoll(dice, rollCount);
-    return rVal;
+    return new DiceRoll(dice, rollCount);
   }
 
   /**
    * @param unitsGettingPowerFor
    *        should be sorted from weakest to strongest, before the method is called, for the actual battle
-   * @param allFriendlyUnitsAliveOrWaitingToDie
-   * @param allEnemyUnitsAliveOrWaitingToDie
-   * @param defending
-   * @param bombing
-   * @param player
-   * @param data
-   * @param location
-   * @param territoryEffects
-   * @param isAmphibiousBattle
-   * @param amphibiousLandAttackers
    */
   public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
-      final List<Unit> unitsGettingPowerFor, final List<Unit> allFriendlyUnitsAliveOrWaitingToDie,
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defending, final boolean bombing,
-      final PlayerID player, final GameData data, final Territory location,
+      final List<Unit> unitsGettingPowerFor, final List<Unit> allEnemyUnitsAliveOrWaitingToDie,
+      final boolean defending, final boolean bombing, final GameData data, final Territory location,
       final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibiousBattle,
       final Collection<Unit> amphibiousLandAttackers) {
-    return getUnitPowerAndRollsForNormalBattles(unitsGettingPowerFor, allFriendlyUnitsAliveOrWaitingToDie,
-        allEnemyUnitsAliveOrWaitingToDie, defending, bombing, player, data, location, territoryEffects,
+
+    return getUnitPowerAndRollsForNormalBattles(unitsGettingPowerFor,
+        allEnemyUnitsAliveOrWaitingToDie, defending, bombing, data, location, territoryEffects,
         isAmphibiousBattle, amphibiousLandAttackers, new HashMap<Unit, IntegerMap<Unit>>(),
         new HashMap<Unit, IntegerMap<Unit>>());
   }
 
+
+  /**
+   * For a given set of units, returns their total defensive power, as if they were to defend in the territory in which
+   * are currently located.
+   *
+   * @param units The List of units we wish to consider, and sum their defensive power
+   * @param gameData GameData object for looking up unit values
+   * @param territory Used to determine if any territory effects apply to the units defensive power
+   */
+  public static Integer getTotalDefensivePower(final Collection<Unit> units, final GameData gameData,
+      Territory territory) {
+    boolean defending = true;
+    return getTotalPower(units, gameData, territory, defending);
+  }
+
+
+  /**
+   * For a given set of units, returns their total offensive power, as if they were to attack the territory in which are
+   * currently located.
+   *
+   * @param units The List of units we wish to consider, and sum their offensive power
+   * @param gameData GameData object for looking up unit values
+   * @param territory Used to determine if any territory effects apply to the units offensive power
+   */
+  public static Integer getTotalOffensivePower(final Collection<Unit> units, final GameData gameData,
+      Territory territory) {
+    boolean defending = false;
+    return getTotalPower(units, gameData, territory, defending);
+  }
+
+  private static Integer getTotalPower(final Collection<Unit> units, final GameData gameData, Territory territory,
+      boolean defending) {
+    if (units == null || units.size() == 0) {
+      return 0;
+    }
+
+    final List<Unit> unitsGettingPowerFor = Lists.newArrayList(units);
+    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = Collections.EMPTY_LIST;
+    final boolean bombing = false;
+    final GameData data = gameData;
+    final Territory location = territory;
+
+    final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(territory);
+    final boolean isAmphibiousBattle = false;
+    final Collection<Unit> amphibiousLandAttackers = Collections.EMPTY_LIST;
+
+    final Map<Unit, Tuple<Integer, Integer>> value = getUnitPowerAndRollsForNormalBattles(unitsGettingPowerFor,
+        allEnemyUnitsAliveOrWaitingToDie, defending, bombing, data, location, territoryEffects,
+        isAmphibiousBattle, amphibiousLandAttackers, Maps.newHashMap(), Maps.newHashMap());
+
+    int sum = 0;
+    for (Tuple<Integer, Integer> entry : value.values()) {
+      // power of any unit is multiplied if they can roll multiple dice.
+      sum += entry.getFirst() * entry.getSecond();
+    }
+    return sum;
+  }
+
+
   /**
    * @param unitsGettingPowerFor
    *        should be sorted from weakest to strongest, before the method is called, for the actual battle
-   * @param allFriendlyUnitsAliveOrWaitingToDie
-   * @param allEnemyUnitsAliveOrWaitingToDie
-   * @param defending
-   * @param bombing
-   * @param player
-   * @param data
-   * @param location
-   * @param territoryEffects
-   * @param isAmphibiousBattle
-   * @param amphibiousLandAttackers
-   * @param unitSupportPowerMap
-   * @param unitSupportRollsMap
    */
-  public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
-      final List<Unit> unitsGettingPowerFor, final List<Unit> allFriendlyUnitsAliveOrWaitingToDie,
+  protected static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
+      final List<Unit> unitsGettingPowerFor,
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defending, final boolean bombing,
-      final PlayerID player, final GameData data, final Territory location,
+      final GameData data, final Territory location,
       final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibiousBattle,
       final Collection<Unit> amphibiousLandAttackers, final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
-    final Map<Unit, Tuple<Integer, Integer>> rVal = new HashMap<Unit, Tuple<Integer, Integer>>();
+
+
+    final Map<Unit, Tuple<Integer, Integer>> rVal = Maps.newHashMap();
     if (unitsGettingPowerFor == null || unitsGettingPowerFor.isEmpty()) {
       return rVal;
     }
+
+
     // get all supports, friendly and enemy
-    final Set<List<UnitSupportAttachment>> supportRulesFriendly = new HashSet<List<UnitSupportAttachment>>();
-    final IntegerMap<UnitSupportAttachment> supportLeftFriendly = new IntegerMap<UnitSupportAttachment>();
-    final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftFriendly =
-        new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
-    getSupport(allFriendlyUnitsAliveOrWaitingToDie, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly,
+    final Set<List<UnitSupportAttachment>> supportRulesFriendly = Sets.newHashSet();
+    final IntegerMap<UnitSupportAttachment> supportLeftFriendly = new IntegerMap<>();
+    final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftFriendly = Maps.newHashMap();
+    getSupport(unitsGettingPowerFor, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly,
         data, defending, true);
+
     final Set<List<UnitSupportAttachment>> supportRulesEnemy = new HashSet<List<UnitSupportAttachment>>();
     final IntegerMap<UnitSupportAttachment> supportLeftEnemy = new IntegerMap<UnitSupportAttachment>();
     final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftEnemy =
         new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
     getSupport(allEnemyUnitsAliveOrWaitingToDie, supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, data,
         !defending, false);
+
     // copy for rolls
-    final IntegerMap<UnitSupportAttachment> supportLeftFriendlyRolls =
-        new IntegerMap<UnitSupportAttachment>(supportLeftFriendly);
-    final IntegerMap<UnitSupportAttachment> supportLeftEnemyRolls =
-        new IntegerMap<UnitSupportAttachment>(supportLeftEnemy);
-    final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftFriendlyRolls =
-        new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
+    final IntegerMap<UnitSupportAttachment> supportLeftFriendlyRolls = new IntegerMap<>(supportLeftFriendly);
+    final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftFriendlyRolls = new HashMap<>();
     for (final UnitSupportAttachment usa : supportUnitsLeftFriendly.keySet()) {
       supportUnitsLeftFriendlyRolls.put(usa, new LinkedIntegerMap<Unit>(supportUnitsLeftFriendly.get(usa)));
     }
-    final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftEnemyRolls =
-        new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
+
+    final IntegerMap<UnitSupportAttachment> supportLeftEnemyRolls = new IntegerMap<>(supportLeftEnemy);
+    final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftEnemyRolls = new HashMap<>();
     for (final UnitSupportAttachment usa : supportUnitsLeftEnemy.keySet()) {
       supportUnitsLeftEnemyRolls.put(usa, new LinkedIntegerMap<Unit>(supportUnitsLeftEnemy.get(usa)));
     }
-    final int diceSides = data.getDiceSides();
+
     for (final Unit current : unitsGettingPowerFor) {
+
       // find our initial strength
-      int strength;
       final UnitAttachment ua = UnitAttachment.get(current.getType());
+      int strength = 0;
       if (defending) {
         strength = ua.getDefense(current.getOwner());
         if (isFirstTurnLimitedRoll(current.getOwner(), data)) {
@@ -514,7 +556,11 @@ public class DiceRoll implements Externalizable {
             true, false);
       }
       strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
+
+      final int diceSides = data.getDiceSides();
       strength = Math.min(Math.max(strength, 0), diceSides);
+
+
       // now determine our rolls
       int rolls;
       if (!bombing && strength == 0) {
@@ -539,7 +585,15 @@ public class DiceRoll implements Externalizable {
     return rVal;
   }
 
-  public static Tuple<Integer, Integer> getTotalPowerAndRolls(
+
+
+  public static Integer getTotalPower(final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap,
+      final GameData data) {
+    return getTotalPowerAndRolls(unitPowerAndRollsMap, data).getFirst();
+  }
+
+
+  private static Tuple<Integer, Integer> getTotalPowerAndRolls(
       final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap, final GameData data) {
     final int diceSides = data.getDiceSides();
     final boolean lowLuck = games.strategy.triplea.Properties.getLow_Luck(data);
@@ -587,6 +641,7 @@ public class DiceRoll implements Externalizable {
         }
       }
     }
+
     return Tuple.of(totalPower, totalRolls);
   }
 
@@ -609,10 +664,9 @@ public class DiceRoll implements Externalizable {
     final boolean isAmphibiousBattle = battle.isAmphibious();
     final Collection<Unit> amphibiousLandAttackers = battle.getAmphibiousLandAttackers();
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =
-        DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, allEnemyUnitsAliveOrWaitingToDie, defending, false,
-            player, data, location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers);
-    final Tuple<Integer, Integer> totalPowerAndRolls = getTotalPowerAndRolls(unitPowerAndRollsMap, data);
-    final int power = totalPowerAndRolls.getFirst();
+        DiceRoll.getUnitPowerAndRollsForNormalBattles(units, allEnemyUnitsAliveOrWaitingToDie, defending, false,
+            data, location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers);
+    final int power = getTotalPower(unitPowerAndRollsMap, data);
     if (power == 0) {
       return new DiceRoll(new ArrayList<Die>(0), 0);
     }
@@ -999,8 +1053,8 @@ public class DiceRoll implements Externalizable {
     final boolean isAmphibiousBattle = battle.isAmphibious();
     final Collection<Unit> amphibiousLandAttackers = battle.getAmphibiousLandAttackers();
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =
-        DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, allEnemyUnitsAliveOrWaitingToDie, defending, false,
-            player, data, location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers);
+        DiceRoll.getUnitPowerAndRollsForNormalBattles(units, allEnemyUnitsAliveOrWaitingToDie, defending, false,
+            data, location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers);
     final Tuple<Integer, Integer> totalPowerAndRolls = getTotalPowerAndRolls(unitPowerAndRollsMap, data);
     final int rollCount = totalPowerAndRolls.getSecond();
     if (rollCount == 0) {

@@ -378,9 +378,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       if (isAmphibious()) {
         sortAmphib(m_attackingUnits, m_data);
       } else {
-        BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
+        BattleCalculator.sortPreBattle(m_attackingUnits);
       }
-      BattleCalculator.sortPreBattle(m_defendingUnits, m_data);
+      BattleCalculator.sortPreBattle(m_defendingUnits);
       // play a sound
       if (Match.someMatch(m_attackingUnits, Matches.UnitIsSea)
           || Match.someMatch(m_defendingUnits, Matches.UnitIsSea)) {
