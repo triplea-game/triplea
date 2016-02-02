@@ -3,7 +3,7 @@ jdk:
 - oraclejdk8
 install: true
 script:
-- gradle test
+- gradle test -i
 before_deploy:
 - wget -O setup https://github.com/triplea-game/triplea/blob/master/.travis/setup?raw=true
 - chmod +x setup && ./setup

@@ -73,6 +73,13 @@ dependencies {
 	testCompile 'org.mockito:mockito-all:2.0.2-beta'
 }
 
+test {
+	testLogging {
+		exceptionFormat = 'full'
+	}
+}
+
+
 def assetsDirectory = file("${buildDir}/assets")
 git {
 	assets {
