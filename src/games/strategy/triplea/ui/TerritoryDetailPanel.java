@@ -37,7 +37,10 @@ import games.strategy.ui.OverlayIcon;
 public class TerritoryDetailPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 1377022163587438988L;
   private final IUIContext m_uiContext;
+
   private final JButton m_showOdds = new JButton("Battle Calculator (Ctrl-B)");
+  private final JButton unfreezeButton = new JButton("Unlock");
+
   private Territory m_currentTerritory;
   private final TripleAFrame m_frame;
   // if not null, shift is pressed
@@ -68,6 +71,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setBorder(new EmptyBorder(5, 5, 0, 0));
     final String show_battle_calc = "show_battle_calc";
+
     final Action showBattleCalc = new AbstractAction(show_battle_calc) {
       private static final long serialVersionUID = -1863748437390486994L;
 
@@ -76,6 +80,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
         OddsCalculatorDialog.show(m_frame, m_currentTerritory);
       }
     };
+
     m_showOdds.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
@@ -98,10 +103,11 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
         if (m_new_territory == null && m_currentTerritory != null) {
           m_new_territory = m_currentTerritory;
         }
+        unfreezeButton.setEnabled(true);
       }
     };
-    final String unfreeze_panel = "unfreeze_panel";
-    final Action unfreezePanel = new AbstractAction(unfreeze_panel) {
+    final String unfreezePanelActionLabel = "unfreeze_panel";
+    final Action unfreezePanelAction = new AbstractAction(unfreezePanelActionLabel) {
       private static final long serialVersionUID = -1863748437390486994L;
 
       @Override
@@ -111,15 +117,26 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
             territoryChanged(m_new_territory);
           }
           m_new_territory = null;
+          unfreezeButton.setEnabled(false);
         }
       }
     };
+    unfreezeButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        unfreezePanelAction.actionPerformed(e);
+      }
+    });
+    unfreezeButton.setEnabled(false);
+    unfreezeButton.setToolTipText("Lock the territory panel by holding shift.");
     contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
         .put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK, false), freeze_panel);
     contentPane.getActionMap().put(freeze_panel, freezePanel);
-    contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, 0, true),
-        unfreeze_panel);
-    contentPane.getActionMap().put(unfreeze_panel, unfreezePanel);
+
+    boolean onKeyUp = true;
+    contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, 0, onKeyUp),
+        unfreezePanelActionLabel);
+    contentPane.getActionMap().put(unfreezePanelActionLabel, unfreezePanelAction);
   }
 
   @Override
@@ -136,6 +153,8 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
       return;
     }
     add(m_showOdds);
+    add(unfreezeButton);
+
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     String labelText;
     if (ta == null) {
