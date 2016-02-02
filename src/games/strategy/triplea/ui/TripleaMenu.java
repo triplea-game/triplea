@@ -144,7 +144,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
             + "ALT-Right click on a unit stack to unselect 10 units of that type in the stack.<br>"
             + "CTRL-Right click on a unit stack to unselect all units of that type in the stack.<br>"
             + "CTRL-Right click somewhere not on a unit stack to unselect all units selected.<br>"
-            + "<br><b> Moving Units to a new Territories</b><br>"
+            + "<br><b> Moving Units</b><br>"
             + "After selecting units Left click on a territory to move units there (do not Left click and Drag, instead select units, then move the mouse, then select the territory).<br>"
             + "CTRL-Left click on a territory to select the territory as a way point (this will force the units to move through this territory on their way to the destination).<br>"
             + "<br><b> Moving the Map Screen</b><br>"
@@ -155,14 +155,15 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
             + "Scrolling the mouse wheel will move the map up and down.<br>" + "<br><b> Zooming Out</b><br>"
             + "Holding ALT while Scrolling the Mouse Wheel will zoom the map in and out.<br>"
             + "Select 'Zoom' from the 'View' menu, and change to the desired level.<br>"
-            + "<br><b> Turn off Art</b><br>"
+            + "<br><b> Turn off Map Artwork</b><br>"
             + "Deselect 'Map Details' in the 'View' menu, to show a map without the artwork.<br>"
             + "Select a new 'Map Skin' from the 'View' menu to show a different kind of artwork (not all maps have skins).<br>"
             + "<br><b> Other Things</b><br>"
             + "Press 'n' to cycle through units with movement left (move phases only).<br>"
             + "Press 'f' to highlight all units you own that have movement left (move phases only).<br>"
             + "Press 'i' or 'v' to popup info on whatever territory and unit your mouse is currently over.<br>"
-            + "Press 'u' while mousing over a unit to undo all moves that unit has made (beta).<br>";
+            + "Press 'u' while mousing over a unit to undo all moves that unit has made (beta).<br>"
+            + "To list specific units from a territory in the Territory panel, drag and drop from the territory on the map to the territory panel.<br>";
         final JEditorPane editorPane = new JEditorPane();
         editorPane.setEditable(false);
         editorPane.setContentType("text/html");
