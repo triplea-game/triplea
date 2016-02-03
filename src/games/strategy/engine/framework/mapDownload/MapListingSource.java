@@ -1,15 +1,9 @@
 package games.strategy.engine.framework.mapDownload;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Properties;
-
-import games.strategy.debug.ClientLogger;
+import games.strategy.engine.config.GameEngineProperty;
+import games.strategy.engine.config.PropertyReader;
 
 
 /**
@@ -20,30 +14,12 @@ import games.strategy.debug.ClientLogger;
  * Can be used to create a <code>MapDownloadAction</code>
  */
 public class MapListingSource {
-
-  public static final String MAP_LIST_DOWNLOAD_SITE_PROPERTY_KEY = "Map_List_File";
   private final String mapListDownloadSite;
 
-
-  public MapListingSource(File mapDownloadPropertiesFile) {
-    checkState(checkNotNull(mapDownloadPropertiesFile).isFile());
-    mapListDownloadSite = readMapListDownloadSitePropertyValue(mapDownloadPropertiesFile);
+  public MapListingSource(PropertyReader propertyReader) {
+    checkNotNull(propertyReader);
+    mapListDownloadSite = propertyReader.readProperty(GameEngineProperty.MAP_LISTING_SOURCE_FILE);
   }
-
-  private static String readMapListDownloadSitePropertyValue(File mapDownloadPropertiesFile) {
-    String propertyValue = null;
-    try (FileInputStream inputStream = new FileInputStream(mapDownloadPropertiesFile)) {
-      Properties props = new Properties();
-      props.load(inputStream);
-      propertyValue = props.getProperty(MAP_LIST_DOWNLOAD_SITE_PROPERTY_KEY);
-    } catch (FileNotFoundException e) {
-      // Exception should not happen, already checked by the Checkstate call during construction
-    } catch (IOException e) {
-      ClientLogger.logError("failed to load property file: " + mapDownloadPropertiesFile.getAbsolutePath(), e);
-    }
-    return propertyValue;
-  }
-
 
   /** Return the URL where we can download a file that lists each map that is available */
   protected String getMapListDownloadSite() {
