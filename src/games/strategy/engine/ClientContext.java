@@ -20,14 +20,19 @@ import games.strategy.engine.framework.mapDownload.MapListingSource;
  * to move to an annotation or configuration based IOC framework.
  *
  * Second note, try to put as much class specific construction logic into the constructor of each class managed by this
- * container. This class should focus on just creating and wiring classes together. Contrast that with generating the data
- * needed to create classes. For example, instead of parsing a file and passing that value to the constructor of another class,
- * we would instead create an intermediary class that knows everything about which file to parse and how to parse it, and we would
- * pass that intermediary class to the new class we wish to create. Said in another way, this class should not contain any 'business'
+ * container. This class should focus on just creating and wiring classes together. Contrast that with generating the
+ * data
+ * needed to create classes. For example, instead of parsing a file and passing that value to the constructor of another
+ * class,
+ * we would instead create an intermediary class that knows everything about which file to parse and how to parse it,
+ * and we would
+ * pass that intermediary class to the new class we wish to create. Said in another way, this class should not contain
+ * any 'business'
  * logic.
  *
- * Third Note: Any classes created by ClientContext cannot call ClientContext in their constructor, all dependencies must be passed to them.
- *   Since GameRunner2 creates ClientContext, similar none of the classes created by Client Context can game runner 2
+ * Third Note: Any classes created by ClientContext cannot call ClientContext in their constructor, all dependencies
+ * must be passed to them.
+ * Since GameRunner2 creates ClientContext, similar none of the classes created by Client Context can game runner 2
  */
 public final class ClientContext {
   private static ClientContext instance;
@@ -35,8 +40,8 @@ public final class ClientContext {
 
 
   public static synchronized ClientContext getInstance() {
-    if( instance == null ) {
-      instance = new  ClientContext();
+    if (instance == null) {
+      instance = new ClientContext();
     }
     return instance;
   }
@@ -45,25 +50,6 @@ public final class ClientContext {
   public static void setMockHandler(ClientContext mockHandler) {
     instance = mockHandler;
   }
-
-
-
-  /**
-   * Get the root folder for the application
-   */
-  public static File getRootFolder() {
-    return ClientFileSystemHelper.getRootFolder();
-  }
-
-
-  /**
-   * Our jar is named with engine number and we are in "old" folder.
-   */
-  public static boolean areWeOldExtraJar() {
-    return ClientFileSystemHelper.areWeOldExtraJar();
-  }
-
-
 
 
   private MapDownloadController mapDownloadController;

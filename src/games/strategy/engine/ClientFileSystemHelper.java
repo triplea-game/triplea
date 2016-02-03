@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +24,7 @@ public final class ClientFileSystemHelper {
   }
 
   /** This method is available via ClientContext */
-  protected static File getRootFolder() {
+  public static File getRootFolder() {
     final String fileName = getGameRunnerFileLocation("GameRunner2.class");
 
     final String tripleaJarName = "triplea.jar!";
@@ -95,7 +94,7 @@ public final class ClientFileSystemHelper {
     return f;
   }
 
-  protected static boolean areWeOldExtraJar() {
+  public static boolean areWeOldExtraJar() {
     final URL url = GameRunner2.class.getResource("GameRunner2.class");
     String fileName = url.getFile();
     try {
@@ -121,8 +120,5 @@ public final class ClientFileSystemHelper {
     }
     return false;
   }
-
-
-
 
 }

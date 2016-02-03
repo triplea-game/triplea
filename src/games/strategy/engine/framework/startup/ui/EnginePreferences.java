@@ -32,6 +32,7 @@ import javax.swing.border.EmptyBorder;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
@@ -443,7 +444,7 @@ public class EnginePreferences extends JDialog {
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          DesktopUtilityBrowserLauncher.openFile(ClientContext.getRootFolder());
+          DesktopUtilityBrowserLauncher.openFile(ClientFileSystemHelper.getRootFolder());
         } catch (final Exception e1) {
           e1.printStackTrace();
         }
@@ -455,7 +456,7 @@ public class EnginePreferences extends JDialog {
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          DesktopUtilityBrowserLauncher.openFile(new File(ClientContext.getRootFolder(), "readme.html"));
+          DesktopUtilityBrowserLauncher.openFile(new File(ClientFileSystemHelper.getRootFolder(), "readme.html"));
         } catch (final Exception e1) {
           e1.printStackTrace();
         }

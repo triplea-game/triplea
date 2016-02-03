@@ -10,7 +10,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.EngineVersion;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.GameDescription.GameStatus;
 import games.strategy.net.Messengers;
@@ -93,7 +93,7 @@ public class TripleAProcessRunner {
       try {
         newClassPath = findOldJar(engineVersionOfGameToJoin, false);
       } catch (final Exception e) {
-        if (ClientContext.areWeOldExtraJar()) {
+        if (ClientFileSystemHelper.areWeOldExtraJar()) {
           JOptionPane.showMessageDialog(parent,
               "<html>Please run the default TripleA and try joining the online lobby for it instead. "
                   + "<br>This TripleA engine is old and kept only for backwards compatibility and can only play with people using the exact same version as this one. "
@@ -144,7 +144,7 @@ public class TripleAProcessRunner {
       return System.getProperty("java.class.path");
     }
     // first, see if the default/main triplea can run it
-    if (ClientContext.areWeOldExtraJar()) {
+    if (ClientFileSystemHelper.areWeOldExtraJar()) {
       final String version = System.getProperty(GameRunner2.TRIPLEA_ENGINE_VERSION_BIN);
       if (version != null && version.length() > 0) {
         Version defaultVersion = null;
@@ -157,9 +157,9 @@ public class TripleAProcessRunner {
           if (defaultVersion.equals(oldVersionNeeded, ignoreMicro)) {
             final String jarName = "triplea.jar";
             // windows is in 'bin' folder, mac is in 'Java' folder.
-            File binFolder = new File(ClientContext.getRootFolder(), "bin/");
+            File binFolder = new File(ClientFileSystemHelper.getRootFolder(), "bin/");
             if (!binFolder.exists()) {
-              binFolder = new File(ClientContext.getRootFolder(), "Java/");
+              binFolder = new File(ClientFileSystemHelper.getRootFolder(), "Java/");
             }
             if (binFolder.exists()) {
               final File[] files = binFolder.listFiles();
@@ -201,7 +201,7 @@ public class TripleAProcessRunner {
     // we don't care what the last (micro) number is of the version number. example: triplea 1.5.2.1 can open 1.5.2.0
     // savegames.
     final String jarName = "triplea_" + oldVersionNeeded.toStringFull("_", ignoreMicro);
-    final File oldJarsFolder = new File(ClientContext.getRootFolder(), "old/");
+    final File oldJarsFolder = new File(ClientFileSystemHelper.getRootFolder(), "old/");
     if (!oldJarsFolder.exists()) {
       throw new IOException("Can not find 'old' engine jars folder");
     }

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientContext;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.util.Match;
 
@@ -26,7 +26,7 @@ public class ResourceLoader {
   public static String RESOURCE_FOLDER = "assets";
 
   public static ResourceLoader getMapResourceLoader(final String mapName, final boolean allowNoneFound) {
-    File atFolder = ClientContext.getRootFolder();
+    File atFolder = ClientFileSystemHelper.getRootFolder();
     File resourceFolder = new File(atFolder,RESOURCE_FOLDER);
 
     while (!resourceFolder.exists() && !resourceFolder.isDirectory()) {
@@ -55,8 +55,8 @@ public class ResourceLoader {
     // prioritize user maps folder over root folder
     candidates.add(new File(GameRunner2.getUserMapsFolder(), dirName));
     candidates.add(new File(GameRunner2.getUserMapsFolder(), zipName));
-    candidates.add(new File(ClientContext.getRootFolder() + File.separator + "maps", dirName));
-    candidates.add(new File(ClientContext.getRootFolder() + File.separator + "maps", zipName));
+    candidates.add(new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps", dirName));
+    candidates.add(new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps", zipName));
     final Collection<File> existing = Match.getMatches(candidates, new Match<File>() {
       @Override
       public boolean match(final File f) {

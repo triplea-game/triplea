@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import games.strategy.engine.ClientContext;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.util.Version;
 
 /**
@@ -58,7 +58,7 @@ public class ProcessRunnerUtil {
     if (GameRunner.isMac()) {
       commands.add("-Dapple.laf.useScreenMenuBar=true");
       commands.add("-Xdock:name=\"TripleA\"");
-      final File icons = new File(ClientContext.getRootFolder(), "icons/triplea_icon.png");
+      final File icons = new File(ClientFileSystemHelper.getRootFolder(), "icons/triplea_icon.png");
       if (!icons.exists()) {
         throw new IllegalStateException("Icon file not found");
       }

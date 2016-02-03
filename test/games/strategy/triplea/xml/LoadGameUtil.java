@@ -81,7 +81,7 @@ public class LoadGameUtil {
    */
   private static File getFile(final String game, final String[] possibleFolders) {
     for (final String possibleFolder : possibleFolders) {
-      final File start = ClientContext.getRootFolder();
+      final File start = ClientFileSystemHelper.getRootFolder();
       if (folderContainsFolderAndFile(start, possibleFolder, game)) {
         return new File(new File(start, possibleFolder), game);
       }

@@ -7,14 +7,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.URI;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map.Entry;
@@ -34,7 +30,7 @@ import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.EngineVersion;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.mapDownload.MapDownloadController;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.WaitWindow;
@@ -440,7 +436,7 @@ public class GameRunner2 {
 
   public static Properties getSystemIni() {
     final Properties rVal = new Properties();
-    final File systemIni = new File(ClientContext.getRootFolder(), SYSTEM_INI);
+    final File systemIni = new File(ClientFileSystemHelper.getRootFolder(), SYSTEM_INI);
     if (systemIni != null && systemIni.exists()) {
       try (FileInputStream fis = new FileInputStream(systemIni)) {
         rVal.load(fis);
@@ -462,7 +458,7 @@ public class GameRunner2 {
       }
     }
 
-    final File systemIni = new File(ClientContext.getRootFolder(), SYSTEM_INI);
+    final File systemIni = new File(ClientFileSystemHelper.getRootFolder(), SYSTEM_INI);
 
     try (FileOutputStream fos = new FileOutputStream(systemIni)) {
       toWrite.store(fos, SYSTEM_INI);
@@ -709,7 +705,7 @@ public class GameRunner2 {
       @Override
       public void run() {
         // do not check if we are the old extra jar. (a jar kept for backwards compatibility only)
-        if (ClientContext.areWeOldExtraJar()) {
+        if (ClientFileSystemHelper.areWeOldExtraJar()) {
           return;
         }
         // if we are joining a game online, or hosting, or loading straight into a savegame, do not check
@@ -859,7 +855,4 @@ public class GameRunner2 {
     }
     return f;
   }
-
-
-
 }

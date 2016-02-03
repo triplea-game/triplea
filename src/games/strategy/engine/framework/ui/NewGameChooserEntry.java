@@ -11,6 +11,7 @@ import org.xml.sax.SAXParseException;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -139,7 +140,7 @@ public class NewGameChooserEntry {
 
   public String getLocation() {
     final String raw = m_url.toString();
-    final String base = ClientContext.getRootFolder().toURI().toString() + "maps";
+    final String base = ClientFileSystemHelper.getRootFolder().toURI().toString() + "maps";
     if (raw.startsWith(base)) {
       return raw.substring(base.length());
     }

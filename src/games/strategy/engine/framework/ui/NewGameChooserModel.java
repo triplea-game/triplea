@@ -34,6 +34,7 @@ import com.google.common.collect.Sets;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.framework.GameRunner2;
@@ -59,7 +60,7 @@ public class NewGameChooserModel extends DefaultListModel {
   }
 
   public static File getDefaultMapsDir() {
-    return new File(ClientContext.getRootFolder(), "maps");
+    return new File(ClientFileSystemHelper.getRootFolder(), "maps");
   }
 
 
