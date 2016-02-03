@@ -2,6 +2,8 @@ package games.strategy.engine;
 
 import java.io.File;
 
+import games.strategy.engine.config.GameEnginePropertyFileReader;
+import games.strategy.engine.config.PropertyReader;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.mapDownload.MapDownloadController;
 import games.strategy.engine.framework.mapDownload.MapListingSource;
@@ -45,8 +47,8 @@ public final class ClientContext {
 
 
   private ClientContext() {
-    File mapDownloadPropertiesFile = new File(GameRunner2.getRootFolder(), "game_engine.properties");
-    MapListingSource listingSource = new MapListingSource(mapDownloadPropertiesFile);
+    PropertyReader reader = new GameEnginePropertyFileReader();
+    MapListingSource listingSource = new MapListingSource(reader);
     mapDownloadController = new MapDownloadController(listingSource);
   }
 
