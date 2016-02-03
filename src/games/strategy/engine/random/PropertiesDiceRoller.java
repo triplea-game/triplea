@@ -18,6 +18,7 @@ import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
 
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
@@ -37,7 +38,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
    */
   public static Collection<PropertiesDiceRoller> loadFromFile() {
     final List<PropertiesDiceRoller> rollers = new ArrayList<PropertiesDiceRoller>();
-    final File f = new File(ClientContext.getRootFolder(), "dice_servers");
+    final File f = new File(ClientFileSystemHelper.getRootFolder(), "dice_servers");
     if (!f.exists()) {
       throw new IllegalStateException("No dice server folder:" + f);
     }

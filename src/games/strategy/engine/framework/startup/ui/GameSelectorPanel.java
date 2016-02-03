@@ -30,6 +30,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.properties.IEditableProperty;
@@ -312,7 +313,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
       m_gameOptions.setEnabled(false);
     }
     // we don't want them starting new games if we are an old jar
-    if (ClientContext.areWeOldExtraJar()) {
+    if (ClientFileSystemHelper.areWeOldExtraJar()) {
       m_loadNewGame.setEnabled(false);
       m_loadNewGame.setToolTipText(
           "This is disabled on older engine jars, please start new games with the latest version of TripleA.");

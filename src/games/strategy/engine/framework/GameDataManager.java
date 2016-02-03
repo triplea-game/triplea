@@ -20,6 +20,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
@@ -113,7 +114,7 @@ public class GameDataManager {
             System.exit(0);
           }
         } catch (final IOException e) {
-          if (ClientContext.areWeOldExtraJar()) {
+          if (ClientFileSystemHelper.areWeOldExtraJar()) {
             throw new IOException("<html>Please run the default TripleA and try to open this game again. "
                 + "<br>This TripleA engine is old and kept only for backwards compatibility and can only open savegames created by engines with these first 3 version digits: "
                 + ClientContext.getInstance().engineVersion().getVersion().toStringFull("_", true) + "</html>");

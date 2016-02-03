@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.JOptionPane;
 
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.server.LobbyServer;
@@ -40,7 +41,7 @@ public class LobbyLogin {
       return null;
     }
     if (m_serverProperties.getPort() == -1) {
-      if (ClientContext.areWeOldExtraJar()) {
+      if (ClientFileSystemHelper.areWeOldExtraJar()) {
         JOptionPane.showMessageDialog(m_parent,
             "<html>Could not find lobby server for this version of TripleA, <br>Please make sure you are using the latest version: http://triplea.sourceforge.net/ "
                 + "<br /><br />This is because you are using an old engine that is kept for backwards compatibility. "

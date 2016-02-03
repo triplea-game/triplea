@@ -30,6 +30,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.mapDownload.MapDownloadController;
@@ -297,7 +298,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   private LobbyServerProperties getLobbyServerProperties() {
     // try to look up an override
-    final File f = new File(ClientContext.getRootFolder(), "lobby.properties");
+    final File f = new File(ClientFileSystemHelper.getRootFolder(), "lobby.properties");
     if (f.exists()) {
       final Properties props = new Properties();
       try {
