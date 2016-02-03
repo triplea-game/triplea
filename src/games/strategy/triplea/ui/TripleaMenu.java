@@ -961,7 +961,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
       text.append(defaultFileName + ",");
       text.append("\n");
       text.append("TripleA Engine Version: ,");
-      text.append(games.strategy.engine.EngineVersion.VERSION.toString() + ",");
+      text.append(games.strategy.engine.ClientContext.getInstance().engineVersion().getVersion().toString() + ",");
       text.append("\n");
       text.append("Game Name: ,");
       text.append(getData().getGameName() + ",");

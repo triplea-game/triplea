@@ -46,7 +46,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   private static final long serialVersionUID = 3926503672972937677L;
   private static final Logger s_logger = Logger.getLogger(MetaSetupPanel.class.getName());
-  private static String s_serverPropertiesName = "server_" + EngineVersion.VERSION.toString() + ".properties";
+  private static String s_serverPropertiesName = "server_" + ClientContext.getInstance().engineVersion().getVersion().toString() + ".properties";
   private JButton m_startLocal;
   private JButton m_startPBEM;
   private JButton m_hostGame;
@@ -231,7 +231,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   private void about() {
     final String text =
-        "<h2>TripleA</h2>" + "<p><b>Engine Version:</b> " + games.strategy.engine.EngineVersion.VERSION.toString()
+        "<h2>TripleA</h2>" + "<p><b>Engine Version:</b> " + games.strategy.engine.ClientContext.getInstance().engineVersion().getVersion().toString()
             + "<br><b>Authors:</b> Sean Bridges, and many others. Current Developers: Veqryn (Chris Duncan)."
             + "<br>TripleA is an open-source game engine, allowing people to play many different games and maps."
             + "<br>For more information please visit:<br>"
@@ -297,7 +297,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   private LobbyServerProperties getLobbyServerProperties() {
     // try to look up an override
-    final File f = new File(GameRunner2.getRootFolder(), "lobby.properties");
+    final File f = new File(ClientContext.getRootFolder(), "lobby.properties");
     if (f.exists()) {
       final Properties props = new Properties();
       try {

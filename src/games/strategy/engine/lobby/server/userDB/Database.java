@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 
@@ -54,7 +55,7 @@ public class Database {
     if (System.getProperties().containsKey(ServerLauncher.SERVER_ROOT_DIR_PROPERTY)) {
       root = new File(System.getProperties().getProperty(ServerLauncher.SERVER_ROOT_DIR_PROPERTY));
     } else {
-      root = GameRunner2.getRootFolder();
+      root = ClientContext.getRootFolder();
     }
     if (!root.exists()) {
       throw new IllegalStateException("Root dir does not exist");

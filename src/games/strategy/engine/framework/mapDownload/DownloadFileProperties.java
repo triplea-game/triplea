@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.EngineVersion;
 import games.strategy.util.Version;
 
@@ -59,6 +60,6 @@ class DownloadFileProperties {
     props.setProperty("map.url", selected.getUrl());
     props.setProperty("download.time", new Date().toString());
     props.setProperty("download.hostedBy", selected.getHostedUrl());
-    props.setProperty("engine.version", EngineVersion.VERSION.toString());
+    props.setProperty("engine.version", ClientContext.getInstance().engineVersion().getVersion().toString());
   }
 }

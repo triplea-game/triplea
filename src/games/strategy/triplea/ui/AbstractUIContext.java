@@ -18,6 +18,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.LocalPlayers;
@@ -301,7 +302,7 @@ public abstract class AbstractUIContext implements IUIContext {
     final String mapName = data.getProperties().get(Constants.MAP_NAME).toString();
     final Map<String, String> rVal = new LinkedHashMap<String, String>();
     rVal.put("Original", mapName);
-    getSkins(mapName, rVal, new File(GameRunner2.getRootFolder(), "maps"));
+    getSkins(mapName, rVal, new File(ClientContext.getRootFolder(), "maps"));
     getSkins(mapName, rVal, GameRunner2.getUserMapsFolder());
     return rVal;
   }

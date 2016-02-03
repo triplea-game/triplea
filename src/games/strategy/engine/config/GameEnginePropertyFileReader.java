@@ -8,6 +8,7 @@ import java.util.Properties;
 
 import com.google.common.base.Throwables;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner2;
 
 /**
@@ -20,7 +21,7 @@ public class GameEnginePropertyFileReader implements PropertyReader {
   private final File propertyFile;
 
   public GameEnginePropertyFileReader() {
-    this(new File(GameRunner2.getRootFolder(), GAME_ENGINE_PROPERTY_FILE));
+    this(new File(ClientContext.getRootFolder(), GAME_ENGINE_PROPERTY_FILE));
   }
 
   /** This constructor here for testing purposes, use the simple no-arg constructor instead */
@@ -47,7 +48,7 @@ public class GameEnginePropertyFileReader implements PropertyReader {
   }
 
   public static String getConfigFilePath() {
-    File f = new File(GameRunner2.getRootFolder(), GAME_ENGINE_PROPERTY_FILE);
+    File f = new File(ClientContext.getRootFolder(), GAME_ENGINE_PROPERTY_FILE);
     return f.getAbsolutePath();
   }
 }

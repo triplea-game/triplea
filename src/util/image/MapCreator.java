@@ -28,6 +28,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
@@ -212,7 +213,7 @@ public class MapCreator extends JFrame {
       public void actionPerformed(final ActionEvent e) {
         try {
           DesktopUtilityBrowserLauncher.openFile(
-              new File(GameRunner2.getRootFolder(), "doc" + File.separator + "map_and_map_skin_making_overview.html"));
+              new File(ClientContext.getRootFolder(), "doc" + File.separator + "map_and_map_skin_making_overview.html"));
           // DesktopUtilityBrowserLauncher.openURL(GameRunner.getRootFolder().getAbsoluteFile() + File.separator + "doc"
           // + File.separator +
           // "map_and_map_skin_making_overview.html");

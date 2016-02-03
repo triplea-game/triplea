@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.util.List;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner2;
 
 public class DownloadRunnable implements Runnable {
@@ -112,7 +113,7 @@ public class DownloadRunnable implements Runnable {
   }
 
   private void readLocalFile() {
-    File targetFile = new File(GameRunner2.getRootFolder(), urlString);
+    File targetFile = new File(ClientContext.getRootFolder(), urlString);
     try {
       contents = Files.readAllBytes(targetFile.toPath());
       downloads = DownloadFileParser.parse(new ByteArrayInputStream(getContents()), urlString);

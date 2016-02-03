@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.GameDescription.GameStatus;
@@ -88,11 +89,11 @@ public class TripleAProcessRunner {
     }
     final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
     String newClassPath = null;
-    if (!EngineVersion.VERSION.equals(engineVersionOfGameToJoin)) {
+    if (!ClientContext.getInstance().engineVersion().getVersion().equals(engineVersionOfGameToJoin)) {
       try {
         newClassPath = findOldJar(engineVersionOfGameToJoin, false);
       } catch (final Exception e) {
-        if (GameRunner2.areWeOldExtraJar()) {
+        if (ClientContext.areWeOldExtraJar()) {
           JOptionPane.showMessageDialog(parent,
               "<html>Please run the default TripleA and try joining the online lobby for it instead. "
                   + "<br>This TripleA engine is old and kept only for backwards compatibility and can only play with people using the exact same version as this one. "
@@ -108,7 +109,7 @@ public class TripleAProcessRunner {
         return;
       }
       // ask user if we really want to do this?
-      final String messageString = "<html>This TripleA engine is version " + EngineVersion.VERSION.toString()
+      final String messageString = "<html>This TripleA engine is version " + ClientContext.getInstance().engineVersion().getVersion().toString()
           + " and you are trying to join a game made with version " + engineVersionOfGameToJoin.toString()
           + "<br>However, this TripleA can only play with engines that are the exact same version as itself (x_x_x_x)."
           + "<br><br>TripleA now comes with older engines included with it, and has found the engine used by the host. This is a new feature and is in 'beta' stage."
@@ -139,11 +140,11 @@ public class TripleAProcessRunner {
   }
 
   public static String findOldJar(final Version oldVersionNeeded, final boolean ignoreMicro) throws IOException {
-    if (EngineVersion.VERSION.equals(oldVersionNeeded, ignoreMicro)) {
+    if (ClientContext.getInstance().engineVersion().getVersion().equals(oldVersionNeeded, ignoreMicro)) {
       return System.getProperty("java.class.path");
     }
     // first, see if the default/main triplea can run it
-    if (GameRunner2.areWeOldExtraJar()) {
+    if (ClientContext.areWeOldExtraJar()) {
       final String version = System.getProperty(GameRunner2.TRIPLEA_ENGINE_VERSION_BIN);
       if (version != null && version.length() > 0) {
         Version defaultVersion = null;
@@ -156,9 +157,9 @@ public class TripleAProcessRunner {
           if (defaultVersion.equals(oldVersionNeeded, ignoreMicro)) {
             final String jarName = "triplea.jar";
             // windows is in 'bin' folder, mac is in 'Java' folder.
-            File binFolder = new File(GameRunner2.getRootFolder(), "bin/");
+            File binFolder = new File(ClientContext.getRootFolder(), "bin/");
             if (!binFolder.exists()) {
-              binFolder = new File(GameRunner2.getRootFolder(), "Java/");
+              binFolder = new File(ClientContext.getRootFolder(), "Java/");
             }
             if (binFolder.exists()) {
               final File[] files = binFolder.listFiles();
@@ -200,7 +201,7 @@ public class TripleAProcessRunner {
     // we don't care what the last (micro) number is of the version number. example: triplea 1.5.2.1 can open 1.5.2.0
     // savegames.
     final String jarName = "triplea_" + oldVersionNeeded.toStringFull("_", ignoreMicro);
-    final File oldJarsFolder = new File(GameRunner2.getRootFolder(), "old/");
+    final File oldJarsFolder = new File(ClientContext.getRootFolder(), "old/");
     if (!oldJarsFolder.exists()) {
       throw new IOException("Can not find 'old' engine jars folder");
     }
