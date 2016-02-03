@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.GameRunner;
@@ -32,12 +30,8 @@ public final class ClientFileSystemHelper {
       return getRootFolderRelativeToJar(fileName, tripleaJarName);
     }
 
-//    final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
-    if (fileName.contains("triplea_") && fileName.contains(".jar!")) {
-      Pattern pattern = Pattern.compile("triplea_.*\\.jar!");
-      Matcher matcher = pattern.matcher(fileName);
-
-      String tripleaJarNameWithEngineVersion =   matcher.group();
+    final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
+    if (fileName.contains("triplea_"+ tripleaJarNameWithEngineVersion + ".jar!")) {
       return getRootFolderRelativeToJar(fileName, tripleaJarNameWithEngineVersion);
     }
 
