@@ -1,7 +1,6 @@
 # Set the default behavior, in case people don't have core.autocrlf set.
 * text=auto
 
-game_engine.properties=lf
 MacOS_users_read_this_first.txt eol=lf
 triplea_maps.xml eol=lf
 
@@ -9,7 +8,6 @@ triplea_maps.xml eol=lf
 *.bat eol=crlf
 *.txt eol=crlf
 *.ini eol=crlf
-*.properties eol=crlf
 *.xml eol=crlf
 *.html eol=crlf
 *.css eol=crlf
@@ -19,6 +17,7 @@ triplea_maps.xml eol=lf
 # Declare files that will always have LF line endings on checkout.
 *.sh eol=lf
 *.plist eol=lf
+*.properties eol=lf
 
 # Denote all files that are truly binary and should not be modified.
 *.png binary
