@@ -154,34 +154,49 @@ public class GameSelectorPanel extends JPanel implements Observer {
         "<html>Set options for the currently selected game, <br>such as enabling/disabling Low Luck, or Technology, etc.</html>");
   }
 
+
+
   private void layoutComponents() {
     setLayout(new GridBagLayout());
-    add(m_nameLabel, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(10, 10, 3, 5), 0, 0));
-    add(m_nameText, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(10, 0, 3, 0), 0, 0));
-    add(m_versionLabel, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(0, 10, 3, 5), 0, 0));
-    add(m_versionText, new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(0, 0, 3, 0), 0, 0));
-    add(m_roundLabel, new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(0, 10, 3, 5), 0, 0));
-    add(m_roundText, new GridBagConstraints(1, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(0, 0, 3, 0), 0, 0));
-    add(m_fileNameLabel, new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(20, 10, 3, 5), 0, 0));
-    add(m_fileNameText, new GridBagConstraints(0, 4, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(0, 10, 3, 5), 0, 0));
-    add(m_loadNewGame, new GridBagConstraints(0, 5, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(25, 10, 10, 10), 0, 0));
-    add(m_loadSavedGame, new GridBagConstraints(0, 6, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(0, 10, 10, 10), 0, 0));
-    add(m_gameOptions, new GridBagConstraints(0, 7, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(25, 10, 10, 10), 0, 0));
+    add(m_nameLabel, buildGridCell(0, 0, new Insets(10, 10, 3, 5)));
+    add(m_nameText, buildGridCell(1, 0, new Insets(10, 0, 3, 0)));
+    add(m_versionLabel, buildGridCell(0, 1, new Insets(0, 10, 3, 5)));
+    add(m_versionText, buildGridCell(1, 1, new Insets(0, 0, 3, 0)));
+    add(m_roundLabel, buildGridCell(0, 2, new Insets(0, 10, 3, 5)));
+    add(m_roundText, buildGridCell(1, 2, new Insets(0, 0, 3, 0)));
+    add(m_fileNameLabel, buildGridCell(0, 3, new Insets(20, 10, 3, 5)));
+    add(m_fileNameText, buildGridRow(0, 4, new Insets(0, 10, 3, 5)));
+    add(m_loadNewGame, buildGridRow(0, 5, new Insets(25, 10, 10, 10)));
+    add(m_loadSavedGame, buildGridRow(0, 6, new Insets(0, 10, 10, 10)));
+    add(m_gameOptions, buildGridRow(0, 7,new Insets(25, 10, 10, 10)));
+
     // spacer
     add(new JPanel(), new GridBagConstraints(0, 8, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
         new Insets(0, 0, 0, 0), 0, 0));
   }
+
+
+  private static GridBagConstraints buildGridCell(int x, int y, Insets insets) {
+    return buildGrid(x, y, insets, 1);
+  }
+
+  private static GridBagConstraints buildGridRow(int x, int y, Insets insets) {
+    return buildGrid(x, y, insets, 2);
+  }
+
+  private static GridBagConstraints buildGrid(int x, int y, Insets insets, int width) {
+    int gridWidth = width;
+    int gridHeight = 1;
+    double weigthX = 0;
+    double weigthY = 0;
+    int anchor = GridBagConstraints.WEST;
+    int fill = GridBagConstraints.NONE;
+    int ipadx = 0;
+    int ipady = 0;
+
+    return new GridBagConstraints(x, y, gridWidth, gridHeight, weigthX, weigthY, anchor, fill, insets, ipadx, ipady);
+  }
+
 
   private void setupListeners() {
     m_loadNewGame.addActionListener(new ActionListener() {
