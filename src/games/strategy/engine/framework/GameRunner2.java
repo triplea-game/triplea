@@ -33,6 +33,7 @@ import org.apache.commons.httpclient.HostConfiguration;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.mapDownload.MapDownloadController;
 import games.strategy.engine.framework.startup.ui.MainFrame;
@@ -812,7 +813,7 @@ public class GameRunner2 {
    * @return true if we have any out of date maps
    */
   private static boolean checkForUpdatedMaps() {
-    MapDownloadController downloadController = new MapDownloadController();
+    MapDownloadController downloadController = ClientContext.getInstance().mapDownloadController();
     return downloadController.checkDownloadedMapsAreLatest();
   }
 
