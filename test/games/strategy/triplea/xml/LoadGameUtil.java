@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicReference;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameRunner2;
@@ -48,7 +49,7 @@ public class LoadGameUtil {
   private static InputStream openInputStream(final String game, String[] possibleFolders) {
     InputStream is = LoadGameUtil.class.getResourceAsStream(game);
     if (is == null) {
-      final File f = GameRunner2.getFile(game, possibleFolders);
+      final File f = ClientContext.getFile(game, possibleFolders);
       if (f.exists()) {
         try {
           is = new FileInputStream(f);

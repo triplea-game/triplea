@@ -30,6 +30,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
@@ -190,7 +191,7 @@ public class GameParser {
     }
     final Version mapCompatibleWithTripleaVersion =
         new Version(((Element) minimumVersion).getAttribute("minimumVersion"));
-    if (mapCompatibleWithTripleaVersion.isGreaterThan(EngineVersion.VERSION, true)) {
+    if (mapCompatibleWithTripleaVersion.isGreaterThan(ClientContext.getInstance().engineVersion().getVersion(), true)) {
       throw new EngineVersionException("Trying to play a map made for a newer version of TripleA. Map named '"
           + data.getGameName() + "' requires at least TripleA version " + mapCompatibleWithTripleaVersion.toString());
     }

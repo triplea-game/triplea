@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
@@ -67,7 +68,7 @@ public class GameDataExporter {
     // Since we do not keep the minimum version info in the game data, just put the current version of triplea here
     // (since we have
     // successfully started the map, it is basically correct)
-    xmlfile.append("    <triplea minimumVersion=\"" + EngineVersion.VERSION + "\"/>\n");
+    xmlfile.append("    <triplea minimumVersion=\"" + ClientContext.getInstance().engineVersion().getVersion() + "\"/>\n");
   }
 
   private void diceSides(final GameData data) {

@@ -4,6 +4,7 @@ import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
@@ -118,7 +119,7 @@ public class MessengerLoginTest extends TestCase {
         final String salt = challengProperties.get(ClientLoginValidator.SALT_PROPERTY);
         final HashMap<String, String> rVal = new HashMap<String, String>();
         rVal.put(ClientLogin.PASSWORD_PROPERTY, MD5Crypt.crypt("foo", salt));
-        rVal.put(ClientLogin.ENGINE_VERSION_PROPERTY, EngineVersion.VERSION.toString());
+        rVal.put(ClientLogin.ENGINE_VERSION_PROPERTY, ClientContext.getInstance().engineVersion().getVersion().toString());
         return rVal;
       }
     };

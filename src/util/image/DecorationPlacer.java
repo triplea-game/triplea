@@ -50,6 +50,7 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
@@ -645,7 +646,7 @@ public class DecorationPlacer extends JFrame {
     File image = new File(s_mapFolderLocation + File.separator + s_imagePointType.getFolderName(),
         s_imagePointType.getImageName());
     if (image == null || !image.exists()) {
-      image = new File(GameRunner2.getRootFolder() + File.separator + ResourceLoader.RESOURCE_FOLDER + File.separator
+      image = new File(ClientContext.getRootFolder() + File.separator + ResourceLoader.RESOURCE_FOLDER + File.separator
           + s_imagePointType.getFolderName(), s_imagePointType.getImageName());
     }
     if (image == null || !image.exists()) {

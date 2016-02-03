@@ -147,7 +147,7 @@ public class ForumPosterEditor extends EditorPanel {
           }
         }
         poster.postTurnSummary(
-            "Test summary from TripleA, engine version: " + games.strategy.engine.EngineVersion.VERSION.toString()
+            "Test summary from TripleA, engine version: " + games.strategy.engine.ClientContext.getInstance().engineVersion().getVersion().toString()
                 + ", time: " + new SimpleDateFormat("HH:mm:ss").format(new Date()),
             "Testing Forum poster");
         progressWindow.setVisible(false);

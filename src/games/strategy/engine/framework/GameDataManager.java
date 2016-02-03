@@ -19,6 +19,7 @@ import java.util.zip.GZIPOutputStream;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
@@ -62,17 +63,17 @@ public class GameDataManager {
     try {
       final Version readVersion = (Version) input.readObject();
       final boolean headless = HeadlessGameServer.headless();
-      if (!readVersion.equals(EngineVersion.VERSION, true)) {
+      if (!readVersion.equals(ClientContext.getInstance().engineVersion().getVersion(), true)) {
         // a hack for now, but a headless server should not try to open any savegame that is not its version
         if (headless) {
-          final String message = "Incompatible game save, we are: " + EngineVersion.VERSION
+          final String message = "Incompatible game save, we are: " + ClientContext.getInstance().engineVersion().getVersion()
               + "  Trying to load game created with: " + readVersion;
           HeadlessGameServer.sendChat(message);
           System.out.println(message);
           return null;
         }
         final String error = "<html>Incompatible engine versions, and no old engine found. We are: "
-            + EngineVersion.VERSION + " . Trying to load game created with: " + readVersion
+            + ClientContext.getInstance().engineVersion().getVersion() + " . Trying to load game created with: " + readVersion
             + "<br>To download the latest version of TripleA, Please visit http://triplea.sourceforge.net/</html>";
         if (savegamePath == null) {
           throw new IOException(error);
@@ -83,7 +84,7 @@ public class GameDataManager {
         try {
           final String newClassPath = TripleAProcessRunner.findOldJar(readVersion, true);
           // ask user if we really want to do this?
-          final String messageString = "<html>This TripleA engine is version " + EngineVersion.VERSION.toString()
+          final String messageString = "<html>This TripleA engine is version " + ClientContext.getInstance().engineVersion().getVersion().toString()
               + " and you are trying to open a savegame made with version " + readVersion.toString()
               + "<br>However, this TripleA can not open any savegame made by any engine other than engines with the same first three version numbers as it (x_x_x_x)."
               + "<br><br>TripleA now comes with older engines included with it, and has found the engine to run this savegame. This is a new feature and is in 'beta' stage."
@@ -112,23 +113,23 @@ public class GameDataManager {
             System.exit(0);
           }
         } catch (final IOException e) {
-          if (GameRunner2.areWeOldExtraJar()) {
+          if (ClientContext.areWeOldExtraJar()) {
             throw new IOException("<html>Please run the default TripleA and try to open this game again. "
                 + "<br>This TripleA engine is old and kept only for backwards compatibility and can only open savegames created by engines with these first 3 version digits: "
-                + EngineVersion.VERSION.toStringFull("_", true) + "</html>");
+                + ClientContext.getInstance().engineVersion().getVersion().toStringFull("_", true) + "</html>");
           } else {
             throw new IOException(error);
           }
         }
         return null;
-      } else if (!headless && readVersion.isGreaterThan(EngineVersion.VERSION, false)) {
+      } else if (!headless && readVersion.isGreaterThan(ClientContext.getInstance().engineVersion().getVersion(), false)) {
         // we can still load it because first 3 numbers of the version are the same, however this save was made by a
         // newer engine, so prompt
         // the user to upgrade
         final String messageString =
             "<html>Your TripleA engine is OUT OF DATE.  This save was made by a newer version of TripleA."
                 + "<br>However, because the first 3 version numbers are the same as your current version, we can still open the savegame."
-                + "<br><br>This TripleA engine is version " + EngineVersion.VERSION.toStringFull("_")
+                + "<br><br>This TripleA engine is version " + ClientContext.getInstance().engineVersion().getVersion().toStringFull("_")
                 + " and you are trying to open a savegame made with version " + readVersion.toStringFull("_")
                 + "<br><br>To download the latest version of TripleA, Please visit http://triplea.sourceforge.net/"
                 + "<br><br>It is recommended that you upgrade to the latest version of TripleA before playing this savegame."
@@ -167,8 +168,8 @@ public class GameDataManager {
      * example1:
      * final Version v1610 = new Version(1, 6, 1, 0);
      * final Version v1620 = new Version(1, 6, 2, 0);
-     * if (originalEngineVersion.equals(v1610, false) && EngineVersion.VERSION.isGreaterThan(v1610, false) &&
-     * EngineVersion.VERSION.isLessThan(v1620, true))
+     * if (originalEngineVersion.equals(v1610, false) && ClientContext.getInstance().engineVersion().getVersion().isGreaterThan(v1610, false) &&
+     * ClientContext.getInstance().engineVersion().getVersion().isLessThan(v1620, true))
      * {
      * // if original save was done under 1.6.1.0, and new engine is greater than 1.6.1.0 and less than 1.6.2.0
      * try
@@ -226,7 +227,7 @@ public class GameDataManager {
     // write internally first in case of error
     final ByteArrayOutputStream bytes = new ByteArrayOutputStream(25000);
     final ObjectOutputStream outStream = new ObjectOutputStream(bytes);
-    outStream.writeObject(games.strategy.engine.EngineVersion.VERSION);
+    outStream.writeObject(games.strategy.engine.ClientContext.getInstance().engineVersion().getVersion());
     data.acquireReadLock();
     try {
       outStream.writeObject(data);
