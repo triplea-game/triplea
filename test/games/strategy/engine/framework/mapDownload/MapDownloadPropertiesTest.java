@@ -4,7 +4,6 @@ package games.strategy.engine.framework.mapDownload;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,9 +28,8 @@ public class MapDownloadPropertiesTest {
 
   @Test
   public void mapListDownloadSitePropertyIsReadFromPropertyFile() {
-    MapListingSource testObj = new MapListingSource(mockReader);
     when(mockReader.readProperty(GameEngineProperty.MAP_LISTING_SOURCE_FILE)).thenReturn(SAMPLE_VALUE);
+    MapListingSource testObj = new MapListingSource(mockReader);
     assertThat(testObj.getMapListDownloadSite(), is(SAMPLE_VALUE));
-    verify(mockReader);
   }
 }
