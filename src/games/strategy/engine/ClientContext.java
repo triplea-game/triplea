@@ -44,12 +44,13 @@ public final class ClientContext {
 
 
   private final MapDownloadController mapDownloadController;
-
+  private final EngineVersion engineVersion;
 
   private ClientContext() {
     PropertyReader reader = new GameEnginePropertyFileReader();
     MapListingSource listingSource = new MapListingSource(reader);
     mapDownloadController = new MapDownloadController(listingSource);
+    engineVersion = new EngineVersion(reader);
   }
 
 
@@ -57,5 +58,8 @@ public final class ClientContext {
     return mapDownloadController;
   }
 
+  public EngineVersion engineVersion() {
+    return engineVersion;
+  }
 
 }
