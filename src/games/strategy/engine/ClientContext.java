@@ -34,7 +34,7 @@ public final class ClientContext {
 
 
   private ClientContext() {
-    File mapDownloadPropertiesFile = new File(GameRunner2.getRootFolder(), "mapDownload.properties");
+    File mapDownloadPropertiesFile = new File(GameRunner2.getRootFolder(), "game_engine.properties");
     MapListingSource listingSource = new MapListingSource(mapDownloadPropertiesFile);
     mapDownloadController = new MapDownloadController(listingSource);
   }
