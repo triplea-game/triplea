@@ -83,7 +83,7 @@ public class AutoPlacementFinder {
       System.out.println("Shutting down");
       System.exit(0);
     }
-    File file = new File(GameRunner2.getUserMapsFolder() + File.separator + mapDir + File.separator + "map.properties");
+    File file = new File(ClientFileSystemHelper.getUserMapsFolder() + File.separator + mapDir + File.separator + "map.properties");
     if (!file.exists()) {
       file = new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps" + File.separator + mapDir + File.separator
           + "map.properties");

@@ -53,8 +53,8 @@ public class ResourceLoader {
     final String zipName = dirName + ".zip";
     final List<File> candidates = new ArrayList<File>();
     // prioritize user maps folder over root folder
-    candidates.add(new File(GameRunner2.getUserMapsFolder(), dirName));
-    candidates.add(new File(GameRunner2.getUserMapsFolder(), zipName));
+    candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), dirName));
+    candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), zipName));
     candidates.add(new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps", dirName));
     candidates.add(new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps", zipName));
     final Collection<File> existing = Match.getMatches(candidates, new Match<File>() {

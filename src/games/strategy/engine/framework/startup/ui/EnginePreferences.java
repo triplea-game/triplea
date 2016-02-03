@@ -432,7 +432,7 @@ public class EnginePreferences extends JDialog {
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          DesktopUtilityBrowserLauncher.openFile(GameRunner2.getUserRootFolder());
+          DesktopUtilityBrowserLauncher.openFile(ClientFileSystemHelper.getUserRootFolder());
         } catch (final Exception e1) {
           e1.printStackTrace();
         }
