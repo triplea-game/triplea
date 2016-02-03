@@ -142,8 +142,8 @@ public class GameSelectorPanel extends JPanel implements Observer {
     String version = ClientContext.getInstance().engineVersion().getExactVersion();
     m_engineVersionText = new JLabel(version);
     m_nameLabel = new JLabel("Game Name:");
-    m_versionLabel = new JLabel("Game Version:");
-    m_roundLabel = new JLabel("Game Round:");
+    m_versionLabel = new JLabel("Map Version:");
+    m_roundLabel = new JLabel("Map Round:");
     m_fileNameLabel = new JLabel("File Name:");
     m_nameText = new JLabel();
     m_versionText = new JLabel();
