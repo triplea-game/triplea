@@ -1,22 +1,11 @@
 package games.strategy.engine;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.config.GameEnginePropertyFileReader;
 import games.strategy.engine.config.PropertyReader;
-import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.mapDownload.MapDownloadController;
 import games.strategy.engine.framework.mapDownload.MapListingSource;
-import games.strategy.util.Version;
 
 /**
  * IOC container for storing objects needed by the TripleA Swing client
@@ -73,6 +62,7 @@ public final class ClientContext {
   public static boolean areWeOldExtraJar() {
     return ClientFileSystemHelper.areWeOldExtraJar();
   }
+
 
 
 
