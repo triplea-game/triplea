@@ -35,14 +35,10 @@ import games.strategy.engine.framework.mapDownload.MapListingSource;
  * Since GameRunner2 creates ClientContext, similar none of the classes created by Client Context can game runner 2
  */
 public final class ClientContext {
-  private static ClientContext instance;
+  private static ClientContext instance = new ClientContext();
 
 
-
-  public static synchronized ClientContext getInstance() {
-    if (instance == null) {
-      instance = new ClientContext();
-    }
+  public static ClientContext getInstance() {
     return instance;
   }
 
@@ -56,10 +52,6 @@ public final class ClientContext {
   private EngineVersion engineVersion;
 
   private ClientContext() {
-    initObjects();
-  }
-
-  private void initObjects() {
     PropertyReader reader = new GameEnginePropertyFileReader();
     MapListingSource listingSource = new MapListingSource(reader);
     mapDownloadController = new MapDownloadController(listingSource);
