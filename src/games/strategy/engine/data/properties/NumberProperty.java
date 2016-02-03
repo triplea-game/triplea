@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.swing.JComponent;
 
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.IntTextFieldChangeListener;
@@ -40,7 +41,7 @@ public class NumberProperty extends AEditableProperty {
       // todo (kg) remove at a later point
       throw new RuntimeException(
           "Number properties are no longer stored as Strings. You should delete your option cache, located at "
-              + new File(GameRunner2.getUserRootFolder(), "optionCache").toString());
+              + new File(ClientFileSystemHelper.getUserRootFolder(), "optionCache").toString());
     } else {
       m_value = (Integer) value;
     }

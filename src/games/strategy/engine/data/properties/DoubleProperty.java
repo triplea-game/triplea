@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 
 import javax.swing.JComponent;
 
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.ui.DoubleTextField;
 import games.strategy.ui.DoubleTextFieldChangeListener;
 
@@ -49,7 +49,7 @@ public class DoubleProperty extends AEditableProperty {
       // todo (kg) remove at a later point
       throw new RuntimeException(
           "Double and Number properties are no longer stored as Strings. You should delete your option cache, located at "
-              + new File(GameRunner2.getUserRootFolder(), "optionCache").toString());
+              + new File(ClientFileSystemHelper.getUserRootFolder(), "optionCache").toString());
     } else {
       m_value = roundToPlace((Double) value, m_places, BigDecimal.ROUND_FLOOR);
     }

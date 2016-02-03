@@ -36,9 +36,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
@@ -602,7 +602,7 @@ class LocalBeanCache {
   Map<String, IBean> m_map = new HashMap<String, IBean>();
 
   private LocalBeanCache() {
-    m_file = new File(GameRunner2.getUserRootFolder(), "local.cache");
+    m_file = new File(ClientFileSystemHelper.getUserRootFolder(), "local.cache");
     m_map = loadMap();
     // add a shutdown, just in case someone forgets to call writeToDisk
     final Thread shutdown = new Thread(new Runnable() {

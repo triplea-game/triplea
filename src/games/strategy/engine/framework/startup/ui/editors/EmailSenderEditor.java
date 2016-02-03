@@ -17,7 +17,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.startup.ui.editors.validators.EmailValidator;
 import games.strategy.engine.framework.startup.ui.editors.validators.IntegerRangeValidator;
@@ -159,7 +159,7 @@ public class EmailSenderEditor extends EditorPanel {
         int messageType = JOptionPane.ERROR_MESSAGE;
         try {
           final String html = "<html><body><h1>Success</h1><p>This was a test email sent by TripleA<p></body></html>";
-          final File dummy = new File(GameRunner2.getUserRootFolder(), "dummySave.txt");
+          final File dummy = new File(ClientFileSystemHelper.getUserRootFolder(), "dummySave.txt");
           dummy.deleteOnExit();
           final FileOutputStream fout = new FileOutputStream(dummy);
           fout.write("This file would normally be a save game".getBytes());

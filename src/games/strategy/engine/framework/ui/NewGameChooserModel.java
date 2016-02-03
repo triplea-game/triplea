@@ -78,7 +78,7 @@ public class NewGameChooserModel extends DefaultListModel {
   private static List<File> allMapFiles() {
     final List<File> rVal = new ArrayList<File>();
     // prioritize user maps folder over root folder
-    rVal.addAll(safeListFiles(GameRunner2.getUserMapsFolder()));
+    rVal.addAll(safeListFiles(ClientFileSystemHelper.getUserMapsFolder()));
     rVal.addAll(safeListFiles(getDefaultMapsDir()));
     return rVal;
   }

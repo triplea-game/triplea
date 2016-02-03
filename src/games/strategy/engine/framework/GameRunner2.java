@@ -832,27 +832,4 @@ public class GameRunner2 {
     return img;
   }
 
-  public static File getUserRootFolder() {
-    final File userHome = new File(System.getProperties().getProperty("user.home"));
-    // the default
-    File rootDir;
-    if (GameRunner.isMac()) {
-      rootDir = new File(new File(userHome, "Documents"), "triplea");
-    } else {
-      rootDir = new File(userHome, "triplea");
-    }
-    return rootDir;
-  }
-
-  public static File getUserMapsFolder() {
-    final File f = new File(getUserRootFolder(), "maps");
-    if (!f.exists()) {
-      try {
-        f.mkdirs();
-      } catch (final SecurityException e) {
-        e.printStackTrace();
-      }
-    }
-    return f;
-  }
 }

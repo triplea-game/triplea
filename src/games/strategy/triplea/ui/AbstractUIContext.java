@@ -304,7 +304,7 @@ public abstract class AbstractUIContext implements IUIContext {
     final Map<String, String> rVal = new LinkedHashMap<String, String>();
     rVal.put("Original", mapName);
     getSkins(mapName, rVal, new File(ClientFileSystemHelper.getRootFolder(), "maps"));
-    getSkins(mapName, rVal, GameRunner2.getUserMapsFolder());
+    getSkins(mapName, rVal, ClientFileSystemHelper.getUserMapsFolder());
     return rVal;
   }
 

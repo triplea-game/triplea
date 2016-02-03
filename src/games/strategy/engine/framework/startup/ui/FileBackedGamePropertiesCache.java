@@ -11,9 +11,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.framework.GameRunner2;
 
 /**
  * A game options cache that uses files to store the game options
@@ -89,8 +89,8 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
    *        the game data
    * @return the File where the cached game options should be stored or read from
    */
-  private File getCacheFile(final GameData gameData) {
-    final File cacheDir = new File(GameRunner2.getUserRootFolder(), "optionCache");
+  private static File getCacheFile(final GameData gameData) {
+    final File cacheDir = new File(ClientFileSystemHelper.getUserRootFolder(), "optionCache");
     return new File(cacheDir, getFileName(gameData.getGameName()));
   }
 
@@ -101,7 +101,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
    *        the name of the game
    * @return the fileName on disk
    */
-  private String getFileName(final String gameName) {
+  private static String getFileName(final String gameName) {
     final StringBuilder sb = new StringBuilder();
     for (int i = 0, charArrayLength = gameName.length(); i < charArrayLength; i++) {
       final char c = gameName.charAt(i);
