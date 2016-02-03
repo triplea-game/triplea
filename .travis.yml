@@ -7,7 +7,10 @@ script:
 before_deploy:
 - wget -O setup https://github.com/triplea-game/triplea/blob/master/.travis/setup?raw=true
 - chmod +x setup && ./setup
-- export TAGGED_VERSION="$BUILD_VERSION.$TRAVIS_BUILD_NUMBER"
+- GAME_CONFIG=game_engine.properties
+- ENGINE_VERSION=$(grep "engine_version" $GAME_CONFIG | sed 's/.*= *//g')
+- export TAGGED_VERSION="$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER"
+- sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" $GAME_CONFIG
 - gradle release
 - wget -O push_tag https://github.com/triplea-game/triplea/blob/master/.travis/push_tag?raw=true
 - chmod +x push_tag && ./push_tag
