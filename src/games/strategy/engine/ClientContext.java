@@ -1,7 +1,5 @@
 package games.strategy.engine;
 
-import java.io.File;
-
 import games.strategy.engine.config.GameEnginePropertyFileReader;
 import games.strategy.engine.config.PropertyReader;
 import games.strategy.engine.framework.mapDownload.MapDownloadController;
