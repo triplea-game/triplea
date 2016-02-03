@@ -20,7 +20,7 @@ public class GameEnginePropertyFileReader implements PropertyReader {
   private final File propertyFile;
 
   public GameEnginePropertyFileReader() {
-    this(new File(ClientFileSystemHelper.getRootFolder(), GAME_ENGINE_PROPERTY_FILE));
+    this(new File(GAME_ENGINE_PROPERTY_FILE));
   }
 
   /** This constructor here for testing purposes, use the simple no-arg constructor instead */
