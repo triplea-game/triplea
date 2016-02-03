@@ -163,25 +163,27 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
   private void layoutComponents() {
     setLayout(new GridBagLayout());
+    add(m_engineVersionLabel, buildGridCell(0, 0, new Insets(10, 10, 3, 5)));
+    add(m_engineVersionText, buildGridCell(1, 0, new Insets(10, 0, 3, 0)));
 
-    add(m_nameLabel, buildGridCell(0, 0, new Insets(10, 10, 3, 5)));
-    add(m_nameText, buildGridCell(1, 0, new Insets(10, 0, 3, 0)));
+    add(m_nameLabel, buildGridCell(0, 1, new Insets(0, 10, 3, 5)));
+    add(m_nameText, buildGridCell(1, 1, new Insets(0, 0, 3, 0)));
 
-    add(m_versionLabel, buildGridCell(0, 1, new Insets(0, 10, 3, 5)));
-    add(m_versionText, buildGridCell(1, 1, new Insets(0, 0, 3, 0)));
+    add(m_versionLabel, buildGridCell(0, 2, new Insets(0, 10, 3, 5)));
+    add(m_versionText, buildGridCell(1, 2, new Insets(0, 0, 3, 0)));
 
-    add(m_roundLabel, buildGridCell(0, 2, new Insets(0, 10, 3, 5)));
-    add(m_roundText, buildGridCell(1, 2, new Insets(0, 0, 3, 0)));
+    add(m_roundLabel, buildGridCell(0, 3, new Insets(0, 10, 3, 5)));
+    add(m_roundText, buildGridCell(1, 3, new Insets(0, 0, 3, 0)));
 
-    add(m_fileNameLabel, buildGridCell(0, 3, new Insets(20, 10, 3, 5)));
+    add(m_fileNameLabel, buildGridCell(0, 4, new Insets(20, 10, 3, 5)));
 
-    add(m_fileNameText, buildGridRow(0, 4, new Insets(0, 10, 3, 5)));
+    add(m_fileNameText, buildGridRow(0, 5, new Insets(0, 10, 3, 5)));
 
-    add(m_loadNewGame, buildGridRow(0, 5, new Insets(25, 10, 10, 10)));
+    add(m_loadNewGame, buildGridRow(0, 6, new Insets(25, 10, 10, 10)));
 
-    add(m_loadSavedGame, buildGridRow(0, 6, new Insets(0, 10, 10, 10)));
+    add(m_loadSavedGame, buildGridRow(0, 7, new Insets(0, 10, 10, 10)));
 
-    add(m_gameOptions, buildGridRow(0, 7, new Insets(25, 10, 10, 10)));
+    add(m_gameOptions, buildGridRow(0, 8, new Insets(25, 10, 10, 10)));
 
     // spacer
     add(new JPanel(), new GridBagConstraints(0, 8, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
