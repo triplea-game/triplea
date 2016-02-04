@@ -654,7 +654,7 @@
     <version>1.0</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/greyhawk/releases/download/0.1/greyhawk.zip</url>
+    <url>https://github.com/triplea-maps/greyhawk/releases/download/0.3/greyhawk.zip</url>
     <mapName>Greyhawk</mapName>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_greyhawk_mini.png" />
@@ -1962,7 +1962,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     ]]></description>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/developer_resources/map_makers/triplea_map_creator/releases/download/0.1/developer_resources/map_makers/triplea_map_creator.zip</url>
+    <url>http://downloads.sourceforge.net/project/tripleamaps/developer%20resources/map%20makers/TripleA_Map_Creator.zip</url>
     <mapName>TripleA_Map_Creator</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_Map_Creator_mini.png" />
@@ -2015,7 +2015,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>1.0.1.6</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/developer_resources/map_makers/map_making_tutorial_map/releases/download/0.1/developer_resources/map_makers/map_making_tutorial_map.zip</url>
+    <url>http://downloads.sourceforge.net/project/tripleamaps/developer%20resources/map%20makers/Map_Making_Tutorial_Map.zip</url>
     <mapName>Map_Making_Tutorial_Map</mapName>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_map_making_tutorial_map_mini.png" />
