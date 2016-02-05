@@ -14,10 +14,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -91,42 +87,17 @@ public class NewGameChooserModel extends DefaultListModel {
 
 
   private Set<NewGameChooserEntry> parseMapFiles() {
-    List<File> allMapFiles = allMapFiles();
     final Set<NewGameChooserEntry> parsedMapSet = Sets.newHashSet();
-
-    Collections.newSetFromMap(new ConcurrentHashMap(allMapFiles.size()));
-
-    // Half the total number of cores being used as a generic sweet spot. @DanVanAtta found with 6 cores that 2 to 4 threads were best.
-    final int halfCoreCount = (int) Math.ceil(Runtime.getRuntime().availableProcessors()/2);
-    final ExecutorService threadPool = Executors.newFixedThreadPool(halfCoreCount);
-
-    for (final File map : allMapFiles) {
+    for (final File map : allMapFiles()) {
       if (clearCacheMessenger.isCancelled()) {
         return ImmutableSet.of();
       }
       if (map.isDirectory()) {
-        threadPool.submit(new Runnable() {
-          @Override
-          public void run() {
-            parsedMapSet.addAll(populateFromDirectory(map));
-          }
-        });
+        parsedMapSet.addAll(populateFromDirectory(map));
       } else if (map.isFile() && map.getName().toLowerCase().endsWith(".zip")) {
-        threadPool.submit(new Runnable() {
-          @Override
-          public void run() {
-            parsedMapSet.addAll(populateFromZip(map));
-          }
-        });
+        parsedMapSet.addAll(populateFromZip(map));
       }
     }
-    try {
-      threadPool.shutdown();
-      threadPool.awaitTermination(5,TimeUnit.MINUTES);
-    } catch (InterruptedException e) {
-      ClientLogger.logQuietly(e);
-    }
-
     return parsedMapSet;
   }
 
@@ -203,7 +174,7 @@ public class NewGameChooserModel extends DefaultListModel {
         }
       };
 
-      if( SwingUtilities.isEventDispatchThread() ) {
+      if (SwingUtilities.isEventDispatchThread()) {
         deleteMapRunnable.run();
       } else {
         SwingUtilities.invokeAndWait(deleteMapRunnable);
