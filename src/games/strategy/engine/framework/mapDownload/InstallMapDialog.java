@@ -42,7 +42,6 @@ import javax.swing.event.ListSelectionListener;
 
 import com.google.common.io.Files;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
@@ -66,7 +65,7 @@ public class InstallMapDialog extends JDialog {
   private final List<String> m_outOfDateMaps = new ArrayList<String>();
 
   private InstallMapDialog(final Frame owner, final List<DownloadFileDescription> games) {
-    super(owner, "Select game to install", true);
+    super(owner, "Download Maps", true);
     m_games = games;
     createComponents();
     layoutCoponents();
