@@ -66,7 +66,7 @@ public class InstallMapDialog extends JDialog {
 
   private InstallMapDialog(final Frame owner, final List<DownloadFileDescription> games) {
     super(owner, "Download Maps", true);
-    m_games = games;
+    m_games = MapDownloadListSort.sortByMapName(games);
     createComponents();
     layoutCoponents();
     setupListeners();
