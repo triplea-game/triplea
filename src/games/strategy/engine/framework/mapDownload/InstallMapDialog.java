@@ -42,7 +42,6 @@ import javax.swing.event.ListSelectionListener;
 
 import com.google.common.io.Files;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;

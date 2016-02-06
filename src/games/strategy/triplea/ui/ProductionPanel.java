@@ -6,7 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -14,7 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -30,6 +28,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -98,14 +97,7 @@ public class ProductionPanel extends JPanel {
   private void initDialog(final JFrame root) {
     m_dialog = new JDialog(root, "Produce", true);
     m_dialog.getContentPane().add(this);
-    final Action closeAction = new AbstractAction("") {
-      private static final long serialVersionUID = -3984693668306307869L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_dialog.setVisible(false);
-      }
-    };
+    final Action closeAction = SwingAction.of("", e -> m_dialog.setVisible(false));
     // close the window on escape
     // this is mostly for developers, makes it much easier to quickly cycle through steps
     final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
@@ -199,14 +191,7 @@ public class ProductionPanel extends JPanel {
     m_left.setText(totalUnits + " total units purchased.  You have " + leftWithoutTechTokensOrVPs.toString() + " left");
   }
 
-  Action m_done_action = new AbstractAction("Done") {
-    private static final long serialVersionUID = -72826856616395760L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      m_dialog.setVisible(false);
-    }
-  };
+  Action m_done_action = SwingAction.of("Done", e -> m_dialog.setVisible(false));
 
   private IntegerMap<ProductionRule> getProduction() {
     final IntegerMap<ProductionRule> prod = new IntegerMap<ProductionRule>();

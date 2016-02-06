@@ -3,14 +3,12 @@ package games.strategy.triplea.ui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.Icon;
@@ -31,6 +29,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.tree.TreeNode;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.history.Event;
@@ -267,18 +266,13 @@ public class CommentPanel extends JPanel {
     }
   }
 
-  private final Action m_saveAction = new AbstractAction("Add Comment") {
-    private static final long serialVersionUID = -5771971912942033713L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      if (m_nextMessage.getText().trim().length() == 0) {
-        return;
-      }
-      addMessage(m_nextMessage.getText());
-      m_nextMessage.setText("");
+  private final Action m_saveAction = SwingAction.of("Add Comment", e -> {
+    if (m_nextMessage.getText().trim().length() == 0) {
+      return;
     }
-  };
+    addMessage(m_nextMessage.getText());
+    m_nextMessage.setText("");
+  });
 
   public void cleanUp() {
     cleanupKeyMap();

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -31,6 +30,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.framework.TripleAProcessRunner;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
@@ -238,7 +238,7 @@ public class LobbyGamePanel extends JPanel {
     return rVal;
   }
 
-  private Action getHostSupportInfoAction(final GameDescription description) {
+  private static Action getHostSupportInfoAction(final GameDescription description) {
     final String supportEmail =
         description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
     if (supportEmail.length() == 0) {
@@ -248,61 +248,28 @@ public class LobbyGamePanel extends JPanel {
         + "\n(Please copy the email address below and manually email them ONLY if something is seriously "
         + "\nwrong with the host, like it needs to be restarted because it is down and not working at all.) "
         + "\n\nEmail: \n" + supportEmail;
-    return new AbstractAction("Show Host Support Information/Email") {
-      private static final long serialVersionUID = 8280773721585118064L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final JTextPane textPane = new JTextPane();
-        textPane.setEditable(false);
-        textPane.setText(text);
-        JOptionPane.showMessageDialog(null, textPane, "Host Support Info", JOptionPane.INFORMATION_MESSAGE);
-      }
-    };
+    return SwingAction.of("Show Host Support Information/Email", e -> {
+      final JTextPane textPane = new JTextPane();
+      textPane.setEditable(false);
+      textPane.setText(text);
+      JOptionPane.showMessageDialog(null, textPane, "Host Support Info", JOptionPane.INFORMATION_MESSAGE);
+    });
   }
 
   private Action getJoinGameAction() {
-    return new AbstractAction("Join Game") {
-      private static final long serialVersionUID = -8534704904840171733L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        joinGame();
-      }
-    };
+    return SwingAction.of("Join Game", e -> joinGame());
   }
 
   private Action getHostGameAction() {
-    return new AbstractAction("Host Game") {
-      private static final long serialVersionUID = 2256758711590833222L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        hostGame();
-      }
-    };
+    return SwingAction.of("Host Game", e -> hostGame());
   }
 
   private Action getBootGameAction() {
-    return new AbstractAction("Boot Game") {
-      private static final long serialVersionUID = 5507232731850561329L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        bootGame();
-      }
-    };
+    return SwingAction.of("Boot Game", e -> bootGame());
   }
 
   private Action getHostInfoAction() {
-    return new AbstractAction("Host Information") {
-      private static final long serialVersionUID = -1653282482807405899L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        getHostInfo();
-      }
-    };
+    return SwingAction.of("Host Information", e -> getHostInfo());
   }
 
   private Action getChatLogOfHeadlessHostBotAction(final GameDescription description) {
@@ -311,14 +278,7 @@ public class LobbyGamePanel extends JPanel {
     if (supportEmail.length() == 0) {
       return null;
     }
-    return new AbstractAction("Get Chat Log Of Headless Host Bot") {
-      private static final long serialVersionUID = -2927005305224530547L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        getChatLogOfHeadlessHostBot();
-      }
-    };
+    return SwingAction.of("Get Chat Log Of Headless Host Bot", e -> getChatLogOfHeadlessHostBot());
   }
 
   private Action getMutePlayerHeadlessHostBotAction(final GameDescription description) {
@@ -327,14 +287,7 @@ public class LobbyGamePanel extends JPanel {
     if (supportEmail.length() == 0) {
       return null;
     }
-    return new AbstractAction("Mute Player In Headless Host Bot") {
-      private static final long serialVersionUID = 877617773610239979L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        mutePlayerInHeadlessHostBot();
-      }
-    };
+    return SwingAction.of("Mute Player In Headless Host Bot", e -> mutePlayerInHeadlessHostBot());
   }
 
   private Action getBootPlayerHeadlessHostBotAction(final GameDescription description) {
@@ -343,14 +296,7 @@ public class LobbyGamePanel extends JPanel {
     if (supportEmail.length() == 0) {
       return null;
     }
-    return new AbstractAction("Boot Player In Headless Host Bot") {
-      private static final long serialVersionUID = -2364912813781036326L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        bootPlayerInHeadlessHostBot();
-      }
-    };
+    return SwingAction.of("Boot Player In Headless Host Bot", e -> bootPlayerInHeadlessHostBot());
   }
 
   private Action getBanPlayerHeadlessHostBotAction(final GameDescription description) {
@@ -359,14 +305,7 @@ public class LobbyGamePanel extends JPanel {
     if (supportEmail.length() == 0) {
       return null;
     }
-    return new AbstractAction("Ban Player In Headless Host Bot") {
-      private static final long serialVersionUID = 7864471330154915855L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        banPlayerInHeadlessHostBot();
-      }
-    };
+    return SwingAction.of("Ban Player In Headless Host Bot", e -> banPlayerInHeadlessHostBot());
   }
 
   private Action getShutDownHeadlessHostBotAction(final GameDescription description) {
@@ -375,14 +314,7 @@ public class LobbyGamePanel extends JPanel {
     if (supportEmail.length() == 0) {
       return null;
     }
-    return new AbstractAction("Remote Shutdown Headless Host Bot") {
-      private static final long serialVersionUID = 3580808218664367499L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        shutDownHeadlessHostBot();
-      }
-    };
+    return SwingAction.of("Remote Shutdown Headless Host Bot", e -> shutDownHeadlessHostBot());
   }
 
   private Action getStopGameHeadlessHostBotAction(final GameDescription description) {
@@ -391,14 +323,7 @@ public class LobbyGamePanel extends JPanel {
     if (supportEmail.length() == 0) {
       return null;
     }
-    return new AbstractAction("Remote Stop Game Headless Host Bot") {
-      private static final long serialVersionUID = 4667832053880819979L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        stopGameHeadlessHostBot();
-      }
-    };
+    return SwingAction.of("Remote Stop Game Headless Host Bot", e -> stopGameHeadlessHostBot());
   }
 
   private void joinGame() {

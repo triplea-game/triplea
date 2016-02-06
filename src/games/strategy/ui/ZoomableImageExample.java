@@ -2,7 +2,6 @@ package games.strategy.ui;
 
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -10,11 +9,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+
+import games.strategy.common.swing.SwingAction;
 
 /**
  * Start with one arg that is the filename
@@ -51,15 +51,10 @@ public class ZoomableImageExample extends JFrame {
       }
     }
   };
-  private final Action ZOOM_COMMAND = new AbstractAction("save") {
-    private static final long serialVersionUID = 4825071800322928852L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      final String input = JOptionPane.showInputDialog("Get Zoom Factor");
-      panel.setZoom(Integer.parseInt(input));
-    }
-  };
+  private final Action ZOOM_COMMAND = SwingAction.of("save", e -> {
+    final String input = JOptionPane.showInputDialog("Get Zoom Factor");
+    panel.setZoom(Integer.parseInt(input));
+  });
   public static final WindowListener EXIT_ON_CLOSE_WINDOW_LISTENER = new WindowAdapter() {
     @Override
     public void windowClosing(final WindowEvent e) {

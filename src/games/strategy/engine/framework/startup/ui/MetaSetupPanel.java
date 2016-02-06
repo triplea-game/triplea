@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -30,11 +29,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.GameRunner2;
-import games.strategy.engine.framework.mapDownload.DownloadRunnable;
-import games.strategy.engine.framework.mapDownload.InstallMapDialog;
 import games.strategy.engine.framework.mapDownload.MapDownloadController;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.ui.NewGameChooser;

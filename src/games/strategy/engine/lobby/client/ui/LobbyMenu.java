@@ -23,6 +23,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
 import games.strategy.engine.lobby.server.IModeratorController;
@@ -404,7 +405,7 @@ public class LobbyMenu extends JMenuBar {
     addChatTimeMenu(settings);
   }
 
-  private void createHelpMenu(final LobbyMenu menuBar) {
+  private static void createHelpMenu(final LobbyMenu menuBar) {
     final JMenu help = new JMenu("Help");
     menuBar.add(help);
     addHelpMenu(help);
@@ -413,7 +414,7 @@ public class LobbyMenu extends JMenuBar {
   /**
    * @param parentMenu
    */
-  private void addHelpMenu(final JMenu parentMenu) {
+  private static void addHelpMenu(final JMenu parentMenu) {
     final JMenuItem hostingLink = new JMenuItem("How to Host...");
     final JMenuItem mapLink = new JMenuItem("Install Maps...");
     final JMenuItem bugReport = new JMenuItem("Bug Report...");
@@ -571,14 +572,7 @@ public class LobbyMenu extends JMenuBar {
     // Mac OS X automatically creates a Quit menu item under the TripleA menu,
     // so all we need to do is register that menu item with triplea's shutdown mechanism
     if (!isMac) { // On non-Mac operating systems, we need to manually create an Exit menu item
-      final JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit") {
-        private static final long serialVersionUID = 7173511775817785866L;
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          m_frame.shutdown();
-        }
-      });
+      final JMenuItem menuFileExit = new JMenuItem(SwingAction.of("Exit", e -> m_frame.shutdown()));
       parentMenu.add(menuFileExit);
     }
   }
