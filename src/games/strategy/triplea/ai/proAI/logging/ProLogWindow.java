@@ -4,10 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.util.logging.Level;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -16,6 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.triplea.ui.TripleAFrame;
 
 /**
@@ -306,7 +305,8 @@ public class ProLogWindow extends javax.swing.JDialog {
         JOptionPane.showConfirmDialog(rootPane, "Are you sure you want to reset all Dynamix AI settings?",
             "Reset Default Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
     if (result == JOptionPane.OK_OPTION) {
-      final ProLogSettings defaultSettings = new ProLogSettings(); // Default settings are already contained in a new DSettings instance
+      final ProLogSettings defaultSettings = new ProLogSettings(); // Default settings are already contained in a new
+                                                                   // DSettings instance
       loadSettings(defaultSettings);
       JOptionPane.showMessageDialog(rootPane,
           "Default settings restored.\r\n\r\n(If you don't want to keep these default settings, just hit cancel)",
@@ -371,14 +371,7 @@ public class ProLogWindow extends javax.swing.JDialog {
     pane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
     pane.setViewportView(label);
     dialog.add(pane, BorderLayout.CENTER);
-    final JButton button = new JButton(new AbstractAction() {
-      private static final long serialVersionUID = -1367858475413936399L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        dialog.dispose();
-      }
-    });
+    final JButton button = new JButton(SwingAction.of(e -> dialog.dispose()));
     button.setText("Close");
     button.setMinimumSize(new Dimension(100, 30));
     dialog.add(button, BorderLayout.SOUTH);
@@ -429,7 +422,8 @@ public class ProLogWindow extends javax.swing.JDialog {
     }
     // Now remove round logging that has 'expired'.
     // Note that this method will also trim all but the first and last log panels if logging is turned off
-    // (We always keep first round's log panel, and we keep last because the user might turn logging back on in the middle of the round)
+    // (We always keep first round's log panel, and we keep last because the user might turn logging back on in the
+    // middle of the round)
     trimLogRoundPanels();
   }
 
