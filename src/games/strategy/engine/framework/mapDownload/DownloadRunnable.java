@@ -1,15 +1,14 @@
 package games.strategy.engine.framework.mapDownload;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.List;
+
+import com.google.common.io.Resources;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
@@ -71,35 +70,15 @@ public class DownloadRunnable implements Runnable {
   }
 
   private void downloadFile() {
-    URL url;
-
     try {
-      url = new URL(urlString.trim());
-    } catch (final MalformedURLException e1) {
-      error = "invalid url";
-      return;
-    }
-    try {
-      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-      int status = conn.getResponseCode();
-      if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
-          || status == HttpURLConnection.HTTP_SEE_OTHER) {
-
-        String newUrl = conn.getHeaderField("Location");
-        conn = (HttpURLConnection) new URL(newUrl).openConnection();
-      }
-
-      try (InputStream stream = conn.getInputStream()) {
-        final ByteArrayOutputStream sink = new ByteArrayOutputStream();
-        InstallMapDialog.copy(sink, stream);
-        contents = sink.toByteArray();
-      }
+      final URL url = getUrlFollowingRedirects(urlString);
+      contents = Resources.asByteSource(url).read();
     } catch (final Exception e) {
       error = e.getMessage();
       return;
     }
-    if (parse && getError() == null) {
+
+    if (parse) {
       try {
         downloads = DownloadFileParser.parse(new ByteArrayInputStream(getContents()), urlString);
         if (downloads == null || downloads.isEmpty()) {
@@ -110,6 +89,19 @@ public class DownloadRunnable implements Runnable {
       }
     }
   }
+
+  private static URL getUrlFollowingRedirects(String possibleRedirectionUrl) throws Exception {
+    URL url = new URL(possibleRedirectionUrl);
+    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+    int status = conn.getResponseCode();
+    if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
+        || status == HttpURLConnection.HTTP_SEE_OTHER) {
+      // update the URL if we were redirected
+      url = new URL(conn.getHeaderField("Location"));
+    }
+    return url;
+  }
+
 
   private void readLocalFile() {
     File targetFile = new File(ClientFileSystemHelper.getRootFolder(), urlString);
