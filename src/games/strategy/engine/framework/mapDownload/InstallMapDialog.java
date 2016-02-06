@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
@@ -67,8 +66,6 @@ public class InstallMapDialog extends JDialog {
     super(owner, "Download Maps", true);
     m_games = MapDownloadListSort.sortByMapName(games);
     createComponents();
-    layoutCoponents();
-    setupListeners();
     setWidgetActivation();
     informUserOfOutOfDateMaps(owner);
   }
@@ -87,26 +84,6 @@ public class InstallMapDialog extends JDialog {
     }
   }
 
-  public static void populateOutOfDateMapsListing(final Collection<String> listingToBeAddedTo,
-      final Collection<DownloadFileDescription> gamesDownloadFileDescriptions) {
-    if (listingToBeAddedTo == null) {
-      return;
-    }
-    listingToBeAddedTo.clear();
-    for (final DownloadFileDescription d : gamesDownloadFileDescriptions) {
-      if (d != null && !d.isDummyUrl()) {
-        File installed = new File(ClientFileSystemHelper.getUserMapsFolder(), d.getMapName() + ".zip");
-        if (installed == null || !installed.exists()) {
-          installed = new File(GameSelectorModel.DEFAULT_MAP_DIRECTORY, d.getMapName() + ".zip");
-        }
-        if (installed != null && installed.exists()) {
-          if (d.getVersion() != null && d.getVersion().isGreaterThan(getVersion(installed), true)) {
-            listingToBeAddedTo.add(d.getMapName());
-          }
-        }
-      }
-    }
-  }
 
   private void createComponents() {
     m_installButton = new JButton("Install Games");
@@ -174,9 +151,7 @@ public class InstallMapDialog extends JDialog {
     m_descriptionPane.setBackground(new JLabel().getBackground());
     m_urlLabel = new JLabel(DOWNLOAD_URL_PREFIX);
     m_mapVersion = new JLabel(MAP_VERSION_PREFIX);
-  }
 
-  private void layoutCoponents() {
     setLayout(new BorderLayout());
     final JPanel buttonsPanel = new JPanel();
     add(m_intro, BorderLayout.NORTH);
@@ -207,9 +182,6 @@ public class InstallMapDialog extends JDialog {
     extraPanel.add(m_mapVersion, BorderLayout.SOUTH);
     main.add(extraPanel, BorderLayout.SOUTH);
     add(main, BorderLayout.CENTER);
-  }
-
-  private void setupListeners() {
     m_cancelButton.addActionListener(SwingAction.of(e -> setVisible(false)));
     m_installButton.addActionListener(SwingAction.of(e -> {
       boolean installed = false;
@@ -410,8 +382,4 @@ public class InstallMapDialog extends JDialog {
     return v.toString();
   }
 
-  private static Version getVersion(final File zipFile) {
-    final DownloadFileProperties props = DownloadFileProperties.loadForZip(zipFile);
-    return props.getVersion();
-  }
 }
