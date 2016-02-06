@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
@@ -128,14 +127,7 @@ public class LobbyMenu extends JMenuBar {
                 pane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
                 pane.setViewportView(label);
                 dialog.add(pane, BorderLayout.CENTER);
-                final JButton button = new JButton(new AbstractAction() {
-                  private static final long serialVersionUID = 823636925655070882L;
-
-                  @Override
-                  public void actionPerformed(final ActionEvent e) {
-                    dialog.dispose();
-                  }
-                });
+                final JButton button = new JButton(SwingAction.of(e -> dialog.dispose()));
                 button.setText("Close");
                 button.setMinimumSize(new Dimension(100, 30));
                 dialog.add(button, BorderLayout.SOUTH);

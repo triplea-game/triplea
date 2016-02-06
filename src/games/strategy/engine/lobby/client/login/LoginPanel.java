@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -28,6 +27,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.ui.Util;
@@ -139,14 +139,7 @@ public class LoginPanel extends JPanel {
       }
     });
     // close when hitting the escape key
-    final Action enterAction = new AbstractAction() {
-      private static final long serialVersionUID = 4248565786079247230L;
-
-      @Override
-      public void actionPerformed(final ActionEvent arg0) {
-        logonPressed();
-      }
-    };
+    final Action enterAction = SwingAction.of(e-> logonPressed());
     final String key = "logon.through.enter.key";
     getActionMap().put(key, enterAction);
     getActionMap().put(key, enterAction);
