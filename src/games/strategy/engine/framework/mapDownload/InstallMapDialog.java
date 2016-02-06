@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,7 +21,6 @@ import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -42,6 +40,7 @@ import javax.swing.event.ListSelectionListener;
 
 import com.google.common.io.Files;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
@@ -211,58 +210,46 @@ public class InstallMapDialog extends JDialog {
   }
 
   private void setupListeners() {
-    m_cancelButton.addActionListener(new AbstractAction() {
-      private static final long serialVersionUID = -2437255215905705911L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        setVisible(false);
-      }
-    });
-    m_installButton.addActionListener(new AbstractAction() {
-      private static final long serialVersionUID = -2202445889252381183L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        boolean installed = false;
-        final List<DownloadFileDescription> selected = getSelected();
-        final List<DownloadFileDescription> toDownload = new ArrayList<DownloadFileDescription>();
-        for (final DownloadFileDescription map : selected) {
-          if (map.isDummyUrl()) {
-            continue;
-          }
-          final File destination = new File(GameRunner2.getUserMapsFolder(), map.getMapName() + ".zip");
-          if (destination.exists()) {
-            final String msg = "<html>Replace map: " + map.getMapName() + " ?" + "<br>You have version "
-                + getVersionString(getVersion(destination)) + " installed, replace with version "
-                + getVersionString(map.getVersion()) + "?</html>";
-            if (replaceOldQuestion(msg)) {
-              toDownload.add(map);
-            }
-          } else {
+    m_cancelButton.addActionListener(SwingAction.of(e -> setVisible(false)));
+    m_installButton.addActionListener(SwingAction.of(e -> {
+      boolean installed = false;
+      final List<DownloadFileDescription> selected = getSelected();
+      final List<DownloadFileDescription> toDownload = new ArrayList<DownloadFileDescription>();
+      for (final DownloadFileDescription map : selected) {
+        if (map.isDummyUrl()) {
+          continue;
+        }
+        final File destination = new File(GameRunner2.getUserMapsFolder(), map.getMapName() + ".zip");
+        if (destination.exists()) {
+          final String msg = "<html>Replace map: " + map.getMapName() + " ?" + "<br>You have version "
+              + getVersionString(getVersion(destination)) + " installed, replace with version "
+              + getVersionString(map.getVersion()) + "?</html>";
+          if (replaceOldQuestion(msg)) {
             toDownload.add(map);
           }
-        }
-        int i = 1;
-        for (final DownloadFileDescription map : toDownload) {
-          if (map.isDummyUrl()) {
-            continue;
-          }
-          install(map, i++, toDownload.size());
-          installed = true;
-        }
-        if (installed) {
-          // TODO - asking the user to restart isn't good, we should find the cause of the error, maybe a windows thing?
-          // https://sourceforge.net/tracker/?func=detail&aid=2981890&group_id=44492&atid=439737
-          EventThreadJOptionPane
-              .showMessageDialog(getRootPane(),
-                  ((toDownload.size() > 1) ? "Maps" : "Map")
-                      + " successfully installed, please restart TripleA before playing",
-                  new CountDownLatchHandler(true));
-          setVisible(false);
+        } else {
+          toDownload.add(map);
         }
       }
-    });
+      int i = 1;
+      for (final DownloadFileDescription map : toDownload) {
+        if (map.isDummyUrl()) {
+          continue;
+        }
+        install(map, i++, toDownload.size());
+        installed = true;
+      }
+      if (installed) {
+        // TODO - asking the user to restart isn't good, we should find the cause of the error, maybe a windows thing?
+        // https://sourceforge.net/tracker/?func=detail&aid=2981890&group_id=44492&atid=439737
+        EventThreadJOptionPane
+            .showMessageDialog(getRootPane(),
+                ((toDownload.size() > 1) ? "Maps" : "Map")
+                    + " successfully installed, please restart TripleA before playing",
+                new CountDownLatchHandler(true));
+        setVisible(false);
+      }
+    }));
     m_gamesList.addListSelectionListener(new ListSelectionListener() {
       @Override
       public void valueChanged(final ListSelectionEvent e) {

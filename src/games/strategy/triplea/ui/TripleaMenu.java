@@ -448,28 +448,16 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     final JCheckBoxMenuItem showEnemyCasualties = new JCheckBoxMenuItem("Confirm Enemy Casualties");
     showEnemyCasualties.setMnemonic(KeyEvent.VK_E);
     showEnemyCasualties.setSelected(BattleDisplay.getShowEnemyCasualtyNotification());
-    showEnemyCasualties.addActionListener(new AbstractAction() {
-      private static final long serialVersionUID = -7445092411530581715L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        BattleDisplay.setShowEnemyCasualtyNotification(showEnemyCasualties.isSelected());
-      }
-    });
+    showEnemyCasualties.addActionListener(
+        SwingAction.of(e -> BattleDisplay.setShowEnemyCasualtyNotification(showEnemyCasualties.isSelected())));
     parentMenu.add(showEnemyCasualties);
   }
 
   private static void addFocusOnCasualties(final JMenu parentMenu) {
     final JCheckBoxMenuItem focusOnCasualties = new JCheckBoxMenuItem("Focus On Own Casualties");
     focusOnCasualties.setSelected(BattleDisplay.getFocusOnOwnCasualtiesNotification());
-    focusOnCasualties.addActionListener(new AbstractAction() {
-      private static final long serialVersionUID = 6176484225385360649L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        BattleDisplay.setFocusOnOwnCasualtiesNotification(focusOnCasualties.isSelected());
-      }
-    });
+    focusOnCasualties.addActionListener(
+        SwingAction.of(e -> BattleDisplay.setFocusOnOwnCasualtiesNotification(focusOnCasualties.isSelected())));
     parentMenu.add(focusOnCasualties);
   }
 

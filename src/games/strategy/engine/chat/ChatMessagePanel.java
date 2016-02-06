@@ -3,7 +3,6 @@ package games.strategy.engine.chat;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.InvocationTargetException;
@@ -12,7 +11,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.InputMap;
@@ -357,18 +355,13 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     }
     m_nextMessage.setText("");
   });
-  private final Action m_DownAction = new AbstractAction() {
-    private static final long serialVersionUID = -1945655511272482449L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      if (m_chat == null) {
-        return;
-      }
-      m_chat.getSentMessagesHistory().next();
-      m_nextMessage.setText(m_chat.getSentMessagesHistory().current());
+  private final Action m_DownAction = SwingAction.of(e -> {
+    if (m_chat == null) {
+      return;
     }
-  };
+    m_chat.getSentMessagesHistory().next();
+    m_nextMessage.setText(m_chat.getSentMessagesHistory().current());
+  });
   private final Action m_UpAction = SwingAction.of(e -> {
     if (m_chat == null) {
       return;
