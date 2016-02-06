@@ -2,9 +2,7 @@ package games.strategy.triplea.ui;
 
 import java.awt.Component;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
@@ -13,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.util.SoftJEditorPane;
 
@@ -37,19 +36,14 @@ public class NotesPanel extends JPanel {
   protected void initLayout() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     m_refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
-    m_refresh.addActionListener(new AbstractAction("Refresh Notes") {
-      private static final long serialVersionUID = 8439704398303765832L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            layoutNotes();
-          }
-        });
-      }
-    });
+    m_refresh.addActionListener(SwingAction.of("Refresh Notes", e -> {
+      SwingUtilities.invokeLater(new Runnable() {
+        @Override
+        public void run() {
+          layoutNotes();
+        }
+      });
+    }));
     // layoutNotes();
     removeNotes();
   }

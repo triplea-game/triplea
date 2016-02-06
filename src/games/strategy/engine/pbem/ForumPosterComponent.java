@@ -1,10 +1,8 @@
 package games.strategy.engine.pbem;
 
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -12,6 +10,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.common.ui.MainGameFrame;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -55,80 +54,30 @@ public class ForumPosterComponent extends JPanel {
     m_data = data;
     m_title = title;
     // m_actionLabel = new JLabel();
-    m_viewAction = new AbstractAction("View " + m_title) {
-      private static final long serialVersionUID = -2619980789206699839L;
+    m_viewAction = SwingAction.of("View " + m_title, e -> m_historyLog.setVisible(true));
+    m_postAction = SwingAction.of("Post " + m_title, e -> {
+      m_postButton.setEnabled(false);
+      updateHistoryLog();
+      PBEMMessagePoster.postTurn(m_title, m_historyLog, m_includeSavegameCheckBox.isSelected(), m_poster,
+          m_forumPosterDelegate, m_frame, m_postButton);
+      m_repostTurnSummaryCheckBox.setSelected(false);
+    });
+    m_includeTerritoryAction = SwingAction.of("Include territory summary", e ->
 
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        m_historyLog.setVisible(true);
-      }
-    };
-    m_postAction = new AbstractAction("Post " + m_title) {
-      private static final long serialVersionUID = 8317441736305744524L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        m_postButton.setEnabled(false);
-        updateHistoryLog();
-        PBEMMessagePoster.postTurn(m_title, m_historyLog, m_includeSavegameCheckBox.isSelected(), m_poster,
-            m_forumPosterDelegate, m_frame, m_postButton);
-        m_repostTurnSummaryCheckBox.setSelected(false);
-      }
-    };
-    m_includeTerritoryAction = new AbstractAction("Include territory summary") {
-      private static final long serialVersionUID = 207279881318712095L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        updateHistoryLog();
-      }
-    };
-    m_includeTerritoryAllPlayersAction = new AbstractAction("Include full territory summary") {
-      private static final long serialVersionUID = 207279881318712095L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        updateHistoryLog();
-      }
-    };
-    m_includeProductionAction = new AbstractAction("Include production summary") {
-      private static final long serialVersionUID = 2298448099326090293L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        updateHistoryLog();
-      }
-    };
-    m_showDetailsAction = new AbstractAction("Show dice/battle details") {
-      private static final long serialVersionUID = -4248518090232071926L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        updateHistoryLog();
-      }
-    };
-    m_showDiceStatisticsAction = new AbstractAction("Include overall dice statistics") {
-      private static final long serialVersionUID = 1431745626173286692L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        updateHistoryLog();
-      }
-    };
-    m_repostAction = new AbstractAction("Repost " + m_title) {
-      private static final long serialVersionUID = -67455254243579500L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        if (m_repostTurnSummaryCheckBox.isSelected()) {
-          m_postButton.setEnabled(true);
-        } else {
-          if (m_forumPosterDelegate != null) {
-            m_postButton.setEnabled(!m_forumPosterDelegate.getHasPostedTurnSummary());
-          }
+    updateHistoryLog());
+    m_includeTerritoryAllPlayersAction = SwingAction.of("Include full territory summary", e -> updateHistoryLog());
+    m_includeProductionAction = SwingAction.of("Include production summary", e -> updateHistoryLog());
+    m_showDetailsAction = SwingAction.of("Show dice/battle details", e -> updateHistoryLog());
+    m_showDiceStatisticsAction = SwingAction.of("Include overall dice statistics", e -> updateHistoryLog());
+    m_repostAction = SwingAction.of("Repost " + m_title, e -> {
+      if (m_repostTurnSummaryCheckBox.isSelected()) {
+        m_postButton.setEnabled(true);
+      } else {
+        if (m_forumPosterDelegate != null) {
+          m_postButton.setEnabled(!m_forumPosterDelegate.getHasPostedTurnSummary());
         }
       }
-    };
+    });
     m_doneAction = doneAction;
     m_includeTerritoryCheckbox = new JCheckBox(m_includeTerritoryAction);
     m_includeTerritoryAllPlayersCheckbox = new JCheckBox(m_includeTerritoryAllPlayersAction);

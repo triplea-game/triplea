@@ -2,6 +2,7 @@ package games.strategy.performance;
 
 
 import java.awt.event.KeyEvent;
+
 import javax.swing.JCheckBoxMenuItem;
 
 public class EnablePerformanceLoggingCheckBox extends JCheckBoxMenuItem {

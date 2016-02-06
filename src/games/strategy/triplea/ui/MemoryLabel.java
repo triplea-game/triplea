@@ -1,16 +1,16 @@
 package games.strategy.triplea.ui;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
 
-import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
+
+import games.strategy.common.swing.SwingAction;
 
 public class MemoryLabel extends JLabel {
   private static final long serialVersionUID = -6011470050936617333L;
@@ -38,18 +38,13 @@ public class MemoryLabel extends JLabel {
 
   protected void gc(final MouseEvent e) {
     final JPopupMenu menu = new JPopupMenu();
-    menu.add(new AbstractAction("Garbage Collect") {
-      private static final long serialVersionUID = -8067651392155651586L;
-
-      @Override
-      public void actionPerformed(final ActionEvent arg0) {
-        System.gc();
-        System.runFinalization();
-        System.gc();
-        System.runFinalization();
-        System.gc();
-      }
-    });
+    menu.add(SwingAction.of("Garbage Collect", event -> {
+      System.gc();
+      System.runFinalization();
+      System.gc();
+      System.runFinalization();
+      System.gc();
+    }));
     menu.show(this, e.getX(), e.getY());
   }
 
@@ -102,7 +97,7 @@ class Updater implements Runnable {
     });
   }
 
-  private void sleep() {
+  private static void sleep() {
     try {
       Thread.sleep(2000);
     } catch (final InterruptedException e) {

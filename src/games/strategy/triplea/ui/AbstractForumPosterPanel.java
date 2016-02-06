@@ -1,12 +1,10 @@
 package games.strategy.triplea.ui;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
@@ -29,14 +27,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel {
   public AbstractForumPosterPanel(final GameData data, final MapPanel map) {
     super(data, map);
     m_actionLabel = new JLabel();
-    m_doneAction = new AbstractAction("Done") {
-      private static final long serialVersionUID = -3658752576117043053L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        release();
-      }
-    };
+    m_doneAction = SwingAction.of("Done", e -> release());
     m_forumPosterComponent = new ForumPosterComponent(getData(), m_doneAction, getTitle());
   }
 

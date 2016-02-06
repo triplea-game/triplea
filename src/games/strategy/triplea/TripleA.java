@@ -1,5 +1,14 @@
 package games.strategy.triplea;
 
+import java.awt.Frame;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.SwingUtilities;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.PlayerID;
@@ -32,15 +41,6 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.display.DummyTripleaDisplay;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.triplea.ui.display.TripleaDisplay;
-
-import java.awt.Frame;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.swing.SwingUtilities;
 
 public class TripleA extends AbstractGameLoader implements IGameLoader {
   // compatible with 0.9.0.2 saved games

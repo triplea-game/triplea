@@ -53,6 +53,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -110,12 +111,8 @@ public class BattleDisplay extends JPanel {
   // private MovePerformer m_tempMovePerformer;
   private final IUIContext m_uiContext;
   private final JLabel m_messageLabel = new JLabel();
-  private final Action m_nullAction = new AbstractAction(" ") {
-    private static final long serialVersionUID = 3308067665313935111L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {}
-  };
+  private final Action m_nullAction = SwingAction.of(" ", e -> {
+  });
 
   public BattleDisplay(final GameData data, final Territory territory, final PlayerID attacker, final PlayerID defender,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
@@ -363,35 +360,30 @@ public class BattleDisplay extends JPanel {
     }
     final Territory[] retreatTo = new Territory[1];
     final CountDownLatch latch = new CountDownLatch(1);
-    final Action action = new AbstractAction("Submerge Subs?") {
-      private static final long serialVersionUID = -1962843804675586562L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final String ok = "Submerge";
-        final String cancel = "Remain";
-        final String wait = "Ask Me Later";
-        final String[] options = {ok, cancel, wait};
-        final int choice = JOptionPane.showOptionDialog(BattleDisplay.this, message, "Submerge Subs?",
-            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, cancel);
-        // dialog dismissed
-        if (choice == -1) {
-          return;
-        }
-        // wait
-        if (choice == 2) {
-          return;
-        }
-        // remain
-        if (choice == 1) {
-          latch.countDown();
-          return;
-        }
-        // submerge
-        retreatTo[0] = m_location;
-        latch.countDown();
+    final Action action = SwingAction.of("Submerge Subs?", e -> {
+      final String ok = "Submerge";
+      final String cancel = "Remain";
+      final String wait = "Ask Me Later";
+      final String[] options = {ok, cancel, wait};
+      final int choice = JOptionPane.showOptionDialog(BattleDisplay.this, message, "Submerge Subs?",
+          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, cancel);
+      // dialog dismissed
+      if (choice == -1) {
+        return;
       }
-    };
+      // wait
+      if (choice == 2) {
+        return;
+      }
+      // remain
+      if (choice == 1) {
+        latch.countDown();
+        return;
+      }
+      // submerge
+      retreatTo[0] = m_location;
+      latch.countDown();
+    });
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -426,44 +418,39 @@ public class BattleDisplay extends JPanel {
     }
     final Territory[] retreatTo = new Territory[1];
     final CountDownLatch latch = new CountDownLatch(1);
-    final Action action = new AbstractAction("Retreat?") {
-      private static final long serialVersionUID = -1276337628464642219L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final String yes = "Retreat";
-        final String no = "Remain";
-        final String cancel = "Ask Me Later";
-        final String[] options = {yes, no, cancel};
-        final int choice = JOptionPane.showOptionDialog(BattleDisplay.this, message, "Retreat?",
-            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, no);
-        // dialog dismissed
-        if (choice == -1) {
-          return;
-        }
-        // wait
-        if (choice == JOptionPane.CANCEL_OPTION) {
-          return;
-        }
-        // remain
-        if (choice == JOptionPane.NO_OPTION) {
+    final Action action = SwingAction.of("Retreat?", e -> {
+      final String yes = "Retreat";
+      final String no = "Remain";
+      final String cancel = "Ask Me Later";
+      final String[] options = {yes, no, cancel};
+      final int choice = JOptionPane.showOptionDialog(BattleDisplay.this, message, "Retreat?",
+          JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, no);
+      // dialog dismissed
+      if (choice == -1) {
+        return;
+      }
+      // wait
+      if (choice == JOptionPane.CANCEL_OPTION) {
+        return;
+      }
+      // remain
+      if (choice == JOptionPane.NO_OPTION) {
+        latch.countDown();
+        return;
+      }
+      // if you have eliminated the impossible, whatever remains, no matter
+      // how improbable, must be the truth
+      // retreat
+      final RetreatComponent comp = new RetreatComponent(possible);
+      final int option = JOptionPane.showConfirmDialog(BattleDisplay.this, comp, message,
+          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, (Icon) null);
+      if (option == JOptionPane.OK_OPTION) {
+        if (comp.getSelection() != null) {
+          retreatTo[0] = comp.getSelection();
           latch.countDown();
-          return;
-        }
-        // if you have eliminated the impossible, whatever remains, no matter
-        // how improbable, must be the truth
-        // retreat
-        final RetreatComponent comp = new RetreatComponent(possible);
-        final int option = JOptionPane.showConfirmDialog(BattleDisplay.this, comp, message,
-            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, (Icon) null);
-        if (option == JOptionPane.OK_OPTION) {
-          if (comp.getSelection() != null) {
-            retreatTo[0] = comp.getSelection();
-            latch.countDown();
-          }
         }
       }
-    };
+    });
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -694,17 +681,12 @@ public class BattleDisplay extends JPanel {
     }
     setDefaultWidths(defenderTable);
     setDefaultWidths(attackerTable);
-    final Action continueAction = new AbstractAction() {
-      private static final long serialVersionUID = -7893664767396697489L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final Action a = m_actionButton.getAction();
-        if (a != null) {
-          a.actionPerformed(null);
-        }
+    final Action continueAction = SwingAction.of(e -> {
+      final Action a = m_actionButton.getAction();
+      if (a != null) {
+        a.actionPerformed(null);
       }
-    };
+    });
     // press space to continue
     final String key = "battle.display.press.space.to.continue";
     getActionMap().put(key, continueAction);
@@ -714,7 +696,7 @@ public class BattleDisplay extends JPanel {
   /**
    * Shorten columns with no units.
    */
-  private void setDefaultWidths(final JTable table) {
+  private static void setDefaultWidths(final JTable table) {
     for (int column = 0; column < table.getColumnCount(); column++) {
       boolean hasData = false;
       for (int row = 0; row < table.getRowCount(); row++) {

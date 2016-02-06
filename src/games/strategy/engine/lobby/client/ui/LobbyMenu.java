@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
@@ -23,6 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
 import games.strategy.engine.lobby.server.IModeratorController;
@@ -127,14 +127,7 @@ public class LobbyMenu extends JMenuBar {
                 pane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
                 pane.setViewportView(label);
                 dialog.add(pane, BorderLayout.CENTER);
-                final JButton button = new JButton(new AbstractAction() {
-                  private static final long serialVersionUID = 823636925655070882L;
-
-                  @Override
-                  public void actionPerformed(final ActionEvent e) {
-                    dialog.dispose();
-                  }
-                });
+                final JButton button = new JButton(SwingAction.of(e -> dialog.dispose()));
                 button.setText("Close");
                 button.setMinimumSize(new Dimension(100, 30));
                 dialog.add(button, BorderLayout.SOUTH);
@@ -404,7 +397,7 @@ public class LobbyMenu extends JMenuBar {
     addChatTimeMenu(settings);
   }
 
-  private void createHelpMenu(final LobbyMenu menuBar) {
+  private static void createHelpMenu(final LobbyMenu menuBar) {
     final JMenu help = new JMenu("Help");
     menuBar.add(help);
     addHelpMenu(help);
@@ -413,7 +406,7 @@ public class LobbyMenu extends JMenuBar {
   /**
    * @param parentMenu
    */
-  private void addHelpMenu(final JMenu parentMenu) {
+  private static void addHelpMenu(final JMenu parentMenu) {
     final JMenuItem hostingLink = new JMenuItem("How to Host...");
     final JMenuItem mapLink = new JMenuItem("Install Maps...");
     final JMenuItem bugReport = new JMenuItem("Bug Report...");
@@ -571,14 +564,7 @@ public class LobbyMenu extends JMenuBar {
     // Mac OS X automatically creates a Quit menu item under the TripleA menu,
     // so all we need to do is register that menu item with triplea's shutdown mechanism
     if (!isMac) { // On non-Mac operating systems, we need to manually create an Exit menu item
-      final JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit") {
-        private static final long serialVersionUID = 7173511775817785866L;
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          m_frame.shutdown();
-        }
-      });
+      final JMenuItem menuFileExit = new JMenuItem(SwingAction.of("Exit", e -> m_frame.shutdown()));
       parentMenu.add(menuFileExit);
     }
   }

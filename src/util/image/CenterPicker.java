@@ -10,7 +10,6 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -27,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -40,6 +38,7 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 
@@ -163,32 +162,11 @@ public class CenterPicker extends JFrame {
     this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
     this.getContentPane().add(m_location, BorderLayout.SOUTH);
     // set up the actions
-    final Action openAction = new AbstractAction("Load Centers") {
-      private static final long serialVersionUID = 2712234474452114083L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        loadCenters();
-      }
-    };
+    final Action openAction = SwingAction.of("Load Centers", e -> loadCenters());
     openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Center Points File");
-    final Action saveAction = new AbstractAction("Save Centers") {
-      private static final long serialVersionUID = -4519036149978621171L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        saveCenters();
-      }
-    };
+    final Action saveAction = SwingAction.of("Save Centers", e -> saveCenters());
     saveAction.putValue(Action.SHORT_DESCRIPTION, "Save The Center Points To File");
-    final Action exitAction = new AbstractAction("Exit") {
-      private static final long serialVersionUID = -5631457890653630218L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        System.exit(0);
-      }
-    };
+    final Action exitAction = SwingAction.of("Exit", e -> System.exit(0));
     exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
     // set up the menu items
     final JMenuItem openItem = new JMenuItem(openAction);
