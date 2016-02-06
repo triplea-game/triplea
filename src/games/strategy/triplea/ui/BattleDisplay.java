@@ -362,28 +362,28 @@ public class BattleDisplay extends JPanel {
     final Territory[] retreatTo = new Territory[1];
     final CountDownLatch latch = new CountDownLatch(1);
     final Action action = SwingAction.of("Submerge Subs?", e -> {
-      final String ok = "Submerge";
-      final String cancel = "Remain";
-      final String wait = "Ask Me Later";
-      final String[] options = {ok, cancel, wait};
-      final int choice = JOptionPane.showOptionDialog(BattleDisplay.this, message, "Submerge Subs?",
-          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, cancel);
-      // dialog dismissed
-      if (choice == -1) {
-        return;
-      }
-      // wait
-      if (choice == 2) {
-        return;
-      }
-      // remain
-      if (choice == 1) {
+         final String ok = "Submerge";
+        final String cancel = "Remain";
+        final String wait = "Ask Me Later";
+        final String[] options = {ok, cancel, wait};
+        final int choice = JOptionPane.showOptionDialog(BattleDisplay.this, message, "Submerge Subs?",
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, cancel);
+        // dialog dismissed
+        if (choice == -1) {
+          return;
+        }
+        // wait
+        if (choice == 2) {
+          return;
+        }
+        // remain
+        if (choice == 1) {
+          latch.countDown();
+          return;
+        }
+        // submerge
+        retreatTo[0] = m_location;
         latch.countDown();
-        return;
-      }
-      // submerge
-      retreatTo[0] = m_location;
-      latch.countDown();
     });
     SwingUtilities.invokeLater(new Runnable() {
       @Override
@@ -420,37 +420,37 @@ public class BattleDisplay extends JPanel {
     final Territory[] retreatTo = new Territory[1];
     final CountDownLatch latch = new CountDownLatch(1);
     final Action action = SwingAction.of("Retreat?", e -> {
-      final String yes = "Retreat";
-      final String no = "Remain";
-      final String cancel = "Ask Me Later";
-      final String[] options = {yes, no, cancel};
-      final int choice = JOptionPane.showOptionDialog(BattleDisplay.this, message, "Retreat?",
-          JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, no);
-      // dialog dismissed
-      if (choice == -1) {
-        return;
-      }
-      // wait
-      if (choice == JOptionPane.CANCEL_OPTION) {
-        return;
-      }
-      // remain
-      if (choice == JOptionPane.NO_OPTION) {
-        latch.countDown();
-        return;
-      }
-      // if you have eliminated the impossible, whatever remains, no matter
-      // how improbable, must be the truth
-      // retreat
-      final RetreatComponent comp = new RetreatComponent(possible);
-      final int option = JOptionPane.showConfirmDialog(BattleDisplay.this, comp, message,
-          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, (Icon) null);
-      if (option == JOptionPane.OK_OPTION) {
-        if (comp.getSelection() != null) {
-          retreatTo[0] = comp.getSelection();
-          latch.countDown();
+        final String yes = "Retreat";
+        final String no = "Remain";
+        final String cancel = "Ask Me Later";
+        final String[] options = {yes, no, cancel};
+        final int choice = JOptionPane.showOptionDialog(BattleDisplay.this, message, "Retreat?",
+            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, no);
+        // dialog dismissed
+        if (choice == -1) {
+          return;
         }
-      }
+        // wait
+        if (choice == JOptionPane.CANCEL_OPTION) {
+          return;
+        }
+        // remain
+        if (choice == JOptionPane.NO_OPTION) {
+          latch.countDown();
+          return;
+        }
+        // if you have eliminated the impossible, whatever remains, no matter
+        // how improbable, must be the truth
+        // retreat
+        final RetreatComponent comp = new RetreatComponent(possible);
+        final int option = JOptionPane.showConfirmDialog(BattleDisplay.this, comp, message,
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, (Icon) null);
+        if (option == JOptionPane.OK_OPTION) {
+          if (comp.getSelection() != null) {
+            retreatTo[0] = comp.getSelection();
+            latch.countDown();
+          }
+        }
     });
     SwingUtilities.invokeLater(new Runnable() {
       @Override
