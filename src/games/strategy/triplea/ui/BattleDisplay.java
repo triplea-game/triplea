@@ -112,7 +112,9 @@ public class BattleDisplay extends JPanel {
   // private MovePerformer m_tempMovePerformer;
   private final IUIContext m_uiContext;
   private final JLabel m_messageLabel = new JLabel();
-  private final Action m_nullAction = SwingAction.of(" ", e -> {} );
+  private final Action m_nullAction = SwingAction.of(" ", e -> {
+  });
+
   public BattleDisplay(final GameData data, final Territory territory, final PlayerID attacker, final PlayerID defender,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
       final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final GUID battleID,
