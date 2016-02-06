@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
@@ -47,6 +46,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 
@@ -199,39 +199,14 @@ public class PolygonGrabber extends JFrame {
     this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
     this.getContentPane().add(location, BorderLayout.SOUTH);
     // set up the actions
-    final Action openAction = new AbstractAction("Load Polygons") {
-      private static final long serialVersionUID = -9093814781969488946L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        loadPolygons();
-      }
-    };
+    final Action openAction = SwingAction.of("Load Polygons", e -> loadPolygons());
     openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Polygon Points FIle");
-    final Action saveAction = new AbstractAction("Save Polygons") {
-      private static final long serialVersionUID = -6886417728606754296L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        savePolygons();
-      }
-    };
+    final Action saveAction = SwingAction.of("Save Polygons", e -> savePolygons());
     saveAction.putValue(Action.SHORT_DESCRIPTION, "Save The Polygon Points To File");
-    final Action exitAction = new AbstractAction("Exit") {
-      private static final long serialVersionUID = -1294988703454116227L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        System.exit(0);
-      }
-    };
+    final Action exitAction = SwingAction.of("Exit", e -> System.exit(0));
     exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
-    final Action autoAction = new AbstractAction("Auto Find Polygons") {
-      private static final long serialVersionUID = 9135123964960352915L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        JOptionPane.showMessageDialog(null,
+    final Action autoAction = SwingAction.of("Auto Find Polygons", e -> {
+      JOptionPane.showMessageDialog(null,
             new JLabel("<html>"
                 + "You will need to check and go back and do some polygons manually, as Auto does not catch them all. "
                 + "<br>Also, if a territory has more than 1 part (like an island chain), you will need to go back and "
@@ -283,8 +258,8 @@ public class PolygonGrabber extends JFrame {
         g.dispose();
         imageCopy.flush();
         repaint();
-      }
-    };
+
+    });
     autoAction.putValue(Action.SHORT_DESCRIPTION, "Autodetect Polygons around Centers");
     // set up the menu items
     final JMenuItem openItem = new JMenuItem(openAction);

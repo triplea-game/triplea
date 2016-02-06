@@ -1,5 +1,8 @@
 package games.strategy.triplea.ai.fastAI;
 
+import java.util.Collection;
+import java.util.List;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
@@ -8,9 +11,6 @@ import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
-
-import java.util.Collection;
-import java.util.List;
 
 public class AggregateEstimate extends AggregateResults {
 

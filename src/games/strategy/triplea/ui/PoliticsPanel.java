@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -25,6 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
@@ -45,7 +45,7 @@ public class PoliticsPanel extends ActionPanel {
   private JButton m_selectPoliticalActionButton = null;
   private JButton m_doneButton = null;
   private PoliticalActionAttachment m_choice = null;
-  private final TripleAFrame m_parent;
+  private TripleAFrame m_parent = null;
   private boolean m_firstRun = true;
   protected List<PoliticalActionAttachment> m_validPoliticalActions = null;
 
@@ -123,11 +123,7 @@ public class PoliticsPanel extends ActionPanel {
    * Fires up a JDialog showing the political landscape and valid actions,
    * choosing an action will release this model and trigger waitForRelease()
    */
-  private final Action SelectPoliticalActionAction = new AbstractAction("Do Politics...") {
-    private static final long serialVersionUID = 3906101150281154032L;
-
-    @Override
-    public void actionPerformed(final ActionEvent event) {
+  private final Action SelectPoliticalActionAction = SwingAction.of("Do Politics...", e -> {
       final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
       final int availHeight = screenResolution.height - 96;
       final int availWidth = screenResolution.width - 30;
@@ -175,14 +171,7 @@ public class PoliticsPanel extends ActionPanel {
       splitPane.setDividerSize(8);
       politicalChoicePanel.add(splitPane, new GridBagConstraints(0, row++, 1, 1, 100.0, 100.0,
           GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
-      final JButton noActionButton = new JButton(new AbstractAction("No Actions") {
-        private static final long serialVersionUID = -5979922310580413800L;
-
-        @Override
-        public void actionPerformed(final ActionEvent arg0) {
-          politicalChoiceDialog.setVisible(false);
-        }
-      });
+      final JButton noActionButton = new JButton(SwingAction.of("No Actions", event -> politicalChoiceDialog.setVisible(false)));
       SwingUtilities.invokeLater(new Runnable() {
         @Override
         public void run() {
@@ -196,8 +185,8 @@ public class PoliticsPanel extends ActionPanel {
       politicalChoiceDialog.setLocationRelativeTo(m_parent);
       politicalChoiceDialog.setVisible(true);
       politicalChoiceDialog.dispose();
-    }
-  };
+
+  });
 
   private JPanel PoliticalActionButtonPanel(final JDialog parent) {
     final JPanel politicalActionButtonPanel = new JPanel();
@@ -231,23 +220,18 @@ public class PoliticsPanel extends ActionPanel {
   /**
    * This will stop the politicsPhase
    */
-  private final Action DontBotherAction = new AbstractAction("Done") {
-    private static final long serialVersionUID = 5975405674090929150L;
-
-    @Override
-    public void actionPerformed(final ActionEvent event) {
-      if (!m_firstRun || youSureDoNothing()) {
+  private final Action DontBotherAction = SwingAction.of("Done", e -> {
+    if (!m_firstRun || youSureDoNothing()) {
         m_choice = null;
         release();
       }
-    }
+    });
 
-    private boolean youSureDoNothing() {
-      final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PoliticsPanel.this),
-          "Are you sure you dont want to do anything?", "End Politics", JOptionPane.YES_NO_OPTION);
-      return rVal == JOptionPane.YES_OPTION;
-    }
-  };
+  private boolean youSureDoNothing() {
+    final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PoliticsPanel.this),
+        "Are you sure you dont want to do anything?", "End Politics", JOptionPane.YES_NO_OPTION);
+    return rVal == JOptionPane.YES_OPTION;
+  }
 
   /**
    * Convenient method to get a JCompenent showing the flags involved in this

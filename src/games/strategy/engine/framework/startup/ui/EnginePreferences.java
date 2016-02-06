@@ -2,7 +2,6 @@ package games.strategy.engine.framework.startup.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -13,7 +12,6 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.prefs.Preferences;
 
-import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -29,6 +27,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.data.properties.IEditableProperty;
@@ -145,19 +144,8 @@ public class EnginePreferences extends JDialog {
   }
 
   private void setupListeners() {
-    m_okButton.addActionListener(new AbstractAction("OK") {
-      private static final long serialVersionUID = 8014389179875584858L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        setVisible(false);
-      }
-    });
-    m_lookAndFeel.addActionListener(new AbstractAction("Set Look And Feel") {
-      private static final long serialVersionUID = -6524988343523615143L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
+    m_okButton.addActionListener(SwingAction.of("OK", e ->         setVisible(false)));
+    m_lookAndFeel.addActionListener(SwingAction.of("Set Look And Feel", e -> {
         final Triple<JList, Map<String, String>, String> lookAndFeel = BasicGameMenuBar.getLookAndFeelList();
         final JList list = lookAndFeel.getFirst();
         final String currentKey = lookAndFeel.getThird();
@@ -174,13 +162,8 @@ public class EnginePreferences extends JDialog {
           EventThreadJOptionPane.showMessageDialog(m_parentFrame,
               "The look and feel will update when you restart TripleA", new CountDownLatchHandler(true));
         }
-      }
-    });
-    m_gameParser.addActionListener(new AbstractAction("Enable/Disable Delayed Parsing of Game XML's") {
-      private static final long serialVersionUID = -6223524865968800051L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
+    }));
+    m_gameParser.addActionListener(SwingAction.of("Enable/Disable Delayed Parsing of Game XML's", e -> {
         // TODO: replace with 2 radio buttons
         final boolean current = GameRunner2.getDelayedParsing();
         final Object[] options = {"Parse Selected", "Parse All", "Cancel"};
@@ -201,13 +184,9 @@ public class EnginePreferences extends JDialog {
         GameRunner2.setDelayedParsing(delay);
         EventThreadJOptionPane.showMessageDialog(m_parentFrame, "Please restart TripleA to avoid any potential errors",
             new CountDownLatchHandler(true));
-      }
-    });
-    m_casualtySelection.addActionListener(new AbstractAction("Set Default Casualty Selection Method") {
-      private static final long serialVersionUID = -6223524865968825151L;
 
-      @Override
-      public void actionPerformed(final ActionEvent e) {
+    }));
+    m_casualtySelection.addActionListener(SwingAction.of("Set Default Casualty Selection Method", e -> {
         // TODO: replace with 2 radio buttons
         final boolean currentIsPerfectButSlow = GameRunner2.getCasualtySelectionSlow();
         final Object[] options = {"Default", "Perfect but Slow", "Cancel"};
@@ -229,13 +208,8 @@ public class EnginePreferences extends JDialog {
         GameRunner2.setCasualtySelectionSlow(usePerfectButSlow);
         EventThreadJOptionPane.showMessageDialog(m_parentFrame, "Please restart TripleA for this to take effect",
             new CountDownLatchHandler(true));
-      }
-    });
-    m_setupProxies.addActionListener(new AbstractAction("Setup Network and Proxy Settings") {
-      private static final long serialVersionUID = 1673056396542959597L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
+    }));
+    m_setupProxies.addActionListener(SwingAction.of("Setup Network and Proxy Settings", e -> {
         final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
         final ProxyChoice proxyChoice =
             ProxyChoice.valueOf(pref.get(GameRunner2.PROXY_CHOICE, ProxyChoice.NONE.toString()));
@@ -278,13 +252,8 @@ public class EnginePreferences extends JDialog {
           newChoice = ProxyChoice.NONE;
         }
         GameRunner2.setProxy(hostText.getText(), portText.getText(), newChoice);
-      }
-    });
-    m_hostWaitTime.addActionListener(new AbstractAction("Set Max Host Wait Time for Clients and Observers") {
-      private static final long serialVersionUID = 1262782782389758914L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
+    }));
+    m_hostWaitTime.addActionListener(SwingAction.of("Set Max Host Wait Time for Clients and Observers", e -> {
         final NumberProperty clientWait =
             new NumberProperty("Max seconds to wait for all clients to sync data on game start",
                 "Max seconds to wait for all clients to sync data on game start", 9999,
@@ -307,13 +276,8 @@ public class EnginePreferences extends JDialog {
           GameRunner2.resetServerStartGameSyncWaitTime();
           GameRunner2.resetServerObserverJoinWaitTime();
         }
-      }
-    });
-    m_setMaxMemory.addActionListener(new AbstractAction("Set Max Memory Usage") {
-      private static final long serialVersionUID = 1262782782917758914L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
+    }));
+    m_setMaxMemory.addActionListener(SwingAction.of("Set Max Memory Usage", e -> {
         final AtomicBoolean tested = new AtomicBoolean();
         tested.set(false);
         final Properties systemIni = GameRunner2.getSystemIni();
@@ -334,17 +298,12 @@ public class EnginePreferences extends JDialog {
             "<html>If checked, only joining and hosting from online lobby will be affected by these settings."
                 + "<br />If unchecked, TripleA will automatically restart itself with the new memory setting every time you start TripleA.</html>");
         final JButton test = new JButton("Test User Settings");
-        test.addActionListener(new AbstractAction("Test User Settings") {
-          private static final long serialVersionUID = -4398183978989504112L;
-
-          @Override
-          public void actionPerformed(final ActionEvent e) {
+        test.addActionListener(SwingAction.of("Test User Settings", event -> {
             tested.set(true);
             System.out.println("Testing TripleA launch with max memory of: " + newMaxMemory.getValue() + "m");
             // it is in MB
             TripleAProcessRunner.startNewTripleA((((long) newMaxMemory.getValue()) * 1024 * 1024) + 67108864);
-          }
-        });
+        }));
         final JPanel radioPanel = new JPanel();
         radioPanel.setLayout(new BoxLayout(radioPanel, BoxLayout.Y_AXIS));
         radioPanel.add(new JLabel("<html>Configure TripleA's Maxmimum Memory Usage Settings: "
@@ -401,68 +360,45 @@ public class EnginePreferences extends JDialog {
             GameRunner2.writeSystemIni(prop, false);
           }
         }
-      }
-    });
-    m_mapCreator.addActionListener(new AbstractAction("Run the Map Creator") {
-      private static final long serialVersionUID = -3588932790184974286L;
 
-      @Override
-      public void actionPerformed(final ActionEvent e) {
+    }));
+    m_mapCreator.addActionListener(SwingAction.of("Run the Map Creator", e -> {
         final List<String> commands = new ArrayList<String>();
         ProcessRunnerUtil.populateBasicJavaArgs(commands);
         final String javaClass = "util.image.MapCreator";
         commands.add(javaClass);
         ProcessRunnerUtil.exec(commands);
-      }
-    });
-    m_console.addActionListener(new AbstractAction("Show Console") {
-      private static final long serialVersionUID = 5333381081739176723L;
 
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        ErrorConsole.getConsole().setVisible(true);
+    }));
+    m_console.addActionListener(SwingAction.of("Show Console", e -> {
+         ErrorConsole.getConsole().setVisible(true);
         reportMemoryUsageToConsole();
-      }
-    });
-    m_userFolder.addActionListener(new AbstractAction("Open User Maps and Savegames Folder") {
-      private static final long serialVersionUID = -3882256687728469915L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
+    }));
+    m_userFolder.addActionListener(SwingAction.of("Open User Maps and Savegames Folder", e -> {
         try {
           DesktopUtilityBrowserLauncher.openFile(GameRunner2.getUserRootFolder());
         } catch (final Exception e1) {
           e1.printStackTrace();
         }
-      }
-    });
-    m_programFolder.addActionListener(new AbstractAction("Open Installed Program Folder") {
-      private static final long serialVersionUID = 3621594954694705711L;
 
-      @Override
-      public void actionPerformed(final ActionEvent e) {
+    }));
+    m_programFolder.addActionListener(SwingAction.of("Open Installed Program Folder", e -> {
         try {
           DesktopUtilityBrowserLauncher.openFile(GameRunner2.getRootFolder());
         } catch (final Exception e1) {
           e1.printStackTrace();
         }
-      }
-    });
-    m_readme.addActionListener(new AbstractAction("Open Readme / User Manual") {
-      private static final long serialVersionUID = 7125025575496119585L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
+    }));
+    m_readme.addActionListener(SwingAction.of("Open Readme / User Manual", e -> {
         try {
           DesktopUtilityBrowserLauncher.openFile(new File(GameRunner2.getRootFolder(), "readme.html"));
         } catch (final Exception e1) {
           e1.printStackTrace();
         }
-      }
-    });
+    }));
   }
 
-  private void reportMemoryUsageToConsole() {
+  private static void reportMemoryUsageToConsole() {
     final int mb = 1024 * 1024;
     // Getting the runtime reference from system
     final Runtime runtime = Runtime.getRuntime();
