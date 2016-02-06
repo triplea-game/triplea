@@ -31,6 +31,10 @@ import javax.swing.ScrollPaneConstants;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.EngineVersion;
+import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.mapDownload.DownloadRunnable;
+import games.strategy.engine.framework.mapDownload.InstallMapDialog;
 import games.strategy.engine.framework.mapDownload.MapDownloadController;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.ui.NewGameChooser;

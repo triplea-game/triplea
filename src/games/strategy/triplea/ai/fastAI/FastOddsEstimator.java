@@ -1,5 +1,9 @@
 package games.strategy.triplea.ai.fastAI;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -9,10 +13,6 @@ import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorListener;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 public class FastOddsEstimator implements IOddsCalculator {
 

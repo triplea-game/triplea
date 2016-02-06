@@ -3,7 +3,6 @@ package games.strategy.debug;
 import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -16,6 +15,8 @@ import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
+
+import games.strategy.common.swing.SwingAction;
 
 public abstract class GenericConsole extends JFrame {
   private static final long serialVersionUID = 5754914217052820386L;
@@ -43,7 +44,7 @@ public abstract class GenericConsole extends JFrame {
 
   public abstract GenericConsole getConsoleInstance();
 
-    public void append(final String s) {
+  public void append(final String s) {
     m_text.append(s);
   }
 
@@ -82,49 +83,18 @@ public abstract class GenericConsole extends JFrame {
     System.setOut(print);
   }
 
-  private final Action m_copyAction = new AbstractAction("Copy to clipboard") {
-    private static final long serialVersionUID = 1573097546768015070L;
+  private final Action m_copyAction = SwingAction.of("Copy to clipboard", e -> {
+    final String text = m_text.getText();
+    final StringSelection select = new StringSelection(text);
+    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(select, select);
+  });
 
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      final String text = m_text.getText();
-      final StringSelection select = new StringSelection(text);
-      Toolkit.getDefaultToolkit().getSystemClipboard().setContents(select, select);
-    }
-  };
-  private final AbstractAction m_threadDiagnoseAction = new AbstractAction("Enumerate Threads") {
-    private static final long serialVersionUID = 4414139104815149199L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      System.out.println(DebugUtils.getThreadDumps());
-    }
-  };
-  private final AbstractAction m_memoryAction = new AbstractAction("Memory") {
-    private static final long serialVersionUID = 1053036985791697566L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      append(DebugUtils.getMemory());
-    }
-  };
-  private final AbstractAction m_propertiesAction = new AbstractAction("Properties") {
-    private static final long serialVersionUID = -8186358504886470902L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      final String s = DebugUtils.getProperties();
-      append(s);
-    }
-  };
-  private final AbstractAction m_clearAction = new AbstractAction("Clear") {
-    private static final long serialVersionUID = -6041425265177989146L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      clear();
-    }
-  };
+  private final AbstractAction m_threadDiagnoseAction =
+      SwingAction.of("Enumerate Threads", e -> System.out.println(DebugUtils.getThreadDumps()));
+  private final AbstractAction m_memoryAction = SwingAction.of("Memory", e -> append(DebugUtils.getMemory()));
+  private final AbstractAction m_propertiesAction =
+      SwingAction.of("Properties", e -> append(DebugUtils.getProperties()));
+  private final AbstractAction m_clearAction = SwingAction.of("Clear", e -> clear());
 }
 
 
@@ -135,7 +105,8 @@ class ThreadReader implements Runnable {
   private final boolean m_displayConsoleOnWrite;
   private final GenericConsole parentConsole;
 
-  ThreadReader(final SynchedByteArrayOutputStream in, final JTextArea text, final boolean displayConsoleOnWrite, GenericConsole parentConsole) {
+  ThreadReader(final SynchedByteArrayOutputStream in, final JTextArea text, final boolean displayConsoleOnWrite,
+      GenericConsole parentConsole) {
     m_in = in;
     m_text = text;
     m_displayConsoleOnWrite = displayConsoleOnWrite;

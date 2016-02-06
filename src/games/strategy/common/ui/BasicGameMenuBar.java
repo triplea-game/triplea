@@ -53,6 +53,7 @@ import com.apple.eawt.Application;
 import com.apple.eawt.ApplicationAdapter;
 import com.apple.eawt.ApplicationEvent;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.debug.DebugUtils;
@@ -401,15 +402,10 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
   protected void addGameSpecificHelpMenus(final JMenu helpMenu) {}
 
   protected void addConsoleMenu(final JMenu parentMenu) {
-    parentMenu.add(new AbstractAction("Show Console...") {
-      private static final long serialVersionUID = 6303760092518795718L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        ErrorConsole.getConsole().setVisible(true);
-        ErrorConsole.getConsole().append(DebugUtils.getMemory());
-      }
-    }).setMnemonic(KeyEvent.VK_C);
+    parentMenu.add(SwingAction.of("Show Console...", e -> {
+      ErrorConsole.getConsole().setVisible(true);
+      ErrorConsole.getConsole().append(DebugUtils.getMemory());
+    })).setMnemonic(KeyEvent.VK_C);
   }
 
   protected void addAboutMenu(final JMenu parentMenu) {
@@ -428,15 +424,10 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     scroll.setBorder(null);
     if (System.getProperty("mrj.version") == null) {
       parentMenu.addSeparator();
-      parentMenu.add(new AbstractAction("About...") {
-        private static final long serialVersionUID = 2861657714227435945L;
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(),
-              JOptionPane.PLAIN_MESSAGE);
-        }
-      }).setMnemonic(KeyEvent.VK_A);
+      parentMenu.add(SwingAction.of("About...", e -> {
+        JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(),
+            JOptionPane.PLAIN_MESSAGE);
+      })).setMnemonic(KeyEvent.VK_A);
     } else
     // On Mac OS X, put the About menu where Mac users expect it to be
     {
@@ -529,18 +520,13 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
   }
 
   protected void addSaveMenu(final JMenu parent) {
-    final JMenuItem menuFileSave = new JMenuItem(new AbstractAction("Save...") {
-      private static final long serialVersionUID = -8835148465905355231L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final File f = getSaveGameLocationDialog(m_frame);
-        if (f != null) {
-          getGame().saveGame(f);
-          JOptionPane.showMessageDialog(m_frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
-        }
+    final JMenuItem menuFileSave = new JMenuItem(SwingAction.of("Save...", e -> {
+      final File f = getSaveGameLocationDialog(m_frame);
+      if (f != null) {
+        getGame().saveGame(f);
+        JOptionPane.showMessageDialog(m_frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
       }
-    });
+    }));
     menuFileSave.setMnemonic(KeyEvent.VK_S);
     menuFileSave.setAccelerator(
         KeyStroke.getKeyStroke(KeyEvent.VK_S, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -551,31 +537,26 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     if (!PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(getGame().getData())) {
       return;
     }
-    final JMenuItem menuPBEM = new JMenuItem(new AbstractAction("Post PBEM/PBF Gamesave...") {
-      private static final long serialVersionUID = 5197939183318847906L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final GameData data = getGame().getData();
-        if (data == null || !PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(data)) {
-          return;
-        }
-        final String title = "Manual Gamesave Post";
-        try {
-          data.acquireReadLock();
-          final GameStep step = data.getSequence().getStep();
-          final PlayerID currentPlayer = (step == null ? PlayerID.NULL_PLAYERID
-              : (step.getPlayerID() == null ? PlayerID.NULL_PLAYERID : step.getPlayerID()));
-          final int round = data.getSequence().getRound();
-          final HistoryLog historyLog = new HistoryLog();
-          historyLog.printFullTurn(data, false, GameStepPropertiesHelper.getTurnSummaryPlayers(data));
-          final PBEMMessagePoster poster = new PBEMMessagePoster(getData(), currentPlayer, round, title);
-          PBEMMessagePoster.postTurn(title, historyLog, true, poster, null, m_frame, null);
-        } finally {
-          data.releaseReadLock();
-        }
+    final JMenuItem menuPBEM = new JMenuItem(SwingAction.of("Post PBEM/PBF Gamesave...", e -> {
+      final GameData data = getGame().getData();
+      if (data == null || !PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(data)) {
+        return;
       }
-    });
+      final String title = "Manual Gamesave Post";
+      try {
+        data.acquireReadLock();
+        final GameStep step = data.getSequence().getStep();
+        final PlayerID currentPlayer = (step == null ? PlayerID.NULL_PLAYERID
+            : (step.getPlayerID() == null ? PlayerID.NULL_PLAYERID : step.getPlayerID()));
+        final int round = data.getSequence().getRound();
+        final HistoryLog historyLog = new HistoryLog();
+        historyLog.printFullTurn(data, false, GameStepPropertiesHelper.getTurnSummaryPlayers(data));
+        final PBEMMessagePoster poster = new PBEMMessagePoster(getData(), currentPlayer, round, title);
+        PBEMMessagePoster.postTurn(title, historyLog, true, poster, null, m_frame, null);
+      } finally {
+        data.releaseReadLock();
+      }
+    }));
     menuPBEM.setMnemonic(KeyEvent.VK_P);
     menuPBEM.setAccelerator(
         KeyStroke.getKeyStroke(KeyEvent.VK_P, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -584,14 +565,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 
   protected void addExitMenu(final JMenu parentMenu) {
     final boolean isMac = GameRunner.isMac();
-    final JMenuItem leaveGameMenuExit = new JMenuItem(new AbstractAction("Leave Game") {
-      private static final long serialVersionUID = 5438496165424252930L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_frame.leaveGame();
-      }
-    });
+    final JMenuItem leaveGameMenuExit = new JMenuItem(SwingAction.of("Leave Game", e -> m_frame.leaveGame()));
     leaveGameMenuExit.setMnemonic(KeyEvent.VK_L);
     if (isMac) { // On Mac OS X, the command-Q is reserved for the Quit action,
                  // so set the command-L key combo for the Leave Game action
@@ -607,14 +581,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     if (isMac) {
       MacWrapper.registerMacShutdownHandler(m_frame);
     } else { // On non-Mac operating systems, we need to manually create an Exit menu item
-      final JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit") {
-        private static final long serialVersionUID = 2801394552918725137L;
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          m_frame.shutdown();
-        }
-      });
+      final JMenuItem menuFileExit = new JMenuItem(SwingAction.of("Exit", e -> m_frame.shutdown()));
       menuFileExit.setMnemonic(KeyEvent.VK_E);
       parentMenu.add(menuFileExit);
     }
@@ -707,50 +674,40 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
   }
 
   protected void addSetLookAndFeel(final JMenu menuView) {
-    menuView.add(new AbstractAction("Set Look and Feel...") {
-      private static final long serialVersionUID = 379919988820952164L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final Triple<JList, Map<String, String>, String> lookAndFeel = getLookAndFeelList();
-        final JList list = lookAndFeel.getFirst();
-        final String currentKey = lookAndFeel.getThird();
-        final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
-        if (JOptionPane.showConfirmDialog(m_frame, list) == JOptionPane.OK_OPTION) {
-          final String selectedValue = (String) list.getSelectedValue();
-          if (selectedValue == null) {
-            return;
-          }
-          if (selectedValue.equals(currentKey)) {
-            return;
-          }
-          GameRunner2.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
-          EventThreadJOptionPane.showMessageDialog(m_frame, "The look and feel will update when you restart TripleA",
-              new CountDownLatchHandler(true));
+    menuView.add(SwingAction.of("Set Look and Feel...", e -> {
+      final Triple<JList, Map<String, String>, String> lookAndFeel = getLookAndFeelList();
+      final JList list = lookAndFeel.getFirst();
+      final String currentKey = lookAndFeel.getThird();
+      final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
+      if (JOptionPane.showConfirmDialog(m_frame, list) == JOptionPane.OK_OPTION) {
+        final String selectedValue = (String) list.getSelectedValue();
+        if (selectedValue == null) {
+          return;
         }
+        if (selectedValue.equals(currentKey)) {
+          return;
+        }
+        GameRunner2.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
+        EventThreadJOptionPane.showMessageDialog(m_frame, "The look and feel will update when you restart TripleA",
+            new CountDownLatchHandler(true));
       }
-    }).setMnemonic(KeyEvent.VK_F);
+    })).setMnemonic(KeyEvent.VK_F);
   }
 
   protected void addShowGameUuid(final JMenu menuView) {
-    menuView.add(new AbstractAction("Game UUID...") {
-      private static final long serialVersionUID = 119615303846107510L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final String id = (String) getData().getProperties().get(GameData.GAME_UUID);
-        final JTextField text = new JTextField();
-        text.setText(id);
-        final JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        panel.add(new JLabel("Game UUID:"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
-            GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 0), 0, 0));
-        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(BasicGameMenuBar.this), panel, "Game UUID",
-            JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
-      }
-    }).setMnemonic(KeyEvent.VK_U);
+    menuView.add(SwingAction.of("Game UUID...", e -> {
+      final String id = (String) getData().getProperties().get(GameData.GAME_UUID);
+      final JTextField text = new JTextField();
+      text.setText(id);
+      final JPanel panel = new JPanel();
+      panel.setLayout(new GridBagLayout());
+      panel.add(new JLabel("Game UUID:"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+          GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+      panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+          new Insets(0, 0, 0, 0), 0, 0));
+      JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(BasicGameMenuBar.this), panel, "Game UUID",
+          JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
+    })).setMnemonic(KeyEvent.VK_U);
   }
 
   protected void addChatTimeMenu(final JMenu parentMenu) {
@@ -795,69 +752,58 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 
   protected void addGameOptionsMenu(final JMenu menuGame) {
     if (!getGame().getData().getProperties().getEditableProperties().isEmpty()) {
-      final AbstractAction optionsAction = new AbstractAction("View Game Options...") {
-        private static final long serialVersionUID = 8937205081994328616L;
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          final PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties().getEditableProperties(), false);
-          JOptionPane.showMessageDialog(m_frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
-        }
-      };
+      final AbstractAction optionsAction = SwingAction.of("View Game Options...", e -> {
+        final PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties().getEditableProperties(), false);
+        JOptionPane.showMessageDialog(m_frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
+      });
       menuGame.add(optionsAction).setMnemonic(KeyEvent.VK_O);
     }
   }
 
   // TODO: create a second menu option for parsing current attachments
   protected void addExportXML(final JMenu parentMenu) {
-    final Action exportXML = new AbstractAction("Export game.xml file (Beta)...") {
-      private static final long serialVersionUID = 8379478036021948990L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        exportXMLFile();
-      }
-
-      private void exportXMLFile() {
-        final JFileChooser chooser = new JFileChooser();
-        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        final File rootDir = new File(System.getProperties().getProperty("user.dir"));
-        final DateFormat formatDate = new SimpleDateFormat("yyyy_MM_dd");
-        int round = 0;
-        try {
-          getData().acquireReadLock();
-          round = getData().getSequence().getRound();
-        } finally {
-          getData().releaseReadLock();
-        }
-        String defaultFileName =
-            "xml_" + formatDate.format(new Date()) + "_" + getData().getGameName() + "_round_" + round;
-        defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
-        defaultFileName = defaultFileName + ".xml";
-        chooser.setSelectedFile(new File(rootDir, defaultFileName));
-        if (chooser.showSaveDialog(m_frame) != JOptionPane.OK_OPTION) {
-          return;
-        }
-        final GameData data = getData();
-        final String xmlFile;
-        try {
-          data.acquireReadLock();
-          final GameDataExporter exporter = new games.strategy.engine.data.export.GameDataExporter(data, false);
-          xmlFile = exporter.getXML();
-        } finally {
-          data.releaseReadLock();
-        }
-        try {
-          try(final FileWriter writer = new FileWriter(chooser.getSelectedFile());) {
-            writer.write(xmlFile);
-          }
-        } catch (final IOException e1) {
-          ClientLogger.logQuietly(e1);
-        }
-      }
-    };
+    final Action exportXML = SwingAction.of("Export game.xml file (Beta)...", e -> exportXMLFile());
     parentMenu.add(exportXML).setMnemonic(KeyEvent.VK_X);
   }
+
+  private void exportXMLFile() {
+    final JFileChooser chooser = new JFileChooser();
+    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    final File rootDir = new File(System.getProperties().getProperty("user.dir"));
+    final DateFormat formatDate = new SimpleDateFormat("yyyy_MM_dd");
+    int round = 0;
+    try {
+      getData().acquireReadLock();
+      round = getData().getSequence().getRound();
+    } finally {
+      getData().releaseReadLock();
+    }
+    String defaultFileName =
+        "xml_" + formatDate.format(new Date()) + "_" + getData().getGameName() + "_round_" + round;
+    defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
+    defaultFileName = defaultFileName + ".xml";
+    chooser.setSelectedFile(new File(rootDir, defaultFileName));
+    if (chooser.showSaveDialog(m_frame) != JOptionPane.OK_OPTION) {
+      return;
+    }
+    final GameData data = getData();
+    final String xmlFile;
+    try {
+      data.acquireReadLock();
+      final GameDataExporter exporter = new games.strategy.engine.data.export.GameDataExporter(data, false);
+      xmlFile = exporter.getXML();
+    } finally {
+      data.releaseReadLock();
+    }
+    try {
+      try (final FileWriter writer = new FileWriter(chooser.getSelectedFile());) {
+        writer.write(xmlFile);
+      }
+    } catch (final IOException e1) {
+      ClientLogger.logQuietly(e1);
+    }
+  }
+
 
   public IGame getGame() {
     return m_frame.getGame();

@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.triplea.delegate.Die.DieType;
 
 public class DiceChooser extends JPanel {
@@ -118,14 +119,7 @@ public class DiceChooser extends JPanel {
       diceButtonPanel.add(button);
     }
     diceButtonPanel.add(Box.createHorizontalStrut(4));
-    m_undoButton = new JButton(new AbstractAction("Undo") {
-      private static final long serialVersionUID = 9096980607403511853L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        removeLastDie();
-      }
-    });
+    m_undoButton = new JButton(SwingAction.of("Undo", e -> removeLastDie()));
     diceButtonPanel.add(m_undoButton);
     diceButtonPanel.add(Box.createHorizontalStrut(40));
     m_diceCountLabel = new JLabel("Dice remaining:   ");
