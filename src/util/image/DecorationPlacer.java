@@ -49,6 +49,7 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.framework.GameRunner2;
