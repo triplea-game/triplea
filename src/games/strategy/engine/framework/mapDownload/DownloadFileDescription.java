@@ -3,6 +3,7 @@ package games.strategy.engine.framework.mapDownload;
 import games.strategy.util.Version;
 
 public class DownloadFileDescription {
+  protected static final String DUMMY_URL = "!";
   private final String url;
   private final String description;
   private final String mapName;
@@ -36,7 +37,7 @@ public class DownloadFileDescription {
   }
 
   public boolean isDummyUrl() {
-    return url.startsWith("!");
+    return url.startsWith(DUMMY_URL);
   }
 
   public Version getVersion() {
