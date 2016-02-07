@@ -350,7 +350,7 @@ public class TripleAFrame extends MainGameFrame {
     m_notesPanel = new NotesPanel(m_data, m_menu.getGameNotesJEditorPane());
     m_tabsPanel.addTab("Notes", m_notesPanel);
     m_details = new TerritoryDetailPanel(m_mapPanel, m_data, m_uiContext, this);
-    m_tabsPanel.addTab("Territory", m_details);
+    m_tabsPanel.addTab("Territory", null, m_details, TerritoryDetailPanel.getHoverText());
     m_editPanel = new EditPanel(m_data, m_mapPanel, this);
     // Register a change listener
     m_tabsPanel.addChangeListener(new ChangeListener() {
