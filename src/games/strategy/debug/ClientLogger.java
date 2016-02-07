@@ -2,6 +2,8 @@ package games.strategy.debug;
 
 import java.io.PrintStream;
 
+import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
+
 public class ClientLogger {
   private static final PrintStream developerOutputStream = System.out;
   private static final PrintStream userOutputStream = System.err;
@@ -37,5 +39,15 @@ public class ClientLogger {
   public static void logError(final String msg, final Throwable e) {
     logError(msg);
     logError(e);
+  }
+
+  public static void logError(LocalSystemChecker systemCheck) {
+    logError("Warning!! " + systemCheck.getExceptions().size()
+        + " system checks failed. Some game features may not be available or may not work correctly.\n"
+        + systemCheck.getStatusMessage());
+
+    for (Exception e : systemCheck.getExceptions()) {
+      logError(e);
+    }
   }
 }
