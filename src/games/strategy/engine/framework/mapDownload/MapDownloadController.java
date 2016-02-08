@@ -3,6 +3,7 @@ package games.strategy.engine.framework.mapDownload;
 import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -13,6 +14,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
@@ -75,7 +77,7 @@ public class MapDownloadController {
         return false;
       }
       final List<String> outOfDateMaps = new ArrayList<String>();
-      InstallMapDialog.populateOutOfDateMapsListing(outOfDateMaps, downloads);
+      populateOutOfDateMapsListing(outOfDateMaps, downloads);
       if (!outOfDateMaps.isEmpty()) {
         final StringBuilder text =
             new StringBuilder("<html>Some of the maps you have are out of date, and newer versions of those maps exist."
@@ -98,5 +100,27 @@ public class MapDownloadController {
       ClientLogger.logError("Error while checking for map updates", e);
     }
     return false;
+  }
+
+
+  public static void populateOutOfDateMapsListing(final Collection<String> listingToBeAddedTo,
+      final Collection<DownloadFileDescription> gamesDownloadFileDescriptions) {
+    if (listingToBeAddedTo == null) {
+      return;
+    }
+    listingToBeAddedTo.clear();
+    for (final DownloadFileDescription d : gamesDownloadFileDescriptions) {
+      if (d != null && !d.isDummyUrl()) {
+        File installed = new File(GameRunner2.getUserMapsFolder(), d.getMapName() + ".zip");
+        if (installed == null || !installed.exists()) {
+          installed = new File(GameSelectorModel.DEFAULT_MAP_DIRECTORY, d.getMapName() + ".zip");
+        }
+        if (installed != null && installed.exists()) {
+          if (d.getVersion() != null && d.getVersion().isGreaterThan(InstallMapDialog.getVersion(installed), true)) {
+            listingToBeAddedTo.add(d.getMapName());
+          }
+        }
+      }
+    }
   }
 }

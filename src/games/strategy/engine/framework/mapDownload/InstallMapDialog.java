@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
@@ -87,26 +86,6 @@ public class InstallMapDialog extends JDialog {
     }
   }
 
-  public static void populateOutOfDateMapsListing(final Collection<String> listingToBeAddedTo,
-      final Collection<DownloadFileDescription> gamesDownloadFileDescriptions) {
-    if (listingToBeAddedTo == null) {
-      return;
-    }
-    listingToBeAddedTo.clear();
-    for (final DownloadFileDescription d : gamesDownloadFileDescriptions) {
-      if (d != null && !d.isDummyUrl()) {
-        File installed = new File(ClientFileSystemHelper.getUserMapsFolder(), d.getMapName() + ".zip");
-        if (installed == null || !installed.exists()) {
-          installed = new File(GameSelectorModel.DEFAULT_MAP_DIRECTORY, d.getMapName() + ".zip");
-        }
-        if (installed != null && installed.exists()) {
-          if (d.getVersion() != null && d.getVersion().isGreaterThan(getVersion(installed), true)) {
-            listingToBeAddedTo.add(d.getMapName());
-          }
-        }
-      }
-    }
-  }
 
   private void createComponents() {
     m_installButton = new JButton("Install Games");
@@ -410,8 +389,4 @@ public class InstallMapDialog extends JDialog {
     return v.toString();
   }
 
-  private static Version getVersion(final File zipFile) {
-    final DownloadFileProperties props = DownloadFileProperties.loadForZip(zipFile);
-    return props.getVersion();
-  }
 }
