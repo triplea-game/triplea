@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <games>
-  <!-- "!" given as first character of an URL causes the "Install Map" button to be disabled, and the mapname does not have to be unique anymore. Use to  format.-->
+  <!-- "!" given as the URL will creates a header that partitions the download list -->
   <!-- <game>
     <url>!</url>
-    <mapName/>
+    <mapName>***Header Text***</mapName>
     <description><![CDATA[
     <br>
     ]]></description>
@@ -217,13 +217,6 @@
     <br>With help from Pulicat and Bung
     ]]></description>
     <version>2.2</version>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName/>
-    <description><![CDATA[
-    <br>
-    ]]></description>
   </game>
   <game>
     <url>!</url>
@@ -729,13 +722,6 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>4.3</version>
   </game>
   <game>
-    <url>!</url>
-    <mapName/>
-    <description><![CDATA[
-    <br>
-    ]]></description>
-  </game>
-  <game>
     <url>https://github.com/triplea-maps/big_world_variations/releases/download/0.1/big_world_variations.zip</url>
     <mapName>big_world_variations</mapName>
     <description><![CDATA[
@@ -859,13 +845,6 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   </game>
   <game>
     <url>!</url>
-    <mapName/>
-    <description><![CDATA[
-    <br>
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
     <mapName>***MAP SKINS FOR ABOVE MAPS***</mapName>
     <description><![CDATA[
     <br>This section contains Map Skins for any maps in the above 3 categories (High Quality Maps, WW2 Maps, and Quality Maps).
@@ -952,13 +931,6 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <br>A very basic style.  I made this one for people who hate the cursive writing of the other 3 skins.  It has a simple font, no textures, and no cursive.
     ]]></description>
     <version>2.0</version>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName/>
-    <description><![CDATA[
-    <br>
-    ]]></description>
   </game>
   <game>
     <url>!</url>
@@ -1149,13 +1121,6 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <br>
     ]]></description>
     <version>1.4</version>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName/>
-    <description><![CDATA[
-    <br>
-    ]]></description>
   </game>
   <game>
     <url>https://github.com/triplea-maps/atari/releases/download/0.1/atari.zip</url>
@@ -1595,13 +1560,6 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   </game>
   <game>
     <url>!</url>
-    <mapName/>
-    <description><![CDATA[
-    <br>
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
     <mapName>***IN DEVELOPMENT***</mapName>
     <description><![CDATA[
     <br>Located in this section are maps that are a "work in progress".  
@@ -1895,13 +1853,6 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
         <br>by Gregorek
     ]]></description>
     <version>1.0</version>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName/>
-    <description><![CDATA[
-    <br>
-    ]]></description>
   </game>
   <game>
     <url>!</url>
