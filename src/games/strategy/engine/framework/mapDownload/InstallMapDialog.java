@@ -66,8 +66,6 @@ public class InstallMapDialog extends JDialog {
     super(owner, "Download Maps", true);
     m_games = MapDownloadListSort.sortByMapName(games);
     createComponents();
-    layoutCoponents();
-    setupListeners();
     setWidgetActivation();
     informUserOfOutOfDateMaps(owner);
   }
@@ -153,9 +151,7 @@ public class InstallMapDialog extends JDialog {
     m_descriptionPane.setBackground(new JLabel().getBackground());
     m_urlLabel = new JLabel(DOWNLOAD_URL_PREFIX);
     m_mapVersion = new JLabel(MAP_VERSION_PREFIX);
-  }
 
-  private void layoutCoponents() {
     setLayout(new BorderLayout());
     final JPanel buttonsPanel = new JPanel();
     add(m_intro, BorderLayout.NORTH);
@@ -186,9 +182,6 @@ public class InstallMapDialog extends JDialog {
     extraPanel.add(m_mapVersion, BorderLayout.SOUTH);
     main.add(extraPanel, BorderLayout.SOUTH);
     add(main, BorderLayout.CENTER);
-  }
-
-  private void setupListeners() {
     m_cancelButton.addActionListener(SwingAction.of(e -> setVisible(false)));
     m_installButton.addActionListener(SwingAction.of(e -> {
       boolean installed = false;
