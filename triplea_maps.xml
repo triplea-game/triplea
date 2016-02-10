@@ -11,7 +11,7 @@
  -->
   <game>
     <url>!</url>
-    <mapName>HIGH QUALITY MAPS</mapName>
+    <mapName>***HIGH QUALITY MAPS***</mapName>
     <description><![CDATA[
          <br>Maps here feature good to excellent balance, high replay value, good documentation and good visuals.
          <br>
@@ -396,21 +396,7 @@
   </game>
   <game>
     <url>!</url>
-    <mapName>***WW2 MAPS***</mapName>
-    <description><![CDATA[
-    <br>Above can be found maps with an authentic WW2 board game flavor.
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName/>
-    <description><![CDATA[
-    <br>
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName>QUALITY MAPS</mapName>
+    <mapName>***QUALITY MAPS***</mapName>
     <description><![CDATA[
     <br>Maps that make it into this category are of high general quality, mostly even awesome, only coming short in one or two of the requirements.
     <br>Maps here must have a decent level of popularity and/or very good art and polish.
@@ -418,13 +404,6 @@
     <br>Feedback highly welcome, if played.
     <br>Leave feedback at the forums: http://triplea.sourceforge.net/mywiki/Community
     <br>or at the Depot: http://sites.google.com/site/tripleaerniebommel/
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName>------------------------</mapName>
-    <description><![CDATA[
-    <br>
     ]]></description>
   </game>
   <game>
@@ -887,20 +866,13 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   </game>
   <game>
     <url>!</url>
-    <mapName>MAP SKINS FOR ABOVE MAPS</mapName>
+    <mapName>***MAP SKINS FOR ABOVE MAPS***</mapName>
     <description><![CDATA[
     <br>This section contains Map Skins for any maps in the above 3 categories (High Quality Maps, WW2 Maps, and Quality Maps).
     <br>To use a map skin, you MUST HAVE THE ORIGINAL MAP.
     <br>This means that any map ending in "<MapName>-<SkinName>" you must have the map that is the <MapName> part in order to use the skin.
     <br>
     <br>To use the skin, simply start a game and go to the top of the screen.  Click "view" then click "map skins", and then select the skin you want.
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName>------------------------</mapName>
-    <description><![CDATA[
-    <br>
     ]]></description>
   </game>
   <game>
@@ -990,19 +962,12 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   </game>
   <game>
     <url>!</url>
-    <mapName>ALL OTHER MAPS / EXPERIMENTAL</mapName>
+    <mapName>***ALL OTHER MAPS / EXPERIMENTAL***</mapName>
     <description><![CDATA[
     <br>This section is for all maps that dont fit into the other sections.
     <br>From good maps that didnt become popular yet, to maps which may need an extra hand to be finished, to maps which may have gameplay design flaws are found here.
     <br>Excellent place to look for ideas or discovering something that others have not yet found.
     <br>If you would like to help balance or polish or fix these maps, be sure to let us know.
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName>------------------------</mapName>
-    <description><![CDATA[
-    <br>
     ]]></description>
   </game>
   <game>
@@ -1637,20 +1602,13 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   </game>
   <game>
     <url>!</url>
-    <mapName>IN DEVELOPMENT</mapName>
+    <mapName>***IN DEVELOPMENT***</mapName>
     <description><![CDATA[
     <br>Located in this section are maps that are a "work in progress".  
         Thus good Maps which are in the state of development and thus not completed yet, may it be functionally, bugs, art, or in terms of basic balance.
     <br>These maps are usually updated often, so check back.
     <br>Technically, all maps are still usually getting updates here and there, but maps in this category are usually very new (2-6 weeks), or have bugs, 
         or the map maker does not consider them to be ready for release.
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName>------------------------</mapName>
-    <description><![CDATA[
-    <br>
     ]]></description>
   </game>
   <game>
@@ -1947,17 +1905,10 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   </game>
   <game>
     <url>!</url>
-    <mapName>DEVELOPER RESOURCES</mapName>
+    <mapName>***DEVELOPER RESOURCES***</mapName>
     <description><![CDATA[
     <br>Located in this section are resources such as the map maker by Wisconsin (be sure to check the .txt files that come with it before using it), 
         as well as map files or art files that could be used for future maps.
-    <br>
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName>------------------------</mapName>
-    <description><![CDATA[
     <br>
     ]]></description>
   </game>
