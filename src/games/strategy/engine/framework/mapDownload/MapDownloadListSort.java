@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.mapDownload;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 import java.util.List;
 
@@ -19,7 +18,7 @@ public final class MapDownloadListSort {
    * groups.
    */
   public static List<DownloadFileDescription> sortByMapName(List<DownloadFileDescription> downloads) {
-    checkState(!checkNotNull(downloads).isEmpty());
+    checkNotNull(downloads);
 
     List<DownloadFileDescription> returnList = Lists.newArrayList();
 
@@ -32,6 +31,11 @@ public final class MapDownloadListSort {
       if (download.isDummyUrl()) {
         returnList.addAll(sort(maps));
         maps = Lists.newArrayList();
+
+        if(!returnList.isEmpty()) {
+          // Add an empty row before any new headers (with exception to the first row)
+          returnList.add(DownloadFileDescription.PLACE_HOLDER);
+        }
         returnList.add(download);
       } else {
         maps.add(download);
