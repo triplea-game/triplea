@@ -12,7 +12,7 @@ import games.strategy.engine.EngineVersion;
 import games.strategy.util.Version;
 
 class DownloadFileProperties {
-  private static final String VERSION = "map.version";
+  protected static final String VERSION_PROPERTY = "map.version";
   private final Properties props = new Properties();
 
   public static DownloadFileProperties loadForZip(final File zipFile) {
@@ -39,19 +39,23 @@ class DownloadFileProperties {
   public DownloadFileProperties() {}
 
   private static File fromZip(final File zipFile) {
-    return new File(zipFile.getParent(), zipFile.getName() + ".properties");
+    return new File(zipFile.getParent(), getPropertiesFileName(zipFile.getName()));
+  }
+
+  public static String getPropertiesFileName(String mapFileName) {
+    return mapFileName + ".properties";
   }
 
   public Version getVersion() {
-    if (!props.containsKey(VERSION)) {
+    if (!props.containsKey(VERSION_PROPERTY)) {
       return null;
     }
-    return new Version(props.getProperty(VERSION));
+    return new Version(props.getProperty(VERSION_PROPERTY));
   }
 
   private void setVersion(final Version v) {
     if (v != null) {
-      props.put(VERSION, v.toString());
+      props.put(VERSION_PROPERTY, v.toString());
     }
   }
 
