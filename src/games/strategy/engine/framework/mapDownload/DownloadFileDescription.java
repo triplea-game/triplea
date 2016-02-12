@@ -1,5 +1,7 @@
 package games.strategy.engine.framework.mapDownload;
 
+import com.google.common.base.MoreObjects;
+
 import games.strategy.util.Version;
 
 public class DownloadFileDescription {
@@ -10,9 +12,8 @@ public class DownloadFileDescription {
   private final Version version;
   private final String hostedUrl;
 
-  public String getHostedUrl() {
-    return hostedUrl;
-  }
+  public static final DownloadFileDescription PLACE_HOLDER =
+      new DownloadFileDescription(DUMMY_URL, " ", " ", new Version("0"), " ");
 
   public DownloadFileDescription(final String url, final String description, final String mapName,
       final Version version, final String hostedUrl) {
@@ -22,6 +23,10 @@ public class DownloadFileDescription {
     this.mapName = mapName;
     this.version = version;
     this.hostedUrl = hostedUrl;
+  }
+
+  public String getHostedUrl() {
+    return hostedUrl;
   }
 
   public String getUrl() {
@@ -42,5 +47,11 @@ public class DownloadFileDescription {
 
   public Version getVersion() {
     return version;
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this).addValue(url).addValue(mapName).addValue(version).toString();
+
   }
 }
