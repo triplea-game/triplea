@@ -28,8 +28,6 @@ public class MapDownloadListSortTest {
     return new DownloadFileDescription(url, description, mapName, version, hostedUrl);
   }
 
-
-
   @Test
   public void testSortingSortedList() {
     List<DownloadFileDescription> downloads = Lists.newArrayList(MAP_A, MAP_B, MAP_C);
@@ -44,7 +42,6 @@ public class MapDownloadListSortTest {
     assertThat(sorted.get(2).getMapName(), is(MAP_C.getMapName()));
   }
 
-
   @Test
   public void testSortingUnSortedList() {
     List<DownloadFileDescription> downloads = Lists.newArrayList(MAP_B, MAP_C, MAP_A);
@@ -52,6 +49,16 @@ public class MapDownloadListSortTest {
     assertSorted(sorted);
   }
 
+  @Test
+  public void testInsertEmptyRowAboveHeaders() {
+    List<DownloadFileDescription> downloads =
+        Lists.newArrayList(HEADER, HEADER);
+    List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
+    assertThat(sorted.size(), is(downloads.size() + 1));
+    assertThat(sorted.get(0).isDummyUrl(), is(true));
+    assertThat(sorted.get(1).isDummyUrl(), is(true));
+    assertThat(sorted.get(2).isDummyUrl(), is(true));
+  }
 
   @Test
   public void testSortingUnSortedListWithHeaders() {
@@ -62,9 +69,12 @@ public class MapDownloadListSortTest {
     assertThat(sorted.get(1).getMapName(), is(MAP_A.getMapName()));
     assertThat(sorted.get(2).getMapName(), is(MAP_B.getMapName()));
     assertThat(sorted.get(3).isDummyUrl(), is(true));
-    assertThat(sorted.get(4).getMapName(), is(MAP_C.getMapName()));
-    assertThat(sorted.get(5).getMapName(), is(MAP_D.getMapName()));
-    assertThat(sorted.get(6).isDummyUrl(), is(true));
+    assertThat(sorted.get(4).isDummyUrl(), is(true));
+    assertThat(sorted.get(5).getMapName(), is(MAP_C.getMapName()));
+    assertThat(sorted.get(6).getMapName(), is(MAP_D.getMapName()));
     assertThat(sorted.get(7).isDummyUrl(), is(true));
+    assertThat(sorted.get(8).isDummyUrl(), is(true));
+    assertThat(sorted.get(9).isDummyUrl(), is(true));
+    assertThat(sorted.get(10).isDummyUrl(), is(true));
   }
 }
