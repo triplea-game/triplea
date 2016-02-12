@@ -1,0 +1,46 @@
+package games.strategy.engine.framework.mapDownload;
+
+import java.util.List;
+import java.util.Optional;
+
+import com.google.common.collect.Lists;
+
+import games.strategy.util.Version;
+
+public class MapDownloadList {
+
+  private final List<DownloadFileDescription> available = Lists.newArrayList();
+  private final List<DownloadFileDescription> installed = Lists.newArrayList();
+  private final List<DownloadFileDescription> outOfDate = Lists.newArrayList();
+
+  public MapDownloadList(List<DownloadFileDescription> downloads, FileSystemStrategy strategy) {
+    for (DownloadFileDescription download : downloads) {
+      Optional<Version> mapVersion = strategy.getMapVersion(download.getMapName());
+
+      // TODO: this part is not tested where we preserve the headers are retained
+      if (download.isDummyUrl()) {
+        available.add(download);
+        installed.add(download);
+      } else if (mapVersion.isPresent()) {
+        installed.add(download);
+        if (download.getVersion().isGreaterThan(mapVersion.get())) {
+          outOfDate.add(download);
+        }
+      } else {
+        available.add(download);
+      }
+    }
+  }
+
+  public List<DownloadFileDescription> getAvailable() {
+    return available;
+  }
+
+  public List<DownloadFileDescription> getInstalled() {
+    return installed;
+  }
+
+  public List<DownloadFileDescription> getOutOfDate() {
+    return outOfDate;
+  }
+}

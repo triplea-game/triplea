@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.mapDownload;
 
 import java.awt.Frame;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -13,6 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.util.CountDownLatchHandler;
@@ -111,7 +113,7 @@ public class MapDownloadController {
     listingToBeAddedTo.clear();
     for (final DownloadFileDescription d : gamesDownloadFileDescriptions) {
       if (d != null && !d.isDummyUrl()) {
-        File installed = new File(GameRunner2.getUserMapsFolder(), d.getMapName() + ".zip");
+        File installed = new File(ClientFileSystemHelper.getUserMapsFolder(), d.getMapName() + ".zip");
         if (installed == null || !installed.exists()) {
           installed = new File(GameSelectorModel.DEFAULT_MAP_DIRECTORY, d.getMapName() + ".zip");
         }
