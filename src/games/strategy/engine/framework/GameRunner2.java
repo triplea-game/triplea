@@ -35,6 +35,8 @@ import games.strategy.engine.framework.mapDownload.MapDownloadController;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
 import games.strategy.engine.framework.ui.background.WaitWindow;
+import games.strategy.performance.Perf;
+import games.strategy.performance.PerfTimer;
 import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
@@ -138,25 +140,23 @@ public class GameRunner2 {
   }
 
   public static void main(final String[] args) {
-    setupLogging();
-    ErrorConsole.getConsole().displayStandardError();
-    ErrorConsole.getConsole().displayStandardOutput();
-    ErrorHandler.registerExceptionHandler();
-    System.setProperty("triplea.engine.version", ClientContext.engineVersion().toString());
-    handleCommandLineArgs(args);
-    // do after we handle command line args
-    checkForMemoryXMX();
-    setupLookAndFeel();
-
-    LocalSystemChecker systemCheck = new LocalSystemChecker();
-    if( !systemCheck.getExceptions().isEmpty() ) {
-      String msg = "Warning!! " + systemCheck.getExceptions().size()
-          + " system checks failed. Some game features may not be available or may not work correctly.\n"
-          + systemCheck.getStatusMessage();
-      ClientLogger.logError(msg, systemCheck.getExceptions());
-      // Now continue after we have warned the user that some game functionality may not work.
+    try (PerfTimer timer = Perf.startTimer("logging setup")) {
+      setupLogging();
     }
-
+    try (PerfTimer timer = Perf.startTimer("error console setup")) {
+      ErrorConsole.getConsole().displayStandardError();
+      ErrorConsole.getConsole().displayStandardOutput();
+      ErrorHandler.registerExceptionHandler();
+    }
+    try (PerfTimer timer = Perf.startTimer("set engine version property")) {
+      System.setProperty("triplea.engine.version", ClientContext.engineVersion().toString());
+    }
+    try (PerfTimer timer = Perf.startTimer("handle command line args, check memory, and setup look and feel")) {
+      handleCommandLineArgs(args);
+      // do after we handle command line args
+      checkForMemoryXMX();
+      setupLookAndFeel();
+    }
     s_countDownLatch = new CountDownLatch(1);
     try {
       SwingUtilities.invokeAndWait(new Runnable() {
@@ -170,10 +170,15 @@ public class GameRunner2 {
     } catch (final Exception e) {
       // just don't show the wait window
     }
-    setupProxies();
-    showMainFrame();
-    // lastly, check and see if there are new versions of TripleA out
-    checkForUpdates();
+    try (PerfTimer timer = Perf.startTimer("setup proxies")) {
+      setupProxies();
+    }
+    try (PerfTimer timer = Perf.startTimer("show main frame")) {
+      showMainFrame();
+    }
+    try (PerfTimer timer = Perf.startTimer("check for new versions of tripleA")) {
+      checkForUpdates();
+    }
   }
 
   private static void showMainFrame() {
