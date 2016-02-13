@@ -12,7 +12,6 @@ public class Perf {
   private static final String LOG_PERFORMANCE_KEY = "logPerformance";
   private static boolean enabled;
 
-
   static {
     enabled = isEnabled();
     if (enabled) {
@@ -46,17 +45,9 @@ public class Perf {
     }
   }
 
-  public static void stopTimer(PerfTimer timer ) {
-    if( timer == PerfTimer.DISABLED_TIMER ) {
-      return;
-    }
-
-    long elapsed = timer.stop();
-    // TODO: make sure this won't interfere with performance of nested timers, for example:
-    // Timer a = ..
-    // Timer b = ..
-    // a.stop(); // << important to make sure this won't impact Timer b
-    // b.stop()
-    PerformanceConsole.getInstance().append( "Timer - " + elapsed + "ms  :  " + timer.title);
+  protected static void processResult(long stopNanos, PerfTimer perfTimer) {
+    long milliFraction = stopNanos % 100;
+    long millis = (stopNanos / 100);
+    PerformanceConsole.getInstance().append( millis + "." + milliFraction + " ms - " + perfTimer.title);
   }
 }
