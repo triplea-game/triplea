@@ -31,7 +31,7 @@ public final class ClientFileSystemHelper {
     }
 
     final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
-    if (fileName.contains("triplea_"+ tripleaJarNameWithEngineVersion + ".jar!")) {
+    if (fileName.contains("triplea_" + tripleaJarNameWithEngineVersion + ".jar!")) {
       return getRootFolderRelativeToJar(fileName, tripleaJarNameWithEngineVersion);
     }
 
@@ -55,7 +55,8 @@ public final class ClientFileSystemHelper {
 
   private static String getTripleaJarWithEngineVersionStringPath() {
     // TODO: This is begging for trouble since we call ClientFileSystem during the construction of
-    // ClientContext. Though, we will at this point already have parsed the game engine version, so it is okay (but brittle)
+    // ClientContext. Though, we will at this point already have parsed the game engine version, so it is okay (but
+    // brittle)
     EngineVersion engine = ClientContext.engineVersion();
     Version version = engine.getVersion();
 
@@ -138,5 +139,12 @@ public final class ClientFileSystemHelper {
     return f;
   }
 
-
+  /** Create a temporary file, checked exceptions are re-thrown as unchecked */
+  public static File createTempFile() {
+    try {
+      return File.createTempFile("triplea", "tmp");
+    } catch (IOException e) {
+      throw new IllegalStateException("Failed to create a temporary file", e);
+    }
+  }
 }
