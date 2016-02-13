@@ -37,17 +37,19 @@ public class Perf {
     return prefs.getBoolean(LOG_PERFORMANCE_KEY, false);
   }
 
-  public static PerfTimer startTimer(Object obj, String title) {
+  public static PerfTimer startTimer(String title) {
     if (!enabled) {
       return PerfTimer.DISABLED_TIMER;
     } else {
-      return new PerfTimer(title + " - " + obj.getClass().getName());
+       return new PerfTimer(title);
     }
   }
 
   protected static void processResult(long stopNanos, PerfTimer perfTimer) {
-    long milliFraction = stopNanos % 100;
-    long millis = (stopNanos / 100);
-    PerformanceConsole.getInstance().append( millis + "." + milliFraction + " ms - " + perfTimer.title);
+    long stopMicros = stopNanos / 1000;
+
+    long milliFraction = (stopMicros % 1000) / 100;
+    long millis = (stopMicros / 1000);
+    PerformanceConsole.getInstance().append( millis + "." + milliFraction + " ms - " + perfTimer.title + "\n");
   }
 }
