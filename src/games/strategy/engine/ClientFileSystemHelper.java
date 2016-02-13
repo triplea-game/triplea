@@ -57,7 +57,7 @@ public final class ClientFileSystemHelper {
     // TODO: This is begging for trouble since we call ClientFileSystem during the construction of
     // ClientContext. Though, we will at this point already have parsed the game engine version, so it is okay (but brittle)
     EngineVersion engine = ClientContext.engineVersion();
-    Version version = engine.getVersion();
+    Version version = engine.getCompatabilityVersion();
 
     return "triplea_" + version.toStringFull("_") + ".jar!";
   }

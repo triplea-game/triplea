@@ -191,7 +191,7 @@ public class GameParser {
     }
     final Version mapCompatibleWithTripleaVersion =
         new Version(((Element) minimumVersion).getAttribute("minimumVersion"));
-    if (mapCompatibleWithTripleaVersion.isGreaterThan(ClientContext.engineVersion().getVersion(), true)) {
+    if (mapCompatibleWithTripleaVersion.isGreaterThan(ClientContext.engineVersion().getCompatabilityVersion(), true)) {
       throw new EngineVersionException("Trying to play a map made for a newer version of TripleA. Map named '"
           + data.getGameName() + "' requires at least TripleA version " + mapCompatibleWithTripleaVersion.toString());
     }

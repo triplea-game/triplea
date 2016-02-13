@@ -82,7 +82,7 @@ public class GameRunner2 {
   // non-commandline-argument-properties (for preferences)
   // first time we've run this version of triplea?
   private static final String TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY =
-      "triplea.firstTimeThisVersion" + ClientContext.engineVersion().getVersion().toString();
+      "triplea.firstTimeThisVersion" + ClientContext.engineVersion().getCompatabilityVersion().toString();
   private static final String TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE = "triplea.lastCheckForEngineUpdate";
   // only for Online?
   public static final String TRIPLEA_MEMORY_ONLINE_ONLY = "triplea.memory.onlineOnly";
@@ -141,7 +141,7 @@ public class GameRunner2 {
     ErrorConsole.getConsole().displayStandardError();
     ErrorConsole.getConsole().displayStandardOutput();
     ErrorHandler.registerExceptionHandler();
-    System.setProperty("triplea.engine.version", ClientContext.engineVersion().getVersion().toString());
+    System.setProperty("triplea.engine.version", ClientContext.engineVersion().getCompatabilityVersion().toString());
     handleCommandLineArgs(args);
     // do after we handle command line args
     checkForMemoryXMX();
@@ -235,17 +235,17 @@ public class GameRunner2 {
         testVersion = new Version(version);
         // if successful we don't do anything
         System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + version);
-        if (!ClientContext.engineVersion().getVersion().equals(testVersion, false)) {
-          System.out.println("Current Engine version in use: " + ClientContext.engineVersion().getVersion().toString());
+        if (!ClientContext.engineVersion().getCompatabilityVersion().equals(testVersion, false)) {
+          System.out.println("Current Engine version in use: " + ClientContext.engineVersion().getCompatabilityVersion().toString());
         }
       } catch (final Exception e) {
-        System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().getVersion().toString());
-        System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion().getVersion().toString());
+        System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().getCompatabilityVersion().toString());
+        System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion().getCompatabilityVersion().toString());
         return;
       }
     } else {
-      System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().getVersion().toString());
-      System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion().getVersion().toString());
+      System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().getCompatabilityVersion().toString());
+      System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion().getCompatabilityVersion().toString());
     }
   }
 
@@ -773,7 +773,7 @@ public class GameRunner2 {
       if (latestEngineOut == null) {
         return false;
       }
-      if (ClientContext.engineVersion().getVersion().isLessThan(latestEngineOut.getLatestVersionOut(), false)) {
+      if (ClientContext.engineVersion().getCompatabilityVersion().isLessThan(latestEngineOut.getLatestVersionOut(), false)) {
         SwingUtilities.invokeLater(new Runnable() {
           @Override
           public void run() {
@@ -784,7 +784,7 @@ public class GameRunner2 {
         return true;
       } else {
         // if this is the first time we are running THIS version of TripleA, then show what is new.
-        if (firstTimeThisVersion && latestEngineOut.getReleaseNotes().containsKey(ClientContext.engineVersion().getVersion())) {
+        if (firstTimeThisVersion && latestEngineOut.getReleaseNotes().containsKey(ClientContext.engineVersion().getCompatabilityVersion())) {
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {

@@ -121,7 +121,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
         new NameValuePair("modroll", "No"), new NameValuePair("numroll", "" + 1), new NameValuePair("subject", message),
         new NameValuePair("roller", getToAddress()), new NameValuePair("gm", getCcAddress()),
         new NameValuePair("send", "true"),};
-    post.setRequestHeader("User-Agent", "triplea/" + ClientContext.engineVersion().getVersion());
+    post.setRequestHeader("User-Agent", "triplea/" + ClientContext.engineVersion().getCompatabilityVersion());
     // this is to allow a dice server to allow the user to request the emails for the game
     // rather than sending out email for each roll
     post.setRequestHeader("X-Triplea-Game-UUID", gameUUID);

@@ -60,6 +60,6 @@ class DownloadFileProperties {
     props.setProperty("map.url", selected.getUrl());
     props.setProperty("download.time", new Date().toString());
     props.setProperty("download.hostedBy", selected.getHostedUrl());
-    props.setProperty("engine.version", ClientContext.engineVersion().getVersion().toString());
+    props.setProperty("engine.version", ClientContext.engineVersion().getCompatabilityVersion().toString());
   }
 }

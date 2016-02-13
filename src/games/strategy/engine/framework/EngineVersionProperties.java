@@ -52,11 +52,11 @@ public class EngineVersionProperties {
   }
 
   private EngineVersionProperties(final Properties props) {
-    m_latestVersionOut = new Version(props.getProperty("LATEST", ClientContext.engineVersion().getVersion().toStringFull(".")));
+    m_latestVersionOut = new Version(props.getProperty("LATEST", ClientContext.engineVersion().getCompatabilityVersion().toStringFull(".")));
     final Version showUpdatesFromTemp =
-        new Version(props.getProperty("SHOW_FROM", ClientContext.engineVersion().getVersion().toStringFull(".")));
+        new Version(props.getProperty("SHOW_FROM", ClientContext.engineVersion().getCompatabilityVersion().toStringFull(".")));
     m_showUpdatesFrom =
-        (ClientContext.engineVersion().getVersion().isLessThan(showUpdatesFromTemp, false) ? ClientContext.engineVersion().getVersion() : showUpdatesFromTemp);
+        (ClientContext.engineVersion().getCompatabilityVersion().isLessThan(showUpdatesFromTemp, false) ? ClientContext.engineVersion().getCompatabilityVersion() : showUpdatesFromTemp);
     m_link = props.getProperty("LINK", "http://triplea.sourceforge.net/");
     m_linkAlt = props.getProperty("LINK_ALT", "http://sourceforge.net/projects/tripleamaps/files/TripleA/stable/");
     m_changelogLink = props.getProperty("CHANGELOG",
@@ -185,7 +185,7 @@ public class EngineVersionProperties {
   private String getOutOfDateMessage() {
     final StringBuilder text = new StringBuilder("<html>");
     text.append("<h2>A new version of TripleA is out.  Please Update TripleA!</h2>");
-    text.append("<br />Your current version: " + ClientContext.engineVersion().getVersion());
+    text.append("<br />Your current version: " + ClientContext.engineVersion().getCompatabilityVersion());
     text.append("<br />Latest version available for download: " + getLatestVersionOut());
     text.append("<br /><br />Click to download: <a class=\"external\" href=\"" + getLinkToDownloadLatestVersion()
         + "\">" + getLinkToDownloadLatestVersion() + "</a>");
@@ -205,7 +205,7 @@ public class EngineVersionProperties {
     versions.addAll(getReleaseNotes().keySet());
     Collections.sort(versions, Version.getHighestToLowestComparator(false));
     for (final Version v : versions) {
-      if (showAll || ClientContext.engineVersion().getVersion().isLessThan(v, false)) {
+      if (showAll || ClientContext.engineVersion().getCompatabilityVersion().isLessThan(v, false)) {
         text.append("<br />" + getReleaseNotes().get(v) + "<br /><br />");
       }
     }
@@ -217,7 +217,7 @@ public class EngineVersionProperties {
 
   public Component getCurrentFeaturesComponent() {
     final JPanel panel = new JPanel(new BorderLayout());
-    final JEditorPane intro = new JEditorPane("text/html", "<html><h2>What is new in version " + ClientContext.engineVersion().getVersion()
+    final JEditorPane intro = new JEditorPane("text/html", "<html><h2>What is new in version " + ClientContext.engineVersion().getCompatabilityVersion()
         + "</h2><br />" + "Please visit our forum to get involved: "
         + "<a class=\"external\" href=\"http://triplea.sourceforge.net/mywiki/Forum\">http://triplea.sourceforge.net/mywiki/Forum</a><br /><br /></html>");
     intro.setEditable(false);

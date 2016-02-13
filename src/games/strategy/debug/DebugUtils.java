@@ -98,7 +98,7 @@ public class DebugUtils {
     result.append(getThreadDumps());
     result.append(getProperties());
     result.append(getMemory());
-    result.append("ENGINE VERSION: ").append(ClientContext.engineVersion().getVersion()).append("\n");
+    result.append("ENGINE VERSION: ").append(ClientContext.engineVersion().getCompatabilityVersion()).append("\n");
     return result.toString();
   }
 
@@ -111,7 +111,7 @@ public class DebugUtils {
     result.append(getProperties());
     result.append(getMemory());
     result.append(getOpenAppWindows());
-    result.append("ENGINE VERSION: ").append(ClientContext.engineVersion().getVersion()).append("\n");
+    result.append("ENGINE VERSION: ").append(ClientContext.engineVersion().getCompatabilityVersion()).append("\n");
     return result.toString();
   }
 

@@ -17,7 +17,7 @@ public class EngineVersion {
   /**
    * @return the game engine 'Version' used for in-game compatibility checks.
    */
-  public Version getVersion() {
+  public Version getCompatabilityVersion() {
     return version;
   }
 
@@ -30,4 +30,5 @@ public class EngineVersion {
   public String getExactVersion() {
     return exactVersion;
   }
+
 }
