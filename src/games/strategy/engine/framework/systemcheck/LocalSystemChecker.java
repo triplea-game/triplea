@@ -22,7 +22,7 @@ public final class LocalSystemChecker {
   }
 
   private static final SystemCheck defaultNetworkCheck() {
-    return new SystemCheck("Can connect to internet", () -> {
+    return new SystemCheck("Can connect to github.com (check network connection)", () -> {
       try {
         URL url = new URL("http://www.github.com");
         url.openConnection();
@@ -33,7 +33,7 @@ public final class LocalSystemChecker {
   }
 
   private static final SystemCheck defaultFileSystemCheck() {
-    return new SystemCheck("Can create temporary files", () -> {
+    return new SystemCheck("Can create temporary files (check disk usage, file permissions)", () -> {
       try {
         File.createTempFile("prefix", "suffix");
       } catch (IOException e) {
