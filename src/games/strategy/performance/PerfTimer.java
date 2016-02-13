@@ -1,18 +1,28 @@
 package games.strategy.performance;
 
-public class PerfTimer {
+import java.io.Closeable;
+
+public class PerfTimer implements Closeable {
 
   protected static final PerfTimer DISABLED_TIMER = new PerfTimer("disabled");
 
   public final String title;
   private final long startMillis;
 
-  public PerfTimer(String title) {
+  protected PerfTimer(String title) {
     this.title = title;
-    this.startMillis = System.currentTimeMillis();
+    this.startMillis = System.nanoTime();
   }
-  protected long stop() {
-    long end = System.currentTimeMillis();
+  private long stopTimer() {
+    long end = System.nanoTime();
     return end-startMillis;
+  }
+  @Override
+  public void close() {
+    Perf.processResult(stopTimer(), this);
+  }
+  /** Alias for the close method, stops the timer*/
+  public void stop() {
+    close();
   }
 }
