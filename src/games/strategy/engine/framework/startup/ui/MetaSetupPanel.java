@@ -47,7 +47,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   private static final long serialVersionUID = 3926503672972937677L;
   private static final Logger s_logger = Logger.getLogger(MetaSetupPanel.class.getName());
-  private static String s_serverPropertiesName = "server_" + ClientContext.getInstance().engineVersion().getVersion().toString() + ".properties";
+  private static String s_serverPropertiesName = "server_" + ClientContext.engineVersion().getVersion().toString() + ".properties";
   private JButton m_startLocal;
   private JButton m_startPBEM;
   private JButton m_hostGame;
@@ -64,7 +64,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   public MetaSetupPanel(final SetupPanelModel model) {
     this.m_model = model;
-    this.mapDownloadController = ClientContext.getInstance().mapDownloadController();
+    this.mapDownloadController = ClientContext.mapDownloadController();
 
     createComponents();
     layoutComponents();
@@ -232,7 +232,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   private void about() {
     final String text =
-        "<h2>TripleA</h2>" + "<p><b>Engine Version:</b> " + games.strategy.engine.ClientContext.getInstance().engineVersion().getVersion().toString()
+        "<h2>TripleA</h2>" + "<p><b>Engine Version:</b> " + games.strategy.engine.ClientContext.engineVersion().getVersion().toString()
             + "<br><b>Authors:</b> Sean Bridges, and many others. Current Developers: Veqryn (Chris Duncan)."
             + "<br>TripleA is an open-source game engine, allowing people to play many different games and maps."
             + "<br>For more information please visit:<br>"

@@ -36,10 +36,6 @@ public final class ClientContext {
   private static ClientContext instance = new ClientContext();
 
 
-  public static ClientContext getInstance() {
-    return instance;
-  }
-
   /** Useful for testing, not meant for normal code paths */
   public static void setMockHandler(ClientContext mockHandler) {
     instance = mockHandler;
@@ -57,12 +53,12 @@ public final class ClientContext {
   }
 
 
-  public MapDownloadController mapDownloadController() {
-    return mapDownloadController;
+  public static MapDownloadController mapDownloadController() {
+    return instance.mapDownloadController;
   }
 
-  public EngineVersion engineVersion() {
-    return engineVersion;
+  public static EngineVersion engineVersion() {
+    return instance.engineVersion;
   }
 
 

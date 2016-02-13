@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.EngineVersion;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.util.MD5Crypt;
@@ -43,7 +42,7 @@ public class ClientLoginValidator implements ILoginValidator {
   @Override
   public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
     final Map<String, String> challengeProperties = new HashMap<String, String>();
-    challengeProperties.put("Sever Version", ClientContext.getInstance().engineVersion().getVersion().toString());
+    challengeProperties.put("Sever Version", ClientContext.engineVersion().getVersion().toString());
     if (m_password != null) {
       /**
        * Get a new random salt.
@@ -67,8 +66,8 @@ public class ClientLoginValidator implements ILoginValidator {
     }
     // check for version
     final Version clientVersion = new Version(versionString);
-    if (!ClientContext.getInstance().engineVersion().getVersion().equals(clientVersion, false)) {
-      final String error = "Client is using " + clientVersion + " but server requires version " + ClientContext.getInstance().engineVersion().getVersion();
+    if (!ClientContext.engineVersion().getVersion().equals(clientVersion, false)) {
+      final String error = "Client is using " + clientVersion + " but server requires version " + ClientContext.engineVersion().getVersion();
       return error;
     }
     final String realName = clientName.split(" ")[0];

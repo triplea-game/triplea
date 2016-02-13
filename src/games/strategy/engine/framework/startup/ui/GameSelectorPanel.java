@@ -139,7 +139,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
   private void createComponents() {
     m_engineVersionLabel = new JLabel("Engine Version:");
-    String version = ClientContext.getInstance().engineVersion().getExactVersion();
+    String version = ClientContext.engineVersion().getExactVersion();
     m_engineVersionText = new JLabel(version);
     m_nameLabel = new JLabel("Map Name:");
     m_versionLabel = new JLabel("Map Version:");

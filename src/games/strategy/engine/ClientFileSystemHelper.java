@@ -13,7 +13,7 @@ import games.strategy.util.Version;
 
 /**
  * Pure utility class, final and private constructor to enforce this
- * WARNING: do not call ClientContext.getInstance() in this class. ClientContext call this class in turn
+ * WARNING: do not call ClientContext in this class. ClientContext call this class in turn
  * during construction, depending upon ordering this can cause an infinite call loop.
  */
 public final class ClientFileSystemHelper {
@@ -56,8 +56,7 @@ public final class ClientFileSystemHelper {
   private static String getTripleaJarWithEngineVersionStringPath() {
     // TODO: This is begging for trouble since we call ClientFileSystem during the construction of
     // ClientContext. Though, we will at this point already have parsed the game engine version, so it is okay (but brittle)
-    ClientContext context = ClientContext.getInstance();
-    EngineVersion engine = context.engineVersion();
+    EngineVersion engine = ClientContext.engineVersion();
     Version version = engine.getVersion();
 
     return "triplea_" + version.toStringFull("_") + ".jar!";
