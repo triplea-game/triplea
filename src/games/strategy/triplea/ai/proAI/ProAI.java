@@ -378,8 +378,8 @@ public class ProAI extends AbstractAI {
         for (int i = 0; i < selectFromSorted.size() - 1; i++) {
           final Unit unit1 = selectFromSorted.get(i);
           final Unit unit2 = selectFromSorted.get(i + 1);
-          final double unitCost1 = ProPurchaseUtils.getCost(unit1.getType(), unit1.getOwner(), unit1.getData());
-          final double unitCost2 = ProPurchaseUtils.getCost(unit2.getType(), unit2.getOwner(), unit2.getData());
+          final double unitCost1 = ProPurchaseUtils.getCost(unit1);
+          final double unitCost2 = ProPurchaseUtils.getCost(unit2);
           if (unitCost1 > 1.5 * unitCost2) {
             selectFromSorted.set(i, unit2);
             selectFromSorted.set(i + 1, unit1);

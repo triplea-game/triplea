@@ -1,14 +1,5 @@
 package games.strategy.triplea.ai.proAI.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
@@ -32,9 +23,19 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
+import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Pro AI purchase utilities.
@@ -271,32 +272,31 @@ public class ProPurchaseUtils {
     return new Comparator<Unit>() {
       @Override
       public int compare(final Unit o1, final Unit o2) {
-        return Double.compare(getCost(o1.getType(), o1.getOwner(), o1.getData()),
-            getCost(o2.getType(), o2.getOwner(), o2.getData()));
+        return Double.compare(getCost(o1), getCost(o2));
       }
     };
   }
 
   /**
-   * How many PU's does it cost the given player to produce the given unit type.
-   * <p>
-   * If the player cannot produce the given unit, return Integer.MAX_VALUE
-   * <p>
+   * How many PU's does it cost the given player to produce the given unit including any dependents.
    */
-  public static double getCost(final UnitType unitType, final PlayerID player, final GameData data) {
-    if (unitType == null) {
-      throw new IllegalArgumentException("null unit type");
+  public static double getCost(final Unit unit) {
+    if (unit == null || unit.getType() == null || unit.getOwner() == null || unit.getData() == null) {
+      throw new IllegalArgumentException("Invalid unit");
     }
-    if (player == null) {
-      throw new IllegalArgumentException("null player id");
+    final Resource PUs = unit.getData().getResourceList().getResource(Constants.PUS);
+    final Collection<Unit> units = TransportTracker.transportingAndUnloaded(unit);
+    units.add(unit);
+    double cost = 0.0;
+    for (final Unit u : units) {
+      final ProductionRule rule = getProductionRule(u.getType(), u.getOwner());
+      if (rule == null) {
+        cost += ProData.unitValueMap.getInt(u.getType());
+      } else {
+        cost += ((double) rule.getCosts().getInt(PUs)) / rule.getResults().totalValues();
+      }
     }
-    final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-    final ProductionRule rule = getProductionRule(unitType, player, data);
-    if (rule == null) {
-      return ProData.unitValueMap.getInt(unitType);
-    } else {
-      return ((double) rule.getCosts().getInt(PUs)) / rule.getResults().totalValues();
-    }
+    return cost;
   }
 
   /**
@@ -304,13 +304,7 @@ public class ProPurchaseUtils {
    * <p>
    * If no such rule can be found, then return null.
    */
-  public static ProductionRule getProductionRule(final UnitType unitType, final PlayerID player, final GameData data) {
-    if (unitType == null) {
-      throw new IllegalArgumentException("null unit type");
-    }
-    if (player == null) {
-      throw new IllegalArgumentException("null player id");
-    }
+  public static ProductionRule getProductionRule(final UnitType unitType, final PlayerID player) {
     final ProductionFrontier frontier = player.getProductionFrontier();
     if (frontier == null) {
       return null;
