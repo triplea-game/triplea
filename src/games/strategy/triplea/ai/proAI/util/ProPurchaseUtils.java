@@ -281,9 +281,6 @@ public class ProPurchaseUtils {
    * How many PU's does it cost the given player to produce the given unit including any dependents.
    */
   public static double getCost(final Unit unit) {
-    if (unit == null || unit.getType() == null || unit.getOwner() == null || unit.getData() == null) {
-      throw new IllegalArgumentException("Invalid unit");
-    }
     final Resource PUs = unit.getData().getResourceList().getResource(Constants.PUS);
     final Collection<Unit> units = TransportTracker.transportingAndUnloaded(unit);
     units.add(unit);
