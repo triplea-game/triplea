@@ -301,7 +301,7 @@ public class ProPurchaseUtils {
    * <p>
    * If no such rule can be found, then return null.
    */
-  public static ProductionRule getProductionRule(final UnitType unitType, final PlayerID player) {
+  private static ProductionRule getProductionRule(final UnitType unitType, final PlayerID player) {
     final ProductionFrontier frontier = player.getProductionFrontier();
     if (frontier == null) {
       return null;
