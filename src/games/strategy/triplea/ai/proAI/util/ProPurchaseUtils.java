@@ -266,15 +266,10 @@ public class ProPurchaseUtils {
   }
 
   /**
-   * @return a comparator that sorts cheaper units before expensive ones
+   * Comparator that sorts cheaper units before expensive ones.
    */
   public static Comparator<Unit> getCostComparator() {
-    return new Comparator<Unit>() {
-      @Override
-      public int compare(final Unit o1, final Unit o2) {
-        return Double.compare(getCost(o1), getCost(o2));
-      }
-    };
+    return (o1, o2) -> Double.compare(getCost(o1), getCost(o2));
   }
 
   /**
