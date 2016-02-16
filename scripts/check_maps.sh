@@ -20,6 +20,8 @@ for i in $(grep "<url>" "$MAP_FILE"  | grep -v "<\!--" | sed 's| *</*url>||g' | 
    FAIL_COUNT=$((FAIL_COUNT+1))
   }
   TOTAL=$((TOTAL+1))
+  echo "Fail count: $FAIL_COUNT, Done checking URL $i"
 done;
 
 echo "$FAIL_COUNT failed out of $TOTAL"
+
