@@ -13,7 +13,6 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.debug.HeartBeat;
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.GameRunner2;
