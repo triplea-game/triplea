@@ -52,8 +52,8 @@ public class GameRunner {
     // we want this class to be executable in older jvm's
     // since we require jdk 1.5, this class delegates to GameRunner2
     // and all we do is check the java version
-    try (PerfTimer timer = Perf.startTimer("GameRunner1 Launch")) {
-      checkJavaVersion();
+    try (PerfTimer timer = Perf.startTimer("GameRunner1 Total Launch")) {
+      (new Thread(() -> checkJavaVersion())).start();
       // do the other interesting stuff here
       GameRunner2.main(args);
     }
