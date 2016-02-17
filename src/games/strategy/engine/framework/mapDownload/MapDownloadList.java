@@ -13,21 +13,22 @@ public class MapDownloadList {
   private final List<DownloadFileDescription> installed = Lists.newArrayList();
   private final List<DownloadFileDescription> outOfDate = Lists.newArrayList();
 
-  public MapDownloadList(List<DownloadFileDescription> downloads, FileSystemStrategy strategy) {
+  public MapDownloadList(List<DownloadFileDescription> downloads, FileSystemAccessStrategy strategy) {
     for (DownloadFileDescription download : downloads) {
-      Optional<Version> mapVersion = strategy.getMapVersion(download.getMapName());
-
-      // TODO: this part is not tested where we preserve the headers are retained
       if (download.isDummyUrl()) {
         available.add(download);
         installed.add(download);
-      } else if (mapVersion.isPresent()) {
-        installed.add(download);
-        if (download.getVersion().isGreaterThan(mapVersion.get())) {
-          outOfDate.add(download);
-        }
       } else {
-        available.add(download);
+        Optional<Version> mapVersion = strategy.getMapVersion(download.getInstallLocation().getAbsolutePath());
+
+        if (mapVersion.isPresent()) {
+          installed.add(download);
+          if (download.getVersion().isGreaterThan(mapVersion.get())) {
+            outOfDate.add(download);
+          }
+        } else {
+          available.add(download);
+        }
       }
     }
   }
