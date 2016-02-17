@@ -16,12 +16,9 @@ public class WaitWindow extends JWindow {
   private boolean m_finished = false;
 
   public WaitWindow(final String waitMessage) {
-    // super("Game Loading, Please wait");
-    // setIconImage(GameRunner.getGameIcon(this));
     setSize(200, 80);
     final WaitPanel mainPanel = new WaitPanel(waitMessage);
     setLocationRelativeTo(null);
-    // setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     mainPanel.setBorder(new LineBorder(Color.BLACK));
     setLayout(new BorderLayout());
     add(mainPanel, BorderLayout.CENTER);
@@ -31,14 +28,10 @@ public class WaitWindow extends JWindow {
     final TimerTask task = new TimerTask() {
       @Override
       public void run() {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            toFront();
-          }
-        });
-      }
-    };
+        SwingUtilities.invokeLater(() -> toFront());
+        }
+      };
+
     synchronized (m_mutex) {
       if (m_timer != null) {
         m_timer.schedule(task, 15, 15);
@@ -66,16 +59,5 @@ public class WaitWindow extends JWindow {
 
   public boolean isFinished() {
     return m_finished;
-  }
-
-  public static void main(final String[] args) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        final WaitWindow window = new WaitWindow("Loading game, please wait.");
-        window.setVisible(true);
-        window.showWait();
-      }
-    });
   }
 }
