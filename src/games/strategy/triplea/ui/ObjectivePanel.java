@@ -109,12 +109,10 @@ public class ObjectivePanel extends AbstractStatPanel {
 
   @Override
   protected void initLayout() {
-    // setLayout(new GridLayout(1, 1));
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     m_objectiveModel = new ObjectiveTableModel();
     final JTable table = new JTable(m_objectiveModel);
     table.getTableHeader().setReorderingAllowed(false);
-    // table.setDefaultRenderer(String.class, new TextAreaTableCellRenderer());
     final TableColumn column0 = table.getColumnModel().getColumn(0);
     column0.setPreferredWidth(34);
     column0.setWidth(34);

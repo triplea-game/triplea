@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
+import games.strategy.common.swing.SwingComponents;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -193,8 +194,7 @@ public class TabbedProductionPanel extends ProductionPanel {
   }
 
   private JPanel getRulesPanel(final List<Rule> rules) {
-    final JPanel panel = new JPanel();
-    panel.setLayout(new GridLayout(m_rows, m_columns));
+    final JPanel panel = SwingComponents.gridPanel(m_rows, m_columns);
     final JPanel[][] panelHolder = new JPanel[m_rows][m_columns];
     for (int m = 0; m < m_rows; m++) {
       for (int n = 0; n < m_columns; n++) {
@@ -205,8 +205,6 @@ public class TabbedProductionPanel extends ProductionPanel {
     for (int x = 0; x < m_columns * m_rows; x++) {
       if (x < rules.size()) {
         panelHolder[(x % m_rows)][(x / m_rows)].add(rules.get(x).getPanelComponent());
-        // else
-        // panelHolder[(x % m_rows)][(x / m_rows)].add(new JPanel());
       }
     }
     return panel;
