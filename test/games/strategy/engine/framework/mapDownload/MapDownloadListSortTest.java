@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -24,8 +25,7 @@ public class MapDownloadListSortTest {
   private static DownloadFileDescription createDownload(String mapName, String url) {
     String description = "fake";
     Version version = new Version("1");
-    String hostedUrl = "fake";
-    return new DownloadFileDescription(url, description, mapName, version, hostedUrl);
+    return new DownloadFileDescription(url, description, mapName, version, DownloadFileDescription.DownloadType.MAP);
   }
 
   @Test
