@@ -18,10 +18,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;

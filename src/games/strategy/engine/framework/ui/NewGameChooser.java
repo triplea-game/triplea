@@ -8,8 +8,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -24,15 +22,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.util.LocalizeHTML;
 
-
 public class NewGameChooser extends JDialog {
-
   private static final long serialVersionUID = -3223711652118741132L;
 
   // Use synchronization when accessing s_cachedGameModel, it is accessed by both
@@ -191,30 +185,10 @@ public class NewGameChooser extends JDialog {
   private void setWidgetActivation() {}
 
   private void setupListeners() {
-    m_refreshGamesButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        refreshGameList();
-      }
-    });
-    m_okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        selectAndReturn();
-      }
-    });
-    m_cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        cancelAndReturn();
-      }
-    });
-    m_gameList.addListSelectionListener(new ListSelectionListener() {
-      @Override
-      public void valueChanged(final ListSelectionEvent e) {
-        updateInfoPanel();
-      }
-    });
+    m_refreshGamesButton.addActionListener(e -> refreshGameList());
+    m_okButton.addActionListener(e -> selectAndReturn());
+    m_cancelButton.addActionListener(e -> cancelAndReturn());
+    m_gameList.addListSelectionListener(e -> updateInfoPanel());
     m_gameList.addMouseListener(new MouseListener() {
       @Override
       public void mouseClicked(final MouseEvent event) {
@@ -301,10 +275,5 @@ public class NewGameChooser extends JDialog {
   private void cancelAndReturn() {
     m_choosen = null;
     setVisible(false);
-  }
-
-  public static void main(final String[] args) {
-    chooseGame(null, "Revised");
-    System.exit(0);
   }
 }
