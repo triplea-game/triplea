@@ -104,8 +104,8 @@ class Task implements Runnable {
   public void run() {
     try {
       Thread.sleep(0, 1);
-    } catch (final InterruptedException e) {
-      e.printStackTrace();
+    } catch (InterruptedException e) {
+      throw new IllegalStateException(e);
     }
     done = true;
   }

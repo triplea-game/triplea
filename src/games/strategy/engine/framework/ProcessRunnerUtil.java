@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
 
 /**
@@ -158,11 +159,7 @@ public class ProcessRunnerUtil {
     } catch (final IOException ioe) {
       ioe.printStackTrace();
     }
-    try {
-      Thread.sleep(5000);
-    } catch (final InterruptedException e) {
-      e.printStackTrace();
-    }
+    ThreadUtil.sleep(5000);
     System.out.println("Finished");
   }
 }

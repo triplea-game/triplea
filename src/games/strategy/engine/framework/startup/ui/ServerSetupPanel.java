@@ -45,6 +45,7 @@ import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.net.IServerMessenger;
+import games.strategy.util.ThreadUtil;
 
 /** Setup panel displayed for hosting a non-lobby network game (using host option from main panel) */
 public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener {
@@ -88,10 +89,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     }
     System.out.println("Restarting lobby watcher");
     shutDownLobbyWatcher();
-    try {
-      Thread.sleep(1000);
-    } catch (final InterruptedException e) {
-    }
+    ThreadUtil.sleep(1000);
     HeadlessGameServer.resetLobbyHostOldExtensionProperties();
     createLobbyWatcher();
   }

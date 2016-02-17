@@ -21,6 +21,7 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.AbstractUIContext;
 import games.strategy.util.Match;
+import games.strategy.util.ThreadUtil;
 
 /**
  * Pro AI utilities (these are very general and maybe should be moved into delegate or engine).
@@ -262,9 +263,7 @@ public class ProUtils {
    */
   public static void pause() {
     try {
-      Thread.sleep(AbstractUIContext.getAIPauseDuration());
-    } catch (final InterruptedException e) {
-      e.printStackTrace();
+      ThreadUtil.sleep(AbstractUIContext.getAIPauseDuration());
     } catch (final Exception e) {
       e.printStackTrace();
     }

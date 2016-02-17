@@ -7,7 +7,7 @@ public class ThreadUtil {
     try {
       Thread.sleep(millis);
     } catch (InterruptedException e) {
-
+      // ignore, general cause is the user sent an interrupt (killed the program)
     }
   }
 }

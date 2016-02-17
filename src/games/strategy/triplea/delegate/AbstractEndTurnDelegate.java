@@ -37,6 +37,7 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
 /**
@@ -397,10 +398,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
           // so we need to slow them down a bit, until we come up with a better solution (like aggregating all the
           // chances together, then
           // getting a ton of random numbers at once instead of one at a time)
-          try {
-            Thread.sleep(100);
-          } catch (final InterruptedException e) {
-          }
+          ThreadUtil.sleep(100);
           final String transcript = "Rolling for Convoy Blockade Damage in " + b.getName();
           final int[] dice = aBridge.getRandom(CONVOY_BLOCKADE_DICE_SIDES, numberOfDice,
               enemies.iterator().next().getOwner(), DiceType.BOMBING, transcript);

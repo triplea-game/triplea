@@ -24,6 +24,7 @@ import games.strategy.net.IMessageListener;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
+import games.strategy.util.ThreadUtil;
 
 /**
  * A messenger general enough that both Channel and Remote messenger can be
@@ -240,11 +241,7 @@ public class UnifiedMessenger {
     }
     final long endTime = timeoutMS + System.currentTimeMillis();
     while (System.currentTimeMillis() < endTime && !hasLocalEndPoint(endPointName)) {
-      try {
-        Thread.sleep(50);
-      } catch (final InterruptedException e) {
-        // whats a devloper to do
-      }
+      ThreadUtil.sleep(50);
     }
   }
 

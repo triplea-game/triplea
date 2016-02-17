@@ -2,6 +2,7 @@ package games.strategy.engine.chat;
 
 import games.strategy.engine.message.DummyMessenger;
 import games.strategy.net.Messengers;
+import games.strategy.util.ThreadUtil;
 import junit.framework.TestCase;
 
 public class StatusTest extends TestCase {
@@ -11,7 +12,7 @@ public class StatusTest extends TestCase {
     final StatusManager manager = new StatusManager(messengers);
     assertNull(manager.getStatus(messenger.getLocalNode()));
     manager.setStatus("test");
-    Thread.sleep(200);
+    ThreadUtil.sleep(200);
     assertEquals("test", manager.getStatus(messenger.getLocalNode()));
     assertEquals("test", new StatusManager(messengers).getStatus(messenger.getLocalNode()));
   }

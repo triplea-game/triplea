@@ -38,6 +38,7 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
 public class RulesAttachment extends AbstractPlayerRulesAttachment implements ICondition {
@@ -868,10 +869,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
         // so we need to slow them down a bit, until we come up with a better solution (like aggregating all the chances
         // together, then
         // getting a ton of random numbers at once instead of one at a time)
-        try {
-          Thread.sleep(100);
-        } catch (final InterruptedException e) {
-        }
+        ThreadUtil.sleep(100);
         final int rollResult = aBridge.getRandom(diceSides, null, DiceType.ENGINE,
             "Attempting the Condition: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
         objectiveMet = rollResult <= hitTarget;

@@ -23,6 +23,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
 /**
@@ -98,10 +99,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       if (m_currentPickingPlayer == null || !playersCanPick.contains(m_currentPickingPlayer)) {
         m_currentPickingPlayer = playersCanPick.get(0);
       }
-      try {
-        Thread.sleep(250);
-      } catch (final InterruptedException e) {
-      }
+      ThreadUtil.sleep(250);
       Territory picked;
       if (randomTerritories) {
         pos += hitRandom[i];

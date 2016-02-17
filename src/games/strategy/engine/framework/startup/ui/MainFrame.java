@@ -11,6 +11,7 @@ import games.strategy.engine.chat.Chat;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
+import games.strategy.util.ThreadUtil;
 
 /**
  * arguments
@@ -91,12 +92,9 @@ public class MainFrame extends JFrame {
       }
       return;
     }
-    try {
       // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
       // closing of stream while unloading map resources.
-      Thread.sleep(100);
-    } catch (final InterruptedException e) {
-    }
+    ThreadUtil.sleep(100);
     m_gameSelectorModel.loadDefaultGame(this);
     m_setupPanelModel.showSelectType();
     setVisible(true);

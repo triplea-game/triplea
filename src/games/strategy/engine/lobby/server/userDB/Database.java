@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
+import games.strategy.util.ThreadUtil;
 
 /**
  * Utility to get connections to the database.
@@ -196,11 +197,7 @@ public class Database {
       public void run() {
         while (true) {
           // wait 7 days
-          try {
-            Thread.sleep(7 * 24 * 60 * 60 * 1000);
-          } catch (final InterruptedException e) {
-            e.printStackTrace();
-          }
+          ThreadUtil.sleep(7 * 24 * 60 * 60 * 1000);
           backup();
         }
       }

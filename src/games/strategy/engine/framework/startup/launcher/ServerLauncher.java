@@ -43,6 +43,7 @@ import games.strategy.engine.random.CryptoRandomSource;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import games.strategy.util.ThreadUtil;
 
 public class ServerLauncher extends AbstractLauncher {
   private static final Logger s_logger = Logger.getLogger(ServerLauncher.class.getName());
@@ -254,12 +255,9 @@ public class ServerLauncher extends AbstractLauncher {
             }
             stopGame();
           }
-          try {
-            // having an oddball issue with the zip stream being closed while parsing to load default game. might be
-            // caused by closing of stream while unloading map resources.
-            Thread.sleep(200);
-          } catch (final InterruptedException e) {
-          }
+          // having an oddball issue with the zip stream being closed while parsing to load default game. might be
+          // caused by closing of stream while unloading map resources.
+          ThreadUtil.sleep(200);
           // either game ended, or aborted, or a player left or disconnected
           if (m_headless) {
             try {
