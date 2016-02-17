@@ -56,7 +56,31 @@ public class MainFrame extends JFrame {
     // getRootPane().setDefaultButton(mainPanel.getDefaultButton());
     pack();
     setLocationRelativeTo(null);
+    start();
   }
+
+  /**
+   * For displaying on startup.
+   * Only call once!
+   */
+  private void start() {
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
+        if (fileName.length() > 0) {
+          loadGameFile(fileName);
+        }
+        setVisible(true);
+        if (System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equals("true")) {
+          m_setupPanelModel.showServer(MainFrame.this);
+        } else if (System.getProperty(GameRunner2.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")) {
+          m_setupPanelModel.showClient(MainFrame.this);
+        }
+      }
+    });
+  }
+
 
   /**
    * todo, replace with something better
@@ -113,25 +137,4 @@ public class MainFrame extends JFrame {
     m_gameSelectorModel.load(f, this);
   }
 
-  /**
-   * For displaying on startup.
-   * Only call once!
-   */
-  public void start() {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
-        if (fileName.length() > 0) {
-          loadGameFile(fileName);
-        }
-        setVisible(true);
-        if (System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equals("true")) {
-          m_setupPanelModel.showServer(MainFrame.this);
-        } else if (System.getProperty(GameRunner2.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")) {
-          m_setupPanelModel.showClient(MainFrame.this);
-        }
-      }
-    });
-  }
 }
