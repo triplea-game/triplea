@@ -2,6 +2,7 @@ package games.strategy.engine.framework.mapDownload;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -23,14 +24,14 @@ public class MapDownloadListTest {
 
 
   private final static String MAP_NAME = "new_test_order";
-  private final static Version MAP_VERSION = new Version(10,10);
-  private final static Version lowVersion = new Version(0,0);
+  private final static Version MAP_VERSION = new Version(10, 10);
+  private final static Version lowVersion = new Version(0, 0);
 
   private final static DownloadFileDescription TEST_MAP =
-      new DownloadFileDescription("", "", MAP_NAME, MAP_VERSION, "");
+      new DownloadFileDescription("", "", MAP_NAME, MAP_VERSION, DownloadFileDescription.DownloadType.MAP);
 
   @Mock
-  private FileSystemStrategy strategy;
+  private FileSystemAccessStrategy strategy;
 
   private List<DownloadFileDescription> descriptions;
 
@@ -44,7 +45,7 @@ public class MapDownloadListTest {
 
   @Test
   public void testAvailable() {
-    when(strategy.getMapVersion(MAP_NAME)).thenReturn(Optional.empty());
+    when(strategy.getMapVersion(any())).thenReturn(Optional.empty());
     MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
 
     List<DownloadFileDescription> available = testObj.getAvailable();
@@ -59,7 +60,7 @@ public class MapDownloadListTest {
 
   @Test
   public void testInstalled() {
-    when(strategy.getMapVersion(MAP_NAME)).thenReturn(Optional.of(MAP_VERSION));
+    when(strategy.getMapVersion(any())).thenReturn(Optional.of(MAP_VERSION));
     MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
 
     List<DownloadFileDescription> available = testObj.getAvailable();
@@ -74,7 +75,7 @@ public class MapDownloadListTest {
 
   @Test
   public void testOutOfDate() {
-    when(strategy.getMapVersion(MAP_NAME)).thenReturn(Optional.of(lowVersion));
+    when(strategy.getMapVersion(any())).thenReturn(Optional.of(lowVersion));
     MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
 
     List<DownloadFileDescription> available = testObj.getAvailable();

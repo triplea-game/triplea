@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.google.common.io.Files;
 
+import games.strategy.test.TestUtil;
 import games.strategy.util.Version;
 
 /**
@@ -21,23 +22,20 @@ import games.strategy.util.Version;
 public class FileSystemStrategyTest {
 
 
-  private final static String mapFileName = "mapName";
-  private final static String zipName = FileSystemStrategy.convertToFileName(mapFileName);
 
-  private FileSystemStrategy testObj;
+  private FileSystemAccessStrategy testObj;
+
+  private File mapFile;
+//  private File propFile;
 
   @Before
   public void setUp() throws Exception {
-    final File rootFolder = Files.createTempDir();
-    rootFolder.deleteOnExit();
-    testObj = new FileSystemStrategy(rootFolder);
 
-    // if the map file does not exist, then we will not try to load the property file
-    File mapFile = new File(rootFolder, zipName);
-    Files.write("",  mapFile, java.nio.charset.StandardCharsets.UTF_8);
-    File mapPropertyFile = new File(rootFolder, DownloadFileProperties.getPropertiesFileName(zipName));
+    testObj = new FileSystemAccessStrategy();
     String text = DownloadFileProperties.VERSION_PROPERTY + " = 1.2";
-    Files.write(text, mapPropertyFile, java.nio.charset.StandardCharsets.UTF_8);
+    mapFile = TestUtil.createTempFile("");
+    File propFile = new File(mapFile.getAbsolutePath() + ".properties");
+    Files.write(text.getBytes(),  propFile);
   }
 
   @Test
@@ -47,13 +45,7 @@ public class FileSystemStrategyTest {
 
   @Test
   public void testMapFileFound()  {
-    assertThat(testObj.getMapVersion(mapFileName), is(Optional.of(new Version(1,2))));
+    assertThat(testObj.getMapVersion(mapFile.getAbsolutePath()) , is(Optional.of(new Version(1,2))));
   }
 
-  @Test
-  public void testConvertToMapName() {
-    String testValue = "test_map";
-    String expected = testValue + ".zip";
-    assertThat(FileSystemStrategy.convertToFileName(testValue), is(expected));
-  }
 }
