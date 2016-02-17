@@ -188,7 +188,7 @@ public class TechPanel extends ActionPanel {
     final int PUs = currentPlayer.getResources().getQuantity(Constants.PUS);
     final String message = "Purchase Tech Tokens";
     // see if anyone will help us to pay
-    final Collection<PlayerID> helpPay;
+    Collection<PlayerID> helpPay;
     final PlayerAttachment pa = PlayerAttachment.get(currentPlayer);
     if (pa != null) {
       helpPay = pa.getHelpPayTechCost();
