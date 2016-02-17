@@ -14,7 +14,6 @@ import java.util.StringTokenizer;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.util.Match;
 
 /**
@@ -27,7 +26,7 @@ public class ResourceLoader {
 
   public static ResourceLoader getMapResourceLoader(final String mapName, final boolean allowNoneFound) {
     File atFolder = ClientFileSystemHelper.getRootFolder();
-    File resourceFolder = new File(atFolder,RESOURCE_FOLDER);
+    File resourceFolder = new File(atFolder, RESOURCE_FOLDER);
 
     while (!resourceFolder.exists() && !resourceFolder.isDirectory()) {
       atFolder = atFolder.getParentFile();
@@ -38,6 +37,23 @@ public class ResourceLoader {
     dirs.add(resourceFolder.getAbsolutePath());
 
     return new ResourceLoader(dirs.toArray(new String[dirs.size()]));
+  }
+
+  protected static String normalizeMapZipName(String zipName) {
+    StringBuilder sb = new StringBuilder();
+    Character lastChar = null;
+
+    String spacesReplaced = zipName.replace(' ', '_');
+
+    for (Character c : spacesReplaced.toCharArray()) {
+      // break up camel casing
+      if (lastChar != null && Character.isLowerCase(lastChar) && Character.isUpperCase(c)) {
+        sb.append("_");
+      }
+      sb.append(Character.toLowerCase(c));
+      lastChar = c;
+    }
+    return sb.toString();
   }
 
   private static List<String> getPaths(final String mapName, final boolean allowNoneFound) {
@@ -57,6 +73,11 @@ public class ResourceLoader {
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), zipName));
     candidates.add(new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps", dirName));
     candidates.add(new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps", zipName));
+
+    String normalizedZipName = normalizeMapZipName(zipName);
+    candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), normalizedZipName));
+
+
     final Collection<File> existing = Match.getMatches(candidates, new Match<File>() {
       @Override
       public boolean match(final File f) {
@@ -78,15 +99,7 @@ public class ResourceLoader {
       }
     }
     final File match = existing.iterator().next();
-    String fileName = match.getName();
-    if (fileName.indexOf('.') > 0) {
-      fileName = fileName.substring(0, fileName.lastIndexOf('.'));
-    }
-    if (!fileName.equals(mapName)) {
-      throw new IllegalStateException("Map case is incorrect, xml: " + mapName + " file: " + match.getName() + "\r\n"
-          + "Make sure the mapName property within the xml game file exactly matches the map zip or folder name."
-          + "\r\n");
-    }
+
     final List<String> rVal = new ArrayList<String>();
     rVal.add(match.getAbsolutePath());
     // find dependencies
