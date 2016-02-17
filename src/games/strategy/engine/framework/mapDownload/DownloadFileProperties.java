@@ -7,11 +7,12 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.EngineVersion;
 import games.strategy.util.Version;
 
-class DownloadFileProperties {
+/** Properties file used to know which map versions have been installed */
+public class DownloadFileProperties {
   protected static final String VERSION_PROPERTY = "map.version";
   private final Properties props = new Properties();
 
@@ -23,7 +24,7 @@ class DownloadFileProperties {
     try (final FileInputStream fis = new FileInputStream(fromZip(zipFile))) {
       rVal.props.load(fis);
     } catch (final IOException e) {
-      e.printStackTrace(System.out);
+      ClientLogger.logError("Failed to read property file: "+ fromZip(zipFile).getAbsolutePath(),e);
     }
     return rVal;
   }
@@ -32,18 +33,14 @@ class DownloadFileProperties {
     try ( final FileOutputStream fos = new FileOutputStream(fromZip(zipFile))) {
         props.props.store(fos, null);
     } catch (final IOException e) {
-      e.printStackTrace(System.out);
+      ClientLogger.logError("Failed to write property file to: " + fromZip(zipFile).getAbsolutePath(),e);
     }
   }
 
   public DownloadFileProperties() {}
 
   private static File fromZip(final File zipFile) {
-    return new File(zipFile.getParent(), getPropertiesFileName(zipFile.getName()));
-  }
-
-  public static String getPropertiesFileName(String mapFileName) {
-    return mapFileName + ".properties";
+    return new File(zipFile.getAbsolutePath() + ".properties");
   }
 
   public Version getVersion() {
@@ -63,7 +60,6 @@ class DownloadFileProperties {
     setVersion(selected.getVersion());
     props.setProperty("map.url", selected.getUrl());
     props.setProperty("download.time", new Date().toString());
-    props.setProperty("download.hostedBy", selected.getHostedUrl());
     props.setProperty("engine.version", ClientContext.engineVersion().toString());
   }
 }
