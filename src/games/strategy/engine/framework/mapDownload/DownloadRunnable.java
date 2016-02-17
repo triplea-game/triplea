@@ -1,5 +1,7 @@
 package games.strategy.engine.framework.mapDownload;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -7,13 +9,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Map;
 
-import com.google.common.io.Resources;
+import org.apache.commons.io.FileUtils;
+import org.testng.collections.Maps;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 
+/** Used to download triplea_maps.xml */
 public class DownloadRunnable implements Runnable {
+  private static Map<URL,File> downloadCache = Maps.newHashMap();
   private final String urlString;
   private final boolean parse;
   private volatile byte[] contents;
@@ -23,37 +29,19 @@ public class DownloadRunnable implements Runnable {
   public DownloadRunnable(final String urlString) {
     super();
     this.urlString = urlString;
-    parse = false;
-  }
-
-  public DownloadRunnable(final String urlString, final boolean parseToo) {
-    super();
-    this.urlString = urlString;
-    parse = parseToo;
+    parse = true;
   }
 
   public byte[] getContents() {
     return contents;
   }
 
-  public void setContents(final byte[] contents) {
-    this.contents = contents;
-  }
-
   public List<DownloadFileDescription> getDownloads() {
     return downloads;
   }
 
-  public void setDownloads(final List<DownloadFileDescription> downloads) {
-    this.downloads = downloads;
-  }
-
   public String getError() {
     return error;
-  }
-
-  public void setError(final String error) {
-    this.error = error;
   }
 
   @Override
@@ -72,7 +60,14 @@ public class DownloadRunnable implements Runnable {
   private void downloadFile() {
     try {
       final URL url = getUrlFollowingRedirects(urlString);
-      contents = Resources.asByteSource(url).read();
+
+      if( !downloadCache.containsKey(url)) {
+        File tempFile = ClientFileSystemHelper.createTempFile();
+        FileUtils.copyURLToFile( url, tempFile);
+        downloadCache.put(url, tempFile);
+      }
+      File f = downloadCache.get(url);
+      contents = Files.readAllBytes(f.toPath());
     } catch (final Exception e) {
       error = e.getMessage();
       return;
@@ -80,7 +75,7 @@ public class DownloadRunnable implements Runnable {
 
     if (parse) {
       try {
-        downloads = DownloadFileParser.parse(new ByteArrayInputStream(getContents()), urlString);
+        downloads = DownloadFileParser.parse(new ByteArrayInputStream(getContents()));
         if (downloads == null || downloads.isEmpty()) {
           error = "No games listed.";
         }
@@ -102,12 +97,12 @@ public class DownloadRunnable implements Runnable {
     return url;
   }
 
-
   private void readLocalFile() {
     File targetFile = new File(ClientFileSystemHelper.getRootFolder(), urlString);
     try {
       contents = Files.readAllBytes(targetFile.toPath());
-      downloads = DownloadFileParser.parse(new ByteArrayInputStream(getContents()), urlString);
+      downloads = DownloadFileParser.parse(new ByteArrayInputStream(getContents()));
+      checkNotNull(downloads);
     } catch (IOException e) {
       ClientLogger.logError("Failed to read file at: " + targetFile.getAbsolutePath(), e);
     }
