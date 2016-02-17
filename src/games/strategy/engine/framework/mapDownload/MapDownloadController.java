@@ -17,6 +17,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
@@ -31,17 +32,34 @@ public class MapDownloadController {
     mapDownloadProperties = mapSource;
   }
 
+  public DownloadRunnable downloadForLatestMapsCheck() {
+    final DownloadRunnable runnable = new DownloadRunnable(mapDownloadProperties.getMapListDownloadSite());
+    BackgroundTaskRunner.runInBackground(null, "Checking for out-of-date Maps.", runnable,
+        new CountDownLatchHandler(true));
+    return runnable;
+  }
+
   /** Opens a new window dialog where a user can select maps to download or update */
   public void openDownloadMapScreen(JComponent parentComponent) {
-    MapDownloadAction downloadAction = new MapDownloadAction(mapDownloadProperties);
-    final DownloadRunnable download = downloadAction.downloadForAvailableMaps(parentComponent);
+    final DownloadRunnable download = downloadForAvailableMaps(parentComponent);
 
     if (download.getError() != null) {
       ClientLogger.logError(download.getError());
       return;
     }
     final Frame parentFrame = JOptionPane.getFrameForComponent(parentComponent);
-    InstallMapDialog.installGames(parentFrame, download.getDownloads());
+    InstallMapDialog.showDownloadMapsWindow(parentFrame, download.getDownloads());
+
+  }
+
+  private DownloadRunnable downloadForAvailableMaps(JComponent parentComponent) {
+    final DownloadRunnable download = new DownloadRunnable(mapDownloadProperties.getMapListDownloadSite());
+    // despite "BackgroundTaskRunner.runInBackground" saying runInBackground, it runs in a modal window in the
+    // foreground.
+    String popupWindowTitle = "Downloading list of availabe maps....";
+    BackgroundTaskRunner.runInBackground(parentComponent.getRootPane(), popupWindowTitle, download);
+
+    return download;
   }
 
   /**
@@ -69,8 +87,8 @@ public class MapDownloadController {
       } catch (final BackingStoreException e) {
       }
 
-      MapDownloadAction downloadAction = new MapDownloadAction(mapDownloadProperties);
-      final DownloadRunnable download = downloadAction.downloadForLatestMapsCheck();
+      MapDownloadController controller = new MapDownloadController(mapDownloadProperties);
+      final DownloadRunnable download = controller.downloadForLatestMapsCheck();
       if (download.getError() != null) {
         return false;
       }
