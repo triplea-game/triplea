@@ -15,7 +15,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.concurrent.CountDownLatch;
 import java.util.logging.LogManager;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -34,7 +33,6 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
-import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.performance.Perf;
 import games.strategy.performance.PerfTimer;
 import games.strategy.triplea.ui.ErrorHandler;
@@ -93,8 +91,6 @@ public class GameRunner2 {
   public static final String TRIPLEA_MEMORY_XMX = "triplea.memory.Xmx";
   public static final String TRIPLEA_MEMORY_USE_DEFAULT = "triplea.memory.useDefault";
   public static final String SYSTEM_INI = "system.ini";
-  private static WaitWindow s_waitWindow;
-  private static CountDownLatch s_countDownLatch;
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
   public static final int DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME =
       Math.max(MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, 25);
@@ -165,12 +161,6 @@ public class GameRunner2 {
         final MainFrame frame = new MainFrame();
         frame.requestFocus();
         frame.toFront();
-        if (s_waitWindow != null) {
-          s_waitWindow.doneWait();
-        }
-        if (s_countDownLatch != null) {
-          s_countDownLatch.countDown();
-        }
         frame.setVisible(true);
       }
     });
@@ -342,12 +332,6 @@ public class GameRunner2 {
       return;
     }
     // the difference is significant enough that we should re-run triplea with a larger number
-    if (s_waitWindow != null) {
-      s_waitWindow.doneWait();
-    }
-    if (s_countDownLatch != null) {
-      s_countDownLatch.countDown();
-    }
     TripleAProcessRunner.startNewTripleA(xmx);
     // must exit now
     System.exit(0);
