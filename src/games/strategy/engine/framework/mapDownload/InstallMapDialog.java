@@ -1,385 +1,301 @@
 package games.strategy.engine.framework.mapDownload;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Rectangle;
-import java.io.ByteArrayInputStream;
+import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.UUID;
-import java.util.Vector;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JEditorPane;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListCellRenderer;
-import javax.swing.SwingConstants;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import com.google.common.io.Files;
+import com.google.common.collect.Lists;
 
-import games.strategy.common.swing.SwingAction;
-import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
-import games.strategy.ui.Util;
-import games.strategy.util.CountDownLatchHandler;
-import games.strategy.util.EventThreadJOptionPane;
+import games.strategy.common.swing.SwingComponents;
 import games.strategy.util.Version;
 
-public class InstallMapDialog extends JDialog {
+
+// TODO: rename to DownloadMapswindow
+/** Window that allows for map downloads and removal */
+public class InstallMapDialog extends JFrame {
   private static final long serialVersionUID = -1542210716764178580L;
-  private static final String DOWNLOAD_URL_PREFIX = "Location: ";
-  private static final String MAP_VERSION_PREFIX = "New Version: ";
-  private JButton m_installButton;
-  private JButton m_cancelButton;
-  private JLabel m_intro;
-  private final List<DownloadFileDescription> m_games;
-  private JList m_gamesList;
-  private JEditorPane m_descriptionPane;
-  private JLabel m_urlLabel;
-  private JLabel m_mapVersion;
-  private final List<String> m_outOfDateMaps = new ArrayList<String>();
 
-  private InstallMapDialog(final Frame owner, final List<DownloadFileDescription> games) {
-    super(owner, "Download Maps", true);
-    m_games = MapDownloadListSort.sortByMapName(games);
-    createComponents();
-    setWidgetActivation();
-    informUserOfOutOfDateMaps(owner);
+  private static enum MapAction {
+    INSTALL, UPDATE, REMOVE
   }
 
-  private void informUserOfOutOfDateMaps(final Frame owner) {
-    // tell the user if there are any out of date maps that they should update
-    if (!m_outOfDateMaps.isEmpty()) {
-      final StringBuilder text =
-          new StringBuilder("<html>Some of the maps you have are out of date, and newer versions of those maps exist."
-              + "<br>You should update (re-download) the following maps:<br><ul>");
-      for (final String map : m_outOfDateMaps) {
-        text.append("<li> " + map + "</li>");
-      }
-      text.append("</ul></html>");
-      JOptionPane.showMessageDialog(owner, text, "Update Your Maps", JOptionPane.INFORMATION_MESSAGE);
-    }
+  private static final int WINDOW_HEIGHT = 670;
+  private static final int DIVIDER_POSITION = WINDOW_HEIGHT - 100;
+
+  private final MapDownloadProgressPanel progressPanel;
+
+  public static Version getVersion(final File zipFile) {
+    final DownloadFileProperties props = DownloadFileProperties.loadForZip(zipFile);
+    return props.getVersion();
   }
 
 
-  private void createComponents() {
-    m_installButton = new JButton("Install Games");
-    m_cancelButton = new JButton("Cancel");
-    m_intro = new JLabel(
-        "<html>Click on any number of maps on the left side, then click 'Install' at the bottom to download them. "
-            + "<br />Hold down CTRL to select more than one. "
-            + "<br />Red and Bold means your map is out of date. Italics means your map is up-to-date. </html>");
-    m_intro.setHorizontalAlignment(SwingConstants.CENTER);
-    final Vector<String> gameNames = new Vector<String>();
-    final LinkedHashMap<String, DownloadFileDescription> gameMap = new LinkedHashMap<String, DownloadFileDescription>();
-    m_outOfDateMaps.clear();
-    for (final DownloadFileDescription d : m_games) {
-      if (d == null) {
-        continue;
-      }
-      gameMap.put(d.getMapName(), d);
-      gameNames.add(d.getMapName());
-      if (d != null && !d.isDummyUrl()) {
-        File installed = new File(ClientFileSystemHelper.getUserMapsFolder(), d.getMapName() + ".zip");
-        if (installed == null || !installed.exists()) {
-          installed = new File(GameSelectorModel.DEFAULT_MAP_DIRECTORY, d.getMapName() + ".zip");
-        }
-        if (installed != null && installed.exists()) {
-          if (d.getVersion() != null && d.getVersion().isGreaterThan(getVersion(installed), true)) {
-            m_outOfDateMaps.add(d.getMapName());
-          }
-        }
-      }
-    }
-    m_gamesList = new JList(gameNames);
-    m_gamesList.setSelectedIndex(0);
-    // correctly handle empty names
-    final ListCellRenderer oldRenderer = m_gamesList.getCellRenderer();
-    m_gamesList.setCellRenderer(new ListCellRenderer() {
-      @Override
-      public Component getListCellRendererComponent(final JList list, final Object value, final int index,
-          final boolean isSelected, final boolean cellHasFocus) {
-        String mapName = (String) value;
-        if (mapName.trim().length() == 0) {
-          mapName = " ";
-        } else {
-          final DownloadFileDescription description = gameMap.get(mapName);
-          if (!description.isDummyUrl()) {
-            File installed = new File(ClientFileSystemHelper.getUserMapsFolder(), mapName + ".zip");
-            if (installed == null || !installed.exists()) {
-              installed = new File(GameSelectorModel.DEFAULT_MAP_DIRECTORY, mapName + ".zip");
-            }
-            if (installed != null && installed.exists()) {
-              if (description.getVersion() != null
-                  && description.getVersion().isGreaterThan(getVersion(installed), true)) {
-                mapName = "<html><b><font color=\"red\">" + mapName + "</font></b></html>";
-              } else {
-                mapName = "<html><i>" + mapName + "</i></html>";
-              }
-            }
-          }
-        }
-        return oldRenderer.getListCellRendererComponent(list, mapName, index, isSelected, cellHasFocus);
-      }
-    });
-    m_descriptionPane = new JEditorPane();
-    m_descriptionPane.setEditable(false);
-    m_descriptionPane.setContentType("text/html");
-    m_descriptionPane.setBackground(new JLabel().getBackground());
-    m_urlLabel = new JLabel(DOWNLOAD_URL_PREFIX);
-    m_mapVersion = new JLabel(MAP_VERSION_PREFIX);
-
-    setLayout(new BorderLayout());
-    final JPanel buttonsPanel = new JPanel();
-    add(m_intro, BorderLayout.NORTH);
-    add(buttonsPanel, BorderLayout.SOUTH);
-    buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
-    buttonsPanel.add(Box.createGlue());
-    buttonsPanel.add(m_cancelButton);
-    buttonsPanel.add(m_installButton);
-    buttonsPanel.add(Box.createGlue());
-    buttonsPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
-    final JScrollPane descriptionScroll = new JScrollPane();
-    descriptionScroll.setViewportView(m_descriptionPane);
-    descriptionScroll.setBorder(null);
-    descriptionScroll.getViewport().setBorder(null);
-    final JScrollPane gamesScroll = new JScrollPane();
-    gamesScroll.setViewportView(m_gamesList);
-    gamesScroll.setBorder(null);
-    gamesScroll.getViewport().setBorder(null);
-    final JPanel main = new JPanel();
-    main.setBorder(new EmptyBorder(30, 30, 30, 30));
-    main.setLayout(new BorderLayout());
-    main.add(gamesScroll, BorderLayout.WEST);
-    main.add(descriptionScroll, BorderLayout.CENTER);
-    final JPanel extraPanel = new JPanel();
-    extraPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
-    extraPanel.setLayout(new BorderLayout());
-    extraPanel.add(m_urlLabel, BorderLayout.NORTH);
-    extraPanel.add(m_mapVersion, BorderLayout.SOUTH);
-    main.add(extraPanel, BorderLayout.SOUTH);
-    add(main, BorderLayout.CENTER);
-    m_cancelButton.addActionListener(SwingAction.of(e -> setVisible(false)));
-    m_installButton.addActionListener(SwingAction.of(e -> {
-      boolean installed = false;
-      final List<DownloadFileDescription> selected = getSelected();
-      final List<DownloadFileDescription> toDownload = new ArrayList<DownloadFileDescription>();
-      for (final DownloadFileDescription map : selected) {
-        if (map.isDummyUrl()) {
-          continue;
-        }
-        final File destination = new File(ClientFileSystemHelper.getUserMapsFolder(), map.getMapName() + ".zip");
-        if (destination.exists()) {
-          final String msg = "<html>Replace map: " + map.getMapName() + " ?" + "<br>You have version "
-              + getVersionString(getVersion(destination)) + " installed, replace with version "
-              + getVersionString(map.getVersion()) + "?</html>";
-          if (replaceOldQuestion(msg)) {
-            toDownload.add(map);
-          }
-        } else {
-          toDownload.add(map);
-        }
-      }
-      int i = 1;
-      for (final DownloadFileDescription map : toDownload) {
-        if (map.isDummyUrl()) {
-          continue;
-        }
-        install(map, i++, toDownload.size());
-        installed = true;
-      }
-      if (installed) {
-        // TODO - asking the user to restart isn't good, we should find the cause of the error, maybe a windows thing?
-        // https://sourceforge.net/tracker/?func=detail&aid=2981890&group_id=44492&atid=439737
-        EventThreadJOptionPane
-            .showMessageDialog(getRootPane(),
-                ((toDownload.size() > 1) ? "Maps" : "Map")
-                    + " successfully installed, please restart TripleA before playing",
-                new CountDownLatchHandler(true));
-        setVisible(false);
-      }
-    }));
-    m_gamesList.addListSelectionListener(new ListSelectionListener() {
-      @Override
-      public void valueChanged(final ListSelectionEvent e) {
-        setWidgetActivation();
-      }
-    });
-  }
-
-  private boolean replaceOldQuestion(final String message) {
-    final int rVal = EventThreadJOptionPane.showConfirmDialog(this, message, "Overwrite?", JOptionPane.YES_NO_OPTION,
-        new CountDownLatchHandler(true));
-    if (rVal != JOptionPane.OK_OPTION) {
-      return false;
-    }
-    return true;
-  }
-
-  private void install(final DownloadFileDescription selected, final int count, final int total) {
-    String destinationFileName = Files.getNameWithoutExtension(selected.getUrl()) + ".zip";
-    final File destination = new File(ClientFileSystemHelper.getUserMapsFolder(), destinationFileName);
-
-    if (destination.exists()) {
-      if (!destination.delete()) {
-        // TODO we can't delete the file on windows something is leaking a file descriptor to it the source seems to be
-        // some caching in the java url libraries called from the constructor of NewGameChooserEntry we will overwrite,
-        // rather than delete the file
-      }
-    }
-    final File tempFile = new File(System.getProperty("java.io.tmpdir"), "tadownload:" + UUID.randomUUID().toString());
-    tempFile.deleteOnExit();
-    final DownloadRunnable download = new DownloadRunnable(selected.getUrl());
-    final String message =
-        "Downloading" + ((total > 1) ? (" (" + count + " of " + total + "): ") : ": ") + selected.getMapName();
-    BackgroundTaskRunner.runInBackground(getRootPane(), message, download);
-    if (download.getError() != null) {
-      Util.notifyError(this, download.getError());
-      return;
-    }
-    try {
-      validateZip(download);
-      try (FileOutputStream sink = new FileOutputStream(tempFile)) {
-        sink.write(download.getContents());
-        sink.getFD().sync();
-      }
-      final DownloadFileProperties props = new DownloadFileProperties();
-      props.setFrom(selected);
-      DownloadFileProperties.saveForZip(destination, props);
-    } catch (final IOException e) {
-      Util.notifyError(this, "Could not create write to temp file:" + e.getMessage());
-      return;
-    }
-
-    try (final FileInputStream fileInputStream = new FileInputStream(tempFile);
-        final ZipInputStream zis = new ZipInputStream(fileInputStream)) {
-      while (zis.getNextEntry() != null) {
-        zis.read(new byte[128]);
-      }
-    } catch (final IOException e) {
-      Util.notifyError(this, "Invalid zip file:" + e.getMessage());
-      return;
-    }
-    // move it to the games folder
-    // try to rename first
-    if (!tempFile.renameTo(destination)) {
-      try (final FileInputStream source = new FileInputStream(tempFile);
-          final FileOutputStream destSink = new FileOutputStream(destination);) {
-        copy(destSink, source);
-        destSink.getFD().sync();
-      } catch (final IOException e) {
-        Util.notifyError(this, e.getMessage());
-        return;
-      } finally {
-        tempFile.delete();
-      }
-    }
-  }
-
-  private static void validateZip(final DownloadRunnable download) throws IOException {
-    // try to unzip it to make sure it is valid
-    try (
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(download.getContents());
-        final ZipInputStream zis = new ZipInputStream(byteArrayInputStream)) {
-      ZipEntry ze;
-      while ((ze = zis.getNextEntry()) != null) {
-        // make sure we can read something from each stream
-        ze.getSize();
-        zis.read(new byte[512]);
-      }
-    } catch (final Exception e) {
-      throw new IOException(
-          "zip file could not be opened, it may have been corrupted during the download, please try again");
-    }
-  }
-
-  public static void copy(final OutputStream sink, final InputStream is) throws IOException {
-    final byte[] b = new byte[8192];
-    int read;
-    while ((read = is.read(b)) != -1) {
-      sink.write(b, 0, read);
-    }
-  }
-
-  private void setWidgetActivation() {
-    if (m_gamesList.isSelectionEmpty()) {
-      m_installButton.setEnabled(false);
-      m_descriptionPane.setText("");
-      m_urlLabel.setText(DOWNLOAD_URL_PREFIX);
-      m_mapVersion.setText(MAP_VERSION_PREFIX);
-    } else {
-      for (final DownloadFileDescription map : getSelected()) {
-        m_installButton.setEnabled(!map.isDummyUrl());
-        m_descriptionPane.setText(map.getDescription());
-        if (!map.isDummyUrl()) {
-          m_urlLabel.setText(DOWNLOAD_URL_PREFIX + map.getUrl());
-          String currentVersion = "";
-          final File destination = new File(ClientFileSystemHelper.getUserMapsFolder(), map.getMapName() + ".zip");
-          if (destination.exists()) {
-            currentVersion = "   (installed version: " + getVersionString(getVersion(destination)) + ")";
-          }
-          m_mapVersion.setText(MAP_VERSION_PREFIX + getVersionString(map.getVersion()) + currentVersion);
-          // scroll to the top of the notes screen
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              m_descriptionPane.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-            }
-          });
-          // only show one map description
-          break;
-        }
-      }
-    }
-  }
-
-  private List<DownloadFileDescription> getSelected() {
-    final List<DownloadFileDescription> selected = new ArrayList<DownloadFileDescription>();
-    for (final DownloadFileDescription d : m_games) {
-      final List<Object> values = Arrays.asList(m_gamesList.getSelectedValues());
-      if (values.contains(d.getMapName())) {
-        selected.add(d);
-      }
-    }
-    return selected;
-  }
-
-  protected static void installGames(final Component parent, final List<DownloadFileDescription> games) {
+  public static void showDownloadMapsWindow(final Component parent, final List<DownloadFileDescription> games) {
+    checkNotNull(games);
     final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
-    final InstallMapDialog dia = new InstallMapDialog(parentFrame, games);
-    dia.setSize(800, 620);
+    final InstallMapDialog dia = new InstallMapDialog(games);
+    dia.setSize(800, WINDOW_HEIGHT);
     dia.setLocationRelativeTo(parentFrame);
+    dia.setMinimumSize(new Dimension(200, 200));
     dia.setVisible(true);
   }
 
-  private static String getVersionString(final Version v) {
-    if (v == null) {
-      return "Unknown";
-    }
-    return v.toString();
+  private InstallMapDialog(final List<DownloadFileDescription> games) {
+    super("Download Maps");
+
+    progressPanel = new MapDownloadProgressPanel(this);
+    SwingComponents.addWindowCloseListener(this, () -> progressPanel.cancel());
+
+    JTabbedPane outerTabs = new JTabbedPane();
+
+    List<DownloadFileDescription> maps = filterMaps(games, download -> download.isMap());
+    outerTabs.add("Maps", createAvailableInstalledTabbedPanel(maps));
+
+    List<DownloadFileDescription> mods = filterMaps(games, download -> download.isMapMod());
+    outerTabs.add("Mods", createAvailableInstalledTabbedPanel(mods));
+
+    List<DownloadFileDescription> skins = filterMaps(games, download -> download.isMapSkin());
+    outerTabs.add("Skins", createAvailableInstalledTabbedPanel(skins));
+
+    List<DownloadFileDescription> tools = filterMaps(games, download -> download.isMapTool());
+    outerTabs.add("Tools", createAvailableInstalledTabbedPanel(tools));
+
+    JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, outerTabs,
+        SwingComponents.newJScrollPane(progressPanel));
+    splitPane.setDividerLocation(DIVIDER_POSITION);
+    add(splitPane);
   }
 
+  private static List<DownloadFileDescription> filterMaps(List<DownloadFileDescription> maps,
+      Function<DownloadFileDescription, Boolean> filter) {
+
+    maps.forEach(map -> checkNotNull("Maps list contained null element: " + maps, map));
+    return maps.stream().filter(map -> filter.apply(map)).collect(Collectors.toList());
+  }
+
+  private JTabbedPane createAvailableInstalledTabbedPanel(final List<DownloadFileDescription> games) {
+    MapDownloadList mapList = new MapDownloadList(games, new FileSystemAccessStrategy());
+
+    JTabbedPane tabbedPane = new JTabbedPane();
+
+    if (containsMaps(mapList.getOutOfDate())) {
+      final JPanel outOfDate = createMapSelectionPanel(mapList.getOutOfDate(), MapAction.UPDATE);
+      tabbedPane.addTab("Update", outOfDate);
+    }
+
+    // For the UX, always show an available maps tab, even if it is empty
+    final JPanel available = createMapSelectionPanel(mapList.getAvailable(), MapAction.INSTALL);
+    tabbedPane.addTab("Available", available);
+
+    if (containsMaps(mapList.getInstalled())) {
+      final JPanel installed = createMapSelectionPanel(mapList.getInstalled(), MapAction.REMOVE);
+      tabbedPane.addTab("Installed", installed);
+    }
+    return tabbedPane;
+  }
+
+
+  private static boolean containsMaps(List<DownloadFileDescription> maps) {
+    return maps.stream().anyMatch(e -> !e.isDummyUrl());
+  }
+
+  private JPanel createMapSelectionPanel(List<DownloadFileDescription> unsortedMaps, MapAction action) {
+    final List<DownloadFileDescription> maps = MapDownloadListSort.sortByMapName(unsortedMaps);
+    final JPanel main = SwingComponents.newBorderedPanel(30);
+    final JEditorPane descriptionPane = SwingComponents.newHtmlJEditorPane();
+    main.add(SwingComponents.newJScrollPane(descriptionPane), BorderLayout.CENTER);
+
+    final JLabel mapSizeLabel = new JLabel(" ");
+
+    final JList<String> gamesList = createGameSelectionList(maps);
+    gamesList.addListSelectionListener(createDescriptionPanelUpdatingSelectionListener(
+        descriptionPane, gamesList, maps, action, mapSizeLabel));
+    main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
+
+    JPanel southPanel = SwingComponents.gridPanel(2, 1);
+    southPanel.add(mapSizeLabel);
+    southPanel.add(createButtonsPanel(action, gamesList, maps));
+    main.add(southPanel, BorderLayout.SOUTH);
+
+    return main;
+  }
+
+  private static JList<String> createGameSelectionList(List<DownloadFileDescription> maps) {
+    JList<String> gamesList = SwingComponents.newJList(maps, (map) -> map.getMapName());
+    // select the first map, not header
+    int selectedIndex = 0;
+    for (int i = 0; i < maps.size(); i++) {
+      if (!maps.get(i).isDummyUrl()) {
+        selectedIndex = i;
+        break;
+      }
+    }
+    gamesList.setSelectedIndex(selectedIndex);
+    return gamesList;
+  }
+
+  private static ListSelectionListener createDescriptionPanelUpdatingSelectionListener(JEditorPane descriptionPanel,
+      JList<String> gamesList, List<DownloadFileDescription> maps, MapAction action, JLabel mapSizeLabel) {
+    return e -> {
+      final int index = gamesList.getSelectedIndex();
+      DownloadFileDescription map = maps.get(index);
+
+      String text = createEditorPaneText(map);
+      descriptionPanel.setText(text);
+      descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+
+      mapSizeLabel.setText(" ");
+      if (!map.isDummyUrl()) {
+        (new Thread(() -> {
+          final String labelText = createLabelText(action, map);
+          if (index == gamesList.getSelectedIndex()) {
+            SwingUtilities.invokeLater(() -> mapSizeLabel.setText(labelText));
+          }
+        })).start();
+      }
+    };
+  }
+
+  private static String createLabelText(MapAction action, DownloadFileDescription map) {
+    final String DOUBLE_SPACE = "&nbsp;&nbsp;";
+
+    final long mapSize;
+    String labelText = "<html>" + map.getMapName() + DOUBLE_SPACE + " v" + map.getVersion() + DOUBLE_SPACE + " (";
+    if (action == MapAction.INSTALL) {
+      mapSize = DownloadUtils.getDownloadLength(map.newURL());
+    } else {
+      mapSize = map.getInstallLocation().length();
+    }
+    labelText += createSizeLabel(mapSize) + ")<br/>";
+
+    if (action == MapAction.INSTALL) {
+      labelText += map.getUrl();
+    } else {
+      labelText += map.getInstallLocation().getAbsolutePath();
+    }
+
+    labelText += "</html>";
+    return labelText;
+  }
+
+  private static String createSizeLabel(long bytes) {
+    long kiloBytes = (bytes / 1024);
+    long megaBytes = kiloBytes / 1024;
+    long kbDigits = ((kiloBytes % 1000) / 100);
+    return megaBytes + "." + kbDigits + " MB";
+  }
+
+  private static String createEditorPaneText(DownloadFileDescription map) {
+    String text = "<h2>" + map.getMapName() + "</h2>";
+    if (map.isDummyUrl()) {
+      text += map.getDescription();
+    } else {
+      text += map.getDescription();
+    }
+    return text;
+  }
+
+  private JPanel createButtonsPanel(MapAction action, JList<String> gamesList, List<DownloadFileDescription> maps) {
+    final JPanel buttonsPanel = SwingComponents.gridPanel(1, 5);
+
+    buttonsPanel.setBorder(SwingComponents.newEmptyBorder(20));
+
+
+    buttonsPanel.add(buildMapActionButton(action, gamesList, maps));
+
+    buttonsPanel.add(Box.createGlue());
+
+    String toolTip = "Click this button to learn more about the map download feature in TripleA";
+    JButton helpButton = SwingComponents.newJButton("Help", toolTip,
+        e -> JOptionPane.showMessageDialog(this, new MapDownloadHelpPanel()));
+    buttonsPanel.add(helpButton);
+
+    toolTip = "Click this button to submit map comments and bug reports back to the map makers";
+    JButton mapFeedbackButton = SwingComponents.newJButton("Feedback", toolTip,
+        e -> FeedbackDialog.showFeedbackDialog(gamesList.getSelectedValuesList(), maps));
+    buttonsPanel.add(mapFeedbackButton);
+
+    buttonsPanel.add(Box.createGlue());
+
+    toolTip = "Click this button to close the map download window and cancel any in-progress downloads.";
+    final JButton closeButton = SwingComponents.newJButton("Close", toolTip, e -> {
+      setVisible(false);
+      dispose();
+    });
+    buttonsPanel.add(closeButton);
+
+    return buttonsPanel;
+  }
+
+
+  private JButton buildMapActionButton(MapAction action, JList<String> gamesList, List<DownloadFileDescription> maps) {
+    final JButton actionButton;
+
+    if (action == MapAction.REMOVE) {
+      actionButton = SwingComponents.newJButton("Remove", removeAction(gamesList, maps));
+    } else {
+      final String buttonText;
+      if (action == MapAction.INSTALL) {
+        buttonText = "Install";
+      } else {
+        buttonText = "Update";
+      }
+      actionButton = SwingComponents.newJButton(buttonText, installAction(gamesList, maps));
+      actionButton.setToolTipText(
+          "Click this button to install the currently selected map(s). Click the map names above while holding control to select multiple maps for installation.");
+    }
+    return actionButton;
+  }
+
+  private ActionListener removeAction(JList<String> gamesList, List<DownloadFileDescription> maps) {
+    return (e) -> {
+      final List<String> selectedValues = gamesList.getSelectedValuesList();
+      final List<DownloadFileDescription> selectedMaps =
+          maps.stream().filter(map -> !map.isDummyUrl() && selectedValues.contains(map.getMapName()))
+              .collect(Collectors.toList());
+
+      final Runnable removeCompleteCallback = () -> {
+        setVisible(false);
+        dispose();
+      };
+      FileSystemAccessStrategy.remove(selectedMaps, removeCompleteCallback);
+    };
+  }
+
+  private ActionListener installAction(JList gamesList, List<DownloadFileDescription> maps) {
+    return (e) -> {
+      List<String> selectedValues = gamesList.getSelectedValuesList();
+      List<DownloadFileDescription> downloadList = Lists.newArrayList();
+      for (DownloadFileDescription map : maps) {
+        if (selectedValues.contains(map.getMapName())) {
+          downloadList.add(map);
+        }
+      }
+      if (!downloadList.isEmpty()) {
+        progressPanel.download(downloadList);
+      }
+    };
+  }
 }
