@@ -71,8 +71,6 @@ public class DownloadFile {
   private Thread createDownloadThread(final File fileToDownloadTo) {
     return new Thread(() -> {
       if (state != DownloadState.CANCELLED) {
-        System.out.println("DOWNLOADING: " + downloadDescription.getMapName());
-
         try (PerfTimer timer = Perf.startTimer("Download map: " + downloadDescription.getUrl())) {
           strategy.download(downloadDescription.newURL(), fileToDownloadTo);
         }
@@ -105,10 +103,7 @@ public class DownloadFile {
 
   public void cancelDownload() {
     if (!isDone()) {
-      System.out.println("Cancelled: " + downloadDescription.getMapName());
       state = DownloadState.CANCELLED;
-    } else {
-      System.out.println("Cancelled: , but was done" + downloadDescription.getMapName());
     }
   }
 

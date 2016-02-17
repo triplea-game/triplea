@@ -8,7 +8,8 @@ import java.util.Map.Entry;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.testng.collections.Maps;
+
+import com.google.common.collect.Maps;
 
 public class ResourceLoaderTest {
 
