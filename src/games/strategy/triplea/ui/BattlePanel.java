@@ -28,6 +28,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import games.strategy.common.swing.SwingComponents;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -125,8 +126,7 @@ public class BattlePanel extends ActionPanel {
         removeAll();
         m_actionLabel.setText(id.getName() + " battle");
         setLayout(new BorderLayout());
-        final JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(0, 1));
+        final JPanel panel = SwingComponents.gridPanel(0,1);
         panel.add(m_actionLabel);
         for (final Entry<BattleType, Collection<Territory>> entry : m_battles.entrySet()) {
           for (final Territory t : entry.getValue()) {
