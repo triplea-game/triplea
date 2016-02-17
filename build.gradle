@@ -72,7 +72,6 @@ dependencies {
 	testCompile 'org.hamcrest:hamcrest-all:1.3'
 	testCompile 'junit:junit:4.12'
 	testCompile 'org.mockito:mockito-all:2.0.2-beta'
-	testCompile 'org.powermock:powermock-mockito-release-full:1.5.4'
 }
 
 test {
