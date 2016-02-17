@@ -10,14 +10,13 @@ public class MapDownloadHelpPanel extends JPanel {
   private static final long serialVersionUID = -7254964602067275442L;
 
   private static final String[] HELP_COMMENTS = {
-      "Install new maps by clicking the 'Available' tab, select a map by clicking it, and then click the 'Install' button.",
-      "Hold shift or control while selecting maps to select multiple maps.",
-      "While maps are downloading you may select additional maps and download them.",
-      "Map will be installed to: " + ClientFileSystemHelper.getUserMapsFolder().getAbsolutePath(),
+      "Click the 'Available' tab to see maps available for download",
+      "Select any map by clicking its title",
+      "Hold control and/or shift to select multiples maps",
+      "Map files will be installed to: " + ClientFileSystemHelper.getUserMapsFolder().getAbsolutePath(),
   };
 
   public MapDownloadHelpPanel() {
-
     JLabel label = new JLabel(buildHelpHtmlOutput());
     add(label);
   }
