@@ -27,6 +27,7 @@ import javax.swing.border.EmptyBorder;
 
 import games.strategy.engine.framework.map.download.DownloadFileDescription;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.triplea.UrlConstants;
 
 public class SwingComponents {
 
@@ -166,10 +167,14 @@ public class SwingComponents {
     return new EmptyBorder(w, w, w, w);
   }
 
-  public static void newOpenUrlConfirmationDialog(String feedbackURL) {
-    final String msg = "Is it okay to open the feedback form in a web browser?\n" + feedbackURL;
+  public static void newOpenUrlConfirmationDialog(UrlConstants url) {
+    newOpenUrlConfirmationDialog(url.toString());
+  }
+
+  public static void newOpenUrlConfirmationDialog(String url) {
+    final String msg = "Is it okay to open the feedback form in a web browser?\n" + url;
     SwingComponents.promptUser("Okay to open external URL?", msg, () -> {
-      DesktopUtilityBrowserLauncher.openURL(feedbackURL);
+      DesktopUtilityBrowserLauncher.openURL(url);
     });
   }
 }

@@ -56,10 +56,10 @@ import com.apple.eawt.ApplicationAdapter;
 import com.apple.eawt.ApplicationEvent;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.common.swing.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.DebugUtils;
 import games.strategy.debug.ErrorConsole;
-import games.strategy.debug.DebugUtils;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
@@ -84,6 +84,7 @@ import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.net.IServerMessenger;
 import games.strategy.performance.EnablePerformanceLoggingCheckBox;
+import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.ui.AbstractUIContext;
@@ -109,8 +110,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     final InGameLobbyWatcherWrapper watcher = createLobbyMenu(this);
     createNetworkMenu(this, watcher);
     createWebHelpMenu(this);
-    createHelpMenu(this);
     createDebugMenu(this);
+    createHelpMenu(this);
   }
 
   private void createDebugMenu(final JMenuBar menuBar) {
@@ -119,8 +120,15 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     addChangeProAISettings(debugMenu);
     debugMenu.add(new EnablePerformanceLoggingCheckBox());
     addConsoleMenu(debugMenu);
-
+    addReportBugsMenu(debugMenu);
   }
+
+  protected void addReportBugsMenu(final JMenu parentMenu) {
+    parentMenu.add(SwingAction.of( "Send Bug Report", e -> {
+      SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES);
+    } )).setMnemonic(KeyEvent.VK_B);
+  }
+
   protected void addConsoleMenu(final JMenu parentMenu) {
     parentMenu.add(new AbstractAction("Show Console...") {
       private static final long serialVersionUID = 6303760092518795718L;
