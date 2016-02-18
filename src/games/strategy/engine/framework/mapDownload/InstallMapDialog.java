@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -220,7 +219,7 @@ public class InstallMapDialog extends JDialog {
         if (map.isDummyUrl()) {
           continue;
         }
-        final File destination = new File(GameRunner2.getUserMapsFolder(), map.getMapName() + ".zip");
+        final File destination = new File(ClientFileSystemHelper.getUserMapsFolder(), map.getMapName() + ".zip");
         if (destination.exists()) {
           final String msg = "<html>Replace map: " + map.getMapName() + " ?" + "<br>You have version "
               + getVersionString(getVersion(destination)) + " installed, replace with version "
