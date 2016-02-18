@@ -30,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+import games.strategy.common.swing.SwingComponents;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.EngineVersion;
@@ -45,6 +46,7 @@ import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.triplea.UrlConstants;
 
 public class MetaSetupPanel extends SetupPanel {
 
@@ -188,16 +190,7 @@ public class MetaSetupPanel extends SetupPanel {
         ruleBook();
       }
     });
-    m_donate.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher.openURL("https://sourceforge.net/donate/index.php?group_id=44492");
-        } catch (final Exception e1) {
-          e1.printStackTrace();
-        }
-      }
-    });
+    m_donate.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
     m_about.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
@@ -211,22 +204,12 @@ public class MetaSetupPanel extends SetupPanel {
     mapDownloadController.openDownloadMapScreen(parentWindow);
   }
 
-  private void ruleBook() {
-    try {
-      // We open both the actual rule book, and the web page for all guides.
-      // This way we can add other guides and rulebooks and tutorials later, as well as being able to update them after
-      // the stable is out.
-      DesktopUtilityBrowserLauncher.openURL("http://github.com/triplea-game/assets/blob/master/rulebooks/TripleA_RuleBook.pdf");
-      DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/mywiki/Guides");
-      // BareBonesBrowserLaunch.openURL("https://sourceforge.net/projects/triplea/files/help/");
-    } catch (final Exception ex) {
-      // print the error
-      System.out.println("Error: " + ex);
-    }
-    /*
-     * Or we could try opening the file on the computer, since triplea comes with it:
-     * DesktopUtilityBrowserLauncher.openFile(new File(GameRunner.getRootFolder(), "TripleA_RuleBook.pdf"));
-     */
+  private static void ruleBook() {
+    // We open both the actual rule book, and the web page for all guides.
+    // This way we can add other guides and rulebooks and tutorials later, as well as being able to update them after
+    // the stable is out.
+    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_RULE_BOOK_PDF);
+    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_WIKI_GUIDES);
   }
 
   private void enginePreferences() {
