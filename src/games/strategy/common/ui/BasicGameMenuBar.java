@@ -348,89 +348,16 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     donateLink.setMnemonic(KeyEvent.VK_O);
     final JMenuItem guidesLink = new JMenuItem("Guides...");
     guidesLink.setMnemonic(KeyEvent.VK_G);
-    hostingLink.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher.openURL(
-              "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312.html");
-        } catch (final Exception e1) {
-          ClientLogger.logQuietly(e1);
-        }
-      }
-    });
-    mapLink.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher.openURL(
-              "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html");
-        } catch (final Exception e1) {
-          ClientLogger.logQuietly(e1);
-        }
-      }
-    });
-    bugReport.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher.openURL("https://sourceforge.net/p/triplea/_list/tickets");
-        } catch (final Exception e1) {
-          ClientLogger.logQuietly(e1);
-        }
-      }
-    });
-    lobbyRules.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher
-              .openURL("http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100&forum=1");
-        } catch (final Exception e1) {
-          ClientLogger.logQuietly(e1);
-        }
-      }
-    });
-    warClub.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher.openURL("http://www.tripleawarclub.org/");
-        } catch (final Exception e1) {
-          ClientLogger.logQuietly(e1);
-        }
-      }
-    });
-    devForum.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/mywiki/Forum");
-        } catch (final Exception e1) {
-          ClientLogger.logQuietly(e1);
-        }
-      }
-    });
-    donateLink.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher.openURL("https://sourceforge.net/donate/index.php?group_id=44492");
-        } catch (final Exception e1) {
-          ClientLogger.logQuietly(e1);
-        }
-      }
-    });
-    guidesLink.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/mywiki/Guides");
-        } catch (final Exception e1) {
-          ClientLogger.logQuietly(e1);
-        }
-      }
-    });
+
+    hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_HOSTING_MAPS));
+    mapLink.addActionListener(e  -> SwingComponents.newOpenUrlConfirmationDialog( UrlConstants.SF_HOSTING_MAPS));
+    bugReport.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_TICKET_LIST));
+    lobbyRules.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB_LOBBY_RULES ));
+    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB));
+    devForum.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_FORUM));
+    donateLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
+    guidesLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_WIKI_GUIDES));
+
     parentMenu.add(hostingLink);
     parentMenu.add(mapLink);
     parentMenu.add(bugReport);
@@ -450,7 +377,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         + ClientContext.engineVersion() + "<br><b>Game:</b> " + getData().getGameName()
         + "<br><b>Game Version:</b>" + getData().getGameVersion() + "</p>"
         + "<p>For more information please visit,<br><br>"
-        + "<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b><br><br>";
+        + "<b><a hlink='" + UrlConstants.SOURCE_FORGE + "'>" + UrlConstants.SOURCE_FORGE + "</a></b><br><br>";
     final JEditorPane editorPane = new JEditorPane();
     editorPane.setBorder(null);
     editorPane.setBackground(getBackground());

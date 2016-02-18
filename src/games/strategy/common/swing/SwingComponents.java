@@ -172,8 +172,8 @@ public class SwingComponents {
   }
 
   public static void newOpenUrlConfirmationDialog(String url) {
-    final String msg = "Is it okay to open the feedback form in a web browser?\n" + url;
-    SwingComponents.promptUser("Okay to open external URL?", msg, () -> {
+    final String msg = "Okay to open URL in a web browser?\n" + url;
+    SwingComponents.promptUser("Open external URL?", msg, () -> {
       DesktopUtilityBrowserLauncher.openURL(url);
     });
   }
