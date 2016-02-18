@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import games.strategy.common.swing.SwingComponents;
-import games.strategy.net.DesktopUtilityBrowserLauncher;
 
 /**
  * Simple static utility class to show a confirmation dialog to the user, if they hit accept a new browser
@@ -22,10 +21,7 @@ public final class FeedbackDialog {
 
     if (mapSelection.isPresent()) {
       final String feedbackURL = mapSelection.get().getFeedbackUrl();
-      final String msg = "Is it okay to open the feedback form in a web browser?\n" + feedbackURL;
-      SwingComponents.promptUser("Okay to open external URL?", msg, () -> {
-        DesktopUtilityBrowserLauncher.openURL(feedbackURL);
-      });
+      SwingComponents.newOpenUrlConfirmationDialog(feedbackURL);
     } else {
       SwingComponents.newMessageDialog(
           "To open the map feedback from in your web browser, please first select a map title, and then click the feedback button again.");

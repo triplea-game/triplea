@@ -25,6 +25,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
+import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.engine.framework.map.download.DownloadFileDescription;
+
 public class SwingComponents {
 
   /** Creates a JPanel with BorderLayout and adds a west component and an east component */
@@ -161,5 +164,12 @@ public class SwingComponents {
   public static Border newEmptyBorder(int borderWidth) {
     int w = borderWidth;
     return new EmptyBorder(w, w, w, w);
+  }
+
+  public static void newOpenUrlConfirmationDialog(String feedbackURL) {
+    final String msg = "Is it okay to open the feedback form in a web browser?\n" + feedbackURL;
+    SwingComponents.promptUser("Okay to open external URL?", msg, () -> {
+      DesktopUtilityBrowserLauncher.openURL(feedbackURL);
+    });
   }
 }
