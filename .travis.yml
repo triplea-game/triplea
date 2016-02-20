@@ -5,12 +5,10 @@ install: true
 script:
 - gradle test -i
 before_deploy:
-- wget -O setup https://github.com/triplea-game/triplea/blob/master/.travis/setup?raw=true
-- chmod +x setup && ./setup
+- chmod +x ./travis/setup && ./travis/setup
 - export TAGGED_VERSION="$BUILD_VERSION.$TRAVIS_BUILD_NUMBER"
 - gradle release
-- wget -O push_tag https://github.com/triplea-game/triplea/blob/master/.travis/push_tag?raw=true
-- chmod +x push_tag && ./push_tag
+- chmod +x push_tag && ./.travis/push_tag
 deploy:
   provider: releases
   api_key:
