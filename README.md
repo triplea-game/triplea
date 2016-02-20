@@ -32,7 +32,7 @@ Learning to Play
 
 - Install the game and play the new tutorial map (*coming soon*)
 - Play against the AI
-- Read the rule book: http://github.com/triplea-game/triplea/blob/master/TripleA_RuleBook.pdf
+- Read the rule book: http://github.com/triplea-game/assets/blob/master/rulebooks/TripleA_RuleBook.pdf
 - Join the online TripleA game lobby and observe games
 
 
