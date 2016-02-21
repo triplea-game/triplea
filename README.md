@@ -1,5 +1,5 @@
-TripleA website: http://triplea-game.github.io/
-TripleA Community Website: http://www.tripleawarclub.org/
+- TripleA website: http://triplea-game.github.io/
+- TripleA Community Website: http://www.tripleawarclub.org/
 
 
 TripleA Game Features
