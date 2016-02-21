@@ -1,5 +1,13 @@
 - TripleA website: http://triplea-game.github.io/
 - TripleA Community Website: http://www.tripleawarclub.org/
+- TripleA Maps: http://github.com/triplea-maps
+
+
+Bug Reports
+===========
+
+- Game bugs / feature requests: http://github.com/triplea-game/triplea/issues/new
+
 
 
 TripleA Game Features
@@ -26,19 +34,6 @@ Learning to Play
 - Play against the AI
 - Read the rule book: http://github.com/triplea-game/triplea/blob/master/TripleA_RuleBook.pdf
 - Join the online TripleA game lobby and observe games
-
-
-Bug Reports
-===========
-
-Please submit bug reports to: http://github.com/triplea-game/triplea/issues/new
-
-
-TripleA Maps
-============
-
-Maps are hosted in: http://github.com/triplea-maps
-For issues global to all maps, please refer to the map adminstration project: http://github.com/triplea-maps/Project
 
 
 Build system
