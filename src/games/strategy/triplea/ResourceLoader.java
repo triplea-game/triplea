@@ -15,8 +15,8 @@ import java.util.StringTokenizer;
 
 import games.strategy.common.swing.SwingComponents;
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.mapDownload.InstallMapDialog;
 import games.strategy.util.Match;
 
 /**
@@ -41,6 +41,18 @@ public class ResourceLoader {
     }
 
     final List<String> dirs = getPaths(mapName);
+    if (mapName != null && dirs.isEmpty()) {
+      SwingComponents.promptUser("Download map?",
+          "Map missing: " + mapName + ", could not join game.\nWould you like to download the map now?"
+              + "\nOnce the download completes, you may reconnect to this game.",
+          () -> InstallMapDialog.showDownloadMapsWindow(mapName));
+
+      throw new IllegalStateException("Could not find file folder or zip for map: " + mapName + "\r\n"
+          + "Please DOWNLOAD THIS MAP if you do not have it." + "\r\n"
+          + "If you are making a map or mod, make sure the mapName property within the xml game file exactly matches the map zip or folder name."
+          + "\r\n" + "\r\n");
+    }
+
     dirs.add(resourceFolder.getAbsolutePath());
 
     return new ResourceLoader(dirs.toArray(new String[dirs.size()]));
@@ -92,15 +104,7 @@ public class ResourceLoader {
     }
     // At least one must exist
     if (existing.isEmpty()) {
-      SwingComponents.promptUser("Download map?", "Map missing: " + mapName + ", could not join game.\nWould you like to download the map now?"
-          + "\nOnce the download completes, you may reconnect to this game.", () -> {
-        ClientContext.mapDownloadController().downloadMap(mapName);
-      });
-
-      throw new IllegalStateException("Could not find file folder or zip for map: " + mapName + "\r\n"
-          + "Please DOWNLOAD THIS MAP if you do not have it." + "\r\n"
-          + "If you are making a map or mod, make sure the mapName property within the xml game file exactly matches the map zip or folder name."
-          + "\r\n" + "\r\n");
+      return Collections.EMPTY_LIST;
     }
     final File match = existing.iterator().next();
 
