@@ -32,6 +32,8 @@ import javax.swing.event.ListSelectionListener;
 import com.google.common.collect.Lists;
 
 import games.strategy.common.swing.SwingComponents;
+import games.strategy.engine.ClientContext;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.util.Version;
 
 
@@ -54,18 +56,30 @@ public class InstallMapDialog extends JFrame {
     return props.getVersion();
   }
 
-  public static void showDownloadMapsWindow(final String mapName, final List<DownloadFileDescription> downloads) {
-    // todo: VERIFY WE CAN ACTUALLY DOWNLOAD THE MAP FROM THE LIST
-    showDownloadMapsWindow(null, Optional.of(mapName), downloads);
+  /**
+   * Shows the download window and begins downloading the specified map right away.
+   * If the map cannot be downloaded a message prompt is shown to the user.
+   */
+  public static void showDownloadMapsWindow(final String mapName) {
+    showDownloadMapsWindow(null, Optional.of(mapName));
   }
 
-  public static void showDownloadMapsWindow(final Component parent, final List<DownloadFileDescription> games) {
-    showDownloadMapsWindow(parent, Optional.empty(), games);
+  public static void showDownloadMapsWindow(final Component parent) {
+    showDownloadMapsWindow(parent, Optional.empty());
   }
 
-  private static void showDownloadMapsWindow(final Component parent, Optional<String> mapName,
-      final List<DownloadFileDescription> games) {
+  public static void showDownloadMapsWindow() {
+    showDownloadMapsWindow(null, Optional.empty());
+  }
+
+
+  private static void showDownloadMapsWindow(final Component parent, Optional<String> mapName) {
+    final DownloadRunnable download = new DownloadRunnable(ClientContext.mapListingSource().getMapListDownloadSite());
+    final String popupWindowTitle = "Downloading list of availabe maps....";
+    BackgroundTaskRunner.runInBackground(null, popupWindowTitle, download);
+    final List<DownloadFileDescription> games = download.getDownloads();
     checkNotNull(games);
+
     final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
     final InstallMapDialog dia = new InstallMapDialog(mapName, games);
     dia.setSize(800, WINDOW_HEIGHT);
