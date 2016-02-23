@@ -39,14 +39,18 @@ public final class ClientContext {
   private final MapDownloadController mapDownloadController;
   private final EngineVersion engineVersion;
   private final MapDownloadStrategy downloadStrategy;
-
+  private final MapListingSource mapListingSource;
 
   private ClientContext() {
     PropertyReader reader = new GameEnginePropertyFileReader();
-    MapListingSource listingSource = new MapListingSource(reader);
-    mapDownloadController = new MapDownloadController(listingSource);
+    mapListingSource = new MapListingSource(reader);
+    mapDownloadController = new MapDownloadController(mapListingSource);
     engineVersion = new EngineVersion(reader);
     downloadStrategy = new MapDownloadStrategy();
+  }
+
+  public static MapListingSource mapListingSource() {
+    return instance.mapListingSource;
   }
 
   public static MapDownloadController mapDownloadController() {
