@@ -140,7 +140,7 @@ public class MapData {
   }
 
   public MapData(final String mapNameDir) {
-    this(ResourceLoader.getMapResourceLoader(mapNameDir, false));
+    this(ResourceLoader.getMapResourceLoader(mapNameDir));
   }
 
   /**

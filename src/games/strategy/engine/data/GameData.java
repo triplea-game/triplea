@@ -441,7 +441,7 @@ public class GameData implements java.io.Serializable {
     if (mapName == null || mapName.trim().length() == 0) {
       mapName = m_gameName;
     }
-    m_resourceLoader = ResourceLoader.getMapResourceLoader(mapName, false);
+    m_resourceLoader = ResourceLoader.getMapResourceLoader(mapName);
     if (m_resourceLoader == null) {
       throw new IllegalStateException("Map name property not set on game");
     }
