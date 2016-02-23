@@ -13,7 +13,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import games.strategy.common.swing.SwingComponents;
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.util.Match;
 
@@ -90,6 +92,11 @@ public class ResourceLoader {
     }
     // At least one must exist
     if (existing.isEmpty()) {
+      SwingComponents.promptUser("Download map?", "Map missing: " + mapName + ", could not join game.\nWould you like to download the map now?"
+          + "\nOnce the download completes, you may reconnect to this game.", () -> {
+        ClientContext.mapDownloadController().downloadMap(mapName);
+      });
+
       throw new IllegalStateException("Could not find file folder or zip for map: " + mapName + "\r\n"
           + "Please DOWNLOAD THIS MAP if you do not have it." + "\r\n"
           + "If you are making a map or mod, make sure the mapName property within the xml game file exactly matches the map zip or folder name."
