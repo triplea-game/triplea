@@ -59,6 +59,10 @@ public class SwingComponents {
     return panel;
   }
 
+  public static JButton newJButton(String title, String toolTip, Runnable actionListener) {
+    return newJButton(title, toolTip, SwingAction.of(e->actionListener.run()));
+  }
+
   public static JButton newJButton(String title, String toolTip, ActionListener actionListener) {
     JButton button = newJButton(title, actionListener);
     button.setToolTipText(toolTip);
@@ -89,7 +93,7 @@ public class SwingComponents {
       final Runnable cancelAction) {
 
     boolean showMessage = false;
-    synchronized(visiblePrompts) {
+    synchronized (visiblePrompts) {
       if (!visiblePrompts.contains(message)) {
         visiblePrompts.add(message);
         showMessage = true;
@@ -97,7 +101,7 @@ public class SwingComponents {
     }
 
     if (showMessage) {
-        SwingUtilities.invokeLater(() -> {
+      SwingUtilities.invokeLater(() -> {
         // JDialog.setDefaultLookAndFeelDecorated(true);
         int response = JOptionPane.showConfirmDialog(null, message, title,
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
