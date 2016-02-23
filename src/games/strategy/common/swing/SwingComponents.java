@@ -10,6 +10,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -30,11 +31,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
+import com.google.common.collect.Sets;
 import games.strategy.engine.framework.map.download.DownloadFileDescription;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.UrlConstants;
 
 public class SwingComponents {
+
+  private static Set<String> visiblePrompts = Sets.newHashSet();
 
   /** Creates a JPanel with BorderLayout and adds a west component and an east component */
   public static JPanel horizontalJPanel(Component westComponent, Component eastComponent) {
@@ -92,16 +96,34 @@ public class SwingComponents {
   public static void promptUser(final String title, final String message, final Runnable confirmedAction,
       final Runnable cancelAction) {
     SwingUtilities.invokeLater(() -> {
-      int response = JOptionPane.showConfirmDialog(null, message, title,
-          JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+      int response =
+          JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
       boolean result = response == JOptionPane.YES_OPTION;
 
-      if (result) {
-        confirmedAction.run();
-      } else {
-        cancelAction.run();
+    boolean showMessage = false;
+    synchronized(visiblePrompts) {
+      if (!visiblePrompts.contains(message)) {
+        visiblePrompts.add(message);
+        showMessage = true;
       }
-    });
+    }
+
+    if (showMessage) {
+        SwingUtilities.invokeLater(() -> {
+        // JDialog.setDefaultLookAndFeelDecorated(true);
+        int response = JOptionPane.showConfirmDialog(null, message, title,
+            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        boolean result = response == JOptionPane.YES_OPTION;
+        visiblePrompts.remove(message);
+
+        if (result) {
+          confirmedAction.run();
+        } else {
+          cancelAction.run();
+        }
+      });
+    }
+
   }
 
   public static void newMessageDialog(String msg) {
