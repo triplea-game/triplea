@@ -125,7 +125,7 @@ public class ClipPlayer {
 
   public static synchronized ClipPlayer getInstance() {
     if (clipPlayer == null) {
-      clipPlayer = new ClipPlayer(ResourceLoader.getMapResourceLoader(null, true));
+      clipPlayer = new ClipPlayer(ResourceLoader.getGameEngineAssetLoader());
       SoundPath.preLoadSounds(SoundPath.SoundType.GENERAL);
     }
     return clipPlayer;
