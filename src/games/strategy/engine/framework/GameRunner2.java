@@ -710,11 +710,6 @@ public class GameRunner2 {
         if (areWeOldExtraJar()) {
           return;
         }
-        // if we are joining a game online, or hosting, or loading straight into a savegame, do not check
-        final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
-        if (fileName.trim().length() > 0) {
-          return;
-        }
         if (System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true")) {
           return;
         }
@@ -724,19 +719,13 @@ public class GameRunner2 {
         if (System.getProperty(GameRunner2.TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true")) {
           return;
         }
-        if (s_countDownLatch != null) {
-          try {
-            // wait til the main screen has shown.
-            s_countDownLatch.await();
-          } catch (final InterruptedException e) {
-          }
+
+        // if we are joining a game online, or hosting, or loading straight into a savegame, do not check
+        final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
+        if (fileName.trim().length() > 0) {
+          return;
         }
-        // the main screen may take just a little bit longer after releasing the latch,
-        // so sleep for just a little bit.
-        try {
-          Thread.sleep(500);
-        } catch (final InterruptedException e) {
-        }
+
         boolean busy = false;
         busy = checkForLatestEngineVersionOut();
         if (!busy) {
