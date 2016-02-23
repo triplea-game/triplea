@@ -1,12 +1,8 @@
 package games.strategy.engine.framework.map.download;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
@@ -14,18 +10,15 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingComponents;
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.util.CountDownLatchHandler;
-import games.strategy.util.EventThreadJOptionPane;
 
 
 /** Controller for in-game map download actions */
@@ -46,34 +39,14 @@ public class MapDownloadController {
   }
 
   public void downloadMap(String mapName) {
-    final DownloadRunnable download = new DownloadRunnable(mapDownloadProperties.getMapListDownloadSite());
-    String popupWindowTitle = "Downloading list of availabe maps....";
-    BackgroundTaskRunner.runInBackground(null, popupWindowTitle, download);
-    InstallMapDialog.showDownloadMapsWindow(mapName, download.getDownloads());
+    DownloadMapsWindow.showDownloadMapsWindow(mapName);
   }
 
 
   /** Opens a new window dialog where a user can select maps to download or update */
   public void openDownloadMapScreen(JComponent parentComponent) {
-    final DownloadRunnable download = downloadForAvailableMaps(parentComponent);
-
-    if (download.getError() != null) {
-      ClientLogger.logError(download.getError());
-      return;
-    }
     final Frame parentFrame = JOptionPane.getFrameForComponent(parentComponent);
-    DownloadMapsWindow.showDownloadMapsWindow(parentFrame, download.getDownloads());
-
-  }
-
-  private DownloadRunnable downloadForAvailableMaps(JComponent parentComponent) {
-    final DownloadRunnable download = new DownloadRunnable(mapDownloadProperties.getMapListDownloadSite());
-    // despite "BackgroundTaskRunner.runInBackground" saying runInBackground, it runs in a modal window in the
-    // foreground.
-    String popupWindowTitle = "Downloading list of availabe maps....";
-    BackgroundTaskRunner.runInBackground(parentComponent.getRootPane(), popupWindowTitle, download);
-
-    return download;
+    DownloadMapsWindow.showDownloadMapsWindow(parentFrame);
   }
 
   /**
@@ -112,22 +85,15 @@ public class MapDownloadController {
       }
       final List<String> outOfDateMaps = new ArrayList<String>();
       populateOutOfDateMapsListing(outOfDateMaps, downloads);
-      if (!outOfDateMaps.isEmpty()) {
+      if (!outOfDateMaps.isEmpty() || true) {
         final StringBuilder text =
             new StringBuilder("<html>Some of the maps you have are out of date, and newer versions of those maps exist."
-                + "<br>You should update (re-download) the following maps:<br><ul>");
+                + "<br>Would you like to update (re-download) the following maps now?:<br><ul>");
         for (final String map : outOfDateMaps) {
           text.append("<li> " + map + "</li>");
         }
-        text.append(
-            "</ul><br><br>You can update them by clicking on the 'Download Maps' button on the start screen of TripleA.</html>");
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            EventThreadJOptionPane.showMessageDialog(null, text, "Update Your Maps", JOptionPane.INFORMATION_MESSAGE,
-                false, new CountDownLatchHandler(true));
-          }
-        });
+        text.append("</ul></html>");
+        SwingComponents.promptUser("Update Your Maps?", text.toString(), () -> InstallMapDialog.showDownloadMapsWindow());
         return true;
       }
     } catch (final Exception e) {
