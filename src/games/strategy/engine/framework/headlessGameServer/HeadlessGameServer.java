@@ -143,7 +143,7 @@ public class HeadlessGameServer {
       if (input == null || fileName == null) {
         return;
       }
-      final GameData data = m_gameSelectorModel.getGameData(input, fileName);
+      final GameData data = m_gameSelectorModel.getGameData(input);
       if (data == null) {
         System.out.println("Loading GameData failed for: " + fileName);
         return;
