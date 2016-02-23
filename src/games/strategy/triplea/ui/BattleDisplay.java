@@ -53,6 +53,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import com.google.common.collect.Lists;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -219,7 +221,7 @@ public class BattleDisplay extends JPanel {
     Map<Unit, Collection<Unit>> dependentsMap;
     m_data.acquireReadLock();
     try {
-      dependentsMap = BattleCalculator.getDependents(aKilledUnits, m_data);
+      dependentsMap = BattleCalculator.getDependents(aKilledUnits);
     } finally {
       m_data.releaseReadLock();
     }
@@ -871,8 +873,8 @@ class BattleModel extends DefaultTableModel {
       if (m_battleType.isAirPreBattleOrPreRaid()) {
         unitPowerAndRollsMap = null;
       } else {
-        unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units,
-            new ArrayList<Unit>(m_enemyBattleModel.getUnits()), !m_attack, false, m_player, m_data, m_location,
+        unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units,
+            Lists.newArrayList(m_enemyBattleModel.getUnits()), !m_attack, false, m_data, m_location,
             m_territoryEffects, m_isAmphibious, m_amphibiousLandAttackers);
       }
     } finally {
