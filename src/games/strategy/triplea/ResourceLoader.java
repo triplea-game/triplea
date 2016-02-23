@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,7 +25,11 @@ public class ResourceLoader {
   private final URLClassLoader m_loader;
   public static String RESOURCE_FOLDER = "assets";
 
-  public static ResourceLoader getMapResourceLoader(final String mapName,final boolean allowNoneFound) {
+  public static ResourceLoader getGameEngineAssetLoader() {
+    return getMapResourceLoader(null);
+  }
+
+  public static ResourceLoader getMapResourceLoader(final String mapName) {
     File atFolder = ClientFileSystemHelper.getRootFolder();
     File resourceFolder = new File(atFolder, RESOURCE_FOLDER);
 
@@ -33,7 +38,7 @@ public class ResourceLoader {
       resourceFolder = new File(atFolder, RESOURCE_FOLDER);
     }
 
-    final List<String> dirs = getPaths(mapName, allowNoneFound);
+    final List<String> dirs = getPaths(mapName);
     dirs.add(resourceFolder.getAbsolutePath());
 
     return new ResourceLoader(dirs.toArray(new String[dirs.size()]));
@@ -56,13 +61,9 @@ public class ResourceLoader {
     return sb.toString();
   }
 
-  private static List<String> getPaths(final String mapName, final boolean allowNoneFound) {
+  private static List<String> getPaths(final String mapName) {
     if (mapName == null) {
-      if (allowNoneFound) {
-        return new ArrayList<String>();
-      } else {
-        throw new IllegalArgumentException("mapName can not be null, it must exist");
-      }
+      return new ArrayList<String>();
     }
     // find the primary directory/file
     final String dirName = File.separator + mapName;
@@ -89,14 +90,10 @@ public class ResourceLoader {
     }
     // At least one must exist
     if (existing.isEmpty()) {
-      if (allowNoneFound) {
-        return new ArrayList<String>();
-      } else {
-        throw new IllegalStateException("Could not find file folder or zip for map: " + mapName + "\r\n"
-            + "Please DOWNLOAD THIS MAP if you do not have it." + "\r\n"
-            + "If you are making a map or mod, make sure the mapName property within the xml game file exactly matches the map zip or folder name."
-            + "\r\n" + "\r\n");
-      }
+      throw new IllegalStateException("Could not find file folder or zip for map: " + mapName + "\r\n"
+          + "Please DOWNLOAD THIS MAP if you do not have it." + "\r\n"
+          + "If you are making a map or mod, make sure the mapName property within the xml game file exactly matches the map zip or folder name."
+          + "\r\n" + "\r\n");
     }
     final File match = existing.iterator().next();
 
@@ -114,7 +111,7 @@ public class ResourceLoader {
           final StringTokenizer tokens = new StringTokenizer(dependencies, ",", false);
           while (tokens.hasMoreTokens()) {
             // add the dependencies recursivly
-            rVal.addAll(getPaths(tokens.nextToken(), allowNoneFound));
+            rVal.addAll(getPaths(tokens.nextToken()));
           }
         }
       }
