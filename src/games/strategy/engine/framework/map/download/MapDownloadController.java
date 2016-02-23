@@ -1,8 +1,12 @@
 package games.strategy.engine.framework.map.download;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
@@ -10,10 +14,12 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -38,6 +44,14 @@ public class MapDownloadController {
         new CountDownLatchHandler(true));
     return runnable;
   }
+
+  public void downloadMap(String mapName) {
+    final DownloadRunnable download = new DownloadRunnable(mapDownloadProperties.getMapListDownloadSite());
+    String popupWindowTitle = "Downloading list of availabe maps....";
+    BackgroundTaskRunner.runInBackground(null, popupWindowTitle, download);
+    InstallMapDialog.showDownloadMapsWindow(mapName, download.getDownloads());
+  }
+
 
   /** Opens a new window dialog where a user can select maps to download or update */
   public void openDownloadMapScreen(JComponent parentComponent) {
