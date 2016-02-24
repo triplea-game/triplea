@@ -82,7 +82,7 @@ public class GameRunner2 {
   // non-commandline-argument-properties (for preferences)
   // first time we've run this version of triplea?
   private static final String TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY =
-      "triplea.firstTimeThisVersion" + ClientContext.engineVersion().getCompatabilityVersion().toString();
+      "triplea.firstTimeThisVersion" + ClientContext.engineVersion().getCompatabilityVersion();
   private static final String TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE = "triplea.lastCheckForEngineUpdate";
   // only for Online?
   public static final String TRIPLEA_MEMORY_ONLINE_ONLY = "triplea.memory.onlineOnly";
@@ -236,16 +236,16 @@ public class GameRunner2 {
         // if successful we don't do anything
         System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + version);
         if (!ClientContext.engineVersion().getCompatabilityVersion().equals(testVersion, false)) {
-          System.out.println("Current Engine version in use: " + ClientContext.engineVersion().getCompatabilityVersion().toString());
+          System.out.println("Current Engine version in use: " + ClientContext.engineVersion().getCompatabilityVersion());
         }
       } catch (final Exception e) {
         System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().getCompatabilityVersion().toString());
-        System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion().getCompatabilityVersion().toString());
+        System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion().getCompatabilityVersion());
         return;
       }
     } else {
       System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().getCompatabilityVersion().toString());
-      System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion().getCompatabilityVersion().toString());
+      System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion().getCompatabilityVersion());
     }
   }
 

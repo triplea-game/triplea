@@ -109,7 +109,7 @@ public class TripleAProcessRunner {
         return;
       }
       // ask user if we really want to do this?
-      final String messageString = "<html>This TripleA engine is version " + ClientContext.engineVersion().getCompatabilityVersion().toString()
+      final String messageString = "<html>This TripleA engine is version " + ClientContext.engineVersion().getCompatabilityVersion()
           + " and you are trying to join a game made with version " + engineVersionOfGameToJoin.toString()
           + "<br>However, this TripleA can only play with engines that are the exact same version as itself (x_x_x_x)."
           + "<br><br>TripleA now comes with older engines included with it, and has found the engine used by the host. This is a new feature and is in 'beta' stage."

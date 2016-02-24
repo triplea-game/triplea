@@ -56,6 +56,7 @@ import com.apple.eawt.ApplicationEvent;
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.debug.DebugUtils;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
@@ -413,7 +414,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 
   protected void addAboutMenu(final JMenu parentMenu) {
     final String text = "<h2>" + getData().getGameName() + "</h2>" + "<p><b>Engine Version:</b> "
-        + games.strategy.engine.ClientContext.engineVersion().getCompatabilityVersion().toString() + "<br><b>Game:</b> " + getData().getGameName()
+        + ClientContext.engineVersion().getCompatabilityVersion() + "<br><b>Game:</b> " + getData().getGameName()
         + "<br><b>Game Version:</b>" + getData().getGameVersion() + "</p>"
         + "<p>For more information please visit,<br><br>"
         + "<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b><br><br>";

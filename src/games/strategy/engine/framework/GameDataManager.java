@@ -85,7 +85,7 @@ public class GameDataManager {
         try {
           final String newClassPath = TripleAProcessRunner.findOldJar(readVersion, true);
           // ask user if we really want to do this?
-          final String messageString = "<html>This TripleA engine is version " + ClientContext.engineVersion().getCompatabilityVersion().toString()
+          final String messageString = "<html>This TripleA engine is version " + ClientContext.engineVersion().getCompatabilityVersion()
               + " and you are trying to open a savegame made with version " + readVersion.toString()
               + "<br>However, this TripleA can not open any savegame made by any engine other than engines with the same first three version numbers as it (x_x_x_x)."
               + "<br><br>TripleA now comes with older engines included with it, and has found the engine to run this savegame. This is a new feature and is in 'beta' stage."

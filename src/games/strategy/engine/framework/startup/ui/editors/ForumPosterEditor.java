@@ -22,6 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentListener;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.engine.pbem.NullForumPoster;
@@ -147,7 +148,7 @@ public class ForumPosterEditor extends EditorPanel {
           }
         }
         poster.postTurnSummary(
-            "Test summary from TripleA, engine version: " + games.strategy.engine.ClientContext.engineVersion().getCompatabilityVersion().toString()
+            "Test summary from TripleA, engine version: " + ClientContext.engineVersion().getCompatabilityVersion()
                 + ", time: " + new SimpleDateFormat("HH:mm:ss").format(new Date()),
             "Testing Forum poster");
         progressWindow.setVisible(false);
