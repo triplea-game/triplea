@@ -316,11 +316,13 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_COMBAT, id);
       m_soundPlayedAlreadyCombatMove = true;
     }
-
+    // getMove will block until all moves are done. We recursively call this same method
+    // until getMove stops blocking.
     final MoveDescription moveDescription = m_ui.getMove(id, getPlayerBridge(), nonCombat, stepName);
     if (moveDescription == null) {
       if (GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData())) {
         if (!canAirLand(true, id)) {
+           // continue with the move loop
           move(nonCombat, stepName);
         }
       }
