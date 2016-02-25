@@ -850,11 +850,13 @@ public class TripleAFrame extends MainGameFrame {
       return true;
     }
     m_messageAndDialogThreadPool.waitForAll();
-    final StringBuilder buf = new StringBuilder("Air in following territories cant land: ");
+    final String airUnitPlural = (airCantLand.size() == 1 ) ? "" : "s";
+    final String territoryPlural = (airCantLand.size() == 1 ) ? "y" : "ies";
+    final StringBuilder sb = new StringBuilder("<html>" + airCantLand.size() + " air unit" + airUnitPlural + " cannot land in the following territor" + territoryPlural + ":<ul> ");
     for (final Territory t : airCantLand) {
-      buf.append(t.getName());
-      buf.append(" ");
+      sb.append("<li>" + t.getName() + "</li>");
     }
+    sb.append("</ul></html>");
     final boolean lhtrProd = AirThatCantLandUtil.isLHTRCarrierProduction(m_data)
         || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(m_data);
     int carrierCount = 0;
@@ -863,7 +865,7 @@ public class TripleAFrame extends MainGameFrame {
     }
     final boolean canProduceCarriersUnderFighter = lhtrProd && carrierCount != 0;
     if (canProduceCarriersUnderFighter && carrierCount > 0) {
-      buf.append("\nYou have " + carrierCount + " " + MyFormatter.pluralize("carrier", carrierCount)
+      sb.append("\nYou have " + carrierCount + " " + MyFormatter.pluralize("carrier", carrierCount)
           + " on which planes can land");
     }
     final String ok = movePhase ? "End Move Phase" : "Kill Planes";
@@ -871,7 +873,7 @@ public class TripleAFrame extends MainGameFrame {
     final String[] options = {cancel, ok};
     this.m_mapPanel.centerOn(airCantLand.iterator().next());
     final int choice =
-        EventThreadJOptionPane.showOptionDialog(this, buf.toString(), "Air cannot land", JOptionPane.YES_NO_OPTION,
+        EventThreadJOptionPane.showOptionDialog(this, sb.toString(), "Air cannot land", JOptionPane.YES_NO_OPTION,
             JOptionPane.WARNING_MESSAGE, null, options, cancel, getUIContext().getCountDownLatchHandler());
     return choice == 1;
   }
