@@ -33,6 +33,7 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.mapDownload.MapDownloadController;
 import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.util.CountDownLatchHandler;
@@ -146,6 +147,16 @@ public class GameRunner2 {
     // do after we handle command line args
     checkForMemoryXMX();
     setupLookAndFeel();
+
+    LocalSystemChecker systemCheck = new LocalSystemChecker();
+    if( !systemCheck.getExceptions().isEmpty() ) {
+      String msg = "Warning!! " + systemCheck.getExceptions().size()
+          + " system checks failed. Some game features may not be available or may not work correctly.\n"
+          + systemCheck.getStatusMessage();
+      ClientLogger.logError(msg, systemCheck.getExceptions());
+      // Now continue after we have warned the user that some game functionality may not work.
+    }
+
     s_countDownLatch = new CountDownLatch(1);
     try {
       SwingUtilities.invokeAndWait(new Runnable() {
