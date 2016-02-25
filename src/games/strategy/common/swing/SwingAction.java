@@ -30,7 +30,7 @@ public class SwingAction {
    */
   public static AbstractAction of(final String name, final Consumer<ActionEvent> swingAction) {
     return new AbstractAction(name) {
-      private static final long serialVersionUID = 1L;
+      private static final long serialVersionUID = 6751222534195121860L;
 
       @Override
       public void actionPerformed(ActionEvent e) {
