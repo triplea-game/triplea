@@ -232,7 +232,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     }
     // add conditions required for national objectives (nat objs that have uses left)
     final List<RulesAttachment> natObjs =
-        Match.getMatches(RulesAttachment.getNationalObjectives(player, data), availableUses);
+        Match.getMatches(RulesAttachment.getNationalObjectives(player), availableUses);
     allConditionsNeeded
         .addAll(AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<ICondition>(natObjs), null));
     if (allConditionsNeeded.isEmpty()) {

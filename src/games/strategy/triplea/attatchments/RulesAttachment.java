@@ -129,7 +129,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
    * specifically named inside
    * that trigger.
    */
-  public static Set<RulesAttachment> getNationalObjectives(final PlayerID player, final GameData data) {
+  public static Set<RulesAttachment> getNationalObjectives(final PlayerID player) {
     final Set<RulesAttachment> natObjs = new HashSet<RulesAttachment>();
     final Map<String, IAttachment> map = player.getAttachments();
     for (final Map.Entry<String, IAttachment> entry : map.entrySet()) {
