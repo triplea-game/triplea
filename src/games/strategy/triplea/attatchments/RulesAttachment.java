@@ -596,12 +596,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTechs(final String techs) throws GameParseException {
-    if (techs == null) {
+  public void setTechs(final String newTechs) throws GameParseException {
+    if (newTechs == null) {
       m_techs = null;
       return;
     }
-    final String[] s = techs.split(":");
+    final String[] s = newTechs.split(":");
     int count = -1;
     if (s.length < 1) {
       throw new GameParseException("Empty tech list" + thisErrorMsg());
