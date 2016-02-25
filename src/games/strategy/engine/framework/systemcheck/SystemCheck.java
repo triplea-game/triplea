@@ -14,11 +14,6 @@ public class SystemCheck {
   private final String msg;
   private final Optional<Exception> exception;
 
-//  /** Constructor for test case usages, use the (String,Runnable) constructor instead */
-//  protected SystemCheck(Runnable r) {
-//    this("dummy msg test", r);
-//  }
-
   /**
    * @param msg Message that is printed along with success/fail, should describe what the system check did.
    * @param r The runnable that represents the system check, should verify that an action can be performed.

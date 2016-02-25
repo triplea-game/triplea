@@ -47,7 +47,7 @@ public final class LocalSystemChecker {
     systemChecks = checks;
   }
 
-  /** Return any exceptions encountered while running each each check */
+  /** Return any exceptions encountered while running each check */
   public Set<Exception> getExceptions() {
     final Set<Exception> exceptions = Sets.newHashSet();
     for (SystemCheck systemCheck : systemChecks) {

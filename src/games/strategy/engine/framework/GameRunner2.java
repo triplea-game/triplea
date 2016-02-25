@@ -150,7 +150,10 @@ public class GameRunner2 {
 
     LocalSystemChecker systemCheck = new LocalSystemChecker();
     if( !systemCheck.getExceptions().isEmpty() ) {
-      ClientLogger.logError(systemCheck);
+      String msg = "Warning!! " + systemCheck.getExceptions().size()
+          + " system checks failed. Some game features may not be available or may not work correctly.\n"
+          + systemCheck.getStatusMessage();
+      ClientLogger.logError(msg, systemCheck.getExceptions());
       // Now continue after we have warned the user that some game functionality may not work.
     }
 
