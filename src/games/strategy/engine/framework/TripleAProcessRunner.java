@@ -89,7 +89,7 @@ public class TripleAProcessRunner {
     }
     final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
     String newClassPath = null;
-    if (!ClientContext.engineVersion().getCompatabilityVersion().equals(engineVersionOfGameToJoin)) {
+    if (!ClientContext.engineVersion().getVersion().equals(engineVersionOfGameToJoin)) {
       try {
         newClassPath = findOldJar(engineVersionOfGameToJoin, false);
       } catch (final Exception e) {
@@ -109,7 +109,7 @@ public class TripleAProcessRunner {
         return;
       }
       // ask user if we really want to do this?
-      final String messageString = "<html>This TripleA engine is version " + ClientContext.engineVersion().getCompatabilityVersion()
+      final String messageString = "<html>This TripleA engine is version " + ClientContext.engineVersion().getVersion()
           + " and you are trying to join a game made with version " + engineVersionOfGameToJoin.toString()
           + "<br>However, this TripleA can only play with engines that are the exact same version as itself (x_x_x_x)."
           + "<br><br>TripleA now comes with older engines included with it, and has found the engine used by the host. This is a new feature and is in 'beta' stage."
@@ -140,7 +140,7 @@ public class TripleAProcessRunner {
   }
 
   public static String findOldJar(final Version oldVersionNeeded, final boolean ignoreMicro) throws IOException {
-    if (ClientContext.engineVersion().getCompatabilityVersion().equals(oldVersionNeeded, ignoreMicro)) {
+    if (ClientContext.engineVersion().getVersion().equals(oldVersionNeeded, ignoreMicro)) {
       return System.getProperty("java.class.path");
     }
     // first, see if the default/main triplea can run it

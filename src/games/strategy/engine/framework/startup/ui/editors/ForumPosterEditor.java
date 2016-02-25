@@ -148,7 +148,7 @@ public class ForumPosterEditor extends EditorPanel {
           }
         }
         poster.postTurnSummary(
-            "Test summary from TripleA, engine version: " + ClientContext.engineVersion().getCompatabilityVersion()
+            "Test summary from TripleA, engine version: " + ClientContext.engineVersion().getVersion()
                 + ", time: " + new SimpleDateFormat("HH:mm:ss").format(new Date()),
             "Testing Forum poster");
         progressWindow.setVisible(false);

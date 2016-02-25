@@ -17,7 +17,7 @@ public class EngineVersion {
   /**
    * @return the game engine 'Version' used for in-game compatibility checks.
    */
-  public Version getCompatabilityVersion() {
+  public Version getVersion() {
     return version;
   }
 
@@ -27,7 +27,7 @@ public class EngineVersion {
    *
    * @return the full non-truncated game engine version String, as found in the game engine configuration
    */
-  public String getExactVersion() {
+  public String getFullVersion() {
     return exactVersion;
   }
 
