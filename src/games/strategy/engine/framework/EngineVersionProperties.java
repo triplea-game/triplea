@@ -185,7 +185,7 @@ public class EngineVersionProperties {
   private String getOutOfDateMessage() {
     final StringBuilder text = new StringBuilder("<html>");
     text.append("<h2>A new version of TripleA is out.  Please Update TripleA!</h2>");
-    text.append("<br />Your current version: " + ClientContext.engineVersion().getVersion());
+    text.append("<br />Your current version: " + ClientContext.engineVersion().getFullVersion());
     text.append("<br />Latest version available for download: " + getLatestVersionOut());
     text.append("<br /><br />Click to download: <a class=\"external\" href=\"" + getLinkToDownloadLatestVersion()
         + "\">" + getLinkToDownloadLatestVersion() + "</a>");
@@ -217,7 +217,7 @@ public class EngineVersionProperties {
 
   public Component getCurrentFeaturesComponent() {
     final JPanel panel = new JPanel(new BorderLayout());
-    final JEditorPane intro = new JEditorPane("text/html", "<html><h2>What is new in version " + ClientContext.engineVersion().getVersion()
+    final JEditorPane intro = new JEditorPane("text/html", "<html><h2>What is new in version " + ClientContext.engineVersion()
         + "</h2><br />" + "Please visit our forum to get involved: "
         + "<a class=\"external\" href=\"http://triplea.sourceforge.net/mywiki/Forum\">http://triplea.sourceforge.net/mywiki/Forum</a><br /><br /></html>");
     intro.setEditable(false);

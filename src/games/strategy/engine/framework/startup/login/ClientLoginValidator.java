@@ -42,7 +42,7 @@ public class ClientLoginValidator implements ILoginValidator {
   @Override
   public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
     final Map<String, String> challengeProperties = new HashMap<String, String>();
-    challengeProperties.put("Sever Version", ClientContext.engineVersion().getVersion().toString());
+    challengeProperties.put("Sever Version", ClientContext.engineVersion().toString());
     if (m_password != null) {
       /**
        * Get a new random salt.

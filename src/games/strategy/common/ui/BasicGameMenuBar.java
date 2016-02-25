@@ -414,7 +414,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 
   protected void addAboutMenu(final JMenu parentMenu) {
     final String text = "<h2>" + getData().getGameName() + "</h2>" + "<p><b>Engine Version:</b> "
-        + ClientContext.engineVersion().getVersion() + "<br><b>Game:</b> " + getData().getGameName()
+        + ClientContext.engineVersion() + "<br><b>Game:</b> " + getData().getGameName()
         + "<br><b>Game Version:</b>" + getData().getGameVersion() + "</p>"
         + "<p>For more information please visit,<br><br>"
         + "<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b><br><br>";

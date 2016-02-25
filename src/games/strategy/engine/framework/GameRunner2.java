@@ -82,7 +82,7 @@ public class GameRunner2 {
   // non-commandline-argument-properties (for preferences)
   // first time we've run this version of triplea?
   private static final String TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY =
-      "triplea.firstTimeThisVersion" + ClientContext.engineVersion().getVersion();
+      "triplea.firstTimeThisVersion" + ClientContext.engineVersion();
   private static final String TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE = "triplea.lastCheckForEngineUpdate";
   // only for Online?
   public static final String TRIPLEA_MEMORY_ONLINE_ONLY = "triplea.memory.onlineOnly";
@@ -141,7 +141,7 @@ public class GameRunner2 {
     ErrorConsole.getConsole().displayStandardError();
     ErrorConsole.getConsole().displayStandardOutput();
     ErrorHandler.registerExceptionHandler();
-    System.setProperty("triplea.engine.version", ClientContext.engineVersion().getVersion().toString());
+    System.setProperty("triplea.engine.version", ClientContext.engineVersion().toString());
     handleCommandLineArgs(args);
     // do after we handle command line args
     checkForMemoryXMX();
@@ -239,12 +239,12 @@ public class GameRunner2 {
           System.out.println("Current Engine version in use: " + ClientContext.engineVersion().getVersion());
         }
       } catch (final Exception e) {
-        System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().getVersion().toString());
+        System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());
         System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion().getVersion());
         return;
       }
     } else {
-      System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().getVersion().toString());
+      System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());
       System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion().getVersion());
     }
   }

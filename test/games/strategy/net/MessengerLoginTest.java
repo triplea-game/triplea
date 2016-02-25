@@ -119,7 +119,7 @@ public class MessengerLoginTest extends TestCase {
         final String salt = challengProperties.get(ClientLoginValidator.SALT_PROPERTY);
         final HashMap<String, String> rVal = new HashMap<String, String>();
         rVal.put(ClientLogin.PASSWORD_PROPERTY, MD5Crypt.crypt("foo", salt));
-        rVal.put(ClientLogin.ENGINE_VERSION_PROPERTY, ClientContext.engineVersion().getVersion().toString());
+        rVal.put(ClientLogin.ENGINE_VERSION_PROPERTY, ClientContext.engineVersion().toString());
         return rVal;
       }
     };

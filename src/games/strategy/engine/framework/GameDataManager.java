@@ -21,7 +21,6 @@ import javax.swing.JOptionPane;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;

@@ -31,4 +31,9 @@ public class EngineVersion {
     return exactVersion;
   }
 
+  @Override
+  public String toString() {
+    return getVersion().toString();
+  }
+
 }
