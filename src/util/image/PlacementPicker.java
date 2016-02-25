@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
@@ -47,6 +46,7 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.ui.Util;
@@ -307,32 +307,11 @@ public class PlacementPicker extends JFrame {
     this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
     this.getContentPane().add(m_location, BorderLayout.SOUTH);
     // set up the actions
-    final Action openAction = new AbstractAction("Load Placements") {
-      private static final long serialVersionUID = -2894085191455411106L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        loadPlacements();
-      }
-    };
+    final Action openAction = SwingAction.of("Load Placements", e -> loadPlacements());
     openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Placement File");
-    final Action saveAction = new AbstractAction("Save Placements") {
-      private static final long serialVersionUID = -3341738809601318716L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        savePlacements();
-      }
-    };
+    final Action saveAction = SwingAction.of("Save Placements", e -> savePlacements());
     saveAction.putValue(Action.SHORT_DESCRIPTION, "Save The Placements To File");
-    final Action exitAction = new AbstractAction("Exit") {
-      private static final long serialVersionUID = -9093426903644867897L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        System.exit(0);
-      }
-    };
+    final Action exitAction = SwingAction.of("Exit", e -> System.exit(0));
     exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
     // set up the menu items
     final JMenuItem openItem = new JMenuItem(openAction);
@@ -393,7 +372,8 @@ public class PlacementPicker extends JFrame {
     editMenu.add(showIncompleteModeItem);
     menuBar.add(fileMenu);
     menuBar.add(editMenu);
-  }// end constructor
+  }// end
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 // constructor
 
   /**
    * createImage(java.lang.String)

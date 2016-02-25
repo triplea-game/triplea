@@ -6,9 +6,7 @@ import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -17,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.ui.IntTextField;
 
 /**
@@ -113,21 +112,9 @@ public class ClientOptions extends JDialog {
     return m_okPressed;
   }
 
-  private final Action m_okAction = new AbstractAction("Connect") {
-    private static final long serialVersionUID = -3148947760273290532L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      setVisible(false);
-      m_okPressed = true;
-    }
-  };
-  private final Action m_cancelAction = new AbstractAction("Cancel") {
-    private static final long serialVersionUID = -3911528133067426275L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      setVisible(false);
-    }
-  };
+  private final Action m_okAction = SwingAction.of("Connect", e -> {
+    setVisible(false);
+    m_okPressed = true;
+  });
+  private final Action m_cancelAction = SwingAction.of("Cancel", e -> setVisible(false));
 }

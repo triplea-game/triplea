@@ -1,6 +1,5 @@
 package games.strategy.triplea;
 
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,6 +14,7 @@ import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
 
 import games.strategy.common.player.AbstractHumanPlayer;
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
@@ -178,24 +178,20 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     });
   }
 
-  private final AbstractAction m_editModeAction = new AbstractAction() {
-    private static final long serialVersionUID = -8076017427171022731L;
-
-    @Override
-    public void actionPerformed(final ActionEvent ae) {
-      final boolean editMode = ((ButtonModel) ae.getSource()).isSelected();
-      try {
-        // Set edit mode
-        // All GameDataChangeListeners will be notified upon success
-        final IEditDelegate editDelegate = (IEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit");
-        editDelegate.setEditMode(editMode);
-      } catch (final Exception e) {
-        e.printStackTrace();
-        // toggle back to previous state since setEditMode failed
-        m_ui.getEditModeButtonModel().setSelected(!m_ui.getEditModeButtonModel().isSelected());
-      }
+  private final AbstractAction m_editModeAction = SwingAction.of(e -> {
+    final boolean editMode = ((ButtonModel) e.getSource()).isSelected();
+    try {
+      // Set edit mode
+      // All GameDataChangeListeners will be notified upon success
+      final IEditDelegate editDelegate = (IEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit");
+      editDelegate.setEditMode(editMode);
+    } catch (final Exception exception) {
+      exception.printStackTrace();
+      // toggle back to previous state since setEditMode failed
+      m_ui.getEditModeButtonModel().setSelected(!m_ui.getEditModeButtonModel().isSelected());
     }
-  };
+
+  });
 
   private void politics(final boolean firstRun) {
     if (getPlayerBridge().isGameOver()) {

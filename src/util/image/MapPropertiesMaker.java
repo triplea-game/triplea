@@ -43,6 +43,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.ui.DoubleTextField;
 import games.strategy.ui.IntTextField;
@@ -105,32 +106,11 @@ public class MapPropertiesMaker extends JFrame {
     final JPanel panel = createPropertiesPanel();
     this.getContentPane().add(new JScrollPane(panel), BorderLayout.CENTER);
     // set up the actions
-    final Action openAction = new AbstractAction("Load Properties") {
-      private static final long serialVersionUID = -3135749471880991185L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        loadProperties();
-      }
-    };
+    final Action openAction = SwingAction.of("Load Properties", e -> loadProperties());
     openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Properties File");
-    final Action saveAction = new AbstractAction("Save Properties") {
-      private static final long serialVersionUID = -5608941822299486808L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        saveProperties();
-      }
-    };
+    final Action saveAction = SwingAction.of("Save Properties", e -> saveProperties());
     saveAction.putValue(Action.SHORT_DESCRIPTION, "Save The Properties To File");
-    final Action exitAction = new AbstractAction("Exit") {
-      private static final long serialVersionUID = -9212762817640498442L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        System.exit(0);
-      }
-    };
+    final Action exitAction = SwingAction.of("Exit", e -> System.exit(0));
     exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
     // set up the menu items
     final JMenuItem openItem = new JMenuItem(openAction);
@@ -231,21 +211,17 @@ public class MapPropertiesMaker extends JFrame {
     panel.add(s_playerColorChooser, new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER,
         GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
     final JButton showMore = new JButton("Show All Options");
-    showMore.addActionListener(new AbstractAction("Show All Options") {
-      private static final long serialVersionUID = -794092512377464803L;
+    showMore.addActionListener(SwingAction.of("Show All Options", e -> {
+      @SuppressWarnings("rawtypes")
+      final Tuple<PropertiesUI, List<MapPropertyWrapper>> propertyWrapperUI =
+          MapPropertiesMaker.s_mapProperties.propertyWrapperUI(true);
+      JOptionPane.showMessageDialog(MapPropertiesMaker.this, propertyWrapperUI.getFirst());
+      s_mapProperties.writePropertiesToObject(propertyWrapperUI.getSecond());
+      MapPropertiesMaker.this.createPlayerColorChooser();
+      MapPropertiesMaker.this.validate();
+      MapPropertiesMaker.this.repaint();
 
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        @SuppressWarnings("rawtypes")
-        final Tuple<PropertiesUI, List<MapPropertyWrapper>> propertyWrapperUI =
-            MapPropertiesMaker.s_mapProperties.propertyWrapperUI(true);
-        JOptionPane.showMessageDialog(MapPropertiesMaker.this, propertyWrapperUI.getFirst());
-        s_mapProperties.writePropertiesToObject(propertyWrapperUI.getSecond());
-        MapPropertiesMaker.this.createPlayerColorChooser();
-        MapPropertiesMaker.this.validate();
-        MapPropertiesMaker.this.repaint();
-      }
-    });
+    }));
     panel.add(showMore, new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 10, 10, 10), 0, 0));
     return panel;
@@ -315,17 +291,13 @@ public class MapPropertiesMaker extends JFrame {
     nameTextField.setMinimumSize(ourMinimum);
     nameTextField.setPreferredSize(ourMinimum);
     final JButton addPlayer = new JButton("Add Another Player");
-    addPlayer.addActionListener(new AbstractAction("Add Another Player") {
-      private static final long serialVersionUID = -794092512377464803L;
+    addPlayer.addActionListener(SwingAction.of("Add Another Player", e -> {
+      s_mapProperties.getCOLOR_MAP().put(nameTextField.getText(), Color.GREEN);
+      MapPropertiesMaker.this.createPlayerColorChooser();
+      MapPropertiesMaker.this.validate();
+      MapPropertiesMaker.this.repaint();
 
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        s_mapProperties.getCOLOR_MAP().put(nameTextField.getText(), Color.GREEN);
-        MapPropertiesMaker.this.createPlayerColorChooser();
-        MapPropertiesMaker.this.validate();
-        MapPropertiesMaker.this.repaint();
-      }
-    });
+    }));
     s_playerColorChooser.add(addPlayer, new GridBagConstraints(0, row, 1, 1, 1, 1, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
     s_playerColorChooser.add(nameTextField, new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST,
@@ -367,7 +339,7 @@ public class MapPropertiesMaker extends JFrame {
     repaint();
   }
 
-  private void saveProperties() {
+  private static void saveProperties() {
     try {
       final String fileName =
           new FileSave("Where To Save map.properties ?", "map.properties", s_mapFolderLocation).getPathString();
@@ -393,7 +365,7 @@ public class MapPropertiesMaker extends JFrame {
     }
   }
 
-  private String getOutPutString() {
+  private static String getOutPutString() {
     final StringBuilder outString = new StringBuilder();
     for (final Method outMethod : s_mapProperties.getClass().getMethods()) {
       final boolean startsWithSet = outMethod.getName().startsWith("out");

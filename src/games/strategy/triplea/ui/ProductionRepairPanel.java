@@ -3,14 +3,12 @@ package games.strategy.triplea.ui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -24,6 +22,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RepairRule;
@@ -105,14 +104,7 @@ public class ProductionRepairPanel extends JPanel {
   private void initDialog(final JFrame root) {
     m_dialog = new JDialog(root, "Repair", true);
     m_dialog.getContentPane().add(this);
-    final Action closeAction = new AbstractAction("") {
-      private static final long serialVersionUID = 2832491642574528614L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_dialog.setVisible(false);
-      }
-    };
+    final Action closeAction = SwingAction.of("", e -> m_dialog.setVisible(false));
     // close the window on escape
     // this is mostly for developers, makes it much easier to quickly cycle through steps
     final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
@@ -190,14 +182,7 @@ public class ProductionRepairPanel extends JPanel {
     m_left.setText("<html>You have " + left + " left.<br>Out of " + total + "</html>");
   }
 
-  Action m_done_action = new AbstractAction("Done") {
-    private static final long serialVersionUID = 8547016018558520143L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      m_dialog.setVisible(false);
-    }
-  };
+  Action m_done_action = SwingAction.of("Done", e -> m_dialog.setVisible(false));
 
   private HashMap<Unit, IntegerMap<RepairRule>> getProduction() {
     final HashMap<Unit, IntegerMap<RepairRule>> prod = new HashMap<Unit, IntegerMap<RepairRule>>();

@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -51,6 +50,8 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.common.swing.SwingAction;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
@@ -277,44 +278,18 @@ public class DecorationPlacer extends JFrame {
     this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
     this.getContentPane().add(m_location, BorderLayout.SOUTH);
     // set up the actions
-    final Action openAction = new AbstractAction("Load Image Locations") {
-      private static final long serialVersionUID = 2712234474452114083L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        loadImagesAndPoints();
-      }
-    };
+    final Action openAction = SwingAction.of("Load Image Locations", e -> loadImagesAndPoints());
     openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Image Points File");
-    final Action saveAction = new AbstractAction("Save Image Locations") {
-      private static final long serialVersionUID = -4519036149978621171L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        saveImagePoints();
-      }
-    };
+    final Action saveAction = SwingAction.of("Save Image Locations", e -> saveImagePoints());
     saveAction.putValue(Action.SHORT_DESCRIPTION, "Save The Image Points To File");
-    final Action keepGoingAction = new AbstractAction("Save Current and Keep Them On Map and Load New File") {
-      private static final long serialVersionUID = -7217861953409073730L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
+    final Action keepGoingAction = SwingAction.of("Save Current and Keep Them On Map and Load New File", e -> {
         saveImagePoints();
         saveCurrentToMapPicture();
         loadImagesAndPoints();
-      }
-    };
+    });
     keepGoingAction.putValue(Action.SHORT_DESCRIPTION,
         "Save current points to a file, then draw the images onto the map, then load a new points file.");
-    final Action exitAction = new AbstractAction("Exit") {
-      private static final long serialVersionUID = -5631457890653630218L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        System.exit(0);
-      }
-    };
+    final Action exitAction = SwingAction.of("Exit", e -> System.exit(0));
     exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
     // set up the menu items
     final JMenuItem openItem = new JMenuItem(openAction);
@@ -348,14 +323,7 @@ public class DecorationPlacer extends JFrame {
         DecorationPlacer.this.repaint();
       }
     });
-    final Action clearAction = new AbstractAction("Clear all current points.") {
-      private static final long serialVersionUID = -7217861953409073730L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        m_currentImagePoints.clear();
-      }
-    };
+    final Action clearAction = SwingAction.of("Clear all current points.", e -> m_currentImagePoints.clear());
     clearAction.putValue(Action.SHORT_DESCRIPTION, "Delete all points.");
     final JMenu editMenu = new JMenu("Edit");
     editMenu.setMnemonic('E');
@@ -375,7 +343,7 @@ public class DecorationPlacer extends JFrame {
    * @param java
    *        .lang.String mapName the path of image map
    */
-  private Image createImage(final String mapName) {
+  private static Image createImage(final String mapName) {
     final Image image = Toolkit.getDefaultToolkit().createImage(mapName);
     try {
       Util.ensureImageLoaded(image);
@@ -603,7 +571,7 @@ public class DecorationPlacer extends JFrame {
     JOptionPane.showMessageDialog(this, new JLabel(s_imagePointType.getInstructions()));
   }
 
-  private void loadImageFolder() {
+  private static void loadImageFolder() {
     System.out.println("Load an image folder (eg: 'misc' or 'territoryNames', etc)");
     File folder = new File(s_mapFolderLocation, s_imagePointType.getFolderName());
     if (folder == null || !folder.exists()) {

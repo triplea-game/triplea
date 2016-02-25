@@ -10,7 +10,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -20,7 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner2;
@@ -171,23 +170,14 @@ public class ServerOptions extends JDialog {
     }
   }
 
-  private final Action m_okAction = new AbstractAction("OK") {
-    private static final long serialVersionUID = -479176526245850045L;
+  private final Action m_okAction = SwingAction.of("OK", e -> {
+    setVisible(false);
+    m_okPressed = true;
+  });
 
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      setVisible(false);
-      m_okPressed = true;
-    }
-  };
-  private final Action m_cancelAction = new AbstractAction("Cancel") {
-    private static final long serialVersionUID = 6591074291179846696L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      setVisible(false);
-    }
-  };
+  private final Action m_cancelAction = SwingAction.of("Cancel", e -> {
+    setVisible(false);
+  });
 
   public String getComments() {
     return m_comment.getText();

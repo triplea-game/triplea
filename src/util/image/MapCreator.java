@@ -28,6 +28,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner2;
@@ -101,47 +102,12 @@ public class MapCreator extends JFrame {
     createPart2Panel();
     createPart3Panel();
     createPart4Panel();
-    m_part1.addActionListener(new AbstractAction("Part 1") {
-      private static final long serialVersionUID = 5363944759664271421L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        setupMainPanel(m_panel1);
-      }
-    });
-    m_part2.addActionListener(new AbstractAction("Part 2") {
-      private static final long serialVersionUID = -8158213072422149296L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        setupMainPanel(m_panel2);
-      }
-    });
-    m_part3.addActionListener(new AbstractAction("Part 3") {
-      private static final long serialVersionUID = 881434681054088699L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        setupMainPanel(m_panel3);
-      }
-    });
-    m_part4.addActionListener(new AbstractAction("Part 4") {
-      private static final long serialVersionUID = 2794249359841059679L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        setupMainPanel(m_panel4);
-      }
-    });
+    m_part1.addActionListener(SwingAction.of("Part 1", e -> setupMainPanel(m_panel1)));
+    m_part2.addActionListener(SwingAction.of("Part 2", e -> setupMainPanel(m_panel2)));
+    m_part3.addActionListener(SwingAction.of("Part 3", e -> setupMainPanel(m_panel3)));
+    m_part4.addActionListener(SwingAction.of("Part 4", e -> setupMainPanel(m_panel4)));
     // set up the menu actions
-    final Action exitAction = new AbstractAction("Exit") {
-      private static final long serialVersionUID = 5363944759664271421L;
-
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        System.exit(0);
-      }
-    };
+    final Action exitAction = SwingAction.of("Exit", e -> System.exit(0));
     exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
     // set up the menu items
     final JMenuItem exitItem = new JMenuItem(exitAction);
@@ -227,21 +193,16 @@ public class MapCreator extends JFrame {
     m_panel1.add(Box.createVerticalStrut(30));
     m_panel1.add(new JLabel("Click button to select where your map folder is:"));
     final JButton mapFolderButton = new JButton("Select Map Folder");
-    mapFolderButton.addActionListener(new AbstractAction("Select Map Folder") {
-      private static final long serialVersionUID = 3918797244306320614L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final String path = new FileSave("Where is your map's folder?", null, s_mapFolderLocation).getPathString();
-        if (path != null) {
-          final File mapFolder = new File(path);
-          if (mapFolder.exists()) {
-            s_mapFolderLocation = mapFolder;
-            System.setProperty(TRIPLEA_MAP_FOLDER, s_mapFolderLocation.getPath());
-          }
+    mapFolderButton.addActionListener(SwingAction.of("Select Map Folder", e -> {
+      final String path = new FileSave("Where is your map's folder?", null, s_mapFolderLocation).getPathString();
+      if (path != null) {
+        final File mapFolder = new File(path);
+        if (mapFolder.exists()) {
+          s_mapFolderLocation = mapFolder;
+          System.setProperty(TRIPLEA_MAP_FOLDER, s_mapFolderLocation.getPath());
         }
       }
-    });
+    }));
     m_panel1.add(mapFolderButton);
     m_panel1.add(Box.createVerticalStrut(30));
     m_panel1.add(new JLabel("Set the unit scaling (unit image zoom): "));

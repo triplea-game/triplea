@@ -2,7 +2,6 @@ package games.strategy.triplea.ui;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -42,6 +40,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IAttachment;
@@ -127,11 +126,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     final JScrollPane scroll = new JScrollPane(table);
     final JButton refresh = new JButton("Refresh Objectives");
     refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
-    refresh.addActionListener(new AbstractAction("Refresh Objectives") {
-      private static final long serialVersionUID = -5217040341132623172L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
+    refresh.addActionListener(SwingAction.of("Refresh Objectives", e -> {
         m_objectiveModel.loadData();
         SwingUtilities.invokeLater(new Runnable() {
           @Override
@@ -139,8 +134,7 @@ public class ObjectivePanel extends AbstractStatPanel {
             table.repaint();
           }
         });
-      }
-    });
+    }));
     add(Box.createVerticalStrut(6));
     add(refresh);
     add(Box.createVerticalStrut(6));
@@ -854,7 +848,7 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
    * also a TextAreaRenderer, we look at the maximum height in
    * its hash table for this row.
    */
-  private int findTotalMaximumRowSize(final JTable table, final int row) {
+  private static int findTotalMaximumRowSize(final JTable table, final int row) {
     int maximum_height = 0;
     final Enumeration columns = table.getColumnModel().getColumns();
     while (columns.hasMoreElements()) {

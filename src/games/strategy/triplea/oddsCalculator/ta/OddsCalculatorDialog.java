@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.IUIContext;
@@ -42,15 +43,10 @@ public class OddsCalculatorDialog extends JDialog {
     });
     // close when hitting the escape key
     final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-    final Action closeAction = new AbstractAction() {
-      private static final long serialVersionUID = 8426179963957717432L;
-
-      @Override
-      public void actionPerformed(final ActionEvent arg0) {
-        dialog.setVisible(false);
-        dialog.dispose();
-      }
-    };
+    final Action closeAction = SwingAction.of(e -> {
+      dialog.setVisible(false);
+      dialog.dispose();
+    });
     final String key = "odds.calc.invoke.close";
     dialog.getRootPane().getActionMap().put(key, closeAction);
     dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);

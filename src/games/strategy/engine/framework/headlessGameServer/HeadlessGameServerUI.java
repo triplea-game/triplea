@@ -2,13 +2,11 @@ package games.strategy.engine.framework.headlessGameServer;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -19,6 +17,7 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.common.ui.MacWrapper;
 import games.strategy.common.ui.MainGameFrame;
 import games.strategy.engine.chat.ChatPanel;
@@ -69,23 +68,9 @@ public class HeadlessGameServerUI extends MainGameFrame {
     m_step = new JLabel("Step: -");
     m_player = new JLabel("Player: -");
     m_leaveGame = new JButton("Leave Game");
-    m_leaveGame.addActionListener(new AbstractAction() {
-      private static final long serialVersionUID = 699780405180654825L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        leaveGame();
-      }
-    });
+    m_leaveGame.addActionListener(SwingAction.of(e-> leaveGame()));
     m_quit = new JButton("Quit Program");
-    m_quit.addActionListener(new AbstractAction() {
-      private static final long serialVersionUID = -3485076131973126967L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        shutdown();
-      }
-    });
+    m_quit.addActionListener(SwingAction.of(e->shutdown()));
     m_mapAndChatPanel = new JPanel();
     m_mapAndChatPanel.setLayout(new BorderLayout());
     m_mainPanel = new JPanel();

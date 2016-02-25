@@ -31,8 +31,6 @@ import java.util.prefs.Preferences;
 
 import javax.imageio.ImageIO;
 
-import com.sun.javafx.iio.ImageStorage.ImageType;
-
 import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.BlendComposite.BlendingMode;

@@ -3,7 +3,6 @@ package games.strategy.engine.chat;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.InvocationTargetException;
@@ -12,7 +11,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.InputMap;
@@ -29,6 +27,7 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.net.INode;
 import games.strategy.net.ServerMessenger;
 import games.strategy.sound.ClipPlayer;
@@ -326,7 +325,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     }
   }
 
-  private String trimMessage(final String originalMessage) {
+  private static String trimMessage(final String originalMessage) {
     // dont allow messages that are too long
     if (originalMessage.length() > 200) {
       return originalMessage.substring(0, 199) + "...";
@@ -335,61 +334,41 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     }
   }
 
-  private final Action m_setStatusAction = new AbstractAction("Status...") {
-    private static final long serialVersionUID = -774288042140967424L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      String status = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(ChatMessagePanel.this),
-          "Enter Status Text (leave blank for no status)", "");
-      if (status != null) {
-        if (status.trim().length() == 0) {
-          status = null;
-        }
-        m_chat.getStatusManager().setStatus(status);
+  private final Action m_setStatusAction = SwingAction.of("Status...", e -> {
+    String status = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(ChatMessagePanel.this),
+        "Enter Status Text (leave blank for no status)", "");
+    if (status != null) {
+      if (status.trim().length() == 0) {
+        status = null;
       }
+      m_chat.getStatusManager().setStatus(status);
     }
-  };
-  private final Action m_sendAction = new AbstractAction("Send") {
-    private static final long serialVersionUID = -1315412454568254254L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      if (m_nextMessage.getText().trim().length() == 0) {
-        return;
-      }
-      if (isThirdPerson(m_nextMessage.getText())) {
-        m_chat.sendMessage(m_nextMessage.getText().substring(ME.length()), true);
-      } else {
-        m_chat.sendMessage(m_nextMessage.getText(), false);
-      }
-      m_nextMessage.setText("");
+  });
+  private final Action m_sendAction = SwingAction.of("Send", e -> {
+    if (m_nextMessage.getText().trim().length() == 0) {
+      return;
     }
-  };
-  private final Action m_DownAction = new AbstractAction() {
-    private static final long serialVersionUID = -1945655511272482449L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      if (m_chat == null) {
-        return;
-      }
-      m_chat.getSentMessagesHistory().next();
-      m_nextMessage.setText(m_chat.getSentMessagesHistory().current());
+    if (isThirdPerson(m_nextMessage.getText())) {
+      m_chat.sendMessage(m_nextMessage.getText().substring(ME.length()), true);
+    } else {
+      m_chat.sendMessage(m_nextMessage.getText(), false);
     }
-  };
-  private final Action m_UpAction = new AbstractAction() {
-    private static final long serialVersionUID = 1541868547613849892L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      if (m_chat == null) {
-        return;
-      }
-      m_chat.getSentMessagesHistory().prev();
-      m_nextMessage.setText(m_chat.getSentMessagesHistory().current());
+    m_nextMessage.setText("");
+  });
+  private final Action m_DownAction = SwingAction.of(e -> {
+    if (m_chat == null) {
+      return;
     }
-  };
+    m_chat.getSentMessagesHistory().next();
+    m_nextMessage.setText(m_chat.getSentMessagesHistory().current());
+  });
+  private final Action m_UpAction = SwingAction.of(e -> {
+    if (m_chat == null) {
+      return;
+    }
+    m_chat.getSentMessagesHistory().prev();
+    m_nextMessage.setText(m_chat.getSentMessagesHistory().current());
+  });
 
   @Override
   public void updatePlayerList(final Collection<INode> players) {}
