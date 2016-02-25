@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.mapDownload;
 
 import java.awt.Frame;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -24,9 +23,8 @@ public class MapDownloadController {
   private static final String TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES = "triplea.lastCheckForMapUpdates";
   private final MapListingSource mapDownloadProperties;
 
-  public MapDownloadController() {
-    File mapDownloadPropertiesFile = new File(GameRunner2.getRootFolder(), "mapDownload.properties");
-    mapDownloadProperties = new MapListingSource(mapDownloadPropertiesFile);
+  public MapDownloadController(final MapListingSource mapSource) {
+    mapDownloadProperties = mapSource;
   }
 
   /** Opens a new window dialog where a user can select maps to download or update */

@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -30,11 +29,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
-import games.strategy.debug.ClientLogger;
-import games.strategy.engine.EngineVersion;
-import games.strategy.engine.framework.GameRunner2;
-import games.strategy.engine.framework.mapDownload.DownloadRunnable;
-import games.strategy.engine.framework.mapDownload.InstallMapDialog;
+import games.strategy.engine.ClientContext;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.mapDownload.MapDownloadController;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.ui.NewGameChooser;
@@ -49,7 +45,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   private static final long serialVersionUID = 3926503672972937677L;
   private static final Logger s_logger = Logger.getLogger(MetaSetupPanel.class.getName());
-  private static String s_serverPropertiesName = "server_" + EngineVersion.VERSION.toString() + ".properties";
+  private static String s_serverPropertiesName = "server_" + ClientContext.engineVersion() + ".properties";
   private JButton m_startLocal;
   private JButton m_startPBEM;
   private JButton m_hostGame;
@@ -66,7 +62,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   public MetaSetupPanel(final SetupPanelModel model) {
     this.m_model = model;
-    this.mapDownloadController = new MapDownloadController();
+    this.mapDownloadController = ClientContext.mapDownloadController();
 
     createComponents();
     layoutComponents();
@@ -234,7 +230,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   private void about() {
     final String text =
-        "<h2>TripleA</h2>" + "<p><b>Engine Version:</b> " + games.strategy.engine.EngineVersion.VERSION.toString()
+        "<h2>TripleA</h2>" + "<p><b>Engine Version:</b> " + ClientContext.engineVersion()
             + "<br><b>Authors:</b> Sean Bridges, and many others. Current Developers: Veqryn (Chris Duncan)."
             + "<br>TripleA is an open-source game engine, allowing people to play many different games and maps."
             + "<br>For more information please visit:<br>"
@@ -300,7 +296,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   private LobbyServerProperties getLobbyServerProperties() {
     // try to look up an override
-    final File f = new File(GameRunner2.getRootFolder(), "lobby.properties");
+    final File f = new File(ClientFileSystemHelper.getRootFolder(), "lobby.properties");
     if (f.exists()) {
       final Properties props = new Properties();
       try {

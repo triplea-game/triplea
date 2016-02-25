@@ -23,6 +23,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import games.strategy.engine.ClientContext;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.MapData;
@@ -81,9 +83,9 @@ public class AutoPlacementFinder {
       System.out.println("Shutting down");
       System.exit(0);
     }
-    File file = new File(GameRunner2.getUserMapsFolder() + File.separator + mapDir + File.separator + "map.properties");
+    File file = new File(ClientFileSystemHelper.getUserMapsFolder() + File.separator + mapDir + File.separator + "map.properties");
     if (!file.exists()) {
-      file = new File(GameRunner2.getRootFolder() + File.separator + "maps" + File.separator + mapDir + File.separator
+      file = new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps" + File.separator + mapDir + File.separator
           + "map.properties");
     }
     if (file.exists() && s_mapFolderLocation == null) {

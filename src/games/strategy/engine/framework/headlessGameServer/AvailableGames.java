@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameRunner2;
@@ -83,7 +84,7 @@ public class AvailableGames {
   private static List<File> allMapFiles() {
     final List<File> rVal = new ArrayList<File>();
     // prioritize user maps folder over root folder
-    rVal.addAll(safeListFiles(GameRunner2.getUserMapsFolder()));
+    rVal.addAll(safeListFiles(ClientFileSystemHelper.getUserMapsFolder()));
     rVal.addAll(safeListFiles(NewGameChooserModel.getDefaultMapsDir()));
     return rVal;
   }
@@ -185,7 +186,7 @@ public class AvailableGames {
       return null;
     }
     final String raw = uri.toString();
-    final String base = GameRunner2.getRootFolder().toURI().toString() + "maps";
+    final String base = ClientFileSystemHelper.getRootFolder().toURI().toString() + "maps";
     if (raw.startsWith(base)) {
       return raw.substring(base.length());
     }

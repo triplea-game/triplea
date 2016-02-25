@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.debug.HeartBeat;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.events.GameStepListener;
@@ -187,7 +188,7 @@ public class InGameLobbyWatcher {
             ? "-" : oldWatcher.m_gameDescription.getRound();
     m_gameDescription = new GameDescription(m_messenger.getLocalNode(), m_gameMessenger.getLocalNode().getPort(),
         startDateTime, "???", playerCount, gameStatus, gameRound, m_gameMessenger.getLocalNode().getName(),
-        System.getProperty(GameRunner2.LOBBY_GAME_COMMENTS), passworded, EngineVersion.VERSION.toString(), "0");
+        System.getProperty(GameRunner2.LOBBY_GAME_COMMENTS), passworded, ClientContext.engineVersion().toString(), "0");
     final ILobbyGameController controller =
         (ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
     synchronized (m_mutex) {

@@ -1,42 +1,35 @@
 package games.strategy.engine.framework.mapDownload;
 
+
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import com.google.common.collect.ImmutableList;
+import games.strategy.engine.config.GameEngineProperty;
+import games.strategy.engine.config.PropertyReader;
 
 
 /**
- * Does a basic test where a property file is written, then parsed back and we verify we get the expected value.
+ * Basic test of  map listing source, make sure that the test object requests a specific property key,
+ * we fake a return value, then verify that we get the same faked value back when calling 'getMapListDownloadSite()'
  */
+@RunWith(MockitoJUnitRunner.class)
 public class MapDownloadPropertiesTest {
 
   private final static String SAMPLE_VALUE = "http://this is a test value.txt";
 
-  private MapListingSource testObj;
-
-  @Before
-  public void setUp() throws Exception {
-    assertThat(MapListingSource.MAP_LIST_DOWNLOAD_SITE_PROPERTY_KEY, notNullValue());
-    String mapListProp = MapListingSource.MAP_LIST_DOWNLOAD_SITE_PROPERTY_KEY + " = " + SAMPLE_VALUE;
-
-    File testPropertiesFile = new File("mapDownload.test.properties");
-    testPropertiesFile.deleteOnExit();
-    Files.write(Paths.get(testPropertiesFile.getPath()), ImmutableList.of(mapListProp));
-
-    testObj = new MapListingSource(testPropertiesFile);
-  }
+  @Mock
+  private PropertyReader mockReader;
 
   @Test
   public void mapListDownloadSitePropertyIsReadFromPropertyFile() {
+    when(mockReader.readProperty(GameEngineProperty.MAP_LISTING_SOURCE_FILE)).thenReturn(SAMPLE_VALUE);
+    MapListingSource testObj = new MapListingSource(mockReader);
     assertThat(testObj.getMapListDownloadSite(), is(SAMPLE_VALUE));
   }
 }

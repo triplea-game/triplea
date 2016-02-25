@@ -13,6 +13,7 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
 
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -31,7 +32,7 @@ public class GameSelectorModel extends Observable {
    */
   public static final String DEFAULT_GAME_XML_DIRECTORY_NAME = "games";
   /** Returns the folder where maps are held, example: "/maps" */
-  public static final File DEFAULT_MAP_DIRECTORY = new File(GameRunner2.getRootFolder(), "maps");
+  public static final File DEFAULT_MAP_DIRECTORY = new File(ClientFileSystemHelper.getRootFolder(), "maps");
   private static final String DEFAULT_GAME_NAME_PREF = "DefaultGameName2";
   private static final String DEFAULT_GAME_NAME = "Big World : 1942";
   private static final String DEFAULT_GAME_URI_PREF = "DefaultGameURI";
@@ -69,7 +70,7 @@ public class GameSelectorModel extends Observable {
     // and then start a game with an older jar when they should be using the newest jar (we want user to be using the
     // normal default
     // [newest] triplea.jar for new games)
-    if (GameRunner2.areWeOldExtraJar()) {
+    if (ClientFileSystemHelper.areWeOldExtraJar()) {
       return;
     }
     m_fileName = entry.getLocation();
@@ -287,8 +288,8 @@ public class GameSelectorModel extends Observable {
     // we don't want to load a game file by default that is not within the map folders we can load. (ie: if a previous
     // version of triplea
     // was using running a game within its root folder, we shouldn't open it)
-    final String user = GameRunner2.getUserRootFolder().toURI().toString();
-    final String root = GameRunner2.getRootFolder().toURI().toString();
+    final String user = ClientFileSystemHelper.getUserRootFolder().toURI().toString();
+    final String root = ClientFileSystemHelper.getRootFolder().toURI().toString();
     if (!forceFactoryDefault && userPreferredDefaultGameURI != null && userPreferredDefaultGameURI.length() > 0
         && (userPreferredDefaultGameURI.contains(root) || userPreferredDefaultGameURI.contains(user))) {
       // if the user has a preferred URI, then we load it, and don't bother parsing or doing anything with the whole

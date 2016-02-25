@@ -31,6 +31,8 @@ import javax.swing.border.EmptyBorder;
 
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.debug.ErrorConsole;
+import games.strategy.engine.ClientContext;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
@@ -430,7 +432,7 @@ public class EnginePreferences extends JDialog {
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          DesktopUtilityBrowserLauncher.openFile(GameRunner2.getUserRootFolder());
+          DesktopUtilityBrowserLauncher.openFile(ClientFileSystemHelper.getUserRootFolder());
         } catch (final Exception e1) {
           e1.printStackTrace();
         }
@@ -442,7 +444,7 @@ public class EnginePreferences extends JDialog {
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          DesktopUtilityBrowserLauncher.openFile(GameRunner2.getRootFolder());
+          DesktopUtilityBrowserLauncher.openFile(ClientFileSystemHelper.getRootFolder());
         } catch (final Exception e1) {
           e1.printStackTrace();
         }
@@ -454,7 +456,7 @@ public class EnginePreferences extends JDialog {
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          DesktopUtilityBrowserLauncher.openFile(new File(GameRunner2.getRootFolder(), "readme.html"));
+          DesktopUtilityBrowserLauncher.openFile(new File(ClientFileSystemHelper.getRootFolder(), "readme.html"));
         } catch (final Exception e1) {
           e1.printStackTrace();
         }

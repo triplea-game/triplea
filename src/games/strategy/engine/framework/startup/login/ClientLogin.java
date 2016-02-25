@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.EngineVersion;
 import games.strategy.net.IConnectionLogin;
 import games.strategy.util.CountDownLatchHandler;
@@ -34,7 +35,7 @@ public class ClientLogin implements IConnectionLogin {
       final String password = new String(passwordField.getPassword());
       rVal.put(PASSWORD_PROPERTY, MD5Crypt.crypt(password, challengProperties.get(ClientLoginValidator.SALT_PROPERTY)));
     }
-    rVal.put(ENGINE_VERSION_PROPERTY, EngineVersion.VERSION.toString());
+    rVal.put(ENGINE_VERSION_PROPERTY, ClientContext.engineVersion().toString());
     rVal.put(JDK_VERSION_PROPERTY, System.getProperty("java.runtime.version"));
     return rVal;
   }

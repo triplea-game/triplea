@@ -29,12 +29,13 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import games.strategy.engine.ClientContext;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.NewGameChooser;
@@ -43,6 +44,9 @@ import games.strategy.engine.framework.ui.SaveGameFileChooser;
 
 public class GameSelectorPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -4598107601238030020L;
+
+  private JLabel m_engineVersionLabel;
+  private JLabel m_engineVersionText;
   private JLabel m_nameText;
   private JLabel m_versionText;
   private JLabel m_fileNameLabel;
@@ -110,7 +114,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
    *        maximum number of characters per line
    * @return filename formatted file name - in case it is too long (> maxLength) to two lines
    */
-  private String getFormattedFileNameText(final String fileName, final int maxLength) {
+  private static String getFormattedFileNameText(final String fileName, final int maxLength) {
     if (fileName.length() <= maxLength) {
       return fileName;
     }
@@ -134,8 +138,11 @@ public class GameSelectorPanel extends JPanel implements Observer {
   }
 
   private void createComponents() {
-    m_nameLabel = new JLabel("Game Name:");
-    m_versionLabel = new JLabel("Game Version:");
+    m_engineVersionLabel = new JLabel("Engine Version:");
+    String version = ClientContext.engineVersion().getFullVersion();
+    m_engineVersionText = new JLabel(version);
+    m_nameLabel = new JLabel("Map Name:");
+    m_versionLabel = new JLabel("Map Version:");
     m_roundLabel = new JLabel("Game Round:");
     m_fileNameLabel = new JLabel("File Name:");
     m_nameText = new JLabel();
@@ -152,34 +159,59 @@ public class GameSelectorPanel extends JPanel implements Observer {
         "<html>Set options for the currently selected game, <br>such as enabling/disabling Low Luck, or Technology, etc.</html>");
   }
 
+
+
   private void layoutComponents() {
     setLayout(new GridBagLayout());
-    add(m_nameLabel, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(10, 10, 3, 5), 0, 0));
-    add(m_nameText, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(10, 0, 3, 0), 0, 0));
-    add(m_versionLabel, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(0, 10, 3, 5), 0, 0));
-    add(m_versionText, new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(0, 0, 3, 0), 0, 0));
-    add(m_roundLabel, new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(0, 10, 3, 5), 0, 0));
-    add(m_roundText, new GridBagConstraints(1, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(0, 0, 3, 0), 0, 0));
-    add(m_fileNameLabel, new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(20, 10, 3, 5), 0, 0));
-    add(m_fileNameText, new GridBagConstraints(0, 4, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(0, 10, 3, 5), 0, 0));
-    add(m_loadNewGame, new GridBagConstraints(0, 5, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(25, 10, 10, 10), 0, 0));
-    add(m_loadSavedGame, new GridBagConstraints(0, 6, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(0, 10, 10, 10), 0, 0));
-    add(m_gameOptions, new GridBagConstraints(0, 7, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(25, 10, 10, 10), 0, 0));
+    add(m_engineVersionLabel, buildGridCell(0, 0, new Insets(10, 10, 3, 5)));
+    add(m_engineVersionText, buildGridCell(1, 0, new Insets(10, 0, 3, 0)));
+
+    add(m_nameLabel, buildGridCell(0, 1, new Insets(0, 10, 3, 5)));
+    add(m_nameText, buildGridCell(1, 1, new Insets(0, 0, 3, 0)));
+
+    add(m_versionLabel, buildGridCell(0, 2, new Insets(0, 10, 3, 5)));
+    add(m_versionText, buildGridCell(1, 2, new Insets(0, 0, 3, 0)));
+
+    add(m_roundLabel, buildGridCell(0, 3, new Insets(0, 10, 3, 5)));
+    add(m_roundText, buildGridCell(1, 3, new Insets(0, 0, 3, 0)));
+
+    add(m_fileNameLabel, buildGridCell(0, 4, new Insets(20, 10, 3, 5)));
+
+    add(m_fileNameText, buildGridRow(0, 5, new Insets(0, 10, 3, 5)));
+
+    add(m_loadNewGame, buildGridRow(0, 6, new Insets(25, 10, 10, 10)));
+
+    add(m_loadSavedGame, buildGridRow(0, 7, new Insets(0, 10, 10, 10)));
+
+    add(m_gameOptions, buildGridRow(0, 8, new Insets(25, 10, 10, 10)));
+
     // spacer
     add(new JPanel(), new GridBagConstraints(0, 8, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
         new Insets(0, 0, 0, 0), 0, 0));
   }
+
+
+  private static GridBagConstraints buildGridCell(int x, int y, Insets insets) {
+    return buildGrid(x, y, insets, 1);
+  }
+
+  private static GridBagConstraints buildGridRow(int x, int y, Insets insets) {
+    return buildGrid(x, y, insets, 2);
+  }
+
+  private static GridBagConstraints buildGrid(int x, int y, Insets insets, int width) {
+    int gridWidth = width;
+    int gridHeight = 1;
+    double weigthX = 0;
+    double weigthY = 0;
+    int anchor = GridBagConstraints.WEST;
+    int fill = GridBagConstraints.NONE;
+    int ipadx = 0;
+    int ipady = 0;
+
+    return new GridBagConstraints(x, y, gridWidth, gridHeight, weigthX, weigthY, anchor, fill, insets, ipadx, ipady);
+  }
+
 
   private void setupListeners() {
     m_loadNewGame.addActionListener(new ActionListener() {
@@ -311,7 +343,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
       m_gameOptions.setEnabled(false);
     }
     // we don't want them starting new games if we are an old jar
-    if (GameRunner2.areWeOldExtraJar()) {
+    if (ClientFileSystemHelper.areWeOldExtraJar()) {
       m_loadNewGame.setEnabled(false);
       m_loadNewGame.setToolTipText(
           "This is disabled on older engine jars, please start new games with the latest version of TripleA.");

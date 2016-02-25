@@ -7,14 +7,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.URI;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map.Entry;
@@ -33,7 +29,8 @@ import org.apache.commons.httpclient.HostConfiguration;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
-import games.strategy.engine.EngineVersion;
+import games.strategy.engine.ClientContext;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.mapDownload.MapDownloadController;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.WaitWindow;
@@ -43,6 +40,7 @@ import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Version;
 
 public class GameRunner2 {
+
   // not arguments:
   public static final int PORT = 3300;
   public static final String LOOK_AND_FEEL_PREF = "LookAndFeel";
@@ -84,7 +82,7 @@ public class GameRunner2 {
   // non-commandline-argument-properties (for preferences)
   // first time we've run this version of triplea?
   private static final String TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY =
-      "triplea.firstTimeThisVersion" + EngineVersion.VERSION.toString();
+      "triplea.firstTimeThisVersion" + ClientContext.engineVersion();
   private static final String TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE = "triplea.lastCheckForEngineUpdate";
   // only for Online?
   public static final String TRIPLEA_MEMORY_ONLINE_ONLY = "triplea.memory.onlineOnly";
@@ -143,7 +141,7 @@ public class GameRunner2 {
     ErrorConsole.getConsole().displayStandardError();
     ErrorConsole.getConsole().displayStandardOutput();
     ErrorHandler.registerExceptionHandler();
-    System.setProperty("triplea.engine.version", EngineVersion.VERSION.toString());
+    System.setProperty("triplea.engine.version", ClientContext.engineVersion().toString());
     handleCommandLineArgs(args);
     // do after we handle command line args
     checkForMemoryXMX();
@@ -237,17 +235,17 @@ public class GameRunner2 {
         testVersion = new Version(version);
         // if successful we don't do anything
         System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + version);
-        if (!EngineVersion.VERSION.equals(testVersion, false)) {
-          System.out.println("Current Engine version in use: " + EngineVersion.VERSION.toString());
+        if (!ClientContext.engineVersion().getVersion().equals(testVersion, false)) {
+          System.out.println("Current Engine version in use: " + ClientContext.engineVersion().getVersion());
         }
       } catch (final Exception e) {
-        System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, EngineVersion.VERSION.toString());
-        System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + EngineVersion.VERSION.toString());
+        System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());
+        System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion().getVersion());
         return;
       }
     } else {
-      System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, EngineVersion.VERSION.toString());
-      System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + EngineVersion.VERSION.toString());
+      System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());
+      System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion().getVersion());
     }
   }
 
@@ -438,7 +436,7 @@ public class GameRunner2 {
 
   public static Properties getSystemIni() {
     final Properties rVal = new Properties();
-    final File systemIni = new File(GameRunner2.getRootFolder(), SYSTEM_INI);
+    final File systemIni = new File(ClientFileSystemHelper.getRootFolder(), SYSTEM_INI);
     if (systemIni != null && systemIni.exists()) {
       try (FileInputStream fis = new FileInputStream(systemIni)) {
         rVal.load(fis);
@@ -460,7 +458,7 @@ public class GameRunner2 {
       }
     }
 
-    final File systemIni = new File(GameRunner2.getRootFolder(), SYSTEM_INI);
+    final File systemIni = new File(ClientFileSystemHelper.getRootFolder(), SYSTEM_INI);
 
     try (FileOutputStream fos = new FileOutputStream(systemIni)) {
       toWrite.store(fos, SYSTEM_INI);
@@ -707,7 +705,7 @@ public class GameRunner2 {
       @Override
       public void run() {
         // do not check if we are the old extra jar. (a jar kept for backwards compatibility only)
-        if (areWeOldExtraJar()) {
+        if (ClientFileSystemHelper.areWeOldExtraJar()) {
           return;
         }
         // if we are joining a game online, or hosting, or loading straight into a savegame, do not check
@@ -775,7 +773,7 @@ public class GameRunner2 {
       if (latestEngineOut == null) {
         return false;
       }
-      if (EngineVersion.VERSION.isLessThan(latestEngineOut.getLatestVersionOut(), false)) {
+      if (ClientContext.engineVersion().getVersion().isLessThan(latestEngineOut.getLatestVersionOut(), false)) {
         SwingUtilities.invokeLater(new Runnable() {
           @Override
           public void run() {
@@ -786,7 +784,7 @@ public class GameRunner2 {
         return true;
       } else {
         // if this is the first time we are running THIS version of TripleA, then show what is new.
-        if (firstTimeThisVersion && latestEngineOut.getReleaseNotes().containsKey(EngineVersion.VERSION)) {
+        if (firstTimeThisVersion && latestEngineOut.getReleaseNotes().containsKey(ClientContext.engineVersion().getVersion())) {
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -812,43 +810,10 @@ public class GameRunner2 {
    * @return true if we have any out of date maps
    */
   private static boolean checkForUpdatedMaps() {
-    MapDownloadController downloadController = new MapDownloadController();
+    MapDownloadController downloadController = ClientContext.mapDownloadController();
     return downloadController.checkDownloadedMapsAreLatest();
   }
 
-  /**
-   * Our jar is named with engine number and we are in "old" folder.
-   */
-  public static boolean areWeOldExtraJar() {
-    final URL url = GameRunner2.class.getResource("GameRunner2.class");
-    String fileName = url.getFile();
-    try {
-      fileName = URLDecoder.decode(fileName, "UTF-8");
-    } catch (final UnsupportedEncodingException e) {
-      e.printStackTrace();
-    }
-    final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
-    if (fileName.contains(tripleaJarNameWithEngineVersion)) {
-      final String subString = fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1),
-          fileName.indexOf(tripleaJarNameWithEngineVersion) - 1);
-      final File f = new File(subString);
-      if (!f.exists()) {
-        throw new IllegalStateException("File not found:" + f);
-      }
-      String path;
-      try {
-        path = f.getCanonicalPath();
-      } catch (final IOException e) {
-        path = f.getPath();
-      }
-      return path.contains("old");
-    }
-    return false;
-  }
-
-  private static String getTripleaJarWithEngineVersionStringPath() {
-    return "triplea_" + EngineVersion.VERSION.toStringFull("_") + ".jar!";
-  }
 
   public static Image getGameIcon(final Window frame) {
     Image img = null;
@@ -867,147 +832,4 @@ public class GameRunner2 {
     return img;
   }
 
-  public static File getUserRootFolder() {
-    final File userHome = new File(System.getProperties().getProperty("user.home"));
-    // the default
-    File rootDir;
-    if (GameRunner.isMac()) {
-      rootDir = new File(new File(userHome, "Documents"), "triplea");
-    } else {
-      rootDir = new File(userHome, "triplea");
-    }
-    return rootDir;
-  }
-
-  public static File getUserMapsFolder() {
-    final File f = new File(getUserRootFolder(), "maps");
-    if (!f.exists()) {
-      try {
-        f.mkdirs();
-      } catch (final SecurityException e) {
-        e.printStackTrace();
-      }
-    }
-    return f;
-  }
-
-  /**
-   * Get the root folder for the application
-   */
-  public static File getRootFolder() {
-    final String fileName = getGameRunnerFileLocation("GameRunner2.class");
-
-    final String tripleaJarName = "triplea.jar!";
-    if (fileName.contains(tripleaJarName)) {
-      return getRootFolderRelativeToJar(fileName, tripleaJarName);
-    }
-
-    final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
-    if (fileName.contains(tripleaJarNameWithEngineVersion)) {
-      return getRootFolderRelativeToJar(fileName, tripleaJarNameWithEngineVersion);
-    }
-
-    return getRootRelativeToClassFile(fileName);
-  }
-
-  private static String getGameRunnerFileLocation(final String runnerClassName) {
-    final URL url = GameRunner2.class.getResource(runnerClassName);
-    String fileName = url.getFile();
-
-    try {
-      // Deal with spaces in the file name which would be url encoded
-      fileName = URLDecoder.decode(fileName, "UTF-8");
-    } catch (final UnsupportedEncodingException e) {
-      ClientLogger.logError("Unsupported encoding of fileName: " + fileName + ", error: " + e.getMessage());
-    }
-    return fileName;
-  }
-
-  private static File getRootFolderRelativeToJar(final String fileName, final String tripleaJarName) {
-    final String subString =
-        fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1), fileName.indexOf(tripleaJarName) - 1);
-    final File f = new File(subString).getParentFile();
-    if (!f.exists()) {
-      throw new IllegalStateException("File not found:" + f);
-    }
-    return f;
-  }
-
-  private static File getRootRelativeToClassFile(final String fileName) {
-    File f = new File(fileName);
-
-    // move up 1 directory for each package
-    final int moveUpCount = GameRunner2.class.getName().split("\\.").length + 1;
-    for (int i = 0; i < moveUpCount; i++) {
-      f = f.getParentFile();
-    }
-    if (!f.exists()) {
-      System.err.println("Could not find root folder, does  not exist:" + f);
-      return new File(System.getProperties().getProperty("user.dir"));
-    }
-    return f;
-  }
-
-
-  /* Check if a folder contains another folder or file */
-  private static boolean folderContains(final File folder, final String childToFind) {
-    if (folder == null || folder.list() == null || folder.list().length == 0) {
-      return false;
-    }
-    return Arrays.asList(folder.list()).contains(childToFind);
-  }
-
-  /**
-   * Search for a file that may be contained in one of multiple folders.
-   *
-   * The file to search for is given by first parameter, second is the list of folders.
-   * We will search all possible paths of the first folder before moving on to the next,
-   * so ordering of the possible folders is more important than the ordering of search paths.
-   *
-   * The search paths vary by if this class is being run from a class file instance,
-   * or a copy compiled into a jar.
-   *
-   * @param game The name of the file to find
-   * @param possibleFolders An array containing a sequence of possible folders that may contain
-   *        the search file.
-   * @return Throws illegal state if not found. Otherwise returns a file reference whose name
-   *         matches the first parameter and parent folder matches an element of "possibleFolders"
-   */
-  public static File getFile(final String game, final String[] possibleFolders) {
-    for (final String possibleFolder : possibleFolders) {
-      final File start = GameRunner2.getRootFolder();
-      if (folderContainsFolderAndFile(start, possibleFolder, game)) {
-        return new File(new File(start, possibleFolder), game);
-      }
-
-      final File secondStart = GameRunner2.getParentFolder(possibleFolder);
-      if (folderContainsFolderAndFile(secondStart, possibleFolder, game)) {
-        return new File(new File(secondStart, possibleFolder), game);
-      }
-
-    }
-    throw new IllegalStateException(
-        "Could not find any of these folders: " + Arrays.asList(possibleFolders) + ", containing game file: " + game);
-  }
-
-  /* Check if a given folder contains another folder that in turn contains a given file */
-  private static boolean folderContainsFolderAndFile(final File f, final String childFolder, final String child) {
-    if (folderContains(f, childFolder)) {
-      final File possibleParent = new File(f, childFolder);
-      if (folderContains(possibleParent, child)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /* From the Game Runner root location, walk up directories until we find a given folder */
-  private static File getParentFolder(final String folderToFind) {
-    File f = new File(getGameRunnerFileLocation("GameRunner2.class"));
-
-    while (f != null && f.exists() && !folderContains(f, folderToFind)) {
-      f = f.getParentFile();
-    }
-    return f;
-  }
 }

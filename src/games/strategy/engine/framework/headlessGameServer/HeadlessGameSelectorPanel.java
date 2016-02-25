@@ -28,10 +28,10 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
@@ -235,7 +235,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
       m_gameOptions.setEnabled(false);
     }
     // we don't want them starting new games if we are an old jar
-    if (GameRunner2.areWeOldExtraJar()) {
+    if (ClientFileSystemHelper.areWeOldExtraJar()) {
       m_loadNewGame.setEnabled(false);
       m_loadNewGame.setToolTipText(
           "This is disabled on older engine jars, please start new games with the latest version of TripleA.");

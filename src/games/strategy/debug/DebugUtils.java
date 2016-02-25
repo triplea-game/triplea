@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Properties;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.GameRunner2;
 
@@ -97,7 +98,7 @@ public class DebugUtils {
     result.append(getThreadDumps());
     result.append(getProperties());
     result.append(getMemory());
-    result.append("ENGINE VERSION: ").append(EngineVersion.VERSION).append("\n");
+    result.append("ENGINE VERSION: ").append(ClientContext.engineVersion()).append("\n");
     return result.toString();
   }
 
@@ -110,7 +111,7 @@ public class DebugUtils {
     result.append(getProperties());
     result.append(getMemory());
     result.append(getOpenAppWindows());
-    result.append("ENGINE VERSION: ").append(EngineVersion.VERSION).append("\n");
+    result.append("ENGINE VERSION: ").append(ClientContext.engineVersion().getVersion()).append("\n");
     return result.toString();
   }
 
