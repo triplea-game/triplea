@@ -1,5 +1,8 @@
 package games.strategy.triplea.attatchments;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -643,12 +646,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 
   @Override
   public boolean isSatisfied(final HashMap<ICondition, Boolean> testedConditions) {
-    if (testedConditions == null) {
-      throw new IllegalStateException("testedConditions can not be null");
-    }
-    if (!testedConditions.containsKey(this)) {
-      throw new IllegalStateException("testedConditions is incomplete and does not contain " + this.toString());
-    }
+    checkNotNull(testedConditions);
+    checkState(testedConditions.containsKey(this));
+
     return testedConditions.get(this);
   }
 
