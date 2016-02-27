@@ -268,12 +268,12 @@ public class ClipPlayer {
       return;
     }
     // run in a new thread, so that we do not delay the game
-    String subFolder = null;
+    String folder = clipName;
     if (playerId != null) {
-      subFolder = playerId.getName();
+      folder += "_" + playerId.getName();
     }
 
-    final URI clip = loadClip(clipName, subFolder);
+    final URI clip = loadClip(folder);
     if (clip != null) {
       (new Thread(() -> {
         try {
@@ -288,25 +288,11 @@ public class ClipPlayer {
     }
   }
 
-  private synchronized URI loadClip(final String clipName, final String subFolder) {
+  private synchronized URI loadClip(final String clipName) {
     if (beSilent || isMuted(clipName)) {
       return null;
     }
-    try {
-      if (subFolder != null && subFolder.length() > 0) {
-        final URI clip = loadClipPath(clipName + "_" + subFolder);
-        if (clip != null) {
-          return clip;
-        }
-        // if null, there is no sub folder, so check for a non-sub-folder sound.
-        return loadClipPath(clipName);
-      } else {
-        return loadClipPath(clipName);
-      }
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
-    return null;
+    return loadClipPath(clipName);
   }
 
   private URI loadClipPath(final String pathName) {
