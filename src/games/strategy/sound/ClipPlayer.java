@@ -21,11 +21,7 @@ import java.util.prefs.Preferences;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
+import com.google.common.base.Throwables;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -59,7 +55,7 @@ import javazoom.jl.player.advanced.AdvancedPlayer;
  * What I mean by this is that all sound key locations that triplea supports, are the names of all the folders in the
  * "assets/sounds/generic/" folder. <br>
  * example: <br>
- * <b>battle_aa_miss</b>=ww2/battle_aa_miss;future/battle_aa_miss/battle_aa_miss_01_ufo_flyby.wav <br>
+ * <b>battle_aa_miss</b>=ww2/battle_aa_miss;future/battle_aa_miss/battle_aa_miss_01_ufo_flyby.mp3 <br>
  * "battle_aa_miss" is one of the folders under "generic", therefore it is a "sound location key" <br>
  * We can set this equal to any list of sounds paths, each separated by a semicolon (;). The engine will pick one at
  * random each time we
@@ -68,27 +64,27 @@ import javazoom.jl.player.advanced.AdvancedPlayer;
  * If it is a file, we will only use that file. We can use a file and folder and another file and another folder, all
  * together. <br>
  * Example: "<b>ww2/battle_aa_miss</b>" is the sound path for a folder, so we will use all the sounds in that folder.
- * "<b>future/battle_aa_miss/battle_aa_miss_01_ufo_flyby.wav</b>" is a specific file, so we will use just this file.
+ * "<b>future/battle_aa_miss/battle_aa_miss_01_ufo_flyby.mp3</b>" is a specific file, so we will use just this file.
  * Because we use both of these together, the engine will make a list of all the files in that folder, plus that single
  * file we specified,
  * then it will randomly pick one of this whole list every time it needs to play the "battle_aa_miss" sound. <br>
  * <br>
  * So, lets say that you want to play 2 sounds, for the "battle_land" sound key.
- * One of them is located at "tripleainstallfolder/assets/sounds/generic/battle_land_01_angry_drumming_noise.wav".
- * The other is located at "tripleainstallfolder/assets/sounds/classical/battle_land_02_war_trumpets.wav". Then the
+ * One of them is located at "tripleainstallfolder/assets/sounds/generic/battle_land_01_angry_drumming_noise.mp3".
+ * The other is located at "tripleainstallfolder/assets/sounds/classical/battle_land_02_war_trumpets.mp3". Then the
  * entry would look like
  * this: <br>
- * battle_land=generic/battle_land_01_angry_drumming_noise.wav;classical/battle_land_02_war_trumpets.wav <br>
+ * battle_land=generic/battle_land_01_angry_drumming_noise.mp3;classical/battle_land_02_war_trumpets.mp3 <br>
  * If you wanted it to also play every single sound in the "tripleainstallfolder/assets/sounds/ww2/battle_land/" folder,
  * then you would add
  * that folder to path: <br>
- * battle_land=generic/battle_land_01_angry_drumming_noise.wav;classical/battle_land_02_war_trumpets.wav;ww2/battle_land
+ * battle_land=generic/battle_land_01_angry_drumming_noise.mp3;classical/battle_land_02_war_trumpets.mp3;ww2/battle_land
  * <br>
  * <br>
  * Furthermore, we can customize the sound key by adding "_nationName" onto the end of it. So if you want a specific
  * sound for a german land
  * attack, then use: <br>
- * battle_land<b>_Germans</b>=misc/battle_land/battle_land_Germans_panzers_and_yelling_in_german.wav <br>
+ * battle_land<b>_Germans</b>=misc/battle_land/battle_land_Germans_panzers_and_yelling_in_german.mp3 <br>
  * You can use nation specific sound keys for almost all sounds, though things like game_start, or chat_message, will
  * never use them. <br>
  * <br>
@@ -123,7 +119,6 @@ public class ClipPlayer {
   protected final Map<String, List<URL>> sounds = new HashMap<String, List<URL>>();
   private final Set<String> mutedClips = new HashSet<String>();
   private final Set<String> subFolders = new HashSet<String>();
-  private final ClipCache clipCache = new ClipCache();
   private boolean beSilent = false;
   private final ResourceLoader resourceLoader;
   private static ClipPlayer clipPlayer;
@@ -131,7 +126,6 @@ public class ClipPlayer {
   public static synchronized ClipPlayer getInstance() {
     if (clipPlayer == null) {
       clipPlayer = new ClipPlayer(ResourceLoader.getMapResourceLoader(null, true));
-      SoundPath.preLoadSounds(SoundPath.SoundType.GENERAL);
     }
     return clipPlayer;
   }
@@ -139,13 +133,8 @@ public class ClipPlayer {
   public static synchronized ClipPlayer getInstance(final ResourceLoader resourceLoader, final GameData data) {
     // make a new clip player if we switch resource loaders (ie: if we switch maps)
     if (clipPlayer == null || clipPlayer.resourceLoader != resourceLoader) {
-      // stop and close any playing clips
-      if (clipPlayer != null) {
-        clipPlayer.clipCache.removeAll();
-      }
       // make a new clip player with our new resource loader
       clipPlayer = new ClipPlayer(resourceLoader, data);
-      SoundPath.preLoadSounds(SoundPath.SoundType.GENERAL);
     }
     return clipPlayer;
   }
@@ -274,18 +263,17 @@ public class ClipPlayer {
     getInstance().playClip(clipPath, playerId);
   }
 
-
   private void playClip(final String clipName, final PlayerID playerId) {
     if (beSilent || isMuted(clipName)) {
       return;
     }
     // run in a new thread, so that we do not delay the game
-    String subFolder = null;
+    String folder = clipName;
     if (playerId != null) {
-      subFolder = playerId.getName();
+      folder += "_" + playerId.getName();
     }
 
-    final URI clip = loadClip(clipName, subFolder, false);
+    final URI clip = loadClip(folder);
     if (clip != null) {
       (new Thread(() -> {
         try {
@@ -300,54 +288,30 @@ public class ClipPlayer {
     }
   }
 
-
-  /**
-   * To reduce the delay when the clip is first played, we can preload clips here.
-   *
-   * @param clipName name of the clip
-   */
-  protected void preLoadClip(final String clipName) {
-    loadClip(clipName, null, true);
-    for (final String sub : subFolders) {
-      loadClip(clipName, sub, true);
-    }
-  }
-
-  private synchronized URI loadClip(final String clipName, final String subFolder, final boolean parseThenTestOnly) {
+  private synchronized URI loadClip(final String clipName) {
     if (beSilent || isMuted(clipName)) {
       return null;
     }
-    try {
-      if (subFolder != null && subFolder.length() > 0) {
-        final URI clip = loadClipPath(clipName + "_" + subFolder, true, parseThenTestOnly);
-        if (clip != null) {
-          return clip;
-        }
-        // if null, there is no sub folder, so check for a non-sub-folder sound.
-        return loadClipPath(clipName, false, parseThenTestOnly);
-      } else {
-        return loadClipPath(clipName, false, parseThenTestOnly);
-      }
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
-    return null;
+    return loadClipPath(clipName);
   }
 
-  private URI loadClipPath(final String pathName, final boolean subFolder, final boolean parseThenTestOnly) {
+  private URI loadClipPath(final String pathName) {
     if (!sounds.containsKey(pathName)) {
       // parse sounds for the first time
-      sounds.put(pathName, parseClipPaths(pathName, subFolder));
+      sounds.put(pathName, parseClipPaths(pathName));
     }
     final List<URL> availableSounds = sounds.get(pathName);
-    if (parseThenTestOnly || availableSounds == null || availableSounds.isEmpty()) {
+    if (availableSounds == null || availableSounds.isEmpty()) {
       return null;
     }
     // we want to pick a random sound from this folder, as users don't like hearing the same ones over
     // and over again
     Collections.shuffle(availableSounds);
-    final URL clipFile = availableSounds.get(0);
-    return clipCache.get(clipFile);
+    try {
+      return availableSounds.get(0).toURI();
+    } catch (URISyntaxException e) {
+      throw Throwables.propagate(e);
+    }
   }
 
   /**
@@ -362,15 +326,16 @@ public class ClipPlayer {
    * <br>
    * Example sounds.properties keys:<br>
    * Sound.Default.Folder=ww2<br>
-   * battle_aa_miss=ww2/battle_aa_miss/battle_aa_miss_01_aa_artillery_and_flyby.wav;ww2/battle_aa_miss/
+   * battle_aa_miss=ww2/battle_aa_miss/battle_aa_miss_01_aa_artillery_and_flyby.mp3;ww2/battle_aa_miss/
    * battle_aa_miss_02_just_aa_artillery.
-   * wav<br>
-   * phase_purchase_Germans=phase_purchase_Germans/game_start_Germans_01_anthem.wav
+   * mp3<br>
+   * phase_purchase_Germans=phase_purchase_Germans/game_start_Germans_01_anthem.mp3
    *
    * @param pathName
    * @param subFolder
    */
-  private List<URL> parseClipPaths(final String pathName, final boolean subFolder) {
+  private List<URL> parseClipPaths(final String pathName) {
+    // Check if there is a sound.properties path override for this resource
     String resourcePath = SoundProperties.getInstance(resourceLoader).getProperty(pathName);
     if (resourcePath == null) {
       resourcePath = SoundProperties.getInstance(resourceLoader).getDefaultEraFolder() + "/" + pathName;
@@ -382,11 +347,11 @@ public class ClipPlayer {
       return availableSounds;
     }
     for (final String path : resourcePath.split(";")) {
-      availableSounds.addAll(createAndAddClips(ASSETS_SOUNDS_FOLDER + "/" + path));
+      availableSounds.addAll(findClipFiles(ASSETS_SOUNDS_FOLDER + "/" + path));
     }
     if (availableSounds.isEmpty()) {
       final String genericPath = SoundProperties.GENERIC_FOLDER + "/" + pathName;
-      availableSounds.addAll(createAndAddClips(ASSETS_SOUNDS_FOLDER + "/" + genericPath));
+      availableSounds.addAll(findClipFiles(ASSETS_SOUNDS_FOLDER + "/" + genericPath));
     }
     return availableSounds;
   }
@@ -395,7 +360,7 @@ public class ClipPlayer {
    * @param resourceAndPathURL
    *        (URL uses '/', not File.separator or '\')
    */
-  protected List<URL> createAndAddClips(final String resourceAndPathURL) {
+  protected List<URL> findClipFiles(final String resourceAndPathURL) {
     final List<URL> availableSounds = new ArrayList<URL>();
     final URL thisSoundURL = resourceLoader.getResource(resourceAndPathURL);
     if (thisSoundURL == null) {
@@ -466,9 +431,7 @@ public class ClipPlayer {
                         if (zipSoundURL == null) {
                           continue;
                         }
-                        if (testClipSuccessful(zipSoundURL)) {
-                          availableSounds.add(zipSoundURL);
-                        }
+                        availableSounds.add(zipSoundURL);
                       } catch (final Exception e) {
                         ClientLogger.logQuietly(e);
                       }
@@ -485,15 +448,13 @@ public class ClipPlayer {
     } else {
       // we must be using unzipped sounds
       if (!thisSoundFile.isDirectory()) {
-        if (!(thisSoundFile.getName().endsWith(MP3_SUFFIX))) {
+        if (!(isSoundFileNamed(thisSoundFile))) {
           return availableSounds;
         }
-        if (testClipSuccessful(thisSoundURL)) {
-          availableSounds.add(thisSoundURL);
-        }
+        availableSounds.add(thisSoundURL);
       } else {
         for (final File sound : thisSoundFile.listFiles()) {
-          if (!(sound.getName().endsWith(MP3_SUFFIX))) {
+          if (!(isSoundFileNamed(sound))) {
             continue;
           }
         }
@@ -504,9 +465,7 @@ public class ClipPlayer {
         if (isSoundFileNamed(soundFile)) {
           try {
             final URL individualSoundURL = soundFile.toURI().toURL();
-            if (testClipSuccessful(individualSoundURL)) {
-              availableSounds.add(individualSoundURL);
-            }
+            availableSounds.add(individualSoundURL);
           } catch (final MalformedURLException e) {
             String msg = "Error " + e.getMessage() + " with sound file: " + soundFile.getPath();
             ClientLogger.logQuietly(msg, e);
@@ -517,9 +476,7 @@ public class ClipPlayer {
       if (!isSoundFileNamed(thisSoundFile)) {
         return availableSounds;
       }
-      if (testClipSuccessful(thisSoundURL)) {
-        availableSounds.add(thisSoundURL);
-      }
+      availableSounds.add(thisSoundURL);
     }
     return availableSounds;
   }
@@ -527,26 +484,5 @@ public class ClipPlayer {
 
   private static boolean isSoundFileNamed(final File soundFile) {
     return soundFile.getName().endsWith(MP3_SUFFIX);
-  }
-
-
-  protected static Clip createClip(final URL clipFile) {
-    try {
-      final AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(clipFile);
-      final AudioFormat format = audioInputStream.getFormat();
-      final DataLine.Info info = new DataLine.Info(Clip.class, format);
-      final Clip clip = (Clip) AudioSystem.getLine(info);
-      clip.open(audioInputStream);
-      return clip;
-    } catch (final Exception e) {
-      ClientLogger.logQuietly("failed to create clip: " + clipFile.toString(), e);
-      return null;
-    }
-  }
-
-  private static synchronized boolean testClipSuccessful(final URL clipFile) {
-    return true;
-    // Clip clip = createClip(clipFile);
-    // return clip != null;
   }
 }
