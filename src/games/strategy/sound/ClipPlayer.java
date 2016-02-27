@@ -32,6 +32,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.triplea.ResourceLoader;
+import javazoom.jl.player.FactoryRegistry;
+import javazoom.jl.player.advanced.AdvancedPlayer;
 
 /**
  * Utility for loading and playing sound clips.
@@ -114,6 +116,9 @@ public class ClipPlayer {
   private static final String SOUND_PREFERENCE_GLOBAL_SWITCH = "beSilent2";
   private static final String SOUND_PREFERENCE_PREFIX = "sound_";
   private static final boolean DEFAULT_SOUND_SILENCED_SWITCH_SETTING = false;
+
+  private static final String MP3_SUFFIX = ".mp3";
+
 
   protected final Map<String, List<URL>> sounds = new HashMap<String, List<URL>>();
   private final Set<String> mutedClips = new HashSet<String>();
@@ -275,27 +280,26 @@ public class ClipPlayer {
       return;
     }
     // run in a new thread, so that we do not delay the game
-    final Runnable loadSounds = new Runnable() {
-      @Override
-      public void run() {
-        try {
-          String subFolder = null;
-          if (playerId != null) {
-            subFolder = playerId.getName();
-          }
+    String subFolder = null;
+    if (playerId != null) {
+      subFolder = playerId.getName();
+    }
 
-          final Clip clip = loadClip(clipName, subFolder, false);
-          if (clip != null) {
-            clip.setFramePosition(0);
-            clip.loop(0);
-          }
-        } catch (final Exception e) {
-          ClientLogger.logQuietly(e);
+    final URI clip = loadClip(clipName, subFolder, false);
+    if (clip != null) {
+      (new Thread(() -> {
+        try {
+          final AdvancedPlayer player = new AdvancedPlayer(
+              new java.net.URL(clip.toURL().toString()).openStream(),
+              FactoryRegistry.systemRegistry().createAudioDevice());
+          player.play();
+        } catch (Exception e) {
+          ClientLogger.logError("Failed to play: " + clip, e);
         }
-      }
-    };
-    (new Thread(loadSounds, "Triplea sound loader for " + clipName)).start();
+      })).start();
+    }
   }
+
 
   /**
    * To reduce the delay when the clip is first played, we can preload clips here.
@@ -309,13 +313,13 @@ public class ClipPlayer {
     }
   }
 
-  private synchronized Clip loadClip(final String clipName, final String subFolder, final boolean parseThenTestOnly) {
+  private synchronized URI loadClip(final String clipName, final String subFolder, final boolean parseThenTestOnly) {
     if (beSilent || isMuted(clipName)) {
       return null;
     }
     try {
       if (subFolder != null && subFolder.length() > 0) {
-        final Clip clip = loadClipPath(clipName + "_" + subFolder, true, parseThenTestOnly);
+        final URI clip = loadClipPath(clipName + "_" + subFolder, true, parseThenTestOnly);
         if (clip != null) {
           return clip;
         }
@@ -330,10 +334,10 @@ public class ClipPlayer {
     return null;
   }
 
-  private Clip loadClipPath(final String pathName, final boolean subFolder, final boolean parseThenTestOnly) {
+  private URI loadClipPath(final String pathName, final boolean subFolder, final boolean parseThenTestOnly) {
     if (!sounds.containsKey(pathName)) {
       // parse sounds for the first time
-      parseClipPaths(pathName, subFolder);
+      sounds.put(pathName, parseClipPaths(pathName, subFolder));
     }
     final List<URL> availableSounds = sounds.get(pathName);
     if (parseThenTestOnly || availableSounds == null || availableSounds.isEmpty()) {
@@ -366,7 +370,7 @@ public class ClipPlayer {
    * @param pathName
    * @param subFolder
    */
-  private void parseClipPaths(final String pathName, final boolean subFolder) {
+  private List<URL> parseClipPaths(final String pathName, final boolean subFolder) {
     String resourcePath = SoundProperties.getInstance(resourceLoader).getProperty(pathName);
     if (resourcePath == null) {
       resourcePath = SoundProperties.getInstance(resourceLoader).getDefaultEraFolder() + "/" + pathName;
@@ -375,7 +379,7 @@ public class ClipPlayer {
     final List<URL> availableSounds = new ArrayList<URL>();
     if ("NONE".equals(resourcePath)) {
       sounds.put(pathName, availableSounds);
-      return;
+      return availableSounds;
     }
     for (final String path : resourcePath.split(";")) {
       availableSounds.addAll(createAndAddClips(ASSETS_SOUNDS_FOLDER + "/" + path));
@@ -384,7 +388,7 @@ public class ClipPlayer {
       final String genericPath = SoundProperties.GENERIC_FOLDER + "/" + pathName;
       availableSounds.addAll(createAndAddClips(ASSETS_SOUNDS_FOLDER + "/" + genericPath));
     }
-    sounds.put(pathName, availableSounds);
+    return availableSounds;
   }
 
   /**
@@ -456,8 +460,7 @@ public class ClipPlayer {
                     final ZipEntry zipElement = zipEnumeration.nextElement();
                     if (zipElement != null && zipElement.getName() != null
                         && zipElement.getName().indexOf(resourceAndPathURL) != -1
-                        && (zipElement.getName().endsWith(".wav") || zipElement.getName().endsWith(".au")
-                            || zipElement.getName().endsWith(".aiff") || zipElement.getName().endsWith(".midi"))) {
+                        && (zipElement.getName().endsWith(MP3_SUFFIX))) {
                       try {
                         final URL zipSoundURL = resourceLoader.getResource(zipElement.getName());
                         if (zipSoundURL == null) {
@@ -482,8 +485,7 @@ public class ClipPlayer {
     } else {
       // we must be using unzipped sounds
       if (!thisSoundFile.isDirectory()) {
-        if (!(thisSoundFile.getName().endsWith(".wav") || thisSoundFile.getName().endsWith(".au")
-            || thisSoundFile.getName().endsWith(".aiff") || thisSoundFile.getName().endsWith(".midi"))) {
+        if (!(thisSoundFile.getName().endsWith(MP3_SUFFIX))) {
           return availableSounds;
         }
         if (testClipSuccessful(thisSoundURL)) {
@@ -491,8 +493,7 @@ public class ClipPlayer {
         }
       } else {
         for (final File sound : thisSoundFile.listFiles()) {
-          if (!(sound.getName().endsWith(".wav") || sound.getName().endsWith(".au") || sound.getName().endsWith(".aiff")
-              || sound.getName().endsWith(".midi"))) {
+          if (!(sound.getName().endsWith(MP3_SUFFIX))) {
             continue;
           }
         }
@@ -525,9 +526,7 @@ public class ClipPlayer {
 
 
   private static boolean isSoundFileNamed(final File soundFile) {
-    return soundFile.getName().endsWith(".wav") || soundFile.getName().endsWith(".au")
-        || soundFile.getName().endsWith(".aiff")
-        || soundFile.getName().endsWith(".midi");
+    return soundFile.getName().endsWith(MP3_SUFFIX);
   }
 
 
@@ -546,7 +545,8 @@ public class ClipPlayer {
   }
 
   private static synchronized boolean testClipSuccessful(final URL clipFile) {
-    Clip clip = createClip(clipFile);
-    return clip != null;
+    return true;
+    // Clip clip = createClip(clipFile);
+    // return clip != null;
   }
 }
