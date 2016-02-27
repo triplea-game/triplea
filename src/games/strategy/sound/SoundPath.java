@@ -133,64 +133,6 @@ public class SoundPath {
     return rVal;
   }
 
-  public static void preLoadSounds(final SoundType sounds) {
-    final ClipPlayer clipPlayer = ClipPlayer.getInstance();
-    switch (sounds) {
-      case GENERAL:
-        clipPlayer.preLoadClip(CLIP_CHAT_MESSAGE);
-        clipPlayer.preLoadClip(CLIP_CHAT_SLAP);
-        clipPlayer.preLoadClip(CLIP_CHAT_JOIN_GAME);
-        clipPlayer.preLoadClip(CLIP_CLICK_BUTTON);
-        clipPlayer.preLoadClip(CLIP_CLICK_PLOT);
-        clipPlayer.preLoadClip(CLIP_GAME_START);
-        clipPlayer.preLoadClip(CLIP_GAME_WON);
-        clipPlayer.preLoadClip(CLIP_REQUIRED_ACTION);
-        clipPlayer.preLoadClip(CLIP_REQUIRED_YOUR_TURN_SERIES);
-        break;
-      case TRIPLEA:
-        clipPlayer.preLoadClip(CLIP_BATTLE_AA_HIT);
-        clipPlayer.preLoadClip(CLIP_BATTLE_AA_MISS);
-        clipPlayer.preLoadClip(CLIP_BATTLE_AIR);
-        clipPlayer.preLoadClip(CLIP_BATTLE_AIR_SUCCESSFUL);
-        clipPlayer.preLoadClip(CLIP_BATTLE_BOMBARD);
-        clipPlayer.preLoadClip(CLIP_BATTLE_FAILURE);
-        clipPlayer.preLoadClip(CLIP_BATTLE_LAND);
-        clipPlayer.preLoadClip(CLIP_BATTLE_RETREAT_AIR);
-        clipPlayer.preLoadClip(CLIP_BATTLE_RETREAT_LAND);
-        clipPlayer.preLoadClip(CLIP_BATTLE_RETREAT_SEA);
-        clipPlayer.preLoadClip(CLIP_BATTLE_RETREAT_SUBMERGE);
-        clipPlayer.preLoadClip(CLIP_BATTLE_SEA_NORMAL);
-        clipPlayer.preLoadClip(CLIP_BATTLE_SEA_SUBS);
-        clipPlayer.preLoadClip(CLIP_BATTLE_SEA_SUCCESSFUL);
-        clipPlayer.preLoadClip(CLIP_BATTLE_STALEMATE);
-        clipPlayer.preLoadClip(CLIP_BOMBING_ROCKET);
-        clipPlayer.preLoadClip(CLIP_BOMBING_STRATEGIC);
-        clipPlayer.preLoadClip(CLIP_PHASE_BATTLE);
-        clipPlayer.preLoadClip(CLIP_PHASE_END_TURN);
-        clipPlayer.preLoadClip(CLIP_PHASE_MOVE_COMBAT);
-        clipPlayer.preLoadClip(CLIP_PHASE_MOVE_NONCOMBAT);
-        clipPlayer.preLoadClip(CLIP_PHASE_PLACEMENT);
-        clipPlayer.preLoadClip(CLIP_PHASE_POLITICS);
-        clipPlayer.preLoadClip(CLIP_PHASE_PURCHASE);
-        clipPlayer.preLoadClip(CLIP_PHASE_TECHNOLOGY);
-        clipPlayer.preLoadClip(CLIP_PHASE_USER_ACTIONS);
-        clipPlayer.preLoadClip(CLIP_PLACED_AIR);
-        clipPlayer.preLoadClip(CLIP_PLACED_INFRASTRUCTURE);
-        clipPlayer.preLoadClip(CLIP_PLACED_LAND);
-        clipPlayer.preLoadClip(CLIP_PLACED_SEA);
-        clipPlayer.preLoadClip(CLIP_POLITICAL_ACTION_FAILURE);
-        clipPlayer.preLoadClip(CLIP_POLITICAL_ACTION_SUCCESSFUL);
-        clipPlayer.preLoadClip(CLIP_TECHNOLOGY_FAILURE);
-        clipPlayer.preLoadClip(CLIP_TECHNOLOGY_SUCCESSFUL);
-        clipPlayer.preLoadClip(CLIP_TERRITORY_CAPTURE_BLITZ);
-        clipPlayer.preLoadClip(CLIP_TERRITORY_CAPTURE_CAPITAL);
-        clipPlayer.preLoadClip(CLIP_TERRITORY_CAPTURE_LAND);
-        clipPlayer.preLoadClip(CLIP_TERRITORY_CAPTURE_SEA);
-        clipPlayer.preLoadClip(CLIP_USER_ACTION_FAILURE);
-        clipPlayer.preLoadClip(CLIP_USER_ACTION_SUCCESSFUL);
-        break;
-    }
-  }
 
   public static ArrayList<IEditableProperty> getSoundOptions(final SoundType sounds) {
     final ArrayList<IEditableProperty> rVal = new ArrayList<IEditableProperty>();
