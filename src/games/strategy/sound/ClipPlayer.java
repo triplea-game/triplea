@@ -132,7 +132,6 @@ public class ClipPlayer {
   public static synchronized ClipPlayer getInstance() {
     if (clipPlayer == null) {
       clipPlayer = new ClipPlayer(ResourceLoader.getMapResourceLoader(null, true));
-      SoundPath.preLoadSounds(SoundPath.SoundType.GENERAL);
     }
     return clipPlayer;
   }
@@ -142,7 +141,6 @@ public class ClipPlayer {
     if (clipPlayer == null || clipPlayer.resourceLoader != resourceLoader) {
       // make a new clip player with our new resource loader
       clipPlayer = new ClipPlayer(resourceLoader, data);
-      SoundPath.preLoadSounds(SoundPath.SoundType.GENERAL);
     }
     return clipPlayer;
   }
@@ -271,7 +269,6 @@ public class ClipPlayer {
     getInstance().playClip(clipPath, playerId);
   }
 
-
   private void playClip(final String clipName, final PlayerID playerId) {
     if (beSilent || isMuted(clipName)) {
       return;
@@ -294,19 +291,6 @@ public class ClipPlayer {
           ClientLogger.logError("Failed to play: " + clip, e);
         }
       })).start();
-    }
-  }
-
-
-  /**
-   * To reduce the delay when the clip is first played, we can preload clips here.
-   *
-   * @param clipName name of the clip
-   */
-  protected void preLoadClip(final String clipName) {
-    loadClip(clipName, null, true);
-    for (final String sub : subFolders) {
-      loadClip(clipName, sub, true);
     }
   }
 
