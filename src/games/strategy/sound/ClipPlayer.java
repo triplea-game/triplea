@@ -273,7 +273,7 @@ public class ClipPlayer {
       subFolder = playerId.getName();
     }
 
-    final URI clip = loadClip(clipName, subFolder, false);
+    final URI clip = loadClip(clipName, subFolder);
     if (clip != null) {
       (new Thread(() -> {
         try {
@@ -288,20 +288,20 @@ public class ClipPlayer {
     }
   }
 
-  private synchronized URI loadClip(final String clipName, final String subFolder, final boolean parseThenTestOnly) {
+  private synchronized URI loadClip(final String clipName, final String subFolder) {
     if (beSilent || isMuted(clipName)) {
       return null;
     }
     try {
       if (subFolder != null && subFolder.length() > 0) {
-        final URI clip = loadClipPath(clipName + "_" + subFolder, true, parseThenTestOnly);
+        final URI clip = loadClipPath(clipName + "_" + subFolder);
         if (clip != null) {
           return clip;
         }
         // if null, there is no sub folder, so check for a non-sub-folder sound.
-        return loadClipPath(clipName, false, parseThenTestOnly);
+        return loadClipPath(clipName);
       } else {
-        return loadClipPath(clipName, false, parseThenTestOnly);
+        return loadClipPath(clipName);
       }
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
@@ -309,13 +309,13 @@ public class ClipPlayer {
     return null;
   }
 
-  private URI loadClipPath(final String pathName, final boolean subFolder, final boolean parseThenTestOnly) {
+  private URI loadClipPath(final String pathName) {
     if (!sounds.containsKey(pathName)) {
       // parse sounds for the first time
-      sounds.put(pathName, parseClipPaths(pathName, subFolder));
+      sounds.put(pathName, parseClipPaths(pathName));
     }
     final List<URL> availableSounds = sounds.get(pathName);
-    if (parseThenTestOnly || availableSounds == null || availableSounds.isEmpty()) {
+    if (availableSounds == null || availableSounds.isEmpty()) {
       return null;
     }
     // we want to pick a random sound from this folder, as users don't like hearing the same ones over
@@ -348,7 +348,7 @@ public class ClipPlayer {
    * @param pathName
    * @param subFolder
    */
-  private List<URL> parseClipPaths(final String pathName, final boolean subFolder) {
+  private List<URL> parseClipPaths(final String pathName) {
     String resourcePath = SoundProperties.getInstance(resourceLoader).getProperty(pathName);
     if (resourcePath == null) {
       resourcePath = SoundProperties.getInstance(resourceLoader).getDefaultEraFolder() + "/" + pathName;
