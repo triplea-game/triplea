@@ -461,13 +461,13 @@ public class ClipPlayer {
     } else {
       // we must be using unzipped sounds
       if (!thisSoundFile.isDirectory()) {
-        if (!(thisSoundFile.getName().endsWith(MP3_SUFFIX))) {
+        if (!(isSoundFileNamed(thisSoundFile))) {
           return availableSounds;
         }
         availableSounds.add(thisSoundURL);
       } else {
         for (final File sound : thisSoundFile.listFiles()) {
-          if (!(sound.getName().endsWith(MP3_SUFFIX))) {
+          if (!(isSoundFileNamed(sound))) {
             continue;
           }
         }
