@@ -335,6 +335,7 @@ public class ClipPlayer {
    * @param subFolder
    */
   private List<URL> parseClipPaths(final String pathName) {
+    // Check if there is a sound.properties path override for this resource
     String resourcePath = SoundProperties.getInstance(resourceLoader).getProperty(pathName);
     if (resourcePath == null) {
       resourcePath = SoundProperties.getInstance(resourceLoader).getDefaultEraFolder() + "/" + pathName;
@@ -346,11 +347,11 @@ public class ClipPlayer {
       return availableSounds;
     }
     for (final String path : resourcePath.split(";")) {
-      availableSounds.addAll(createAndAddClips(ASSETS_SOUNDS_FOLDER + "/" + path));
+      availableSounds.addAll(findClipFiles(ASSETS_SOUNDS_FOLDER + "/" + path));
     }
     if (availableSounds.isEmpty()) {
       final String genericPath = SoundProperties.GENERIC_FOLDER + "/" + pathName;
-      availableSounds.addAll(createAndAddClips(ASSETS_SOUNDS_FOLDER + "/" + genericPath));
+      availableSounds.addAll(findClipFiles(ASSETS_SOUNDS_FOLDER + "/" + genericPath));
     }
     return availableSounds;
   }
@@ -359,7 +360,7 @@ public class ClipPlayer {
    * @param resourceAndPathURL
    *        (URL uses '/', not File.separator or '\')
    */
-  protected List<URL> createAndAddClips(final String resourceAndPathURL) {
+  protected List<URL> findClipFiles(final String resourceAndPathURL) {
     final List<URL> availableSounds = new ArrayList<URL>();
     final URL thisSoundURL = resourceLoader.getResource(resourceAndPathURL);
     if (thisSoundURL == null) {
