@@ -466,9 +466,7 @@ public class ClipPlayer {
                         if (zipSoundURL == null) {
                           continue;
                         }
-                        if (testClipSuccessful(zipSoundURL)) {
-                          availableSounds.add(zipSoundURL);
-                        }
+                        availableSounds.add(zipSoundURL);
                       } catch (final Exception e) {
                         ClientLogger.logQuietly(e);
                       }
@@ -488,9 +486,7 @@ public class ClipPlayer {
         if (!(thisSoundFile.getName().endsWith(MP3_SUFFIX))) {
           return availableSounds;
         }
-        if (testClipSuccessful(thisSoundURL)) {
-          availableSounds.add(thisSoundURL);
-        }
+        availableSounds.add(thisSoundURL);
       } else {
         for (final File sound : thisSoundFile.listFiles()) {
           if (!(sound.getName().endsWith(MP3_SUFFIX))) {
@@ -504,9 +500,7 @@ public class ClipPlayer {
         if (isSoundFileNamed(soundFile)) {
           try {
             final URL individualSoundURL = soundFile.toURI().toURL();
-            if (testClipSuccessful(individualSoundURL)) {
-              availableSounds.add(individualSoundURL);
-            }
+            availableSounds.add(individualSoundURL);
           } catch (final MalformedURLException e) {
             String msg = "Error " + e.getMessage() + " with sound file: " + soundFile.getPath();
             ClientLogger.logQuietly(msg, e);
@@ -517,9 +511,7 @@ public class ClipPlayer {
       if (!isSoundFileNamed(thisSoundFile)) {
         return availableSounds;
       }
-      if (testClipSuccessful(thisSoundURL)) {
-        availableSounds.add(thisSoundURL);
-      }
+      availableSounds.add(thisSoundURL);
     }
     return availableSounds;
   }
@@ -542,11 +534,5 @@ public class ClipPlayer {
       ClientLogger.logQuietly("failed to create clip: " + clipFile.toString(), e);
       return null;
     }
-  }
-
-  private static synchronized boolean testClipSuccessful(final URL clipFile) {
-    return true;
-    // Clip clip = createClip(clipFile);
-    // return clip != null;
   }
 }
