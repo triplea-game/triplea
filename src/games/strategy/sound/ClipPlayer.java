@@ -21,12 +21,6 @@ import java.util.prefs.Preferences;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
-
 import com.google.common.base.Throwables;
 
 import games.strategy.debug.ClientLogger;
@@ -503,20 +497,5 @@ public class ClipPlayer {
 
   private static boolean isSoundFileNamed(final File soundFile) {
     return soundFile.getName().endsWith(MP3_SUFFIX);
-  }
-
-
-  protected static Clip createClip(final URL clipFile) {
-    try {
-      final AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(clipFile);
-      final AudioFormat format = audioInputStream.getFormat();
-      final DataLine.Info info = new DataLine.Info(Clip.class, format);
-      final Clip clip = (Clip) AudioSystem.getLine(info);
-      clip.open(audioInputStream);
-      return clip;
-    } catch (final Exception e) {
-      ClientLogger.logQuietly("failed to create clip: " + clipFile.toString(), e);
-      return null;
-    }
   }
 }
