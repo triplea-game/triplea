@@ -55,7 +55,7 @@ import javazoom.jl.player.advanced.AdvancedPlayer;
  * What I mean by this is that all sound key locations that triplea supports, are the names of all the folders in the
  * "assets/sounds/generic/" folder. <br>
  * example: <br>
- * <b>battle_aa_miss</b>=ww2/battle_aa_miss;future/battle_aa_miss/battle_aa_miss_01_ufo_flyby.wav <br>
+ * <b>battle_aa_miss</b>=ww2/battle_aa_miss;future/battle_aa_miss/battle_aa_miss_01_ufo_flyby.mp3 <br>
  * "battle_aa_miss" is one of the folders under "generic", therefore it is a "sound location key" <br>
  * We can set this equal to any list of sounds paths, each separated by a semicolon (;). The engine will pick one at
  * random each time we
@@ -64,27 +64,27 @@ import javazoom.jl.player.advanced.AdvancedPlayer;
  * If it is a file, we will only use that file. We can use a file and folder and another file and another folder, all
  * together. <br>
  * Example: "<b>ww2/battle_aa_miss</b>" is the sound path for a folder, so we will use all the sounds in that folder.
- * "<b>future/battle_aa_miss/battle_aa_miss_01_ufo_flyby.wav</b>" is a specific file, so we will use just this file.
+ * "<b>future/battle_aa_miss/battle_aa_miss_01_ufo_flyby.mp3</b>" is a specific file, so we will use just this file.
  * Because we use both of these together, the engine will make a list of all the files in that folder, plus that single
  * file we specified,
  * then it will randomly pick one of this whole list every time it needs to play the "battle_aa_miss" sound. <br>
  * <br>
  * So, lets say that you want to play 2 sounds, for the "battle_land" sound key.
- * One of them is located at "tripleainstallfolder/assets/sounds/generic/battle_land_01_angry_drumming_noise.wav".
- * The other is located at "tripleainstallfolder/assets/sounds/classical/battle_land_02_war_trumpets.wav". Then the
+ * One of them is located at "tripleainstallfolder/assets/sounds/generic/battle_land_01_angry_drumming_noise.mp3".
+ * The other is located at "tripleainstallfolder/assets/sounds/classical/battle_land_02_war_trumpets.mp3". Then the
  * entry would look like
  * this: <br>
- * battle_land=generic/battle_land_01_angry_drumming_noise.wav;classical/battle_land_02_war_trumpets.wav <br>
+ * battle_land=generic/battle_land_01_angry_drumming_noise.mp3;classical/battle_land_02_war_trumpets.mp3 <br>
  * If you wanted it to also play every single sound in the "tripleainstallfolder/assets/sounds/ww2/battle_land/" folder,
  * then you would add
  * that folder to path: <br>
- * battle_land=generic/battle_land_01_angry_drumming_noise.wav;classical/battle_land_02_war_trumpets.wav;ww2/battle_land
+ * battle_land=generic/battle_land_01_angry_drumming_noise.mp3;classical/battle_land_02_war_trumpets.mp3;ww2/battle_land
  * <br>
  * <br>
  * Furthermore, we can customize the sound key by adding "_nationName" onto the end of it. So if you want a specific
  * sound for a german land
  * attack, then use: <br>
- * battle_land<b>_Germans</b>=misc/battle_land/battle_land_Germans_panzers_and_yelling_in_german.wav <br>
+ * battle_land<b>_Germans</b>=misc/battle_land/battle_land_Germans_panzers_and_yelling_in_german.mp3 <br>
  * You can use nation specific sound keys for almost all sounds, though things like game_start, or chat_message, will
  * never use them. <br>
  * <br>
@@ -340,10 +340,10 @@ public class ClipPlayer {
    * <br>
    * Example sounds.properties keys:<br>
    * Sound.Default.Folder=ww2<br>
-   * battle_aa_miss=ww2/battle_aa_miss/battle_aa_miss_01_aa_artillery_and_flyby.wav;ww2/battle_aa_miss/
+   * battle_aa_miss=ww2/battle_aa_miss/battle_aa_miss_01_aa_artillery_and_flyby.mp3;ww2/battle_aa_miss/
    * battle_aa_miss_02_just_aa_artillery.
-   * wav<br>
-   * phase_purchase_Germans=phase_purchase_Germans/game_start_Germans_01_anthem.wav
+   * mp3<br>
+   * phase_purchase_Germans=phase_purchase_Germans/game_start_Germans_01_anthem.mp3
    *
    * @param pathName
    * @param subFolder
