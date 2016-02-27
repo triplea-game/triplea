@@ -27,6 +27,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 
+import com.google.common.base.Throwables;
+
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -123,7 +125,6 @@ public class ClipPlayer {
   protected final Map<String, List<URL>> sounds = new HashMap<String, List<URL>>();
   private final Set<String> mutedClips = new HashSet<String>();
   private final Set<String> subFolders = new HashSet<String>();
-  private final ClipCache clipCache = new ClipCache();
   private boolean beSilent = false;
   private final ResourceLoader resourceLoader;
   private static ClipPlayer clipPlayer;
@@ -139,10 +140,6 @@ public class ClipPlayer {
   public static synchronized ClipPlayer getInstance(final ResourceLoader resourceLoader, final GameData data) {
     // make a new clip player if we switch resource loaders (ie: if we switch maps)
     if (clipPlayer == null || clipPlayer.resourceLoader != resourceLoader) {
-      // stop and close any playing clips
-      if (clipPlayer != null) {
-        clipPlayer.clipCache.removeAll();
-      }
       // make a new clip player with our new resource loader
       clipPlayer = new ClipPlayer(resourceLoader, data);
       SoundPath.preLoadSounds(SoundPath.SoundType.GENERAL);
@@ -346,8 +343,11 @@ public class ClipPlayer {
     // we want to pick a random sound from this folder, as users don't like hearing the same ones over
     // and over again
     Collections.shuffle(availableSounds);
-    final URL clipFile = availableSounds.get(0);
-    return clipCache.get(clipFile);
+    try {
+      return availableSounds.get(0).toURI();
+    } catch (URISyntaxException e) {
+      throw Throwables.propagate(e);
+    }
   }
 
   /**
