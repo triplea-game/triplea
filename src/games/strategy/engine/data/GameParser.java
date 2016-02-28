@@ -249,7 +249,7 @@ public class GameParser {
     return list;
   }
 
-  private Document getDocument(final InputStream input) throws SAXException, IOException, ParserConfigurationException {
+  public Document getDocument(final InputStream input) throws SAXException, IOException, ParserConfigurationException {
     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     factory.setValidating(true);
     // get the dtd location
