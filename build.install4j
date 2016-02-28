@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="6.0.4" transformSequenceNumber="5">
+<install4j version="6.1" transformSequenceNumber="5">
   <directoryPresets config="./game_engine.properties" />
   <application name="TripleA" distributionSourceDir="" applicationId="5978-7304-8769-5296" mediaDir="build/releases" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}" compression="6" lzmaCompression="false" pack200Compression="false" excludeSignedFromPacking="true" commonExternalFiles="false" createMd5Sums="true" shrinkRuntime="true" shortName="triplea" publisher="TripleA Developer Team" publisherWeb="triplea-game.github.io" version="${compiler:sys.version}" allPathsRelative="true" backupOnSave="false" autoSave="true" convertDotsToUnderscores="false" macSignature="????" macVolumeId="af9346379363d40e" javaMinVersion="1.8" javaMaxVersion="" allowBetaVM="true" jdkMode="jdk" jdkName="">
     <languages skipLanguageSelection="false" languageSelectionInPrincipalLanguage="false">
@@ -64,7 +64,7 @@
       <executable name="TripleA" type="1" iconSet="true" iconFile="" executableDir="" redirectStderr="true" stderrFile="error.log" stderrMode="append" redirectStdout="false" stdoutFile="output.log" stdoutMode="overwrite" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="asInvoker" checkConsoleParameter="true" globalSingleInstance="false" singleInstanceActivate="true" dpiAware="false">
         <versionInfo include="false" fileVersion="" fileDescription="" legalCopyright="" internalName="TripleA" productName="TripleA Game" />
       </executable>
-      <splashScreen show="true" width="256" height="256" bitmapFile="build/assets/icons/triplea_icon_256_256.png" windowsNative="false" textOverlay="true">
+      <splashScreen show="true" width="256" height="256" bitmapFile="build/assets/icons/triplea_icon_256_256.png" windowsNative="true" textOverlay="true">
         <text>
           <statusLine x="142" y="5" text="TripleA" fontSize="8" fontColor="0,0,0" bold="false" />
           <versionLine x="144" y="22" text="version ${compiler:sys.version}" fontSize="8" fontColor="0,0,0" bold="false" />
@@ -75,6 +75,7 @@
           <archive location="bin/triplea.jar" failOnError="false" />
         </classPath>
         <nativeLibraryDirectories />
+        <vmOptions />
       </java>
       <includedFiles />
       <unextractableFiles />
