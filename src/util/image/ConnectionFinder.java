@@ -245,7 +245,7 @@ public class ConnectionFinder {
    *        the area of which the boundingbox size is measured
    * @return the size of the area of the boundingbox of this area
    */
-  private static double sizeOfArea(final Area area) {
+  public static double sizeOfArea(final Area area) {
     final Dimension d = area.getBounds().getSize();
     return d.getHeight() * d.getWidth();
   }
@@ -346,7 +346,7 @@ public class ConnectionFinder {
     return (calcCenterOfMass(pointArray));
   }
 
-  private static Shape scale(final Shape currentShape, final int pixels) {
+  public static Shape scale(final Shape currentShape, final int pixels) {
     final Dimension d = currentShape.getBounds().getSize();
     final double scalefactorX = 1.0 + (1 / ((double) d.width)) * pixels;
     final double scalefactorY = 1.0 + (1 / ((double) d.height)) * pixels;
