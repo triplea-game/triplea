@@ -1,5 +1,8 @@
 package games.strategy.triplea.attatchments;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -129,7 +132,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
    * specifically named inside
    * that trigger.
    */
-  public static Set<RulesAttachment> getNationalObjectives(final PlayerID player, final GameData data) {
+  public static Set<RulesAttachment> getNationalObjectives(final PlayerID player) {
     final Set<RulesAttachment> natObjs = new HashSet<RulesAttachment>();
     final Map<String, IAttachment> map = player.getAttachments();
     for (final Map.Entry<String, IAttachment> entry : map.entrySet()) {
@@ -596,12 +599,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTechs(final String techs) throws GameParseException {
-    if (techs == null) {
+  public void setTechs(final String newTechs) throws GameParseException {
+    if (newTechs == null) {
       m_techs = null;
       return;
     }
-    final String[] s = techs.split(":");
+    final String[] s = newTechs.split(":");
     int count = -1;
     if (s.length < 1) {
       throw new GameParseException("Empty tech list" + thisErrorMsg());
@@ -643,12 +646,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 
   @Override
   public boolean isSatisfied(final HashMap<ICondition, Boolean> testedConditions) {
-    if (testedConditions == null) {
-      throw new IllegalStateException("testedConditions can not be null");
-    }
-    if (!testedConditions.containsKey(this)) {
-      throw new IllegalStateException("testedConditions is incomplete and does not contain " + this.toString());
-    }
+    checkNotNull(testedConditions);
+    checkState(testedConditions.containsKey(this));
+
     return testedConditions.get(this);
   }
 
