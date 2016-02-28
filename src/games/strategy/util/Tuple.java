@@ -23,7 +23,7 @@ public class Tuple<T, S> implements Serializable {
     return new Tuple(first,second);
   }
 
-  protected Tuple(final T first, final S second) {
+  public Tuple(final T first, final S second) {
     this.m_first = first;
     this.m_second = second;
   }

@@ -14,7 +14,7 @@ public class Triple<F, S, T> implements Serializable  {
     return new Triple(first,second,third);
   }
 
-  private Triple(final F first, final S second, final T third) {
+  public Triple(final F first, final S second, final T third) {
     tuple = Tuple.of(first, second);
     this.third = third;
   }
