@@ -93,7 +93,7 @@ public class LobbyMenu extends JMenuBar {
     revive.setEnabled(true);
     revive.addActionListener(new ActionListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(final ActionEvent event) {
         final Runnable runner = new Runnable() {
           @Override
           public void run() {
