@@ -2,9 +2,9 @@ package games.strategy.engine;
 
 import games.strategy.engine.config.GameEnginePropertyFileReader;
 import games.strategy.engine.config.PropertyReader;
-import games.strategy.engine.framework.mapDownload.MapDownloadStrategy;
-import games.strategy.engine.framework.mapDownload.MapDownloadController;
-import games.strategy.engine.framework.mapDownload.MapListingSource;
+import games.strategy.engine.framework.map.download.MapDownloadController;
+import games.strategy.engine.framework.map.download.MapDownloadStrategy;
+import games.strategy.engine.framework.map.download.MapListingSource;
 
 /**
  * IOC container for storing objects needed by the TripleA Swing client
