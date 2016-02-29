@@ -103,10 +103,7 @@ public class DownloadFile {
 
   public void cancelDownload() {
     if (!isDone()) {
-      System.out.println("Cancelled: " + downloadDescription.getMapName());
       state = DownloadState.CANCELLED;
-    } else {
-      System.out.println("Cancelled: , but was done" + downloadDescription.getMapName());
     }
   }
 
