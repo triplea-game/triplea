@@ -56,7 +56,7 @@ public class SwingComponents {
   }
 
   public static JButton newJButton(String title, String toolTip, ActionListener actionListener) {
-    JButton button = newJButton(title,actionListener);
+    JButton button = newJButton(title, actionListener);
     button.setToolTipText(toolTip);
     return button;
   }
@@ -84,9 +84,8 @@ public class SwingComponents {
   public static void promptUser(final String title, final String message, final Runnable confirmedAction,
       final Runnable cancelAction) {
     SwingUtilities.invokeLater(() -> {
-      // JDialog.setDefaultLookAndFeelDecorated(true);
-      int response = JOptionPane.showConfirmDialog(null, message, title,
-          JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+      int response =
+          JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
       boolean result = response == JOptionPane.YES_OPTION;
 
       if (result) {
@@ -135,7 +134,7 @@ public class SwingComponents {
   }
 
   public static <T> JList<String> newJList(List<T> maps, Function<T, String> mapper) {
-    List<String> mapList = maps.stream().map( mapper).collect(Collectors.toList());
+    List<String> mapList = maps.stream().map(mapper).collect(Collectors.toList());
     return new JList(mapList.toArray());
   }
 
@@ -156,6 +155,6 @@ public class SwingComponents {
 
   public static Border newEmptyBorder(int borderWidth) {
     int w = borderWidth;
-    return new EmptyBorder(w,w,w,w);
+    return new EmptyBorder(w, w, w, w);
   }
 }
