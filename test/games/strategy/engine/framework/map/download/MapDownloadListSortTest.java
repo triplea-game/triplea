@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.mapDownload;
+package games.strategy.engine.framework.map.download;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -10,6 +10,8 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
+import games.strategy.engine.framework.map.download.DownloadFileDescription;
+import games.strategy.engine.framework.map.download.MapDownloadListSort;
 import games.strategy.util.Version;
 
 public class MapDownloadListSortTest {

@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.mapDownload;
+package games.strategy.engine.framework.map.download;
 
 import java.util.List;
 import java.util.Optional;

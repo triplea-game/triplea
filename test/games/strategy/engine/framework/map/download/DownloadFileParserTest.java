@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.mapDownload;
+package games.strategy.engine.framework.map.download;
 
 
 import static org.hamcrest.Matchers.is;
@@ -9,6 +9,9 @@ import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
+
+import games.strategy.engine.framework.map.download.DownloadFileDescription;
+import games.strategy.engine.framework.map.download.DownloadFileParser;
 
 public class DownloadFileParserTest {
 

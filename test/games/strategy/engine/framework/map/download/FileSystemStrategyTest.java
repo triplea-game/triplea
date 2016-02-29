@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.mapDownload;
+package games.strategy.engine.framework.map.download;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -11,6 +11,8 @@ import org.junit.Test;
 
 import com.google.common.io.Files;
 
+import games.strategy.engine.framework.map.download.DownloadFileProperties;
+import games.strategy.engine.framework.map.download.FileSystemAccessStrategy;
 import games.strategy.test.TestUtil;
 import games.strategy.util.Version;
 

@@ -31,7 +31,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.mapDownload.MapDownloadController;
+import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
 import games.strategy.engine.framework.ui.background.WaitWindow;
@@ -157,6 +157,15 @@ public class GameRunner2 {
       checkForMemoryXMX();
       setupLookAndFeel();
     }
+
+    LocalSystemChecker systemCheck = new LocalSystemChecker();
+    if (!systemCheck.getExceptions().isEmpty()) {
+      String msg = "Warning!! " + systemCheck.getExceptions().size()
+          + " system checks failed. Some game features may not be available or may not work correctly.\n"
+          + systemCheck.getStatusMessage();
+      ClientLogger.logError(msg, systemCheck.getExceptions());
+    }
+
     s_countDownLatch = new CountDownLatch(1);
     try {
       SwingUtilities.invokeAndWait(new Runnable() {
@@ -789,7 +798,8 @@ public class GameRunner2 {
         return true;
       } else {
         // if this is the first time we are running THIS version of TripleA, then show what is new.
-        if (firstTimeThisVersion && latestEngineOut.getReleaseNotes().containsKey(ClientContext.engineVersion().getVersion())) {
+        if (firstTimeThisVersion
+            && latestEngineOut.getReleaseNotes().containsKey(ClientContext.engineVersion().getVersion())) {
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {

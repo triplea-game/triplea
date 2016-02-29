@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.mapDownload;
+package games.strategy.engine.framework.map.download;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -16,6 +16,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.collect.Lists;
 
+import games.strategy.engine.framework.map.download.DownloadFileDescription;
+import games.strategy.engine.framework.map.download.FileSystemAccessStrategy;
+import games.strategy.engine.framework.map.download.MapDownloadList;
 import games.strategy.util.Version;
 
 
