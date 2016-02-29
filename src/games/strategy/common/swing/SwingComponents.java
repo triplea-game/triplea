@@ -24,7 +24,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-import games.strategy.engine.framework.mapDownload.DownloadFileDescription;
+import games.strategy.engine.framework.map.download.DownloadFileDescription;
 
 public class SwingComponents {
 
