@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.mapDownload;
+package games.strategy.engine.framework.map.download;
 
 
 import static org.hamcrest.Matchers.is;
@@ -12,6 +12,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import games.strategy.engine.config.GameEngineProperty;
 import games.strategy.engine.config.PropertyReader;
+import games.strategy.engine.framework.map.download.MapListingSource;
 
 
 /**
