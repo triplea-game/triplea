@@ -300,8 +300,9 @@ public class InstallMapDialog extends JFrame {
       final List<DownloadFileDescription> selectedMaps =
           maps.stream().filter(map -> !map.isDummyUrl() && selectedValues.contains(map.getMapName()))
               .collect(Collectors.toList());
-
-      FileSystemAccessStrategy.remove(selectedMaps, listModel);
+      if(!selectedMaps.isEmpty()) {
+        FileSystemAccessStrategy.remove(selectedMaps, listModel);
+      }
     };
   }
 
