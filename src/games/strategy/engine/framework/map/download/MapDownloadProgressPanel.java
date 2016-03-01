@@ -48,7 +48,7 @@ public final class MapDownloadProgressPanel extends JPanel {
 
   public void cancel() {
     downloadCoordinator.cancelDownloads();
- }
+  }
 
 
   public void download(List<DownloadFileDescription> newDownloads) {
@@ -74,14 +74,14 @@ public final class MapDownloadProgressPanel extends JPanel {
 
 
     for (DownloadFileDescription download : newDownloads) {
-      if( download.isDummyUrl() || download.getMapName().isEmpty() ){
+      if (download.isDummyUrl() || download.getMapName().isEmpty()) {
         continue;
       }
       // space at the end of the label so the text does not end right at the progress bar
       labels.put(download, new JLabel(download.getMapName() + "  "));
       JProgressBar progressBar = new JProgressBar();
       progressBar.setStringPainted(true);
-      progressBar.setToolTipText("Installing to: "+ download.getInstallLocation().getAbsolutePath());
+      progressBar.setToolTipText("Installing to: " + download.getInstallLocation().getAbsolutePath());
 
       progressBars.put(download, progressBar);
     }
@@ -101,7 +101,7 @@ public final class MapDownloadProgressPanel extends JPanel {
     repaint();
 
     for (DownloadFileDescription download : newDownloads) {
-      if( download.isDummyUrl() || download.getMapName().isEmpty()) {
+      if (download.isDummyUrl() || download.getMapName().isEmpty()) {
         continue;
       }
       final JProgressBar progressBar = progressBars.get(download);

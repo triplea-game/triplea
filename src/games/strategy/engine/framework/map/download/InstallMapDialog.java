@@ -133,7 +133,7 @@ public class InstallMapDialog extends JFrame {
     final JLabel mapSizeLabel = new JLabel(" ");
 
     final DefaultListModel listModel = createGameSelectionListModel(maps);
-    final JList<String> gamesList = createGameSelectionList(listModel, maps, descriptionPane);
+    final JList<String> gamesList = createGameSelectionList(listModel, maps, descriptionPane, action, mapSizeLabel);
     gamesList.addListSelectionListener(createDescriptionPanelUpdatingSelectionListener(
         descriptionPane, gamesList, maps, action, mapSizeLabel));
     main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
@@ -153,7 +153,7 @@ public class InstallMapDialog extends JFrame {
 
 
   private static JList<String> createGameSelectionList(DefaultListModel model, List<DownloadFileDescription> maps,
-      JEditorPane descriptionPanel) {
+      JEditorPane descriptionPanel, MapAction action, JLabel mapSizeLabel) {
     JList gamesList = SwingComponents.newJList(model);
 
     Optional<Integer> index = getDefaultSelectionIndex(maps);
@@ -161,6 +161,8 @@ public class InstallMapDialog extends JFrame {
       gamesList.setSelectedIndex(index.get());
       String text = createEditorPaneText(maps.get(index.get()));
       descriptionPanel.setText(text);
+
+      updateMapUrlAndSizeLabel(maps.get(index.get()), action, mapSizeLabel);
     }
     return gamesList;
   }
@@ -188,18 +190,21 @@ public class InstallMapDialog extends JFrame {
         descriptionPanel.setText(text);
         descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
 
-        mapSizeLabel.setText(" ");
-        if (!map.isDummyUrl()) {
-          (new Thread(() -> {
-            final String labelText = createLabelText(action, map);
-            if (index == gamesList.getSelectedIndex()) {
-              SwingUtilities.invokeLater(() -> mapSizeLabel.setText(labelText));
-            }
-          })).start();
-        }
+        updateMapUrlAndSizeLabel(map, action, mapSizeLabel);
 
       }
     };
+  }
+
+  private static void updateMapUrlAndSizeLabel(DownloadFileDescription map, MapAction action, JLabel mapSizeLabel) {
+    mapSizeLabel.setText(" ");
+    if (!map.isDummyUrl()) {
+      (new Thread(() -> {
+        final String labelText = createLabelText(action, map);
+        SwingUtilities.invokeLater(() -> mapSizeLabel.setText(labelText));
+      })).start();
+    }
+
   }
 
   private static String createLabelText(MapAction action, DownloadFileDescription map) {
@@ -275,40 +280,38 @@ public class InstallMapDialog extends JFrame {
   }
 
 
+  private static final String MULTIPLE_SELECT_MSG =
+      "You can select multiple maps by holding control or shift while clicking map names.";
+
   private JButton buildMapActionButton(MapAction action, JList<String> gamesList, List<DownloadFileDescription> maps,
       DefaultListModel listModel) {
     final JButton actionButton;
 
     if (action == MapAction.REMOVE) {
-      // We close the window after removing maps, so we do not need to pass in the listModel which would otherwise be used
-      // to update the JList to no longer contain the map we  are removing.
-      actionButton = SwingComponents.newJButton("Remove", removeAction(gamesList, maps));
+      actionButton = SwingComponents.newJButton("Remove", removeAction(gamesList, maps, listModel));
+
+      String hoverText =
+          "Click this button to remove the maps selected above from your computer. " + MULTIPLE_SELECT_MSG;
+      actionButton.setToolTipText(hoverText);
     } else {
-      final String buttonText;
-      if (action == MapAction.INSTALL) {
-        buttonText = "Install";
-      } else {
-        buttonText = "Update";
-      }
+      final String buttonText = (action == MapAction.INSTALL) ? "Install" : "Update";
       actionButton = SwingComponents.newJButton(buttonText, installAction(gamesList, maps, listModel));
-      actionButton.setToolTipText(
-          "Click this button to install the currently selected map(s). Click the map names above while holding control to select multiple maps for installation.");
+      String hoverText = "Click this button to download and install the maps selected above. " + MULTIPLE_SELECT_MSG;
+      actionButton.setToolTipText(hoverText);
     }
     return actionButton;
   }
 
-  private ActionListener removeAction(JList<String> gamesList, List<DownloadFileDescription> maps) {
+  private static ActionListener removeAction(JList<String> gamesList, List<DownloadFileDescription> maps,
+      DefaultListModel listModel) {
     return (e) -> {
       final List<String> selectedValues = gamesList.getSelectedValuesList();
       final List<DownloadFileDescription> selectedMaps =
           maps.stream().filter(map -> !map.isDummyUrl() && selectedValues.contains(map.getMapName()))
               .collect(Collectors.toList());
-
-      final Runnable removeCompleteCallback = () -> {
-        setVisible(false);
-        dispose();
-      };
-      FileSystemAccessStrategy.remove(selectedMaps, removeCompleteCallback);
+      if (!selectedMaps.isEmpty()) {
+        FileSystemAccessStrategy.remove(selectedMaps, listModel);
+      }
     };
   }
 
