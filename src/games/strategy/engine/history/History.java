@@ -165,12 +165,7 @@ public class History extends DefaultTreeModel implements java.io.Serializable {
       return;
     }
     if (m_currentNode == getLastNode()) {
-      getGameData().acquireWriteLock();
-      try {
-        new ChangePerformer(m_data).perform(aChange);
-      } finally {
-        getGameData().releaseWriteLock();
-      }
+      new ChangePerformer(m_data).perform(aChange);
     }
   }
 
