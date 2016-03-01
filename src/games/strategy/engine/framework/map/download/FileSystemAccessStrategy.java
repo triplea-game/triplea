@@ -69,7 +69,9 @@ public class FileSystemAccessStrategy {
       }
 
       if (!fails.isEmpty()) {
-        showFailDialog("Failed to remove (these map files will need to be removed manually):", fails);
+        showFailDialog("Unable to delete some maps files.\nPlease restart TripleA and check if the files have been removed.\n"
+            + "If not, they will need to be removed manually:", fails);
+        fails.forEach(m-> m.getInstallLocation().deleteOnExit());
       }
       removeCompleteCallback.run();
     };
