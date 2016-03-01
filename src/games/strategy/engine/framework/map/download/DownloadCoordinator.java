@@ -64,6 +64,7 @@ public class DownloadCoordinator {
       }
     });
   }
+
   private void startNextDownloads() {
     long downloadingCount = countDownloadsInProgress();
     if (downloadList != null && downloadingCount < MAX_CONCURRENT_DOWNLOAD) {

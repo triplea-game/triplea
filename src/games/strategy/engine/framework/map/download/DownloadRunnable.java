@@ -20,7 +20,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 
 /** Used to download triplea_maps.xml */
 public class DownloadRunnable implements Runnable {
-  private static Map<URL,File> downloadCache = Maps.newHashMap();
+  private static Map<URL, File> downloadCache = Maps.newHashMap();
   private final String urlString;
   private final boolean parse;
   private volatile byte[] contents;
@@ -62,9 +62,9 @@ public class DownloadRunnable implements Runnable {
     try {
       final URL url = getUrlFollowingRedirects(urlString);
 
-      if( !downloadCache.containsKey(url)) {
+      if (!downloadCache.containsKey(url)) {
         File tempFile = ClientFileSystemHelper.createTempFile();
-        FileUtils.copyURLToFile( url, tempFile);
+        FileUtils.copyURLToFile(url, tempFile);
         downloadCache.put(url, tempFile);
       }
       File f = downloadCache.get(url);

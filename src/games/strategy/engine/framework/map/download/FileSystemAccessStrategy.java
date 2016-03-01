@@ -33,7 +33,8 @@ public class FileSystemAccessStrategy {
 
   public static void remove(List<DownloadFileDescription> toRemove, DefaultListModel listModel) {
     SwingComponents.promptUser("Remove Maps?",
-        "<html>Will remove " + toRemove.size() + " maps, are you sure? <br/>" + formatMapList(toRemove, map-> map.getMapName()) + "</html>",
+        "<html>Will remove " + toRemove.size() + " maps, are you sure? <br/>"
+            + formatMapList(toRemove, map -> map.getMapName()) + "</html>",
         createRemoveMapAction(toRemove, listModel));
   }
 
@@ -66,14 +67,14 @@ public class FileSystemAccessStrategy {
       if (!deletes.isEmpty()) {
         showRemoveSuccessDialog("Successfully removed.", deletes);
         // only once we know for sure we deleted things, then delete the ".properties" file
-        deletes.forEach( dl -> (new File(dl.getInstallLocation() + ".properties")).delete());
+        deletes.forEach(dl -> (new File(dl.getInstallLocation() + ".properties")).delete());
         deletes.forEach(m -> listModel.removeElement(m.getMapName()));
       }
 
       if (!fails.isEmpty()) {
         showRemoveFailDialog("Unable to delete some of the maps files.<br />Please restart TripleA and try again.<br />"
             + "Manual removal of the files may be necessary:", fails);
-        fails.forEach(m-> m.getInstallLocation().deleteOnExit());
+        fails.forEach(m -> m.getInstallLocation().deleteOnExit());
       }
     };
   }
@@ -83,15 +84,16 @@ public class FileSystemAccessStrategy {
     showDialog(message, Optional.empty(), mapList, (map) -> map.getInstallLocation().getAbsolutePath());
   }
 
-  private static void showRemoveSuccessDialog( String successMessage, List<DownloadFileDescription> mapList) {
+  private static void showRemoveSuccessDialog(String successMessage, List<DownloadFileDescription> mapList) {
     String message = createDialogMessage(successMessage, mapList);
-    String footerText =  "<br />Please restart TripleA before re-installing these maps";
+    String footerText = "<br />Please restart TripleA before re-installing these maps";
     showDialog(message, Optional.of(footerText), mapList, (map) -> map.getMapName());
   }
 
-  private static void showDialog(String message, Optional<String> footerText, List<DownloadFileDescription> mapList,  Function<DownloadFileDescription,String> outputFunction) {
+  private static void showDialog(String message, Optional<String> footerText, List<DownloadFileDescription> mapList,
+      Function<DownloadFileDescription, String> outputFunction) {
     StringBuilder sb = new StringBuilder("<html>" + message + "<br /> " + formatMapList(mapList, outputFunction));
-    if( footerText.isPresent() ) {
+    if (footerText.isPresent()) {
       sb.append(footerText.get());
     }
     sb.append("</html>");
@@ -99,12 +101,13 @@ public class FileSystemAccessStrategy {
     SwingComponents.newMessageDialog(sb.toString());
   }
 
-  private static String createDialogMessage( String message, List<DownloadFileDescription> mapList ) {
+  private static String createDialogMessage(String message, List<DownloadFileDescription> mapList) {
     String plural = mapList.size() > 0 ? "s" : "";
     return message + " " + mapList.size() + " map" + plural;
   }
 
-  private static String formatMapList(List<DownloadFileDescription> mapList, Function<DownloadFileDescription,String> outputFunction) {
+  private static String formatMapList(List<DownloadFileDescription> mapList,
+      Function<DownloadFileDescription, String> outputFunction) {
     final int MAX_MAPS_TO_LIST = 6;
     StringBuilder sb = new StringBuilder("<ul>");
     for (int i = 0; i < mapList.size(); i++) {

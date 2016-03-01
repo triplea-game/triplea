@@ -32,7 +32,7 @@ public final class MapDownloadListSort {
         returnList.addAll(sort(maps));
         maps = Lists.newArrayList();
 
-        if(!returnList.isEmpty()) {
+        if (!returnList.isEmpty()) {
           // Add an empty row before any new headers (with exception to the first row)
           returnList.add(DownloadFileDescription.PLACE_HOLDER);
         }
