@@ -275,36 +275,33 @@ public class InstallMapDialog extends JFrame {
   }
 
 
+  private static final String MULTIPLE_SELECT_MSG = "You can select multiple maps by holding control or shift while clicking map names.";
   private JButton buildMapActionButton(MapAction action, JList<String> gamesList, List<DownloadFileDescription> maps,
       DefaultListModel listModel) {
     final JButton actionButton;
 
     if (action == MapAction.REMOVE) {
-      // We close the window after removing maps, so we do not need to pass in the listModel which would otherwise be used
-      // to update the JList to no longer contain the map we  are removing.
-      actionButton = SwingComponents.newJButton("Remove", removeAction(gamesList, maps));
+      actionButton = SwingComponents.newJButton("Remove", removeAction(gamesList, maps, listModel));
+
+      String hoverText = "Click this button to remove the maps selected above from your computer. " + MULTIPLE_SELECT_MSG;
+      actionButton.setToolTipText(hoverText);
     } else {
-      final String buttonText;
-      if (action == MapAction.INSTALL) {
-        buttonText = "Install";
-      } else {
-        buttonText = "Update";
-      }
+      final String buttonText = (action == MapAction.INSTALL) ?  "Install" : "Update";
       actionButton = SwingComponents.newJButton(buttonText, installAction(gamesList, maps, listModel));
-      actionButton.setToolTipText(
-          "Click this button to install the currently selected map(s). Click the map names above while holding control to select multiple maps for installation.");
+      String hoverText = "Click this button to download and install the maps selected above. " + MULTIPLE_SELECT_MSG;
+      actionButton.setToolTipText(hoverText);
     }
     return actionButton;
   }
 
-  private static ActionListener removeAction(JList<String> gamesList, List<DownloadFileDescription> maps) {
+  private static ActionListener removeAction(JList<String> gamesList, List<DownloadFileDescription> maps, DefaultListModel listModel) {
     return (e) -> {
       final List<String> selectedValues = gamesList.getSelectedValuesList();
       final List<DownloadFileDescription> selectedMaps =
           maps.stream().filter(map -> !map.isDummyUrl() && selectedValues.contains(map.getMapName()))
               .collect(Collectors.toList());
 
-      FileSystemAccessStrategy.remove(selectedMaps);
+      FileSystemAccessStrategy.remove(selectedMaps, listModel);
     };
   }
 

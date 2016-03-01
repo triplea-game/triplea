@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import javax.swing.DefaultListModel;
+
 import com.google.common.collect.Lists;
 
 import games.strategy.common.swing.SwingComponents;
@@ -29,13 +31,13 @@ public class FileSystemAccessStrategy {
     }
   }
 
-  public static void remove(List<DownloadFileDescription> toRemove) {
+  public static void remove(List<DownloadFileDescription> toRemove, DefaultListModel listModel) {
     SwingComponents.promptUser("Remove Maps?",
         "<html>Will remove " + toRemove.size() + " maps, are you sure? <br/>" + formatMapList(toRemove, map-> map.getMapName()) + "</html>",
-        createRemoveMapAction(toRemove));
+        createRemoveMapAction(toRemove, listModel));
   }
 
-  private static Runnable createRemoveMapAction(List<DownloadFileDescription> maps) {
+  private static Runnable createRemoveMapAction(List<DownloadFileDescription> maps, DefaultListModel listModel) {
     return () -> {
       List<DownloadFileDescription> fails = Lists.newArrayList();
       List<DownloadFileDescription> deletes = Lists.newArrayList();
@@ -62,9 +64,10 @@ public class FileSystemAccessStrategy {
 
 
       if (!deletes.isEmpty()) {
-        showSuccessDialog("Successfully removed", deletes);
+        showSuccessDialog("Successfully removed.", deletes);
         // only once we know for sure we deleted things, then delete the ".properties" file
         deletes.forEach( dl -> (new File(dl.getInstallLocation() + ".properties")).delete());
+        deletes.forEach(m -> listModel.removeElement(m.getMapName()));
       }
 
       if (!fails.isEmpty()) {
@@ -75,18 +78,24 @@ public class FileSystemAccessStrategy {
     };
   }
 
-  private static void showFailDialog(String message, List<DownloadFileDescription> mapList) {
+  private static void showFailDialog(String failMessage, List<DownloadFileDescription> mapList) {
+    String message = createDialogMessage(failMessage, mapList);
     showDialog(message,mapList, (map) -> map.getInstallLocation().getAbsolutePath());
   }
 
-  private static void showSuccessDialog( String message, List<DownloadFileDescription> mapList) {
+  private static void showSuccessDialog( String successMessage, List<DownloadFileDescription> mapList) {
+    String message = createDialogMessage(successMessage, mapList) + "\nPlease restart Triple before re-installing these re-installing maps.";
     showDialog(message,mapList, (map) -> map.getMapName());
   }
 
   private static void showDialog(String message, List<DownloadFileDescription> mapList,  Function<DownloadFileDescription,String> outputFunction) {
-    String plural = mapList.size() > 0 ? "s" : "";
     SwingComponents.newMessageDialog(
-        "<html>" + message + " " + mapList.size() + " map" + plural + "<br /> " + formatMapList(mapList, outputFunction)+ "</html>");
+        "<html>" + message + "<br /> " + formatMapList(mapList, outputFunction)+ "</html>");
+  }
+
+  private static String createDialogMessage( String message, List<DownloadFileDescription> mapList ) {
+    String plural = mapList.size() > 0 ? "s" : "";
+    return message + " " + mapList.size() + " map" + plural;
   }
 
   private static String formatMapList(List<DownloadFileDescription> mapList, Function<DownloadFileDescription,String> outputFunction) {
