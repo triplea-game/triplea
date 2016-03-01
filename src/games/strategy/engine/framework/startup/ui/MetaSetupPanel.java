@@ -215,7 +215,7 @@ public class MetaSetupPanel extends SetupPanel {
       // We open both the actual rule book, and the web page for all guides.
       // This way we can add other guides and rulebooks and tutorials later, as well as being able to update them after
       // the stable is out.
-      DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/TripleA_RuleBook.pdf");
+      DesktopUtilityBrowserLauncher.openURL("http://github.com/triplea-game/assets/blob/master/rulebooks/TripleA_RuleBook.pdf");
       DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/mywiki/Guides");
       // BareBonesBrowserLaunch.openURL("https://sourceforge.net/projects/triplea/files/help/");
     } catch (final Exception ex) {

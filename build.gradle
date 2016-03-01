@@ -114,7 +114,7 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updat
 		into('icons')
 		exclude("icon.icns")
 	}
-	['readme.html', 'changelog.txt', 'system.ini', 'TripleA_RuleBook.pdf', 'game_engine.properties',
+	['readme.html', 'changelog.txt', 'system.ini', 'game_engine.properties',
 	 'run-headless-game-host-mac-os.sh', 'run-headless-game-host.sh', 'run-headless-game-host-windows.bat',
 	 'triplea_unix.sh', 'triplea_windows.bat', 'triplea_mac_os_x.sh'].each { fileName ->
 		from(fileName)
