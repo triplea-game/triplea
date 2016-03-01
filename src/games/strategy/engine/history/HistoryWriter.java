@@ -1,8 +1,5 @@
 package games.strategy.engine.history;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.Change;
@@ -16,7 +13,6 @@ public class HistoryWriter implements java.io.Serializable {
   private static final long serialVersionUID = 4230519614567508061L;
   private final History m_history;
   private HistoryNode m_current;
-  private static final Logger s_logger = Logger.getLogger(HistoryWriter.class.getName());
 
   public HistoryWriter(final History history) {
     m_history = history;
@@ -34,8 +30,6 @@ public class HistoryWriter implements java.io.Serializable {
   public void startNextStep(final String stepName, final String delegateName, final PlayerID player,
       final String stepDisplayName) {
     assertCorrectThread();
-    s_logger.log(Level.FINE, "start step, stepName:" + stepName + " delegateName:" + delegateName + " player:" + player
-        + " displayName:" + stepDisplayName);
     // we are being called for the first time
     if (m_current == null) {
       int round = 0;
@@ -63,7 +57,6 @@ public class HistoryWriter implements java.io.Serializable {
 
   public void startNextRound(final int round) {
     assertCorrectThread();
-    s_logger.log(Level.FINE, "Starting round:" + round);
     if (isCurrentEvent()) {
       closeCurrent();
     }
@@ -118,8 +111,6 @@ public class HistoryWriter implements java.io.Serializable {
 
   public void startEvent(final String eventName) {
     assertCorrectThread();
-    s_logger.log(Level.FINE, "Starting event:" + eventName);
-    // close the current event
     if (isCurrentEvent()) {
       closeCurrent();
     }
@@ -148,7 +139,6 @@ public class HistoryWriter implements java.io.Serializable {
    */
   public void addChildToEvent(final EventChild node) {
     assertCorrectThread();
-    s_logger.log(Level.FINE, "Adding child:" + node);
     if (!isCurrentEvent()) {
       new IllegalStateException("Not in an event, but trying to add child:" + node + " current is:" + m_current)
           .printStackTrace(System.out);
@@ -162,7 +152,6 @@ public class HistoryWriter implements java.io.Serializable {
    */
   public void addChange(final Change change) {
     assertCorrectThread();
-    s_logger.log(Level.FINE, "Adding change:" + change);
     if (!isCurrentEvent() && !isCurrentStep()) {
       new IllegalStateException("Not in an event, but trying to add change:" + change + " current is:" + m_current)
           .printStackTrace(System.out);
@@ -173,7 +162,6 @@ public class HistoryWriter implements java.io.Serializable {
 
   public void setRenderingData(final Object details) {
     assertCorrectThread();
-    s_logger.log(Level.FINE, "Setting rendering data:" + details);
     if (!isCurrentEvent()) {
       new IllegalStateException("Not in an event, but trying to set details:" + details + " current is:" + m_current)
           .printStackTrace(System.out);
@@ -185,10 +173,6 @@ public class HistoryWriter implements java.io.Serializable {
     } finally {
       m_history.getGameData().releaseWriteLock();
     }
-    /*
-     * Can delete after a few releases confirm that the new way works
-     * m_history.reload(m_current);
-     */
     m_history.goToEnd();
   }
 }
