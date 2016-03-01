@@ -120,7 +120,7 @@ public class NewGameChooserModel extends DefaultListModel {
         }
       }
     } catch (final IOException ioe) {
-      ClientLogger.logQuietly(ioe);
+      confirmWithUserAndThenDeleteCorruptZipFile(map);
     }
 
     if (badMapZip) {
