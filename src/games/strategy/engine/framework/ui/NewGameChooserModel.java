@@ -24,6 +24,7 @@ import javax.swing.SwingUtilities;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -119,12 +120,12 @@ public class NewGameChooserModel extends DefaultListModel {
           }
         }
       }
-    } catch (final IOException ioe) {
-      ClientLogger.logQuietly(ioe);
+    } catch (final IOException e) {
+      confirmWithUserAndThenDeleteCorruptZipFile(map, Optional.of(e.getMessage()));
     }
 
     if (badMapZip) {
-      confirmWithUserAndThenDeleteCorruptZipFile(map);
+      confirmWithUserAndThenDeleteCorruptZipFile(map, Optional.absent());
     }
     return entries;
   }
@@ -148,7 +149,7 @@ public class NewGameChooserModel extends DefaultListModel {
    * Open up a confirmation dialog, if user says yes, delete the map specified by
    * parameter, then show confirmation of deletion.
    */
-  private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map) {
+  private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map, Optional<String> details) {
     try {
       Runnable deleteMapRunnable = new Runnable() {
         @Override
@@ -156,6 +157,9 @@ public class NewGameChooserModel extends DefaultListModel {
           final Component parentComponent = MainFrame.getInstance();
           String message = "Could not parse map file correctly, would you like to remove it?\n" + map.getAbsolutePath()
               + "\n(You may see this error message again if you keep the file)";
+          if( details.isPresent()) {
+            message += "\nError message encountered: " + details.get();
+          }
           String title = "Corrup Map File Found";
           final int optionType = JOptionPane.YES_NO_OPTION;
           int messageType = JOptionPane.WARNING_MESSAGE;
