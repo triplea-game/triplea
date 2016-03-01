@@ -61,7 +61,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     final ITestDelegateBridge bridge = getDelegateBridge(player);
     final Territory balkans = m_data.getMap().getTerritory("Balkans");
     final Change addAir = ChangeFactory.addUnits(balkans, m_fighter.create(2, player));
-    new ChangePerformer(m_data).perform(addAir);
+    ChangePerformer.perform(addAir, m_data);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
     final Collection<Territory> cantLand = airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
     assertEquals(1, cantLand.size());
@@ -76,7 +76,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     final ITestDelegateBridge bridge = getDelegateBridge(player);
     final Territory sz_55 = m_data.getMap().getTerritory("55 Sea Zone");
     final Change addAir = ChangeFactory.addUnits(sz_55, m_fighter.create(2, player));
-    new ChangePerformer(m_data).perform(addAir);
+    ChangePerformer.perform(addAir, m_data);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
     final Collection<Territory> cantLand = airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
     assertEquals(1, cantLand.size());
@@ -90,7 +90,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     final ITestDelegateBridge bridge = getDelegateBridge(player);
     final Territory sz_55 = m_data.getMap().getTerritory("55 Sea Zone");
     final Change addAir = ChangeFactory.addUnits(sz_55, m_fighter.create(2, player));
-    new ChangePerformer(m_data).perform(addAir);
+    ChangePerformer.perform(addAir, m_data);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
     airThatCantLandUtil.removeAirThatCantLand(player, true);
     assertEquals(2, sz_55.getUnits().getMatches(Matches.UnitIsAir).size());
@@ -102,7 +102,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     final ITestDelegateBridge bridge = getDelegateBridge(player);
     final Territory sz_52 = m_data.getMap().getTerritory("52 Sea Zone");
     final Change addAir = ChangeFactory.addUnits(sz_52, m_fighter.create(2, player));
-    new ChangePerformer(m_data).perform(addAir);
+    ChangePerformer.perform(addAir, m_data);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
     final Collection<Territory> cantLand = airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
     assertEquals(1, cantLand.size());
@@ -306,7 +306,8 @@ public class AirThatCantLandUtilTest extends TestCase {
     assertEquals(expectedCountCanada, postCountInt);
   }
 
-  private ITripleaPlayer getDummyPlayer() {
+  /** @deprecated Use a mock object instead */
+  private static ITripleaPlayer getDummyPlayer() {
     final InvocationHandler handler = new InvocationHandler() {
       @Override
       public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {

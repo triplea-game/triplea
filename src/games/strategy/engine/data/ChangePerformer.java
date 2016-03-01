@@ -37,4 +37,8 @@ public class ChangePerformer {
     }
     m_data.notifyGameDataChanged(aChange);
   }
+
+  public static void perform(final Change aChange, final GameData gameData) {
+    (new ChangePerformer(gameData)).perform(aChange);
+  }
 }

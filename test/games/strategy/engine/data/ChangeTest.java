@@ -66,12 +66,12 @@ public class ChangeTest extends TestCase {
     // remove some units
     final Collection<Unit> units = can.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
     final Change change = ChangeFactory.removeUnits(can, units);
-    final ChangePerformer changePerformer = new ChangePerformer(m_data);
-    changePerformer.perform(change);
+    ChangePerformer.perform(change, m_data);
+
     assertEquals(can.getUnits().getUnitCount(), 2);
-    // invert the change
-    changePerformer.perform(change.invert());
-    assertEquals(can.getUnits().getUnitCount(), 5);
+    ChangePerformer.perform(change.invert(), m_data);
+    assertEquals("last change inverted, should have gained units.",
+        can.getUnits().getUnitCount(), 5);
   }
 
   public void testSerializeUnitsRemoteTerritory() throws Exception {

@@ -20,6 +20,9 @@ import games.strategy.triplea.ui.display.ITripleaDisplay;
 /**
  * Not for actual use, suitable for testing. Never returns messages, but can get
  * random and implements changes immediately.
+ *
+ * @deprecated Use mock objects instead. This TestDelegateBridge object has a substantial amount of implementation and
+ *             coupling to the rest of the system, do not build on it.
  */
 public class TestDelegateBridge implements ITestDelegateBridge {
   private final GameData m_data;
@@ -82,8 +85,7 @@ public class TestDelegateBridge implements ITestDelegateBridge {
 
   @Override
   public void addChange(final Change aChange) {
-    final ChangePerformer changePerformer = new ChangePerformer(m_data);
-    changePerformer.perform(aChange);
+    ChangePerformer.perform(aChange, m_data);
   }
 
   @Override
