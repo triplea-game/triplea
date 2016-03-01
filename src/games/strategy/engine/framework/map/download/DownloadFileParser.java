@@ -18,7 +18,10 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import games.strategy.util.Version;
 
-/** Utility class to parse an available map list file config file - used to determine which maps are available for download */
+/**
+ * Utility class to parse an available map list file config file - used to determine which maps are available for
+ * download
+ */
 public final class DownloadFileParser {
 
   private DownloadFileParser() {}

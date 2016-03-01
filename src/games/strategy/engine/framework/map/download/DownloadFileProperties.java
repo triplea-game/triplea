@@ -24,16 +24,16 @@ public class DownloadFileProperties {
     try (final FileInputStream fis = new FileInputStream(fromZip(zipFile))) {
       rVal.props.load(fis);
     } catch (final IOException e) {
-      ClientLogger.logError("Failed to read property file: "+ fromZip(zipFile).getAbsolutePath(),e);
+      ClientLogger.logError("Failed to read property file: " + fromZip(zipFile).getAbsolutePath(), e);
     }
     return rVal;
   }
 
   public static void saveForZip(final File zipFile, final DownloadFileProperties props) {
-    try ( final FileOutputStream fos = new FileOutputStream(fromZip(zipFile))) {
-        props.props.store(fos, null);
+    try (final FileOutputStream fos = new FileOutputStream(fromZip(zipFile))) {
+      props.props.store(fos, null);
     } catch (final IOException e) {
-      ClientLogger.logError("Failed to write property file to: " + fromZip(zipFile).getAbsolutePath(),e);
+      ClientLogger.logError("Failed to write property file to: " + fromZip(zipFile).getAbsolutePath(), e);
     }
   }
 
