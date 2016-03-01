@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -24,7 +25,6 @@ import javax.swing.SwingUtilities;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -125,7 +125,7 @@ public class NewGameChooserModel extends DefaultListModel {
     }
 
     if (badMapZip) {
-      confirmWithUserAndThenDeleteCorruptZipFile(map, Optional.absent());
+      confirmWithUserAndThenDeleteCorruptZipFile(map, Optional.empty());
     }
     return entries;
   }
