@@ -133,7 +133,7 @@ public class InstallMapDialog extends JFrame {
     final JLabel mapSizeLabel = new JLabel(" ");
 
     final DefaultListModel listModel = createGameSelectionListModel(maps);
-    final JList<String> gamesList = createGameSelectionList(listModel, maps, descriptionPane);
+    final JList<String> gamesList = createGameSelectionList(listModel, maps, descriptionPane, action, mapSizeLabel);
     gamesList.addListSelectionListener(createDescriptionPanelUpdatingSelectionListener(
         descriptionPane, gamesList, maps, action, mapSizeLabel));
     main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
@@ -153,7 +153,7 @@ public class InstallMapDialog extends JFrame {
 
 
   private static JList<String> createGameSelectionList(DefaultListModel model, List<DownloadFileDescription> maps,
-      JEditorPane descriptionPanel) {
+      JEditorPane descriptionPanel, MapAction action, JLabel mapSizeLabel) {
     JList gamesList = SwingComponents.newJList(model);
 
     Optional<Integer> index = getDefaultSelectionIndex(maps);
@@ -161,6 +161,8 @@ public class InstallMapDialog extends JFrame {
       gamesList.setSelectedIndex(index.get());
       String text = createEditorPaneText(maps.get(index.get()));
       descriptionPanel.setText(text);
+
+      updateMapUrlAndSizeLabel(maps.get(index.get()), action, mapSizeLabel);
     }
     return gamesList;
   }
@@ -188,18 +190,21 @@ public class InstallMapDialog extends JFrame {
         descriptionPanel.setText(text);
         descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
 
-        mapSizeLabel.setText(" ");
-        if (!map.isDummyUrl()) {
-          (new Thread(() -> {
-            final String labelText = createLabelText(action, map);
-            if (index == gamesList.getSelectedIndex()) {
-              SwingUtilities.invokeLater(() -> mapSizeLabel.setText(labelText));
-            }
-          })).start();
-        }
+        updateMapUrlAndSizeLabel(map,action,mapSizeLabel);
 
       }
     };
+  }
+
+  private static void updateMapUrlAndSizeLabel(DownloadFileDescription map, MapAction action, JLabel mapSizeLabel ) {
+    mapSizeLabel.setText(" ");
+    if (!map.isDummyUrl()) {
+      (new Thread(() -> {
+        final String labelText = createLabelText(action, map);
+        SwingUtilities.invokeLater(() -> mapSizeLabel.setText(labelText));
+      })).start();
+    }
+
   }
 
   private static String createLabelText(MapAction action, DownloadFileDescription map) {
