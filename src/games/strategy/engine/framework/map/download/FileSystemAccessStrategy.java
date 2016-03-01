@@ -40,10 +40,19 @@ public class FileSystemAccessStrategy {
       List<DownloadFileDescription> fails = Lists.newArrayList();
       List<DownloadFileDescription> deletes = Lists.newArrayList();
 
+      // delete the map files
       for (DownloadFileDescription map : maps) {
         map.getInstallLocation().delete();
-        (new File(map.getInstallLocation() + ".properties")).delete();
+      }
 
+      // now sleep a short while before we check our work
+      try {
+        Thread.sleep(10);
+      } catch (InterruptedException e) {
+      }
+
+      // check our work, see if we actuall deleted stuff
+      for (DownloadFileDescription map : maps) {
         if (map.getInstallLocation().exists()) {
           fails.add(map);
         } else {
@@ -51,9 +60,13 @@ public class FileSystemAccessStrategy {
         }
       }
 
+
       if (!deletes.isEmpty()) {
         showDialog("Successfully removed", deletes);
+        // only once we know for sure we deleted things, then delete the ".properties" file
+        deletes.forEach( dl -> (new File(dl.getInstallLocation() + ".properties")).delete());
       }
+
       if (!fails.isEmpty()) {
         showDialog("Failed to remove", fails);
       }
