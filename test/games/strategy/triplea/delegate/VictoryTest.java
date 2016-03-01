@@ -23,6 +23,17 @@ public class VictoryTest extends TestCase {
   private PlayerID m_italians;
   private ITestDelegateBridge m_bridge;
 
+  private IntegerMap<Resource> italianResources;
+  private PurchaseDelegate purchaseDelegate;
+  private Territory b_congo;
+  private Territory kenya;
+  private UnitType motorized;
+  private UnitType armour;
+  private Territory fe_africa;
+  private Territory fw_africa;
+  private Territory a_egypt;
+  private Territory libya;
+
   public VictoryTest(final String name) {
     super(name);
   }
@@ -39,18 +50,22 @@ public class VictoryTest extends TestCase {
     initDel.setDelegateBridgeAndPlayer(m_bridge);
     initDel.start();
     initDel.end();
+
+    italianResources = m_italians.getResources().getResourcesCopy();
+    purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
+    b_congo = m_data.getMap().getTerritory("Belgian Congo");
+    kenya = m_data.getMap().getTerritory("Kenya");
+    motorized = m_data.getUnitTypeList().getUnitType("motorized");
+    armour = GameDataTestUtil.armour(m_data);
+    fe_africa = m_data.getMap().getTerritory("French Equatorial Africa");
+    fw_africa = m_data.getMap().getTerritory("French West Africa");
+    a_egypt = m_data.getMap().getTerritory("Anglo Egypt");
+    libya = m_data.getMap().getTerritory("Libya");
+
   }
 
-  @Override
-  public void tearDown() throws Exception {
-    m_data = null;
-    super.tearDown();
-  }
 
   public void testNoBlitzThroughMountain() {
-    final Territory libya = m_data.getMap().getTerritory("Libya");
-    final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
-    final UnitType armour = GameDataTestUtil.armour(m_data);
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(libya, armour.create(1, m_italians)));
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     m_bridge.setStepName("CombatMove");
@@ -62,9 +77,6 @@ public class VictoryTest extends TestCase {
   }
 
   public void testBlitzNormal() {
-    final Territory fw_africa = m_data.getMap().getTerritory("French West Africa");
-    final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
-    final UnitType armour = GameDataTestUtil.armour(m_data);
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(fw_africa, armour.create(1, m_italians)));
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     m_bridge.setStepName("CombatMove");
@@ -76,11 +88,9 @@ public class VictoryTest extends TestCase {
     assertEquals(error, null);
   }
 
+
+
   public void testNoBlitzWithStopThroughMountain() {
-    final Territory libya = m_data.getMap().getTerritory("Libya");
-    final Territory a_egypt = m_data.getMap().getTerritory("Anglo Egypt");
-    final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
-    final UnitType armour = GameDataTestUtil.armour(m_data);
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(libya, armour.create(1, m_italians)));
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     m_bridge.setStepName("CombatMove");
@@ -96,10 +106,6 @@ public class VictoryTest extends TestCase {
   }
 
   public void testBlitzWithStop() {
-    final Territory fw_africa = m_data.getMap().getTerritory("French West Africa");
-    final Territory fe_africa = m_data.getMap().getTerritory("French Equatorial Africa");
-    final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
-    final UnitType armour = GameDataTestUtil.armour(m_data);
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(fw_africa, armour.create(1, m_italians)));
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     m_bridge.setStepName("CombatMove");
@@ -112,12 +118,11 @@ public class VictoryTest extends TestCase {
     assertEquals(error, null);
   }
 
+
+
   // test if it gives the unit can't blitz error instead of the unit lost blitz error if a non-blitzing unit tries to
   // blitz!
   public void testMotorizedThroughMountain() {
-    final Territory libya = m_data.getMap().getTerritory("Libya");
-    final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
-    final UnitType motorized = m_data.getUnitTypeList().getUnitType("motorized");
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(libya, motorized.create(1, m_italians)));
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     m_bridge.setStepName("CombatMove");
@@ -129,11 +134,6 @@ public class VictoryTest extends TestCase {
   }
 
   public void testMotorizedNoBlitzBlitzedTerritory() {
-    final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
-    final Territory kenya = m_data.getMap().getTerritory("Kenya");
-    final Territory fe_africa = m_data.getMap().getTerritory("French Equatorial Africa");
-    final UnitType armour = GameDataTestUtil.armour(m_data);
-    final UnitType motorized = m_data.getUnitTypeList().getUnitType("motorized");
     new ChangePerformer(m_data).perform(ChangeFactory.changeOwner(fe_africa, m_italians));
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(fe_africa, armour.create(1, m_italians)));
     new ChangePerformer(m_data).perform(ChangeFactory.changeOwner(kenya, m_italians));
@@ -151,11 +151,8 @@ public class VictoryTest extends TestCase {
     moveDelegate.end();
   }
 
+
   public void testFuelUseMotorized() {
-    final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
-    final Territory kenya = m_data.getMap().getTerritory("Kenya");
-    final UnitType motorized = m_data.getUnitTypeList().getUnitType("motorized");
-    final UnitType armour = GameDataTestUtil.armour(m_data);
     new ChangePerformer(m_data).perform(ChangeFactory.changeOwner(kenya, m_italians));
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(kenya, motorized.create(1, m_italians)));
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
@@ -181,10 +178,6 @@ public class VictoryTest extends TestCase {
     moveDelegate.end();
   }
 
-  public void testUseNoFuelWhileTransported() {
-    // FIXME this is a known bug.. when you fix this first update
-  }
-
   public void testMultipleResourcesToPurchase() {
     final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy();
     final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
@@ -202,8 +195,6 @@ public class VictoryTest extends TestCase {
   }
 
   public void testNotEnoughMultipleResourcesToPurchase() {
-    final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy();
-    final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
     m_bridge.setStepName("italianPurchase");
     purchaseDelegate.setDelegateBridgeAndPlayer(m_bridge);
     purchaseDelegate.start();
@@ -216,9 +207,9 @@ public class VictoryTest extends TestCase {
     assertEquals(PurchaseDelegate.NOT_ENOUGH_RESOURCES, error);
   }
 
+
+
   public void testPUOnlyResourcesToPurchase() {
-    final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy();
-    final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
     m_bridge.setStepName("italianPurchase");
     purchaseDelegate.setDelegateBridgeAndPlayer(m_bridge);
     purchaseDelegate.start();
@@ -248,11 +239,4 @@ public class VictoryTest extends TestCase {
     assertEquals(italianResources, m_italians.getResources().getResourcesCopy());
   }
 
-  public void testTerritoryEffectsOnCombat() {
-    // TODO implement test
-  }
-
-  public void testCanOnlyInvadeFrom() {
-    // TODO implement test
-  }
 }
