@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
@@ -133,9 +134,15 @@ public class SwingComponents {
     });
   }
 
-  public static <T> JList<String> newJList(List<T> maps, Function<T, String> mapper) {
+  public static <T> DefaultListModel<String> newJListModel(List<T> maps, Function<T, String> mapper) {
     List<String> mapList = maps.stream().map(mapper).collect(Collectors.toList());
-    return new JList(mapList.toArray());
+    DefaultListModel<String> model = new DefaultListModel( );
+    mapList.forEach(e ->  model.addElement(e));
+    return model;
+  }
+
+  public static <T> JList<String> newJList(DefaultListModel listModel) {
+    return new JList(listModel);
   }
 
   public static JEditorPane newHtmlJEditorPane() {
