@@ -129,7 +129,7 @@ public class InstallMapDialog extends JFrame {
 
     final JLabel mapSizeLabel = new JLabel(" ");
 
-    final JList<String> gamesList = createGameSelectionList(maps);
+    final JList<String> gamesList = createGameSelectionList(maps, descriptionPane);
     gamesList.addListSelectionListener(createDescriptionPanelUpdatingSelectionListener(
         descriptionPane, gamesList, maps, action, mapSizeLabel));
     main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
@@ -142,17 +142,19 @@ public class InstallMapDialog extends JFrame {
     return main;
   }
 
-  private static JList<String> createGameSelectionList(List<DownloadFileDescription> maps) {
+  private static JList<String> createGameSelectionList(List<DownloadFileDescription> maps, JEditorPane descriptionPanel) {
     JList<String> gamesList = SwingComponents.newJList(maps, (map) -> map.getMapName());
     // select the first map, not header
-    int selectedIndex = 0;
     for (int i = 0; i < maps.size(); i++) {
       if (!maps.get(i).isDummyUrl()) {
-        selectedIndex = i;
+        gamesList.setSelectedIndex(i);
+        String text = createEditorPaneText(maps.get(i));
+        descriptionPanel.setText(text);
         break;
       }
     }
-    gamesList.setSelectedIndex(selectedIndex);
+
+
     return gamesList;
   }
 
