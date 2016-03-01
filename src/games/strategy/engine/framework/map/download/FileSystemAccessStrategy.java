@@ -29,14 +29,13 @@ public class FileSystemAccessStrategy {
     }
   }
 
-  public static void remove(List<DownloadFileDescription> toRemove, Runnable removeCompleteCallback) {
+  public static void remove(List<DownloadFileDescription> toRemove) {
     SwingComponents.promptUser("Remove Maps?",
         "<html>Will remove " + toRemove.size() + " maps, are you sure? <br/>" + formatMapList(toRemove, map-> map.getMapName()) + "</html>",
-        createRemoveMapAction(toRemove, removeCompleteCallback));
+        createRemoveMapAction(toRemove));
   }
 
-  private static Runnable createRemoveMapAction(List<DownloadFileDescription> maps,
-      Runnable removeCompleteCallback) {
+  private static Runnable createRemoveMapAction(List<DownloadFileDescription> maps) {
     return () -> {
       List<DownloadFileDescription> fails = Lists.newArrayList();
       List<DownloadFileDescription> deletes = Lists.newArrayList();
@@ -73,7 +72,6 @@ public class FileSystemAccessStrategy {
             + "If not, they will need to be removed manually:", fails);
         fails.forEach(m-> m.getInstallLocation().deleteOnExit());
       }
-      removeCompleteCallback.run();
     };
   }
 

@@ -297,18 +297,14 @@ public class InstallMapDialog extends JFrame {
     return actionButton;
   }
 
-  private ActionListener removeAction(JList<String> gamesList, List<DownloadFileDescription> maps) {
+  private static ActionListener removeAction(JList<String> gamesList, List<DownloadFileDescription> maps) {
     return (e) -> {
       final List<String> selectedValues = gamesList.getSelectedValuesList();
       final List<DownloadFileDescription> selectedMaps =
           maps.stream().filter(map -> !map.isDummyUrl() && selectedValues.contains(map.getMapName()))
               .collect(Collectors.toList());
 
-      final Runnable removeCompleteCallback = () -> {
-        setVisible(false);
-        dispose();
-      };
-      FileSystemAccessStrategy.remove(selectedMaps, removeCompleteCallback);
+      FileSystemAccessStrategy.remove(selectedMaps);
     };
   }
 
