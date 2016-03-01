@@ -3,6 +3,7 @@ package games.strategy.engine.framework.map.download;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import com.google.common.collect.Lists;
 
@@ -30,7 +31,7 @@ public class FileSystemAccessStrategy {
 
   public static void remove(List<DownloadFileDescription> toRemove, Runnable removeCompleteCallback) {
     SwingComponents.promptUser("Remove Maps?",
-        "<html>Will remove " + toRemove.size() + " maps, are you sure? <br/>" + formatMapList(toRemove) + "</html>",
+        "<html>Will remove " + toRemove.size() + " maps, are you sure? <br/>" + formatMapList(toRemove, map-> map.getMapName()) + "</html>",
         createRemoveMapAction(toRemove, removeCompleteCallback));
   }
 
@@ -40,10 +41,19 @@ public class FileSystemAccessStrategy {
       List<DownloadFileDescription> fails = Lists.newArrayList();
       List<DownloadFileDescription> deletes = Lists.newArrayList();
 
+      // delete the map files
       for (DownloadFileDescription map : maps) {
         map.getInstallLocation().delete();
-        (new File(map.getInstallLocation() + ".properties")).delete();
+      }
 
+      // now sleep a short while before we check our work
+      try {
+        Thread.sleep(10);
+      } catch (InterruptedException e) {
+      }
+
+      // check our work, see if we actuall deleted stuff
+      for (DownloadFileDescription map : maps) {
         if (map.getInstallLocation().exists()) {
           fails.add(map);
         } else {
@@ -51,23 +61,37 @@ public class FileSystemAccessStrategy {
         }
       }
 
+
       if (!deletes.isEmpty()) {
-        showDialog("Successfully removed", deletes);
+        showSuccessDialog("Successfully removed", deletes);
+        // only once we know for sure we deleted things, then delete the ".properties" file
+        deletes.forEach( dl -> (new File(dl.getInstallLocation() + ".properties")).delete());
       }
+
       if (!fails.isEmpty()) {
-        showDialog("Failed to remove", fails);
+        showFailDialog("Unable to delete some maps files.\nPlease restart TripleA and check if the files have been removed.\n"
+            + "If not, they will need to be removed manually:", fails);
+        fails.forEach(m-> m.getInstallLocation().deleteOnExit());
       }
       removeCompleteCallback.run();
     };
   }
 
-  private static void showDialog(String message, List<DownloadFileDescription> mapList) {
-    String plural = mapList.size() > 0 ? "s" : "";
-    SwingComponents.newMessageDialog(
-        "<html>" + message + " " + mapList.size() + " map" + plural + "<br /> " + formatMapList(mapList) + "</html>");
+  private static void showFailDialog(String message, List<DownloadFileDescription> mapList) {
+    showDialog(message,mapList, (map) -> map.getInstallLocation().getAbsolutePath());
   }
 
-  private static String formatMapList(List<DownloadFileDescription> mapList) {
+  private static void showSuccessDialog( String message, List<DownloadFileDescription> mapList) {
+    showDialog(message,mapList, (map) -> map.getMapName());
+  }
+
+  private static void showDialog(String message, List<DownloadFileDescription> mapList,  Function<DownloadFileDescription,String> outputFunction) {
+    String plural = mapList.size() > 0 ? "s" : "";
+    SwingComponents.newMessageDialog(
+        "<html>" + message + " " + mapList.size() + " map" + plural + "<br /> " + formatMapList(mapList, outputFunction)+ "</html>");
+  }
+
+  private static String formatMapList(List<DownloadFileDescription> mapList, Function<DownloadFileDescription,String> outputFunction) {
     final int MAX_MAPS_TO_LIST = 6;
     StringBuilder sb = new StringBuilder("<ul>");
     for (int i = 0; i < mapList.size(); i++) {
@@ -75,7 +99,7 @@ public class FileSystemAccessStrategy {
         sb.append("<li>...</li>");
         break;
       } else {
-        sb.append("<li>" + mapList.get(i).getMapName() + "</li>");
+        sb.append("<li>" + outputFunction.apply(mapList.get(i)) + "</li>");
       }
     }
     return sb.toString();
