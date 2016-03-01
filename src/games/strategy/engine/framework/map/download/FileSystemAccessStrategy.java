@@ -64,33 +64,39 @@ public class FileSystemAccessStrategy {
 
 
       if (!deletes.isEmpty()) {
-        showSuccessDialog("Successfully removed.", deletes);
+        showRemoveSuccessDialog("Successfully removed.", deletes);
         // only once we know for sure we deleted things, then delete the ".properties" file
         deletes.forEach( dl -> (new File(dl.getInstallLocation() + ".properties")).delete());
         deletes.forEach(m -> listModel.removeElement(m.getMapName()));
       }
 
       if (!fails.isEmpty()) {
-        showFailDialog("Unable to delete some maps files.\nPlease restart TripleA and check if the files have been removed.\n"
-            + "If not, they will need to be removed manually:", fails);
+        showRemoveFailDialog("Unable to delete some of the maps files.<br />Please restart TripleA and try again.<br />"
+            + "Manual removal of the files may be necessary:", fails);
         fails.forEach(m-> m.getInstallLocation().deleteOnExit());
       }
     };
   }
 
-  private static void showFailDialog(String failMessage, List<DownloadFileDescription> mapList) {
+  private static void showRemoveFailDialog(String failMessage, List<DownloadFileDescription> mapList) {
     String message = createDialogMessage(failMessage, mapList);
-    showDialog(message,mapList, (map) -> map.getInstallLocation().getAbsolutePath());
+    showDialog(message, Optional.empty(), mapList, (map) -> map.getInstallLocation().getAbsolutePath());
   }
 
-  private static void showSuccessDialog( String successMessage, List<DownloadFileDescription> mapList) {
-    String message = createDialogMessage(successMessage, mapList) + "\nPlease restart Triple before re-installing these re-installing maps.";
-    showDialog(message,mapList, (map) -> map.getMapName());
+  private static void showRemoveSuccessDialog( String successMessage, List<DownloadFileDescription> mapList) {
+    String message = createDialogMessage(successMessage, mapList);
+    String footerText =  "<br />Please restart TripleA before re-installing these maps";
+    showDialog(message, Optional.of(footerText), mapList, (map) -> map.getMapName());
   }
 
-  private static void showDialog(String message, List<DownloadFileDescription> mapList,  Function<DownloadFileDescription,String> outputFunction) {
-    SwingComponents.newMessageDialog(
-        "<html>" + message + "<br /> " + formatMapList(mapList, outputFunction)+ "</html>");
+  private static void showDialog(String message, Optional<String> footerText, List<DownloadFileDescription> mapList,  Function<DownloadFileDescription,String> outputFunction) {
+    StringBuilder sb = new StringBuilder("<html>" + message + "<br /> " + formatMapList(mapList, outputFunction));
+    if( footerText.isPresent() ) {
+      sb.append(footerText.get());
+    }
+    sb.append("</html>");
+
+    SwingComponents.newMessageDialog(sb.toString());
   }
 
   private static String createDialogMessage( String message, List<DownloadFileDescription> mapList ) {
