@@ -1068,22 +1068,6 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.0.3</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/ww2_new_world_order/releases/download/0.1/ww2_new_world_order.zip</url>
-    <mapName>WW2 NEW WORLD ORDER</mapName>
-    <description><![CDATA[
-    <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_nwo_mini.png" />
-    <br>Mod done by SneakingCoward / Marshal / pentium@gmx.net
-    <br>
-    <br>Includes 2 Mods of NWO
-    <br>
-    <br>NWO 2.0 Neutrals (a hybrid of v2 and v3 rules and with active neutral countries)
-    <br>NWO 3.0 Neutrals (a mod using rules similar to v3 rules, paratroopers, and with active neutral countries)
-    <br>
-    <br>Update by Ice
-    ]]></description>
-    <version>2.0.1</version>
-  </game>
-  <game>
     <url>https://github.com/triplea-maps/ww2v3_11n/releases/download/0.1/ww2v3_11n.zip</url>
     <mapName>WW2v3_11N</mapName>
     <description><![CDATA[
