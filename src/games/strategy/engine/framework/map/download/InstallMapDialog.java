@@ -62,6 +62,7 @@ public class InstallMapDialog extends JFrame {
     dia.setLocationRelativeTo(parentFrame);
     dia.setMinimumSize(new Dimension(200, 200));
     dia.setVisible(true);
+    dia.toFront();
   }
 
   private InstallMapDialog(final List<DownloadFileDescription> games) {
