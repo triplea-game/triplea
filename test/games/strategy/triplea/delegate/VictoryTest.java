@@ -30,7 +30,7 @@ public class VictoryTest extends TestCase {
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    m_data = LoadGameUtil.loadGame("victory_test", "victory_test.xml");
+    m_data = LoadGameUtil.loadTestGame("victory_test.xml");
     m_italians = GameDataTestUtil.italians(m_data);
     m_bridge = GameDataTestUtil.getDelegateBridge(m_italians, m_data);
     // we need to initialize the original owner
