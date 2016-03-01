@@ -41,7 +41,7 @@ public class History extends DefaultTreeModel implements java.io.Serializable {
   }
 
   public History(final GameData data) {
-    super(new RootHistoryNode("Game History", true));
+    super(new RootHistoryNode("Game History"));
     m_data = data;
   }
 
@@ -235,8 +235,8 @@ class SerializedHistory implements Serializable {
 class RootHistoryNode extends HistoryNode {
   private static final long serialVersionUID = 625147613043836829L;
 
-  public RootHistoryNode(final String title, final boolean allowsChildren) {
-    super(title, allowsChildren);
+  public RootHistoryNode(final String title) {
+    super(title);
   }
 
   @Override
