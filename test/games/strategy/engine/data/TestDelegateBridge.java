@@ -85,7 +85,7 @@ public class TestDelegateBridge implements ITestDelegateBridge {
 
   @Override
   public void addChange(final Change aChange) {
-    ChangePerformer.perform(aChange, m_data);
+    m_data.performChange(aChange);
   }
 
   @Override

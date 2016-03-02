@@ -3,7 +3,6 @@ package games.strategy.triplea.ai.proAI.simulate;
 import java.util.Properties;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -28,7 +27,6 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   private final ProAI m_proAI;
   private final DelegateHistoryWriter m_writer = new DelegateHistoryWriter(new ProDummyGameModifiedChannel());
   private final GameData m_data;
-  private final ChangePerformer m_changePerformer;
   private final CompositeChange m_allChanges = new CompositeChange();
   private MustFightBattle m_battle = null;
 
@@ -36,7 +34,6 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
     m_proAI = proAI;
     m_data = data;
     m_player = player;
-    m_changePerformer = new ChangePerformer(m_data);
   }
 
   @Override
@@ -104,7 +101,7 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   @Override
   public void addChange(final Change aChange) {
     m_allChanges.add(aChange);
-    m_changePerformer.perform(aChange);
+    m_data.performChange(aChange);
   }
 
   @Override
