@@ -60,6 +60,7 @@ dependencies {
 	compile 'com.github.insubstantial:substance-flamingo:7.3'
 	compile 'com.github.insubstantial:trident:7.3'
 
+	compile 'org.yaml:snakeyaml:1.17'
 	compile 'org.swinglabs.swingx:swingx-all:1.6.5-1'
 	compile 'com.sun.mail:mailapi:1.5.5'
 	compile 'com.sun.mail:smtp:1.5.5'
