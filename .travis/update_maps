@@ -1,0 +1,46 @@
+#!/bin/bash
+
+#
+# This script is pushed out to a server that hosts bots
+# Executing this script will download the list of latest maps, compare to what
+# is on the file system (since the last run), and will update map zips as necessary 
+#
+
+# General strategy:
+#  - create a version file, zip name + version
+#  - combine this version file with the last one, any duplicates are maps that are up to date
+#  - remove duplicates and this is the list of maps that are out of date, remove them
+#  - now iterate back over the original list of URLs, and download any maps that are missing.
+#  - everything should be up to date now, rename the new version file and use it as the old version file next time.
+
+mkdir -p maps-testing
+cd maps-testing
+
+wget https://raw.githubusercontent.com/triplea-game/triplea/master/triplea_maps.yaml
+
+## iterate over each line in the yaml, convert this:
+## - url:  http://..map.zip
+##   mapName: name
+##   version: 0.2
+## Into:
+##   map.zip_0.2
+##
+## Then we'll store these map version names in a file called "new_versions.txt"
+
+
+egrep "^-? *url|^ *version" triplea_maps.yaml  | sed 's/^-/ /g' | tr '\n' ' ' |  sed 's/url: /\n/g' | sed 's/$/\n/' | sed 's|.*/||g' | sed 's/zip *version: /zip_/g' | sed '/^ *$/d' > new_versions.txt
+
+
+## Concatenate new versions and old versions. Any files that are not the same will show up as non-duplicates.
+## filter out the duplicates, and remove any that remain
+cat new_versions.txt versions.txt | sort | uniq -c | egrep -v "^\s*2 " | sed 's/\.zip_.*$/.zip/' | sed 's/^\s*[0-9]* //' | sort | uniq | xargs -r rm
+
+## Now iterate over each URL, and look for maps which we do not have
+## We will download them.
+for i in $(grep " url: " triplea_maps.yaml  | sed 's/.*url: //g'); do 
+  zipName=$(echo $i | sed 's|.*/||')
+  ls | grep -q "$zipName" 2> /dev/null || wget $i
+done
+
+## Now update the old versions file
+mv new_versions.txt versions.txt
