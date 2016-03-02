@@ -9,7 +9,10 @@ PID_FILE="$INSTALL_DIR/.prereleases_lobby_running.pid"
 if [ -f $PID_FILE ]; then
   PID=$(cat $PID_FILE)
   if [ ! -z "$PID" ]; then
-    kill $PID
+    if  ! kill $PID > /dev/null 2>&1; then
+      echo "Could not send SIGTERM to process $PID" >&2
+      exit 1
+    fi
     sleep 1
   fi
   rm $PID_FILE
@@ -23,4 +26,14 @@ NEW_PID=$!
 if [ ! -z $NEW_PID ]; then
   echo $NEW_PID > $PID_FILE
 fi
+
+## wait for a little bit and then check if the lobby is still running
+sleep 5
+if  ! kill -0 $NEW_PID > /dev/null 2>&1; then
+   echo "Lobby crashed shortly after startup, $NEW_PID is no longer running." >&2
+   exit 2
+fi
+
 rm $LOBBY_ARTIFACT
+
+exit 0
