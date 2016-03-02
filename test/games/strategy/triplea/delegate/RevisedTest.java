@@ -49,7 +49,6 @@ import java.util.Set;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
@@ -82,12 +81,7 @@ public class RevisedTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    m_data = LoadGameUtil.loadGame("World War II Revised Test", "revised_test.xml");
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    m_data = null;
+    m_data = LoadGameUtil.loadTestGame("revised_test.xml");
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
@@ -177,11 +171,11 @@ public class RevisedTest extends TestCase {
     initDel.end();
     // make sinkian japanese owned, put one infantry in it
     final Territory sinkiang = m_data.getMap().getTerritory("Sinkiang");
-    new ChangePerformer(m_data).perform(ChangeFactory.removeUnits(sinkiang, sinkiang.getUnits().getUnits()));
+    m_data.performChange(ChangeFactory.removeUnits(sinkiang, sinkiang.getUnits().getUnits()));
     final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     sinkiang.setOwner(japanese);
     final UnitType infantryType = GameDataTestUtil.infantry(m_data);
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sinkiang, infantryType.create(1, japanese)));
+    m_data.performChange(ChangeFactory.addUnits(sinkiang, infantryType.create(1, japanese)));
     // now move to attack it
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
@@ -230,13 +224,13 @@ public class RevisedTest extends TestCase {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final Territory karelia = m_data.getMap().getTerritory("Karelia S.S.R.");
     final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
-    new ChangePerformer(m_data).perform(ChangeFactory.removeUnits(sz5, sz5.getUnits().getUnits()));
+    m_data.performChange(ChangeFactory.removeUnits(sz5, sz5.getUnits().getUnits()));
     final UnitType infantryType = GameDataTestUtil.infantry(m_data);
     final UnitType subType = GameDataTestUtil.submarine(m_data);
     final UnitType trnType = GameDataTestUtil.transport(m_data);
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz5, subType.create(1, germans)));
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz5, trnType.create(1, germans)));
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz5, subType.create(1, russians)));
+    m_data.performChange(ChangeFactory.addUnits(sz5, subType.create(1, germans)));
+    m_data.performChange(ChangeFactory.addUnits(sz5, trnType.create(1, germans)));
+    m_data.performChange(ChangeFactory.addUnits(sz5, subType.create(1, russians)));
     // submerge the russian sub
     final TripleAUnit sub =
         (TripleAUnit) Match.getMatches(sz5.getUnits().getUnits(), Matches.unitIsOwnedBy(russians)).iterator().next();
@@ -553,7 +547,7 @@ public class RevisedTest extends TestCase {
     // add japanese infantry to eastern europe
     final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     final Change change = ChangeFactory.addUnits(eastEurope, infantryType.create(1, japanese));
-    new ChangePerformer(m_data).perform(change);
+    m_data.performChange(change);
     final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
@@ -726,7 +720,7 @@ public class RevisedTest extends TestCase {
     // put 1 british sub in sz 45, this simulates a submerged enemy sub
     final UnitType sub = GameDataTestUtil.submarine(m_data);
     final Change c = ChangeFactory.addUnits(sz45, sub.create(1, british));
-    new ChangePerformer(m_data).perform(c);
+    m_data.performChange(c);
     // new move delegate
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);

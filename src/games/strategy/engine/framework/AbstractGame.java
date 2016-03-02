@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
@@ -35,7 +34,6 @@ abstract public class AbstractGame implements IGame {
   protected final IMessenger m_messenger;
   protected final IRemoteMessenger m_remoteMessenger;
   protected final IChannelMessenger m_channelMessenger;
-  protected final ChangePerformer m_changePerformer;
   protected final Map<PlayerID, IGamePlayer> m_gamePlayers = new HashMap<PlayerID, IGamePlayer>();
   protected volatile boolean m_isGameOver = false;
   protected final Vault m_vault;
@@ -50,7 +48,6 @@ abstract public class AbstractGame implements IGame {
     m_messenger = messengers.getMessenger();
     m_remoteMessenger = messengers.getRemoteMessenger();
     m_channelMessenger = messengers.getChannelMessenger();
-    m_changePerformer = new ChangePerformer(m_data);
     m_vault = new Vault(m_channelMessenger);
     final Map<String, INode> allPlayers = new HashMap<String, INode>(remotePlayerMapping);
     for (final IGamePlayer player : gamePlayers) {

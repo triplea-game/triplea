@@ -103,7 +103,7 @@ public class ServerGame extends AbstractGame {
       @Override
       public void gameDataChanged(final Change aChange) {
         assertCorrectCaller();
-        m_changePerformer.perform(aChange);
+        m_data.performChange(aChange);
         m_data.getHistory().getHistoryWriter().addChange(aChange);
       }
 

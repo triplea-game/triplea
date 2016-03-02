@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
@@ -33,6 +32,7 @@ public class VictoryTest extends TestCase {
   private Territory frenchWestAfrica;
   private Territory angloEgypt;
   private Territory libya;
+  private MoveDelegate moveDelegate;
 
   public VictoryTest(final String name) {
     super(name);
@@ -53,6 +53,8 @@ public class VictoryTest extends TestCase {
 
     italianResources = italians.getResources().getResourcesCopy();
     purchaseDelegate = (PurchaseDelegate) gameData.getDelegateList().getDelegate("purchase");
+    moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
+
     britishCongo = gameData.getMap().getTerritory("Belgian Congo");
     kenya = gameData.getMap().getTerritory("Kenya");
     motorized = gameData.getUnitTypeList().getUnitType("motorized");
@@ -66,8 +68,7 @@ public class VictoryTest extends TestCase {
 
 
   public void testNoBlitzThroughMountain() {
-    new ChangePerformer(gameData).perform(ChangeFactory.addUnits(libya, armour.create(1, italians)));
-    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
+    gameData.performChange(ChangeFactory.addUnits(libya, armour.create(1, italians)));
     testBridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
@@ -77,8 +78,7 @@ public class VictoryTest extends TestCase {
   }
 
   public void testBlitzNormal() {
-    new ChangePerformer(gameData).perform(ChangeFactory.addUnits(frenchWestAfrica, armour.create(1, italians)));
-    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
+    gameData.performChange(ChangeFactory.addUnits(frenchWestAfrica, armour.create(1, italians)));
     testBridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
@@ -91,8 +91,7 @@ public class VictoryTest extends TestCase {
 
 
   public void testNoBlitzWithStopThroughMountain() {
-    new ChangePerformer(gameData).perform(ChangeFactory.addUnits(libya, armour.create(1, italians)));
-    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
+    gameData.performChange(ChangeFactory.addUnits(libya, armour.create(1, italians)));
     testBridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
@@ -106,8 +105,7 @@ public class VictoryTest extends TestCase {
   }
 
   public void testBlitzWithStop() {
-    new ChangePerformer(gameData).perform(ChangeFactory.addUnits(frenchWestAfrica, armour.create(1, italians)));
-    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
+    gameData.performChange(ChangeFactory.addUnits(frenchWestAfrica, armour.create(1, italians)));
     testBridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
@@ -120,8 +118,7 @@ public class VictoryTest extends TestCase {
 
 
   public void testMotorizedThroughMountain() {
-    new ChangePerformer(gameData).perform(ChangeFactory.addUnits(libya, motorized.create(1, italians)));
-    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
+    gameData.performChange(ChangeFactory.addUnits(libya, motorized.create(1, italians)));
     testBridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
@@ -131,11 +128,10 @@ public class VictoryTest extends TestCase {
   }
 
   public void testMotorizedNoBlitzBlitzedTerritory() {
-    new ChangePerformer(gameData).perform(ChangeFactory.changeOwner(frenchEastAfrica, italians));
-    new ChangePerformer(gameData).perform(ChangeFactory.addUnits(frenchEastAfrica, armour.create(1, italians)));
-    new ChangePerformer(gameData).perform(ChangeFactory.changeOwner(kenya, italians));
-    new ChangePerformer(gameData).perform(ChangeFactory.addUnits(kenya, motorized.create(1, italians)));
-    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
+    gameData.performChange(ChangeFactory.changeOwner(frenchEastAfrica, italians));
+    gameData.performChange(ChangeFactory.addUnits(frenchEastAfrica, armour.create(1, italians)));
+    gameData.performChange(ChangeFactory.changeOwner(kenya, italians));
+    gameData.performChange(ChangeFactory.addUnits(kenya, motorized.create(1, italians)));
     testBridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
@@ -150,9 +146,8 @@ public class VictoryTest extends TestCase {
 
 
   public void testFuelUseMotorized() {
-    new ChangePerformer(gameData).perform(ChangeFactory.changeOwner(kenya, italians));
-    new ChangePerformer(gameData).perform(ChangeFactory.addUnits(kenya, motorized.create(1, italians)));
-    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
+    gameData.performChange(ChangeFactory.changeOwner(kenya, italians));
+    gameData.performChange(ChangeFactory.addUnits(kenya, motorized.create(1, italians)));
     testBridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
@@ -161,15 +156,15 @@ public class VictoryTest extends TestCase {
     moveDelegate.move(kenya.getUnits().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
     assertEquals(fuelAmount - 1, italians.getResources().getQuantity("Fuel"));
     assertEquals(puAmount - 1, italians.getResources().getQuantity("PUs"));
-    new ChangePerformer(gameData).perform(ChangeFactory.addUnits(kenya, armour.create(1, italians)));
+    gameData.performChange(ChangeFactory.addUnits(kenya, armour.create(1, italians)));
     moveDelegate.move(kenya.getUnits().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
     assertEquals(fuelAmount - 1, italians.getResources().getQuantity("Fuel"));
     assertEquals(puAmount - 1, italians.getResources().getQuantity("PUs"));
-    new ChangePerformer(gameData).perform(ChangeFactory.addUnits(kenya, motorized.create(5, italians)));
+    gameData.performChange(ChangeFactory.addUnits(kenya, motorized.create(5, italians)));
     moveDelegate.move(kenya.getUnits().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
     assertEquals(fuelAmount - 6, italians.getResources().getQuantity("Fuel"));
     assertEquals(puAmount - 6, italians.getResources().getQuantity("PUs"));
-    new ChangePerformer(gameData).perform(ChangeFactory.addUnits(kenya, motorized.create(50, italians)));
+    gameData.performChange(ChangeFactory.addUnits(kenya, motorized.create(50, italians)));
     final String error = moveDelegate.move(kenya.getUnits().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
     assertTrue(error.startsWith("Not enough resources to perform this move"));
     moveDelegate.end();

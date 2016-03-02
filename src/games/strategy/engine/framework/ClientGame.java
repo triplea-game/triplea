@@ -30,7 +30,7 @@ public class ClientGame extends AbstractGame {
     m_gameModifiedChannel = new IGameModifiedChannel() {
       @Override
       public void gameDataChanged(final Change aChange) {
-        m_changePerformer.perform(aChange);
+        m_data.performChange(aChange);
         m_data.getHistory().getHistoryWriter().addChange(aChange);
       }
 

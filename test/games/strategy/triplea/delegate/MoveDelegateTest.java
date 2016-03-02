@@ -9,7 +9,6 @@ import java.util.List;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -47,7 +46,7 @@ public class MoveDelegateTest extends DelegateTest {
     m_delegate.start();
   }
 
-  private Collection<Unit> getUnits(final IntegerMap<UnitType> units, final Territory from) {
+  private static Collection<Unit> getUnits(final IntegerMap<UnitType> units, final Territory from) {
     final Iterator<UnitType> iter = units.keySet().iterator();
     final Collection<Unit> rVal = new ArrayList<Unit>(units.totalValues());
     while (iter.hasNext()) {
@@ -301,8 +300,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.setStart(egypt);
     route.add(libya);
     // Disable canBlitz attachment
-    new ChangePerformer(m_data)
-        .perform(ChangeFactory.attachmentPropertyChange(UnitAttachment.get(armour), "false", "canBlitz"));
+    m_data.performChange(ChangeFactory.attachmentPropertyChange(UnitAttachment.get(armour), "false", "canBlitz"));
     String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
     // Validate move happened
@@ -508,8 +506,8 @@ public class MoveDelegateTest extends DelegateTest {
     removeFrom(manchuria, manchuria.getUnits().getUnits());
     manchuria.setOwner(russians);
     removeFrom(japanSeaZone, japanSeaZone.getUnits().getUnits());
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(japanSeaZone, transport.create(3, japanese)));
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(japan, infantry.create(3, japanese)));
+    m_data.performChange(ChangeFactory.addUnits(japanSeaZone, transport.create(3, japanese)));
+    m_data.performChange(ChangeFactory.addUnits(japan, infantry.create(3, japanese)));
     // Perform the first load
     final Route load = new Route();
     load.setStart(japan);

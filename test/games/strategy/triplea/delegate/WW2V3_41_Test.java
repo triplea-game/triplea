@@ -53,7 +53,6 @@ import java.util.Map.Entry;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.ITestDelegateBridge;
@@ -265,8 +264,7 @@ public class WW2V3_41_Test extends TestCase {
     final TechnologyFrontier mech = new TechnologyFrontier("", m_data);
     mech.addAdvance(TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_MECHANIZED_INFANTRY, m_data, null));
     // Add tech token
-    new ChangePerformer(m_data).perform(
-        ChangeFactory.changeResourcesChange(germans, m_data.getResourceList().getResource(Constants.TECH_TOKENS), 1));
+    m_data.performChange(ChangeFactory.changeResourcesChange(germans, m_data.getResourceList().getResource(Constants.TECH_TOKENS), 1));
     // Check to make sure it was successful
     final int initTokens = germans.getResources().getQuantity("techTokens");
     assertEquals(1, initTokens);
@@ -1538,7 +1536,7 @@ public class WW2V3_41_Test extends TestCase {
     // damage a factory
     IntegerMap<Unit> startHits = new IntegerMap<Unit>();
     startHits.put(factory, 1);
-    new ChangePerformer(m_data).perform(ChangeFactory.bombingUnitDamage(startHits));
+    m_data.performChange(ChangeFactory.bombingUnitDamage(startHits));
     assertEquals(((TripleAUnit) factory).getUnitDamage(), 1);
     RepairRule repair = germans(m_data).getRepairFrontier().getRules().get(0);
     IntegerMap<RepairRule> repairs = new IntegerMap<RepairRule>();
@@ -1560,7 +1558,7 @@ public class WW2V3_41_Test extends TestCase {
     // damage a factory
     startHits = new IntegerMap<Unit>();
     startHits.put(factory, 2);
-    new ChangePerformer(m_data).perform(ChangeFactory.bombingUnitDamage(startHits));
+    m_data.performChange(ChangeFactory.bombingUnitDamage(startHits));
     assertEquals(((TripleAUnit) factory).getUnitDamage(), 2);
     repair = germans(m_data).getRepairFrontier().getRules().get(0);
     repairs = new IntegerMap<RepairRule>();
@@ -1583,7 +1581,7 @@ public class WW2V3_41_Test extends TestCase {
     // dame a factory
     final IntegerMap<Unit> startHits = new IntegerMap<Unit>();
     startHits.put(factory, 1);
-    new ChangePerformer(m_data).perform(ChangeFactory.bombingUnitDamage(startHits));
+    m_data.performChange(ChangeFactory.bombingUnitDamage(startHits));
     assertEquals(((TripleAUnit) factory).getUnitDamage(), 1);
     final RepairRule repair = germans(m_data).getRepairFrontier().getRules().get(0);
     final IntegerMap<RepairRule> repairs = new IntegerMap<RepairRule>();
