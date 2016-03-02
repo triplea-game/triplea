@@ -1,5 +1,7 @@
 package games.strategy.engine.framework.startup.ui;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -12,14 +14,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.nio.file.Files;
 import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
+import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
@@ -30,14 +28,19 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+import org.apache.commons.io.FileUtils;
+import org.yaml.snakeyaml.Yaml;
+
+import com.google.common.base.Throwables;
+
 import games.strategy.common.swing.SwingComponents;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.EngineVersion;
-import games.strategy.engine.framework.GameRunner2;
-import games.strategy.engine.framework.map.download.DownloadRunnable;
-import games.strategy.engine.framework.map.download.InstallMapDialog;
-import games.strategy.engine.framework.map.download.MapDownloadController;
+import games.strategy.engine.config.GameEngineProperty;
+import games.strategy.engine.config.PropertyReader;
+import games.strategy.engine.framework.mapDownload.DownloadUtils;
+import games.strategy.engine.framework.mapDownload.MapDownloadController;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
@@ -47,12 +50,11 @@ import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.util.Version;
 
 public class MetaSetupPanel extends SetupPanel {
 
   private static final long serialVersionUID = 3926503672972937677L;
-  private static final Logger s_logger = Logger.getLogger(MetaSetupPanel.class.getName());
-  private static String s_serverPropertiesName = "server_" + ClientContext.engineVersion() + ".properties";
   private JButton m_startLocal;
   private JButton m_startPBEM;
   private JButton m_hostGame;
@@ -261,14 +263,7 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   private void connectToLobby() {
-    LobbyServerProperties props = getLobbyServerProperties();
-    if (props == null) {
-      props = new LobbyServerProperties(null, -1,
-          "<html>Server Lookup failed, try again later. "
-              + "<br>Either TripleA could not reach the internet, or the server host is down. "
-              + "<br>Please make sure you are using the latest version of TripleA: http://triplea.sourceforge.net/</html>",
-          null);
-    }
+    final LobbyServerProperties props = getLobbyServerProperties();
 
     final LobbyLogin login = new LobbyLogin(JOptionPane.getFrameForComponent(this), props);
     final LobbyClient client = login.login();
@@ -282,118 +277,66 @@ public class MetaSetupPanel extends SetupPanel {
     lobbyFrame.setVisible(true);
   }
 
-  private LobbyServerProperties getLobbyServerProperties() {
-    // try to look up an override
-    final File f = new File(ClientFileSystemHelper.getRootFolder(), "lobby.properties");
-    if (f.exists()) {
-      final Properties props = new Properties();
-      try {
-        final FileInputStream fis = new FileInputStream(f);
-        props.load(fis);
-        return new LobbyServerProperties(props);
-      } catch (final IOException e) {
-        throw new IllegalStateException(e);
-      }
-    }
-    final List<URL> serverPropsList = getServerLookupURL();
-    if (serverPropsList == null || serverPropsList.isEmpty()) {
-      throw new IllegalStateException("No Server Properties Found!");
-    }
-    final Iterator<URL> iter = serverPropsList.iterator();
-    LobbyServerProperties props = null;
-    while (iter.hasNext() && (props == null || props.getPort() == -1)) {
-      final URL serverPropertiesURL = iter.next();
-      // System.out.println("Trying to connect to: " + serverPropertiesURL);
-      props = contactServerForLobbyServerProperties(serverPropertiesURL);
-      // System.out.println("Finished connecting to: " + serverPropertiesURL);
-      if (props == null || props.getPort() == -1) {
-        System.out.println("Unable to connect to: " + serverPropertiesURL);
-      }
-    }
-    return props;
-  }
 
-  private LobbyServerProperties contactServerForLobbyServerProperties(final URL serverPropsURL) {
-    if (s_logger.isLoggable(Level.FINE)) {
-      s_logger.log(Level.FINE, "lobby url:" + serverPropsURL);
-    }
-    // sourceforge sometimes takes a long while
-    // to return results
-    // so run a couple requests in parallell, starting
-    // with delays to try and get
-    // a response quickly
-    final AtomicReference<LobbyServerProperties> ref = new AtomicReference<LobbyServerProperties>();
-    final CountDownLatch latch = new CountDownLatch(1);
-    final Runnable r = new Runnable() {
-      @Override
-      public void run() {
-        for (int i = 0; i < 5; i++) {
-          spawnRequest(serverPropsURL, ref, latch);
-          try {
-            latch.await(2, TimeUnit.SECONDS);
-          } catch (final InterruptedException e) {
-            e.printStackTrace();
-          }
-          if (ref.get() != null) {
-            break;
-          }
-        }
-        // we have spawned a bunch of requests
-        try {
-          latch.await(15, TimeUnit.SECONDS);
-        } catch (final InterruptedException e) {
-          e.printStackTrace();
-        }
-      }
-
-      private void spawnRequest(final URL serverPropsURL, final AtomicReference<LobbyServerProperties> ref,
-          final CountDownLatch latch) {
-        final Thread t1 = new Thread(new Runnable() {
-          @Override
-          public void run() {
-            ref.set(new LobbyServerProperties(serverPropsURL));
-            latch.countDown();
-          }
-        });
-        t1.start();
-      }
-    };
-    BackgroundTaskRunner.runInBackground(this, "Looking Up Server", r);
-    final LobbyServerProperties props = ref.get();
-    return props;
-  }
-
-  /**
-   * Get the url which we use to lookup the lobby server.
-   * we look for a system property triplea.lobby.server.lookup.url, if that is not defined
-   * we default to looking on sourceforge, with a version dependent url
-   */
-  private List<URL> getServerLookupURL() {
-    final List<URL> rVal = new ArrayList<URL>();
-    final String propertyString = System.getProperties().getProperty("triplea.lobby.server.lookup.url");
-    if (propertyString != null) {
-      try {
-        final URL propertyURL = new URL(propertyString);
-        rVal.add(propertyURL);
-      } catch (final MalformedURLException e) {
-        e.printStackTrace();
-      }
-      // if we set it as a system property, then we don't want to try other ones, only this one.
-      return rVal;
-    }
+  private static Optional<List<Map<String, Object>>> loadYaml(File yamlFile) {
+    String yamlContent;
     try {
-      // first is the default, rest are backups. Do NOT add too many backups, as we want to maintain control over all of
-      // them.
-      // default:
-      rVal.add(new URL("http://triplea.sourceforge.net/lobby/" + s_serverPropertiesName));
-      // backups:
-      rVal.add(new URL("http://www.tripleawarclub.org/lobby/" + s_serverPropertiesName));
-      // rVal.add(new URL("http://tripleamaps.sourceforge.net/lobby/" + s_serverPropertiesName));
-    } catch (final MalformedURLException e) {
-      e.printStackTrace();
+      yamlContent = new String(Files.readAllBytes(yamlFile.toPath()));
+    } catch (IOException e) {
+      ClientLogger.logQuietly(e);
+      return Optional.empty();
     }
-    return rVal;
+    Yaml yaml = new Yaml();
+    List<Map<String, Object>> yamlDataObj = (List<Map<String, Object>>) yaml.load(yamlContent);
+    if( yamlDataObj == null ) {
+      return Optional.empty();
+    } else {
+      return Optional.of(yamlDataObj);
+    }
   }
+
+  private static LobbyServerProperties getLobbyServerProperties() {
+    PropertyReader propReader = ClientContext.propertyReader();
+    String urlProp = propReader.readProperty(GameEngineProperty.LOBBY_PROPS_URL);
+
+    File propFile = ClientFileSystemHelper.createTempFile();
+    try {
+      DownloadUtils.downloadFile(urlProp, propFile);
+    } catch (IOException e) {
+      ClientLogger.logQuietly("Failed to download lobby server props file: " + urlProp + ", using the backup local property file instead.", e);
+    }
+    Optional<List<Map<String, Object>>> yamlDataObj = loadYaml(propFile);
+    if(!yamlDataObj.isPresent()) {
+      // try reading properties from the local file as a backup
+      String localFileProp = propReader.readProperty(GameEngineProperty.LOBBY_PROPS_BACKUP_FILE);
+      File localFile = new File(ClientFileSystemHelper.getRootFolder(), localFileProp);
+      yamlDataObj = loadYaml(propFile);
+      if( !yamlDataObj.isPresent()) {
+        throw new IllegalStateException("Failed to read lobby properties from both: " + urlProp + ", and: " + localFile.getAbsolutePath());
+      }
+    }
+
+    Map<String, Object> yamlProps = matchCurrentVersion(yamlDataObj.get());
+
+    LobbyServerProperties lobbyProps = new LobbyServerProperties(yamlProps);
+    return lobbyProps;
+  }
+
+  private static Map<String, Object> matchCurrentVersion(List<Map<String, Object>> lobbyProps) {
+    checkNotNull(lobbyProps);
+    Version currentVersion = ClientContext.engineVersion().getCompatabilityVersion();
+    for (Map<String, Object> props : lobbyProps) {
+      if (props.containsKey("version")) {
+        Version otherVersion = new Version((String) props.get("version"));
+        if (otherVersion.equals(currentVersion)) {
+          return props;
+        }
+      }
+    }
+
+    return lobbyProps.get(0);
+  }
+
 
   @Override
   public void setWidgetActivation() {

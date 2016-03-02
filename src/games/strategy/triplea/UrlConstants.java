@@ -1,7 +1,11 @@
 package games.strategy.triplea;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public enum UrlConstants {
   GITHUB_ISSUES("http://github.com/triplea-game/triplea/issues/new"),
+  LOBBY_PROPS("https://raw.githubusercontent.com/triplea-game/triplea/master/lobby_server.yaml"),
   PAYPAL_DONATE("https://sourceforge.net/donate/index.php?group_id=44492"),
   SOURCE_FORGE("http://triplea.sourceforge.net/"),
   SF_TICKET_LIST("https://sourceforge.net/p/triplea/_list/tickets"),
@@ -28,5 +32,13 @@ public enum UrlConstants {
 
   public String getDescription() {
     return description;
+  }
+
+  public URL toURL() {
+    try {
+      return new URL(urlString);
+    } catch (MalformedURLException e) {
+      throw new IllegalStateException("Invalid URL: "+ urlString, e);
+    }
   }
 }
