@@ -24,6 +24,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import com.google.common.collect.Lists;
+
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.startup.mc.ClientModel;
@@ -41,18 +43,12 @@ public class ClientSetupPanel extends SetupPanel {
 
     @Override
     public void playerListChanged() {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          internalPlayersChanged();
-        }
-      });
+      SwingUtilities.invokeLater(() -> internalPlayersChanged());
     }
   };
 
   public ClientSetupPanel(final ClientModel model) {
     m_model = model;
-    createComponents();
     layoutComponents();
     setupListeners();
     setWidgetActivation();
@@ -78,8 +74,6 @@ public class ClientSetupPanel extends SetupPanel {
     }
     layoutComponents();
   }
-
-  private void createComponents() {}
 
   private void layoutComponents() {
     removeAll();
@@ -136,7 +130,7 @@ public class ClientSetupPanel extends SetupPanel {
     layout.setConstraints(playedByLabel, playConstraints);
     players.add(playedByLabel);
     final JLabel allianceLabel = new JLabel("Alliance");
-    allianceLabel.setForeground(Color.black);
+//    allianceLabel.setForeground(Color.black);
     layout.setConstraints(allianceLabel, allianceConstraints);
     players.add(allianceLabel);
     for (final PlayerRow row : m_playerRows) {
@@ -300,11 +294,11 @@ public class ClientSetupPanel extends SetupPanel {
   @Override
   public List<Action> getUserActions() {
     if (m_model == null) {
-      return null;
+      return Lists.newArrayList();
     }
     final boolean isServerHeadless = m_model.getIsServerHeadlessCached();
     if (!isServerHeadless) {
-      return null;
+      return Lists.newArrayList();
     }
     final List<Action> rVal = new ArrayList<Action>();
     rVal.add(m_model.getHostBotSetMapClientAction(this));
