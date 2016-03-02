@@ -170,7 +170,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     diceRollers.add(new InternalDiceServer());
     for (final IRemoteDiceServer diceRoller : diceRollers) {
       final IRemoteDiceServer cached =
-          (IRemoteDiceServer) LocalBeanCache.getInstance().getSerializable(diceRoller.getDisplayName());
+          (IRemoteDiceServer) LocalBeanCache.INSTANCE.getSerializable(diceRoller.getDisplayName());
       if (cached != null) {
         diceRoller.setCcAddress(cached.getCcAddress());
         diceRoller.setToAddress(cached.getToAddress());
@@ -206,7 +206,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     if (forumPoster != null) {
       // if we have a cached version, use the credentials from this, as each player has different forum login
       final IForumPoster cached =
-          (IForumPoster) LocalBeanCache.getInstance().getSerializable(forumPoster.getClass().getCanonicalName());
+          (IForumPoster) LocalBeanCache.INSTANCE.getSerializable(forumPoster.getClass().getCanonicalName());
       if (cached != null) {
         forumPoster.setUsername(cached.getUsername());
         forumPoster.setPassword(cached.getPassword());
@@ -250,7 +250,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     final IEmailSender sender = (IEmailSender) data.getProperties().get(PBEMMessagePoster.EMAIL_SENDER_PROP_NAME);
     if (sender != null) {
       final IEmailSender cached =
-          (IEmailSender) LocalBeanCache.getInstance().getSerializable(sender.getClass().getCanonicalName());
+          (IEmailSender) LocalBeanCache.INSTANCE.getSerializable(sender.getClass().getCanonicalName());
       if (cached != null) {
         sender.setUserName(cached.getUserName());
         sender.setPassword(cached.getPassword());
@@ -267,7 +267,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
    * @return a IBean either loaded from the cache or created
    */
   private static IBean findCachedOrCreateNew(final Class<? extends IBean> theClassType) {
-    IBean cached = LocalBeanCache.getInstance().getSerializable(theClassType.getCanonicalName());
+    IBean cached = LocalBeanCache.INSTANCE.getSerializable(theClassType.getCanonicalName());
     if (cached == null) {
       try {
         cached = theClassType.newInstance();
@@ -388,19 +388,19 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     // update local cache and write to disk before game starts
     final IForumPoster poster = (IForumPoster) m_forumPosterEditor.getBean();
     if (poster != null) {
-      LocalBeanCache.getInstance().storeSerializable(poster.getClass().getCanonicalName(), poster);
+      LocalBeanCache.INSTANCE.storeSerializable(poster.getClass().getCanonicalName(), poster);
     }
     final IEmailSender sender = (IEmailSender) m_emailSenderEditor.getBean();
     if (sender != null) {
-      LocalBeanCache.getInstance().storeSerializable(sender.getClass().getCanonicalName(), sender);
+      LocalBeanCache.INSTANCE.storeSerializable(sender.getClass().getCanonicalName(), sender);
     }
     final IWebPoster web = (IWebPoster) m_webPosterEditor.getBean();
     if (web != null) {
-      LocalBeanCache.getInstance().storeSerializable(web.getClass().getCanonicalName(), web);
+      LocalBeanCache.INSTANCE.storeSerializable(web.getClass().getCanonicalName(), web);
     }
     final IRemoteDiceServer server = (IRemoteDiceServer) m_diceServerEditor.getBean();
-    LocalBeanCache.getInstance().storeSerializable(server.getDisplayName(), server);
-    LocalBeanCache.getInstance().writeToDisk();
+    LocalBeanCache.INSTANCE.storeSerializable(server.getDisplayName(), server);
+    LocalBeanCache.INSTANCE.writeToDisk();
     // create local launcher
     final String gameUUID = (String) m_gameSelectorModel.getGameData().getProperties().get(GameData.GAME_UUID);
     final PBEMDiceRoller randomSource = new PBEMDiceRoller((IRemoteDiceServer) m_diceServerEditor.getBean(), gameUUID);
@@ -590,14 +590,10 @@ class PBEMLocalPlayerComboBoxSelector {
 }
 
 /** A bean cache used by PBEMSetupPanel */
-class LocalBeanCache {
-  private static final LocalBeanCache s_INSTANCE = new LocalBeanCache();
+enum LocalBeanCache {
+  INSTANCE;
   private final File m_file;
   private final Object m_mutex = new Object();
-
-  public static LocalBeanCache getInstance() {
-    return s_INSTANCE;
-  }
 
   Map<String, IBean> m_map = new HashMap<String, IBean>();
 
