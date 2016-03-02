@@ -417,27 +417,25 @@ public class ClipPlayer {
 
           try {
             final File zipFile = new File(decoded);
-            if (zipFile != null && zipFile.exists()) {
+            if (zipFile.exists()) {
               try (ZipFile zf = new ZipFile(zipFile)) {
-                if (zf != null) {
-                  final Enumeration<? extends ZipEntry> zipEnumeration = zf.entries();
-                  while (zipEnumeration.hasMoreElements()) {
-                    final ZipEntry zipElement = zipEnumeration.nextElement();
-                    if (zipElement != null && zipElement.getName() != null
-                        && zipElement.getName().indexOf(resourceAndPathURL) != -1
-                        && (zipElement.getName().endsWith(MP3_SUFFIX))) {
-                      try {
-                        final URL zipSoundURL = resourceLoader.getResource(zipElement.getName());
-                        if (zipSoundURL == null) {
-                          continue;
-                        }
-                        availableSounds.add(zipSoundURL);
-                      } catch (final Exception e) {
-                        ClientLogger.logQuietly(e);
+
+                final Enumeration<? extends ZipEntry> zipEnumeration = zf.entries();
+                while (zipEnumeration.hasMoreElements()) {
+                  final ZipEntry zipElement = zipEnumeration.nextElement();
+                  if (isZippedMp3(zipElement, resourceAndPathURL)) {
+                    try {
+                      final URL zipSoundURL = resourceLoader.getResource(zipElement.getName());
+                      if (zipSoundURL == null) {
+                        continue;
                       }
+                      availableSounds.add(zipSoundURL);
+                    } catch (final Exception e) {
+                      ClientLogger.logQuietly(e);
                     }
                   }
                 }
+
               }
             }
           } catch (final Exception e) {
@@ -481,6 +479,10 @@ public class ClipPlayer {
     return availableSounds;
   }
 
+  private static boolean isZippedMp3(ZipEntry zipElement, String resourceAndPathURL) {
+    return zipElement != null && zipElement.getName() != null && zipElement.getName().indexOf(resourceAndPathURL) != -1
+        && (zipElement.getName().endsWith(MP3_SUFFIX));
+  }
 
   private static boolean isSoundFileNamed(final File soundFile) {
     return soundFile.getName().endsWith(MP3_SUFFIX);
