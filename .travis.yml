@@ -11,7 +11,7 @@ before_deploy:
 - export TAGGED_VERSION="$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER"
 - sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" $GAME_CONFIG
 - gradle release
-- chmod +x push_tag && ./.travis/push_tag
+- chmod +x ./.travis/push_tag && ./.travis/push_tag
 deploy:
   provider: releases
   api_key:
