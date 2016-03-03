@@ -40,4 +40,4 @@ after_deploy:
 - export SSHPASS=$DEPLOY_PASS
 - sshpass -e scp build/distributions/$LOBBY_ARTIFACT $DEPLOY_DEST
 - sshpass -e scp .travis/prerelease_lobby_install.sh $DEPLOY_DEST
-- sshpass -e ssh $DEPLOY_USER@$DEPLOY_HOST $DEPLOY_PATH/rerelease_lobby_install.sh $LOBBY_ARTIFACT
+- sshpass -e ssh $DEPLOY_USER@$DEPLOY_HOST $DEPLOY_PATH/prerelease_lobby_install.sh $LOBBY_ARTIFACT
