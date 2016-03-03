@@ -96,7 +96,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 
   public static RulesAttachment get(final PlayerID player, final String nameOfAttachment,
       final Collection<PlayerID> playersToSearch, final boolean allowNull) {
-    RulesAttachment rVal = player.getRulesAttachment();
+    RulesAttachment rVal =  (RulesAttachment) player.getAttachment(nameOfAttachment);
     if (rVal == null) {
       if (playersToSearch == null) {
         if (!allowNull) {
