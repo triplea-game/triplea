@@ -101,7 +101,7 @@ public class MapPanel extends ImageScrollerLargeView {
 
   /** Creates new MapPanel */
   public MapPanel(final GameData data, final MapPanelSmallView smallView, final IUIContext uiContext,
-      final ImageScrollModel model) throws IOException {
+      final ImageScrollModel model)  {
     super(uiContext.getMapData().getMapDimensions(), model);
     m_uiContext = uiContext;
     this.setCursor(m_uiContext.getCursor());
