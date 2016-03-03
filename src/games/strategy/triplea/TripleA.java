@@ -1,7 +1,6 @@
 package games.strategy.triplea;
 
 import java.awt.Frame;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Map;
@@ -43,15 +42,17 @@ import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.triplea.ui.display.TripleaDisplay;
 
 public class TripleA extends AbstractGameLoader implements IGameLoader {
-  // compatible with 0.9.0.2 saved games
   private static final long serialVersionUID = -8374315848374732436L;
   public static final String HUMAN_PLAYER_TYPE = "Human";
   public static final String WEAK_COMPUTER_PLAYER_TYPE = "Easy (AI)";
   public static final String FAST_COMPUTER_PLAYER_TYPE = "Fast (AI)";
   public static final String PRO_COMPUTER_PLAYER_TYPE = "Hard (AI)";
   public static final String DOESNOTHINGAI_COMPUTER_PLAYER_TYPE = "Does Nothing (AI)";
-  // public static final String NONE = "None (AI)";
-  protected transient ITripleaDisplay m_display;
+  protected transient ITripleaDisplay display;
+
+  public TripleA() {
+
+  }
 
   @Override
   public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames) {
@@ -79,92 +80,74 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
   @Override
   public void shutDown() {
     super.shutDown();
-    if (m_display != null) {
-      game.removeDisplay(m_display);
-      m_display.shutDown();
-      m_display = null;
+    if (display != null) {
+      game.removeDisplay(display);
+      display.shutDown();
+      display = null;
     }
   }
 
-  protected void initializeGame() {}
 
   @Override
   public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) throws Exception {
-    try {
-      super.game = game;
-      if (game.getData().getDelegateList().getDelegate("edit") == null) {
-        // An evil hack: instead of modifying the XML, force an EditDelegate by adding one here
-        final EditDelegate delegate = new EditDelegate();
-        delegate.initialize("edit", "edit");
-        super.game.getData().getDelegateList().addDelegate(delegate);
-        if (game instanceof ServerGame) {
-          ((ServerGame) game).addDelegateMessenger(delegate);
-        }
+    super.game = game;
+    if (game.getData().getDelegateList().getDelegate("edit") == null) {
+      // An evil hack: instead of modifying the XML, force an EditDelegate by adding one here
+      final EditDelegate delegate = new EditDelegate();
+      delegate.initialize("edit", "edit");
+      super.game.getData().getDelegateList().addDelegate(delegate);
+      if (game instanceof ServerGame) {
+        ((ServerGame) game).addDelegateMessenger(delegate);
       }
-      final LocalPlayers localPlayers = new LocalPlayers(players);
-      if (headless) {
-        final IUIContext uiContext = new HeadlessUIContext();
-        uiContext.setDefaultMapDir(game.getData());
-        uiContext.setLocalPlayers(localPlayers);
-        final boolean useServerUI = HeadlessGameServer.getUseGameServerUI();
-        final HeadlessGameServerUI headlessFrameUI;
-        if (useServerUI) {
-          headlessFrameUI = new HeadlessGameServerUI(game, localPlayers, uiContext);
-        } else {
-          headlessFrameUI = null;
-        }
-        m_display = new DummyTripleaDisplay(headlessFrameUI);
-        soundChannel = new DummySoundChannel();
-        game.addDisplay(m_display);
-        game.addSoundChannel(soundChannel);
-        initializeGame();
-        // technically not needed because we won't have any "local human players" in a headless game.
-        connectPlayers(players, null);
-        if (headlessFrameUI != null) {
-          headlessFrameUI.setLocationRelativeTo(null);
-          headlessFrameUI.setSize(700, 400);
-          headlessFrameUI.setVisible(true);
-          headlessFrameUI.toFront();
-        }
+    }
+    final LocalPlayers localPlayers = new LocalPlayers(players);
+    if (headless) {
+      final IUIContext uiContext = new HeadlessUIContext();
+      uiContext.setDefaultMapDir(game.getData());
+      uiContext.setLocalPlayers(localPlayers);
+      final boolean useServerUI = HeadlessGameServer.getUseGameServerUI();
+      final HeadlessGameServerUI headlessFrameUI;
+      if (useServerUI) {
+        headlessFrameUI = new HeadlessGameServerUI(game, localPlayers, uiContext);
       } else {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            final TripleAFrame frame;
-            try {
-              frame = new TripleAFrame(game, localPlayers);
-            } catch (final IOException e) {
-              e.printStackTrace();
-              System.exit(-1);
-              return;
+        headlessFrameUI = null;
+      }
+      display = new DummyTripleaDisplay(headlessFrameUI);
+      soundChannel = new DummySoundChannel();
+      game.addDisplay(display);
+      game.addSoundChannel(soundChannel);
+
+      // technically not needed because we won't have any "local human players" in a headless game.
+      connectPlayers(players, null);
+      if (headlessFrameUI != null) {
+        headlessFrameUI.setLocationRelativeTo(null);
+        headlessFrameUI.setSize(700, 400);
+        headlessFrameUI.setVisible(true);
+        headlessFrameUI.toFront();
+      }
+    } else {
+      SwingUtilities.invokeAndWait(new Runnable() {
+        @Override
+        public void run() {
+          final TripleAFrame frame;
+          frame = new TripleAFrame(game, localPlayers);
+          display = new TripleaDisplay(frame);
+          game.addDisplay(display);
+          soundChannel = new DefaultSoundChannel(localPlayers);
+          game.addSoundChannel(soundChannel);
+          frame.setSize(700, 400);
+          frame.setVisible(true);
+          ClipPlayer.play(SoundPath.CLIP_GAME_START);
+          connectPlayers(players, frame);
+          SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+              frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+              frame.toFront();
             }
-            m_display = new TripleaDisplay(frame);
-            game.addDisplay(m_display);
-            soundChannel = new DefaultSoundChannel(localPlayers);
-            game.addSoundChannel(soundChannel);
-            frame.setSize(700, 400);
-            frame.setVisible(true);
-            ClipPlayer.play(SoundPath.CLIP_GAME_START);
-            connectPlayers(players, frame);
-            SwingUtilities.invokeLater(new Runnable() {
-              @Override
-              public void run() {
-                frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-                frame.toFront();
-              }
-            });
-          }
-        });
-      }
-    } catch (final InterruptedException e) {
-      e.printStackTrace();
-    } catch (final InvocationTargetException e) {
-      if (e.getCause() instanceof Exception) {
-        throw (Exception) e.getCause();
-      } else {
-        e.printStackTrace();
-        throw new IllegalStateException(e.getCause().getMessage());
-      }
+          });
+        }
+      });
     }
   }
 

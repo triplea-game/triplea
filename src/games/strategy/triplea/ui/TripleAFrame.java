@@ -211,10 +211,12 @@ public class TripleAFrame extends MainGameFrame {
   private Map<PlayerID, Boolean> m_requiredTurnSeries = new HashMap<PlayerID, Boolean>();
   private ThreadPool m_messageAndDialogThreadPool;
   private TripleaMenu m_menu;
+  private LocalPlayers m_localPlayers;
 
   /** Creates new TripleAFrame */
-  public TripleAFrame(final IGame game, final LocalPlayers players) throws IOException {
+  public TripleAFrame(final IGame game, final LocalPlayers players) {
     super("TripleA - " + game.getData().getGameName(), players);
+    m_localPlayers = players;
     m_game = game;
     m_data = game.getData();
     m_messageAndDialogThreadPool = new ThreadPool(1);
