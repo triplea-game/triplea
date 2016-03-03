@@ -103,12 +103,7 @@ public class PurchasePanel extends ActionPanel {
     m_bid = bid;
     refreshActionLabelText();
     // automatically "click" the buy button for us!
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        PURCHASE_ACTION.actionPerformed(null);
-      }
-    });
+    SwingUtilities.invokeLater(() -> PURCHASE_ACTION.actionPerformed(null));
     waitForRelease();
     return m_purchase;
   }
@@ -139,7 +134,7 @@ public class PurchasePanel extends ActionPanel {
     }
   };
 
-  private int totalUnitNumberPurchased(final IntegerMap<ProductionRule> purchase) {
+  private static int totalUnitNumberPurchased(final IntegerMap<ProductionRule> purchase) {
     int totalUnits = 0;
     final Collection<ProductionRule> rules = purchase.keySet();
     for (final ProductionRule current : rules) {
@@ -203,7 +198,7 @@ public class PurchasePanel extends ActionPanel {
     }
   };
 
-  private boolean isUnlimitedProduction(final PlayerID player) {
+  private static boolean isUnlimitedProduction(final PlayerID player) {
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     if (ra == null) {
       return false;

@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.List;
@@ -12,8 +13,11 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,6 +25,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -87,8 +92,8 @@ public class SwingComponents {
   public static void promptUser(final String title, final String message, final Runnable confirmedAction,
       final Runnable cancelAction) {
     SwingUtilities.invokeLater(() -> {
-      int response =
-          JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+      int response = JOptionPane.showConfirmDialog(null, message, title,
+          JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
       boolean result = response == JOptionPane.YES_OPTION;
 
       if (result) {
@@ -176,5 +181,16 @@ public class SwingComponents {
     SwingComponents.promptUser("Open external URL?", msg, () -> {
       DesktopUtilityBrowserLauncher.openURL(url);
     });
+  }
+
+  public static JDialog newJDialogModal(JFrame parent, String title, JPanel contents) {
+    final JDialog dialog = new JDialog(parent, title, true);
+    dialog.getContentPane().add(contents);
+    final Action closeAction = SwingAction.of("", e -> dialog.setVisible(false));
+    final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+    final String key = "dialog.close";
+    dialog.getRootPane().getActionMap().put(key, closeAction);
+    dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
+    return dialog;
   }
 }
