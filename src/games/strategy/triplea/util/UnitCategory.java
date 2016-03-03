@@ -9,8 +9,8 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.attatchments.UnitTypeComparator;
+import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.attachments.UnitTypeComparator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Util;
 

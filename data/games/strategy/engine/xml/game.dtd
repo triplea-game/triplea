@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!ELEMENT game (info, loader, triplea?, diceSides?, map, resourceList?, playerList, unitList?, relationshipTypes?, territoryEffectList?, gamePlay, production?, technology?, attatchmentList? , initialize?, propertyList?)>
+<!ELEMENT game (info, loader, triplea?, diceSides?, map, resourceList?, playerList, unitList?, relationshipTypes?, territoryEffectList?, gamePlay, production?, technology?, attachmentList? , initialize?, propertyList?)>
 
 <!-- version must be in the form xx.xx or xx.xx.xx where xx is a positive integer -->
 <!ELEMENT info EMPTY>
@@ -198,12 +198,12 @@
 				name IDREF #REQUIRED
 			>
 	
-<!-- attatchments must implement Attatchment -->
-<!ELEMENT attatchmentList (attatchment+) >
-	<!ELEMENT attatchment (option+) >
-	<!ATTLIST attatchment 
+<!-- attachments must implement Attachment -->
+<!ELEMENT attachmentList (attachment+) >
+	<!ELEMENT attachment (option+) >
+	<!ATTLIST attachment 
 		name CDATA #REQUIRED
-		attatchTo CDATA #REQUIRED
+		attachTo CDATA #REQUIRED
 		javaClass CDATA #REQUIRED
 		type (unitType | territory | resource | player | relationship | territoryEffect | technology)  "unitType"
 	>

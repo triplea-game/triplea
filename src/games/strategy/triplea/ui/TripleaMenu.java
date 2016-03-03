@@ -89,7 +89,7 @@ import games.strategy.performance.EnablePerformanceLoggingCheckBox;
 import games.strategy.sound.SoundOptions;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ai.proAI.ProAI;
-import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.image.MapImage;

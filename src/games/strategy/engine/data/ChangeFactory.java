@@ -13,7 +13,7 @@ import java.util.Set;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attatchments.TechAttachment;
+import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;

@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attachments.TerritoryAttachment;
 
 /**
  * Logic for placing units.

@@ -14,7 +14,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseOption;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseOptionMap;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;

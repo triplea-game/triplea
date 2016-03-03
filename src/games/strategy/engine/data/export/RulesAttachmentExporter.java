@@ -9,7 +9,7 @@ import java.util.Set;
 
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.triplea.attatchments.RulesAttachment;
+import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 
 public class RulesAttachmentExporter extends DefaultAttachmentExporter {
