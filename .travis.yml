@@ -5,15 +5,13 @@ install: true
 script:
 - gradle test -i
 before_deploy:
-- wget -O setup https://github.com/triplea-game/triplea/blob/master/.travis/setup?raw=true
-- chmod +x setup && ./setup
+- chmod +x ./travis/setup && ./travis/setup
 - GAME_CONFIG=game_engine.properties
 - ENGINE_VERSION=$(grep "engine_version" $GAME_CONFIG | sed 's/.*= *//g')
 - export TAGGED_VERSION="$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER"
 - sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" $GAME_CONFIG
 - gradle release
-- wget -O push_tag https://github.com/triplea-game/triplea/blob/master/.travis/push_tag?raw=true
-- chmod +x push_tag && ./push_tag
+- chmod +x push_tag && ./.travis/push_tag
 deploy:
   provider: releases
   api_key:
@@ -36,3 +34,10 @@ deploy:
     branches:
       only:
         - master
+after_deploy:
+- DEPLOY_DEST="$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
+- LOBBY_ARTIFACT="triplea-${TAGGED_VERSION}-server.zip"
+- export SSHPASS=$DEPLOY_PASS
+- sshpass -e scp build/distributions/$LOBBY_ARTIFACT $DEPLOY_DEST
+- sshpass -e scp .travis/prerelease_lobby_install.sh $DEPLOY_DEST
+- sshpass -e ssh $DEPLOY_USER@$DEPLOY_HOST $DEPLOY_PATH/rerelease_lobby_install.sh $LOBBY_ARTIFACT
