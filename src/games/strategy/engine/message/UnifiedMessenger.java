@@ -110,8 +110,6 @@ public class UnifiedMessenger {
   }
 
   private RemoteMethodCallResults invokeAndWaitRemote(final RemoteMethodCall remoteCall) {
-    // prepatory to anything else...
-    // generate a unique id
     final GUID methodCallID = new GUID();
     final CountDownLatch latch = new CountDownLatch(1);
     synchronized (m_pendingLock) {
@@ -120,28 +118,22 @@ public class UnifiedMessenger {
     // invoke remotely
     final Invoke invoke = new HubInvoke(methodCallID, true, remoteCall);
     send(invoke, m_messenger.getServerNode());
-    if (s_logger.isLoggable(Level.FINER)) {
-      s_logger.log(Level.FINER, "Waiting for method:" + remoteCall.getMethodName() + " for remote name:"
-          + remoteCall.getRemoteName() + " with id:" + methodCallID);
-    }
+
     try {
       latch.await();
     } catch (final InterruptedException e) {
       s_logger.log(Level.WARNING, e.getMessage());
     }
-    if (s_logger.isLoggable(Level.FINER)) {
-      s_logger.log(Level.FINER, "Method returned:" + remoteCall.getMethodName() + " for remote name:"
-          + remoteCall.getRemoteName() + " with id:" + methodCallID);
-    }
-    RemoteMethodCallResults results;
-    // the countdownlatch map will be cleared when the results come in
+
     synchronized (m_pendingLock) {
-      results = m_results.remove(methodCallID);
+      RemoteMethodCallResults results = m_results.remove(methodCallID);
       if (results == null) {
-        throw new IllegalStateException("No results");
+        throw new IllegalStateException(
+            "No results from remote call. Method returned:" + remoteCall.getMethodName() + " for remote name:"
+                + remoteCall.getRemoteName() + " with id:" + methodCallID);
       }
+      return results;
     }
-    return results;
   }
 
   /**
