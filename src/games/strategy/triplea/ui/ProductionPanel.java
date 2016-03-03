@@ -44,28 +44,34 @@ import games.strategy.util.IntegerMap;
 
 public class ProductionPanel extends JPanel {
   private static final long serialVersionUID = -1539053979479586609L;
-  private final JFrame m_owner = null;
-  private JDialog m_dialog;
-  // Edwin: made these protected so the class can be extended
+
   protected final IUIContext m_uiContext;
   protected List<Rule> m_rules = new ArrayList<Rule>();
   protected JLabel m_left = new JLabel();
   protected JButton m_done;
   protected PlayerID m_id;
-  private boolean m_bid;
   protected GameData m_data;
+
+  private JDialog m_dialog;
+  private boolean m_bid;
+
 
   public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data,
       final boolean bid, final IntegerMap<ProductionRule> initialPurchase, final IUIContext context) {
     return new ProductionPanel(context).show(id, parent, data, bid, initialPurchase);
   }
 
+  protected ProductionPanel(final IUIContext uiContext) {
+    m_uiContext = uiContext;
+  }
+
+
   /**
    * Shows the production panel, and returns a map of selected rules.
    */
   public IntegerMap<ProductionRule> show(final PlayerID id, final JFrame parent, final GameData data, final boolean bid,
       final IntegerMap<ProductionRule> initialPurchase) {
-    if (!(parent == m_owner)) {
+    if (parent != null) {
       m_dialog = null;
     }
     if (m_dialog == null) {
@@ -106,11 +112,6 @@ public class ProductionPanel extends JPanel {
     m_dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
   }
 
-  /** Creates new ProductionPanel */
-  // the constructor can be accessed by subclasses
-  protected ProductionPanel(final IUIContext uiContext) {
-    m_uiContext = uiContext;
-  }
 
   // made this protected so can be extended by edit production panel
   protected void initRules(final PlayerID player,
