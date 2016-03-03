@@ -1,6 +1,8 @@
 package games.strategy.engine.framework.map.download;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -10,6 +12,7 @@ import javax.swing.DefaultListModel;
 import com.google.common.collect.Lists;
 
 import games.strategy.common.swing.SwingComponents;
+import games.strategy.debug.ClientLogger;
 import games.strategy.util.Version;
 
 public class FileSystemAccessStrategy {
@@ -45,6 +48,11 @@ public class FileSystemAccessStrategy {
 
       // delete the map files
       for (DownloadFileDescription map : maps) {
+        try {
+          Files.delete( map.getInstallLocation().toPath());
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
         map.getInstallLocation().delete();
       }
 
