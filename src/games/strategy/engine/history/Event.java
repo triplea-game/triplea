@@ -11,7 +11,7 @@ public class Event extends IndexedHistoryNode implements Renderable {
   }
 
   Event(final String description, final int changeStartIndex) {
-    super(description, changeStartIndex, true);
+    super(description, changeStartIndex);
     m_description = description;
   }
 

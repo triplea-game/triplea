@@ -6,7 +6,7 @@ public class EventChild extends HistoryNode implements Renderable {
   public final Object m_renderingData;
 
   public EventChild(final String text, final Object renderingData) {
-    super(text, true);
+    super(text);
     m_text = text;
     m_renderingData = renderingData;
   }
