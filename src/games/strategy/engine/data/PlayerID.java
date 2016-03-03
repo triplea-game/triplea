@@ -3,6 +3,10 @@ package games.strategy.engine.data;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.PlayerAttachment;
+import games.strategy.triplea.attatchments.RulesAttachment;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CompositeMatchAnd;
 
@@ -164,12 +168,15 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
     return rVal;
   }
 
-  /**
-   * Do not use this ever. The Null PlayerID has no GameData associated with it, so you WILL get a Null Pointer error.
-   */
-  @Deprecated
-  @Override
-  public GameData getData() {
-    return super.getData();
+  public RulesAttachment getRulesAttachment() {
+    return (RulesAttachment) getAttachment(Constants.RULES_ATTACHMENT_NAME);
+  }
+
+  public PlayerAttachment getPlayerAttachment() {
+    return  (PlayerAttachment) getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
+  }
+
+  public TechAttachment getTechAttachment() {
+    return (TechAttachment)   getAttachment(Constants.TECH_ATTACHMENT_NAME);
   }
 }
