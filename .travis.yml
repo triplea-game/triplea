@@ -1,4 +1,8 @@
 language: java
+addons:
+  apt:
+     packages:
+         - sshpass
 jdk:
 - oraclejdk8
 install: true
