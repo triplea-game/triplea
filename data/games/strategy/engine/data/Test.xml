@@ -65,20 +65,20 @@
 		<playerProduction player="chretian" frontier="canProd" />
 	</production> 
 
-	<attatchmentList>
-		<attatchment name="infAttatchment" attatchTo="inf" javaClass="games.strategy.engine.xml.TestAttachment" type="unitType">
+	<attachmentList>
+		<attachment name="infAttachment" attachTo="inf" javaClass="games.strategy.engine.xml.TestAttachment" type="unitType">
 			<option name="value" value="inf"/>
-		</attatchment>
-		<attatchment name="resourceAttatchment" attatchTo="gold" javaClass="games.strategy.engine.xml.TestAttachment" type="resource">
+		</attachment>
+		<attachment name="resourceAttachment" attachTo="gold" javaClass="games.strategy.engine.xml.TestAttachment" type="resource">
 			<option name="value" value="gold"/>
-		</attatchment>
-		<attatchment name="territoryAttatchment" attatchTo="us" javaClass="games.strategy.engine.xml.TestAttachment" type="territory">
+		</attachment>
+		<attachment name="territoryAttachment" attachTo="us" javaClass="games.strategy.engine.xml.TestAttachment" type="territory">
 			<option name="value" value="us of a"/>
-		</attatchment>
-		<attatchment name="playerAttatchment" attatchTo="chretian" javaClass="games.strategy.engine.xml.TestAttachment" type="player">
+		</attachment>
+		<attachment name="playerAttachment" attachTo="chretian" javaClass="games.strategy.engine.xml.TestAttachment" type="player">
 			<option name="value" value="liberal"/>
-		</attatchment>
-	</attatchmentList>
+		</attachment>
+	</attachmentList>
 	<initialize>
 		<ownerInitialize>
 			<territoryOwner territory="us" owner="bush"/>

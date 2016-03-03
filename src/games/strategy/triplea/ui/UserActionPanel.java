@@ -29,7 +29,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
-import games.strategy.triplea.attatchments.UserActionAttachment;
+import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 
 /**

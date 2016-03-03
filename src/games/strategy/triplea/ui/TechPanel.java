@@ -28,7 +28,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.PlayerAttachment;
+import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.dataObjects.TechRoll;

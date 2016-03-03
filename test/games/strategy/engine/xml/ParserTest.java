@@ -104,7 +104,7 @@ public class ParserTest extends TestCase {
     assertEquals(can.getProductionFrontier(), cf);
   }
 
-  public void testAttatchments() {
+  public void testAttachments() {
     TestAttachment att = (TestAttachment) gameData.getResourceList().getResource("gold")
         .getAttachment(Constants.RESOURCE_ATTACHMENT_NAME);
     assertEquals(att.getValue(), "gold");

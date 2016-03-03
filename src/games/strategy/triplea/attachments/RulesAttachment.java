@@ -1,4 +1,4 @@
-package games.strategy.triplea.attatchments;
+package games.strategy.triplea.attachments;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;

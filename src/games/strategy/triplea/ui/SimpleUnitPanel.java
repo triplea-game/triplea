@@ -18,7 +18,7 @@ import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attatchments.UnitTypeComparator;
+import games.strategy.triplea.attachments.UnitTypeComparator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.util.IntegerMap;

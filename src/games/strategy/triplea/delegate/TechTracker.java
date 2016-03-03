@@ -9,7 +9,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.attatchments.TechAttachment;
+import games.strategy.triplea.attachments.TechAttachment;
 
 /**
  * Tracks which players have which technology advances.

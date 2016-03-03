@@ -8,7 +8,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.IntegerMap;
 
 public class UnitBattleComparator implements Comparator<Unit> {

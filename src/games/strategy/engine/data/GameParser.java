@@ -43,9 +43,9 @@ import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TechAbilityAttachment;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attachments.TechAbilityAttachment;
+import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -148,7 +148,7 @@ public class GameParser {
     } else {
       TechAdvance.createDefaultTechAdvances(data);
     }
-    final Element attachmentList = getSingleChild("attatchmentList", root, true);
+    final Element attachmentList = getSingleChild("attachmentList", root, true);
     if (attachmentList != null) {
       parseAttachments(attachmentList);
     }
@@ -471,7 +471,7 @@ public class GameParser {
         newClassesForOldNames = new HashMap<String, String>();
         // put in here class names that have been changed like //newClassesForOldNames.put("<oldClassName>",
         // "<newClassName>"), e.g.
-        // newClassesForOldNames.put("attatchment", "attachment")
+        // newClassesForOldNames.put("attachment", "attachment")
       }
       final String newClassName = newClassesForOldNames.get(className);
       if (newClassName != null) {
@@ -1290,7 +1290,7 @@ public class GameParser {
 
   private void parseAttachments(final Element root) throws GameParseException {
     final HashMap<String, Constructor<?>> constructors = new HashMap<String, Constructor<?>>();
-    for (final Element current : getChildren("attatchment", root)) {
+    for (final Element current : getChildren("attachment", root)) {
       // get class name and constructor
       final String className = current.getAttribute("javaClass");
       if (!constructors.containsKey(className)) {
@@ -1339,7 +1339,7 @@ public class GameParser {
 
   private Attachable findAttachment(final Element element, final String type) throws GameParseException {
     Attachable returnVal;
-    final String name = "attatchTo";
+    final String name = "attachTo";
     if (type.equals("unitType")) {
       returnVal = getUnitType(element, name, true);
     } else if (type.equals("territory")) {

@@ -20,7 +20,7 @@ import games.strategy.net.GUID;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.TripleA;
 import games.strategy.triplea.ai.weakAI.WeakAI;
-import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord.BattleResultDescription;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;

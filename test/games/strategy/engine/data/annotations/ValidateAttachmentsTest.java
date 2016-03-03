@@ -88,22 +88,22 @@ public class ValidateAttachmentsTest extends TestCase {
   @SuppressWarnings("unchecked")
   private static Class<? extends IAttachment>[] getKnownAttachmentClasses() {
     return new Class[] {games.strategy.engine.data.DefaultAttachment.class,
-        games.strategy.triplea.attatchments.CanalAttachment.class,
-        games.strategy.triplea.attatchments.PlayerAttachment.class,
-        games.strategy.triplea.attatchments.PoliticalActionAttachment.class,
-        games.strategy.triplea.attatchments.RelationshipTypeAttachment.class,
-        games.strategy.triplea.attatchments.RulesAttachment.class,
-        games.strategy.triplea.attatchments.TechAttachment.class,
-        games.strategy.triplea.attatchments.TerritoryAttachment.class,
-        games.strategy.triplea.attatchments.TerritoryEffectAttachment.class,
-        games.strategy.triplea.attatchments.TriggerAttachment.class,
-        games.strategy.triplea.attatchments.UnitAttachment.class,
-        games.strategy.triplea.attatchments.UnitSupportAttachment.class,
-        games.strategy.triplea.attatchments.TechAbilityAttachment.class};
-    // games.strategy.triplea.attatchments.AbstractConditionsAttachment.class
-    // games.strategy.triplea.attatchments.AbstractPlayerRulesAttachment.class
-    // games.strategy.triplea.attatchments.AbstractRulesAttachment.class
-    // games.strategy.triplea.attatchments.AbstractTriggerAttachment.class
+        games.strategy.triplea.attachments.CanalAttachment.class,
+        games.strategy.triplea.attachments.PlayerAttachment.class,
+        games.strategy.triplea.attachments.PoliticalActionAttachment.class,
+        games.strategy.triplea.attachments.RelationshipTypeAttachment.class,
+        games.strategy.triplea.attachments.RulesAttachment.class,
+        games.strategy.triplea.attachments.TechAttachment.class,
+        games.strategy.triplea.attachments.TerritoryAttachment.class,
+        games.strategy.triplea.attachments.TerritoryEffectAttachment.class,
+        games.strategy.triplea.attachments.TriggerAttachment.class,
+        games.strategy.triplea.attachments.UnitAttachment.class,
+        games.strategy.triplea.attachments.UnitSupportAttachment.class,
+        games.strategy.triplea.attachments.TechAbilityAttachment.class};
+    // games.strategy.triplea.attachments.AbstractConditionsAttachment.class
+    // games.strategy.triplea.attachments.AbstractPlayerRulesAttachment.class
+    // games.strategy.triplea.attachments.AbstractRulesAttachment.class
+    // games.strategy.triplea.attachments.AbstractTriggerAttachment.class
   }
 
   /**
