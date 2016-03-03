@@ -24,7 +24,11 @@ public interface Constants {
   public static final String TRIGGER_ATTACHMENT_PREFIX = "triggerAttachment";
   public static final String POLITICALACTION_ATTACHMENT_PREFIX = "politicalActionAttachment";
   public static final String USERACTION_ATTACHMENT_PREFIX = "userActionAttachment";
+
+
   public static final String PLAYER_ATTACHMENT_NAME = "playerAttatchment";
+
+
   public static final String RELATIONSHIPTYPE_ATTACHMENT_NAME = "relationshipTypeAttachment";
   public static final String CANAL_ATTACHMENT_PREFIX = "canalAttatchment";
   public static final String SUPPORT_ATTACHMENT_PREFIX = "supportAttachment";
