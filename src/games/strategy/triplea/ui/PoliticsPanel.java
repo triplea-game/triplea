@@ -129,7 +129,7 @@ public class PoliticsPanel extends ActionPanel {
       final int availWidth = screenResolution.width - 30;
       final int availHeightOverview = (int) ((float) availHeight * 2 / 3);
       final int availHeightChoice = (int) ((float) availHeight / 3);
-      // availHeighChoice -= (42 * getData().getPlayerList().getPlayers().size() + 46);
+
       final JDialog politicalChoiceDialog = new JDialog(m_parent, "Political Actions", true);
       final Insets insets = new Insets(1, 1, 1, 1);
       int row = 0;
@@ -148,12 +148,7 @@ public class PoliticsPanel extends ActionPanel {
           (overviewScroll.getPreferredSize().height > availHeightOverview ? availHeightOverview
               : (overviewScroll.getPreferredSize().height + (m_validPoliticalActions.isEmpty() ? 26 : 0)
                   + (overviewScroll.getPreferredSize().width > availWidth ? 20 : 0)))));
-      // politicalChoicePanel.add(overviewScroll, new GridBagConstraints(0, row++, 4, 1, 1.0, 10.0,
-      // GridBagConstraints.CENTER,
-      // GridBagConstraints.BOTH, insets, 0, 0));
-      // politicalChoicePanel.add(new JSeparator(JSeparator.HORIZONTAL), new GridBagConstraints(0, row++, 20, 1, 0.1,
-      // 1.0,
-      // GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
+
       final JScrollPane choiceScroll = new JScrollPane(PoliticalActionButtonPanel(politicalChoiceDialog));
       choiceScroll.setBorder(BorderFactory.createEmptyBorder());
       choiceScroll.setPreferredSize(new Dimension(
@@ -163,21 +158,14 @@ public class PoliticsPanel extends ActionPanel {
           (choiceScroll.getPreferredSize().height > availHeightChoice ? availHeightChoice
               : (choiceScroll.getPreferredSize().height)
                   + (choiceScroll.getPreferredSize().width > availWidth ? 20 : 0))));
-      // politicalChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 1, 1, 1.0, 11.0,
-      // GridBagConstraints.CENTER,
-      // GridBagConstraints.BOTH, insets, 0, 0));
+
       final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, overviewScroll, choiceScroll);
       splitPane.setOneTouchExpandable(true);
       splitPane.setDividerSize(8);
       politicalChoicePanel.add(splitPane, new GridBagConstraints(0, row++, 1, 1, 100.0, 100.0,
           GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
       final JButton noActionButton = new JButton(SwingAction.of("No Actions", event -> politicalChoiceDialog.setVisible(false)));
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          noActionButton.requestFocusInWindow();
-        }
-      });
+      SwingUtilities.invokeLater(() -> noActionButton.requestFocusInWindow());
       politicalChoicePanel.add(noActionButton, new GridBagConstraints(0, row, 20, 1, 1.0, 1.0, GridBagConstraints.EAST,
           GridBagConstraints.NONE, insets, 0, 0));
       politicalChoiceDialog.add(politicalChoicePanel);
@@ -249,12 +237,12 @@ public class PoliticsPanel extends ActionPanel {
     return panel;
   }
 
-  private String getActionButtonText(final PoliticalActionAttachment paa) {
+  private static String getActionButtonText(final PoliticalActionAttachment paa) {
     final String costString = paa.getCostPU() == 0 ? "" : "[" + paa.getCostPU() + " PU] ";
     return costString + PoliticsText.getInstance().getButtonText(paa.getText());
   }
 
-  private JLabel getActionDescriptionLabel(final PoliticalActionAttachment paa) {
+  private static JLabel getActionDescriptionLabel(final PoliticalActionAttachment paa) {
     final String chanceString = paa.getChanceToHit() >= paa.getChanceDiceSides() ? ""
         : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
     return new JLabel(chanceString + PoliticsText.getInstance().getDescription(paa.getText()));
