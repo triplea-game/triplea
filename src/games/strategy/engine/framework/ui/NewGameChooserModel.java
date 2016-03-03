@@ -28,6 +28,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
@@ -151,41 +152,28 @@ public class NewGameChooserModel extends DefaultListModel {
    * parameter, then show confirmation of deletion.
    */
   private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map) {
-    try {
-      Runnable deleteMapRunnable = new Runnable() {
-        @Override
-        public void run() {
-          final Component parentComponent = MainFrame.getInstance();
-          String message = "Could not parse map file correctly, would you like to remove it?\n" + map.getAbsolutePath()
-              + "\n(You may see this error message again if you keep the file)";
-          String title = "Corrup Map File Found";
-          final int optionType = JOptionPane.YES_NO_OPTION;
-          int messageType = JOptionPane.WARNING_MESSAGE;
-          final int result = JOptionPane.showConfirmDialog(parentComponent, message, title, optionType, messageType);
-          if (result == JOptionPane.YES_OPTION) {
-            final boolean deleted = map.delete();
-            if (deleted) {
-              messageType = JOptionPane.INFORMATION_MESSAGE;
-              message = "File was deleted successfully.";
-            } else if (!deleted && map.exists()) {
-              message = "Unable to delete file, please remove it by hand:\n" + map.getAbsolutePath();
-            }
-            title = "File Removal Result";
-            JOptionPane.showMessageDialog(parentComponent, message, title, messageType);
-          }
+    Runnable deleteMapRunnable = () -> {
+      final Component parentComponent = MainFrame.getInstance();
+      String message = "Could not parse map file correctly, would you like to remove it?\n" + map.getAbsolutePath()
+          + "\n(You may see this error message again if you keep the file)";
+      String title = "Corrup Map File Found";
+      final int optionType = JOptionPane.YES_NO_OPTION;
+      int messageType = JOptionPane.WARNING_MESSAGE;
+      final int result = JOptionPane.showConfirmDialog(parentComponent, message, title, optionType, messageType);
+      if (result == JOptionPane.YES_OPTION) {
+        final boolean deleted = map.delete();
+        if (deleted) {
+          messageType = JOptionPane.INFORMATION_MESSAGE;
+          message = "File was deleted successfully.";
+        } else if (!deleted && map.exists()) {
+          message = "Unable to delete file, please remove it by hand:\n" + map.getAbsolutePath();
         }
-      };
-
-      if (SwingUtilities.isEventDispatchThread()) {
-        deleteMapRunnable.run();
-      } else {
-        SwingUtilities.invokeAndWait(deleteMapRunnable);
+        title = "File Removal Result";
+        JOptionPane.showMessageDialog(parentComponent, message, title, messageType);
       }
-    } catch (final InvocationTargetException e) {
-      ClientLogger.logError(e);
-    } catch (final InterruptedException e) {
-      ClientLogger.logQuietly(e);
-    }
+    };
+
+    SwingAction.invokeAndWait(deleteMapRunnable);
   }
 
   /**
@@ -203,8 +191,8 @@ public class NewGameChooserModel extends DefaultListModel {
     } catch (final EngineVersionException e) {
       System.out.println(e.getMessage());
     } catch (final SAXParseException e) {
-      System.err
-          .println("Could not parse:" + uri + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
+      String msg = "Could not parse:" + uri + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber();
+      System.err.println(msg);
       e.printStackTrace();
     } catch (final Exception e) {
       System.err.println("Could not parse:" + uri);

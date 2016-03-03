@@ -160,19 +160,7 @@ public class HeadlessGameServerUI extends MainGameFrame {
     // change, we need to ensure that no further history
     // events are run until our historySynchronizer is set up
     if (!SwingUtilities.isEventDispatchThread()) {
-      try {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            updateStep();
-          }
-        });
-      } catch (final InterruptedException e) {
-        e.printStackTrace();
-      } catch (final InvocationTargetException e) {
-        e.getCause().printStackTrace();
-        throw new IllegalStateException(e.getCause().getMessage());
-      }
+      SwingAction.invokeAndWait(() -> updateStep());
       return;
     }
     int round;

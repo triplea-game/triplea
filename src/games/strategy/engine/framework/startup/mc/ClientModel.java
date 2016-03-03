@@ -21,6 +21,7 @@ import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.IChatPanel;
@@ -243,12 +244,7 @@ public class ClientModel implements IMessengerErrorListener {
     @Override
     public void gameReset() {
       m_objectStreamFactory.setData(null);
-      Util.runInSwingEventThread(new Runnable() {
-        @Override
-        public void run() {
-          MainFrame.getInstance().setVisible(true);
-        }
-      });
+      SwingAction.invokeAndWait(() -> MainFrame.getInstance().setVisible(true));
     }
 
     @Override

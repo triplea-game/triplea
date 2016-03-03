@@ -26,6 +26,7 @@ import javax.swing.UIManager;
 
 import org.apache.commons.httpclient.HostConfiguration;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
@@ -149,7 +150,7 @@ public class GameRunner2 {
     setupLookAndFeel();
 
     LocalSystemChecker systemCheck = new LocalSystemChecker();
-    if( !systemCheck.getExceptions().isEmpty() ) {
+    if (!systemCheck.getExceptions().isEmpty()) {
       String msg = "Warning!! " + systemCheck.getExceptions().size()
           + " system checks failed. Some game features may not be available or may not work correctly.\n"
           + systemCheck.getStatusMessage();
@@ -269,31 +270,24 @@ public class GameRunner2 {
   }
 
   public static void setupLookAndFeel() {
-    try {
-      SwingUtilities.invokeAndWait(new Runnable() {
-        @Override
-        public void run() {
+    SwingAction.invokeAndWait(() -> {
+      try {
+        UIManager.setLookAndFeel(getDefaultLookAndFeel());
+        // FYI if you are getting a null pointer exception in Substance, like this:
+        // org.pushingpixels.substance.internal.utils.SubstanceColorUtilities
+        // .getDefaultBackgroundColor(SubstanceColorUtilities.java:758)
+        // Then it is because you included the swingx substance library without including swingx.
+        // You can solve by including both swingx libraries or removing both,
+        // or by setting the look and feel twice in a row.
+      } catch (final Throwable t) {
+        if (!GameRunner.isMac()) {
           try {
-            UIManager.setLookAndFeel(getDefaultLookAndFeel());
-            // FYI if you are getting a null pointer exception in Substance, like this:
-            // org.pushingpixels.substance.internal.utils.SubstanceColorUtilities
-            // .getDefaultBackgroundColor(SubstanceColorUtilities.java:758)
-            // Then it is because you included the swingx substance library without including swingx.
-            // You can solve by including both swingx libraries or removing both,
-            // or by setting the look and feel twice in a row.
-          } catch (final Throwable t) {
-            if (!GameRunner.isMac()) {
-              try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-              } catch (final Exception e) {
-              }
-            }
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          } catch (final Exception e) {
           }
         }
-      });
-    } catch (final Throwable t) {
-      t.printStackTrace(System.out);
-    }
+      }
+    });
   }
 
   public static void setupLogging() {
@@ -784,7 +778,8 @@ public class GameRunner2 {
         return true;
       } else {
         // if this is the first time we are running THIS version of TripleA, then show what is new.
-        if (firstTimeThisVersion && latestEngineOut.getReleaseNotes().containsKey(ClientContext.engineVersion().getVersion())) {
+        if (firstTimeThisVersion
+            && latestEngineOut.getReleaseNotes().containsKey(ClientContext.engineVersion().getVersion())) {
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {

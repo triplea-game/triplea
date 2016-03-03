@@ -1,8 +1,12 @@
 package games.strategy.common.swing;
 
 import java.awt.event.ActionEvent;
+import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
 import javax.swing.AbstractAction;
+import javax.swing.SwingUtilities;
+
+import games.strategy.debug.ClientLogger;
 
 
 /**
@@ -48,5 +52,15 @@ public class SwingAction {
         swingAction.accept(e);
       }
     };
+  }
+
+  public static void invokeAndWait(Runnable action) {
+    try {
+      SwingUtilities.invokeAndWait(() -> action.run());
+    } catch (InvocationTargetException e) {
+      ClientLogger.logError(e);
+    } catch (InterruptedException e) {
+      ClientLogger.logQuietly(e);
+    }
   }
 }
