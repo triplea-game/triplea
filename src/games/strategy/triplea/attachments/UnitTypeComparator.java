@@ -1,4 +1,4 @@
-package games.strategy.triplea.attatchments;
+package games.strategy.triplea.attachments;
 
 import java.util.Comparator;
 

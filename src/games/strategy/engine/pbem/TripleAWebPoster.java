@@ -27,7 +27,7 @@ import games.strategy.engine.framework.startup.ui.editors.MicroWebPosterEditor;
 import games.strategy.engine.stats.AbstractStat;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.help.HelpSupport;
 

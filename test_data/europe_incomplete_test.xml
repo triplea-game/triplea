@@ -567,47 +567,47 @@
 
 	</production> 
 	
-	<attatchmentList>
-				<!-- Tech Attatchements here for compatibility reasons with .5.1 -->
+	<attachmentList>
+				<!-- Tech Attachements here for compatibility reasons with .5.1 -->
                 <!-- Germans -->
-                <attatchment name="techAttatchment" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+                <attachment name="techAttachment" attachTo="Germans" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
                         <option name="heavyBomber" value="false"/>
                         <option name="jetPower" value="false"/>
                         <option name="industrialTechnology" value="false"/>
                         <option name="superSub" value="false"/>
                         <option name="rocket" value="false"/>
                         <option name="longRangeAir" value="false"/>
-                </attatchment>
+                </attachment>
 
                 <!-- Russians -->
-                <attatchment name="techAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+                <attachment name="techAttachment" attachTo="Russians" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
                         <option name="heavyBomber" value="false"/>
                         <option name="jetPower" value="false"/>
                         <option name="industrialTechnology" value="false"/>
                         <option name="superSub" value="false"/>
                         <option name="rocket" value="false"/>
                         <option name="longRangeAir" value="false"/>
-                </attatchment>
+                </attachment>
 
                 <!-- British -->
-                <attatchment name="techAttatchment" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+                <attachment name="techAttachment" attachTo="British" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
                         <option name="heavyBomber" value="false"/>
                         <option name="jetPower" value="false"/>
                         <option name="industrialTechnology" value="false"/>
                         <option name="superSub" value="false"/>
                         <option name="rocket" value="false"/>
                         <option name="longRangeAir" value="false"/>
-                </attatchment>
+                </attachment>
 
                 <!-- Americans -->
-                <attatchment name="techAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+                <attachment name="techAttachment" attachTo="Americans" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
                         <option name="heavyBomber" value="false"/>
                         <option name="jetPower" value="false"/>
                         <option name="industrialTechnology" value="false"/>
                         <option name="superSub" value="false"/>
                         <option name="rocket" value="false"/>
                         <option name="longRangeAir" value="false"/>
-                </attatchment>
+                </attachment>
 
 
 
@@ -617,9 +617,9 @@
 
 
 
-	    <attatchment name="unitAttatchment" 
-			 attatchTo="infantry"
-			 javaClass="games.strategy.triplea.attatchments.UnitAttachment"
+	    <attachment name="unitAttachment" 
+			 attachTo="infantry"
+			 javaClass="games.strategy.triplea.attachments.UnitAttachment"
 			 type="unitType">
 			 <option name="movement" value="1"/>
 			 <option name="transportCost" value="2"/>
@@ -627,10 +627,10 @@
 			 <option name="defense" value="2"/>
 			 <option name="artillerySupportable" value="true"/>
 			 <option name="canBeGivenByTerritoryTo" value="Russians"/>
-	    </attatchment>
-	    <attatchment name="unitAttatchment" 
-			 attatchTo="artillery"
-			 javaClass="games.strategy.triplea.attatchments.UnitAttachment"
+	    </attachment>
+	    <attachment name="unitAttachment" 
+			 attachTo="artillery"
+			 javaClass="games.strategy.triplea.attachments.UnitAttachment"
 			 type="unitType">
 			 <option name="movement" value="1"/>
 			 <option name="transportCost" value="2"/>
@@ -638,10 +638,10 @@
 			 <option name="defense" value="2"/>
 			 <option name="artillery" value="true"/>
 			 <option name="canBeGivenByTerritoryTo" value="Russians"/>
-	    </attatchment>
-	    <attatchment name="unitAttatchment" 
-			 attatchTo="armour"
-			 javaClass="games.strategy.triplea.attatchments.UnitAttachment"
+	    </attachment>
+	    <attachment name="unitAttachment" 
+			 attachTo="armour"
+			 javaClass="games.strategy.triplea.attachments.UnitAttachment"
 			 type="unitType">
 			 <option name="movement" value="2"/>
 			 <option name="transportCost" value="3"/>
@@ -649,10 +649,10 @@
 			 <option name="attack" value="3"/>
 			 <option name="defense" value="2"/>
 			 <option name="canBeGivenByTerritoryTo" value="Russians"/>
-	    </attatchment>
-	    <attatchment name="unitAttatchment" 
-			 attatchTo="fighter"
-			 javaClass="games.strategy.triplea.attatchments.UnitAttachment"
+	    </attachment>
+	    <attachment name="unitAttachment" 
+			 attachTo="fighter"
+			 javaClass="games.strategy.triplea.attachments.UnitAttachment"
 			 type="unitType">
 			 <option name="movement" value="4"/>
 			 <option name="carrierCost" value="1"/>
@@ -660,10 +660,10 @@
 			 <option name="attack" value="3"/>
 			 <option name="defense" value="4"/>
 			 <option name="canBeGivenByTerritoryTo" value="Russians"/>
-	    </attatchment>
-	    <attatchment name="unitAttatchment" 
-			 attatchTo="bomber"
-			 javaClass="games.strategy.triplea.attatchments.UnitAttachment"
+	    </attachment>
+	    <attachment name="unitAttachment" 
+			 attachTo="bomber"
+			 javaClass="games.strategy.triplea.attachments.UnitAttachment"
 			 type="unitType">
 			 <option name="movement" value="6"/>
 			 <option name="isAir" value="true"/>
@@ -671,20 +671,20 @@
 			 <option name="defense" value="1"/>
 			 <option name="isStrategicBomber" value="true"/>
 			 <option name="canBeGivenByTerritoryTo" value="Russians"/>
-	    </attatchment>
-	    <attatchment name="unitAttatchment" 
-			 attatchTo="transport"
-			 javaClass="games.strategy.triplea.attatchments.UnitAttachment"
+	    </attachment>
+	    <attachment name="unitAttachment" 
+			 attachTo="transport"
+			 javaClass="games.strategy.triplea.attachments.UnitAttachment"
 			 type="unitType">
 			 <option name="movement" value="2"/>
 			 <option name="isSea" value="true"/>   
 			 <option name="transportCapacity" value="4"/>   
 			 <option name="attack" value="0"/>
 			 <option name="defense" value="1"/>
-	    </attatchment>
-	    <attatchment name="unitAttatchment" 
-			 attatchTo="destroyer"
-			 javaClass="games.strategy.triplea.attatchments.UnitAttachment"
+	    </attachment>
+	    <attachment name="unitAttachment" 
+			 attachTo="destroyer"
+			 javaClass="games.strategy.triplea.attachments.UnitAttachment"
 			 type="unitType">
 			 <option name="movement" value="2"/>
 			 <option name="isSea" value="true"/>   
@@ -692,10 +692,10 @@
 			 <option name="defense" value="3"/>
  			 <option name="isDestroyer" value="true"/>
 			 <option name="canBombard" value="true"/>
-	    </attatchment>
-	    <attatchment name="unitAttatchment" 
-			 attatchTo="battleship"
-			 javaClass="games.strategy.triplea.attatchments.UnitAttachment"
+	    </attachment>
+	    <attachment name="unitAttachment" 
+			 attachTo="battleship"
+			 javaClass="games.strategy.triplea.attachments.UnitAttachment"
 			 type="unitType">
 			 <option name="movement" value="2"/>
 			 <option name="isSea" value="true"/>
@@ -703,354 +703,354 @@
 			 <option name="defense" value="4"/>
 			 <option name="canBombard" value="true"/>
 			 <option name="isTwoHit" value="true"/>
-		 </attatchment>
-	    <attatchment name="unitAttatchment" 
-			 attatchTo="carrier"
-			 javaClass="games.strategy.triplea.attatchments.UnitAttachment"
+		 </attachment>
+	    <attachment name="unitAttachment" 
+			 attachTo="carrier"
+			 javaClass="games.strategy.triplea.attachments.UnitAttachment"
 			 type="unitType">
 			 <option name="carrierCapacity" value="2"/>
 			 <option name="movement" value="2"/>
 			 <option name="isSea" value="true"/>   
 			 <option name="attack" value="1"/>
 			 <option name="defense" value="3"/>
-	    </attatchment>
-	    <attatchment name="unitAttatchment" 
-			 attatchTo="submarine"
-			 javaClass="games.strategy.triplea.attatchments.UnitAttachment"
+	    </attachment>
+	    <attachment name="unitAttachment" 
+			 attachTo="submarine"
+			 javaClass="games.strategy.triplea.attachments.UnitAttachment"
 			 type="unitType">
 			 <option name="isSub" value="true"/>
 			 <option name="movement" value="2"/>
 			 <option name="isSea" value="true"/>   
 			 <option name="attack" value="2"/>
 			 <option name="defense" value="2"/>
-	    </attatchment>
+	    </attachment>
 
-	    <attatchment name="unitAttatchment" 
-			 attatchTo="factory"
-			 javaClass="games.strategy.triplea.attatchments.UnitAttachment"
+	    <attachment name="unitAttachment" 
+			 attachTo="factory"
+			 javaClass="games.strategy.triplea.attachments.UnitAttachment"
 			 type="unitType">
 			 <option name="isFactory" value="true"/>   
-	    </attatchment>
-	    <attatchment name="unitAttatchment" 
-			 attatchTo="aaGun"
-			 javaClass="games.strategy.triplea.attatchments.UnitAttachment"
+	    </attachment>
+	    <attachment name="unitAttachment" 
+			 attachTo="aaGun"
+			 javaClass="games.strategy.triplea.attachments.UnitAttachment"
 			 type="unitType">
 			 <option name="isAA" value="true"/>   
 			 <option name="transportCost" value="2"/>
 			 <option name="movement" value="1"/>
 			 <option name="canBeGivenByTerritoryTo" value="Russians"/>
-	    </attatchment>
+	    </attachment>
 
 
 		<!-- German IC -->
-		<attatchment name="territoryAttatchment" attatchTo="Germany" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"  type="territory">
+		<attachment name="territoryAttachment" attachTo="Germany" javaClass="games.strategy.triplea.attachments.TerritoryAttachment"  type="territory">
                         <option name="production" value="6"/>
 						<option name="originalFactory" value="true" />
                         <option name="capital" value="Germans"/>        
-        </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Eastern France" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+        </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Eastern France" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="2" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="France" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="France" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="3" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Bulgaria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Bulgaria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Baltic States" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Baltic States" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
 			<option name="changeUnitOwners" value="Russians"/>
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Northern Italy" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Northern Italy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="4" />
 			<option name="originalFactory" value="true" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Palestine" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Palestine" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Vyborg" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Vyborg" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
 			<option name="changeUnitOwners" value="Russians"/>
-	    </attatchment>
-		    <attatchment name="territoryAttatchment"  attatchTo="Czechoslovakia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+		    <attachment name="territoryAttachment"  attachTo="Czechoslovakia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="2" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Tunisia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Tunisia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Ukraine S.S.R." javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Ukraine S.S.R." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="2" />
 			<option name="changeUnitOwners" value="Russians"/>
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Iceland" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Iceland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Sicily" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Sicily" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Iraq" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Iraq" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="2" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Gibraltar" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Gibraltar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Hungary" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Hungary" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="2" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Turkey" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Turkey" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Spanish Morocco" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Spanish Morocco" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Caucasus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Caucasus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="4" />
 			<option name="changeUnitOwners" value="Russians"/>
-	    </attatchment>
-		<attatchment name="territoryAttatchment"  attatchTo="Southern Italy" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+		<attachment name="territoryAttachment"  attachTo="Southern Italy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="2" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Egypt" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Egypt" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Iran" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Iran" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="2" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Denmark" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Denmark" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Spain" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Spain" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Turkestan" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Turkestan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="2" />
 			<option name="changeUnitOwners" value="Russians"/>
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Algeria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Algeria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Archangel" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Archangel" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
 			<option name="originalFactory" value="true" />
 			<option name="changeUnitOwners" value="Russians"/>
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Cyprus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Cyprus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Eire" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Eire" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Austria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Austria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="2" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Sweden" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Sweden" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Siberia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Siberia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="2" />
 			<option name="changeUnitOwners" value="Russians"/>
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Libya" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Libya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Canada" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Canada" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="3" />
 		    <option name="originalFactory" value="true" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Belorussia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Belorussia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
 			<option name="changeUnitOwners" value="Russians"/>
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Moscow" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Moscow" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="2" />
 			<option name="changeUnitOwners" value="Russians"/>
 			<option name="originalFactory" value="true" />
-	    </attatchment>
+	    </attachment>
 	   
-	    <attatchment name="territoryAttatchment"  attatchTo="Corsica" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    <attachment name="territoryAttachment"  attachTo="Corsica" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Russia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Russia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
 			<option name="changeUnitOwners" value="Russians"/>
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Rumania" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Rumania" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Syria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Syria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="United States" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="United States" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="30" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Stalingrad" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Stalingrad" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
 			<option name="originalFactory" value="true" />
 			<option name="changeUnitOwners" value="Russians"/>
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Greece" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Greece" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Poland" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Poland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="2" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Switzerland" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Switzerland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Norway" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Norway" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="2" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Leningrad" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Leningrad" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
 			<option name="originalFactory" value="true" />
 			<option name="changeUnitOwners" value="Russians"/>
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Crete" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Crete" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Vichy France" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Vichy France" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Bessarabia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Bessarabia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
 			<option name="changeUnitOwners" value="Russians"/>
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Morocco" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Morocco" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Trans-Jordan" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Trans-Jordan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="2" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Finland" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Finland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Sardinia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Sardinia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="United Kingdom" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="United Kingdom" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="6" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Saudi Arabia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Saudi Arabia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Netherlands-Belgium" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Netherlands-Belgium" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="2" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Malta" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Malta" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Karelia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Karelia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
 			<option name="changeUnitOwners" value="Russians"/>
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="Yugoslavia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="Yugoslavia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
-	    </attatchment>
-	    <attatchment name="territoryAttatchment"  attatchTo="East Poland" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    </attachment>
+	    <attachment name="territoryAttachment"  attachTo="East Poland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
 			<option name="changeUnitOwners" value="Russians"/>
-	    </attatchment>
+	    </attachment>
 	
 		<!-- Capitol Moscow-->
-		<attatchment name="territoryAttatchment" attatchTo="Moscow" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"  type="territory">
+		<attachment name="territoryAttachment" attachTo="Moscow" javaClass="games.strategy.triplea.attachments.TerritoryAttachment"  type="territory">
                         <option name="production" value="2"/>
 						<option name="originalFactory" value="true" />
 			            <option name="capital" value="Russians" />  
 						<option name="changeUnitOwners" value="Russians"/>  
-        </attatchment>
+        </attachment>
 
-		<attatchment name="territoryAttatchment" attatchTo="United Kingdom" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"  type="territory">
+		<attachment name="territoryAttachment" attachTo="United Kingdom" javaClass="games.strategy.triplea.attachments.TerritoryAttachment"  type="territory">
                         <option name="production" value="6"/>
 						<option name="originalFactory" value="true" />
 			            <option name="capital" value="British" />    
-        </attatchment>
+        </attachment>
 
-		<attatchment name="territoryAttatchment" attatchTo="United States" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"  type="territory">
+		<attachment name="territoryAttachment" attachTo="United States" javaClass="games.strategy.triplea.attachments.TerritoryAttachment"  type="territory">
                         <option name="production" value="30"/>
 						<option name="originalFactory" value="true" />
 			            <option name="capital" value="Americans" />    
-        </attatchment>
+        </attachment>
 
 		<!-- Convoy Center Attachements -->
-		<attatchment name="territoryAttatchment" attatchTo="British Convoy 1 Sea Zone"
-            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+		<attachment name="territoryAttachment" attachTo="British Convoy 1 Sea Zone"
+            javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="3"/>
-       </attatchment>
-       <attatchment name="territoryAttatchment" attatchTo="British Convoy 2 Sea Zone"
-            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+       </attachment>
+       <attachment name="territoryAttachment" attachTo="British Convoy 2 Sea Zone"
+            javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="3"/>
-       </attatchment>
-       <attatchment name="territoryAttatchment" attatchTo="British Convoy 3 Sea Zone"
-            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+       </attachment>
+       <attachment name="territoryAttachment" attachTo="British Convoy 3 Sea Zone"
+            javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="5"/>
-       </attatchment>
-       <attatchment name="territoryAttatchment" attatchTo="British Convoy 4 Sea Zone"
-            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+       </attachment>
+       <attachment name="territoryAttachment" attachTo="British Convoy 4 Sea Zone"
+            javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="5"/>
-       </attatchment>
-       <attatchment name="territoryAttatchment" attatchTo="U.S. Convoy 1 Sea Zone"
-            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+       </attachment>
+       <attachment name="territoryAttachment" attachTo="U.S. Convoy 1 Sea Zone"
+            javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="4"/>
-       </attatchment>
-       <attatchment name="territoryAttatchment" attatchTo="U.S. Convoy 2 Sea Zone"
-            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+       </attachment>
+       <attachment name="territoryAttachment" attachTo="U.S. Convoy 2 Sea Zone"
+            javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="6"/>
-       </attatchment>
-       <attatchment name="territoryAttatchment" attatchTo="Soviet Convoy Sea Zone"
-            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+       </attachment>
+       <attachment name="territoryAttachment" attachTo="Soviet Convoy Sea Zone"
+            javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="4"/>
-       </attatchment>
+       </attachment>
 	   
 	   
 	   <!-- Canals -->
 	   
-	   		   	<attatchment name="canalAttatchment" attatchTo="Black Sea Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+	   		   	<attachment name="canalAttachment" attachTo="Black Sea Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
 			    	<option name="canalName" value="The Bosphorus"/>
 			    	<option name="landTerritories" value="Turkey"/>
-			    </attatchment>
+			    </attachment>
 			    
-			    <attatchment name="canalAttatchment" attatchTo="Aegean Sea Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+			    <attachment name="canalAttachment" attachTo="Aegean Sea Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
 			    	<option name="canalName" value="The Bosphorus"/>
 			    	<option name="landTerritories" value="Turkey"/>
-			    </attatchment>
+			    </attachment>
 				
 	<!--  Rules Restrictions -->
-				<attatchment name="rulesAttatchment" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+				<attachment name="rulesAttachment" attachTo="Germans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="unlimitedProduction" value="true"/>
-                </attatchment>
-				<attatchment name="rulesAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                </attachment>
+				<attachment name="rulesAttachment" attachTo="Russians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="unlimitedProduction" value="true"/>
-                </attatchment>
-				<attatchment name="rulesAttatchment" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                </attachment>
+				<attachment name="rulesAttachment" attachTo="British" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="unlimitedProduction" value="true"/>
-                </attatchment>
-				<attatchment name="rulesAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                </attachment>
+				<attachment name="rulesAttachment" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="unlimitedProduction" value="true"/>
-                </attatchment>
+                </attachment>
 				
 				
 				
-				<attatchment name="playerAttatchment" attatchTo="British" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
+				<attachment name="playerAttachment" attachTo="British" javaClass="games.strategy.triplea.attachments.PlayerAttachment" type="player">
 					<!-- giveUnitControl allow multiple players to give units to multiple other players, if those units are in a designated territory 
 							must be a list of the player's names, in a ":" delimited list.  Example: value="Russians:Chinese"-->
 					<option name="giveUnitControl" value="Russians"/>
-				</attatchment>
+				</attachment>
 				
-				<attatchment name="playerAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
+				<attachment name="playerAttachment" attachTo="Americans" javaClass="games.strategy.triplea.attachments.PlayerAttachment" type="player">
 					<!-- giveUnitControl allow multiple players to give units to multiple other players, if those units are in a designated territory 
 							must be a list of the player's names, in a ":" delimited list.  Example: value="Russians:Chinese"-->
 					<option name="giveUnitControl" value="Russians"/>
-				</attatchment>
+				</attachment>
 				
 				
-	</attatchmentList>
+	</attachmentList>
 	
 	
 	

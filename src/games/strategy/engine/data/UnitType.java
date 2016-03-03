@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.TooltipProperties;

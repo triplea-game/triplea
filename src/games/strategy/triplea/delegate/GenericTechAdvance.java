@@ -3,7 +3,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.attatchments.TechAttachment;
+import games.strategy.triplea.attachments.TechAttachment;
 
 public class GenericTechAdvance extends TechAdvance {
   private static final long serialVersionUID = -5985281030083508185L;

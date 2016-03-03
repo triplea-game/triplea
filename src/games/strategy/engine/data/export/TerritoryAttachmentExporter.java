@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attachments.TerritoryAttachment;
 
 public class TerritoryAttachmentExporter extends DefaultAttachmentExporter {
   @Override

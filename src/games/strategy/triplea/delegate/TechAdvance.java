@@ -19,7 +19,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.attatchments.TechAttachment;
+import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.util.Tuple;
 
 public abstract class TechAdvance extends NamedAttachable implements Serializable {

@@ -8,7 +8,7 @@ import java.util.Iterator;
  * A collection of Relationship types
  */
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.RelationshipTypeAttachment;
+import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 
 public class RelationshipTypeList extends GameDataComponent implements Iterable<RelationshipType> {
   private static final long serialVersionUID = 6590541694575435151L;

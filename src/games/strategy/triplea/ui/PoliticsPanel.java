@@ -31,7 +31,7 @@ import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.RelationshipTypeList;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
-import games.strategy.triplea.attatchments.PoliticalActionAttachment;
+import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.util.PlayerOrderComparator;
 

@@ -9,7 +9,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.history.HistoryNode;
-import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 
 public class InitialSetup {
   private Iterator<UnitType> m_unitTypeIterator;
