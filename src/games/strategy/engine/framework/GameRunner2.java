@@ -25,6 +25,7 @@ import javax.swing.UIManager;
 
 import org.apache.commons.httpclient.HostConfiguration;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
@@ -149,6 +150,19 @@ public class GameRunner2 {
       ErrorHandler.registerExceptionHandler();
     })).start();
 
+    s_countDownLatch = new CountDownLatch(1);
+    try {
+      SwingUtilities.invokeAndWait(new Runnable() {
+        @Override
+        public void run() {
+          s_waitWindow = new WaitWindow("TripleA is starting...");
+          s_waitWindow.setVisible(true);
+          s_waitWindow.showWait();
+        }
+      });
+    } catch (final Exception e) {
+      // just don't show the wait window
+    }
     setupProxies();
     (new Thread(() -> checkForUpdates())).start();
     handleCommandLineArgs(args);
@@ -241,23 +255,24 @@ public class GameRunner2 {
   }
 
   public static void setupLookAndFeel() {
-    try {
-      UIManager.setLookAndFeel(getDefaultLookAndFeel());
-      // FYI if you are getting a null pointer exception in Substance, like this:
-      // org.pushingpixels.substance.internal.utils.SubstanceColorUtilities
-      // .getDefaultBackgroundColor(SubstanceColorUtilities.java:758)
-      // Then it is because you included the swingx substance library without including swingx.
-      // You can solve by including both swingx libraries or removing both,
-      // or by setting the look and feel twice in a row.
-    } catch (final Throwable t) {
-      System.out.println("LOOK AND FEEL exception: " + t.getMessage());
-      if (!GameRunner.isMac()) {
-        try {
-          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (final Exception e) {
+    SwingAction.invokeAndWait(() -> {
+      try {
+        UIManager.setLookAndFeel(getDefaultLookAndFeel());
+        // FYI if you are getting a null pointer exception in Substance, like this:
+        // org.pushingpixels.substance.internal.utils.SubstanceColorUtilities
+        // .getDefaultBackgroundColor(SubstanceColorUtilities.java:758)
+        // Then it is because you included the swingx substance library without including swingx.
+        // You can solve by including both swingx libraries or removing both,
+        // or by setting the look and feel twice in a row.
+      } catch (final Throwable t) {
+        if (!GameRunner.isMac()) {
+          try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          } catch (final Exception e) {
+          }
         }
       }
-    }
+    });
   }
 
   public static void setupLogging() {

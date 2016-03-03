@@ -1,13 +1,11 @@
 package games.strategy.triplea;
 
 import java.awt.Frame;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.SwingUtilities;
-
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.PlayerID;
@@ -89,7 +87,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
 
 
   @Override
-  public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) throws Exception {
+  public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) {
     super.game = game;
     if (game.getData().getDelegateList().getDelegate("edit") == null) {
       // An evil hack: instead of modifying the XML, force an EditDelegate by adding one here
@@ -126,29 +124,23 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
         headlessFrameUI.toFront();
       }
     } else {
-      SwingUtilities.invokeAndWait(new Runnable() {
-        @Override
-        public void run() {
-          final TripleAFrame frame;
-          frame = new TripleAFrame(game, localPlayers);
-          display = new TripleaDisplay(frame);
-          game.addDisplay(display);
-          soundChannel = new DefaultSoundChannel(localPlayers);
-          game.addSoundChannel(soundChannel);
-          frame.setSize(700, 400);
-          frame.setVisible(true);
-          ClipPlayer.play(SoundPath.CLIP_GAME_START);
-          connectPlayers(players, frame);
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-              frame.toFront();
-            }
-          });
-        }
+      SwingAction.invokeAndWait(() -> {
+        final TripleAFrame frame;
+        frame = new TripleAFrame(game, localPlayers);
+        display = new TripleaDisplay(frame);
+        game.addDisplay(display);
+        soundChannel = new DefaultSoundChannel(localPlayers);
+        game.addSoundChannel(soundChannel);
+        frame.setSize(700, 400);
+        frame.setVisible(true);
+        ClipPlayer.play(SoundPath.CLIP_GAME_START);
+        connectPlayers(players, frame);
+        frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+        frame.toFront();
       });
+
     }
+
   }
 
   private static void connectPlayers(final Set<IGamePlayer> players, final TripleAFrame frame) {

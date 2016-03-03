@@ -398,28 +398,21 @@ public class ProLogWindow extends javax.swing.JDialog {
   }
 
   public void notifyNewRound(final int roundNumber, final String name) {
-    try {
-      SwingUtilities.invokeAndWait(new Runnable() {
-        @Override
-        public void run() {
-          final JPanel newPanel = new JPanel();
-          final JScrollPane newScrollPane = new JScrollPane();
-          final JTextArea newTextArea = new JTextArea();
-          newTextArea.setColumns(20);
-          newTextArea.setRows(5);
-          newTextArea.setFont(new java.awt.Font("Segoe UI", 0, 10));
-          newTextArea.setEditable(false);
-          newScrollPane.getHorizontalScrollBar().setEnabled(true);
-          newScrollPane.setViewportView(newTextArea);
-          newPanel.setLayout(new GridLayout());
-          newPanel.add(newScrollPane);
-          v_logHolderTabbedPane.addTab(Integer.toString(roundNumber) + "-" + name, newPanel);
-          currentLogTextArea = newTextArea;
-        }
-      });
-    } catch (final Exception ex) {
-      System.out.print("Error initializing ProAI settings window: " + ex.toString() + "\r\n");
-    }
+    SwingAction.invokeAndWait(() -> {
+      final JPanel newPanel = new JPanel();
+      final JScrollPane newScrollPane = new JScrollPane();
+      final JTextArea newTextArea = new JTextArea();
+      newTextArea.setColumns(20);
+      newTextArea.setRows(5);
+      newTextArea.setFont(new java.awt.Font("Segoe UI", 0, 10));
+      newTextArea.setEditable(false);
+      newScrollPane.getHorizontalScrollBar().setEnabled(true);
+      newScrollPane.setViewportView(newTextArea);
+      newPanel.setLayout(new GridLayout());
+      newPanel.add(newScrollPane);
+      v_logHolderTabbedPane.addTab(Integer.toString(roundNumber) + "-" + name, newPanel);
+      currentLogTextArea = newTextArea;
+    });
     // Now remove round logging that has 'expired'.
     // Note that this method will also trim all but the first and last log panels if logging is turned off
     // (We always keep first round's log panel, and we keep last because the user might turn logging back on in the
@@ -437,23 +430,16 @@ public class ProLogWindow extends javax.swing.JDialog {
       } else {
         maxHistoryRounds = 1; // If we're not logging, trim to 1
       }
-      try {
-        final Runnable runner = new Runnable() {
-          @Override
-          public void run() {
-            for (int i = 0; i < v_logHolderTabbedPane.getTabCount(); i++) {
-              // Remember, we never remove last tab, in case user turns logging back on in the middle of a round
-              if (i != 0 && i < v_logHolderTabbedPane.getTabCount() - maxHistoryRounds) {
-                // Remove the tab and decrease i by one, so the next component will be checked
-                v_logHolderTabbedPane.removeTabAt(i);
-                i--;
-              }
-            }
+      SwingAction.invokeAndWait(() -> {
+        for (int i = 0; i < v_logHolderTabbedPane.getTabCount(); i++) {
+          // Remember, we never remove last tab, in case user turns logging back on in the middle of a round
+          if (i != 0 && i < v_logHolderTabbedPane.getTabCount() - maxHistoryRounds) {
+            // Remove the tab and decrease i by one, so the next component will be checked
+            v_logHolderTabbedPane.removeTabAt(i);
+            i--;
           }
-        };
-        SwingUtilities.invokeAndWait(runner);
-      } catch (final Exception ex) {
-      }
+        }
+      });
     }
   }
 

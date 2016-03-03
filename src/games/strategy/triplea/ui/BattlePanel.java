@@ -241,61 +241,52 @@ public class BattlePanel extends ActionPanel {
     }
   }
 
-  public void showBattle(final GUID battleID, final Territory location, final String battleTitle,
+  public void showBattle(final GUID battleID, final Territory location,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
       final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
-      final Map<Unit, Collection<Unit>> unit_dependents, final PlayerID attacker, final PlayerID defender,
+      final PlayerID attacker, final PlayerID defender,
       final boolean isAmphibious, final BattleType battleType, final Collection<Unit> amphibiousLandAttackers) {
-    try {
-      SwingUtilities.invokeAndWait(new Runnable() {
-        @Override
-        public void run() {
-          if (m_battleDisplay != null) {
-            cleanUpBattleWindow();
-            m_currentBattleDisplayed = null;
-          }
-          if (!getMap().getUIContext().getShowMapOnly()) {
-            m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits,
-                killedUnits, attackingWaitingToDie, defendingWaitingToDie, battleID, BattlePanel.this.getMap(),
-                isAmphibious, battleType, amphibiousLandAttackers);
-            m_battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
-            m_battleFrame.getContentPane().removeAll();
-            m_battleFrame.getContentPane().add(m_battleDisplay);
-            m_battleFrame.setSize(800, 600);
-            m_battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
-            games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);
-            boolean foundHumanInBattle = false;
-            for (final IGamePlayer gamePlayer : getMap().getUIContext().getLocalPlayers().getLocalPlayers()) {
-              if ((gamePlayer.getPlayerID().equals(attacker) && gamePlayer instanceof TripleAPlayer)
-                  || (gamePlayer.getPlayerID().equals(defender) && gamePlayer instanceof TripleAPlayer)) {
-                foundHumanInBattle = true;
-                break;
-              }
-            }
-            if (getMap().getUIContext().getShowBattlesBetweenAIs() || foundHumanInBattle) {
-              m_battleFrame.setVisible(true);
-              m_battleFrame.validate();
-              m_battleFrame.invalidate();
-              m_battleFrame.repaint();
-            } else {
-              m_battleFrame.setVisible(false);
-            }
-            m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-            m_currentBattleDisplayed = battleID;
-            SwingUtilities.invokeLater(new Runnable() {
-              @Override
-              public void run() {
-                m_battleFrame.toFront();
-              }
-            });
+    SwingAction.invokeAndWait(() -> {
+      if (m_battleDisplay != null) {
+        cleanUpBattleWindow();
+        m_currentBattleDisplayed = null;
+      }
+      if (!getMap().getUIContext().getShowMapOnly()) {
+        m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits,
+            killedUnits, attackingWaitingToDie, defendingWaitingToDie, battleID, BattlePanel.this.getMap(),
+            isAmphibious, battleType, amphibiousLandAttackers);
+        m_battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
+        m_battleFrame.getContentPane().removeAll();
+        m_battleFrame.getContentPane().add(m_battleDisplay);
+        m_battleFrame.setSize(800, 600);
+        m_battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
+        games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);
+        boolean foundHumanInBattle = false;
+        for (final IGamePlayer gamePlayer : getMap().getUIContext().getLocalPlayers().getLocalPlayers()) {
+          if ((gamePlayer.getPlayerID().equals(attacker) && gamePlayer instanceof TripleAPlayer)
+              || (gamePlayer.getPlayerID().equals(defender) && gamePlayer instanceof TripleAPlayer)) {
+            foundHumanInBattle = true;
+            break;
           }
         }
-      });
-    } catch (final InterruptedException e) {
-      e.printStackTrace();
-    } catch (final InvocationTargetException e) {
-      e.printStackTrace();
-    }
+        if (getMap().getUIContext().getShowBattlesBetweenAIs() || foundHumanInBattle) {
+          m_battleFrame.setVisible(true);
+          m_battleFrame.validate();
+          m_battleFrame.invalidate();
+          m_battleFrame.repaint();
+        } else {
+          m_battleFrame.setVisible(false);
+        }
+        m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        m_currentBattleDisplayed = battleID;
+        SwingUtilities.invokeLater(new Runnable() {
+          @Override
+          public void run() {
+            m_battleFrame.toFront();
+          }
+        });
+      }
+    });
   }
 
   public FightBattleDetails waitForBattleSelection() {
