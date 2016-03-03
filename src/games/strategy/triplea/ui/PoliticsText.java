@@ -9,6 +9,7 @@ import games.strategy.triplea.ResourceLoader;
 
 /**
  * Returns a bunch of messages from politicstext.properties
+ * TODO: copy paste overlap with NotifcationMessages.java
  */
 public class PoliticsText {
   // Filename

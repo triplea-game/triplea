@@ -484,7 +484,7 @@ public class ObjectivePanel extends AbstractStatPanel {
   }
 }
 
-
+/** TODO: copy paste overlap with NotifcationMessages.java */
 class ObjectiveProperties {
   // Filename
   private static final String PROPERTY_FILE = "objectives.properties";

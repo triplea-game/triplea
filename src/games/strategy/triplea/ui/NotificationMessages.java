@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import games.strategy.triplea.ResourceLoader;
 
+/** TODO: copy paste overlap with PoliticsText.java */
 public class NotificationMessages {
   // Filename
   private static final String PROPERTY_FILE = "notifications.properties";

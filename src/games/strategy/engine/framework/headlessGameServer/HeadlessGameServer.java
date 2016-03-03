@@ -45,6 +45,7 @@ import games.strategy.util.Util;
  * A way of hosting a game, but headless.
  */
 public class HeadlessGameServer {
+
   public static final String TRIPLEA_GAME_HOST_UI_PROPERTY = "triplea.game.host.ui";
   public static final String TRIPLEA_HEADLESS = "triplea.headless";
   public static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.game.host.console";
