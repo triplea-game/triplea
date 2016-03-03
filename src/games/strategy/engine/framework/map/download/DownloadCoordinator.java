@@ -49,13 +49,13 @@ public class DownloadCoordinator {
             // It's a difficult situation to create for the user, and the worst case is multiple map download
             // complete dialogs appearing - which is not a big deal.
             downloadPromptAlreadyShown = true;
-            SwingComponents.promptUser("Map Downloads Completed",
-                "Map downloads are complete, would you like to continue downloading more maps?", () -> {
-            } , () -> {
+            Runnable confirmAction = () -> {
               if (downloadCompleteAction.isPresent()) {
                 downloadCompleteAction.get().run();
               }
-            });
+            };
+            SwingComponents.promptUser("Map Downloads Completed",
+                "Map downloads are complete, would you like to continue downloading more maps?", confirmAction);
           }
         } catch (Exception e) {
           e.printStackTrace();

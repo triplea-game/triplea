@@ -31,7 +31,6 @@ public class DownloadFileDescription {
 
   public DownloadFileDescription(final String url, final String description, final String mapName,
       final Version version, DownloadType downloadType) {
-    super();
     this.url = url;
     this.description = description;
     this.mapName = mapName;

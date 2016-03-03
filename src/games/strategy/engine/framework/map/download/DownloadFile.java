@@ -34,7 +34,7 @@ public class DownloadFile {
 
   /**
    * Creates a new FileDownload object.
-   * Does not actually start the download, call 'startAsyncDownload()' to start the donwload.
+   * Does not actually start the download, call 'startAsyncDownload()' to start the download.
    *
    * @param download The details of what to download
    * @param progressUpdateListener Called periodically while download progress is made.
