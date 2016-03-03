@@ -29,6 +29,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.common.swing.SwingComponents;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -72,10 +73,9 @@ public class ProductionPanel extends JPanel {
   public IntegerMap<ProductionRule> show(final PlayerID id, final JFrame parent, final GameData data, final boolean bid,
       final IntegerMap<ProductionRule> initialPurchase) {
     if (parent != null) {
-      m_dialog = null;
-    }
-    if (m_dialog == null) {
-      initDialog(parent);
+      String title = "Produce";
+      JPanel contents = this;
+      m_dialog = SwingComponents.newJDialogModal(parent, title , contents);
     }
     this.m_bid = bid;
     this.m_data = data;
@@ -84,12 +84,8 @@ public class ProductionPanel extends JPanel {
     this.calculateLimits();
     m_dialog.pack();
     m_dialog.setLocationRelativeTo(parent);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_done.requestFocusInWindow();
-      }
-    });
+    SwingUtilities.invokeLater(() -> m_done.requestFocusInWindow());
+    // making the dialog visible will block until it is closed
     m_dialog.setVisible(true);
     m_dialog.dispose();
     return getProduction();
@@ -98,18 +94,6 @@ public class ProductionPanel extends JPanel {
   // this method can be accessed by subclasses
   protected List<Rule> getRules() {
     return m_rules;
-  }
-
-  private void initDialog(final JFrame root) {
-    m_dialog = new JDialog(root, "Produce", true);
-    m_dialog.getContentPane().add(this);
-    final Action closeAction = SwingAction.of("", e -> m_dialog.setVisible(false));
-    // close the window on escape
-    // this is mostly for developers, makes it much easier to quickly cycle through steps
-    final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-    final String key = "production.panel.close.prod.popup";
-    m_dialog.getRootPane().getActionMap().put(key, closeAction);
-    m_dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
   }
 
 
