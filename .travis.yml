@@ -8,22 +8,6 @@ jdk:
 install: true
 script:
 - gradle test -i
-before_deploy:
-- chmod +x ./.travis/setup && ./.travis/setup
-- GAME_CONFIG=game_engine.properties
-- ENGINE_VERSION=$(grep "engine_version" $GAME_CONFIG | sed 's/.*= *//g')
-- export TAGGED_VERSION="$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER"
-- sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" $GAME_CONFIG
-- gradle release
-- chmod +x ./.travis/push_tag && ./.travis/push_tag
-before_deploy:
-- echo "showing build artifacts" && ls build/distributions
-- DEPLOY_DEST="$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
-- LOBBY_ARTIFACT="triplea-${TAGGED_VERSION}-server.zip"
-- export SSHPASS=$DEPLOY_PASS
-- sshpass -e scp build/distributions/$LOBBY_ARTIFACT $DEPLOY_DEST
-- sshpass -e scp .travis/prerelease_lobby_install.sh $DEPLOY_DEST
-- sshpass -e ssh $DEPLOY_USER@$DEPLOY_HOST $DEPLOY_PATH/prerelease_lobby_install.sh $LOBBY_ARTIFACT
 deploy:
   provider: releases
   api_key:
@@ -46,3 +30,11 @@ deploy:
     branches:
       only:
         - master
+after_deploy:
+- echo "showing build artifacts" && ls build/distributions
+- DEPLOY_DEST="$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
+- LOBBY_ARTIFACT="triplea-${TAGGED_VERSION}-server.zip"
+- export SSHPASS=$DEPLOY_PASS
+- sshpass -e scp build/distributions/$LOBBY_ARTIFACT $DEPLOY_DEST
+- sshpass -e scp .travis/prerelease_lobby_install.sh $DEPLOY_DEST
+- sshpass -e ssh $DEPLOY_USER@$DEPLOY_HOST $DEPLOY_PATH/prerelease_lobby_install.sh $LOBBY_ARTIFACT
