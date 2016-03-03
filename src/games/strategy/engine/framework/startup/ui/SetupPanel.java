@@ -7,6 +7,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.Action;
 import javax.swing.JPanel;
 
+import com.google.common.collect.Lists;
+
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 
@@ -67,6 +69,6 @@ public abstract class SetupPanel extends JPanel implements ISetupPanel {
 
   @Override
   public List<Action> getUserActions() {
-    return null;
+    return Lists.newArrayList();
   }
 }
