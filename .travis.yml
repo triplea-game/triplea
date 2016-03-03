@@ -5,7 +5,7 @@ install: true
 script:
 - gradle test -i
 before_deploy:
-- chmod +x ./travis/setup && ./travis/setup
+- chmod +x ./.travis/setup && ./.travis/setup
 - GAME_CONFIG=game_engine.properties
 - ENGINE_VERSION=$(grep "engine_version" $GAME_CONFIG | sed 's/.*= *//g')
 - export TAGGED_VERSION="$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER"
