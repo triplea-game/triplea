@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.util.ThreadUtil;
 
 /**
  * An ExecutorService backed thread pool.
@@ -38,16 +39,12 @@ public class ThreadPool {
    * Returns when all tasks run through the runTask method have finished.
    */
   public void waitForAll() {
-    try {
-      while (!futuresStack.isEmpty()) {
-        if (futuresStack.peek().isDone()) {
-          futuresStack.pop();
-        } else {
-          Thread.sleep(5);
-        }
+    while (!futuresStack.isEmpty()) {
+      if (futuresStack.peek().isDone()) {
+        futuresStack.pop();
+      } else {
+        ThreadUtil.sleep(5);
       }
-    } catch (InterruptedException e) {
-      ClientLogger.logQuietly(e);
     }
   }
 

@@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import games.strategy.common.swing.SwingComponents;
+import games.strategy.util.ThreadUtil;
 
 /**
  * Class that accepts and queues download requests. Download requests are started in background
@@ -38,10 +39,7 @@ public class DownloadCoordinator {
         try {
           startNextDownloads();
           // pause for a brief while before the next iteration
-          try {
-            Thread.sleep(50);
-          } catch (InterruptedException e) {
-          }
+          ThreadUtil.sleep(50);
 
           if (shouldShowDownloadsFinishedPrompt()) {
 

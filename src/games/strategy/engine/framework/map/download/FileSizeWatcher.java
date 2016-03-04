@@ -3,6 +3,8 @@ package games.strategy.engine.framework.map.download;
 import java.io.File;
 import java.util.function.Consumer;
 
+import games.strategy.util.ThreadUtil;
+
 /**
  * A class that will monitor the size of a file. Inputs are a file and a consumer,
  * the file is polled in a new thread for its file size which is then passed to the
@@ -28,10 +30,7 @@ public class FileSizeWatcher {
     return () -> {
       while (!stop) {
         progressListener.accept((int) fileToWatch.length());
-        try {
-          Thread.sleep(50);
-        } catch (InterruptedException e) {
-        }
+        ThreadUtil.sleep(50);
       }
     };
   }

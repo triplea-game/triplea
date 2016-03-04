@@ -14,6 +14,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import games.strategy.util.ThreadUtil;
+
 @RunWith(MockitoJUnitRunner.class)
 public class HeadlessGameServerConsoleTest {
 
@@ -48,12 +50,8 @@ public class HeadlessGameServerConsoleTest {
     }
     testObj.start();
 
-    try {
-      // console thread reads on another thread, sleep for a bit to give it a chance to read.
-      Thread.sleep(HeadlessGameServerConsole.LOOP_SLEEP_MS * 5);
-    } catch (InterruptedException e) {
-      throw new IllegalStateException(e);
-    }
+    // console thread reads on another thread, sleep for a bit to give it a chance to read.
+    ThreadUtil.sleep(HeadlessGameServerConsole.LOOP_SLEEP_MS * 5);
     verify( mockHeadlessConsoleController,times(1)).process(testValueToSendThru.trim());
   }
 

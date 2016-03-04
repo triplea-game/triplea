@@ -4,6 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.util.ThreadUtil;
 
 /**
  * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate
@@ -87,27 +88,24 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
       int i = 0;
       boolean shownErrorMessage = false;
       while (!stepName.equals(bridgeStep)) {
-        try {
-          Thread.sleep(100);
-          i++;
-          if (i > 30 && !shownErrorMessage) {
-            System.out.println("Start step: " + stepName + " does not match player bridge step: " + bridgeStep
-                + ". Player Bridge GameOver=" + getPlayerBridge().isGameOver() + ", PlayerID: "
-                + getPlayerID().getName() + ", Game: " + getGameData().getGameName()
-                + ". Something wrong or very laggy. Will keep trying for 30 more seconds. ");
-            shownErrorMessage = true;
-          }
-          // TODO: what is the right amount of time to wait before we give up?
-          if (i > 310) {
-            System.err.println("Start step: " + stepName + " still does not match player bridge step: " + bridgeStep
-                + " even after waiting more than 30 seconds. This will probably result in a ClassCastException very soon. Player Bridge GameOver="
-                + getPlayerBridge().isGameOver() + ", PlayerID: " + getPlayerID().getName() + ", Game: "
-                + getGameData().getGameName());
-            // getPlayerBridge().printErrorStatus();
-            // waited more than 30 seconds, so just let stuff run (an error will pop up surely...)
-            break;
-          }
-        } catch (final InterruptedException e) {
+        ThreadUtil.sleep(100);
+        i++;
+        if (i > 30 && !shownErrorMessage) {
+          System.out.println("Start step: " + stepName + " does not match player bridge step: " + bridgeStep
+              + ". Player Bridge GameOver=" + getPlayerBridge().isGameOver() + ", PlayerID: "
+              + getPlayerID().getName() + ", Game: " + getGameData().getGameName()
+              + ". Something wrong or very laggy. Will keep trying for 30 more seconds. ");
+          shownErrorMessage = true;
+        }
+        // TODO: what is the right amount of time to wait before we give up?
+        if (i > 310) {
+          System.err.println("Start step: " + stepName + " still does not match player bridge step: " + bridgeStep
+              + " even after waiting more than 30 seconds. This will probably result in a ClassCastException very soon. Player Bridge GameOver="
+              + getPlayerBridge().isGameOver() + ", PlayerID: " + getPlayerID().getName() + ", Game: "
+              + getGameData().getGameName());
+          // getPlayerBridge().printErrorStatus();
+          // waited more than 30 seconds, so just let stuff run (an error will pop up surely...)
+          break;
         }
         bridgeStep = getPlayerBridge().getStepName();
       }

@@ -17,6 +17,7 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.ServerMessenger;
 import games.strategy.sound.SoundPath;
 import games.strategy.test.TestUtil;
+import games.strategy.util.ThreadUtil;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
@@ -108,7 +109,7 @@ public class ChatTest extends TestCase {
         assertEquals(m_serverChatListener.m_players.size(), 3);
         break;
       } catch (final AssertionFailedError afe) {
-        Thread.sleep(25);
+        ThreadUtil.sleep(25);
       }
     }
     assertEquals(m_client1ChatListener.m_players.size(), 3);
@@ -149,7 +150,7 @@ public class ChatTest extends TestCase {
         assertEquals(m_serverChatListener.m_messages.size(), 3 * messageCount);
         break;
       } catch (final AssertionFailedError afe) {
-        Thread.sleep(25);
+        ThreadUtil.sleep(25);
       }
     }
     assertEquals(m_client1ChatListener.m_messages.size(), 3 * messageCount);
@@ -163,7 +164,7 @@ public class ChatTest extends TestCase {
         assertEquals(m_serverChatListener.m_players.size(), 1);
         break;
       } catch (final AssertionFailedError afe) {
-        Thread.sleep(25);
+        ThreadUtil.sleep(25);
       }
     }
     assertEquals(m_serverChatListener.m_players.size(), 1);
@@ -173,7 +174,7 @@ public class ChatTest extends TestCase {
         assertEquals(m_serverChatListener.m_players.size(), 0);
         break;
       } catch (final AssertionFailedError afe) {
-        Thread.sleep(25);
+        ThreadUtil.sleep(25);
       }
     }
     assertEquals(m_serverChatListener.m_players.size(), 0);

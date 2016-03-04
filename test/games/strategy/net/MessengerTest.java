@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import games.strategy.test.TestUtil;
+import games.strategy.util.ThreadUtil;
 import junit.framework.TestCase;
 
 public class MessengerTest extends TestCase {
@@ -41,11 +42,7 @@ public class MessengerTest extends TestCase {
     assertEquals(m_server.getServerNode(), m_server.getLocalNode());
     for (int i = 0; i < 100; i++) {
       if (m_server.getNodes().size() != 3) {
-        try {
-          Thread.sleep(1);
-        } catch (final InterruptedException e) {
-          throw new IllegalStateException(e);
-        }
+        ThreadUtil.sleep(1);
       } else {
         break;
       }
@@ -193,10 +190,7 @@ public class MessengerTest extends TestCase {
       if (m_server.getNodes().size() == 3) {
         break;
       }
-      try {
-        Thread.sleep(10);
-      } catch (final InterruptedException e) {
-      }
+      ThreadUtil.sleep(10);
     }
     final AtomicInteger m_serverCount = new AtomicInteger(3);
     m_server.addConnectionChangeListener(new IConnectionChangeListener() {
@@ -213,10 +207,10 @@ public class MessengerTest extends TestCase {
     m_client1.shutDown();
     for (int i = 0; i < 100; i++) {
       if (m_server.getNodes().size() == 2) {
-        Thread.sleep(10);
+        ThreadUtil.sleep(10);
         break;
       }
-      Thread.sleep(10);
+      ThreadUtil.sleep(10);
     }
     assertEquals(2, m_serverCount.get());
   }
@@ -226,17 +220,17 @@ public class MessengerTest extends TestCase {
       if (m_server.getNodes().size() == 3) {
         break;
       }
-      Thread.sleep(10);
+      ThreadUtil.sleep(10);
     }
     assertEquals(3, m_server.getNodes().size());
     m_client1.shutDown();
     m_client2.shutDown();
     for (int i = 0; i < 100; i++) {
       if (m_server.getNodes().size() == 1) {
-        Thread.sleep(10);
+        ThreadUtil.sleep(10);
         break;
       }
-      Thread.sleep(1);
+      ThreadUtil.sleep(1);
     }
     assertEquals(m_server.getNodes().size(), 1);
   }
@@ -252,10 +246,10 @@ public class MessengerTest extends TestCase {
     m_server.removeConnection(m_client1.getLocalNode());
     int waitCount = 0;
     while (!closed.get() && waitCount < 10) {
-      Thread.sleep(40);
+      ThreadUtil.sleep(40);
       waitCount++;
     }
-    assert(closed.get());
+    assert (closed.get());
   }
 
   public void testManyClients() throws UnknownHostException, CouldNotLogInException, IOException, InterruptedException {

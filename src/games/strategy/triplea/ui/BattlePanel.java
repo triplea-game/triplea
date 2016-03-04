@@ -46,6 +46,7 @@ import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
 import games.strategy.ui.Util;
 import games.strategy.ui.Util.Task;
 import games.strategy.util.EventThreadJOptionPane;
+import games.strategy.util.ThreadUtil;
 
 /**
  * UI for fighting battles.
@@ -199,12 +200,8 @@ public class BattlePanel extends ActionPanel {
     GUID displayed = m_currentBattleDisplayed;
     int count = 0;
     while (displayed == null || !battleID.equals(displayed)) {
-      try {
-        count++;
-        Thread.sleep(count);
-      } catch (final InterruptedException e) {
-        return false;
-      }
+      count++;
+      ThreadUtil.sleep(count);
       // something is wrong, we shouldnt have to wait this long
       if (count > 200) {
         ErrorConsole.getConsole().dumpStacks();

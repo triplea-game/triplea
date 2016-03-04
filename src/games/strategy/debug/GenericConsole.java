@@ -17,6 +17,7 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.util.ThreadUtil;
 
 public abstract class GenericConsole extends JFrame {
   private static final long serialVersionUID = 5754914217052820386L;
@@ -120,11 +121,7 @@ class ThreadReader implements Runnable {
       if (m_displayConsoleOnWrite && !parentConsole.isVisible()) {
         parentConsole.setVisible(true);
       }
-      try {
-        Thread.sleep(CONSOLE_UPDATE_INTERVAL_MS);
-      } catch (final InterruptedException e) {
-        ClientLogger.logQuietly(e);
-      }
+      ThreadUtil.sleep(CONSOLE_UPDATE_INTERVAL_MS);
     }
   }
 }
