@@ -12,6 +12,8 @@ import java.util.UUID;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import javax.swing.SwingUtilities;
+
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.GameMapListener;
 import games.strategy.engine.data.events.TerritoryListener;
@@ -512,5 +514,18 @@ public class GameData implements java.io.Serializable {
       }
       m_sequence.setStepIndex(Math.max(0, Math.min(m_sequence.size() - 1, currentIndex - toSubtract)));
     }
+  }
+
+  public void performChange(Change change) {
+    if (areChangesOnlyInSwingEventThread() && !SwingUtilities.isEventDispatchThread()) {
+      throw new IllegalStateException("Wrong thread");
+    }
+    try {
+      acquireWriteLock();
+      change.perform(this);
+    } finally {
+      releaseWriteLock();
+    }
+    notifyGameDataChanged(change);
   }
 }

@@ -23,7 +23,6 @@ import javax.swing.tree.DefaultTreeModel;
  * Event - an event that happened in the game, eg Russia buys 8 inf.
  */
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.history.HistoryPanel;
@@ -119,7 +118,7 @@ public class History extends DefaultTreeModel implements java.io.Serializable {
       final Change dataChange = getDelta(m_currentNode, node);
       m_currentNode = node;
       if (dataChange != null) {
-        new ChangePerformer(m_data).perform(dataChange);
+        m_data.performChange(dataChange);
       }
     } finally {
       getGameData().releaseWriteLock();
@@ -165,12 +164,7 @@ public class History extends DefaultTreeModel implements java.io.Serializable {
       return;
     }
     if (m_currentNode == getLastNode()) {
-      getGameData().acquireWriteLock();
-      try {
-        new ChangePerformer(m_data).perform(aChange);
-      } finally {
-        getGameData().releaseWriteLock();
-      }
+      m_data.performChange(aChange);
     }
   }
 

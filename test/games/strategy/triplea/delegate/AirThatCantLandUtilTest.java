@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
@@ -27,7 +26,7 @@ public class AirThatCantLandUtilTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    m_data = LoadGameUtil.loadGame("World War II Revised Test", "revised_test.xml");
+    m_data = LoadGameUtil.loadTestGame("revised_test.xml");
     m_americans = GameDataTestUtil.americans(m_data);
     m_fighter = GameDataTestUtil.fighter(m_data);
   }
@@ -61,7 +60,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     final ITestDelegateBridge bridge = getDelegateBridge(player);
     final Territory balkans = m_data.getMap().getTerritory("Balkans");
     final Change addAir = ChangeFactory.addUnits(balkans, m_fighter.create(2, player));
-    new ChangePerformer(m_data).perform(addAir);
+    m_data.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
     final Collection<Territory> cantLand = airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
     assertEquals(1, cantLand.size());
@@ -76,7 +75,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     final ITestDelegateBridge bridge = getDelegateBridge(player);
     final Territory sz_55 = m_data.getMap().getTerritory("55 Sea Zone");
     final Change addAir = ChangeFactory.addUnits(sz_55, m_fighter.create(2, player));
-    new ChangePerformer(m_data).perform(addAir);
+    m_data.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
     final Collection<Territory> cantLand = airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
     assertEquals(1, cantLand.size());
@@ -90,7 +89,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     final ITestDelegateBridge bridge = getDelegateBridge(player);
     final Territory sz_55 = m_data.getMap().getTerritory("55 Sea Zone");
     final Change addAir = ChangeFactory.addUnits(sz_55, m_fighter.create(2, player));
-    new ChangePerformer(m_data).perform(addAir);
+    m_data.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
     airThatCantLandUtil.removeAirThatCantLand(player, true);
     assertEquals(2, sz_55.getUnits().getMatches(Matches.UnitIsAir).size());
@@ -102,7 +101,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     final ITestDelegateBridge bridge = getDelegateBridge(player);
     final Territory sz_52 = m_data.getMap().getTerritory("52 Sea Zone");
     final Change addAir = ChangeFactory.addUnits(sz_52, m_fighter.create(2, player));
-    new ChangePerformer(m_data).perform(addAir);
+    m_data.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
     final Collection<Territory> cantLand = airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
     assertEquals(1, cantLand.size());
@@ -130,9 +129,9 @@ public class AirThatCantLandUtilTest extends TestCase {
     final UnitType carrierType = GameDataTestUtil.carrier(m_data);
     final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     // Add units for the test
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_45, subType.create(1, japanese)));
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_44, carrierType.create(1, americans)));
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_44, fighterType.create(1, americans)));
+    m_data.performChange(ChangeFactory.addUnits(sz_45, subType.create(1, japanese)));
+    m_data.performChange(ChangeFactory.addUnits(sz_44, carrierType.create(1, americans)));
+    m_data.performChange(ChangeFactory.addUnits(sz_44, fighterType.create(1, americans)));
     // Get total number of defending units before the battle
     final Integer preCountSz_52 = sz_52.getUnits().size();
     final Integer preCountAirSz_44 = sz_44.getUnits().getMatches(Matches.UnitIsAir).size();
@@ -177,10 +176,10 @@ public class AirThatCantLandUtilTest extends TestCase {
     final UnitType carrierType = GameDataTestUtil.carrier(m_data);
     final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     // Add units for the test
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_45, subType.create(1, japanese)));
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_44, carrierType.create(1, americans)));
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_44, fighterType.create(3, americans)));
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_43, carrierType.create(1, americans)));
+    m_data.performChange(ChangeFactory.addUnits(sz_45, subType.create(1, japanese)));
+    m_data.performChange(ChangeFactory.addUnits(sz_44, carrierType.create(1, americans)));
+    m_data.performChange(ChangeFactory.addUnits(sz_44, fighterType.create(3, americans)));
+    m_data.performChange(ChangeFactory.addUnits(sz_43, carrierType.create(1, americans)));
     // Get total number of defending units before the battle
     final Integer preCountSz_52 = sz_52.getUnits().size();
     final Integer preCountSz_43 = sz_43.getUnits().size();
@@ -227,9 +226,9 @@ public class AirThatCantLandUtilTest extends TestCase {
     final UnitType carrierType = GameDataTestUtil.carrier(m_data);
     final UnitType fighterType = GameDataTestUtil.fighter(m_data);
     // Add units for the test
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_11, subType.create(1, japanese)));
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_9, carrierType.create(1, americans)));
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_9, fighterType.create(1, americans)));
+    m_data.performChange(ChangeFactory.addUnits(sz_11, subType.create(1, japanese)));
+    m_data.performChange(ChangeFactory.addUnits(sz_9, carrierType.create(1, americans)));
+    m_data.performChange(ChangeFactory.addUnits(sz_9, fighterType.create(1, americans)));
     // Get total number of defending units before the battle
     final Integer preCountCanada = eastCanada.getUnits().size();
     final Integer preCountAirSz_9 = sz_9.getUnits().getMatches(Matches.UnitIsAir).size();
@@ -269,11 +268,11 @@ public class AirThatCantLandUtilTest extends TestCase {
     final UnitType transportType = GameDataTestUtil.transport(m_data);
     final UnitType infantryType = GameDataTestUtil.infantry(m_data);
     // Add units for the test
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_11, subType.create(1, japanese)));
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_11, transportType.create(1, japanese)));
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_11, infantryType.create(1, japanese)));
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_9, carrierType.create(1, americans)));
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_9, fighterType.create(2, americans)));
+    m_data.performChange(ChangeFactory.addUnits(sz_11, subType.create(1, japanese)));
+    m_data.performChange(ChangeFactory.addUnits(sz_11, transportType.create(1, japanese)));
+    m_data.performChange(ChangeFactory.addUnits(sz_11, infantryType.create(1, japanese)));
+    m_data.performChange(ChangeFactory.addUnits(sz_9, carrierType.create(1, americans)));
+    m_data.performChange(ChangeFactory.addUnits(sz_9, fighterType.create(2, americans)));
     // we need to initialize the original owner
     final InitializationDelegate initDel =
         (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
@@ -306,7 +305,8 @@ public class AirThatCantLandUtilTest extends TestCase {
     assertEquals(expectedCountCanada, postCountInt);
   }
 
-  private ITripleaPlayer getDummyPlayer() {
+  /** @deprecated Use a mock object instead */
+  private static ITripleaPlayer getDummyPlayer() {
     final InvocationHandler handler = new InvocationHandler() {
       @Override
       public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
