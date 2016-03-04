@@ -1,7 +1,6 @@
 package games.strategy.triplea.printgenerator;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -88,7 +87,7 @@ public class SetupFrame extends JPanel {
         }
       }
     });
-    m_infoPanel = SwingComponents.gridPanel(3,1);
+    m_infoPanel = SwingComponents.gridPanel(3, 1);
     m_textButtonRadioPanel = new JPanel(new BorderLayout());
     m_infoPanel.add(m_info1);
     m_infoPanel.add(m_info2);
@@ -96,7 +95,7 @@ public class SetupFrame extends JPanel {
     super.add(m_infoPanel, BorderLayout.NORTH);
     m_textButtonRadioPanel.add(m_outField, BorderLayout.WEST);
     m_textButtonRadioPanel.add(m_outDirButton, BorderLayout.EAST);
-    final JPanel panel = SwingComponents.gridPanel(1,2);
+    final JPanel panel = SwingComponents.gridPanel(1, 2);
     panel.add(m_originalState);
     panel.add(m_currentState);
     m_textButtonRadioPanel.add(panel, BorderLayout.SOUTH);
