@@ -2,8 +2,9 @@ package games.strategy.engine;
 
 import games.strategy.engine.config.GameEnginePropertyFileReader;
 import games.strategy.engine.config.PropertyReader;
-import games.strategy.engine.framework.mapDownload.MapDownloadController;
-import games.strategy.engine.framework.mapDownload.MapListingSource;
+import games.strategy.engine.framework.map.download.MapDownloadController;
+import games.strategy.engine.framework.map.download.MapDownloadStrategy;
+import games.strategy.engine.framework.map.download.MapListingSource;
 
 /**
  * IOC container for storing objects needed by the TripleA Swing client
@@ -33,25 +34,20 @@ import games.strategy.engine.framework.mapDownload.MapListingSource;
  * Since GameRunner2 creates ClientContext, similar none of the classes created by Client Context can game runner 2
  */
 public final class ClientContext {
-  private static ClientContext instance = new ClientContext();
+  private static final ClientContext instance = new ClientContext();
 
+  private final MapDownloadController mapDownloadController;
+  private final EngineVersion engineVersion;
+  private final MapDownloadStrategy downloadStrategy;
 
-  /** Useful for testing, not meant for normal code paths */
-  public static void setMockHandler(ClientContext mockHandler) {
-    instance = mockHandler;
-  }
-
-
-  private MapDownloadController mapDownloadController;
-  private EngineVersion engineVersion;
 
   private ClientContext() {
     PropertyReader reader = new GameEnginePropertyFileReader();
     MapListingSource listingSource = new MapListingSource(reader);
     mapDownloadController = new MapDownloadController(listingSource);
     engineVersion = new EngineVersion(reader);
+    downloadStrategy = new MapDownloadStrategy();
   }
-
 
   public static MapDownloadController mapDownloadController() {
     return instance.mapDownloadController;
@@ -61,5 +57,10 @@ public final class ClientContext {
     return instance.engineVersion;
   }
 
-
+  private MapDownloadStrategy downloadStrategy() {
+      return downloadStrategy;
+  }
+  public static MapDownloadStrategy mapDownloadStrategy() {
+    return instance.downloadStrategy();
+  }
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <games>
-  <!-- "!" given as first character of an URL causes the "Install Map" button to be disabled, and the mapname does not have to be unique anymore. Use to  format.-->
+  <!-- "!" given as the URL will creates a header that partitions the download list -->
   <!-- <game>
     <url>!</url>
-    <mapName/>
+    <mapName>***Header Text***</mapName>
     <description><![CDATA[
     <br>
     ]]></description>
@@ -11,7 +11,7 @@
  -->
   <game>
     <url>!</url>
-    <mapName>HIGH QUALITY MAPS</mapName>
+    <mapName>***HIGH QUALITY MAPS***</mapName>
     <description><![CDATA[
          <br>Maps here feature good to excellent balance, high replay value, good documentation and good visuals.
          <br>
@@ -219,20 +219,6 @@
     <version>2.2</version>
   </game>
   <game>
-    <url>!</url>
-    <mapName/>
-    <description><![CDATA[
-    <br>
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName>***WW2 MAPS***</mapName>
-    <description><![CDATA[
-    <br>Here can be found maps with an authentic WW2 board game flavor.
-    ]]></description>
-  </game>
-  <game>
     <url>https://github.com/triplea-maps/world_war_ii_classic/releases/download/0.1/world_war_ii_classic.zip</url>
     <mapName>World War II Classic</mapName>
     <description><![CDATA[
@@ -396,21 +382,7 @@
   </game>
   <game>
     <url>!</url>
-    <mapName>***WW2 MAPS***</mapName>
-    <description><![CDATA[
-    <br>Above can be found maps with an authentic WW2 board game flavor.
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName/>
-    <description><![CDATA[
-    <br>
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName>QUALITY MAPS</mapName>
+    <mapName>***QUALITY MAPS***</mapName>
     <description><![CDATA[
     <br>Maps that make it into this category are of high general quality, mostly even awesome, only coming short in one or two of the requirements.
     <br>Maps here must have a decent level of popularity and/or very good art and polish.
@@ -418,13 +390,6 @@
     <br>Feedback highly welcome, if played.
     <br>Leave feedback at the forums: http://triplea.sourceforge.net/mywiki/Community
     <br>or at the Depot: http://sites.google.com/site/tripleaerniebommel/
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName>------------------------</mapName>
-    <description><![CDATA[
-    <br>
     ]]></description>
   </game>
   <game>
@@ -751,14 +716,14 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   </game>
   <game>
     <url>!</url>
-    <mapName/>
-    <description><![CDATA[
-    <br>
-    ]]></description>
+    <mapName>*** MAP MODS ***</mapName>
+    <mapType>MAP_MOD</mapType>
+    <description><![CDATA[Mods are add-ons to other maps that provide a different map experience.]]></description>
   </game>
   <game>
     <url>https://github.com/triplea-maps/big_world_variations/releases/download/0.1/big_world_variations.zip</url>
     <mapName>big_world_variations</mapName>
+    <mapType>MAP_MOD</mapType>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_big_world_mini.png" />
     <br>Variations of BigWorld. 
@@ -776,6 +741,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   <game>
     <url>https://github.com/triplea-maps/nwo_variants/releases/download/0.1/nwo_variants.zip</url>
     <mapName>NWO_Variants</mapName>
+    <mapType>MAP_MOD</mapType>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_new_world_order_mini.png" />
     <br>
@@ -799,6 +765,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   <game>
     <url>https://github.com/triplea-maps/pact_of_steel_variations/releases/download/0.1/pact_of_steel_variations.zip</url>
     <mapName>pact_of_steel_variations</mapName>
+    <mapType>MAP_MOD</mapType>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_pact_of_steel_china_added_mini.png" />
     <br>
@@ -852,6 +819,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   <game>
     <url>https://github.com/triplea-maps/classic_variations/releases/download/0.1/classic_variations.zip</url>
     <mapName>Classic_variations</mapName>
+    <mapType>MAP_MOD</mapType>
     <description><![CDATA[
         <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v1_classic_mini.png" />
     <br>
@@ -880,32 +848,19 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   </game>
   <game>
     <url>!</url>
-    <mapName/>
+    <mapName>***HOW TO USE MAP SKINS***</mapName>
+    <mapType>MAP_SKIN</mapType> 
     <description><![CDATA[
-    <br>
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName>MAP SKINS FOR ABOVE MAPS</mapName>
-    <description><![CDATA[
-    <br>This section contains Map Skins for any maps in the above 3 categories (High Quality Maps, WW2 Maps, and Quality Maps).
     <br>To use a map skin, you MUST HAVE THE ORIGINAL MAP.
     <br>This means that any map ending in "<MapName>-<SkinName>" you must have the map that is the <MapName> part in order to use the skin.
     <br>
-    <br>To use the skin, simply start a game and go to the top of the screen.  Click "view" then click "map skins", and then select the skin you want.
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName>------------------------</mapName>
-    <description><![CDATA[
-    <br>
+    <br>To use the skin, start a game and go to the top of the screen.  Click "view" then click "map skins", and then select the skin you want.
     ]]></description>
   </game>
   <game>
     <url>https://github.com/triplea-maps/world_war_ii_global-battlemap_skin/releases/download/0.1/world_war_ii_global-battlemap_skin.zip</url>
     <mapName>World War II Global-battlemap_skin</mapName>
+    <mapType>MAP_SKIN</mapType>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_global_1940_battlemap_skin_mini.png" />
     <br>
@@ -920,8 +875,8 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   <game>
     <url>https://github.com/triplea-maps/new_world_order-skin_sieg_2/releases/download/0.1/new_world_order-skin_sieg_2.zip</url>
     <mapName>new_world_order-skin_sieg_2</mapName>
+    <mapType>MAP_SKIN</mapType>
     <description><![CDATA[
-
         <div style="text-align: left;">     
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_new_world_order_siegSkin2_mini.png" />
     <br>
@@ -937,6 +892,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   <game>
     <url>https://github.com/triplea-maps/new_world_order-skin_pulicat_1/releases/download/0.1/new_world_order-skin_pulicat_1.zip</url>
     <mapName>new_world_order-skin_pulicat_1</mapName>
+    <mapType>MAP_SKIN</mapType>
     <description><![CDATA[
      
         <div style="text-align: left;">
@@ -954,6 +910,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   <game>
     <url>https://github.com/triplea-maps/diplomacy-map_skin1/releases/download/0.1/diplomacy-map_skin1.zip</url>
     <mapName>Diplomacy-MapSkin1</mapName>
+    <mapType>MAP_SKIN</mapType>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_diplomacy_mapskin1_mini.png" />
     <br>This is a MAP SKIN for "Diplomacy"
@@ -964,6 +921,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   <game>
     <url>https://github.com/triplea-maps/diplomacy-map_skin2/releases/download/0.1/diplomacy-map_skin2.zip</url>
     <mapName>Diplomacy-MapSkin2</mapName>
+    <mapType>MAP_SKIN</mapType>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_diplomacy_mapskin2_mini.png" />
     <br>This is a MAP SKIN for "Diplomacy"
@@ -974,6 +932,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   <game>
     <url>https://github.com/triplea-maps/diplomacy-map_skin3/releases/download/0.1/diplomacy-map_skin3.zip</url>
     <mapName>Diplomacy-MapSkin3</mapName>
+    <mapType>MAP_SKIN</mapType>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_diplomacy_mapskin3_mini.png" />
     <br>This is a MAP SKIN for "Diplomacy"
@@ -983,26 +942,12 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   </game>
   <game>
     <url>!</url>
-    <mapName/>
-    <description><![CDATA[
-    <br>
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName>ALL OTHER MAPS / EXPERIMENTAL</mapName>
+    <mapName>***ALL OTHER MAPS / EXPERIMENTAL***</mapName>
     <description><![CDATA[
     <br>This section is for all maps that dont fit into the other sections.
     <br>From good maps that didnt become popular yet, to maps which may need an extra hand to be finished, to maps which may have gameplay design flaws are found here.
     <br>Excellent place to look for ideas or discovering something that others have not yet found.
     <br>If you would like to help balance or polish or fix these maps, be sure to let us know.
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName>------------------------</mapName>
-    <description><![CDATA[
-    <br>
     ]]></description>
   </game>
   <game>
@@ -1123,22 +1068,6 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <version>2.0.3</version>
   </game>
   <game>
-    <url>https://github.com/triplea-maps/ww2_new_world_order/releases/download/0.1/ww2_new_world_order.zip</url>
-    <mapName>WW2 NEW WORLD ORDER</mapName>
-    <description><![CDATA[
-    <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_nwo_mini.png" />
-    <br>Mod done by SneakingCoward / Marshal / pentium@gmx.net
-    <br>
-    <br>Includes 2 Mods of NWO
-    <br>
-    <br>NWO 2.0 Neutrals (a hybrid of v2 and v3 rules and with active neutral countries)
-    <br>NWO 3.0 Neutrals (a mod using rules similar to v3 rules, paratroopers, and with active neutral countries)
-    <br>
-    <br>Update by Ice
-    ]]></description>
-    <version>2.0.1</version>
-  </game>
-  <game>
     <url>https://github.com/triplea-maps/ww2v3_11n/releases/download/0.1/ww2v3_11n.zip</url>
     <mapName>WW2v3_11N</mapName>
     <description><![CDATA[
@@ -1184,13 +1113,6 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     <br>
     ]]></description>
     <version>1.4</version>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName/>
-    <description><![CDATA[
-    <br>
-    ]]></description>
   </game>
   <game>
     <url>https://github.com/triplea-maps/atari/releases/download/0.1/atari.zip</url>
@@ -1630,27 +1552,13 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   </game>
   <game>
     <url>!</url>
-    <mapName/>
-    <description><![CDATA[
-    <br>
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName>IN DEVELOPMENT</mapName>
+    <mapName>***IN DEVELOPMENT***</mapName>
     <description><![CDATA[
     <br>Located in this section are maps that are a "work in progress".  
         Thus good Maps which are in the state of development and thus not completed yet, may it be functionally, bugs, art, or in terms of basic balance.
     <br>These maps are usually updated often, so check back.
     <br>Technically, all maps are still usually getting updates here and there, but maps in this category are usually very new (2-6 weeks), or have bugs, 
         or the map maker does not consider them to be ready for release.
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName>------------------------</mapName>
-    <description><![CDATA[
-    <br>
     ]]></description>
   </game>
   <game>
@@ -1940,14 +1848,8 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   </game>
   <game>
     <url>!</url>
-    <mapName/>
-    <description><![CDATA[
-    <br>
-    ]]></description>
-  </game>
-  <game>
-    <url>!</url>
-    <mapName>DEVELOPER RESOURCES</mapName>
+    <mapName>***DEVELOPER RESOURCES***</mapName>
+    <mapType>MAP_TOOL</mapType>
     <description><![CDATA[
     <br>Located in this section are resources such as the map maker by Wisconsin (be sure to check the .txt files that come with it before using it), 
         as well as map files or art files that could be used for future maps.
@@ -1955,15 +1857,9 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
     ]]></description>
   </game>
   <game>
-    <url>!</url>
-    <mapName>------------------------</mapName>
-    <description><![CDATA[
-    <br>
-    ]]></description>
-  </game>
-  <game>
     <url>http://downloads.sourceforge.net/project/tripleamaps/developer%20resources/map%20makers/TripleA_Map_Creator.zip</url>
     <mapName>TripleA_Map_Creator</mapName>
+    <mapType>MAP_TOOL</mapType>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_Map_Creator_mini.png" />
     <br>By Wisconsin, SGB, and ComradeKev
@@ -2017,6 +1913,7 @@ Some years after the death of Emperor Palpatine and after the rise of the New Re
   <game>
     <url>http://downloads.sourceforge.net/project/tripleamaps/developer%20resources/map%20makers/Map_Making_Tutorial_Map.zip</url>
     <mapName>Map_Making_Tutorial_Map</mapName>
+    <mapType>MAP_TOOL</mapType>
     <description><![CDATA[
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_map_making_tutorial_map_mini.png" />
     <br>A VERY simple map.

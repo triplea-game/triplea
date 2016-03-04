@@ -50,6 +50,7 @@ dependencies {
 	compile 'commons-codec:commons-codec:1.10'
 	compile 'commons-httpclient:commons-httpclient:3.1'
 	compile 'commons-logging:commons-logging:1.2'
+	compile 'commons-io:commons-io:2.4'
 
 	compile 'com.github.insubstantial:flamingo:7.3'
 	compile 'com.github.insubstantial:laf-plugin:7.3'

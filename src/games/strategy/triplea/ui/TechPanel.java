@@ -1,10 +1,10 @@
 package games.strategy.triplea.ui;
 
+
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Vector;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -24,6 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.TechnologyFrontier;
@@ -103,82 +103,124 @@ public class TechPanel extends ActionPanel {
     return Util.difference(allAdvances, currentAdvances);
   }
 
-  private final Action GetTechRollsAction = new AbstractAction("Roll Tech...") {
-    private static final long serialVersionUID = -5077755928034508263L;
-
-    @Override
-    public void actionPerformed(final ActionEvent event) {
-      TechAdvance advance = null;
-      if (isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel())) {
-        final List<TechAdvance> available = getAvailableTechs();
-        if (available.isEmpty()) {
-          JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
-          return;
-        }
-        final JList list = new JList(new Vector<TechAdvance>(available));
-        final JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.add(list, BorderLayout.CENTER);
-        panel.add(new JLabel("Select the tech you want to roll for"), BorderLayout.NORTH);
-        list.setSelectedIndex(0);
-        final int choice = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel,
-            "Select advance", JOptionPane.PLAIN_MESSAGE);
-        if (choice != JOptionPane.OK_OPTION) {
-          return;
-        }
-        advance = (TechAdvance) list.getSelectedValue();
+  private final Action GetTechRollsAction = SwingAction.of("Roll Tech...", e -> {
+    TechAdvance advance = null;
+    if (isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel())) {
+      final List<TechAdvance> available = getAvailableTechs();
+      if (available.isEmpty()) {
+        JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
+        return;
       }
-      final int PUs = getCurrentPlayer().getResources().getQuantity(Constants.PUS);
-      final String message = "Roll Tech";
-      final TechRollPanel techRollPanel = new TechRollPanel(PUs, getCurrentPlayer());
-      final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techRollPanel, message,
-          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
+      final JList list = new JList(new Vector<TechAdvance>(available));
+      final JPanel panel = new JPanel();
+      panel.setLayout(new BorderLayout());
+      panel.add(list, BorderLayout.CENTER);
+      panel.add(new JLabel("Select the tech you want to roll for"), BorderLayout.NORTH);
+      list.setSelectedIndex(0);
+      final int choice = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel,
+          "Select advance", JOptionPane.PLAIN_MESSAGE);
       if (choice != JOptionPane.OK_OPTION) {
         return;
       }
-      final int quantity = techRollPanel.getValue();
-      if (advance == null) {
-        m_techRoll = new TechRoll(null, quantity);
-      } else {
-        try {
-          getData().acquireReadLock();
-          final TechnologyFrontier front = new TechnologyFrontier("", getData());
-          front.addAdvance(advance);
-          m_techRoll = new TechRoll(front, quantity);
-        } finally {
-          getData().releaseReadLock();
+      advance = (TechAdvance) list.getSelectedValue();
+    }
+    final int PUs = getCurrentPlayer().getResources().getQuantity(Constants.PUS);
+    final String message = "Roll Tech";
+    final TechRollPanel techRollPanel = new TechRollPanel(PUs, getCurrentPlayer());
+    final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techRollPanel, message,
+        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
+    if (choice != JOptionPane.OK_OPTION) {
+      return;
+    }
+    final int quantity = techRollPanel.getValue();
+    if (advance == null) {
+      m_techRoll = new TechRoll(null, quantity);
+    } else {
+      try {
+        getData().acquireReadLock();
+        final TechnologyFrontier front = new TechnologyFrontier("", getData());
+        front.addAdvance(advance);
+        m_techRoll = new TechRoll(front, quantity);
+      } finally {
+        getData().releaseReadLock();
+      }
+    }
+    release();
+  });
+  private final Action DontBother = SwingAction.of("Done", e -> {
+    m_techRoll = null;
+    release();
+  });
+  private final Action GetTechTokenAction = SwingAction.of("Buy Tech Tokens...", e -> {
+    final PlayerID currentPlayer = getCurrentPlayer();
+    m_currTokens = currentPlayer.getResources().getQuantity(Constants.TECH_TOKENS);
+    // Notify user if there are no more techs to acheive
+    final List<TechnologyFrontier> techCategories = getAvailableCategories();
+
+
+    if (techCategories.isEmpty()) {
+      JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
+      return;
+    }
+    TechnologyFrontier category = null;
+    final JList list = new JList(new Vector<TechnologyFrontier>(techCategories)) {
+      private static final long serialVersionUID = 35094445315520702L;
+
+      @Override
+      public String getToolTipText(final MouseEvent e) {
+        final int index = locationToIndex(e.getPoint());
+        if (-1 < index) {
+          return getTechListToolTipText((TechnologyFrontier) this.getModel().getElementAt(index));
+        } else {
+          return null;
         }
       }
-      release();
-    }
-  };
-  private final Action DontBother = new AbstractAction("Done") {
-    private static final long serialVersionUID = -7065334229434684387L;
+    };
+    final JPanel panel = new JPanel();
+    panel.setLayout(new BorderLayout());
+    panel.add(list, BorderLayout.CENTER);
+    panel.add(new JLabel("Select which tech chart you want to roll for"), BorderLayout.NORTH);
+    list.setSelectedIndex(0);
+    JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart",
+        JOptionPane.PLAIN_MESSAGE);
+    category = (TechnologyFrontier) list.getSelectedValue();
 
-    @Override
-    public void actionPerformed(final ActionEvent event) {
-      m_techRoll = null;
-      release();
+    final int PUs = currentPlayer.getResources().getQuantity(Constants.PUS);
+    final String message = "Purchase Tech Tokens";
+    // see if anyone will help us to pay
+    Collection<PlayerID> helpPay;
+    final PlayerAttachment pa = PlayerAttachment.get(currentPlayer);
+    if (pa != null) {
+      helpPay = pa.getHelpPayTechCost();
+    } else {
+      helpPay = null;
     }
-  };
-  private final Action GetTechTokenAction = new AbstractAction("Buy Tech Tokens...") {
-    private static final long serialVersionUID = 6541224254805479410L;
+    final TechTokenPanel techTokenPanel = new TechTokenPanel(PUs, m_currTokens, currentPlayer, helpPay);
+    final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techTokenPanel, message,
+        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
+    if (choice != JOptionPane.OK_OPTION) {
+      return;
+    }
+    m_quantity = techTokenPanel.getValue();
+    m_whoPaysHowMuch = techTokenPanel.getWhoPaysHowMuch();
+    m_currTokens += m_quantity;
+    m_techRoll = new TechRoll(category, m_currTokens, m_quantity, m_whoPaysHowMuch);
+    m_techRoll.setNewTokens(m_quantity);
+    release();
 
-    @Override
-    public void actionPerformed(final ActionEvent event) {
-      final PlayerID currentPlayer = getCurrentPlayer();
-      m_currTokens = currentPlayer.getResources().getQuantity(Constants.TECH_TOKENS);
-      // Notify user if there are no more techs to acheive
+
+  });
+  private final Action JustRollTech = SwingAction.of("Done/Roll Current Tokens", e -> {
+    m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
+    // If this player has tokens, roll them.
+    if (m_currTokens > 0) {
       final List<TechnologyFrontier> techCategories = getAvailableCategories();
-
-
       if (techCategories.isEmpty()) {
-        JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
         return;
       }
       TechnologyFrontier category = null;
       final JList list = new JList(new Vector<TechnologyFrontier>(techCategories)) {
-        private static final long serialVersionUID = 35094445315520702L;
+        private static final long serialVersionUID = -8415987764855418565L;
 
         @Override
         public String getToolTipText(final MouseEvent e) {
@@ -198,73 +240,15 @@ public class TechPanel extends ActionPanel {
       JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart",
           JOptionPane.PLAIN_MESSAGE);
       category = (TechnologyFrontier) list.getSelectedValue();
-      final int PUs = currentPlayer.getResources().getQuantity(Constants.PUS);
-      final String message = "Purchase Tech Tokens";
-      // see if anyone will help us to pay
-      final Collection<PlayerID> helpPay;
-      final PlayerAttachment pa = PlayerAttachment.get(currentPlayer);
-      if (pa != null) {
-        helpPay = pa.getHelpPayTechCost();
-      } else {
-        helpPay = null;
-      }
-      final TechTokenPanel techTokenPanel = new TechTokenPanel(PUs, m_currTokens, currentPlayer, helpPay);
-      final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techTokenPanel, message,
-          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
-      if (choice != JOptionPane.OK_OPTION) {
-        return;
-      }
-      m_quantity = techTokenPanel.getValue();
-      m_whoPaysHowMuch = techTokenPanel.getWhoPaysHowMuch();
-      m_currTokens += m_quantity;
-      m_techRoll = new TechRoll(category, m_currTokens, m_quantity, m_whoPaysHowMuch);
-      m_techRoll.setNewTokens(m_quantity);
-      release();
+      m_techRoll = new TechRoll(category, m_currTokens);
+    } else {
+      m_techRoll = null;
     }
-  };
-  private final Action JustRollTech = new AbstractAction("Done/Roll Current Tokens") {
-    private static final long serialVersionUID = -4709625797723985960L;
+    release();
 
-    @Override
-    public void actionPerformed(final ActionEvent event) {
-      m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
-      // If this player has tokens, roll them.
-      if (m_currTokens > 0) {
-        final List<TechnologyFrontier> techCategories = getAvailableCategories();
-        if (techCategories.isEmpty()) {
-          return;
-        }
-        TechnologyFrontier category = null;
-        final JList list = new JList(new Vector<TechnologyFrontier>(techCategories)) {
-          private static final long serialVersionUID = -8415987764855418565L;
+  });
 
-          @Override
-          public String getToolTipText(final MouseEvent e) {
-            final int index = locationToIndex(e.getPoint());
-            if (-1 < index) {
-              return getTechListToolTipText((TechnologyFrontier) this.getModel().getElementAt(index));
-            } else {
-              return null;
-            }
-          }
-        };
-        final JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.add(list, BorderLayout.CENTER);
-        panel.add(new JLabel("Select which tech chart you want to roll for"), BorderLayout.NORTH);
-        list.setSelectedIndex(0);
-        JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart",
-            JOptionPane.PLAIN_MESSAGE);
-        category = (TechnologyFrontier) list.getSelectedValue();
-        m_techRoll = new TechRoll(category, m_currTokens);
-      } else {
-        m_techRoll = null;
-      }
-      release();
-    }
-  };
-
-  private String getTechListToolTipText(final TechnologyFrontier techCategory) {
+  private static String getTechListToolTipText(final TechnologyFrontier techCategory) {
     final List<TechAdvance> techList = techCategory.getTechs();
     if (techList.size() <= 1) {
       return null;

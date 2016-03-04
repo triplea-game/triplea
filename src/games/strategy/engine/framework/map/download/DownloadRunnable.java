@@ -1,20 +1,26 @@
-package games.strategy.engine.framework.mapDownload;
+package games.strategy.engine.framework.map.download;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.io.FileUtils;
+
+import com.google.common.collect.Maps;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 
+/** Used to download triplea_maps.xml */
 public class DownloadRunnable implements Runnable {
+  private static Map<URL, File> downloadCache = Maps.newHashMap();
   private final String urlString;
   private final boolean parse;
   private volatile byte[] contents;
@@ -24,37 +30,19 @@ public class DownloadRunnable implements Runnable {
   public DownloadRunnable(final String urlString) {
     super();
     this.urlString = urlString;
-    parse = false;
-  }
-
-  public DownloadRunnable(final String urlString, final boolean parseToo) {
-    super();
-    this.urlString = urlString;
-    parse = parseToo;
+    parse = true;
   }
 
   public byte[] getContents() {
     return contents;
   }
 
-  public void setContents(final byte[] contents) {
-    this.contents = contents;
-  }
-
   public List<DownloadFileDescription> getDownloads() {
     return downloads;
   }
 
-  public void setDownloads(final List<DownloadFileDescription> downloads) {
-    this.downloads = downloads;
-  }
-
   public String getError() {
     return error;
-  }
-
-  public void setError(final String error) {
-    this.error = error;
   }
 
   @Override
@@ -71,37 +59,24 @@ public class DownloadRunnable implements Runnable {
   }
 
   private void downloadFile() {
-    URL url;
-
     try {
-      url = new URL(urlString.trim());
-    } catch (final MalformedURLException e1) {
-      error = "invalid url";
-      return;
-    }
-    try {
-      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+      final URL url = getUrlFollowingRedirects(urlString);
 
-      int status = conn.getResponseCode();
-      if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
-          || status == HttpURLConnection.HTTP_SEE_OTHER) {
-
-        String newUrl = conn.getHeaderField("Location");
-        conn = (HttpURLConnection) new URL(newUrl).openConnection();
+      if (!downloadCache.containsKey(url)) {
+        File tempFile = ClientFileSystemHelper.createTempFile();
+        FileUtils.copyURLToFile(url, tempFile);
+        downloadCache.put(url, tempFile);
       }
-
-      try (InputStream stream = conn.getInputStream()) {
-        final ByteArrayOutputStream sink = new ByteArrayOutputStream();
-        InstallMapDialog.copy(sink, stream);
-        contents = sink.toByteArray();
-      }
+      File f = downloadCache.get(url);
+      contents = Files.readAllBytes(f.toPath());
     } catch (final Exception e) {
       error = e.getMessage();
       return;
     }
-    if (parse && getError() == null) {
+
+    if (parse) {
       try {
-        downloads = DownloadFileParser.parse(new ByteArrayInputStream(getContents()), urlString);
+        downloads = DownloadFileParser.parse(new ByteArrayInputStream(getContents()));
         if (downloads == null || downloads.isEmpty()) {
           error = "No games listed.";
         }
@@ -111,11 +86,24 @@ public class DownloadRunnable implements Runnable {
     }
   }
 
+  private static URL getUrlFollowingRedirects(String possibleRedirectionUrl) throws Exception {
+    URL url = new URL(possibleRedirectionUrl);
+    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+    int status = conn.getResponseCode();
+    if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
+        || status == HttpURLConnection.HTTP_SEE_OTHER) {
+      // update the URL if we were redirected
+      url = new URL(conn.getHeaderField("Location"));
+    }
+    return url;
+  }
+
   private void readLocalFile() {
     File targetFile = new File(ClientFileSystemHelper.getRootFolder(), urlString);
     try {
       contents = Files.readAllBytes(targetFile.toPath());
-      downloads = DownloadFileParser.parse(new ByteArrayInputStream(getContents()), urlString);
+      downloads = DownloadFileParser.parse(new ByteArrayInputStream(getContents()));
+      checkNotNull(downloads);
     } catch (IOException e) {
       ClientLogger.logError("Failed to read file at: " + targetFile.getAbsolutePath(), e);
     }

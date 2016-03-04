@@ -31,10 +31,12 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.mapDownload.MapDownloadController;
+import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
 import games.strategy.engine.framework.ui.background.WaitWindow;
+import games.strategy.performance.Perf;
+import games.strategy.performance.PerfTimer;
 import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
@@ -138,23 +140,30 @@ public class GameRunner2 {
   }
 
   public static void main(final String[] args) {
-    setupLogging();
-    ErrorConsole.getConsole().displayStandardError();
-    ErrorConsole.getConsole().displayStandardOutput();
-    ErrorHandler.registerExceptionHandler();
-    System.setProperty("triplea.engine.version", ClientContext.engineVersion().toString());
-    handleCommandLineArgs(args);
-    // do after we handle command line args
-    checkForMemoryXMX();
-    setupLookAndFeel();
+    try (PerfTimer timer = Perf.startTimer("logging setup")) {
+      setupLogging();
+    }
+    try (PerfTimer timer = Perf.startTimer("error console setup")) {
+      ErrorConsole.getConsole().displayStandardError();
+      ErrorConsole.getConsole().displayStandardOutput();
+      ErrorHandler.registerExceptionHandler();
+    }
+    try (PerfTimer timer = Perf.startTimer("set engine version property")) {
+      System.setProperty("triplea.engine.version", ClientContext.engineVersion().toString());
+    }
+    try (PerfTimer timer = Perf.startTimer("handle command line args, check memory, and setup look and feel")) {
+      handleCommandLineArgs(args);
+      // do after we handle command line args
+      checkForMemoryXMX();
+      setupLookAndFeel();
+    }
 
     LocalSystemChecker systemCheck = new LocalSystemChecker();
-    if( !systemCheck.getExceptions().isEmpty() ) {
+    if (!systemCheck.getExceptions().isEmpty()) {
       String msg = "Warning!! " + systemCheck.getExceptions().size()
           + " system checks failed. Some game features may not be available or may not work correctly.\n"
           + systemCheck.getStatusMessage();
       ClientLogger.logError(msg, systemCheck.getExceptions());
-      // Now continue after we have warned the user that some game functionality may not work.
     }
 
     s_countDownLatch = new CountDownLatch(1);
@@ -170,10 +179,15 @@ public class GameRunner2 {
     } catch (final Exception e) {
       // just don't show the wait window
     }
-    setupProxies();
-    showMainFrame();
-    // lastly, check and see if there are new versions of TripleA out
-    checkForUpdates();
+    try (PerfTimer timer = Perf.startTimer("setup proxies")) {
+      setupProxies();
+    }
+    try (PerfTimer timer = Perf.startTimer("show main frame")) {
+      showMainFrame();
+    }
+    try (PerfTimer timer = Perf.startTimer("check for new versions of tripleA")) {
+      checkForUpdates();
+    }
   }
 
   private static void showMainFrame() {
@@ -247,16 +261,16 @@ public class GameRunner2 {
         // if successful we don't do anything
         System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + version);
         if (!ClientContext.engineVersion().getVersion().equals(testVersion, false)) {
-          System.out.println("Current Engine version in use: " + ClientContext.engineVersion().getVersion());
+          System.out.println("Current Engine version in use: " + ClientContext.engineVersion());
         }
       } catch (final Exception e) {
         System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());
-        System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion().getVersion());
+        System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion());
         return;
       }
     } else {
       System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());
-      System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion().getVersion());
+      System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion());
     }
   }
 
@@ -784,7 +798,8 @@ public class GameRunner2 {
         return true;
       } else {
         // if this is the first time we are running THIS version of TripleA, then show what is new.
-        if (firstTimeThisVersion && latestEngineOut.getReleaseNotes().containsKey(ClientContext.engineVersion().getVersion())) {
+        if (firstTimeThisVersion
+            && latestEngineOut.getReleaseNotes().containsKey(ClientContext.engineVersion().getVersion())) {
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
