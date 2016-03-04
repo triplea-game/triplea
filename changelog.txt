@@ -1,4 +1,4 @@
-Changes for 1.8.0.13
+Changes for 1.8.0.11
 * Minimum Java version is now Java 1.8
 
 * Removing all "Grid" games (Chess, Checkers, Go, Kings Table) as well as inaccessible puzzle games (N-Puzzle and Tic-Tac-Toe). (veqryn)
@@ -23,7 +23,47 @@ Changes for 1.8.0.13
 
 * Code improvement - Unit test runtime reduced from 31s to 21s. PR#115 (lafayette)
 
-* Map parsing improvement - map zip data is read more efficiently, map data is loaded 10x faster. P$ #240 (lafayette)
+* Map parsing improvement - map zip data is read more efficiently, map data is loaded 10x faster. PR #240 (lafayette)
+
+* Undo unit moves with 'u' key - PR#253
+
+* AI - Added check for whether factories can be placed to purchase  #270 (redrum)
+
+* AI - consider enemy turn order  #282 (redrum)
+
+* AI - consider multi-nation attacks  (redrum)
+
+* Github Map Downloads #286
+
+* Map parsing performance improvement #293
+
+* AI - Add capital value for amphib attacks  #316
+
+* Add a 'clear' button to the error console.  #332
+
+* Add performance debug console   #333, #335 
+
+* Updated canals to check if at least 1 is passable instead of all if  #343 (redrum)
+
+* New Install4j Installers  #372  (gaborbernat)
+
+* AI - Add new Fast AI player #379
+
+* Ai remove strong ai  #394
+
+* Add total units in territory count to TerritoryPanel  #399
+
+* Show Engine Version on the UI + Consolidate Engine Version and Game Configuration  #426
+
+* AI - Update casualty selection unit value calculation to consider  #447
+
+* Map Download Overhaul - Tabbed View with Progress Bars and additional features  #449
+
+* Improve Planes Can Not Land Warning  #476
+
+* Remove Delay on the Startup Map and Engine Version Checks - #470
+
+* Default Politics Action is No - #497
 
 
 Changes for 1.8.0.9
