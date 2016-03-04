@@ -60,6 +60,7 @@ import games.strategy.common.swing.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.DebugUtils;
 import games.strategy.debug.ErrorConsole;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
@@ -120,7 +121,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     addChangeProAISettings(debugMenu);
     debugMenu.add(new EnablePerformanceLoggingCheckBox());
     addConsoleMenu(debugMenu);
-    addReportBugsMenu(debugMenu);
   }
 
   protected void addReportBugsMenu(final JMenu parentMenu) {
@@ -322,6 +322,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     addGameSpecificHelpMenus(helpMenu);
     addGameNotesMenu(helpMenu);
     addAboutMenu(helpMenu);
+    addReportBugsMenu(helpMenu);
   }
 
   private static void createWebHelpMenu(final JMenuBar menuBar) {
