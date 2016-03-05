@@ -25,8 +25,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-import games.strategy.engine.framework.map.download.DownloadFileDescription;
-
 public class SwingComponents {
 
   /** Creates a JPanel with BorderLayout and adds a west component and an east component */
@@ -136,8 +134,8 @@ public class SwingComponents {
 
   public static <T> DefaultListModel<String> newJListModel(List<T> maps, Function<T, String> mapper) {
     List<String> mapList = maps.stream().map(mapper).collect(Collectors.toList());
-    DefaultListModel<String> model = new DefaultListModel( );
-    mapList.forEach(e ->  model.addElement(e));
+    DefaultListModel<String> model = new DefaultListModel();
+    mapList.forEach(e -> model.addElement(e));
     return model;
   }
 
