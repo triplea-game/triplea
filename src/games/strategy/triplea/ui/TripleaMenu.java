@@ -298,6 +298,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     addPoliticsMenu(menuGame);
     addNotificationSettings(menuGame);
     addFocusOnCasualties(menuGame);
+    addConfirmBattlePhases(menuGame);
     addShowEnemyCasualties(menuGame);
     addShowAIBattles(menuGame);
     addChangeProAISettings(menuGame);
@@ -459,6 +460,14 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     focusOnCasualties.addActionListener(
         SwingAction.of(e -> BattleDisplay.setFocusOnOwnCasualtiesNotification(focusOnCasualties.isSelected())));
     parentMenu.add(focusOnCasualties);
+  }
+
+  private static void addConfirmBattlePhases(final JMenu parentMenu) {
+    final JCheckBoxMenuItem confirmPhases = new JCheckBoxMenuItem("Confirm Defensive Rolls");
+    confirmPhases.setSelected(BattleDisplay.getConfirmDefensiveRolls());
+    confirmPhases.addActionListener(
+        SwingAction.of(e -> BattleDisplay.setConfirmDefensiveRolls(confirmPhases.isSelected())));
+    parentMenu.add(confirmPhases);
   }
 
   private static void addTabbedProduction(final JMenu parentMenu) {

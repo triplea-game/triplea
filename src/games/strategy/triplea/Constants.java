@@ -242,9 +242,6 @@ public interface Constants {
   public static final String PROPERTY_TRUE = "true";
   public static final String PROPERTY_FALSE = "false";
   public static final String PROPERTY_DEFAULT = "default";
-  /*
-   * public static final char VALUE_TRUE = 't';
-   * public static final char VALUE_FALSE = 'f';
-   * public static final char VALUE_DEFAULT = 'd';
-   */
+
+  public static final String CONFIRM_DEFENSIVE_ROLLS = "confirm_defensive_rolls";
 }
