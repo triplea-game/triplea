@@ -14,6 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import games.strategy.common.swing.SwingAction;
@@ -39,7 +40,7 @@ public abstract class GenericConsole extends JFrame {
     m_actions.add(m_propertiesAction);
     m_actions.add(m_copyAction);
     m_actions.add(m_clearAction);
-    pack();
+    SwingUtilities.invokeLater(() -> pack());
   }
 
   public abstract GenericConsole getConsoleInstance();
