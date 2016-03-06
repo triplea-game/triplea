@@ -39,8 +39,8 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.config.GameEngineProperty;
 import games.strategy.engine.config.PropertyReader;
-import games.strategy.engine.framework.mapDownload.DownloadUtils;
-import games.strategy.engine.framework.mapDownload.MapDownloadController;
+import games.strategy.engine.framework.map.download.DownloadUtils;
+import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
@@ -324,7 +324,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   private static Map<String, Object> matchCurrentVersion(List<Map<String, Object>> lobbyProps) {
     checkNotNull(lobbyProps);
-    Version currentVersion = ClientContext.engineVersion().getCompatabilityVersion();
+    Version currentVersion = ClientContext.engineVersion().getVersion();
     for (Map<String, Object> props : lobbyProps) {
       if (props.containsKey("version")) {
         Version otherVersion = new Version((String) props.get("version"));
