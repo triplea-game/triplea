@@ -15,7 +15,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.concurrent.CountDownLatch;
 import java.util.logging.LogManager;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -34,7 +33,6 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
-import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.performance.Perf;
 import games.strategy.performance.PerfTimer;
 import games.strategy.triplea.ui.ErrorHandler;
@@ -93,8 +91,6 @@ public class GameRunner2 {
   public static final String TRIPLEA_MEMORY_XMX = "triplea.memory.Xmx";
   public static final String TRIPLEA_MEMORY_USE_DEFAULT = "triplea.memory.useDefault";
   public static final String SYSTEM_INI = "system.ini";
-  private static WaitWindow s_waitWindow;
-  private static CountDownLatch s_countDownLatch;
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
   public static final int DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME =
       Math.max(MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, 25);
@@ -140,54 +136,22 @@ public class GameRunner2 {
   }
 
   public static void main(final String[] args) {
-    try (PerfTimer timer = Perf.startTimer("logging setup")) {
-      setupLogging();
+    try (PerfTimer timer = Perf.startTimer("Show main window")) {
+      // do after we handle command line args
+      checkForMemoryXMX();
+      SwingUtilities.invokeLater(() -> setupLookAndFeel());
+      showMainFrame();
     }
-    try (PerfTimer timer = Perf.startTimer("error console setup")) {
+    (new Thread(() -> setupLogging())).start();
+    (new Thread(() -> {
       ErrorConsole.getConsole().displayStandardError();
       ErrorConsole.getConsole().displayStandardOutput();
       ErrorHandler.registerExceptionHandler();
-    }
-    try (PerfTimer timer = Perf.startTimer("set engine version property")) {
-      System.setProperty("triplea.engine.version", ClientContext.engineVersion().toString());
-    }
-    try (PerfTimer timer = Perf.startTimer("handle command line args, check memory, and setup look and feel")) {
-      handleCommandLineArgs(args);
-      // do after we handle command line args
-      checkForMemoryXMX();
-      setupLookAndFeel();
-    }
+    })).start();
 
-    LocalSystemChecker systemCheck = new LocalSystemChecker();
-    if (!systemCheck.getExceptions().isEmpty()) {
-      String msg = "Warning!! " + systemCheck.getExceptions().size()
-          + " system checks failed. Some game features may not be available or may not work correctly.\n"
-          + systemCheck.getStatusMessage();
-      ClientLogger.logError(msg, systemCheck.getExceptions());
-    }
-
-    s_countDownLatch = new CountDownLatch(1);
-    try {
-      SwingUtilities.invokeAndWait(new Runnable() {
-        @Override
-        public void run() {
-          s_waitWindow = new WaitWindow("TripleA is starting...");
-          s_waitWindow.setVisible(true);
-          s_waitWindow.showWait();
-        }
-      });
-    } catch (final Exception e) {
-      // just don't show the wait window
-    }
-    try (PerfTimer timer = Perf.startTimer("setup proxies")) {
-      setupProxies();
-    }
-    try (PerfTimer timer = Perf.startTimer("show main frame")) {
-      showMainFrame();
-    }
-    try (PerfTimer timer = Perf.startTimer("check for new versions of tripleA")) {
-      checkForUpdates();
-    }
+    setupProxies();
+    (new Thread(() -> checkForUpdates())).start();
+    handleCommandLineArgs(args);
   }
 
   private static void showMainFrame() {
@@ -195,15 +159,9 @@ public class GameRunner2 {
       @Override
       public void run() {
         final MainFrame frame = new MainFrame();
-        frame.start();
         frame.requestFocus();
         frame.toFront();
-        if (s_waitWindow != null) {
-          s_waitWindow.doneWait();
-        }
-        if (s_countDownLatch != null) {
-          s_countDownLatch.countDown();
-        }
+        frame.setVisible(true);
       }
     });
   }
@@ -284,29 +242,21 @@ public class GameRunner2 {
 
   public static void setupLookAndFeel() {
     try {
-      SwingUtilities.invokeAndWait(new Runnable() {
-        @Override
-        public void run() {
-          try {
-            UIManager.setLookAndFeel(getDefaultLookAndFeel());
-            // FYI if you are getting a null pointer exception in Substance, like this:
-            // org.pushingpixels.substance.internal.utils.SubstanceColorUtilities
-            // .getDefaultBackgroundColor(SubstanceColorUtilities.java:758)
-            // Then it is because you included the swingx substance library without including swingx.
-            // You can solve by including both swingx libraries or removing both,
-            // or by setting the look and feel twice in a row.
-          } catch (final Throwable t) {
-            if (!GameRunner.isMac()) {
-              try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-              } catch (final Exception e) {
-              }
-            }
-          }
-        }
-      });
+      UIManager.setLookAndFeel(getDefaultLookAndFeel());
+      // FYI if you are getting a null pointer exception in Substance, like this:
+      // org.pushingpixels.substance.internal.utils.SubstanceColorUtilities
+      // .getDefaultBackgroundColor(SubstanceColorUtilities.java:758)
+      // Then it is because you included the swingx substance library without including swingx.
+      // You can solve by including both swingx libraries or removing both,
+      // or by setting the look and feel twice in a row.
     } catch (final Throwable t) {
-      t.printStackTrace(System.out);
+      System.out.println("LOOK AND FEEL exception: " + t.getMessage());
+      if (!GameRunner.isMac()) {
+        try {
+          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (final Exception e) {
+        }
+      }
     }
   }
 
@@ -382,12 +332,6 @@ public class GameRunner2 {
       return;
     }
     // the difference is significant enough that we should re-run triplea with a larger number
-    if (s_waitWindow != null) {
-      s_waitWindow.doneWait();
-    }
-    if (s_countDownLatch != null) {
-      s_countDownLatch.countDown();
-    }
     TripleAProcessRunner.startNewTripleA(xmx);
     // must exit now
     System.exit(0);
