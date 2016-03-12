@@ -73,92 +73,35 @@ public class DownloadFileParserTest {
 
 
   private static String createTypeTag(DownloadFileParser.ValueType type) {
-    return "<" + DownloadFileParser.Tags.mapType + ">" + type + "</" + DownloadFileParser.Tags.mapType + ">";
+    return "  " + DownloadFileParser.Tags.mapType + ": " + type + "\n";
   }
 
   private static byte[] buildTestXml() {
     String xml = "";
-    xml += "<games>\n";
-    xml += "  <game>\n";
-    xml += "    <url>http://example.com/games/game.zip</url>\n";
-    xml += "    <mapName>" + GAME_NAME + "</mapName>\n";
+    xml += "- url: http://example.com/games/game.zip\n";
+    xml += "  mapName: " + GAME_NAME + "\n";
     xml += createTypeTag(DownloadFileParser.ValueType.MAP);
-    xml += "    <description><![CDATA[\n";
-    xml += "	<pre>Some notes about the game, simple html allowed.\n";
-    xml += "	</pre>\n";
-    xml += "    ]]></description>\n";
-    xml += "  </game>\n";
-    xml += "  <game>\n";
-    xml += "    <url>http://example.com/games/mod.zip</url>\n";
-    xml += "    <mapName>mapModName</mapName>\n";
+    xml += "  description: |\n";
+    xml += "     <pre>Some notes about the game, simple html allowed.\n";
+    xml += "     </pre>\n";
+    xml += "- url: http://example.com/games/mod.zip\n";
+    xml += "  mapName: mapModName\n";
     xml += createTypeTag(DownloadFileParser.ValueType.MAP_MOD);
-    xml += "    <description><![CDATA[\n";
+    xml += "  description: |\n";
     xml += "      map mod\n";
-    xml += "	</pre>\n";
-    xml += "    ]]></description>\n";
-    xml += "  </game>\n";
-    xml += "  <game>\n";
-    xml += "    <url>http://example.com/games/skin.zip</url>\n";
-    xml += "    <mapName>mapSkinName</mapName>\n";
+    xml += "- url: http://example.com/games/skin.zip\n";
+    xml += "  mapName: skin\n";
     xml += createTypeTag(DownloadFileParser.ValueType.MAP_SKIN);
-    xml += "    <description><![CDATA[\n";
+    xml += "  description: |\n";
     xml += "      map skin\n";
-    xml += "    ]]></description>\n";
-    xml += "  </game>\n";
-    xml += "  <game>\n";
-    xml += "    <url>http://example.com/games/tool.zip</url>\n";
-    xml += "    <mapName>mapToolName</mapName>\n";
+    xml += "- url: http://example.com/games/tool.zip\n";
+    xml += "  mapName: mapToolName\n";
     xml += createTypeTag(DownloadFileParser.ValueType.MAP_TOOL);
-    xml += "    <description><![CDATA[\n";
+    xml += "  description: |\n";
+    xml += "       <pre>\n";
     xml += "       this is a map tool";
     xml += "    </pre>\n";
-    xml += "    ]]></description>\n";
-    xml += "  </game>\n";
-    xml += "</games>\n";
     return xml.getBytes();
-  }
-
-
-  // TODO we probably should do clientLogger.logError( ) to handle this, show an error
-  // to the user and abort, rather than sending a stack trace and exception to the user.
-  @Test(expected = IllegalStateException.class)
-  public void testParseBadData() {
-    final ByteArrayInputStream inputStream = new ByteArrayInputStream(buildBadTestXml());
-    DownloadFileParser.parse(inputStream);
-  }
-
-  private static byte[] buildBadTestXml() {
-    String xml = "";
-    xml += "<games>\n";
-    return xml.getBytes();
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void testDuplicateMapNames() {
-    final ByteArrayInputStream inputStream = new ByteArrayInputStream(buildDuplicateMapNameTestXml().getBytes());
-    DownloadFileParser.parse(inputStream);
-  }
-
-  private static String buildDuplicateMapNameTestXml() {
-    String xml = "";
-    xml += "<games>\n";
-      xml += createGameXml( );
-      xml += createGameXml( );
-    xml += "</games>\n";
-    return xml;
-  }
-
-  private static String createGameXml( ) {
-    String xml = "";
-    xml += "  <game>\n";
-    xml += "    <url>http://example.com/games/mod.zip</url>\n";
-    xml += "    <mapName>" + GAME_NAME + "</mapName>\n";
-    xml += createTypeTag(DownloadFileParser.ValueType.MAP_MOD);
-    xml += "    <description><![CDATA[\n";
-    xml += "      description\n";
-    xml += "    ]]></description>\n";
-    xml += "  </game>\n";
-    return xml;
   }
 
 
@@ -177,13 +120,10 @@ public class DownloadFileParserTest {
 
   private static byte[] createSimpleGameXmlWithNoTypeTag( ) {
     String xml = "";
-    xml += "  <game>\n";
-    xml += "    <url>http://example.com/games/mod.zip</url>\n";
-    xml += "    <mapName>" + GAME_NAME + "</mapName>\n";
-    xml += "    <description><![CDATA[\n";
+    xml += "- url: http://example.com/games/mod.zip\n";
+    xml += "  mapName: " + GAME_NAME + "\n";
+    xml += "  description: |\n";
     xml += "      description\n";
-    xml += "    ]]></description>\n";
-    xml += "  </game>\n";
     return xml.getBytes();
   }
 

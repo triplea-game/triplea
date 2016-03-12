@@ -4,14 +4,11 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
-import games.strategy.engine.framework.map.download.DownloadFileDescription;
-import games.strategy.engine.framework.map.download.MapDownloadListSort;
 import games.strategy.util.Version;
 
 public class MapDownloadListSortTest {
@@ -21,7 +18,7 @@ public class MapDownloadListSortTest {
                                                                                    // insensitive sorting
   private static final DownloadFileDescription MAP_C = createDownload("c", "url");
   private static final DownloadFileDescription MAP_D = createDownload("d", "url");
-  private static final DownloadFileDescription HEADER = createDownload("header", DownloadFileDescription.DUMMY_URL);
+  private static final DownloadFileDescription HEADER = createDownload("header", null);
 
 
   private static DownloadFileDescription createDownload(String mapName, String url) {

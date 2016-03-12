@@ -15,7 +15,6 @@ import games.strategy.util.Version;
  * version, etc..
  */
 public class DownloadFileDescription {
-  protected static final String DUMMY_URL = "!";
   private final String url;
   private final String description;
   private final String mapName;
@@ -27,7 +26,7 @@ public class DownloadFileDescription {
   }
 
   public static final DownloadFileDescription PLACE_HOLDER =
-      new DownloadFileDescription(DUMMY_URL, " ", " ", new Version("0"), DownloadType.DISPLAY_HEADER);
+      new DownloadFileDescription(null, " ", " ", new Version("0"), DownloadType.DISPLAY_HEADER);
 
   public DownloadFileDescription(final String url, final String description, final String mapName,
       final Version version, DownloadType downloadType) {
@@ -51,7 +50,7 @@ public class DownloadFileDescription {
   }
 
   public boolean isDummyUrl() {
-    return url.startsWith(DUMMY_URL);
+    return url == null;
   }
 
   public Version getVersion() {
