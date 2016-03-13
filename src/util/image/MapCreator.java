@@ -28,11 +28,13 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.common.swing.SwingComponents;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
 
 /**
@@ -179,7 +181,8 @@ public class MapCreator extends JFrame {
       public void actionPerformed(final ActionEvent e) {
         try {
           DesktopUtilityBrowserLauncher.openFile(
-              new File(ClientFileSystemHelper.getRootFolder(), "doc" + File.separator + "map_and_map_skin_making_overview.html"));
+              new File(ClientFileSystemHelper.getRootFolder(),
+                  "doc" + File.separator + "map_and_map_skin_making_overview.html"));
           // DesktopUtilityBrowserLauncher.openURL(GameRunner.getRootFolder().getAbsoluteFile() + File.separator + "doc"
           // + File.separator +
           // "map_and_map_skin_making_overview.html");
@@ -425,13 +428,8 @@ public class MapCreator extends JFrame {
         .add(new JLabel("You can try downloading it from our dev forum: http://triplea.sourceforge.net/mywiki/Forum"));
     m_panel3.add(Box.createVerticalStrut(30));
     final JButton goToWebButton = new JButton("Go To Dev Forum");
-    goToWebButton.addActionListener(SwingAction.of("Go To Dev Forum", e -> {
-      try {
-        DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/mywiki/Forum");
-      } catch (final Exception e1) {
-        e1.printStackTrace();
-      }
-    }));
+    goToWebButton.addActionListener(
+        SwingAction.of("Go To Dev Forum", e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_FORUM)));
     m_panel3.add(goToWebButton);
     m_panel3.add(Box.createVerticalStrut(30));
     final JButton connectionFinderButton = new JButton("Run the Connection Finder");
