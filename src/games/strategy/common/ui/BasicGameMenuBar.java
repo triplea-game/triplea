@@ -120,6 +120,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     menuBar.add(debugMenu);
     addChangeProAISettings(debugMenu);
     debugMenu.add(new EnablePerformanceLoggingCheckBox());
+    debugMenu.setMnemonic(KeyEvent.VK_D);
     addConsoleMenu(debugMenu);
   }
 
@@ -130,15 +131,10 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
   }
 
   protected void addConsoleMenu(final JMenu parentMenu) {
-    parentMenu.add(new AbstractAction("Show Console...") {
-      private static final long serialVersionUID = 6303760092518795718L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
+    parentMenu.add(SwingAction.of("Show Console...", e ->  {
         ErrorConsole.getConsole().setVisible(true);
         ErrorConsole.getConsole().append(DebugUtils.getMemory());
-      }
-    }).setMnemonic(KeyEvent.VK_C);
+    })).setMnemonic(KeyEvent.VK_C);
   }
 
   private void addChangeProAISettings(final JMenu parentMenu) {
@@ -152,14 +148,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     if (areThereProAIs) {
       ProAI.initialize((TripleAFrame) m_frame);
       parentMenu.addSeparator();
-      parentMenu.add(new AbstractAction("Show Hard AI Logs") {
-        private static final long serialVersionUID = 3457295609477283292L;
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          ProAI.showSettingsWindow();
-        }
-      }).setMnemonic(KeyEvent.VK_X);
+      parentMenu.add(SwingAction.of("Show Hard AI Logs", e -> ProAI.showSettingsWindow())).setMnemonic(KeyEvent.VK_X);
       parentMenu.addSeparator();
     }
   }
