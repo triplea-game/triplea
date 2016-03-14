@@ -70,7 +70,11 @@ With the help of the Gradle system any modern IDE support is provided out of box
 * Eclipse:
   - use the [Buildship plugin](https://github.com/eclipse/buildship/blob/master/docs/user/Installation.md)
   - [Gradle integration plugin](https://marketplace.eclipse.org/content/buildship-gradle-integration)
-* Intellij IDEA - out of box integration support (just import project, and specify the settings.gradle file)
+* Intellij IDEA
+  - out of box integration support (just import project, and specify the settings.gradle file)
+  - Install eclipser to use the eclipse launchers: https://plugins.jetbrains.com/plugin/7153?pr=idea
+    - Once installed, right click the eclipse launchers found in 'triplea/eclipse/launchers'
+    - Select 'convert with eclipser', then the launchers will be available to run as intelliJ run configurations
 * Netbeans - use the [Gradle plugin](http://plugins.netbeans.org/plugin/44510/gradle-support)
 
  
