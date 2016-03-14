@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.event.WindowAdapter;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -99,10 +100,6 @@ public class SwingComponents {
 
   public static void promptUser(final String title, final String message, final Runnable confirmedAction,
       final Runnable cancelAction) {
-    SwingUtilities.invokeLater(() -> {
-      int response =
-          JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-      boolean result = response == JOptionPane.YES_OPTION;
 
     boolean showMessage = false;
     synchronized (visiblePrompts) {
@@ -114,13 +111,13 @@ public class SwingComponents {
 
     if (showMessage) {
       SwingUtilities.invokeLater(() -> {
-        // JDialog.setDefaultLookAndFeelDecorated(true);
+        // blocks until the user responds to the modal dialog
         int response = JOptionPane.showConfirmDialog(null, message, title,
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-        boolean result = response == JOptionPane.YES_OPTION;
-        visiblePrompts.remove(message);
 
-        if (result) {
+        // dialog is now closed
+        visiblePrompts.remove(message);
+        if( response == JOptionPane.YES_OPTION ) {
           confirmedAction.run();
         } else {
           cancelAction.run();
@@ -141,29 +138,11 @@ public class SwingComponents {
   }
 
   public static void addWindowCloseListener(Window window, Runnable closeAction) {
-    window.addWindowListener(new WindowListener() {
-      @Override
-      public void windowOpened(WindowEvent e) {}
-
+    window.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
         closeAction.run();
       }
-
-      @Override
-      public void windowClosed(WindowEvent e) {}
-
-      @Override
-      public void windowIconified(WindowEvent e) {}
-
-      @Override
-      public void windowDeiconified(WindowEvent e) {}
-
-      @Override
-      public void windowActivated(WindowEvent e) {}
-
-      @Override
-      public void windowDeactivated(WindowEvent e) {}
     });
   }
 
