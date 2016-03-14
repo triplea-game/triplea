@@ -12,7 +12,7 @@ before_deploy:
 - chmod +x ./.travis/setup && ./.travis/setup
 - GAME_CONFIG=game_engine.properties
 - ENGINE_VERSION=$(grep "engine_version" $GAME_CONFIG | sed 's/.*= *//g')
-- if [ $TRAVIS_BRANCH == master ]; then export TAGGED_VERSION="$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER"; else export TAGGED_VERSION="stable"; fi
+- export TAGGED_VERSION="$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER"
 - sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" $GAME_CONFIG
 - gradle release
 - chmod +x ./.travis/push_tag && ./.travis/push_tag
@@ -44,4 +44,3 @@ deploy:
     branches:
       only:
         - master
-        - stable_branch
