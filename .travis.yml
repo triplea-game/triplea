@@ -41,7 +41,6 @@ deploy:
   prerelease: true
   on:
     repo: triplea-game/triplea
-    tags: false
-    branches:
-      only:
-        - master
+    tags: true
+    all_branches: true
+    condition: "$TRAVIS_TAG == stable || $TRAVIS_BRANCH == master"
