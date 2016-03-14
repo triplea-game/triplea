@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.client.login;
 
+
 import java.awt.Window;
 import java.io.IOException;
 import java.util.HashMap;
@@ -8,9 +9,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JOptionPane;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
@@ -37,11 +36,11 @@ public class LobbyLogin {
    */
   public LobbyClient login() {
     if (!m_serverProperties.isServerAvailable()) {
-      JOptionPane.showMessageDialog(m_parent, m_serverProperties.getServerErrorMessage(), "Could not connect to server",
+      JOptionPane.showMessageDialog(m_parent, m_serverProperties.serverErrorMessage, "Could not connect to server",
           JOptionPane.ERROR_MESSAGE);
       return null;
     }
-    if (m_serverProperties.getPort() == -1) {
+    if (m_serverProperties.port == -1) {
       if (ClientFileSystemHelper.areWeOldExtraJar()) {
         JOptionPane.showMessageDialog(m_parent,
             "<html>Could not find lobby server for this version of TripleA, <br>Please make sure you are using the latest version: " + UrlConstants.SOURCE_FORGE
@@ -75,7 +74,7 @@ public class LobbyLogin {
   private LobbyClient login(final LoginPanel panel) {
     try {
       final String mac = MacFinder.GetHashedMacAddress();
-      final ClientMessenger messenger = new ClientMessenger(m_serverProperties.getHost(), m_serverProperties.getPort(),
+      final ClientMessenger messenger = new ClientMessenger(m_serverProperties.host, m_serverProperties.port,
           panel.getUserName(), mac, new IConnectionLogin() {
             private final AtomicReference<String> m_internalError = new AtomicReference<String>();
 
@@ -134,7 +133,7 @@ public class LobbyLogin {
   private LobbyClient createAccount(final CreateUpdateAccountPanel createAccount) {
     try {
       final String mac = MacFinder.GetHashedMacAddress();
-      final ClientMessenger messenger = new ClientMessenger(m_serverProperties.getHost(), m_serverProperties.getPort(),
+      final ClientMessenger messenger = new ClientMessenger(m_serverProperties.host, m_serverProperties.port,
           createAccount.getUserName(), mac, new IConnectionLogin() {
             @Override
             public void notifyFailedLogin(final String message) {

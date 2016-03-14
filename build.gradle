@@ -62,6 +62,7 @@ dependencies {
 
 	compile 'org.yaml:snakeyaml:1.17'
 	compile 'org.swinglabs.swingx:swingx-all:1.6.5-1'
+	compile 'org.yaml:snakeyaml:1.17'
 	compile 'com.sun.mail:mailapi:1.5.5'
 	compile 'com.sun.mail:smtp:1.5.5'
 	compile 'com.google.guava:guava:19.0'
@@ -118,7 +119,7 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updat
 		into('icons')
 		exclude("icon.icns")
 	}
-	['readme.html', 'changelog.txt', 'system.ini', 'game_engine.properties',
+	['readme.html', 'changelog.txt', 'system.ini', 'game_engine.properties', 'lobby_server.yaml',
 	 'run-headless-game-host-mac-os.sh', 'run-headless-game-host.sh', 'run-headless-game-host-windows.bat',
 	 'triplea_unix.sh', 'triplea_windows.bat', 'triplea_mac_os_x.sh'].each { fileName ->
 		from(fileName)
@@ -144,7 +145,7 @@ task bots(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets
 			into(folder)
 		}
 	}
-	['readme.html', 'changelog.txt', 'system.ini', 'game_engine.properties',
+	['readme.html', 'changelog.txt', 'system.ini', 'game_engine.properties', 'lobby_server.yaml',
 	 'run-headless-game-host-mac-os.sh', 'run-headless-game-host.sh', 'run-headless-game-host-windows.bat',
 	 'triplea_unix.sh', 'triplea_windows.bat', 'triplea_mac_os_x.sh'].each { fileName ->
 		from(fileName)
