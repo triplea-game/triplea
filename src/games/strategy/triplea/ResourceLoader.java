@@ -16,7 +16,7 @@ import java.util.StringTokenizer;
 import games.strategy.common.swing.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.mapDownload.InstallMapDialog;
+import games.strategy.engine.framework.map.download.InstallMapDialog;
 import games.strategy.util.Match;
 
 /**
