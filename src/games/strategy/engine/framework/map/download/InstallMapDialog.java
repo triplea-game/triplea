@@ -148,25 +148,30 @@ public class InstallMapDialog extends JFrame {
 
 
     JPanel outOfDate = null;
-    if (containsMaps(mapList.getOutOfDate())) {
+    if (containsNonDummyMaps(mapList.getOutOfDate())) {
       outOfDate = createMapSelectionPanel(mapName, mapList.getOutOfDate(), MapAction.UPDATE);
     }
     // For the UX, always show an available maps tab, even if it is empty
     final JPanel available = createMapSelectionPanel(mapName, mapList.getAvailable(), MapAction.INSTALL);
 
+
     // if there is a map to preselect, show the available map list first
-    if (outOfDate != null && mapName.isPresent()) {
-      tabbedPane.addTab("Available", available);
-      tabbedPane.addTab("Update", outOfDate);
-    } else if (outOfDate != null) {
-      tabbedPane.addTab("Update", outOfDate);
-      tabbedPane.addTab("Available", available);
-    } else {
+    if (mapName.isPresent()) {
       tabbedPane.addTab("Available", available);
     }
 
+    // otherwise show the updates first
+    if( outOfDate != null ) {
+      tabbedPane.addTab("Update", outOfDate);
+    }
 
-    if (containsMaps(mapList.getInstalled())) {
+    // finally make sure we are always showing the 'available' tab, this condition will be
+    // true if the first 'mapName.isPresent()' is false
+    if (!mapName.isPresent()) {
+      tabbedPane.addTab("Available", available);
+    }
+
+    if (containsNonDummyMaps(mapList.getInstalled())) {
       final JPanel installed = createMapSelectionPanel(mapName, mapList.getInstalled(), MapAction.REMOVE);
       tabbedPane.addTab("Installed", installed);
     }
@@ -174,7 +179,7 @@ public class InstallMapDialog extends JFrame {
   }
 
 
-  private static boolean containsMaps(List<DownloadFileDescription> maps) {
+  private static boolean containsNonDummyMaps(List<DownloadFileDescription> maps) {
     return maps.stream().anyMatch(e -> !e.isDummyUrl());
   }
 
