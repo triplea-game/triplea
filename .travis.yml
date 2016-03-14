@@ -12,7 +12,7 @@ before_deploy:
 - chmod +x ./.travis/setup && ./.travis/setup
 - GAME_CONFIG=game_engine.properties
 - ENGINE_VERSION=$(grep "engine_version" $GAME_CONFIG | sed 's/.*= *//g')
-- export TAGGED_VERSION="$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER"
+- if [ $TRAVIS_BRANCH == master ]; then export TAGGED_VERSION="$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER"; else export TAGGED_VERSION="stable"; fi
 - sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" $GAME_CONFIG
 - gradle release
 - chmod +x ./.travis/push_tag && ./.travis/push_tag
@@ -40,7 +40,8 @@ deploy:
   skip_cleanup: true
   prerelease: true
   on:
-    repo: triplea-game/triplea
-    tags: true
-    all_branches: true
-    condition: "$TRAVIS_TAG == stable || $TRAVIS_BRANCH == master"
+    tags: false
+    branches:
+      only:
+        - master
+        - stable
