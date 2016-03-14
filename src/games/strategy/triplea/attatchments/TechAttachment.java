@@ -18,7 +18,7 @@ public class TechAttachment extends DefaultAttachment {
 
   // attaches to a PlayerID
   public static TechAttachment get(final PlayerID id) {
-    final TechAttachment attachment = (TechAttachment) id.getAttachment(Constants.TECH_ATTACHMENT_NAME);
+    final TechAttachment attachment = id.getTechAttachment();
     // dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment
     // for them
     if (attachment == null) {

@@ -14,7 +14,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -27,13 +26,12 @@ public class PlayerAttachment extends DefaultAttachment {
    * Convenience method. can be null
    */
   public static PlayerAttachment get(final PlayerID p) {
-    final PlayerAttachment rVal = (PlayerAttachment) p.getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
     // allow null
-    return rVal;
+    return p.getPlayerAttachment();
   }
 
   public static PlayerAttachment get(final PlayerID p, final String nameOfAttachment) {
-    final PlayerAttachment rVal = (PlayerAttachment) p.getAttachment(nameOfAttachment);
+    final PlayerAttachment rVal = p.getPlayerAttachment(); //(PlayerAttachment) p.getAttachment(nameOfAttachment);
     if (rVal == null) {
       throw new IllegalStateException("No player attachment for:" + p.getName() + " with name:" + nameOfAttachment);
     }

@@ -195,7 +195,7 @@ public class ProPurchaseUtils {
     final GameData data = ProData.getData();
 
     // Find all territories that I can place units on
-    final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
+    final RulesAttachment ra = player.getRulesAttachment();
     List<Territory> ownedAndNotConqueredFactoryTerritories = new ArrayList<Territory>();
     if (ra != null && ra.getPlacementAnyTerritory()) {
       ownedAndNotConqueredFactoryTerritories = data.getMap().getTerritoriesOwnedBy(player);
@@ -234,7 +234,7 @@ public class ProPurchaseUtils {
     final boolean originalFactory = (ta == null ? false : ta.getOriginalFactory());
     final boolean playerIsOriginalOwner =
         factoryUnits.size() > 0 ? player.equals(getOriginalFactoryOwner(territory, player)) : false;
-    final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
+    final RulesAttachment ra = player.getRulesAttachment();
     if (originalFactory && playerIsOriginalOwner) {
       if (ra != null && ra.getMaxPlacePerTerritory() != -1) {
         return Math.max(0, ra.getMaxPlacePerTerritory());
