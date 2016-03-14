@@ -6,7 +6,7 @@ git config --global user.name "tripleabuilderbot"
 
 echo "Delete previous tag if it exists, this way we can restart builds and regenerate artifacts in case anything goes wrong"
 git tag -d "$TAGGED_VERSION"
-git push origin ":refs/tags/$$TAGGED_VERSION"
+git push origin ":refs/tags/$TAGGED_VERSION"
 
 git tag $TAGGED_VERSION -a -m "$TAGGED_VERSION"
 git push -q https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea --tags 2>&1 | sed 's|https://.*github|https://[secure]@github|'
