@@ -44,4 +44,4 @@ deploy:
     branches:
       only:
         - master
-        - stable
+        - stable_branch
