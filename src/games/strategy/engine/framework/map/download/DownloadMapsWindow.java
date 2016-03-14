@@ -187,22 +187,25 @@ public class DownloadMapswindow extends JFrame {
 
     final JLabel mapSizeLabel = new JLabel(" ");
 
-    final JList<String> gamesList = createGameSelectionList(selectedMap, maps, descriptionPane);
+    DefaultListModel model = SwingComponents.newJListModel(maps, (map) -> map.getMapName());
+
+    final JList<String> gamesList = createGameSelectionList(selectedMap, maps, descriptionPane, model);
     gamesList.addListSelectionListener(createDescriptionPanelUpdatingSelectionListener(
         descriptionPane, gamesList, maps, action, mapSizeLabel));
     main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
 
     final JPanel southPanel = SwingComponents.gridPanel(2, 1);
     southPanel.add(mapSizeLabel);
-    southPanel.add(createButtonsPanel(action, gamesList, maps));
+    southPanel.add(createButtonsPanel(action, gamesList, maps, model));
     main.add(southPanel, BorderLayout.SOUTH);
 
     return main;
   }
 
   private static JList<String> createGameSelectionList(final Optional<String> selectedMap,
-      final List<DownloadFileDescription> maps, final JEditorPane descriptionPanel) {
-    JList<String> gamesList = SwingComponents.newJList(maps, (map) -> map.getMapName());
+      final List<DownloadFileDescription> maps, final JEditorPane descriptionPanel, DefaultListModel model) {
+
+    JList<String> gamesList = SwingComponents.newJList(model);
     // select the first map, not header
     int selectedIndex = 0;
     for (int i = 0; i < maps.size(); i++) {
@@ -231,9 +234,8 @@ public class DownloadMapswindow extends JFrame {
       descriptionPanel.setText(text);
       descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
 
-        updateMapUrlAndSizeLabel(map, action, mapSizeLabel);
+      updateMapUrlAndSizeLabel(map, action, mapSizeLabel);
 
-      }
     };
   }
 
