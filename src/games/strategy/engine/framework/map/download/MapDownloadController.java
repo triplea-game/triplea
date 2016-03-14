@@ -85,7 +85,7 @@ public class MapDownloadController {
       }
       final List<String> outOfDateMaps = new ArrayList<String>();
       populateOutOfDateMapsListing(outOfDateMaps, downloads);
-      if (!outOfDateMaps.isEmpty() || true) {
+      if (!outOfDateMaps.isEmpty()) {
         final StringBuilder text =
             new StringBuilder("<html>Some of the maps you have are out of date, and newer versions of those maps exist."
                 + "<br>Would you like to update (re-download) the following maps now?:<br><ul>");
