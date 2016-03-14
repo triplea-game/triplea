@@ -249,7 +249,7 @@ public class ProNonCombatMoveAI {
 
       // Add max defenders that can be purchased to each territory
       for (final Territory t : moveMap.keySet()) {
-        if (ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data).match(t)) {
+        if (ProMatches.territoryHasNonMobileInfraFactoryAndIsNotConqueredOwnedLand(player, data).match(t)) {
           moveMap.get(t).getCantMoveUnits()
               .addAll(ProPurchaseUtils.findMaxPurchaseDefenders(player, t, landPurchaseOptions));
         }
