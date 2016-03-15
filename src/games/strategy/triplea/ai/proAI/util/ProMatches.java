@@ -332,21 +332,6 @@ public class ProMatches {
     };
   }
 
-  public static Match<Territory> territoryHasNonMobileInfraFactoryAndIsLand() {
-    return new Match<Territory>() {
-      @Override
-      public boolean match(final Territory t) {
-        final Match<Unit> nonMobileinfraFactoryMatch =
-            new CompositeMatchAnd<Unit>(Matches.UnitCanProduceUnits, Matches.UnitIsInfrastructure,
-                Matches.unitHasMovementLeft.invert());
-        final Match<Territory> match =
-            new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand,
-                Matches.territoryHasUnitsThatMatch(nonMobileinfraFactoryMatch));
-        return match.match(t);
-      }
-    };
-  }
-
   public static Match<Territory> territoryHasInfraFactoryAndIsEnemyLand(final PlayerID player, final GameData data) {
     return new Match<Territory>() {
       @Override
@@ -395,8 +380,21 @@ public class ProMatches {
       @Override
       public boolean match(final Territory t) {
         final Match<Territory> match =
-            new CompositeMatchAnd<Territory>(territoryIsNotConqueredOwnedLand(player, data),
-                territoryHasInfraFactoryAndIsOwnedLand(player), territoryHasNonMobileInfraFactoryAndIsLand());
+            new CompositeMatchAnd<Territory>(territoryHasNonMobileInfraFactory(),
+                territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data));
+        return match.match(t);
+      }
+    };
+  }
+
+  private static Match<Territory> territoryHasNonMobileInfraFactory() {
+    return new Match<Territory>() {
+      @Override
+      public boolean match(final Territory t) {
+        final Match<Unit> nonMobileInfraFactoryMatch =
+            new CompositeMatchAnd<Unit>(Matches.UnitCanProduceUnits, Matches.UnitIsInfrastructure,
+                Matches.unitHasMovementLeft.invert());
+        final Match<Territory> match = Matches.territoryHasUnitsThatMatch(nonMobileInfraFactoryMatch);
         return match.match(t);
       }
     };

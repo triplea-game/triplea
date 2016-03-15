@@ -1906,10 +1906,12 @@ public class ProNonCombatMoveAI {
             }
 
             // Check if territory is safe after all current moves
-            final List<Unit> defendingUnits = moveMap.get(t).getAllDefenders();
-            moveMap.get(t).setBattleResult(
-                calc.calculateBattleResults(player, t, moveMap.get(t).getMaxEnemyUnits(), defendingUnits, moveMap
-                    .get(t).getMaxEnemyBombardUnits(), false));
+            if (moveMap.get(t).getBattleResult() == null) {
+              final List<Unit> defendingUnits = moveMap.get(t).getAllDefenders();
+              moveMap.get(t).setBattleResult(
+                  calc.calculateBattleResults(player, t, moveMap.get(t).getMaxEnemyUnits(), defendingUnits, moveMap
+                      .get(t).getMaxEnemyBombardUnits(), false));
+            }
             final ProBattleResult result = moveMap.get(t).getBattleResult();
             if (result.getWinPercentage() >= ProData.minWinPercentage || result.getTUVSwing() > 0) {
               moveMap.get(t).setCanHold(false);
