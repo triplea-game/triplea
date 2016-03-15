@@ -1,8 +1,5 @@
 package games.strategy.triplea.ai.proAI.util;
 
-import java.util.Collection;
-import java.util.List;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -16,6 +13,9 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Pro AI matches.
@@ -186,7 +186,7 @@ public class ProMatches {
               new CompositeMatchOr<Territory>(Matches.isTerritoryAllied(player, data),
                   Matches.territoryIsInList(clearedTerritories), territoryIsBlitzable(player, data, u));
         }
-        Match<Territory> match =
+        final Match<Territory> match =
             new CompositeMatchAnd<Territory>(
                 ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, u), alliedMatch, Matches
                     .territoryIsInList(blockedTerritories).invert());
@@ -369,6 +369,32 @@ public class ProMatches {
         final Match<Territory> match =
             new CompositeMatchAnd<Territory>(territoryIsNotConqueredOwnedLand(player, data),
                 territoryHasInfraFactoryAndIsOwnedLand(player));
+        return match.match(t);
+      }
+    };
+  }
+
+  public static Match<Territory> territoryHasNonMobileInfraFactoryAndIsNotConqueredOwnedLand(final PlayerID player,
+      final GameData data) {
+    return new Match<Territory>() {
+      @Override
+      public boolean match(final Territory t) {
+        final Match<Territory> match =
+            new CompositeMatchAnd<Territory>(territoryHasNonMobileInfraFactory(),
+                territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data));
+        return match.match(t);
+      }
+    };
+  }
+
+  private static Match<Territory> territoryHasNonMobileInfraFactory() {
+    return new Match<Territory>() {
+      @Override
+      public boolean match(final Territory t) {
+        final Match<Unit> nonMobileInfraFactoryMatch =
+            new CompositeMatchAnd<Unit>(Matches.UnitCanProduceUnits, Matches.UnitIsInfrastructure,
+                Matches.unitHasMovementLeft.invert());
+        final Match<Territory> match = Matches.territoryHasUnitsThatMatch(nonMobileInfraFactoryMatch);
         return match.match(t);
       }
     };
