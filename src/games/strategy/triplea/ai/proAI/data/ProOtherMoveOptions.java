@@ -1,6 +1,5 @@
 package games.strategy.triplea.ai.proAI.data;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -54,7 +53,7 @@ public class ProOtherMoveOptions {
 
   private static Map<Territory, ProTerritory> createMaxMoveMap(final List<Map<Territory, ProTerritory>> moveMaps,
       final PlayerID player, final boolean isAttacker) {
-    final GameData data = ProData.getData();
+
 
     final Map<Territory, ProTerritory> result = new HashMap<Territory, ProTerritory>();
     final List<PlayerID> players = ProUtils.getOtherPlayersInTurnOrder(player);
@@ -72,7 +71,7 @@ public class ProOtherMoveOptions {
         }
 
         // Skip if checking allied moves and their turn doesn't come before territory owner's
-        if (data.getRelationshipTracker().isAllied(player, movePlayer)
+        if (ProData.getData().getRelationshipTracker().isAllied(player, movePlayer)
             && !ProUtils.isPlayersTurnFirst(players, movePlayer, t.getOwner())) {
           continue;
         }
