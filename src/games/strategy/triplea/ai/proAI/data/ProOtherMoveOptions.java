@@ -1,5 +1,14 @@
 package games.strategy.triplea.ai.proAI.data;
 
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.triplea.ai.proAI.ProData;
+import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
+import games.strategy.triplea.ai.proAI.util.ProUtils;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.Match;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,14 +17,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
-
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
-import games.strategy.triplea.ai.proAI.util.ProUtils;
-import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.Match;
 
 public class ProOtherMoveOptions {
 
@@ -53,6 +54,7 @@ public class ProOtherMoveOptions {
   private static Map<Territory, ProTerritory> createMaxMoveMap(final List<Map<Territory, ProTerritory>> moveMaps,
       final PlayerID player, final boolean isAttacker) {
 
+
     final Map<Territory, ProTerritory> result = new HashMap<Territory, ProTerritory>();
     final List<PlayerID> players = ProUtils.getOtherPlayersInTurnOrder(player);
     for (final Map<Territory, ProTerritory> moveMap : moveMaps) {
@@ -68,8 +70,9 @@ public class ProOtherMoveOptions {
           continue;
         }
 
-        // Check if mover's turn comes before territory owner's
-        if (!ProUtils.isPlayersTurnFirst(players, movePlayer, t.getOwner())) {
+        // Skip if checking allied moves and their turn doesn't come before territory owner's
+        if (ProData.getData().getRelationshipTracker().isAllied(player, movePlayer)
+            && !ProUtils.isPlayersTurnFirst(players, movePlayer, t.getOwner())) {
           continue;
         }
 
