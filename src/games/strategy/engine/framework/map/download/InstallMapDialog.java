@@ -234,14 +234,15 @@ public class InstallMapDialog extends JFrame {
       JList<String> gamesList, List<DownloadFileDescription> maps, MapAction action, JLabel mapSizeLabel) {
     return e -> {
       final int index = gamesList.getSelectedIndex();
-      DownloadFileDescription map = maps.get(index);
+      if( index > 0 ) {
+        DownloadFileDescription map = maps.get(index);
 
-      String text = createEditorPaneText(map);
-      descriptionPanel.setText(text);
-      descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+        String text = createEditorPaneText(map);
+        descriptionPanel.setText(text);
+        descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
 
-      updateMapUrlAndSizeLabel(map, action, mapSizeLabel);
-
+        updateMapUrlAndSizeLabel(map, action, mapSizeLabel);
+      }
     };
   }
 
