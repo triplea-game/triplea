@@ -124,7 +124,7 @@ public class DownloadMapswindow extends JFrame {
   private static Optional<DownloadFileDescription> findMap(final String mapName,
       final List<DownloadFileDescription> games) {
     for (DownloadFileDescription download : games) {
-      if (download.getMapName().equals(mapName)) {
+      if (download.getMapName().equalsIgnoreCase(mapName)) {
         return Optional.of(download);
       }
     }
