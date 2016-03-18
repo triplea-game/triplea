@@ -42,18 +42,18 @@ public class DownloadCoordinator {
           ThreadUtil.sleep(50);
 
           if (shouldShowDownloadsFinishedPrompt()) {
-
             // TODO: we ignore the threading problem here, we may enter this code block multiple times.
             // It's a difficult situation to create for the user, and the worst case is multiple map download
             // complete dialogs appearing - which is not a big deal.
             downloadPromptAlreadyShown = true;
-            Runnable confirmAction = () -> {
-              if (downloadCompleteAction.isPresent()) {
-                downloadCompleteAction.get().run();
-              }
-            };
             SwingComponents.promptUser("Map Downloads Completed",
-                "Map downloads are complete, would you like to continue downloading more maps?", confirmAction);
+                "Map downloads are complete, would you like to continue downloading more maps?", () -> {}, // do nothing, keep the window open
+                () -> { // user clicked no, close the window
+                  if (downloadCompleteAction.isPresent()) {
+                    downloadCompleteAction.get().run();
+                  }
+                }
+            );
           }
         } catch (Exception e) {
           e.printStackTrace();
