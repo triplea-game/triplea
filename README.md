@@ -72,6 +72,7 @@ With the help of the Gradle system any modern IDE support is provided out of box
   - [Gradle integration plugin](https://marketplace.eclipse.org/content/buildship-gradle-integration)
 * Intellij IDEA
   - out of box integration support (just import project, and specify the settings.gradle file)
+    - If you are getting "JAVA HOME not yet set", see: http://stackoverflow.com/questions/31215452/intellij-idea-importing-gradle-project-getting-java-home-not-defined-yet
   - Install eclipser to use the eclipse launchers: https://plugins.jetbrains.com/plugin/7153?pr=idea
     - Once installed, right click the eclipse launchers found in 'triplea/eclipse/launchers'
     - Select 'convert with eclipser', then the launchers will be available to run as intelliJ run configurations
