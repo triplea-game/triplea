@@ -331,6 +331,10 @@ public class ProNonCombatMoveAI {
         }
       }
     }
+
+    // Remove any territories that don't get a unit from result
+    result.removeAll(territoriesToDefendWithOneUnit);
+
     return result;
   }
 
