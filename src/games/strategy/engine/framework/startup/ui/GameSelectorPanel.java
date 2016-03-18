@@ -193,7 +193,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     add(m_gameOptions, buildGridRow(0, 9, new Insets(25, 10, 10, 10)));
 
     // spacer
-    add(new JPanel(), new GridBagConstraints(0, 9, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+    add(new JPanel(), new GridBagConstraints(0, 10, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
         new Insets(0, 0, 0, 0), 0, 0));
   }
 
