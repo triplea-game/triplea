@@ -199,14 +199,7 @@ public class EventThreadJOptionPane {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
-        String noOption = "No";
-        Object initialValue = noOption;
-        Icon icon = null;
-        Object[] options = {noOption, "Yes"};
-        int selectionValue = JOptionPane.showOptionDialog(parentComponent, message, title , JOptionPane.YES_NO_OPTION,  JOptionPane.QUESTION_MESSAGE,  icon, options, initialValue);
-        // we swapped the meaning of No and Yes, typically it is the other way round, thus we should shift rVal from: 1->0, or: 0->1
-        int correctedValue = (selectionValue + 1) % 2;
-        rVal.set(correctedValue);
+        rVal.set(JOptionPane.showConfirmDialog(parentComponent, message, title, optionType));
         latch.countDown();
       }
     });
