@@ -331,6 +331,10 @@ public class ProNonCombatMoveAI {
         }
       }
     }
+
+    // Only return territories that received a defender
+    result.removeAll(territoriesToDefendWithOneUnit);
+
     return result;
   }
 

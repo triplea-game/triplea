@@ -1,17 +1,5 @@
 package games.strategy.triplea.ai.proAI;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -41,6 +29,20 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import com.google.common.collect.Lists;
 
 /**
  * Pro combat move AI.
@@ -121,7 +123,7 @@ public class ProCombatMoveAI {
 
     // Determine if capital can be held if I still own it
     if (ProData.myCapital != null && ProData.myCapital.getOwner().equals(player)) {
-      determineIfCapitalCanBeHeld(attackOptions, ProData.purchaseOptions.getLandOptions());
+      removeAttacksUntilCapitalCanBeHeld(attackOptions, ProData.purchaseOptions.getLandOptions());
     }
 
     // Check if any subs in contested territory that's not being attacked
@@ -1418,17 +1420,21 @@ public class ProCombatMoveAI {
     return sortedUnitAttackOptions;
   }
 
-  private void determineIfCapitalCanBeHeld(final List<ProTerritory> prioritizedTerritories,
+  private void removeAttacksUntilCapitalCanBeHeld(final List<ProTerritory> prioritizedTerritories,
       final List<ProPurchaseOption> landPurchaseOptions) {
 
-    ProLogger.info("Determine if capital can be held");
+    ProLogger.info("Check capital defenses after attack moves");
 
     final Map<Territory, ProTerritory> attackMap = territoryManager.getAttackOptions().getTerritoryMap();
 
     final Territory myCapital = ProData.myCapital;
 
-    // Determine max number of defenders I can purchase
-    final List<Unit> placeUnits = ProPurchaseUtils.findMaxPurchaseDefenders(player, myCapital, landPurchaseOptions);
+    // Add max purchase defenders to capital for non-mobile factories (don't consider mobile factories since they may
+    // move elsewhere)
+    final List<Unit> placeUnits = Lists.newArrayList();
+    if (ProMatches.territoryHasNonMobileInfraFactoryAndIsNotConqueredOwnedLand(player, data).match(myCapital)) {
+      placeUnits.addAll(ProPurchaseUtils.findMaxPurchaseDefenders(player, myCapital, landPurchaseOptions));
+    }
 
     // Remove attack until capital can be defended
     while (true) {
