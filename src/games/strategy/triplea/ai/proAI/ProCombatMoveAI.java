@@ -123,7 +123,7 @@ public class ProCombatMoveAI {
 
     // Determine if capital can be held if I still own it
     if (ProData.myCapital != null && ProData.myCapital.getOwner().equals(player)) {
-      determineIfCapitalCanBeHeld(attackOptions, ProData.purchaseOptions.getLandOptions());
+      removeAttacksUntilCapitalCanBeHeld(attackOptions, ProData.purchaseOptions.getLandOptions());
     }
 
     // Check if any subs in contested territory that's not being attacked
@@ -1420,16 +1420,17 @@ public class ProCombatMoveAI {
     return sortedUnitAttackOptions;
   }
 
-  private void determineIfCapitalCanBeHeld(final List<ProTerritory> prioritizedTerritories,
+  private void removeAttacksUntilCapitalCanBeHeld(final List<ProTerritory> prioritizedTerritories,
       final List<ProPurchaseOption> landPurchaseOptions) {
 
-    ProLogger.info("Determine if capital can be held");
+    ProLogger.info("Check capital defenses after attack moves");
 
     final Map<Territory, ProTerritory> attackMap = territoryManager.getAttackOptions().getTerritoryMap();
 
     final Territory myCapital = ProData.myCapital;
 
-    // Determine max number of defenders I can purchase
+    // Add max purchase defenders to capital for non-mobile factories (don't consider mobile factories since they may
+    // move elsewhere)
     final List<Unit> placeUnits = Lists.newArrayList();
     if (ProMatches.territoryHasNonMobileInfraFactoryAndIsNotConqueredOwnedLand(player, data).match(myCapital)) {
       placeUnits.addAll(ProPurchaseUtils.findMaxPurchaseDefenders(player, myCapital, landPurchaseOptions));
