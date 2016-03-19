@@ -9,11 +9,14 @@ import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
+import com.google.common.collect.Sets;
 
 /**
  * Base class for *Panel classes based on DynamicRow class with which it is interlinked.
@@ -28,18 +31,18 @@ import javax.swing.JScrollPane;
  */
 public abstract class DynamicRowsPanel {
 
-  protected static DynamicRowsPanel me = null;
+  protected static Optional<DynamicRowsPanel> me = Optional.empty();
 
   protected JPanel ownPanel;
   protected JPanel stepActionPanel;
   private ArrayList<JButton> finalRowButtons = new ArrayList<JButton>();
   boolean dataIsConsistent = true;
 
-  public LinkedHashSet<DynamicRow> rows = new LinkedHashSet<DynamicRow>();
+  public LinkedHashSet<DynamicRow> rows = Sets.newLinkedHashSet();
 
   protected static void layout(final MapXMLCreator mapXMLCreator, final JPanel stepActionPanel) {
-    me.resetRows();
-    me.setAutoFillAction(mapXMLCreator.autoFillButton);
+    me.get().resetRows();
+    me.get().setAutoFillAction(mapXMLCreator.autoFillButton);
   }
 
   public boolean dataIsConsistent() {
@@ -79,18 +82,18 @@ public abstract class DynamicRowsPanel {
   private void initialize() {
     finalRowButtons.clear();
     rows.clear();
-    me.initializeSpecifics();
+    me.get().initializeSpecifics();
   }
 
-  private void setAutoFillAction(final JButton bAutoFill) {
-    final ActionListener autoFillAction = me.getAutoFillAction();
+  private void setAutoFillAction(final JButton buttonAutoFill) {
+    final ActionListener autoFillAction = me.get().getAutoFillAction();
     if (autoFillAction == null)
-      bAutoFill.setEnabled(false);
+      buttonAutoFill.setEnabled(false);
     else {
-      bAutoFill.setEnabled(true);
-      for (final ActionListener curr_actionListener : bAutoFill.getActionListeners())
-        bAutoFill.removeActionListener(curr_actionListener);
-      bAutoFill.addActionListener(autoFillAction);
+      buttonAutoFill.setEnabled(true);
+      for (final ActionListener curr_actionListener : buttonAutoFill.getActionListeners())
+        buttonAutoFill.removeActionListener(curr_actionListener);
+      buttonAutoFill.addActionListener(autoFillAction);
     }
   }
 

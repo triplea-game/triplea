@@ -7,7 +7,6 @@ import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -24,6 +23,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -82,15 +82,15 @@ public class MapXMLCreator extends JFrame {
   private JPanel southLeftPanel;
   private JPanel southRightPanel;
   private JPanel southCenterPanel;
-  private JButton bHelp;
-  private JButton bAvailableChoices;
+  private JButton buttonHelp;
+  private JButton buttonAvailableChoices;
   private JButton backButton;
   JButton autoFillButton;
   private JButton nextButton;
   private JPanel stepActionPanel;
   private JLabel stepTitleLabel;
   private JPanel actionPanel;
-  private int currentStep;
+  private int currentStep; // TODO: change to enum
 
   public static String[] getProperties() {
     return new String[] {TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT};
@@ -135,7 +135,7 @@ public class MapXMLCreator extends JFrame {
           return;
         }
         highest_step = 1;
-        DynamicRowsPanel.me = null;
+        DynamicRowsPanel.me = Optional.empty();
         if (goToStep > 0) {
           SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -153,7 +153,7 @@ public class MapXMLCreator extends JFrame {
 
       public void actionPerformed(final ActionEvent event) {
         stepActionPanel.requestFocus();
-        if (DynamicRowsPanel.me == null || DynamicRowsPanel.me.dataIsConsistent())
+        if (!DynamicRowsPanel.me.isPresent() || DynamicRowsPanel.me.get().dataIsConsistent())
           MapXMLHelper.saveXML();
       }
     };
@@ -215,9 +215,9 @@ public class MapXMLCreator extends JFrame {
 
     int current_label = 1;
     for (final Iterator<JLabel> iter = stepList.iterator(); iter.hasNext();) {
-      final JLabel lStep = iter.next();
+      final JLabel labelStep = iter.next();
       final int label_order = current_label;
-      lStep.addMouseListener(new MouseListener() {
+      labelStep.addMouseListener(new MouseListener() {
 
         @Override
         public void mouseReleased(MouseEvent e) {}
@@ -228,32 +228,32 @@ public class MapXMLCreator extends JFrame {
         @Override
         public void mouseExited(MouseEvent e) {
           if (label_order <= highest_step && label_order != currentStep) {
-            lStep.setOpaque(false);
-            lStep.setBackground(lStep.getBackground().darker().darker());
-            lStep.updateUI();
+            labelStep.setOpaque(false);
+            labelStep.setBackground(labelStep.getBackground().darker().darker());
+            labelStep.updateUI();
           }
         }
 
         @Override
         public void mouseEntered(MouseEvent e) {
           if (label_order <= highest_step && label_order != currentStep) {
-            lStep.setOpaque(true);
-            lStep.setBackground(lStep.getBackground().brighter().brighter());
-            lStep.updateUI();
+            labelStep.setOpaque(true);
+            labelStep.setBackground(labelStep.getBackground().brighter().brighter());
+            labelStep.updateUI();
           }
         }
 
         @Override
         public void mouseClicked(MouseEvent e) {
-          lStep.requestFocus();
+          labelStep.requestFocus();
           if (label_order <= highest_step && label_order != currentStep
-              && (DynamicRowsPanel.me == null || DynamicRowsPanel.me.dataIsConsistent())) {
-            lStep.setOpaque(false);
+              && (!DynamicRowsPanel.me.isPresent() || DynamicRowsPanel.me.get().dataIsConsistent())) {
+            labelStep.setOpaque(false);
             goToStep(label_order);
           }
         }
       });
-      stepListPanel.add(lStep);
+      stepListPanel.add(labelStep);
       ++current_label;
     }
 
@@ -271,7 +271,7 @@ public class MapXMLCreator extends JFrame {
     stepPanel.add(Box.createVerticalStrut(20));
 
     stepTitleLabel = new JLabel("Map Properties");
-    stepTitleLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+    stepTitleLabel.setFont(new Font(MapXMLHelper.defaultMapXMLCreatorFontName, Font.BOLD, 12));
     stepTitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     stepPanel.add(stepTitleLabel);
 
@@ -303,10 +303,10 @@ public class MapXMLCreator extends JFrame {
 
     southPanel.add(Box.createHorizontalGlue());
 
-    bHelp = new JButton("Help");
-    bHelp.setMnemonic('H');
-    bHelp.setFont(new Font("Tahoma", Font.PLAIN, 11));
-    bHelp.addActionListener(new ActionListener() {
+    buttonHelp = new JButton("Help");
+    buttonHelp.setMnemonic('H');
+    buttonHelp.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
+    buttonHelp.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         switch (currentStep) {
           case 1:
@@ -407,7 +407,7 @@ public class MapXMLCreator extends JFrame {
         }
       }
     });
-    southLeftPanel.add(bHelp);
+    southLeftPanel.add(buttonHelp);
 
     southCenterPanel = new JPanel();
     southPanel.add(southCenterPanel);
@@ -416,32 +416,24 @@ public class MapXMLCreator extends JFrame {
 
     backButton = new JButton("Back");
     backButton.setMnemonic(KeyEvent.VK_B);
-    backButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-    backButton.addActionListener(new AbstractAction("Previous Step") {
-      private static final long serialVersionUID = -8623081809358073307L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-
-        if (currentStep > 1) {
-          goToStep(currentStep - 1);
-          SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-              actionPanel.validate();
-              actionPanel.repaint();
-            }
-          });
-        }
+    backButton.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
+    backButton.addActionListener(e -> {
+      if (currentStep > 1) {
+        goToStep(currentStep - 1);
+        SwingUtilities.invokeLater(() -> {
+          actionPanel.validate();
+          actionPanel.repaint();
+        });
       }
     });
     southCenterPanel.add(backButton);
 
-    autoFillButton = createButton("Auto-Fill", KeyEvent.VK_A);
+    autoFillButton = MapXMLHelper.createButton("Auto-Fill", KeyEvent.VK_A);
     autoFillButton.setMinimumSize(new Dimension(50, 23));
     autoFillButton.setMaximumSize(new Dimension(50, 23));
     southCenterPanel.add(autoFillButton);
 
-    nextButton = createButton("Next", KeyEvent.VK_N, e -> {
+    nextButton = MapXMLHelper.createButton("Next", KeyEvent.VK_N, e -> {
       if (currentStep < stepList.size()) {
         goToStep(currentStep + 1);
         actionPanel.validate();
@@ -455,8 +447,8 @@ public class MapXMLCreator extends JFrame {
     southRightPanelFlowLayout.setAlignment(FlowLayout.RIGHT);
     southPanel.add(southRightPanel);
 
-    bAvailableChoices = createButton("Available Choices", KeyEvent.VK_C);
-    bAvailableChoices.addActionListener(e -> {
+    buttonAvailableChoices = MapXMLHelper.createButton("Available Choices", KeyEvent.VK_C);
+    buttonAvailableChoices.addActionListener(e -> {
       switch (currentStep) {
         case 1: // TODO: Verify message text.
                 // showInfoMessage("Map Name: The map name that is displayed in the New Game window in TripleA.
@@ -590,28 +582,7 @@ public class MapXMLCreator extends JFrame {
           break;
       }
     });
-    southRightPanel.add(bAvailableChoices);
-  }
-
-  /**
-   * @return
-   */
-  public static JButton createButton(final String buttonText, final int mnemonic) {
-    final JButton newButton = new JButton(buttonText);
-    newButton.setMnemonic(mnemonic);
-    newButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-    newButton.setMargin(new Insets(2, 5, 2, 5));
-    return newButton;
-  }
-
-
-  /**
-   * @return
-   */
-  public static JButton createButton(final String buttonText, final int mnemonic, final ActionListener actionListener) {
-    final JButton newButton = createButton(buttonText, mnemonic);
-    newButton.addActionListener(actionListener);
-    return newButton;
+    southRightPanel.add(buttonAvailableChoices);
   }
 
   private void showInfoMessage(final String message, final String title) {
@@ -628,11 +599,7 @@ public class MapXMLCreator extends JFrame {
 
   void validateAndRepaint() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        public void run() {
-          validateAndRepaint();
-        }
-      });
+      SwingUtilities.invokeLater(() -> validateAndRepaint());
       return;
     }
     mainPanel.revalidate();
@@ -642,22 +609,7 @@ public class MapXMLCreator extends JFrame {
   }
 
 
-  /**
-   * Tries to find font 'Tahoma' or takes the first in the list of available fonts.
-   * 
-   * @return default font name for XML Creator
-   */
-  public static String getDefaultMapXMLCreatorFontName() {
-    final String[] availableFontFamilyNames =
-        GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-    for (final String fontName : availableFontFamilyNames) {
-      if (fontName.equals("Tahoma"))
-        return fontName;
-    }
-    return availableFontFamilyNames[0];
-  }
-
-  final private String stepLabelFontName = getDefaultMapXMLCreatorFontName();
+  final private String stepLabelFontName = MapXMLHelper.defaultMapXMLCreatorFontName;
   final private Font stepLabelFontDefault = new Font(stepLabelFontName, Font.PLAIN, 13);
   final private Font stepLabelFontHighlighted = new Font(stepLabelFontName, Font.BOLD, 13);
 
@@ -706,12 +658,7 @@ public class MapXMLCreator extends JFrame {
       autoFillButton.removeActionListener(actionListener);
     autoFillButton.addActionListener(action);
     autoFillButton.setEnabled(true);
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-
-        autoFillButton.repaint();
-      }
-    });
+    SwingUtilities.invokeLater(() -> autoFillButton.repaint());
   }
 
   private void layoutStepActionPanel() {
@@ -812,51 +759,51 @@ public class MapXMLCreator extends JFrame {
     size.height -= 100;
     spTaNotes.setMinimumSize(size);
 
-    GridBagConstraints gbc_lFirstRow = new GridBagConstraints();
-    gbc_lFirstRow.insets = new Insets(0, 0, 5, 0);
-    gbc_lFirstRow.gridy = 0;
-    gbc_lFirstRow.gridx = 0;
-    gbc_lFirstRow.anchor = GridBagConstraints.NORTH;
-    gbc_lFirstRow.weightx = 1.0;
-    gbc_lFirstRow.weighty = 1.0;
-    gbc_lFirstRow.gridwidth = 3;
-    stepActionPanel.add(spTaNotes, gbc_lFirstRow);
+    GridBagConstraints gridBadConstLabelNotesRow = new GridBagConstraints();
+    gridBadConstLabelNotesRow.insets = new Insets(0, 0, 5, 0);
+    gridBadConstLabelNotesRow.gridy = 0;
+    gridBadConstLabelNotesRow.gridx = 0;
+    gridBadConstLabelNotesRow.anchor = GridBagConstraints.NORTH;
+    gridBadConstLabelNotesRow.weightx = 1.0;
+    gridBadConstLabelNotesRow.weighty = 1.0;
+    gridBadConstLabelNotesRow.gridwidth = 3;
+    stepActionPanel.add(spTaNotes, gridBadConstLabelNotesRow);
 
-    GridBagConstraints gbc_lSecondRow = (GridBagConstraints) gbc_lFirstRow.clone();
-    gbc_lSecondRow.weighty = 0.0;
-    gbc_lSecondRow.insets = new Insets(0, 0, 0, 0);
-    gbc_lSecondRow.gridwidth = 1;
-    gbc_lSecondRow.gridx = 1;
-    gbc_lSecondRow.gridy = 1;
+    GridBagConstraints gridBadConstButtonPreviewHTMLRow = (GridBagConstraints) gridBadConstLabelNotesRow.clone();
+    gridBadConstButtonPreviewHTMLRow.weighty = 0.0;
+    gridBadConstButtonPreviewHTMLRow.insets = new Insets(0, 0, 0, 0);
+    gridBadConstButtonPreviewHTMLRow.gridwidth = 1;
+    gridBadConstButtonPreviewHTMLRow.gridx = 1;
+    gridBadConstButtonPreviewHTMLRow.gridy = 1;
 
-    final JButton bPreviewHTML = new JButton("Preview HTML");
-    bPreviewHTML.setPreferredSize(new Dimension(300, 30));
-    bPreviewHTML.setAction(new AbstractAction("Preview HTML") {
+    final JButton buttonPreviewHTML = new JButton("Preview HTML");
+    buttonPreviewHTML.setPreferredSize(new Dimension(300, 30));
+    buttonPreviewHTML.setAction(new AbstractAction("Preview HTML") {
       private static final long serialVersionUID = -5608941822299486808L;
 
       public void actionPerformed(final ActionEvent event) {
         showHTML(MapXMLHelper.notes, "HTML Preview");
       }
     });
-    stepActionPanel.add(bPreviewHTML, gbc_lSecondRow);
+    stepActionPanel.add(buttonPreviewHTML, gridBadConstButtonPreviewHTMLRow);
 
-    GridBagConstraints gbc_lThirdRow = (GridBagConstraints) gbc_lSecondRow.clone();
-    gbc_lThirdRow.gridy = 2;
-    stepActionPanel.add(new JLabel("<html><big>Congratulation!</big></html>"), gbc_lThirdRow);
+    GridBagConstraints gridBadConstLabelCongratsRow = (GridBagConstraints) gridBadConstButtonPreviewHTMLRow.clone();
+    gridBadConstLabelCongratsRow.gridy = 2;
+    stepActionPanel.add(new JLabel("<html><big>Congratulation!</big></html>"), gridBadConstLabelCongratsRow);
 
-    GridBagConstraints gbc_lFourthRow = (GridBagConstraints) gbc_lSecondRow.clone();
-    gbc_lFourthRow.gridy = 3;
+    GridBagConstraints gridBadConstLabelAllCompletedRow = (GridBagConstraints) gridBadConstButtonPreviewHTMLRow.clone();
+    gridBadConstLabelAllCompletedRow.gridy = 3;
     stepActionPanel.add(
         new JLabel("<html><nobr>You have completed all the steps for creating the map XML.</nobr></html>"),
-        gbc_lFourthRow);
+        gridBadConstLabelAllCompletedRow);
 
-    final JButton bSave = new JButton("Save Entries to XML");
-    bSave.setPreferredSize(new Dimension(600, 35));
-    bSave.setAction(SwingAction.of("Save Map XML", e -> MapXMLHelper.saveXML()));
-    GridBagConstraints gbc_lFifthRow = (GridBagConstraints) gbc_lSecondRow.clone();
-    gbc_lFifthRow.insets = new Insets(5, 0, 0, 0);
-    gbc_lFifthRow.gridy = 4;
-    stepActionPanel.add(bSave, gbc_lFifthRow);
+    final JButton buttonSave = new JButton("Save Entries to XML");
+    buttonSave.setPreferredSize(new Dimension(600, 35));
+    buttonSave.setAction(SwingAction.of("Save Map XML", e -> MapXMLHelper.saveXML()));
+    GridBagConstraints gridBadConstButtonSaveRow = (GridBagConstraints) gridBadConstButtonPreviewHTMLRow.clone();
+    gridBadConstButtonSaveRow.insets = new Insets(5, 0, 0, 0);
+    gridBadConstButtonSaveRow.gridy = 4;
+    stepActionPanel.add(buttonSave, gridBadConstButtonSaveRow);
   }
 
   protected void layoutTabbedPaneWith(final Set<String> keySet) {

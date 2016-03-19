@@ -81,11 +81,7 @@ public class TerritoryOwnershipPanel extends ImageScrollPanePanel {
       MapXMLHelper.putTerritoyOwnerships(territoryName, inputText);
     lastChosenPlayer = inputText;
 
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        imagePanel.repaint();
-      }
-    });
+    SwingUtilities.invokeLater(() -> imagePanel.repaint());
   }
 
 }

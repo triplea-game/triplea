@@ -46,12 +46,7 @@ class ProductionFrontiersRow extends DynamicRow {
                 JOptionPane.ERROR_MESSAGE);
             tUnitName.setSelectedItem(currentValue);
             // UI Update
-            SwingUtilities.invokeLater(new Runnable() {
-              public void run() {
-                stepActionPanel.revalidate();
-                stepActionPanel.repaint();
-              }
-            });
+            SwingUtilities.invokeLater(() -> { stepActionPanel.revalidate(); stepActionPanel.repaint(); });
           } else {
             playerUnitNames.add(newUnitValue);
             currentValue = newUnitValue;
@@ -76,9 +71,9 @@ class ProductionFrontiersRow extends DynamicRow {
   public void addToComponent(final JComponent parent, final GridBagConstraints gbc_template) {
     parent.add(tUnitName, gbc_template);
 
-    final GridBagConstraints gbc_bRemove = (GridBagConstraints) gbc_template.clone();
-    gbc_bRemove.gridx = 1;
-    parent.add(bRemoveRow, gbc_bRemove);
+    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
+    gridBadConstButtonRemove.gridx = 1;
+    parent.add(buttonRemoveRow, gridBadConstButtonRemove);
   }
 
   @Override

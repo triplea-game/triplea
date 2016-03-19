@@ -1,13 +1,13 @@
 package util.triplea.MapXMLCreator;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
@@ -27,8 +27,8 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
   }
 
   public static void layout(final MapXMLCreator mapXMLCreator, final JPanel stepActionPanel) {
-    if (DynamicRowsPanel.me == null || !(DynamicRowsPanel.me instanceof PlayerAndAlliancesPanel))
-      DynamicRowsPanel.me = new PlayerAndAlliancesPanel(stepActionPanel);
+    if (!DynamicRowsPanel.me.isPresent() || !(DynamicRowsPanel.me.get() instanceof PlayerAndAlliancesPanel))
+      DynamicRowsPanel.me = Optional.of(new PlayerAndAlliancesPanel(stepActionPanel));
     DynamicRowsPanel.layout(mapXMLCreator, stepActionPanel);
   }
 
@@ -38,16 +38,16 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
 
   protected void layoutComponents() {
 
-    final JLabel lPlayerName = new JLabel("Player Name");
-    Dimension dimension = lPlayerName.getPreferredSize();
+    final JLabel labelPlayerName = new JLabel("Player Name");
+    Dimension dimension = labelPlayerName.getPreferredSize();
     dimension.width = DynamicRow.INPUT_FIELD_SIZE_MEDIUM;
-    lPlayerName.setPreferredSize(dimension);
-    final JLabel lPlayerAlliance = new JLabel("Player Alliance");
-    lPlayerAlliance.setPreferredSize(dimension);
-    final JLabel lInitialResource = new JLabel("Initial Resource");
+    labelPlayerName.setPreferredSize(dimension);
+    final JLabel labelPlayerAlliance = new JLabel("Player Alliance");
+    labelPlayerAlliance.setPreferredSize(dimension);
+    final JLabel labelInitialResource = new JLabel("Initial Resource");
     dimension = (Dimension) dimension.clone();
     dimension.width = 80;
-    lInitialResource.setPreferredSize(dimension);
+    labelInitialResource.setPreferredSize(dimension);
 
     // <1> Set panel layout
     GridBagLayout gbl_stepActionPanel = new GridBagLayout();
@@ -56,28 +56,28 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
     ownPanel.setLayout(gbl_stepActionPanel);
 
     // <2> Add Row Labels: Player Name, Alliance Name, Initial Resource
-    GridBagConstraints gbc_lPlayerName = new GridBagConstraints();
-    gbc_lPlayerName.insets = new Insets(0, 0, 5, 5);
-    gbc_lPlayerName.gridy = 0;
-    gbc_lPlayerName.gridx = 0;
-    gbc_lPlayerName.anchor = GridBagConstraints.WEST;
-    ownPanel.add(lPlayerName, gbc_lPlayerName);
+    GridBagConstraints gridBadConstLabelPlayerName = new GridBagConstraints();
+    gridBadConstLabelPlayerName.insets = new Insets(0, 0, 5, 5);
+    gridBadConstLabelPlayerName.gridy = 0;
+    gridBadConstLabelPlayerName.gridx = 0;
+    gridBadConstLabelPlayerName.anchor = GridBagConstraints.WEST;
+    ownPanel.add(labelPlayerName, gridBadConstLabelPlayerName);
 
-    GridBagConstraints gbc_lPlayerAlliance = (GridBagConstraints) gbc_lPlayerName.clone();
-    gbc_lPlayerAlliance.gridx = 1;
-    ownPanel.add(lPlayerAlliance, gbc_lPlayerAlliance);
+    GridBagConstraints gridBadConstLabelPlayerAlliance = (GridBagConstraints) gridBadConstLabelPlayerName.clone();
+    gridBadConstLabelPlayerAlliance.gridx = 1;
+    ownPanel.add(labelPlayerAlliance, gridBadConstLabelPlayerAlliance);
 
-    GridBagConstraints gbc_lInitialResource = (GridBagConstraints) gbc_lPlayerName.clone();
-    gbc_lInitialResource.gridx = 2;
-    ownPanel.add(lInitialResource, gbc_lInitialResource);
+    GridBagConstraints gridBadConstLabelInitialResource = (GridBagConstraints) gridBadConstLabelPlayerName.clone();
+    gridBadConstLabelInitialResource.gridx = 2;
+    ownPanel.add(labelInitialResource, gridBadConstLabelInitialResource);
 
     // <3> Add Main Input Rows
     final String[] alliancesArray = alliances.toArray(new String[alliances.size()]);
     int yValue = 1;
     for (final String playerName : MapXMLHelper.playerName) {
-      GridBagConstraints gbc_tPlayerName = (GridBagConstraints) gbc_lPlayerName.clone();
+      GridBagConstraints gbc_tPlayerName = (GridBagConstraints) gridBadConstLabelPlayerName.clone();
       gbc_tPlayerName.gridx = 0;
-      gbc_lPlayerName.gridy = yValue;
+      gridBadConstLabelPlayerName.gridy = yValue;
       final PlayerAndAlliancesRow newRow = new PlayerAndAlliancesRow(this, ownPanel, playerName,
           MapXMLHelper.playerAlliance.get(playerName), alliancesArray,
           MapXMLHelper.playerInitResources.get(playerName));
@@ -87,12 +87,12 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
     }
 
     // <4> Add Final Button Row
-    final JButton bAddPlayer = new JButton("Add Player");
-    final JButton bAddAlliance = new JButton("Add Alliance");
-    final JButton bRemoveAlliance = new JButton("Remove Alliance");
+    final JButton buttonAddPlayer = new JButton("Add Player");
+    final JButton buttonAddAlliance = new JButton("Add Alliance");
+    final JButton buttonRemoveAlliance = new JButton("Remove Alliance");
 
-    bAddPlayer.setFont(new Font("Tahoma", Font.PLAIN, 11));
-    bAddPlayer.addActionListener(new AbstractAction("Add Player") {
+    buttonAddPlayer.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
+    buttonAddPlayer.addActionListener(new AbstractAction("Add Player") {
       private static final long serialVersionUID = 6322566373692205163L;
 
       public void actionPerformed(final ActionEvent e) {
@@ -130,18 +130,16 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
         // UI Update
         setRows((GridBagLayout) ownPanel.getLayout(), MapXMLHelper.playerName.size());
         addRowWith(newPlayerName, allianceName, 0);
-        SwingUtilities.invokeLater(new Runnable() {
-          public void run() {
-            ownPanel.revalidate();
-            ownPanel.repaint();
-          }
+        SwingUtilities.invokeLater(() -> {
+          ownPanel.revalidate();
+          ownPanel.repaint();
         });
       }
     });
-    addButton(bAddPlayer);
+    addButton(buttonAddPlayer);
 
-    bAddAlliance.setFont(new Font("Tahoma", Font.PLAIN, 11));
-    bAddAlliance.addActionListener(new AbstractAction("Add Alliance") {
+    buttonAddAlliance.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
+    buttonAddAlliance.addActionListener(new AbstractAction("Add Alliance") {
       private static final long serialVersionUID = 6322566373692205163L;
 
       public void actionPerformed(final ActionEvent e) {
@@ -158,23 +156,21 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
 
         alliances.add(newAllianceName);
         if (alliances.size() > 1)
-          bRemoveAlliance.setEnabled(true);
+          buttonRemoveAlliance.setEnabled(true);
 
         // UI Update
         addToComboBoxesAlliance(newAllianceName);
-        SwingUtilities.invokeLater(new Runnable() {
-          public void run() {
-            ownPanel.revalidate();
-            ownPanel.repaint();
-          }
+        SwingUtilities.invokeLater(() -> {
+          ownPanel.revalidate();
+          ownPanel.repaint();
         });
       }
     });
-    addButton(bAddAlliance);
+    addButton(buttonAddAlliance);
 
-    bRemoveAlliance.setFont(new Font("Tahoma", Font.PLAIN, 11));
-    bRemoveAlliance.setEnabled(alliances.size() > 1);
-    bRemoveAlliance.addActionListener(new AbstractAction("Remove Alliance") {
+    buttonRemoveAlliance.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
+    buttonRemoveAlliance.setEnabled(alliances.size() > 1);
+    buttonRemoveAlliance.addActionListener(new AbstractAction("Remove Alliance") {
       private static final long serialVersionUID = 6322566373692205163L;
 
       public void actionPerformed(final ActionEvent e) {
@@ -204,24 +200,22 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
 
         alliances.remove(removeAllianceName);
         if (alliances.size() <= 1)
-          bRemoveAlliance.setEnabled(false);
+          buttonRemoveAlliance.setEnabled(false);
 
         // UI Update
         removeFromComboBoxesAlliance(removeAllianceName);
-        SwingUtilities.invokeLater(new Runnable() {
-          public void run() {
-            ownPanel.revalidate();
-            ownPanel.repaint();
-          }
+        SwingUtilities.invokeLater(() -> {
+          ownPanel.revalidate();
+          ownPanel.repaint();
         });
       }
     });
-    addButton(bRemoveAlliance);
+    addButton(buttonRemoveAlliance);
 
-    GridBagConstraints gbc_bAddPlayer = (GridBagConstraints) gbc_lPlayerName.clone();
-    gbc_bAddPlayer.gridx = 0;
-    gbc_bAddPlayer.gridy = yValue;
-    addFinalButtonRow(gbc_bAddPlayer);
+    GridBagConstraints gridBadConstButtonAddPlayer = (GridBagConstraints) gridBadConstLabelPlayerName.clone();
+    gridBadConstButtonAddPlayer.gridx = 0;
+    gridBadConstButtonAddPlayer.gridy = yValue;
+    addFinalButtonRow(gridBadConstButtonAddPlayer);
   }
 
   protected void addToComboBoxesAlliance(final String newAlliance) {

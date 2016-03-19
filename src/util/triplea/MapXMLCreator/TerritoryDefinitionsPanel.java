@@ -14,6 +14,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import com.google.common.collect.Maps;
+
 import util.triplea.MapXMLCreator.TerritoryDefinitionDialog.DEFINITION;
 
 
@@ -57,6 +59,8 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
             case IS_CAPITAL:
               g.setColor(Color.green);
               break;
+            default:
+              throw new IllegalStateException("No valid value for " + DEFINITION.class);
           }
           g.fillOval(x_value, y_value, 16, 16);
           g.setColor(Color.red);
@@ -75,7 +79,7 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
     if (!MapXMLCreator.waterFilterString.isEmpty() && MapXMLHelper.territoryDefintions.isEmpty()) {
       for (final String centerName : centers.keySet()) {
         final HashMap<DEFINITION, Boolean> territoyDefintion =
-            new HashMap<TerritoryDefinitionDialog.DEFINITION, Boolean>();
+            Maps.newHashMap();
         if (centerName.startsWith(MapXMLCreator.waterFilterString)) {
           territoyDefintion.put(DEFINITION.IS_WATER, true);
         }
@@ -84,7 +88,7 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
     } else {
       for (final String centerName : centers.keySet()) {
         final HashMap<DEFINITION, Boolean> territoyDefintion =
-            new HashMap<TerritoryDefinitionDialog.DEFINITION, Boolean>();
+            Maps.newHashMap();
         MapXMLHelper.putTerritoryDefintions(centerName, territoyDefintion);
       }
     }
@@ -110,7 +114,7 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
         public void run() {
           HashMap<DEFINITION, Boolean> territoyDefintions = MapXMLHelper.territoryDefintions.get(territoryName);
           if (territoyDefintions == null)
-            territoyDefintions = new HashMap<DEFINITION, Boolean>();
+            territoyDefintions = Maps.newHashMap();
           new TerritoryDefinitionDialog(mapXMLCreator, territoryName, territoyDefintions);
           imagePanel.repaint();
         }

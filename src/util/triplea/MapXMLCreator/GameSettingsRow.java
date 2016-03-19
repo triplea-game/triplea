@@ -299,9 +299,9 @@ class GameSettingsRow extends DynamicRow {
     gbc_tMaxNumber.gridx = 4;
     parent.add(tMaxNumber, gbc_tMaxNumber);
 
-    final GridBagConstraints gbc_bRemove = (GridBagConstraints) gbc_template.clone();
-    gbc_bRemove.gridx = 5;
-    parent.add(bRemoveRow, gbc_bRemove);
+    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
+    gridBadConstButtonRemove.gridx = 5;
+    parent.add(buttonRemoveRow, gridBadConstButtonRemove);
   }
 
   @Override

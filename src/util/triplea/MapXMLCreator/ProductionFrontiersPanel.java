@@ -1,7 +1,6 @@
 package util.triplea.MapXMLCreator;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -10,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
@@ -32,9 +32,9 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
   }
 
   public static void layout(final MapXMLCreator mapXMLCreator, final JPanel stepActionPanel, final String playerName) {
-    if (me == null || !(me instanceof ProductionFrontiersPanel)
-        || ((ProductionFrontiersPanel) me).playerName != playerName)
-      me = new ProductionFrontiersPanel(stepActionPanel, playerName);
+    if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof ProductionFrontiersPanel)
+        || ((ProductionFrontiersPanel) me.get()).playerName != playerName)
+      me = Optional.of(new ProductionFrontiersPanel(stepActionPanel, playerName));
     DynamicRowsPanel.layout(mapXMLCreator, stepActionPanel);
   }
 
@@ -68,10 +68,10 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
   protected void layoutComponents() {
     final List<String> playersUnitNames = MapXMLHelper.productionFrontiers.get(playerName);
 
-    final JLabel lUnitName = new JLabel("Unit Name");
-    Dimension dimension = lUnitName.getPreferredSize();
+    final JLabel labelUnitName = new JLabel("Unit Name");
+    Dimension dimension = labelUnitName.getPreferredSize();
     dimension.width = 140;
-    lUnitName.setPreferredSize(dimension);
+    labelUnitName.setPreferredSize(dimension);
 
     // <1> Set panel layout
     GridBagLayout gbl_stepActionPanel = new GridBagLayout();
@@ -80,20 +80,20 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
     ownPanel.setLayout(gbl_stepActionPanel);
 
     // <2> Add Row Labels: Player Name, Alliance Name, Buy Quantity
-    GridBagConstraints gbc_lUnitName = new GridBagConstraints();
-    gbc_lUnitName.insets = new Insets(0, 0, 5, 5);
-    gbc_lUnitName.gridy = 0;
-    gbc_lUnitName.gridx = 0;
-    gbc_lUnitName.anchor = GridBagConstraints.WEST;
-    ownPanel.add(lUnitName, gbc_lUnitName);
+    GridBagConstraints gridBadConstLabelUnitName = new GridBagConstraints();
+    gridBadConstLabelUnitName.insets = new Insets(0, 0, 5, 5);
+    gridBadConstLabelUnitName.gridy = 0;
+    gridBadConstLabelUnitName.gridx = 0;
+    gridBadConstLabelUnitName.anchor = GridBagConstraints.WEST;
+    ownPanel.add(labelUnitName, gridBadConstLabelUnitName);
 
     // <3> Add Main Input Rows
     int yValue = 1;
     final String[] allUnitNamesArray = allUnitNames.toArray(new String[allUnitNames.size()]);
     for (final String unitName : playersUnitNames) {
-      GridBagConstraints gbc_tUnitName = (GridBagConstraints) gbc_lUnitName.clone();
+      GridBagConstraints gbc_tUnitName = (GridBagConstraints) gridBadConstLabelUnitName.clone();
       gbc_tUnitName.gridx = 0;
-      gbc_lUnitName.gridy = yValue;
+      gridBadConstLabelUnitName.gridy = yValue;
       final ProductionFrontiersRow newRow =
           new ProductionFrontiersRow(this, ownPanel, playerName, unitName, allUnitNamesArray);
       newRow.addToComponent(ownPanel, yValue, gbc_tUnitName);
@@ -102,10 +102,10 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
     }
 
     // <4> Add Final Button Row
-    final JButton bAddUnit = new JButton("Add Unit");
+    final JButton buttonAddUnit = new JButton("Add Unit");
 
-    bAddUnit.setFont(new Font("Tahoma", Font.PLAIN, 11));
-    bAddUnit.addActionListener(new AbstractAction("Add Unit") {
+    buttonAddUnit.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
+    buttonAddUnit.addActionListener(new AbstractAction("Add Unit") {
       private static final long serialVersionUID = 6322566373692205163L;
 
       public void actionPerformed(final ActionEvent e) {
@@ -123,21 +123,19 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
         } else {
           curr_playersUnitNames.add(newUnitName);
           addRowWith(newUnitName, allUnitNamesArray);
-          SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-              ownPanel.revalidate();
-              ownPanel.repaint();
-            }
+          SwingUtilities.invokeLater(() -> {
+            ownPanel.revalidate();
+            ownPanel.repaint();
           });
         }
       }
     });
-    addButton(bAddUnit);
+    addButton(buttonAddUnit);
 
-    GridBagConstraints gbc_bAddUnit = (GridBagConstraints) gbc_lUnitName.clone();
-    gbc_bAddUnit.gridx = 0;
-    gbc_bAddUnit.gridy = yValue;
-    addFinalButtonRow(gbc_bAddUnit);
+    GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelUnitName.clone();
+    gridBadConstButtonAddUnit.gridx = 0;
+    gridBadConstButtonAddUnit.gridy = yValue;
+    addFinalButtonRow(gridBadConstButtonAddUnit);
   }
 
   private DynamicRow addRowWith(final String newUnitName, final String[] unitNames) {

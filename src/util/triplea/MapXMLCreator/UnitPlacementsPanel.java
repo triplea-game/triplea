@@ -145,11 +145,7 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
       }
     }
 
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        imagePanel.repaint();
-      }
-    });
+    SwingUtilities.invokeLater(() -> imagePanel.repaint());
   }
 
 
@@ -185,9 +181,9 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
           nullInsets, 0, 0));
       // Buttons
       final Dimension buttonDim = new Dimension(75, 20);
-      final JButton bPlaceNone = new JButton("Place None");
-      bPlaceNone.setPreferredSize(buttonDim);
-      bPlaceNone.addActionListener(new ActionListener() {
+      final JButton buttonPlaceNone = new JButton("Place None");
+      buttonPlaceNone.setPreferredSize(buttonDim);
+      buttonPlaceNone.addActionListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           for (final JTextField countField : countFields) {
             if (!countField.getText().equals("0")) {
@@ -206,9 +202,9 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
       for (final String unitType : emptyPlayerUnitTypes)
         allPlayerPlacements.put(unitType, 0);
 
-      final JButton bReset = new JButton("Reset");
-      bReset.setPreferredSize(buttonDim);
-      bReset.addActionListener(new ActionListener() {
+      final JButton buttonReset = new JButton("Reset");
+      buttonReset.setPreferredSize(buttonDim);
+      buttonReset.addActionListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           int fieldIndex = 0;
           for (final Entry<String, Integer> placement : allPlayerPlacements.entrySet()) {
@@ -277,9 +273,9 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
             GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 0), 0, 0));
         yIndex++;
       }
-      this.add(bPlaceNone, new GridBagConstraints(0, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
+      this.add(buttonPlaceNone, new GridBagConstraints(0, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
           GridBagConstraints.NONE, nullInsets, 0, 0));
-      this.add(bReset, new GridBagConstraints(3, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.NONE,
+      this.add(buttonReset, new GridBagConstraints(3, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.NONE,
           nullInsets, 0, 0));
       // return territoryPlacementPanel;
     }
