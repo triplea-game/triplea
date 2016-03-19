@@ -28,148 +28,140 @@ import javax.swing.JScrollPane;
  */
 public abstract class DynamicRowsPanel {
 
-	protected static DynamicRowsPanel s_me = null;
-	
-	protected JPanel m_ownPanel;
-	protected JPanel m_stepActionPanel;
-	private ArrayList<JButton> m_finalRowButtons = new ArrayList<JButton>();
-	boolean m_dataIsConsistent = true;
+  protected static DynamicRowsPanel me = null;
 
-	public LinkedHashSet<DynamicRow> m_rows = new LinkedHashSet<DynamicRow>();
+  protected JPanel ownPanel;
+  protected JPanel stepActionPanel;
+  private ArrayList<JButton> finalRowButtons = new ArrayList<JButton>();
+  boolean dataIsConsistent = true;
 
-	protected static void layout(final MapXMLCreator mapXMLCreator, final JPanel stepActionPanel)
-	{
-		s_me.resetRows();
-		s_me.setAutoFillAction(mapXMLCreator.m_bAuto);
-	}
-	
-	public boolean dataIsConsistent()
-	{
-		return m_dataIsConsistent;
-	}
-	
-	void setDataIsConsistent(final boolean dataIsConsistent)
-	{
-		m_dataIsConsistent = dataIsConsistent;
-	}
+  public LinkedHashSet<DynamicRow> rows = new LinkedHashSet<DynamicRow>();
 
-	protected DynamicRowsPanel(final JPanel stepActionPanel)
-	{
-		m_stepActionPanel = stepActionPanel;
-		m_ownPanel = new JPanel();
-		final Dimension size = stepActionPanel.getSize();
-		JScrollPane js = new JScrollPane(m_ownPanel);
-		js.setBorder(null);
-		stepActionPanel.setLayout(new BorderLayout());
-		stepActionPanel.add(js,BorderLayout.CENTER);
-		stepActionPanel.setPreferredSize(size);
-	}
-	
-	protected void resetRows()
-	{
-		initialize();
-		m_ownPanel.removeAll();
-		// re-register scollPane on stepActionPanel
-		final Container viewPort = m_ownPanel.getParent();
-		final Container scrollPane = viewPort.getParent();
-		if (scrollPane.getParent() == null)
-		{
-			if (!(m_stepActionPanel.getLayout() instanceof BorderLayout))
-				m_stepActionPanel.setLayout(new BorderLayout());
-			m_stepActionPanel.add(scrollPane,BorderLayout.CENTER);
-		}
-		layoutComponents();
-		m_dataIsConsistent = true;
-	}
-	
-	private void initialize() {
-		m_finalRowButtons.clear();
-		m_rows.clear();
-		s_me.initializeSpecifics();
-	}
+  protected static void layout(final MapXMLCreator mapXMLCreator, final JPanel stepActionPanel) {
+    me.resetRows();
+    me.setAutoFillAction(mapXMLCreator.autoFillButton);
+  }
 
-	private void setAutoFillAction(final JButton bAutoFill) {
-		final ActionListener autoFillAction = s_me.getAutoFillAction();
-		if (autoFillAction == null)
-			bAutoFill.setEnabled(false);
-		else {
-			bAutoFill.setEnabled(true);
-			for (final ActionListener curr_actionListener : bAutoFill.getActionListeners())
-				bAutoFill.removeActionListener(curr_actionListener);
-			bAutoFill.addActionListener(autoFillAction);
-		}
-	}
-	
-	public void removeComponents(final ArrayList<JComponent> componentList) {
-		for (final JComponent component : componentList) {
-			m_ownPanel.remove(component);
-		}
-	}
-	
-	protected void addButton(final JButton newButton)
-	{
-		m_finalRowButtons.add(newButton);
-	}
+  public boolean dataIsConsistent() {
+    return dataIsConsistent;
+  }
 
-	protected void setRows(GridBagLayout gbl_panel, final int inputRows) {
-		final int totalRows = inputRows + 3; // header row, button row, remaining space row
-		gbl_panel.rowHeights = new int[totalRows];
-		gbl_panel.rowWeights = new double[totalRows];
-		for (int i = 0; i < totalRows; ++i)
-		{
-			gbl_panel.rowHeights[i] = 32;
-			gbl_panel.rowWeights[i] = 0.0;
-		}
-		gbl_panel.rowHeights[totalRows - 1] = 0;
-		gbl_panel.rowWeights[totalRows - 1] = Double.MIN_VALUE;
-	}
+  void setDataIsConsistent(final boolean dataIsConsistent) {
+    this.dataIsConsistent = dataIsConsistent;
+  }
 
-	
-	protected void addRow(final DynamicRow newRow)
-	{
-		removeFinalButtonRow();
+  protected DynamicRowsPanel(final JPanel stepActionPanel) {
+    this.stepActionPanel = stepActionPanel;
+    ownPanel = new JPanel();
+    final Dimension size = stepActionPanel.getSize();
+    JScrollPane js = new JScrollPane(ownPanel);
+    js.setBorder(null);
+    stepActionPanel.setLayout(new BorderLayout());
+    stepActionPanel.add(js, BorderLayout.CENTER);
+    stepActionPanel.setPreferredSize(size);
+  }
 
-		final int countPlayers = m_rows.size() + 1;
-		GridBagConstraints gbc_templateRow = new GridBagConstraints();
-		gbc_templateRow.insets = new Insets(0, 0, 5, 5);
-		gbc_templateRow.gridy = countPlayers;
-		gbc_templateRow.gridx = 0;
-		gbc_templateRow.anchor = GridBagConstraints.WEST;
-		newRow.addToComponent(m_ownPanel, countPlayers, gbc_templateRow);
-		m_rows.add(newRow);
-		
-		GridBagConstraints gbc_templateButton = (GridBagConstraints) gbc_templateRow.clone();
-		gbc_templateButton.gridx = 0;
-		gbc_templateButton.gridy = countPlayers + 1;
-		addFinalButtonRow(gbc_templateButton);
-	}
+  protected void resetRows() {
+    initialize();
+    ownPanel.removeAll();
+    // re-register scollPane on stepActionPanel
+    final Container viewPort = ownPanel.getParent();
+    final Container scrollPane = viewPort.getParent();
+    if (scrollPane.getParent() == null) {
+      if (!(stepActionPanel.getLayout() instanceof BorderLayout))
+        stepActionPanel.setLayout(new BorderLayout());
+      stepActionPanel.add(scrollPane, BorderLayout.CENTER);
+    }
+    layoutComponents();
+    dataIsConsistent = true;
+  }
 
-	protected void addFinalButtonRow(final GridBagConstraints gbc_template)
-	{
-		int xValue = 0;
-		for (final JButton button : m_finalRowButtons) {
-			final GridBagConstraints gbc_currentButton = (GridBagConstraints) gbc_template.clone();
-			gbc_currentButton.gridx = xValue;
-			++xValue;
-			m_ownPanel.add(button, gbc_currentButton);
-		}
-	}
-	
-	public void removeFinalButtonRow()
-	{
-		for (final JButton button : m_finalRowButtons) {
-			m_ownPanel.remove(button);
-		}
-	}
+  private void initialize() {
+    finalRowButtons.clear();
+    rows.clear();
+    me.initializeSpecifics();
+  }
 
-	public LinkedHashSet<DynamicRow> getRows() {
-		return m_rows;
-	}
+  private void setAutoFillAction(final JButton bAutoFill) {
+    final ActionListener autoFillAction = me.getAutoFillAction();
+    if (autoFillAction == null)
+      bAutoFill.setEnabled(false);
+    else {
+      bAutoFill.setEnabled(true);
+      for (final ActionListener curr_actionListener : bAutoFill.getActionListeners())
+        bAutoFill.removeActionListener(curr_actionListener);
+      bAutoFill.addActionListener(autoFillAction);
+    }
+  }
 
-	abstract protected ActionListener getAutoFillAction();
-	abstract protected void layoutComponents();
-	abstract protected void initializeSpecifics();
-	abstract protected void setColumns(GridBagLayout gbl_panel);
+  public void removeComponents(final ArrayList<JComponent> componentList) {
+    for (final JComponent component : componentList) {
+      ownPanel.remove(component);
+    }
+  }
+
+  protected void addButton(final JButton newButton) {
+    finalRowButtons.add(newButton);
+  }
+
+  protected void setRows(GridBagLayout gbl_panel, final int inputRows) {
+    final int totalRows = inputRows + 3; // header row, button row, remaining space row
+    gbl_panel.rowHeights = new int[totalRows];
+    gbl_panel.rowWeights = new double[totalRows];
+    for (int i = 0; i < totalRows; ++i) {
+      gbl_panel.rowHeights[i] = 32;
+      gbl_panel.rowWeights[i] = 0.0;
+    }
+    gbl_panel.rowHeights[totalRows - 1] = 0;
+    gbl_panel.rowWeights[totalRows - 1] = Double.MIN_VALUE;
+  }
+
+
+  protected void addRow(final DynamicRow newRow) {
+    removeFinalButtonRow();
+
+    final int countPlayers = rows.size() + 1;
+    GridBagConstraints gbc_templateRow = new GridBagConstraints();
+    gbc_templateRow.insets = new Insets(0, 0, 5, 5);
+    gbc_templateRow.gridy = countPlayers;
+    gbc_templateRow.gridx = 0;
+    gbc_templateRow.anchor = GridBagConstraints.WEST;
+    newRow.addToComponent(ownPanel, countPlayers, gbc_templateRow);
+    rows.add(newRow);
+
+    GridBagConstraints gbc_templateButton = (GridBagConstraints) gbc_templateRow.clone();
+    gbc_templateButton.gridx = 0;
+    gbc_templateButton.gridy = countPlayers + 1;
+    addFinalButtonRow(gbc_templateButton);
+  }
+
+  protected void addFinalButtonRow(final GridBagConstraints gbc_template) {
+    int xValue = 0;
+    for (final JButton button : finalRowButtons) {
+      final GridBagConstraints gbc_currentButton = (GridBagConstraints) gbc_template.clone();
+      gbc_currentButton.gridx = xValue;
+      ++xValue;
+      ownPanel.add(button, gbc_currentButton);
+    }
+  }
+
+  public void removeFinalButtonRow() {
+    for (final JButton button : finalRowButtons) {
+      ownPanel.remove(button);
+    }
+  }
+
+  public LinkedHashSet<DynamicRow> getRows() {
+    return rows;
+  }
+
+  abstract protected ActionListener getAutoFillAction();
+
+  abstract protected void layoutComponents();
+
+  abstract protected void initializeSpecifics();
+
+  abstract protected void setColumns(GridBagLayout gbl_panel);
 
 
 }
