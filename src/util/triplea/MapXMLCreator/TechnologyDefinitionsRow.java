@@ -17,27 +17,27 @@ import javax.swing.SwingUtilities;
 
 
 class TechnologyDefinitionsRow extends DynamicRow {
-  private JTextField tTechnologyName;
-  private JComboBox<String> tPlayerName;
-  private JComboBox<String> tAlreadyEnabled;
+  private JTextField textFieldTechnologyName;
+  private JComboBox<String> comboBoxPlayerName;
+  private JComboBox<String> comboBoxAlreadyEnabled;
   public static String[] selectionTrueFalse = {"false", "true"};
 
   public TechnologyDefinitionsRow(final DynamicRowsPanel parentRowPanel, final JPanel stepActionPanel,
       final String technologyName, final String playerName, final String[] playerNames, final String alreadyEnabled) {
     super(technologyName + "_" + playerName, parentRowPanel, stepActionPanel);
 
-    tTechnologyName = new JTextField(technologyName);
-    tPlayerName = new JComboBox<String>(playerNames);
-    tAlreadyEnabled = new JComboBox<String>(selectionTrueFalse);
+    textFieldTechnologyName = new JTextField(technologyName);
+    comboBoxPlayerName = new JComboBox<String>(playerNames);
+    comboBoxAlreadyEnabled = new JComboBox<String>(selectionTrueFalse);
 
-    Dimension dimension = tTechnologyName.getPreferredSize();
+    Dimension dimension = textFieldTechnologyName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_LARGE;
-    tTechnologyName.setPreferredSize(dimension);
-    tTechnologyName.addFocusListener(new FocusListener() {
+    textFieldTechnologyName.setPreferredSize(dimension);
+    textFieldTechnologyName.addFocusListener(new FocusListener() {
       @Override
       public void focusLost(FocusEvent arg0) {
-        String inputText = tTechnologyName.getText().trim();
-        final String curr_playerName = (String) tPlayerName.getSelectedItem();
+        String inputText = textFieldTechnologyName.getText().trim();
+        final String curr_playerName = (String) comboBoxPlayerName.getSelectedItem();
         if (currentRowName.startsWith(inputText + "_"))
           return;
         final String newRowName = inputText + "_" + curr_playerName;
@@ -49,8 +49,8 @@ class TechnologyDefinitionsRow extends DynamicRow {
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-              tTechnologyName.requestFocus();
-              tTechnologyName.selectAll();
+              textFieldTechnologyName.requestFocus();
+              textFieldTechnologyName.selectAll();
             }
           });
           return;
@@ -65,23 +65,23 @@ class TechnologyDefinitionsRow extends DynamicRow {
 
       @Override
       public void focusGained(FocusEvent arg0) {
-        tTechnologyName.selectAll();
+        textFieldTechnologyName.selectAll();
       }
     });
 
-    dimension = tPlayerName.getPreferredSize();
+    dimension = comboBoxPlayerName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_MEDIUM;
-    tPlayerName.setPreferredSize(dimension);
-    tPlayerName.setSelectedIndex(Arrays.binarySearch(playerNames, playerName));
-    tPlayerName.addFocusListener(new FocusListener() {
-      int prevSelectedIndex = tPlayerName.getSelectedIndex();
+    comboBoxPlayerName.setPreferredSize(dimension);
+    comboBoxPlayerName.setSelectedIndex(Arrays.binarySearch(playerNames, playerName));
+    comboBoxPlayerName.addFocusListener(new FocusListener() {
+      int prevSelectedIndex = comboBoxPlayerName.getSelectedIndex();
 
       @Override
       public void focusLost(FocusEvent arg0) {
-        if (prevSelectedIndex == tPlayerName.getSelectedIndex())
+        if (prevSelectedIndex == comboBoxPlayerName.getSelectedIndex())
           return;
-        String techInputText = tTechnologyName.getText().trim();
-        final String curr_playerName = (String) tPlayerName.getSelectedItem();
+        String techInputText = textFieldTechnologyName.getText().trim();
+        final String curr_playerName = (String) comboBoxPlayerName.getSelectedItem();
         if (currentRowName.endsWith("_" + curr_playerName))
           return;
         final String newRowName = techInputText + "_" + curr_playerName;
@@ -92,8 +92,8 @@ class TechnologyDefinitionsRow extends DynamicRow {
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-              tPlayerName.setSelectedIndex(prevSelectedIndex);
-              tPlayerName.requestFocus();
+              comboBoxPlayerName.setSelectedIndex(prevSelectedIndex);
+              comboBoxPlayerName.requestFocus();
             }
           });
           return;
@@ -103,23 +103,23 @@ class TechnologyDefinitionsRow extends DynamicRow {
         MapXMLHelper.technologyDefinitions.remove(currentRowName);
         MapXMLHelper.technologyDefinitions.put(newRowName, newValues);
         currentRowName = newRowName;
-        prevSelectedIndex = tPlayerName.getSelectedIndex();
+        prevSelectedIndex = comboBoxPlayerName.getSelectedIndex();
       }
 
       @Override
       public void focusGained(FocusEvent arg0) {}
     });
 
-    dimension = tAlreadyEnabled.getPreferredSize();
+    dimension = comboBoxAlreadyEnabled.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_SMALL;
-    tAlreadyEnabled.setPreferredSize(dimension);
-    tAlreadyEnabled.setSelectedIndex(Arrays.binarySearch(selectionTrueFalse, alreadyEnabled));
-    tAlreadyEnabled.addFocusListener(new FocusListener() {
+    comboBoxAlreadyEnabled.setPreferredSize(dimension);
+    comboBoxAlreadyEnabled.setSelectedIndex(Arrays.binarySearch(selectionTrueFalse, alreadyEnabled));
+    comboBoxAlreadyEnabled.addFocusListener(new FocusListener() {
       @Override
       public void focusLost(FocusEvent arg0) {
         // everything is okay with the new technology name, lets rename everything
         final List<String> newValues = MapXMLHelper.technologyDefinitions.get(currentRowName);
-        newValues.set(1, (String) tAlreadyEnabled.getSelectedItem());
+        newValues.set(1, (String) comboBoxAlreadyEnabled.getSelectedItem());
       }
 
       @Override
@@ -130,23 +130,23 @@ class TechnologyDefinitionsRow extends DynamicRow {
   @Override
   protected ArrayList<JComponent> getComponentList() {
     final ArrayList<JComponent> componentList = new ArrayList<JComponent>();
-    componentList.add(tTechnologyName);
-    componentList.add(tPlayerName);
-    componentList.add(tAlreadyEnabled);
+    componentList.add(textFieldTechnologyName);
+    componentList.add(comboBoxPlayerName);
+    componentList.add(comboBoxAlreadyEnabled);
     return componentList;
   }
 
   @Override
   public void addToComponent(final JComponent parent, final GridBagConstraints gbc_template) {
-    parent.add(tTechnologyName, gbc_template);
+    parent.add(textFieldTechnologyName, gbc_template);
 
     final GridBagConstraints gbc_tClassName = (GridBagConstraints) gbc_template.clone();
     gbc_tClassName.gridx = 1;
-    parent.add(tPlayerName, gbc_tClassName);
+    parent.add(comboBoxPlayerName, gbc_tClassName);
 
     final GridBagConstraints gbc_tDisplayName = (GridBagConstraints) gbc_template.clone();
     gbc_tDisplayName.gridx = 2;
-    parent.add(tAlreadyEnabled, gbc_tDisplayName);
+    parent.add(comboBoxAlreadyEnabled, gbc_tDisplayName);
 
     final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
     gridBadConstButtonRemove.gridx = 3;
@@ -156,9 +156,9 @@ class TechnologyDefinitionsRow extends DynamicRow {
   @Override
   protected void adaptRowSpecifics(final DynamicRow newRow) {
     final TechnologyDefinitionsRow newTechnologyDefinitionsRow = (TechnologyDefinitionsRow) newRow;
-    this.tTechnologyName.setText(newTechnologyDefinitionsRow.tTechnologyName.getText());
-    this.tPlayerName.setSelectedIndex(newTechnologyDefinitionsRow.tPlayerName.getSelectedIndex());
-    this.tAlreadyEnabled.setSelectedIndex(newTechnologyDefinitionsRow.tAlreadyEnabled.getSelectedIndex());
+    this.textFieldTechnologyName.setText(newTechnologyDefinitionsRow.textFieldTechnologyName.getText());
+    this.comboBoxPlayerName.setSelectedIndex(newTechnologyDefinitionsRow.comboBoxPlayerName.getSelectedIndex());
+    this.comboBoxAlreadyEnabled.setSelectedIndex(newTechnologyDefinitionsRow.comboBoxAlreadyEnabled.getSelectedIndex());
   }
 
   @Override
