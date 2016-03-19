@@ -1,13 +1,13 @@
 package util.triplea.MapXMLCreator;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
@@ -30,8 +30,8 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
   }
 
   public static void layout(final MapXMLCreator mapXMLCreator, final JPanel stepActionPanel) {
-    if (me == null || !(me instanceof PlayerSequencePanel))
-      me = new PlayerSequencePanel(stepActionPanel);
+    if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof PlayerSequencePanel))
+      me = Optional.of(new PlayerSequencePanel(stepActionPanel));
     DynamicRowsPanel.layout(mapXMLCreator, stepActionPanel);
   }
 
@@ -41,18 +41,18 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
 
   protected void layoutComponents() {
 
-    final JLabel lSequenceName = new JLabel("Sequence Name");
-    Dimension dimension = lSequenceName.getPreferredSize();
+    final JLabel labelSequenceName = new JLabel("Sequence Name");
+    Dimension dimension = labelSequenceName.getPreferredSize();
     dimension.width = DynamicRow.INPUT_FIELD_SIZE_MEDIUM;
-    lSequenceName.setPreferredSize(dimension);
-    final JLabel lGameSequenceName = new JLabel("Game Sequence");
-    lGameSequenceName.setPreferredSize(dimension);
-    final JLabel lPlayerName = new JLabel("Player Name");
-    lPlayerName.setPreferredSize(dimension);
-    final JLabel lMaxRunCount = new JLabel("Max Run Count");
+    labelSequenceName.setPreferredSize(dimension);
+    final JLabel labelGameSequenceName = new JLabel("Game Sequence");
+    labelGameSequenceName.setPreferredSize(dimension);
+    final JLabel labelPlayerName = new JLabel("Player Name");
+    labelPlayerName.setPreferredSize(dimension);
+    final JLabel labelMaxRunCount = new JLabel("Max Run Count");
     dimension = (Dimension) dimension.clone();
     dimension.width = 90;
-    lMaxRunCount.setPreferredSize(dimension);
+    labelMaxRunCount.setPreferredSize(dimension);
 
     // <1> Set panel layout
     GridBagLayout gbl_stepActionPanel = new GridBagLayout();
@@ -61,24 +61,24 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
     ownPanel.setLayout(gbl_stepActionPanel);
 
     // <2> Add Row Labels: Player Name, Alliance Name, Buy Quantity
-    GridBagConstraints gbc_lSequenceName = new GridBagConstraints();
-    gbc_lSequenceName.insets = new Insets(0, 0, 5, 5);
-    gbc_lSequenceName.gridy = 0;
-    gbc_lSequenceName.gridx = 0;
-    gbc_lSequenceName.anchor = GridBagConstraints.WEST;
-    ownPanel.add(lSequenceName, gbc_lSequenceName);
+    GridBagConstraints gridBadConstLabelSequenceName = new GridBagConstraints();
+    gridBadConstLabelSequenceName.insets = new Insets(0, 0, 5, 5);
+    gridBadConstLabelSequenceName.gridy = 0;
+    gridBadConstLabelSequenceName.gridx = 0;
+    gridBadConstLabelSequenceName.anchor = GridBagConstraints.WEST;
+    ownPanel.add(labelSequenceName, gridBadConstLabelSequenceName);
 
-    GridBagConstraints gbc_lGameSequenceName = (GridBagConstraints) gbc_lSequenceName.clone();
-    gbc_lGameSequenceName.gridx = 1;
-    ownPanel.add(lGameSequenceName, gbc_lGameSequenceName);
+    GridBagConstraints gridBadConstLabelGameSequenceName = (GridBagConstraints) gridBadConstLabelSequenceName.clone();
+    gridBadConstLabelGameSequenceName.gridx = 1;
+    ownPanel.add(labelGameSequenceName, gridBadConstLabelGameSequenceName);
 
-    GridBagConstraints gbc_lPlayerName = (GridBagConstraints) gbc_lSequenceName.clone();
-    gbc_lPlayerName.gridx = 2;
-    ownPanel.add(lPlayerName, gbc_lPlayerName);
+    GridBagConstraints gridBadConstLabelPlayerName = (GridBagConstraints) gridBadConstLabelSequenceName.clone();
+    gridBadConstLabelPlayerName.gridx = 2;
+    ownPanel.add(labelPlayerName, gridBadConstLabelPlayerName);
 
-    GridBagConstraints gbc_lMaxRunCount = (GridBagConstraints) gbc_lSequenceName.clone();
-    gbc_lMaxRunCount.gridx = 3;
-    ownPanel.add(lMaxRunCount, gbc_lMaxRunCount);
+    GridBagConstraints gridBadConstLabelMaxRunCount = (GridBagConstraints) gridBadConstLabelSequenceName.clone();
+    gridBadConstLabelMaxRunCount.gridx = 3;
+    ownPanel.add(labelMaxRunCount, gridBadConstLabelMaxRunCount);
 
     // <3> Add Main Input Rows
     int yValue = 1;
@@ -87,9 +87,9 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
     final String[] playerNamesArray = playerNames.toArray(new String[playerNames.size()]);
     for (final Entry<String, Triple<String, String, Integer>> playerSequence : MapXMLHelper.playerSequence
         .entrySet()) {
-      GridBagConstraints gbc_tSequenceName = (GridBagConstraints) gbc_lSequenceName.clone();
+      GridBagConstraints gbc_tSequenceName = (GridBagConstraints) gridBadConstLabelSequenceName.clone();
       gbc_tSequenceName.gridx = 0;
-      gbc_lSequenceName.gridy = yValue;
+      gridBadConstLabelSequenceName.gridy = yValue;
       final Triple<String, String, Integer> defintionValues = playerSequence.getValue();
       final PlayerSequenceRow newRow =
           new PlayerSequenceRow(this, ownPanel, playerSequence.getKey(), defintionValues.getFirst(),
@@ -100,10 +100,10 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
     }
 
     // <4> Add Final Button Row
-    final JButton bAddSequence = new JButton("Add Sequence");
+    final JButton buttonAddSequence = new JButton("Add Sequence");
 
-    bAddSequence.setFont(new Font("Tahoma", Font.PLAIN, 11));
-    bAddSequence.addActionListener(new AbstractAction("Add Sequence") {
+    buttonAddSequence.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
+    buttonAddSequence.addActionListener(new AbstractAction("Add Sequence") {
       private static final long serialVersionUID = 6322566373692205163L;
 
       public void actionPerformed(final ActionEvent e) {
@@ -125,20 +125,18 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
         // UI Update
         setRows((GridBagLayout) ownPanel.getLayout(), MapXMLHelper.playerSequence.size());
         addRowWith(newSequenceName, gameSequenceNames.iterator().next(), playerNames.iterator().next(), 0);
-        SwingUtilities.invokeLater(new Runnable() {
-          public void run() {
-            ownPanel.revalidate();
-            ownPanel.repaint();
-          }
+        SwingUtilities.invokeLater(() -> {
+          ownPanel.revalidate();
+          ownPanel.repaint();
         });
       }
     });
-    addButton(bAddSequence);
+    addButton(buttonAddSequence);
 
-    GridBagConstraints gbc_bAddUnit = (GridBagConstraints) gbc_lSequenceName.clone();
-    gbc_bAddUnit.gridx = 0;
-    gbc_bAddUnit.gridy = yValue;
-    addFinalButtonRow(gbc_bAddUnit);
+    GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelSequenceName.clone();
+    gridBadConstButtonAddUnit.gridx = 0;
+    gridBadConstButtonAddUnit.gridy = yValue;
+    addFinalButtonRow(gridBadConstButtonAddUnit);
   }
 
   private DynamicRow addRowWith(final String newSequenceName, final String gameSequenceName, final String playerName,

@@ -31,18 +31,18 @@ public abstract class DynamicRow {
 
   private DynamicRowsPanel parentRowPanel;
   protected String currentRowName;
-  protected JButton bRemoveRow;
+  protected JButton buttonRemoveRow;
 
   protected DynamicRow(final String rowName, final DynamicRowsPanel parentRowPanel, final JPanel stepActionPanel) {
     currentRowName = rowName;
     this.parentRowPanel = parentRowPanel;
 
-    bRemoveRow = new JButton("X");
-    bRemoveRow.setFont(new Font("Tahoma", Font.PLAIN, 11));
-    final Dimension dimension = bRemoveRow.getPreferredSize();
+    buttonRemoveRow = new JButton("X");
+    buttonRemoveRow.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
+    final Dimension dimension = buttonRemoveRow.getPreferredSize();
     dimension.width = 25;
-    bRemoveRow.setPreferredSize(dimension);
-    bRemoveRow.addActionListener(new AbstractAction("Remove Row") {
+    buttonRemoveRow.setPreferredSize(dimension);
+    buttonRemoveRow.addActionListener(new AbstractAction("Remove Row") {
       private static final long serialVersionUID = 7725213146244928366L;
 
       public void actionPerformed(final ActionEvent e) {
@@ -50,12 +50,7 @@ public abstract class DynamicRow {
 
         pushUpRowsTo(currentRowName);
 
-        SwingUtilities.invokeLater(new Runnable() {
-          public void run() {
-            stepActionPanel.revalidate();
-            stepActionPanel.repaint();
-          }
-        });
+        SwingUtilities.invokeLater(() -> { stepActionPanel.revalidate(); stepActionPanel.repaint(); });
       }
     });
   }
@@ -110,7 +105,7 @@ public abstract class DynamicRow {
 
   private void removeFromStepPanel() {
     final ArrayList<JComponent> componentList = getComponentList();
-    componentList.add(bRemoveRow);
+    componentList.add(buttonRemoveRow);
 
     ((DynamicRowsPanel) parentRowPanel).removeComponents(componentList);
   }

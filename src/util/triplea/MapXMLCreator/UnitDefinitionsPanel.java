@@ -1,7 +1,6 @@
 package util.triplea.MapXMLCreator;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -10,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -26,8 +26,8 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
   }
 
   public static void layout(final MapXMLCreator mapXMLCreator, final JPanel stepActionPanel) {
-    if (me == null || !(me instanceof UnitDefinitionsPanel))
-      me = new UnitDefinitionsPanel(stepActionPanel);
+    if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof UnitDefinitionsPanel))
+      me = Optional.of(new UnitDefinitionsPanel(stepActionPanel));
     DynamicRowsPanel.layout(mapXMLCreator, stepActionPanel);
   }
 
@@ -37,16 +37,16 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
 
   protected void layoutComponents() {
 
-    final JLabel lUnitName = new JLabel("Unit Name");
-    Dimension dimension = lUnitName.getPreferredSize();
+    final JLabel labelUnitName = new JLabel("Unit Name");
+    Dimension dimension = labelUnitName.getPreferredSize();
     dimension.width = 140;
-    lUnitName.setPreferredSize(dimension);
-    final JLabel lBuyCost = new JLabel("Buy Cost");
+    labelUnitName.setPreferredSize(dimension);
+    final JLabel labelBuyCost = new JLabel("Buy Cost");
     dimension = (Dimension) dimension.clone();
     dimension.width = 80;
-    lBuyCost.setPreferredSize(dimension);
-    final JLabel lBuyQuantity = new JLabel("Buy Quantity");
-    lBuyQuantity.setPreferredSize(dimension);
+    labelBuyCost.setPreferredSize(dimension);
+    final JLabel labelBuyQuantity = new JLabel("Buy Quantity");
+    labelBuyQuantity.setPreferredSize(dimension);
 
     // <1> Set panel layout
     GridBagLayout gbl_stepActionPanel = new GridBagLayout();
@@ -55,27 +55,27 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
     ownPanel.setLayout(gbl_stepActionPanel);
 
     // <2> Add Row Labels: Player Name, Alliance Name, Buy Quantity
-    GridBagConstraints gbc_lUnitName = new GridBagConstraints();
-    gbc_lUnitName.insets = new Insets(0, 0, 5, 5);
-    gbc_lUnitName.gridy = 0;
-    gbc_lUnitName.gridx = 0;
-    gbc_lUnitName.anchor = GridBagConstraints.WEST;
-    ownPanel.add(lUnitName, gbc_lUnitName);
+    GridBagConstraints gridBadConstLabelUnitName = new GridBagConstraints();
+    gridBadConstLabelUnitName.insets = new Insets(0, 0, 5, 5);
+    gridBadConstLabelUnitName.gridy = 0;
+    gridBadConstLabelUnitName.gridx = 0;
+    gridBadConstLabelUnitName.anchor = GridBagConstraints.WEST;
+    ownPanel.add(labelUnitName, gridBadConstLabelUnitName);
 
-    GridBagConstraints gbc_lBuyCost = (GridBagConstraints) gbc_lUnitName.clone();
-    gbc_lBuyCost.gridx = 1;
-    ownPanel.add(lBuyCost, gbc_lBuyCost);
+    GridBagConstraints gridBadConstLabelBuyCost = (GridBagConstraints) gridBadConstLabelUnitName.clone();
+    gridBadConstLabelBuyCost.gridx = 1;
+    ownPanel.add(labelBuyCost, gridBadConstLabelBuyCost);
 
-    GridBagConstraints gbc_lBuyQuantity = (GridBagConstraints) gbc_lUnitName.clone();
-    gbc_lBuyQuantity.gridx = 2;
-    ownPanel.add(lBuyQuantity, gbc_lBuyQuantity);
+    GridBagConstraints gridBadConstLabelBuyQuantity = (GridBagConstraints) gridBadConstLabelUnitName.clone();
+    gridBadConstLabelBuyQuantity.gridx = 2;
+    ownPanel.add(labelBuyQuantity, gridBadConstLabelBuyQuantity);
 
     // <3> Add Main Input Rows
     int yValue = 1;
     for (final Entry<String, List<Integer>> unitDefinition : MapXMLHelper.unitDefinitions.entrySet()) {
-      GridBagConstraints gbc_tUnitName = (GridBagConstraints) gbc_lUnitName.clone();
+      GridBagConstraints gbc_tUnitName = (GridBagConstraints) gridBadConstLabelUnitName.clone();
       gbc_tUnitName.gridx = 0;
-      gbc_lUnitName.gridy = yValue;
+      gridBadConstLabelUnitName.gridy = yValue;
       final List<Integer> defintionValues = unitDefinition.getValue();
       final UnitDefinitionsRow newRow = new UnitDefinitionsRow(this, ownPanel, unitDefinition.getKey(),
           defintionValues.get(0), defintionValues.get(1));
@@ -85,10 +85,10 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
     }
 
     // <4> Add Final Button Row
-    final JButton bAddUnit = new JButton("Add Unit");
+    final JButton buttonAddUnit = new JButton("Add Unit");
 
-    bAddUnit.setFont(new Font("Tahoma", Font.PLAIN, 11));
-    bAddUnit.addActionListener(new AbstractAction("Add Unit") {
+    buttonAddUnit.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
+    buttonAddUnit.addActionListener(new AbstractAction("Add Unit") {
       private static final long serialVersionUID = 6322566373692205163L;
 
       public void actionPerformed(final ActionEvent e) {
@@ -111,20 +111,18 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
         // UI Update
         setRows((GridBagLayout) ownPanel.getLayout(), MapXMLHelper.unitDefinitions.size());
         addRowWith(newUnitName, 0, 1);
-        SwingUtilities.invokeLater(new Runnable() {
-          public void run() {
-            ownPanel.revalidate();
-            ownPanel.repaint();
-          }
+        SwingUtilities.invokeLater(() -> {
+          ownPanel.revalidate();
+          ownPanel.repaint();
         });
       }
     });
-    addButton(bAddUnit);
+    addButton(buttonAddUnit);
 
-    GridBagConstraints gbc_bAddUnit = (GridBagConstraints) gbc_lUnitName.clone();
-    gbc_bAddUnit.gridx = 0;
-    gbc_bAddUnit.gridy = yValue;
-    addFinalButtonRow(gbc_bAddUnit);
+    GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelUnitName.clone();
+    gridBadConstButtonAddUnit.gridx = 0;
+    gridBadConstButtonAddUnit.gridy = yValue;
+    addFinalButtonRow(gridBadConstButtonAddUnit);
   }
 
   private DynamicRow addRowWith(final String newUnitName, final int buyCost, final int buyQuantity) {

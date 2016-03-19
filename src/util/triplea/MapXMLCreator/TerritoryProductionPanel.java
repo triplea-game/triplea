@@ -85,10 +85,6 @@ public class TerritoryProductionPanel extends ImageScrollPanePanel {
       return;
     }
 
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        imagePanel.repaint();
-      }
-    });
+    SwingUtilities.invokeLater(() -> imagePanel.repaint());
   }
 }

@@ -36,7 +36,8 @@ public class TerritoryDefinitionDialog extends JDialog {
       case IS_CAPITAL:
         return TERRITORY_DEFINITION_IS_CAPITAL;
       default:
-        return "";
+        throw new IllegalArgumentException(
+            "Provided value is not valid for " + DEFINITION.class);
     }
   }
 
@@ -50,7 +51,7 @@ public class TerritoryDefinitionDialog extends JDialog {
     else if (defString.equals(TERRITORY_DEFINITION_IS_CAPITAL))
       return DEFINITION.IS_CAPITAL;
     throw new IllegalArgumentException(
-        "'" + defString + "' is not a valid string for enum TerritoryDefinitionDialog.DEFINITION");
+        "'" + defString + "' is not a valid string for " + DEFINITION.class);
   }
 
   private static final long serialVersionUID = -2504102953599720855L;

@@ -13,10 +13,11 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
@@ -24,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import games.strategy.util.AlphanumComparator;
 import util.image.ConnectionFinder;
@@ -31,8 +33,7 @@ import util.image.ConnectionFinder;
 
 public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
 
-  // TODO: Consider Optional<String>
-  private String selectedTerritory = null;
+  private Optional<String> selectedTerritory = Optional.empty();
 
   private TerritoryConnectionsPanel() {}
 
@@ -71,16 +72,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
   protected void paintPreparation(final Map<String, Point> centers) {
     if (centers != null && !MapXMLHelper.territoryConnections.isEmpty())
       return;
-    final Map<String, List<Area>> territoryAreas = Maps.newHashMap();
-    for (final String territoryName : polygons.keySet()) {
-      final List<Polygon> listOfPolygons = polygons.get(territoryName);
-      final List<Area> listOfAreas = new ArrayList<Area>();
-      for (final Polygon p : listOfPolygons) {
-        listOfAreas.add(new Area(p));
-      }
-      territoryAreas.put(territoryName, listOfAreas);
-
-    }
+    final Map<String, List<Area>> territoryAreas = getTerritoryAreasFromPolygons();
     final int lineThickness = showInputDialogForPositiveIntegerInput(
         "Enter the width of territory border lines on your map? \r(eg: 1, or 2, etc.)", "1");
     if (lineThickness == 0) {
@@ -117,7 +109,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
     final List<String> allAreas = new ArrayList<String>(territoryAreas.keySet());
     Collections.sort(allAreas, new AlphanumComparator());
     for (final String territory : allTerritories) {
-      final LinkedHashSet<String> thisTerritoryConnections = new LinkedHashSet<String>();
+      final Set<String> thisTerritoryConnections = Sets.newLinkedHashSet();
       final List<Polygon> currentPolygons = polygons.get(territory);
       for (final Polygon currentPolygon : currentPolygons) {
 
@@ -143,6 +135,20 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
       }
     }
     System.out.println("finished");
+  }
+
+  private Map<String, List<Area>> getTerritoryAreasFromPolygons() {
+    final Map<String, List<Area>> territoryAreas = Maps.newHashMap();
+    for (final String territoryName : polygons.keySet()) {
+      final List<Polygon> listOfPolygons = polygons.get(territoryName);
+      final List<Area> listOfAreas = new ArrayList<Area>();
+      for (final Polygon p : listOfPolygons) {
+        listOfAreas.add(new Area(p));
+      }
+      territoryAreas.put(territoryName, listOfAreas);
+
+    }
+    return territoryAreas;
   }
 
   /**
@@ -172,7 +178,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
   @Override
   protected void paintOwnSpecifics(Graphics g, Map<String, Point> centers) {
     g.setColor(Color.GREEN);
-    for (final Entry<String, LinkedHashSet<String>> territoryConnection : MapXMLHelper.territoryConnections
+    for (final Entry<String, Set<String>> territoryConnection : MapXMLHelper.territoryConnections
         .entrySet()) {
       final Point center1 = centers.get(territoryConnection.getKey());
       for (final String territory2 : territoryConnection.getValue()) {
@@ -186,11 +192,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
     if (SwingUtilities.isRightMouseButton(e)) {
       if (selectedTerritory != null) {
         selectedTerritory = null;
-        SwingUtilities.invokeLater(new Runnable() {
-          public void run() {
-            imagePanel.repaint();
-          }
-        });
+        SwingUtilities.invokeLater(() -> imagePanel.repaint());
       }
       return;
     }
@@ -202,15 +204,15 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
     if (territoryName == null)
       return;
 
-    if (selectedTerritory == null || selectedTerritory.equals(territoryName)) {
-      selectedTerritory = territoryName;
+    if (!selectedTerritory.isPresent() || selectedTerritory.equals(territoryName)) {
+      selectedTerritory = Optional.of(territoryName);
       repaint = true;
     } else {
       Collection<String> firstTerritoryConnections;
       String secondterritory;
-      if (territoryName.compareTo(selectedTerritory) < 0) {
+      if (territoryName.compareTo(selectedTerritory.get()) < 0) {
         firstTerritoryConnections = MapXMLHelper.territoryConnections.get(territoryName);
-        secondterritory = selectedTerritory;
+        secondterritory = selectedTerritory.get();
       } else {
         firstTerritoryConnections = MapXMLHelper.territoryConnections.get(selectedTerritory);
         secondterritory = territoryName;
@@ -224,11 +226,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
       repaint = true;
     }
     if (repaint) {
-      SwingUtilities.invokeLater(new Runnable() {
-        public void run() {
-          imagePanel.repaint();
-        }
-      });
+      SwingUtilities.invokeLater(() -> imagePanel.repaint());
     }
   }
 }

@@ -173,9 +173,9 @@ class PlayerSequenceRow extends DynamicRow {
     gbc_tMaxCount.gridx = 3;
     parent.add(tMaxCount, gbc_tMaxCount);
 
-    final GridBagConstraints gbc_bRemove = (GridBagConstraints) gbc_template.clone();
-    gbc_bRemove.gridx = 4;
-    parent.add(bRemoveRow, gbc_bRemove);
+    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
+    gridBadConstButtonRemove.gridx = 4;
+    parent.add(buttonRemoveRow, gridBadConstButtonRemove);
   }
 
   @Override

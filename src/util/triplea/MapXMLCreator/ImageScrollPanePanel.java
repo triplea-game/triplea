@@ -21,7 +21,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,6 +30,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
+
+import com.google.common.collect.Maps;
 
 import games.strategy.util.PointFileReaderWriter;
 import util.image.FileOpen;
@@ -43,8 +44,8 @@ public abstract class ImageScrollPanePanel {
   private static Font font = null;
 
   protected static MapXMLCreator mapXMLCreator;
-  protected static Map<String, List<Polygon>> polygons = new HashMap<String, List<Polygon>>(); // hash map for polygon
-                                                                                               // points
+  protected static Map<String, List<Polygon>> polygons = Maps.newHashMap(); // hash map for polygon
+                                                                            // points
   public static boolean polygonsInvalid = true;
 
   private JPanel imagePanel;
@@ -69,11 +70,7 @@ public abstract class ImageScrollPanePanel {
       final MouseEvent e);
 
   protected void repaint() {
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        imagePanel.repaint();
-      }
-    });
+    SwingUtilities.invokeLater(() -> imagePanel.repaint());
   }
 
   protected JPanel createImagePanel() {
@@ -247,7 +244,7 @@ public abstract class ImageScrollPanePanel {
   }
 
   private static Map<String, Point> loadCenters() {
-    Map<String, Point> centers = new HashMap<String, Point>(); // hash map for center points
+    Map<String, Point> centers = Maps.newHashMap(); // hash map for center points
     try {
       System.out.println("Load Centers from " + MapXMLCreator.mapCentersFile.getAbsolutePath());
       final FileInputStream in = new FileInputStream(MapXMLCreator.mapCentersFile);

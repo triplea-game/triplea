@@ -150,9 +150,9 @@ class UnitDefinitionsRow extends DynamicRow {
     gbc_tBuyQuantity.gridx = 2;
     parent.add(tBuyQuantity, gbc_tBuyQuantity);
 
-    final GridBagConstraints gbc_bRemove = (GridBagConstraints) gbc_template.clone();
-    gbc_bRemove.gridx = 3;
-    parent.add(bRemoveRow, gbc_bRemove);
+    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
+    gridBadConstButtonRemove.gridx = 3;
+    parent.add(buttonRemoveRow, gridBadConstButtonRemove);
   }
 
   @Override

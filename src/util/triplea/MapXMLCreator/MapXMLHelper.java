@@ -1,7 +1,11 @@
 package util.triplea.MapXMLCreator;
 
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.HeadlessException;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,14 +15,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,6 +43,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 
 import games.strategy.engine.data.GameParser;
@@ -57,11 +64,11 @@ public class MapXMLHelper {
   static Map<String, String> xmlStrings = Maps.newLinkedHashMap();
   static List<String> resourceList = new ArrayList<String>();
   static Map<String, HashMap<DEFINITION, Boolean>> territoryDefintions =
-      new HashMap<String, HashMap<DEFINITION, Boolean>>();
-  static Map<String, LinkedHashSet<String>> territoryConnections = new HashMap<String, LinkedHashSet<String>>();
+      Maps.newHashMap();
+  static Map<String, Set<String>> territoryConnections = Maps.newHashMap();
   static List<String> playerName = new ArrayList<String>();
-  static Map<String, String> playerAlliance = new HashMap<String, String>();
-  static Map<String, Integer> playerInitResources = new HashMap<String, Integer>();
+  static Map<String, String> playerAlliance = Maps.newHashMap();
+  static Map<String, Integer> playerInitResources = Maps.newHashMap();
   static Map<String, List<Integer>> unitDefinitions = Maps.newLinkedHashMap();
   static Map<String, List<String>> gamePlaySequence = Maps.newLinkedHashMap();
   static Map<String, Triple<String, String, Integer>> playerSequence =
@@ -70,13 +77,13 @@ public class MapXMLHelper {
       Maps.newLinkedHashMap();
   static Map<String, List<String>> productionFrontiers = Maps.newLinkedHashMap();
   static Map<String, List<String>> unitAttatchments = Maps.newLinkedHashMap();
-  static Map<String, Integer> territoyProductions = new HashMap<String, Integer>();
-  static Map<String, Tuple<SortedSet<String>, SortedSet<String>>> canalDefinitions =
-      new HashMap<String, Tuple<SortedSet<String>, SortedSet<String>>>();
-  static Map<String, String> territoryOwnerships = new HashMap<String, String>();
+  static Map<String, Integer> territoyProductions = Maps.newHashMap();
+  static Map<String, Tuple<Set<String>, Set<String>>> canalDefinitions =
+      Maps.newHashMap();
+  static Map<String, String> territoryOwnerships = Maps.newHashMap();
   static Map<String, Map<String, Map<String, Integer>>> unitPlacements =
-      new HashMap<String, Map<String, Map<String, Integer>>>();
-  static Map<String, List<String>> gameSettings = new HashMap<String, List<String>>();
+      Maps.newHashMap();
+  static Map<String, List<String>> gameSettings = Maps.newHashMap();
   static String notes = "";
 
   static File mapXMLFile;
@@ -97,7 +104,7 @@ public class MapXMLHelper {
     territoryDefintions.put(key, value);
   }
 
-  static void putTerritoryConnections(final String key, final LinkedHashSet<String> value) {
+  static void putTerritoryConnections(final String key, final Set<String> value) {
     territoryConnections.put(key, value);
   }
 
@@ -141,7 +148,7 @@ public class MapXMLHelper {
     territoyProductions.put(key, value);
   }
 
-  static void putCanalDefinitions(final String key, final Tuple<SortedSet<String>, SortedSet<String>> value) {
+  static void putCanalDefinitions(final String key, final Tuple<Set<String>, Set<String>> value) {
     canalDefinitions.put(key, value);
   }
 
@@ -451,7 +458,7 @@ public class MapXMLHelper {
         final String owner = attrUnitPlacements.get("owner");
         Map<String, Map<String, Integer>> terrPlacements = unitPlacements.get(territory);
         if (terrPlacements == null) {
-          terrPlacements = new HashMap<String, Map<String, Integer>>();
+          terrPlacements = Maps.newHashMap();
           unitPlacements.put(territory, terrPlacements);
         }
         Map<String, Integer> terrOwnerPlacements = terrPlacements.get(owner);
@@ -510,37 +517,37 @@ public class MapXMLHelper {
 
   private static void parseAttatchmentNode(final Node attatchment) {
     final HashMap<String, String> attatchmentAttr = getAttributesMap(attatchment.getAttributes());
-    final String attatachmentName = attatchmentAttr.get("name");
-    final String attatachmentType = attatchmentAttr.get("type");
-    final String attatachmentAttatchTo = attatchmentAttr.get("attatchTo");
-    if (attatachmentName.equals("techAttatchment") && attatachmentType.equals("player")) {
+    final String attachmentName = attatchmentAttr.get("name");
+    final String attachmentType = attatchmentAttr.get("type");
+    final String attachmentAttatchTo = attatchmentAttr.get("attatchTo");
+    if (attachmentName.equals("techAttatchment") && attachmentType.equals("player")) {
       final NodeList attatchmentOptionNodes = attatchment.getChildNodes();
       for (int pr_i = 0; pr_i < attatchmentOptionNodes.getLength(); ++pr_i) {
         final Node attatchmentOption = attatchmentOptionNodes.item(pr_i);
         if (attatchmentOption.getNodeName().equals("option")) {
           final HashMap<String, String> attatchmentOptionAttr = getAttributesMap(attatchmentOption.getAttributes());
           final ArrayList<String> values = new ArrayList<String>();
-          values.add(attatachmentAttatchTo); // playerName
+          values.add(attachmentAttatchTo); // playerName
           values.add(attatchmentOptionAttr.get("value"));
-          technologyDefinitions.put(attatchmentOptionAttr.get("name") + "_" + attatachmentAttatchTo, values);
+          technologyDefinitions.put(attatchmentOptionAttr.get("name") + "_" + attachmentAttatchTo, values);
         }
       }
-    } else if (attatachmentName.equals("unitAttatchment") && attatachmentType.equals("unitType")) {
+    } else if (attachmentName.equals("unitAttatchment") && attachmentType.equals("unitType")) {
       final NodeList attatchmentOptionNodes = attatchment.getChildNodes();
       for (int pr_i = 0; pr_i < attatchmentOptionNodes.getLength(); ++pr_i) {
         final Node attatchmentOption = attatchmentOptionNodes.item(pr_i);
         if (attatchmentOption.getNodeName().equals("option")) {
           final HashMap<String, String> attatchmentOptionAttr = getAttributesMap(attatchmentOption.getAttributes());
           final ArrayList<String> values = new ArrayList<String>();
-          values.add(attatachmentAttatchTo); // unitName
+          values.add(attachmentAttatchTo); // unitName
           values.add(attatchmentOptionAttr.get("value"));
-          unitAttatchments.put(attatchmentOptionAttr.get("name") + "_" + attatachmentAttatchTo, values);
+          unitAttatchments.put(attatchmentOptionAttr.get("name") + "_" + attachmentAttatchTo, values);
         }
       }
-    } else if (attatachmentName.equals("canalAttatchment") && attatachmentType.equals("territory")) {
+    } else if (attachmentName.equals("canalAttatchment") && attachmentType.equals("territory")) {
       final NodeList attatchmentOptionNodes = attatchment.getChildNodes();
 
-      Tuple<SortedSet<String>, SortedSet<String>> canalDef = null;
+      Tuple<Set<String>, Set<String>> canalDef = null;
       String newCanalName = null;
       SortedSet<String> newLandTerritories = new TreeSet<String>();
       for (int pr_i = 0; pr_i < attatchmentOptionNodes.getLength(); ++pr_i) {
@@ -560,11 +567,11 @@ public class MapXMLHelper {
       }
       if (canalDef == null) {
         final SortedSet<String> newWaterTerritories = new TreeSet<String>();
-        newWaterTerritories.add(attatachmentAttatchTo);
+        newWaterTerritories.add(attachmentAttatchTo);
         canalDefinitions.put(newCanalName, Tuple.of(newWaterTerritories, newLandTerritories));
       } else
-        canalDef.getFirst().add(attatachmentAttatchTo);
-    } else if (attatachmentName.equals("territoryAttatchment") && attatachmentType.equals("territory")) {
+        canalDef.getFirst().add(attachmentAttatchTo);
+    } else if (attachmentName.equals("territoryAttatchment") && attachmentType.equals("territory")) {
       final NodeList attatchmentOptionNodes = attatchment.getChildNodes();
       for (int pr_i = 0; pr_i < attatchmentOptionNodes.getLength(); ++pr_i) {
         final Node attatchmentOption = attatchmentOptionNodes.item(pr_i);
@@ -572,12 +579,12 @@ public class MapXMLHelper {
           final HashMap<String, String> attatchmentOptionAttr = getAttributesMap(attatchmentOption.getAttributes());
           final String optionNameAttr = attatchmentOptionAttr.get("name");
           if (optionNameAttr.equals("production"))
-            territoyProductions.put(attatachmentAttatchTo, Integer.parseInt(attatchmentOptionAttr.get("value")));
+            territoyProductions.put(attachmentAttatchTo, Integer.parseInt(attatchmentOptionAttr.get("value")));
           else {
-            HashMap<DEFINITION, Boolean> terrDefinitions = territoryDefintions.get(attatachmentAttatchTo);
+            HashMap<DEFINITION, Boolean> terrDefinitions = territoryDefintions.get(attachmentAttatchTo);
             if (terrDefinitions == null) {
-              terrDefinitions = new HashMap<TerritoryDefinitionDialog.DEFINITION, Boolean>();
-              territoryDefintions.put(attatachmentAttatchTo, terrDefinitions);
+              terrDefinitions = Maps.newHashMap();
+              territoryDefintions.put(attachmentAttatchTo, terrDefinitions);
             }
             switch (TerritoryDefinitionDialog.valueOf(optionNameAttr)) {
               case IS_CAPITAL:
@@ -622,7 +629,7 @@ public class MapXMLHelper {
   }
 
   private static HashMap<String, String> getAttributesMap(final NamedNodeMap attrNodeMap) {
-    final HashMap<String, String> rVal = new HashMap<String, String>();
+    final HashMap<String, String> rVal = Maps.newHashMap();
     for (int i = 0; i < attrNodeMap.getLength(); ++i) {
       final Node attrNodeItem = attrNodeMap.item(i);
       rVal.put(attrNodeItem.getNodeName(), attrNodeItem.getNodeValue());
@@ -656,7 +663,7 @@ public class MapXMLHelper {
       if (mapChildNodeName.equals("territory")) {
         final NamedNodeMap terrAttrNodes = mapChildNode.getAttributes();
         String terrName = null;
-        final HashMap<DEFINITION, Boolean> terrDef = new HashMap<TerritoryDefinitionDialog.DEFINITION, Boolean>();
+        final HashMap<DEFINITION, Boolean> terrDef = Maps.newHashMap();
         for (int terrAttr_i = 0; terrAttr_i < terrAttrNodes.getLength(); ++terrAttr_i) {
           final Node terrAttrNode = terrAttrNodes.item(terrAttr_i);
           if (terrAttrNode.getNodeName().equals("name")) {
@@ -676,11 +683,11 @@ public class MapXMLHelper {
           t1Name = t2Name;
           t2Name = swapHelper;
         }
-        LinkedHashSet<String> t1Connections = territoryConnections.get(t1Name);
+        Set<String> t1Connections = territoryConnections.get(t1Name);
         if (t1Connections != null)
           t1Connections.add(t2Name);
         else {
-          t1Connections = new LinkedHashSet<String>();
+          t1Connections = Sets.newLinkedHashSet();
           t1Connections.add(t2Name);
           territoryConnections.put(t1Name, t1Connections);
         }
@@ -851,7 +858,7 @@ public class MapXMLHelper {
     if (!territoryOwnerships.isEmpty()) {
       final Element ownerInitialize = doc.createElement("ownerInitialize");
       initialize.appendChild(ownerInitialize);
-      final HashMap<String, ArrayList<String>> playerTerritories = new HashMap<String, ArrayList<String>>();
+      final HashMap<String, ArrayList<String>> playerTerritories = Maps.newHashMap();
       for (final String player : playerName)
         playerTerritories.put(player, new ArrayList<String>());
       for (final Entry<String, String> ownershipEntry : territoryOwnerships.entrySet())
@@ -933,9 +940,9 @@ public class MapXMLHelper {
       attatchmentTemplate.setAttribute("name", "canalAttatchment");
       attatchmentTemplate.setAttribute("javaClass", "games.strategy.triplea.attatchments.CanalAttachment");
       attatchmentTemplate.setAttribute("type", "territory");
-      for (final Entry<String, Tuple<SortedSet<String>, SortedSet<String>>> canalDefEntry : canalDefinitions
+      for (final Entry<String, Tuple<Set<String>, Set<String>>> canalDefEntry : canalDefinitions
           .entrySet()) {
-        final Tuple<SortedSet<String>, SortedSet<String>> canalDef = canalDefEntry.getValue();
+        final Tuple<Set<String>, Set<String>> canalDef = canalDefEntry.getValue();
         Iterator<String> iter_landTerrs = canalDef.getSecond().iterator();
         final StringBuilder sb = new StringBuilder(iter_landTerrs.next());
         while (iter_landTerrs.hasNext())
@@ -978,7 +985,7 @@ public class MapXMLHelper {
     }
 
     map.appendChild(doc.createComment(" Territory Connections "));
-    for (final Entry<String, LinkedHashSet<String>> entryTerritoryConnection : territoryConnections.entrySet()) {
+    for (final Entry<String, Set<String>> entryTerritoryConnection : territoryConnections.entrySet()) {
       final Element connectionTemp = doc.createElement("connection");
       connectionTemp.setAttribute("t1", entryTerritoryConnection.getKey());
       for (final String t2 : entryTerritoryConnection.getValue()) {
@@ -1052,7 +1059,7 @@ public class MapXMLHelper {
       playerList.appendChild(doc.createComment(" In Turn Order "));
       appendChildrenWithTwoAttributesFromList(doc, playerList, playerName, "player", "name", "optional", "false");
 
-      final HashMap<String, ArrayList<String>> alliances = new HashMap<String, ArrayList<String>>();
+      final HashMap<String, ArrayList<String>> alliances = Maps.newHashMap();
       for (final Entry<String, String> allianceEntry : playerAlliance.entrySet()) {
         final String allianceName = allianceEntry.getValue();
         ArrayList<String> players = alliances.get(allianceName);
@@ -1135,7 +1142,7 @@ public class MapXMLHelper {
 
   protected static void writeAttatchmentNodes(Document doc, final Element attatchmentList,
       final Map<String, List<String>> hashMap, final Element attatchmentTemplate) {
-    final HashMap<String, List<Element>> playerAttatchOptions = new HashMap<String, List<Element>>();
+    final HashMap<String, List<Element>> playerAttatchOptions = Maps.newHashMap();
     for (final Entry<String, List<String>> technologyDefinition : hashMap.entrySet()) {
       final List<String> definitionValues = technologyDefinition.getValue();
       final Element option = doc.createElement("option");
@@ -1195,5 +1202,94 @@ public class MapXMLHelper {
     final GridBagConstraints gbcNew = getGBCCloneWith(gbcToClone, gridx, gridy);
     gbcNew.anchor = anchor;
     return gbcNew;
+  }
+
+  /**
+   * @return
+   */
+  public static JButton createButton(final String buttonText, final int mnemonic) {
+    final JButton newButton = new JButton(buttonText);
+    newButton.setMnemonic(mnemonic);
+    newButton.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
+    newButton.setMargin(new Insets(2, 5, 2, 5));
+    return newButton;
+  }
+
+  /**
+   * @return
+   */
+  public static JButton createButton(final String buttonText, final int mnemonic, final ActionListener actionListener) {
+    final JButton newButton = createButton(buttonText, mnemonic);
+    newButton.addActionListener(actionListener);
+    return newButton;
+  }
+
+  final public static Font defaultMapXMLCreatorFont = getDefaultMapXMLCreatorFont();
+  final public static String defaultMapXMLCreatorFontName = getDefaultMapXMLCreatorFontName();
+  final public static String preferredMapXMLCreatorFontName = "Tahoma";
+
+  /**
+   * Tries to find preferredMapXMLCreatorFontName font or takes the first in the list of available fonts.
+   * 
+   * @return default font name for XML Creator
+   */
+  public static String getDefaultMapXMLCreatorFontName() {
+    final String[] availableFontFamilyNames =
+        GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+    for (final String fontName : availableFontFamilyNames) {
+      if (fontName.equals(preferredMapXMLCreatorFontName))
+        return fontName;
+    }
+    return availableFontFamilyNames[0];
+  }
+
+  public static Font getDefaultMapXMLCreatorFont() {
+    return MapXMLHelper.defaultMapXMLCreatorFont;
+  }
+
+  /**
+   * 
+   * @param title - the title string for the dialog
+   * @param message - the Object to display
+   * @param messageType - an integer designating the kind of message this is, primarily used to determine the icon from
+   *        the pluggable Look and Feel: ERROR_MESSAGE, INFORMATION_MESSAGE, WARNING_MESSAGE, QUESTION_MESSAGE, or
+   *        PLAIN_MESSAGE
+   * @param initialValue - the object that represents the default selection for the dialog; only meaningful if options
+   *        is used; can be null
+   * @return an integer indicating the option chosen by the user, or CLOSED_OPTION if the user closed the dialog
+   * @throws HeadlessException
+   */
+  public static int showOptionDialog(
+      final String title, final Object message,
+      final int optionType,
+      final int messageType,
+      final Object initialValue)
+      throws HeadlessException {
+    return JOptionPane.showOptionDialog(null,
+        message,
+        title,
+        optionType,
+        messageType, null, null, initialValue);
+  }
+
+  /**
+   * 
+   * @param title - the title string for the dialog
+   * @param message - the Object to display
+   * @param messageType - an integer designating the kind of message this is, primarily used to determine the icon from
+   *        the pluggable Look and Feel: ERROR_MESSAGE, INFORMATION_MESSAGE, WARNING_MESSAGE, QUESTION_MESSAGE, or
+   *        PLAIN_MESSAGE
+   * @return an integer indicating the option chosen by the user, or CLOSED_OPTION if the user closed the dialog
+   * @throws HeadlessException
+   */
+  public static int showYesNoOptionDialog(
+      final String title, final Object message,
+      final int messageType)
+      throws HeadlessException {
+    return showOptionDialog(
+        title,
+        message,
+        JOptionPane.YES_NO_OPTION,
+        messageType, JOptionPane.NO_OPTION);
   }
 }

@@ -1,7 +1,6 @@
 package util.triplea.MapXMLCreator;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -11,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
@@ -52,8 +52,8 @@ public class GameSettingsPanel extends DynamicRowsPanel {
   }
 
   public static void layout(final MapXMLCreator mapXMLCreator, final JPanel stepActionPanel) {
-    if (me == null || !(me instanceof GameSettingsPanel))
-      me = new GameSettingsPanel(stepActionPanel);
+    if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof GameSettingsPanel))
+      me = Optional.of(new GameSettingsPanel(stepActionPanel));
     DynamicRowsPanel.layout(mapXMLCreator, stepActionPanel);
   }
 
@@ -63,23 +63,23 @@ public class GameSettingsPanel extends DynamicRowsPanel {
 
   protected void layoutComponents() {
 
-    final JLabel lSettingName = new JLabel("Setting Name");
-    Dimension dimension = lSettingName.getPreferredSize();
-    lSettingName.setPreferredSize(dimension);
-    final JLabel lValue = new JLabel("Value");
+    final JLabel labelSettingName = new JLabel("Setting Name");
+    Dimension dimension = labelSettingName.getPreferredSize();
+    labelSettingName.setPreferredSize(dimension);
+    final JLabel labelValue = new JLabel("Value");
     dimension = (Dimension) dimension.clone();
     dimension.width = DynamicRow.INPUT_FIELD_SIZE_SMALL;
-    lValue.setPreferredSize(dimension);
-    final JLabel lEditable = new JLabel("Editable");
+    labelValue.setPreferredSize(dimension);
+    final JLabel labelEditable = new JLabel("Editable");
     dimension = (Dimension) dimension.clone();
     dimension.width = DynamicRow.INPUT_FIELD_SIZE_SMALL;
-    lEditable.setPreferredSize(dimension);
-    final JLabel lMinNumber = new JLabel("Min. N.");
+    labelEditable.setPreferredSize(dimension);
+    final JLabel labelMinNumber = new JLabel("Min. N.");
     dimension = (Dimension) dimension.clone();
-    lMinNumber.setPreferredSize(dimension);
-    final JLabel lMaxNumber = new JLabel("Max. N.");
+    labelMinNumber.setPreferredSize(dimension);
+    final JLabel labelMaxNumber = new JLabel("Max. N.");
     dimension = (Dimension) dimension.clone();
-    lMaxNumber.setPreferredSize(dimension);
+    labelMaxNumber.setPreferredSize(dimension);
 
     // <1> Set panel layout
     GridBagLayout gbl_stepActionPanel = new GridBagLayout();
@@ -88,37 +88,37 @@ public class GameSettingsPanel extends DynamicRowsPanel {
     ownPanel.setLayout(gbl_stepActionPanel);
 
     // <2> Add Row Labels: Setting Name, Alliance Name, Buy Quantity
-    GridBagConstraints gbc_lSettingName = new GridBagConstraints();
-    gbc_lSettingName.insets = new Insets(0, 0, 5, 5);
-    gbc_lSettingName.gridy = 0;
-    gbc_lSettingName.gridx = 0;
-    gbc_lSettingName.anchor = GridBagConstraints.WEST;
-    ownPanel.add(lSettingName, gbc_lSettingName);
+    GridBagConstraints gridBadConstLabelSettingName = new GridBagConstraints();
+    gridBadConstLabelSettingName.insets = new Insets(0, 0, 5, 5);
+    gridBadConstLabelSettingName.gridy = 0;
+    gridBadConstLabelSettingName.gridx = 0;
+    gridBadConstLabelSettingName.anchor = GridBagConstraints.WEST;
+    ownPanel.add(labelSettingName, gridBadConstLabelSettingName);
 
-    GridBagConstraints gbc_lValue = (GridBagConstraints) gbc_lSettingName.clone();
-    gbc_lValue.gridx = 1;
-    ownPanel.add(lValue, gbc_lValue);
+    GridBagConstraints gridBadConstLabelValue = (GridBagConstraints) gridBadConstLabelSettingName.clone();
+    gridBadConstLabelValue.gridx = 1;
+    ownPanel.add(labelValue, gridBadConstLabelValue);
 
-    GridBagConstraints gbc_lEditable = (GridBagConstraints) gbc_lSettingName.clone();
-    gbc_lEditable.gridx = 2;
-    ownPanel.add(lEditable, gbc_lEditable);
+    GridBagConstraints gridBadConstLabelEditable = (GridBagConstraints) gridBadConstLabelSettingName.clone();
+    gridBadConstLabelEditable.gridx = 2;
+    ownPanel.add(labelEditable, gridBadConstLabelEditable);
 
-    GridBagConstraints gbc_lMinNumber = (GridBagConstraints) gbc_lSettingName.clone();
-    gbc_lMinNumber.gridx = 3;
-    ownPanel.add(lMinNumber, gbc_lMinNumber);
+    GridBagConstraints gridBadConstLabelMinNumber = (GridBagConstraints) gridBadConstLabelSettingName.clone();
+    gridBadConstLabelMinNumber.gridx = 3;
+    ownPanel.add(labelMinNumber, gridBadConstLabelMinNumber);
 
-    GridBagConstraints gbc_lMaxNumber = (GridBagConstraints) gbc_lSettingName.clone();
-    gbc_lMaxNumber.gridx = 4;
-    ownPanel.add(lMaxNumber, gbc_lMaxNumber);
+    GridBagConstraints gridBadConstLabelMaxNumber = (GridBagConstraints) gridBadConstLabelSettingName.clone();
+    gridBadConstLabelMaxNumber.gridx = 4;
+    ownPanel.add(labelMaxNumber, gridBadConstLabelMaxNumber);
 
     // <3> Add Main Input Rows
     int yValue = 1;
 
     final String[] settingNamesArray = settingNames.toArray(new String[settingNames.size()]);
     for (final Entry<String, List<String>> settingEntry : MapXMLHelper.gameSettings.entrySet()) {
-      GridBagConstraints gbc_tValue = (GridBagConstraints) gbc_lSettingName.clone();
+      GridBagConstraints gbc_tValue = (GridBagConstraints) gridBadConstLabelSettingName.clone();
       gbc_tValue.gridx = 0;
-      gbc_lValue.gridy = yValue;
+      gridBadConstLabelValue.gridy = yValue;
       final List<String> settingValue = settingEntry.getValue();
       Integer minValueInteger, maxValueInteger;
       try {
@@ -136,10 +136,10 @@ public class GameSettingsPanel extends DynamicRowsPanel {
     }
 
     // <4> Add Final Button Row
-    final JButton bAddValue = new JButton("Add Game Setting");
+    final JButton buttonAddValue = new JButton("Add Game Setting");
 
-    bAddValue.setFont(new Font("Tahoma", Font.PLAIN, 11));
-    bAddValue.addActionListener(new AbstractAction("Add Game Setting") {
+    buttonAddValue.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
+    buttonAddValue.addActionListener(new AbstractAction("Add Game Setting") {
       private static final long serialVersionUID = 6322566373692205163L;
 
       public void actionPerformed(final ActionEvent e) {
@@ -166,20 +166,18 @@ public class GameSettingsPanel extends DynamicRowsPanel {
         // UI Update
         setRows((GridBagLayout) ownPanel.getLayout(), MapXMLHelper.gameSettings.size());
         addRowWith(suggestedSettingName, newValue, "true", 0, 0);
-        SwingUtilities.invokeLater(new Runnable() {
-          public void run() {
-            ownPanel.revalidate();
-            ownPanel.repaint();
-          }
+        SwingUtilities.invokeLater(() -> {
+          ownPanel.revalidate();
+          ownPanel.repaint();
         });
       }
     });
-    addButton(bAddValue);
+    addButton(buttonAddValue);
 
-    GridBagConstraints gbc_bAddUnit = (GridBagConstraints) gbc_lSettingName.clone();
-    gbc_bAddUnit.gridx = 0;
-    gbc_bAddUnit.gridy = yValue;
-    addFinalButtonRow(gbc_bAddUnit);
+    GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelSettingName.clone();
+    gridBadConstButtonAddUnit.gridx = 0;
+    gridBadConstButtonAddUnit.gridy = yValue;
+    addFinalButtonRow(gridBadConstButtonAddUnit);
   }
 
   private DynamicRow addRowWith(final String settingName, final String newValue, final String editable,
