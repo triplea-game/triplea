@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -183,8 +184,8 @@ public class DownloadMapswindow extends JFrame {
   }
 
   private JPanel createMapSelectionPanel(final Optional<String> selectedMap,
-      final List<DownloadFileDescription> unsortedMaps,
-      final MapAction action) {
+      final List<DownloadFileDescription> unsortedMaps, final MapAction action) {
+
     final List<DownloadFileDescription> maps = MapDownloadListSort.sortByMapName(unsortedMaps);
     final JPanel main = SwingComponents.newBorderedPanel(30);
     final JEditorPane descriptionPane = SwingComponents.newHtmlJEditorPane();
@@ -192,45 +193,59 @@ public class DownloadMapswindow extends JFrame {
 
     final JLabel mapSizeLabel = new JLabel(" ");
 
-    DefaultListModel model = SwingComponents.newJListModel(maps, (map) -> map.getMapName());
+    final DefaultListModel model = SwingComponents.newJListModel(maps, (map) -> map.getMapName());
 
-    final JList<String> gamesList = createGameSelectionList(selectedMap, maps, descriptionPane, model);
-    gamesList.addListSelectionListener(createDescriptionPanelUpdatingSelectionListener(
-        descriptionPane, gamesList, maps, action, mapSizeLabel));
-    main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
 
-    final JPanel southPanel = SwingComponents.gridPanel(2, 1);
-    southPanel.add(mapSizeLabel);
-    southPanel.add(createButtonsPanel(action, gamesList, maps, model));
-    main.add(southPanel, BorderLayout.SOUTH);
+    if (maps.size() > 0) {
+      DownloadFileDescription mapToSelect = determineCurrentMapSelection(maps, selectedMap);
+      final JList<String> gamesList = createGameSelectionList(mapToSelect, maps, descriptionPane, model);
+      gamesList.addListSelectionListener(createDescriptionPanelUpdatingSelectionListener(
+          descriptionPane, gamesList, maps, action, mapSizeLabel));
+
+      if (!mapToSelect.isDummyUrl()) {
+        InstallMapDialog.updateMapUrlAndSizeLabel(mapToSelect, action, mapSizeLabel);
+      }
+
+      main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
+      final JPanel southPanel = SwingComponents.gridPanel(2, 1);
+      southPanel.add(mapSizeLabel);
+      southPanel.add(createButtonsPanel(action, gamesList, maps, model));
+      main.add(southPanel, BorderLayout.SOUTH);
+    }
 
     return main;
   }
 
-  private static JList<String> createGameSelectionList(final Optional<String> selectedMap,
+  private DownloadFileDescription determineCurrentMapSelection(final List<DownloadFileDescription> maps, Optional<String> mapToSelect) {
+    if( mapToSelect.isPresent() ) {
+      Optional<DownloadFileDescription> potentialMap = maps.stream().filter(m -> m.getMapName().equalsIgnoreCase(mapToSelect.get())).findFirst();
+      if( potentialMap.isPresent() ) {
+        return potentialMap.get();
+      }
+    }
+
+    Optional<DownloadFileDescription> map = maps.stream().filter(m -> !m.isDummyUrl()).findFirst();
+    if( map.isPresent() ) {
+      return map.get();
+    }
+    return maps.stream().findFirst().get();
+  }
+
+  private static JList<String> createGameSelectionList(DownloadFileDescription selectedMap,
       final List<DownloadFileDescription> maps, final JEditorPane descriptionPanel, DefaultListModel model) {
 
     JList<String> gamesList = SwingComponents.newJList(model);
-    // select the first map, not header
-    int selectedIndex = 0;
-    for (int i = 0; i < maps.size(); i++) {
-      final DownloadFileDescription currentMap = maps.get(i);
-      final boolean selectedByMapName = selectedMap.isPresent() && selectedMap.get().equals(currentMap.getMapName());
-      final boolean selectedByFirstNonDummyUrl = !selectedMap.isPresent() && !currentMap.isDummyUrl();
-      if (selectedByMapName || selectedByFirstNonDummyUrl) {
-        selectedIndex = i;
-        final String text = createEditorPaneText(maps.get(i));
-        descriptionPanel.setText(text);
-        descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-        break;
-      }
-    }
+    int selectedIndex = maps.indexOf(selectedMap);
     gamesList.setSelectedIndex(selectedIndex);
+
+    final String text = createEditorPaneText(maps.get(selectedIndex));
+    descriptionPanel.setText(text);
+    descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
     return gamesList;
   }
 
   private static ListSelectionListener createDescriptionPanelUpdatingSelectionListener(JEditorPane descriptionPanel,
-      JList<String> gamesList, List<DownloadFileDescription> maps, MapAction action, JLabel mapSizeLabel) {
+      JList<String> gamesList, List<DownloadFileDescription> maps, MapAction action, JLabel mapSizeLabelToUpdate) {
     return e -> {
       final int index = gamesList.getSelectedIndex();
       if( index > 0 ) {
@@ -240,7 +255,7 @@ public class DownloadMapswindow extends JFrame {
         descriptionPanel.setText(text);
         descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
 
-        updateMapUrlAndSizeLabel(map, action, mapSizeLabel);
+        updateMapUrlAndSizeLabel(map, action, mapSizeLabelToUpdate);
       }
     };
   }
