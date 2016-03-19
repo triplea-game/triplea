@@ -24,32 +24,32 @@ import games.strategy.util.Triple;
 
 
 class PlayerAndAlliancesRow extends DynamicRow {
-  JTextField tPlayerName;
-  JComboBox<String> tPlayerAlliance;
-  JTextField tInitialResource;
+  private JTextField textFieldPlayerName;
+  private JComboBox<String> comboBoxPlayerAlliance;
+  private JTextField textFieldInitialResource;
 
   public PlayerAndAlliancesRow(final DynamicRowsPanel parentRowPanel, final JPanel stepActionPanel,
       final String playerName, final String allianceName, final String[] alliances, final int initialResource) {
     super(playerName, parentRowPanel, stepActionPanel);
 
-    tPlayerName = new JTextField(playerName);
-    tPlayerAlliance = new JComboBox<String>(alliances);
+    textFieldPlayerName = new JTextField(playerName);
+    comboBoxPlayerAlliance = new JComboBox<String>(alliances);
     final Integer initialResourceInteger = Integer.valueOf(initialResource);
-    tInitialResource =
+    textFieldInitialResource =
         new JTextField(initialResourceInteger == null ? "0" : Integer.toString(initialResourceInteger));
 
-    Dimension dimension = tPlayerName.getPreferredSize();
+    Dimension dimension = textFieldPlayerName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_MEDIUM;
-    tPlayerName.setPreferredSize(dimension);
-    tPlayerName.addFocusListener(new FocusListener() {
+    textFieldPlayerName.setPreferredSize(dimension);
+    textFieldPlayerName.addFocusListener(new FocusListener() {
 
       @Override
       public void focusLost(FocusEvent arg0) {
-        String inputText = tPlayerName.getText().trim();
+        String inputText = textFieldPlayerName.getText().trim();
         if (currentRowName.equals(inputText))
           return;
         if (MapXMLHelper.playerName.contains(inputText)) {
-          tPlayerName.selectAll();
+          textFieldPlayerName.selectAll();
           JOptionPane.showMessageDialog(stepActionPanel, "Player '" + inputText + "' already exists.", "Input error",
               JOptionPane.ERROR_MESSAGE);
           parentRowPanel.setDataIsConsistent(false);
@@ -57,7 +57,7 @@ class PlayerAndAlliancesRow extends DynamicRow {
 
             @Override
             public void run() {
-              tPlayerName.requestFocus();
+              textFieldPlayerName.requestFocus();
             }
           });
           return;
@@ -115,39 +115,39 @@ class PlayerAndAlliancesRow extends DynamicRow {
 
       @Override
       public void focusGained(FocusEvent arg0) {
-        tPlayerName.selectAll();
+        textFieldPlayerName.selectAll();
       }
     });
 
-    dimension = tPlayerAlliance.getPreferredSize();
+    dimension = comboBoxPlayerAlliance.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_MEDIUM;
-    tPlayerAlliance.setPreferredSize(dimension);
-    tPlayerAlliance.setSelectedIndex(Arrays.binarySearch(alliances, allianceName));
-    tPlayerAlliance.addFocusListener(new FocusListener() {
+    comboBoxPlayerAlliance.setPreferredSize(dimension);
+    comboBoxPlayerAlliance.setSelectedIndex(Arrays.binarySearch(alliances, allianceName));
+    comboBoxPlayerAlliance.addFocusListener(new FocusListener() {
       @Override
       public void focusLost(FocusEvent arg0) {
         // everything is okay with the new technology name, lets rename everything
-        MapXMLHelper.playerAlliance.put(playerName, (String) tPlayerAlliance.getSelectedItem());
+        MapXMLHelper.playerAlliance.put(playerName, (String) comboBoxPlayerAlliance.getSelectedItem());
       }
 
       @Override
       public void focusGained(FocusEvent arg0) {}
     });
 
-    dimension = tInitialResource.getPreferredSize();
+    dimension = textFieldInitialResource.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_SMALL;
-    tInitialResource.setPreferredSize(dimension);
-    tInitialResource.addFocusListener(new FocusListener() {
+    textFieldInitialResource.setPreferredSize(dimension);
+    textFieldInitialResource.addFocusListener(new FocusListener() {
       String prevValue = Integer.toString(initialResource);
 
       @Override
       public void focusLost(FocusEvent arg0) {
-        String inputText = tInitialResource.getText().trim();
+        String inputText = textFieldInitialResource.getText().trim();
         try {
           final Integer newValue = Integer.parseInt(inputText);
           MapXMLHelper.playerInitResources.put(playerName, newValue);
         } catch (NumberFormatException e) {
-          tInitialResource.setText(prevValue);
+          textFieldInitialResource.setText(prevValue);
           JOptionPane.showMessageDialog(stepActionPanel, "'" + inputText + "' is no integer value.", "Input error",
               JOptionPane.ERROR_MESSAGE);
           parentRowPanel.setDataIsConsistent(false);
@@ -155,9 +155,9 @@ class PlayerAndAlliancesRow extends DynamicRow {
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-              tInitialResource.updateUI();
-              tInitialResource.requestFocus();
-              tInitialResource.selectAll();
+              textFieldInitialResource.updateUI();
+              textFieldInitialResource.requestFocus();
+              textFieldInitialResource.selectAll();
             }
           });
           return;
@@ -168,44 +168,44 @@ class PlayerAndAlliancesRow extends DynamicRow {
 
       @Override
       public void focusGained(FocusEvent arg0) {
-        tInitialResource.selectAll();
+        textFieldInitialResource.selectAll();
       }
     });
 
   }
 
   public boolean isAllianceSelected(final String removeAllianceName) {
-    return tPlayerAlliance.getSelectedItem().equals(removeAllianceName);
+    return comboBoxPlayerAlliance.getSelectedItem().equals(removeAllianceName);
   }
 
   public void removeFromComboBoxesAlliance(String removeAlliance) {
-    tPlayerAlliance.removeItem(removeAlliance);
+    comboBoxPlayerAlliance.removeItem(removeAlliance);
   }
 
   public void updateComboBoxesAlliance(final String newAlliance) {
-    tPlayerAlliance.addItem(newAlliance);
+    comboBoxPlayerAlliance.addItem(newAlliance);
   }
 
   @Override
   protected ArrayList<JComponent> getComponentList() {
     final ArrayList<JComponent> componentList = new ArrayList<JComponent>();
-    componentList.add(tPlayerName);
-    componentList.add(tPlayerAlliance);
-    componentList.add(tInitialResource);
+    componentList.add(textFieldPlayerName);
+    componentList.add(comboBoxPlayerAlliance);
+    componentList.add(textFieldInitialResource);
     return componentList;
   }
 
   @Override
   public void addToComponent(final JComponent parent, final GridBagConstraints gbc_template) {
-    parent.add(tPlayerName, gbc_template);
+    parent.add(textFieldPlayerName, gbc_template);
 
     final GridBagConstraints gbc_tPlayerAlliance = (GridBagConstraints) gbc_template.clone();
     gbc_tPlayerAlliance.gridx = 1;
-    parent.add(tPlayerAlliance, gbc_tPlayerAlliance);
+    parent.add(comboBoxPlayerAlliance, gbc_tPlayerAlliance);
 
     final GridBagConstraints gbc_tInitialResource = (GridBagConstraints) gbc_template.clone();
     gbc_tInitialResource.gridx = 2;
-    parent.add(tInitialResource, gbc_tInitialResource);
+    parent.add(textFieldInitialResource, gbc_tInitialResource);
 
     final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
     gridBadConstButtonRemove.gridx = 3;
@@ -215,9 +215,9 @@ class PlayerAndAlliancesRow extends DynamicRow {
   @Override
   protected void adaptRowSpecifics(final DynamicRow newRow) {
     final PlayerAndAlliancesRow newRowPlayerAndAlliancesRow = (PlayerAndAlliancesRow) newRow;
-    this.tPlayerName.setText(newRowPlayerAndAlliancesRow.tPlayerName.getText());
-    this.tPlayerAlliance.setSelectedIndex(newRowPlayerAndAlliancesRow.tPlayerAlliance.getSelectedIndex());
-    this.tInitialResource.setText(newRowPlayerAndAlliancesRow.tInitialResource.getText());
+    this.textFieldPlayerName.setText(newRowPlayerAndAlliancesRow.textFieldPlayerName.getText());
+    this.comboBoxPlayerAlliance.setSelectedIndex(newRowPlayerAndAlliancesRow.comboBoxPlayerAlliance.getSelectedIndex());
+    this.textFieldInitialResource.setText(newRowPlayerAndAlliancesRow.textFieldInitialResource.getText());
   }
 
   @Override

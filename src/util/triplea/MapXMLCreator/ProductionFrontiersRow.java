@@ -17,7 +17,7 @@ import javax.swing.SwingUtilities;
 
 class ProductionFrontiersRow extends DynamicRow {
 
-  private JComboBox<String> tUnitName;
+  private JComboBox<String> comboBoxUnitName;
   private String playerName;
 
   public ProductionFrontiersRow(final DynamicRowsPanel parentRowPanel, final JPanel stepActionPanel,
@@ -26,25 +26,25 @@ class ProductionFrontiersRow extends DynamicRow {
 
     this.playerName = playerName;
 
-    tUnitName = new JComboBox<String>(unitNames);
-    Dimension dimension = tUnitName.getPreferredSize();
+    comboBoxUnitName = new JComboBox<String>(unitNames);
+    Dimension dimension = comboBoxUnitName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_MEDIUM;
-    tUnitName.setPreferredSize(dimension);
-    tUnitName.setSelectedIndex(Arrays.binarySearch(unitNames, unitName));
-    tUnitName.addFocusListener(new FocusListener() {
+    comboBoxUnitName.setPreferredSize(dimension);
+    comboBoxUnitName.setSelectedIndex(Arrays.binarySearch(unitNames, unitName));
+    comboBoxUnitName.addFocusListener(new FocusListener() {
 
       String currentValue = unitName;
 
       @Override
       public void focusLost(FocusEvent e) {
-        String newUnitValue = (String) tUnitName.getSelectedItem();
+        String newUnitValue = (String) comboBoxUnitName.getSelectedItem();
         if (!currentValue.equals(newUnitValue)) {
           final List<String> playerUnitNames = MapXMLHelper.productionFrontiers.get(playerName);
           if (playerUnitNames.contains(newUnitValue)) {
             JOptionPane.showMessageDialog(stepActionPanel,
                 "Unit '" + newUnitValue + "' already selected fpr player '" + playerName + "'.", "Input error",
                 JOptionPane.ERROR_MESSAGE);
-            tUnitName.setSelectedItem(currentValue);
+            comboBoxUnitName.setSelectedItem(currentValue);
             // UI Update
             SwingUtilities.invokeLater(() -> { stepActionPanel.revalidate(); stepActionPanel.repaint(); });
           } else {
@@ -63,13 +63,13 @@ class ProductionFrontiersRow extends DynamicRow {
   @Override
   protected ArrayList<JComponent> getComponentList() {
     final ArrayList<JComponent> componentList = new ArrayList<JComponent>();
-    componentList.add(tUnitName);
+    componentList.add(comboBoxUnitName);
     return componentList;
   }
 
   @Override
   public void addToComponent(final JComponent parent, final GridBagConstraints gbc_template) {
-    parent.add(tUnitName, gbc_template);
+    parent.add(comboBoxUnitName, gbc_template);
 
     final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
     gridBadConstButtonRemove.gridx = 1;
@@ -79,7 +79,7 @@ class ProductionFrontiersRow extends DynamicRow {
   @Override
   protected void adaptRowSpecifics(final DynamicRow newRow) {
     final ProductionFrontiersRow newRowPlayerAndAlliancesRow = (ProductionFrontiersRow) newRow;
-    this.tUnitName.setSelectedIndex(newRowPlayerAndAlliancesRow.tUnitName.getSelectedIndex());
+    this.comboBoxUnitName.setSelectedIndex(newRowPlayerAndAlliancesRow.comboBoxUnitName.getSelectedIndex());
   }
 
   @Override

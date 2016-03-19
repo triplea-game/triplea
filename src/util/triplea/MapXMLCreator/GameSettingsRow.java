@@ -20,12 +20,12 @@ import games.strategy.util.Triple;
 
 class GameSettingsRow extends DynamicRow {
   private boolean isBoolean;
-  private JComboBox<String> tSettingName;
-  private JTextField tValue;
-  private JComboBox<String> tEditable;
+  private JComboBox<String> comboBoxSettingName;
+  private JTextField textFieldValue;
+  private JComboBox<String> comboBoxEditable;
   public static String[] selectionTrueFalse = {"false", "true"};
-  private JTextField tMinNumber;
-  private JTextField tMaxNumber;
+  private JTextField textFieldMinNumber;
+  private JTextField textFieldMaxNumber;
 
   public GameSettingsRow(final DynamicRowsPanel parentRowPanel, final JPanel stepActionPanel, final String settingName,
       final String[] settingNames, final String value, final String editable,
@@ -33,30 +33,30 @@ class GameSettingsRow extends DynamicRow {
     super(settingName, parentRowPanel, stepActionPanel);
 
     isBoolean = GameSettingsPanel.isBoolean(settingName);
-    tSettingName = new JComboBox<String>(settingNames);
-    tEditable = new JComboBox<String>(selectionTrueFalse);
-    tValue = new JTextField(value);
+    comboBoxSettingName = new JComboBox<String>(settingNames);
+    comboBoxEditable = new JComboBox<String>(selectionTrueFalse);
+    textFieldValue = new JTextField(value);
     final Integer minCountInteger = Integer.valueOf(minNumber);
-    tMinNumber = new JTextField(minCountInteger == null ? "0" : Integer.toString(minCountInteger));
+    textFieldMinNumber = new JTextField(minCountInteger == null ? "0" : Integer.toString(minCountInteger));
     final Integer maxCountInteger = Integer.valueOf(maxNumber);
-    tMaxNumber = new JTextField(maxCountInteger == null ? "0" : Integer.toString(maxCountInteger));
+    textFieldMaxNumber = new JTextField(maxCountInteger == null ? "0" : Integer.toString(maxCountInteger));
 
-    Dimension dimension = tSettingName.getPreferredSize();
+    Dimension dimension = comboBoxSettingName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_LARGE;
-    tSettingName.setPreferredSize(dimension);
+    comboBoxSettingName.setPreferredSize(dimension);
     try {
-      tSettingName.setSelectedIndex(Arrays.binarySearch(settingNames, settingName));
+      comboBoxSettingName.setSelectedIndex(Arrays.binarySearch(settingNames, settingName));
     } catch (IllegalArgumentException e) {
       System.out.println(settingName + " is not known (yet)!");
     }
-    tSettingName.addFocusListener(new FocusListener() {
-      int prevSelectedIndex = tSettingName.getSelectedIndex();
+    comboBoxSettingName.addFocusListener(new FocusListener() {
+      int prevSelectedIndex = comboBoxSettingName.getSelectedIndex();
 
       @Override
       public void focusLost(FocusEvent arg0) {
-        if (prevSelectedIndex == tSettingName.getSelectedIndex())
+        if (prevSelectedIndex == comboBoxSettingName.getSelectedIndex())
           return;
-        final String curr_settingName = (String) tSettingName.getSelectedItem();
+        final String curr_settingName = (String) comboBoxSettingName.getSelectedItem();
         if (currentRowName.equals(curr_settingName))
           return;
         if (MapXMLHelper.gameSettings.containsKey(curr_settingName)) {
@@ -64,8 +64,8 @@ class GameSettingsRow extends DynamicRow {
               "Input error", JOptionPane.ERROR_MESSAGE);
           parentRowPanel.setDataIsConsistent(false);
           SwingUtilities.invokeLater(() -> {
-            tSettingName.setSelectedIndex(prevSelectedIndex);
-            tSettingName.requestFocus();
+            comboBoxSettingName.setSelectedIndex(prevSelectedIndex);
+            comboBoxSettingName.requestFocus();
           });
           return;
         }
@@ -76,34 +76,34 @@ class GameSettingsRow extends DynamicRow {
         if (newIsBoolean != isBoolean) {
           if (newIsBoolean) {
             newValues.set(0, "false");
-            tValue.setText("false");
-            tMinNumber.setEnabled(false);
-            tMaxNumber.setEnabled(false);
+            textFieldValue.setText("false");
+            textFieldMinNumber.setEnabled(false);
+            textFieldMaxNumber.setEnabled(false);
           } else {
             newValues.set(0, "0");
-            tValue.setText("0");
-            tMinNumber.setEnabled(true);
-            tMaxNumber.setEnabled(true);
+            textFieldValue.setText("0");
+            textFieldMinNumber.setEnabled(true);
+            textFieldMaxNumber.setEnabled(true);
           }
           newValues.set(2, "0");
-          tMinNumber.setText("0");
+          textFieldMinNumber.setText("0");
           newValues.set(3, "0");
-          tMaxNumber.setText("0");
+          textFieldMaxNumber.setText("0");
           isBoolean = newIsBoolean;
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-              tValue.updateUI();
-              tMinNumber.updateUI();
-              tMaxNumber.updateUI();
-              tValue.requestFocus();
-              tValue.selectAll();
+              textFieldValue.updateUI();
+              textFieldMinNumber.updateUI();
+              textFieldMaxNumber.updateUI();
+              textFieldValue.requestFocus();
+              textFieldValue.selectAll();
             }
           });
         }
         MapXMLHelper.gameSettings.put(curr_settingName, newValues);
         currentRowName = curr_settingName;
-        prevSelectedIndex = tSettingName.getSelectedIndex();
+        prevSelectedIndex = comboBoxSettingName.getSelectedIndex();
         parentRowPanel.setDataIsConsistent(true);
       }
 
@@ -112,15 +112,15 @@ class GameSettingsRow extends DynamicRow {
     });
 
 
-    dimension = tValue.getPreferredSize();
+    dimension = textFieldValue.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_SMALL;
-    tValue.setPreferredSize(dimension);
-    tValue.addFocusListener(new FocusListener() {
+    textFieldValue.setPreferredSize(dimension);
+    textFieldValue.addFocusListener(new FocusListener() {
       String prevValue = value;
 
       @Override
       public void focusLost(FocusEvent arg0) {
-        String inputText = tValue.getText().trim().toLowerCase();
+        String inputText = textFieldValue.getText().trim().toLowerCase();
         boolean isInputOkay = true;
         if (isBoolean) {
           final String parsedInputText = Boolean.toString(Boolean.parseBoolean(inputText));
@@ -138,14 +138,14 @@ class GameSettingsRow extends DynamicRow {
           }
         }
         if (!isInputOkay) {
-          tValue.setText(prevValue);
+          textFieldValue.setText(prevValue);
           parentRowPanel.setDataIsConsistent(false);
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-              tValue.updateUI();
-              tValue.requestFocus();
-              tValue.selectAll();
+              textFieldValue.updateUI();
+              textFieldValue.requestFocus();
+              textFieldValue.selectAll();
             }
           });
           return;
@@ -153,7 +153,7 @@ class GameSettingsRow extends DynamicRow {
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-              tValue.updateUI();
+              textFieldValue.updateUI();
             }
           });
         }
@@ -167,35 +167,35 @@ class GameSettingsRow extends DynamicRow {
 
       @Override
       public void focusGained(FocusEvent arg0) {
-        tValue.selectAll();
+        textFieldValue.selectAll();
       }
     });
 
-    dimension = tEditable.getPreferredSize();
+    dimension = comboBoxEditable.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_SMALL;
-    tEditable.setPreferredSize(dimension);
-    tEditable.setSelectedIndex(Arrays.binarySearch(selectionTrueFalse, editable));
-    tEditable.addFocusListener(new FocusListener() {
+    comboBoxEditable.setPreferredSize(dimension);
+    comboBoxEditable.setSelectedIndex(Arrays.binarySearch(selectionTrueFalse, editable));
+    comboBoxEditable.addFocusListener(new FocusListener() {
       @Override
       public void focusLost(FocusEvent arg0) {
         // everything is okay with the new value name, lets rename everything
         final List<String> newValues = MapXMLHelper.gameSettings.get(currentRowName);
-        newValues.set(1, (String) tEditable.getSelectedItem());
+        newValues.set(1, (String) comboBoxEditable.getSelectedItem());
       }
 
       @Override
       public void focusGained(FocusEvent arg0) {}
     });
 
-    dimension = tMinNumber.getPreferredSize();
+    dimension = textFieldMinNumber.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_SMALL;
-    tMinNumber.setPreferredSize(dimension);
-    tMinNumber.setEnabled(!isBoolean);
-    tMinNumber.addFocusListener(new FocusListener() {
+    textFieldMinNumber.setPreferredSize(dimension);
+    textFieldMinNumber.setEnabled(!isBoolean);
+    textFieldMinNumber.addFocusListener(new FocusListener() {
 
       @Override
       public void focusLost(FocusEvent arg0) {
-        String inputText = tMinNumber.getText().trim();
+        String inputText = textFieldMinNumber.getText().trim();
         try {
           final Integer newValue = Integer.parseInt(inputText);
           if (newValue < 0)
@@ -204,16 +204,16 @@ class GameSettingsRow extends DynamicRow {
           MapXMLHelper.playerSequence.put(currentRowName,
               Triple.of(oldTriple.getFirst(), oldTriple.getSecond(), newValue));
         } catch (NumberFormatException e) {
-          tMinNumber.setText("0");
+          textFieldMinNumber.setText("0");
           JOptionPane.showMessageDialog(stepActionPanel, "'" + inputText + "' is no integer value.", "Input error",
               JOptionPane.ERROR_MESSAGE);
           parentRowPanel.setDataIsConsistent(false);
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-              tMinNumber.updateUI();
-              tMinNumber.requestFocus();
-              tMinNumber.selectAll();
+              textFieldMinNumber.updateUI();
+              textFieldMinNumber.requestFocus();
+              textFieldMinNumber.selectAll();
             }
           });
           return;
@@ -223,19 +223,19 @@ class GameSettingsRow extends DynamicRow {
 
       @Override
       public void focusGained(FocusEvent arg0) {
-        tMinNumber.selectAll();
+        textFieldMinNumber.selectAll();
       }
     });
 
-    dimension = tMaxNumber.getPreferredSize();
+    dimension = textFieldMaxNumber.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_SMALL;
-    tMaxNumber.setPreferredSize(dimension);
-    tMaxNumber.setEnabled(!isBoolean);
-    tMaxNumber.addFocusListener(new FocusListener() {
+    textFieldMaxNumber.setPreferredSize(dimension);
+    textFieldMaxNumber.setEnabled(!isBoolean);
+    textFieldMaxNumber.addFocusListener(new FocusListener() {
 
       @Override
       public void focusLost(FocusEvent arg0) {
-        String inputText = tMaxNumber.getText().trim();
+        String inputText = textFieldMaxNumber.getText().trim();
         try {
           final Integer newValue = Integer.parseInt(inputText);
           if (newValue < 0)
@@ -244,16 +244,16 @@ class GameSettingsRow extends DynamicRow {
           MapXMLHelper.playerSequence.put(currentRowName,
               Triple.of(oldTriple.getFirst(), oldTriple.getSecond(), newValue));
         } catch (NumberFormatException e) {
-          tMaxNumber.setText("0");
+          textFieldMaxNumber.setText("0");
           JOptionPane.showMessageDialog(stepActionPanel, "'" + inputText + "' is no integer value.", "Input error",
               JOptionPane.ERROR_MESSAGE);
           parentRowPanel.setDataIsConsistent(false);
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-              tMaxNumber.updateUI();
-              tMaxNumber.requestFocus();
-              tMaxNumber.selectAll();
+              textFieldMaxNumber.updateUI();
+              textFieldMaxNumber.requestFocus();
+              textFieldMaxNumber.selectAll();
             }
           });
           return;
@@ -263,7 +263,7 @@ class GameSettingsRow extends DynamicRow {
 
       @Override
       public void focusGained(FocusEvent arg0) {
-        tMaxNumber.selectAll();
+        textFieldMaxNumber.selectAll();
       }
     });
   }
@@ -271,33 +271,33 @@ class GameSettingsRow extends DynamicRow {
   @Override
   protected ArrayList<JComponent> getComponentList() {
     final ArrayList<JComponent> componentList = new ArrayList<JComponent>();
-    componentList.add(tValue);
-    componentList.add(tSettingName);
-    componentList.add(tEditable);
-    componentList.add(tMinNumber);
-    componentList.add(tMaxNumber);
+    componentList.add(textFieldValue);
+    componentList.add(comboBoxSettingName);
+    componentList.add(comboBoxEditable);
+    componentList.add(textFieldMinNumber);
+    componentList.add(textFieldMaxNumber);
     return componentList;
   }
 
   @Override
   public void addToComponent(final JComponent parent, final GridBagConstraints gbc_template) {
-    parent.add(tSettingName, gbc_template);
+    parent.add(comboBoxSettingName, gbc_template);
 
     final GridBagConstraints gbc_tValue = (GridBagConstraints) gbc_template.clone();
     gbc_tValue.gridx = 1;
-    parent.add(tValue, gbc_tValue);
+    parent.add(textFieldValue, gbc_tValue);
 
     final GridBagConstraints gbc_tEditable = (GridBagConstraints) gbc_template.clone();
     gbc_tEditable.gridx = 2;
-    parent.add(tEditable, gbc_tEditable);
+    parent.add(comboBoxEditable, gbc_tEditable);
 
     final GridBagConstraints gbc_tMinNumber = (GridBagConstraints) gbc_template.clone();
     gbc_tMinNumber.gridx = 3;
-    parent.add(tMinNumber, gbc_tMinNumber);
+    parent.add(textFieldMinNumber, gbc_tMinNumber);
 
     final GridBagConstraints gbc_tMaxNumber = (GridBagConstraints) gbc_template.clone();
     gbc_tMaxNumber.gridx = 4;
-    parent.add(tMaxNumber, gbc_tMaxNumber);
+    parent.add(textFieldMaxNumber, gbc_tMaxNumber);
 
     final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
     gridBadConstButtonRemove.gridx = 5;
@@ -307,11 +307,11 @@ class GameSettingsRow extends DynamicRow {
   @Override
   protected void adaptRowSpecifics(final DynamicRow newRow) {
     final GameSettingsRow newGameSettingsRow = (GameSettingsRow) newRow;
-    this.tSettingName.setSelectedIndex(newGameSettingsRow.tSettingName.getSelectedIndex());
-    this.tValue.setText(newGameSettingsRow.tValue.getText());
-    this.tEditable.setSelectedIndex(newGameSettingsRow.tEditable.getSelectedIndex());
-    this.tMinNumber.setText(newGameSettingsRow.tMinNumber.getText());
-    this.tMaxNumber.setText(newGameSettingsRow.tMaxNumber.getText());
+    this.comboBoxSettingName.setSelectedIndex(newGameSettingsRow.comboBoxSettingName.getSelectedIndex());
+    this.textFieldValue.setText(newGameSettingsRow.textFieldValue.getText());
+    this.comboBoxEditable.setSelectedIndex(newGameSettingsRow.comboBoxEditable.getSelectedIndex());
+    this.textFieldMinNumber.setText(newGameSettingsRow.textFieldMinNumber.getText());
+    this.textFieldMaxNumber.setText(newGameSettingsRow.textFieldMaxNumber.getText());
   }
 
   @Override

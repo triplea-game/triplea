@@ -32,7 +32,7 @@ import util.triplea.MapXMLCreator.TerritoryDefinitionDialog.DEFINITION;
 
 
 final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
-  public static final double piHalf = Math.PI / 2;
+  private static final double piHalf = Math.PI / 2;
   private static final String NEW_CANAL_OPTION = "<new Canal>";
 
   private Set<String> selectedLandTerritories = new TreeSet<String>();

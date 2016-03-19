@@ -16,8 +16,8 @@ import javax.swing.SwingUtilities;
 
 class UnitAttatchmentsRow extends DynamicRow {
 
-  private JTextField tAttatchmentName;
-  private JTextField tValue;
+  private JTextField textFieldAttatchmentName;
+  private JTextField textFieldValue;
   private String unitName;
 
   public UnitAttatchmentsRow(final DynamicRowsPanel parentRowPanel, final JPanel stepActionPanel, final String unitName,
@@ -26,17 +26,17 @@ class UnitAttatchmentsRow extends DynamicRow {
 
     this.unitName = unitName;
 
-    tAttatchmentName = new JTextField(attatchmentName);
-    Dimension dimension = tAttatchmentName.getPreferredSize();
+    textFieldAttatchmentName = new JTextField(attatchmentName);
+    Dimension dimension = textFieldAttatchmentName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_LARGE;
-    tAttatchmentName.setPreferredSize(dimension);
-    tAttatchmentName.addFocusListener(new FocusListener() {
+    textFieldAttatchmentName.setPreferredSize(dimension);
+    textFieldAttatchmentName.addFocusListener(new FocusListener() {
 
       String currentValue = attatchmentName;
 
       @Override
       public void focusLost(FocusEvent e) {
-        String newAttatchmentName = (String) tAttatchmentName.getText().trim();
+        String newAttatchmentName = (String) textFieldAttatchmentName.getText().trim();
         if (!currentValue.equals(newAttatchmentName)) {
           final String newUnitAttatchmentKey = newAttatchmentName + "_" + unitName;
           if (MapXMLHelper.unitAttatchments.containsKey(newUnitAttatchmentKey)) {
@@ -49,7 +49,7 @@ class UnitAttatchmentsRow extends DynamicRow {
               public void run() {
                 stepActionPanel.revalidate();
                 stepActionPanel.repaint();
-                tAttatchmentName.requestFocus();
+                textFieldAttatchmentName.requestFocus();
               }
             });
             return;
@@ -66,35 +66,35 @@ class UnitAttatchmentsRow extends DynamicRow {
 
       @Override
       public void focusGained(FocusEvent e) {
-        tAttatchmentName.selectAll();
+        textFieldAttatchmentName.selectAll();
       }
     });
 
 
-    tValue = new JTextField(value);
-    dimension = tValue.getPreferredSize();
+    textFieldValue = new JTextField(value);
+    dimension = textFieldValue.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_SMALL;
-    tValue.setPreferredSize(dimension);
-    tValue.addFocusListener(new FocusListener() {
+    textFieldValue.setPreferredSize(dimension);
+    textFieldValue.addFocusListener(new FocusListener() {
 
       String prevValue = value;
 
       @Override
       public void focusLost(FocusEvent e) {
-        String inputText = tValue.getText().trim().toLowerCase();
+        String inputText = textFieldValue.getText().trim().toLowerCase();
         try {
           if (Integer.parseInt(inputText) < 0)
             throw new NumberFormatException();
         } catch (NumberFormatException nfe) {
           JOptionPane.showMessageDialog(stepActionPanel, "'" + inputText + "' is no integer value.", "Input error",
               JOptionPane.ERROR_MESSAGE);
-          tValue.setText(prevValue);
+          textFieldValue.setText(prevValue);
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-              tValue.updateUI();
-              tValue.requestFocus();
-              tValue.selectAll();
+              textFieldValue.updateUI();
+              textFieldValue.requestFocus();
+              textFieldValue.selectAll();
             }
           });
           return;
@@ -108,7 +108,7 @@ class UnitAttatchmentsRow extends DynamicRow {
 
       @Override
       public void focusGained(FocusEvent e) {
-        tValue.selectAll();
+        textFieldValue.selectAll();
       }
     });
   }
@@ -116,18 +116,18 @@ class UnitAttatchmentsRow extends DynamicRow {
   @Override
   protected ArrayList<JComponent> getComponentList() {
     final ArrayList<JComponent> componentList = new ArrayList<JComponent>();
-    componentList.add(tAttatchmentName);
-    componentList.add(tValue);
+    componentList.add(textFieldAttatchmentName);
+    componentList.add(textFieldValue);
     return componentList;
   }
 
   @Override
   public void addToComponent(final JComponent parent, final GridBagConstraints gbc_template) {
-    parent.add(tAttatchmentName, gbc_template);
+    parent.add(textFieldAttatchmentName, gbc_template);
 
     final GridBagConstraints gbc_tValue = (GridBagConstraints) gbc_template.clone();
     gbc_tValue.gridx = 1;
-    parent.add(tValue, gbc_tValue);
+    parent.add(textFieldValue, gbc_tValue);
 
     final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
     gridBadConstButtonRemove.gridx = 2;
@@ -137,8 +137,8 @@ class UnitAttatchmentsRow extends DynamicRow {
   @Override
   protected void adaptRowSpecifics(final DynamicRow newRow) {
     final UnitAttatchmentsRow newRowPlayerAndAlliancesRow = (UnitAttatchmentsRow) newRow;
-    this.tAttatchmentName.setText(newRowPlayerAndAlliancesRow.tAttatchmentName.getText());
-    this.tValue.setText(newRowPlayerAndAlliancesRow.tValue.getText());
+    this.textFieldAttatchmentName.setText(newRowPlayerAndAlliancesRow.textFieldAttatchmentName.getText());
+    this.textFieldValue.setText(newRowPlayerAndAlliancesRow.textFieldValue.getText());
   }
 
   @Override

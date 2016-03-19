@@ -21,30 +21,30 @@ import games.strategy.util.Triple;
 
 
 class GameSequenceRow extends DynamicRow {
-  private JTextField tSequenceName;
-  private JTextField tClassName;
-  private JTextField tDisplayName;
+  private JTextField textFieldSequenceName;
+  private JTextField textFieldClassName;
+  private JTextField textFieldDisplayName;
 
   public GameSequenceRow(final DynamicRowsPanel parentRowPanel, final JPanel stepActionPanel, final String sequenceName,
       final String className, final String displayName) {
     super(sequenceName, parentRowPanel, stepActionPanel);
 
-    tSequenceName = new JTextField(sequenceName);
-    tClassName = new JTextField(className);
-    tDisplayName = new JTextField(displayName);
+    textFieldSequenceName = new JTextField(sequenceName);
+    textFieldClassName = new JTextField(className);
+    textFieldDisplayName = new JTextField(displayName);
 
-    Dimension dimension = tSequenceName.getPreferredSize();
+    Dimension dimension = textFieldSequenceName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_MEDIUM;
-    tSequenceName.setPreferredSize(dimension);
-    tSequenceName.addFocusListener(new FocusListener() {
+    textFieldSequenceName.setPreferredSize(dimension);
+    textFieldSequenceName.addFocusListener(new FocusListener() {
 
       @Override
       public void focusLost(FocusEvent arg0) {
-        String inputText = tSequenceName.getText().trim();
+        String inputText = textFieldSequenceName.getText().trim();
         if (currentRowName.equals(inputText))
           return;
         if (MapXMLHelper.gamePlaySequence.containsKey(inputText)) {
-          tSequenceName.selectAll();
+          textFieldSequenceName.selectAll();
           JOptionPane.showMessageDialog(stepActionPanel, "Sequence '" + inputText + "' already exists.", "Input error",
               JOptionPane.ERROR_MESSAGE);
           parentRowPanel.setDataIsConsistent(false);
@@ -52,7 +52,7 @@ class GameSequenceRow extends DynamicRow {
 
             @Override
             public void run() {
-              tSequenceName.requestFocus();
+              textFieldSequenceName.requestFocus();
             }
           });
           return;
@@ -82,41 +82,41 @@ class GameSequenceRow extends DynamicRow {
 
       @Override
       public void focusGained(FocusEvent arg0) {
-        tSequenceName.selectAll();
+        textFieldSequenceName.selectAll();
       }
     });
 
-    dimension = tClassName.getPreferredSize();
+    dimension = textFieldClassName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_LARGE;
-    tClassName.setPreferredSize(dimension);
-    tClassName.addFocusListener(new FocusListener() {
+    textFieldClassName.setPreferredSize(dimension);
+    textFieldClassName.addFocusListener(new FocusListener() {
 
       @Override
       public void focusLost(FocusEvent arg0) {
-        String inputText = tClassName.getText().trim();
+        String inputText = textFieldClassName.getText().trim();
         MapXMLHelper.gamePlaySequence.get(sequenceName).set(0, inputText);
       }
 
       @Override
       public void focusGained(FocusEvent arg0) {
-        tClassName.selectAll();
+        textFieldClassName.selectAll();
       }
     });
 
-    dimension = tDisplayName.getPreferredSize();
+    dimension = textFieldDisplayName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_LARGE;
-    tDisplayName.setPreferredSize(dimension);
-    tDisplayName.addFocusListener(new FocusListener() {
+    textFieldDisplayName.setPreferredSize(dimension);
+    textFieldDisplayName.addFocusListener(new FocusListener() {
 
       @Override
       public void focusLost(FocusEvent arg0) {
-        String inputText = tDisplayName.getText().trim();
+        String inputText = textFieldDisplayName.getText().trim();
         MapXMLHelper.gamePlaySequence.get(sequenceName).set(1, inputText);
       }
 
       @Override
       public void focusGained(FocusEvent arg0) {
-        tDisplayName.selectAll();
+        textFieldDisplayName.selectAll();
       }
     });
 
@@ -125,23 +125,23 @@ class GameSequenceRow extends DynamicRow {
   @Override
   protected ArrayList<JComponent> getComponentList() {
     final ArrayList<JComponent> componentList = new ArrayList<JComponent>();
-    componentList.add(tSequenceName);
-    componentList.add(tClassName);
-    componentList.add(tDisplayName);
+    componentList.add(textFieldSequenceName);
+    componentList.add(textFieldClassName);
+    componentList.add(textFieldDisplayName);
     return componentList;
   }
 
   @Override
   public void addToComponent(final JComponent parent, final GridBagConstraints gbc_template) {
-    parent.add(tSequenceName, gbc_template);
+    parent.add(textFieldSequenceName, gbc_template);
 
     final GridBagConstraints gbc_tClassName = (GridBagConstraints) gbc_template.clone();
     gbc_tClassName.gridx = 1;
-    parent.add(tClassName, gbc_tClassName);
+    parent.add(textFieldClassName, gbc_tClassName);
 
     final GridBagConstraints gbc_tDisplayName = (GridBagConstraints) gbc_template.clone();
     gbc_tDisplayName.gridx = 2;
-    parent.add(tDisplayName, gbc_tDisplayName);
+    parent.add(textFieldDisplayName, gbc_tDisplayName);
 
     final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
     gridBadConstButtonRemove.gridx = 3;
@@ -151,9 +151,9 @@ class GameSequenceRow extends DynamicRow {
   @Override
   protected void adaptRowSpecifics(final DynamicRow newRow) {
     final GameSequenceRow newRowPlayerAndAlliancesRow = (GameSequenceRow) newRow;
-    this.tSequenceName.setText(newRowPlayerAndAlliancesRow.tSequenceName.getText());
-    this.tClassName.setText(newRowPlayerAndAlliancesRow.tClassName.getText());
-    this.tDisplayName.setText(newRowPlayerAndAlliancesRow.tDisplayName.getText());
+    this.textFieldSequenceName.setText(newRowPlayerAndAlliancesRow.textFieldSequenceName.getText());
+    this.textFieldClassName.setText(newRowPlayerAndAlliancesRow.textFieldClassName.getText());
+    this.textFieldDisplayName.setText(newRowPlayerAndAlliancesRow.textFieldDisplayName.getText());
   }
 
   @Override

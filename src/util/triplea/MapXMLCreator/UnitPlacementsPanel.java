@@ -225,16 +225,16 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
         final String unitType = placement.getKey();
         this.add(new JLabel(unitType), new GridBagConstraints(1, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
             GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
-        final JTextField tCount = new JTextField(placement.getValue().toString());
-        tCount.setPreferredSize(textFieldDim);
-        countFields[yIndex - 1] = tCount;
-        tCount.addFocusListener(new FocusListener() {
+        final JTextField textFieldCount = new JTextField(placement.getValue().toString());
+        textFieldCount.setPreferredSize(textFieldDim);
+        countFields[yIndex - 1] = textFieldCount;
+        textFieldCount.addFocusListener(new FocusListener() {
           final String unitTypeString = unitType;
-          String prevValue = tCount.getText();
+          String prevValue = textFieldCount.getText();
 
           @Override
           public void focusLost(FocusEvent arg0) {
-            final String newValue = tCount.getText().trim();
+            final String newValue = textFieldCount.getText().trim();
             if (newValue.equals(prevValue))
               return;
             final Integer newValueInteger;
@@ -245,12 +245,12 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
             } catch (NumberFormatException nfe) {
               JOptionPane.showMessageDialog(me, "'" + newValue + "' is no valid integer value.", "Input error",
                   JOptionPane.ERROR_MESSAGE);
-              tCount.setText(prevValue);
+              textFieldCount.setText(prevValue);
               SwingUtilities.invokeLater(new Runnable() {
 
                 @Override
                 public void run() {
-                  tCount.requestFocus();
+                  textFieldCount.requestFocus();
                 }
               });
               return;
@@ -266,10 +266,10 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
 
           @Override
           public void focusGained(FocusEvent arg0) {
-            tCount.selectAll();
+            textFieldCount.selectAll();
           }
         });
-        this.add(tCount, new GridBagConstraints(2, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
+        this.add(textFieldCount, new GridBagConstraints(2, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
             GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 0), 0, 0));
         yIndex++;
       }
