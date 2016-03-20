@@ -18,13 +18,10 @@ class UnitAttatchmentsRow extends DynamicRow {
 
   private JTextField textFieldAttatchmentName;
   private JTextField textFieldValue;
-  private String unitName;
 
   public UnitAttatchmentsRow(final DynamicRowsPanel parentRowPanel, final JPanel stepActionPanel, final String unitName,
       final String attatchmentName, final String value) {
     super(attatchmentName + "_" + unitName, parentRowPanel, stepActionPanel);
-
-    this.unitName = unitName;
 
     textFieldAttatchmentName = new JTextField(attatchmentName);
     Dimension dimension = textFieldAttatchmentName.getPreferredSize();

@@ -14,7 +14,6 @@ import java.util.StringTokenizer;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.util.Match;
 
 /**
