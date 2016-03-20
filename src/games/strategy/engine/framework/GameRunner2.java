@@ -150,19 +150,6 @@ public class GameRunner2 {
       ErrorHandler.registerExceptionHandler();
     })).start();
 
-    s_countDownLatch = new CountDownLatch(1);
-    try {
-      SwingUtilities.invokeAndWait(new Runnable() {
-        @Override
-        public void run() {
-          s_waitWindow = new WaitWindow("TripleA is starting...");
-          s_waitWindow.setVisible(true);
-          s_waitWindow.showWait();
-        }
-      });
-    } catch (final Exception e) {
-      // just don't show the wait window
-    }
     setupProxies();
     (new Thread(() -> checkForUpdates())).start();
     handleCommandLineArgs(args);

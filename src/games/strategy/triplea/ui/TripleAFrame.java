@@ -158,11 +158,7 @@ import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.Util;
-import games.strategy.util.EventThreadJOptionPane;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.LocalizeHTML;
-import games.strategy.util.Match;
-import games.strategy.util.Tuple;
+import games.strategy.util.*;
 
 /**
  * Main frame for the triple a game
@@ -1188,11 +1184,7 @@ public class TripleAFrame extends MainGameFrame {
               dialog.setVisible(false);
               dialog.removeAll();
               dialog.dispose();
-              try {
-                Thread.sleep(500);
-              } catch (final InterruptedException e2) {
-                e2.printStackTrace();
-              }
+              ThreadUtil.sleep(500);
               run();
             }
           }
@@ -1299,11 +1291,7 @@ public class TripleAFrame extends MainGameFrame {
               dialog.setVisible(false);
               dialog.removeAll();
               dialog.dispose();
-              try {
-                Thread.sleep(500);
-              } catch (final InterruptedException e2) {
-                e2.printStackTrace();
-              }
+              ThreadUtil.sleep(500);
               run();
             }
           }
@@ -1396,11 +1384,7 @@ public class TripleAFrame extends MainGameFrame {
               dialog.setVisible(false);
               dialog.removeAll();
               dialog.dispose();
-              try {
-                Thread.sleep(500);
-              } catch (final InterruptedException e2) {
-                e2.printStackTrace();
-              }
+              ThreadUtil.sleep(500);
               run();
             }
           }

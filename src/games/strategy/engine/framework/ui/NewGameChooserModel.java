@@ -152,7 +152,7 @@ public class NewGameChooserModel extends DefaultListModel {
    * Open up a confirmation dialog, if user says yes, delete the map specified by
    * parameter, then show confirmation of deletion.
    */
-  private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map) {
+  private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map, Optional<String> errorDetails) {
     Runnable deleteMapRunnable = () -> {
       final Component parentComponent = MainFrame.getInstance();
       String message = "Could not parse map file correctly, would you like to remove it?\n" + map.getAbsolutePath()
@@ -167,7 +167,11 @@ public class NewGameChooserModel extends DefaultListModel {
           messageType = JOptionPane.INFORMATION_MESSAGE;
           message = "File was deleted successfully.";
         } else if (!deleted && map.exists()) {
-          message = "Unable to delete file, please remove it by hand:\n" + map.getAbsolutePath();
+          message = "Unable to delete file, please remove it in the file system and restart tripleA:\n" + map
+              .getAbsolutePath();
+          if (errorDetails.isPresent()) {
+            message += "\nError details: " + errorDetails;
+          }
         }
         title = "File Removal Result";
         JOptionPane.showMessageDialog(parentComponent, message, title, messageType);
