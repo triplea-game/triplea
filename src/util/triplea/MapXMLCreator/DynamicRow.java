@@ -1,7 +1,6 @@
 package util.triplea.MapXMLCreator;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -50,7 +49,10 @@ public abstract class DynamicRow {
 
         pushUpRowsTo(currentRowName);
 
-        SwingUtilities.invokeLater(() -> { stepActionPanel.revalidate(); stepActionPanel.repaint(); });
+        SwingUtilities.invokeLater(() -> {
+          stepActionPanel.revalidate();
+          stepActionPanel.repaint();
+        });
       }
     });
   }
