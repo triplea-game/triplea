@@ -521,89 +521,105 @@ public class MapXMLHelper {
     final String attachmentType = attatchmentAttr.get("type");
     final String attachmentAttatchTo = attatchmentAttr.get("attatchTo");
     if (attachmentName.equals("techAttatchment") && attachmentType.equals("player")) {
-      final NodeList attatchmentOptionNodes = attatchment.getChildNodes();
-      for (int pr_i = 0; pr_i < attatchmentOptionNodes.getLength(); ++pr_i) {
-        final Node attatchmentOption = attatchmentOptionNodes.item(pr_i);
-        if (attatchmentOption.getNodeName().equals("option")) {
-          final HashMap<String, String> attatchmentOptionAttr = getAttributesMap(attatchmentOption.getAttributes());
-          final ArrayList<String> values = new ArrayList<String>();
-          values.add(attachmentAttatchTo); // playerName
-          values.add(attatchmentOptionAttr.get("value"));
-          technologyDefinitions.put(attatchmentOptionAttr.get("name") + "_" + attachmentAttatchTo, values);
-        }
-      }
+      parseNodeTechAttachment(attatchment, attachmentAttatchTo);
     } else if (attachmentName.equals("unitAttatchment") && attachmentType.equals("unitType")) {
-      final NodeList attatchmentOptionNodes = attatchment.getChildNodes();
-      for (int pr_i = 0; pr_i < attatchmentOptionNodes.getLength(); ++pr_i) {
-        final Node attatchmentOption = attatchmentOptionNodes.item(pr_i);
-        if (attatchmentOption.getNodeName().equals("option")) {
-          final HashMap<String, String> attatchmentOptionAttr = getAttributesMap(attatchmentOption.getAttributes());
-          final ArrayList<String> values = new ArrayList<String>();
-          values.add(attachmentAttatchTo); // unitName
-          values.add(attatchmentOptionAttr.get("value"));
-          unitAttatchments.put(attatchmentOptionAttr.get("name") + "_" + attachmentAttatchTo, values);
-        }
-      }
+      parseNodeUnitAttachment(attatchment, attachmentAttatchTo);
     } else if (attachmentName.equals("canalAttatchment") && attachmentType.equals("territory")) {
-      final NodeList attatchmentOptionNodes = attatchment.getChildNodes();
-
-      Tuple<Set<String>, Set<String>> canalDef = null;
-      String newCanalName = null;
-      SortedSet<String> newLandTerritories = new TreeSet<String>();
-      for (int pr_i = 0; pr_i < attatchmentOptionNodes.getLength(); ++pr_i) {
-        final Node attatchmentOption = attatchmentOptionNodes.item(pr_i);
-        if (attatchmentOption.getNodeName().equals("option")) {
-          final HashMap<String, String> attatchmentOptionAttr = getAttributesMap(attatchmentOption.getAttributes());
-          final String attatOptAttrName = attatchmentOptionAttr.get("name");
-          if (attatOptAttrName.equals("canalName")) {
-            newCanalName = attatchmentOptionAttr.get("value");
-            canalDef = canalDefinitions.get(newCanalName);
-            if (canalDef != null)
-              break;
-          } else if (attatOptAttrName.equals("landTerritories")) {
-            newLandTerritories.addAll(Arrays.asList(attatchmentOptionAttr.get("value").split(":")));
-          }
-        }
-      }
-      if (canalDef == null) {
-        final SortedSet<String> newWaterTerritories = new TreeSet<String>();
-        newWaterTerritories.add(attachmentAttatchTo);
-        canalDefinitions.put(newCanalName, Tuple.of(newWaterTerritories, newLandTerritories));
-      } else
-        canalDef.getFirst().add(attachmentAttatchTo);
+      parseNodeCanalAttachment(attatchment, attachmentAttatchTo);
     } else if (attachmentName.equals("territoryAttatchment") && attachmentType.equals("territory")) {
-      final NodeList attatchmentOptionNodes = attatchment.getChildNodes();
-      for (int pr_i = 0; pr_i < attatchmentOptionNodes.getLength(); ++pr_i) {
-        final Node attatchmentOption = attatchmentOptionNodes.item(pr_i);
-        if (attatchmentOption.getNodeName().equals("option")) {
-          final HashMap<String, String> attatchmentOptionAttr = getAttributesMap(attatchmentOption.getAttributes());
-          final String optionNameAttr = attatchmentOptionAttr.get("name");
-          if (optionNameAttr.equals("production"))
-            territoyProductions.put(attachmentAttatchTo, Integer.parseInt(attatchmentOptionAttr.get("value")));
-          else {
-            HashMap<DEFINITION, Boolean> terrDefinitions = territoryDefintions.get(attachmentAttatchTo);
-            if (terrDefinitions == null) {
-              terrDefinitions = Maps.newHashMap();
-              territoryDefintions.put(attachmentAttatchTo, terrDefinitions);
-            }
-            switch (TerritoryDefinitionDialog.valueOf(optionNameAttr)) {
-              case IS_CAPITAL:
-                terrDefinitions.put(DEFINITION.IS_CAPITAL, true);
-                break;
-              case IS_VICTORY_CITY:
-                terrDefinitions.put(DEFINITION.IS_VICTORY_CITY, true);
-                break;
-              case IS_WATER:
-                terrDefinitions.put(DEFINITION.IS_WATER, true);
-                break;
-              case IMPASSABLE:
-                terrDefinitions.put(DEFINITION.IMPASSABLE, true);
-                break;
-            }
+      parseNodeTerritoryAttachment(attatchment, attachmentAttatchTo);
+    }
+  }
+
+  private static void parseNodeTerritoryAttachment(final Node attatchment, final String attachmentAttatchTo) {
+    final NodeList attatchmentOptionNodes = attatchment.getChildNodes();
+    for (int pr_i = 0; pr_i < attatchmentOptionNodes.getLength(); ++pr_i) {
+      final Node attatchmentOption = attatchmentOptionNodes.item(pr_i);
+      if (attatchmentOption.getNodeName().equals("option")) {
+        final HashMap<String, String> attatchmentOptionAttr = getAttributesMap(attatchmentOption.getAttributes());
+        final String optionNameAttr = attatchmentOptionAttr.get("name");
+        if (optionNameAttr.equals("production"))
+          territoyProductions.put(attachmentAttatchTo, Integer.parseInt(attatchmentOptionAttr.get("value")));
+        else {
+          HashMap<DEFINITION, Boolean> terrDefinitions = territoryDefintions.get(attachmentAttatchTo);
+          if (terrDefinitions == null) {
+            terrDefinitions = Maps.newHashMap();
+            territoryDefintions.put(attachmentAttatchTo, terrDefinitions);
+          }
+          switch (TerritoryDefinitionDialog.valueOf(optionNameAttr)) {
+            case IS_CAPITAL:
+              terrDefinitions.put(DEFINITION.IS_CAPITAL, true);
+              break;
+            case IS_VICTORY_CITY:
+              terrDefinitions.put(DEFINITION.IS_VICTORY_CITY, true);
+              break;
+            case IS_WATER:
+              terrDefinitions.put(DEFINITION.IS_WATER, true);
+              break;
+            case IMPASSABLE:
+              terrDefinitions.put(DEFINITION.IMPASSABLE, true);
+              break;
           }
         }
       }
     }
+  }
+
+  private static void parseNodeTechAttachment(final Node attatchment, final String attachmentAttatchTo) {
+    final NodeList attatchmentOptionNodes = attatchment.getChildNodes();
+    for (int pr_i = 0; pr_i < attatchmentOptionNodes.getLength(); ++pr_i) {
+      final Node attatchmentOption = attatchmentOptionNodes.item(pr_i);
+      if (attatchmentOption.getNodeName().equals("option")) {
+        final HashMap<String, String> attatchmentOptionAttr = getAttributesMap(attatchmentOption.getAttributes());
+        final ArrayList<String> values = new ArrayList<String>();
+        values.add(attachmentAttatchTo); // playerName
+        values.add(attatchmentOptionAttr.get("value"));
+        technologyDefinitions.put(attatchmentOptionAttr.get("name") + "_" + attachmentAttatchTo, values);
+      }
+    }
+  }
+
+  private static void parseNodeUnitAttachment(final Node attatchment, final String attachmentAttatchTo) {
+    final NodeList attatchmentOptionNodes = attatchment.getChildNodes();
+    for (int pr_i = 0; pr_i < attatchmentOptionNodes.getLength(); ++pr_i) {
+      final Node attatchmentOption = attatchmentOptionNodes.item(pr_i);
+      if (attatchmentOption.getNodeName().equals("option")) {
+        final HashMap<String, String> attatchmentOptionAttr = getAttributesMap(attatchmentOption.getAttributes());
+        final ArrayList<String> values = new ArrayList<String>();
+        values.add(attachmentAttatchTo); // unitName
+        values.add(attatchmentOptionAttr.get("value"));
+        unitAttatchments.put(attatchmentOptionAttr.get("name") + "_" + attachmentAttatchTo, values);
+      }
+    }
+  }
+
+  private static void parseNodeCanalAttachment(final Node attatchment, final String attachmentAttatchTo) {
+    final NodeList attatchmentOptionNodes = attatchment.getChildNodes();
+
+    Tuple<Set<String>, Set<String>> canalDef = null;
+    String newCanalName = null;
+    SortedSet<String> newLandTerritories = new TreeSet<String>();
+    for (int pr_i = 0; pr_i < attatchmentOptionNodes.getLength(); ++pr_i) {
+      final Node attatchmentOption = attatchmentOptionNodes.item(pr_i);
+      if (attatchmentOption.getNodeName().equals("option")) {
+        final HashMap<String, String> attatchmentOptionAttr = getAttributesMap(attatchmentOption.getAttributes());
+        final String attatOptAttrName = attatchmentOptionAttr.get("name");
+        if (attatOptAttrName.equals("canalName")) {
+          newCanalName = attatchmentOptionAttr.get("value");
+          canalDef = canalDefinitions.get(newCanalName);
+          if (canalDef != null)
+            break;
+        } else if (attatOptAttrName.equals("landTerritories")) {
+          newLandTerritories.addAll(Arrays.asList(attatchmentOptionAttr.get("value").split(":")));
+        }
+      }
+    }
+    if (canalDef == null) {
+      final SortedSet<String> newWaterTerritories = new TreeSet<String>();
+      newWaterTerritories.add(attachmentAttatchTo);
+      canalDefinitions.put(newCanalName, Tuple.of(newWaterTerritories, newLandTerritories));
+    } else
+      canalDef.getFirst().add(attachmentAttatchTo);
   }
 
   private static void parseProductionRuleNode(final NodeList productionRuleChildNodes) {
@@ -661,38 +677,46 @@ public class MapXMLHelper {
       final Node mapChildNode = mapChildNodes.item(map_i);
       final String mapChildNodeName = mapChildNode.getNodeName();
       if (mapChildNodeName.equals("territory")) {
-        final NamedNodeMap terrAttrNodes = mapChildNode.getAttributes();
-        String terrName = null;
-        final HashMap<DEFINITION, Boolean> terrDef = Maps.newHashMap();
-        for (int terrAttr_i = 0; terrAttr_i < terrAttrNodes.getLength(); ++terrAttr_i) {
-          final Node terrAttrNode = terrAttrNodes.item(terrAttr_i);
-          if (terrAttrNode.getNodeName().equals("name")) {
-            terrName = terrAttrNode.getNodeValue();
-          } else {
-            terrDef.put(TerritoryDefinitionDialog.valueOf(terrAttrNode.getNodeName()),
-                Boolean.valueOf(terrAttrNode.getNodeValue()));
-          }
-        }
-        territoryDefintions.put(terrName, terrDef);
+        parseNodeTerritory(mapChildNode);
       } else if (mapChildNodeName.equals("connection")) {
-        final NamedNodeMap connectionAttrNodes = mapChildNode.getAttributes();
-        String t1Name = connectionAttrNodes.item(0).getNodeValue();
-        String t2Name = connectionAttrNodes.item(1).getNodeValue();
-        if (t1Name.compareTo(t2Name) > 0) {
-          final String swapHelper = t1Name;
-          t1Name = t2Name;
-          t2Name = swapHelper;
-        }
-        Set<String> t1Connections = territoryConnections.get(t1Name);
-        if (t1Connections != null)
-          t1Connections.add(t2Name);
-        else {
-          t1Connections = Sets.newLinkedHashSet();
-          t1Connections.add(t2Name);
-          territoryConnections.put(t1Name, t1Connections);
-        }
+        parseNodeConnection(mapChildNode);
       }
     }
+  }
+
+  private static void parseNodeConnection(final Node mapChildNode) {
+    final NamedNodeMap connectionAttrNodes = mapChildNode.getAttributes();
+    String t1Name = connectionAttrNodes.item(0).getNodeValue();
+    String t2Name = connectionAttrNodes.item(1).getNodeValue();
+    if (t1Name.compareTo(t2Name) > 0) {
+      final String swapHelper = t1Name;
+      t1Name = t2Name;
+      t2Name = swapHelper;
+    }
+    Set<String> t1Connections = territoryConnections.get(t1Name);
+    if (t1Connections != null)
+      t1Connections.add(t2Name);
+    else {
+      t1Connections = Sets.newLinkedHashSet();
+      t1Connections.add(t2Name);
+      territoryConnections.put(t1Name, t1Connections);
+    }
+  }
+
+  private static void parseNodeTerritory(final Node mapChildNode) {
+    final NamedNodeMap terrAttrNodes = mapChildNode.getAttributes();
+    String terrName = null;
+    final HashMap<DEFINITION, Boolean> terrDef = Maps.newHashMap();
+    for (int terrAttr_i = 0; terrAttr_i < terrAttrNodes.getLength(); ++terrAttr_i) {
+      final Node terrAttrNode = terrAttrNodes.item(terrAttr_i);
+      if (terrAttrNode.getNodeName().equals("name")) {
+        terrName = terrAttrNode.getNodeValue();
+      } else {
+        terrDef.put(TerritoryDefinitionDialog.valueOf(terrAttrNode.getNodeName()),
+            Boolean.valueOf(terrAttrNode.getNodeValue()));
+      }
+    }
+    territoryDefintions.put(terrName, terrDef);
   }
 
   static void saveXML() {
@@ -892,78 +916,100 @@ public class MapXMLHelper {
       final Element attatchmentList) {
     final Element attatchmentTemplate = doc.createElement("attatchment");
     if (!technologyDefinitions.isEmpty()) {
-      attatchmentTemplate.setAttribute("name", "techAttatchment");
-      attatchmentTemplate.setAttribute("javaClass", "games.strategy.triplea.attatchments.TechAttachment");
-      attatchmentTemplate.setAttribute("type", "player");
+      setAttachmentTemplateAttributes(attatchmentTemplate, "techAttatchment",
+          "games.strategy.triplea.attatchments.TechAttachment", "player");
       writeAttatchmentNodes(doc, attatchmentList, technologyDefinitions, attatchmentTemplate);
     }
     if (!unitAttatchments.isEmpty()) {
-      attatchmentTemplate.setAttribute("name", "unitAttatchment");
-      attatchmentTemplate.setAttribute("javaClass", "games.strategy.triplea.attatchments.UnitAttachment");
-      attatchmentTemplate.setAttribute("type", "unitType");
+      setAttachmentTemplateAttributes(attatchmentTemplate, "unitAttatchment",
+          "games.strategy.triplea.attatchments.UnitAttachment", "unitType");
       writeAttatchmentNodes(doc, attatchmentList, unitAttatchments, attatchmentTemplate);
     }
     if (territoryAttatchmentNeeded) {
-      attatchmentTemplate.setAttribute("name", "territoryAttatchment");
-      attatchmentTemplate.setAttribute("javaClass", "games.strategy.triplea.attatchments.TerritoryAttachment");
-      attatchmentTemplate.setAttribute("type", "territory");
-      Map<String, List<String>> territoryAttatchments = Maps.newLinkedHashMap();
-      for (final Entry<String, HashMap<DEFINITION, Boolean>> territoryDefinition : territoryDefintions.entrySet()) {
-        final String territoryName = territoryDefinition.getKey();
-        for (final Entry<DEFINITION, Boolean> definition : territoryDefinition.getValue().entrySet()) {
-          if (definition.getValue() == Boolean.TRUE) {
-            final ArrayList<String> attatchmentOptions = new ArrayList<String>();
-            attatchmentOptions.add(territoryName);
-            attatchmentOptions.add("true");
-            // TODO: handle capital different based on owner
-            // owner defined (step 13) only after territory definitions (step 2)
-            // <option name="capital" value="Italians"/>
-            territoryAttatchments.put(
-                TerritoryDefinitionDialog.getDefinitionString(definition.getKey()) + "_" + territoryName,
-                attatchmentOptions);
-          }
-        }
-      }
-      for (final Entry<String, Integer> productionEntry : territoyProductions.entrySet()) {
-        final Integer production = productionEntry.getValue();
-        if (production > 0) {
-          final String territoryName = productionEntry.getKey();
-          final ArrayList<String> attatchmentOptions = new ArrayList<String>();
-          attatchmentOptions.add(territoryName);
-          attatchmentOptions.add(production.toString());
-          territoryAttatchments.put("production_" + territoryName, attatchmentOptions);
-        }
-      }
-      writeAttatchmentNodes(doc, attatchmentList, territoryAttatchments, attatchmentTemplate);
+      setAttachmentTemplateAttributes(attatchmentTemplate, "territoryAttatchment",
+          "games.strategy.triplea.attatchments.TerritoryAttachment", "territory");
+      writeAttatchmentNodes(doc, attatchmentList, getTerritoryAttachments(), attatchmentTemplate);
     }
     if (!canalDefinitions.isEmpty()) {
-      attatchmentTemplate.setAttribute("name", "canalAttatchment");
-      attatchmentTemplate.setAttribute("javaClass", "games.strategy.triplea.attatchments.CanalAttachment");
-      attatchmentTemplate.setAttribute("type", "territory");
-      for (final Entry<String, Tuple<Set<String>, Set<String>>> canalDefEntry : canalDefinitions
-          .entrySet()) {
-        final Tuple<Set<String>, Set<String>> canalDef = canalDefEntry.getValue();
-        Iterator<String> iter_landTerrs = canalDef.getSecond().iterator();
-        final StringBuilder sb = new StringBuilder(iter_landTerrs.next());
-        while (iter_landTerrs.hasNext())
-          sb.append(":").append(iter_landTerrs.next());
-        final String landTerritories = sb.toString();
+      setAttachmentTemplateAttributes(attatchmentTemplate, "canalAttatchment",
+          "games.strategy.triplea.attatchments.CanalAttachment", "territory");
+      addCanalDefinitionsAttachmentNodes(doc, attatchmentList, attatchmentTemplate);
+      writeAttatchmentNodes(doc, attatchmentList, unitAttatchments, attatchmentTemplate);
+    }
+  }
 
-        final Element canalOptionName = doc.createElement("option");
-        canalOptionName.setAttribute("name", "canalName");
-        canalOptionName.setAttribute("value", canalDefEntry.getKey());
-        attatchmentTemplate.appendChild(canalOptionName);
-        final Element canalOptionLandTerrs = doc.createElement("option");
-        canalOptionLandTerrs.setAttribute("name", "landTerritories");
-        canalOptionLandTerrs.setAttribute("value", landTerritories);
-        attatchmentTemplate.appendChild(canalOptionLandTerrs);
-        for (final String waterTerr : canalDef.getFirst()) {
-          final Element canalAttatchment = (Element) attatchmentTemplate.cloneNode(true);
-          canalAttatchment.setAttribute("attatchTo", waterTerr);
-          attatchmentList.appendChild(canalAttatchment);
+
+  private static void setAttachmentTemplateAttributes(final Element attatchmentTemplate, final String name,
+      final String javaClass, final String player) {
+    attatchmentTemplate.setAttribute("name", name);
+    attatchmentTemplate.setAttribute("javaClass", javaClass);
+    attatchmentTemplate.setAttribute("type", player);
+  }
+
+  private static void addCanalDefinitionsAttachmentNodes(Document doc, final Element attatchmentList,
+      final Element attatchmentTemplate) {
+    for (final Entry<String, Tuple<Set<String>, Set<String>>> canalDefEntry : canalDefinitions
+        .entrySet()) {
+      final Tuple<Set<String>, Set<String>> canalDef = canalDefEntry.getValue();
+      Iterator<String> iter_landTerrs = canalDef.getSecond().iterator();
+      final StringBuilder sb = new StringBuilder(iter_landTerrs.next());
+      while (iter_landTerrs.hasNext())
+        sb.append(":").append(iter_landTerrs.next());
+      final String landTerritories = sb.toString();
+
+      final Element attatchmentTemplateCanal = (Element) attatchmentTemplate.cloneNode(false);
+      final Element canalOptionName = doc.createElement("option");
+      canalOptionName.setAttribute("name", "canalName");
+      canalOptionName.setAttribute("value", canalDefEntry.getKey());
+      attatchmentTemplateCanal.appendChild(canalOptionName);
+      final Element canalOptionLandTerrs = doc.createElement("option");
+      canalOptionLandTerrs.setAttribute("name", "landTerritories");
+      canalOptionLandTerrs.setAttribute("value", landTerritories);
+      attatchmentTemplateCanal.appendChild(canalOptionLandTerrs);
+      for (final String waterTerr : canalDef.getFirst()) {
+        final Element canalAttatchment = (Element) attatchmentTemplateCanal.cloneNode(true);
+        canalAttatchment.setAttribute("attatchTo", waterTerr);
+        attatchmentList.appendChild(canalAttatchment);
+      }
+    }
+  }
+
+  private static Map<String, List<String>> getTerritoryAttachments() {
+    final Map<String, List<String>> territoryAttatchments = Maps.newLinkedHashMap();
+    addAttachmentsFromTerritoryDefinitions(territoryAttatchments);
+    addAttachmentsFromTerritoryProductions(territoryAttatchments);
+    return territoryAttatchments;
+  }
+
+  private static void addAttachmentsFromTerritoryProductions(final Map<String, List<String>> territoryAttatchments) {
+    for (final Entry<String, Integer> productionEntry : territoyProductions.entrySet()) {
+      final Integer production = productionEntry.getValue();
+      if (production > 0) {
+        final String territoryName = productionEntry.getKey();
+        final ArrayList<String> attatchmentOptions = new ArrayList<String>();
+        attatchmentOptions.add(territoryName);
+        attatchmentOptions.add(production.toString());
+        territoryAttatchments.put("production_" + territoryName, attatchmentOptions);
+      }
+    }
+  }
+
+  private static void addAttachmentsFromTerritoryDefinitions(final Map<String, List<String>> territoryAttatchments) {
+    for (final Entry<String, HashMap<DEFINITION, Boolean>> territoryDefinition : territoryDefintions.entrySet()) {
+      final String territoryName = territoryDefinition.getKey();
+      for (final Entry<DEFINITION, Boolean> definition : territoryDefinition.getValue().entrySet()) {
+        if (definition.getValue() == Boolean.TRUE) {
+          final ArrayList<String> attatchmentOptions = new ArrayList<String>();
+          attatchmentOptions.add(territoryName);
+          attatchmentOptions.add("true");
+          // TODO: handle capital different based on owner
+          // owner defined (step 13) only after territory definitions (step 2)
+          // <option name="capital" value="Italians"/>
+          territoryAttatchments.put(
+              TerritoryDefinitionDialog.getDefinitionString(definition.getKey()) + "_" + territoryName,
+              attatchmentOptions);
         }
       }
-      writeAttatchmentNodes(doc, attatchmentList, unitAttatchments, attatchmentTemplate);
     }
   }
 

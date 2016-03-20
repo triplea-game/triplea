@@ -100,8 +100,19 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
       }
     }
 
+    setTerritoryConnections(territoryAreas, scalePixels, minOverlap);
+
+  }
+
+  /**
+   * @param territoryAreas
+   * @param scalePixels
+   * @param minOverlap
+   */
+  private void setTerritoryConnections(final Map<String, List<Area>> territoryAreas, int scalePixels,
+      double minOverlap) {
     MapXMLHelper.clearTerritoryConnections();
-    System.out.print("Now Scanning for Connections ... ");
+    System.out.print("Now scanning for connections ... ");
     // sort so that they are in alphabetic order (makes xml's prettier and easier to update in future)
     final List<String> allTerritories =
         polygons == null ? new ArrayList<String>() : new ArrayList<String>(polygons.keySet());
@@ -134,7 +145,8 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
         MapXMLHelper.putTerritoryConnections(territory, thisTerritoryConnections);
       }
     }
-    System.out.println("finished");
+
+    System.out.println("finished scanning");
   }
 
   private Map<String, List<Area>> getTerritoryAreasFromPolygons() {
@@ -197,13 +209,19 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
       return;
     }
 
-    boolean repaint = false;
     final Point point = e.getPoint();
     final String territoryName = findTerritoryName(point, polygons);
 
     if (territoryName == null)
       return;
 
+    if (needToBeRepainted(territoryName)) {
+      SwingUtilities.invokeLater(() -> imagePanel.repaint());
+    }
+  }
+
+  private boolean needToBeRepainted(final String territoryName) {
+    boolean repaint = false;
     if (!selectedTerritory.isPresent() || selectedTerritory.equals(territoryName)) {
       selectedTerritory = Optional.of(territoryName);
       repaint = true;
@@ -225,8 +243,6 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
       selectedTerritory = null;
       repaint = true;
     }
-    if (repaint) {
-      SwingUtilities.invokeLater(() -> imagePanel.repaint());
-    }
+    return repaint;
   }
 }
