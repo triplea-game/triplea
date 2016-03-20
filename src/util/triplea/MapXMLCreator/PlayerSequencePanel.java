@@ -4,19 +4,18 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.TreeSet;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.util.Triple;
 
 
@@ -103,34 +102,30 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
     final JButton buttonAddSequence = new JButton("Add Sequence");
 
     buttonAddSequence.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
-    buttonAddSequence.addActionListener(new AbstractAction("Add Sequence") {
-      private static final long serialVersionUID = 6322566373692205163L;
-
-      public void actionPerformed(final ActionEvent e) {
-        String newSequenceName = JOptionPane.showInputDialog(ownPanel, "Enter a new sequence name:",
-            "Sequence" + (MapXMLHelper.playerSequence.size() + 1));
-        if (newSequenceName == null || newSequenceName.isEmpty())
-          return;
-        if (MapXMLHelper.playerSequence.containsKey(newSequenceName)) {
-          JOptionPane.showMessageDialog(ownPanel, "Sequence '" + newSequenceName + "' already exists.", "Input error",
-              JOptionPane.ERROR_MESSAGE);
-          return;
-        }
-        newSequenceName = newSequenceName.trim();
-
-        final Triple<String, String, Integer> newValue =
-            Triple.of(gameSequenceNames.iterator().next(), playerNames.iterator().next(), 0);
-        MapXMLHelper.putPlayerSequence(newSequenceName, newValue);
-
-        // UI Update
-        setRows((GridBagLayout) ownPanel.getLayout(), MapXMLHelper.playerSequence.size());
-        addRowWith(newSequenceName, gameSequenceNames.iterator().next(), playerNames.iterator().next(), 0);
-        SwingUtilities.invokeLater(() -> {
-          ownPanel.revalidate();
-          ownPanel.repaint();
-        });
+    buttonAddSequence.addActionListener(SwingAction.of("Add Sequence", e -> {
+      String newSequenceName = JOptionPane.showInputDialog(ownPanel, "Enter a new sequence name:",
+          "Sequence" + (MapXMLHelper.playerSequence.size() + 1));
+      if (newSequenceName == null || newSequenceName.isEmpty())
+        return;
+      if (MapXMLHelper.playerSequence.containsKey(newSequenceName)) {
+        JOptionPane.showMessageDialog(ownPanel, "Sequence '" + newSequenceName + "' already exists.", "Input error",
+            JOptionPane.ERROR_MESSAGE);
+        return;
       }
-    });
+      newSequenceName = newSequenceName.trim();
+
+      final Triple<String, String, Integer> newValue =
+          Triple.of(gameSequenceNames.iterator().next(), playerNames.iterator().next(), 0);
+      MapXMLHelper.putPlayerSequence(newSequenceName, newValue);
+
+      // UI Update
+      setRows((GridBagLayout) ownPanel.getLayout(), MapXMLHelper.playerSequence.size());
+      addRowWith(newSequenceName, gameSequenceNames.iterator().next(), playerNames.iterator().next(), 0);
+      SwingUtilities.invokeLater(() -> {
+        ownPanel.revalidate();
+        ownPanel.repaint();
+      });
+    }));
     addButton(buttonAddSequence);
 
     GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelSequenceName.clone();

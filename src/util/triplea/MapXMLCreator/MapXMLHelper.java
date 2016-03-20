@@ -732,7 +732,7 @@ public class MapXMLHelper {
       final Transformer transformer = transformerFactory.newTransformer();
       transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
       transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-      transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, GameParser.dtdFileName);
+      transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, GameParser.DTD_FILE_NAME);
       final DOMSource source = new DOMSource(getXMLDocument());
       final File newFile = new File(fileName);
       final StreamResult result = new StreamResult(newFile);

@@ -4,20 +4,19 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import games.strategy.common.swing.SwingAction;
 import util.image.FileOpen;
 
 
@@ -158,33 +157,29 @@ public class MapPropertiesPanel {
     });
     stepActionPanel.add(textFieldMapImageFile, MapXMLHelper.getGBCCloneWith(gridBadConstLabelMapName, 1, 4));
 
-    buttonSelectMapImageFile.addActionListener(new AbstractAction("Select Map Image File") {
-      private static final long serialVersionUID = 3918797244306320614L;
-
-      public void actionPerformed(final ActionEvent e) {
-        selectMapImageFile();
-        if (MapXMLCreator.mapImageFile != null) {
-          textFieldMapImageFile.setText(MapXMLCreator.mapImageFile.getAbsolutePath());
-          if (MapXMLCreator.mapFolderLocation != null && MapXMLCreator.mapCentersFile == null) {
-            final File fileGuess = new File(MapXMLCreator.mapFolderLocation, "centers.txt");
-            if (fileGuess.exists()
-                && JOptionPane.showConfirmDialog(new JPanel(),
-                    "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories names?",
-                    "File Suggestion", 1) == 0) {
-              MapXMLCreator.mapCentersFile = fileGuess;
-              textFieldCentersFile.setText(MapXMLCreator.mapCentersFile.getAbsolutePath());
-              textFieldWaterFilter.setEnabled(true);
-            }
-          }
-          if (MapXMLCreator.mapImageFile != null && textFieldMapName.getText().isEmpty()) {
-            String mapFileName = MapXMLCreator.mapImageFile.getName();
-            mapFileName = mapFileName.substring(0, mapFileName.lastIndexOf("."));
-            textFieldMapName.setText(mapFileName);
-            MapXMLHelper.putXmlStrings("info_@name", mapFileName);
+    buttonSelectMapImageFile.addActionListener(SwingAction.of("Select Map Image File", e -> {
+      selectMapImageFile();
+      if (MapXMLCreator.mapImageFile != null) {
+        textFieldMapImageFile.setText(MapXMLCreator.mapImageFile.getAbsolutePath());
+        if (MapXMLCreator.mapFolderLocation != null && MapXMLCreator.mapCentersFile == null) {
+          final File fileGuess = new File(MapXMLCreator.mapFolderLocation, "centers.txt");
+          if (fileGuess.exists()
+              && JOptionPane.showConfirmDialog(new JPanel(),
+                  "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories names?",
+                  "File Suggestion", 1) == 0) {
+            MapXMLCreator.mapCentersFile = fileGuess;
+            textFieldCentersFile.setText(MapXMLCreator.mapCentersFile.getAbsolutePath());
+            textFieldWaterFilter.setEnabled(true);
           }
         }
+        if (MapXMLCreator.mapImageFile != null && textFieldMapName.getText().isEmpty()) {
+          String mapFileName = MapXMLCreator.mapImageFile.getName();
+          mapFileName = mapFileName.substring(0, mapFileName.lastIndexOf("."));
+          textFieldMapName.setText(mapFileName);
+          MapXMLHelper.putXmlStrings("info_@name", mapFileName);
+        }
       }
-    });
+    }));
     stepActionPanel.add(buttonSelectMapImageFile, MapXMLHelper.getGBCCloneWith(gridBadConstLabelMapNameExample, 2, 4));
 
     // Map Centers File
@@ -214,19 +209,17 @@ public class MapPropertiesPanel {
     });
     stepActionPanel.add(textFieldCentersFile, MapXMLHelper.getGBCCloneWith(gridBadConstLabelMapName, 1, 5));
 
-    buttonSelectCentersFile.addActionListener(new AbstractAction("Select Centers File") {
-      private static final long serialVersionUID = -1634037486288735207L;
-
-      public void actionPerformed(final ActionEvent e) {
-        selectCentersFile();
-        if (MapXMLCreator.mapCentersFile != null)
-          textFieldWaterFilter.setEnabled(true);
+    buttonSelectCentersFile.addActionListener(SwingAction.of("Select Centers File", e -> {
+      selectCentersFile();
+      if (MapXMLCreator.mapCentersFile != null) {
+        textFieldWaterFilter.setEnabled(true);
       }
-    });
+    }));
     stepActionPanel.add(buttonSelectCentersFile, MapXMLHelper.getGBCCloneWith(gridBadConstLabelMapNameExample, 2, 5));
 
     // Water Territory Filter
-    stepActionPanel.add(labelWaterFilter, MapXMLHelper.getGBCCloneWith(gridBadConstLabelMapName, 0, 6, GridBagConstraints.NORTHWEST));
+    stepActionPanel.add(labelWaterFilter,
+        MapXMLHelper.getGBCCloneWith(gridBadConstLabelMapName, 0, 6, GridBagConstraints.NORTHWEST));
 
     textFieldWaterFilter.setEnabled(MapXMLCreator.mapCentersFile != null);
     textFieldWaterFilter.addFocusListener(new FocusListener() {

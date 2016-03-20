@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Shape;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
@@ -19,7 +18,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -27,6 +25,7 @@ import javax.swing.SwingUtilities;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.util.AlphanumComparator;
 import util.image.ConnectionFinder;
 
@@ -41,15 +40,10 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
     ImageScrollPanePanel.mapXMLCreator = mapXMLCreator;
     final TerritoryConnectionsPanel panel = new TerritoryConnectionsPanel();
     panel.layout(stepActionPanel);
-    mapXMLCreator.setAutoFillAction(new AbstractAction() {
-      private static final long serialVersionUID = -8508734371454749752L;
-
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-        panel.paintPreparation(null);
-        panel.repaint();
-      }
-    });
+    mapXMLCreator.setAutoFillAction(SwingAction.of(e -> {
+      panel.paintPreparation(null);
+      panel.repaint();
+    }));
   }
 
   protected void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
@@ -104,11 +98,6 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
 
   }
 
-  /**
-   * @param territoryAreas
-   * @param scalePixels
-   * @param minOverlap
-   */
   private void setTerritoryConnections(final Map<String, List<Area>> territoryAreas, int scalePixels,
       double minOverlap) {
     MapXMLHelper.clearTerritoryConnections();

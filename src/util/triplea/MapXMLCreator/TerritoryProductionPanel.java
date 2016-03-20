@@ -4,15 +4,15 @@ import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
-import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+import games.strategy.common.swing.SwingAction;
 
 
 public class TerritoryProductionPanel extends ImageScrollPanePanel {
@@ -23,15 +23,10 @@ public class TerritoryProductionPanel extends ImageScrollPanePanel {
     ImageScrollPanePanel.mapXMLCreator = mapXMLCreator;
     final TerritoryProductionPanel panel = new TerritoryProductionPanel();
     panel.layout(stepActionPanel);
-    mapXMLCreator.setAutoFillAction(new AbstractAction() {
-      private static final long serialVersionUID = -8508734371454749752L;
-
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-        panel.paintPreparation(null);
-        panel.repaint();
-      }
-    });
+    mapXMLCreator.setAutoFillAction(SwingAction.of(Exception -> {
+      panel.paintPreparation(null);
+      panel.repaint();
+    }));
   }
 
   protected void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,

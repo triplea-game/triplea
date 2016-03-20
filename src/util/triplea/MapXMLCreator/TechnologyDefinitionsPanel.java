@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +11,13 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.TreeSet;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+import games.strategy.common.swing.SwingAction;
 
 
 public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
@@ -96,42 +96,38 @@ public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
     final JButton buttonAddTechnology = new JButton("Add Technology");
 
     buttonAddTechnology.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
-    buttonAddTechnology.addActionListener(new AbstractAction("Add Technology") {
-      private static final long serialVersionUID = 6322566373692205163L;
-
-      public void actionPerformed(final ActionEvent e) {
-        String newTechnologyName = JOptionPane.showInputDialog(ownPanel, "Enter a new technology name:",
-            "Technology" + (MapXMLHelper.technologyDefinitions.size() + 1));
-        if (newTechnologyName == null || newTechnologyName.isEmpty())
-          return;
-        newTechnologyName = newTechnologyName.trim();
-        String suggestedPlayerName = null;
-        for (final String playerName : MapXMLHelper.playerName) {
-          if (!MapXMLHelper.technologyDefinitions.containsKey(newTechnologyName + "_" + playerName))
-            suggestedPlayerName = playerName;
-        }
-        if (suggestedPlayerName == null) {
-          JOptionPane.showMessageDialog(ownPanel,
-              "Technology '" + newTechnologyName + "' already exists for all players.", "Input error",
-              JOptionPane.ERROR_MESSAGE);
-          return;
-        }
-        final String newRowName = newTechnologyName + "_" + suggestedPlayerName;
-
-        final ArrayList<String> newValue = new ArrayList<String>();
-        newValue.add(suggestedPlayerName);
-        newValue.add("false");
-        MapXMLHelper.putTechnologyDefinitions(newRowName, newValue);
-
-        // UI Update
-        setRows((GridBagLayout) ownPanel.getLayout(), MapXMLHelper.technologyDefinitions.size());
-        addRowWith(newTechnologyName, suggestedPlayerName, "false");
-        SwingUtilities.invokeLater(() -> {
-          ownPanel.revalidate();
-          ownPanel.repaint();
-        });
+    buttonAddTechnology.addActionListener(SwingAction.of("Add Technology", e -> {
+      String newTechnologyName = JOptionPane.showInputDialog(ownPanel, "Enter a new technology name:",
+          "Technology" + (MapXMLHelper.technologyDefinitions.size() + 1));
+      if (newTechnologyName == null || newTechnologyName.isEmpty())
+        return;
+      newTechnologyName = newTechnologyName.trim();
+      String suggestedPlayerName = null;
+      for (final String playerName : MapXMLHelper.playerName) {
+        if (!MapXMLHelper.technologyDefinitions.containsKey(newTechnologyName + "_" + playerName))
+          suggestedPlayerName = playerName;
       }
-    });
+      if (suggestedPlayerName == null) {
+        JOptionPane.showMessageDialog(ownPanel,
+            "Technology '" + newTechnologyName + "' already exists for all players.", "Input error",
+            JOptionPane.ERROR_MESSAGE);
+        return;
+      }
+      final String newRowName = newTechnologyName + "_" + suggestedPlayerName;
+
+      final ArrayList<String> newValue = new ArrayList<String>();
+      newValue.add(suggestedPlayerName);
+      newValue.add("false");
+      MapXMLHelper.putTechnologyDefinitions(newRowName, newValue);
+
+      // UI Update
+      setRows((GridBagLayout) ownPanel.getLayout(), MapXMLHelper.technologyDefinitions.size());
+      addRowWith(newTechnologyName, suggestedPlayerName, "false");
+      SwingUtilities.invokeLater(() -> {
+        ownPanel.revalidate();
+        ownPanel.repaint();
+      });
+    }));
     addButton(buttonAddTechnology);
 
     GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelTechnologyName.clone();

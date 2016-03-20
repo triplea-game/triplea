@@ -4,18 +4,18 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.TreeSet;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+import games.strategy.common.swing.SwingAction;
 
 
 public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
@@ -92,124 +92,112 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
     final JButton buttonRemoveAlliance = new JButton("Remove Alliance");
 
     buttonAddPlayer.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
-    buttonAddPlayer.addActionListener(new AbstractAction("Add Player") {
-      private static final long serialVersionUID = 6322566373692205163L;
-
-      public void actionPerformed(final ActionEvent e) {
-        String newPlayerName = JOptionPane.showInputDialog(ownPanel, "Enter a new player name:",
-            "Player" + (MapXMLHelper.playerName.size() + 1));
-        if (newPlayerName == null || newPlayerName.isEmpty())
-          return;
-        if (MapXMLHelper.playerName.contains(newPlayerName)) {
-          JOptionPane.showMessageDialog(ownPanel, "Player '" + newPlayerName + "' already exists.", "Input error",
-              JOptionPane.ERROR_MESSAGE);
-          return;
-        }
-        newPlayerName = newPlayerName.trim();
-
-        String allianceName;
-        if (alliances.isEmpty()) {
-          allianceName = JOptionPane.showInputDialog(ownPanel,
-              "Which alliance should player '" + newPlayerName + "' join?", "Alliance1");
-          if (allianceName == null)
-            return;
-          allianceName = allianceName.trim();
-          alliances.add(allianceName);
-        } else
-          allianceName = (String) JOptionPane.showInputDialog(ownPanel,
-              "Which alliance should player '" + newPlayerName + "' join?",
-              "Choose Player's Alliance",
-              JOptionPane.QUESTION_MESSAGE, null,
-              alliances.toArray(new String[alliances.size()]), // Array of choices
-              alliances.iterator().next()); // Initial choice
-
-        MapXMLHelper.addPlayerName(newPlayerName);
-        MapXMLHelper.putPlayerAlliance(newPlayerName, allianceName);
-        MapXMLHelper.putPlayerInitResources(newPlayerName, 0);
-
-        // UI Update
-        setRows((GridBagLayout) ownPanel.getLayout(), MapXMLHelper.playerName.size());
-        addRowWith(newPlayerName, allianceName, 0);
-        SwingUtilities.invokeLater(() -> {
-          ownPanel.revalidate();
-          ownPanel.repaint();
-        });
+    buttonAddPlayer.addActionListener(SwingAction.of("Add Player", e -> {
+      String newPlayerName = JOptionPane.showInputDialog(ownPanel, "Enter a new player name:",
+          "Player" + (MapXMLHelper.playerName.size() + 1));
+      if (newPlayerName == null || newPlayerName.isEmpty())
+        return;
+      if (MapXMLHelper.playerName.contains(newPlayerName)) {
+        JOptionPane.showMessageDialog(ownPanel, "Player '" + newPlayerName + "' already exists.", "Input error",
+            JOptionPane.ERROR_MESSAGE);
+        return;
       }
-    });
+      newPlayerName = newPlayerName.trim();
+
+      String allianceName;
+      if (alliances.isEmpty()) {
+        allianceName = JOptionPane.showInputDialog(ownPanel,
+            "Which alliance should player '" + newPlayerName + "' join?", "Alliance1");
+        if (allianceName == null)
+          return;
+        allianceName = allianceName.trim();
+        alliances.add(allianceName);
+      } else
+        allianceName = (String) JOptionPane.showInputDialog(ownPanel,
+            "Which alliance should player '" + newPlayerName + "' join?",
+            "Choose Player's Alliance",
+            JOptionPane.QUESTION_MESSAGE, null,
+            alliances.toArray(new String[alliances.size()]), // Array of choices
+            alliances.iterator().next()); // Initial choice
+
+      MapXMLHelper.addPlayerName(newPlayerName);
+      MapXMLHelper.putPlayerAlliance(newPlayerName, allianceName);
+      MapXMLHelper.putPlayerInitResources(newPlayerName, 0);
+
+      // UI Update
+      setRows((GridBagLayout) ownPanel.getLayout(), MapXMLHelper.playerName.size());
+      addRowWith(newPlayerName, allianceName, 0);
+      SwingUtilities.invokeLater(() -> {
+        ownPanel.revalidate();
+        ownPanel.repaint();
+      });
+    }));
     addButton(buttonAddPlayer);
 
     buttonAddAlliance.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
-    buttonAddAlliance.addActionListener(new AbstractAction("Add Alliance") {
-      private static final long serialVersionUID = 6322566373692205163L;
-
-      public void actionPerformed(final ActionEvent e) {
-        String newAllianceName = JOptionPane.showInputDialog(ownPanel, "Enter a new alliance name:",
-            "Alliance" + (alliances.size() + 1));
-        if (newAllianceName == null || newAllianceName.isEmpty())
-          return;
-        if (alliances.contains(newAllianceName)) {
-          JOptionPane.showMessageDialog(ownPanel, "Alliance '" + newAllianceName + "' already exists.", "Input error",
-              JOptionPane.ERROR_MESSAGE);
-          return;
-        }
-        newAllianceName = newAllianceName.trim();
-
-        alliances.add(newAllianceName);
-        if (alliances.size() > 1)
-          buttonRemoveAlliance.setEnabled(true);
-
-        // UI Update
-        addToComboBoxesAlliance(newAllianceName);
-        SwingUtilities.invokeLater(() -> {
-          ownPanel.revalidate();
-          ownPanel.repaint();
-        });
+    buttonAddAlliance.addActionListener(SwingAction.of("Add Alliance", e -> {
+      String newAllianceName = JOptionPane.showInputDialog(ownPanel, "Enter a new alliance name:",
+          "Alliance" + (alliances.size() + 1));
+      if (newAllianceName == null || newAllianceName.isEmpty())
+        return;
+      if (alliances.contains(newAllianceName)) {
+        JOptionPane.showMessageDialog(ownPanel, "Alliance '" + newAllianceName + "' already exists.", "Input error",
+            JOptionPane.ERROR_MESSAGE);
+        return;
       }
-    });
+      newAllianceName = newAllianceName.trim();
+
+      alliances.add(newAllianceName);
+      if (alliances.size() > 1)
+        buttonRemoveAlliance.setEnabled(true);
+
+      // UI Update
+      addToComboBoxesAlliance(newAllianceName);
+      SwingUtilities.invokeLater(() -> {
+        ownPanel.revalidate();
+        ownPanel.repaint();
+      });
+    }));
     addButton(buttonAddAlliance);
 
     buttonRemoveAlliance.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
     buttonRemoveAlliance.setEnabled(alliances.size() > 1);
-    buttonRemoveAlliance.addActionListener(new AbstractAction("Remove Alliance") {
-      private static final long serialVersionUID = 6322566373692205163L;
-
-      public void actionPerformed(final ActionEvent e) {
-        String removeAllianceName = (String) JOptionPane.showInputDialog(ownPanel,
-            "Which alliance should get removed?", "Remove Alliance", JOptionPane.QUESTION_MESSAGE,
-            null, alliances.toArray(new String[alliances.size()]), // Array of choices
-            alliances.iterator().next()); // Initial choice
-        if (removeAllianceName == null || removeAllianceName.isEmpty())
-          return;
-        final ArrayList<String> playerStillUsing = new ArrayList<String>();
-        for (final DynamicRow row : rows) {
-          if (((PlayerAndAlliancesRow) row).isAllianceSelected(removeAllianceName))
-            playerStillUsing.add(row.getRowName());
-        }
-        if (!playerStillUsing.isEmpty()) {
-          StringBuilder formattedPlayerList = new StringBuilder();
-          final boolean plural = playerStillUsing.size() > 1;
-          for (final String playerString : playerStillUsing)
-            formattedPlayerList.append("\r - " + playerString);
-          JOptionPane.showMessageDialog(ownPanel, "Cannot remove alliance.\rThe following player"
-              + (plural ? "s are" : " is") + " still assigned to alliance '"
-              + removeAllianceName + "':"
-              + formattedPlayerList, "Input error",
-              JOptionPane.ERROR_MESSAGE);
-          return;
-        }
-
-        alliances.remove(removeAllianceName);
-        if (alliances.size() <= 1)
-          buttonRemoveAlliance.setEnabled(false);
-
-        // UI Update
-        removeFromComboBoxesAlliance(removeAllianceName);
-        SwingUtilities.invokeLater(() -> {
-          ownPanel.revalidate();
-          ownPanel.repaint();
-        });
+    buttonRemoveAlliance.addActionListener(SwingAction.of("Remove Alliance", e -> {
+      String removeAllianceName = (String) JOptionPane.showInputDialog(ownPanel,
+          "Which alliance should get removed?", "Remove Alliance", JOptionPane.QUESTION_MESSAGE,
+          null, alliances.toArray(new String[alliances.size()]), // Array of choices
+          alliances.iterator().next()); // Initial choice
+      if (removeAllianceName == null || removeAllianceName.isEmpty())
+        return;
+      final ArrayList<String> playerStillUsing = new ArrayList<String>();
+      for (final DynamicRow row : rows) {
+        if (((PlayerAndAlliancesRow) row).isAllianceSelected(removeAllianceName))
+          playerStillUsing.add(row.getRowName());
       }
-    });
+      if (!playerStillUsing.isEmpty()) {
+        StringBuilder formattedPlayerList = new StringBuilder();
+        final boolean plural = playerStillUsing.size() > 1;
+        for (final String playerString : playerStillUsing)
+          formattedPlayerList.append("\r - " + playerString);
+        JOptionPane.showMessageDialog(ownPanel, "Cannot remove alliance.\rThe following player"
+            + (plural ? "s are" : " is") + " still assigned to alliance '"
+            + removeAllianceName + "':"
+            + formattedPlayerList, "Input error",
+            JOptionPane.ERROR_MESSAGE);
+        return;
+      }
+
+      alliances.remove(removeAllianceName);
+      if (alliances.size() <= 1)
+        buttonRemoveAlliance.setEnabled(false);
+
+      // UI Update
+      removeFromComboBoxesAlliance(removeAllianceName);
+      SwingUtilities.invokeLater(() -> {
+        ownPanel.revalidate();
+        ownPanel.repaint();
+      });
+    }));
     addButton(buttonRemoveAlliance);
 
     GridBagConstraints gridBadConstButtonAddPlayer = (GridBagConstraints) gridBadConstLabelPlayerName.clone();
