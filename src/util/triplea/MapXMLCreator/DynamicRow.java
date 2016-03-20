@@ -3,16 +3,16 @@ package util.triplea.MapXMLCreator;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+import games.strategy.common.swing.SwingAction;
 
 /**
  * Base class for the other *Row classes defining one removable input row.
@@ -41,20 +41,16 @@ public abstract class DynamicRow {
     final Dimension dimension = buttonRemoveRow.getPreferredSize();
     dimension.width = 25;
     buttonRemoveRow.setPreferredSize(dimension);
-    buttonRemoveRow.addActionListener(new AbstractAction("Remove Row") {
-      private static final long serialVersionUID = 7725213146244928366L;
+    buttonRemoveRow.addActionListener(SwingAction.of("Remove Row", e -> {
+      removeRowAction();
 
-      public void actionPerformed(final ActionEvent e) {
-        removeRowAction();
+      pushUpRowsTo(currentRowName);
 
-        pushUpRowsTo(currentRowName);
-
-        SwingUtilities.invokeLater(() -> {
-          stepActionPanel.revalidate();
-          stepActionPanel.repaint();
-        });
-      }
-    });
+      SwingUtilities.invokeLater(() -> {
+        stepActionPanel.revalidate();
+        stepActionPanel.repaint();
+      });
+    }));
   }
 
   public void addToComponent(final JComponent parent, final int rowIndex) {

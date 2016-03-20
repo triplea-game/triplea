@@ -12,12 +12,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.TreeSet;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+import games.strategy.common.swing.SwingAction;
 
 
 public class ProductionFrontiersPanel extends DynamicRowsPanel {
@@ -105,31 +106,27 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
     final JButton buttonAddUnit = new JButton("Add Unit");
 
     buttonAddUnit.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
-    buttonAddUnit.addActionListener(new AbstractAction("Add Unit") {
-      private static final long serialVersionUID = 6322566373692205163L;
+    buttonAddUnit.addActionListener(SwingAction.of("Add Unit", e -> {
+      final List<String> curr_playersUnitNames = MapXMLHelper.productionFrontiers.get(playerName);
 
-      public void actionPerformed(final ActionEvent e) {
-        final List<String> curr_playersUnitNames = MapXMLHelper.productionFrontiers.get(playerName);
-
-        // UI Update
-        setRows((GridBagLayout) ownPanel.getLayout(), MapXMLHelper.unitDefinitions.size());
-        final String[] allUnitNamesArray = allUnitNames.toArray(new String[allUnitNames.size()]);
-        final HashSet<String> freeUnitNames = new HashSet<String>(allUnitNames);
-        freeUnitNames.removeAll(curr_playersUnitNames);
-        final String newUnitName = freeUnitNames.iterator().next();
-        if (newUnitName == null) {
-          JOptionPane.showMessageDialog(ownPanel, "All units already selected.", "Input error",
-              JOptionPane.ERROR_MESSAGE);
-        } else {
-          curr_playersUnitNames.add(newUnitName);
-          addRowWith(newUnitName, allUnitNamesArray);
-          SwingUtilities.invokeLater(() -> {
-            ownPanel.revalidate();
-            ownPanel.repaint();
-          });
-        }
+      // UI Update
+      setRows((GridBagLayout) ownPanel.getLayout(), MapXMLHelper.unitDefinitions.size());
+      final String[] allUnitNamesArray2 = allUnitNames.toArray(new String[allUnitNames.size()]);
+      final HashSet<String> freeUnitNames = new HashSet<String>(allUnitNames);
+      freeUnitNames.removeAll(curr_playersUnitNames);
+      final String newUnitName = freeUnitNames.iterator().next();
+      if (newUnitName == null) {
+        JOptionPane.showMessageDialog(ownPanel, "All units already selected.", "Input error",
+            JOptionPane.ERROR_MESSAGE);
+      } else {
+        curr_playersUnitNames.add(newUnitName);
+        addRowWith(newUnitName, allUnitNamesArray2);
+        SwingUtilities.invokeLater(() -> {
+          ownPanel.revalidate();
+          ownPanel.repaint();
+        });
       }
-    });
+    }));
     addButton(buttonAddUnit);
 
     GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelUnitName.clone();

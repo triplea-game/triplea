@@ -758,7 +758,7 @@ public class GameDataExporter {
 
   private void init(final GameData data) {
     xmlfile.append("<?xml version=\"1.0\"?>\n");
-    xmlfile.append("<!DOCTYPE game SYSTEM \"" + GameParser.dtdFileName + "\">\n");
+    xmlfile.append("<!DOCTYPE game SYSTEM \"" + GameParser.DTD_FILE_NAME + "\">\n");
     xmlfile.append("<game>\n");
     xmlfile.append(
         "    <info name=\"" + data.getGameName() + "\" version=\"" + data.getGameVersion().toString() + "\"/>\n");

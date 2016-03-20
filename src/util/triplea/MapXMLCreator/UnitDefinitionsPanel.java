@@ -4,19 +4,19 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+import games.strategy.common.swing.SwingAction;
 
 
 public class UnitDefinitionsPanel extends DynamicRowsPanel {
@@ -88,35 +88,31 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
     final JButton buttonAddUnit = new JButton("Add Unit");
 
     buttonAddUnit.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
-    buttonAddUnit.addActionListener(new AbstractAction("Add Unit") {
-      private static final long serialVersionUID = 6322566373692205163L;
-
-      public void actionPerformed(final ActionEvent e) {
-        String newUnitName = JOptionPane.showInputDialog(ownPanel, "Enter a new unit name:",
-            "Unit" + (MapXMLHelper.unitDefinitions.size() + 1));
-        if (newUnitName == null || newUnitName.isEmpty())
-          return;
-        if (MapXMLHelper.unitDefinitions.containsKey(newUnitName)) {
-          JOptionPane.showMessageDialog(ownPanel, "Unit '" + newUnitName + "' already exists.", "Input error",
-              JOptionPane.ERROR_MESSAGE);
-          return;
-        }
-        newUnitName = newUnitName.trim();
-
-        final ArrayList<Integer> newValue = new ArrayList<Integer>();
-        newValue.add(0);
-        newValue.add(1);
-        MapXMLHelper.putUnitDefinitions(newUnitName, newValue);
-
-        // UI Update
-        setRows((GridBagLayout) ownPanel.getLayout(), MapXMLHelper.unitDefinitions.size());
-        addRowWith(newUnitName, 0, 1);
-        SwingUtilities.invokeLater(() -> {
-          ownPanel.revalidate();
-          ownPanel.repaint();
-        });
+    buttonAddUnit.addActionListener(SwingAction.of("Add Unit", e -> {
+      String newUnitName = JOptionPane.showInputDialog(ownPanel, "Enter a new unit name:",
+          "Unit" + (MapXMLHelper.unitDefinitions.size() + 1));
+      if (newUnitName == null || newUnitName.isEmpty())
+        return;
+      if (MapXMLHelper.unitDefinitions.containsKey(newUnitName)) {
+        JOptionPane.showMessageDialog(ownPanel, "Unit '" + newUnitName + "' already exists.", "Input error",
+            JOptionPane.ERROR_MESSAGE);
+        return;
       }
-    });
+      newUnitName = newUnitName.trim();
+
+      final ArrayList<Integer> newValue = new ArrayList<Integer>();
+      newValue.add(0);
+      newValue.add(1);
+      MapXMLHelper.putUnitDefinitions(newUnitName, newValue);
+
+      // UI Update
+      setRows((GridBagLayout) ownPanel.getLayout(), MapXMLHelper.unitDefinitions.size());
+      addRowWith(newUnitName, 0, 1);
+      SwingUtilities.invokeLater(() -> {
+        ownPanel.revalidate();
+        ownPanel.repaint();
+      });
+    }));
     addButton(buttonAddUnit);
 
     GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelUnitName.clone();

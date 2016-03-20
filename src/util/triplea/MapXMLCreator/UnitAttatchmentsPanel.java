@@ -4,19 +4,19 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+import games.strategy.common.swing.SwingAction;
 
 
 public class UnitAttatchmentsPanel extends DynamicRowsPanel {
@@ -99,37 +99,33 @@ public class UnitAttatchmentsPanel extends DynamicRowsPanel {
     final JButton buttonAddAttatchment = new JButton("Add Attatchment");
 
     buttonAddAttatchment.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
-    buttonAddAttatchment.addActionListener(new AbstractAction("Add Attatchment") {
-      private static final long serialVersionUID = 6322566373692205163L;
-
-      public void actionPerformed(final ActionEvent e) {
-        String newAttatchmentName = JOptionPane.showInputDialog(ownPanel, "Enter a new attatchment name:",
-            "Attatchment" + (rows.size() + 1));
-        if (newAttatchmentName == null || newAttatchmentName.isEmpty())
-          return;
-        newAttatchmentName = newAttatchmentName.trim();
-        final String newUnitAttatchmentKey = newAttatchmentName + "_" + unitName;
-        if (MapXMLHelper.unitAttatchments.containsKey(newUnitAttatchmentKey)) {
-          JOptionPane.showMessageDialog(ownPanel,
-              "Attatchment '" + newAttatchmentName + "' already exists for unit '" + unitName + "'.", "Input error",
-              JOptionPane.ERROR_MESSAGE);
-          return;
-        }
-
-        final ArrayList<String> unitAttatchment = new ArrayList<String>();
-        unitAttatchment.add(unitName);
-        unitAttatchment.add("");
-        MapXMLHelper.putUnitAttatchments(newUnitAttatchmentKey, unitAttatchment);
-
-        // UI Update
-        setRows((GridBagLayout) ownPanel.getLayout(), rows.size() + 1);
-        addRowWith(newAttatchmentName, "");
-        SwingUtilities.invokeLater(() -> {
-          ownPanel.revalidate();
-          ownPanel.repaint();
-        });
+    buttonAddAttatchment.addActionListener(SwingAction.of("Add Attatchment", e -> {
+      String newAttatchmentName = JOptionPane.showInputDialog(ownPanel, "Enter a new attatchment name:",
+          "Attatchment" + (rows.size() + 1));
+      if (newAttatchmentName == null || newAttatchmentName.isEmpty())
+        return;
+      newAttatchmentName = newAttatchmentName.trim();
+      final String newUnitAttatchmentKey = newAttatchmentName + "_" + unitName;
+      if (MapXMLHelper.unitAttatchments.containsKey(newUnitAttatchmentKey)) {
+        JOptionPane.showMessageDialog(ownPanel,
+            "Attatchment '" + newAttatchmentName + "' already exists for unit '" + unitName + "'.", "Input error",
+            JOptionPane.ERROR_MESSAGE);
+        return;
       }
-    });
+
+      final ArrayList<String> unitAttatchment = new ArrayList<String>();
+      unitAttatchment.add(unitName);
+      unitAttatchment.add("");
+      MapXMLHelper.putUnitAttatchments(newUnitAttatchmentKey, unitAttatchment);
+
+      // UI Update
+      setRows((GridBagLayout) ownPanel.getLayout(), rows.size() + 1);
+      addRowWith(newAttatchmentName, "");
+      SwingUtilities.invokeLater(() -> {
+        ownPanel.revalidate();
+        ownPanel.repaint();
+      });
+    }));
     addButton(buttonAddAttatchment);
 
     GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelAttatchmentName.clone();

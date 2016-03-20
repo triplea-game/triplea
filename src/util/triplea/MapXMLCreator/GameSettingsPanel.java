@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,12 +12,13 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.TreeSet;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+import games.strategy.common.swing.SwingAction;
 
 
 public class GameSettingsPanel extends DynamicRowsPanel {
@@ -139,39 +139,35 @@ public class GameSettingsPanel extends DynamicRowsPanel {
     final JButton buttonAddValue = new JButton("Add Game Setting");
 
     buttonAddValue.setFont(MapXMLHelper.defaultMapXMLCreatorFont);
-    buttonAddValue.addActionListener(new AbstractAction("Add Game Setting") {
-      private static final long serialVersionUID = 6322566373692205163L;
+    buttonAddValue.addActionListener(SwingAction.of("Add Game Setting", e -> {
+      final String suggestedSettingName = (String) JOptionPane.showInputDialog(ownPanel,
+          "Which game setting should be added?", "Choose Game Setting", JOptionPane.QUESTION_MESSAGE, null,
+          settingNames.toArray(new String[settingNames.size()]), // Array of choices
+          settingNames.iterator().next()); // Initial choice
+      if (suggestedSettingName == null || suggestedSettingName.isEmpty())
+        return;
 
-      public void actionPerformed(final ActionEvent e) {
-        final String suggestedSettingName = (String) JOptionPane.showInputDialog(ownPanel,
-            "Which game setting should be added?", "Choose Game Setting", JOptionPane.QUESTION_MESSAGE, null,
-            settingNames.toArray(new String[settingNames.size()]), // Array of choices
-            settingNames.iterator().next()); // Initial choice
-        if (suggestedSettingName == null || suggestedSettingName.isEmpty())
-          return;
+      final ArrayList<String> newSettingValue = new ArrayList<String>();
+      final boolean settingIsBoolean = isBoolean(suggestedSettingName);
+      String newValue;
+      if (settingIsBoolean)
+        newValue = "true";
+      else
+        newValue = "0";
+      newSettingValue.add(newValue);
+      newSettingValue.add("true");
+      newSettingValue.add("0");
+      newSettingValue.add("0");
+      MapXMLHelper.putGameSettings(suggestedSettingName, newSettingValue);
 
-        final ArrayList<String> newSettingValue = new ArrayList<String>();
-        final boolean settingIsBoolean = isBoolean(suggestedSettingName);
-        String newValue;
-        if (settingIsBoolean)
-          newValue = "true";
-        else
-          newValue = "0";
-        newSettingValue.add(newValue);
-        newSettingValue.add("true");
-        newSettingValue.add("0");
-        newSettingValue.add("0");
-        MapXMLHelper.putGameSettings(suggestedSettingName, newSettingValue);
-
-        // UI Update
-        setRows((GridBagLayout) ownPanel.getLayout(), MapXMLHelper.gameSettings.size());
-        addRowWith(suggestedSettingName, newValue, "true", 0, 0);
-        SwingUtilities.invokeLater(() -> {
-          ownPanel.revalidate();
-          ownPanel.repaint();
-        });
-      }
-    });
+      // UI Update
+      setRows((GridBagLayout) ownPanel.getLayout(), MapXMLHelper.gameSettings.size());
+      addRowWith(suggestedSettingName, newValue, "true", 0, 0);
+      SwingUtilities.invokeLater(() -> {
+        ownPanel.revalidate();
+        ownPanel.repaint();
+      });
+    }));
     addButton(buttonAddValue);
 
     GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelSettingName.clone();

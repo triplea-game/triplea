@@ -11,7 +11,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -250,13 +249,7 @@ public class MapXMLCreator extends JFrame {
         MapXMLHelper.saveXML();
     });
     saveAction.putValue(Action.SHORT_DESCRIPTION, "Save the Map XML to File");
-    final Action exitAction = new AbstractAction("Exit") {
-      private static final long serialVersionUID = -9212762817640498442L;
-
-      public void actionPerformed(final ActionEvent event) {
-        System.exit(0);
-      }
-    };
+    final Action exitAction = SwingAction.of("Exit", e -> System.exit(0));
     exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
     // set up the menu items
     final JMenuItem openItem = new JMenuItem(openAction);

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -35,6 +34,8 @@ import javax.swing.SwingUtilities;
 
 import com.google.common.collect.Maps;
 
+import games.strategy.common.swing.SwingAction;
+
 
 public class UnitPlacementsPanel extends ImageScrollPanePanel {
 
@@ -46,15 +47,10 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
     ImageScrollPanePanel.mapXMLCreator = mapXMLCreator;
     final UnitPlacementsPanel panel = new UnitPlacementsPanel();
     panel.layout(stepActionPanel);
-    mapXMLCreator.setAutoFillAction(new AbstractAction() {
-      private static final long serialVersionUID = -8508734371454749752L;
-
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-        panel.paintPreparation(null);
-        panel.repaint();
-      }
-    });
+    mapXMLCreator.setAutoFillAction(SwingAction.of(e -> {
+      panel.paintPreparation(null);
+      panel.repaint();
+    }));
   }
 
   protected void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
@@ -275,8 +271,9 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
       }
       this.add(buttonPlaceNone, new GridBagConstraints(0, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
           GridBagConstraints.NONE, nullInsets, 0, 0));
-      this.add(buttonReset, new GridBagConstraints(3, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.NONE,
-          nullInsets, 0, 0));
+      this.add(buttonReset,
+          new GridBagConstraints(3, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.NONE,
+              nullInsets, 0, 0));
       // return territoryPlacementPanel;
     }
 

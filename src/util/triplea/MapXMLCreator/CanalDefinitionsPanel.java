@@ -5,7 +5,6 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -18,7 +17,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -27,12 +25,13 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.util.Tuple;
 import util.triplea.MapXMLCreator.TerritoryDefinitionDialog.DEFINITION;
 
 
 final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
-  private static final double piHalf = Math.PI / 2;
+  private static final double PI_HALF = Math.PI / 2;
   private static final String NEW_CANAL_OPTION = "<new Canal>";
 
   private Set<String> selectedLandTerritories = new TreeSet<String>();
@@ -45,165 +44,145 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
     ImageScrollPanePanel.mapXMLCreator = mapXMLCreator;
     final CanalDefinitionsPanel panel = new CanalDefinitionsPanel();
     panel.layout(stepActionPanel);
-    mapXMLCreator.setAutoFillAction(new AbstractAction() {
-      private static final long serialVersionUID = -8508734371454749752L;
-
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-        final int prevCanalCount = MapXMLHelper.canalDefinitions.size();
-        if (prevCanalCount > 0) {
-          if (JOptionPane.YES_OPTION != MapXMLHelper.showYesNoOptionDialog("Auto-Fill Warning",
-              "All current canal definitions will be deleted.\rDo you want to continue with Auto-Fill?",
-              JOptionPane.WARNING_MESSAGE))
-            return;
-          MapXMLHelper.clearCanalDefinitions();
-        }
-        panel.clearSelection();
-
-        final Map<String, Set<String>> landWaterTerritoyConnections =
-            Maps.newHashMap();
-        final Map<String, Set<String>> waterLandTerritoyConnections =
-            Maps.newHashMap();
-        getSplittedTerritoryConnectionsByDefintionsSwitch(landWaterTerritoyConnections, waterLandTerritoyConnections);
-
-        validateAndAddCanalDefinitions(landWaterTerritoyConnections);
-
-        boolean noNewCanalsBuild = MapXMLHelper.canalDefinitions.isEmpty();
-        if (noNewCanalsBuild)
-          JOptionPane.showMessageDialog(null, "No canals have been build!", "Auto-Fill Result",
-              JOptionPane.PLAIN_MESSAGE);
-        else {
-          JOptionPane.showMessageDialog(null, getHTMLStringFromCanalDefinitions(), "Auto-Fill Result",
-              JOptionPane.PLAIN_MESSAGE);
-        }
-        if (prevCanalCount > 0 || !noNewCanalsBuild)
-          panel.repaint();
-      }
-
-      /**
-       * @return HTML string listing the canal definitions in the following format:
-       *         ' - <canal name>: <water territory 1>-<water territory 2>- ...'
-       */
-      public String getHTMLStringFromCanalDefinitions() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("<html>The following " + MapXMLHelper.canalDefinitions.size() + " canals have been build:");
-        for (final Entry<String, Tuple<Set<String>, Set<String>>> canalDef : MapXMLHelper.canalDefinitions
-            .entrySet()) {
-          sb.append("<br/> - " + canalDef.getKey() + ": ");
-          sb.append(Joiner.on("-").join(canalDef.getValue().getFirst().iterator()));
-        }
-        sb.append("</html>");
-        return sb.toString();
-      }
-
-      /**
-       * @param landWaterTerritoyConnections
-       */
-      public void validateAndAddCanalDefinitions(final Map<String, Set<String>> landWaterTerritoyConnections) {
-        final Map<String, Set<String>> landWaterTerrConnChecks =
-            Maps.newHashMap(landWaterTerritoyConnections);
-        for (final Entry<String, Set<String>> landWaterTerrConn : landWaterTerritoyConnections.entrySet()) {
-          final String landTerr = landWaterTerrConn.getKey();
-          final Set<String> waterTerrs = landWaterTerrConn.getValue();
-          Set<String> landTerrNeighbors = MapXMLHelper.territoryConnections.get(landTerr);
-          if (landTerrNeighbors == null)
-            landTerrNeighbors = Sets.newLinkedHashSet();
-          landWaterTerrConnChecks.remove(landTerr);
-          for (final Entry<String, Set<String>> landWaterTerrConn2 : landWaterTerrConnChecks.entrySet()) {
-            validateAndAddCanalDefinition(landTerr, waterTerrs, landTerrNeighbors, landWaterTerrConn2);
-          }
-        }
-      }
-
-      /**
-       * @param landTerr
-       * @param waterTerrs
-       * @param landTerrNeighbors
-       * @param landWaterTerrConn2
-       * @return
-       */
-      public void validateAndAddCanalDefinition(final String landTerr, final Set<String> waterTerrs,
-          Set<String> landTerrNeighbors, final Entry<String, Set<String>> landWaterTerrConn2) {
-        final String landTerr2 = landWaterTerrConn2.getKey();
-
-        Set<String> landTerrNeighbors2 = MapXMLHelper.territoryConnections.get(landTerr2);
-        if (landTerrNeighbors2 == null)
-          landTerrNeighbors2 = Sets.newLinkedHashSet();
-
-        if (!landTerrNeighbors.contains(landTerr2) && !landTerrNeighbors2.contains(landTerr))
+    mapXMLCreator.setAutoFillAction(SwingAction.of(e -> {
+      final int prevCanalCount = MapXMLHelper.canalDefinitions.size();
+      if (prevCanalCount > 0) {
+        if (JOptionPane.YES_OPTION != MapXMLHelper.showYesNoOptionDialog("Auto-Fill Warning",
+            "All current canal definitions will be deleted.\rDo you want to continue with Auto-Fill?",
+            JOptionPane.WARNING_MESSAGE))
           return;
-        final Set<String> waterTerrs2 = new TreeSet<String>(landWaterTerrConn2.getValue());
-        waterTerrs2.retainAll(waterTerrs);
-        if (waterTerrs2.size() > 1) {
-          getWaterTerrsWithAtLeastOneWaterNeighbor(waterTerrs2);
-          // create canal only if at least 2 water territories remain
-          if (waterTerrs2.size() > 1) {
-            final Set<String> newLandSet = new TreeSet<String>();
-            newLandSet.add(landTerr);
-            newLandSet.add(landTerr2);
-            final Tuple<Set<String>, Set<String>> terrTuple =
-                Tuple.of(new TreeSet<String>(waterTerrs2), newLandSet);
-            MapXMLHelper.putCanalDefinitions("Canal" + MapXMLHelper.canalDefinitions.size(), terrTuple);
-          }
-        }
-        return;
+        MapXMLHelper.clearCanalDefinitions();
+      }
+      panel.clearSelection();
+
+      final Map<String, Set<String>> landWaterTerritoyConnections =
+          Maps.newHashMap();
+      final Map<String, Set<String>> waterLandTerritoyConnections =
+          Maps.newHashMap();
+      getSplittedTerritoryConnectionsByDefintionsSwitch(landWaterTerritoyConnections, waterLandTerritoyConnections);
+
+      validateAndAddCanalDefinitions(landWaterTerritoyConnections);
+
+      boolean noNewCanalsBuild = MapXMLHelper.canalDefinitions.isEmpty();
+      if (noNewCanalsBuild)
+        JOptionPane.showMessageDialog(null, "No canals have been build!", "Auto-Fill Result",
+            JOptionPane.PLAIN_MESSAGE);
+      else {
+        JOptionPane.showMessageDialog(null, getHTMLStringFromCanalDefinitions(), "Auto-Fill Result",
+            JOptionPane.PLAIN_MESSAGE);
+      }
+      if (prevCanalCount > 0 || !noNewCanalsBuild)
+        panel.repaint();
+
+    }));
+  }
+
+
+  /**
+   * @return HTML string listing the canal definitions in the following format:
+   *         ' - <canal name>: <water territory 1>-<water territory 2>- ...'
+   */
+  public static String getHTMLStringFromCanalDefinitions() {
+    final StringBuilder sb = new StringBuilder();
+    sb.append("<html>The following " + MapXMLHelper.canalDefinitions.size() + " canals have been build:");
+    for (final Entry<String, Tuple<Set<String>, Set<String>>> canalDef : MapXMLHelper.canalDefinitions
+        .entrySet()) {
+      sb.append("<br/> - " + canalDef.getKey() + ": ");
+      sb.append(Joiner.on("-").join(canalDef.getValue().getFirst().iterator()));
+    }
+    sb.append("</html>");
+    return sb.toString();
+  }
+
+  public static void validateAndAddCanalDefinitions(final Map<String, Set<String>> landWaterTerritoyConnections) {
+    final Map<String, Set<String>> landWaterTerrConnChecks =
+        Maps.newHashMap(landWaterTerritoyConnections);
+    for (final Entry<String, Set<String>> landWaterTerrConn : landWaterTerritoyConnections.entrySet()) {
+      final String landTerr = landWaterTerrConn.getKey();
+      final Set<String> waterTerrs = landWaterTerrConn.getValue();
+      Set<String> landTerrNeighbors = MapXMLHelper.territoryConnections.get(landTerr);
+      if (landTerrNeighbors == null)
+        landTerrNeighbors = Sets.newLinkedHashSet();
+      landWaterTerrConnChecks.remove(landTerr);
+      for (final Entry<String, Set<String>> landWaterTerrConn2 : landWaterTerrConnChecks.entrySet()) {
+        validateAndAddCanalDefinition(landTerr, waterTerrs, landTerrNeighbors, landWaterTerrConn2);
+      }
+    }
+  }
+
+  public static void validateAndAddCanalDefinition(final String landTerr, final Set<String> waterTerrs,
+      Set<String> landTerrNeighbors, final Entry<String, Set<String>> landWaterTerrConn2) {
+    final String landTerr2 = landWaterTerrConn2.getKey();
+
+    Set<String> landTerrNeighbors2 = MapXMLHelper.territoryConnections.get(landTerr2);
+    if (landTerrNeighbors2 == null)
+      landTerrNeighbors2 = Sets.newLinkedHashSet();
+
+    if (!landTerrNeighbors.contains(landTerr2) && !landTerrNeighbors2.contains(landTerr))
+      return;
+    final Set<String> waterTerrs2 = new TreeSet<String>(landWaterTerrConn2.getValue());
+    waterTerrs2.retainAll(waterTerrs);
+    if (waterTerrs2.size() > 1) {
+      getWaterTerrsWithAtLeastOneWaterNeighbor(waterTerrs2);
+      // create canal only if at least 2 water territories remain
+      if (waterTerrs2.size() > 1) {
+        final Set<String> newLandSet = new TreeSet<String>();
+        newLandSet.add(landTerr);
+        newLandSet.add(landTerr2);
+        final Tuple<Set<String>, Set<String>> terrTuple =
+            Tuple.of(new TreeSet<String>(waterTerrs2), newLandSet);
+        MapXMLHelper.putCanalDefinitions("Canal" + MapXMLHelper.canalDefinitions.size(), terrTuple);
+      }
+    }
+    return;
+  }
+
+  public static void getWaterTerrsWithAtLeastOneWaterNeighbor(final Set<String> waterTerrs2) {
+    final Set<String> waterTerrs2Copy = new TreeSet<String>(waterTerrs2);
+    for (Iterator<String> iter_waterTerr2 = waterTerrs2.iterator(); iter_waterTerr2.hasNext();) {
+      final String waterTerr2 = (String) iter_waterTerr2.next();
+      waterTerrs2Copy.remove(waterTerr2);
+      final Set<String> waterTerrs2ReqNeighbors = new TreeSet<String>(waterTerrs2Copy);
+      final Set<String> waterTerr2Neightbors = MapXMLHelper.territoryConnections.get(waterTerr2);
+      if (waterTerr2Neightbors != null) {
+        for (final String waterTerr2Neighbor : waterTerr2Neightbors)
+          waterTerrs2ReqNeighbors.remove(waterTerr2Neighbor);
+      }
+      if (!waterTerrs2ReqNeighbors.isEmpty())
+        iter_waterTerr2.remove();
+    }
+  }
+
+  public static void getSplittedTerritoryConnectionsByDefintionsSwitch(
+      final Map<String, Set<String>> landWaterTerritoyConnections,
+      final Map<String, Set<String>> waterLandTerritoyConnections) {
+    for (final Entry<String, Set<String>> terrConn : MapXMLHelper.territoryConnections.entrySet()) {
+      if (MapXMLHelper.territoryDefintions.get(terrConn.getKey()).get(DEFINITION.IS_WATER)) {
+        @SuppressWarnings("unchecked")
+        final Set<String> landTerrValue = (Set<String>) terrConn.getValue().stream()
+            .filter(terr -> !MapXMLHelper.territoryDefintions.get(terr).get(DEFINITION.IS_WATER));
+        if (!landTerrValue.isEmpty())
+          waterLandTerritoyConnections.put(terrConn.getKey(), landTerrValue);
+      } else {
+        @SuppressWarnings("unchecked")
+        final Set<String> waterTerrValue = (Set<String>) terrConn.getValue().stream()
+            .filter(terr -> MapXMLHelper.territoryDefintions.get(terr).get(DEFINITION.IS_WATER));
+        landWaterTerritoyConnections.put(terrConn.getKey(), waterTerrValue);
+      }
+    }
+    for (final Entry<String, Set<String>> terrConn : waterLandTerritoyConnections.entrySet()) {
+      final String waterTerr = terrConn.getKey();
+      for (final String landTerr : terrConn.getValue()) {
+        Set<String> waterTerrs = landWaterTerritoyConnections.get(landTerr);
+        if (waterTerrs == null) {
+          final Set<String> newWaterTerrs = Sets.newLinkedHashSet();
+          newWaterTerrs.add(waterTerr);
+          landWaterTerritoyConnections.put(landTerr, newWaterTerrs);
+        } else
+          waterTerrs.add(waterTerr);
       }
 
-      /**
-       * @param waterTerrs2
-       */
-      public void getWaterTerrsWithAtLeastOneWaterNeighbor(final Set<String> waterTerrs2) {
-        final Set<String> waterTerrs2Copy = new TreeSet<String>(waterTerrs2);
-        for (Iterator<String> iter_waterTerr2 = waterTerrs2.iterator(); iter_waterTerr2.hasNext();) {
-          final String waterTerr2 = (String) iter_waterTerr2.next();
-          waterTerrs2Copy.remove(waterTerr2);
-          final Set<String> waterTerrs2ReqNeighbors = new TreeSet<String>(waterTerrs2Copy);
-          final Set<String> waterTerr2Neightbors = MapXMLHelper.territoryConnections.get(waterTerr2);
-          if (waterTerr2Neightbors != null) {
-            for (final String waterTerr2Neighbor : waterTerr2Neightbors)
-              waterTerrs2ReqNeighbors.remove(waterTerr2Neighbor);
-          }
-          if (!waterTerrs2ReqNeighbors.isEmpty())
-            iter_waterTerr2.remove();
-        }
-      }
-
-      /**
-       * @param landWaterTerritoyConnections
-       * @param waterLandTerritoyConnections
-       */
-      public void getSplittedTerritoryConnectionsByDefintionsSwitch(
-          final Map<String, Set<String>> landWaterTerritoyConnections,
-          final Map<String, Set<String>> waterLandTerritoyConnections) {
-        for (final Entry<String, Set<String>> terrConn : MapXMLHelper.territoryConnections.entrySet()) {
-          if (MapXMLHelper.territoryDefintions.get(terrConn.getKey()).get(DEFINITION.IS_WATER)) {
-            @SuppressWarnings("unchecked")
-            final Set<String> landTerrValue = (Set<String>) terrConn.getValue().stream()
-                .filter(terr -> !MapXMLHelper.territoryDefintions.get(terr).get(DEFINITION.IS_WATER));
-            if (!landTerrValue.isEmpty())
-              waterLandTerritoyConnections.put(terrConn.getKey(), landTerrValue);
-          } else {
-            @SuppressWarnings("unchecked")
-            final Set<String> waterTerrValue = (Set<String>) terrConn.getValue().stream()
-                .filter(terr -> MapXMLHelper.territoryDefintions.get(terr).get(DEFINITION.IS_WATER));
-            landWaterTerritoyConnections.put(terrConn.getKey(), waterTerrValue);
-          }
-        }
-        for (final Entry<String, Set<String>> terrConn : waterLandTerritoyConnections.entrySet()) {
-          final String waterTerr = terrConn.getKey();
-          for (final String landTerr : terrConn.getValue()) {
-            Set<String> waterTerrs = landWaterTerritoyConnections.get(landTerr);
-            if (waterTerrs == null) {
-              final Set<String> newWaterTerrs = Sets.newLinkedHashSet();
-              newWaterTerrs.add(waterTerr);
-              landWaterTerritoyConnections.put(landTerr, newWaterTerrs);
-            } else
-              waterTerrs.add(waterTerr);
-          }
-
-        }
-      }
-    });
+    }
   }
 
   protected void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
@@ -269,9 +248,9 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
   public static void drawRotate(final Graphics2D g2d, final double x, final double y, double radianAngle,
       final String text, final int xOffset) {
     g2d.translate((float) x, (float) y);
-    if (radianAngle > piHalf)
+    if (radianAngle > PI_HALF)
       radianAngle -= Math.PI;
-    else if (radianAngle < -piHalf)
+    else if (radianAngle < -PI_HALF)
       radianAngle += Math.PI;
     g2d.rotate(radianAngle);
     g2d.drawString(text, xOffset, -2);
