@@ -1,16 +1,19 @@
+TripleA is a free game engine that runs on open source and is community supported. 
+
 
 Installing TripleA and Playing
 ==============================
-- Download and install TripleA: http://triplea-game.github.io/download/)
+- Download and install TripleA: http://triplea-game.github.io/download/
 - Bug reports, suggestions: http://github.com/triplea-game/triplea/issues/new
 - Online PDF rule book: http://github.com/triplea-game/assets/blob/master/rulebooks/TripleA_RuleBook.pdf
 
 TripleA Game Features
 =====================
+- Free to play, 100% open source and community supported
 - Online lobby, find, join and observe live games
 - Play by correspondence (email)
-- Play single player against the game AI
-- Many community created maps available for download
+- Play single player against the AI
+- Many community created maps available for in-game download
 - Generic game engine allows you to [build your own maps and mods](https://github.com/triplea-maps/Project)
 
 
@@ -34,7 +37,7 @@ Developer Setup
   - Use the [Gradle plugin](http://plugins.netbeans.org/plugin/44510/gradle-support)
 
 *Intellij IDEA*
-  - Import the project as a gradle file, specify the settings.gradle file
+  - Import the project as a gradle project, specify the settings.gradle file
   - Plugins to Install:
     - [eclipse code formatter plugin](https://plugins.jetbrains.com/plugin/6546)
     - [eclipse launcher plugin (eclipser)](https://plugins.jetbrains.com/plugin/7153?pr=idea)
