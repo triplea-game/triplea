@@ -1,12 +1,5 @@
 package games.strategy.triplea.ai.proAI.data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -17,6 +10,13 @@ import games.strategy.triplea.ai.proAI.util.ProMatches;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ProTerritory {
 
@@ -59,68 +59,68 @@ public class ProTerritory {
 
   public ProTerritory(final Territory territory) {
     this.territory = territory;
-    maxUnits = new ArrayList<Unit>();
-    units = new ArrayList<Unit>();
-    cantMoveUnits = new ArrayList<Unit>();
-    maxEnemyUnits = new ArrayList<Unit>();
-    maxEnemyBombardUnits = new HashSet<Unit>();
+    maxUnits = new ArrayList<>();
+    units = new ArrayList<>();
+    cantMoveUnits = new ArrayList<>();
+    maxEnemyUnits = new ArrayList<>();
+    maxEnemyBombardUnits = new HashSet<>();
     maxBattleResult = new ProBattleResult();
     canHold = true;
     canAttack = false;
     strengthEstimate = Double.POSITIVE_INFINITY;
-    maxAmphibUnits = new ArrayList<Unit>();
-    maxBombardUnits = new HashSet<Unit>();
+    maxAmphibUnits = new ArrayList<>();
+    maxBombardUnits = new HashSet<>();
     needAmphibUnits = false;
     strafing = false;
-    amphibAttackMap = new HashMap<Unit, List<Unit>>();
-    isTransportingMap = new HashMap<Unit, Boolean>();
-    transportTerritoryMap = new HashMap<Unit, Territory>();
-    bombardOptionsMap = new HashMap<Unit, Set<Territory>>();
-    bombardTerritoryMap = new HashMap<Unit, Territory>();
+    amphibAttackMap = new HashMap<>();
+    isTransportingMap = new HashMap<>();
+    transportTerritoryMap = new HashMap<>();
+    bombardOptionsMap = new HashMap<>();
+    bombardTerritoryMap = new HashMap<>();
     currentlyWins = false;
     battleResult = null;
     minBattleResult = new ProBattleResult();
-    tempUnits = new ArrayList<Unit>();
-    tempAmphibAttackMap = new HashMap<Unit, List<Unit>>();
+    tempUnits = new ArrayList<>();
+    tempAmphibAttackMap = new HashMap<>();
     loadValue = 0;
     value = 0;
     seaValue = 0;
-    maxScrambleUnits = new ArrayList<Unit>();
+    maxScrambleUnits = new ArrayList<>();
   }
 
   public ProTerritory(final ProTerritory patd) {
     this.territory = patd.getTerritory();
-    maxUnits = new ArrayList<Unit>(patd.getMaxUnits());
-    units = new ArrayList<Unit>(patd.getUnits());
-    cantMoveUnits = new ArrayList<Unit>(patd.getCantMoveUnits());
-    maxEnemyUnits = new ArrayList<Unit>(patd.getMaxEnemyUnits());
-    maxEnemyBombardUnits = new HashSet<Unit>(patd.getMaxEnemyBombardUnits());
+    maxUnits = new ArrayList<>(patd.getMaxUnits());
+    units = new ArrayList<>(patd.getUnits());
+    cantMoveUnits = new ArrayList<>(patd.getCantMoveUnits());
+    maxEnemyUnits = new ArrayList<>(patd.getMaxEnemyUnits());
+    maxEnemyBombardUnits = new HashSet<>(patd.getMaxEnemyBombardUnits());
     minBattleResult = patd.getMaxBattleResult();
     canHold = patd.isCanHold();
     canAttack = patd.isCanAttack();
     strengthEstimate = patd.getStrengthEstimate();
-    maxAmphibUnits = new ArrayList<Unit>(patd.getMaxAmphibUnits());
-    maxBombardUnits = new HashSet<Unit>(patd.getMaxBombardUnits());
+    maxAmphibUnits = new ArrayList<>(patd.getMaxAmphibUnits());
+    maxBombardUnits = new HashSet<>(patd.getMaxBombardUnits());
     needAmphibUnits = patd.isNeedAmphibUnits();
     strafing = patd.isStrafing();
-    amphibAttackMap = new HashMap<Unit, List<Unit>>(patd.getAmphibAttackMap());
-    isTransportingMap = new HashMap<Unit, Boolean>(patd.getIsTransportingMap());
-    transportTerritoryMap = new HashMap<Unit, Territory>(patd.getTransportTerritoryMap());
-    bombardOptionsMap = new HashMap<Unit, Set<Territory>>(patd.getBombardOptionsMap());
-    bombardTerritoryMap = new HashMap<Unit, Territory>(patd.getBombardTerritoryMap());
+    amphibAttackMap = new HashMap<>(patd.getAmphibAttackMap());
+    isTransportingMap = new HashMap<>(patd.getIsTransportingMap());
+    transportTerritoryMap = new HashMap<>(patd.getTransportTerritoryMap());
+    bombardOptionsMap = new HashMap<>(patd.getBombardOptionsMap());
+    bombardTerritoryMap = new HashMap<>(patd.getBombardTerritoryMap());
     currentlyWins = patd.isCurrentlyWins();
     battleResult = patd.getBattleResult();
     minBattleResult = patd.getMinBattleResult();
-    tempUnits = new ArrayList<Unit>(patd.getTempUnits());
-    tempAmphibAttackMap = new HashMap<Unit, List<Unit>>(patd.getTempAmphibAttackMap());
+    tempUnits = new ArrayList<>(patd.getTempUnits());
+    tempAmphibAttackMap = new HashMap<>(patd.getTempAmphibAttackMap());
     loadValue = patd.getLoadValue();
     value = patd.getValue();
     seaValue = patd.getSeaValue();
-    maxScrambleUnits = new ArrayList<Unit>(patd.getMaxScrambleUnits());
+    maxScrambleUnits = new ArrayList<>(patd.getMaxScrambleUnits());
   }
 
   public List<Unit> getAllDefenders() {
-    final List<Unit> defenders = new ArrayList<Unit>(units);
+    final List<Unit> defenders = new ArrayList<>(units);
     defenders.addAll(cantMoveUnits);
     defenders.addAll(tempUnits);
     return defenders;
@@ -138,7 +138,7 @@ public class ProTerritory {
   }
 
   public List<Unit> getMaxDefenders() {
-    final List<Unit> defenders = new ArrayList<Unit>(maxUnits);
+    final List<Unit> defenders = new ArrayList<>(maxUnits);
     defenders.addAll(cantMoveUnits);
     return defenders;
   }
@@ -403,7 +403,7 @@ public class ProTerritory {
     if (bombardOptionsMap.containsKey(unit)) {
       bombardOptionsMap.get(unit).add(t);
     } else {
-      final Set<Territory> territories = new HashSet<Territory>();
+      final Set<Territory> territories = new HashSet<>();
       territories.add(t);
       bombardOptionsMap.put(unit, territories);
     }

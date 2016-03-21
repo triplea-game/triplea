@@ -1,11 +1,5 @@
 package games.strategy.triplea.ai.proAI.data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
@@ -21,8 +15,13 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.LinkedIntegerMap;
 import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ProPurchaseOption {
 
@@ -314,13 +313,12 @@ public class ProPurchaseOption {
       return 0;
     }
 
-    final List<Unit> units = new ArrayList<Unit>(ownedLocalUnits);
+    final List<Unit> units = new ArrayList<>(ownedLocalUnits);
     units.addAll(unitsToPlace);
     units.addAll(unitType.create(1, player, true));
-    final Set<List<UnitSupportAttachment>> supportsAvailable = new HashSet<List<UnitSupportAttachment>>();
-    final IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<UnitSupportAttachment>();
-    DiceRoll.getSupport(units, supportsAvailable, supportLeft,
-        new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>(), data, defense, true);
+    final Set<List<UnitSupportAttachment>> supportsAvailable = new HashSet<>();
+    final IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<>();
+    DiceRoll.getSupport(units, supportsAvailable, supportLeft, new HashMap<>(), data, defense, true);
     double totalSupportFactor = 0;
     for (final UnitSupportAttachment usa : unitSupportAttachments) {
       for (final List<UnitSupportAttachment> bonusType : supportsAvailable) {
@@ -334,7 +332,7 @@ public class ProPurchaseOption {
           numAddedSupport *= 2;
         }
         int numSupportProvided = -numAddedSupport;
-        final Set<Unit> supportableUnits = new HashSet<Unit>();
+        final Set<Unit> supportableUnits = new HashSet<>();
         for (final UnitSupportAttachment usa2 : bonusType) {
           numSupportProvided += supportLeft.getInt(usa2);
           supportableUnits.addAll(Match.getMatches(units, Matches.unitIsOfTypes(usa2.getUnitType())));

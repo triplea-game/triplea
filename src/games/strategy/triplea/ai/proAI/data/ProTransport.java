@@ -1,13 +1,13 @@
 package games.strategy.triplea.ai.proAI.data;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
 
 public class ProTransport {
 
@@ -17,8 +17,8 @@ public class ProTransport {
 
   public ProTransport(final Unit transport) {
     this.transport = transport;
-    transportMap = new HashMap<Territory, Set<Territory>>();
-    seaTransportMap = new HashMap<Territory, Set<Territory>>();
+    transportMap = new HashMap<>();
+    seaTransportMap = new HashMap<>();
   }
 
   public void addTerritories(final Set<Territory> attackTerritories, final Set<Territory> myUnitsToLoadTerritories) {
@@ -26,7 +26,7 @@ public class ProTransport {
       if (transportMap.containsKey(attackTerritory)) {
         transportMap.get(attackTerritory).addAll(myUnitsToLoadTerritories);
       } else {
-        final Set<Territory> territories = new HashSet<Territory>();
+        final Set<Territory> territories = new HashSet<>();
         territories.addAll(myUnitsToLoadTerritories);
         transportMap.put(attackTerritory, territories);
       }
@@ -39,7 +39,7 @@ public class ProTransport {
       if (seaTransportMap.containsKey(attackTerritory)) {
         seaTransportMap.get(attackTerritory).addAll(myUnitsToLoadTerritories);
       } else {
-        final Set<Territory> territories = new HashSet<Territory>();
+        final Set<Territory> territories = new HashSet<>();
         territories.addAll(myUnitsToLoadTerritories);
         seaTransportMap.put(attackTerritory, territories);
       }

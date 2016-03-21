@@ -44,7 +44,7 @@ public class ProPurchaseUtils {
 
   public static List<ProPurchaseOption> findPurchaseOptionsForTerritory(final PlayerID player,
       final List<ProPurchaseOption> purchaseOptions, final Territory t) {
-    final List<ProPurchaseOption> result = new ArrayList<ProPurchaseOption>();
+    final List<ProPurchaseOption> result = new ArrayList<>();
     for (final ProPurchaseOption ppo : purchaseOptions) {
       if (canTerritoryUsePurchaseOption(player, ppo, t)) {
         result.add(ppo);
@@ -99,7 +99,7 @@ public class ProPurchaseUtils {
         // Find number of unit type that are already built and about to be placed
         int currentlyBuilt = 0;
         final CompositeMatch<Unit> unitTypeOwnedBy =
-            new CompositeMatchAnd<Unit>(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(player));
+            new CompositeMatchAnd<>(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(player));
         final List<Territory> allTerritories = data.getMap().getTerritories();
         for (final Territory t : allTerritories) {
           currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);
@@ -127,7 +127,7 @@ public class ProPurchaseUtils {
     for (final Double efficiency : purchaseEfficiencies.values()) {
       totalEfficiency += efficiency;
     }
-    final Map<ProPurchaseOption, Double> purchasePercentages = new LinkedHashMap<ProPurchaseOption, Double>();
+    final Map<ProPurchaseOption, Double> purchasePercentages = new LinkedHashMap<>();
     double upperBound = 0.0;
     for (final ProPurchaseOption ppo : purchaseEfficiencies.keySet()) {
       final double chance = purchaseEfficiencies.get(ppo) / totalEfficiency * 100;
@@ -166,7 +166,7 @@ public class ProPurchaseUtils {
     }
 
     // Determine number of defenders I can purchase
-    final List<Unit> placeUnits = new ArrayList<Unit>();
+    final List<Unit> placeUnits = new ArrayList<>();
     if (bestDefenseOption != null) {
       ProLogger.debug("Best defense option: " + bestDefenseOption.getUnitType().getName());
       int remainingUnitProduction = getUnitProduction(t, data, player);
@@ -196,7 +196,7 @@ public class ProPurchaseUtils {
 
     // Find all territories that I can place units on
     final RulesAttachment ra = player.getRulesAttachment();
-    List<Territory> ownedAndNotConqueredFactoryTerritories = new ArrayList<Territory>();
+    List<Territory> ownedAndNotConqueredFactoryTerritories = new ArrayList<>();
     if (ra != null && ra.getPlacementAnyTerritory()) {
       ownedAndNotConqueredFactoryTerritories = data.getMap().getTerritoriesOwnedBy(player);
     } else {
@@ -209,7 +209,7 @@ public class ProPurchaseUtils {
             ProMatches.territoryCanMoveLandUnits(player, data, false));
 
     // Create purchase territory holder for each factory territory
-    final Map<Territory, ProPurchaseTerritory> purchaseTerritories = new HashMap<Territory, ProPurchaseTerritory>();
+    final Map<Territory, ProPurchaseTerritory> purchaseTerritories = new HashMap<>();
     for (final Territory t : ownedAndNotConqueredFactoryTerritories) {
       final int unitProduction = getUnitProduction(t, data, player);
       final ProPurchaseTerritory ppt = new ProPurchaseTerritory(t, data, player, unitProduction);
@@ -222,7 +222,7 @@ public class ProPurchaseUtils {
   public static int getUnitProduction(final Territory territory, final GameData data, final PlayerID player) {
 
     final CompositeMatchAnd<Unit> factoryMatch =
-        new CompositeMatchAnd<Unit>(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches
+        new CompositeMatchAnd<>(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches
             .unitIsBeingTransported().invert());
     if (territory.isWater()) {
       factoryMatch.add(Matches.UnitIsLand.invert());
@@ -312,7 +312,7 @@ public class ProPurchaseUtils {
   public static List<Unit> getPlaceUnits(final Territory t,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
-    final List<Unit> placeUnits = new ArrayList<Unit>();
+    final List<Unit> placeUnits = new ArrayList<>();
     if (purchaseTerritories == null) {
       return placeUnits;
     }

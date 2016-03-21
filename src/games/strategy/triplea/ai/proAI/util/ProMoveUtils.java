@@ -1,13 +1,5 @@
 package games.strategy.triplea.ai.proAI.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -23,6 +15,14 @@ import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.util.Match;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Pro AI move utilities.
  */
@@ -34,7 +34,7 @@ public class ProMoveUtils {
     final GameData data = ProData.getData();
 
     // Find all amphib units
-    final Set<Unit> amphibUnits = new HashSet<Unit>();
+    final Set<Unit> amphibUnits = new HashSet<>();
     for (final Territory t : attackMap.keySet()) {
       amphibUnits.addAll(attackMap.get(t).getAmphibAttackMap().keySet());
       for (final Unit transport : attackMap.get(t).getAmphibAttackMap().keySet()) {
@@ -60,7 +60,7 @@ public class ProMoveUtils {
         }
 
         // Add unit to move list
-        final List<Unit> unitList = new ArrayList<Unit>();
+        final List<Unit> unitList = new ArrayList<>();
         unitList.add(u);
         moveUnits.add(unitList);
 
@@ -89,7 +89,7 @@ public class ProMoveUtils {
                   startTerritory,
                   t,
                   ProMatches.territoryCanMoveLandUnitsThrough(player, data, u, startTerritory, isCombatMove,
-                      new ArrayList<Territory>()));
+                      new ArrayList<>()));
         } else if (Match.allMatch(unitList, Matches.UnitIsAir)) {
 
           // Air unit
@@ -122,8 +122,8 @@ public class ProMoveUtils {
         Territory transportTerritory = ProData.unitTerritoryMap.get(transport);
 
         // Check if units are already loaded or not
-        final List<Unit> loadedUnits = new ArrayList<Unit>();
-        final List<Unit> remainingUnitsToLoad = new ArrayList<Unit>();
+        final List<Unit> loadedUnits = new ArrayList<>();
+        final List<Unit> remainingUnitsToLoad = new ArrayList<>();
         if (TransportTracker.isTransporting(transport)) {
           loadedUnits.addAll(amphibAttackMap.get(transport));
         } else {
@@ -135,7 +135,7 @@ public class ProMoveUtils {
 
           // Load adjacent units if no enemies present in transport territory
           if (Matches.territoryHasEnemyUnits(player, data).invert().match(transportTerritory)) {
-            final List<Unit> unitsToRemove = new ArrayList<Unit>();
+            final List<Unit> unitsToRemove = new ArrayList<>();
             for (final Unit amphibUnit : remainingUnitsToLoad) {
               if (data.getMap().getDistance(transportTerritory, ProData.unitTerritoryMap.get(amphibUnit)) == 1) {
                 moveUnits.add(Collections.singletonList(amphibUnit));
@@ -203,7 +203,7 @@ public class ProMoveUtils {
               }
             }
             if (territoryToMoveTo != null) {
-              final List<Unit> unitsToMove = new ArrayList<Unit>();
+              final List<Unit> unitsToMove = new ArrayList<>();
               unitsToMove.add(transport);
               unitsToMove.addAll(loadedUnits);
               moveUnits.add(unitsToMove);
@@ -253,7 +253,7 @@ public class ProMoveUtils {
         }
 
         // Add unit to move list
-        final List<Unit> unitList = new ArrayList<Unit>();
+        final List<Unit> unitList = new ArrayList<>();
         unitList.add(u);
         moveUnits.add(unitList);
 

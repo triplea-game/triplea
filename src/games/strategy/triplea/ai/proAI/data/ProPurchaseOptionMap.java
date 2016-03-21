@@ -1,10 +1,5 @@
 package games.strategy.triplea.ai.proAI.data;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -14,6 +9,11 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ProPurchaseOptionMap {
 
@@ -34,17 +34,17 @@ public class ProPurchaseOptionMap {
     ProLogger.info("Purchase Options");
 
     // Initialize lists
-    landFodderOptions = new ArrayList<ProPurchaseOption>();
-    landAttackOptions = new ArrayList<ProPurchaseOption>();
-    landDefenseOptions = new ArrayList<ProPurchaseOption>();
-    airOptions = new ArrayList<ProPurchaseOption>();
-    seaDefenseOptions = new ArrayList<ProPurchaseOption>();
-    seaTransportOptions = new ArrayList<ProPurchaseOption>();
-    seaCarrierOptions = new ArrayList<ProPurchaseOption>();
-    seaSubOptions = new ArrayList<ProPurchaseOption>();
-    aaOptions = new ArrayList<ProPurchaseOption>();
-    factoryOptions = new ArrayList<ProPurchaseOption>();
-    specialOptions = new ArrayList<ProPurchaseOption>();
+    landFodderOptions = new ArrayList<>();
+    landAttackOptions = new ArrayList<>();
+    landDefenseOptions = new ArrayList<>();
+    airOptions = new ArrayList<>();
+    seaDefenseOptions = new ArrayList<>();
+    seaTransportOptions = new ArrayList<>();
+    seaCarrierOptions = new ArrayList<>();
+    seaSubOptions = new ArrayList<>();
+    aaOptions = new ArrayList<>();
+    factoryOptions = new ArrayList<>();
+    specialOptions = new ArrayList<>();
 
     // Add each production rule to appropriate list(s)
     final ProductionFrontier productionFrontier = player.getProductionFrontier();
@@ -127,31 +127,31 @@ public class ProPurchaseOptionMap {
   }
 
   public List<ProPurchaseOption> getAllOptions() {
-    final Set<ProPurchaseOption> allOptions = new HashSet<ProPurchaseOption>();
+    final Set<ProPurchaseOption> allOptions = new HashSet<>();
     allOptions.addAll(getLandOptions());
     allOptions.addAll(airOptions);
     allOptions.addAll(getSeaOptions());
     allOptions.addAll(aaOptions);
     allOptions.addAll(factoryOptions);
     allOptions.addAll(specialOptions);
-    return new ArrayList<ProPurchaseOption>(allOptions);
+    return new ArrayList<>(allOptions);
   }
 
   public List<ProPurchaseOption> getLandOptions() {
-    final Set<ProPurchaseOption> landOptions = new HashSet<ProPurchaseOption>();
+    final Set<ProPurchaseOption> landOptions = new HashSet<>();
     landOptions.addAll(landFodderOptions);
     landOptions.addAll(landAttackOptions);
     landOptions.addAll(landDefenseOptions);
-    return new ArrayList<ProPurchaseOption>(landOptions);
+    return new ArrayList<>(landOptions);
   }
 
   public List<ProPurchaseOption> getSeaOptions() {
-    final Set<ProPurchaseOption> seaOptions = new HashSet<ProPurchaseOption>();
+    final Set<ProPurchaseOption> seaOptions = new HashSet<>();
     seaOptions.addAll(seaDefenseOptions);
     seaOptions.addAll(seaTransportOptions);
     seaOptions.addAll(seaCarrierOptions);
     seaOptions.addAll(seaSubOptions);
-    return new ArrayList<ProPurchaseOption>(seaOptions);
+    return new ArrayList<>(seaOptions);
   }
 
   public List<ProPurchaseOption> getLandFodderOptions() {
