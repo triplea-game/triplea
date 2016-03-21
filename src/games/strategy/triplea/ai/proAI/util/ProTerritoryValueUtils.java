@@ -30,8 +30,7 @@ public class ProTerritoryValueUtils {
     double value = 3 * TerritoryAttachment.getProduction(t) * (isEnemyFactory + 1);
     if (!t.isWater() && t.getOwner().isNull()) {
       final double strength =
-          ProBattleUtils.estimateStrength(t, new ArrayList<>(t.getUnits().getUnits()),
-              new ArrayList<>(), false);
+          ProBattleUtils.estimateStrength(t, new ArrayList<>(t.getUnits().getUnits()), new ArrayList<>(), false);
 
       // Estimate TUV swing as number of casualties * cost
       final double TUVSwing = -(strength / 8) * ProData.minCostPerHitPoint;

@@ -66,8 +66,7 @@ public class ProRetreatAI {
 
     // Calculate battle results
     final ProBattleResult result =
-        calc.calculateBattleResults(player, battleTerritory, attackers, defenders, new HashSet<>(),
-            isAttacker);
+        calc.calculateBattleResults(player, battleTerritory, attackers, defenders, new HashSet<>(), isAttacker);
 
     // Determine if it has a factory
     int isFactory = 0;

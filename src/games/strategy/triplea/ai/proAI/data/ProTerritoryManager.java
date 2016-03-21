@@ -75,8 +75,7 @@ public class ProTerritoryManager {
   public void populateAttackOptions() {
     findAttackOptions(player, ProData.myUnitTerritories, attackOptions.getTerritoryMap(),
         attackOptions.getUnitMoveMap(), attackOptions.getTransportMoveMap(), attackOptions.getBombardMap(),
-        attackOptions.getTransportList(), new ArrayList<>(), new ArrayList<>(),
-        new ArrayList<>(), false, false);
+        attackOptions.getTransportList(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), false, false);
     alliedAttackOptions = findAlliedAttackOptions(player);
   }
 
@@ -190,13 +189,13 @@ public class ProTerritoryManager {
       }
     }
     final Match<Unit> airbasesCanScramble =
-        new CompositeMatchAnd<>(Matches.unitIsEnemyOf(data, player), Matches.UnitIsAirBase,
-            Matches.UnitIsNotDisabled, Matches.unitIsBeingTransported().invert());
+        new CompositeMatchAnd<>(Matches.unitIsEnemyOf(data, player), Matches.UnitIsAirBase, Matches.UnitIsNotDisabled,
+            Matches.unitIsBeingTransported().invert());
     final CompositeMatchAnd<Territory> canScramble =
-        new CompositeMatchAnd<>(new CompositeMatchOr<>(Matches.TerritoryIsWater,
-            Matches.isTerritoryEnemy(player, data)), Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<>(
-            Matches.UnitCanScramble, Matches.unitIsEnemyOf(data, player), Matches.UnitIsNotDisabled)),
-            Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
+        new CompositeMatchAnd<>(
+            new CompositeMatchOr<>(Matches.TerritoryIsWater, Matches.isTerritoryEnemy(player, data)),
+            Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<>(Matches.UnitCanScramble, Matches.unitIsEnemyOf(
+                data, player), Matches.UnitIsNotDisabled)), Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
     if (fromIslandOnly) {
       canScramble.add(Matches.TerritoryIsIsland);
     }
@@ -237,11 +236,9 @@ public class ProTerritoryManager {
               @Override
               public int compare(final Unit o1, final Unit o2) {
                 final double strength1 =
-                    ProBattleUtils.estimateStrength(to, Collections.singletonList(o1), new ArrayList<>(),
-                        false);
+                    ProBattleUtils.estimateStrength(to, Collections.singletonList(o1), new ArrayList<>(), false);
                 final double strength2 =
-                    ProBattleUtils.estimateStrength(to, Collections.singletonList(o2), new ArrayList<>(),
-                        false);
+                    ProBattleUtils.estimateStrength(to, Collections.singletonList(o2), new ArrayList<>(), false);
                 return Double.compare(strength2, strength1);
               }
             });
@@ -315,8 +312,7 @@ public class ProTerritoryManager {
       final List<ProTransport> transportMapList = new ArrayList<>();
       alliedAttackMaps.add(attackMap);
       findAttackOptions(alliedPlayer, alliedUnitTerritories, attackMap, unitAttackMap, transportAttackMap, bombardMap,
-          transportMapList, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), false,
-          false);
+          transportMapList, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), false, false);
     }
     return new ProOtherMoveOptions(alliedAttackMaps, player, true);
   }
@@ -343,8 +339,7 @@ public class ProTerritoryManager {
       final List<ProTransport> transportMapList = new ArrayList<>();
       enemyAttackMaps.add(attackMap);
       findAttackOptions(enemyPlayer, enemyUnitTerritories, attackMap, unitAttackMap, transportAttackMap, bombardMap,
-          transportMapList, enemyTerritories, new ArrayList<>(alliedTerritories), territoriesToCheck, true,
-          true);
+          transportMapList, enemyTerritories, new ArrayList<>(alliedTerritories), territoriesToCheck, true, true);
       alliedTerritories.addAll(Match.getMatches(attackMap.keySet(), Matches.TerritoryIsLand));
       enemyTerritories.removeAll(alliedTerritories);
     }
@@ -360,14 +355,14 @@ public class ProTerritoryManager {
     final Map<Territory, Set<Territory>> landRoutesMap = new HashMap<>();
     final List<PlayerID> otherPlayers = ProUtils.getPotentialEnemyPlayers(player);
     findNavalMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap,
-        ProMatches.territoryIsPotentialEnemyOrHasPotentialEnemyUnits(player, data, otherPlayers),
-        new ArrayList<>(), true, false);
+        ProMatches.territoryIsPotentialEnemyOrHasPotentialEnemyUnits(player, data, otherPlayers), new ArrayList<>(),
+        true, false);
     findLandMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, landRoutesMap,
-        ProMatches.territoryIsPotentialEnemy(player, data, otherPlayers), new ArrayList<>(),
-        new ArrayList<>(), true, false, true);
+        ProMatches.territoryIsPotentialEnemy(player, data, otherPlayers), new ArrayList<>(), new ArrayList<>(), true,
+        false, true);
     findAirMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap,
-        ProMatches.territoryHasPotentialEnemyUnits(player, data, otherPlayers), new ArrayList<>(),
-        new ArrayList<>(), true, false, true);
+        ProMatches.territoryHasPotentialEnemyUnits(player, data, otherPlayers), new ArrayList<>(), new ArrayList<>(),
+        true, false, true);
     findAmphibMoveOptions(player, myUnitTerritories, moveMap, transportMapList, landRoutesMap,
         ProMatches.territoryIsPotentialEnemy(player, data, otherPlayers), new ArrayList<>(), true, false, true);
     findBombardOptions(player, myUnitTerritories, moveMap, bombardMap, transportMapList, false);
@@ -384,11 +379,11 @@ public class ProTerritoryManager {
         ProMatches.territoryHasNoEnemyUnitsOrCleared(player, data, clearedTerritories), clearedTerritories, false,
         isCheckingEnemyAttacks);
     findLandMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, landRoutesMap,
-        Matches.isTerritoryAllied(player, data), new ArrayList<>(), clearedTerritories, false,
-        isCheckingEnemyAttacks, false);
+        Matches.isTerritoryAllied(player, data), new ArrayList<>(), clearedTerritories, false, isCheckingEnemyAttacks,
+        false);
     findAirMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap,
-        ProMatches.territoryIsNotConqueredAlliedLand(player, data), new ArrayList<>(),
-        new ArrayList<>(), false, isCheckingEnemyAttacks, false);
+        ProMatches.territoryIsNotConqueredAlliedLand(player, data), new ArrayList<>(), new ArrayList<>(), false,
+        isCheckingEnemyAttacks, false);
     findAmphibMoveOptions(player, myUnitTerritories, moveMap, transportMapList, landRoutesMap,
         Matches.isTerritoryAllied(player, data), new ArrayList<>(), false, isCheckingEnemyAttacks, false);
   }
@@ -642,8 +637,8 @@ public class ProTerritoryManager {
     final Set<Territory> possibleCarrierTerritories = new HashSet<>();
     if (isCheckingEnemyAttacks || !isCombatMove) {
       final Map<Unit, Set<Territory>> unitMoveMap2 = new HashMap<>();
-      findNavalMoveOptions(player, myUnitTerritories, new HashMap<>(), unitMoveMap2,
-          new HashMap<>(), Matches.TerritoryIsWater, enemyTerritories, false, true);
+      findNavalMoveOptions(player, myUnitTerritories, new HashMap<>(), unitMoveMap2, new HashMap<>(),
+          Matches.TerritoryIsWater, enemyTerritories, false, true);
       for (final Unit u : unitMoveMap2.keySet()) {
         if (Matches.UnitIsCarrier.match(u)) {
           possibleCarrierTerritories.addAll(unitMoveMap2.get(u));
@@ -766,8 +761,8 @@ public class ProTerritoryManager {
               moveAmphibToTerritoryMatch);
       if (isIgnoringRelationships) {
         unloadAmphibTerritoryMatch =
-            new CompositeMatchAnd<>(
-                ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, isCombatMove), moveAmphibToTerritoryMatch);
+            new CompositeMatchAnd<>(ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, isCombatMove),
+                moveAmphibToTerritoryMatch);
       }
 
       // Check each transport unit individually since they can have different ranges
@@ -989,8 +984,7 @@ public class ProTerritoryManager {
           }
 
           // Find potential unload to territories
-          final Set<Territory> bombardToTerritories =
-              new HashSet<>(data.getMap().getNeighbors(bombardFromTerritory));
+          final Set<Territory> bombardToTerritories = new HashSet<>(data.getMap().getNeighbors(bombardFromTerritory));
           bombardToTerritories.retainAll(unloadToTerritories);
 
           // Populate attack territories with bombard unit
@@ -1039,8 +1033,8 @@ public class ProTerritoryManager {
       if (patd.getMaxBattleResult().getWinPercentage() < ProData.winPercentage && !patd.getMaxAmphibUnits().isEmpty()) {
         final Set<Unit> combinedUnits = new HashSet<>(patd.getMaxUnits());
         combinedUnits.addAll(patd.getMaxAmphibUnits());
-        patd.setMaxBattleResult(calc.estimateAttackBattleResults(player, t,
-            new ArrayList<>(combinedUnits), defenders, patd.getMaxBombardUnits()));
+        patd.setMaxBattleResult(calc.estimateAttackBattleResults(player, t, new ArrayList<>(combinedUnits), defenders,
+            patd.getMaxBombardUnits()));
         patd.setNeedAmphibUnits(true);
       }
 
@@ -1083,8 +1077,8 @@ public class ProTerritoryManager {
             final Set<Unit> enemyDefendersBeforeStrafe = new HashSet<>(defenders);
             enemyDefendersBeforeStrafe.addAll(additionalEnemyDefenders);
             final ProBattleResult result =
-                calc.estimateAttackBattleResults(alliedPlayer, t, new ArrayList<>(alliedUnits),
-                    new ArrayList<>(enemyDefendersBeforeStrafe), alliedAttack.getMaxBombardUnits());
+                calc.estimateAttackBattleResults(alliedPlayer, t, new ArrayList<>(alliedUnits), new ArrayList<>(
+                    enemyDefendersBeforeStrafe), alliedAttack.getMaxBombardUnits());
             if (result.getWinPercentage() < ProData.winPercentage) {
               patd.setStrafing(true);
 
@@ -1096,11 +1090,10 @@ public class ProTerritoryManager {
                       patd.getMaxBombardUnits(), true);
 
               // Check allied result with strafe
-              final Set<Unit> enemyDefendersAfterStrafe =
-                  new HashSet<>(strafeResult.getAverageDefendersRemaining());
+              final Set<Unit> enemyDefendersAfterStrafe = new HashSet<>(strafeResult.getAverageDefendersRemaining());
               enemyDefendersAfterStrafe.addAll(additionalEnemyDefenders);
-              patd.setMaxBattleResult(calc.estimateAttackBattleResults(alliedPlayer, t, new ArrayList<>(
-                  alliedUnits), new ArrayList<>(enemyDefendersAfterStrafe), alliedAttack.getMaxBombardUnits()));
+              patd.setMaxBattleResult(calc.estimateAttackBattleResults(alliedPlayer, t, new ArrayList<>(alliedUnits),
+                  new ArrayList<>(enemyDefendersAfterStrafe), alliedAttack.getMaxBombardUnits()));
 
 
               ProLogger.debug("Checking strafing territory: " + t + ", alliedPlayer="

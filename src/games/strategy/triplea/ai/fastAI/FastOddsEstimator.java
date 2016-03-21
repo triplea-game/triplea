@@ -33,8 +33,7 @@ public class FastOddsEstimator implements IOddsCalculator {
   @Override
   public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits,
-      final Collection<Unit> bombardingUnits,
-      final Collection<TerritoryEffect> territoryEffects, final int runCount) {
+      final Collection<Unit> bombardingUnits, final Collection<TerritoryEffect> territoryEffects, final int runCount) {
     this.attacker = attacker;
     this.defender = defender;
     this.location = location;
@@ -46,8 +45,9 @@ public class FastOddsEstimator implements IOddsCalculator {
 
   @Override
   public AggregateResults calculate() {
-    final double winPercentage = ProBattleUtils.estimateStrengthDifference(location,
-        new ArrayList<>(attackingUnits), new ArrayList<>(defendingUnits));
+    final double winPercentage =
+        ProBattleUtils.estimateStrengthDifference(location, new ArrayList<>(attackingUnits), new ArrayList<>(
+            defendingUnits));
     final int battleRoundsFought = 3;
     final List<Unit> remainingAttackingUnits = new ArrayList<>();
     final List<Unit> remainingDefendingUnits = new ArrayList<>();

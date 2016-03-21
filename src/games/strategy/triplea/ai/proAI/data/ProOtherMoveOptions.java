@@ -82,8 +82,7 @@ public class ProOtherMoveOptions {
           maxUnits.addAll(result.get(t).getMaxAmphibUnits());
           double maxStrength = 0;
           if (!maxUnits.isEmpty()) {
-            maxStrength =
-                ProBattleUtils.estimateStrength(t, new ArrayList<>(maxUnits), new ArrayList<>(), isAttacker);
+            maxStrength = ProBattleUtils.estimateStrength(t, new ArrayList<>(maxUnits), new ArrayList<>(), isAttacker);
           }
           final double currentStrength =
               ProBattleUtils.estimateStrength(t, new ArrayList<>(currentUnits), new ArrayList<>(), isAttacker);

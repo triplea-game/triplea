@@ -28,10 +28,10 @@ public class ProMatches {
       @Override
       public boolean match(final Territory t) {
         final Match<Territory> match =
-            new CompositeMatchOr<>(Matches.territoryIsInList(alliedTerritories),
-                new CompositeMatchAnd<>(Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data),
-                    Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false,
-                        false, true, true), Matches.territoryIsInList(enemyTerritories).invert()));
+            new CompositeMatchOr<>(Matches.territoryIsInList(alliedTerritories), new CompositeMatchAnd<>(
+                Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data),
+                Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false,
+                    false, true, true), Matches.territoryIsInList(enemyTerritories).invert()));
         return match.match(t);
       }
     };
@@ -140,8 +140,8 @@ public class ProMatches {
       @Override
       public boolean match(final Territory t) {
         final Match<Territory> match =
-            new CompositeMatchAnd<>(Matches.isTerritoryAllied(player, data), territoryCanMoveLandUnits(player,
-                data, false));
+            new CompositeMatchAnd<>(Matches.isTerritoryAllied(player, data), territoryCanMoveLandUnits(player, data,
+                false));
         return match.match(t);
       }
     };
@@ -153,19 +153,18 @@ public class ProMatches {
       @Override
       public boolean match(final Territory t) {
         Match<Territory> match =
-            new CompositeMatchAnd<>(
-                ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, u), Matches.isTerritoryAllied(
-                    player, data), Matches.territoryHasNoEnemyUnits(player, data), Matches.territoryIsInList(
-                    enemyTerritories).invert());
+            new CompositeMatchAnd<>(ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, u),
+                Matches.isTerritoryAllied(player, data), Matches.territoryHasNoEnemyUnits(player, data), Matches
+                    .territoryIsInList(enemyTerritories).invert());
         if (isCombatMove && Matches.UnitCanBlitz.match(u) && TerritoryEffectHelper.unitKeepsBlitz(u, startTerritory)) {
           final Match<Territory> alliedWithNoEnemiesMatch =
-              new CompositeMatchAnd<>(Matches.isTerritoryAllied(player, data),
-                  Matches.territoryHasNoEnemyUnits(player, data));
+              new CompositeMatchAnd<>(Matches.isTerritoryAllied(player, data), Matches.territoryHasNoEnemyUnits(player,
+                  data));
           final Match<Territory> alliedOrBlitzableMatch =
               new CompositeMatchOr<>(alliedWithNoEnemiesMatch, territoryIsBlitzable(player, data, u));
           match =
-              new CompositeMatchAnd<>(ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove,
-                  u), alliedOrBlitzableMatch, Matches.territoryIsInList(enemyTerritories).invert());
+              new CompositeMatchAnd<>(ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, u),
+                  alliedOrBlitzableMatch, Matches.territoryIsInList(enemyTerritories).invert());
         }
         return match.match(t);
       }
@@ -187,9 +186,8 @@ public class ProMatches {
                   Matches.territoryIsInList(clearedTerritories), territoryIsBlitzable(player, data, u));
         }
         final Match<Territory> match =
-            new CompositeMatchAnd<>(
-                ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, u), alliedMatch, Matches
-                    .territoryIsInList(blockedTerritories).invert());
+            new CompositeMatchAnd<>(ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, u),
+                alliedMatch, Matches.territoryIsInList(blockedTerritories).invert());
         return match.match(t);
       }
     };
@@ -325,8 +323,7 @@ public class ProMatches {
         final Match<Unit> infraFactoryMatch =
             new CompositeMatchAnd<>(Matches.UnitCanProduceUnits, Matches.UnitIsInfrastructure);
         final Match<Territory> match =
-            new CompositeMatchAnd<>(Matches.TerritoryIsLand,
-                Matches.territoryHasUnitsThatMatch(infraFactoryMatch));
+            new CompositeMatchAnd<>(Matches.TerritoryIsLand, Matches.territoryHasUnitsThatMatch(infraFactoryMatch));
         return match.match(t);
       }
     };
@@ -337,8 +334,7 @@ public class ProMatches {
       @Override
       public boolean match(final Territory t) {
         final Match<Territory> match =
-            new CompositeMatchAnd<>(territoryHasInfraFactoryAndIsLand(player), Matches.isTerritoryEnemy(
-                player, data));
+            new CompositeMatchAnd<>(territoryHasInfraFactoryAndIsLand(player), Matches.isTerritoryEnemy(player, data));
         return match.match(t);
       }
     };
@@ -474,8 +470,8 @@ public class ProMatches {
       @Override
       public boolean match(final Territory t) {
         final Match<Territory> alliedLand =
-            new CompositeMatchAnd<>(territoryCanMoveLandUnits(player, data, false), Matches.isTerritoryAllied(
-                player, data));
+            new CompositeMatchAnd<>(territoryCanMoveLandUnits(player, data, false), Matches.isTerritoryAllied(player,
+                data));
         final Match<Territory> hasNoEnemyNeighbors =
             Matches.territoryHasNeighborMatching(data, ProMatches.territoryIsEnemyNotNeutralLand(player, data))
                 .invert();
@@ -490,8 +486,8 @@ public class ProMatches {
       @Override
       public boolean match(final Territory t) {
         final Match<Territory> match =
-            new CompositeMatchAnd<>(territoryCanMoveLandUnits(player, data, false), Matches.isTerritoryEnemy(
-                player, data));
+            new CompositeMatchAnd<>(territoryCanMoveLandUnits(player, data, false), Matches.isTerritoryEnemy(player,
+                data));
         return match.match(t);
       }
     };
@@ -502,8 +498,7 @@ public class ProMatches {
       @Override
       public boolean match(final Territory t) {
         final Match<Territory> match =
-            new CompositeMatchAnd<>(territoryIsEnemyLand(player, data),
-                Matches.TerritoryIsNeutralButNotWater.invert());
+            new CompositeMatchAnd<>(territoryIsEnemyLand(player, data), Matches.TerritoryIsNeutralButNotWater.invert());
         return match.match(t);
       }
     };
@@ -514,8 +509,7 @@ public class ProMatches {
       @Override
       public boolean match(final Territory t) {
         final Match<Territory> isMatch =
-            new CompositeMatchAnd<>(territoryIsEnemyLand(player, data),
-                Matches.TerritoryIsNeutralButNotWater.invert());
+            new CompositeMatchAnd<>(territoryIsEnemyLand(player, data), Matches.TerritoryIsNeutralButNotWater.invert());
         final Match<Territory> adjacentMatch =
             new CompositeMatchAnd<>(territoryCanMoveLandUnits(player, data, false),
                 Matches.territoryHasNeighborMatching(data, isMatch));
@@ -531,8 +525,7 @@ public class ProMatches {
       public boolean match(final Territory t) {
         final Match<Territory> alliedLand =
             new CompositeMatchAnd<>(Matches.TerritoryIsLand, Matches.isTerritoryAllied(player, data));
-        final Match<Territory> match =
-            new CompositeMatchOr<>(territoryIsEnemyNotNeutralLand(player, data), alliedLand);
+        final Match<Territory> match = new CompositeMatchOr<>(territoryIsEnemyNotNeutralLand(player, data), alliedLand);
         return match.match(t);
       }
     };
@@ -570,8 +563,8 @@ public class ProMatches {
       @Override
       public boolean match(final Territory t) {
         final Match<Territory> match =
-            new CompositeMatchOr<>(territoryIsPotentialEnemy(player, data, players),
-                territoryHasPotentialEnemyUnits(player, data, players));
+            new CompositeMatchOr<>(territoryIsPotentialEnemy(player, data, players), territoryHasPotentialEnemyUnits(
+                player, data, players));
         return match.match(t);
       }
     };
@@ -587,8 +580,8 @@ public class ProMatches {
             new CompositeMatchAnd<>(Matches.TerritoryIsLand, Matches.territoryHasNeighborMatching(data,
                 Matches.territoryHasUnitsThatMatch(myUnitIsLand)));
         final Match<Territory> match =
-            new CompositeMatchAnd<>(territoryIsLandAndAdjacentToMyLandUnits, territoryIsEnemyOrCantBeHeld(
-                player, data, territoriesThatCantBeHeld));
+            new CompositeMatchAnd<>(territoryIsLandAndAdjacentToMyLandUnits, territoryIsEnemyOrCantBeHeld(player, data,
+                territoriesThatCantBeHeld));
         return match.match(t);
       }
     };
@@ -629,8 +622,7 @@ public class ProMatches {
         final Match<Territory> hasOwnedFactoryNeighbor =
             Matches.territoryHasNeighborMatching(data, ProMatches.territoryHasInfraFactoryAndIsOwnedLand(player));
         final Match<Territory> match =
-            new CompositeMatchAnd<>(hasOwnedFactoryNeighbor, ProMatches.territoryCanMoveSeaUnits(player, data,
-                true));
+            new CompositeMatchAnd<>(hasOwnedFactoryNeighbor, ProMatches.territoryCanMoveSeaUnits(player, data, true));
         return match.match(t);
       }
     };
@@ -640,8 +632,7 @@ public class ProMatches {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
-        final Match<Unit> match =
-            new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft);
+        final Match<Unit> match = new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft);
         return match.match(u);
       }
     };
@@ -695,8 +686,7 @@ public class ProMatches {
         if (isCombatMove && Matches.UnitCanNotMoveDuringCombatMove.match(u)) {
           return false;
         }
-        final Match<Unit> match =
-            new CompositeMatchAnd<>(unitCanBeMovedAndIsOwned(player), Matches.UnitIsTransport);
+        final Match<Unit> match = new CompositeMatchAnd<>(unitCanBeMovedAndIsOwned(player), Matches.UnitIsTransport);
         return match.match(u);
       }
     };
@@ -736,9 +726,9 @@ public class ProMatches {
         final Match<Unit> myUnitHasNoMovementMatch =
             new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft.invert());
         final Match<Unit> alliedUnitMatch =
-            new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player).invert(), Matches.isUnitAllied(player, data),
-                Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(t.getUnits().getUnits(), null,
-                    player, data, false).invert());
+            new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player).invert(), Matches.isUnitAllied(player, data), Matches
+                .unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(t.getUnits().getUnits(), null, player, data,
+                    false).invert());
         final Match<Unit> match = new CompositeMatchOr<>(myUnitHasNoMovementMatch, alliedUnitMatch);
         return match.match(u);
       }
@@ -847,8 +837,7 @@ public class ProMatches {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
-        final Match<Unit> match =
-            new CompositeMatchAnd<>(Matches.enemyUnit(player, data), unitIsNeutral().invert());
+        final Match<Unit> match = new CompositeMatchAnd<>(Matches.enemyUnit(player, data), unitIsNeutral().invert());
         return match.match(u);
       }
     };
@@ -935,8 +924,7 @@ public class ProMatches {
       @Override
       public boolean match(final Unit u) {
         final Match<Unit> match =
-            new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), Matches.UnitCanBeTransported,
-                Matches.UnitCanMove);
+            new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), Matches.UnitCanBeTransported, Matches.UnitCanMove);
         return match.match(u);
       }
     };

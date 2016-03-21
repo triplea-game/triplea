@@ -277,8 +277,9 @@ public class ProTransportUtils {
         // If this is the first carrier seek and not last unit
         if (seekedCarrier == null && i > 0) {
           final int seekedCarrierIndex =
-              AdvancedUtils.getIndexOfLastUnitMatching(result, new CompositeMatchAnd<>(Matches.UnitIsCarrier,
-                  Matches.isNotInList(filledCarriers)), result.size() - 1);
+              AdvancedUtils.getIndexOfLastUnitMatching(result,
+                  new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
+                  result.size() - 1);
           if (seekedCarrierIndex == -1) {
             break; // No carriers left
           }

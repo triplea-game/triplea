@@ -357,13 +357,12 @@ public class ProPurchaseOption {
         // Find support factor value
         final double supportFactor = Math.pow(numAddedSupport * 0.9, 0.9) * bonus * ratio;
         totalSupportFactor += supportFactor;
-        ProLogger.trace(unitType.getName() + ", bonusType=" + usa.getBonusType() + ", supportFactor="
-            + supportFactor + ", numSupportProvided=" + numSupportProvided + ", numSupportableUnits="
-            + numSupportableUnits + ", numAddedSupport=" + numAddedSupport + ", ratio=" + ratio + ", bonus=" + bonus);
+        ProLogger.trace(unitType.getName() + ", bonusType=" + usa.getBonusType() + ", supportFactor=" + supportFactor
+            + ", numSupportProvided=" + numSupportProvided + ", numSupportableUnits=" + numSupportableUnits
+            + ", numAddedSupport=" + numAddedSupport + ", ratio=" + ratio + ", bonus=" + bonus);
       }
     }
-    ProLogger.debug(unitType.getName() + ", defense=" + defense + ", totalSupportFactor="
-        + totalSupportFactor);
+    ProLogger.debug(unitType.getName() + ", defense=" + defense + ", totalSupportFactor=" + totalSupportFactor);
     return totalSupportFactor;
   }
 

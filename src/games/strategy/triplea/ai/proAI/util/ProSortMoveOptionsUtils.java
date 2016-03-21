@@ -29,8 +29,7 @@ public class ProSortMoveOptionsUtils {
   public static Map<Unit, Set<Territory>> sortUnitMoveOptions(final PlayerID player,
       final Map<Unit, Set<Territory>> unitAttackOptions) {
 
-    final List<Map.Entry<Unit, Set<Territory>>> list =
-        new LinkedList<>(unitAttackOptions.entrySet());
+    final List<Map.Entry<Unit, Set<Territory>>> list = new LinkedList<>(unitAttackOptions.entrySet());
     Collections.sort(list, new Comparator<Map.Entry<Unit, Set<Territory>>>() {
       @Override
       public int compare(final Map.Entry<Unit, Set<Territory>> o1, final Map.Entry<Unit, Set<Territory>> o2) {
@@ -58,8 +57,7 @@ public class ProSortMoveOptionsUtils {
       final ProOddsCalculator calc) {
     final GameData data = ProData.getData();
 
-    final List<Map.Entry<Unit, Set<Territory>>> list =
-        new LinkedList<>(unitAttackOptions.entrySet());
+    final List<Map.Entry<Unit, Set<Territory>>> list = new LinkedList<>(unitAttackOptions.entrySet());
     Collections.sort(list, new Comparator<Map.Entry<Unit, Set<Territory>>>() {
       @Override
       public int compare(final Map.Entry<Unit, Set<Territory>> o1, final Map.Entry<Unit, Set<Territory>> o2) {
@@ -111,8 +109,7 @@ public class ProSortMoveOptionsUtils {
       final Map<Unit, Territory> unitTerritoryMap, final ProOddsCalculator calc) {
     final GameData data = ProData.getData();
 
-    final List<Map.Entry<Unit, Set<Territory>>> list =
-        new LinkedList<>(unitAttackOptions.entrySet());
+    final List<Map.Entry<Unit, Set<Territory>>> list = new LinkedList<>(unitAttackOptions.entrySet());
     Collections.sort(list, new Comparator<Map.Entry<Unit, Set<Territory>>>() {
       @Override
       public int compare(final Map.Entry<Unit, Set<Territory>> o1, final Map.Entry<Unit, Set<Territory>> o2) {
@@ -157,17 +154,15 @@ public class ProSortMoveOptionsUtils {
                 TerritoryEffectHelper.getEffects(t), data, false, false));
             Collections.reverse(sortedUnitsList);
             final int powerWithout =
-                DiceRoll.getTotalPower(
-                    DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
-                        false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+                DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
+                    false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
             sortedUnitsList.add(o1.getKey());
             Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.unitValueMap,
                 TerritoryEffectHelper.getEffects(t), data, false, false));
             Collections.reverse(sortedUnitsList);
             final int powerWith =
-                DiceRoll.getTotalPower(
-                    DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
-                        false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+                DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
+                    false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
             final int power = powerWith - powerWithout;
             if (power < minPower1) {
               minPower1 = power;
@@ -188,17 +183,15 @@ public class ProSortMoveOptionsUtils {
                 TerritoryEffectHelper.getEffects(t), data, false, false));
             Collections.reverse(sortedUnitsList);
             final int powerWithout =
-                DiceRoll.getTotalPower(
-                    DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
-                        false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+                DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
+                    false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
             sortedUnitsList.add(o2.getKey());
             Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.unitValueMap,
                 TerritoryEffectHelper.getEffects(t), data, false, false));
             Collections.reverse(sortedUnitsList);
             final int powerWith =
-                DiceRoll.getTotalPower(
-                    DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
-                        false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+                DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
+                    false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
             final int power = powerWith - powerWithout;
             if (power < minPower2) {
               minPower2 = power;

@@ -111,8 +111,7 @@ public class ProPoliticsAI {
       }
 
       // Decide whether to declare war on an enemy
-      final List<PoliticalActionAttachment> options =
-          new ArrayList<>(attackPercentageMap.keySet());
+      final List<PoliticalActionAttachment> options = new ArrayList<>(attackPercentageMap.keySet());
       Collections.shuffle(options);
       for (final PoliticalActionAttachment action : options) {
         final double roundFactor = (round - 1) * .05; // 0, .05, .1, .15, etc
