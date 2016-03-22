@@ -318,7 +318,11 @@ public class ProNonCombatMoveAI {
           if (ta != null) {
             production = ta.getProduction();
           }
-          if (territoriesToDefendWithOneUnit.contains(t) && unitValue <= (production + 3)) {
+
+          // Only defend territories that either already have units (avoid abandoning territories)
+          // or where unit value is less than production + 3 (avoid sacrificing expensive units to block)
+          if (territoriesToDefendWithOneUnit.contains(t)
+              && (unitValue <= (production + 3) || Matches.territoryHasUnitsOwnedBy(player).match(t))) {
             moveMap.get(t).addUnit(unit);
             unitMoveMap.remove(unit);
             territoriesToDefendWithOneUnit.remove(t);
