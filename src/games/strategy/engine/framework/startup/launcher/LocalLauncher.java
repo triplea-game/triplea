@@ -49,6 +49,8 @@ public class LocalLauncher extends AbstractLauncher {
         game.setRandomSource(new ScriptedRandomSource());
       }
       m_gameData.getGameLoader().startGame(game, gamePlayers, m_headless);
+    } catch( IllegalStateException e ) {
+      exceptionLoadingGame = e;
     } catch (final Exception ex) {
       ex.printStackTrace();
       exceptionLoadingGame = ex;
