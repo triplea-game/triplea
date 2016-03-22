@@ -1,9 +1,5 @@
 package games.strategy.triplea.ai.fastAI;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -14,16 +10,20 @@ import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorListener;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 public class FastOddsEstimator implements IOddsCalculator {
 
   private GameData data;
   private PlayerID attacker = null;
   private PlayerID defender = null;
   private Territory location = null;
-  private Collection<Unit> attackingUnits = new ArrayList<Unit>();
-  private Collection<Unit> defendingUnits = new ArrayList<Unit>();
-  private Collection<Unit> bombardingUnits = new ArrayList<Unit>();
-  private Collection<TerritoryEffect> territoryEffects = new ArrayList<TerritoryEffect>();
+  private Collection<Unit> attackingUnits = new ArrayList<>();
+  private Collection<Unit> defendingUnits = new ArrayList<>();
+  private Collection<Unit> bombardingUnits = new ArrayList<>();
+  private Collection<TerritoryEffect> territoryEffects = new ArrayList<>();
 
   @Override
   public void setGameData(final GameData data) {
@@ -33,8 +33,7 @@ public class FastOddsEstimator implements IOddsCalculator {
   @Override
   public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits,
-      final Collection<Unit> bombardingUnits,
-      final Collection<TerritoryEffect> territoryEffects, final int runCount) {
+      final Collection<Unit> bombardingUnits, final Collection<TerritoryEffect> territoryEffects, final int runCount) {
     this.attacker = attacker;
     this.defender = defender;
     this.location = location;
@@ -46,11 +45,12 @@ public class FastOddsEstimator implements IOddsCalculator {
 
   @Override
   public AggregateResults calculate() {
-    final double winPercentage = ProBattleUtils.estimateStrengthDifference(location,
-        new ArrayList<Unit>(attackingUnits), new ArrayList<Unit>(defendingUnits));
+    final double winPercentage =
+        ProBattleUtils.estimateStrengthDifference(location, new ArrayList<>(attackingUnits), new ArrayList<>(
+            defendingUnits));
     final int battleRoundsFought = 3;
-    final List<Unit> remainingAttackingUnits = new ArrayList<Unit>();
-    final List<Unit> remainingDefendingUnits = new ArrayList<Unit>();
+    final List<Unit> remainingAttackingUnits = new ArrayList<>();
+    final List<Unit> remainingDefendingUnits = new ArrayList<>();
     if (winPercentage > 50) {
       remainingAttackingUnits.addAll(attackingUnits);
     } else {

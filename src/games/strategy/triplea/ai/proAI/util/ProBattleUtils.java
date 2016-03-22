@@ -1,12 +1,5 @@
 package games.strategy.triplea.ai.proAI.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -25,6 +18,13 @@ import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Pro AI battle utilities.
@@ -49,14 +49,13 @@ public class ProBattleUtils {
     }
 
     // Determine if enough attack power to win in 1 round
-    final List<Unit> sortedUnitsList = new ArrayList<Unit>(attackingUnits);
+    final List<Unit> sortedUnitsList = new ArrayList<>(attackingUnits);
     Collections.sort(sortedUnitsList,
         new UnitBattleComparator(false, ProData.unitValueMap, TerritoryEffectHelper.getEffects(t), data, false, false));
     Collections.reverse(sortedUnitsList);
     final int attackPower =
-        DiceRoll.getTotalPower(
-            DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits, false,
-                false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+        DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits, false,
+            false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
     final List<Unit> defendersWithHitPoints = Match.getMatches(defendingUnits, Matches.UnitIsInfrastructure.invert());
     final int totalDefenderHitPoints = BattleCalculator.getTotalHitpointsLeft(defendersWithHitPoints);
     return ((attackPower / data.getDiceSides()) >= totalDefenderHitPoints);
@@ -72,15 +71,13 @@ public class ProBattleUtils {
     if (actualDefenders.size() == 0) {
       return 100;
     }
-    final double attackerStrength =
-        estimateStrength(t, attackingUnits, actualDefenders, true);
-    final double defenderStrength =
-        estimateStrength(t, actualDefenders, attackingUnits, false);
+    final double attackerStrength = estimateStrength(t, attackingUnits, actualDefenders, true);
+    final double defenderStrength = estimateStrength(t, actualDefenders, attackingUnits, false);
     return ((attackerStrength - defenderStrength) / Math.pow(defenderStrength, 0.85) * 50 + 50);
   }
 
-  public static double estimateStrength(final Territory t, final List<Unit> myUnits,
-      final List<Unit> enemyUnits, final boolean attacking) {
+  public static double estimateStrength(final Territory t, final List<Unit> myUnits, final List<Unit> enemyUnits,
+      final boolean attacking) {
     final GameData data = ProData.getData();
 
     List<Unit> unitsThatCanFight =
@@ -93,26 +90,25 @@ public class ProBattleUtils {
     return (2 * myHP) + myPower;
   }
 
-  private static double estimatePower(final Territory t, final List<Unit> myUnits,
-      final List<Unit> enemyUnits, final boolean attacking) {
+  private static double estimatePower(final Territory t, final List<Unit> myUnits, final List<Unit> enemyUnits,
+      final boolean attacking) {
     final GameData data = ProData.getData();
 
     final List<Unit> unitsThatCanFight =
         Match.getMatches(myUnits, Matches.UnitCanBeInBattle(attacking, !t.isWater(), data, 1, false, true, true));
-    final List<Unit> sortedUnitsList = new ArrayList<Unit>(unitsThatCanFight);
+    final List<Unit> sortedUnitsList = new ArrayList<>(unitsThatCanFight);
     Collections.sort(sortedUnitsList,
         new UnitBattleComparator(!attacking, ProData.unitValueMap, TerritoryEffectHelper.getEffects(t), data, false,
             false));
     Collections.reverse(sortedUnitsList);
     final int myPower =
-        DiceRoll.getTotalPower(
-            DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, enemyUnits, !attacking,
-                false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+        DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, enemyUnits, !attacking,
+            false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
     return (myPower * 6.0 / data.getDiceSides());
   }
 
   public static boolean territoryHasLocalLandSuperiority(final Territory t, final int distance, final PlayerID player) {
-    return territoryHasLocalLandSuperiority(t, distance, player, new HashMap<Territory, ProPurchaseTerritory>());
+    return territoryHasLocalLandSuperiority(t, distance, player, new HashMap<>());
   }
 
   public static boolean territoryHasLocalLandSuperiority(final Territory t, final int distance, final PlayerID player,
@@ -129,7 +125,7 @@ public class ProBattleUtils {
       final Set<Territory> nearbyTerritoriesForEnemy =
           data.getMap().getNeighbors(t, i, ProMatches.territoryCanMoveLandUnits(player, data, false));
       nearbyTerritoriesForEnemy.add(t);
-      final List<Unit> enemyUnits = new ArrayList<Unit>();
+      final List<Unit> enemyUnits = new ArrayList<>();
       for (final Territory nearbyTerritory : nearbyTerritoriesForEnemy) {
         enemyUnits.addAll(nearbyTerritory.getUnits().getMatches(ProMatches.unitIsEnemyNotNeutral(player, data)));
       }
@@ -138,7 +134,7 @@ public class ProBattleUtils {
       final Set<Territory> nearbyTerritoriesForAllied =
           data.getMap().getNeighbors(t, i - 1, ProMatches.territoryCanMoveLandUnits(player, data, false));
       nearbyTerritoriesForAllied.add(t);
-      final List<Unit> alliedUnits = new ArrayList<Unit>();
+      final List<Unit> alliedUnits = new ArrayList<>();
       for (final Territory nearbyTerritory : nearbyTerritoriesForAllied) {
         alliedUnits.addAll(nearbyTerritory.getUnits().getMatches(Matches.isUnitAllied(player, data)));
       }
@@ -169,7 +165,7 @@ public class ProBattleUtils {
     final Set<Territory> nearbyTerritoriesForEnemy =
         data.getMap().getNeighbors(t, distance, ProMatches.territoryCanMoveLandUnits(player, data, false));
     nearbyTerritoriesForEnemy.add(t);
-    final List<Unit> enemyUnits = new ArrayList<Unit>();
+    final List<Unit> enemyUnits = new ArrayList<>();
     for (final Territory nearbyTerritory : nearbyTerritoriesForEnemy) {
       enemyUnits.addAll(nearbyTerritory.getUnits().getMatches(ProMatches.unitIsEnemyNotNeutral(player, data)));
     }
@@ -178,7 +174,7 @@ public class ProBattleUtils {
     final Set<Territory> nearbyTerritoriesForAllied =
         data.getMap().getNeighbors(t, distance - 1, ProMatches.territoryCanMoveLandUnits(player, data, false));
     nearbyTerritoriesForAllied.add(t);
-    final List<Unit> alliedUnits = new ArrayList<Unit>();
+    final List<Unit> alliedUnits = new ArrayList<>();
     for (final Territory nearbyTerritory : nearbyTerritoriesForAllied) {
       if (moveMap.get(nearbyTerritory) != null) {
         alliedUnits.addAll(moveMap.get(nearbyTerritory).getAllDefenders());
@@ -214,10 +210,10 @@ public class ProBattleUtils {
     final Set<Territory> nearbyAlliedSeaTerritories =
         data.getMap().getNeighbors(t, alliedDistance, Matches.TerritoryIsWater);
     nearbyAlliedSeaTerritories.add(t);
-    final List<Unit> enemyUnitsInSeaTerritories = new ArrayList<Unit>();
-    final List<Unit> enemyUnitsInLandTerritories = new ArrayList<Unit>();
-    final List<Unit> myUnitsInSeaTerritories = new ArrayList<Unit>();
-    final List<Unit> alliedUnitsInSeaTerritories = new ArrayList<Unit>();
+    final List<Unit> enemyUnitsInSeaTerritories = new ArrayList<>();
+    final List<Unit> enemyUnitsInLandTerritories = new ArrayList<>();
+    final List<Unit> myUnitsInSeaTerritories = new ArrayList<>();
+    final List<Unit> alliedUnitsInSeaTerritories = new ArrayList<>();
     for (final Territory nearbyLandTerritory : nearbyLandTerritories) {
       enemyUnitsInLandTerritories.addAll(nearbyLandTerritory.getUnits().getMatches(
           ProMatches.unitIsEnemyAir(player, data)));
@@ -252,10 +248,10 @@ public class ProBattleUtils {
         + myUnitsInSeaTerritories);
 
     // Find current naval defense strength
-    final List<Unit> myUnits = new ArrayList<Unit>(myUnitsInSeaTerritories);
+    final List<Unit> myUnits = new ArrayList<>(myUnitsInSeaTerritories);
     myUnits.addAll(unitsToPlace);
     myUnits.addAll(alliedUnitsInSeaTerritories);
-    final List<Unit> enemyAttackers = new ArrayList<Unit>(enemyUnitsInSeaTerritories);
+    final List<Unit> enemyAttackers = new ArrayList<>(enemyUnitsInSeaTerritories);
     enemyAttackers.addAll(enemyUnitsInLandTerritories);
     final double defenseStrengthDifference = estimateStrengthDifference(t, enemyAttackers, myUnits);
     ProLogger.trace(t + ", current enemy naval attack strengthDifference=" + defenseStrengthDifference + ", enemySize="

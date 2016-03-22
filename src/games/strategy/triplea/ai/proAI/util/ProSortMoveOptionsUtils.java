@@ -1,14 +1,5 @@
 package games.strategy.triplea.ai.proAI.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -21,6 +12,15 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Pro AI attack options utilities.
  */
@@ -29,8 +29,7 @@ public class ProSortMoveOptionsUtils {
   public static Map<Unit, Set<Territory>> sortUnitMoveOptions(final PlayerID player,
       final Map<Unit, Set<Territory>> unitAttackOptions) {
 
-    final List<Map.Entry<Unit, Set<Territory>>> list =
-        new LinkedList<Map.Entry<Unit, Set<Territory>>>(unitAttackOptions.entrySet());
+    final List<Map.Entry<Unit, Set<Territory>>> list = new LinkedList<>(unitAttackOptions.entrySet());
     Collections.sort(list, new Comparator<Map.Entry<Unit, Set<Territory>>>() {
       @Override
       public int compare(final Map.Entry<Unit, Set<Territory>> o1, final Map.Entry<Unit, Set<Territory>> o2) {
@@ -46,7 +45,7 @@ public class ProSortMoveOptionsUtils {
         return o1.getKey().getType().getName().compareTo(o2.getKey().getType().getName());
       }
     });
-    final Map<Unit, Set<Territory>> sortedUnitAttackOptions = new LinkedHashMap<Unit, Set<Territory>>();
+    final Map<Unit, Set<Territory>> sortedUnitAttackOptions = new LinkedHashMap<>();
     for (final Map.Entry<Unit, Set<Territory>> entry : list) {
       sortedUnitAttackOptions.put(entry.getKey(), entry.getValue());
     }
@@ -58,8 +57,7 @@ public class ProSortMoveOptionsUtils {
       final ProOddsCalculator calc) {
     final GameData data = ProData.getData();
 
-    final List<Map.Entry<Unit, Set<Territory>>> list =
-        new LinkedList<Map.Entry<Unit, Set<Territory>>>(unitAttackOptions.entrySet());
+    final List<Map.Entry<Unit, Set<Territory>>> list = new LinkedList<>(unitAttackOptions.entrySet());
     Collections.sort(list, new Comparator<Map.Entry<Unit, Set<Territory>>>() {
       @Override
       public int compare(final Map.Entry<Unit, Set<Territory>> o1, final Map.Entry<Unit, Set<Territory>> o2) {
@@ -99,7 +97,7 @@ public class ProSortMoveOptionsUtils {
         return o1.getKey().getType().getName().compareTo(o2.getKey().getType().getName());
       }
     });
-    final Map<Unit, Set<Territory>> sortedUnitAttackOptions = new LinkedHashMap<Unit, Set<Territory>>();
+    final Map<Unit, Set<Territory>> sortedUnitAttackOptions = new LinkedHashMap<>();
     for (final Map.Entry<Unit, Set<Territory>> entry : list) {
       sortedUnitAttackOptions.put(entry.getKey(), entry.getValue());
     }
@@ -111,8 +109,7 @@ public class ProSortMoveOptionsUtils {
       final Map<Unit, Territory> unitTerritoryMap, final ProOddsCalculator calc) {
     final GameData data = ProData.getData();
 
-    final List<Map.Entry<Unit, Set<Territory>>> list =
-        new LinkedList<Map.Entry<Unit, Set<Territory>>>(unitAttackOptions.entrySet());
+    final List<Map.Entry<Unit, Set<Territory>>> list = new LinkedList<>(unitAttackOptions.entrySet());
     Collections.sort(list, new Comparator<Map.Entry<Unit, Set<Territory>>>() {
       @Override
       public int compare(final Map.Entry<Unit, Set<Territory>> o1, final Map.Entry<Unit, Set<Territory>> o2) {
@@ -152,22 +149,20 @@ public class ProSortMoveOptionsUtils {
         for (final Territory t : o1.getValue()) {
           if (!attackMap.get(t).isCurrentlyWins()) {
             final List<Unit> defendingUnits = t.getUnits().getMatches(Matches.enemyUnit(player, data));
-            final List<Unit> sortedUnitsList = new ArrayList<Unit>(attackMap.get(t).getUnits());
+            final List<Unit> sortedUnitsList = new ArrayList<>(attackMap.get(t).getUnits());
             Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.unitValueMap,
                 TerritoryEffectHelper.getEffects(t), data, false, false));
             Collections.reverse(sortedUnitsList);
             final int powerWithout =
-                DiceRoll.getTotalPower(
-                    DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
-                        false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+                DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
+                    false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
             sortedUnitsList.add(o1.getKey());
             Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.unitValueMap,
                 TerritoryEffectHelper.getEffects(t), data, false, false));
             Collections.reverse(sortedUnitsList);
             final int powerWith =
-                DiceRoll.getTotalPower(
-                    DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
-                        false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+                DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
+                    false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
             final int power = powerWith - powerWithout;
             if (power < minPower1) {
               minPower1 = power;
@@ -183,22 +178,20 @@ public class ProSortMoveOptionsUtils {
         for (final Territory t : o2.getValue()) {
           if (!attackMap.get(t).isCurrentlyWins()) {
             final List<Unit> defendingUnits = t.getUnits().getMatches(Matches.enemyUnit(player, data));
-            final List<Unit> sortedUnitsList = new ArrayList<Unit>(attackMap.get(t).getUnits());
+            final List<Unit> sortedUnitsList = new ArrayList<>(attackMap.get(t).getUnits());
             Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.unitValueMap,
                 TerritoryEffectHelper.getEffects(t), data, false, false));
             Collections.reverse(sortedUnitsList);
             final int powerWithout =
-                DiceRoll.getTotalPower(
-                    DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
-                        false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+                DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
+                    false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
             sortedUnitsList.add(o2.getKey());
             Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.unitValueMap,
                 TerritoryEffectHelper.getEffects(t), data, false, false));
             Collections.reverse(sortedUnitsList);
             final int powerWith =
-                DiceRoll.getTotalPower(
-                    DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
-                        false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+                DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
+                    false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
             final int power = powerWith - powerWithout;
             if (power < minPower2) {
               minPower2 = power;
@@ -246,7 +239,7 @@ public class ProSortMoveOptionsUtils {
         return o1.getKey().getType().getName().compareTo(o2.getKey().getType().getName());
       }
     });
-    final Map<Unit, Set<Territory>> sortedUnitAttackOptions = new LinkedHashMap<Unit, Set<Territory>>();
+    final Map<Unit, Set<Territory>> sortedUnitAttackOptions = new LinkedHashMap<>();
     for (final Map.Entry<Unit, Set<Territory>> entry : list) {
       sortedUnitAttackOptions.put(entry.getKey(), entry.getValue());
     }

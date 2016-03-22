@@ -1,10 +1,5 @@
 package games.strategy.triplea.ai.proAI;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -21,6 +16,11 @@ import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Pro retreat AI.
@@ -66,8 +66,7 @@ public class ProRetreatAI {
 
     // Calculate battle results
     final ProBattleResult result =
-        calc.calculateBattleResults(player, battleTerritory, attackers, defenders, new HashSet<Unit>(),
-            isAttacker);
+        calc.calculateBattleResults(player, battleTerritory, attackers, defenders, new HashSet<>(), isAttacker);
 
     // Determine if it has a factory
     int isFactory = 0;
@@ -110,7 +109,7 @@ public class ProRetreatAI {
         }
         final double strength =
             ProBattleUtils.estimateStrength(t, t.getUnits().getMatches(Matches.isUnitAllied(player, data)),
-                new ArrayList<Unit>(), false);
+                new ArrayList<>(), false);
         if (strength > maxStrength) {
           retreatTerritory = t;
           maxStrength = strength;

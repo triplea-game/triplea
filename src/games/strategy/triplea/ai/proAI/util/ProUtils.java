@@ -1,12 +1,5 @@
 package games.strategy.triplea.ai.proAI.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameStep;
@@ -23,13 +16,20 @@ import games.strategy.triplea.ui.AbstractUIContext;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Pro AI utilities (these are very general and maybe should be moved into delegate or engine).
  */
 public class ProUtils {
 
   public static Map<Unit, Territory> createUnitTerritoryMap() {
-    final Map<Unit, Territory> unitTerritoryMap = new HashMap<Unit, Territory>();
+    final Map<Unit, Territory> unitTerritoryMap = new HashMap<>();
     for (final Territory t : ProData.getData().getMap().getTerritories()) {
       for (final Unit u : t.getUnits().getUnits()) {
         unitTerritoryMap.put(u, t);
@@ -40,7 +40,7 @@ public class ProUtils {
 
   public static List<PlayerID> getOtherPlayersInTurnOrder(final PlayerID player) {
     final GameData data = ProData.getData();
-    final List<PlayerID> players = new ArrayList<PlayerID>();
+    final List<PlayerID> players = new ArrayList<>();
     final GameSequence sequence = data.getSequence();
     final int startIndex = sequence.getStepIndex();
     for (int i = 0; i < sequence.size(); i++) {
@@ -96,7 +96,7 @@ public class ProUtils {
 
   public static List<PlayerID> getEnemyPlayers(final PlayerID player) {
     final GameData data = ProData.getData();
-    final List<PlayerID> enemyPlayers = new ArrayList<PlayerID>();
+    final List<PlayerID> enemyPlayers = new ArrayList<>();
     for (final PlayerID players : data.getPlayerList().getPlayers()) {
       if (!data.getRelationshipTracker().isAllied(player, players)) {
         enemyPlayers.add(players);
@@ -107,7 +107,7 @@ public class ProUtils {
 
   public static List<PlayerID> getAlliedPlayers(final PlayerID player) {
     final GameData data = ProData.getData();
-    final List<PlayerID> alliedPlayers = new ArrayList<PlayerID>();
+    final List<PlayerID> alliedPlayers = new ArrayList<>();
     for (final PlayerID players : data.getPlayerList().getPlayers()) {
       if (data.getRelationshipTracker().isAllied(player, players)) {
         alliedPlayers.add(players);
@@ -142,7 +142,7 @@ public class ProUtils {
   }
 
   public static List<Territory> getLiveEnemyCapitals(final GameData data, final PlayerID player) {
-    final List<Territory> enemyCapitals = new ArrayList<Territory>();
+    final List<Territory> enemyCapitals = new ArrayList<>();
     final List<PlayerID> ePlayers = getEnemyPlayers(player);
     for (final PlayerID otherPlayer : ePlayers) {
       enemyCapitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(otherPlayer, data));
@@ -154,7 +154,7 @@ public class ProUtils {
   }
 
   public static List<Territory> getLiveAlliedCapitals(final GameData data, final PlayerID player) {
-    final List<Territory> capitals = new ArrayList<Territory>();
+    final List<Territory> capitals = new ArrayList<>();
     final List<PlayerID> players = getAlliedPlayers(player);
     for (final PlayerID alliedPlayer : players) {
       capitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(alliedPlayer, data));

@@ -1,14 +1,5 @@
 package games.strategy.triplea.ai.proAI.simulate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
@@ -34,6 +25,15 @@ import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.Match;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 /**
  * Pro AI simulate turn utilities.
  */
@@ -54,18 +54,17 @@ public class ProSimulateTurnUtils {
         attackers.retainAll(t.getUnits().getUnits());
         final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
         defenders.retainAll(t.getUnits().getUnits());
-        final Set<Unit> bombardingUnits = new HashSet<Unit>(battle.getBombardingUnits());
+        final Set<Unit> bombardingUnits = new HashSet<>(battle.getBombardingUnits());
         ProLogger.debug("---" + t);
         ProLogger.debug("attackers=" + attackers);
         ProLogger.debug("defenders=" + defenders);
         ProLogger.debug("bombardingUnits=" + bombardingUnits);
-        final ProBattleResult result =
-            calc.callBattleCalculator(player, t, attackers, defenders, bombardingUnits);
+        final ProBattleResult result = calc.callBattleCalculator(player, t, attackers, defenders, bombardingUnits);
         final List<Unit> remainingUnits = result.getAverageAttackersRemaining();
         ProLogger.debug("remainingUnits=" + remainingUnits);
 
         // Make updates to data
-        final List<Unit> attackersToRemove = new ArrayList<Unit>(attackers);
+        final List<Unit> attackersToRemove = new ArrayList<>(attackers);
         attackersToRemove.removeAll(remainingUnits);
         final List<Unit> defendersToRemove = Match.getMatches(defenders, Matches.UnitIsInfrastructure.invert());
         final List<Unit> infrastructureToChangeOwner = Match.getMatches(defenders, Matches.UnitIsInfrastructure);
@@ -96,8 +95,8 @@ public class ProSimulateTurnUtils {
 
     final Map<Unit, Territory> unitTerritoryMap = ProData.unitTerritoryMap;
 
-    final Map<Territory, ProTerritory> result = new HashMap<Territory, ProTerritory>();
-    final List<Unit> usedUnits = new ArrayList<Unit>();
+    final Map<Territory, ProTerritory> result = new HashMap<>();
+    final List<Unit> usedUnits = new ArrayList<>();
     for (final Territory fromTerritory : moveMap.keySet()) {
       final Territory toTerritory = toData.getMap().getTerritory(fromTerritory.getName());
       final ProTerritory patd = new ProTerritory(toTerritory);
@@ -107,10 +106,10 @@ public class ProSimulateTurnUtils {
       final Map<Unit, Territory> transportTerritoryMap = moveMap.get(fromTerritory).getTransportTerritoryMap();
       final Map<Unit, Territory> bombardMap = moveMap.get(fromTerritory).getBombardTerritoryMap();
       ProLogger.debug("Transferring " + fromTerritory + " to " + toTerritory);
-      final List<Unit> amphibUnits = new ArrayList<Unit>();
+      final List<Unit> amphibUnits = new ArrayList<>();
       for (final Unit transport : amphibAttackMap.keySet()) {
         Unit toTransport = null;
-        final List<Unit> toUnits = new ArrayList<Unit>();
+        final List<Unit> toUnits = new ArrayList<>();
         if (isTransportingMap.get(transport)) {
           toTransport =
               transferLoadedTransport(transport, amphibAttackMap.get(transport), unitTerritoryMap, usedUnits, toData,

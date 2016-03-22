@@ -16,16 +16,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.Lists;
-
 public class ProOtherMoveOptions {
 
   private final Map<Territory, ProTerritory> maxMoveMap;
   private final Map<Territory, List<ProTerritory>> moveMaps;
 
   public ProOtherMoveOptions() {
-    maxMoveMap = new HashMap<Territory, ProTerritory>();
-    moveMaps = new HashMap<Territory, List<ProTerritory>>();
+    maxMoveMap = new HashMap<>();
+    moveMaps = new HashMap<>();
   }
 
   public ProOtherMoveOptions(final List<Map<Territory, ProTerritory>> moveMapList, final PlayerID player,
@@ -43,7 +41,7 @@ public class ProOtherMoveOptions {
     if (result != null) {
       return result;
     }
-    return new ArrayList<ProTerritory>();
+    return new ArrayList<>();
   }
 
   @Override
@@ -55,14 +53,14 @@ public class ProOtherMoveOptions {
       final PlayerID player, final boolean isAttacker) {
 
 
-    final Map<Territory, ProTerritory> result = new HashMap<Territory, ProTerritory>();
+    final Map<Territory, ProTerritory> result = new HashMap<>();
     final List<PlayerID> players = ProUtils.getOtherPlayersInTurnOrder(player);
     for (final Map<Territory, ProTerritory> moveMap : moveMaps) {
       for (final Territory t : moveMap.keySet()) {
 
         // Get current player
         PlayerID movePlayer = null;
-        final Set<Unit> currentUnits = new HashSet<Unit>(moveMap.get(t).getMaxUnits());
+        final Set<Unit> currentUnits = new HashSet<>(moveMap.get(t).getMaxUnits());
         currentUnits.addAll(moveMap.get(t).getMaxAmphibUnits());
         if (!currentUnits.isEmpty()) {
           movePlayer = currentUnits.iterator().next().getOwner();
@@ -80,15 +78,14 @@ public class ProOtherMoveOptions {
         if (!result.containsKey(t)) {
           result.put(t, moveMap.get(t));
         } else {
-          final Set<Unit> maxUnits = new HashSet<Unit>(result.get(t).getMaxUnits());
+          final Set<Unit> maxUnits = new HashSet<>(result.get(t).getMaxUnits());
           maxUnits.addAll(result.get(t).getMaxAmphibUnits());
           double maxStrength = 0;
           if (!maxUnits.isEmpty()) {
-            maxStrength =
-                ProBattleUtils.estimateStrength(t, Lists.newArrayList(maxUnits), Lists.newArrayList(), isAttacker);
+            maxStrength = ProBattleUtils.estimateStrength(t, new ArrayList<>(maxUnits), new ArrayList<>(), isAttacker);
           }
           final double currentStrength =
-              ProBattleUtils.estimateStrength(t, Lists.newArrayList(currentUnits), Lists.newArrayList(), isAttacker);
+              ProBattleUtils.estimateStrength(t, new ArrayList<>(currentUnits), new ArrayList<>(), isAttacker);
           final boolean currentHasLandUnits = Match.someMatch(currentUnits, Matches.UnitIsLand);
           final boolean maxHasLandUnits = Match.someMatch(maxUnits, Matches.UnitIsLand);
           if ((currentHasLandUnits && ((!maxHasLandUnits && !t.isWater()) || currentStrength > maxStrength))
@@ -103,11 +100,11 @@ public class ProOtherMoveOptions {
 
   private static Map<Territory, List<ProTerritory>> createMoveMaps(final List<Map<Territory, ProTerritory>> moveMapList) {
 
-    final Map<Territory, List<ProTerritory>> result = new HashMap<Territory, List<ProTerritory>>();
+    final Map<Territory, List<ProTerritory>> result = new HashMap<>();
     for (final Map<Territory, ProTerritory> moveMap : moveMapList) {
       for (final Territory t : moveMap.keySet()) {
         if (!result.containsKey(t)) {
-          final List<ProTerritory> list = new ArrayList<ProTerritory>();
+          final List<ProTerritory> list = new ArrayList<>();
           list.add(moveMap.get(t));
           result.put(t, list);
         } else {
