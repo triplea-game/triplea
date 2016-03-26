@@ -327,6 +327,29 @@
     <br>Feedback highly welcome, if played.
     <br>Leave feedback at the forums: http://triplea.sourceforge.net/mywiki/Community
     <br>or at the Depot: http://sites.google.com/site/tripleaerniebommel/
++  url: https://github.com/KaiMAD/big_world_1939/blob/master/big_world_1939.zip+
++  mapName: big_world_1939
++  description: |
++    <img src="https://github.com/KaiMAD/big_world_1939/blob/master/screenshot.png" />
++    <br>
++    <br>Big World 1939
++    <br>Version 1.0
++    <br>Mod by KaiMAD
++    <br>
++    <br>This is a map based on the original Big World 1942 v3 Rules Game; however, it is set in 1939 and includes the following players:
++    <br>Germans
++    <br>Russians
++    <br>Slovaks
++    <br>British
++    <br>Romanians
++    <br>French
++    <br>Italians
++    <br>Canadians
++    <br>Japanese
++    <br>Chinese
++    <br>Finns
++    <br>Americans
++    <br>(in the above listed order)
 - url: https://github.com/triplea-maps/big_world_2/releases/download/0.1/big_world_2.zip
   mapName: big_world_2
   description: |
