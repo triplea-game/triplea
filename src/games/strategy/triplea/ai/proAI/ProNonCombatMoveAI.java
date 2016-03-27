@@ -116,7 +116,6 @@ public class ProNonCombatMoveAI {
       while (true) {
 
         // Add value to territories near capital if necessary
-
         for (final Territory t : territoryManager.getDefendTerritories()) {
           double value = territoryValueMap.get(t);
           final int distance =
@@ -131,7 +130,6 @@ public class ProNonCombatMoveAI {
           }
         }
 
-        // Move units to best territories
         moveUnitsToBestTerritories();
 
         // Check if capital has local land superiority
@@ -148,6 +146,8 @@ public class ProNonCombatMoveAI {
           break;
         }
       }
+    } else {
+      moveUnitsToBestTerritories();
     }
 
     // Determine where to move infra units
