@@ -21,7 +21,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attatchments.TechAbilityAttachment;
+import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;

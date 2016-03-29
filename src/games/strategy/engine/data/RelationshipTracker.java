@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import games.strategy.triplea.attatchments.RelationshipTypeAttachment;
+import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 
 public class RelationshipTracker extends RelationshipInterpreter {
   private static final long serialVersionUID = -4740671761925519069L;

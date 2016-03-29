@@ -9,8 +9,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.attatchments.TerritoryEffectAttachment;
+import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.attachments.TerritoryEffectAttachment;
 
 /**
  * Placeholder for all calculations to do with TerritoryEffects

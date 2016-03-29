@@ -29,7 +29,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.MapData;

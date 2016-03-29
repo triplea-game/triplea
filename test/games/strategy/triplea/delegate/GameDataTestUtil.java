@@ -15,7 +15,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TechAttachment;
+import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.ui.display.DummyTripleaDisplay;
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;

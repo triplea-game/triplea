@@ -10,8 +10,8 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attatchments.RulesAttachment;
-import games.strategy.triplea.attatchments.UnitSupportAttachment;
+import games.strategy.triplea.attachments.RulesAttachment;
+import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.util.IntegerMap;
 

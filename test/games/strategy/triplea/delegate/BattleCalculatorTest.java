@@ -22,7 +22,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.util.DummyTripleAPlayer;

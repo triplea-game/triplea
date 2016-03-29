@@ -15,7 +15,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 
 /**
  * Tracks which transports are carrying which units. Also tracks the capacity

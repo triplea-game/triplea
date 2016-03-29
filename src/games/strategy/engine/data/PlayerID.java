@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.PlayerAttachment;
-import games.strategy.triplea.attatchments.RulesAttachment;
-import games.strategy.triplea.attatchments.TechAttachment;
+import games.strategy.triplea.attachments.PlayerAttachment;
+import games.strategy.triplea.attachments.RulesAttachment;
+import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CompositeMatchAnd;
 

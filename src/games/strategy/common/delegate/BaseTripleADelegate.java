@@ -9,7 +9,7 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.TripleA;
 import games.strategy.triplea.ai.weakAI.WeakAI;
-import games.strategy.triplea.attatchments.TriggerAttachment;
+import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;

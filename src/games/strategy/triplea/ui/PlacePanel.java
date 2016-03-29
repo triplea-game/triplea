@@ -17,7 +17,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
-import games.strategy.triplea.attatchments.PlayerAttachment;
+import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;

@@ -12,7 +12,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TechAttachment;
+import games.strategy.triplea.attachments.TechAttachment;
 import junit.framework.TestCase;
 
 public class DelegateTest extends TestCase {
