@@ -1,15 +1,15 @@
 package games.strategy.engine;
 
+import games.strategy.debug.ClientLogger;
+import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
+import games.strategy.util.Version;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
-
-import games.strategy.debug.ClientLogger;
-import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.GameRunner2;
-import games.strategy.util.Version;
 
 /**
  * Pure utility class, final and private constructor to enforce this
@@ -57,8 +57,8 @@ public final class ClientFileSystemHelper {
     // TODO: This is begging for trouble since we call ClientFileSystem during the construction of
     // ClientContext. Though, we will at this point already have parsed the game engine version, so it is okay (but
     // brittle)
-    EngineVersion engine = ClientContext.engineVersion();
-    Version version = engine.getVersion();
+    final EngineVersion engine = ClientContext.engineVersion();
+    final Version version = engine.getVersion();
 
     return "triplea_" + version.toStringFull("_") + ".jar!";
   }
@@ -128,7 +128,7 @@ public final class ClientFileSystemHelper {
   }
 
   public static File getUserMapsFolder() {
-    final File f = new File(getUserRootFolder(), "maps");
+    final File f = new File(getUserRootFolder(), "downloadedMaps");
     if (!f.exists()) {
       try {
         f.mkdirs();
@@ -143,7 +143,7 @@ public final class ClientFileSystemHelper {
   public static File createTempFile() {
     try {
       return File.createTempFile("triplea", "tmp");
-    } catch (IOException e) {
+    } catch (final IOException e) {
       throw new IllegalStateException("Failed to create a temporary file", e);
     }
   }
