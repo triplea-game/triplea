@@ -1622,9 +1622,9 @@
     <br>
   version: 1.0
   url: https://github.com/triplea-maps/invasion_usa/releases/download/0.40/invasion_usa.zip 
-  mapName: UNDER SIEGE: America
+  mapName: Invasion_USA
   description: |
-    UNDER SIEGE: America is an updated version for Hobbes__ map Invasion USA
+    UNDER SIEGE: America is an updated mod for Hobbes__ map Invasion USA
     <br />Objective:
     <br />	Americans maintain 13 Victory Cities through 12 rounds.
     <br />	Invader capture and control 18 or more Victory Cities before the end of round 12.
