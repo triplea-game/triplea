@@ -10,6 +10,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
@@ -208,8 +209,7 @@ public class ProMatches {
       @Override
       public boolean match(final Territory t) {
         final boolean navalMayNotNonComIntoControlled =
-            Properties.getWW2V2(data)
-                || games.strategy.triplea.Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(data);
+            Properties.getWW2V2(data) || Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(data);
         if (!isCombatMove && navalMayNotNonComIntoControlled
             && Matches.isTerritoryEnemyAndNotUnownedWater(player, data).match(t)) {
           return false;
@@ -230,7 +230,7 @@ public class ProMatches {
       public boolean match(final Territory t) {
         final Match<Territory> match =
             new CompositeMatchAnd<>(territoryCanMoveSeaUnits(player, data, isCombatMove),
-                Matches.territoryHasNoEnemyUnits(player, data));
+                territoryHasOnlyIgnoredUnits(player, data));
         return match.match(t);
       }
     };
@@ -255,11 +255,28 @@ public class ProMatches {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
+        final Match<Territory> onlyIgnoredOrClearedMatch =
+            new CompositeMatchOr<>(territoryHasOnlyIgnoredUnits(player, data),
+                Matches.territoryIsInList(clearedTerritories));
         final Match<Territory> match =
-            new CompositeMatchAnd<>(territoryCanMoveSeaUnits(player, data, isCombatMove),
-                territoryHasNoEnemyUnitsOrCleared(player, data, clearedTerritories),
+            new CompositeMatchAnd<>(territoryCanMoveSeaUnits(player, data, isCombatMove), onlyIgnoredOrClearedMatch,
                 Matches.territoryIsNotInList(notTerritories));
         return match.match(t);
+      }
+    };
+  }
+
+  private static Match<Territory> territoryHasOnlyIgnoredUnits(final PlayerID player, final GameData data) {
+    return new Match<Territory>() {
+      @Override
+      public boolean match(final Territory t) {
+        final CompositeMatch<Unit> subOnly =
+            new CompositeMatchOr<Unit>(Matches.UnitIsInfrastructure, Matches.UnitIsSub, Matches.enemyUnit(player, data)
+                .invert());
+        if (Properties.getIgnoreSubInMovement(data) && t.getUnits().allMatch(subOnly)) {
+          return true;
+        }
+        return Matches.territoryHasNoEnemyUnits(player, data).match(t);
       }
     };
   }
