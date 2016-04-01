@@ -125,17 +125,17 @@ public class PointFileReaderWriter {
     out.flush();
   }
 
-  public static void writeOneToMany(final OutputStream sink, Map mapping) throws Exception {
+  public static void writeOneToMany(final OutputStream sink, Map<String, Collection<Point>> mapping) throws Exception {
     final StringBuilder out = new StringBuilder();
     if (mapping == null) {
-      mapping = new HashMap();
+      mapping = new HashMap<String, Collection<Point>>();
     }
-    final Iterator keyIter = mapping.keySet().iterator();
+    final Iterator<String> keyIter = mapping.keySet().iterator();
     while (keyIter.hasNext()) {
       final String name = (String) keyIter.next();
       out.append(name).append(" ");
-      final Collection points = (Collection) mapping.get(name);
-      final Iterator pointIter = points.iterator();
+      final Collection<Point> points = mapping.get(name);
+      final Iterator<Point> pointIter = points.iterator();
       while (pointIter.hasNext()) {
         final Point point = (Point) pointIter.next();
         out.append(" (").append(point.x).append(",").append(point.y).append(")");
@@ -149,6 +149,31 @@ public class PointFileReaderWriter {
     }
     write(out, sink);
   }
+  
+  /*public static void writeOneToMany(final OutputStream sink, Map<String, List<Point>> mapping) throws Exception {
+	    final StringBuilder out = new StringBuilder();
+	    if (mapping == null) {
+	      mapping = new HashMap();
+	    }
+	    final Iterator keyIter = mapping.keySet().iterator();
+	    while (keyIter.hasNext()) {
+	      final String name = (String) keyIter.next();
+	      out.append(name).append(" ");
+	      final Collection points = (Collection) mapping.get(name);
+	      final Iterator pointIter = points.iterator();
+	      while (pointIter.hasNext()) {
+	        final Point point = (Point) pointIter.next();
+	        out.append(" (").append(point.x).append(",").append(point.y).append(")");
+	        if (pointIter.hasNext()) {
+	          out.append(" ");
+	        }
+	      }
+	      if (keyIter.hasNext()) {
+	        out.append("\r\n");
+	      }
+	    }
+	    write(out, sink);
+	  }*/
 
   /**
    * Returns a map of the form String -> Collection of points.

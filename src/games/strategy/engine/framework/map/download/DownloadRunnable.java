@@ -11,8 +11,6 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
-
 import com.google.common.collect.Maps;
 
 import games.strategy.debug.ClientLogger;

@@ -51,8 +51,6 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.common.swing.SwingAction;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
@@ -452,7 +450,7 @@ public class DecorationPlacer extends JFrame {
       }
       final FileOutputStream out = new FileOutputStream(fileName);
 
-      PointFileReaderWriter.writeOneToMany(out, m_currentPoints);
+      PointFileReaderWriter.writeOneToMany(out, new HashMap<String, Collection<Point>>(m_currentPoints));
 
       out.flush();
       out.close();

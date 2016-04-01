@@ -807,7 +807,8 @@ class BattleModel extends DefaultTableModel {
   private final Collection<TerritoryEffect> m_territoryEffects;
   private final boolean m_isAmphibious;
   private final Collection<Unit> m_amphibiousLandAttackers;
-  private final PlayerID m_player;
+  @SuppressWarnings("unused")
+private final PlayerID m_player;
   private BattleModel m_enemyBattleModel = null;
 
   private static String[] varDiceArray(final GameData data) {

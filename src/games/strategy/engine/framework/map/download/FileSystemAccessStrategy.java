@@ -12,7 +12,6 @@ import javax.swing.DefaultListModel;
 import com.google.common.collect.Lists;
 
 import games.strategy.common.swing.SwingComponents;
-import games.strategy.debug.ClientLogger;
 import games.strategy.util.Version;
 
 public class FileSystemAccessStrategy {

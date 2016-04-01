@@ -30,7 +30,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-import games.strategy.engine.framework.map.download.DownloadFileDescription;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.UrlConstants;
 

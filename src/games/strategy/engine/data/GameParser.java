@@ -31,7 +31,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.ComboProperty;

@@ -11,6 +11,9 @@ import javax.swing.JOptionPane;
 public class WaitDialog extends JDialog {
   private static final long serialVersionUID = 7433959812027467868L;
 
+  /**
+   * @wbp.parser.constructor
+   */
   public WaitDialog(final Component parent, final String waitMessage) {
     this(parent, waitMessage, null);
   }
@@ -18,13 +21,14 @@ public class WaitDialog extends JDialog {
   public WaitDialog(final Component parent, final String waitMessage, final Action cancelAction) {
     super(JOptionPane.getFrameForComponent(parent), "Please Wait", true);
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+    setUndecorated(true);
     final WaitPanel panel = new WaitPanel(waitMessage);
-    setLayout(new BorderLayout());
-    add(panel, BorderLayout.CENTER);
+    getContentPane().setLayout(new BorderLayout());
+    getContentPane().add(panel, BorderLayout.CENTER);
     if (cancelAction != null) {
       final JButton cancelButton = new JButton("Cancel");
       cancelButton.addActionListener(cancelAction);
-      add(cancelButton, BorderLayout.SOUTH);
+      getContentPane().add(cancelButton, BorderLayout.SOUTH);
     }
   }
 }

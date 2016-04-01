@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.message.DummyMessenger;

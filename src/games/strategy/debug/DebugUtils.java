@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.GameRunner2;
 
 /**

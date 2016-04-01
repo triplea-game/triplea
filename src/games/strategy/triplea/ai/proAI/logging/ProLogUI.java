@@ -10,7 +10,8 @@ import games.strategy.triplea.ui.TripleAFrame;
  * Class to manage log window display.
  */
 public class ProLogUI {
-  private static TripleAFrame s_frame = null;
+  @SuppressWarnings("unused")
+private static TripleAFrame s_frame = null;
   private static ProLogWindow s_settingsWindow = null;
   private static String currentName = "";
   private static int currentRound = 0;

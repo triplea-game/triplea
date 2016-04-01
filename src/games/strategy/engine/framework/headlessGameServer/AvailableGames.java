@@ -23,7 +23,6 @@ import java.util.zip.ZipInputStream;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.ui.NewGameChooserModel;
 import games.strategy.triplea.Constants;
 

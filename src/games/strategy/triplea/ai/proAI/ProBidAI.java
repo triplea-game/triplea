@@ -387,16 +387,19 @@ public class ProBidAI {
         impassableTerrs.add(t);
       }
     }
-    final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
+    @SuppressWarnings("unused")
+	final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final boolean tFirst = !games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
     final CompositeMatch<Unit> ownedUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player));
     final CompositeMatch<Unit> attackUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsNotTransport);
-    final CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport);
+    @SuppressWarnings("unused")
+	final CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport);
     final CompositeMatch<Unit> enemyUnit = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data));
     final CompositeMatch<Unit> enemyAttackUnit = new CompositeMatchAnd<Unit>(attackUnit, enemyUnit);
     // CompositeMatch<Unit> enemyTransUnit = new CompositeMatchAnd<Unit>(transUnit, enemyUnit);
     final CompositeMatch<Unit> ourFactory = new CompositeMatchAnd<Unit>(ownedUnit, Matches.UnitCanProduceUnits);
-    final CompositeMatch<Unit> landUnit =
+    @SuppressWarnings("unused")
+	final CompositeMatch<Unit> landUnit =
         new CompositeMatchAnd<Unit>(ownedUnit, Matches.UnitIsLand, Matches.UnitIsNotInfrastructure,
             Matches.UnitCanNotProduceUnits);
     // CompositeMatch<Territory> ourLandTerr = new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(player),

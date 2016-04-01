@@ -82,7 +82,6 @@ import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.pbem.PBEMMessagePoster;
-import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.net.IServerMessenger;
 import games.strategy.performance.EnablePerformanceLoggingCheckBox;
 import games.strategy.triplea.UrlConstants;

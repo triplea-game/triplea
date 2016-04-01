@@ -8,7 +8,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.EngineVersion;
 import games.strategy.net.IConnectionLogin;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;

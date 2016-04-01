@@ -5,7 +5,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.util.ThreadUtil;
 
 /**

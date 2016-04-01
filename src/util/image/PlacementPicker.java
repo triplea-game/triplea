@@ -481,7 +481,7 @@ public class PlacementPicker extends JFrame {
         return;
       }
       final FileOutputStream out = new FileOutputStream(fileName);
-      PointFileReaderWriter.writeOneToMany(out, m_placements);
+      PointFileReaderWriter.writeOneToMany(out, new HashMap<String, Collection<Point>>(m_placements));
       out.flush();
       out.close();
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
