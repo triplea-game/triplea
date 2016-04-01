@@ -34,7 +34,7 @@ public class PointFileReaderWriter {
     if (stream == null) {
       return Collections.emptyMap();
     }
-    final Map<String, Point> mapping = new HashMap<String, Point>();
+    final Map<String, Point> mapping = new HashMap<>();
 
     try (InputStreamReader inputStreamReader = new InputStreamReader(stream);
         LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
@@ -53,7 +53,7 @@ public class PointFileReaderWriter {
    * Returns a map of the form String -> Point.
    */
   public static Map<String, Point> readOneToOneCenters(final InputStream stream) throws IOException {
-    final Map<String, Point> mapping = new HashMap<String, Point>();
+    final Map<String, Point> mapping = new HashMap<>();
 
     try (InputStreamReader inputStreamReader = new InputStreamReader(stream);
         LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
@@ -128,16 +128,16 @@ public class PointFileReaderWriter {
   public static void writeOneToMany(final OutputStream sink, Map<String, Collection<Point>> mapping) throws Exception {
     final StringBuilder out = new StringBuilder();
     if (mapping == null) {
-      mapping = new HashMap<String, Collection<Point>>();
+      mapping = new HashMap<>();
     }
     final Iterator<String> keyIter = mapping.keySet().iterator();
     while (keyIter.hasNext()) {
-      final String name = (String) keyIter.next();
+      final String name = keyIter.next();
       out.append(name).append(" ");
       final Collection<Point> points = mapping.get(name);
       final Iterator<Point> pointIter = points.iterator();
       while (pointIter.hasNext()) {
-        final Point point = (Point) pointIter.next();
+        final Point point = pointIter.next();
         out.append(" (").append(point.x).append(",").append(point.y).append(")");
         if (pointIter.hasNext()) {
           out.append(" ");
@@ -149,31 +149,6 @@ public class PointFileReaderWriter {
     }
     write(out, sink);
   }
-  
-  /*public static void writeOneToMany(final OutputStream sink, Map<String, List<Point>> mapping) throws Exception {
-	    final StringBuilder out = new StringBuilder();
-	    if (mapping == null) {
-	      mapping = new HashMap();
-	    }
-	    final Iterator keyIter = mapping.keySet().iterator();
-	    while (keyIter.hasNext()) {
-	      final String name = (String) keyIter.next();
-	      out.append(name).append(" ");
-	      final Collection points = (Collection) mapping.get(name);
-	      final Iterator pointIter = points.iterator();
-	      while (pointIter.hasNext()) {
-	        final Point point = (Point) pointIter.next();
-	        out.append(" (").append(point.x).append(",").append(point.y).append(")");
-	        if (pointIter.hasNext()) {
-	          out.append(" ");
-	        }
-	      }
-	      if (keyIter.hasNext()) {
-	        out.append("\r\n");
-	      }
-	    }
-	    write(out, sink);
-	  }*/
 
   /**
    * Returns a map of the form String -> Collection of points.
@@ -183,7 +158,7 @@ public class PointFileReaderWriter {
       return Collections.emptyMap();
     }
 
-    final HashMap<String, List<Point>> mapping = new HashMap<String, List<Point>>();
+    final HashMap<String, List<Point>> mapping = new HashMap<>();
     try (InputStreamReader inputStreamReader = new InputStreamReader(stream);
         LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
       String current = reader.readLine();
@@ -204,7 +179,7 @@ public class PointFileReaderWriter {
    * Returns a map of the form String -> Collection of points.
    */
   public static Map<String, List<Polygon>> readOneToManyPolygons(final InputStream stream) throws IOException {
-    final HashMap<String, List<Polygon>> mapping = new HashMap<String, List<Polygon>>();
+    final HashMap<String, List<Polygon>> mapping = new HashMap<>();
     try (InputStreamReader inputStreamReader = new InputStreamReader(stream);
         LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
       String current = reader.readLine();
@@ -228,8 +203,8 @@ public class PointFileReaderWriter {
       // so it is hand optimized
       final String name = line.substring(0, line.indexOf('<')).trim();
       int index = name.length();
-      final List<Polygon> polygons = new ArrayList<Polygon>(64);
-      final ArrayList<Point> points = new ArrayList<Point>();
+      final List<Polygon> polygons = new ArrayList<>(64);
+      final ArrayList<Point> points = new ArrayList<>();
       final int length = line.length();
       while (index < length) {
         char current = line.charAt(index);

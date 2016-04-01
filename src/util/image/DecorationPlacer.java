@@ -282,9 +282,9 @@ public class DecorationPlacer extends JFrame {
     final Action saveAction = SwingAction.of("Save Image Locations", e -> saveImagePoints());
     saveAction.putValue(Action.SHORT_DESCRIPTION, "Save The Image Points To File");
     final Action keepGoingAction = SwingAction.of("Save Current and Keep Them On Map and Load New File", e -> {
-        saveImagePoints();
-        saveCurrentToMapPicture();
-        loadImagesAndPoints();
+      saveImagePoints();
+      saveCurrentToMapPicture();
+      loadImagesAndPoints();
     });
     keepGoingAction.putValue(Action.SHORT_DESCRIPTION,
         "Save current points to a file, then draw the images onto the map, then load a new points file.");
@@ -450,7 +450,7 @@ public class DecorationPlacer extends JFrame {
       }
       final FileOutputStream out = new FileOutputStream(fileName);
 
-      PointFileReaderWriter.writeOneToMany(out, new HashMap<String, Collection<Point>>(m_currentPoints));
+      PointFileReaderWriter.writeOneToMany(out, new HashMap<>(m_currentPoints));
 
       out.flush();
       out.close();
@@ -612,8 +612,10 @@ public class DecorationPlacer extends JFrame {
     File image = new File(s_mapFolderLocation + File.separator + s_imagePointType.getFolderName(),
         s_imagePointType.getImageName());
     if (image == null || !image.exists()) {
-      image = new File(ClientFileSystemHelper.getRootFolder() + File.separator + ResourceLoader.RESOURCE_FOLDER + File.separator
-          + s_imagePointType.getFolderName(), s_imagePointType.getImageName());
+      image = new File(
+          ClientFileSystemHelper.getRootFolder() + File.separator + ResourceLoader.RESOURCE_FOLDER + File.separator
+              + s_imagePointType.getFolderName(),
+          s_imagePointType.getImageName());
     }
     if (image == null || !image.exists()) {
       image = null;
