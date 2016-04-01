@@ -70,9 +70,9 @@ public class ProductionPanel extends JPanel {
   public IntegerMap<ProductionRule> show(final PlayerID id, final JFrame parent, final GameData data, final boolean bid,
       final IntegerMap<ProductionRule> initialPurchase) {
     if (parent != null) {
-      final String title = "Produce";
-      final JPanel contents = this;
-      m_dialog = SwingComponents.newJDialogModal(parent, title, contents);
+      String title = "Produce";
+      JPanel contents = this;
+      m_dialog = SwingComponents.newJDialogModal(parent, title , contents);
     }
     this.m_bid = bid;
     this.m_data = data;

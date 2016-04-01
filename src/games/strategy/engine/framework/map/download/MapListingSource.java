@@ -19,7 +19,7 @@ import games.strategy.engine.config.PropertyReader;
 public class MapListingSource {
   private final String mapListDownloadSite;
 
-  public MapListingSource(final PropertyReader propertyReader) {
+  public MapListingSource(PropertyReader propertyReader) {
     checkNotNull(propertyReader);
     mapListDownloadSite = propertyReader.readProperty(GameEngineProperty.MAP_LISTING_SOURCE_FILE);
   }
@@ -33,15 +33,15 @@ public class MapListingSource {
   public URL getMapListDownloadURL() {
     try {
       return getUrlFollowingRedirects(mapListDownloadSite);
-    } catch (final Exception e) {
+    } catch (Exception e) {
       throw new IllegalStateException("Failed to download: " + mapListDownloadSite, e);
     }
   }
 
-  private static URL getUrlFollowingRedirects(final String possibleRedirectionUrl) throws Exception {
+  private static URL getUrlFollowingRedirects(String possibleRedirectionUrl) throws Exception {
     URL url = new URL(possibleRedirectionUrl);
-    final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-    final int status = conn.getResponseCode();
+    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+    int status = conn.getResponseCode();
     if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
         || status == HttpURLConnection.HTTP_SEE_OTHER) {
       // update the URL if we were redirected

@@ -51,13 +51,11 @@ public class EngineVersionProperties {
   }
 
   private EngineVersionProperties(final Properties props) {
-    m_latestVersionOut =
-        new Version(props.getProperty("LATEST", ClientContext.engineVersion().getVersion().toStringFull(".")));
+    m_latestVersionOut = new Version(props.getProperty("LATEST", ClientContext.engineVersion().getVersion().toStringFull(".")));
     final Version showUpdatesFromTemp =
         new Version(props.getProperty("SHOW_FROM", ClientContext.engineVersion().getVersion().toStringFull(".")));
     m_showUpdatesFrom =
-        (ClientContext.engineVersion().getVersion().isLessThan(showUpdatesFromTemp, false)
-            ? ClientContext.engineVersion().getVersion() : showUpdatesFromTemp);
+        (ClientContext.engineVersion().getVersion().isLessThan(showUpdatesFromTemp, false) ? ClientContext.engineVersion().getVersion() : showUpdatesFromTemp);
     m_link = props.getProperty("LINK", "http://triplea.sourceforge.net/");
     m_linkAlt = props.getProperty("LINK_ALT", "http://sourceforge.net/projects/tripleamaps/files/TripleA/stable/");
     m_changelogLink = props.getProperty("CHANGELOG",
@@ -218,10 +216,9 @@ public class EngineVersionProperties {
 
   public Component getCurrentFeaturesComponent() {
     final JPanel panel = new JPanel(new BorderLayout());
-    final JEditorPane intro =
-        new JEditorPane("text/html", "<html><h2>What is new in version " + ClientContext.engineVersion()
-            + "</h2><br />" + "Please visit our forum to get involved: "
-            + "<a class=\"external\" href=\"http://triplea.sourceforge.net/mywiki/Forum\">http://triplea.sourceforge.net/mywiki/Forum</a><br /><br /></html>");
+    final JEditorPane intro = new JEditorPane("text/html", "<html><h2>What is new in version " + ClientContext.engineVersion()
+        + "</h2><br />" + "Please visit our forum to get involved: "
+        + "<a class=\"external\" href=\"http://triplea.sourceforge.net/mywiki/Forum\">http://triplea.sourceforge.net/mywiki/Forum</a><br /><br /></html>");
     intro.setEditable(false);
     intro.setOpaque(false);
     intro.setBorder(BorderFactory.createEmptyBorder());

@@ -36,7 +36,7 @@ public class DefaultNamed extends GameDataComponent implements Named, Serializab
 
   @Override
   public int hashCode() {
-    if (m_name == null) {
+    if( m_name == null )  {
       logSerializationWarning();
     }
     return Objects.hash(m_name);
@@ -48,7 +48,7 @@ public class DefaultNamed extends GameDataComponent implements Named, Serializab
 
   @Override
   public String toString() {
-    if (m_name == null) {
+    if( m_name == null )  {
       logSerializationWarning();
     }
     return MoreObjects.toStringHelper(getClass()).add("name", m_name).toString();

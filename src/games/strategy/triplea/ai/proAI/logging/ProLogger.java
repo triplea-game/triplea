@@ -9,19 +9,19 @@ import games.strategy.triplea.ai.proAI.ProAI;
  */
 public class ProLogger {
 
-  public static void warn(final String message) {
+  public static void warn(String message) {
     log(Level.WARNING, message);
   }
 
-  public static void info(final String message) {
+  public static void info(String message) {
     log(Level.FINE, message);
   }
 
-  public static void debug(final String message) {
+  public static void debug(String message) {
     log(Level.FINER, message);
   }
 
-  public static void trace(final String message) {
+  public static void trace(String message) {
     log(Level.FINEST, message);
   }
 

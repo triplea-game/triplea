@@ -36,18 +36,17 @@ import games.strategy.triplea.UrlConstants;
 public class SwingComponents {
 
   /** Creates a JPanel with BorderLayout and adds a west component and an east component */
-  public static JPanel horizontalJPanel(final Component westComponent, final Component eastComponent) {
+  public static JPanel horizontalJPanel(Component westComponent, Component eastComponent) {
     return horizontalJPanel(westComponent, Optional.empty(), eastComponent);
   }
 
-  public static JPanel horizontalJPanel(final Component westComponent, final Component centerComponent,
-      final Component eastComponent) {
+  public static JPanel horizontalJPanel(Component westComponent, Component centerComponent, Component eastComponent) {
     return horizontalJPanel(westComponent, Optional.of(centerComponent), eastComponent);
   }
 
-  private static JPanel horizontalJPanel(final Component westComponent, final Optional<Component> centerComponent,
-      final Component eastComponent) {
-    final JPanel panel = new JPanel();
+  private static JPanel horizontalJPanel(Component westComponent, Optional<Component> centerComponent,
+      Component eastComponent) {
+    JPanel panel = new JPanel();
     panel.setLayout(new BorderLayout());
     panel.add(westComponent, BorderLayout.WEST);
     if (centerComponent.isPresent()) {
@@ -57,26 +56,26 @@ public class SwingComponents {
     return panel;
   }
 
-  public static JPanel gridPanel(final int rows, final int cols) {
-    final JPanel panel = new JPanel();
+  public static JPanel gridPanel(int rows, int cols) {
+    JPanel panel = new JPanel();
     panel.setLayout(new GridLayout(rows, cols));
     return panel;
   }
 
-  public static JButton newJButton(final String title, final String toolTip, final ActionListener actionListener) {
-    final JButton button = newJButton(title, actionListener);
+  public static JButton newJButton(String title, String toolTip, ActionListener actionListener) {
+    JButton button = newJButton(title, actionListener);
     button.setToolTipText(toolTip);
     return button;
   }
 
-  public static JButton newJButton(final String title, final ActionListener actionListener) {
-    final JButton button = new JButton(title);
+  public static JButton newJButton(String title, ActionListener actionListener) {
+    JButton button = new JButton(title);
     button.addActionListener(actionListener);
     return button;
   }
 
 
-  public static JScrollPane newJScrollPane(final Component contents) {
+  public static JScrollPane newJScrollPane(Component contents) {
     final JScrollPane scroll = new JScrollPane();
     scroll.setViewportView(contents);
     scroll.setBorder(null);
@@ -92,9 +91,9 @@ public class SwingComponents {
   public static void promptUser(final String title, final String message, final Runnable confirmedAction,
       final Runnable cancelAction) {
     SwingUtilities.invokeLater(() -> {
-      final int response = JOptionPane.showConfirmDialog(null, message, title,
+      int response = JOptionPane.showConfirmDialog(null, message, title,
           JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-      final boolean result = response == JOptionPane.YES_OPTION;
+      boolean result = response == JOptionPane.YES_OPTION;
 
       if (result) {
         confirmedAction.run();
@@ -104,86 +103,86 @@ public class SwingComponents {
     });
   }
 
-  public static void newMessageDialog(final String msg) {
+  public static void newMessageDialog(String msg) {
     SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, msg));
   }
 
   public static JFrame newJFrameWithCloseAction(final Runnable closeListener) {
-    final JFrame frame = new JFrame();
+    JFrame frame = new JFrame();
     addWindowCloseListener(frame, closeListener);
     return frame;
   }
 
-  public static void addWindowCloseListener(final Window window, final Runnable closeAction) {
+  public static void addWindowCloseListener(Window window, Runnable closeAction) {
     window.addWindowListener(new WindowListener() {
       @Override
-      public void windowOpened(final WindowEvent e) {}
+      public void windowOpened(WindowEvent e) {}
 
       @Override
-      public void windowClosing(final WindowEvent e) {
+      public void windowClosing(WindowEvent e) {
         closeAction.run();
       }
 
       @Override
-      public void windowClosed(final WindowEvent e) {}
+      public void windowClosed(WindowEvent e) {}
 
       @Override
-      public void windowIconified(final WindowEvent e) {}
+      public void windowIconified(WindowEvent e) {}
 
       @Override
-      public void windowDeiconified(final WindowEvent e) {}
+      public void windowDeiconified(WindowEvent e) {}
 
       @Override
-      public void windowActivated(final WindowEvent e) {}
+      public void windowActivated(WindowEvent e) {}
 
       @Override
-      public void windowDeactivated(final WindowEvent e) {}
+      public void windowDeactivated(WindowEvent e) {}
     });
   }
 
-  public static <T> DefaultListModel<String> newJListModel(final List<T> maps, final Function<T, String> mapper) {
-    final List<String> mapList = maps.stream().map(mapper).collect(Collectors.toList());
-    final DefaultListModel<String> model = new DefaultListModel();
+  public static <T> DefaultListModel<String> newJListModel(List<T> maps, Function<T, String> mapper) {
+    List<String> mapList = maps.stream().map(mapper).collect(Collectors.toList());
+    DefaultListModel<String> model = new DefaultListModel();
     mapList.forEach(e -> model.addElement(e));
     return model;
   }
 
-  public static <T> JList<String> newJList(final DefaultListModel listModel) {
+  public static <T> JList<String> newJList(DefaultListModel listModel) {
     return new JList(listModel);
   }
 
   public static JEditorPane newHtmlJEditorPane() {
-    final JEditorPane m_descriptionPane = new JEditorPane();
+    JEditorPane m_descriptionPane = new JEditorPane();
     m_descriptionPane.setEditable(false);
     m_descriptionPane.setContentType("text/html");
     m_descriptionPane.setBackground(new JLabel().getBackground());
     return m_descriptionPane;
   }
 
-  public static JPanel newBorderedPanel(final int borderWidth) {
-    final JPanel panel = new JPanel();
+  public static JPanel newBorderedPanel(int borderWidth) {
+    JPanel panel = new JPanel();
     panel.setLayout(new BorderLayout());
     panel.setBorder(newEmptyBorder(borderWidth));
     return panel;
   }
 
-  public static Border newEmptyBorder(final int borderWidth) {
-    final int w = borderWidth;
+  public static Border newEmptyBorder(int borderWidth) {
+    int w = borderWidth;
     return new EmptyBorder(w, w, w, w);
   }
 
-  public static void newOpenUrlConfirmationDialog(final UrlConstants url) {
+  public static void newOpenUrlConfirmationDialog(UrlConstants url) {
     newOpenUrlConfirmationDialog(url.toString());
   }
 
-  public static void newOpenUrlConfirmationDialog(final String url) {
+  public static void newOpenUrlConfirmationDialog(String url) {
     final String msg = "Okay to open URL in a web browser?\n" + url;
     SwingComponents.promptUser("Open external URL?", msg, () -> {
       DesktopUtilityBrowserLauncher.openURL(url);
     });
   }
 
-  public static JDialog newJDialogModal(final JFrame parent, final String title, final JPanel contents) {
+  public static JDialog newJDialogModal(JFrame parent, String title, JPanel contents) {
     final JDialog dialog = new JDialog(parent, title, true);
     dialog.getContentPane().add(contents);
     final Action closeAction = SwingAction.of("", e -> dialog.setVisible(false));

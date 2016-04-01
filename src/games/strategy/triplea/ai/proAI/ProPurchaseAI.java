@@ -1,16 +1,5 @@
 package games.strategy.triplea.ai.proAI;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
@@ -49,6 +38,17 @@ import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Pro purchase AI.
@@ -185,8 +185,7 @@ public class ProPurchaseAI {
 
     // Determine whether to purchase new land factory
     final Map<Territory, ProPurchaseTerritory> factoryPurchaseTerritories = new HashMap<>();
-    purchaseFactory(factoryPurchaseTerritories, purchaseTerritories, prioritizedLandTerritories, purchaseOptions,
-        false);
+    purchaseFactory(factoryPurchaseTerritories, purchaseTerritories, prioritizedLandTerritories, purchaseOptions, false);
 
     // Prioritize sea place options and purchase units
     final List<ProPlaceTerritory> prioritizedSeaTerritories = prioritizeSeaTerritories(purchaseTerritories);
@@ -370,8 +369,7 @@ public class ProPurchaseAI {
             !t.isWater() && Match.allMatch(enemyAttackingUnits, Matches.UnitIsAir);
         if ((!t.isWater() && result.isHasLandUnitRemaining())
             || result.getTUVSwing() > holdValue
-            || (t.equals(ProData.myCapital) && !isLandAndCanOnlyBeAttackedByAir
-                && result.getWinPercentage() > (100 - ProData.winPercentage))) {
+            || (t.equals(ProData.myCapital) && !isLandAndCanOnlyBeAttackedByAir && result.getWinPercentage() > (100 - ProData.winPercentage))) {
           needToDefendTerritories.add(placeTerritory);
         }
       }
@@ -535,9 +533,8 @@ public class ProPurchaseAI {
 
           // Break if it can be held
           if ((!t.equals(ProData.myCapital) && !finalResult.isHasLandUnitRemaining() && finalResult.getTUVSwing() <= 0)
-              || (t.equals(ProData.myCapital) && finalResult.getWinPercentage() < (100 - ProData.winPercentage)
-                  && finalResult
-                      .getTUVSwing() <= 0)) {
+              || (t.equals(ProData.myCapital) && finalResult.getWinPercentage() < (100 - ProData.winPercentage) && finalResult
+                  .getTUVSwing() <= 0)) {
             break;
           }
         }
@@ -548,8 +545,7 @@ public class ProPurchaseAI {
           ProBattleUtils.territoryHasLocalLandSuperiority(t, ProBattleUtils.SHORT_RANGE, player, purchaseTerritories);
       if (!finalResult.isHasLandUnitRemaining()
           || (finalResult.getTUVSwing() - resourceTracker.getTempPUs(data) / 2) < placeTerritory.getMinBattleResult()
-              .getTUVSwing()
-          || t.equals(ProData.myCapital) || (!t.isWater() && hasLocalSuperiority)) {
+              .getTUVSwing() || t.equals(ProData.myCapital) || (!t.isWater() && hasLocalSuperiority)) {
         resourceTracker.confirmTempPurchases();
         ProLogger.trace(t + ", placedUnits=" + unitsToPlace + ", TUVSwing=" + finalResult.getTUVSwing()
             + ", hasLandUnitRemaining=" + finalResult.isHasLandUnitRemaining() + ", hasLocalSuperiority="
@@ -1660,9 +1656,8 @@ public class ProPurchaseAI {
                 / minPurchaseOption.getQuantity();
         for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
           if (ppo.getCost() > minPurchaseOption.getCost()
-              && (ppo.isAir() || placeTerritory.getStrategicValue() >= 0.25
-                  || ppo.getTransportCost() <= minPurchaseOption
-                      .getTransportCost())) {
+              && (ppo.isAir() || placeTerritory.getStrategicValue() >= 0.25 || ppo.getTransportCost() <= minPurchaseOption
+                  .getTransportCost())) {
             double attackEfficiency = ppo.getAttackEfficiency() * ppo.getMovement() * ppo.getCost() / ppo.getQuantity();
             if (ppo.isAir()) {
               attackEfficiency *= 10;
@@ -1795,9 +1790,8 @@ public class ProPurchaseAI {
 
         // Break if it can be held
         if ((!t.equals(ProData.myCapital) && !finalResult.isHasLandUnitRemaining() && finalResult.getTUVSwing() <= 0)
-            || (t.equals(ProData.myCapital) && finalResult.getWinPercentage() < (100 - ProData.winPercentage)
-                && finalResult
-                    .getTUVSwing() <= 0)) {
+            || (t.equals(ProData.myCapital) && finalResult.getWinPercentage() < (100 - ProData.winPercentage) && finalResult
+                .getTUVSwing() <= 0)) {
           break;
         }
       }

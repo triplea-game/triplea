@@ -36,11 +36,11 @@ abstract public class AbstractUndoableMove implements Serializable {
     m_units = units;
   }
 
-  public boolean containsAnyOf(final Set<Unit> units) {
+  public boolean containsAnyOf(Set<Unit> units) {
     if (units == null) {
       return false;
     }
-    for (final Unit unit : units) {
+    for (Unit unit : units) {
       if (containsUnit(unit)) {
         return true;
       }
@@ -48,7 +48,7 @@ abstract public class AbstractUndoableMove implements Serializable {
     return false;
   }
 
-  private boolean containsUnit(final Unit unit) {
+  private boolean containsUnit(Unit unit) {
     return m_units.contains(unit);
   }
 

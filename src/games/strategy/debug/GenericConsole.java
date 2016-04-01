@@ -26,7 +26,7 @@ public abstract class GenericConsole extends JFrame {
   private final JTextArea m_text = new JTextArea(20, 50);
   private final JToolBar m_actions = new JToolBar(SwingConstants.HORIZONTAL);
 
-  public GenericConsole(final String title) {
+  public GenericConsole(String title) {
     super(title);
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout());
@@ -108,7 +108,7 @@ class ThreadReader implements Runnable {
   private final GenericConsole parentConsole;
 
   ThreadReader(final SynchedByteArrayOutputStream in, final JTextArea text, final boolean displayConsoleOnWrite,
-      final GenericConsole parentConsole) {
+      GenericConsole parentConsole) {
     m_in = in;
     m_text = text;
     m_displayConsoleOnWrite = displayConsoleOnWrite;

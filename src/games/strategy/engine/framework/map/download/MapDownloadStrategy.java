@@ -13,10 +13,10 @@ public class MapDownloadStrategy {
   private static final int READ_TIMEOUT_MS = 5000;
   private static final int CONNECTION_TIMEOUT_MS = 5000;
 
-  public void download(final URL url, final File fileToDownloadTo) {
+  public void download(URL url, File fileToDownloadTo) {
     try {
       FileUtils.copyURLToFile(url, fileToDownloadTo, CONNECTION_TIMEOUT_MS, READ_TIMEOUT_MS);
-    } catch (final IOException e) {
+    } catch (IOException e) {
       ClientLogger.logError("Failed to download: " + url, e);
     }
   }

@@ -131,10 +131,9 @@ public class Version implements Serializable, Comparable {
     return 0;
   }
 
-  public boolean isGreaterThan(final Version other) {
+  public boolean isGreaterThan(final Version other ) {
     return isGreaterThan(other, false);
   }
-
   public boolean isGreaterThan(final Version other, final boolean ignoreMicro) {
     return compareTo(other, ignoreMicro) < 0;
   }

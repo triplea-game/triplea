@@ -325,13 +325,12 @@ public class TripleAFrame extends MainGameFrame {
     m_tabsPanel.setBorder(null);
     m_rightHandSidePanel.add(m_tabsPanel, BorderLayout.CENTER);
 
-    final MovePanel movePanel = new MovePanel(m_data, m_mapPanel, this);
+    MovePanel movePanel = new MovePanel(m_data, m_mapPanel, this);
     m_actionButtons = new ActionButtons(m_data, m_mapPanel, movePanel, this);
 
-    final List<KeyListener> keyListeners =
-        ImmutableList.of(this.getArrowKeyListener(), movePanel.getUndoMoveKeyListener());
-    for (final KeyListener keyListener : keyListeners) {
-      m_mapPanel.addKeyListener(keyListener);
+    List<KeyListener> keyListeners = ImmutableList.of(this.getArrowKeyListener(), movePanel.getUndoMoveKeyListener());
+    for( KeyListener keyListener : keyListeners ) {
+      m_mapPanel.addKeyListener(keyListener );
       // TODO: figure out if it is really needed to double add the key listener to both the frame and also the map panel
       this.addKeyListener(keyListener);
     }
@@ -852,10 +851,9 @@ public class TripleAFrame extends MainGameFrame {
       return true;
     }
     m_messageAndDialogThreadPool.waitForAll();
-    final String airUnitPlural = (airCantLand.size() == 1) ? "" : "s";
-    final String territoryPlural = (airCantLand.size() == 1) ? "y" : "ies";
-    final StringBuilder sb = new StringBuilder("<html>" + airCantLand.size() + " air unit" + airUnitPlural
-        + " cannot land in the following territor" + territoryPlural + ":<ul> ");
+    final String airUnitPlural = (airCantLand.size() == 1 ) ? "" : "s";
+    final String territoryPlural = (airCantLand.size() == 1 ) ? "y" : "ies";
+    final StringBuilder sb = new StringBuilder("<html>" + airCantLand.size() + " air unit" + airUnitPlural + " cannot land in the following territor" + territoryPlural + ":<ul> ");
     for (final Territory t : airCantLand) {
       sb.append("<li>" + t.getName() + "</li>");
     }

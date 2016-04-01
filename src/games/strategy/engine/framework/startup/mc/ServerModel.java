@@ -158,8 +158,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
             if (player.getIsDisabled()) {
               m_playersToNodeListing.put(name, m_serverMessenger.getLocalNode().getName());
               // the 2nd in the list should be Weak AI
-              final int indexPosition =
-                  Math.max(0, Math.min(m_data.getGameLoader().getServerPlayerTypes().length - 1, 1));
+              int indexPosition = Math.max(0, Math.min(m_data.getGameLoader().getServerPlayerTypes().length - 1, 1));
               m_localPlayerTypes.put(name, m_data.getGameLoader().getServerPlayerTypes()[indexPosition]);
             } else {
               // we generally do not want a headless host bot to be doing any AI turns, since that

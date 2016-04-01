@@ -259,7 +259,7 @@ public class ClipPlayer {
    * @param clipName - the file name of the clip
    * @param playerId - the name of the player, or null
    */
-  public static void play(final String clipPath, final PlayerID playerId) {
+  public static void play(String clipPath, PlayerID playerId) {
     getInstance().playClip(clipPath, playerId);
   }
 
@@ -281,7 +281,7 @@ public class ClipPlayer {
               new java.net.URL(clip.toURL().toString()).openStream(),
               FactoryRegistry.systemRegistry().createAudioDevice());
           player.play();
-        } catch (final Exception e) {
+        } catch (Exception e) {
           ClientLogger.logError("Failed to play: " + clip, e);
         }
       })).start();
@@ -309,7 +309,7 @@ public class ClipPlayer {
     Collections.shuffle(availableSounds);
     try {
       return availableSounds.get(0).toURI();
-    } catch (final URISyntaxException e) {
+    } catch (URISyntaxException e) {
       throw Throwables.propagate(e);
     }
   }
@@ -465,7 +465,7 @@ public class ClipPlayer {
             final URL individualSoundURL = soundFile.toURI().toURL();
             availableSounds.add(individualSoundURL);
           } catch (final MalformedURLException e) {
-            final String msg = "Error " + e.getMessage() + " with sound file: " + soundFile.getPath();
+            String msg = "Error " + e.getMessage() + " with sound file: " + soundFile.getPath();
             ClientLogger.logQuietly(msg, e);
           }
         }
@@ -479,7 +479,7 @@ public class ClipPlayer {
     return availableSounds;
   }
 
-  private static boolean isZippedMp3(final ZipEntry zipElement, final String resourceAndPathURL) {
+  private static boolean isZippedMp3(ZipEntry zipElement, String resourceAndPathURL) {
     return zipElement != null && zipElement.getName() != null && zipElement.getName().indexOf(resourceAndPathURL) != -1
         && (zipElement.getName().endsWith(MP3_SUFFIX));
   }

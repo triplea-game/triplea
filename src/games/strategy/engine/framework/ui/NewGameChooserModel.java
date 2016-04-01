@@ -44,7 +44,7 @@ public class NewGameChooserModel extends DefaultListModel {
   }
 
 
-  public NewGameChooserModel(final ClearGameChooserCacheMessenger clearCacheMessenger) {
+  public NewGameChooserModel(ClearGameChooserCacheMessenger clearCacheMessenger) {
     this.clearCacheMessenger = clearCacheMessenger;
     populate();
   }
@@ -109,11 +109,11 @@ public class NewGameChooserModel extends DefaultListModel {
 
     try (ZipFile zipFile = new ZipFile(map);
         final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
-      final Enumeration<? extends ZipEntry> zipEntryEnumeration = zipFile.entries();
+      Enumeration<? extends ZipEntry> zipEntryEnumeration = zipFile.entries();
       while (zipEntryEnumeration.hasMoreElements()) {
-        final ZipEntry entry = zipEntryEnumeration.nextElement();
+        ZipEntry entry = zipEntryEnumeration.nextElement();
         if (entry.getName().startsWith("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
-          final ZipProcessingResult result = processZipEntry(loader, entry, entries);
+          ZipProcessingResult result = processZipEntry(loader, entry, entries);
           if (result == ZipProcessingResult.ERROR) {
             badMapZip = true;
             break;
@@ -149,15 +149,15 @@ public class NewGameChooserModel extends DefaultListModel {
    * Open up a confirmation dialog, if user says yes, delete the map specified by
    * parameter, then show confirmation of deletion.
    */
-  private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map, final Optional<String> details) {
+  private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map, Optional<String> details) {
     try {
-      final Runnable deleteMapRunnable = new Runnable() {
+      Runnable deleteMapRunnable = new Runnable() {
         @Override
         public void run() {
           final Component parentComponent = MainFrame.getInstance();
           String message = "Could not parse map file correctly, would you like to remove it?\n" + map.getAbsolutePath()
               + "\n(You may see this error message again if you keep the file)";
-          if (details.isPresent()) {
+          if( details.isPresent()) {
             message += "\nError message encountered: " + details.get();
           }
           String title = "Corrup Map File Found";

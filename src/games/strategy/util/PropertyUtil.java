@@ -71,13 +71,12 @@ public class PropertyUtil {
 
   public static Object getPropertyFieldObject(final String propertyName, final Object subject) {
     try {
-      final Field field = getPropertyField(propertyName, subject);
+      Field field = getPropertyField(propertyName, subject);
       field.setAccessible(true);
       return field.get(subject);
     } catch (final Exception e) {
-      final String msg =
-          "No such Property Field named: " + "m_" + propertyName + ", or: " + propertyName + ", for Subject: "
-              + subject.toString();
+      String msg = "No such Property Field named: " + "m_" + propertyName + ", or: " + propertyName + ", for Subject: "
+          + subject.toString();
       throw new IllegalStateException(msg, e);
     }
   }

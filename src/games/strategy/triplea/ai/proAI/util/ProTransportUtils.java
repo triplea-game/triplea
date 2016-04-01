@@ -1,13 +1,5 @@
 package games.strategy.triplea.ai.proAI.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -23,6 +15,14 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Pro AI transport utilities.
@@ -162,8 +162,7 @@ public class ProTransportUtils {
     return transportCost;
   }
 
-  public static List<Unit> getAirThatCantLandOnCarrier(final PlayerID player, final Territory t,
-      final List<Unit> units) {
+  public static List<Unit> getAirThatCantLandOnCarrier(final PlayerID player, final Territory t, final List<Unit> units) {
     final GameData data = ProData.getData();
 
     int capacity = AirMovementValidator.carrierCapacity(units, t);
@@ -249,8 +248,7 @@ public class ProTransportUtils {
     return capacity;
   }
 
-  public static List<Unit> InterleaveUnits_CarriersAndPlanes(final List<Unit> units,
-      final int planesThatDontNeedToLand) {
+  public static List<Unit> InterleaveUnits_CarriersAndPlanes(final List<Unit> units, final int planesThatDontNeedToLand) {
     if (!(Match.someMatch(units, Matches.UnitIsCarrier) && Match.someMatch(units, Matches.UnitCanLandOnCarrier))) {
       return units;
     }

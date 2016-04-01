@@ -64,8 +64,7 @@ public class ServerGame extends AbstractGame {
   private InGameLobbyWatcherWrapper m_inGameLobbyWatcher;
   private boolean m_needToInitialize = true;
   /**
-   * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from
-   * returning.
+   * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from returning.
    * <p>
    */
   private final CountDownLatch m_delegateExecutionStoppedLatch = new CountDownLatch(1);
@@ -506,8 +505,7 @@ public class ServerGame extends AbstractGame {
     }
     bridge.setRandomSource(m_delegateRandomSource);
     // do any initialization of game data for all players here (not based on a delegate, and should not be)
-    // we can not do this the very first run through, because there are no history nodes yet. We should do after first
-    // node is created.
+    // we can not do this the very first run through, because there are no history nodes yet. We should do after first node is created.
     if (m_needToInitialize) {
       addPlayerTypesToGameData(m_gamePlayers.values(), m_playerManager, bridge);
     }

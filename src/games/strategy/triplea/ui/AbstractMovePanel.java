@@ -150,12 +150,11 @@ public abstract class AbstractMovePanel extends ActionPanel {
    * (at least until we come up with a way to deal with "n" reasons for an undo
    * failure rather than just one)
    */
-  public void undoMoves(final Set<Unit> units) {
-    final Set<UndoableMove> movesToUndo = getMovesToUndo(units, getMoveDelegate().getMovesMade());
+  public void undoMoves(Set<Unit> units) {
+    Set<UndoableMove> movesToUndo = getMovesToUndo(units, getMoveDelegate().getMovesMade());
 
     if (movesToUndo.size() == 0) {
-      final String error =
-          "Could not undo any moves, check that the unit has moved and that you can undo the move normally";
+      String error = "Could not undo any moves, check that the unit has moved and that you can undo the move normally";
       JOptionPane.showMessageDialog(getTopLevelAncestor(), error, "Could not undo move", JOptionPane.ERROR_MESSAGE);
       return;
     }
@@ -163,13 +162,13 @@ public abstract class AbstractMovePanel extends ActionPanel {
     undoMovesInReverseOrder(movesToUndo);
   }
 
-  private static Set<UndoableMove> getMovesToUndo(final Set<Unit> units, final List<Object> movesMade) {
-    final Set<UndoableMove> movesToUndo = Sets.newHashSet();
+  private static Set<UndoableMove> getMovesToUndo(Set<Unit> units, List<Object> movesMade) {
+    Set<UndoableMove> movesToUndo = Sets.newHashSet();
 
     if (movesMade != null) {
-      for (final Object undoableMoveObject : movesMade) {
+      for (Object undoableMoveObject : movesMade) {
         if (undoableMoveObject != null) {
-          final UndoableMove move = (UndoableMove) undoableMoveObject;
+          UndoableMove move = (UndoableMove) undoableMoveObject;
           if (move.containsAnyOf(units) && move.getcanUndo()) {
             movesToUndo.add(move);
           }
@@ -183,16 +182,16 @@ public abstract class AbstractMovePanel extends ActionPanel {
    * Undo moves in reverse order, from largest index to smallest. Undo will reorder move index numbers, so going top
    * down avoids this renumbering.
    */
-  private void undoMovesInReverseOrder(final Set<UndoableMove> movesToUndo) {
-    final List<Integer> moveIndexes = getSortedMoveIndexes(movesToUndo);
+  private void undoMovesInReverseOrder(Set<UndoableMove> movesToUndo) {
+    List<Integer> moveIndexes = getSortedMoveIndexes(movesToUndo);
     for (int i = moveIndexes.size() - 1; i >= 0; i--) {
       undoMove(moveIndexes.get(i));
     }
   }
 
-  private static List<Integer> getSortedMoveIndexes(final Set<UndoableMove> moves) {
-    final List<Integer> moveIndexes = Lists.newArrayList();
-    for (final UndoableMove move : moves) {
+  private static List<Integer> getSortedMoveIndexes(Set<UndoableMove> moves) {
+    List<Integer> moveIndexes = Lists.newArrayList();
+    for (UndoableMove move : moves) {
       moveIndexes.add(move.getIndex());
     }
     Collections.sort(moveIndexes);

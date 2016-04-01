@@ -125,13 +125,13 @@ public class ObjectivePanel extends AbstractStatPanel {
     final JButton refresh = new JButton("Refresh Objectives");
     refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
     refresh.addActionListener(SwingAction.of("Refresh Objectives", e -> {
-      m_objectiveModel.loadData();
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          table.repaint();
-        }
-      });
+        m_objectiveModel.loadData();
+        SwingUtilities.invokeLater(new Runnable() {
+          @Override
+          public void run() {
+            table.repaint();
+          }
+        });
     }));
     add(Box.createVerticalStrut(6));
     add(refresh);
@@ -482,7 +482,6 @@ public class ObjectivePanel extends AbstractStatPanel {
   }
 }
 
-
 /** TODO: copy paste overlap with NotifcationMessages.java */
 class ObjectiveProperties {
   // Filename
@@ -508,8 +507,7 @@ class ObjectiveProperties {
   }
 
   public static ObjectiveProperties getInstance() {
-    if (s_op == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 1000) { // cache properties for 1
-                                                                                         // second
+    if (s_op == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 1000) { // cache properties for 1 second
       s_op = new ObjectiveProperties();
       s_timestamp = Calendar.getInstance().getTimeInMillis();
     }

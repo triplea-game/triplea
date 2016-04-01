@@ -18,7 +18,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 
 /** Used to download triplea_maps.xml */
 public class DownloadRunnable implements Runnable {
-  private static Map<String, File> downloadCache = Maps.newHashMap();
+  private static Map<String,File> downloadCache = Maps.newHashMap();
   private final String urlString;
   private final boolean parse;
   private volatile byte[] contents;
@@ -52,20 +52,20 @@ public class DownloadRunnable implements Runnable {
     }
   }
 
-  public static boolean beginsWithHttpProtocol(final String urlString) {
+  public static boolean beginsWithHttpProtocol(String urlString) {
     return urlString.startsWith("http://") || urlString.startsWith("https://");
   }
 
   private void downloadFile() {
     try {
-      if (!downloadCache.containsKey(urlString)) {
-        final File tempFile = ClientFileSystemHelper.createTempFile();
+      if( !downloadCache.containsKey(urlString)) {
+        File tempFile = ClientFileSystemHelper.createTempFile();
         DownloadUtils.downloadFile(urlString, tempFile);
         downloadCache.put(urlString, tempFile);
       }
-      final File f = downloadCache.get(urlString);
+      File f = downloadCache.get(urlString);
       contents = Files.readAllBytes(f.toPath());
-    } catch (final IOException e) {
+    } catch (IOException e) {
       error = e.getMessage();
       return;
     }
@@ -82,10 +82,10 @@ public class DownloadRunnable implements Runnable {
     }
   }
 
-  private static URL getUrlFollowingRedirects(final String possibleRedirectionUrl) throws Exception {
+  private static URL getUrlFollowingRedirects(String possibleRedirectionUrl) throws Exception {
     URL url = new URL(possibleRedirectionUrl);
-    final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-    final int status = conn.getResponseCode();
+    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+    int status = conn.getResponseCode();
     if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
         || status == HttpURLConnection.HTTP_SEE_OTHER) {
       // update the URL if we were redirected
@@ -95,12 +95,12 @@ public class DownloadRunnable implements Runnable {
   }
 
   private void readLocalFile() {
-    final File targetFile = new File(ClientFileSystemHelper.getRootFolder(), urlString);
+    File targetFile = new File(ClientFileSystemHelper.getRootFolder(), urlString);
     try {
       contents = Files.readAllBytes(targetFile.toPath());
       downloads = DownloadFileParser.parse(new ByteArrayInputStream(getContents()));
       checkNotNull(downloads);
-    } catch (final IOException e) {
+    } catch (IOException e) {
       ClientLogger.logError("Failed to read file at: " + targetFile.getAbsolutePath(), e);
     }
   }

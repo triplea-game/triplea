@@ -316,7 +316,7 @@ public class BattleDisplay extends JPanel {
       // context/explanation around it for a user to really want to set it.
       try {
         Thread.sleep(1500);
-      } catch (final InterruptedException e) {
+      } catch (InterruptedException e) {
       }
     }
   }
@@ -808,7 +808,7 @@ class BattleModel extends DefaultTableModel {
   private final boolean m_isAmphibious;
   private final Collection<Unit> m_amphibiousLandAttackers;
   @SuppressWarnings("unused")
-  private final PlayerID m_player;
+private final PlayerID m_player;
   private BattleModel m_enemyBattleModel = null;
 
   private static String[] varDiceArray(final GameData data) {

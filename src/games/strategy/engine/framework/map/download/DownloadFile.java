@@ -40,14 +40,14 @@ public class DownloadFile {
    * @param progressUpdateListener Called periodically while download progress is made.
    * @param completionListener Called when the File download is complete.
    */
-  public DownloadFile(final DownloadFileDescription download, final Consumer<Integer> progressUpdateListener,
-      final Runnable completionListener) {
+  public DownloadFile(DownloadFileDescription download, Consumer<Integer> progressUpdateListener,
+      Runnable completionListener) {
     this(download, progressUpdateListener, ClientContext.mapDownloadStrategy());
     this.addDownloadCompletedListener(completionListener);
   }
 
-  protected DownloadFile(final DownloadFileDescription download, final Consumer<Integer> progressUpdateListener,
-      final MapDownloadStrategy downloadStrategy) {
+  protected DownloadFile(DownloadFileDescription download, Consumer<Integer> progressUpdateListener,
+      MapDownloadStrategy downloadStrategy) {
     this.downloadDescription = download;
     this.strategy = downloadStrategy;
     this.progressUpdateListener = progressUpdateListener;
@@ -85,8 +85,8 @@ public class DownloadFile {
           props.setFrom(downloadDescription);
           DownloadFileProperties.saveForZip(downloadDescription.getInstallLocation(), props);
 
-        } catch (final Exception e) {
-          final String msg = "Failed to move downloaded file (" + fileToDownloadTo.getAbsolutePath() + ") to: "
+        } catch (Exception e) {
+          String msg = "Failed to move downloaded file (" + fileToDownloadTo.getAbsolutePath() + ") to: "
               + downloadDescription.getInstallLocation().getAbsolutePath();
           ClientLogger.logError(msg, e);
         }
@@ -119,7 +119,7 @@ public class DownloadFile {
     return state == DownloadState.NOT_STARTED;
   }
 
-  public void addDownloadCompletedListener(final Runnable listener) {
+  public void addDownloadCompletedListener(Runnable listener) {
     downloadCompletedListeners.add(listener);
   }
 }

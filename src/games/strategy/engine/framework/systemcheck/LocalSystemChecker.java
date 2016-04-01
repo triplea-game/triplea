@@ -24,9 +24,9 @@ public final class LocalSystemChecker {
   private static final SystemCheck defaultNetworkCheck() {
     return new SystemCheck("Can connect to github.com (check network connection)", () -> {
       try {
-        final URL url = new URL("http://www.github.com");
+        URL url = new URL("http://www.github.com");
         url.openConnection();
-      } catch (final Exception e) {
+      } catch (Exception e) {
         Throwables.propagate(e);
       }
     });
@@ -36,21 +36,21 @@ public final class LocalSystemChecker {
     return new SystemCheck("Can create temporary files (check disk usage, file permissions)", () -> {
       try {
         File.createTempFile("prefix", "suffix");
-      } catch (final IOException e) {
+      } catch (IOException e) {
         Throwables.propagate(e);
       }
     });
   }
 
 
-  protected LocalSystemChecker(final Set<SystemCheck> checks) {
+  protected LocalSystemChecker(Set<SystemCheck> checks) {
     systemChecks = checks;
   }
 
   /** Return any exceptions encountered while running each check */
   public Set<Exception> getExceptions() {
     final Set<Exception> exceptions = Sets.newHashSet();
-    for (final SystemCheck systemCheck : systemChecks) {
+    for (SystemCheck systemCheck : systemChecks) {
       if (systemCheck.getException().isPresent()) {
         exceptions.add(systemCheck.getException().get());
       }
@@ -59,8 +59,8 @@ public final class LocalSystemChecker {
   }
 
   public String getStatusMessage() {
-    final StringBuilder sb = new StringBuilder();
-    for (final SystemCheck systemCheck : systemChecks) {
+    StringBuilder sb = new StringBuilder();
+    for (SystemCheck systemCheck : systemChecks) {
       sb.append(systemCheck.getResultMessage()).append("\n");
     }
     return sb.toString();

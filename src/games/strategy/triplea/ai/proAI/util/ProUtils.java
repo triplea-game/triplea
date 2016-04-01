@@ -1,12 +1,5 @@
 package games.strategy.triplea.ai.proAI.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameStep;
@@ -22,6 +15,13 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.AbstractUIContext;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Pro AI utilities (these are very general and maybe should be moved into delegate or engine).
@@ -164,8 +164,7 @@ public class ProUtils {
     return capitals;
   }
 
-  public static int getClosestEnemyLandTerritoryDistance(final GameData data, final PlayerID player,
-      final Territory t) {
+  public static int getClosestEnemyLandTerritoryDistance(final GameData data, final PlayerID player, final Territory t) {
     final Set<Territory> landTerritories =
         data.getMap().getNeighbors(t, 9, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, true));
     final List<Territory> enemyLandTerritories =

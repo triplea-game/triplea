@@ -30,13 +30,13 @@ public class LobbyGameTableModel extends AbstractTableModel {
   private final IRemoteMessenger m_remoteMessenger;
 
   // these must only be accessed in the swing event thread
-  private final List<Tuple<GUID, GameDescription>> gameList;
+  private final List<Tuple<GUID,GameDescription>> gameList;
   private final ILobbyGameBroadcaster lobbyGameBroadcaster;
 
   public LobbyGameTableModel(final IMessenger messenger, final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger) {
 
-    gameList = new ArrayList<Tuple<GUID, GameDescription>>();
+    gameList = new ArrayList<Tuple<GUID,GameDescription>>();
 
     m_messenger = messenger;
     m_channelMessenger = channelMessenger;

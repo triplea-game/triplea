@@ -139,7 +139,7 @@ public class LoginPanel extends JPanel {
       }
     });
     // close when hitting the escape key
-    final Action enterAction = SwingAction.of(e -> logonPressed());
+    final Action enterAction = SwingAction.of(e-> logonPressed());
     final String key = "logon.through.enter.key";
     getActionMap().put(key, enterAction);
     getActionMap().put(key, enterAction);

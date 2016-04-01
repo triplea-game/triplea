@@ -329,8 +329,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
    * @param territories
    * @param data
    */
-  private static ResourceCollection getResourceProduction(final Collection<Territory> territories,
-      final GameData data) {
+  private static ResourceCollection getResourceProduction(final Collection<Territory> territories, final GameData data) {
     final ResourceCollection rVal = new ResourceCollection(data);
     for (final Territory current : territories) {
       final TerritoryAttachment attachment = TerritoryAttachment.get(current);

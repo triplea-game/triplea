@@ -16,7 +16,7 @@ public class FileSizeWatcher {
   private final Consumer<Integer> progressListener;
   private boolean stop = false;
 
-  public FileSizeWatcher(final File fileToWatch, final Consumer<Integer> progressListener) {
+  public FileSizeWatcher(File fileToWatch, Consumer<Integer> progressListener) {
     this.fileToWatch = fileToWatch;
     this.progressListener = progressListener;
     (new Thread(createRunner())).start();

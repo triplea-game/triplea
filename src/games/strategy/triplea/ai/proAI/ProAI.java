@@ -1,15 +1,5 @@
 package games.strategy.triplea.ai.proAI;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
@@ -51,6 +41,16 @@ import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Pro AI.
@@ -141,8 +141,7 @@ public class ProAI extends AbstractAI {
   }
 
   @Override
-  protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
-      final PlayerID player) {
+  protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player) {
     final long start = System.currentTimeMillis();
     BattleCalculator.clearOOLCache();
     ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());

@@ -127,7 +127,7 @@ public class UnifiedMessenger {
     }
 
     synchronized (m_pendingLock) {
-      final RemoteMethodCallResults results = m_results.remove(methodCallID);
+      RemoteMethodCallResults results = m_results.remove(methodCallID);
       if (results == null) {
         throw new IllegalStateException(
             "No results from remote call. Method returned:" + remoteCall.getMethodName() + " for remote name:"

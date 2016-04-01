@@ -1,15 +1,15 @@
 package games.strategy.engine;
 
+import games.strategy.debug.ClientLogger;
+import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
+import games.strategy.util.Version;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
-
-import games.strategy.debug.ClientLogger;
-import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.GameRunner2;
-import games.strategy.util.Version;
 
 /**
  * Pure utility class, final and private constructor to enforce this

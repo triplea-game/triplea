@@ -83,8 +83,7 @@ public class MoveValidator {
     if (validateNonEnemyUnitsOnPath(data, units, route, player, result).getError() != null) {
       return result;
     }
-    if (validateBasic(isNonCombat, data, units, route, player, transportsToLoad, newDependents, result)
-        .getError() != null) {
+    if (validateBasic(isNonCombat, data, units, route, player, transportsToLoad, newDependents, result).getError() != null) {
       return result;
     }
     if (AirMovementValidator.validateAirCanLand(data, units, route, player, result).getError() != null) {
@@ -139,8 +138,7 @@ public class MoveValidator {
         && !getEditMode(data)
         && !Match.allMatch(Match.getMatches(units,
             Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, player, data, true)
-                .invert()),
-            Matches.unitIsOwnedBy(player))) {
+                .invert()), Matches.unitIsOwnedBy(player))) {
       result.setError("Player, " + player.getName() + ", is not owner of all the units: "
           + MyFormatter.unitsToTextNoOwner(units));
       return result;
@@ -1301,8 +1299,7 @@ public class MoveValidator {
   }
 
   // checks if there are non-paratroopers present that cause move validations to fail
-  private static boolean nonParatroopersPresent(final PlayerID player, final Collection<Unit> units,
-      final Route route) {
+  private static boolean nonParatroopersPresent(final PlayerID player, final Collection<Unit> units, final Route route) {
     if (!isParatroopers(player)) {
       return true;
     }
@@ -1490,8 +1487,7 @@ public class MoveValidator {
   }
 
   private static Map<Unit, Collection<Unit>> mustMoveWith(final Collection<Unit> units,
-      final Map<Unit, Collection<Unit>> newDependents, final Territory start, final GameData data,
-      final PlayerID player) {
+      final Map<Unit, Collection<Unit>> newDependents, final Territory start, final GameData data, final PlayerID player) {
     final List<Unit> sortedUnits = new ArrayList<Unit>(units);
     Collections.sort(sortedUnits, UnitComparator.getHighestToLowestMovementComparator());
     final Map<Unit, Collection<Unit>> mapping = new HashMap<Unit, Collection<Unit>>();
@@ -1710,8 +1706,7 @@ public class MoveValidator {
       if (landRoute != null
           && ((landRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) <= defaultRoute
               .getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent))
-              || (forceLandOrSeaRoute
-                  && Match.someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsLand)))) {
+          || (forceLandOrSeaRoute && Match.someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsLand)))) {
         defaultRoute = landRoute;
         mustGoLand = true;
       }
@@ -1725,7 +1720,7 @@ public class MoveValidator {
       if (waterRoute != null
           && ((waterRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) <= defaultRoute
               .getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent)) || (forceLandOrSeaRoute && Match
-                  .someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsSea)))) {
+              .someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsSea)))) {
         defaultRoute = waterRoute;
         mustGoSea = true;
       }

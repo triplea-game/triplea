@@ -1,10 +1,5 @@
 package games.strategy.triplea.ai.proAI;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -19,6 +14,11 @@ import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Pro AI data.
@@ -81,8 +81,7 @@ public class ProData {
     return player;
   }
 
-  private static double getMinCostPerHitPoint(final PlayerID player,
-      final List<ProPurchaseOption> landPurchaseOptions) {
+  private static double getMinCostPerHitPoint(final PlayerID player, final List<ProPurchaseOption> landPurchaseOptions) {
     double minCostPerHitPoint = Double.MAX_VALUE;
     for (final ProPurchaseOption ppo : landPurchaseOptions) {
       if (ppo.getCostPerHitPoint() < minCostPerHitPoint) {

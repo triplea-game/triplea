@@ -1,18 +1,5 @@
 package games.strategy.triplea.ai.proAI;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -44,6 +31,19 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+
 /**
  * Pro bid AI.
  */
@@ -53,8 +53,7 @@ public class ProBidAI {
 
   private GameData data;
 
-  public void bid(int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data,
-      final PlayerID player) {
+  public void bid(int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data, final PlayerID player) {
     ProLogger.info("Starting bid purchase phase");
 
     // Current data at the start of combat move
@@ -99,10 +98,9 @@ public class ProBidAI {
       // transport/factory/aa unit
       if (((UnitAttachment.get(x).getAttack(player) - UnitAttachment.get(x).getDefense(player) >= 3 || UnitAttachment
           .get(x).getDefense(player) - UnitAttachment.get(x).getAttack(player) >= 3) || UnitAttachment.get(x)
-              .getDefense(player) < 1)
-          && !(UnitAttachment.get(x).getCanProduceUnits()
-              || (UnitAttachment.get(x).getTransportCapacity() > 0 && Matches.UnitTypeIsSea
-                  .match(x)))) {
+          .getDefense(player) < 1)
+          && !(UnitAttachment.get(x).getCanProduceUnits() || (UnitAttachment.get(x).getTransportCapacity() > 0 && Matches.UnitTypeIsSea
+              .match(x)))) {
         // maybe the map only has weird units. make sure there is at least one of each type before we decide not to use
         // it (we are relying
         // on the fact that map makers generally put specialty units AFTER useful units in their production lists [ie:
@@ -390,18 +388,18 @@ public class ProBidAI {
       }
     }
     @SuppressWarnings("unused")
-    final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
+	final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final boolean tFirst = !games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
     final CompositeMatch<Unit> ownedUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player));
     final CompositeMatch<Unit> attackUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsNotTransport);
     @SuppressWarnings("unused")
-    final CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport);
+	final CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport);
     final CompositeMatch<Unit> enemyUnit = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data));
     final CompositeMatch<Unit> enemyAttackUnit = new CompositeMatchAnd<Unit>(attackUnit, enemyUnit);
     // CompositeMatch<Unit> enemyTransUnit = new CompositeMatchAnd<Unit>(transUnit, enemyUnit);
     final CompositeMatch<Unit> ourFactory = new CompositeMatchAnd<Unit>(ownedUnit, Matches.UnitCanProduceUnits);
     @SuppressWarnings("unused")
-    final CompositeMatch<Unit> landUnit =
+	final CompositeMatch<Unit> landUnit =
         new CompositeMatchAnd<Unit>(ownedUnit, Matches.UnitIsLand, Matches.UnitIsNotInfrastructure,
             Matches.UnitCanNotProduceUnits);
     // CompositeMatch<Territory> ourLandTerr = new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(player),
@@ -492,8 +490,7 @@ public class ProBidAI {
       // gibralter, etc.
       for (final Territory noRouteTerr : ourTerrs) {
         // do not place bids on areas that have no direct land access to an enemy, unless the value is 3 or greater
-        if (distanceToEnemy(noRouteTerr, data, player, false) < 1
-            && TerritoryAttachment.getProduction(noRouteTerr) < 3) {
+        if (distanceToEnemy(noRouteTerr, data, player, false) < 1 && TerritoryAttachment.getProduction(noRouteTerr) < 3) {
           ourSemiRankedBidTerrs.remove(noRouteTerr);
         }
       }
@@ -1104,8 +1101,7 @@ public class ProBidAI {
   /**
    * true or false...does a land route exist from territory to any enemy owned capitol?
    */
-  private static boolean hasLandRouteToEnemyOwnedCapitol(final Territory t, final PlayerID player,
-      final GameData data) {
+  private static boolean hasLandRouteToEnemyOwnedCapitol(final Territory t, final PlayerID player, final GameData data) {
     for (final PlayerID ePlayer : data.getPlayerList().getPlayers()) {
       for (final Territory capital : TerritoryAttachment.getAllCapitals(ePlayer, data)) {
         if (data.getRelationshipTracker().isAtWar(player, capital.getOwner())
@@ -1240,7 +1236,7 @@ public class ProBidAI {
       if (lRCap
           && (!Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits)
               .match(eTerr) && !Matches.territoryIsAlliedAndHasAlliedUnitMatching(data, player,
-                  Matches.UnitCanProduceUnits).match(eTerr))) {
+              Matches.UnitCanProduceUnits).match(eTerr))) {
         final Route eCapRoute =
             findNearest(eTerr,
                 Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits),
@@ -1423,9 +1419,8 @@ public class ProBidAI {
     }
     final Set<Territory> waterTerr = data.getMap().getNeighbors(location, Matches.TerritoryIsWater);
     while (playerIter.hasNext()) {
-      float seaStrength = 0.0F, firstStrength = 0.0F, secondStrength = 0.0F, blitzStrength = 0.0F, strength = 0.0F,
-          airStrength =
-              0.0F;
+      float seaStrength = 0.0F, firstStrength = 0.0F, secondStrength = 0.0F, blitzStrength = 0.0F, strength = 0.0F, airStrength =
+          0.0F;
       ePlayer = playerIter.next();
       final CompositeMatch<Unit> enemyPlane =
           new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanMove);

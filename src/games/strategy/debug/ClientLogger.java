@@ -42,7 +42,7 @@ public class ClientLogger {
 
   public static void logError(final String msg, final Set<Exception> exceptions) {
     logError(msg);
-    for (final Exception e : exceptions) {
+    for (Exception e : exceptions) {
       logError(e);
     }
   }

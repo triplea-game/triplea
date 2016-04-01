@@ -318,7 +318,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (moveDescription == null) {
       if (GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData())) {
         if (!canAirLand(true, id)) {
-          // continue with the move loop
+           // continue with the move loop
           move(nonCombat, stepName);
         }
       }

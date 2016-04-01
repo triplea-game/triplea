@@ -140,7 +140,6 @@ public class MapPanel extends ImageScrollerLargeView {
       }
     });
   }
-
   LinkedBlockingQueue<Tile> getUndrawnTiles() {
     return m_undrawnTiles;
   }

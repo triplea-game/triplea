@@ -12,12 +12,11 @@ import games.strategy.engine.ClientFileSystemHelper;
 
 /**
  * Reads property values from the game engine configuration file.
- * 
  * @see PropertyReader for a complete listing of property keys
  */
 public class GameEnginePropertyFileReader implements PropertyReader {
 
-  private static final String GAME_ENGINE_PROPERTY_FILE = "game_engine.properties";
+  private static final String GAME_ENGINE_PROPERTY_FILE =  "game_engine.properties";
   private final File propertyFile;
 
   public GameEnginePropertyFileReader() {
@@ -25,30 +24,30 @@ public class GameEnginePropertyFileReader implements PropertyReader {
   }
 
   /** This constructor here for testing purposes, use the simple no-arg constructor instead */
-  protected GameEnginePropertyFileReader(final File propertyFile) {
+  protected GameEnginePropertyFileReader(File propertyFile) {
     this.propertyFile = propertyFile;
   }
 
   @Override
-  public String readProperty(final GameEngineProperty propertyKey) {
+  public String readProperty(GameEngineProperty propertyKey) {
     try (FileInputStream inputStream = new FileInputStream(propertyFile)) {
-      final Properties props = new Properties();
+      Properties props = new Properties();
       props.load(inputStream);
 
-      if (!props.containsKey(propertyKey.toString())) {
+      if(!props.containsKey(propertyKey.toString())) {
         throw new PropertyNotFoundException(propertyKey);
       } else {
         return props.getProperty(propertyKey.toString()).trim();
       }
-    } catch (final FileNotFoundException e) {
+    } catch (FileNotFoundException e) {
       throw Throwables.propagate(e);
-    } catch (final IOException e) {
+    } catch (IOException e) {
       throw new IllegalStateException("Failed to read propertyFile: " + propertyFile.getAbsolutePath(), e);
     }
   }
 
   public static String getConfigFilePath() {
-    final File f = new File(ClientFileSystemHelper.getRootFolder(), GAME_ENGINE_PROPERTY_FILE);
+    File f = new File(ClientFileSystemHelper.getRootFolder(), GAME_ENGINE_PROPERTY_FILE);
     return f.getAbsolutePath();
   }
 }

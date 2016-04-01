@@ -43,15 +43,13 @@ public class LobbyLogin {
     if (m_serverProperties.port == -1) {
       if (ClientFileSystemHelper.areWeOldExtraJar()) {
         JOptionPane.showMessageDialog(m_parent,
-            "<html>Could not find lobby server for this version of TripleA, <br>Please make sure you are using the latest version: "
-                + UrlConstants.SOURCE_FORGE
+            "<html>Could not find lobby server for this version of TripleA, <br>Please make sure you are using the latest version: " + UrlConstants.SOURCE_FORGE
                 + "<br /><br />This is because you are using an old engine that is kept for backwards compatibility. "
                 + "<br /><b>In order to load your Old savegames in the New lobby, you must First join the lobby with the latest engine, Then host a game, Then load the old savegame!</b></html>",
             "Could not connect to server", JOptionPane.ERROR_MESSAGE);
       } else {
         JOptionPane.showMessageDialog(m_parent,
-            "<html>Could not find lobby server for this version of TripleA, <br>Please make sure you are using the latest version: "
-                + UrlConstants.SOURCE_FORGE + "</html>",
+            "<html>Could not find lobby server for this version of TripleA, <br>Please make sure you are using the latest version: " + UrlConstants.SOURCE_FORGE + "</html>",
             "Could not connect to server", JOptionPane.ERROR_MESSAGE);
       }
       return null;

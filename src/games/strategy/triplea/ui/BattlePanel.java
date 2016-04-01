@@ -126,7 +126,7 @@ public class BattlePanel extends ActionPanel {
         removeAll();
         m_actionLabel.setText(id.getName() + " battle");
         setLayout(new BorderLayout());
-        final JPanel panel = SwingComponents.gridPanel(0, 1);
+        final JPanel panel = SwingComponents.gridPanel(0,1);
         panel.add(m_actionLabel);
         for (final Entry<BattleType, Collection<Territory>> entry : m_battles.entrySet()) {
           for (final Territory t : entry.getValue()) {
@@ -517,8 +517,8 @@ public class BattlePanel extends ActionPanel {
     }
 
     class MyTimerTask extends TimerTask {
-      private final Territory territory;
-      private final Timer m_stopTimer;
+      private Territory territory;
+      private Timer m_stopTimer;
       private int m_count = 0;
 
       MyTimerTask(final Territory battleSite, final Timer stopTimer) {

@@ -14,7 +14,7 @@ import games.strategy.debug.ClientLogger;
 public class ErrorHandler implements Thread.UncaughtExceptionHandler, ErrorHandlerAwtEvents {
 
   @Override
-  public void uncaughtException(final Thread t, final Throwable e) {
+  public void uncaughtException(Thread t, Throwable e) {
     handle(e);
   }
 
@@ -22,17 +22,16 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler, ErrorHandl
    * Method used to handle errors. Called auto-magically by sun property
    */
   @Override
-  public void handle(final Throwable throwable) {
+  public void handle(Throwable throwable) {
     try {
       ClientLogger.logError(throwable);
-    } catch (final Throwable t) {
+    } catch (Throwable t) {
       try {
-        // if client logger fails fall back to methods that may still work
-        final String msg =
-            "Original error: " + throwable.getMessage() + ", next error while handling it: " + t.getMessage();
+          // if client logger fails fall back to methods that may still work
+        String msg = "Original error: " + throwable.getMessage() + ", next error while handling it: " + t.getMessage();
         System.err.println(msg);
         t.printStackTrace();
-      } catch (final Throwable fatal) {
+      } catch (Throwable fatal) {
         // Swallow this last error, if anything is thrown we can have an infinite loop of error handling.
       }
     }

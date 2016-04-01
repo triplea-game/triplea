@@ -16,5 +16,6 @@ public class UndoablePlacementsPanel extends AbstractUndoableMovesPanel {
   }
 
   @Override
-  protected void specificViewAction(final AbstractUndoableMove move) {}
+  protected void specificViewAction(AbstractUndoableMove move) {
+  }
 }

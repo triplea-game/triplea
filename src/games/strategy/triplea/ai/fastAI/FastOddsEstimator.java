@@ -1,9 +1,5 @@
 package games.strategy.triplea.ai.fastAI;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -14,21 +10,25 @@ import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorListener;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 public class FastOddsEstimator implements IOddsCalculator {
 
   @SuppressWarnings("unused")
-  private GameData data;
+private GameData data;
   @SuppressWarnings("unused")
-  private PlayerID attacker = null;
+private PlayerID attacker = null;
   @SuppressWarnings("unused")
-  private PlayerID defender = null;
+private PlayerID defender = null;
   private Territory location = null;
   private Collection<Unit> attackingUnits = new ArrayList<>();
   private Collection<Unit> defendingUnits = new ArrayList<>();
   @SuppressWarnings("unused")
-  private Collection<Unit> bombardingUnits = new ArrayList<>();
+private Collection<Unit> bombardingUnits = new ArrayList<>();
   @SuppressWarnings("unused")
-  private Collection<TerritoryEffect> territoryEffects = new ArrayList<>();
+private Collection<TerritoryEffect> territoryEffects = new ArrayList<>();
 
   @Override
   public void setGameData(final GameData data) {

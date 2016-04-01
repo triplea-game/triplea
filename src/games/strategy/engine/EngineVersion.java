@@ -8,7 +8,7 @@ public class EngineVersion {
   private final Version version;
   private final String exactVersion;
 
-  public EngineVersion(final PropertyReader propertyReader) {
+  public EngineVersion(PropertyReader propertyReader) {
     exactVersion = propertyReader.readProperty(GameEngineProperty.ENGINE_VERSION);
     version = new Version(exactVersion);
   }

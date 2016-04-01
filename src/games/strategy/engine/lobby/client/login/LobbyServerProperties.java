@@ -19,9 +19,9 @@ public class LobbyServerProperties {
   public final String serverErrorMessage;
   public final String serverMessage;
 
-  public LobbyServerProperties(final Map<String, Object> yamlProps) {
+  public LobbyServerProperties(Map<String, Object> yamlProps) {
     this.host = (String) yamlProps.get("host");
-    this.port = (Integer) yamlProps.get("port");
+    this.port= (Integer) yamlProps.get("port");
     this.serverMessage = (String) yamlProps.get("message");
     this.serverErrorMessage = (String) yamlProps.get("error_message");
   }

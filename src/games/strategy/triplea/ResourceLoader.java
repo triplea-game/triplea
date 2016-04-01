@@ -24,7 +24,7 @@ public class ResourceLoader {
   private final URLClassLoader m_loader;
   public static String RESOURCE_FOLDER = "assets";
 
-  public static ResourceLoader getMapResourceLoader(final String mapName, final boolean allowNoneFound) {
+  public static ResourceLoader getMapResourceLoader(final String mapName,final boolean allowNoneFound) {
     File atFolder = ClientFileSystemHelper.getRootFolder();
     File resourceFolder = new File(atFolder, RESOURCE_FOLDER);
 
@@ -39,13 +39,13 @@ public class ResourceLoader {
     return new ResourceLoader(dirs.toArray(new String[dirs.size()]));
   }
 
-  protected static String normalizeMapZipName(final String zipName) {
-    final StringBuilder sb = new StringBuilder();
+  protected static String normalizeMapZipName(String zipName) {
+    StringBuilder sb = new StringBuilder();
     Character lastChar = null;
 
-    final String spacesReplaced = zipName.replace(' ', '_');
+    String spacesReplaced = zipName.replace(' ', '_');
 
-    for (final Character c : spacesReplaced.toCharArray()) {
+    for (Character c : spacesReplaced.toCharArray()) {
       // break up camel casing
       if (lastChar != null && Character.isLowerCase(lastChar) && Character.isUpperCase(c)) {
         sb.append("_");
@@ -74,7 +74,7 @@ public class ResourceLoader {
     candidates.add(new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps", dirName));
     candidates.add(new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps", zipName));
 
-    final String normalizedZipName = normalizeMapZipName(zipName);
+    String normalizedZipName = normalizeMapZipName(zipName);
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), normalizedZipName));
 
 
@@ -128,7 +128,7 @@ public class ResourceLoader {
   public void close() {
     try {
       m_loader.close();
-    } catch (final IOException e) {
+    } catch (IOException e) {
       ClientLogger.logQuietly(e);
     }
   }
@@ -168,10 +168,9 @@ public class ResourceLoader {
    */
   public URL getResource(final String path) {
     URL defaultUrl = null;
-    // Return first any match that is not in the assets folder (we expect that to be the users maps folder (loading from
-    // map.zip))
+    // Return first any match that is not in the assets folder (we expect that to be the users maps folder (loading from map.zip))
     // If we don't have any matches, then return any matches we had from the assets folder
-    for (final URL element : getMatchingResources(path)) {// Collections.list(m_loader.getResources(path))) {
+    for (URL element : getMatchingResources(path)) {// Collections.list(m_loader.getResources(path))) {
       if (element.toString().contains(RESOURCE_FOLDER)) {
         defaultUrl = element;
       } else {
@@ -181,22 +180,22 @@ public class ResourceLoader {
     return defaultUrl;
   }
 
-  private List<URL> getMatchingResources(final String path) {
+  private List<URL> getMatchingResources(final String path ) {
     try {
       return Collections.list(m_loader.getResources(path));
-    } catch (final IOException e) {
+    } catch (IOException e) {
       throw new IllegalStateException(e);
     }
   }
 
   public InputStream getResourceAsStream(final String path) {
-    final URL url = getResource(path);
+    URL url = getResource(path);
     if (url == null) {
       return null;
     }
     try {
       return url.openStream();
-    } catch (final IOException e) {
+    } catch (IOException e) {
       throw new IllegalStateException(e);
     }
   }

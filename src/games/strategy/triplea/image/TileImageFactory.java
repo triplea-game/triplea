@@ -347,7 +347,7 @@ public final class TileImageFactory {
       fromFile.flush();
       copyingImage.done();
     } catch (final IOException e) {
-      ClientLogger.logError("Could not load image, url: " + imageLocation.toString(), e);
+      ClientLogger.logError("Could not load image, url: "+ imageLocation.toString(), e);
       image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
     }
     final ImageRef ref = new ImageRef(image);

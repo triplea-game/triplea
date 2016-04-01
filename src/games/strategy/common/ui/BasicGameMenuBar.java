@@ -124,15 +124,15 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
   }
 
   protected void addReportBugsMenu(final JMenu parentMenu) {
-    parentMenu.add(SwingAction.of("Send Bug Report", e -> {
+    parentMenu.add(SwingAction.of( "Send Bug Report", e -> {
       SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES);
-    })).setMnemonic(KeyEvent.VK_B);
+    } )).setMnemonic(KeyEvent.VK_B);
   }
 
   protected void addConsoleMenu(final JMenu parentMenu) {
-    parentMenu.add(SwingAction.of("Show Console...", e -> {
-      ErrorConsole.getConsole().setVisible(true);
-      ErrorConsole.getConsole().append(DebugUtils.getMemory());
+    parentMenu.add(SwingAction.of("Show Console...", e ->  {
+        ErrorConsole.getConsole().setVisible(true);
+        ErrorConsole.getConsole().append(DebugUtils.getMemory());
     })).setMnemonic(KeyEvent.VK_C);
   }
 
@@ -339,10 +339,9 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     guidesLink.setMnemonic(KeyEvent.VK_G);
 
     hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_HOSTING_MAPS));
-    mapLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_HOSTING_MAPS));
+    mapLink.addActionListener(e  -> SwingComponents.newOpenUrlConfirmationDialog( UrlConstants.SF_HOSTING_MAPS));
     bugReport.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_TICKET_LIST));
-    lobbyRules.addActionListener(
-        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB_LOBBY_RULES));
+    lobbyRules.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB_LOBBY_RULES ));
     warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB));
     devForum.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_FORUM));
     donateLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));

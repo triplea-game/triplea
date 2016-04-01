@@ -78,6 +78,7 @@ public class HeadlessConsoleController {
 
 
 
+
   private void send(final String command) {
     if (command == null) {
       return;
@@ -392,8 +393,7 @@ public class HeadlessConsoleController {
         if (server.getSetupPanelModel() != null) {
           final ISetupPanel setup = server.getSetupPanelModel().getPanel();
           if (setup != null && setup instanceof ServerSetupPanel) {
-            ((ServerSetupPanel) setup).shutDown();// this is causing a deadlock when in a shutdown hook, due to
-                                                  // swing/awt. so we will shut
+            ((ServerSetupPanel) setup).shutDown();// this is causing a deadlock when in a shutdown hook, due to swing/awt. so we will shut
                                                   // it down here instead.
           }
         }

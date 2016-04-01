@@ -1,14 +1,14 @@
 package games.strategy.triplea.ai.proAI.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
 import games.strategy.triplea.delegate.Matches;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProPurchaseTerritory {
 

@@ -13,13 +13,13 @@ public class MapDownloadList {
   private final List<DownloadFileDescription> installed = Lists.newArrayList();
   private final List<DownloadFileDescription> outOfDate = Lists.newArrayList();
 
-  public MapDownloadList(final List<DownloadFileDescription> downloads, final FileSystemAccessStrategy strategy) {
-    for (final DownloadFileDescription download : downloads) {
+  public MapDownloadList(List<DownloadFileDescription> downloads, FileSystemAccessStrategy strategy) {
+    for (DownloadFileDescription download : downloads) {
       if (download.isDummyUrl()) {
         available.add(download);
         installed.add(download);
       } else {
-        final Optional<Version> mapVersion = strategy.getMapVersion(download.getInstallLocation().getAbsolutePath());
+        Optional<Version> mapVersion = strategy.getMapVersion(download.getInstallLocation().getAbsolutePath());
 
         if (mapVersion.isPresent()) {
           installed.add(download);

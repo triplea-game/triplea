@@ -18,11 +18,11 @@ public class SystemCheck {
    * @param msg Message that is printed along with success/fail, should describe what the system check did.
    * @param r The runnable that represents the system check, should verify that an action can be performed.
    */
-  protected SystemCheck(final String msg, final Runnable r) {
+  protected SystemCheck(String msg, Runnable r) {
     this.msg = msg;
     try {
       r.run();
-    } catch (final Exception e) {
+    } catch (Exception e) {
       exception = Optional.of(e);
       result = false;
       return;

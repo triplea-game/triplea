@@ -721,7 +721,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
       throw new IllegalArgumentException("Cant remove ourself!");
     }
     NotifyPlayerRemoval(node);
-    final SocketChannel channel = m_nodeToChannel.remove(node);
+    SocketChannel channel = m_nodeToChannel.remove(node);
     if (channel == null) {
       s_logger.info("Could not remove connection to node:" + node);
       return;
