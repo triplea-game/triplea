@@ -589,6 +589,7 @@ class PBEMLocalPlayerComboBoxSelector {
 
 }
 
+
 /** A bean cache used by PBEMSetupPanel */
 enum LocalBeanCache {
   INSTANCE;

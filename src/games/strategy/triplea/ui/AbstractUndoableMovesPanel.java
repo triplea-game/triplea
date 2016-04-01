@@ -60,10 +60,10 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
     });
   }
 
-  public void undoMoves(Map<Territory, List<Unit>> highlightUnitByTerritory) {
-    Set<Unit> units = Sets.newHashSet();
-    for( List<Unit> highlightedUnits : highlightUnitByTerritory.values() ) {
-      units.addAll(highlightedUnits );
+  public void undoMoves(final Map<Territory, List<Unit>> highlightUnitByTerritory) {
+    final Set<Unit> units = Sets.newHashSet();
+    for (final List<Unit> highlightedUnits : highlightUnitByTerritory.values()) {
+      units.addAll(highlightedUnits);
     }
     m_movePanel.undoMoves(units);
   }

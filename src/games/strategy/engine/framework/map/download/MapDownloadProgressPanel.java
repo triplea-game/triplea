@@ -28,12 +28,12 @@ public final class MapDownloadProgressPanel extends JPanel {
    * Maintain grids that are placed east and west.
    * This gives us a minimal and uniform width for each column.
    */
-  private JPanel labelGrid = SwingComponents.gridPanel(0, 1);
-  private JPanel progressGrid = SwingComponents.gridPanel(0, 1);
+  private final JPanel labelGrid = SwingComponents.gridPanel(0, 1);
+  private final JPanel progressGrid = SwingComponents.gridPanel(0, 1);
 
-  private List<DownloadFileDescription> downloadList = Lists.newArrayList();
-  private Map<DownloadFileDescription, JLabel> labels = Maps.newHashMap();
-  private Map<DownloadFileDescription, JProgressBar> progressBars = Maps.newHashMap();
+  private final List<DownloadFileDescription> downloadList = Lists.newArrayList();
+  private final Map<DownloadFileDescription, JLabel> labels = Maps.newHashMap();
+  private final Map<DownloadFileDescription, JProgressBar> progressBars = Maps.newHashMap();
 
 
 
@@ -52,8 +52,8 @@ public final class MapDownloadProgressPanel extends JPanel {
 
 
   public void download(List<DownloadFileDescription> newDownloads) {
-    List<DownloadFileDescription> brandNewDownloads = Lists.newArrayList();
-    for (DownloadFileDescription download : newDownloads) {
+    final List<DownloadFileDescription> brandNewDownloads = Lists.newArrayList();
+    for (final DownloadFileDescription download : newDownloads) {
       if (!downloadList.contains(download) && !download.isDummyUrl() && !download.getMapName().isEmpty()) {
         brandNewDownloads.add(download);
       }
@@ -64,7 +64,7 @@ public final class MapDownloadProgressPanel extends JPanel {
       return;
     }
 
-    int itemCount = newDownloads.size() + downloadList.size();
+    final int itemCount = newDownloads.size() + downloadList.size();
     this.removeAll();
     add(SwingComponents.horizontalJPanel(labelGrid, progressGrid));
 
@@ -73,13 +73,13 @@ public final class MapDownloadProgressPanel extends JPanel {
 
 
 
-    for (DownloadFileDescription download : newDownloads) {
+    for (final DownloadFileDescription download : newDownloads) {
       if (download.isDummyUrl() || download.getMapName().isEmpty()) {
         continue;
       }
       // space at the end of the label so the text does not end right at the progress bar
       labels.put(download, new JLabel(download.getMapName() + "  "));
-      JProgressBar progressBar = new JProgressBar();
+      final JProgressBar progressBar = new JProgressBar();
       progressBar.setStringPainted(true);
       progressBar.setToolTipText("Installing to: " + download.getInstallLocation().getAbsolutePath());
 
@@ -92,7 +92,7 @@ public final class MapDownloadProgressPanel extends JPanel {
       downloadList.add(0, newDownloads.get(i));
     }
 
-    for (DownloadFileDescription download : downloadList) {
+    for (final DownloadFileDescription download : downloadList) {
       labelGrid.add(labels.get(download));
       progressGrid.add(progressBars.get(download));
     }
@@ -100,20 +100,20 @@ public final class MapDownloadProgressPanel extends JPanel {
     revalidate();
     repaint();
 
-    for (DownloadFileDescription download : newDownloads) {
+    for (final DownloadFileDescription download : newDownloads) {
       if (download.isDummyUrl() || download.getMapName().isEmpty()) {
         continue;
       }
       final JProgressBar progressBar = progressBars.get(download);
-      Consumer<Integer> progressListener = s -> {
+      final Consumer<Integer> progressListener = s -> {
         SwingUtilities.invokeLater(() -> progressBar.setValue(s));
       };
-      Runnable completionListener = () -> {
+      final Runnable completionListener = () -> {
         SwingUtilities.invokeLater(() -> progressBar.setValue(progressBar.getMaximum()));
       };
 
       (new Thread(() -> {
-        int length = DownloadUtils.getDownloadLength(download.newURL());
+        final int length = DownloadUtils.getDownloadLength(download.newURL());
         SwingUtilities.invokeLater(() -> {
           progressBar.setMinimum(0);
           progressBar.setMaximum(length);

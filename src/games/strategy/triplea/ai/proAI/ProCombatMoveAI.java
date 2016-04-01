@@ -1,5 +1,17 @@
 package games.strategy.triplea.ai.proAI;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -29,18 +41,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.util.Match;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
 /**
  * Pro combat move AI.
@@ -262,7 +262,8 @@ public class ProCombatMoveAI {
 
       // Remove negative value territories
       patd.setValue(attackValue);
-      if (attackValue <= 0 || (isDefensive && attackValue <= 8 && data.getMap().getDistance(ProData.myCapital, t) <= 3)) {
+      if (attackValue <= 0
+          || (isDefensive && attackValue <= 8 && data.getMap().getDistance(ProData.myCapital, t) <= 3)) {
         ProLogger.debug("Removing territory that has a negative attack value: " + t.getName() + ", AttackValue="
             + patd.getValue());
         it.remove();
@@ -916,8 +917,9 @@ public class ProCombatMoveAI {
         // Determine whether to remove attack
         if (!patd.isStrafing()
             && (result.getWinPercentage() < ProData.minWinPercentage || !result.isHasLandUnitRemaining()
-                || (isNeutral && !canHold) || (attackValue < 0 && (!isNeutral || allUnitsCanAttackOtherTerritory || result
-                .getBattleRounds() >= 4)))) {
+                || (isNeutral && !canHold)
+                || (attackValue < 0 && (!isNeutral || allUnitsCanAttackOtherTerritory || result
+                    .getBattleRounds() >= 4)))) {
           territoryToRemove = patd;
         }
         ProLogger.debug(patd.getResultString() + ", attackValue=" + attackValue + ", territoryValue=" + territoryValue
@@ -1167,7 +1169,8 @@ public class ProCombatMoveAI {
                 ProBattleUtils.checkForOverwhelmingWin(player, t, patd.getUnits(), defendingUnits);
             final boolean hasAA = Match.someMatch(defendingUnits, Matches.UnitIsAAforAnything);
             if (!isAirUnit
-                || (!hasNoDefenders && !isOverwhelmingWin && (!hasAA || result.getWinPercentage() < minWinPercentage))) {
+                || (!hasNoDefenders && !isOverwhelmingWin
+                    && (!hasAA || result.getWinPercentage() < minWinPercentage))) {
               minWinPercentage = result.getWinPercentage();
               minWinTerritory = t;
             }

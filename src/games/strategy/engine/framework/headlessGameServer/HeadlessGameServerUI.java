@@ -68,9 +68,9 @@ public class HeadlessGameServerUI extends MainGameFrame {
     m_step = new JLabel("Step: -");
     m_player = new JLabel("Player: -");
     m_leaveGame = new JButton("Leave Game");
-    m_leaveGame.addActionListener(SwingAction.of(e-> leaveGame()));
+    m_leaveGame.addActionListener(SwingAction.of(e -> leaveGame()));
     m_quit = new JButton("Quit Program");
-    m_quit.addActionListener(SwingAction.of(e->shutdown()));
+    m_quit.addActionListener(SwingAction.of(e -> shutdown()));
     m_mapAndChatPanel = new JPanel();
     m_mapAndChatPanel.setLayout(new BorderLayout());
     m_mainPanel = new JPanel();

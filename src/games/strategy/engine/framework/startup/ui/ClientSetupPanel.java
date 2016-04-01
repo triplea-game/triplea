@@ -130,7 +130,7 @@ public class ClientSetupPanel extends SetupPanel {
     layout.setConstraints(playedByLabel, playConstraints);
     players.add(playedByLabel);
     final JLabel allianceLabel = new JLabel("Alliance");
-//    allianceLabel.setForeground(Color.black);
+    // allianceLabel.setForeground(Color.black);
     layout.setConstraints(allianceLabel, allianceConstraints);
     players.add(allianceLabel);
     for (final PlayerRow row : m_playerRows) {

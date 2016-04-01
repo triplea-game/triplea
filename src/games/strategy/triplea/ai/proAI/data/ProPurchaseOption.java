@@ -1,5 +1,11 @@
 package games.strategy.triplea.ai.proAI.data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
@@ -16,12 +22,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class ProPurchaseOption {
 
@@ -264,7 +264,8 @@ public class ProPurchaseOption {
       final List<Unit> unitsToPlace, final boolean needDestroyer, final int unusedCarrierCapacity,
       final int unusedLocalCarrierCapacity) {
     if (isAir
-        && (carrierCost <= 0 || carrierCost > unusedCarrierCapacity || !Properties.getProduceFightersOnCarriers(data))) {
+        && (carrierCost <= 0 || carrierCost > unusedCarrierCapacity
+            || !Properties.getProduceFightersOnCarriers(data))) {
       return 0;
     }
     final double supportAttackFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, false);
@@ -281,7 +282,8 @@ public class ProPurchaseOption {
     return calculateEfficiency(0.75, 1, supportAttackFactor, supportDefenseFactor, movement, seaFactor, data);
   }
 
-  public double getAmphibEfficiency(final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace) {
+  public double getAmphibEfficiency(final GameData data, final List<Unit> ownedLocalUnits,
+      final List<Unit> unitsToPlace) {
     final double supportAttackFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, false);
     final double supportDefenseFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, true);
     final double hitPointPerUnitFactor = (3 + hitPoints / quantity);

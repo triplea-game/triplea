@@ -1,5 +1,13 @@
 package games.strategy.triplea.ai.proAI.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -9,14 +17,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.util.Match;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Pro AI battle utilities.
@@ -138,7 +138,8 @@ public class ProTerritoryValueUtils {
             double value = TerritoryAttachment.getProduction(nearbyEnemyTerritory);
             if (nearbyEnemyTerritory.getOwner().isNull()) {
               value = findTerritoryAttackValue(player, nearbyEnemyTerritory) / 3; // find neutral value
-            } else if (ProMatches.territoryIsAlliedLandAndHasNoEnemyNeighbors(player, data).match(nearbyEnemyTerritory)) {
+            } else if (ProMatches.territoryIsAlliedLandAndHasNoEnemyNeighbors(player, data)
+                .match(nearbyEnemyTerritory)) {
               value *= 0.1; // reduce value for can't hold amphib allied territories
             }
             if (value > 0) {

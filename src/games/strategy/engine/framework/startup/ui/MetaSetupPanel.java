@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
@@ -191,7 +192,7 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   private void downloadMaps() {
-    JComponent parentWindow = this;
+    final JComponent parentWindow = this;
     mapDownloadController.openDownloadMapScreen(parentWindow);
   }
 
@@ -267,17 +268,17 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
 
-  private static Optional<List<Map<String, Object>>> loadYaml(File yamlFile) {
+  private static Optional<List<Map<String, Object>>> loadYaml(final File yamlFile) {
     String yamlContent;
     try {
       yamlContent = new String(Files.readAllBytes(yamlFile.toPath()));
-    } catch (IOException e) {
+    } catch (final IOException e) {
       ClientLogger.logQuietly(e);
       return Optional.empty();
     }
-    Yaml yaml = new Yaml();
-    List<Map<String, Object>> yamlDataObj = (List<Map<String, Object>>) yaml.load(yamlContent);
-    if( yamlDataObj == null ) {
+    final Yaml yaml = new Yaml();
+    final List<Map<String, Object>> yamlDataObj = (List<Map<String, Object>>) yaml.load(yamlContent);
+    if (yamlDataObj == null) {
       return Optional.empty();
     } else {
       return Optional.of(yamlDataObj);
@@ -285,38 +286,41 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   private static LobbyServerProperties getLobbyServerProperties() {
-    PropertyReader propReader = ClientContext.propertyReader();
-    String urlProp = propReader.readProperty(GameEngineProperty.LOBBY_PROPS_URL);
+    final PropertyReader propReader = ClientContext.propertyReader();
+    final String urlProp = propReader.readProperty(GameEngineProperty.LOBBY_PROPS_URL);
 
-    File propFile = ClientFileSystemHelper.createTempFile();
+    final File propFile = ClientFileSystemHelper.createTempFile();
     try {
       DownloadUtils.downloadFile(urlProp, propFile);
-    } catch (IOException e) {
-      ClientLogger.logQuietly("Failed to download lobby server props file: " + urlProp + ", using the backup local property file instead.", e);
+    } catch (final IOException e) {
+      ClientLogger.logQuietly(
+          "Failed to download lobby server props file: " + urlProp + ", using the backup local property file instead.",
+          e);
     }
     Optional<List<Map<String, Object>>> yamlDataObj = loadYaml(propFile);
-    if(!yamlDataObj.isPresent()) {
+    if (!yamlDataObj.isPresent()) {
       // try reading properties from the local file as a backup
-      String localFileProp = propReader.readProperty(GameEngineProperty.LOBBY_PROPS_BACKUP_FILE);
-      File localFile = new File(ClientFileSystemHelper.getRootFolder(), localFileProp);
+      final String localFileProp = propReader.readProperty(GameEngineProperty.LOBBY_PROPS_BACKUP_FILE);
+      final File localFile = new File(ClientFileSystemHelper.getRootFolder(), localFileProp);
       yamlDataObj = loadYaml(propFile);
-      if( !yamlDataObj.isPresent()) {
-        throw new IllegalStateException("Failed to read lobby properties from both: " + urlProp + ", and: " + localFile.getAbsolutePath());
+      if (!yamlDataObj.isPresent()) {
+        throw new IllegalStateException(
+            "Failed to read lobby properties from both: " + urlProp + ", and: " + localFile.getAbsolutePath());
       }
     }
 
-    Map<String, Object> yamlProps = matchCurrentVersion(yamlDataObj.get());
+    final Map<String, Object> yamlProps = matchCurrentVersion(yamlDataObj.get());
 
-    LobbyServerProperties lobbyProps = new LobbyServerProperties(yamlProps);
+    final LobbyServerProperties lobbyProps = new LobbyServerProperties(yamlProps);
     return lobbyProps;
   }
 
-  private static Map<String, Object> matchCurrentVersion(List<Map<String, Object>> lobbyProps) {
+  private static Map<String, Object> matchCurrentVersion(final List<Map<String, Object>> lobbyProps) {
     checkNotNull(lobbyProps);
-    Version currentVersion = ClientContext.engineVersion().getVersion();
-    for (Map<String, Object> props : lobbyProps) {
+    final Version currentVersion = ClientContext.engineVersion().getVersion();
+    for (final Map<String, Object> props : lobbyProps) {
       if (props.containsKey("version")) {
-        Version otherVersion = new Version((String) props.get("version"));
+        final Version otherVersion = new Version((String) props.get("version"));
         if (otherVersion.equals(currentVersion)) {
           return props;
         }

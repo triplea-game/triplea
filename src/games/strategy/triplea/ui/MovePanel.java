@@ -130,9 +130,10 @@ public class MovePanel extends AbstractMovePanel {
   private void sortUnitsToMove(final List<Unit> units, final Route route) {
     if (units == null || units.isEmpty()) {
       return;
-    } else if ( route == null ) {
-      Exception nullRouteError = (new IllegalArgumentException("route is not supposed to be null"));
-      ClientLogger.logQuietly("Programming error, route should not be null here. Aborting sort operation and returning.",  nullRouteError );
+    } else if (route == null) {
+      final Exception nullRouteError = (new IllegalArgumentException("route is not supposed to be null"));
+      ClientLogger.logQuietly(
+          "Programming error, route should not be null here. Aborting sort operation and returning.", nullRouteError);
     }
 
     final Comparator<Unit> unitComparator;
@@ -1438,10 +1439,10 @@ public class MovePanel extends AbstractMovePanel {
   public KeyListener getUndoMoveKeyListener() {
     return new KeyListener() {
       @Override
-      public void keyTyped(KeyEvent e) {}
+      public void keyTyped(final KeyEvent e) {}
 
       @Override
-      public void keyPressed(KeyEvent e) {
+      public void keyPressed(final KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_U &&
             getMap().getHighlightedUnits() != null && !getMap().getHighlightedUnits().isEmpty()) {
           m_undoableMovesPanel.undoMoves(getMap().getHighlightedUnits());
@@ -1449,7 +1450,7 @@ public class MovePanel extends AbstractMovePanel {
       }
 
       @Override
-      public void keyReleased(KeyEvent e) {}
+      public void keyReleased(final KeyEvent e) {}
     };
 
   }

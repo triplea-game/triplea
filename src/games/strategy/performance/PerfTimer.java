@@ -9,19 +9,22 @@ public class PerfTimer implements Closeable {
   public final String title;
   private final long startMillis;
 
-  protected PerfTimer(String title) {
+  protected PerfTimer(final String title) {
     this.title = title;
     this.startMillis = System.nanoTime();
   }
+
   private long stopTimer() {
-    long end = System.nanoTime();
-    return end-startMillis;
+    final long end = System.nanoTime();
+    return end - startMillis;
   }
+
   @Override
   public void close() {
     Perf.processResult(stopTimer(), this);
   }
-  /** Alias for the close method, stops the timer*/
+
+  /** Alias for the close method, stops the timer */
   public void stop() {
     close();
   }

@@ -581,6 +581,7 @@ class PlayerOwnerChange extends Change {
   }
 }
 
+
 /**
  * Adds/removes resource from a player.
  */

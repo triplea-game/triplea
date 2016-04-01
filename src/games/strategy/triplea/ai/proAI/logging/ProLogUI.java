@@ -11,7 +11,7 @@ import games.strategy.triplea.ui.TripleAFrame;
  */
 public class ProLogUI {
   @SuppressWarnings("unused")
-private static TripleAFrame s_frame = null;
+  private static TripleAFrame s_frame = null;
   private static ProLogWindow s_settingsWindow = null;
   private static String currentName = "";
   private static int currentRound = 0;

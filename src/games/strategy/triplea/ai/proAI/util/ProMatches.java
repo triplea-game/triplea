@@ -1,5 +1,8 @@
 package games.strategy.triplea.ai.proAI.util;
 
+import java.util.Collection;
+import java.util.List;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -15,9 +18,6 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
-import java.util.Collection;
-import java.util.List;
-
 /**
  * Pro AI matches.
  */
@@ -32,7 +32,8 @@ public class ProMatches {
             new CompositeMatchOr<>(Matches.territoryIsInList(alliedTerritories), new CompositeMatchAnd<>(
                 Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data),
                 Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false,
-                    false, true, true), Matches.territoryIsInList(enemyTerritories).invert()));
+                    false, true, true),
+                Matches.territoryIsInList(enemyTerritories).invert()));
         return match.match(t);
       }
     };
@@ -149,7 +150,8 @@ public class ProMatches {
   }
 
   public static Match<Territory> territoryCanMoveLandUnitsThrough(final PlayerID player, final GameData data,
-      final Unit u, final Territory startTerritory, final boolean isCombatMove, final List<Territory> enemyTerritories) {
+      final Unit u, final Territory startTerritory, final boolean isCombatMove,
+      final List<Territory> enemyTerritories) {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
@@ -479,7 +481,8 @@ public class ProMatches {
     };
   }
 
-  public static Match<Territory> territoryIsAlliedLandAndHasNoEnemyNeighbors(final PlayerID player, final GameData data) {
+  public static Match<Territory> territoryIsAlliedLandAndHasNoEnemyNeighbors(final PlayerID player,
+      final GameData data) {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
@@ -518,7 +521,8 @@ public class ProMatches {
     };
   }
 
-  public static Match<Territory> territoryIsOrAdjacentToEnemyNotNeutralLand(final PlayerID player, final GameData data) {
+  public static Match<Territory> territoryIsOrAdjacentToEnemyNotNeutralLand(final PlayerID player,
+      final GameData data) {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
@@ -742,7 +746,8 @@ public class ProMatches {
         final Match<Unit> alliedUnitMatch =
             new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player).invert(), Matches.isUnitAllied(player, data), Matches
                 .unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(t.getUnits().getUnits(), null, player, data,
-                    false).invert());
+                    false)
+                .invert());
         final Match<Unit> match = new CompositeMatchOr<>(myUnitHasNoMovementMatch, alliedUnitMatch);
         return match.match(u);
       }
@@ -891,7 +896,8 @@ public class ProMatches {
     };
   }
 
-  public static Match<Unit> unitIsOwnedAndMatchesTypeAndNotTransporting(final PlayerID player, final UnitType unitType) {
+  public static Match<Unit> unitIsOwnedAndMatchesTypeAndNotTransporting(final PlayerID player,
+      final UnitType unitType) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
@@ -956,7 +962,8 @@ public class ProMatches {
     };
   }
 
-  public static Match<Unit> unitIsOwnedTransportableUnitAndCanBeLoaded(final PlayerID player, final boolean isCombatMove) {
+  public static Match<Unit> unitIsOwnedTransportableUnitAndCanBeLoaded(final PlayerID player,
+      final boolean isCombatMove) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {

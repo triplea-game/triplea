@@ -185,9 +185,9 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
           return Collections.emptyList();
         }
         final boolean isIgnored = m_chat.isIgnored(clickedOn);
-        final Action ignore = SwingAction.of( isIgnored ? "Stop Ignoring" : "Ignore", e-> {
-            m_chat.setIgnored(clickedOn, !isIgnored);
-            repaint();
+        final Action ignore = SwingAction.of(isIgnored ? "Stop Ignoring" : "Ignore", e -> {
+          m_chat.setIgnored(clickedOn, !isIgnored);
+          repaint();
         });
         final Action slap = new AbstractAction("Slap " + clickedOn.getName()) {
           private static final long serialVersionUID = -5514772068903406263L;

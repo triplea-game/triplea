@@ -17,17 +17,17 @@ public final class MapDownloadListSort {
    * Sorts a list of map downloads alphabetically case insensitive by group where dummy URL headers delimit the map
    * groups.
    */
-  public static List<DownloadFileDescription> sortByMapName(List<DownloadFileDescription> downloads) {
+  public static List<DownloadFileDescription> sortByMapName(final List<DownloadFileDescription> downloads) {
     checkNotNull(downloads);
 
-    List<DownloadFileDescription> returnList = Lists.newArrayList();
+    final List<DownloadFileDescription> returnList = Lists.newArrayList();
 
     // Until we see a header, save each map to this List.
     // When we see a header, we'll sort this list, add it
     // to the return values, and then clear it.
     List<DownloadFileDescription> maps = Lists.newArrayList();
 
-    for (DownloadFileDescription download : downloads) {
+    for (final DownloadFileDescription download : downloads) {
       if (download.isDummyUrl()) {
         returnList.addAll(sort(maps));
         maps = Lists.newArrayList();
@@ -50,7 +50,7 @@ public final class MapDownloadListSort {
   }
 
 
-  private static List<DownloadFileDescription> sort(List<DownloadFileDescription> maps) {
+  private static List<DownloadFileDescription> sort(final List<DownloadFileDescription> maps) {
     maps.sort((lhs, rhs) -> lhs.getMapName().toUpperCase().compareTo(rhs.getMapName().toUpperCase()));
     return maps;
   }

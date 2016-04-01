@@ -9,6 +9,7 @@ public interface ILobbyGameBroadcaster extends IChannelSubscribor {
       new RemoteName("games.strategy.engine.lobby.server.IGameBroadcaster.CHANNEL", ILobbyGameBroadcaster.class);
 
   /** @deprecated Call gameUpdated instead, it will add or update */
+  @Deprecated
   public void gameAdded(GUID gameId, GameDescription description);
 
   public void gameUpdated(GUID gameId, GameDescription description);

@@ -24,7 +24,7 @@ public class UniversalPlugAndPlayHelper {
   private InetAddress m_local = null;
   private InternetGatewayDevice m_device = null;
   @SuppressWarnings("unused")
-private static UniversalPlugAndPlayHelper s_lastInstance = null;
+  private static UniversalPlugAndPlayHelper s_lastInstance = null;
 
   public static void main(final String[] args) {
     UniversalPlugAndPlayHelper.attemptAddingPortForwarding(null, 3300);

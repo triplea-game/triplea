@@ -157,7 +157,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
           + "Press 'f' to highlight all units you own that have movement left (move phases only).<br>"
           + "Press 'i' or 'v' to popup info on whatever territory and unit your mouse is currently over.<br>"
           + "Press 'u' while mousing over a unit to undo all moves that unit has made (beta).<br>"
-          + "To list specific units from a territory in the Territory panel, drag and drop from the territory on the map to the territory panel.<br>";      final JEditorPane editorPane = new JEditorPane();
+          + "To list specific units from a territory in the Territory panel, drag and drop from the territory on the map to the territory panel.<br>";
+      final JEditorPane editorPane = new JEditorPane();
       editorPane.setEditable(false);
       editorPane.setContentType("text/html");
       editorPane.setText(hints);

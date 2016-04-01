@@ -364,7 +364,7 @@ public class Matches {
         }
         final boolean unitOwnerCanLetUnitsBeCapturedByPlayer = pa.getCaptureUnitOnEnteringBy().contains(player);
         return (unitCanBeCapturedByPlayer && territoryCanHaveUnitsThatCanBeCapturedByPlayer
-        && unitOwnerCanLetUnitsBeCapturedByPlayer);
+            && unitOwnerCanLetUnitsBeCapturedByPlayer);
       }
     };
   }
@@ -933,7 +933,8 @@ public class Matches {
     }
   };
 
-  private static final Match<Unit> UnitIsAAthatWillNotFireIfPresentEnemyUnits(final Collection<Unit> enemyUnitsPresent) {
+  private static final Match<Unit> UnitIsAAthatWillNotFireIfPresentEnemyUnits(
+      final Collection<Unit> enemyUnitsPresent) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit obj) {

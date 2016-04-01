@@ -226,7 +226,7 @@ public class TransportTracker {
       // then we must have been transported on our own transport
       final TripleAUnit taUnit = (TripleAUnit) u;
       if (taUnit.getWasLoadedThisTurn() && taUnit.getTransportedBy() != null &&
-          // an allied transport if the owner of the transport is not the owner of the unit
+      // an allied transport if the owner of the transport is not the owner of the unit
           !taUnit.getTransportedBy().getOwner().equals(taUnit.getOwner())) {
         rVal.add(u);
       }

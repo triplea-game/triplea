@@ -51,7 +51,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     mapPanel.addMapSelectionListener(new DefaultMapSelectionListener() {
       @Override
       public void mouseEntered(final Territory territory) {
-          territoryChanged(territory);
+        territoryChanged(territory);
       }
     });
     initLayout();

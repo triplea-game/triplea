@@ -31,7 +31,8 @@ public class NewGameChooserEntry {
       public int compare(final NewGameChooserEntry o1, final NewGameChooserEntry o2) {
         return getLowerCaseComparable(o1).compareTo(getLowerCaseComparable(o2));
       }
-      private String getLowerCaseComparable(NewGameChooserEntry newGameChooserEntry) {
+
+      private String getLowerCaseComparable(final NewGameChooserEntry newGameChooserEntry) {
         return newGameChooserEntry.getGameData().getGameName().toLowerCase();
       }
     };
@@ -64,12 +65,13 @@ public class NewGameChooserEntry {
       ClientLogger.logQuietly(e);
       error = e.getMessage();
     } catch (final SAXParseException e) {
-      String msg = "Could not parse:" + m_url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber();
+      final String msg =
+          "Could not parse:" + m_url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber();
       ClientLogger.logError(msg);
       e.printStackTrace();
       error = e.getMessage();
     } catch (final Exception e) {
-      String msg = "Could not parse:" + m_url;
+      final String msg = "Could not parse:" + m_url;
       ClientLogger.logError(msg);
       e.printStackTrace();
       error = e.getMessage();

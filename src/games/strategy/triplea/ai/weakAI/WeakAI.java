@@ -854,16 +854,16 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
       final int minimumUnitPrice = 3;
       int diff = 0;
       @SuppressWarnings("unused")
-	int totalDamage = 0;
+      int totalDamage = 0;
       @SuppressWarnings("unused")
-	int capDamage = 0;
+      int capDamage = 0;
       int capProduction = 0;
       Unit capUnit = null;
       Territory capUnitTerritory = null;
       int maxUnits = (totPU - 1) / minimumUnitPrice;
       int currentProduction = 0;
       @SuppressWarnings("unused")
-	int maxProduction = 0;
+      int maxProduction = 0;
       // we should sort this
       Collections.shuffle(rfactories);
       for (final Territory fixTerr : rfactories) {

@@ -73,7 +73,7 @@ public class GameParser {
    */
   public synchronized GameData parse(final InputStream stream, final AtomicReference<String> gameName,
       final boolean delayParsing)
-          throws GameParseException, SAXException, EngineVersionException, IllegalArgumentException {
+      throws GameParseException, SAXException, EngineVersionException, IllegalArgumentException {
     if (stream == null) {
       throw new IllegalArgumentException("Stream must be non null");
     }

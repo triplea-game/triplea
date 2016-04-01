@@ -40,7 +40,7 @@ public class MapDownloadController {
   }
 
   /** Opens a new window dialog where a user can select maps to download or update */
-  public void openDownloadMapScreen(JComponent parentComponent) {
+  public void openDownloadMapScreen(final JComponent parentComponent) {
     final DownloadRunnable download = downloadForAvailableMaps(parentComponent);
 
     if (download.getError() != null) {
@@ -52,11 +52,11 @@ public class MapDownloadController {
 
   }
 
-  private DownloadRunnable downloadForAvailableMaps(JComponent parentComponent) {
+  private DownloadRunnable downloadForAvailableMaps(final JComponent parentComponent) {
     final DownloadRunnable download = new DownloadRunnable(mapDownloadProperties.getMapListDownloadSite());
     // despite "BackgroundTaskRunner.runInBackground" saying runInBackground, it runs in a modal window in the
     // foreground.
-    String popupWindowTitle = "Downloading list of availabe maps....";
+    final String popupWindowTitle = "Downloading list of availabe maps....";
     BackgroundTaskRunner.runInBackground(parentComponent.getRootPane(), popupWindowTitle, download);
 
     return download;
@@ -87,7 +87,7 @@ public class MapDownloadController {
       } catch (final BackingStoreException e) {
       }
 
-      MapDownloadController controller = new MapDownloadController(mapDownloadProperties);
+      final MapDownloadController controller = new MapDownloadController(mapDownloadProperties);
       final DownloadRunnable download = controller.downloadForLatestMapsCheck();
       if (download.getError() != null) {
         return false;

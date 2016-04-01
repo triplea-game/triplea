@@ -2,6 +2,7 @@ package games.strategy.common.swing;
 
 import java.awt.event.ActionEvent;
 import java.util.function.Consumer;
+
 import javax.swing.AbstractAction;
 
 
@@ -33,7 +34,7 @@ public class SwingAction {
       private static final long serialVersionUID = 6751222534195121860L;
 
       @Override
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         swingAction.accept(e);
       }
     };
@@ -44,7 +45,7 @@ public class SwingAction {
       private static final long serialVersionUID = 12331L;
 
       @Override
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         swingAction.accept(e);
       }
     };

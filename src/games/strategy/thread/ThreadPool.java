@@ -12,7 +12,7 @@ import games.strategy.util.ThreadUtil;
  */
 public class ThreadPool {
   private final ExecutorService executorService;
-  private ArrayDeque<Future> futuresStack = new ArrayDeque<Future>();
+  private final ArrayDeque<Future> futuresStack = new ArrayDeque<Future>();
 
   /**
    * Creates a new instance of ThreadPool max is the maximum number of threads the pool can have. The pool may have

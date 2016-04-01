@@ -8,7 +8,7 @@ package games.strategy.triplea.ui;
  * Otherwise, to implement this interface successfully, a class would also need to:
  * - have a zero arg constructor
  * - register the class name with a system property, like this:
- *          System.setProperty("sun.awt.exception.handler", <your_implementing_instance>.class.getName());
+ * System.setProperty("sun.awt.exception.handler", <your_implementing_instance>.class.getName());
  *
  * @see ErrorHandler.java
  */

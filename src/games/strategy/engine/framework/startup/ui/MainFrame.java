@@ -116,8 +116,8 @@ public class MainFrame extends JFrame {
       }
       return;
     }
-      // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
-      // closing of stream while unloading map resources.
+    // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
+    // closing of stream while unloading map resources.
     ThreadUtil.sleep(100);
     m_gameSelectorModel.loadDefaultGame(this);
     m_setupPanelModel.showSelectType();

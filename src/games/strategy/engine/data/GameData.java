@@ -516,7 +516,7 @@ public class GameData implements java.io.Serializable {
     }
   }
 
-  public void performChange(Change change) {
+  public void performChange(final Change change) {
     if (areChangesOnlyInSwingEventThread() && !SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread");
     }

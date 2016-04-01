@@ -419,7 +419,7 @@ public class EditPanel extends ActionPanel {
             BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), null, getData(), true, false));
         Collections.reverse(units);
         @SuppressWarnings("unused")
-		final int currentDamage = 0;
+        final int currentDamage = 0;
         // unit mapped to <max, min, current>
         final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap =
             new HashMap<Unit, Triple<Integer, Integer, Integer>>();

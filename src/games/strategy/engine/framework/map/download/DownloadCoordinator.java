@@ -47,7 +47,7 @@ public class DownloadCoordinator {
             // It's a difficult situation to create for the user, and the worst case is multiple map download
             // complete dialogs appearing - which is not a big deal.
             downloadPromptAlreadyShown = true;
-            Runnable confirmAction = () -> {
+            final Runnable confirmAction = () -> {
               if (downloadCompleteAction.isPresent()) {
                 downloadCompleteAction.get().run();
               }
@@ -55,7 +55,7 @@ public class DownloadCoordinator {
             SwingComponents.promptUser("Map Downloads Completed",
                 "Map downloads are complete, would you like to continue downloading more maps?", confirmAction);
           }
-        } catch (Exception e) {
+        } catch (final Exception e) {
           e.printStackTrace();
           throw e;
         }
@@ -64,16 +64,16 @@ public class DownloadCoordinator {
   }
 
   private void startNextDownloads() {
-    long downloadingCount = countDownloadsInProgress();
+    final long downloadingCount = countDownloadsInProgress();
     if (downloadList != null && downloadingCount < MAX_CONCURRENT_DOWNLOAD) {
       startNextDownload();
     }
   }
 
   private boolean shouldShowDownloadsFinishedPrompt() {
-    boolean doneDownloading = countDownloadsInProgress() == 0;
-    boolean downloadedSomething = downloadList.size() > 0;
-    boolean noMoreDownloads = countWaiting() == 0;
+    final boolean doneDownloading = countDownloadsInProgress() == 0;
+    final boolean downloadedSomething = downloadList.size() > 0;
+    final boolean noMoreDownloads = countWaiting() == 0;
 
     return !cancelled && !downloadPromptAlreadyShown && doneDownloading && downloadedSomething && noMoreDownloads;
   }
@@ -86,12 +86,12 @@ public class DownloadCoordinator {
     return count(download -> download.isWaiting());
   }
 
-  private long count(Predicate<DownloadFile> filter) {
+  private long count(final Predicate<DownloadFile> filter) {
     return downloadList.stream().filter(filter).count();
   }
 
   private void startNextDownload() {
-    for (DownloadFile download : downloadList) {
+    for (final DownloadFile download : downloadList) {
       if (download.isWaiting()) {
         download.startAsyncDownload();
         break;
@@ -108,8 +108,8 @@ public class DownloadCoordinator {
    *        the size of the downloaded file in bytes.
    * @param completionListener A listener that is called when this specific download finishes.
    */
-  public void accept(DownloadFileDescription download, Consumer<Integer> progressUpdateListener,
-      Runnable completionListener) {
+  public void accept(final DownloadFileDescription download, final Consumer<Integer> progressUpdateListener,
+      final Runnable completionListener) {
     // To avoid double acceptance, hold a lock while we check the 'downloadSet'
     synchronized (this) {
       if (download.isDummyUrl() || downloadSet.contains(download)) {
@@ -125,7 +125,7 @@ public class DownloadCoordinator {
   /**
    * Set a callback object to be called when all queued downloads have completed.
    */
-  public void setAllDownloadCompleteAction(Runnable closeAction) {
+  public void setAllDownloadCompleteAction(final Runnable closeAction) {
     this.downloadCompleteAction = Optional.of(closeAction);
   }
 
@@ -136,7 +136,7 @@ public class DownloadCoordinator {
    */
   public void cancelDownloads() {
     cancelled = true;
-    for (DownloadFile download : downloadList) {
+    for (final DownloadFile download : downloadList) {
       download.cancelDownload();
     }
   }

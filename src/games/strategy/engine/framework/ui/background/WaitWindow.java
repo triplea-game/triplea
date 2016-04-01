@@ -29,8 +29,8 @@ public class WaitWindow extends JWindow {
       @Override
       public void run() {
         SwingUtilities.invokeLater(() -> toFront());
-        }
-      };
+      }
+    };
 
     synchronized (m_mutex) {
       if (m_timer != null) {

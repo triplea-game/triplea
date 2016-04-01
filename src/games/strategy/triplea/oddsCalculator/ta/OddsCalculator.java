@@ -666,7 +666,7 @@ class DummyPlayer extends AbstractAI {
                   DiceRoll.getUnitPowerAndRollsForNormalBattles(enemyUnits, ourUnits, m_isAttacker, false,
                       m_bridge.getData(), battle.getTerritory(), battle.getTerritoryEffects(), battle.isAmphibious(),
                       (battle.isAmphibious() && !m_isAttacker ? enemyUnits : new ArrayList<Unit>())),
-              m_bridge.getData());
+                  m_bridge.getData());
           final int diceSides = m_bridge.getData().getDiceSides();
           final int ourMetaPower = BattleCalculator.getNormalizedMetaPower(ourPower, ourHP, diceSides);
           final int enemyMetaPower = BattleCalculator.getNormalizedMetaPower(enemyPower, enemyHP, diceSides);

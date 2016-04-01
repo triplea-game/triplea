@@ -173,10 +173,10 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
   }
 
   public PlayerAttachment getPlayerAttachment() {
-    return  (PlayerAttachment) getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
+    return (PlayerAttachment) getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
   }
 
   public TechAttachment getTechAttachment() {
-    return (TechAttachment)   getAttachment(Constants.TECH_ATTACHMENT_NAME);
+    return (TechAttachment) getAttachment(Constants.TECH_ATTACHMENT_NAME);
   }
 }

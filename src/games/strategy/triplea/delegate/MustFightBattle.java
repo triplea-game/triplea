@@ -1846,8 +1846,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       // submerge defending subs
       submergeUnits(defendingSubs, true, bridge);
       // checking defending air on attacking subs
-    } else
-      if (Match.allMatch(m_defendingUnits, Matches.UnitIsAir) && Match.someMatch(m_attackingUnits, Matches.UnitIsSub)) {
+    } else if (Match.allMatch(m_defendingUnits, Matches.UnitIsAir)
+        && Match.someMatch(m_attackingUnits, Matches.UnitIsSub)) {
       // Get all attacking subs in the territory
       final List<Unit> attackingSubs = Match.getMatches(m_attackingUnits, Matches.UnitIsSub);
       // submerge attacking subs
@@ -2034,7 +2034,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       bridge.addChange(change);
     }
     /**
-     * TODO  This code is actually a bug- the property is intended to tell if the return fire is
+     * TODO This code is actually a bug- the property is intended to tell if the return fire is
      * RESTRICTED- but it's used as if it's ALLOWED. The reason is the default values on the
      * property definition. However, fixing this will entail a fix to the XML to reverse
      * all values. We'll leave it as is for now and try to figure out a patch strategy later.
@@ -2361,7 +2361,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     unitList.removeAll(Match.getMatches(unitList,
         Matches.UnitCanBeInBattle(attacking, !m_battleSite.isWater(), m_data,
             (removeForNextRound ? m_round + 1 : m_round), true, doNotIncludeAA, doNotIncludeSeaBombardmentUnits)
-        .invert()));
+            .invert()));
     // remove any disabled units from combat
     unitList.removeAll(Match.getMatches(unitList, Matches.UnitIsDisabled));
     // remove capturableOnEntering units (veqryn)

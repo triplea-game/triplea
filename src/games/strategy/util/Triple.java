@@ -5,13 +5,13 @@ import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 
-public class Triple<F, S, T> implements Serializable  {
+public class Triple<F, S, T> implements Serializable {
   private static final long serialVersionUID = -8188046743232005918L;
-  private final Tuple<F,S> tuple;
+  private final Tuple<F, S> tuple;
   private final T third;
 
-  public static <F,S,T> Triple<F, S, T> of( F first, S second, T third ) {
-    return new Triple(first,second,third);
+  public static <F, S, T> Triple<F, S, T> of(final F first, final S second, final T third) {
+    return new Triple(first, second, third);
   }
 
   private Triple(final F first, final S second, final T third) {
@@ -22,6 +22,7 @@ public class Triple<F, S, T> implements Serializable  {
   public F getFirst() {
     return tuple.getFirst();
   }
+
   public S getSecond() {
     return tuple.getSecond();
   }
@@ -56,6 +57,6 @@ public class Triple<F, S, T> implements Serializable  {
 
     final Triple other = (Triple) obj;
     return Objects.equals(tuple, other.tuple) &&
-        Objects.equals(getThird(), other.getThird() );
+        Objects.equals(getThird(), other.getThird());
   }
 }

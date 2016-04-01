@@ -1,5 +1,13 @@
 package games.strategy.triplea.ai.proAI.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -14,14 +22,6 @@ import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.util.Match;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Pro AI move utilities.
@@ -194,7 +194,8 @@ public class ProMoveUtils {
                   && maxUnitDistance <= minUnitDistance
                   && distanceFromUnloadTerritory < movesLeft
                   && (maxUnitDistance < minUnitDistance
-                      || (maxUnitDistance > 1 && neighborDistanceFromEnd > maxDistanceFromEnd) || (maxUnitDistance <= 1 && neighborDistanceFromEnd < maxDistanceFromEnd))) {
+                      || (maxUnitDistance > 1 && neighborDistanceFromEnd > maxDistanceFromEnd)
+                      || (maxUnitDistance <= 1 && neighborDistanceFromEnd < maxDistanceFromEnd))) {
                 territoryToMoveTo = neighbor;
                 minUnitDistance = maxUnitDistance;
                 if (neighborDistanceFromEnd > maxDistanceFromEnd) {
