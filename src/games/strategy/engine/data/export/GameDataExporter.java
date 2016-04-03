@@ -10,6 +10,7 @@ import java.util.Map;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
+import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.NamedAttachable;
@@ -757,7 +758,7 @@ public class GameDataExporter {
 
   private void init(final GameData data) {
     xmlfile.append("<?xml version=\"1.0\"?>\n");
-    xmlfile.append("<!DOCTYPE game SYSTEM \"game.dtd\">\n");
+    xmlfile.append("<!DOCTYPE game SYSTEM \"" + GameParser.dtdFileName + "\">\n");
     xmlfile.append("<game>\n");
     xmlfile.append(
         "    <info name=\"" + data.getGameName() + "\" version=\"" + data.getGameVersion().toString() + "\"/>\n");

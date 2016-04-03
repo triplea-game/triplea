@@ -10,8 +10,16 @@ public class Triple<F, S, T> implements Serializable  {
   private final Tuple<F,S> tuple;
   private final T third;
 
+  /**
+   * Static creation method to create a new instance of a triple with the parameters provided.
+   *
+   * This method allows for nicer triple creation syntax, namely:
+   *    Triple<String,Integer,String> myTriple = Triple.of("abc",123,"xyz");
+   * Instead of:
+   *    Triple<String,Integer,String> myTriple = new Triple<String,Integer,String>("abc",123,"xyz");
+   */
   public static <F,S,T> Triple<F, S, T> of( F first, S second, T third ) {
-    return new Triple(first,second,third);
+    return new Triple<F, S, T>(first,second,third);
   }
 
   private Triple(final F first, final S second, final T third) {
@@ -54,6 +62,8 @@ public class Triple<F, S, T> implements Serializable  {
       return false;
     }
 
+    // ignore parameterization, just perform equals-check on components
+	@SuppressWarnings("rawtypes")
     final Triple other = (Triple) obj;
     return Objects.equals(tuple, other.tuple) &&
         Objects.equals(getThird(), other.getThird() );
