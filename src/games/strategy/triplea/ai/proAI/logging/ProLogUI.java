@@ -10,8 +10,6 @@ import games.strategy.triplea.ui.TripleAFrame;
  * Class to manage log window display.
  */
 public class ProLogUI {
-  @SuppressWarnings("unused")
-private static TripleAFrame s_frame = null;
   private static ProLogWindow s_settingsWindow = null;
   private static String currentName = "";
   private static int currentRound = 0;
@@ -20,12 +18,10 @@ private static TripleAFrame s_frame = null;
     if (!SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread, should be running on AWT thread.");
     }
-    s_frame = frame;
     s_settingsWindow = new ProLogWindow(frame);
   }
 
   public static void clearCachedInstances() {
-    s_frame = null;
     if (s_settingsWindow != null) {
       s_settingsWindow.clear();
     }

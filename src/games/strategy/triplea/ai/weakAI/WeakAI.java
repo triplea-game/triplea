@@ -50,7 +50,6 @@ import games.strategy.util.Util;
 /*
  * A very weak ai, based on some simple rules.<p>
  */
-@SuppressWarnings("deprecation")
 public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
   private final static Logger s_logger = Logger.getLogger(WeakAI.class.getName());
 
@@ -853,10 +852,6 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
           new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsDisabled);
       final int minimumUnitPrice = 3;
       int diff = 0;
-      @SuppressWarnings("unused")
-	int totalDamage = 0;
-      @SuppressWarnings("unused")
-	int capDamage = 0;
       int capProduction = 0;
       Unit capUnit = null;
       Territory capUnitTerritory = null;
@@ -881,9 +876,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
         maxProduction +=
             TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, false, true);
         diff = taUnit.getUnitDamage();
-        totalDamage += diff;
         if (fixTerr == capitol) {
-          capDamage += diff;
           capProduction =
               TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, true, true);
           capUnit = possibleFactoryNeedingRepair;

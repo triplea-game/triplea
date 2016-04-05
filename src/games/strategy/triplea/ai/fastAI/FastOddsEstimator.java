@@ -16,36 +16,21 @@ import java.util.List;
 
 public class FastOddsEstimator implements IOddsCalculator {
 
-  @SuppressWarnings("unused")
-  private GameData data;
-  @SuppressWarnings("unused")
-  private PlayerID attacker = null;
-  @SuppressWarnings("unused")
-  private PlayerID defender = null;
   private Territory location = null;
   private Collection<Unit> attackingUnits = new ArrayList<>();
   private Collection<Unit> defendingUnits = new ArrayList<>();
-  @SuppressWarnings("unused")
-  private Collection<Unit> bombardingUnits = new ArrayList<>();
-  @SuppressWarnings("unused")
-  private Collection<TerritoryEffect> territoryEffects = new ArrayList<>();
 
   @Override
   public void setGameData(final GameData data) {
-    this.data = data;
   }
 
   @Override
   public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits,
       final Collection<Unit> bombardingUnits, final Collection<TerritoryEffect> territoryEffects, final int runCount) {
-    this.attacker = attacker;
-    this.defender = defender;
     this.location = location;
     this.attackingUnits = attackingUnits;
     this.defendingUnits = defendingUnits;
-    this.bombardingUnits = bombardingUnits;
-    this.territoryEffects = territoryEffects;
   }
 
   @Override
