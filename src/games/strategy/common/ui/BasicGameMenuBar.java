@@ -1,5 +1,6 @@
 package games.strategy.common.ui;
 
+
 import java.awt.BorderLayout;
 import java.awt.FileDialog;
 import java.awt.Frame;
@@ -24,6 +25,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -54,9 +56,10 @@ import com.apple.eawt.ApplicationAdapter;
 import com.apple.eawt.ApplicationEvent;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.common.swing.SwingComponents;
 import games.strategy.debug.ClientLogger;
-import games.strategy.debug.ErrorConsole;
 import games.strategy.debug.DebugUtils;
+import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
@@ -74,14 +77,19 @@ import games.strategy.engine.framework.networkMaintenance.SetPasswordAction;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.net.IServerMessenger;
+import games.strategy.performance.EnablePerformanceLoggingCheckBox;
+import games.strategy.triplea.UrlConstants;
+import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.ui.AbstractUIContext;
+import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.ui.IntTextField;
 import games.strategy.util.CountDownLatchHandler;
@@ -103,7 +111,46 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     final InGameLobbyWatcherWrapper watcher = createLobbyMenu(this);
     createNetworkMenu(this, watcher);
     createWebHelpMenu(this);
+    createDebugMenu(this);
     createHelpMenu(this);
+  }
+
+  private void createDebugMenu(final JMenuBar menuBar) {
+    final JMenu debugMenu = new JMenu("Debug");
+    menuBar.add(debugMenu);
+    addChangeProAISettings(debugMenu);
+    debugMenu.add(new EnablePerformanceLoggingCheckBox());
+    debugMenu.setMnemonic(KeyEvent.VK_D);
+    addConsoleMenu(debugMenu);
+  }
+
+  protected void addReportBugsMenu(final JMenu parentMenu) {
+    parentMenu.add(SwingAction.of( "Send Bug Report", e -> {
+      SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES);
+    } )).setMnemonic(KeyEvent.VK_B);
+  }
+
+  protected void addConsoleMenu(final JMenu parentMenu) {
+    parentMenu.add(SwingAction.of("Show Console...", e ->  {
+        ErrorConsole.getConsole().setVisible(true);
+        ErrorConsole.getConsole().append(DebugUtils.getMemory());
+    })).setMnemonic(KeyEvent.VK_C);
+  }
+
+  private void addChangeProAISettings(final JMenu parentMenu) {
+    boolean areThereProAIs = false;
+    final Set<IGamePlayer> players = (m_frame).getLocalPlayers().getLocalPlayers();
+    for (final IGamePlayer player : players) {
+      if (player instanceof ProAI) {
+        areThereProAIs = true;
+      }
+    }
+    if (areThereProAIs) {
+      ProAI.initialize((TripleAFrame) m_frame);
+      parentMenu.addSeparator();
+      parentMenu.add(SwingAction.of("Show Hard AI Logs", e -> ProAI.showSettingsWindow())).setMnemonic(KeyEvent.VK_X);
+      parentMenu.addSeparator();
+    }
   }
 
   protected void createGameSpecificMenus(final JMenuBar menuBar) {}
@@ -125,64 +172,55 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     if (notesProperty != null && notesProperty.trim().length() != 0) {
       final String notes = LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim());
       m_gameNotesPane = new SoftJEditorPane(notes);
-      parentMenu.add(new AbstractAction("Game Notes...") {
-        private static final long serialVersionUID = -1817640666359299617L;
+      parentMenu.add(SwingAction.of("Game Notes...", e -> {
+        SwingUtilities.invokeLater(new Runnable() {
+          @Override
+          public void run() {
+            final JEditorPane pane = m_gameNotesPane.getComponent();
+            final JScrollPane scroll = new JScrollPane(pane);
+            scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+            final JDialog dialog = new JDialog(m_frame);
+            dialog.setModal(false);
+            // needs java 1.6 at least...
+            // dialog.setModalityType(ModalityType.MODELESS);
+            dialog.setAlwaysOnTop(true);
+            dialog.add(scroll, BorderLayout.CENTER);
+            final JPanel buttons = new JPanel();
+            final JButton button = new JButton(SwingAction.of("OK", event -> {
+              dialog.setVisible(false);
+              dialog.removeAll();
+              dialog.dispose();
 
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              final JEditorPane pane = m_gameNotesPane.getComponent();
-              final JScrollPane scroll = new JScrollPane(pane);
-              scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-              final JDialog dialog = new JDialog(m_frame);
-              dialog.setModal(false);
-              // needs java 1.6 at least...
-              // dialog.setModalityType(ModalityType.MODELESS);
-              dialog.setAlwaysOnTop(true);
-              dialog.add(scroll, BorderLayout.CENTER);
-              final JPanel buttons = new JPanel();
-              final JButton button = new JButton(new AbstractAction("OK") {
-                private static final long serialVersionUID = -6628015175043647980L;
-
-                @Override
-                public void actionPerformed(final ActionEvent e) {
-                  dialog.setVisible(false);
-                  dialog.removeAll();
-                  dialog.dispose();
-                }
-              });
-              buttons.add(button);
-              dialog.getRootPane().setDefaultButton(button);
-              dialog.add(buttons, BorderLayout.SOUTH);
-              dialog.pack();
-              if (dialog.getWidth() < 400) {
-                dialog.setSize(400, dialog.getHeight());
-              }
-              if (dialog.getHeight() < 300) {
-                dialog.setSize(dialog.getWidth(), 300);
-              }
-              if (dialog.getWidth() > 800) {
-                dialog.setSize(800, dialog.getHeight());
-              }
-              if (dialog.getHeight() > 600) {
-                dialog.setSize(dialog.getWidth(), 600);
-              }
-              dialog.setLocationRelativeTo(m_frame);
-              dialog.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowOpened(final WindowEvent e) {
-                  scroll.getVerticalScrollBar().getModel().setValue(0);
-                  scroll.getHorizontalScrollBar().getModel().setValue(0);
-                  button.requestFocus();
-                }
-              });
-              dialog.setVisible(true);
+            }));
+            buttons.add(button);
+            dialog.getRootPane().setDefaultButton(button);
+            dialog.add(buttons, BorderLayout.SOUTH);
+            dialog.pack();
+            if (dialog.getWidth() < 400) {
+              dialog.setSize(400, dialog.getHeight());
             }
-          });
-        }
-      }).setMnemonic(KeyEvent.VK_N);
+            if (dialog.getHeight() < 300) {
+              dialog.setSize(dialog.getWidth(), 300);
+            }
+            if (dialog.getWidth() > 800) {
+              dialog.setSize(800, dialog.getHeight());
+            }
+            if (dialog.getHeight() > 600) {
+              dialog.setSize(dialog.getWidth(), 600);
+            }
+            dialog.setLocationRelativeTo(m_frame);
+            dialog.addWindowListener(new WindowAdapter() {
+              @Override
+              public void windowOpened(final WindowEvent e) {
+                scroll.getVerticalScrollBar().getModel().setValue(0);
+                scroll.getHorizontalScrollBar().getModel().setValue(0);
+                button.requestFocus();
+              }
+            });
+            dialog.setVisible(true);
+          }
+        });
+      })).setMnemonic(KeyEvent.VK_N);
     }
   }
 
@@ -260,14 +298,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 
   protected void addShowPlayers(final JMenu menuGame) {
     if (!getGame().getData().getProperties().getEditableProperties().isEmpty()) {
-      final AbstractAction optionsAction = new AbstractAction("Show Who is Who...") {
-        private static final long serialVersionUID = 5687214685515140202L;
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          PlayersPanel.showPlayers(getGame(), m_frame);
-        }
-      };
+      final AbstractAction optionsAction =
+          SwingAction.of("Show Who is Who...", e -> PlayersPanel.showPlayers(getGame(), m_frame));
       menuGame.add(optionsAction);
     }
   }
@@ -278,11 +310,11 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     menuBar.add(helpMenu);
     addGameSpecificHelpMenus(helpMenu);
     addGameNotesMenu(helpMenu);
-    addConsoleMenu(helpMenu);
     addAboutMenu(helpMenu);
+    addReportBugsMenu(helpMenu);
   }
 
-  private void createWebHelpMenu(final JMenuBar menuBar) {
+  private static void createWebHelpMenu(final JMenuBar menuBar) {
     final JMenu web = new JMenu("Web");
     web.setMnemonic(KeyEvent.VK_W);
     menuBar.add(web);
@@ -306,89 +338,16 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     donateLink.setMnemonic(KeyEvent.VK_O);
     final JMenuItem guidesLink = new JMenuItem("Guides...");
     guidesLink.setMnemonic(KeyEvent.VK_G);
-    hostingLink.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher.openURL(
-              "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312.html");
-        } catch (final Exception e1) {
-          ClientLogger.logQuietly(e1);
-        }
-      }
-    });
-    mapLink.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher.openURL(
-              "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html");
-        } catch (final Exception e1) {
-          ClientLogger.logQuietly(e1);
-        }
-      }
-    });
-    bugReport.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher.openURL("https://sourceforge.net/p/triplea/_list/tickets");
-        } catch (final Exception e1) {
-          ClientLogger.logQuietly(e1);
-        }
-      }
-    });
-    lobbyRules.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher
-              .openURL("http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100&forum=1");
-        } catch (final Exception e1) {
-          ClientLogger.logQuietly(e1);
-        }
-      }
-    });
-    warClub.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher.openURL("http://www.tripleawarclub.org/");
-        } catch (final Exception e1) {
-          ClientLogger.logQuietly(e1);
-        }
-      }
-    });
-    devForum.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/mywiki/Forum");
-        } catch (final Exception e1) {
-          ClientLogger.logQuietly(e1);
-        }
-      }
-    });
-    donateLink.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher.openURL("https://sourceforge.net/donate/index.php?group_id=44492");
-        } catch (final Exception e1) {
-          ClientLogger.logQuietly(e1);
-        }
-      }
-    });
-    guidesLink.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/mywiki/Guides");
-        } catch (final Exception e1) {
-          ClientLogger.logQuietly(e1);
-        }
-      }
-    });
+
+    hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_HOSTING_MAPS));
+    mapLink.addActionListener(e  -> SwingComponents.newOpenUrlConfirmationDialog( UrlConstants.SF_HOSTING_MAPS));
+    bugReport.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_TICKET_LIST));
+    lobbyRules.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB_LOBBY_RULES ));
+    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB));
+    devForum.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_FORUM));
+    donateLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
+    guidesLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_WIKI_GUIDES));
+
     parentMenu.add(hostingLink);
     parentMenu.add(mapLink);
     parentMenu.add(bugReport);
@@ -401,19 +360,14 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 
   protected void addGameSpecificHelpMenus(final JMenu helpMenu) {}
 
-  protected void addConsoleMenu(final JMenu parentMenu) {
-    parentMenu.add(SwingAction.of("Show Console...", e -> {
-      ErrorConsole.getConsole().setVisible(true);
-      ErrorConsole.getConsole().append(DebugUtils.getMemory());
-    })).setMnemonic(KeyEvent.VK_C);
-  }
+
 
   protected void addAboutMenu(final JMenu parentMenu) {
     final String text = "<h2>" + getData().getGameName() + "</h2>" + "<p><b>Engine Version:</b> "
         + ClientContext.engineVersion() + "<br><b>Game:</b> " + getData().getGameName()
         + "<br><b>Game Version:</b>" + getData().getGameVersion() + "</p>"
         + "<p>For more information please visit,<br><br>"
-        + "<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b><br><br>";
+        + "<b><a hlink='" + UrlConstants.SOURCE_FORGE + "'>" + UrlConstants.SOURCE_FORGE + "</a></b><br><br>";
     final JEditorPane editorPane = new JEditorPane();
     editorPane.setBorder(null);
     editorPane.setBackground(getBackground());
@@ -803,7 +757,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       ClientLogger.logQuietly(e1);
     }
   }
-
 
   public IGame getGame() {
     return m_frame.getGame();

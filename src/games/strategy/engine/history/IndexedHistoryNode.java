@@ -1,19 +1,5 @@
 package games.strategy.engine.history;
 
-/**
- * <p>
- * Title:
- * </p>
- * <p>
- * Description:
- * </p>
- * <p>
- * Copyright:
- * </p>
- * <p>
- * Company:
- * </p>
- */
 public abstract class IndexedHistoryNode extends HistoryNode {
   private static final long serialVersionUID = 607716179473453685L;
   // points to the first change we are responsible for
@@ -21,8 +7,8 @@ public abstract class IndexedHistoryNode extends HistoryNode {
   // points after the last change we are responsible for
   private int m_changeStopIndex = -1;
 
-  public IndexedHistoryNode(final String value, final int changeStartIndex, final boolean allowsChildren) {
-    super(value, true);
+  public IndexedHistoryNode(final String value, final int changeStartIndex) {
+    super(value);
     m_changeStartIndex = changeStartIndex;
   }
 

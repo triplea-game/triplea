@@ -10,7 +10,6 @@ import java.util.List;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
@@ -22,7 +21,7 @@ import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
@@ -63,7 +62,7 @@ public class LHTRTest extends TestCase {
     delegate.move(easternEurope.getUnits().getMatches(Matches.unitIsOfType(fighterType)), route);
     // add a carrier to be produced in germany
     final TripleAUnit carrier = new TripleAUnit(carrirType, germans, m_data);
-    new ChangePerformer(m_data).perform(ChangeFactory.addUnits(germans, Collections.singleton((Unit) carrier)));
+    m_data.performChange(ChangeFactory.addUnits(germans, Collections.singleton((Unit) carrier)));
     // end the move phase
     delegate.end();
     // make sure the fighter is still there
@@ -186,7 +185,7 @@ public class LHTRTest extends TestCase {
     // add a unit
     final Unit bomber = GameDataTestUtil.bomber(m_data).create(british);
     final Change change = ChangeFactory.addUnits(uk, Collections.singleton(bomber));
-    new ChangePerformer(m_data).perform(change);
+    m_data.performChange(change);
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany),

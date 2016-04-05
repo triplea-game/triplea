@@ -24,18 +24,19 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attatchments.AbstractConditionsAttachment;
-import games.strategy.triplea.attatchments.AbstractTriggerAttachment;
-import games.strategy.triplea.attatchments.ICondition;
-import games.strategy.triplea.attatchments.RulesAttachment;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.attatchments.TriggerAttachment;
-import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attachments.AbstractConditionsAttachment;
+import games.strategy.triplea.attachments.AbstractTriggerAttachment;
+import games.strategy.triplea.attachments.ICondition;
+import games.strategy.triplea.attachments.RulesAttachment;
+import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.attachments.TriggerAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.ThreadUtil;
 
 /**
  * At the end of the turn collect income.
@@ -153,10 +154,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     // so we need to slow them down a bit, until we come up with a better solution (like aggregating all the chances
     // together, then getting
     // a ton of random numbers at once instead of one at a time)
-    try {
-      Thread.sleep(100);
-    } catch (final InterruptedException e) {
-    }
+    ThreadUtil.sleep(100);
     final List<Territory> list = new ArrayList<Territory>(territories);
     final int random =
         // ZERO BASED
@@ -232,7 +230,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     }
     // add conditions required for national objectives (nat objs that have uses left)
     final List<RulesAttachment> natObjs =
-        Match.getMatches(RulesAttachment.getNationalObjectives(player, data), availableUses);
+        Match.getMatches(RulesAttachment.getNationalObjectives(player), availableUses);
     allConditionsNeeded
         .addAll(AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<ICondition>(natObjs), null));
     if (allConditionsNeeded.isEmpty()) {

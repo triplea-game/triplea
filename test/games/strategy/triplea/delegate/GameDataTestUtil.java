@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 
 import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
@@ -16,7 +15,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TechAttachment;
+import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.ui.display.DummyTripleaDisplay;
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
@@ -107,15 +106,15 @@ public class GameDataTestUtil {
   }
 
   public static void removeFrom(final Territory t, final Collection<Unit> units) {
-    new ChangePerformer(t.getData()).perform(ChangeFactory.removeUnits(t, units));
+    t.getData().performChange(ChangeFactory.removeUnits(t, units));
   }
 
   public static void addTo(final Territory t, final Collection<Unit> units) {
-    new ChangePerformer(t.getData()).perform(ChangeFactory.addUnits(t, units));
+    t.getData().performChange(ChangeFactory.addUnits(t, units));
   }
 
   public static void addTo(final PlayerID t, final Collection<Unit> units, final GameData data) {
-    new ChangePerformer(data).perform(ChangeFactory.addUnits(t, units));
+    data.performChange(ChangeFactory.addUnits(t, units));
   }
 
   public static PlaceDelegate placeDelegate(final GameData data) {

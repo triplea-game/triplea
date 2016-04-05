@@ -17,7 +17,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.ui.Util;
@@ -168,7 +168,7 @@ public class UnitImageFactory {
     // we want a highlight only over the area
     // that is not clear
     g.setComposite(AlphaComposite.SrcIn);
-    g.setColor(new Color(200, 200, 200, 80));
+    g.setColor(new Color(240, 240, 240, 127));
     g.fillRect(0, 0, base.getWidth(null), base.getHeight(null));
     g.dispose();
     return newImage;

@@ -10,7 +10,7 @@ import java.util.TreeSet;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 
 /**

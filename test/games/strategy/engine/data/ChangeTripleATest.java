@@ -13,6 +13,7 @@ import junit.framework.TestCase;
 
 public class ChangeTripleATest extends TestCase {
   private GameData m_data;
+  private Territory can;
 
   public ChangeTripleATest(final String name) {
     super(name);
@@ -20,7 +21,9 @@ public class ChangeTripleATest extends TestCase {
 
   @Override
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadGame("Big World : 1942", "big_world_1942_test.xml");
+    m_data = LoadGameUtil.loadTestGame("big_world_1942_test.xml");
+    can = m_data.getMap().getTerritory("Western Canada");
+    assertEquals(can.getUnits().getUnitCount(), 2);
   }
 
   private Change serialize(final Change aChange) throws Exception {
@@ -39,48 +42,36 @@ public class ChangeTripleATest extends TestCase {
   }
 
   public void testUnitsAddTerritory() {
-    // make sure we know where we are starting
-    final Territory can = m_data.getMap().getTerritory("Western Canada");
-    assertEquals(can.getUnits().getUnitCount(), 2);
     // add some units
     final Change change =
         ChangeFactory.addUnits(can, GameDataTestUtil.infantry(m_data).create(10, null));
-    final ChangePerformer changePerformer = new ChangePerformer(m_data);
-    changePerformer.perform(change);
+    m_data.performChange(change);
     assertEquals(can.getUnits().getUnitCount(), 12);
     // invert the change
-    changePerformer.perform(change.invert());
+    m_data.performChange(change.invert());
     assertEquals(can.getUnits().getUnitCount(), 2);
   }
 
   public void testUnitsRemoveTerritory() {
-    // make sure we now where we are starting
-    final Territory can = m_data.getMap().getTerritory("Western Canada");
-    assertEquals(can.getUnits().getUnitCount(), 2);
     // remove some units
     final Collection<Unit> units = can.getUnits().getUnits(GameDataTestUtil.infantry(m_data), 1);
     final Change change = ChangeFactory.removeUnits(can, units);
-    final ChangePerformer changePerformer = new ChangePerformer(m_data);
-    changePerformer.perform(change);
+    m_data.performChange(change);
     assertEquals(can.getUnits().getUnitCount(), 1);
     // invert the change
-    changePerformer.perform(change.invert());
+    m_data.performChange(change.invert());
     assertEquals(can.getUnits().getUnitCount(), 2);
   }
 
   public void testSerializeUnitsRemoteTerritory() throws Exception {
-    // make sure we now where we are starting
-    final Territory can = m_data.getMap().getTerritory("Western Canada");
-    assertEquals(can.getUnits().getUnitCount(), 2);
     // remove some units
     final Collection<Unit> units = can.getUnits().getUnits(GameDataTestUtil.infantry(m_data), 1);
     Change change = ChangeFactory.removeUnits(can, units);
     change = serialize(change);
-    final ChangePerformer changePerformer = new ChangePerformer(m_data);
-    changePerformer.perform(change);
+    m_data.performChange(change);
     assertEquals(can.getUnits().getUnitCount(), 1);
     // invert the change
-    changePerformer.perform(change.invert());
+    m_data.performChange(change.invert());
     assertEquals(can.getUnits().getUnitCount(), 2);
   }
 }

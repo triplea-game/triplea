@@ -1,6 +1,7 @@
 package games.strategy.common.player;
 
 import games.strategy.triplea.ui.AbstractUIContext;
+import games.strategy.util.ThreadUtil;
 
 /**
  * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate
@@ -20,10 +21,9 @@ public abstract class AbstractBaseAI extends AbstractBasePlayer {
    */
   protected void pause() {
     try {
-      Thread.sleep(AbstractUIContext.getAIPauseDuration());
-    } catch (final InterruptedException e) {
-      e.printStackTrace();
+      ThreadUtil.sleep(AbstractUIContext.getAIPauseDuration());
     } catch (final Exception ex) {
+      ex.printStackTrace();
     }
   }
 }

@@ -24,6 +24,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
 
 /**
@@ -106,10 +107,7 @@ public class GameDataManager {
           final boolean closeCurrentInstance = buttonPressed.equals(yesClose);
           TripleAProcessRunner.startGame(savegamePath, newClassPath, null);
           if (closeCurrentInstance) {
-            try {
-              Thread.sleep(1000);
-            } catch (final InterruptedException e) {
-            }
+            ThreadUtil.sleep(1000);
             System.exit(0);
           }
         } catch (final IOException e) {

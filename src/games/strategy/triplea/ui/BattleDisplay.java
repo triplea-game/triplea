@@ -54,6 +54,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import com.google.common.collect.Lists;
+
 import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -64,7 +65,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
@@ -199,6 +200,17 @@ public class BattleDisplay extends JPanel {
     prefs.putBoolean(Constants.FOCUS_ON_OWN_CASUALTIES_USER_PREF, aVal);
   }
 
+  public static void setConfirmDefensiveRolls(final boolean aVal) {
+    final Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
+    prefs.putBoolean(Constants.CONFIRM_DEFENSIVE_ROLLS, aVal);
+  }
+
+  public static boolean getConfirmDefensiveRolls() {
+    final Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
+    return prefs.getBoolean(Constants.CONFIRM_DEFENSIVE_ROLLS, false);
+  }
+
+
   /**
    * updates the panel content according to killed units for the player
    *
@@ -289,10 +301,27 @@ public class BattleDisplay extends JPanel {
     }
   }
 
-  public void waitForConfirmation(final String message) {
+  protected void waitForConfirmation(final String message) {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("This cant be in dispatch thread");
     }
+
+    if (getConfirmDefensiveRolls()) {
+      waitForSpaceBarClick(message);
+    } else {
+      // Sleep for a short period, allows users to see the dice rolls before the game
+      // moves on.
+      // TODO: This value should find its way into a setting. For now it is hardcoded since
+      // just having another confusing value to set would not help very much. Needs to be some
+      // context/explanation around it for a user to really want to set it.
+      try {
+        Thread.sleep(1500);
+      } catch (InterruptedException e) {
+      }
+    }
+  }
+
+  private void waitForSpaceBarClick(final String message) {
     final CountDownLatch continueLatch = new CountDownLatch(1);
     // set the action in the swing thread.
     SwingUtilities.invokeLater(new Runnable() {
@@ -323,6 +352,7 @@ public class BattleDisplay extends JPanel {
       }
     });
   }
+
 
   public void endBattle(final String message, final Window enclosingFrame) {
     m_steps.walkToLastStep();

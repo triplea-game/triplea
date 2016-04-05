@@ -1,10 +1,5 @@
 package games.strategy.triplea.ai.proAI;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -14,11 +9,16 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseOption;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseOptionMap;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Pro AI data.
@@ -35,9 +35,9 @@ public class ProData {
   public static double minWinPercentage = 75;
   public static boolean areNeutralsPassableByAir = false;
   public static Territory myCapital = null;
-  public static List<Territory> myUnitTerritories = new ArrayList<Territory>();
-  public static Map<Unit, Territory> unitTerritoryMap = new HashMap<Unit, Territory>();
-  public static IntegerMap<UnitType> unitValueMap = new IntegerMap<UnitType>();
+  public static List<Territory> myUnitTerritories = new ArrayList<>();
+  public static Map<Unit, Territory> unitTerritoryMap = new HashMap<>();
+  public static IntegerMap<UnitType> unitValueMap = new IntegerMap<>();
   public static ProPurchaseOptionMap purchaseOptions = null;
   public static double minCostPerHitPoint = Double.MAX_VALUE;
 

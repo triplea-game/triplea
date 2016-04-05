@@ -17,6 +17,7 @@ import games.strategy.engine.random.IRemoteRandom;
 import games.strategy.engine.random.RemoteRandom;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import games.strategy.util.ThreadUtil;
 
 public class ClientGame extends AbstractGame {
   public static final RemoteName getRemoteStepAdvancerName(final INode node) {
@@ -30,7 +31,7 @@ public class ClientGame extends AbstractGame {
     m_gameModifiedChannel = new IGameModifiedChannel() {
       @Override
       public void gameDataChanged(final Change aChange) {
-        m_changePerformer.perform(aChange);
+        m_data.performChange(aChange);
         m_data.getHistory().getHistoryWriter().addChange(aChange);
       }
 
@@ -168,18 +169,14 @@ public class ClientGame extends AbstractGame {
           } finally {
             m_data.releaseReadLock();
           }
-          try {
-            Thread.sleep(100);
-            i++;
-            if (i > 300 && !shownErrorMessage) {
-              System.err.println("Waited more than 30 seconds for step to update. Something wrong.");
-              shownErrorMessage = true;
-              // TODO: should we throw an illegal state error? or just return? or a game over exception? should we
-              // request the server to
-              // send the step update again or something?
-            }
-          } catch (final InterruptedException e) {
-            // no worries mate
+          ThreadUtil.sleep(100);
+          i++;
+          if (i > 300 && !shownErrorMessage) {
+            System.err.println("Waited more than 30 seconds for step to update. Something wrong.");
+            shownErrorMessage = true;
+            // TODO: should we throw an illegal state error? or just return? or a game over exception? should we
+            // request the server to
+            // send the step update again or something?
           }
         }
       }

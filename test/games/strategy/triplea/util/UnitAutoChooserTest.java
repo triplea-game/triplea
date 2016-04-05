@@ -12,7 +12,6 @@ import java.util.Set;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
@@ -150,7 +149,7 @@ public class UnitAutoChooserTest extends TestCase {
       return;
     }
     final Change c = ChangeFactory.addUnits(t, Collections.singleton(u));
-    new ChangePerformer(m_data).perform(c);
+    m_data.performChange(c);
   }
 
   private void setUnits(final Collection<Unit> c, final Unit... objects) {

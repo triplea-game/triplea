@@ -127,12 +127,12 @@ import games.strategy.sound.SoundPath;
 import games.strategy.thread.ThreadPool;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.ai.proAI.ProAI;
-import games.strategy.triplea.attatchments.AbstractConditionsAttachment;
-import games.strategy.triplea.attatchments.AbstractTriggerAttachment;
-import games.strategy.triplea.attatchments.PoliticalActionAttachment;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.attatchments.UserActionAttachment;
+import games.strategy.triplea.attachments.AbstractConditionsAttachment;
+import games.strategy.triplea.attachments.AbstractTriggerAttachment;
+import games.strategy.triplea.attachments.PoliticalActionAttachment;
+import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
 import games.strategy.triplea.delegate.BattleCalculator;
@@ -161,6 +161,7 @@ import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.LocalizeHTML;
 import games.strategy.util.Match;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
 /**
@@ -1203,11 +1204,7 @@ public class TripleAFrame extends MainGameFrame {
               dialog.setVisible(false);
               dialog.removeAll();
               dialog.dispose();
-              try {
-                Thread.sleep(500);
-              } catch (final InterruptedException e2) {
-                e2.printStackTrace();
-              }
+              ThreadUtil.sleep(500);
               run();
             }
           }
@@ -1314,11 +1311,7 @@ public class TripleAFrame extends MainGameFrame {
               dialog.setVisible(false);
               dialog.removeAll();
               dialog.dispose();
-              try {
-                Thread.sleep(500);
-              } catch (final InterruptedException e2) {
-                e2.printStackTrace();
-              }
+              ThreadUtil.sleep(500);
               run();
             }
           }
@@ -1411,11 +1404,7 @@ public class TripleAFrame extends MainGameFrame {
               dialog.setVisible(false);
               dialog.removeAll();
               dialog.dispose();
-              try {
-                Thread.sleep(500);
-              } catch (final InterruptedException e2) {
-                e2.printStackTrace();
-              }
+              ThreadUtil.sleep(500);
               run();
             }
           }
@@ -1650,10 +1639,7 @@ public class TripleAFrame extends MainGameFrame {
       return;
     }
     try {
-      try {
-        Thread.sleep(300);
-      } catch (final InterruptedException e1) {
-      }
+      ThreadUtil.sleep(300);
       SwingUtilities.invokeAndWait(new Runnable() {
         @Override
         public void run() {
@@ -1783,10 +1769,7 @@ public class TripleAFrame extends MainGameFrame {
             final Runnable disposePopup = new Runnable() {
               @Override
               public void run() {
-                try {
-                  Thread.sleep(5000);
-                } catch (final InterruptedException e) {
-                }
+                ThreadUtil.sleep(5000);
                 popup.hide();
               }
             };

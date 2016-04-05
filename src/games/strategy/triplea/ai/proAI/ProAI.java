@@ -1,15 +1,5 @@
 package games.strategy.triplea.ai.proAI;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
@@ -31,7 +21,7 @@ import games.strategy.triplea.ai.proAI.util.ProMatches;
 import games.strategy.triplea.ai.proAI.util.ProOddsCalculator;
 import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
 import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
-import games.strategy.triplea.attatchments.PoliticalActionAttachment;
+import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
@@ -51,6 +41,16 @@ import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Pro AI.
@@ -95,7 +95,7 @@ public class ProAI extends AbstractAI {
     storedFactoryMoveMap = null;
     storedPurchaseTerritories = null;
     storedPoliticalActions = null;
-    storedStrafingTerritories = new ArrayList<Territory>();
+    storedStrafingTerritories = new ArrayList<>();
   }
 
   protected void initializeCalc() {
@@ -208,7 +208,7 @@ public class ProAI extends AbstractAI {
       moveDel.setDelegateBridgeAndPlayer(bridge);
 
       // Determine turn sequence
-      final List<GameStep> gameSteps = new ArrayList<GameStep>();
+      final List<GameStep> gameSteps = new ArrayList<>();
       for (final GameStep gameStep : dataCopy.getSequence()) {
         gameSteps.add(gameStep);
       }
@@ -319,7 +319,7 @@ public class ProAI extends AbstractAI {
   @Override
   public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
       final Territory from) {
-    final List<Unit> rVal = new ArrayList<Unit>();
+    final List<Unit> rVal = new ArrayList<>();
 
     return rVal;
   }
@@ -344,7 +344,7 @@ public class ProAI extends AbstractAI {
     // Consider unit cost
     final CasualtyDetails myCasualties = new CasualtyDetails(false);
     myCasualties.addToDamaged(defaultCasualties.getDamaged());
-    final List<Unit> selectFromSorted = new ArrayList<Unit>(selectFrom);
+    final List<Unit> selectFromSorted = new ArrayList<>(selectFrom);
     if (enemyUnits.isEmpty()) {
       Collections.sort(selectFromSorted, ProPurchaseUtils.getCostComparator());
     } else {
@@ -391,7 +391,7 @@ public class ProAI extends AbstractAI {
 
     // Interleave carriers and planes
     final List<Unit> interleavedTargetList =
-        new ArrayList<Unit>(ProTransportUtils.InterleaveUnits_CarriersAndPlanes(selectFromSorted, 0));
+        new ArrayList<>(ProTransportUtils.InterleaveUnits_CarriersAndPlanes(selectFromSorted, 0));
     for (int i = 0; i < defaultCasualties.getKilled().size(); ++i) {
       myCasualties.addToKilled(interleavedTargetList.get(i));
     }
@@ -455,7 +455,7 @@ public class ProAI extends AbstractAI {
 
     // Calculate battle results
     final ProBattleResult result =
-        calc.calculateBattleResults(player, unitTerritory, attackers, defenders, new HashSet<Unit>(), true);
+        calc.calculateBattleResults(player, unitTerritory, attackers, defenders, new HashSet<>(), true);
     ProLogger.debug(player.getName() + " sub attack TUVSwing=" + result.getTUVSwing());
     if (result.getTUVSwing() > 0) {
       return true;

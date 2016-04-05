@@ -16,6 +16,7 @@ import games.strategy.net.IMessageListener;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
+import games.strategy.util.ThreadUtil;
 
 public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeListener {
   private final static Logger s_logger = Logger.getLogger(UnifiedMessengerHub.class.getName());
@@ -163,11 +164,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
     }
     final long endTime = timeoutMS + System.currentTimeMillis();
     while (System.currentTimeMillis() < endTime && !hasImplementors(endPointName)) {
-      try {
-        Thread.sleep(50);
-      } catch (final InterruptedException e) {
-        // whats a devloper to do
-      }
+      ThreadUtil.sleep(50);
     }
   }
 

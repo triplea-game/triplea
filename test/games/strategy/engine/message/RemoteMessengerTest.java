@@ -9,6 +9,7 @@ import games.strategy.net.INode;
 import games.strategy.net.MacFinder;
 import games.strategy.net.ServerMessenger;
 import games.strategy.test.TestUtil;
+import games.strategy.util.ThreadUtil;
 import junit.framework.TestCase;
 
 public class RemoteMessengerTest extends TestCase {
@@ -122,7 +123,7 @@ public class RemoteMessengerTest extends TestCase {
       int waitCount = 0;
       while (!m_hub.hasImplementors(test.getName()) && waitCount < 20) {
         waitCount++;
-        Thread.sleep(50);
+        ThreadUtil.sleep(50);
       }
       // call it on the client
       final int rVal = ((ITestRemote) clientRM.getRemote(test)).increment(1);
@@ -166,13 +167,6 @@ public class RemoteMessengerTest extends TestCase {
     }
   }
 
-  private void sleep(final int ms) {
-    try {
-      Thread.sleep(ms);
-    } catch (final InterruptedException e) {
-    }
-  }
-
   public void testShutDownClient() throws Exception {
     // when the client shutdown, remotes created
     // on the client should not be visible on server
@@ -190,7 +184,7 @@ public class RemoteMessengerTest extends TestCase {
       serverUM.getHub().waitForNodesToImplement(test.getName(), 200);
       assertTrue(serverUM.getHub().hasImplementors(test.getName()));
       client.shutDown();
-      sleep(200);
+      ThreadUtil.sleep(200);
       assertTrue(!serverUM.getHub().hasImplementors(test.getName()));
     } finally {
       shutdownServerAndClient(server, client);
@@ -245,9 +239,9 @@ public class RemoteMessengerTest extends TestCase {
       t.start();
       // wait for the thread to start
       while (started.get() == false) {
-        sleep(1);
+        ThreadUtil.sleep(1);
       }
-      sleep(20);
+      ThreadUtil.sleep(20);
       // TODO: we are getting a RemoteNotFoundException because the client is disconnecting before the invoke goes out
       // completely
       // Perhaps this situation should be changed to a ConnectionLostException or something else?

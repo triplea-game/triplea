@@ -23,6 +23,7 @@ import games.strategy.engine.pbem.AbstractForumPoster;
 import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.help.HelpSupport;
+import games.strategy.util.ThreadUtil;
 
 /**
  * Post turn summary to www.axisandallies.org to the thread identified by the forumId
@@ -180,13 +181,8 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
           post.addRequestHeader("Referer", "http://www.axisandallies.org/forums/index.php?action=post;topic="
               + m_topicId + ".0;num_replies=" + numReplies);
           post.addRequestHeader("Accept", "*/*");
-          try {
             // the site has spam prevention which means you can't post until 15 seconds after login
-            Thread.sleep(15 * 1000);
-          } catch (final InterruptedException ie) {
-            // this should never happen
-            ie.printStackTrace();
-          }
+          ThreadUtil.sleep(15 * 1000);
           post.setFollowRedirects(false);
           status = m_client.executeMethod(m_hostConfiguration, post, m_httpState);
           body = post.getResponseBodyAsString();

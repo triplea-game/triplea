@@ -164,7 +164,7 @@ public class HeadlessServerMainPanel extends JPanel implements Observer {
   }
 
   private void createUserActionMenu(final JPanel cancelPanel) {
-    if (m_gameSetupPanel.getUserActions() == null) {
+    if (m_gameSetupPanel.getUserActions().isEmpty()) {
       return;
     }
     // if we need this for something other than network, add a way to set it
@@ -174,10 +174,8 @@ public class HeadlessServerMainPanel extends JPanel implements Observer {
       public void actionPerformed(final ActionEvent e) {
         final JPopupMenu menu = new JPopupMenu();
         final List<Action> actions = m_gameSetupPanel.getUserActions();
-        if (actions != null && !actions.isEmpty()) {
-          for (final Action a : actions) {
-            menu.add(a);
-          }
+        for (final Action a : actions) {
+          menu.add(a);
         }
         menu.show(button, 0, button.getHeight());
       }

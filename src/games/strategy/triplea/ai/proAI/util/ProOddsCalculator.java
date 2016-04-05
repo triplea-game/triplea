@@ -1,9 +1,5 @@
 package games.strategy.triplea.ai.proAI.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -17,6 +13,10 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Pro AI odds calculator.
@@ -50,7 +50,7 @@ public class ProOddsCalculator {
     // Determine if attackers have no chance
     final double strengthDifference = ProBattleUtils.estimateStrengthDifference(t, attackingUnits, defendingUnits);
     if (strengthDifference < 45) {
-      return new ProBattleResult(0, -999, false, new ArrayList<Unit>(), defendingUnits, 1);
+      return new ProBattleResult(0, -999, false, new ArrayList<>(), defendingUnits, 1);
     }
     return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits);
   }
@@ -68,7 +68,7 @@ public class ProOddsCalculator {
     if (strengthDifference > 55) {
       final boolean isLandAndCanOnlyBeAttackedByAir = !t.isWater() && Match.allMatch(attackingUnits, Matches.UnitIsAir);
       return new ProBattleResult(100 + strengthDifference, 999 + strengthDifference, !isLandAndCanOnlyBeAttackedByAir,
-          attackingUnits, new ArrayList<Unit>(), 1);
+          attackingUnits, new ArrayList<>(), 1);
     }
     return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits);
   }
@@ -95,7 +95,7 @@ public class ProOddsCalculator {
     } else if (hasNoDefenders && isLandAndCanOnlyBeAttackedByAir) {
       return new ProBattleResult();
     } else if (hasNoDefenders) {
-      return new ProBattleResult(100, 0.1, true, attackingUnits, new ArrayList<Unit>(), 0);
+      return new ProBattleResult(100, 0.1, true, attackingUnits, new ArrayList<>(), 0);
     } else if (Properties.getSubRetreatBeforeBattle(data) && Match.allMatch(defendingUnits, Matches.UnitIsSub)
         && Match.noneMatch(attackingUnits, Matches.UnitIsDestroyer)) {
       return new ProBattleResult();
@@ -128,7 +128,7 @@ public class ProOddsCalculator {
       calc.setRetreatWhenOnlyAirLeft(true);
     }
     results =
-        calc.setCalculateDataAndCalculate(attacker, defender, t, attackingUnits, defendingUnits, new ArrayList<Unit>(
+        calc.setCalculateDataAndCalculate(attacker, defender, t, attackingUnits, defendingUnits, new ArrayList<>(
             bombardingUnits), TerritoryEffectHelper.getEffects(t), runCount);
     if (retreatWhenOnlyAirLeft) {
       calc.setRetreatWhenOnlyAirLeft(false);
@@ -158,7 +158,7 @@ public class ProOddsCalculator {
     }
 
     // Create battle result object
-    final List<Territory> tList = new ArrayList<Territory>();
+    final List<Territory> tList = new ArrayList<>();
     tList.add(t);
     if (Match.allMatch(tList, Matches.TerritoryIsLand)) {
       return new ProBattleResult(winPercentage, TUVswing,

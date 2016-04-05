@@ -1,12 +1,5 @@
 package games.strategy.triplea.ai.proAI;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
@@ -17,12 +10,19 @@ import games.strategy.triplea.ai.proAI.data.ProTerritoryManager;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.ai.proAI.util.ProOddsCalculator;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
-import games.strategy.triplea.attatchments.PoliticalActionAttachment;
+import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Pro politics AI.
@@ -43,7 +43,7 @@ public class ProPoliticsAI {
     final double round = data.getSequence().getRound();
     final ProTerritoryManager territoryManager = new ProTerritoryManager(calc);
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
-    final List<PoliticalActionAttachment> results = new ArrayList<PoliticalActionAttachment>();
+    final List<PoliticalActionAttachment> results = new ArrayList<>();
     ProLogger.info("Politics for " + player.getName());
 
     // Find valid war actions
@@ -58,12 +58,10 @@ public class ProPoliticsAI {
     ProLogger.trace("Valid War options: " + validWarActions);
 
     // Divide war actions into enemy and neutral
-    final Map<PoliticalActionAttachment, List<PlayerID>> enemyMap =
-        new HashMap<PoliticalActionAttachment, List<PlayerID>>();
-    final Map<PoliticalActionAttachment, List<PlayerID>> neutralMap =
-        new HashMap<PoliticalActionAttachment, List<PlayerID>>();
+    final Map<PoliticalActionAttachment, List<PlayerID>> enemyMap = new HashMap<>();
+    final Map<PoliticalActionAttachment, List<PlayerID>> neutralMap = new HashMap<>();
     for (final PoliticalActionAttachment action : validWarActions) {
-      final List<PlayerID> warPlayers = new ArrayList<PlayerID>();
+      final List<PlayerID> warPlayers = new ArrayList<>();
       for (final String relationshipChange : action.getRelationshipChange()) {
         final String[] s = relationshipChange.split(":");
         final PlayerID player1 = data.getPlayerList().getPlayerID(s[0]);
@@ -97,8 +95,7 @@ public class ProPoliticsAI {
       ProLogger.trace(player.getName() + ", numAttackOptions=" + attackOptions.size() + ", options=" + attackOptions);
 
       // Find attack options per war action
-      final Map<PoliticalActionAttachment, Double> attackPercentageMap =
-          new HashMap<PoliticalActionAttachment, Double>();
+      final Map<PoliticalActionAttachment, Double> attackPercentageMap = new HashMap<>();
       for (final PoliticalActionAttachment action : enemyMap.keySet()) {
         int count = 0;
         final List<PlayerID> enemyPlayers = enemyMap.get(action);
@@ -114,8 +111,7 @@ public class ProPoliticsAI {
       }
 
       // Decide whether to declare war on an enemy
-      final List<PoliticalActionAttachment> options =
-          new ArrayList<PoliticalActionAttachment>(attackPercentageMap.keySet());
+      final List<PoliticalActionAttachment> options = new ArrayList<>(attackPercentageMap.keySet());
       Collections.shuffle(options);
       for (final PoliticalActionAttachment action : options) {
         final double roundFactor = (round - 1) * .05; // 0, .05, .1, .15, etc
@@ -131,7 +127,7 @@ public class ProPoliticsAI {
     } else if (!neutralMap.isEmpty()) {
 
       // Decide whether to declare war on a neutral
-      final List<PoliticalActionAttachment> options = new ArrayList<PoliticalActionAttachment>(neutralMap.keySet());
+      final List<PoliticalActionAttachment> options = new ArrayList<>(neutralMap.keySet());
       Collections.shuffle(options);
       final double random = Math.random();
       final double warChance = .01;

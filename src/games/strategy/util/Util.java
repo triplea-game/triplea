@@ -136,10 +136,7 @@ public class Util {
   public static String createUniqueTimeStamp() {
     final long time = System.currentTimeMillis();
     while (time == System.currentTimeMillis()) {
-      try {
-        Thread.sleep(1);
-      } catch (final InterruptedException e) {
-      }
+      ThreadUtil.sleep(1);
     }
     return "" + System.currentTimeMillis();
   }

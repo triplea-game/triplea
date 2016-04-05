@@ -2,6 +2,9 @@ package games.strategy.engine.framework;
 
 import javax.swing.JOptionPane;
 
+import games.strategy.performance.Perf;
+import games.strategy.performance.PerfTimer;
+
 /**
  * This class starts and runs the game.
  * <p>
@@ -49,8 +52,10 @@ public class GameRunner {
     // we want this class to be executable in older jvm's
     // since we require jdk 1.5, this class delegates to GameRunner2
     // and all we do is check the java version
-    checkJavaVersion();
-    // do the other interesting stuff here
-    GameRunner2.main(args);
+    try (PerfTimer timer = Perf.startTimer("GameRunner1 Total Launch")) {
+      (new Thread(() -> checkJavaVersion())).start();
+      // do the other interesting stuff here
+      GameRunner2.main(args);
+    }
   }
 }

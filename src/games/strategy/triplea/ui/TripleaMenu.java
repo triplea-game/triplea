@@ -64,6 +64,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import games.strategy.common.swing.SwingAction;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.debug.ClientLogger;
+import games.strategy.debug.DebugUtils;
+import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
@@ -87,7 +89,7 @@ import games.strategy.performance.EnablePerformanceLoggingCheckBox;
 import games.strategy.sound.SoundOptions;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ai.proAI.ProAI;
-import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.image.MapImage;
@@ -292,20 +294,19 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     SoundOptions.addGlobalSoundSwitchMenu(menuGame);
     SoundOptions.addToMenu(menuGame, SoundPath.SoundType.TRIPLEA);
     menuGame.addSeparator();
-    menuGame.add(new EnablePerformanceLoggingCheckBox());
-    menuGame.addSeparator();
     addGameOptionsMenu(menuGame);
     addPoliticsMenu(menuGame);
     addNotificationSettings(menuGame);
     addFocusOnCasualties(menuGame);
+    addConfirmBattlePhases(menuGame);
     addShowEnemyCasualties(menuGame);
     addShowAIBattles(menuGame);
-    addChangeProAISettings(menuGame);
     addAISleepDuration(menuGame);
     addShowDiceStats(menuGame);
     addRollDice(menuGame);
     addBattleCalculatorMenu(menuGame);
   }
+
 
   private void createExportMenu(final JMenuBar menuBar) {
     final JMenu menuGame = new JMenu("Export");
@@ -459,6 +460,14 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     focusOnCasualties.addActionListener(
         SwingAction.of(e -> BattleDisplay.setFocusOnOwnCasualtiesNotification(focusOnCasualties.isSelected())));
     parentMenu.add(focusOnCasualties);
+  }
+
+  private static void addConfirmBattlePhases(final JMenu parentMenu) {
+    final JCheckBoxMenuItem confirmPhases = new JCheckBoxMenuItem("Confirm Defensive Rolls");
+    confirmPhases.setSelected(BattleDisplay.getConfirmDefensiveRolls());
+    confirmPhases.addActionListener(
+        SwingAction.of(e -> BattleDisplay.setConfirmDefensiveRolls(confirmPhases.isSelected())));
+    parentMenu.add(confirmPhases);
   }
 
   private static void addTabbedProduction(final JMenu parentMenu) {
@@ -734,21 +743,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     parentMenu.add(showAIBattlesBox);
   }
 
-  private void addChangeProAISettings(final JMenu parentMenu) {
-    boolean areThereProAIs = false;
-    final Set<IGamePlayer> players = (m_frame).getLocalPlayers().getLocalPlayers();
-    for (final IGamePlayer player : players) {
-      if (player instanceof ProAI) {
-        areThereProAIs = true;
-      }
-    }
-    if (areThereProAIs) {
-      ProAI.initialize(m_frame);
-      parentMenu.addSeparator();
-      parentMenu.add(SwingAction.of("Show Hard AI Logs", e -> ProAI.showSettingsWindow())).setMnemonic(KeyEvent.VK_X);
-      parentMenu.addSeparator();
-    }
-  }
 
   /**
    * @param parentMenu

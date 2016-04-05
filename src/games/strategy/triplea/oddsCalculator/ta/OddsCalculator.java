@@ -14,7 +14,6 @@ import java.util.concurrent.Callable;
 import games.strategy.common.delegate.GameDelegateBridge;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -145,10 +144,9 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     m_bombardingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(bombarding, m_data);
     m_territoryEffects =
         (Collection<TerritoryEffect>) GameDataUtils.translateIntoOtherGameData(territoryEffects, m_data);
-    final ChangePerformer changePerformer = new ChangePerformer(m_data);
-    changePerformer.perform(ChangeFactory.removeUnits(m_location, m_location.getUnits().getUnits()));
-    changePerformer.perform(ChangeFactory.addUnits(m_location, m_attackingUnits));
-    changePerformer.perform(ChangeFactory.addUnits(m_location, m_defendingUnits));
+    m_data.performChange(ChangeFactory.removeUnits(m_location, m_location.getUnits().getUnits()));
+    m_data.performChange(ChangeFactory.addUnits(m_location, m_attackingUnits));
+    m_data.performChange(ChangeFactory.addUnits(m_location, m_defendingUnits));
     m_runCount = runCount;
     m_isCalcSet = true;
   }
@@ -273,7 +271,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
       battle.fight(bridge);
       rVal.addResult(new BattleResults(battle, m_data));
       // restore the game to its original state
-      new ChangePerformer(m_data).perform(allChanges.invert());
+      m_data.performChange(allChanges.invert());
       battleTracker.clear();
       battleTracker.clearBattleRecords();
     }
@@ -397,7 +395,6 @@ class DummyDelegateBridge implements IDelegateBridge {
   private final DelegateHistoryWriter m_writer = new DelegateHistoryWriter(new DummyGameModifiedChannel());
   private final CompositeChange m_allChanges;
   private final GameData m_data;
-  private final ChangePerformer m_changePerformer;
   private MustFightBattle m_battle = null;
 
   public DummyDelegateBridge(final PlayerID attacker, final GameData data, final CompositeChange allChanges,
@@ -412,7 +409,6 @@ class DummyDelegateBridge implements IDelegateBridge {
     m_data = data;
     m_attacker = attacker;
     m_allChanges = allChanges;
-    m_changePerformer = new ChangePerformer(m_data);
   }
 
   @Override
@@ -488,7 +484,7 @@ class DummyDelegateBridge implements IDelegateBridge {
       return;
     }
     m_allChanges.add(aChange);
-    m_changePerformer.perform(aChange);
+    m_data.performChange(aChange);
   }
 
   @Override

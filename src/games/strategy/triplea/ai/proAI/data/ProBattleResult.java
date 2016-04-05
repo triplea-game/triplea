@@ -1,25 +1,25 @@
 package games.strategy.triplea.ai.proAI.data;
 
+import games.strategy.engine.data.Unit;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import games.strategy.engine.data.Unit;
-
 public class ProBattleResult {
 
-  private double winPercentage;
-  private double TUVSwing;
-  private boolean hasLandUnitRemaining;
-  private List<Unit> averageAttackersRemaining;
-  private List<Unit> averageDefendersRemaining;
-  private double battleRounds;
+  private final double winPercentage;
+  private final double TUVSwing;
+  private final boolean hasLandUnitRemaining;
+  private final List<Unit> averageAttackersRemaining;
+  private final List<Unit> averageDefendersRemaining;
+  private final double battleRounds;
 
   public ProBattleResult() {
     winPercentage = 0;
     TUVSwing = -1;
     hasLandUnitRemaining = false;
-    averageAttackersRemaining = new ArrayList<Unit>();
-    averageDefendersRemaining = new ArrayList<Unit>();
+    averageAttackersRemaining = new ArrayList<>();
+    averageDefendersRemaining = new ArrayList<>();
     battleRounds = 0;
   }
 

@@ -6,9 +6,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -24,9 +24,9 @@ public class ResourceLoader {
   private final URLClassLoader m_loader;
   public static String RESOURCE_FOLDER = "assets";
 
-  public static ResourceLoader getMapResourceLoader(final String mapName, final boolean allowNoneFound) {
+  public static ResourceLoader getMapResourceLoader(final String mapName,final boolean allowNoneFound) {
     File atFolder = ClientFileSystemHelper.getRootFolder();
-    File resourceFolder = new File(atFolder,RESOURCE_FOLDER);
+    File resourceFolder = new File(atFolder, RESOURCE_FOLDER);
 
     while (!resourceFolder.exists() && !resourceFolder.isDirectory()) {
       atFolder = atFolder.getParentFile();
@@ -37,6 +37,23 @@ public class ResourceLoader {
     dirs.add(resourceFolder.getAbsolutePath());
 
     return new ResourceLoader(dirs.toArray(new String[dirs.size()]));
+  }
+
+  protected static String normalizeMapZipName(String zipName) {
+    StringBuilder sb = new StringBuilder();
+    Character lastChar = null;
+
+    String spacesReplaced = zipName.replace(' ', '_');
+
+    for (Character c : spacesReplaced.toCharArray()) {
+      // break up camel casing
+      if (lastChar != null && Character.isLowerCase(lastChar) && Character.isUpperCase(c)) {
+        sb.append("_");
+      }
+      sb.append(Character.toLowerCase(c));
+      lastChar = c;
+    }
+    return sb.toString();
   }
 
   private static List<String> getPaths(final String mapName, final boolean allowNoneFound) {
@@ -56,6 +73,11 @@ public class ResourceLoader {
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), zipName));
     candidates.add(new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps", dirName));
     candidates.add(new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps", zipName));
+
+    String normalizedZipName = normalizeMapZipName(zipName);
+    candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), normalizedZipName));
+
+
     final Collection<File> existing = Match.getMatches(candidates, new Match<File>() {
       @Override
       public boolean match(final File f) {
@@ -77,15 +99,7 @@ public class ResourceLoader {
       }
     }
     final File match = existing.iterator().next();
-    String fileName = match.getName();
-    if (fileName.indexOf('.') > 0) {
-      fileName = fileName.substring(0, fileName.lastIndexOf('.'));
-    }
-    if (!fileName.equals(mapName)) {
-      throw new IllegalStateException("Map case is incorrect, xml: " + mapName + " file: " + match.getName() + "\r\n"
-          + "Make sure the mapName property within the xml game file exactly matches the map zip or folder name."
-          + "\r\n");
-    }
+
     final List<String> rVal = new ArrayList<String>();
     rVal.add(match.getAbsolutePath());
     // find dependencies
@@ -136,6 +150,9 @@ public class ResourceLoader {
         throw new IllegalStateException(e.getMessage());
       }
     }
+    // Note: URLClassLoader does not always respect the ordering of the search URLs
+    // To solve this we will get all matching paths and then filter by what matched
+    // the assets folder.
     m_loader = new URLClassLoader(urls);
   }
 
@@ -145,29 +162,41 @@ public class ResourceLoader {
   }
 
   /**
-   * @param pathURL
+   * @param path
    *        (The name of a resource is a '/'-separated path name that identifies the resource. Do not use '\' or
    *        File.separator)
    */
-  public URL getResource(final String pathURL) {
-    final URL rVal = m_loader.getResource(pathURL);
-    if (rVal == null) {
-      return null;
+  public URL getResource(final String path) {
+    URL defaultUrl = null;
+    // Return first any match that is not in the assets folder (we expect that to be the users maps folder (loading from map.zip))
+    // If we don't have any matches, then return any matches we had from the assets folder
+    for (URL element : getMatchingResources(path)) {// Collections.list(m_loader.getResources(path))) {
+      if (element.toString().contains(RESOURCE_FOLDER)) {
+        defaultUrl = element;
+      } else {
+        return element;
+      }
     }
-    String fileName;
+    return defaultUrl;
+  }
+
+  private List<URL> getMatchingResources(final String path ) {
     try {
-      fileName = URLDecoder.decode(rVal.getFile(), "UTF-8");
-    } catch (final IOException e) {
+      return Collections.list(m_loader.getResources(path));
+    } catch (IOException e) {
       throw new IllegalStateException(e);
     }
-    if (!fileName.endsWith(pathURL)) {
-      throw new IllegalStateException("The file:" + fileName
-          + "  does not have the correct case.  It must match the case declared in the xml:" + pathURL);
-    }
-    return rVal;
   }
 
   public InputStream getResourceAsStream(final String path) {
-    return m_loader.getResourceAsStream(path);
+    URL url = getResource(path);
+    if (url == null) {
+      return null;
+    }
+    try {
+      return url.openStream();
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
+    }
   }
 }

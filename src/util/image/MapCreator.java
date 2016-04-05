@@ -11,7 +11,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -29,11 +28,13 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.common.swing.SwingComponents;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
 
 /**
@@ -180,7 +181,8 @@ public class MapCreator extends JFrame {
       public void actionPerformed(final ActionEvent e) {
         try {
           DesktopUtilityBrowserLauncher.openFile(
-              new File(ClientFileSystemHelper.getRootFolder(), "doc" + File.separator + "map_and_map_skin_making_overview.html"));
+              new File(ClientFileSystemHelper.getRootFolder(),
+                  "doc" + File.separator + "map_and_map_skin_making_overview.html"));
           // DesktopUtilityBrowserLauncher.openURL(GameRunner.getRootFolder().getAbsoluteFile() + File.separator + "doc"
           // + File.separator +
           // "map_and_map_skin_making_overview.html");
@@ -285,14 +287,8 @@ public class MapCreator extends JFrame {
     m_panel1.add(memoryText);
     final JCheckBox runTypeBox = new JCheckBox("Run All Utilities as Separate Processes");
     runTypeBox.setSelected(s_runUtilitiesAsSeperateProcesses);
-    runTypeBox.addActionListener(new AbstractAction("Run All Utilities as Separate Processes") {
-      private static final long serialVersionUID = 363422421871497915L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        s_runUtilitiesAsSeperateProcesses = runTypeBox.isSelected();
-      }
-    });
+    runTypeBox.addActionListener(SwingAction.of("Run All Utilities as Separate Processes",
+        e -> s_runUtilitiesAsSeperateProcesses = runTypeBox.isSelected()));
     m_panel1.add(runTypeBox);
     m_panel1.add(Box.createVerticalStrut(30));
     m_panel1.validate();
@@ -305,151 +301,118 @@ public class MapCreator extends JFrame {
     m_panel2.add(new JLabel("Map Skin Utilities:"));
     m_panel2.add(Box.createVerticalStrut(30));
     final JButton mapPropertiesMakerButton = new JButton("Run the Map Properties Maker");
-    mapPropertiesMakerButton.addActionListener(new AbstractAction("Run the Map Properties Maker") {
-      private static final long serialVersionUID = -5708777348010034859L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (s_runUtilitiesAsSeperateProcesses) {
-          runUtility("util.image.MapPropertiesMaker");
-        } else {
-          (new Thread() {
-            @Override
-            public void run() {
-              MapPropertiesMaker.main(new String[0]);
-            }
-          }).start();
-        }
+    mapPropertiesMakerButton.addActionListener(SwingAction.of("Run the Map Properties Maker", e -> {
+      if (s_runUtilitiesAsSeperateProcesses) {
+        runUtility("util.image.MapPropertiesMaker");
+      } else {
+        (new Thread() {
+          @Override
+          public void run() {
+            MapPropertiesMaker.main(new String[0]);
+          }
+        }).start();
       }
-    });
+    }));
     m_panel2.add(mapPropertiesMakerButton);
     m_panel2.add(Box.createVerticalStrut(30));
     final JButton centerPickerButton = new JButton("Run the Center Picker");
-    centerPickerButton.addActionListener(new AbstractAction("Run the Center Picker") {
-      private static final long serialVersionUID = -2070004374472175438L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (s_runUtilitiesAsSeperateProcesses) {
-          runUtility("util.image.CenterPicker");
-        } else {
-          (new Thread() {
-            @Override
-            public void run() {
-              CenterPicker.main(new String[0]);
-            }
-          }).start();
-        }
+    centerPickerButton.addActionListener(SwingAction.of("Run the Center Picker", e -> {
+      if (s_runUtilitiesAsSeperateProcesses) {
+        runUtility("util.image.CenterPicker");
+      } else {
+        (new Thread() {
+          @Override
+          public void run() {
+            CenterPicker.main(new String[0]);
+          }
+        }).start();
       }
-    });
+    }));
     m_panel2.add(centerPickerButton);
     m_panel2.add(Box.createVerticalStrut(30));
     final JButton polygonGrabberButton = new JButton("Run the Polygon Grabber");
-    polygonGrabberButton.addActionListener(new AbstractAction("Run the Polygon Grabber") {
-      private static final long serialVersionUID = -5708777348010034859L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (s_runUtilitiesAsSeperateProcesses) {
-          runUtility("util.image.PolygonGrabber");
-        } else {
-          (new Thread() {
-            @Override
-            public void run() {
-              PolygonGrabber.main(new String[0]);
-            }
-          }).start();
-        }
+    polygonGrabberButton.addActionListener(SwingAction.of("Run the Polygon Grabber", e -> {
+      if (s_runUtilitiesAsSeperateProcesses) {
+        runUtility("util.image.PolygonGrabber");
+      } else {
+        (new Thread() {
+          @Override
+          public void run() {
+            PolygonGrabber.main(new String[0]);
+          }
+        }).start();
       }
-    });
+
+    }));
     m_panel2.add(polygonGrabberButton);
     m_panel2.add(Box.createVerticalStrut(30));
     final JButton autoPlacerButton = new JButton("Run the Automatic Placement Finder");
-    autoPlacerButton.addActionListener(new AbstractAction("Run the Automatic Placement Finder") {
-      private static final long serialVersionUID = 7557803418683843877L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (s_runUtilitiesAsSeperateProcesses) {
-          runUtility("util.image.AutoPlacementFinder");
-        } else {
-          (new Thread() {
-            @Override
-            public void run() {
-              AutoPlacementFinder.main(new String[0]);
-            }
-          }).start();
-        }
+    autoPlacerButton.addActionListener(SwingAction.of("Run the Automatic Placement Finder", e -> {
+      if (s_runUtilitiesAsSeperateProcesses) {
+        runUtility("util.image.AutoPlacementFinder");
+      } else {
+        (new Thread() {
+          @Override
+          public void run() {
+            AutoPlacementFinder.main(new String[0]);
+          }
+        }).start();
       }
-    });
+
+    }));
     m_panel2.add(autoPlacerButton);
     m_panel2.add(Box.createVerticalStrut(30));
     final JButton placementPickerButton = new JButton("Run the Placement Picker");
-    placementPickerButton.addActionListener(new AbstractAction("Run the Placement Picker") {
-      private static final long serialVersionUID = 2456185407945946528L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (s_runUtilitiesAsSeperateProcesses) {
-          runUtility("util.image.PlacementPicker");
-        } else {
-          (new Thread() {
-            @Override
-            public void run() {
-              PlacementPicker.main(new String[0]);
-            }
-          }).start();
-        }
+    placementPickerButton.addActionListener(SwingAction.of("Run the Placement Picker", e -> {
+      if (s_runUtilitiesAsSeperateProcesses) {
+        runUtility("util.image.PlacementPicker");
+      } else {
+        (new Thread() {
+          @Override
+          public void run() {
+            PlacementPicker.main(new String[0]);
+          }
+        }).start();
       }
-    });
+    }));
     m_panel2.add(placementPickerButton);
     m_panel2.add(Box.createVerticalStrut(30));
     final JButton tileBreakerButton = new JButton("Run the Tile Image Breaker");
-    tileBreakerButton.addActionListener(new AbstractAction("Run the Tile Image Breaker") {
-      private static final long serialVersionUID = 8636496829644907047L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (s_runUtilitiesAsSeperateProcesses) {
-          runUtility("util.image.TileImageBreaker");
-        } else {
-          (new Thread() {
-            @Override
-            public void run() {
-              try {
-                TileImageBreaker.main(new String[0]);
-              } catch (final Exception e) {
-                e.printStackTrace();
-              }
+    tileBreakerButton.addActionListener(SwingAction.of("Run the Tile Image Breaker", e -> {
+      if (s_runUtilitiesAsSeperateProcesses) {
+        runUtility("util.image.TileImageBreaker");
+      } else {
+        (new Thread() {
+          @Override
+          public void run() {
+            try {
+              TileImageBreaker.main(new String[0]);
+            } catch (final Exception e) {
+              e.printStackTrace();
             }
-          }).start();
-        }
+          }
+        }).start();
       }
-    });
+    }));
     m_panel2.add(tileBreakerButton);
     m_panel2.add(Box.createVerticalStrut(30));
     final JButton decorationPlacerButton = new JButton("Run the Decoration Placer");
-    decorationPlacerButton.addActionListener(new AbstractAction("Run the Decoration Placer") {
-      private static final long serialVersionUID = 8981678371888002420L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (s_runUtilitiesAsSeperateProcesses) {
-          runUtility("util.image.DecorationPlacer");
-        } else {
-          (new Thread() {
-            @Override
-            public void run() {
-              try {
-                DecorationPlacer.main(new String[0]);
-              } catch (final Exception e) {
-                e.printStackTrace();
-              }
+    decorationPlacerButton.addActionListener(SwingAction.of("Run the Decoration Placer", e -> {
+      if (s_runUtilitiesAsSeperateProcesses) {
+        runUtility("util.image.DecorationPlacer");
+      } else {
+        (new Thread() {
+          @Override
+          public void run() {
+            try {
+              DecorationPlacer.main(new String[0]);
+            } catch (final Exception e) {
+              e.printStackTrace();
             }
-          }).start();
-        }
+          }
+        }).start();
       }
-    });
+    }));
     m_panel2.add(decorationPlacerButton);
     m_panel2.add(Box.createVerticalStrut(30));
     m_panel2.validate();
@@ -465,42 +428,27 @@ public class MapCreator extends JFrame {
         .add(new JLabel("You can try downloading it from our dev forum: http://triplea.sourceforge.net/mywiki/Forum"));
     m_panel3.add(Box.createVerticalStrut(30));
     final JButton goToWebButton = new JButton("Go To Dev Forum");
-    goToWebButton.addActionListener(new AbstractAction("Go To Dev Forum") {
-      private static final long serialVersionUID = 5059004450673029377L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/mywiki/Forum");
-        } catch (final Exception e1) {
-          e1.printStackTrace();
-        }
-      }
-    });
+    goToWebButton.addActionListener(
+        SwingAction.of("Go To Dev Forum", e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_FORUM)));
     m_panel3.add(goToWebButton);
     m_panel3.add(Box.createVerticalStrut(30));
     final JButton connectionFinderButton = new JButton("Run the Connection Finder");
-    connectionFinderButton.addActionListener(new AbstractAction("Run the Connection Finder") {
-      private static final long serialVersionUID = 8778155499250138516L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (s_runUtilitiesAsSeperateProcesses) {
-          runUtility("util.image.ConnectionFinder");
-        } else {
-          (new Thread() {
-            @Override
-            public void run() {
-              try {
-                ConnectionFinder.main(new String[0]);
-              } catch (final Exception e) {
-                e.printStackTrace();
-              }
+    connectionFinderButton.addActionListener(SwingAction.of("Run the Connection Finder", e -> {
+      if (s_runUtilitiesAsSeperateProcesses) {
+        runUtility("util.image.ConnectionFinder");
+      } else {
+        (new Thread() {
+          @Override
+          public void run() {
+            try {
+              ConnectionFinder.main(new String[0]);
+            } catch (final Exception e) {
+              e.printStackTrace();
             }
-          }).start();
-        }
+          }
+        }).start();
       }
-    });
+    }));
     m_panel3.add(connectionFinderButton);
     m_panel3.add(Box.createVerticalStrut(30));
     m_panel3.validate();
@@ -513,81 +461,67 @@ public class MapCreator extends JFrame {
     m_panel4.add(new JLabel("Other or Optional Utilities:"));
     m_panel4.add(Box.createVerticalStrut(30));
     final JButton reliefBreakerButton = new JButton("Run the Relief Image Breaker");
-    reliefBreakerButton.addActionListener(new AbstractAction("Run the Relief Image Breaker") {
-      private static final long serialVersionUID = 8981678371888002420L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (s_runUtilitiesAsSeperateProcesses) {
-          runUtility("util.image.ReliefImageBreaker");
-        } else {
-          (new Thread() {
-            @Override
-            public void run() {
-              try {
-                ReliefImageBreaker.main(new String[0]);
-              } catch (final Exception e) {
-                e.printStackTrace();
-              }
+    reliefBreakerButton.addActionListener(SwingAction.of("Run the Relief Image Breaker", e -> {
+      if (s_runUtilitiesAsSeperateProcesses) {
+        runUtility("util.image.ReliefImageBreaker");
+      } else {
+        (new Thread() {
+          @Override
+          public void run() {
+            try {
+              ReliefImageBreaker.main(new String[0]);
+            } catch (final Exception e) {
+              e.printStackTrace();
             }
-          }).start();
-        }
+          }
+        }).start();
       }
-    });
+    }));
     m_panel4.add(reliefBreakerButton);
     m_panel4.add(Box.createVerticalStrut(30));
     final JButton imageShrinkerButton = new JButton("Run the Image Shrinker");
-    imageShrinkerButton.addActionListener(new AbstractAction("Run the Image Shrinker") {
-      private static final long serialVersionUID = 8778155499250138516L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (s_runUtilitiesAsSeperateProcesses) {
-          runUtility("util.image.ImageShrinker");
-        } else {
-          (new Thread() {
-            @Override
-            public void run() {
-              try {
-                ImageShrinker.main(new String[0]);
-              } catch (final Exception e) {
-                e.printStackTrace();
-              }
+    imageShrinkerButton.addActionListener(SwingAction.of("Run the Image Shrinker", e -> {
+      if (s_runUtilitiesAsSeperateProcesses) {
+        runUtility("util.image.ImageShrinker");
+      } else {
+        (new Thread() {
+          @Override
+          public void run() {
+            try {
+              ImageShrinker.main(new String[0]);
+            } catch (final Exception e) {
+              e.printStackTrace();
             }
-          }).start();
-        }
+          }
+        }).start();
       }
-    });
+    }));
     m_panel4.add(imageShrinkerButton);
     m_panel4.add(Box.createVerticalStrut(30));
     final JButton tileImageReconstructorButton = new JButton("Run the Tile Image Reconstructor");
-    tileImageReconstructorButton.addActionListener(new AbstractAction("Run the Tile Image Reconstructor") {
-      private static final long serialVersionUID = -1743544461266802405L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (s_runUtilitiesAsSeperateProcesses) {
-          runUtility("util.image.TileImageReconstructor");
-        } else {
-          (new Thread() {
-            @Override
-            public void run() {
-              try {
-                TileImageReconstructor.main(new String[0]);
-              } catch (final Exception e) {
-                e.printStackTrace();
-              }
+    tileImageReconstructorButton.addActionListener(SwingAction.of("Run the Tile Image Reconstructor", e -> {
+      if (s_runUtilitiesAsSeperateProcesses) {
+        runUtility("util.image.TileImageReconstructor");
+      } else {
+        (new Thread() {
+          @Override
+          public void run() {
+            try {
+              TileImageReconstructor.main(new String[0]);
+            } catch (final Exception e) {
+              e.printStackTrace();
             }
-          }).start();
-        }
+          }
+        }).start();
       }
-    });
+
+    }));
     m_panel4.add(tileImageReconstructorButton);
     m_panel4.add(Box.createVerticalStrut(30));
     m_panel4.validate();
   }
 
-  private void runUtility(final String javaClass) {
+  private static void runUtility(final String javaClass) {
     final List<String> commands = new ArrayList<String>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands, s_memory);
     if (s_mapFolderLocation != null && s_mapFolderLocation.exists()) {

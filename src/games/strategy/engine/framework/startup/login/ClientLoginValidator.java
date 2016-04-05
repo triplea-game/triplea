@@ -9,6 +9,7 @@ import games.strategy.engine.ClientContext;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.util.MD5Crypt;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
 
 /**
@@ -95,14 +96,9 @@ public class ClientLoginValidator implements ILoginValidator {
         return "No password";
       }
       if (!readPassword.equals(MD5Crypt.crypt(m_password, propertiesSentToClient.get(SALT_PROPERTY)))) {
-        try {
-          // sleep on average 2 seconds
-          // try to prevent flooding to guess the
-          // password
-          Thread.sleep((int) (4000 * Math.random()));
-        } catch (final InterruptedException e) {
-          // ignore
-        }
+        // sleep on average 2 seconds
+        // try to prevent flooding to guess the password
+        ThreadUtil.sleep((int) (4000 * Math.random()));
         return "Invalid password";
       }
     }

@@ -1,10 +1,10 @@
 package games.strategy.triplea.ai.proAI.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProPlaceTerritory {
   private Territory territory;
@@ -17,11 +17,11 @@ public class ProPlaceTerritory {
 
   public ProPlaceTerritory(final Territory territory) {
     this.territory = territory;
-    defendingUnits = new ArrayList<Unit>();
+    defendingUnits = new ArrayList<>();
     minBattleResult = new ProBattleResult();
     defenseValue = 0;
     strategicValue = 0;
-    placeUnits = new ArrayList<Unit>();
+    placeUnits = new ArrayList<>();
     canHold = true;
   }
 

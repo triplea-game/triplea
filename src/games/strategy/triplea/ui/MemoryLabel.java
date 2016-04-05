@@ -11,6 +11,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.util.ThreadUtil;
 
 public class MemoryLabel extends JLabel {
   private static final long serialVersionUID = -6011470050936617333L;
@@ -98,9 +99,6 @@ class Updater implements Runnable {
   }
 
   private static void sleep() {
-    try {
-      Thread.sleep(2000);
-    } catch (final InterruptedException e) {
-    }
+    ThreadUtil.sleep(2000);
   }
 }

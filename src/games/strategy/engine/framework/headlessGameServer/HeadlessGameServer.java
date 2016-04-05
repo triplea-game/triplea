@@ -39,12 +39,14 @@ import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.util.LoggingPrintStream;
 import games.strategy.util.MD5Crypt;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Util;
 
 /**
  * A way of hosting a game, but headless.
  */
 public class HeadlessGameServer {
+
   public static final String TRIPLEA_GAME_HOST_UI_PROPERTY = "triplea.game.host.ui";
   public static final String TRIPLEA_HEADLESS = "triplea.headless";
   public static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.game.host.console";
@@ -227,11 +229,7 @@ public class HeadlessGameServer {
         @Override
         public void run() {
           System.out.println("Remote Shutdown Initiated.");
-          try {
-            Thread.sleep(1000);
-          } catch (final InterruptedException e) {
-            e.printStackTrace();
-          }
+          ThreadUtil.sleep(1000);
           System.exit(0);
         }
       })).start();
@@ -529,10 +527,7 @@ public class HeadlessGameServer {
         try {
           restartLobbyWatcher(m_setupPanelModel, m_iGame);
         } catch (final Exception e) {
-          try {
-            Thread.sleep(10 * 60 * 1000);
-          } catch (final InterruptedException e1) {
-          }
+          ThreadUtil.sleep(10 * 60 * 1000);
           // try again, but don't catch it this time
           restartLobbyWatcher(m_setupPanelModel, m_iGame);
         }
@@ -653,10 +648,7 @@ public class HeadlessGameServer {
       @Override
       public void run() {
         while (!m_shutDown) {
-          try {
-            Thread.sleep(8000);
-          } catch (final InterruptedException e) {
-          }
+          ThreadUtil.sleep(8000);
           if (m_setupPanelModel != null && m_setupPanelModel.getPanel() != null
               && m_setupPanelModel.getPanel().canGameStart()) {
             final boolean started = startHeadlessGame(m_setupPanelModel);

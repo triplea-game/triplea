@@ -93,12 +93,8 @@ public class TimerClock<T> extends Observable {
       // notify listeners
       setChanged();
       notifyObservers(new TimerClockNotification(0, true));
-      try {
-        // wait a second to gracefully allow a remote player to receive the notice that they are out of time
-        Thread.sleep(1000);
-      } catch (final InterruptedException e1) {
-        e1.printStackTrace();
-      }
+      // wait a second to gracefully allow a remote player to receive the notice that they are out of time
+      ThreadUtil.sleep(1000);
       interrupted = true;
       t.interrupt();
       try {

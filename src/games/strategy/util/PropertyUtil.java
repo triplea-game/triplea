@@ -70,23 +70,29 @@ public class PropertyUtil {
   }
 
   public static Object getPropertyFieldObject(final String propertyName, final Object subject) {
-    Object rVal = null;
-    Field field = null;
     try {
-      field = getFieldIncludingFromSuperClasses(subject.getClass(), "m_" + propertyName, false);
-    } catch (final Exception e) {
-      throw new IllegalStateException(
-          "No such Property Field: " + "m_" + propertyName + " for Subject: " + subject.toString(), e);
-    }
-    try {
+      Field field = getPropertyField(propertyName, subject);
       field.setAccessible(true);
-      rVal = field.get(subject);
+      return field.get(subject);
     } catch (final Exception e) {
-      throw new IllegalStateException(
-          "No such Property Field: " + "m_" + propertyName + " for Subject: " + subject.toString(), e);
+      String msg = "No such Property Field named: " + "m_" + propertyName + ", or: " + propertyName + ", for Subject: "
+          + subject.toString();
+      throw new IllegalStateException(msg, e);
     }
-    return rVal;
   }
+
+  private static Field getPropertyField(final String propertyName, final Object subject) {
+    try {
+      return getFieldIncludingFromSuperClasses(subject.getClass(), "m_" + propertyName, false);
+    } catch (final Exception e) {
+      try {
+        return getFieldIncludingFromSuperClasses(subject.getClass(), propertyName, false);
+      } catch (final Exception exception) {
+        throw exception;
+      }
+    }
+  }
+
 
   private static String capitalizeFirstLetter(final String aString) {
     char first = aString.charAt(0);

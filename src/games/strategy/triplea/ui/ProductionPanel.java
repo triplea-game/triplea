@@ -29,6 +29,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.common.swing.SwingComponents;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -37,39 +38,44 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.util.IntegerMap;
 
 public class ProductionPanel extends JPanel {
   private static final long serialVersionUID = -1539053979479586609L;
-  private final JFrame m_owner = null;
-  private JDialog m_dialog;
-  // Edwin: made these protected so the class can be extended
+
   protected final IUIContext m_uiContext;
   protected List<Rule> m_rules = new ArrayList<Rule>();
   protected JLabel m_left = new JLabel();
   protected JButton m_done;
   protected PlayerID m_id;
-  private boolean m_bid;
   protected GameData m_data;
+
+  private JDialog m_dialog;
+  private boolean m_bid;
+
 
   public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data,
       final boolean bid, final IntegerMap<ProductionRule> initialPurchase, final IUIContext context) {
     return new ProductionPanel(context).show(id, parent, data, bid, initialPurchase);
   }
 
+  protected ProductionPanel(final IUIContext uiContext) {
+    m_uiContext = uiContext;
+  }
+
+
   /**
    * Shows the production panel, and returns a map of selected rules.
    */
   public IntegerMap<ProductionRule> show(final PlayerID id, final JFrame parent, final GameData data, final boolean bid,
       final IntegerMap<ProductionRule> initialPurchase) {
-    if (!(parent == m_owner)) {
-      m_dialog = null;
-    }
-    if (m_dialog == null) {
-      initDialog(parent);
+    if (parent != null) {
+      String title = "Produce";
+      JPanel contents = this;
+      m_dialog = SwingComponents.newJDialogModal(parent, title , contents);
     }
     this.m_bid = bid;
     this.m_data = data;
@@ -78,12 +84,8 @@ public class ProductionPanel extends JPanel {
     this.calculateLimits();
     m_dialog.pack();
     m_dialog.setLocationRelativeTo(parent);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_done.requestFocusInWindow();
-      }
-    });
+    SwingUtilities.invokeLater(() -> m_done.requestFocusInWindow());
+    // making the dialog visible will block until it is closed
     m_dialog.setVisible(true);
     m_dialog.dispose();
     return getProduction();
@@ -94,23 +96,6 @@ public class ProductionPanel extends JPanel {
     return m_rules;
   }
 
-  private void initDialog(final JFrame root) {
-    m_dialog = new JDialog(root, "Produce", true);
-    m_dialog.getContentPane().add(this);
-    final Action closeAction = SwingAction.of("", e -> m_dialog.setVisible(false));
-    // close the window on escape
-    // this is mostly for developers, makes it much easier to quickly cycle through steps
-    final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-    final String key = "production.panel.close.prod.popup";
-    m_dialog.getRootPane().getActionMap().put(key, closeAction);
-    m_dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
-  }
-
-  /** Creates new ProductionPanel */
-  // the constructor can be accessed by subclasses
-  protected ProductionPanel(final IUIContext uiContext) {
-    m_uiContext = uiContext;
-  }
 
   // made this protected so can be extended by edit production panel
   protected void initRules(final PlayerID player,

@@ -366,7 +366,7 @@ public class GameDataExporter {
 
   private void attachments(final GameData data, final boolean currentAttachmentObjects) {
     xmlfile.append("\n");
-    xmlfile.append("    <attatchmentList>\n");
+    xmlfile.append("    <attachmentList>\n");
     final Iterator<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> attachments =
         data.getAttachmentOrderAndValues().iterator();
     while (attachments.hasNext()) {
@@ -376,7 +376,7 @@ public class GameDataExporter {
       final Tuple<IAttachment, ArrayList<Tuple<String, String>>> current = attachments.next();
       printAttachments(current, currentAttachmentObjects);
     }
-    xmlfile.append("    </attatchmentList>\n");
+    xmlfile.append("    </attachmentList>\n");
   }
 
   private String printAttachmentOptionsBasedOnOriginalXML(final ArrayList<Tuple<String, String>> attachmentPlusValues,
@@ -393,9 +393,9 @@ public class GameDataExporter {
       }
     }
     // add occupiedTerrOf until we fix engine to only use originalOwner
-    if (!alreadyHasOccupiedTerrOf && attachment instanceof games.strategy.triplea.attatchments.TerritoryAttachment) {
-      final games.strategy.triplea.attatchments.TerritoryAttachment ta =
-          (games.strategy.triplea.attatchments.TerritoryAttachment) attachment;
+    if (!alreadyHasOccupiedTerrOf && attachment instanceof games.strategy.triplea.attachments.TerritoryAttachment) {
+      final games.strategy.triplea.attachments.TerritoryAttachment ta =
+          (games.strategy.triplea.attachments.TerritoryAttachment) attachment;
       if (ta.getOriginalOwner() != null) {
         sb.append("            <option name=\"occupiedTerrOf\" value=\"" + ta.getOriginalOwner().getName() + "\"/>\n");
       }
@@ -443,10 +443,10 @@ public class GameDataExporter {
         throw new AttachmentExportException("no attachmentType known for " + attachTo.getClass().getCanonicalName());
       }
       if (attachmentOptions.length() > 0) {
-        xmlfile.append("        <attatchment name=\"" + attachment.getName() + "\" attatchTo=\"" + attachTo.getName()
+        xmlfile.append("        <attachment name=\"" + attachment.getName() + "\" attachTo=\"" + attachTo.getName()
             + "\" javaClass=\"" + attachment.getClass().getCanonicalName() + "\" type=\"" + type + "\">\n");
         xmlfile.append(attachmentOptions);
-        xmlfile.append("        </attatchment>\n");
+        xmlfile.append("        </attachment>\n");
       }
     } catch (final Exception e) {
       e.printStackTrace();

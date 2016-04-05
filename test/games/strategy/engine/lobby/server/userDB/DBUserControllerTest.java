@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 
 import games.strategy.util.MD5Crypt;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Util;
 import junit.framework.TestCase;
 
@@ -61,10 +62,7 @@ public class DBUserControllerTest extends TestCase {
     // advance the clock so we can see the login time
     long loginTimeMustBeAfter = System.currentTimeMillis();
     while (loginTimeMustBeAfter == System.currentTimeMillis()) {
-      try {
-        Thread.sleep(1);
-      } catch (final InterruptedException e) {
-      }
+      ThreadUtil.sleep(1);
     }
     loginTimeMustBeAfter = System.currentTimeMillis();
     assertTrue(controller.login(name, password));

@@ -19,6 +19,7 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.pbem.PBEMMessagePoster;
+import games.strategy.util.ThreadUtil;
 
 /**
  * Server setup model.
@@ -57,10 +58,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
     }
     System.out.println("Restarting lobby watcher");
     shutDownLobbyWatcher();
-    try {
-      Thread.sleep(3000);
-    } catch (final InterruptedException e) {
-    }
+    ThreadUtil.sleep(3000);
     HeadlessGameServer.resetLobbyHostOldExtensionProperties();
     createLobbyWatcher();
   }

@@ -50,6 +50,7 @@ dependencies {
 	compile 'commons-codec:commons-codec:1.10'
 	compile 'commons-httpclient:commons-httpclient:3.1'
 	compile 'commons-logging:commons-logging:1.2'
+	compile 'commons-io:commons-io:2.4'
 
 	compile 'com.github.insubstantial:flamingo:7.3'
 	compile 'com.github.insubstantial:laf-plugin:7.3'
@@ -59,10 +60,13 @@ dependencies {
 	compile 'com.github.insubstantial:substance-flamingo:7.3'
 	compile 'com.github.insubstantial:trident:7.3'
 
+	compile 'org.yaml:snakeyaml:1.17'
 	compile 'org.swinglabs.swingx:swingx-all:1.6.5-1'
+	compile 'org.yaml:snakeyaml:1.17'
 	compile 'com.sun.mail:mailapi:1.5.5'
 	compile 'com.sun.mail:smtp:1.5.5'
 	compile 'com.google.guava:guava:19.0'
+	compile 'com.googlecode.soundlibs:jlayer:1.0.1-1'
 
 	compile files('lib/upnp.jar')
 	compile files('lib/AppleJavaExtensions-1.6.jar')
@@ -71,6 +75,7 @@ dependencies {
 	testCompile 'org.hamcrest:hamcrest-all:1.3'
 	testCompile 'junit:junit:4.12'
 	testCompile 'org.mockito:mockito-all:2.0.2-beta'
+
 }
 
 test {
@@ -114,7 +119,7 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updat
 		into('icons')
 		exclude("icon.icns")
 	}
-	['readme.html', 'changelog.txt', 'system.ini', 'TripleA_RuleBook.pdf', 'game_engine.properties',
+	['readme.html', 'changelog.txt', 'system.ini', 'game_engine.properties', 'lobby_server.yaml',
 	 'run-headless-game-host-mac-os.sh', 'run-headless-game-host.sh', 'run-headless-game-host-windows.bat',
 	 'triplea_unix.sh', 'triplea_windows.bat', 'triplea_mac_os_x.sh'].each { fileName ->
 		from(fileName)
@@ -140,7 +145,7 @@ task bots(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets
 			into(folder)
 		}
 	}
-	['readme.html', 'changelog.txt', 'system.ini', 'game_engine.properties',
+	['readme.html', 'changelog.txt', 'system.ini', 'game_engine.properties', 'lobby_server.yaml',
 	 'run-headless-game-host-mac-os.sh', 'run-headless-game-host.sh', 'run-headless-game-host-windows.bat',
 	 'triplea_unix.sh', 'triplea_windows.bat', 'triplea_mac_os_x.sh'].each { fileName ->
 		from(fileName)
