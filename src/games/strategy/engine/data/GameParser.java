@@ -55,6 +55,7 @@ public class GameParser {
   private static final Class<?>[] SETTER_ARGS = {String.class};
   private GameData data;
   private final Collection<SAXParseException> errorsSAX = new ArrayList<SAXParseException>();
+  final static public String dtdFileName = "game.dtd";
   private static HashMap<String, String> newClassesForOldNames;
 
   public GameParser() {}
@@ -73,7 +74,7 @@ public class GameParser {
    */
   public synchronized GameData parse(final InputStream stream, final AtomicReference<String> gameName,
       final boolean delayParsing)
-          throws GameParseException, SAXException, EngineVersionException, IllegalArgumentException {
+      throws GameParseException, SAXException, EngineVersionException, IllegalArgumentException {
     if (stream == null) {
       throw new IllegalArgumentException("Stream must be non null");
     }
@@ -243,11 +244,11 @@ public class GameParser {
     }
   }
 
-  private Document getDocument(final InputStream input) throws SAXException, IOException, ParserConfigurationException {
+  public Document getDocument(final InputStream input) throws SAXException, IOException, ParserConfigurationException {
     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     factory.setValidating(true);
     // get the dtd location
-    final String dtdFile = "/games/strategy/engine/xml/game.dtd";
+    final String dtdFile = "/games/strategy/engine/xml/" + dtdFileName;
     final URL url = GameParser.class.getResource(dtdFile);
     if (url == null) {
       throw new RuntimeException(String.format("Could not find in classpath %s", dtdFile));
