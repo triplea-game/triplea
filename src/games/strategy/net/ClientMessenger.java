@@ -247,7 +247,7 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
 
   private void bareBonesSendMessageToServer(final String methodName, final Object... messages) {
     final List<Object> args = new ArrayList<Object>();
-    final Class[] argTypes = new Class[messages.length];
+    final Class<? extends Object>[] argTypes = new Class<?>[messages.length];
     for (int i = 0; i < messages.length; i++) {
       final Object message = messages[i];
       args.add(message);

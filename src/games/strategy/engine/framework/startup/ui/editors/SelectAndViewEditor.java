@@ -33,7 +33,7 @@ import games.strategy.triplea.ui.JButtonDialog;
  */
 public class SelectAndViewEditor extends EditorPanel {
   private static final long serialVersionUID = 1580648148539524876L;
-  JComboBox m_selector = new JComboBox();
+  JComboBox<IBean> m_selector = new JComboBox<>();
   JPanel m_view = new JPanel();
   JButton m_helpButton = new JButton("Help?");
   private final PropertyChangeListener m_properChangeListener;
@@ -162,7 +162,7 @@ public class SelectAndViewEditor extends EditorPanel {
    *        the list of beans
    */
   public void setBeans(final List<? extends IBean> beans) {
-    m_selector.setModel(new DefaultComboBoxModel(beans.toArray()));
+    m_selector.setModel(new DefaultComboBoxModel<IBean>( beans.toArray(new IBean[beans.size()])));
     updateView();
   }
 
@@ -193,8 +193,8 @@ public class SelectAndViewEditor extends EditorPanel {
    *        the bean
    */
   public void setSelectedBean(final IBean bean) {
-    final DefaultComboBoxModel model = (DefaultComboBoxModel) m_selector.getModel();
-    final DefaultComboBoxModel newModel = new DefaultComboBoxModel();
+    final DefaultComboBoxModel<IBean> model = (DefaultComboBoxModel<IBean>) m_selector.getModel();
+    final DefaultComboBoxModel<IBean> newModel = new DefaultComboBoxModel<>();
     boolean found = false;
     int i;
     for (i = 0; i < model.getSize(); i++) {

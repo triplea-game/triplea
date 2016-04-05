@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
  * versions is the same, then the two versions are considered
  * equal
  */
-public class Version implements Serializable, Comparable {
+public class Version implements Serializable, Comparable<Object> {
   // maintain compatability with old versions
   static final long serialVersionUID = -4770210855326775333L;
   private final int m_major;

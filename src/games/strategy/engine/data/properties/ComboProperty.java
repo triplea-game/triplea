@@ -68,7 +68,7 @@ public class ComboProperty<T> extends AEditableProperty {
 
   @Override
   public JComponent getEditorComponent() {
-    final JComboBox box = new JComboBox(new Vector<T>(m_possibleValues));
+    final JComboBox<T> box = new JComboBox<>(new Vector<T>(m_possibleValues));
     box.setSelectedItem(m_value);
     box.addActionListener(new ActionListener() {
       @Override

@@ -127,8 +127,8 @@ public class LobbyAdminConsole extends JFrame {
   private void setWidgetActivation() {}
 
   private void debugPlayer() {
-    final DefaultComboBoxModel model = new DefaultComboBoxModel();
-    final JComboBox combo = new JComboBox(model);
+    final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+    final JComboBox<String> combo = new JComboBox<>(model);
     model.addElement("");
     for (final INode node : new TreeSet<INode>(m_server.getMessenger().getNodes())) {
       if (!node.equals(m_server.getMessenger().getLocalNode())) {
@@ -173,8 +173,8 @@ public class LobbyAdminConsole extends JFrame {
   }
 
   private void remoteHostActions() {
-    final DefaultComboBoxModel model = new DefaultComboBoxModel();
-    final JComboBox combo = new JComboBox(model);
+    final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+    final JComboBox<String> combo = new JComboBox<>(model);
     model.addElement("");
     for (final INode node : new TreeSet<INode>(m_server.getMessenger().getNodes())) {
       if (!node.equals(m_server.getMessenger().getLocalNode())) {

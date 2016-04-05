@@ -53,7 +53,7 @@ public class ProLogWindow extends javax.swing.JDialog {
     v_aiOutputLogArea = new javax.swing.JTextArea();
     v_enableAILogging = new javax.swing.JCheckBox();
     jLabel15 = new javax.swing.JLabel();
-    v_logDepth = new javax.swing.JComboBox();
+    v_logDepth = new javax.swing.JComboBox<String>();
     v_limitLogHistoryToSpinner = new javax.swing.JSpinner();
     v_limitLogHistoryCB = new javax.swing.JCheckBox();
     jLabel46 = new javax.swing.JLabel();
@@ -205,7 +205,7 @@ public class ProLogWindow extends javax.swing.JDialog {
     gridBagConstraints.gridy = 0;
     gridBagConstraints.insets = new java.awt.Insets(7, 12, 0, 0);
     jPanel8.add(jLabel15, gridBagConstraints);
-    v_logDepth.setModel(new javax.swing.DefaultComboBoxModel(new String[] {"Fine", "Finer", "Finest"}));
+    v_logDepth.setModel(new javax.swing.DefaultComboBoxModel<String>(new String[] {"Fine", "Finer", "Finest"}));
     v_logDepth.setSelectedItem(v_logDepth.getItemAt(2));
     v_logDepth.setName("v_logDepth");
     gridBagConstraints = new java.awt.GridBagConstraints();
@@ -472,7 +472,7 @@ public class ProLogWindow extends javax.swing.JDialog {
   private javax.swing.JCheckBox v_enableAILogging;
   private javax.swing.JCheckBox v_limitLogHistoryCB;
   private javax.swing.JSpinner v_limitLogHistoryToSpinner;
-  private javax.swing.JComboBox v_logDepth;
+  private javax.swing.JComboBox<String> v_logDepth;
   private javax.swing.JTabbedPane v_logHolderTabbedPane;
   private javax.swing.JButton v_okButton;
   private javax.swing.JPanel v_pauseAIs;

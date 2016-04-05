@@ -74,13 +74,14 @@ public class TableSorter extends AbstractTableModel {
   public static final int NOT_SORTED = 0;
   public static final int ASCENDING = 1;
   private static Directive EMPTY_DIRECTIVE = new Directive(-1, NOT_SORTED);
-  public static final Comparator<Object> COMPARABLE_COMAPRATOR = new Comparator() {
+  public static final Comparator<Object> COMPARABLE_COMAPRATOR = new Comparator<Object>() {
+    @SuppressWarnings("unchecked")
     @Override
     public int compare(final Object o1, final Object o2) {
-      return ((Comparable<Object>) o1).compareTo(o2);
+      return ((Comparable<Object>) o1).compareTo(o2);//TODO needs to be rewritten in order to remove the warning
     }
   };
-  public static final Comparator<Object> LEXICAL_COMPARATOR = new Comparator() {
+  public static final Comparator<Object> LEXICAL_COMPARATOR = new Comparator<Object>() {
     @Override
     public int compare(final Object o1, final Object o2) {
       return o1.toString().compareTo(o2.toString());
@@ -91,7 +92,7 @@ public class TableSorter extends AbstractTableModel {
   private JTableHeader tableHeader;
   private final MouseListener mouseListener;
   private final TableModelListener tableModelListener;
-  private final Map<Class, Comparator> columnComparators = new HashMap<Class, Comparator>();
+  private final Map<Class<?>, Comparator<Object>> columnComparators = new HashMap<Class<?>, Comparator<Object>>();
   private final List<Directive> sortingColumns = new ArrayList<Directive>();
 
   public TableSorter() {
@@ -200,7 +201,7 @@ public class TableSorter extends AbstractTableModel {
     sortingStatusChanged();
   }
 
-  public void setColumnComparator(final Class type, final Comparator<Object> comparator) {
+  public void setColumnComparator(final Class<?> type, final Comparator<Object> comparator) {
     if (comparator == null) {
       columnComparators.remove(type);
     } else {
@@ -208,11 +209,12 @@ public class TableSorter extends AbstractTableModel {
     }
   }
 
+  @SuppressWarnings("unchecked")
   protected Comparator<Object> getComparator(final int column) {
-    final Class columnType = tableModel.getColumnClass(column);
-    final Comparator<Object> comparator = columnComparators.get(columnType);
+    final Class<?> columnType = tableModel.getColumnClass(column);
+    final Comparator<?> comparator = columnComparators.get(columnType);
     if (comparator != null) {
-      return comparator;
+      return (Comparator<Object>) comparator;//TODO this warning is not resolvable... This Method needs to be rewritten in order to remove the suppress Warnings annotations
     }
     if (Comparable.class.isAssignableFrom(columnType)) {
       return COMPARABLE_COMAPRATOR;
@@ -298,7 +300,7 @@ public class TableSorter extends AbstractTableModel {
   }
 
   // Helper classes
-  private class Row implements Comparable {
+  private class Row implements Comparable<Object> {
     private final int modelIndex;
 
     public Row(final int index) {

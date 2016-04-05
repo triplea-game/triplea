@@ -262,7 +262,7 @@ public class EditPanel extends ActionPanel {
           CANCEL_EDIT_ACTION.actionPerformed(null);
           return;
         }
-        final JList techList = new JList(techs);
+        final JList<?> techList = new JList<>(techs);
         techList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         techList.setLayoutOrientation(JList.VERTICAL);
         techList.setVisibleRowCount(10);
@@ -275,7 +275,7 @@ public class EditPanel extends ActionPanel {
         }
         final Set<TechAdvance> advance = new HashSet<TechAdvance>();
         try {
-          for (final Object selection : techList.getSelectedValues()) {
+          for (final Object selection : techList.getSelectedValuesList()) {
             advance.add((TechAdvance) selection);
           }
         } catch (final Exception e) {
@@ -324,7 +324,7 @@ public class EditPanel extends ActionPanel {
           CANCEL_EDIT_ACTION.actionPerformed(null);
           return;
         }
-        final JList techList = new JList(techs);
+        final JList<?> techList = new JList<>(techs);
         techList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         techList.setLayoutOrientation(JList.VERTICAL);
         techList.setVisibleRowCount(10);
@@ -337,7 +337,7 @@ public class EditPanel extends ActionPanel {
         }
         final Set<TechAdvance> advance = new HashSet<TechAdvance>();
         try {
-          for (final Object selection : techList.getSelectedValues()) {
+          for (final Object selection : techList.getSelectedValuesList()) {
             advance.add((TechAdvance) selection);
           }
         } catch (final Exception e) {

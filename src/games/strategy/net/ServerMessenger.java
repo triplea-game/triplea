@@ -374,7 +374,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
 
   private void bareBonesSendChatMessage(final String message, final INode to) {
     final List<Object> args = new ArrayList<Object>();
-    final Class[] argTypes = new Class[1];
+    final Class<? extends Object>[] argTypes = new Class<?>[1];
     args.add(message);
     argTypes[0] = args.get(0).getClass();
     RemoteName rn;
