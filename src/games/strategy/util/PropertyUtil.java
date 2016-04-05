@@ -7,10 +7,6 @@ import java.lang.reflect.Method;
  * Utility for getting/setting java bean style properties on an object.
  */
 public class PropertyUtil {
-  @SuppressWarnings("unused")
-  private static final Class<?>[] STRING_ARGS = {String.class};
-  @SuppressWarnings("unused")
-  private static final Class<?>[] INT_ARGS = {int.class};
 
   public static void set(final String propertyName, final Object value, final Object subject) {
     final Method m = getSetter(propertyName, subject, value);

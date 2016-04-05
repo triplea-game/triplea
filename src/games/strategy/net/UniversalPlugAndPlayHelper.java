@@ -23,8 +23,6 @@ public class UniversalPlugAndPlayHelper {
   private int m_port = 3300;
   private InetAddress m_local = null;
   private InternetGatewayDevice m_device = null;
-  @SuppressWarnings("unused")
-private static UniversalPlugAndPlayHelper s_lastInstance = null;
 
   public static void main(final String[] args) {
     UniversalPlugAndPlayHelper.attemptAddingPortForwarding(null, 3300);
@@ -81,7 +79,6 @@ private static UniversalPlugAndPlayHelper s_lastInstance = null;
       return addPortError;
     }
     textArea.append("Port Forwarding map added successfully.\r\n");
-    s_lastInstance = this;
     return null;
   }
 

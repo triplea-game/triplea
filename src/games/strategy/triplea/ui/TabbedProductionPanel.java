@@ -177,8 +177,6 @@ public class TabbedProductionPanel extends ProductionPanel {
           landRules.add(rule);
         }
       } else if (resourceOrUnit instanceof Resource) {
-        @SuppressWarnings("unused")
-        final Resource type = (Resource) resourceOrUnit;
         resourceRules.add(rule);
       }
     }

@@ -737,9 +737,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
     // if its an original factory then unlimited production
     Collections.sort(producers, getBestProducerComparator(to, units, player));
-    // Can be null!
-    @SuppressWarnings("unused")
-	final TerritoryAttachment ta = TerritoryAttachment.get(producers.iterator().next());
     if (!getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(units, to)) {
       return "Cannot place more units which require units, than production capacity of territories with the required units";
     }

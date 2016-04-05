@@ -807,8 +807,6 @@ class BattleModel extends DefaultTableModel {
   private final Collection<TerritoryEffect> m_territoryEffects;
   private final boolean m_isAmphibious;
   private final Collection<Unit> m_amphibiousLandAttackers;
-  @SuppressWarnings("unused")
-private final PlayerID m_player;
   private BattleModel m_enemyBattleModel = null;
 
   private static String[] varDiceArray(final GameData data) {
@@ -832,7 +830,6 @@ private final PlayerID m_player;
     super(new Object[0][0], varDiceArray(data));
     m_uiContext = uiContext;
     m_data = data;
-    m_player = player;
     m_attack = attack;
     // were going to modify the units
     m_units = new ArrayList<Unit>(units);

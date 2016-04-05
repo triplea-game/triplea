@@ -857,8 +857,6 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
       Territory capUnitTerritory = null;
       int maxUnits = (totPU - 1) / minimumUnitPrice;
       int currentProduction = 0;
-      @SuppressWarnings("unused")
-	int maxProduction = 0;
       // we should sort this
       Collections.shuffle(rfactories);
       for (final Territory fixTerr : rfactories) {
@@ -873,8 +871,6 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
         }
         unitsThatAreDisabledNeedingRepair.addAll(Match.getMatches(fixTerr.getUnits().getUnits(), ourDisabled));
         final TripleAUnit taUnit = (TripleAUnit) possibleFactoryNeedingRepair;
-        maxProduction +=
-            TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, false, true);
         diff = taUnit.getUnitDamage();
         if (fixTerr == capitol) {
           capProduction =
