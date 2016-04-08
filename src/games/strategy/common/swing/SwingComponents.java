@@ -50,7 +50,7 @@ public class SwingComponents {
   }
 
   public static JButton newJButton(String title, String toolTip, Runnable actionListener) {
-    return newJButton(title, toolTip, SwingAction.of(e->actionListener.run()));
+    return newJButton(title, toolTip, SwingAction.of(e -> actionListener.run()));
   }
 
   public static JButton newJButton(String title, String toolTip, ActionListener actionListener) {
@@ -98,7 +98,7 @@ public class SwingComponents {
 
         // dialog is now closed
         visiblePrompts.remove(message);
-        if( response == JOptionPane.YES_OPTION ) {
+        if (response == JOptionPane.YES_OPTION) {
           confirmedAction.run();
         } else {
           cancelAction.run();
