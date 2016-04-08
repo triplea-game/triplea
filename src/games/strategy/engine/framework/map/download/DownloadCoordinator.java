@@ -46,14 +46,15 @@ public class DownloadCoordinator {
             // It's a difficult situation to create for the user, and the worst case is multiple map download
             // complete dialogs appearing - which is not a big deal.
             downloadPromptAlreadyShown = true;
-            SwingComponents.promptUser("Map Downloads Completed",
-                "Map downloads are complete, would you like to continue downloading more maps?", () -> {}, // do nothing, keep the window open
-                () -> { // user clicked no, close the window
-                  if (downloadCompleteAction.isPresent()) {
-                    downloadCompleteAction.get().run();
-                  }
-                }
-            );
+            String windowTitle ="Map Downloads Completed";
+            String windowMsg = "Map downloads are complete, would you like to continue downloading more maps?";
+            Runnable userClicksYesAction = () -> {}; // do nothing, dialog will just close
+            Runnable userClicksNoAction =  () -> { // user clicked no, close the window
+              if (downloadCompleteAction.isPresent()) {
+                downloadCompleteAction.get().run();
+              }
+            };
+            SwingComponents.promptUser(windowTitle, windowMsg, userClicksYesAction, userClicksNoAction);
           }
         } catch (Exception e) {
           e.printStackTrace();
