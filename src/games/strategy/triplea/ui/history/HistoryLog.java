@@ -134,7 +134,7 @@ public class HistoryLog extends JFrame {
       }
     }
     do {
-      final Enumeration nodeEnum = curNode.preorderEnumeration();
+      final Enumeration<?> nodeEnum = curNode.preorderEnumeration();
       while (nodeEnum.hasMoreElements()) {
         final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
         if (node instanceof Step) {
@@ -190,7 +190,7 @@ public class HistoryLog extends JFrame {
     do {
       // keep track of conquered territory during combat
       String conquerStr = "";
-      final Enumeration nodeEnum = curNode.preorderEnumeration();
+      final Enumeration<?> nodeEnum = curNode.preorderEnumeration();
       while (nodeEnum.hasMoreElements()) {
         final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
         final String title = node.getTitle();

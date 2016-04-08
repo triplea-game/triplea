@@ -41,7 +41,7 @@ public class IPFinder {
    * @return java.net.InetAddress the ip address to use
    */
   public static InetAddress findInetAddress() throws SocketException, UnknownHostException {
-    final Enumeration enum1 = NetworkInterface.getNetworkInterfaces();
+    final Enumeration<NetworkInterface> enum1 = NetworkInterface.getNetworkInterfaces();
     // Test if null, no point taking a performance hit by
     // letting the JVM check for a NullPointerException.
     if (enum1 == null) {
@@ -51,7 +51,7 @@ public class IPFinder {
     final List<InetAddress> allButLoopback = new ArrayList<InetAddress>();
     while (enum1.hasMoreElements()) {
       final NetworkInterface netface = (NetworkInterface) enum1.nextElement();
-      final Enumeration enum2 = netface.getInetAddresses();
+      final Enumeration<InetAddress> enum2 = netface.getInetAddresses();
       while (enum2.hasMoreElements()) {
         final InetAddress ip2 = (InetAddress) enum2.nextElement();
         if (!ip2.isLoopbackAddress()) {
@@ -109,11 +109,11 @@ public class IPFinder {
   }
 
   public static void main(final String[] args) throws SocketException, UnknownHostException {
-    final Enumeration enum1 = NetworkInterface.getNetworkInterfaces();
+    final Enumeration<NetworkInterface> enum1 = NetworkInterface.getNetworkInterfaces();
     while (enum1.hasMoreElements()) {
       final NetworkInterface netface = (NetworkInterface) enum1.nextElement();
       System.out.println("interface:" + netface);
-      final Enumeration enum2 = netface.getInetAddresses();
+      final Enumeration<InetAddress> enum2 = netface.getInetAddresses();
       while (enum2.hasMoreElements()) {
         final InetAddress ip2 = (InetAddress) enum2.nextElement();
         System.out.println(" address:" + ip2 + " is private:" + isPrivateNetworkAddress(ip2) + " is loopback:"

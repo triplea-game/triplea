@@ -513,7 +513,7 @@ public class BattleDisplay extends JPanel {
 
   private class RetreatComponent extends JPanel {
     private static final long serialVersionUID = 3855054934860687832L;
-    private final JList m_list;
+    private final JList<Territory> m_list;
     private final JLabel m_retreatTerritory = new JLabel("");
 
     RetreatComponent(final Collection<Territory> possible) {
@@ -527,7 +527,7 @@ public class BattleDisplay extends JPanel {
       imagePanel.setBorder(new EmptyBorder(10, 10, 10, 0));
       this.add(imagePanel, BorderLayout.EAST);
       final Vector<Territory> listElements = new Vector<Territory>(possible);
-      m_list = new JList(listElements);
+      m_list = new JList<>(listElements);
       m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       if (listElements.size() >= 1) {
         m_list.setSelectedIndex(0);

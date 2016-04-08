@@ -95,7 +95,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
       switch (m_step) {
         case READ_CHALLENGE:
           // read name, send challenge
-          final Map<String, String> challenge = (Map) o;
+          final Map<String, String> challenge = (Map<String, String>) o;
           if (s_logger.isLoggable(Level.FINER)) {
             s_logger.log(Level.FINER, "read challenge:" + challenge);
           }

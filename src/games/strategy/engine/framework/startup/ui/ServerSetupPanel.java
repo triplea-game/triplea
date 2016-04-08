@@ -348,7 +348,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     private final JLabel m_playerLabel;
     private final JCheckBox m_localCheckBox;
     private final JCheckBox m_enabledCheckBox;
-    private final JComboBox m_type;
+    private final JComboBox<String> m_type;
     private JLabel m_alliance;
     private final String[] m_types;
 
@@ -364,7 +364,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       // this gets updated later
       m_enabledCheckBox.setSelected(true);
       m_types = types;
-      m_type = new JComboBox(types);
+      m_type = new JComboBox<String>(types);
       String previousSelection = reloadSelections.get(playerName);
       if (previousSelection.equalsIgnoreCase("Client")) {
         previousSelection = types[0];
@@ -390,7 +390,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       });
     }
 
-    public JComboBox getType() {
+    public JComboBox<String> getType() {
       return m_type;
     }
 

@@ -14,7 +14,7 @@ public interface IAbstractMoveDelegate extends IRemote, IDelegate {
    *
    * @return a list of UndoableMoves or UndoablePlacements
    */
-  public abstract List getMovesMade();
+  public abstract List<?> getMovesMade();
 
 
   /**

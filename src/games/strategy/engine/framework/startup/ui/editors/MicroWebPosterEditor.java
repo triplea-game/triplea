@@ -45,7 +45,7 @@ public class MicroWebPosterEditor extends EditorPanel {
   // private final JLabel m_idLabel = new JLabel("Site ID:");
   private final JTextField m_id = new JTextField();
   private final JLabel m_hostLabel = new JLabel("Host:");
-  private final JComboBox m_hosts;
+  private final JComboBox<String> m_hosts;
   private final JCheckBox m_includeSaveGame = new JCheckBox("Send emails");
   private final IWebPoster m_bean;
   private final String[] m_parties;
@@ -61,7 +61,7 @@ public class MicroWebPosterEditor extends EditorPanel {
     add(m_hostLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
     m_bean.addToAllHosts(m_bean.getHost());
-    m_hosts = new JComboBox(m_bean.getAllHosts());
+    m_hosts = new JComboBox<>(m_bean.getAllHosts());
     m_hosts.setEditable(true);
     m_hosts.setMaximumRowCount(6);
     add(m_hosts, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
@@ -163,10 +163,11 @@ public class MicroWebPosterEditor extends EditorPanel {
     window.setLayout(new GridBagLayout());
     window.getContentPane().add(new JLabel("Select Players For Each Nation:"), new GridBagConstraints(0, 0, 2, 1, 0, 0,
         GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(20, 20, 20, 20), 0, 0));
-    final JComboBox[] comboBoxes = new JComboBox[m_parties.length];
+    @SuppressWarnings("unchecked")
+    final JComboBox<String>[] comboBoxes = new JComboBox[m_parties.length];//TODO change Array into a List in order to remove the supressed warning
     for (int i = 0; i < m_parties.length; i++) {
       final JLabel label = new JLabel(m_parties[i] + ": ");
-      comboBoxes[i] = new JComboBox();
+      comboBoxes[i] = new JComboBox<>();
       for (int p = 0; p < players.size(); p++) {
         comboBoxes[i].addItem(players.get((p)));
       }

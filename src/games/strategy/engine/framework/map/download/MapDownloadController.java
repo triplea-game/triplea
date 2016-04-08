@@ -48,7 +48,7 @@ public class MapDownloadController {
       return;
     }
     final Frame parentFrame = JOptionPane.getFrameForComponent(parentComponent);
-    InstallMapDialog.showDownloadMapsWindow(parentFrame, download.getDownloads());
+    DownloadMapsWindow.showDownloadMapsWindow(parentFrame, download.getDownloads());
 
   }
 
@@ -136,7 +136,7 @@ public class MapDownloadController {
           installed = new File(GameSelectorModel.DEFAULT_MAP_DIRECTORY, d.getMapName() + ".zip");
         }
         if (installed != null && installed.exists()) {
-          if (d.getVersion() != null && d.getVersion().isGreaterThan(InstallMapDialog.getVersion(installed), true)) {
+          if (d.getVersion() != null && d.getVersion().isGreaterThan(DownloadMapsWindow.getVersion(installed), true)) {
             listingToBeAddedTo.add(d.getMapName());
           }
         }

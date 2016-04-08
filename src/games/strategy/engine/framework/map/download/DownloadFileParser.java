@@ -26,6 +26,7 @@ public final class DownloadFileParser {
   }
 
   public static List<DownloadFileDescription> parse(final InputStream is) {
+    @SuppressWarnings("unchecked")
     List<Map<String,Object>> yamlData = (List<Map<String,Object>>) (new Yaml()).load(is);
 
     final List<DownloadFileDescription> rVal = new ArrayList<DownloadFileDescription>();

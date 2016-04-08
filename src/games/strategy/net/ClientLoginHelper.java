@@ -24,6 +24,7 @@ class ClientLoginHelper {
       // write the object output streams magic number
       out.flush();
       final ObjectInputStream in = new ObjectInputStream(m_streams.getBufferedIn());
+      @SuppressWarnings("rawtypes")
       final Map challenge = (Map) in.readObject();
       // the degenerate case
       if (challenge == null) {
@@ -31,8 +32,8 @@ class ClientLoginHelper {
         out.flush();
         return true;
       }
-      final Set<Map.Entry> entries = challenge.entrySet();
-      for (final Map.Entry entry : entries) {
+      final Set<Map.Entry<?,?>> entries = challenge.entrySet();//TODO someone needs to rewrite this in order to remove the Supressed Warning
+      for (final Map.Entry<?,?> entry : entries) {
         // check what we read is a string
         if (!(entry.getKey() instanceof String) && !(entry.getValue() instanceof String)) {
           throw new IllegalStateException("Value must be a String");
@@ -41,7 +42,7 @@ class ClientLoginHelper {
       if (m_login == null) {
         throw new IllegalStateException("Challenged, but no login generator");
       }
-      final Map<String, String> props = m_login.getProperties(challenge);
+      final Map<String, String> props = m_login.getProperties((Map<String,String>)challenge);
       out.writeObject(props);
       out.flush();
       final String response = (String) in.readObject();

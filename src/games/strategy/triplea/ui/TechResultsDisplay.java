@@ -43,7 +43,7 @@ public class TechResultsDisplay extends JPanel {
     if (msg.getHits() != 0) {
       add(new JLabel("Technologies discovered:"), new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
           GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-      final JList list = new JList(new Vector<String>(msg.getAdvances()));
+      final JList<String> list = new JList<>(new Vector<String>(msg.getAdvances()));
       add(list, new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
           new Insets(0, 0, 5, 0), 0, 0));
       list.setBackground(this.getBackground());

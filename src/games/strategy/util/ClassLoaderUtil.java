@@ -138,7 +138,7 @@ public class ClassLoaderUtil {
    *         release the loader; empty indicates a successful release; non-empty
    *         indicates at least one error attempting to close an open jar.
    */
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({"rawtypes", "unused"})
   private static IOException[] releaseLoader(final URLClassLoader classLoader, final Vector<String> jarsClosed) {
     IOException[] result = null;
     try {

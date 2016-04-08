@@ -980,10 +980,11 @@ public class TripleAFrame extends MainGameFrame {
     m_messageAndDialogThreadPool.waitForAll();
     final AtomicReference<Unit> selected = new AtomicReference<Unit>();
     final String message = "Select bombing target in " + territory.getName();
+    @SuppressWarnings("rawtypes")
     final Tuple<JPanel, JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList>>() {
       @Override
       public Tuple<JPanel, JList> run() {
-        final JList list = new JList(new Vector<Unit>(potentialTargets));
+        final JList<Unit> list = new JList<>(new Vector<Unit>(potentialTargets));
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
         final JPanel panel = new JPanel();
@@ -997,7 +998,7 @@ public class TripleAFrame extends MainGameFrame {
       }
     });
     final JPanel panel = comps.getFirst();
-    final JList list = comps.getSecond();
+    final JList<?> list = comps.getSecond();
     final String[] options = {"OK", "Cancel"};
     final int selection = EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION,
         JOptionPane.PLAIN_MESSAGE, null, options, null, getUIContext().getCountDownLatchHandler());
@@ -1036,11 +1037,12 @@ public class TripleAFrame extends MainGameFrame {
       return candidates.iterator().next();
     }
     m_messageAndDialogThreadPool.waitForAll();
+    @SuppressWarnings("rawtypes")
     final Tuple<JPanel, JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList>>() {
       @Override
       public Tuple<JPanel, JList> run() {
         m_mapPanel.centerOn(currentTerritory);
-        final JList list = new JList(new Vector<Territory>(candidates));
+        final JList<Territory> list = new JList<>(new Vector<Territory>(candidates));
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
         final JPanel panel = new JPanel();
@@ -1056,7 +1058,7 @@ public class TripleAFrame extends MainGameFrame {
       }
     });
     final JPanel panel = comps.getFirst();
-    final JList list = comps.getSecond();
+    final JList<?> list = comps.getSecond();
     final String[] options = {"OK"};
     final String title = "Select territory for air units to land, current territory is " + currentTerritory.getName();
     EventThreadJOptionPane.showOptionDialog(this, panel, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
@@ -1511,7 +1513,7 @@ public class TripleAFrame extends MainGameFrame {
       SwingUtilities.invokeAndWait(new Runnable() {
         @Override
         public void run() {
-          final JList list = new JList(new Vector<Territory>(candidates));
+          final JList<Territory> list = new JList<>(new Vector<Territory>(candidates));
           list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
           list.setSelectedIndex(0);
           final JPanel panel = new JPanel();

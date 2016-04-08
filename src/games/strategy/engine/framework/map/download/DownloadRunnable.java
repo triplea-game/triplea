@@ -82,6 +82,7 @@ public class DownloadRunnable implements Runnable {
     }
   }
 
+  @SuppressWarnings("unused")
   private static URL getUrlFollowingRedirects(String possibleRedirectionUrl) throws Exception {
     URL url = new URL(possibleRedirectionUrl);
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();

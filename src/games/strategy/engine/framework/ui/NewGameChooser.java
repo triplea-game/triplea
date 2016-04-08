@@ -38,7 +38,7 @@ public class NewGameChooser extends JDialog {
   private JButton m_okButton;
   private JButton m_cancelButton;
   private JButton m_refreshGamesButton;
-  private JList m_gameList;
+  private JList<NewGameChooserEntry> m_gameList;
   private JPanel m_infoPanel;
   private JEditorPane m_notesPanel;
   private NewGameChooserModel m_gameListModel;
@@ -58,7 +58,7 @@ public class NewGameChooser extends JDialog {
     m_cancelButton = new JButton("Cancel");
     m_refreshGamesButton = new JButton("Refresh Game List");
     m_gameListModel = getNewGameChooserModel();
-    m_gameList = new JList(m_gameListModel);
+    m_gameList = new JList<>(m_gameListModel);
     m_infoPanel = new JPanel();
     m_infoPanel.setLayout(new BorderLayout());
     m_notesPanel = new JEditorPane();

@@ -3,6 +3,8 @@ package games.strategy.triplea.delegate;
 import java.util.Collection;
 import java.util.List;
 
+import org.junit.Assert;
+
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
@@ -17,7 +19,6 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.ui.display.DummyTripleaDisplay;
-import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 
 public class GameDataTestUtil {

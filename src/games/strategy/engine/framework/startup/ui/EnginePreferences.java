@@ -147,8 +147,8 @@ public class EnginePreferences extends JDialog {
   private void setupListeners() {
     m_okButton.addActionListener(SwingAction.of("OK", e ->         setVisible(false)));
     m_lookAndFeel.addActionListener(SwingAction.of("Set Look And Feel", e -> {
-        final Triple<JList, Map<String, String>, String> lookAndFeel = BasicGameMenuBar.getLookAndFeelList();
-        final JList list = lookAndFeel.getFirst();
+        final Triple<JList<String>, Map<String, String>, String> lookAndFeel = BasicGameMenuBar.getLookAndFeelList();
+        final JList<String> list = lookAndFeel.getFirst();
         final String currentKey = lookAndFeel.getThird();
         final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
         if (JOptionPane.showConfirmDialog(m_parentFrame, list) == JOptionPane.OK_OPTION) {

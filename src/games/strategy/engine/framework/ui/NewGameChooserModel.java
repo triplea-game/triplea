@@ -35,7 +35,7 @@ import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 
-public class NewGameChooserModel extends DefaultListModel {
+public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   private static final long serialVersionUID = -2044689419834812524L;
   private final ClearGameChooserCacheMessenger clearCacheMessenger;
 

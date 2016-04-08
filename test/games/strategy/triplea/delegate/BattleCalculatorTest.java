@@ -35,7 +35,7 @@ public class BattleCalculatorTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    final GameData data = LoadGameUtil.loadGame("World War II Revised Test", "revised_test.xml");
+    final GameData data = LoadGameUtil.loadTestGame("revised_test.xml");
     m_bridge = getDelegateBridge(british(data), data);
   }
 

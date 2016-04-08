@@ -90,7 +90,7 @@ public class WW2V3_41_Test extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    m_data = LoadGameUtil.loadGame("World War II v3 1941 Test", "ww2v3_1941_test.xml");
+    m_data = LoadGameUtil.loadTestGame("ww2v3_1941_test.xml");
   }
 
   @Override

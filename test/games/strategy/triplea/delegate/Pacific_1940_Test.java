@@ -20,7 +20,7 @@ public class Pacific_1940_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    m_data = LoadGameUtil.loadGame("World War II Pacific Test", "ww2pac40_test.xml");
+    m_data = LoadGameUtil.loadTestGame("ww2pac40_test.xml");
   }
 
   @Override

@@ -33,10 +33,8 @@ import com.google.common.collect.Lists;
 import games.strategy.common.swing.SwingComponents;
 import games.strategy.util.Version;
 
-
-// TODO: rename to DownloadMapswindow
 /** Window that allows for map downloads and removal */
-public class InstallMapDialog extends JFrame {
+public class DownloadMapsWindow extends JFrame {
   private static final long serialVersionUID = -1542210716764178580L;
 
   private static enum MapAction {
@@ -57,7 +55,7 @@ public class InstallMapDialog extends JFrame {
   public static void showDownloadMapsWindow(final Component parent, final List<DownloadFileDescription> games) {
     checkNotNull(games);
     final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
-    final InstallMapDialog dia = new InstallMapDialog(games);
+    final DownloadMapsWindow dia = new DownloadMapsWindow(games);
     dia.setSize(800, WINDOW_HEIGHT);
     dia.setLocationRelativeTo(parentFrame);
     dia.setMinimumSize(new Dimension(200, 200));
@@ -65,7 +63,7 @@ public class InstallMapDialog extends JFrame {
     dia.toFront();
   }
 
-  private InstallMapDialog(final List<DownloadFileDescription> games) {
+  private DownloadMapsWindow(final List<DownloadFileDescription> games) {
     super("Download Maps");
 
     progressPanel = new MapDownloadProgressPanel(this);
@@ -132,7 +130,7 @@ public class InstallMapDialog extends JFrame {
 
     final JLabel mapSizeLabel = new JLabel(" ");
 
-    final DefaultListModel listModel = createGameSelectionListModel(maps);
+    final DefaultListModel<String> listModel = createGameSelectionListModel(maps);
     final JList<String> gamesList = createGameSelectionList(listModel, maps, descriptionPane, action, mapSizeLabel);
     gamesList.addListSelectionListener(createDescriptionPanelUpdatingSelectionListener(
         descriptionPane, gamesList, maps, action, mapSizeLabel));
@@ -147,14 +145,14 @@ public class InstallMapDialog extends JFrame {
   }
 
 
-  private static DefaultListModel createGameSelectionListModel(List<DownloadFileDescription> maps) {
+  private static DefaultListModel<String> createGameSelectionListModel(List<DownloadFileDescription> maps) {
     return SwingComponents.newJListModel(maps, (map) -> map.getMapName());
   }
 
 
-  private static JList<String> createGameSelectionList(DefaultListModel model, List<DownloadFileDescription> maps,
+  private static JList<String> createGameSelectionList(DefaultListModel<String> model, List<DownloadFileDescription> maps,
       JEditorPane descriptionPanel, MapAction action, JLabel mapSizeLabel) {
-    JList gamesList = SwingComponents.newJList(model);
+    JList<String> gamesList = SwingComponents.newJList(model);
 
     Optional<Integer> index = getDefaultSelectionIndex(maps);
     if (index.isPresent()) {
@@ -247,7 +245,7 @@ public class InstallMapDialog extends JFrame {
   }
 
   private JPanel createButtonsPanel(MapAction action, JList<String> gamesList, List<DownloadFileDescription> maps,
-      DefaultListModel listModel) {
+      DefaultListModel<String> listModel) {
     final JPanel buttonsPanel = SwingComponents.gridPanel(1, 5);
 
     buttonsPanel.setBorder(SwingComponents.newEmptyBorder(20));
@@ -283,19 +281,20 @@ public class InstallMapDialog extends JFrame {
   private static final String MULTIPLE_SELECT_MSG =
       "You can select multiple maps by holding control or shift while clicking map names.";
 
+  @SuppressWarnings("unchecked")//TODO unify this class... it uses Strings and DownloadFileDescription's in the same ListModel #typeSafety
   private JButton buildMapActionButton(MapAction action, JList<String> gamesList, List<DownloadFileDescription> maps,
-      DefaultListModel listModel) {
+      DefaultListModel<?> listModel) {
     final JButton actionButton;
 
     if (action == MapAction.REMOVE) {
-      actionButton = SwingComponents.newJButton("Remove", removeAction(gamesList, maps, listModel));
+      actionButton = SwingComponents.newJButton("Remove", removeAction(gamesList, maps, (DefaultListModel<DownloadFileDescription>) listModel));
 
       String hoverText =
           "Click this button to remove the maps selected above from your computer. " + MULTIPLE_SELECT_MSG;
       actionButton.setToolTipText(hoverText);
     } else {
       final String buttonText = (action == MapAction.INSTALL) ? "Install" : "Update";
-      actionButton = SwingComponents.newJButton(buttonText, installAction(gamesList, maps, listModel));
+      actionButton = SwingComponents.newJButton(buttonText, installAction(gamesList, maps, (DefaultListModel<String>) listModel));
       String hoverText = "Click this button to download and install the maps selected above. " + MULTIPLE_SELECT_MSG;
       actionButton.setToolTipText(hoverText);
     }
@@ -303,7 +302,7 @@ public class InstallMapDialog extends JFrame {
   }
 
   private static ActionListener removeAction(JList<String> gamesList, List<DownloadFileDescription> maps,
-      DefaultListModel listModel) {
+      DefaultListModel<DownloadFileDescription> listModel) {
     return (e) -> {
       final List<String> selectedValues = gamesList.getSelectedValuesList();
       final List<DownloadFileDescription> selectedMaps =
@@ -315,8 +314,8 @@ public class InstallMapDialog extends JFrame {
     };
   }
 
-  private ActionListener installAction(JList gamesList, List<DownloadFileDescription> maps,
-      DefaultListModel listModel) {
+  private ActionListener installAction(JList<String> gamesList, List<DownloadFileDescription> maps,
+      DefaultListModel<String> listModel) {
     return (e) -> {
       List<String> selectedValues = gamesList.getSelectedValuesList();
       List<DownloadFileDescription> downloadList = Lists.newArrayList();

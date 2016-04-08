@@ -111,7 +111,7 @@ public class TechPanel extends ActionPanel {
         JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
         return;
       }
-      final JList list = new JList(new Vector<TechAdvance>(available));
+      final JList<TechAdvance> list = new JList<>(new Vector<TechAdvance>(available));
       final JPanel panel = new JPanel();
       panel.setLayout(new BorderLayout());
       panel.add(list, BorderLayout.CENTER);
@@ -163,7 +163,7 @@ public class TechPanel extends ActionPanel {
       return;
     }
     TechnologyFrontier category = null;
-    final JList list = new JList(new Vector<TechnologyFrontier>(techCategories)) {
+    final JList<Object> list = new JList<Object>(new Vector<TechnologyFrontier>(techCategories)) {
       private static final long serialVersionUID = 35094445315520702L;
 
       @Override
@@ -219,7 +219,7 @@ public class TechPanel extends ActionPanel {
         return;
       }
       TechnologyFrontier category = null;
-      final JList list = new JList(new Vector<TechnologyFrontier>(techCategories)) {
+      final JList<Object> list = new JList<Object>(new Vector<TechnologyFrontier>(techCategories)) {
         private static final long serialVersionUID = -8415987764855418565L;
 
         @Override

@@ -19,7 +19,7 @@ public class AIUtilsTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    m_data = LoadGameUtil.loadGame("World War II Revised Test", "revised_test.xml");
+    m_data = LoadGameUtil.loadTestGame("revised_test.xml");
   }
 
   @Override

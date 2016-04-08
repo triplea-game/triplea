@@ -276,6 +276,7 @@ public class MetaSetupPanel extends SetupPanel {
       return Optional.empty();
     }
     Yaml yaml = new Yaml();
+    @SuppressWarnings("unchecked")
     List<Map<String, Object>> yamlDataObj = (List<Map<String, Object>>) yaml.load(yamlContent);
     if( yamlDataObj == null ) {
       return Optional.empty();

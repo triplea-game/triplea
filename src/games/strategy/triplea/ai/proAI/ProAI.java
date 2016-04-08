@@ -1,5 +1,15 @@
 package games.strategy.triplea.ai.proAI;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
@@ -42,16 +52,6 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * Pro AI.
  */
@@ -70,7 +70,6 @@ public class ProAI extends AbstractAI {
   private final ProRetreatAI retreatAI;
   private final ProScrambleAI scrambleAI;
   private final ProPoliticsAI politicsAI;
-  private final ProTechAI techAI;
   private final ProBidAI bidAI;
 
   // Data shared across phases
@@ -89,7 +88,6 @@ public class ProAI extends AbstractAI {
     retreatAI = new ProRetreatAI(this);
     scrambleAI = new ProScrambleAI(this);
     politicsAI = new ProPoliticsAI(this);
-    techAI = new ProTechAI();
     bidAI = new ProBidAI();
     storedCombatMoveMap = null;
     storedFactoryMoveMap = null;
@@ -275,7 +273,7 @@ public class ProAI extends AbstractAI {
 
   @Override
   protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {
-    techAI.tech(techDelegate, data, player);
+    ProTechAI.tech(techDelegate, data, player);
   }
 
   @Override

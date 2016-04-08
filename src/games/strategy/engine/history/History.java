@@ -135,7 +135,7 @@ public class History extends DefaultTreeModel implements java.io.Serializable {
         m_changes.remove(lastChange);
       }
       final List<HistoryNode> nodesToRemove = new ArrayList<HistoryNode>();
-      final Enumeration enumeration = ((DefaultMutableTreeNode) this.getRoot()).preorderEnumeration();
+      final Enumeration<?> enumeration = ((DefaultMutableTreeNode) this.getRoot()).preorderEnumeration();
       enumeration.nextElement();
       boolean startRemoving = false;
       while (enumeration.hasMoreElements()) {
@@ -194,7 +194,7 @@ class SerializedHistory implements Serializable {
   public SerializedHistory(final History history, final GameData data, final List<Change> changes) {
     m_data = data;
     int changeIndex = 0;
-    final Enumeration enumeration = ((DefaultMutableTreeNode) history.getRoot()).preorderEnumeration();
+    final Enumeration<?> enumeration = ((DefaultMutableTreeNode) history.getRoot()).preorderEnumeration();
     enumeration.nextElement();
     while (enumeration.hasMoreElements()) {
       final HistoryNode node = (HistoryNode) enumeration.nextElement();

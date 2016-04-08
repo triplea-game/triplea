@@ -59,9 +59,10 @@ class ServerLoginHelper {
       }
       out.writeObject(challenge);
       out.flush();
-      final Map credentials = (Map) in.readObject();
-      final Set<Map.Entry> entries = credentials.entrySet();
-      for (final Map.Entry entry : entries) {
+      @SuppressWarnings("rawtypes")
+      final Map credentials = (Map) in.readObject();//TODO rewrite in order to remove Suppressed Warning
+      final Set<Map.Entry<?,?>> entries = credentials.entrySet();
+      for (final Map.Entry<?,?> entry : entries) {
         // check what we read is a string
         if (!(entry.getKey() instanceof String) && !(entry.getValue() instanceof String)) {
           throw new IllegalStateException("Value must be a String");

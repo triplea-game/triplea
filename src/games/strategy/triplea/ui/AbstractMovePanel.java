@@ -2,6 +2,7 @@ package games.strategy.triplea.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +26,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.triplea.delegate.AbstractUndoableMove;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
@@ -130,9 +132,10 @@ public abstract class AbstractMovePanel extends ActionPanel {
     return (IAbstractMoveDelegate) m_bridge.getRemoteDelegate();
   }
 
+  @SuppressWarnings("unchecked")
   protected final void updateMoves() {
-    m_undoableMoves = getMoveDelegate().getMovesMade();
-    m_undoableMovesPanel.setMoves(m_undoableMoves);
+    m_undoableMoves = (List<UndoableMove>) getMoveDelegate().getMovesMade();
+    m_undoableMovesPanel.setMoves(new ArrayList<AbstractUndoableMove>(m_undoableMoves));
   }
 
   public final void cancelMove() {
@@ -151,7 +154,8 @@ public abstract class AbstractMovePanel extends ActionPanel {
    * failure rather than just one)
    */
   public void undoMoves(Set<Unit> units) {
-    Set<UndoableMove> movesToUndo = getMovesToUndo(units, getMoveDelegate().getMovesMade());
+    @SuppressWarnings("unchecked")
+    Set<UndoableMove> movesToUndo = getMovesToUndo(units, (List<Object>) getMoveDelegate().getMovesMade());
 
     if (movesToUndo.size() == 0) {
       String error = "Could not undo any moves, check that the unit has moved and that you can undo the move normally";

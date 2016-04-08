@@ -23,7 +23,7 @@ public class Pact_of_Steel_2_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    m_data = LoadGameUtil.loadGame("Pact of Steel 2 Test", "pact_of_steel_2_test.xml");
+    m_data = LoadGameUtil.loadTestGame("pact_of_steel_2_test.xml");
   }
 
   @Override
