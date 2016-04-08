@@ -148,7 +148,7 @@ public class SwingComponents {
   }
 
   public static <T> JList<String> newJList(DefaultListModel<String> listModel) {
-    return new JList<String>(listModel);
+    return new JList<>(listModel);
   }
 
   public static JEditorPane newHtmlJEditorPane() {
