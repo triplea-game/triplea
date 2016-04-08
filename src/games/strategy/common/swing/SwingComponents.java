@@ -1,45 +1,26 @@
 package games.strategy.common.swing;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.GridLayout;
-import java.awt.Window;
+import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.triplea.UrlConstants;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.swing.Action;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-
-import com.google.common.collect.Sets;
-import games.strategy.engine.framework.map.download.DownloadFileDescription;
-import games.strategy.net.DesktopUtilityBrowserLauncher;
-import games.strategy.triplea.UrlConstants;
-
 public class SwingComponents {
 
-  private static Set<String> visiblePrompts = Sets.newHashSet();
+  private static Set<String> visiblePrompts = new HashSet<>();
 
   /** Creates a JPanel with BorderLayout and adds a west component and an east component */
   public static JPanel horizontalJPanel(Component westComponent, Component eastComponent) {
