@@ -17,6 +17,7 @@ import games.strategy.common.swing.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.InstallMapDialog;
+import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import games.strategy.util.Match;
 
 /**
@@ -47,10 +48,7 @@ public class ResourceLoader {
               + "\nOnce the download completes, you may reconnect to this game.",
           () -> InstallMapDialog.showDownloadMapsWindow(mapName));
 
-      throw new IllegalStateException("Could not find file folder or zip for map: " + mapName + "\r\n"
-          + "Please DOWNLOAD THIS MAP if you do not have it." + "\r\n"
-          + "If you are making a map or mod, make sure the mapName property within the xml game file exactly matches the map zip or folder name."
-          + "\r\n" + "\r\n");
+      throw new MapNotFoundException();
     }
 
     dirs.add(resourceFolder.getAbsolutePath());
