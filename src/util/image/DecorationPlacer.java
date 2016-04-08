@@ -612,9 +612,8 @@ public class DecorationPlacer extends JFrame {
     File image = new File(s_mapFolderLocation + File.separator + s_imagePointType.getFolderName(),
         s_imagePointType.getImageName());
     if (image == null || !image.exists()) {
-      image = new File(
-          ClientFileSystemHelper.getRootFolder() + File.separator + ResourceLoader.RESOURCE_FOLDER + File.separator + s_imagePointType.getFolderName(),
-          s_imagePointType.getImageName());
+      image = new File(ClientFileSystemHelper.getRootFolder() + File.separator + ResourceLoader.RESOURCE_FOLDER
+          + File.separator + s_imagePointType.getFolderName(), s_imagePointType.getImageName());
     }
     if (image == null || !image.exists()) {
       image = null;
