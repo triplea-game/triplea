@@ -613,8 +613,7 @@ public class DecorationPlacer extends JFrame {
         s_imagePointType.getImageName());
     if (image == null || !image.exists()) {
       image = new File(
-          ClientFileSystemHelper.getRootFolder() + File.separator + ResourceLoader.RESOURCE_FOLDER + File.separator
-              + s_imagePointType.getFolderName(),
+          ClientFileSystemHelper.getRootFolder() + File.separator + ResourceLoader.RESOURCE_FOLDER + File.separator + s_imagePointType.getFolderName(),
           s_imagePointType.getImageName());
     }
     if (image == null || !image.exists()) {
