@@ -5,8 +5,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
@@ -80,19 +78,6 @@ public class DownloadRunnable implements Runnable {
         error = e.getMessage();
       }
     }
-  }
-
-  @SuppressWarnings("unused")
-  private static URL getUrlFollowingRedirects(String possibleRedirectionUrl) throws Exception {
-    URL url = new URL(possibleRedirectionUrl);
-    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-    int status = conn.getResponseCode();
-    if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
-        || status == HttpURLConnection.HTTP_SEE_OTHER) {
-      // update the URL if we were redirected
-      url = new URL(conn.getHeaderField("Location"));
-    }
-    return url;
   }
 
   private void readLocalFile() {

@@ -4,8 +4,7 @@ import java.io.Serializable;
 
 public interface IAttachment extends Serializable {
   /** each implementing class NEEDS to have such an constructor, otherwise the parsing in GameParser won't work */
-  @SuppressWarnings("rawtypes")
-  Class[] attachmentConstructorParameter = new Class[] {String.class, Attachable.class, GameData.class};
+  Class<?>[] attachmentConstructorParameter = new Class<?>[] {String.class, Attachable.class, GameData.class};
 
   /**
    * Called after ALL attachments are created. IF an error occurs should throw an exception to halt the parsing.

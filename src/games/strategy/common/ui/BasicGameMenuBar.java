@@ -600,8 +600,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     try {
       final List<String> substanceLooks = getLookAndFeelAvailableList();
       for (final String s : substanceLooks) {
-        @SuppressWarnings("rawtypes")
-        final Class c = Class.forName(s);
+        final Class<?> c = Class.forName(s);
         final LookAndFeel lf = (LookAndFeel) c.newInstance();
         lookAndFeels.put(lf.getName(), s);
       }

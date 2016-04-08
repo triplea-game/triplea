@@ -30,7 +30,7 @@ public class MapProperty<T, U> extends AEditableProperty {
     resetProperties(map, m_properties, name, description);
   }
 
-  @SuppressWarnings({"rawtypes", "unchecked"})
+  @SuppressWarnings("unchecked")
   private void resetProperties(final Map<T, U> map, final List<IEditableProperty> properties, final String name,
       final String description) {
     properties.clear();
@@ -46,7 +46,7 @@ public class MapProperty<T, U> extends AEditableProperty {
       } else if (value instanceof String) {
         properties.add(new StringProperty(key, description, ((String) value)));
       } else if (value instanceof Collection || value instanceof List || value instanceof Set) {
-        properties.add(new CollectionProperty(name, description, ((Collection) value)));
+        properties.add(new CollectionProperty<>(name, description, ((Collection<U>) value)));
       } else if (value instanceof Integer) {
         properties.add(new NumberProperty(key, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) value)));
       } else if (value instanceof Double) {

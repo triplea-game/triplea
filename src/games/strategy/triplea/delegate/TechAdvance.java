@@ -24,8 +24,7 @@ import games.strategy.util.Tuple;
 
 public abstract class TechAdvance extends NamedAttachable implements Serializable {
   private static final long serialVersionUID = -1076712297024403156L;
-  @SuppressWarnings("rawtypes")
-  private static final Class[] preDefinedTechConstructorParameter = new Class[] {GameData.class};
+  private static final Class<?>[] preDefinedTechConstructorParameter = new Class<?>[] {GameData.class};
   public static final String TECH_NAME_SUPER_SUBS = "Super subs";
   public static final String TECH_PROPERTY_SUPER_SUBS = "superSub";
   public static final String TECH_NAME_JET_POWER = "Jet Power";

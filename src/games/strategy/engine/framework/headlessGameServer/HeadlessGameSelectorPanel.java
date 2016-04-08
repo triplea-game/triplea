@@ -289,8 +289,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
       }
     } else {
       final Vector<String> games = new Vector<String>(m_availableGames.getGameNames());
-      @SuppressWarnings({"rawtypes", "unchecked"})
-      final JList list = new JList(games);
+      final JList<String> list = new JList<>(games);
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       list.setVisibleRowCount(20);
       final JScrollPane listScroll = new JScrollPane(list);

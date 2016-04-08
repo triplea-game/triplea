@@ -2079,24 +2079,17 @@ public class TripleAFrame extends MainGameFrame {
     validate();
   }
 
-  @SuppressWarnings("unused")
   public boolean saveScreenshot(final HistoryNode node, final File file) {
     // get current history node. if we are in history view, get the selected node.
     final MapPanel mapPanel = getMapPanel();
     boolean retval = true;
     // get round/step/player from history tree
     int round = 0;
-    String step = null;
-    PlayerID player = null;
     final Object[] pathFromRoot = node.getPath();
     for (final Object pathNode : pathFromRoot) {
       final HistoryNode curNode = (HistoryNode) pathNode;
       if (curNode instanceof Round) {
         round = ((Round) curNode).getRoundNo();
-      }
-      if (curNode instanceof Step) {
-        player = ((Step) curNode).getPlayerID();
-        step = curNode.getTitle();
       }
     }
     final double scale = m_uiContext.getScale();

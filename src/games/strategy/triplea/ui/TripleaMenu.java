@@ -32,6 +32,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -1283,8 +1284,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     unitSizeGroup.add(radioItem50);
     radioItem100.setSelected(true);
     // select the closest to to the default size
-    @SuppressWarnings("rawtypes")
-    final Enumeration enum1 = unitSizeGroup.getElements();
+    final Enumeration<AbstractButton> enum1 = unitSizeGroup.getElements();
     boolean matchFound = false;
     while (enum1.hasMoreElements()) {
       final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) enum1.nextElement();

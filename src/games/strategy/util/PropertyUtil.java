@@ -42,7 +42,7 @@ public class PropertyUtil {
     }
   }
 
-  public static Field getFieldIncludingFromSuperClasses(@SuppressWarnings("rawtypes") final Class c, final String name,
+  public static Field getFieldIncludingFromSuperClasses(final Class<?> c, final String name,
       final boolean justFromSuper) {
     Field rVal = null;
     if (!justFromSuper) {
