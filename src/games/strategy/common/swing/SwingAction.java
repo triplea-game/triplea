@@ -3,8 +3,7 @@ package games.strategy.common.swing;
 import java.awt.event.ActionEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
-import javax.swing.AbstractAction;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 import games.strategy.debug.ClientLogger;
 
@@ -56,7 +55,11 @@ public class SwingAction {
 
   public static void invokeAndWait(Runnable action) {
     try {
-      SwingUtilities.invokeAndWait(() -> action.run());
+      if( SwingUtilities.isEventDispatchThread()) {
+        action.run();
+      } else {
+        SwingUtilities.invokeAndWait(() -> action.run());
+      }
     } catch (InvocationTargetException e) {
       ClientLogger.logError(e);
     } catch (InterruptedException e) {
