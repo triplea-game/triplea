@@ -39,7 +39,7 @@ import games.strategy.util.Version;
 
 
 /** Window that allows for map downloads and removal */
-public class DownloadMapswindow extends JFrame {
+public class DownloadMapsWindow extends JFrame {
   private static final long serialVersionUID = -1542210716764178580L;
 
   private static enum MapAction {
@@ -81,14 +81,14 @@ public class DownloadMapswindow extends JFrame {
     checkNotNull(games);
 
     final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
-    final DownloadMapswindow dia = new DownloadMapswindow(mapName, games);
+    final DownloadMapsWindow dia = new DownloadMapsWindow(mapName, games);
     dia.setSize(800, WINDOW_HEIGHT);
     dia.setLocationRelativeTo(parentFrame);
     dia.setMinimumSize(new Dimension(200, 200));
     dia.setVisible(true);
   }
 
-  private DownloadMapswindow(final Optional<String> mapName, final List<DownloadFileDescription> games) {
+  private DownloadMapsWindow(final Optional<String> mapName, final List<DownloadFileDescription> games) {
     super("Download Maps");
 
     progressPanel = new MapDownloadProgressPanel(this);
@@ -203,7 +203,7 @@ public class DownloadMapswindow extends JFrame {
           descriptionPane, gamesList, maps, action, mapSizeLabel));
 
       if (!mapToSelect.isDummyUrl()) {
-        InstallMapDialog.updateMapUrlAndSizeLabel(mapToSelect, action, mapSizeLabel);
+        DownloadMapsWindow.updateMapUrlAndSizeLabel(mapToSelect, action, mapSizeLabel);
       }
 
       main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);

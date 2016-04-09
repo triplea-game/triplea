@@ -93,7 +93,7 @@ public class MapDownloadController {
           text.append("<li> " + map + "</li>");
         }
         text.append("</ul></html>");
-        SwingComponents.promptUser("Update Your Maps?", text.toString(), () -> InstallMapDialog.showDownloadMapsWindow());
+        SwingComponents.promptUser("Update Your Maps?", text.toString(), () -> DownloadMapsWindow.showDownloadMapsWindow());
         return true;
       }
     } catch (final Exception e) {
