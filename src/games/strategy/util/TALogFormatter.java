@@ -7,12 +7,12 @@ import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
 public class TALogFormatter extends Formatter {
-  private boolean m_showDates = false;
+  private boolean showDates = false;
 
   public TALogFormatter() {}
 
   public void setShowDates(final boolean aVal) {
-    m_showDates = aVal;
+    showDates = aVal;
   }
 
   @Override
@@ -27,7 +27,7 @@ public class TALogFormatter extends Formatter {
           record.getLoggerName().length());
     }
     final StringBuilder builder = new StringBuilder();
-    if (m_showDates) {
+    if (showDates) {
       builder.append(new Date());
       builder.append(" ");
     }
