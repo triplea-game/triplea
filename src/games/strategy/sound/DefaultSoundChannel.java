@@ -11,10 +11,10 @@ import games.strategy.engine.framework.LocalPlayers;
  * on clients.
  */
 public class DefaultSoundChannel implements ISound {
-  private LocalPlayers m_localPlayers;
+  private LocalPlayers localPlayers;
 
   public DefaultSoundChannel(final LocalPlayers localPlayers) {
-    m_localPlayers = localPlayers;
+    this.localPlayers = localPlayers;
   }
 
 
@@ -32,19 +32,19 @@ public class DefaultSoundChannel implements ISound {
     }
     if (butNotThesePlayers != null) {
       for (final PlayerID p : butNotThesePlayers) {
-        if (m_localPlayers.playing(p)) {
+        if (localPlayers.playing(p)) {
           return;
         }
       }
     }
     boolean isPlaying = false;
     for (final PlayerID p : playersToSendTo) {
-      if (m_localPlayers.playing(p)) {
+      if (localPlayers.playing(p)) {
         isPlaying = true;
         break;
       }
     }
-    if (includeObservers && m_localPlayers.getLocalPlayers().isEmpty()) {
+    if (includeObservers && localPlayers.getLocalPlayers().isEmpty()) {
       isPlaying = true;
     }
     if (isPlaying) {

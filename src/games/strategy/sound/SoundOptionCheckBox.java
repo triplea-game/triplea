@@ -7,7 +7,7 @@ import games.strategy.engine.data.properties.BooleanProperty;
  */
 class SoundOptionCheckBox extends BooleanProperty {
   private static final long serialVersionUID = 5774074488487286103L;
-  final String m_clipName;
+  final String clipName;
 
   /**
    * @param clipName
@@ -20,14 +20,14 @@ class SoundOptionCheckBox extends BooleanProperty {
     if (ClipPlayer.getInstance().isMuted(clipName)) {
       setValue(false);
     }
-    m_clipName = clipName;
+    this.clipName = clipName;
   }
 
   public String getClip() {
-    return m_clipName;
+    return clipName;
   }
 
   public String getClipName() {
-    return m_clipName;
+    return clipName;
   }
 }
