@@ -61,7 +61,6 @@ public class MetaSetupPanel extends SetupPanel {
   private JButton m_connectToHostedGame;
   private JButton m_connectToLobby;
   private JButton m_enginePreferences;
-  private JButton m_downloadMaps;
   private JButton m_ruleBook;
   private JButton m_donate;
   private JButton m_about;
@@ -100,9 +99,6 @@ public class MetaSetupPanel extends SetupPanel {
         .setToolTipText("<html>Connects to someone's hosted game, <br>so long as you know their IP address.</html>");
     m_enginePreferences = new JButton("Engine Preferences");
     m_enginePreferences.setToolTipText("<html>Configure certain options related to the engine.");
-    m_downloadMaps = new JButton("Download Maps");
-    m_downloadMaps.setToolTipText(
-        "<html>Download new maps. Everyone should use this, <br>the best maps are online and have to be downloaded!</html>");
     m_ruleBook = new JButton("Rule Book");
     m_ruleBook.setToolTipText(
         "<html>Download a manual of how to play <br>(it is also included in the directory TripleA was installed to).</html>");
@@ -130,8 +126,6 @@ public class MetaSetupPanel extends SetupPanel {
         GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
     add(m_enginePreferences, new GridBagConstraints(0, 6, 1, 1, 0, 0, GridBagConstraints.CENTER,
         GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
-    add(m_downloadMaps, new GridBagConstraints(0, 7, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
-        new Insets(10, 0, 0, 0), 0, 0));
     add(m_ruleBook, new GridBagConstraints(0, 8, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
     add(m_donate, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
@@ -178,12 +172,6 @@ public class MetaSetupPanel extends SetupPanel {
       @Override
       public void actionPerformed(final ActionEvent e) {
         enginePreferences();
-      }
-    });
-    m_downloadMaps.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        downloadMaps();
       }
     });
     m_ruleBook.addActionListener(new ActionListener() {

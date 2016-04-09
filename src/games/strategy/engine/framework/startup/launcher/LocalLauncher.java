@@ -49,20 +49,8 @@ public class LocalLauncher extends AbstractLauncher {
         game.setRandomSource(new ScriptedRandomSource());
       }
       m_gameData.getGameLoader().startGame(game, gamePlayers, m_headless);
-    } catch (final IllegalStateException e) {
+    } catch( MapNotFoundException e ) {
       exceptionLoadingGame = e;
-      Throwable error = e;
-      while (error.getMessage() == null) {
-        error = error.getCause();
-      }
-      final String message = error.getMessage();
-      m_gameLoadingWindow.doneWait();
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
-        }
-      });
     } catch (final Exception ex) {
       ex.printStackTrace();
       exceptionLoadingGame = ex;
