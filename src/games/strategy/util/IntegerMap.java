@@ -14,19 +14,19 @@ import java.util.Set;
  */
 public class IntegerMap<T> implements Cloneable, Serializable {
   private static final long serialVersionUID = 6856531659284300930L;
-  private final HashMap<T, Integer> m_values;
+  private final HashMap<T, Integer> mapValues;
 
   /** Creates new IntegerMap */
   public IntegerMap() {
-    m_values = new HashMap<T, Integer>();
+    mapValues = new HashMap<T, Integer>();
   }
 
   public IntegerMap(final int size) {
-    m_values = new HashMap<T, Integer>(size);
+    mapValues = new HashMap<T, Integer>(size);
   }
 
   public IntegerMap(final int size, final float loadFactor) {
-    m_values = new HashMap<T, Integer>(size, loadFactor);
+    mapValues = new HashMap<T, Integer>(size, loadFactor);
   }
 
   public IntegerMap(final T object, final int value) {
@@ -46,13 +46,9 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    * @param integerMap
    */
   public IntegerMap(final IntegerMap<T> integerMap) {
-    /*
-     * this will also work:
-     * m_values = new HashMap<T,Integer>(integerMap.m_values);
-     */
-    m_values = new HashMap<T, Integer>(integerMap.size());
+    this.mapValues = new HashMap<T, Integer>(integerMap.size());
     for (final T t : integerMap.keySet()) {
-      m_values.put(t, integerMap.getInt(t));
+      this.mapValues.put(t, integerMap.getInt(t));
     }
   }
 
@@ -60,26 +56,26 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    * This will make a new IntegerMap.
    * The Objects will be linked, but the integers mapped to them will not be linked.
    *
-   * @param integerMap
+   * @param integerMaps
    */
   public IntegerMap(final IntegerMap<T>[] integerMaps) {
-    m_values = new HashMap<T, Integer>();
+    mapValues = new HashMap<T, Integer>();
     for (final IntegerMap<T> integerMap : integerMaps) {
       this.add(integerMap);
     }
   }
 
   public int size() {
-    return m_values.size();
+    return mapValues.size();
   }
 
   public void put(final T key, final Integer value) {
-    m_values.put(key, value);
+    mapValues.put(key, value);
   }
 
   public void put(final T key, final int value) {
     final Integer obj = Integer.valueOf(value);
-    m_values.put(key, obj);
+    mapValues.put(key, obj);
   }
 
   public void putAll(final Collection<T> keys, final int value) {
@@ -101,7 +97,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    * returns 0 if no key found.
    */
   public int getInt(final T key) {
-    final Integer val = m_values.get(key);
+    final Integer val = mapValues.get(key);
     if (val == null) {
       return 0;
     }
@@ -113,10 +109,10 @@ public class IntegerMap<T> implements Cloneable, Serializable {
   }
 
   public void add(final T key, final int value) {
-    if (m_values.get(key) == null) {
+    if (mapValues.get(key) == null) {
       put(key, value);
     } else {
-      final Integer oldVal = m_values.get(key);
+      final Integer oldVal = mapValues.get(key);
       final int newVal = oldVal.intValue() + value;
       put(key, newVal);
     }
@@ -133,7 +129,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    */
   public void multiplyAllValuesBy(final double multiplyBy, final int RoundType) {
     for (final T t : keySet()) {
-      double val = m_values.get(t);
+      double val = mapValues.get(t);
       switch (RoundType) {
         case 1:
           val = Math.floor(val * multiplyBy);
@@ -153,15 +149,15 @@ public class IntegerMap<T> implements Cloneable, Serializable {
   }
 
   public void clear() {
-    m_values.clear();
+    mapValues.clear();
   }
 
   public Set<T> keySet() {
-    return m_values.keySet();
+    return mapValues.keySet();
   }
 
   public Collection<Integer> values() {
-    return m_values.values();
+    return mapValues.values();
   }
 
   /**
@@ -170,11 +166,11 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    * @return true if at least one value and all values are the same.
    */
   public boolean allValuesAreSame() {
-    if (m_values.isEmpty()) {
+    if (mapValues.isEmpty()) {
       return false;
     }
-    final int first = m_values.values().iterator().next();
-    for (final int value : m_values.values()) {
+    final int first = mapValues.values().iterator().next();
+    for (final int value : mapValues.values()) {
       if (first != value) {
         return false;
       }
@@ -188,10 +184,10 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    * @return true if all values are equal to the given integer.
    */
   public boolean allValuesEqual(final int integer) {
-    if (m_values.isEmpty()) {
+    if (mapValues.isEmpty()) {
       return false;
     }
-    for (final int value : m_values.values()) {
+    for (final int value : mapValues.values()) {
       if (integer != value) {
         return false;
       }
@@ -203,11 +199,11 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    * Will return zero if empty.
    */
   public int highestValue() {
-    if (m_values.isEmpty()) {
+    if (mapValues.isEmpty()) {
       return 0;
     }
     int max = Integer.MIN_VALUE;
-    for (final int value : m_values.values()) {
+    for (final int value : mapValues.values()) {
       if (value > max) {
         max = value;
       }
@@ -219,11 +215,11 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    * Will return zero if empty.
    */
   public int lowestValue() {
-    if (m_values.isEmpty()) {
+    if (mapValues.isEmpty()) {
       return 0;
     }
     int min = Integer.MAX_VALUE;
-    for (final int value : m_values.values()) {
+    for (final int value : mapValues.values()) {
       if (value < min) {
         min = value;
       }
@@ -235,12 +231,12 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    * Will return null if empty.
    */
   public T highestKey() {
-    if (m_values.isEmpty()) {
+    if (mapValues.isEmpty()) {
       return null;
     }
     int max = Integer.MIN_VALUE;
     T rVal = null;
-    for (final Entry<T, Integer> entry : m_values.entrySet()) {
+    for (final Entry<T, Integer> entry : mapValues.entrySet()) {
       if (entry.getValue() > max) {
         max = entry.getValue();
         rVal = entry.getKey();
@@ -253,12 +249,12 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    * Will return null if empty.
    */
   public T lowestKey() {
-    if (m_values.isEmpty()) {
+    if (mapValues.isEmpty()) {
       return null;
     }
     int min = Integer.MAX_VALUE;
     T rVal = null;
-    for (final Entry<T, Integer> entry : m_values.entrySet()) {
+    for (final Entry<T, Integer> entry : mapValues.entrySet()) {
       if (entry.getValue() < min) {
         min = entry.getValue();
         rVal = entry.getKey();
@@ -272,7 +268,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    */
   public int totalValues() {
     int sum = 0;
-    for (final Integer value : m_values.values()) {
+    for (final Integer value : mapValues.values()) {
       sum += value.intValue();
     }
     return sum;
@@ -311,7 +307,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    * True if all values are >= 0.
    */
   public boolean isPositive() {
-    for (final T key : m_values.keySet()) {
+    for (final T key : mapValues.keySet()) {
       if (getInt(key) < 0) {
         return false;
       }
@@ -340,7 +336,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
   }
 
   public boolean someKeysMatch(final Match<T> matcher) {
-    for (final T obj : m_values.keySet()) {
+    for (final T obj : mapValues.keySet()) {
       if (matcher.match(obj)) {
         return true;
       }
@@ -349,7 +345,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
   }
 
   public boolean allKeysMatch(final Match<T> matcher) {
-    for (final T obj : m_values.keySet()) {
+    for (final T obj : mapValues.keySet()) {
       if (!matcher.match(obj)) {
         return false;
       }
@@ -359,7 +355,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
 
   public Collection<T> getKeyMatches(final Match<T> matcher) {
     final Collection<T> values = new ArrayList<T>();
-    for (final T obj : m_values.keySet()) {
+    for (final T obj : mapValues.keySet()) {
       if (matcher.match(obj)) {
         values.add(obj);
       }
@@ -369,7 +365,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
 
   public int sumMatches(final Match<T> matcher) {
     int sum = 0;
-    for (final T obj : m_values.keySet()) {
+    for (final T obj : mapValues.keySet()) {
       if (matcher.match(obj)) {
         sum += getInt(obj);
       }
@@ -388,7 +384,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
   }
 
   public void removeKey(final T key) {
-    m_values.remove(key);
+    mapValues.remove(key);
   }
 
   private void removeKeys(final Collection<T> keys) {
@@ -398,22 +394,22 @@ public class IntegerMap<T> implements Cloneable, Serializable {
   }
 
   public boolean containsKey(final T key) {
-    return m_values.containsKey(key);
+    return mapValues.containsKey(key);
   }
 
   public boolean isEmpty() {
-    return m_values.isEmpty();
+    return mapValues.isEmpty();
   }
 
   public Set<Entry<T, Integer>> entrySet() {
-    return m_values.entrySet();
+    return mapValues.entrySet();
   }
 
   @Override
   public String toString() {
     final StringBuilder buf = new StringBuilder();
     buf.append("IntegerMap:\n");
-    final Iterator<T> iter = m_values.keySet().iterator();
+    final Iterator<T> iter = mapValues.keySet().iterator();
     if (!iter.hasNext()) {
       buf.append("empty\n");
     }
@@ -426,7 +422,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
 
   @Override
   public int hashCode() {
-    return m_values.hashCode();
+    return mapValues.hashCode();
   }
 
   /**
@@ -447,7 +443,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
     if (!map.keySet().equals(this.keySet())) {
       return false;
     }
-    if (!map.m_values.equals(this.m_values)) {
+    if (!map.mapValues.equals(this.mapValues)) {
       return false;
     }
     for (final T key : map.keySet()) {

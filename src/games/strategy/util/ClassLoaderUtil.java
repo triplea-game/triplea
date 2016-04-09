@@ -21,8 +21,6 @@ import sun.misc.URLClassPath;
  * java.net.URLClassLoader and sun.misc.URLClassPath. Use with extreme caution.
  */
 public class ClassLoaderUtil {
-  /** records whether initialization has been completed */
-  // private static boolean isInitialized = false;
   /** names of classes and fields of interest for closing the loader's jar files */
   private static final String URLCLASSLOADER_UCP_FIELD_NAME = "ucp";
   // ArrayList of URLClassPath.Loader

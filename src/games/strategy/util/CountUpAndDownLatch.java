@@ -27,7 +27,7 @@ public class CountUpAndDownLatch implements Serializable {
   /**
    * Constructs a {@link CountUpAndDownLatch} initialized with the given count.
    *
-   * @param count
+   * @param initialCount
    *        the number of times {@link #countDown} must be invoked before threads can pass through {@link #await}
    * @throws IllegalArgumentException
    *         if {@code count} is negative
