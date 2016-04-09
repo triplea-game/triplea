@@ -27,7 +27,7 @@ public class UnitImageFactory {
    * Creates new IconImageFactory
    */
   public UnitImageFactory() {
-    m_resourceLoader = ResourceLoader.getGameEngineAssetLoader();
+    m_resourceLoader = ResourceLoader.getMapResourceLoader(null, true);
   }
 
   public void setResourceLoader(final ResourceLoader loader) {

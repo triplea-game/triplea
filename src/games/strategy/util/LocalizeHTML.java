@@ -125,7 +125,7 @@ public class LocalizeHTML {
         final String fullLink = matcherLink.group(1);
         if (fullLink != null && fullLink.length() > 2) {
           if (ourResourceLoader == null) {
-            ourResourceLoader = ResourceLoader.getMapResourceLoader(mapNameDir);
+            ourResourceLoader = ResourceLoader.getMapResourceLoader(mapNameDir, false);
           }
           // remove quotes
           final String link = fullLink.substring(1, fullLink.length() - 1);

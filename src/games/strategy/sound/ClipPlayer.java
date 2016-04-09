@@ -125,7 +125,7 @@ public class ClipPlayer {
 
   public static synchronized ClipPlayer getInstance() {
     if (clipPlayer == null) {
-      clipPlayer = new ClipPlayer(ResourceLoader.getGameEngineAssetLoader());
+      clipPlayer = new ClipPlayer(ResourceLoader.getMapResourceLoader(null, true));
     }
     return clipPlayer;
   }

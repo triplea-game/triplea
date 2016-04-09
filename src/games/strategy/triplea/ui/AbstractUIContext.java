@@ -108,7 +108,7 @@ public abstract class AbstractUIContext implements IUIContext {
     final String mapDir = prefs.get(MAP_SKIN_PREF, mapName);
     // check for existence
     try {
-      ResourceLoader.getMapResourceLoader(mapDir).close();
+      ResourceLoader.getMapResourceLoader(mapDir, false).close();
     } catch (final RuntimeException re) {
       // an error, clear the skin
       prefs.remove(MAP_SKIN_PREF);
