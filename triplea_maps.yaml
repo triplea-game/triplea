@@ -327,6 +327,33 @@
     <br>Feedback highly welcome, if played.
     <br>Leave feedback at the forums: http://triplea.sourceforge.net/mywiki/Community
     <br>or at the Depot: http://sites.google.com/site/tripleaerniebommel/
+- url: https://github.com/triplea-maps/big_world_1939/releases/download/0.5/big_world_1939.zip
+  mapName: big_world_1939
+  description: |
+    <img src="https://github.com/KaiMAD/big_world_1939/blob/master/screenshot.png" />
+    <br>
+    <br>Big World 1939
+    <br>Version 1.0, created ~2016.2
+    <br>Mod by KaiMAD
+    <br>Please post suggestions/comments at "https://github.com/KaiMAD/big_world_1939/issues"
+    <br>
+    <br> Description:
+    <br> This map is based on the original TripleA map Big World 1942, but set instead in 1939.
+    <br> It has the same layout, but includes:
+    <br> Germany,
+    <br> America,
+    <br> Britain,
+    <br> Slovakia,
+    <br> Finland,
+    <br> Russia,
+    <br> China,
+    <br> Japan,
+    <br> Italy,
+    <br> Canada,
+    <br> Romania, and 
+    <br> France (12 players total). 
+    <br> Note: This map is set in late 1939; America was not yet part of the war. 
+    <br> However, it was entirely an option for them to begin fighting, so they are included as a player.
 - url: https://github.com/triplea-maps/big_world_2/releases/download/0.7/big_world_2.zip
   mapName: big_world_2
   description: |
