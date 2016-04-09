@@ -6,14 +6,18 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import games.strategy.common.swing.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.map.download.DownloadMapsWindow;
+import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import games.strategy.util.Match;
 
 /**
@@ -24,7 +28,11 @@ public class ResourceLoader {
   private final URLClassLoader m_loader;
   public static String RESOURCE_FOLDER = "assets";
 
-  public static ResourceLoader getMapResourceLoader(final String mapName,final boolean allowNoneFound) {
+  public static ResourceLoader getGameEngineAssetLoader() {
+    return getMapResourceLoader(null);
+  }
+
+  public static ResourceLoader getMapResourceLoader(final String mapName) {
     File atFolder = ClientFileSystemHelper.getRootFolder();
     File resourceFolder = new File(atFolder, RESOURCE_FOLDER);
 
@@ -33,7 +41,16 @@ public class ResourceLoader {
       resourceFolder = new File(atFolder, RESOURCE_FOLDER);
     }
 
-    final List<String> dirs = getPaths(mapName, allowNoneFound);
+    final List<String> dirs = getPaths(mapName);
+    if (mapName != null && dirs.isEmpty()) {
+      SwingComponents.promptUser("Download map?",
+          "Map missing: " + mapName + ", could not join game.\nWould you like to download the map now?"
+              + "\nOnce the download completes, you may reconnect to this game.",
+          () -> DownloadMapsWindow.showDownloadMapsWindow(mapName));
+
+      throw new MapNotFoundException();
+    }
+
     dirs.add(resourceFolder.getAbsolutePath());
 
     return new ResourceLoader(dirs.toArray(new String[dirs.size()]));
@@ -56,13 +73,9 @@ public class ResourceLoader {
     return sb.toString();
   }
 
-  private static List<String> getPaths(final String mapName, final boolean allowNoneFound) {
+  private static List<String> getPaths(final String mapName) {
     if (mapName == null) {
-      if (allowNoneFound) {
-        return new ArrayList<String>();
-      } else {
-        throw new IllegalArgumentException("mapName can not be null, it must exist");
-      }
+      return new ArrayList<String>();
     }
     // find the primary directory/file
     final String dirName = File.separator + mapName;
@@ -89,14 +102,7 @@ public class ResourceLoader {
     }
     // At least one must exist
     if (existing.isEmpty()) {
-      if (allowNoneFound) {
-        return new ArrayList<String>();
-      } else {
-        throw new IllegalStateException("Could not find file folder or zip for map: " + mapName + "\r\n"
-            + "Please DOWNLOAD THIS MAP if you do not have it." + "\r\n"
-            + "If you are making a map or mod, make sure the mapName property within the xml game file exactly matches the map zip or folder name."
-            + "\r\n" + "\r\n");
-      }
+      return Collections.EMPTY_LIST;
     }
     final File match = existing.iterator().next();
 
@@ -114,7 +120,7 @@ public class ResourceLoader {
           final StringTokenizer tokens = new StringTokenizer(dependencies, ",", false);
           while (tokens.hasMoreTokens()) {
             // add the dependencies recursivly
-            rVal.addAll(getPaths(tokens.nextToken(), allowNoneFound));
+            rVal.addAll(getPaths(tokens.nextToken()));
           }
         }
       }
