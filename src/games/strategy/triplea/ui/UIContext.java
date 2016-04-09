@@ -63,7 +63,7 @@ public class UIContext extends AbstractUIContext implements IUIContext {
   @Override
   protected void internalSetMapDir(final String dir, final GameData data) {
     final Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINE, "Loading UI Context");
-    m_resourceLoader = ResourceLoader.getMapResourceLoader(dir);
+    m_resourceLoader = ResourceLoader.getMapResourceLoader(dir, false);
     if (m_mapData != null) {
       m_mapData.close();
     }

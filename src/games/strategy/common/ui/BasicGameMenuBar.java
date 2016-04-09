@@ -1,5 +1,6 @@
 package games.strategy.common.ui;
 
+
 import java.awt.BorderLayout;
 import java.awt.FileDialog;
 import java.awt.Frame;
@@ -170,8 +171,10 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     if (notesProperty != null && notesProperty.trim().length() != 0) {
       final String notes = LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim());
       m_gameNotesPane = new SoftJEditorPane(notes);
-      parentMenu.add(SwingAction.of("Game Notes...", e ->
-          SwingUtilities.invokeLater(() -> {
+      parentMenu.add(SwingAction.of("Game Notes...", e -> {
+        SwingUtilities.invokeLater(new Runnable() {
+          @Override
+          public void run() {
             final JEditorPane pane = m_gameNotesPane.getComponent();
             final JScrollPane scroll = new JScrollPane(pane);
             scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
@@ -186,6 +189,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
               dialog.setVisible(false);
               dialog.removeAll();
               dialog.dispose();
+
             }));
             buttons.add(button);
             dialog.getRootPane().setDefaultButton(button);
@@ -213,7 +217,9 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
               }
             });
             dialog.setVisible(true);
-          }))).setMnemonic(KeyEvent.VK_N);
+          }
+        });
+      })).setMnemonic(KeyEvent.VK_N);
     }
   }
 
