@@ -3,7 +3,6 @@ package util.triplea.mapXmlCreator;
 import javax.swing.JPanel;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class GameSequencePanelTest extends MapXmlCreatorTestBase {
 

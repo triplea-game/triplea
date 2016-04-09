@@ -16,7 +16,7 @@ import util.triplea.mapXmlCreator.TerritoryDefinitionDialog.DEFINITION;
 
 public class MapXmlData {
   private String notes = "";
-  private File mapXMLFile;
+  private File mapXmlFile;
 
   private Map<String, String> xmlStringsMap = Maps.newLinkedHashMap();
   private List<String> resourceList = new ArrayList<String>();
@@ -61,7 +61,7 @@ public class MapXmlData {
       final Map<String, String> territoryOwnershipsMap,
       final Map<String, Map<String, Map<String, Integer>>> unitPlacementsMap,
       final Map<String, List<String>> gameSettingsMap,
-      final String notes, final File mapXMLFile) {
+      final String notes, final File mapXmlFile) {
     this.xmlStringsMap = xmlStringsMap;
     this.resourceList = resourceList;
     this.territoryDefintionsMap = territoryDefintionsMap;
@@ -81,7 +81,7 @@ public class MapXmlData {
     this.unitPlacementsMap = unitPlacementsMap;
     this.gameSettingsMap = gameSettingsMap;
     this.notes = notes;
-    this.mapXMLFile = mapXMLFile;
+    this.mapXmlFile = mapXmlFile;
   }
 
   public void initialize() {
@@ -257,12 +257,12 @@ public class MapXmlData {
     this.notes = notes;
   }
 
-  public File getMapXMLFile() {
-    return mapXMLFile;
+  public File getMapXmlFile() {
+    return mapXmlFile;
   }
 
-  public void setMapXMLFile(File mapXMLFile) {
-    this.mapXMLFile = mapXMLFile;
+  public void setMapXmlFile(File mapXmlFile) {
+    this.mapXmlFile = mapXmlFile;
   }
 
   /**

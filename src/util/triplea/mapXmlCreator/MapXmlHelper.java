@@ -291,12 +291,12 @@ public class MapXmlHelper {
     mapXmlData.setNotes(notes);
   }
 
-  public static File getMapXMLFile() {
-    return mapXmlData.getMapXMLFile();
+  public static File getMapXmlFile() {
+    return mapXmlData.getMapXmlFile();
   }
 
-  public static void setMapXMLFile(final File mapXMLFile) {
-    MapXmlHelper.mapXmlData.setMapXMLFile(mapXMLFile);
+  public static void setMapXmlFile(final File mapXmlFile) {
+    MapXmlHelper.mapXmlData.setMapXmlFile(mapXmlFile);
   }
 
   private static MapXmlData mapXmlData = new MapXmlData();
@@ -452,7 +452,7 @@ public class MapXmlHelper {
   ///////////////////////////////////////////
   // Start of XML parsing methods
   ///////////////////////////////////////////
-  static public GAME_STEP parseValuesFromXML(final Document dom) {
+  static public GAME_STEP parseValuesFromXml(final Document dom) {
     initializeAll();
 
     final Node mainlastChild = dom.getLastChild();
@@ -969,11 +969,11 @@ public class MapXmlHelper {
       propertyList.appendChild(property);
     }
 
-    if (getMapXMLFile() != null) {
+    if (getMapXmlFile() != null) {
       propertyList.appendChild(doc.createComment(" Map Name: also used for map utils when asked "));
       final Element property = doc.createElement(XML_NODE_NAME_PROPERTY);
       property.setAttribute(XML_ATTR_PROPERTY_NAME_NAME, XML_ATTR_VALUE_PROPERTY_NAME_MAP_NAME);
-      final String fileName = getMapXMLFile().getName();
+      final String fileName = getMapXmlFile().getName();
       property.setAttribute(XML_ATTR_PROPERTY_NAME_VALUE, fileName.substring(0, fileName.lastIndexOf(".") - 1));
       property.setAttribute(XML_ATTR_PROPERTY_NAME_EDITABLE, Constants.PROPERTY_FALSE);
       propertyList.appendChild(property);

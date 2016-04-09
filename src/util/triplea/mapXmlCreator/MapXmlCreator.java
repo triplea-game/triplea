@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
@@ -63,10 +64,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.xml.sax.SAXException;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
-
 import games.strategy.common.swing.SwingAction;
-import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -269,7 +267,7 @@ public class MapXmlCreator extends JFrame {
 
   public static void main(final String[] args) {
     MapXmlCreator.getLogger().setLevel(Level.OFF);
-    MapXmlCreator.log(Level.INFO, "Starting MapXMLCreator");
+    MapXmlCreator.log(Level.INFO, "Starting MapXmlCreator");
 
     // handleCommandLineArgs(args);
     GameRunner2.setupLookAndFeel();
@@ -287,13 +285,14 @@ public class MapXmlCreator extends JFrame {
     });
   }
 
-  public MapXmlCreator(final boolean testMode) {
-    this();
-    MapXmlCreator.testMode = testMode;
+  public MapXmlCreator() {
+    this(false);
   }
 
-  public MapXmlCreator() {
+  public MapXmlCreator(final boolean testMode) {
     super("TripleA Map XML Creator");
+
+    MapXmlCreator.testMode = testMode;
 
     mapFolderLocation = getDefaultMapFolderLocation();
     // keep for the moment for test purposes
@@ -369,16 +368,18 @@ public class MapXmlCreator extends JFrame {
   /**
    * @return
    */
-  public File getDefaultMapXmlFile() {
-    return new File(mapFolderLocation.getAbsolutePath() + File.separator + "new_world_order"
+  public static File getDefaultMapXmlFile() {
+    return new File(getDefaultMapFolderLocation().getAbsolutePath() + File.separator + "new_world_order"
         + File.separator + "games" + File.separator + "new_world_order.xml");
   }
 
   /**
    * @return
    */
-  public File getDefaultMapFolderLocation() {
-    return new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps");
+  public static File getDefaultMapFolderLocation() {
+    // return new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps");
+    return new File(Paths.get("." + File.separator + "maps").toAbsolutePath().normalize().toString());
+
   }
 
   /**
@@ -388,7 +389,7 @@ public class MapXmlCreator extends JFrame {
     // set up the actions
     final Action openAction = SwingAction.of("Load Map XML", e -> {
       final GAME_STEP goToStep;
-      goToStep = MapXmlCreator.loadXML();
+      goToStep = MapXmlCreator.loadXml();
       highestStep = goToStep;
       DynamicRowsPanel.me = Optional.empty();
       SwingUtilities.invokeLater(() -> {
@@ -400,7 +401,7 @@ public class MapXmlCreator extends JFrame {
     final Action saveAction = SwingAction.of(BUTTON_LABEL_SAVE_MAP_XML, e -> {
       stepActionPanel.requestFocus();
       if (!DynamicRowsPanel.me.isPresent() || DynamicRowsPanel.me.get().dataIsConsistent()) {
-        MapXmlCreator.saveXML();
+        MapXmlCreator.saveXml();
       }
     });
     saveAction.putValue(Action.SHORT_DESCRIPTION, "Save the Map XML to File");
@@ -1004,7 +1005,7 @@ public class MapXmlCreator extends JFrame {
 
     final JButton buttonSave = new JButton("Save Entries to XML");
     buttonSave.setPreferredSize(new Dimension(600, 35));
-    buttonSave.setAction(SwingAction.of(BUTTON_LABEL_SAVE_MAP_XML, e -> MapXmlCreator.saveXML()));
+    buttonSave.setAction(SwingAction.of(BUTTON_LABEL_SAVE_MAP_XML, e -> MapXmlCreator.saveXml()));
     final GridBagConstraints gridBadConstButtonSaveRow = (GridBagConstraints) gridBadConstButtonPreviewHTMLRow.clone();
     gridBadConstButtonSaveRow.insets = new Insets(5, 0, 0, 0);
     gridBadConstButtonSaveRow.gridy = 4;
@@ -1055,7 +1056,7 @@ public class MapXmlCreator extends JFrame {
     });
   }
 
-  static void saveXML() {
+  static void saveXml() {
     try {
       final String fileName =
           new FileSave("Where to Save the Game XML ?",
@@ -1101,39 +1102,45 @@ public class MapXmlCreator extends JFrame {
     getLogger().log(level, msg);
   }
 
-  static GAME_STEP loadXML() {
-    final String gameXMLPath =
-        MapXmlUIHelper.selectFile("Game XML File", MapXmlHelper.getMapXMLFile(), FILE_NAME_ENDING_XML).getPathString();
-    MapXmlCreator.log(Level.INFO, "Load Game XML from " + gameXMLPath);
+  static GAME_STEP loadXml() {
+    final String gameXmlPath;
+    if (!MapXmlCreator.testMode) {
+      gameXmlPath =
+          MapXmlUIHelper.selectFile("Game XML File", MapXmlHelper.getMapXmlFile(), FILE_NAME_ENDING_XML)
+              .getPathString();
+    } else {
+      gameXmlPath = getDefaultMapXmlFile().getAbsolutePath();
+    }
+    MapXmlCreator.log(Level.INFO, "Load Game XML from " + gameXmlPath);
     try {
-      return loadXmlFromFilePath(gameXMLPath);
-    } catch (final IOException | HeadlessException | ParserConfigurationException | ParseException | SAXException e) {
+      return loadXmlFromFilePath(gameXmlPath);
+    } catch (final IOException | HeadlessException | ParserConfigurationException | SAXException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
-      return loadXML();
+      return loadXml();
     }
   }
 
   /**
-   * @param gameXMLPath
+   * @param gameXmlPath
    * @return
    * @throws FileNotFoundException
    * @throws SAXException
    * @throws IOException
    * @throws ParserConfigurationException
    */
-  public static GAME_STEP loadXmlFromFilePath(final String gameXMLPath)
+  public static GAME_STEP loadXmlFromFilePath(final String gameXmlPath)
       throws FileNotFoundException, SAXException, IOException, ParserConfigurationException {
-    final FileInputStream in = new FileInputStream(gameXMLPath);
+    final FileInputStream in = new FileInputStream(gameXmlPath);
 
     // parse using builder to get DOM representation of the XML file
     final org.w3c.dom.Document dom = new GameParser().getDocument(in);
 
-    GAME_STEP goToStep = MapXmlHelper.parseValuesFromXML(dom);
+    GAME_STEP goToStep = MapXmlHelper.parseValuesFromXml(dom);
 
     // set map file, image file and map folder
-    MapXmlHelper.setMapXMLFile(new File(gameXMLPath));
-    File mapFolder = MapXmlHelper.getMapXMLFile().getParentFile();
+    MapXmlHelper.setMapXmlFile(new File(gameXmlPath));
+    File mapFolder = MapXmlHelper.getMapXmlFile().getParentFile();
     if (mapFolder.getName().equals(GameSelectorModel.DEFAULT_GAME_XML_DIRECTORY_NAME)) {
       mapFolder = mapFolder.getParentFile();
     }
