@@ -22,6 +22,8 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import games.strategy.performance.Perf;
+import games.strategy.performance.PerfTimer;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -88,18 +90,20 @@ public class NewGameChooserModel extends DefaultListModel {
 
 
   private Set<NewGameChooserEntry> parseMapFiles() {
-    final Set<NewGameChooserEntry> parsedMapSet = Sets.newHashSet();
-    for (final File map : allMapFiles()) {
-      if (clearCacheMessenger.isCancelled()) {
-        return ImmutableSet.of();
+    try(PerfTimer timer = Perf.startTimer("Parse map files")) {
+      final Set<NewGameChooserEntry> parsedMapSet = Sets.newHashSet();
+      for (final File map : allMapFiles()) {
+        if (clearCacheMessenger.isCancelled()) {
+          return ImmutableSet.of();
+        }
+        if (map.isDirectory()) {
+          parsedMapSet.addAll(populateFromDirectory(map));
+        } else if (map.isFile() && map.getName().toLowerCase().endsWith(".zip")) {
+          parsedMapSet.addAll(populateFromZip(map));
+        }
       }
-      if (map.isDirectory()) {
-        parsedMapSet.addAll(populateFromDirectory(map));
-      } else if (map.isFile() && map.getName().toLowerCase().endsWith(".zip")) {
-        parsedMapSet.addAll(populateFromZip(map));
-      }
+      return parsedMapSet;
     }
-    return parsedMapSet;
   }
 
 
