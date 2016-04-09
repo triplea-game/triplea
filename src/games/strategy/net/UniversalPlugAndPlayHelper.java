@@ -20,17 +20,16 @@ import net.sbbi.upnp.impls.InternetGatewayDevice;
 import net.sbbi.upnp.messages.UPNPResponseException;
 
 public class UniversalPlugAndPlayHelper {
-  private int m_port = 3300;
-  private InetAddress m_local = null;
+  private int port = 3300;
+  private InetAddress local = null;
   private InternetGatewayDevice m_device = null;
-  private static UniversalPlugAndPlayHelper s_lastInstance = null;
 
   public static void main(final String[] args) {
     UniversalPlugAndPlayHelper.attemptAddingPortForwarding(null, 3300);
   }
 
   public UniversalPlugAndPlayHelper(final int port) {
-    m_port = port;
+    this.port = port;
   }
 
   public static boolean attemptAddingPortForwarding(final Component parent, final int port) {
@@ -67,7 +66,7 @@ public class UniversalPlugAndPlayHelper {
       textArea.append(localError + "\r\n");
       return localError;
     }
-    textArea.append("Found Local IP/Inet Address to use: " + m_local + "\r\n");
+    textArea.append("Found Local IP/Inet Address to use: " + local + "\r\n");
     final String gatewayError = findInternetGatewayDevice();
     if (gatewayError != null) {
       textArea.append(gatewayError + "\r\n");
@@ -80,13 +79,12 @@ public class UniversalPlugAndPlayHelper {
       return addPortError;
     }
     textArea.append("Port Forwarding map added successfully.\r\n");
-    s_lastInstance = this;
     return null;
   }
 
   public String testConnection() {
     System.out.println("Waiting for a connection");
-    final int internalPort = m_port;
+    final int internalPort = port;
     boolean connection = false;
     // boolean bytes = false;
     try (ServerSocket ss = new ServerSocket(internalPort)) {
@@ -118,7 +116,7 @@ public class UniversalPlugAndPlayHelper {
 
   public String removePortForwardUPNP() {
     System.out.println("Attempting to remove Port Forwarding");
-    final int externalPort = m_port;
+    final int externalPort = port;
     boolean removed = false;
     try {
       removed = m_device.deletePortMapping(null, externalPort, "TCP");
@@ -138,8 +136,8 @@ public class UniversalPlugAndPlayHelper {
   }
 
   private String addPortForwardUPNP() {
-    final int internalPort = m_port;
-    final int externalPort = m_port;
+    final int internalPort = port;
+    final int externalPort = port;
     // System.out.println("Attempting to map port on " + m_device.msgFactory.service.serviceType + " service");
     System.out.print("Adding mapping from ");
     try {
@@ -148,10 +146,10 @@ public class UniversalPlugAndPlayHelper {
     } catch (final IOException e1) {
     }
     System.out.println(":" + externalPort);
-    System.out.println("To " + m_local.getHostAddress() + ":" + internalPort);
+    System.out.println("To " + local.getHostAddress() + ":" + internalPort);
     boolean mapped = false;
     try {
-      mapped = m_device.addPortMapping("TripleA Game Hosting", "TCP", null, externalPort, m_local.getHostAddress(),
+      mapped = m_device.addPortMapping("TripleA Game Hosting", "TCP", null, externalPort, local.getHostAddress(),
           internalPort, 0);
     } catch (final IOException e) {
       System.out.println("Port Mapping Failed! Please try to Forward Ports manually! \r\n " + e.getMessage());
@@ -191,30 +189,30 @@ public class UniversalPlugAndPlayHelper {
   }
 
   private String findLocalInetAddress() {
-    m_local = null;
+    local = null;
     System.out.println("Attempting to find local ip/inet address.");
     try {
       final Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
-      while (ifaces.hasMoreElements() && m_local == null) {
+      while (ifaces.hasMoreElements() && local == null) {
         final NetworkInterface iface = ifaces.nextElement();
         final Enumeration<InetAddress> addresses = iface.getInetAddresses();
-        while (addresses.hasMoreElements() && m_local == null) {
+        while (addresses.hasMoreElements() && local == null) {
           final InetAddress addr = addresses.nextElement();
           if (addr instanceof Inet4Address && !addr.isLoopbackAddress()) {
-            m_local = addr;
+            local = addr;
           }
         }
       }
     } catch (final SocketException e) {
-      m_local = null;
+      local = null;
       System.out.println("Could not determine local ip/inet address!");
       return "Could not determine local ip/inet address! \r\n " + e.getMessage();
     }
-    if (m_local == null) {
+    if (local == null) {
       System.out.println("Could not determine local ip/inet address!");
       return "Could not determine local ip/inet address!";
     }
-    System.out.println("Local Address to use: " + m_local);
+    System.out.println("Local Address to use: " + local);
     return null;
   }
 }
