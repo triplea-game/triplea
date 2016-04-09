@@ -25,7 +25,7 @@ import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 
-public class WW2V3_42_Test extends TestCase {
+public class WW2V3_42_Test extends TestCase { 
   private GameData m_data;
 
   @Override

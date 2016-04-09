@@ -2,7 +2,7 @@ package games.strategy.engine.chat;
 
 import junit.framework.TestCase;
 
-public class ChatFloodControlTest extends TestCase {
+public class ChatFloodControlTest extends TestCase { 
   private final ChatFloodControl fc = new ChatFloodControl();
 
   @Override

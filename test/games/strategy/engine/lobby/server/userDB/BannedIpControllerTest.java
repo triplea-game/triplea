@@ -5,7 +5,7 @@ import java.util.Date;
 import games.strategy.util.Util;
 import junit.framework.TestCase;
 
-public class BannedIpControllerTest extends TestCase {
+public class BannedIpControllerTest extends TestCase { 
   public void testCRUD() {
     final BannedIpController controller = new BannedIpController();
     final String ip = Util.createUniqueTimeStamp();

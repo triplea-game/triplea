@@ -8,7 +8,7 @@ import games.strategy.util.ThreadUtil;
 import games.strategy.util.Util;
 import junit.framework.TestCase;
 
-public class DBUserControllerTest extends TestCase {
+public class DBUserControllerTest extends TestCase { 
   public void testCreate() throws Exception {
     final String name = Util.createUniqueTimeStamp();
     final String email = name + "@none.none";

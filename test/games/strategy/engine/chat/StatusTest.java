@@ -5,7 +5,7 @@ import games.strategy.net.Messengers;
 import games.strategy.util.ThreadUtil;
 import junit.framework.TestCase;
 
-public class StatusTest extends TestCase {
+public class StatusTest extends TestCase { 
   public void testStatus() throws Exception {
     final DummyMessenger messenger = new DummyMessenger();
     final Messengers messengers = new Messengers(messenger);

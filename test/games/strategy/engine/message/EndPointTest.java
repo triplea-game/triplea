@@ -5,7 +5,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-public class EndPointTest extends TestCase {
+public class EndPointTest extends TestCase { 
   @SuppressWarnings("rawtypes")
   public void testEndPoint() {
     final EndPoint endPoint = new EndPoint("", Comparator.class, false);

@@ -85,7 +85,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import junit.framework.TestCase;
 
-public class WW2V3_41_Test extends TestCase {
+public class WW2V3_41_Test extends TestCase { 
   private GameData m_data;
 
   @Override

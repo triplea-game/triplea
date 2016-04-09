@@ -14,7 +14,7 @@ import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 
-public class AIUtilsTest extends TestCase {
+public class AIUtilsTest extends TestCase { 
   private GameData m_data;
 
   @Override

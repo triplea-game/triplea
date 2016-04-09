@@ -30,7 +30,7 @@ import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.Match;
 import junit.framework.TestCase;
 
-public class BattleCalculatorTest extends TestCase {
+public class BattleCalculatorTest extends TestCase { 
   private ITestDelegateBridge m_bridge;
 
   @Override

@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import games.strategy.triplea.Constants;
 import junit.framework.TestCase;
 
-public class AllianceTrackerTest extends TestCase {
+public class AllianceTrackerTest extends TestCase { 
   private GameData m_data;
 
   @Override

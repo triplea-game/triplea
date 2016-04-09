@@ -13,7 +13,7 @@ import games.strategy.test.TestUtil;
 import games.strategy.util.MD5Crypt;
 import junit.framework.TestCase;
 
-public class MessengerLoginTest extends TestCase {
+public class MessengerLoginTest extends TestCase { 
   private int SERVER_PORT = -1;
 
   @Override

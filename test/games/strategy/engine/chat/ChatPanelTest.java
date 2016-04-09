@@ -5,7 +5,7 @@ import javax.swing.text.StyledDocument;
 
 import junit.framework.TestCase;
 
-public class ChatPanelTest extends TestCase {
+public class ChatPanelTest extends TestCase { 
   public void testTrim() throws Exception {
     final StyledDocument doc = new DefaultStyledDocument();
     final StringBuffer buffer = new StringBuffer();

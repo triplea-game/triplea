@@ -4,7 +4,7 @@ import java.lang.reflect.Proxy;
 
 import junit.framework.TestCase;
 
-public class WrappedInvocationHandlerTest extends TestCase {
+public class WrappedInvocationHandlerTest extends TestCase { 
   public void testEquals() {
     final String s1 = "test";
     final WrappedInvocationHandler handler = new WrappedInvocationHandler(s1);

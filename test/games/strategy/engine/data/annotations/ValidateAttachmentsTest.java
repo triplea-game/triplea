@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 /**
  * A test that validates that all attachment classes have properties with valid setters and getters
  */
-public class ValidateAttachmentsTest extends TestCase {
+public class ValidateAttachmentsTest extends TestCase { 
   /**
    * Test that the Example Attachment is valid
    */

@@ -12,7 +12,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 
-public class UnitsThatCantFightUtilTest extends TestCase {
+public class UnitsThatCantFightUtilTest extends TestCase { 
   public void testNoSuicideAttacksAA50AtStart() {
     // at the start of the game, there are no suicide attacks
     final GameData data = LoadGameUtil.loadTestGame("ww2v3_1941_test.xml");

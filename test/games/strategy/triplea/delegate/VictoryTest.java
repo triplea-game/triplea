@@ -17,7 +17,7 @@ import junit.framework.TestCase;
  * POS2 is an actual game with good gameplay that we don't want to mess with, so
  * "Victory" is more of an xml purely for testing purposes, and probably should never be played.
  */
-public class VictoryTest extends TestCase {
+public class VictoryTest extends TestCase { 
   private GameData gameData;
   private PlayerID italians;
   private ITestDelegateBridge testBridge;

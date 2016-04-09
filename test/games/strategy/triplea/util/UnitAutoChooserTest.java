@@ -98,7 +98,7 @@ class TestUnit {
 }
 
 
-public class UnitAutoChooserTest extends TestCase {
+public class UnitAutoChooserTest extends TestCase { 
   private GameData m_data;
   private PlayerID british;
   private UnitType infantry;

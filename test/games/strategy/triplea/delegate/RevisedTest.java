@@ -76,7 +76,7 @@ import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 import junit.framework.TestCase;
 
-public class RevisedTest extends TestCase {
+public class RevisedTest extends TestCase { 
   private GameData m_data;
 
   @Override

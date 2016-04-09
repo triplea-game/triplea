@@ -26,7 +26,7 @@ import junit.framework.TestCase;
  * Company:
  * </p>
  */
-public class GameDataManagerTest extends TestCase {
+public class GameDataManagerTest extends TestCase { 
   public GameDataManagerTest(final String name) {
     super(name);
   }

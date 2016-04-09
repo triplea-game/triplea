@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import junit.framework.TestCase;
 
-public class ChangeTest extends TestCase {
+public class ChangeTest extends TestCase { 
   private GameData m_data;
 
   /** Creates new ChangeTest */

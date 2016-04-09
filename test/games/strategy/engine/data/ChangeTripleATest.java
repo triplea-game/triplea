@@ -11,7 +11,7 @@ import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 
-public class ChangeTripleATest extends TestCase {
+public class ChangeTripleATest extends TestCase { 
   private GameData m_data;
   private Territory can;
 

@@ -20,7 +20,7 @@ import games.strategy.engine.data.UnitTypeList;
 import games.strategy.triplea.Constants;
 import junit.framework.TestCase;
 
-public class ParserTest extends TestCase {
+public class ParserTest extends TestCase { 
   private GameData gameData;
 
   public ParserTest(final String string) {

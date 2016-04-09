@@ -2,7 +2,7 @@ package games.strategy.util;
 
 import junit.framework.TestCase;
 
-public class IntegerMapTest extends TestCase {
+public class IntegerMapTest extends TestCase { 
   private final Object v1 = new Object();
   private final Object v2 = new Object();
   private final Object v3 = new Object();

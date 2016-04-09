@@ -15,7 +15,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import junit.framework.TestCase;
 
-public class DelegateTest extends TestCase {
+public class DelegateTest extends TestCase { 
   protected GameData m_data;
   protected PlayerID british;
   protected PlayerID japanese;

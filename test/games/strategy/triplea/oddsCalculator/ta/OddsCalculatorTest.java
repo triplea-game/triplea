@@ -19,7 +19,7 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 
-public class OddsCalculatorTest extends TestCase {
+public class OddsCalculatorTest extends TestCase { 
   private GameData m_data;
 
   @Override

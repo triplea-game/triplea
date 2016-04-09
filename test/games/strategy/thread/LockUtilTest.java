@@ -8,7 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import games.strategy.thread.LockUtil.ErrorReporter;
 import junit.framework.TestCase;
 
-public class LockUtilTest extends TestCase {
+public class LockUtilTest extends TestCase { 
   private static final LockUtil S_LOCKUTIL = new LockUtil();
   private final TestErrorReporter m_reporter = new TestErrorReporter();
 

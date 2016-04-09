@@ -5,7 +5,7 @@ import java.util.Comparator;
 
 import junit.framework.TestCase;
 
-public class RemoteInterfaceHelperTest extends TestCase {
+public class RemoteInterfaceHelperTest extends TestCase { 
   public void testSimple() {
     assertEquals("compare", RemoteInterfaceHelper.getMethodInfo(0, Comparator.class).getFirst());
     assertEquals("add", RemoteInterfaceHelper.getMethodInfo(0, Collection.class).getFirst());

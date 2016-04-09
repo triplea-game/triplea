@@ -16,7 +16,7 @@ import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
 import junit.framework.TestCase;
 
-public class ModeratorControllerTest extends TestCase {
+public class ModeratorControllerTest extends TestCase { 
   private DummyMessenger m_messenger;
   private ModeratorController m_controller;
   private ConnectionChangeListener m_listener;

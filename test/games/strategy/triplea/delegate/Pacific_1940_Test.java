@@ -14,7 +14,7 @@ import games.strategy.util.IntegerMap;
 import junit.framework.TestCase;
 
 @SuppressWarnings("unused")
-public class Pacific_1940_Test extends TestCase {
+public class Pacific_1940_Test extends TestCase { 
   private GameData m_data;
 
   @Override

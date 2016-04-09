@@ -5,7 +5,7 @@ import java.util.prefs.Preferences;
 
 import junit.framework.TestCase;
 
-public class ChatIgnoreListTest extends TestCase {
+public class ChatIgnoreListTest extends TestCase { 
   @Override
   public void setUp() throws BackingStoreException {
     // clear this

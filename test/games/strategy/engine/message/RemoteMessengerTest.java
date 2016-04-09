@@ -12,7 +12,7 @@ import games.strategy.test.TestUtil;
 import games.strategy.util.ThreadUtil;
 import junit.framework.TestCase;
 
-public class RemoteMessengerTest extends TestCase {
+public class RemoteMessengerTest extends TestCase { 
   private int SERVER_PORT = -1;
   private IMessenger m_messenger;
   private RemoteMessenger m_remoteMessenger;

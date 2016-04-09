@@ -12,7 +12,7 @@ import games.strategy.test.TestUtil;
 import games.strategy.util.ThreadUtil;
 import junit.framework.TestCase;
 
-public class MessengerTest extends TestCase {
+public class MessengerTest extends TestCase { 
   private static int SERVER_PORT = -1;
   private IServerMessenger m_server;
   private IMessenger m_client1;

@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import junit.framework.TestCase;
 
-public class SerializationTest extends TestCase {
+public class SerializationTest extends TestCase { 
   private GameData m_dataSource;
   private GameData m_dataSink;
 

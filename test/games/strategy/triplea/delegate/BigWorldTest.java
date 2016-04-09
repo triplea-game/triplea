@@ -14,7 +14,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 
-public class BigWorldTest extends TestCase {
+public class BigWorldTest extends TestCase { 
   private GameData m_data;
 
   @Override

@@ -2,7 +2,7 @@ package games.strategy.util;
 
 import junit.framework.TestCase;
 
-public class VersionTest extends TestCase {
+public class VersionTest extends TestCase { 
   /** Creates new IntegerMapTest */
   public VersionTest(final String name) {
     super(name);

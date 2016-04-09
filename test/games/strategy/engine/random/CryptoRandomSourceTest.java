@@ -2,7 +2,7 @@ package games.strategy.engine.random;
 
 import junit.framework.TestCase;
 
-public class CryptoRandomSourceTest extends TestCase {
+public class CryptoRandomSourceTest extends TestCase { 
   public CryptoRandomSourceTest(final String name) {
     super(name);
   }

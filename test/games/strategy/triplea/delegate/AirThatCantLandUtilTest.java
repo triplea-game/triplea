@@ -19,7 +19,7 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 
-public class AirThatCantLandUtilTest extends TestCase {
+public class AirThatCantLandUtilTest extends TestCase { 
   private GameData m_data;
   private PlayerID m_americans;
   private UnitType m_fighter;

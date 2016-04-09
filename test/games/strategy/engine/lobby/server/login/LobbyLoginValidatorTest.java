@@ -16,7 +16,7 @@ import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
 import junit.framework.TestCase;
 
-public class LobbyLoginValidatorTest extends TestCase {
+public class LobbyLoginValidatorTest extends TestCase { 
   public void testCreateNewUser() {
     final LobbyLoginValidator validator = new LobbyLoginValidator();
     final SocketAddress address = new InetSocketAddress(5000);

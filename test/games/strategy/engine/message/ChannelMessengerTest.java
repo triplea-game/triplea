@@ -11,7 +11,7 @@ import games.strategy.test.TestUtil;
 import games.strategy.util.ThreadUtil;
 import junit.framework.TestCase;
 
-public class ChannelMessengerTest extends TestCase {
+public class ChannelMessengerTest extends TestCase { 
   private IServerMessenger m_server;
   private IMessenger m_client1;
   private static int SERVER_PORT = -1;

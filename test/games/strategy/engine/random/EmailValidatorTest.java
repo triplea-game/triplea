@@ -3,7 +3,7 @@ package games.strategy.engine.random;
 import games.strategy.util.Util;
 import junit.framework.TestCase;
 
-public class EmailValidatorTest extends TestCase {
+public class EmailValidatorTest extends TestCase { 
   /**
    * @param arg0
    */

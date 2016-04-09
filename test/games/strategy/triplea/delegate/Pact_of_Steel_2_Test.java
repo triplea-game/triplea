@@ -17,7 +17,7 @@ import games.strategy.util.Match;
 import junit.framework.TestCase;
 
 @SuppressWarnings("unused")
-public class Pact_of_Steel_2_Test extends TestCase {
+public class Pact_of_Steel_2_Test extends TestCase { 
   private GameData m_data;
 
   @Override
