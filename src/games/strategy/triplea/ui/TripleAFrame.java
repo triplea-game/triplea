@@ -557,7 +557,7 @@ public class TripleAFrame extends MainGameFrame {
     m_showHistoryAction = null;
     m_showMapOnlyAction = null;
     m_showCommentLogAction = null;
-    m_localPlayers = null;
+    localPlayers = null;
     m_editPanel = null;
     m_messageAndDialogThreadPool = null;
     removeWindowListener(WINDOW_LISTENER);
@@ -1603,7 +1603,7 @@ public class TripleAFrame extends MainGameFrame {
     }
     m_round.setText("Round:" + round + " ");
     m_step.setText(stepDisplayName);
-    final boolean isPlaying = m_localPlayers.playing(player);
+    final boolean isPlaying = localPlayers.playing(player);
     if (player != null) {
       m_player.setText((isPlaying ? "" : "REMOTE: ") + player.getName());
     }
@@ -2334,7 +2334,7 @@ public class TripleAFrame extends MainGameFrame {
     if (m_showMapOnlyAction != null) {
       // We need to check and make sure there are no local human players
       boolean foundHuman = false;
-      for (final IGamePlayer gamePlayer : m_localPlayers.getLocalPlayers()) {
+      for (final IGamePlayer gamePlayer : localPlayers.getLocalPlayers()) {
         if (gamePlayer instanceof TripleAPlayer) {
           foundHuman = true;
         }

@@ -20,23 +20,23 @@ import games.strategy.ui.Util;
 public class UnitImageFactory {
   private static final String FILE_NAME_BASE = "units/";
   // Image cache
-  private final Map<String, Image> m_images = new HashMap<String, Image>();
-  private ResourceLoader m_resourceLoader;
+  private final Map<String, Image> images = new HashMap<String, Image>();
+  private ResourceLoader resourceLoader;
 
   /**
    * Creates new IconImageFactory
    */
   public UnitImageFactory() {
-    m_resourceLoader = ResourceLoader.getGameEngineAssetLoader();
+    resourceLoader = ResourceLoader.getGameEngineAssetLoader();
   }
 
   public void setResourceLoader(final ResourceLoader loader) {
-    m_resourceLoader = loader;
+    resourceLoader = loader;
     clearImageCache();
   }
 
   private void clearImageCache() {
-    m_images.clear();
+    images.clear();
   }
 
   /**
@@ -45,18 +45,18 @@ public class UnitImageFactory {
   public Image getImage(final UnitType type, final PlayerID player, final GameData data) {
     final String baseName = getBaseImageName(type, player, data);
     final String fullName = baseName + player.getName();
-    if (m_images.containsKey(fullName)) {
-      return m_images.get(fullName);
+    if (images.containsKey(fullName)) {
+      return images.get(fullName);
     }
     final Image baseImage = getBaseImage(baseName, player);
-    m_images.put(fullName, baseImage);
+    images.put(fullName, baseImage);
     return baseImage;
   }
 
   private Image getBaseImage(final String baseImageName, final PlayerID id) {
     // URL uses '/' not '\'
     final String fileName = FILE_NAME_BASE + id.getName() + "/" + baseImageName + ".png";
-    final URL url = m_resourceLoader.getResource(fileName);
+    final URL url = resourceLoader.getResource(fileName);
     if (url == null) {
       throw new IllegalStateException("Cant load: " + baseImageName + "  looking in: " + fileName);
     }

@@ -81,12 +81,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 
   @Override
   public void reportError(final String error) {
-    m_ui.notifyError(error);
+    ui.notifyError(error);
   }
 
   @Override
   public void reportMessage(final String message, final String title) {
-    m_ui.notifyMessage(message, title);
+    ui.notifyMessage(message, title);
   }
 
   @Override
@@ -96,7 +96,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    if (m_ui == null) {
+    if (ui == null) {
       System.out.println("Game frame is null, but entered player step: " + name + " for player: " + this.toString());
       // headless games shouldn't get here, but lets try returning anyway
       return;
@@ -109,7 +109,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     // (ISomeDelegate) getPlayerBridge().getRemote()
     // We should never touch the game data directly. All changes to game data are done through the remote,
     // which then changes the game using the DelegateBridge -> change factory
-    m_ui.requiredTurnSeries(getPlayerID());
+    ui.requiredTurnSeries(getPlayerID());
     boolean badStep = false;
     enableEditModeMenu();
     if (name.endsWith("Tech")) {
@@ -122,7 +122,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       final boolean nonCombat = GameStepPropertiesHelper.isNonCombatMove(getGameData(), false);
       move(nonCombat, name);
       if (!nonCombat) {
-        m_ui.waitForMoveForumPoster(getPlayerID(), getPlayerBridge());
+        ui.waitForMoveForumPoster(getPlayerID(), getPlayerBridge());
         // TODO only do forum post if there is a combat
       }
     } else if (name.endsWith("Battle")) {
@@ -154,26 +154,26 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 
   private void enableEditModeMenu() {
     try {
-      m_ui.setEditDelegate((IEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit"));
+      ui.setEditDelegate((IEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit"));
     } catch (final Exception e) {
       e.printStackTrace();
     }
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
-        m_ui.getEditModeButtonModel().addActionListener(m_editModeAction);
-        m_ui.getEditModeButtonModel().setEnabled(true);
+        ui.getEditModeButtonModel().addActionListener(m_editModeAction);
+        ui.getEditModeButtonModel().setEnabled(true);
       }
     });
   }
 
   private void disableEditModeMenu() {
-    m_ui.setEditDelegate(null);
+    ui.setEditDelegate(null);
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
-        m_ui.getEditModeButtonModel().setEnabled(false);
-        m_ui.getEditModeButtonModel().removeActionListener(m_editModeAction);
+        ui.getEditModeButtonModel().setEnabled(false);
+        ui.getEditModeButtonModel().removeActionListener(m_editModeAction);
       }
     });
   }
@@ -188,7 +188,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     } catch (final Exception exception) {
       exception.printStackTrace();
       // toggle back to previous state since setEditMode failed
-      m_ui.getEditModeButtonModel().setSelected(!m_ui.getEditModeButtonModel().isSelected());
+      ui.getEditModeButtonModel().setSelected(!ui.getEditModeButtonModel().isSelected());
     }
 
   });
@@ -210,7 +210,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     }
 
     final PoliticalActionAttachment actionChoice =
-        m_ui.getPoliticalActionChoice(getPlayerID(), firstRun, iPoliticsDelegate);
+        ui.getPoliticalActionChoice(getPlayerID(), firstRun, iPoliticsDelegate);
     if (actionChoice != null) {
       iPoliticsDelegate.attemptAction(actionChoice);
       politics(false);
@@ -232,7 +232,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
-    final UserActionAttachment actionChoice = m_ui.getUserActionChoice(getPlayerID(), firstRun, iUserActionDelegate);
+    final UserActionAttachment actionChoice = ui.getUserActionChoice(getPlayerID(), firstRun, iUserActionDelegate);
     if (actionChoice != null) {
       iUserActionDelegate.attemptAction(actionChoice);
       userActions(false);
@@ -246,7 +246,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (!getPlayerID().amNotDeadYet(data) || getPlayerBridge().isGameOver()) {
       return true;
     }
-    return m_ui.acceptAction(playerSendingProposal, "To " + getPlayerID().getName() + ": " + acceptanceQuestion,
+    return ui.acceptAction(playerSendingProposal, "To " + getPlayerID().getName() + ": " + acceptanceQuestion,
         politics);
   }
 
@@ -272,15 +272,15 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       ClipPlayer.play(SoundPath.CLIP_PHASE_TECHNOLOGY, id);
       m_soundPlayedAlreadyTechnology = true;
     }
-    final TechRoll techRoll = m_ui.getTechRolls(id);
+    final TechRoll techRoll = ui.getTechRolls(id);
     if (techRoll != null) {
       final TechResults techResults = techDelegate.rollTech(techRoll.getRolls(), techRoll.getTech(),
           techRoll.getNewTokens(), techRoll.getWhoPaysHowMuch());
       if (techResults.isError()) {
-        m_ui.notifyError(techResults.getErrorString());
+        ui.notifyError(techResults.getErrorString());
         tech();
       } else {
-        m_ui.notifyTechResults(techResults);
+        ui.notifyTechResults(techResults);
       }
     }
   }
@@ -314,7 +314,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     }
     // getMove will block until all moves are done. We recursively call this same method
     // until getMove stops blocking.
-    final MoveDescription moveDescription = m_ui.getMove(id, getPlayerBridge(), nonCombat, stepName);
+    final MoveDescription moveDescription = ui.getMove(id, getPlayerBridge(), nonCombat, stepName);
     if (moveDescription == null) {
       if (GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData())) {
         if (!canAirLand(true, id)) {
@@ -332,7 +332,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     final String error = moveDel.move(moveDescription.getUnits(), moveDescription.getRoute(),
         moveDescription.getTransportsThatCanBeLoaded(), moveDescription.getDependentUnits());
     if (error != null) {
-      m_ui.notifyError(error);
+      ui.notifyError(error);
     }
     move(nonCombat, stepName);
   }
@@ -356,7 +356,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (airCantLand.isEmpty()) {
       return true;
     } else {
-      if (!m_ui.getOKToLetAirDie(getPlayerID(), airCantLand, movePhase)) {
+      if (!ui.getOKToLetAirDie(getPlayerID(), airCantLand, movePhase)) {
         return false;
       }
       return true;
@@ -378,7 +378,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (unitsCantFight.isEmpty()) {
       return false;
     } else {
-      if (m_ui.getOKToLetUnitsDie(unitsCantFight, true)) {
+      if (ui.getOKToLetUnitsDie(unitsCantFight, true)) {
         return false;
       }
       return true;
@@ -410,7 +410,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         }
         if (damagedUnits.size() > 0) {
           final HashMap<Unit, IntegerMap<RepairRule>> repair =
-              m_ui.getRepair(id, bid, GameStepPropertiesHelper.getRepairPlayers(data, id));
+              ui.getRepair(id, bid, GameStepPropertiesHelper.getRepairPlayers(data, id));
           if (repair != null) {
             final IPurchaseDelegate purchaseDel;
             try {
@@ -425,7 +425,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
             }
             error = purchaseDel.purchaseRepair(repair);
             if (error != null) {
-              m_ui.notifyError(error);
+              ui.notifyError(error);
               // dont give up, keep going
               purchase(bid);
             }
@@ -433,7 +433,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         }
       }
     }
-    final IntegerMap<ProductionRule> prod = m_ui.getProduction(id, bid);
+    final IntegerMap<ProductionRule> prod = ui.getProduction(id, bid);
     if (prod == null) {
       return;
     }
@@ -450,7 +450,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     }
     error = purchaseDel.purchase(prod);
     if (error != null) {
-      m_ui.notifyError(error);
+      ui.notifyError(error);
       // dont give up, keep going
       purchase(bid);
     }
@@ -494,7 +494,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         ClipPlayer.play(SoundPath.CLIP_PHASE_BATTLE, id);
         m_soundPlayedAlreadyBattle = true;
       }
-      final FightBattleDetails details = m_ui.getBattle(id, battles.getBattles());
+      final FightBattleDetails details = ui.getBattle(id, battles.getBattles());
       if (getPlayerBridge().isGameOver()) {
         return;
       }
@@ -502,7 +502,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         final String error =
             battleDel.fightBattle(details.getWhere(), details.isBombingRaid(), details.getBattleType());
         if (error != null) {
-          m_ui.notifyError(error);
+          ui.notifyError(error);
         }
       }
     }
@@ -529,7 +529,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         ClipPlayer.play(SoundPath.CLIP_PHASE_PLACEMENT, id);
         m_soundPlayedAlreadyPlacement = true;
       }
-      final PlaceData placeData = m_ui.waitForPlace(id, bid, getPlayerBridge());
+      final PlaceData placeData = ui.waitForPlace(id, bid, getPlayerBridge());
       if (placeData == null) {
         // this only happens in lhtr rules
         if (!GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData()) || canAirLand(false, id)
@@ -541,7 +541,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       }
       final String error = placeDel.placeUnits(placeData.getUnits(), placeData.getAt());
       if (error != null) {
-        m_ui.notifyError(error);
+        ui.notifyError(error);
       }
     }
   }
@@ -570,7 +570,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       }
       m_soundPlayedAlreadyEndTurn = true;
     }
-    m_ui.waitForEndTurn(getPlayerID(), getPlayerBridge());
+    ui.waitForEndTurn(getPlayerID(), getPlayerBridge());
   }
 
   @Override
@@ -580,20 +580,20 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
       final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
-    return m_ui.getBattlePanel().getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties,
+    return ui.getBattlePanel().getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties,
         battleID, allowMultipleHitsPerUnit);
   }
 
   @Override
   public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title,
       final int diceSides) {
-    return m_ui.selectFixedDice(numDice, hitAt, hitOnlyIfEquals, title, diceSides);
+    return ui.selectFixedDice(numDice, hitAt, hitOnlyIfEquals, title, diceSides);
   }
 
   @Override
   public Territory selectBombardingTerritory(final Unit unit, final Territory unitTerritory,
       final Collection<Territory> territories, final boolean noneAvailable) {
-    return m_ui.getBattlePanel().getBombardment(unit, unitTerritory, territories, noneAvailable);
+    return ui.getBattlePanel().getBombardment(unit, unitTerritory, territories, noneAvailable);
   }
 
   /*
@@ -601,7 +601,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
    */
   @Override
   public boolean selectAttackSubs(final Territory unitTerritory) {
-    return m_ui.getBattlePanel().getAttackSubs(unitTerritory);
+    return ui.getBattlePanel().getAttackSubs(unitTerritory);
   }
 
   /*
@@ -609,7 +609,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
    */
   @Override
   public boolean selectAttackTransports(final Territory unitTerritory) {
-    return m_ui.getBattlePanel().getAttackTransports(unitTerritory);
+    return ui.getBattlePanel().getAttackTransports(unitTerritory);
   }
 
   /*
@@ -617,7 +617,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
    */
   @Override
   public boolean selectAttackUnits(final Territory unitTerritory) {
-    return m_ui.getBattlePanel().getAttackUnits(unitTerritory);
+    return ui.getBattlePanel().getAttackUnits(unitTerritory);
   }
 
   /*
@@ -625,90 +625,90 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
    */
   @Override
   public boolean selectShoreBombard(final Territory unitTerritory) {
-    return m_ui.getBattlePanel().getShoreBombard(unitTerritory);
+    return ui.getBattlePanel().getShoreBombard(unitTerritory);
   }
 
   @Override
   public boolean shouldBomberBomb(final Territory territory) {
-    return m_ui.getStrategicBombingRaid(territory);
+    return ui.getStrategicBombingRaid(territory);
   }
 
   @Override
   public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets,
       final Collection<Unit> bombers) {
-    return m_ui.getStrategicBombingRaidTarget(territory, potentialTargets, bombers);
+    return ui.getStrategicBombingRaidTarget(territory, potentialTargets, bombers);
   }
 
   @Override
   public Territory whereShouldRocketsAttack(final Collection<Territory> candidates, final Territory from) {
-    return m_ui.getRocketAttack(candidates, from);
+    return ui.getRocketAttack(candidates, from);
   }
 
   @Override
   public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
       final Territory from) {
-    return m_ui.moveFightersToCarrier(fightersThatCanBeMoved, from);
+    return ui.moveFightersToCarrier(fightersThatCanBeMoved, from);
   }
 
   @Override
   public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory,
       final String unitMessage) {
-    return m_ui.selectTerritoryForAirToLand(candidates, currentTerritory, unitMessage);
+    return ui.selectTerritoryForAirToLand(candidates, currentTerritory, unitMessage);
   }
 
   @Override
   public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
     final String question = "Your units will be fired on in: "
         + MyFormatter.defaultNamedToTextList(aaFiringTerritories, " and ", false) + ".  Do you still want to move?";
-    return m_ui.getOK(question);
+    return ui.getOK(question);
   }
 
   @Override
   public boolean confirmMoveKamikaze() {
     final String question = "Not all air units in destination territory can land, do you still want to move?";
-    return m_ui.getOK(question);
+    return ui.getOK(question);
   }
 
   @Override
   public boolean confirmMoveHariKari() {
     final String question = "All units in destination territory will automatically die, do you still want to move?";
-    return m_ui.getOK(question);
+    return ui.getOK(question);
   }
 
   @Override
   public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory,
       final Collection<Territory> possibleTerritories, final String message) {
-    return m_ui.getBattlePanel().getRetreat(battleID, message, possibleTerritories, submerge);
+    return ui.getBattlePanel().getRetreat(battleID, message, possibleTerritories, submerge);
   }
 
   @Override
   public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
-    return m_ui.scrambleUnitsQuery(scrambleTo, possibleScramblers);
+    return ui.scrambleUnitsQuery(scrambleTo, possibleScramblers);
   }
 
   @Override
   public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible,
       final String message) {
-    return m_ui.selectUnitsQuery(current, possible, message);
+    return ui.selectUnitsQuery(current, possible, message);
   }
 
   @Override
   public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer) {
     // no need, we have already confirmed since we are firing player
-    if (m_ui.getLocalPlayers().playing(hitPlayer)) {
+    if (ui.getLocalPlayers().playing(hitPlayer)) {
       return;
     }
     // we dont want to confirm enemy casualties
     if (!BattleDisplay.getShowEnemyCasualtyNotification()) {
       return;
     }
-    m_ui.getBattlePanel().confirmCasualties(battleId, message);
+    ui.getBattlePanel().confirmCasualties(battleId, message);
   }
 
   @Override
   public void confirmOwnCasualties(final GUID battleId, final String message) {
-    m_ui.getBattlePanel().confirmCasualties(battleId, message);
+    ui.getBattlePanel().confirmCasualties(battleId, message);
   }
 
   public final boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
@@ -744,7 +744,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       final Resource r = entry.getKey();
       final int max = entry.getValue();
       final HashMap<Territory, IntegerMap<Unit>> selection =
-          m_ui.selectKamikazeSuicideAttacks(possibleUnitsToAttack, r, max);
+          ui.selectKamikazeSuicideAttacks(possibleUnitsToAttack, r, max);
       for (final Entry<Territory, IntegerMap<Unit>> selectionEntry : selection.entrySet()) {
         final Territory t = selectionEntry.getKey();
         HashMap<Unit, IntegerMap<Resource>> currentTerr = rVal.get(t);
@@ -772,6 +772,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (territoryChoices == null || territoryChoices.isEmpty() || unitsPerPick < 1) {
       return Tuple.of((Territory) null, (Set<Unit>) new HashSet<Unit>());
     }
-    return m_ui.pickTerritoryAndUnits(this.getPlayerID(), territoryChoices, unitChoices, unitsPerPick);
+    return ui.pickTerritoryAndUnits(this.getPlayerID(), territoryChoices, unitChoices, unitsPerPick);
   }
 }
