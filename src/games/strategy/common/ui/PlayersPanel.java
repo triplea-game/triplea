@@ -19,17 +19,15 @@ import games.strategy.util.EventThreadJOptionPane;
  */
 public class PlayersPanel extends JPanel {
   private static final long serialVersionUID = -4283654829822141065L;
-  private final PlayerManager players;
 
   public PlayersPanel(final PlayerManager players, final GameData data) {
-    this.players = players;
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    for (final String player : this.players.getPlayers()) {
+    for (final String player : players.getPlayers()) {
       final PlayerID playerID = data.getPlayerList().getPlayerID(player);
       if (playerID.isAI()) {
         add(new JLabel(playerID.getWhoAmI().split(":")[1] + " is " + playerID.getName(), JLabel.RIGHT));
       } else {
-        add(new JLabel(this.players.getNode(player).getName() + " is " + playerID.getName(), JLabel.RIGHT));
+        add(new JLabel(players.getNode(player).getName() + " is " + playerID.getName(), JLabel.RIGHT));
       }
     }
   }
