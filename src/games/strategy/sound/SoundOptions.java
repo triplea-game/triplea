@@ -21,7 +21,7 @@ import games.strategy.sound.SoundPath.SoundType;
  * Sound option window framework.
  */
 public final class SoundOptions {
-  final ClipPlayer m_clipPlayer;
+  final ClipPlayer clipPlayer;
 
   /**
    * @param parentMenu
@@ -51,7 +51,7 @@ public final class SoundOptions {
   }
 
   public SoundOptions(final JComponent parent, final SoundType soundType) {
-    m_clipPlayer = ClipPlayer.getInstance();
+    clipPlayer = ClipPlayer.getInstance();
     final String ok = "OK";
     final String cancel = "Cancel";
     final String selectAll = "All";
@@ -63,21 +63,21 @@ public final class SoundOptions {
     if (pressedButton == null || pressedButton.equals(cancel)) {
     } else if (pressedButton.equals(ok)) {
       for (final IEditableProperty property : properties) {
-        m_clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), !(Boolean) property.getValue());
+        clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), !(Boolean) property.getValue());
       }
-      m_clipPlayer.saveSoundPreferences();
+      clipPlayer.saveSoundPreferences();
     } else if (pressedButton.equals(selectAll)) {
       for (final IEditableProperty property : properties) {
         property.setValue(true);
-        m_clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), false);
+        clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), false);
       }
-      m_clipPlayer.saveSoundPreferences();
+      clipPlayer.saveSoundPreferences();
     } else if (pressedButton.equals(selectNone)) {
       for (final IEditableProperty property : properties) {
         property.setValue(false);
-        m_clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), true);
+        clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), true);
       }
-      m_clipPlayer.saveSoundPreferences();
+      clipPlayer.saveSoundPreferences();
     }
   }
 
