@@ -6,7 +6,7 @@ import org.junit.Before;
 
 import junit.framework.TestCase;
 
-public abstract class MapXmlCreatorTestBase extends TestCase { 
+public abstract class MapXmlCreatorTestBase extends TestCase {
 
   private MapXmlCreator mapXmlCreator;
 
@@ -21,7 +21,7 @@ public abstract class MapXmlCreatorTestBase extends TestCase {
   @Override
   @Before
   protected void setUp() {
-    setMapXmlCreator();
+    // setMapXmlCreator();
   }
 
   private void setMapXmlCreator() {
