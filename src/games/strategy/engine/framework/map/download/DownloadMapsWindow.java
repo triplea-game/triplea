@@ -81,14 +81,22 @@ public class DownloadMapsWindow extends JFrame {
     checkNotNull(games);
 
     final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
+<<<<<<< HEAD:src/games/strategy/engine/framework/map/download/DownloadMapsWindow.java
     final DownloadMapsWindow dia = new DownloadMapsWindow(mapName, games);
+=======
+    final InstallMapDialog dia = new InstallMapDialog(mapName, games);
+>>>>>>> refs/remotes/triplea-game/master:src/games/strategy/engine/framework/map/download/InstallMapDialog.java
     dia.setSize(800, WINDOW_HEIGHT);
     dia.setLocationRelativeTo(parentFrame);
     dia.setMinimumSize(new Dimension(200, 200));
     dia.setVisible(true);
   }
 
+<<<<<<< HEAD:src/games/strategy/engine/framework/map/download/DownloadMapsWindow.java
   private DownloadMapsWindow(final Optional<String> mapName, final List<DownloadFileDescription> games) {
+=======
+  private InstallMapDialog(final Optional<String> mapName, final List<DownloadFileDescription> games) {
+>>>>>>> refs/remotes/triplea-game/master:src/games/strategy/engine/framework/map/download/InstallMapDialog.java
     super("Download Maps");
 
     progressPanel = new MapDownloadProgressPanel(this);
@@ -203,7 +211,11 @@ public class DownloadMapsWindow extends JFrame {
           descriptionPane, gamesList, maps, action, mapSizeLabel));
 
       if (!mapToSelect.isDummyUrl()) {
+<<<<<<< HEAD:src/games/strategy/engine/framework/map/download/DownloadMapsWindow.java
         DownloadMapsWindow.updateMapUrlAndSizeLabel(mapToSelect, action, mapSizeLabel);
+=======
+        InstallMapDialog.updateMapUrlAndSizeLabel(mapToSelect, action, mapSizeLabel);
+>>>>>>> refs/remotes/triplea-game/master:src/games/strategy/engine/framework/map/download/InstallMapDialog.java
       }
 
       main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);

@@ -23,7 +23,11 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
+<<<<<<< HEAD
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
+=======
+import games.strategy.engine.framework.map.download.InstallMapDialog;
+>>>>>>> refs/remotes/triplea-game/master
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.NewGameChooser;
@@ -173,7 +177,11 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
     JButton downloadMapButton =
         SwingComponents.newJButton("Download Maps", "Click this button to install additional maps",
+<<<<<<< HEAD
             () -> DownloadMapsWindow.showDownloadMapsWindow());
+=======
+            () -> InstallMapDialog.showDownloadMapsWindow());
+>>>>>>> refs/remotes/triplea-game/master
     add(downloadMapButton, buildGridRow(0, 8, new Insets(0, 10, 10, 10)));
 
     add(m_gameOptions, buildGridRow(0, 9, new Insets(25, 10, 10, 10)));

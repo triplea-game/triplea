@@ -16,7 +16,11 @@ import java.util.StringTokenizer;
 import games.strategy.common.swing.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
+<<<<<<< HEAD
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
+=======
+import games.strategy.engine.framework.map.download.InstallMapDialog;
+>>>>>>> refs/remotes/triplea-game/master
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import games.strategy.util.Match;
 
@@ -46,7 +50,11 @@ public class ResourceLoader {
       SwingComponents.promptUser("Download map?",
           "Map missing: " + mapName + ", could not join game.\nWould you like to download the map now?"
               + "\nOnce the download completes, you may reconnect to this game.",
+<<<<<<< HEAD
           () -> DownloadMapsWindow.showDownloadMapsWindow(mapName));
+=======
+          () -> InstallMapDialog.showDownloadMapsWindow(mapName));
+>>>>>>> refs/remotes/triplea-game/master
 
       throw new MapNotFoundException();
     }
