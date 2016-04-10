@@ -46,9 +46,9 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    * @param integerMap
    */
   public IntegerMap(final IntegerMap<T> integerMap) {
-    this.mapValues = new HashMap<T, Integer>(integerMap.size());
+    mapValues = new HashMap<T, Integer>(integerMap.size());
     for (final T t : integerMap.keySet()) {
-      this.mapValues.put(t, integerMap.getInt(t));
+      mapValues.put(t, integerMap.getInt(t));
     }
   }
 
