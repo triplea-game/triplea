@@ -33,7 +33,6 @@ public class MyFormatter {
     s_plural = new HashMap<String, String>();
     s_plural.put("armour", "armour");
     s_plural.put("infantry", "infantry");
-    s_plural.put("Infantry", "Infantry");
     s_plural.put("artillery", "artilleries");
     s_plural.put("factory", "factories");
   }
