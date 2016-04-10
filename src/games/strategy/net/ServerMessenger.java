@@ -20,6 +20,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -662,17 +663,19 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   }
 
   private TimerTask GetUsernameUnmuteTask(final String username) {
+    return createUnmuteTimerTask(
+        () -> (isLobby() && new MutedUsernameController().getUsernameUnmuteTime(username) == -1) || (isGame()),
+        () -> m_liveMutedUsernames.remove(username)
+    );
+  }
+
+  private TimerTask createUnmuteTimerTask(final Supplier<Boolean> runCondition, final Runnable action) {
     return new TimerTask() {
       @Override
-      public void run() { // lobby has a database we need to check, normal hosted games do not
-        if ((isLobby() && new MutedUsernameController().getUsernameUnmuteTime(username) == -1) || (isGame())) // If the
-                                                                                                              // mute
-                                                                                                              // has
-                                                                                                              // expired
-        {
+      public void run() {
+        if (runCondition.get()) {
           synchronized (m_cachedListLock) {
-            // Remove the username from the list of live username's muted
-            m_liveMutedUsernames.remove(username);
+            action.run();
           }
         }
       }
@@ -680,34 +683,17 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   }
 
   private TimerTask GetIpUnmuteTask(final String ip) {
-    return new TimerTask() {
-      @Override
-      public void run() { // lobby has a database we need to check, normal hosted games do not
-        if ((isLobby() && new MutedIpController().getIpUnmuteTime(ip) == -1) || (isGame())) // If the mute has expired
-        {
-          synchronized (m_cachedListLock) {
-            // Remove the ip from the list of live ip's muted
-            m_liveMutedIpAddresses.remove(ip);
-          }
-        }
-      }
-    };
+    return createUnmuteTimerTask(
+        () -> (isLobby() && new MutedIpController().getIpUnmuteTime(ip) == -1) || (isGame()),
+        () -> m_liveMutedIpAddresses.remove(ip)
+    );
   }
 
   private TimerTask GetMacUnmuteTask(final String mac) {
-    return new TimerTask() {
-      @Override
-      public void run() { // lobby has a database we need to check, normal hosted games do not
-        if ((isLobby() && new MutedMacController().getMacUnmuteTime(mac) == -1) || (isGame())) // If the mute has
-                                                                                               // expired
-        {
-          synchronized (m_cachedListLock) {
-            // Remove the mac from the list of live mac's muted
-            m_liveMutedMacAddresses.remove(mac);
-          }
-        }
-      }
-    };
+    return createUnmuteTimerTask(
+        () -> (isLobby() && new MutedMacController().getMacUnmuteTime(mac) == -1) || (isGame()),
+        () -> m_liveMutedMacAddresses.remove(mac)
+    );
   }
 
   @Override
