@@ -192,7 +192,7 @@ public class DownloadMapsWindow extends JFrame {
 
     final JLabel mapSizeLabel = new JLabel(" ");
 
-    final DefaultListModel<String> model = SwingComponents.newJListModel(maps, (map) -> map.getMapName());
+    final DefaultListModel<String> model = SwingComponents.newJListModel(maps, map -> map.getMapName());
 
 
     if (maps.size() > 0) {
