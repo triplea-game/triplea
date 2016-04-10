@@ -8,49 +8,52 @@ import javax.swing.JEditorPane;
  * For when your component contains images or data that is very very big, and you want it to be reclaimed as needed by
  * the GC.
  * Example, when a JEditorPane has rich HTML in it, with huge images.
+ * @deprecated Class uses a very complicated SoftReference, it's buggy and very complex, avoid using this class, or
+ * work to remove the soft reference.
  */
 public class SoftJEditorPane {
-  protected SoftReference<JEditorPane> m_component;
-  protected final String m_text;
+  protected SoftReference<JEditorPane> component;
+  protected final String text;
 
   public SoftJEditorPane(final String text) {
-    m_text = text;
+    this.text = text;
   }
 
   protected JEditorPane createComponent() {
     final JEditorPane pane = new JEditorPane();
     pane.setEditable(false);
     pane.setContentType("text/html");
-    pane.setText(m_text);
+    pane.setText(text);
     pane.setCaretPosition(0);
     return pane;
   }
 
   public synchronized JEditorPane getComponent() {
-    if (m_component == null) {
-      m_component = new SoftReference<JEditorPane>(createComponent());
-    }
-    JEditorPane component = m_component.get();
     if (component == null) {
-      component = createComponent();
-      m_component = new SoftReference<JEditorPane>(component);
+      component = new SoftReference<JEditorPane>(createComponent());
     }
-    return component;
+
+    JEditorPane editorPane = this.component.get();
+    if (editorPane == null) {
+      editorPane = createComponent();
+      this.component = new SoftReference<JEditorPane>(editorPane);
+    }
+    return editorPane;
   }
 
   public String getText() {
-    return m_text;
+    return text;
   }
 
   public void dispose() {
-    if (m_component != null) {
-      JEditorPane component = m_component.get();
-      if (component != null) {
-        component.setText("");
-        component.removeAll();
-        component = null;
+    if (component != null) {
+      JEditorPane editorComponent = this.component.get();
+      if (editorComponent != null) {
+        editorComponent.setText("");
+        editorComponent.removeAll();
+        editorComponent = null;
       }
-      m_component = null;
+      this.component = null;
     }
   }
 }
