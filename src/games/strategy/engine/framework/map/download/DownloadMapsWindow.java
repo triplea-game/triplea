@@ -12,7 +12,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -81,22 +80,14 @@ public class DownloadMapsWindow extends JFrame {
     checkNotNull(games);
 
     final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
-<<<<<<< HEAD:src/games/strategy/engine/framework/map/download/DownloadMapsWindow.java
     final DownloadMapsWindow dia = new DownloadMapsWindow(mapName, games);
-=======
-    final InstallMapDialog dia = new InstallMapDialog(mapName, games);
->>>>>>> refs/remotes/triplea-game/master:src/games/strategy/engine/framework/map/download/InstallMapDialog.java
     dia.setSize(800, WINDOW_HEIGHT);
     dia.setLocationRelativeTo(parentFrame);
     dia.setMinimumSize(new Dimension(200, 200));
     dia.setVisible(true);
   }
 
-<<<<<<< HEAD:src/games/strategy/engine/framework/map/download/DownloadMapsWindow.java
   private DownloadMapsWindow(final Optional<String> mapName, final List<DownloadFileDescription> games) {
-=======
-  private InstallMapDialog(final Optional<String> mapName, final List<DownloadFileDescription> games) {
->>>>>>> refs/remotes/triplea-game/master:src/games/strategy/engine/framework/map/download/InstallMapDialog.java
     super("Download Maps");
 
     progressPanel = new MapDownloadProgressPanel(this);
@@ -201,7 +192,7 @@ public class DownloadMapsWindow extends JFrame {
 
     final JLabel mapSizeLabel = new JLabel(" ");
 
-    final DefaultListModel model = SwingComponents.newJListModel(maps, (map) -> map.getMapName());
+    final DefaultListModel<String> model = SwingComponents.newJListModel(maps, (map) -> map.getMapName());
 
 
     if (maps.size() > 0) {
@@ -211,11 +202,7 @@ public class DownloadMapsWindow extends JFrame {
           descriptionPane, gamesList, maps, action, mapSizeLabel));
 
       if (!mapToSelect.isDummyUrl()) {
-<<<<<<< HEAD:src/games/strategy/engine/framework/map/download/DownloadMapsWindow.java
         DownloadMapsWindow.updateMapUrlAndSizeLabel(mapToSelect, action, mapSizeLabel);
-=======
-        InstallMapDialog.updateMapUrlAndSizeLabel(mapToSelect, action, mapSizeLabel);
->>>>>>> refs/remotes/triplea-game/master:src/games/strategy/engine/framework/map/download/InstallMapDialog.java
       }
 
       main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
@@ -244,7 +231,7 @@ public class DownloadMapsWindow extends JFrame {
   }
 
   private static JList<String> createGameSelectionList(DownloadFileDescription selectedMap,
-      final List<DownloadFileDescription> maps, final JEditorPane descriptionPanel, DefaultListModel model) {
+      final List<DownloadFileDescription> maps, final JEditorPane descriptionPanel, DefaultListModel<String> model) {
 
     JList<String> gamesList = SwingComponents.newJList(model);
     int selectedIndex = maps.indexOf(selectedMap);
@@ -323,7 +310,7 @@ public class DownloadMapsWindow extends JFrame {
   }
 
   private JPanel createButtonsPanel(MapAction action, JList<String> gamesList, List<DownloadFileDescription> maps,
-      DefaultListModel listModel) {
+      DefaultListModel<String> listModel) {
     final JPanel buttonsPanel = SwingComponents.gridPanel(1, 5);
 
     buttonsPanel.setBorder(SwingComponents.newEmptyBorder(20));
@@ -360,7 +347,7 @@ public class DownloadMapsWindow extends JFrame {
       "You can select multiple maps by holding control or shift while clicking map names.";
 
   private JButton buildMapActionButton(MapAction action, JList<String> gamesList, List<DownloadFileDescription> maps,
-      DefaultListModel listModel) {
+      DefaultListModel<String> listModel) {
     final JButton actionButton;
 
     if (action == MapAction.REMOVE) {
@@ -379,7 +366,7 @@ public class DownloadMapsWindow extends JFrame {
   }
 
   private static ActionListener removeAction(JList<String> gamesList, List<DownloadFileDescription> maps,
-      DefaultListModel listModel) {
+      DefaultListModel listModel) {//TODO change FSAS.remove so that it uses DefaultListModel<String> instead.
     return (e) -> {
       final List<String> selectedValues = gamesList.getSelectedValuesList();
       final List<DownloadFileDescription> selectedMaps =
@@ -391,8 +378,8 @@ public class DownloadMapsWindow extends JFrame {
     };
   }
 
-  private ActionListener installAction(JList gamesList, List<DownloadFileDescription> maps,
-      DefaultListModel listModel) {
+  private ActionListener installAction(JList<String> gamesList, List<DownloadFileDescription> maps,
+      DefaultListModel<String> listModel) {
     return (e) -> {
       List<String> selectedValues = gamesList.getSelectedValuesList();
       List<DownloadFileDescription> downloadList = Lists.newArrayList();

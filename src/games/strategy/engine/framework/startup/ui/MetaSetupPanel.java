@@ -14,8 +14,8 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -31,7 +31,6 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.config.GameEngineProperty;
 import games.strategy.engine.config.PropertyReader;
 import games.strategy.engine.framework.map.download.DownloadUtils;
-import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.lobby.client.LobbyClient;
@@ -55,11 +54,9 @@ public class MetaSetupPanel extends SetupPanel {
   private JButton m_about;
 
   private final SetupPanelModel m_model;
-  private final MapDownloadController mapDownloadController;
 
   public MetaSetupPanel(final SetupPanelModel model) {
     this.m_model = model;
-    this.mapDownloadController = ClientContext.mapDownloadController();
 
     createComponents();
     layoutComponents();
@@ -176,11 +173,6 @@ public class MetaSetupPanel extends SetupPanel {
         about();
       }
     });
-  }
-
-  private void downloadMaps() {
-    JComponent parentWindow = this;
-    mapDownloadController.openDownloadMapScreen(parentWindow);
   }
 
   private static void ruleBook() {

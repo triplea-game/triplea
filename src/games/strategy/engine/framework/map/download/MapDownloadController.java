@@ -39,22 +39,14 @@ public class MapDownloadController {
   }
 
   public void downloadMap(String mapName) {
-<<<<<<< HEAD
     DownloadMapsWindow.showDownloadMapsWindow(mapName);
-=======
-    InstallMapDialog.showDownloadMapsWindow(mapName);
->>>>>>> refs/remotes/triplea-game/master
   }
 
 
   /** Opens a new window dialog where a user can select maps to download or update */
   public void openDownloadMapScreen(JComponent parentComponent) {
     final Frame parentFrame = JOptionPane.getFrameForComponent(parentComponent);
-<<<<<<< HEAD
     DownloadMapsWindow.showDownloadMapsWindow(parentFrame);
-=======
-    InstallMapDialog.showDownloadMapsWindow(parentFrame);
->>>>>>> refs/remotes/triplea-game/master
   }
 
   /**
@@ -101,11 +93,7 @@ public class MapDownloadController {
           text.append("<li> " + map + "</li>");
         }
         text.append("</ul></html>");
-<<<<<<< HEAD
         SwingComponents.promptUser("Update Your Maps?", text.toString(), () -> DownloadMapsWindow.showDownloadMapsWindow());
-=======
-        SwingComponents.promptUser("Update Your Maps?", text.toString(), () -> InstallMapDialog.showDownloadMapsWindow());
->>>>>>> refs/remotes/triplea-game/master
         return true;
       }
     } catch (final Exception e) {

@@ -59,7 +59,6 @@ public class TerritoryDefinitionDialog extends JDialog {
   public static final String TERRITORY_DEFINITION_IMPASSABLE = "isImpassible"; // typo in engine!!!
   public static final String TERRITORY_DEFINITION_IS_CAPITAL = "capital";
 
-  final private MapXMLCreator mapXMLCreator;
   private final HashMap<DEFINITION, Boolean> properties;
   private JButton okButton;
 
@@ -71,7 +70,6 @@ public class TerritoryDefinitionDialog extends JDialog {
   private TerritoryDefinitionDialog(final MapXMLCreator mapXMLCreator, final Frame parentFrame,
       final String territoryName, final HashMap<DEFINITION, Boolean> properties) {
     super(parentFrame, "Edit Territory Definitions of " + territoryName, true);
-    this.mapXMLCreator = mapXMLCreator;
     this.properties = properties;
     okButton = new JButton("OK");
     okButton.addActionListener(new AbstractAction("OK") {
