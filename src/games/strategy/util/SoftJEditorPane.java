@@ -47,11 +47,11 @@ public class SoftJEditorPane {
 
   public void dispose() {
     if (component != null) {
-      JEditorPane component = this.component.get();
-      if (component != null) {
-        component.setText("");
-        component.removeAll();
-        component = null;
+      JEditorPane editorComponent = this.component.get();
+      if (editorComponent != null) {
+        editorComponent.setText("");
+        editorComponent.removeAll();
+        editorComponent = null;
       }
       this.component = null;
     }
