@@ -12,14 +12,14 @@ import com.apple.eawt.ApplicationEvent;
  * Needs AppleJavaExtensions.jar to compile on non-Mac platform.
  */
 public class MacWrapper {
-  private static MainGameFrame s_shutdownFrame;
+  private static MainGameFrame shutdownFrame;
 
   static {
     Application.getApplication().addApplicationListener(new ApplicationAdapter() {
       @Override
       public void handleQuit(final ApplicationEvent event) {
-        if (s_shutdownFrame != null) {
-          s_shutdownFrame.shutdown();
+        if (shutdownFrame != null) {
+          shutdownFrame.shutdown();
         } else {
           System.exit(0);
         }
@@ -31,10 +31,10 @@ public class MacWrapper {
   // we try to load the game and the stubs arent in the classpath
   // i think the java validator triggers this
   public static void registerMacShutdownHandler(final MainGameFrame frame) {
-    s_shutdownFrame = frame;
+    shutdownFrame = frame;
   }
 
   public static void unregisterShutdownHandler() {
-    s_shutdownFrame = null;
+    shutdownFrame = null;
   }
 }

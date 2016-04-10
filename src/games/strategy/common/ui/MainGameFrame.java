@@ -9,11 +9,11 @@ import games.strategy.engine.framework.LocalPlayers;
 
 public abstract class MainGameFrame extends JFrame {
   private static final long serialVersionUID = 7433347393639606647L;
-  protected LocalPlayers m_localPlayers;
+  protected LocalPlayers localPlayers;
 
   public MainGameFrame(final String name, final LocalPlayers players) {
     super(name);
-    m_localPlayers = players;
+    localPlayers = players;
     setIconImage(GameRunner2.getGameIcon(this));
   }
 
@@ -32,6 +32,6 @@ public abstract class MainGameFrame extends JFrame {
   public abstract void setShowChatTime(final boolean showTime);
 
   public LocalPlayers getLocalPlayers() {
-    return m_localPlayers;
+    return localPlayers;
   }
 }

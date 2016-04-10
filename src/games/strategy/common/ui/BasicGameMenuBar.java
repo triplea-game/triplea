@@ -81,7 +81,6 @@ import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.pbem.PBEMMessagePoster;
-import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.net.IServerMessenger;
 import games.strategy.performance.EnablePerformanceLoggingCheckBox;
 import games.strategy.triplea.UrlConstants;
@@ -101,7 +100,7 @@ import games.strategy.util.Triple;
 public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMenuBar {
   private static final long serialVersionUID = -1447295944297939539L;
   protected final CustomGameFrame m_frame;
-  protected SoftJEditorPane m_gameNotesPane;
+  protected SoftJEditorPane gameNotesPane;
 
   public BasicGameMenuBar(final CustomGameFrame frame) {
     m_frame = frame;
@@ -155,13 +154,13 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
   protected void createGameSpecificMenus(final JMenuBar menuBar) {}
 
   public void dispose() {
-    if (m_gameNotesPane != null) {
-      m_gameNotesPane.dispose();
+    if (gameNotesPane != null) {
+      gameNotesPane.dispose();
     }
   }
 
   public SoftJEditorPane getGameNotesJEditorPane() {
-    return m_gameNotesPane;
+    return gameNotesPane;
   }
 
   protected void addGameNotesMenu(final JMenu parentMenu) {
@@ -170,10 +169,10 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     final String notesProperty = getData().getProperties().get("notes", "");
     if (notesProperty != null && notesProperty.trim().length() != 0) {
       final String notes = LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim());
-      m_gameNotesPane = new SoftJEditorPane(notes);
+      gameNotesPane = new SoftJEditorPane(notes);
       parentMenu.add(SwingAction.of("Game Notes...", e ->
           SwingUtilities.invokeLater(() -> {
-            final JEditorPane pane = m_gameNotesPane.getComponent();
+            final JEditorPane pane = gameNotesPane.getComponent();
             final JScrollPane scroll = new JScrollPane(pane);
             scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
             final JDialog dialog = new JDialog(m_frame);

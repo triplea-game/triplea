@@ -257,7 +257,7 @@ public class HeadlessGameServerUI extends MainGameFrame {
     m_chatPanel = null;
     m_stepListener = null;
     m_dataChangeListener = null;
-    m_localPlayers = null;
+    localPlayers = null;
     removeWindowListener(WINDOW_LISTENER);
     WINDOW_LISTENER = null;
   }
