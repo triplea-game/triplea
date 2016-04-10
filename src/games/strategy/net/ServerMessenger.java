@@ -716,20 +716,20 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   }
 
   @Override
-  public void removeConnection(final INode node) {
-    if (node.equals(this.node)) {
+  public void removeConnection(final INode nodeToRemove) {
+    if (nodeToRemove.equals(this.node)) {
       throw new IllegalArgumentException("Cant remove ourself!");
     }
-    NotifyPlayerRemoval(node);
-    SocketChannel channel = nodeToChannel.remove(node);
+    NotifyPlayerRemoval(nodeToRemove);
+    SocketChannel channel = nodeToChannel.remove(nodeToRemove);
     if (channel == null) {
-      logger.info("Could not remove connection to node:" + node);
+      logger.info("Could not remove connection to node:" + nodeToRemove);
       return;
     }
     channelToNode.remove(channel);
     nioSocket.close(channel);
-    notifyConnectionsChanged(false, node);
-    logger.info("Connection removed:" + node);
+    notifyConnectionsChanged(false, nodeToRemove);
+    logger.info("Connection removed:" + nodeToRemove);
   }
 
   @Override
