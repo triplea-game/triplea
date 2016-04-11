@@ -18,7 +18,7 @@ public class SoundProperties {
   static final String GENERIC_FOLDER = "generic";
   static final String OBJECTIVES_PANEL_NAME = "Objectives.Panel.Name";
   private static SoundProperties s_op = null;
-  private static long s_timestamp = 0;
+  private static long timestamp = 0;
   private final Properties m_properties = new Properties();
 
   protected SoundProperties(final ResourceLoader loader) {
@@ -35,10 +35,10 @@ public class SoundProperties {
   }
 
   public static SoundProperties getInstance(final ResourceLoader loader) {
-    if (s_op == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 1000) { // cache properties for 1
+    if (s_op == null || Calendar.getInstance().getTimeInMillis() > timestamp + 1000) { // cache properties for 1
                                                                                          // second
       s_op = new SoundProperties(loader);
-      s_timestamp = Calendar.getInstance().getTimeInMillis();
+      timestamp = Calendar.getInstance().getTimeInMillis();
     }
     return s_op;
   }
@@ -48,7 +48,6 @@ public class SoundProperties {
   }
 
   /**
-   * @param objectiveKey
    * @return the string property, or null if not found
    */
   public String getProperty(final String key) {

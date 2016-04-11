@@ -13,10 +13,7 @@ import games.strategy.util.Match;
 
 public class BattleResults extends GameDataComponent implements Serializable {
   private static final long serialVersionUID = 1381361441940258702L;
-  // private final int m_attackingUnitsLeft;
-  // private final int m_defendingUnitsLeft;
-  // private final int m_attackingCombatUnitsLeft;
-  // private final int m_defendingCombatUnitsLeft;
+
   private final int m_battleRoundsFought;
   final List<Unit> m_remainingAttackingUnits;
   final List<Unit> m_remainingDefendingUnits;
@@ -29,17 +26,9 @@ public class BattleResults extends GameDataComponent implements Serializable {
    * This battle must have been fought. If fight() was not run on this battle, then the WhoWon will not have been set
    * yet, which will give
    * an error with this constructor.
-   *
-   * @param battle
    */
   public BattleResults(final IBattle battle, final GameData data) {
     super(data);
-    // m_attackingUnitsLeft = battle.getRemainingAttackingUnits().size();
-    // m_attackingCombatUnitsLeft = Match.countMatches(battle.getRemainingAttackingUnits(),
-    // Matches.UnitIsDestructibleInCombatShort);
-    // m_defendingUnitsLeft = battle.getRemainingDefendingUnits().size();
-    // m_defendingCombatUnitsLeft = Match.countMatches(battle.getRemainingDefendingUnits(),
-    // Matches.UnitIsDestructibleInCombatShort);
     m_battleRoundsFought = battle.getBattleRound();
     m_remainingAttackingUnits = battle.getRemainingAttackingUnits();
     m_remainingDefendingUnits = battle.getRemainingDefendingUnits();
@@ -51,16 +40,9 @@ public class BattleResults extends GameDataComponent implements Serializable {
 
   /**
    * This battle may or may not have been fought already. Use this for pre-setting the WhoWon flag.
-   *
-   * @param battle
-   * @param scriptedWhoWon
    */
   public BattleResults(final IBattle battle, final WhoWon scriptedWhoWon, final GameData data) {
     super(data);
-    // m_attackingCombatUnitsLeft = Match.countMatches(battle.getRemainingAttackingUnits(),
-    // Matches.UnitIsDestructibleInCombatShort);
-    // m_defendingCombatUnitsLeft = Match.countMatches(battle.getRemainingDefendingUnits(),
-    // Matches.UnitIsDestructibleInCombatShort);
     m_battleRoundsFought = battle.getBattleRound();
     m_remainingAttackingUnits = battle.getRemainingAttackingUnits();
     m_remainingDefendingUnits = battle.getRemainingDefendingUnits();
@@ -103,22 +85,15 @@ public class BattleResults extends GameDataComponent implements Serializable {
   // combat units that can
   // die.
   public boolean attackerWon() {
-    // return !draw() && m_attackingCombatUnitsLeft > 0;
     return !draw() && m_whoWon == WhoWon.ATTACKER;
   }
 
   public boolean defenderWon() {
     // if noone is left, it is considered a draw, even if m_whoWon says defender.
-    // return !draw() && m_defendingCombatUnitsLeft > 0;
     return !draw() && m_whoWon == WhoWon.DEFENDER;
   }
 
   public boolean draw() {
-    // technically the defender wins if there is noone left. However, most people using the battle calc consider that to
-    // be a "draw", so we
-    // should check and see if there is noone left.
-    // return (m_attackingCombatUnitsLeft == 0 && m_defendingCombatUnitsLeft == 0) || (m_attackingCombatUnitsLeft > 0 &&
-    // m_defendingCombatUnitsLeft > 0);
     return (m_whoWon != WhoWon.ATTACKER && m_whoWon != WhoWon.DEFENDER)
         || (getAttackingCombatUnitsLeft() == 0 && getDefendingCombatUnitsLeft() == 0);
   }
