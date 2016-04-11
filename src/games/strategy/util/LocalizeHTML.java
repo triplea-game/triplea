@@ -55,29 +55,19 @@ public class LocalizeHTML {
   public static final String PATTERN_HTML_IMG_SRC_TAG = "\\s*(?i)src\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
 
   private static List<String> getAllAhrefLinksFromHTML(final String htmlText) {
-    final List<String> result = new ArrayList<String>();
-    final Pattern patternTag = Pattern.compile(PATTERN_HTML_A_TAG);
-    final Pattern patternLink = Pattern.compile(PATTERN_HTML_A_HREF_TAG);
-    final Matcher matcherTag = patternTag.matcher(htmlText);
-    Matcher matcherLink;
-    while (matcherTag.find()) {
-      // a tag
-      final String href = matcherTag.group(1);
-
-      matcherLink = patternLink.matcher(href);
-      while (matcherLink.find()) {
-        // href link
-        final String link = matcherLink.group(1);
-        result.add(link);
-      }
-    }
-    return result;
+    return getAllLinksFromHTML(htmlText, PATTERN_HTML_A_TAG, PATTERN_HTML_A_HREF_TAG);
   }
 
   private static List<String> getAllImgSrcLinksFromHTML(final String htmlText) {
+    return getAllLinksFromHTML(htmlText, PATTERN_HTML_IMG_TAG, PATTERN_HTML_IMG_SRC_TAG);
+  }
+
+  private static List<String> getAllLinksFromHTML(final String htmlText, final String patternTagPattern,
+      final String patternLinkPattern) {
     final List<String> result = new ArrayList<String>();
-    final Pattern patternTag = Pattern.compile(PATTERN_HTML_IMG_TAG);
-    final Pattern patternLink = Pattern.compile(PATTERN_HTML_IMG_SRC_TAG);
+    final Pattern patternTag = Pattern.compile(patternTagPattern);
+    final Pattern patternLink = Pattern.compile(patternLinkPattern);
+
     final Matcher matcherTag = patternTag.matcher(htmlText);
     Matcher matcherLink;
     while (matcherTag.find()) {
@@ -92,6 +82,7 @@ public class LocalizeHTML {
     }
     return result;
   }
+
 
   /**
    * This is only useful once we are IN a game. Before we go into the game, resource loader will either be null, or be

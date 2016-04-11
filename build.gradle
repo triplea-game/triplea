@@ -10,8 +10,8 @@ buildscript {
 plugins {
 	id 'java'
 	id 'application'
-	id 'com.github.ben-manes.versions' version '0.11.3'
-	id 'com.github.johnrengelman.shadow' version '1.2.2'
+	id 'com.github.ben-manes.versions' version '0.12.0'
+	id 'com.github.johnrengelman.shadow' version '1.2.3'
 	id "de.qaware.seu.as.code.git" version "2.2.0"
 }
 
@@ -20,7 +20,10 @@ group = 'triplea'
 description = 'TripleA is a free online turn based strategy game and board game engine, similar to such board games as Axis & Allies or Risk.'
 mainClassName = "games.strategy.engine.framework.GameRunner"
 
-compileJava.options.encoding = 'UTF-8'
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 tasks.withType(JavaCompile) { options.incremental = true }

@@ -7,8 +7,8 @@ import com.google.common.base.MoreObjects;
 
 public class Tuple<T, S> implements Serializable {
   private static final long serialVersionUID = -5091545494950868125L;
-  private final T m_first;
-  private final S m_second;
+  private final T first;
+  private final S second;
 
 
   /**
@@ -24,16 +24,16 @@ public class Tuple<T, S> implements Serializable {
   }
 
   private Tuple(final T first, final S second) {
-    this.m_first = first;
-    this.m_second = second;
+    this.first = first;
+    this.second = second;
   }
 
   public T getFirst() {
-    return m_first;
+    return first;
   }
 
   public S getSecond() {
-    return m_second;
+    return second;
   }
 
   @Override
@@ -46,7 +46,7 @@ public class Tuple<T, S> implements Serializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(m_first, m_second);
+    return Objects.hash(first, second);
   }
 
   @Override

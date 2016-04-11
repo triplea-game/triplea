@@ -18,7 +18,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -101,7 +100,7 @@ public class MapPanel extends ImageScrollerLargeView {
 
   /** Creates new MapPanel */
   public MapPanel(final GameData data, final MapPanelSmallView smallView, final IUIContext uiContext,
-      final ImageScrollModel model) throws IOException {
+      final ImageScrollModel model)  {
     super(uiContext.getMapData().getMapDimensions(), model);
     m_uiContext = uiContext;
     this.setCursor(m_uiContext.getCursor());

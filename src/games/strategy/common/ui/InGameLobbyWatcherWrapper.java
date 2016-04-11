@@ -7,63 +7,63 @@ import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.GameDescription.GameStatus;
 
 public class InGameLobbyWatcherWrapper {
-  private volatile InGameLobbyWatcher m_lobbyWatcher = null;
+  private volatile InGameLobbyWatcher lobbyWatcher = null;
 
   public void setInGameLobbyWatcher(final InGameLobbyWatcher watcher) {
-    m_lobbyWatcher = watcher;
+    lobbyWatcher = watcher;
   }
 
   public InGameLobbyWatcher getInGameLobbyWatcher() {
-    return m_lobbyWatcher;
+    return lobbyWatcher;
   }
 
   public void shutDown() {
-    if (m_lobbyWatcher != null) {
-      m_lobbyWatcher.shutDown();
+    if (lobbyWatcher != null) {
+      lobbyWatcher.shutDown();
     }
   }
 
   public boolean isActive() {
-    return m_lobbyWatcher != null && m_lobbyWatcher.isActive();
+    return lobbyWatcher != null && lobbyWatcher.isActive();
   }
 
   public String getComments() {
-    return m_lobbyWatcher == null ? "" : m_lobbyWatcher.getComments();
+    return lobbyWatcher == null ? "" : lobbyWatcher.getComments();
   }
 
   public void setGame(final IGame game) {
-    if (m_lobbyWatcher != null) {
-      m_lobbyWatcher.setGame(game);
+    if (lobbyWatcher != null) {
+      lobbyWatcher.setGame(game);
     }
   }
 
   public void setGameComments(final String comments) {
-    if (m_lobbyWatcher != null) {
-      m_lobbyWatcher.setGameComments(comments);
+    if (lobbyWatcher != null) {
+      lobbyWatcher.setGameComments(comments);
     }
   }
 
   public void setGameSelectorModel(final GameSelectorModel model) {
-    if (m_lobbyWatcher != null) {
-      m_lobbyWatcher.setGameSelectorModel(model);
+    if (lobbyWatcher != null) {
+      lobbyWatcher.setGameSelectorModel(model);
     }
   }
 
   public void setGameStatus(final GameStatus status, final IGame game) {
-    if (m_lobbyWatcher != null) {
-      m_lobbyWatcher.setGameStatus(status, game);
+    if (lobbyWatcher != null) {
+      lobbyWatcher.setGameStatus(status, game);
     }
   }
 
   public void setPassworded(final boolean passworded) {
-    if (m_lobbyWatcher != null) {
-      m_lobbyWatcher.setPassworded(passworded);
+    if (lobbyWatcher != null) {
+      lobbyWatcher.setPassworded(passworded);
     }
   }
 
   public GameDescription getGameDescription() {
-    if (m_lobbyWatcher != null) {
-      return m_lobbyWatcher.getGameDescription();
+    if (lobbyWatcher != null) {
+      return lobbyWatcher.getGameDescription();
     }
     return null;
   }

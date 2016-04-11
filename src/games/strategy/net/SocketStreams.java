@@ -16,31 +16,31 @@ import java.net.Socket;
  * <p>
  */
 public class SocketStreams {
-  private final InputStream m_socketIn;
-  private final OutputStream m_socketOut;
-  private final BufferedOutputStream m_bufferedOut;
-  private final BufferedInputStream m_bufferedIn;
+  private final InputStream socketIn;
+  private final OutputStream socketOut;
+  private final BufferedOutputStream bufferedOut;
+  private final BufferedInputStream bufferedIn;
 
   public SocketStreams(final Socket s) throws IOException {
-    m_socketIn = s.getInputStream();
-    m_socketOut = s.getOutputStream();
-    m_bufferedIn = new BufferedInputStream(m_socketIn);
-    m_bufferedOut = new BufferedOutputStream(m_socketOut);
+    socketIn = s.getInputStream();
+    socketOut = s.getOutputStream();
+    bufferedIn = new BufferedInputStream(socketIn);
+    bufferedOut = new BufferedOutputStream(socketOut);
   }
 
   public BufferedInputStream getBufferedIn() {
-    return m_bufferedIn;
+    return bufferedIn;
   }
 
   public BufferedOutputStream getBufferedOut() {
-    return m_bufferedOut;
+    return bufferedOut;
   }
 
   public InputStream getSocketIn() {
-    return m_socketIn;
+    return socketIn;
   }
 
   public OutputStream getSocketOut() {
-    return m_socketOut;
+    return socketOut;
   }
 }

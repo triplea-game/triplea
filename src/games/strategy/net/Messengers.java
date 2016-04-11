@@ -10,38 +10,38 @@ import games.strategy.engine.message.UnifiedMessenger;
  * Convenience grouping of a messenger, remote messenger and channel messenger.
  */
 public class Messengers {
-  private final IMessenger m_messenger;
-  private final IRemoteMessenger m_remoteMessenger;
-  private final IChannelMessenger m_channelMessenger;
+  private final IMessenger messenger;
+  private final IRemoteMessenger remoteMessenger;
+  private final IChannelMessenger channelMessenger;
 
   public Messengers(final IMessenger messenger) {
-    m_messenger = messenger;
+    this.messenger = messenger;
     final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
-    m_channelMessenger = new ChannelMessenger(unifiedMessenger);
-    m_remoteMessenger = new RemoteMessenger(unifiedMessenger);
+    channelMessenger = new ChannelMessenger(unifiedMessenger);
+    remoteMessenger = new RemoteMessenger(unifiedMessenger);
   }
 
   public Messengers(final IMessenger messenger, final IRemoteMessenger remoteMessenger,
       final IChannelMessenger channelMessenger) {
-    m_messenger = messenger;
-    m_remoteMessenger = remoteMessenger;
-    m_channelMessenger = channelMessenger;
+    this.messenger = messenger;
+    this.remoteMessenger = remoteMessenger;
+    this.channelMessenger = channelMessenger;
   }
 
   public IChannelMessenger getChannelMessenger() {
-    return m_channelMessenger;
+    return channelMessenger;
   }
 
   public IMessenger getMessenger() {
-    return m_messenger;
+    return messenger;
   }
 
   public IRemoteMessenger getRemoteMessenger() {
-    return m_remoteMessenger;
+    return remoteMessenger;
   }
 
   @Override
   public String toString() {
-    return m_messenger + "\n" + m_remoteMessenger + "\n" + m_channelMessenger;
+    return messenger + "\n" + remoteMessenger + "\n" + channelMessenger;
   }
 }

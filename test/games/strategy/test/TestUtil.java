@@ -3,13 +3,13 @@ package games.strategy.test;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;
+
+import games.strategy.common.swing.SwingAction;
 
 public class TestUtil {
 
@@ -56,18 +56,9 @@ public class TestUtil {
    * to the event thread and then blocking until the do-nothing event is done.
    */
   public static void waitForSwingThreads() {
-    try {
-      SwingUtilities.invokeAndWait(new Runnable() {
-        @Override
-        public void run() {
-          // do nothing event, should be at the end of the event queue.
-        }
-      });
-    } catch (InvocationTargetException e) {
-      throw new IllegalStateException(e);
-    } catch (InterruptedException e) {
-      throw new IllegalStateException(e);
-    }
+    // add a no-op action to the end of the swing event queue, and then wait for it
+    SwingAction.invokeAndWait(() -> {
+    });
   }
 
   @SuppressWarnings("unused")

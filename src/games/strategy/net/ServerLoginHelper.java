@@ -17,31 +17,31 @@ class ServerLoginHelper {
    * 3) server reads credentials, sends null and then client name if login suceeds, otherwise an error message and the
    * connection is closed
    */
-  private final static Logger s_logger = Logger.getLogger(ServerLoginHelper.class.getName());
-  private final SocketAddress m_remoteAddress;
-  private final ILoginValidator m_loginValidator;
-  private final SocketStreams m_streams;
-  private String m_clientName;
-  private final ServerMessenger m_serverMessenger;
+  private final static Logger logger = Logger.getLogger(ServerLoginHelper.class.getName());
+  private final SocketAddress remoteAddress;
+  private final ILoginValidator loginValidator;
+  private final SocketStreams streams;
+  private String clientName;
+  private final ServerMessenger serverMessenger;
 
   public ServerLoginHelper(final SocketAddress remoteAddress, final ILoginValidator loginValidator,
       final SocketStreams streams, final ServerMessenger messenger) {
-    m_remoteAddress = remoteAddress;
-    m_loginValidator = loginValidator;
-    m_streams = streams;
-    m_serverMessenger = messenger;
+    this.remoteAddress = remoteAddress;
+    this.loginValidator = loginValidator;
+    this.streams = streams;
+    serverMessenger = messenger;
   }
 
   @SuppressWarnings("unchecked")
   public boolean canConnect() {
     try {
-      final ObjectOutputStream out = new ObjectOutputStream(m_streams.getBufferedOut());
+      final ObjectOutputStream out = new ObjectOutputStream(streams.getBufferedOut());
       // write the object output streams magic number
       out.flush();
-      final ObjectInputStream in = new ObjectInputStream(m_streams.getBufferedIn());
-      m_clientName = (String) in.readObject();
+      final ObjectInputStream in = new ObjectInputStream(streams.getBufferedIn());
+      clientName = (String) in.readObject();
       // the degenerate case
-      if (m_loginValidator == null) {
+      if (loginValidator == null) {
         out.writeObject(null);
         out.flush();
         // cast to string to avoid toString() call on random object if
@@ -53,7 +53,7 @@ class ServerLoginHelper {
         System.out.println("Server done");
         return true;
       }
-      final Map<String, String> challenge = m_loginValidator.getChallengeProperties(m_clientName, m_remoteAddress);
+      final Map<String, String> challenge = loginValidator.getChallengeProperties(clientName, remoteAddress);
       if (challenge == null) {
         throw new IllegalStateException("Challenge can't be null");
       }
@@ -70,11 +70,11 @@ class ServerLoginHelper {
       }
       final String mac = MacFinder.GetHashedMacAddress();
       final String error =
-          m_loginValidator.verifyConnection(challenge, credentials, m_clientName, mac, m_remoteAddress);
+          loginValidator.verifyConnection(challenge, credentials, clientName, mac, remoteAddress);
       if (error == null) {
         out.writeObject(null);
-        m_clientName = m_serverMessenger.getUniqueName(m_clientName);
-        out.writeObject(m_clientName);
+        clientName = serverMessenger.getUniqueName(clientName);
+        out.writeObject(clientName);
         out.flush();
         return true;
       }
@@ -82,12 +82,12 @@ class ServerLoginHelper {
       out.flush();
       return false;
     } catch (final Exception e) {
-      s_logger.log(Level.SEVERE, e.getMessage(), e);
+      logger.log(Level.SEVERE, e.getMessage(), e);
       return false;
     }
   }
 
   public String getClientName() {
-    return m_clientName;
+    return clientName;
   }
 }

@@ -7,7 +7,7 @@ import games.strategy.common.ui.MainGameFrame;
  * using a change).
  */
 public abstract class AbstractHumanPlayer<CustomGameFrame extends MainGameFrame> extends AbstractBasePlayer {
-  protected CustomGameFrame m_ui;
+  protected CustomGameFrame ui;
 
   /**
    * @param name
@@ -18,6 +18,6 @@ public abstract class AbstractHumanPlayer<CustomGameFrame extends MainGameFrame>
   }
 
   public final void setFrame(final CustomGameFrame frame) {
-    m_ui = frame;
+    ui = frame;
   }
 }

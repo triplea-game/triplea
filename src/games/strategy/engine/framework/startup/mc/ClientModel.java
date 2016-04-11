@@ -21,6 +21,7 @@ import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.IChatPanel;
@@ -58,7 +59,6 @@ import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
-import games.strategy.ui.Util;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
@@ -243,12 +243,7 @@ public class ClientModel implements IMessengerErrorListener {
     @Override
     public void gameReset() {
       m_objectStreamFactory.setData(null);
-      Util.runInSwingEventThread(new Runnable() {
-        @Override
-        public void run() {
-          MainFrame.getInstance().setVisible(true);
-        }
-      });
+      SwingAction.invokeAndWait(() -> MainFrame.getInstance().setVisible(true));
     }
 
     @Override
