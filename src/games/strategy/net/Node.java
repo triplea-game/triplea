@@ -13,8 +13,8 @@ import java.net.UnknownHostException;
 // written very often over the network, so make externalizable to make faster and reduce traffic
 public class Node implements INode, Externalizable {
   static final long serialVersionUID = -2908980662926959943L;
-  private String m_name;
-  private int m_port;
+  private String name;
+  private int port;
   private InetAddress m_address;
   public static final INode NULL_NODE;
 
@@ -31,21 +31,21 @@ public class Node implements INode, Externalizable {
 
   /** Creates new Node */
   public Node(final String name, final InetSocketAddress address) {
-    m_name = name;
+    this.name = name;
     m_address = address.getAddress();
-    m_port = address.getPort();
+    port = address.getPort();
   }
 
   /** Creates new Node */
   public Node(final String name, final InetAddress address, final int port) {
-    m_name = name;
+    this.name = name;
     m_address = address;
-    m_port = port;
+    this.port = port;
   }
 
   @Override
   public String getName() {
-    return m_name;
+    return name;
   }
 
   /**
@@ -64,22 +64,22 @@ public class Node implements INode, Externalizable {
       return false;
     }
     final Node other = (Node) obj;
-    return other.m_port == this.m_port && other.m_address.equals(this.m_address);
+    return other.port == this.port && other.m_address.equals(this.m_address);
   }
 
   @Override
   public int hashCode() {
-    return (37 * m_port) + m_address.hashCode();
+    return (37 * port) + m_address.hashCode();
   }
 
   @Override
   public String toString() {
-    return m_name + " port:" + m_port + " ip:" + m_address.getHostAddress();
+    return name + " port:" + port + " ip:" + m_address.getHostAddress();
   }
 
   @Override
   public int getPort() {
-    return m_port;
+    return port;
   }
 
   @Override
@@ -89,8 +89,8 @@ public class Node implements INode, Externalizable {
 
   @Override
   public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
-    m_name = in.readUTF();
-    m_port = in.readInt();
+    name = in.readUTF();
+    port = in.readInt();
     final int length = in.read();
     final byte[] bytes = new byte[length];
     for (int i = 0; i < length; i++) {
@@ -101,8 +101,8 @@ public class Node implements INode, Externalizable {
 
   @Override
   public void writeExternal(final ObjectOutput out) throws IOException {
-    out.writeUTF(m_name);
-    out.writeInt(m_port);
+    out.writeUTF(name);
+    out.writeInt(port);
     out.write(m_address.getAddress().length);
     out.write(m_address.getAddress());
   }
@@ -112,7 +112,7 @@ public class Node implements INode, Externalizable {
     if (o == null) {
       return -1;
     }
-    return this.m_name.compareToIgnoreCase(o.getName());
+    return this.name.compareToIgnoreCase(o.getName());
   }
 
   public static void main(final String[] args) throws IOException {
@@ -127,6 +127,6 @@ public class Node implements INode, Externalizable {
 
   @Override
   public InetSocketAddress getSocketAddress() {
-    return new InetSocketAddress(m_address, m_port);
+    return new InetSocketAddress(m_address, port);
   }
 }

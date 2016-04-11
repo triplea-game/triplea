@@ -5,7 +5,6 @@ import java.awt.Container;
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
@@ -89,18 +88,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
 
   public void setChat(final Chat chat) {
     if (!SwingUtilities.isEventDispatchThread()) {
-      try {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            setChat(chat);
-          }
-        });
-      } catch (final InterruptedException e) {
-        e.printStackTrace();
-      } catch (final InvocationTargetException e) {
-        e.printStackTrace();
-      }
+      SwingAction.invokeAndWait(() -> setChat(chat));
       return;
     }
     if (m_chat != null) {

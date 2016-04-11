@@ -12,20 +12,20 @@ import games.strategy.util.ThreadUtil;
  */
 public abstract class AbstractBasePlayer implements IGamePlayer {
   // what nation are we playing? ex: "Americans"
-  private final String m_name;
+  private final String name;
   // what are we? ex: "Human", or "Moore N. Able (AI)"
-  private final String m_type;
-  private PlayerID m_playerID;
-  private IPlayerBridge m_iPlayerBridge;
-  private boolean m_stoppedGame = false;
+  private final String type;
+  private PlayerID playerID;
+  private IPlayerBridge playerBridge;
+  private boolean isStoppedGame = false;
 
   /**
    * @param name
    *        - the name of the player.
    */
   public AbstractBasePlayer(final String name, final String type) {
-    m_name = name;
-    m_type = type;
+    this.name = name;
+    this.type = type;
   }
 
   /**
@@ -33,15 +33,15 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
    */
   @Override
   public void initialize(final IPlayerBridge iPlayerBridge, final PlayerID playerID) {
-    m_iPlayerBridge = iPlayerBridge;
-    m_playerID = playerID;
+    playerBridge = iPlayerBridge;
+    this.playerID = playerID;
   }
 
   /**
    * Get the GameData for the game.
    */
   public GameData getGameData() {
-    return m_iPlayerBridge.getGameData();
+    return playerBridge.getGameData();
   }
 
   /**
@@ -51,29 +51,29 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
    * player.)
    */
   protected final IPlayerBridge getPlayerBridge() {
-    return m_iPlayerBridge;
+    return playerBridge;
   }
 
   @Override
   public final String getName() {
-    return m_name;
+    return name;
   }
 
   @Override
   public final String getType() {
-    return m_type;
+    return type;
   }
 
   @Override
   public final PlayerID getPlayerID() {
-    return m_playerID;
+    return playerID;
   }
 
   @Override
   public String toString() {
-    return (m_playerID == null || m_playerID.getName() == null || !m_playerID.getName().equals(m_name))
-        ? (m_type + ":" + m_name + ":" + (m_playerID == null ? "NullID" : m_playerID.getName()))
-        : (m_type + ":" + m_name);
+    return (playerID == null || playerID.getName() == null || !playerID.getName().equals(name))
+        ? (type + ":" + name + ":" + (playerID == null ? "NullID" : playerID.getName()))
+        : (type + ":" + name);
   }
 
   /**
@@ -114,11 +114,11 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
 
   @Override
   public void stopGame() {
-    m_stoppedGame = true;
+    isStoppedGame = true;
   }
 
   public boolean isGameStopped() {
-    return m_stoppedGame;
+    return isStoppedGame;
   }
   // public abstract Class<?> getRemotePlayerType();
 }

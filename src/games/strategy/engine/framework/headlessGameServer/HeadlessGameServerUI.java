@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -160,19 +159,7 @@ public class HeadlessGameServerUI extends MainGameFrame {
     // change, we need to ensure that no further history
     // events are run until our historySynchronizer is set up
     if (!SwingUtilities.isEventDispatchThread()) {
-      try {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            updateStep();
-          }
-        });
-      } catch (final InterruptedException e) {
-        e.printStackTrace();
-      } catch (final InvocationTargetException e) {
-        e.getCause().printStackTrace();
-        throw new IllegalStateException(e.getCause().getMessage());
-      }
+      SwingAction.invokeAndWait(() -> updateStep());
       return;
     }
     int round;
@@ -257,7 +244,7 @@ public class HeadlessGameServerUI extends MainGameFrame {
     m_chatPanel = null;
     m_stepListener = null;
     m_dataChangeListener = null;
-    m_localPlayers = null;
+    localPlayers = null;
     removeWindowListener(WINDOW_LISTENER);
     WINDOW_LISTENER = null;
   }

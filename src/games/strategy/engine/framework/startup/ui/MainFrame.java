@@ -2,11 +2,11 @@ package games.strategy.engine.framework.startup.ui;
 
 import java.awt.BorderLayout;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -102,18 +102,7 @@ public class MainFrame extends JFrame {
    */
   public void clientLeftGame() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      try {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            clientLeftGame();
-          }
-        });
-      } catch (final InterruptedException e) {
-        throw new IllegalStateException(e);
-      } catch (final InvocationTargetException e) {
-        throw new IllegalStateException(e);
-      }
+      SwingAction.invokeAndWait(() -> clientLeftGame());
       return;
     }
       // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by

@@ -6,24 +6,24 @@ import java.util.Map;
 import java.util.Set;
 
 class ClientLoginHelper {
-  private final IConnectionLogin m_login;
-  private final SocketStreams m_streams;
-  private String m_clientName;
+  private final IConnectionLogin login;
+  private final SocketStreams streams;
+  private String clientName;
 
   public ClientLoginHelper(final IConnectionLogin login, final SocketStreams streams, final String clientName) {
-    m_login = login;
-    m_streams = streams;
-    m_clientName = clientName;
+    this.login = login;
+    this.streams = streams;
+    this.clientName = clientName;
   }
 
   @SuppressWarnings("unchecked")
   public boolean login() {
     try {
-      final ObjectOutputStream out = new ObjectOutputStream(m_streams.getBufferedOut());
-      out.writeObject(m_clientName);
+      final ObjectOutputStream out = new ObjectOutputStream(streams.getBufferedOut());
+      out.writeObject(clientName);
       // write the object output streams magic number
       out.flush();
-      final ObjectInputStream in = new ObjectInputStream(m_streams.getBufferedIn());
+      final ObjectInputStream in = new ObjectInputStream(streams.getBufferedIn());
       @SuppressWarnings("rawtypes")
       final Map challenge = (Map) in.readObject();
       // the degenerate case
@@ -39,18 +39,18 @@ class ClientLoginHelper {
           throw new IllegalStateException("Value must be a String");
         }
       }
-      if (m_login == null) {
+      if (login == null) {
         throw new IllegalStateException("Challenged, but no login generator");
       }
-      final Map<String, String> props = m_login.getProperties((Map<String,String>)challenge);
+      final Map<String, String> props = login.getProperties((Map<String,String>)challenge);
       out.writeObject(props);
       out.flush();
       final String response = (String) in.readObject();
       if (response == null) {
-        m_clientName = (String) in.readObject();
+        clientName = (String) in.readObject();
         return true;
       }
-      m_login.notifyFailedLogin(response);
+      login.notifyFailedLogin(response);
       return false;
     } catch (final Exception e) {
       e.printStackTrace();
@@ -59,6 +59,6 @@ class ClientLoginHelper {
   }
 
   public String getClientName() {
-    return m_clientName;
+    return clientName;
   }
 }
