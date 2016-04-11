@@ -30,7 +30,6 @@ import javax.swing.border.EmptyBorder;
 import games.strategy.common.swing.SwingAction;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.debug.ErrorConsole;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
@@ -148,8 +147,8 @@ public class EnginePreferences extends JDialog {
   private void setupListeners() {
     m_okButton.addActionListener(SwingAction.of("OK", e ->         setVisible(false)));
     m_lookAndFeel.addActionListener(SwingAction.of("Set Look And Feel", e -> {
-        final Triple<JList, Map<String, String>, String> lookAndFeel = BasicGameMenuBar.getLookAndFeelList();
-        final JList list = lookAndFeel.getFirst();
+        final Triple<JList<String>, Map<String, String>, String> lookAndFeel = BasicGameMenuBar.getLookAndFeelList();
+        final JList<String> list = lookAndFeel.getFirst();
         final String currentKey = lookAndFeel.getThird();
         final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
         if (JOptionPane.showConfirmDialog(m_parentFrame, list) == JOptionPane.OK_OPTION) {

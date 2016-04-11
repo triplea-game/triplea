@@ -31,7 +31,6 @@ import games.strategy.engine.lobby.server.IUserManager;
 import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
-import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.net.INode;
 import games.strategy.net.Node;
 import games.strategy.sound.SoundOptions;

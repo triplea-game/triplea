@@ -178,7 +178,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
 class LocalPlayerComboBoxSelector {
   private final JCheckBox m_enabledCheckBox;
   private final String m_playerName;
-  private final JComboBox m_playerTypes;
+  private final JComboBox<String> m_playerTypes;
   private final String m_playerAlliances;
   private boolean m_enabled = true;
   private final JLabel m_name;
@@ -199,7 +199,7 @@ class LocalPlayerComboBoxSelector {
     m_disableable = disableable;
     m_parent = parent;
     m_types = types;
-    m_playerTypes = new JComboBox(types);
+    m_playerTypes = new JComboBox<>(types);
     String previousSelection = reloadSelections.get(playerName);
     if (previousSelection.equalsIgnoreCase("Client")) {
       previousSelection = types[0];

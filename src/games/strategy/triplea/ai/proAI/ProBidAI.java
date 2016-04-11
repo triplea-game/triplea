@@ -1,5 +1,18 @@
 package games.strategy.triplea.ai.proAI;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -16,8 +29,6 @@ import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.BattleDelegate;
-import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
@@ -30,19 +41,6 @@ import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
 
 /**
  * Pro bid AI.
@@ -387,18 +385,13 @@ public class ProBidAI {
         impassableTerrs.add(t);
       }
     }
-    final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final boolean tFirst = !games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
     final CompositeMatch<Unit> ownedUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player));
     final CompositeMatch<Unit> attackUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsNotTransport);
-    final CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport);
     final CompositeMatch<Unit> enemyUnit = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data));
     final CompositeMatch<Unit> enemyAttackUnit = new CompositeMatchAnd<Unit>(attackUnit, enemyUnit);
     // CompositeMatch<Unit> enemyTransUnit = new CompositeMatchAnd<Unit>(transUnit, enemyUnit);
     final CompositeMatch<Unit> ourFactory = new CompositeMatchAnd<Unit>(ownedUnit, Matches.UnitCanProduceUnits);
-    final CompositeMatch<Unit> landUnit =
-        new CompositeMatchAnd<Unit>(ownedUnit, Matches.UnitIsLand, Matches.UnitIsNotInfrastructure,
-            Matches.UnitCanNotProduceUnits);
     // CompositeMatch<Territory> ourLandTerr = new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(player),
     // Matches.TerritoryIsLand);
     final Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
@@ -1240,7 +1233,7 @@ public class ProBidAI {
                 Matches.TerritoryIsNotImpassableToLandUnits(player, data), data);
         if (eCapRoute != null) {
           // 8 might be too much, consider changing to 4
-          eTerrValue = Math.max(eTerrValue - 8, eTerrValue - (eCapRoute.getLength() - 1));
+          eTerrValue = Math.max(eTerrValue - 8, eTerrValue - (eCapRoute.numberOfSteps() - 1));
         }
       }
       eTerrValue +=
@@ -1288,7 +1281,7 @@ public class ProBidAI {
         eTerrValue += (aFNeighbors.contains(eTerr)) ? 8.0F : 0.0F;
         // -20 and -10 might be too much,
         // consider changing to -8 and -4
-        eTerrValue += (testERoute == null ? -20.0F : Math.max(-10.0F, -(testERoute.getLength() - 2)));
+        eTerrValue += (testERoute == null ? -20.0F : Math.max(-10.0F, -(testERoute.numberOfSteps() - 2)));
         eTerrValue += (testERoute != null ? productionValue : 0.0F);
         final float aTerrStrength =
             strength(eTerr.getUnits().getMatches(Matches.alliedUnit(player, data)), false, false, tFirst);
@@ -1313,7 +1306,7 @@ public class ProBidAI {
           final boolean hasENeighbors = Matches.territoryHasEnemyLandNeighbor(data, player).match(eTerr);
           final Route testERoute = findNearest(eTerr, enemyAndNoWater, noEnemyOrWater, data);
           eTerrValue += (hasENeighbors ? 1.0F : -1.0F);
-          eTerrValue += (testERoute == null ? -1.0F : -(testERoute.getLength() - 1));
+          eTerrValue += (testERoute == null ? -1.0F : -(testERoute.numberOfSteps() - 1));
           eTerrValue += productionValue > 0 ? productionValue : -5.0F;
           final float netStrength = rankStrength - 0.5F * alliedPotential;
           landStrengthMap.put(eTerr, netStrength);
@@ -1722,7 +1715,7 @@ public class ProBidAI {
     final List<Unit> blitzUnits =
         findAttackers(blitzHere, 2, ignore, ePlayer, data, blitzUnit, validBlitzRoute, blockTerr, routes, false);
     for (final Route r : routes) {
-      if (r.getLength() == 2) {
+      if (r.numberOfSteps() == 2) {
         blitzTerrRoutes.add(r);
       }
     }
@@ -1917,14 +1910,14 @@ public class ProBidAI {
     if (r == null || r.getEnd() == null) {
       return null;
     }
-    final int rDist = r.getLength();
+    final int rDist = r.numberOfSteps();
     Route route2 = new Route();
     if (rDist <= maxDistance) {
       route2 = r;
     } else {
       route2.setStart(start);
       for (int i = 1; i <= maxDistance; i++) {
-        route2.add(r.getTerritories().get(i));
+        route2.add(r.getAllTerritories().get(i));
       }
     }
     return route2;
@@ -2128,7 +2121,7 @@ public class ProBidAI {
     if (r == null) {
       return 0;
     } else {
-      return r.getLength();
+      return r.numberOfSteps();
     }
   }
 

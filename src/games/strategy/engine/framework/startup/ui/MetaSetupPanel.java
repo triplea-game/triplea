@@ -3,35 +3,26 @@ package games.strategy.engine.framework.startup.ui;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
-import org.apache.commons.io.FileUtils;
 import org.yaml.snakeyaml.Yaml;
-
-import com.google.common.base.Throwables;
 
 import games.strategy.common.swing.SwingComponents;
 import games.strategy.debug.ClientLogger;
@@ -40,15 +31,12 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.config.GameEngineProperty;
 import games.strategy.engine.config.PropertyReader;
 import games.strategy.engine.framework.map.download.DownloadUtils;
-import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.ui.NewGameChooser;
-import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
-import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.util.Version;
 
@@ -66,11 +54,9 @@ public class MetaSetupPanel extends SetupPanel {
   private JButton m_about;
 
   private final SetupPanelModel m_model;
-  private final MapDownloadController mapDownloadController;
 
   public MetaSetupPanel(final SetupPanelModel model) {
     this.m_model = model;
-    this.mapDownloadController = ClientContext.mapDownloadController();
 
     createComponents();
     layoutComponents();
@@ -189,11 +175,6 @@ public class MetaSetupPanel extends SetupPanel {
     });
   }
 
-  private void downloadMaps() {
-    JComponent parentWindow = this;
-    mapDownloadController.openDownloadMapScreen(parentWindow);
-  }
-
   private static void ruleBook() {
     // We open both the actual rule book, and the web page for all guides.
     // This way we can add other guides and rulebooks and tutorials later, as well as being able to update them after
@@ -275,6 +256,7 @@ public class MetaSetupPanel extends SetupPanel {
       return Optional.empty();
     }
     Yaml yaml = new Yaml();
+    @SuppressWarnings("unchecked")
     List<Map<String, Object>> yamlDataObj = (List<Map<String, Object>>) yaml.load(yamlContent);
     if( yamlDataObj == null ) {
       return Optional.empty();

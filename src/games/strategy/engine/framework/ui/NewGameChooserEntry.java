@@ -10,7 +10,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;

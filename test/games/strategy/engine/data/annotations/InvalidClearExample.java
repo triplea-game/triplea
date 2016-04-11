@@ -19,7 +19,6 @@ public class InvalidClearExample extends DefaultAttachment {
 
   private final IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
 
-  @SuppressWarnings("unused")
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setGivesMovement(final String value) {}
 

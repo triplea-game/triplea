@@ -22,7 +22,6 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.history.History;
 import games.strategy.thread.LockUtil;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.ListenerList;
 import games.strategy.util.Tuple;
@@ -429,25 +428,6 @@ public class GameData implements java.io.Serializable {
   public void testLocksOnRead() {
     m_testLockIsHeld = true;
   }
-
-  @SuppressWarnings("unused")
-  private ResourceLoader getResourceLoader() {
-    if (m_resourceLoader != null) {
-      return m_resourceLoader;
-    }
-    // TODO: see if this is wrong.... the user may have selected a map skin instead of this map folder, so we should
-    // never use this....
-    String mapName = (String) this.getProperties().get(Constants.MAP_NAME);
-    if (mapName == null || mapName.trim().length() == 0) {
-      mapName = m_gameName;
-    }
-    m_resourceLoader = ResourceLoader.getMapResourceLoader(mapName);
-    if (m_resourceLoader == null) {
-      throw new IllegalStateException("Map name property not set on game");
-    }
-    return m_resourceLoader;
-  }
-
   public void addToAttachmentOrderAndValues(
       final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachmentAndValues) {
     m_attachmentOrderAndValues.add(attachmentAndValues);

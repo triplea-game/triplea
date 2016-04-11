@@ -5,7 +5,6 @@ import java.io.File;
 import javax.swing.JComponent;
 
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.IntTextFieldChangeListener;
 

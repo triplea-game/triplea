@@ -104,15 +104,6 @@ public class ChangeFactory {
     return new ChangeResourceChange(player, resource, quantity);
   }
 
-  /** TODO: unused code, kept per @veqryn */
-  private static Change addResourceCollection(final PlayerID id, final ResourceCollection rCollection) {
-    final CompositeChange cChange = new CompositeChange();
-    for (final Resource r : rCollection.getResourcesCopy().keySet()) {
-      cChange.add(new ChangeResourceChange(id, r, rCollection.getQuantity(r)));
-    }
-    return cChange;
-  }
-
   public static Change removeResourceCollection(final PlayerID id, final ResourceCollection rCollection) {
     final CompositeChange cChange = new CompositeChange();
     for (final Resource r : rCollection.getResourcesCopy().keySet()) {

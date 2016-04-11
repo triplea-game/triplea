@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -178,8 +177,6 @@ public class TabbedProductionPanel extends ProductionPanel {
           landRules.add(rule);
         }
       } else if (resourceOrUnit instanceof Resource) {
-        @SuppressWarnings("unused")
-        final Resource type = (Resource) resourceOrUnit;
         resourceRules.add(rule);
       }
     }

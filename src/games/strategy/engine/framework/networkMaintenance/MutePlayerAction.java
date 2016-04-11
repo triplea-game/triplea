@@ -25,8 +25,8 @@ public class MutePlayerAction extends AbstractAction {
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    final DefaultComboBoxModel model = new DefaultComboBoxModel();
-    final JComboBox combo = new JComboBox(model);
+    final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+    final JComboBox<String> combo = new JComboBox<>(model);
     model.addElement("");
     for (final INode node : new TreeSet<INode>(m_messenger.getNodes())) {
       if (!node.equals(m_messenger.getLocalNode())) {

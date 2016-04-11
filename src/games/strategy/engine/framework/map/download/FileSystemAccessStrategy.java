@@ -12,7 +12,6 @@ import javax.swing.DefaultListModel;
 import com.google.common.collect.Lists;
 
 import games.strategy.common.swing.SwingComponents;
-import games.strategy.debug.ClientLogger;
 import games.strategy.util.Version;
 
 public class FileSystemAccessStrategy {
@@ -34,14 +33,14 @@ public class FileSystemAccessStrategy {
     }
   }
 
-  public static void remove(List<DownloadFileDescription> toRemove, DefaultListModel listModel) {
+  public static void remove(List<DownloadFileDescription> toRemove, DefaultListModel<DownloadFileDescription> listModel) {
     SwingComponents.promptUser("Remove Maps?",
         "<html>Will remove " + toRemove.size() + " maps, are you sure? <br/>"
             + formatMapList(toRemove, map -> map.getMapName()) + "</html>",
         createRemoveMapAction(toRemove, listModel));
   }
 
-  private static Runnable createRemoveMapAction(List<DownloadFileDescription> maps, DefaultListModel listModel) {
+  private static Runnable createRemoveMapAction(List<DownloadFileDescription> maps, DefaultListModel<DownloadFileDescription> listModel) {
     return () -> {
       List<DownloadFileDescription> fails = Lists.newArrayList();
       List<DownloadFileDescription> deletes = Lists.newArrayList();

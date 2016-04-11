@@ -59,7 +59,6 @@ import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
-import games.strategy.ui.Util;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 

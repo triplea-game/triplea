@@ -1,11 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
-import java.awt.Component;
-import java.awt.FileDialog;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -18,16 +13,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 import games.strategy.common.swing.SwingComponents;
 import games.strategy.engine.ClientContext;
@@ -37,7 +23,7 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.map.download.InstallMapDialog;
+import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.NewGameChooser;
@@ -187,7 +173,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
     JButton downloadMapButton =
         SwingComponents.newJButton("Download Maps", "Click this button to install additional maps",
-            () -> InstallMapDialog.showDownloadMapsWindow());
+            () -> DownloadMapsWindow.showDownloadMapsWindow());
     add(downloadMapButton, buildGridRow(0, 8, new Insets(0, 10, 10, 10)));
 
     add(m_gameOptions, buildGridRow(0, 9, new Insets(25, 10, 10, 10)));

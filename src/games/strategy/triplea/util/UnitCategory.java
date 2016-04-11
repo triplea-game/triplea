@@ -14,7 +14,7 @@ import games.strategy.triplea.attachments.UnitTypeComparator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Util;
 
-public class UnitCategory implements Comparable {
+public class UnitCategory implements Comparable<Object> {
   private final UnitType m_type;
   // Collection of UnitOwners, the type of our dependents, not the dependents
   private Collection<UnitOwner> m_dependents;

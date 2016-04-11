@@ -110,13 +110,13 @@ class PlayerChoice extends JPanel {
   private static final String LOCAL = "Local";
   private static final String[] s_choices = {LOCAL, REMOTE};
   private final String m_name;
-  private final JComboBox m_choice;
+  private final JComboBox<String> m_choice;
 
   public PlayerChoice(final String name) {
     setLayout(new FlowLayout(FlowLayout.LEFT));
     m_name = name;
     add(new JLabel(name));
-    m_choice = new JComboBox(s_choices);
+    m_choice = new JComboBox<>(s_choices);
     m_choice.setSelectedIndex(0);
     m_choice.setEditable(false);
     add(m_choice);

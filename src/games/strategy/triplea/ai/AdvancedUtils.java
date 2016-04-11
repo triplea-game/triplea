@@ -82,6 +82,7 @@ public class AdvancedUtils {
   }
 
 
+  @SuppressWarnings("unchecked")
   public static List<Territory> getTerritoriesWithinXDistanceOfYMatchingZ(final GameData data, final Territory start,
       final int maxDistance, final Match<Territory> match) {
     return getTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, start, maxDistance, match,

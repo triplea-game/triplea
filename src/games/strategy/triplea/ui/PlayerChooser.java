@@ -18,7 +18,7 @@ import games.strategy.ui.Util;
 
 public class PlayerChooser extends JOptionPane {
   private static final long serialVersionUID = -7272867474891641839L;
-  private JList m_list;
+  private JList<PlayerID> m_list;
   private final PlayerList m_players;
   private final PlayerID m_defaultPlayer;
   private final IUIContext m_uiContext;
@@ -48,7 +48,7 @@ public class PlayerChooser extends JOptionPane {
     if (m_allowNeutral) {
       players.add(PlayerID.NULL_PLAYERID);
     }
-    m_list = new JList(players.toArray());
+    m_list = new JList<>(players.toArray(new PlayerID[players.size()]));
     m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     m_list.setSelectedValue(m_defaultPlayer, true);
     m_list.setFocusable(false);
@@ -88,7 +88,7 @@ class PlayerChooserRenderer extends DefaultListCellRenderer {
   }
 
   @Override
-  public Component getListCellRendererComponent(final JList list, final Object value, final int index,
+  public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
       final boolean isSelected, final boolean cellHasFocus) {
     super.getListCellRendererComponent(list, ((PlayerID) value).getName(), index, isSelected, cellHasFocus);
     if (m_uiContext == null || (PlayerID) value == PlayerID.NULL_PLAYERID) {

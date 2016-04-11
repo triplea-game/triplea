@@ -35,7 +35,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
   }
 
   @Override
-  public Component getListCellRendererComponent(final JList list, final Object value, final int index,
+  public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
       final boolean isSelected, final boolean cellHasFocus) {
     final List<Icon> icons = m_iconMap.get(value.toString());
     if (icons != null) {

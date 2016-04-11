@@ -3,12 +3,10 @@ package games.strategy.triplea.oddsCalculator.ta;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -81,8 +79,8 @@ public class OddsCalculatorDialog extends JDialog {
   }
 
   @Override
-  public void show() {
-    super.show();
+  public void setVisible(boolean vis) {
+    super.setVisible(vis);
     panel.selectCalculateButton();
   }
 }

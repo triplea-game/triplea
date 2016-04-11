@@ -3,11 +3,9 @@ package games.strategy.triplea.ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -571,7 +569,7 @@ public class BattlePanel extends ActionPanel {
 
   private class BombardComponent extends JPanel {
     private static final long serialVersionUID = -2388895995673156507L;
-    private final JList m_list;
+    private final JList<Object> m_list;
 
     BombardComponent(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories,
         final boolean noneAvailable) {
@@ -583,7 +581,7 @@ public class BattlePanel extends ActionPanel {
       if (noneAvailable) {
         listElements.add(0, "None");
       }
-      m_list = new JList(listElements);
+      m_list = new JList<>(listElements);
       m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       if (listElements.size() >= 1) {
         m_list.setSelectedIndex(0);

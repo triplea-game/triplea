@@ -29,9 +29,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingAction;
 import games.strategy.common.swing.SwingComponents;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.UrlConstants;

@@ -19,8 +19,8 @@ import games.strategy.net.IServerMessenger;
 public class AllUsersPanel extends JPanel {
   private static final long serialVersionUID = -9133556462653843231L;
   private final IMessenger m_messenger;
-  private JList m_nodes;
-  private DefaultListModel m_nodesModel;
+  private JList<INode> m_nodes;
+  private DefaultListModel<INode> m_nodesModel;
   private LobbyAdminStatPanel m_statPane;
   private final List<INode> m_orderedNodes;
 
@@ -34,8 +34,8 @@ public class AllUsersPanel extends JPanel {
   }
 
   private void createComponents() {
-    m_nodesModel = new DefaultListModel();
-    m_nodes = new JList(m_nodesModel);
+    m_nodesModel = new DefaultListModel<>();
+    m_nodes = new JList<>(m_nodesModel);
     m_statPane = new LobbyAdminStatPanel(m_messenger);
   }
 

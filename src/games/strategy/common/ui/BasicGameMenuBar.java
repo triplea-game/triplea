@@ -589,13 +589,12 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
   /**
    * First is our JList, second is our LookAndFeels string -> class map, third is our 'current' look and feel.
    */
-  public static Triple<JList, Map<String, String>, String> getLookAndFeelList() {
+  public static Triple<JList<String>, Map<String, String>, String> getLookAndFeelList() {
     final Map<String, String> lookAndFeels = new LinkedHashMap<String, String>();
     try {
       final List<String> substanceLooks = getLookAndFeelAvailableList();
       for (final String s : substanceLooks) {
-        @SuppressWarnings("rawtypes")
-        final Class c = Class.forName(s);
+        final Class<?> c = Class.forName(s);
         final LookAndFeel lf = (LookAndFeel) c.newInstance();
         lookAndFeels.put(lf.getName(), s);
       }
@@ -607,7 +606,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       lookAndFeels.put("Metal", MetalLookAndFeel.class.getName());
       lookAndFeels.put("Platform Independent", UIManager.getCrossPlatformLookAndFeelClassName());
     }
-    final JList list = new JList(new Vector<String>(lookAndFeels.keySet()));
+    final JList<String> list = new JList<>(new Vector<String>(lookAndFeels.keySet()));
     String currentKey = null;
     for (final String s : lookAndFeels.keySet()) {
       final String currentName = UIManager.getLookAndFeel().getClass().getName();
@@ -622,8 +621,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 
   protected void addSetLookAndFeel(final JMenu menuView) {
     menuView.add(SwingAction.of("Set Look and Feel...", e -> {
-      final Triple<JList, Map<String, String>, String> lookAndFeel = getLookAndFeelList();
-      final JList list = lookAndFeel.getFirst();
+      final Triple<JList<String>, Map<String, String>, String> lookAndFeel = getLookAndFeelList();
+      final JList<String> list = lookAndFeel.getFirst();
       final String currentKey = lookAndFeel.getThird();
       final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
       if (JOptionPane.showConfirmDialog(m_frame, list) == JOptionPane.OK_OPTION) {

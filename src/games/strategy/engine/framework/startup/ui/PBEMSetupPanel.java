@@ -490,7 +490,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
 class PBEMLocalPlayerComboBoxSelector {
   private final JCheckBox m_enabledCheckBox;
   private final String m_playerName;
-  private final JComboBox m_playerTypes;
+  private final JComboBox<String> m_playerTypes;
   private final String m_playerAlliances;
   private boolean m_enabled = true;
   private final JLabel m_name;
@@ -511,7 +511,7 @@ class PBEMLocalPlayerComboBoxSelector {
     m_disableable = disableable;
     m_parent = parent;
     m_types = types;
-    m_playerTypes = new JComboBox(types);
+    m_playerTypes = new JComboBox<>(types);
     String previousSelection = reloadSelections.get(playerName);
     if (previousSelection.equalsIgnoreCase("Client")) {
       previousSelection = types[0];
@@ -617,7 +617,7 @@ enum LocalBeanCache {
           ObjectInput oin = new ObjectInputStream(fin);) {
         final Object o = oin.readObject();
         if (o instanceof Map) {
-          final Map m = (Map) o;
+          final Map<?,?> m = (Map<?,?>) o;
           for (final Object o1 : m.keySet()) {
             if (!(o1 instanceof String)) {
               throw new Exception("Map is corrupt");

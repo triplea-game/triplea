@@ -32,6 +32,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -64,8 +65,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import games.strategy.common.swing.SwingAction;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.debug.ClientLogger;
-import games.strategy.debug.DebugUtils;
-import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
@@ -78,17 +77,14 @@ import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataUtils;
-import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.engine.stats.IStat;
-import games.strategy.performance.EnablePerformanceLoggingCheckBox;
 import games.strategy.sound.SoundOptions;
 import games.strategy.sound.SoundPath;
-import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.EndRoundDelegate;
@@ -1288,8 +1284,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     unitSizeGroup.add(radioItem50);
     radioItem100.setSelected(true);
     // select the closest to to the default size
-    @SuppressWarnings("rawtypes")
-    final Enumeration enum1 = unitSizeGroup.getElements();
+    final Enumeration<AbstractButton> enum1 = unitSizeGroup.getElements();
     boolean matchFound = false;
     while (enum1.hasMoreElements()) {
       final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) enum1.nextElement();

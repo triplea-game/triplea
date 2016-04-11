@@ -31,7 +31,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.EngineVersion;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.util.Version;
 

@@ -6,7 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,13 +16,11 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
@@ -99,7 +96,7 @@ public class ProductionPanel extends JPanel {
 
   // made this protected so can be extended by edit production panel
   protected void initRules(final PlayerID player,
-      @SuppressWarnings("unused") final GameData data,
+      final GameData data,
       final IntegerMap<ProductionRule> initialPurchase) {
     m_data.acquireReadLock();
     try {

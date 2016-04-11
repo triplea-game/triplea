@@ -129,13 +129,13 @@ public class SwingComponents {
 
   public static <T> DefaultListModel<String> newJListModel(List<T> maps, Function<T, String> mapper) {
     List<String> mapList = maps.stream().map(mapper).collect(Collectors.toList());
-    DefaultListModel<String> model = new DefaultListModel();
+    DefaultListModel<String> model = new DefaultListModel<>();
     mapList.forEach(e -> model.addElement(e));
     return model;
   }
 
-  public static <T> JList<String> newJList(DefaultListModel listModel) {
-    return new JList(listModel);
+  public static <T> JList<String> newJList(DefaultListModel<String> listModel) {
+    return new JList<>(listModel);
   }
 
   public static JEditorPane newHtmlJEditorPane() {

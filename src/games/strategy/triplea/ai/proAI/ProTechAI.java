@@ -379,7 +379,7 @@ public final class ProTechAI {
     final List<Unit> blitzUnits =
         findAttackers(blitzHere, 2, ignore, ePlayer, data, blitzUnit, validBlitzRoute, blockTerr, routes, false);
     for (final Route r : routes) {
-      if (r.getLength() == 2) {
+      if (r.numberOfSteps() == 2) {
         blitzTerrRoutes.add(r);
       }
     }
@@ -575,14 +575,14 @@ public final class ProTechAI {
     if (r == null || r.getEnd() == null) {
       return null;
     }
-    final int rDist = r.getLength();
+    final int rDist = r.numberOfSteps();
     Route route2 = new Route();
     if (rDist <= maxDistance) {
       route2 = r;
     } else {
       route2.setStart(start);
       for (int i = 1; i <= maxDistance; i++) {
-        route2.add(r.getTerritories().get(i));
+        route2.add(r.getAllTerritories().get(i));
       }
     }
     return route2;

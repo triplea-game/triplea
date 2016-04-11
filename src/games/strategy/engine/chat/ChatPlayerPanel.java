@@ -55,15 +55,15 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     s_ignoreIcon = new ImageIcon(img);
   }
 
-  private JList m_players;
-  private DefaultListModel m_listModel;
+  private JList<INode> m_players;
+  private DefaultListModel<INode> m_listModel;
   private Chat m_chat;
   private final Set<String> m_hiddenPlayers = new HashSet<String>();
   private final IStatusListener m_statusListener;
   // if our renderer is overridden
   // we do not set this directly on the JList,
   // instead we feed it the node name and staus as a string
-  private ListCellRenderer m_setCellRenderer = new DefaultListCellRenderer();
+  private ListCellRenderer<Object> m_setCellRenderer = new DefaultListCellRenderer();
   private final List<IPlayerActionFactory> m_actionFactories = new ArrayList<IPlayerActionFactory>();
 
   public ChatPlayerPanel(final Chat chat) {
@@ -128,13 +128,12 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   }
 
   private void createComponents() {
-    m_listModel = new DefaultListModel();
-    m_players = new JList(m_listModel);
+    m_listModel = new DefaultListModel<>();
+    m_players = new JList<>(m_listModel);
     m_players.setFocusable(false);
-    m_players.setCellRenderer(new ListCellRenderer() {
+    m_players.setCellRenderer(new ListCellRenderer<Object>() {
       @Override
-      public Component getListCellRendererComponent(final JList list, final Object value, final int index,
-          final boolean isSelected, final boolean cellHasFocus) {
+      public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         if (m_setCellRenderer == null) {
           return new JLabel();
         }
@@ -207,7 +206,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   /**
    * The renderer will be passed in a string
    */
-  public void setPlayerRenderer(final ListCellRenderer renderer) {
+  public void setPlayerRenderer(final ListCellRenderer<Object> renderer) {
     m_setCellRenderer = renderer;
     setDynamicPreferredSize();
   }

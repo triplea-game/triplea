@@ -39,14 +39,14 @@ public class MapDownloadController {
   }
 
   public void downloadMap(String mapName) {
-    InstallMapDialog.showDownloadMapsWindow(mapName);
+    DownloadMapsWindow.showDownloadMapsWindow(mapName);
   }
 
 
   /** Opens a new window dialog where a user can select maps to download or update */
   public void openDownloadMapScreen(JComponent parentComponent) {
     final Frame parentFrame = JOptionPane.getFrameForComponent(parentComponent);
-    InstallMapDialog.showDownloadMapsWindow(parentFrame);
+    DownloadMapsWindow.showDownloadMapsWindow(parentFrame);
   }
 
   /**
@@ -93,7 +93,7 @@ public class MapDownloadController {
           text.append("<li> " + map + "</li>");
         }
         text.append("</ul></html>");
-        SwingComponents.promptUser("Update Your Maps?", text.toString(), () -> InstallMapDialog.showDownloadMapsWindow());
+        SwingComponents.promptUser("Update Your Maps?", text.toString(), () -> DownloadMapsWindow.showDownloadMapsWindow());
         return true;
       }
     } catch (final Exception e) {
@@ -116,7 +116,7 @@ public class MapDownloadController {
           installed = new File(GameSelectorModel.DEFAULT_MAP_DIRECTORY, d.getMapName() + ".zip");
         }
         if (installed != null && installed.exists()) {
-          if (d.getVersion() != null && d.getVersion().isGreaterThan(InstallMapDialog.getVersion(installed), true)) {
+          if (d.getVersion() != null && d.getVersion().isGreaterThan(DownloadMapsWindow.getVersion(installed), true)) {
             listingToBeAddedTo.add(d.getMapName());
           }
         }

@@ -2,7 +2,6 @@ package games.strategy.engine.framework.startup.ui;
 
 import java.awt.BorderLayout;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;

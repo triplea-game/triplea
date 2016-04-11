@@ -97,7 +97,7 @@ class InvalidSetterClass {
 class NoOpSetterClass {
   protected String bar = PropertyUtilTest.DEFAULT;
 
-  public void setBar(@SuppressWarnings("unused") String value) {}
+  public void setBar(String value) {}
 }
 
 

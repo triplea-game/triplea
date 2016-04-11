@@ -19,7 +19,6 @@ import org.apache.commons.httpclient.methods.PostMethod;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;

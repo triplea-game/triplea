@@ -61,7 +61,8 @@ public class TestUtil {
     });
   }
 
-  private static void closeFrame(JFrame frame) {
+  @SuppressWarnings("unused")
+private static void closeFrame(JFrame frame) {
     frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
   }
 }

@@ -794,11 +794,10 @@ class EditorPaneCellEditor extends DefaultCellEditor {
 
 
 // author: Heinz M. Kabutz (modified for JEditorPane by Mark Christopher Duncan)
-@SuppressWarnings({"unchecked", "rawtypes"})
 class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRenderer {
   private static final long serialVersionUID = -2835145877164663862L;
   private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
-  private final Map cellSizes = new HashMap();
+  private final Map<JTable, Map<?,?>> cellSizes = new HashMap<>();
 
   public EditorPaneTableCellRenderer() {
     // setLineWrap(true);
@@ -830,13 +829,14 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
   }
 
   private void addSize(final JTable table, final int row, final int column, final int height) {
-    Map rows = (Map) cellSizes.get(table);
+    @SuppressWarnings("unchecked")
+    Map<Integer, Map<Integer,Integer>> rows = (Map<Integer, Map<Integer,Integer>>) cellSizes.get(table);
     if (rows == null) {
-      cellSizes.put(table, rows = new HashMap());
+      cellSizes.put(table, rows = new HashMap<>());
     }
-    Map rowheights = (Map) rows.get(new Integer(row));
+    Map<Integer, Integer> rowheights = (Map<Integer, Integer>) rows.get(new Integer(row));
     if (rowheights == null) {
-      rows.put(new Integer(row), rowheights = new HashMap());
+      rows.put(new Integer(row), rowheights = new HashMap<>());
     }
     rowheights.put(new Integer(column), new Integer(height));
   }
@@ -848,7 +848,7 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
    */
   private static int findTotalMaximumRowSize(final JTable table, final int row) {
     int maximum_height = 0;
-    final Enumeration columns = table.getColumnModel().getColumns();
+    final Enumeration<?> columns = table.getColumnModel().getColumns();
     while (columns.hasMoreElements()) {
       final TableColumn tc = (TableColumn) columns.nextElement();
       final TableCellRenderer cellRenderer = tc.getCellRenderer();
@@ -861,17 +861,18 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
   }
 
   private int findMaximumRowSize(final JTable table, final int row) {
-    final Map rows = (Map) cellSizes.get(table);
+    @SuppressWarnings("unchecked")
+    final Map<Integer, Map<Integer, Integer>> rows = (Map<Integer, Map<Integer, Integer>>) cellSizes.get(table);
     if (rows == null) {
       return 0;
     }
-    final Map rowheights = (Map) rows.get(new Integer(row));
+    final Map<?,?> rowheights = (Map<?,?>) rows.get(new Integer(row));
     if (rowheights == null) {
       return 0;
     }
     int maximum_height = 0;
-    for (final Iterator it = rowheights.entrySet().iterator(); it.hasNext();) {
-      final Map.Entry entry = (Map.Entry) it.next();
+    for (final Iterator<?> it = rowheights.entrySet().iterator(); it.hasNext();) {
+      final Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
       final int cellHeight = ((Integer) entry.getValue()).intValue();
       maximum_height = Math.max(maximum_height, cellHeight);
     }

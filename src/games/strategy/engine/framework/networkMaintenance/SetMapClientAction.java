@@ -31,8 +31,8 @@ public class SetMapClientAction extends AbstractAction {
   @Override
   public void actionPerformed(final ActionEvent e) {
     final INode serverNode = m_clientMessenger.getServerNode();
-    final DefaultComboBoxModel model = new DefaultComboBoxModel();
-    final JComboBox combo = new JComboBox(model);
+    final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+    final JComboBox<String> combo = new JComboBox<>(model);
     model.addElement("");
     for (final String game : m_availableGames) {
       model.addElement(game);

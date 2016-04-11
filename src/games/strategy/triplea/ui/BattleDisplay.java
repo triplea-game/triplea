@@ -513,7 +513,7 @@ public class BattleDisplay extends JPanel {
 
   private class RetreatComponent extends JPanel {
     private static final long serialVersionUID = 3855054934860687832L;
-    private final JList m_list;
+    private final JList<Territory> m_list;
     private final JLabel m_retreatTerritory = new JLabel("");
 
     RetreatComponent(final Collection<Territory> possible) {
@@ -527,7 +527,7 @@ public class BattleDisplay extends JPanel {
       imagePanel.setBorder(new EmptyBorder(10, 10, 10, 0));
       this.add(imagePanel, BorderLayout.EAST);
       final Vector<Territory> listElements = new Vector<Territory>(possible);
-      m_list = new JList(listElements);
+      m_list = new JList<>(listElements);
       m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       if (listElements.size() >= 1) {
         m_list.setSelectedIndex(0);
@@ -807,7 +807,6 @@ class BattleModel extends DefaultTableModel {
   private final Collection<TerritoryEffect> m_territoryEffects;
   private final boolean m_isAmphibious;
   private final Collection<Unit> m_amphibiousLandAttackers;
-  private final PlayerID m_player;
   private BattleModel m_enemyBattleModel = null;
 
   private static String[] varDiceArray(final GameData data) {
@@ -831,7 +830,6 @@ class BattleModel extends DefaultTableModel {
     super(new Object[0][0], varDiceArray(data));
     m_uiContext = uiContext;
     m_data = data;
-    m_player = player;
     m_attack = attack;
     // were going to modify the units
     m_units = new ArrayList<Unit>(units);

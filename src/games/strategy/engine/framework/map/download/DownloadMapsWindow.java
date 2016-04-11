@@ -12,7 +12,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -38,9 +37,8 @@ import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.util.Version;
 
 
-// TODO: rename to DownloadMapswindow
 /** Window that allows for map downloads and removal */
-public class InstallMapDialog extends JFrame {
+public class DownloadMapsWindow extends JFrame {
   private static final long serialVersionUID = -1542210716764178580L;
 
   private static enum MapAction {
@@ -82,14 +80,14 @@ public class InstallMapDialog extends JFrame {
     checkNotNull(games);
 
     final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
-    final InstallMapDialog dia = new InstallMapDialog(mapName, games);
+    final DownloadMapsWindow dia = new DownloadMapsWindow(mapName, games);
     dia.setSize(800, WINDOW_HEIGHT);
     dia.setLocationRelativeTo(parentFrame);
     dia.setMinimumSize(new Dimension(200, 200));
     dia.setVisible(true);
   }
 
-  private InstallMapDialog(final Optional<String> mapName, final List<DownloadFileDescription> games) {
+  private DownloadMapsWindow(final Optional<String> mapName, final List<DownloadFileDescription> games) {
     super("Download Maps");
 
     progressPanel = new MapDownloadProgressPanel(this);
@@ -194,7 +192,7 @@ public class InstallMapDialog extends JFrame {
 
     final JLabel mapSizeLabel = new JLabel(" ");
 
-    final DefaultListModel model = SwingComponents.newJListModel(maps, (map) -> map.getMapName());
+    final DefaultListModel<String> model = SwingComponents.newJListModel(maps, map -> map.getMapName());
 
 
     if (maps.size() > 0) {
@@ -204,7 +202,7 @@ public class InstallMapDialog extends JFrame {
           descriptionPane, gamesList, maps, action, mapSizeLabel));
 
       if (!mapToSelect.isDummyUrl()) {
-        InstallMapDialog.updateMapUrlAndSizeLabel(mapToSelect, action, mapSizeLabel);
+        DownloadMapsWindow.updateMapUrlAndSizeLabel(mapToSelect, action, mapSizeLabel);
       }
 
       main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
@@ -233,7 +231,7 @@ public class InstallMapDialog extends JFrame {
   }
 
   private static JList<String> createGameSelectionList(DownloadFileDescription selectedMap,
-      final List<DownloadFileDescription> maps, final JEditorPane descriptionPanel, DefaultListModel model) {
+      final List<DownloadFileDescription> maps, final JEditorPane descriptionPanel, DefaultListModel<String> model) {
 
     JList<String> gamesList = SwingComponents.newJList(model);
     int selectedIndex = maps.indexOf(selectedMap);
@@ -312,7 +310,7 @@ public class InstallMapDialog extends JFrame {
   }
 
   private JPanel createButtonsPanel(MapAction action, JList<String> gamesList, List<DownloadFileDescription> maps,
-      DefaultListModel listModel) {
+      DefaultListModel<String> listModel) {
     final JPanel buttonsPanel = SwingComponents.gridPanel(1, 5);
 
     buttonsPanel.setBorder(SwingComponents.newEmptyBorder(20));
@@ -349,7 +347,7 @@ public class InstallMapDialog extends JFrame {
       "You can select multiple maps by holding control or shift while clicking map names.";
 
   private JButton buildMapActionButton(MapAction action, JList<String> gamesList, List<DownloadFileDescription> maps,
-      DefaultListModel listModel) {
+      DefaultListModel<String> listModel) {
     final JButton actionButton;
 
     if (action == MapAction.REMOVE) {
@@ -368,7 +366,7 @@ public class InstallMapDialog extends JFrame {
   }
 
   private static ActionListener removeAction(JList<String> gamesList, List<DownloadFileDescription> maps,
-      DefaultListModel listModel) {
+      DefaultListModel listModel) {//TODO change FSAS.remove so that it uses DefaultListModel<String> instead.
     return (e) -> {
       final List<String> selectedValues = gamesList.getSelectedValuesList();
       final List<DownloadFileDescription> selectedMaps =
@@ -380,8 +378,8 @@ public class InstallMapDialog extends JFrame {
     };
   }
 
-  private ActionListener installAction(JList gamesList, List<DownloadFileDescription> maps,
-      DefaultListModel listModel) {
+  private ActionListener installAction(JList<String> gamesList, List<DownloadFileDescription> maps,
+      DefaultListModel<String> listModel) {
     return (e) -> {
       List<String> selectedValues = gamesList.getSelectedValuesList();
       List<DownloadFileDescription> downloadList = Lists.newArrayList();

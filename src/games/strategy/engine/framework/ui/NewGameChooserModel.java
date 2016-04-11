@@ -3,7 +3,6 @@ package games.strategy.engine.framework.ui;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -20,7 +19,6 @@ import java.util.zip.ZipFile;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -30,15 +28,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import games.strategy.common.swing.SwingAction;
-import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 
-public class NewGameChooserModel extends DefaultListModel {
+public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   private static final long serialVersionUID = -2044689419834812524L;
   private final ClearGameChooserCacheMessenger clearCacheMessenger;
 

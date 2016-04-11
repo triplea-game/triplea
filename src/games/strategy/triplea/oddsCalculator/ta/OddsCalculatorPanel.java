@@ -115,9 +115,9 @@ public class OddsCalculatorPanel extends JPanel {
   private final IOddsCalculator m_calculator;
   private PlayerUnitsPanel m_attackingUnitsPanel;
   private PlayerUnitsPanel m_defendingUnitsPanel;
-  private JComboBox m_attackerCombo;
-  private JComboBox m_defenderCombo;
-  private JComboBox m_SwapSidesCombo;
+  private JComboBox<PlayerID> m_attackerCombo;
+  private JComboBox<PlayerID> m_defenderCombo;
+  private JComboBox<PlayerID> m_SwapSidesCombo;
   private final JLabel m_attackerUnitsTotalNumber = new JLabel();
   private final JLabel m_defenderUnitsTotalNumber = new JLabel();
   private final JLabel m_attackerUnitsTotalTUV = new JLabel();
@@ -129,7 +129,7 @@ public class OddsCalculatorPanel extends JPanel {
   private String m_attackerOrderOfLosses = null;
   private String m_defenderOrderOfLosses = null;
   private Territory m_location = null;
-  private JList m_territoryEffectsJList;
+  private JList<String> m_territoryEffectsJList;
   private final WidgetChangedListener m_listenerPlayerUnitsPanel = new WidgetChangedListener() {
     @Override
     public void widgetChanged() {
@@ -382,7 +382,7 @@ public class OddsCalculatorPanel extends JPanel {
   private Collection<TerritoryEffect> getTerritoryEffects() {
     final Collection<TerritoryEffect> territoryEffects = new ArrayList<TerritoryEffect>();
     if (m_territoryEffectsJList != null) {
-      final List<Object> selectedObjects = Arrays.asList(m_territoryEffectsJList.getSelectedValues());
+      final List<Object> selectedObjects = Arrays.asList(m_territoryEffectsJList.getSelectedValuesList());
       final List<String> selected = new ArrayList<String>();
       for (final Object obj : selectedObjects) {
         selected.add((String) obj);
@@ -732,9 +732,9 @@ public class OddsCalculatorPanel extends JPanel {
       if (doesPlayerHaveUnitsOnMap(PlayerID.NULL_PLAYERID, m_data)) {
         playerList.add(PlayerID.NULL_PLAYERID);
       }
-      m_attackerCombo = new JComboBox(new Vector<PlayerID>(playerList));
-      m_defenderCombo = new JComboBox(new Vector<PlayerID>(playerList));
-      m_SwapSidesCombo = new JComboBox(new Vector<PlayerID>(playerList));
+      m_attackerCombo = new JComboBox<>(new Vector<PlayerID>(playerList));
+      m_defenderCombo = new JComboBox<>(new Vector<PlayerID>(playerList));
+      m_SwapSidesCombo = new JComboBox<>(new Vector<PlayerID>(playerList));
       final Hashtable<String, TerritoryEffect> allTerritoryEffects = m_data.getTerritoryEffectList();
       if (allTerritoryEffects == null || allTerritoryEffects.isEmpty()) {
         m_territoryEffectsJList = null;
@@ -742,7 +742,7 @@ public class OddsCalculatorPanel extends JPanel {
         final Vector<String> effectNames = new Vector<String>();
         effectNames.add(NO_EFFECTS);
         effectNames.addAll(allTerritoryEffects.keySet());
-        m_territoryEffectsJList = new JList(effectNames);
+        m_territoryEffectsJList = new JList<>(effectNames);
         m_territoryEffectsJList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         m_territoryEffectsJList.setLayoutOrientation(JList.VERTICAL);
         // equal to the amount of space left (number of remaining items on the right)
@@ -872,7 +872,7 @@ public class OddsCalculatorPanel extends JPanel {
     private static final long serialVersionUID = -7639128794342607309L;
 
     @Override
-    public Component getListCellRendererComponent(final JList list, final Object value, final int index,
+    public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
         final boolean isSelected, final boolean cellHasFocus) {
       super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
       final PlayerID id = (PlayerID) value;
