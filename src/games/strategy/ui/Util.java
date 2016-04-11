@@ -14,16 +14,16 @@ import java.awt.Window;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
-import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import games.strategy.common.swing.SwingAction;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
-public class Util {
+public final class Util {
   // all we have is static methods
   private Util() {}
 
@@ -31,37 +31,12 @@ public class Util {
     public T run();
   }
 
-  public static void runInSwingEventThread(final Runnable r) {
-    if (SwingUtilities.isEventDispatchThread()) {
-      r.run();
-    } else {
-      try {
-        SwingUtilities.invokeAndWait(r);
-      } catch (final InterruptedException e) {
-        throw new IllegalStateException(e);
-      } catch (final InvocationTargetException e) {
-        throw new IllegalStateException(e);
-      }
-    }
-  }
-
   public static <T> T runInSwingEventThread(final Task<T> task) {
     if (SwingUtilities.isEventDispatchThread()) {
       return task.run();
     }
     final AtomicReference<T> results = new AtomicReference<T>();
-    try {
-      SwingUtilities.invokeAndWait(new Runnable() {
-        @Override
-        public void run() {
-          results.set(task.run());
-        }
-      });
-    } catch (final InterruptedException e) {
-      throw new IllegalStateException(e);
-    } catch (final InvocationTargetException e) {
-      throw new IllegalStateException(e);
-    }
+    SwingAction.invokeAndWait(() -> results.set(task.run()));
     return results.get();
   }
 
