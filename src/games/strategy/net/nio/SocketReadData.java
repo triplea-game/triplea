@@ -15,25 +15,25 @@ import java.util.logging.Logger;
  */
 class SocketReadData {
   public static final int MAX_MESSAGE_SIZE = 1000 * 1000 * 10;
-  private static final Logger s_logger = Logger.getLogger(SocketReadData.class.getName());
-  private static final AtomicInteger s_counter = new AtomicInteger();
+  private static final Logger logger = Logger.getLogger(SocketReadData.class.getName());
+  private static final AtomicInteger counter = new AtomicInteger();
   // as a sanity check to make sure
   // we are talking to another tripea instance
   // that the upper bits of the packet
   // size we send is 0x9b
   public static final int MAGIC = 0x9b000000;
-  private int m_targetSize = -1;
+  private int targetSize = -1;
   // we read into here the first four
   // bytes to find out size
-  private ByteBuffer m_sizeBuffer;
+  private ByteBuffer sizeBuffer;
   // we read into here after knowing out size
-  private ByteBuffer m_contentBuffer;
-  private final SocketChannel m_channel;
-  private final int m_number = s_counter.incrementAndGet();
-  private int m_readCalls;
+  private ByteBuffer contentBuffer;
+  private final SocketChannel channel;
+  private final int number = counter.incrementAndGet();
+  private int readCalls;
 
   public SocketReadData(final SocketChannel channel) {
-    this.m_channel = channel;
+    this.channel = channel;
   }
 
   /**
@@ -42,53 +42,53 @@ class SocketReadData {
    * If we detect the socket is closed, we will throw an IOExcpetion
    */
   public boolean read(final SocketChannel channel) throws IOException {
-    m_readCalls++;
+    readCalls++;
     // we dont know our size, read it
-    if (m_targetSize < 0) {
+    if (targetSize < 0) {
       // our first read
       // find out how big this packet is
-      if (m_sizeBuffer == null) {
-        m_sizeBuffer = ByteBuffer.allocate(4);
+      if (sizeBuffer == null) {
+        sizeBuffer = ByteBuffer.allocate(4);
       }
-      final int size = channel.read(m_sizeBuffer);
-      if (s_logger.isLoggable(Level.FINEST)) {
-        s_logger.finest("read size_buffer bytes:" + size);
+      final int size = channel.read(sizeBuffer);
+      if (logger.isLoggable(Level.FINEST)) {
+        logger.finest("read size_buffer bytes:" + size);
       }
       if (size == -1) {
         throw new IOException("Socket closed");
       }
       // we have read all four bytes of our size
-      if (!m_sizeBuffer.hasRemaining()) {
-        m_sizeBuffer.flip();
-        m_targetSize = m_sizeBuffer.getInt();
-        if ((m_targetSize & 0xFF000000) != MAGIC) {
+      if (!sizeBuffer.hasRemaining()) {
+        sizeBuffer.flip();
+        targetSize = sizeBuffer.getInt();
+        if ((targetSize & 0xFF000000) != MAGIC) {
           throw new IOException("Did not write magic!");
         }
-        m_targetSize = m_targetSize & 0x00ffffff;
+        targetSize = targetSize & 0x00ffffff;
         // limit messages to 10MB
-        if (m_targetSize <= 0 || m_targetSize > MAX_MESSAGE_SIZE) {
-          throw new IOException("Invalid triplea packet size:" + m_targetSize);
+        if (targetSize <= 0 || targetSize > MAX_MESSAGE_SIZE) {
+          throw new IOException("Invalid triplea packet size:" + targetSize);
         }
-        m_contentBuffer = ByteBuffer.allocate(m_targetSize);
-        m_sizeBuffer = null;
+        contentBuffer = ByteBuffer.allocate(targetSize);
+        sizeBuffer = null;
       } else {
         // we ddnt read all 4 bytes, return
         return false;
       }
     }
     // http://javaalmanac.com/egs/java.nio/DetectClosed.html
-    final int size = channel.read(m_contentBuffer);
-    if (s_logger.isLoggable(Level.FINEST)) {
-      s_logger.finest("read content bytes:" + size);
+    final int size = channel.read(contentBuffer);
+    if (logger.isLoggable(Level.FINEST)) {
+      logger.finest("read content bytes:" + size);
     }
     if (size == -1) {
       throw new IOException("Socket closed");
     }
-    return !m_contentBuffer.hasRemaining();
+    return !contentBuffer.hasRemaining();
   }
 
   public SocketChannel getChannel() {
-    return m_channel;
+    return channel;
   }
 
   /**
@@ -96,24 +96,24 @@ class SocketReadData {
    * This method can only be called once.
    */
   public byte[] getData() {
-    final byte[] rVal = new byte[m_contentBuffer.capacity()];
-    m_contentBuffer.flip();
-    m_contentBuffer.get(rVal);
-    m_contentBuffer = null;
+    final byte[] rVal = new byte[contentBuffer.capacity()];
+    contentBuffer.flip();
+    contentBuffer.get(rVal);
+    contentBuffer = null;
     return rVal;
   }
 
   public int size() {
     // add 4 to count the bytes used to send our size
-    return m_targetSize + 4;
+    return targetSize + 4;
   }
 
   public int getReadCalls() {
-    return m_readCalls;
+    return readCalls;
   }
 
   @Override
   public String toString() {
-    return "<id:" + m_number + " size:" + m_targetSize + ">";
+    return "<id:" + number + " size:" + targetSize + ">";
   }
 }
