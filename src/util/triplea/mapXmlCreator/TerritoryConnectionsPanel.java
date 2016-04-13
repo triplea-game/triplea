@@ -37,11 +37,11 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
 
   private TerritoryConnectionsPanel() {}
 
-  public static void layout(final MapXmlCreator mapXMLCreator) {
-    ImageScrollPanePanel.mapXMLCreator = mapXMLCreator;
+  public static void layout(final MapXmlCreator mapXmlCreator) {
+    setMapXmlCreator(mapXmlCreator);
     final TerritoryConnectionsPanel panel = new TerritoryConnectionsPanel();
-    panel.layout(mapXMLCreator.getStepActionPanel());
-    mapXMLCreator.setAutoFillAction(SwingAction.of(e -> {
+    panel.layout(mapXmlCreator.getStepActionPanel());
+    mapXmlCreator.setAutoFillAction(SwingAction.of(e -> {
       panel.paintPreparation(null);
       panel.repaint();
     }));
@@ -67,8 +67,9 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
 
   @Override
   protected void paintPreparation(final Map<String, Point> centers) {
-    if (centers != null && !MapXmlHelper.getTerritoryConnectionsMap().isEmpty())
+    if (centers != null && !MapXmlHelper.getTerritoryConnectionsMap().isEmpty()) {
       return;
+    }
     final Map<String, List<Area>> territoryAreas = getTerritoryAreasFromPolygons();
     final int lineThickness = showInputDialogForPositiveIntegerInput(
         "Enter the width of territory border lines on your map? \r(eg: 1, or 2, etc.)", "1");
@@ -101,8 +102,8 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
 
   }
 
-  private void setTerritoryConnections(final Map<String, List<Area>> territoryAreas, int scalePixels,
-      double minOverlap) {
+  private void setTerritoryConnections(final Map<String, List<Area>> territoryAreas, final int scalePixels,
+      final double minOverlap) {
     MapXmlHelper.clearTerritoryConnections();
     Logger.getLogger(MapXmlCreator.MAP_XML_CREATOR_LOGGER_NAME).log(Level.FINE,
         "Now scanning for connections ... ");
@@ -120,13 +121,16 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
         final Shape scaledShape = ConnectionFinder.scale(currentPolygon, scalePixels);
 
         for (final String otherTerritory : allAreas) {
-          if (otherTerritory.equals(territory))
+          if (otherTerritory.equals(territory)) {
             continue;
-          if (thisTerritoryConnections.contains(otherTerritory))
+          }
+          if (thisTerritoryConnections.contains(otherTerritory)) {
             continue;
+          }
           if (MapXmlHelper.getTerritoryConnectionsMap().get(otherTerritory) != null
-              && MapXmlHelper.getTerritoryConnectionsMap().get(otherTerritory).contains(territory))
+              && MapXmlHelper.getTerritoryConnectionsMap().get(otherTerritory).contains(territory)) {
             continue;
+          }
           for (final Area otherArea : territoryAreas.get(otherTerritory)) {
             final Area testArea = new Area(scaledShape);
             testArea.intersect(otherArea);
@@ -158,7 +162,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
 
   /**
    * Forces the user to either enter nothing or a positive integer
-   * 
+   *
    * @return input value or 0 if nothing has been entered
    */
   public int showInputDialogForPositiveIntegerInput(final String message, final String suggestedInput) {
@@ -181,7 +185,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
   }
 
   @Override
-  protected void paintOwnSpecifics(Graphics g, Map<String, Point> centers) {
+  protected void paintOwnSpecifics(final Graphics g, final Map<String, Point> centers) {
     g.setColor(Color.GREEN);
     for (final Entry<String, Set<String>> territoryConnection : MapXmlHelper.getTerritoryConnectionsMap()
         .entrySet()) {
@@ -206,8 +210,9 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
     final Point point = e.getPoint();
     final Optional<String> territoryName = Optional.of(findTerritoryName(point, polygons));
 
-    if (!territoryName.isPresent())
+    if (!territoryName.isPresent()) {
       return;
+    }
 
     if (needToBeRepainted(territoryName.get())) {
       repaint();

@@ -26,10 +26,10 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
     super(stepActionPanel);
   }
 
-  public static void layout(final MapXmlCreator mapXMLCreator) {
+  public static void layout(final MapXmlCreator mapXmlCreator) {
     if (!DynamicRowsPanel.me.isPresent() || !(DynamicRowsPanel.me.get() instanceof PlayerAndAlliancesPanel))
-      DynamicRowsPanel.me = Optional.of(new PlayerAndAlliancesPanel(mapXMLCreator.getStepActionPanel()));
-    DynamicRowsPanel.layout(mapXMLCreator);
+      DynamicRowsPanel.me = Optional.of(new PlayerAndAlliancesPanel(mapXmlCreator.getStepActionPanel()));
+    DynamicRowsPanel.layout(mapXmlCreator);
   }
 
   @Override

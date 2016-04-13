@@ -44,10 +44,10 @@ public abstract class DynamicRowsPanel {
 
   public LinkedHashSet<DynamicRow> rows = Sets.newLinkedHashSet();
 
-  protected static void layout(final MapXmlCreator mapXMLCreator) {
+  protected static void layout(final MapXmlCreator mapXmlCreator) {
     if (me.isPresent()) {
       me.get().resetRows();
-      mapXMLCreator.setAutoFillActionListener(me.get().getAutoFillAction());
+      mapXmlCreator.setAutoFillActionListener(me.get().getAutoFillAction());
     }
   }
 

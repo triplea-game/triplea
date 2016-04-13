@@ -287,13 +287,14 @@ public class MapXmlCreator extends JFrame {
     });
   }
 
-  public MapXmlCreator(final boolean testMode) {
-    this();
-    MapXmlCreator.testMode = testMode;
+  public MapXmlCreator() {
+    this(false);
   }
 
-  public MapXmlCreator() {
+  public MapXmlCreator(final boolean testMode) {
     super("TripleA Map XML Creator");
+
+    MapXmlCreator.testMode = testMode;
 
     mapFolderLocation = getDefaultMapFolderLocation();
     // keep for the moment for test purposes

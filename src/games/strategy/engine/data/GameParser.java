@@ -55,7 +55,7 @@ public class GameParser {
   private static final Class<?>[] SETTER_ARGS = {String.class};
   private GameData data;
   private final Collection<SAXParseException> errorsSAX = new ArrayList<SAXParseException>();
-  final static public String DTD_FILE_NAME = "game.dtd";
+  public static final String DTD_FILE_NAME = "game.dtd";
   private static HashMap<String, String> newClassesForOldNames;
 
   public GameParser() {}

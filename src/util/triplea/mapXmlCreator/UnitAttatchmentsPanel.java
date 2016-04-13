@@ -28,11 +28,11 @@ public class UnitAttatchmentsPanel extends DynamicRowsPanel {
     this.unitName = unitName;
   }
 
-  public static void layout(final MapXmlCreator mapXMLCreator, final JPanel stepActionPanel, final String unitName) {
+  public static void layout(final MapXmlCreator mapXmlCreator, final JPanel stepActionPanel, final String unitName) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof UnitAttatchmentsPanel)
         || ((UnitAttatchmentsPanel) me.get()).unitName != unitName)
       me = Optional.of(new UnitAttatchmentsPanel(stepActionPanel, unitName));
-    DynamicRowsPanel.layout(mapXMLCreator);
+    DynamicRowsPanel.layout(mapXmlCreator);
   }
 
   protected ActionListener getAutoFillAction() {

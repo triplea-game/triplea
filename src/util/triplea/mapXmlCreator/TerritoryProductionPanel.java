@@ -17,11 +17,11 @@ public class TerritoryProductionPanel extends ImageScrollPanePanel {
 
   private TerritoryProductionPanel() {}
 
-  public static void layout(final MapXmlCreator mapXMLCreator) {
-    ImageScrollPanePanel.mapXMLCreator = mapXMLCreator;
+  public static void layout(final MapXmlCreator mapXmlCreator) {
+    setMapXmlCreator(mapXmlCreator);
     final TerritoryProductionPanel panel = new TerritoryProductionPanel();
-    panel.layout(mapXMLCreator.getStepActionPanel());
-    mapXMLCreator.setAutoFillAction(SwingAction.of(Exception -> {
+    panel.layout(mapXmlCreator.getStepActionPanel());
+    mapXmlCreator.setAutoFillAction(SwingAction.of(Exception -> {
       panel.paintPreparation(null);
       panel.repaint();
     }));
