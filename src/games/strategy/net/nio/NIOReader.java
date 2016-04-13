@@ -24,22 +24,22 @@ import java.util.logging.Logger;
  * Packets are placed in the output queue in order they are read from the socket.
  */
 public class NIOReader {
-  private static final Logger s_logger = Logger.getLogger(NIOReader.class.getName());
-  private final LinkedBlockingQueue<SocketReadData> m_outputQueue = new LinkedBlockingQueue<SocketReadData>();
-  private volatile boolean m_running = true;
-  private final Map<SocketChannel, SocketReadData> m_reading = new ConcurrentHashMap<SocketChannel, SocketReadData>();
-  private final IErrorReporter m_errorReporter;
-  private final Selector m_selector;
-  private final Object m_socketsToAddMutex = new Object();
-  private final List<SocketChannel> m_socketsToAdd = new ArrayList<SocketChannel>();
-  private long m_totalBytes;
+  private static final Logger logger = Logger.getLogger(NIOReader.class.getName());
+  private final LinkedBlockingQueue<SocketReadData> outputQueue = new LinkedBlockingQueue<SocketReadData>();
+  private volatile boolean running = true;
+  private final Map<SocketChannel, SocketReadData> reading = new ConcurrentHashMap<SocketChannel, SocketReadData>();
+  private final IErrorReporter errorReporter;
+  private final Selector selector;
+  private final Object socketsToAddMutex = new Object();
+  private final List<SocketChannel> socketsToAdd = new ArrayList<SocketChannel>();
+  private long totalBytes;
 
   public NIOReader(final IErrorReporter reporter, final String threadSuffix) {
-    m_errorReporter = reporter;
+    errorReporter = reporter;
     try {
-      m_selector = Selector.open();
+      selector = Selector.open();
     } catch (final IOException e) {
-      s_logger.log(Level.SEVERE, "Could not create Selector", e);
+      logger.log(Level.SEVERE, "Could not create Selector", e);
       throw new IllegalStateException(e);
     }
     final Thread t = new Thread(new Runnable() {
@@ -52,33 +52,33 @@ public class NIOReader {
   }
 
   public void shutDown() {
-    m_running = false;
+    running = false;
     try {
-      m_selector.close();
+      selector.close();
     } catch (final Exception e) {
-      s_logger.log(Level.WARNING, "error closing selector", e);
+      logger.log(Level.WARNING, "error closing selector", e);
     }
   }
 
   public void add(final SocketChannel channel) {
-    synchronized (m_socketsToAddMutex) {
-      m_socketsToAdd.add(channel);
-      m_selector.wakeup();
+    synchronized (socketsToAddMutex) {
+      socketsToAdd.add(channel);
+      selector.wakeup();
     }
   }
 
   private void selectNewChannels() {
     List<SocketChannel> toAdd = null;
-    synchronized (m_socketsToAddMutex) {
-      if (m_socketsToAdd.isEmpty()) {
+    synchronized (socketsToAddMutex) {
+      if (socketsToAdd.isEmpty()) {
         return;
       }
-      toAdd = new ArrayList<SocketChannel>(m_socketsToAdd);
-      m_socketsToAdd.clear();
+      toAdd = new ArrayList<SocketChannel>(socketsToAdd);
+      socketsToAdd.clear();
     }
     for (final SocketChannel channel : toAdd) {
       try {
-        channel.register(m_selector, SelectionKey.OP_READ);
+        channel.register(selector, SelectionKey.OP_READ);
       } catch (final ClosedChannelException e) {
         // this is ok, the channel is closed, so dont bother reading it
         return;
@@ -87,26 +87,26 @@ public class NIOReader {
   }
 
   private void loop() {
-    while (m_running) {
+    while (running) {
       try {
-        if (s_logger.isLoggable(Level.FINEST)) {
-          s_logger.finest("selecting...");
+        if (logger.isLoggable(Level.FINEST)) {
+          logger.finest("selecting...");
         }
         try {
-          m_selector.select();
+          selector.select();
         }
         // exceptions can be thrown here, nothing we can do
         // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4729342
         catch (final Exception e) {
-          s_logger.log(Level.INFO, "error reading selection", e);
+          logger.log(Level.INFO, "error reading selection", e);
         }
-        if (!m_running) {
+        if (!running) {
           continue;
         }
         selectNewChannels();
-        final Set<SelectionKey> selected = m_selector.selectedKeys();
-        if (s_logger.isLoggable(Level.FINEST)) {
-          s_logger.finest("selected:" + selected.size());
+        final Set<SelectionKey> selected = selector.selectedKeys();
+        if (logger.isLoggable(Level.FINEST)) {
+          logger.finest("selected:" + selected.size());
         }
         final Iterator<SelectionKey> iter = selected.iterator();
         while (iter.hasNext()) {
@@ -115,14 +115,14 @@ public class NIOReader {
           if (key.isValid() && key.isReadable()) {
             final SocketChannel channel = (SocketChannel) key.channel();
             final SocketReadData packet = getReadData(channel);
-            if (s_logger.isLoggable(Level.FINEST)) {
-              s_logger.finest("reading packet:" + packet + " from:" + channel.socket().getRemoteSocketAddress());
+            if (logger.isLoggable(Level.FINEST)) {
+              logger.finest("reading packet:" + packet + " from:" + channel.socket().getRemoteSocketAddress());
             }
             try {
               final boolean done = packet.read(channel);
               if (done) {
-                m_totalBytes += packet.size();
-                if (s_logger.isLoggable(Level.FINE)) {
+                totalBytes += packet.size();
+                if (logger.isLoggable(Level.FINE)) {
                   String remote = "null";
                   final Socket s = channel.socket();
                   SocketAddress sa = null;
@@ -132,50 +132,50 @@ public class NIOReader {
                   if (sa != null) {
                     remote = sa.toString();
                   }
-                  s_logger.log(Level.FINE, " done reading from:" + remote + " size:" + packet.size() + " readCalls;"
-                      + packet.getReadCalls() + " total:" + m_totalBytes);
+                  logger.log(Level.FINE, " done reading from:" + remote + " size:" + packet.size() + " readCalls;"
+                      + packet.getReadCalls() + " total:" + totalBytes);
                 }
                 enque(packet);
               }
             } catch (final Exception e) {
-              s_logger.log(Level.FINER, "exception reading", e);
+              logger.log(Level.FINER, "exception reading", e);
               key.cancel();
-              m_errorReporter.error(channel, e);
+              errorReporter.error(channel, e);
             }
           } else if (!key.isValid()) {
-            s_logger.fine("Remotely closed");
+            logger.fine("Remotely closed");
             final SocketChannel channel = (SocketChannel) key.channel();
             key.cancel();
-            m_errorReporter.error(channel, new SocketException("triplea:key cancelled"));
+            errorReporter.error(channel, new SocketException("triplea:key cancelled"));
           }
         }
       } catch (final Exception e) {
         // catch unhandles exceptions to that the reader
         // thread doesnt die
-        s_logger.log(Level.WARNING, "error in reader", e);
+        logger.log(Level.WARNING, "error in reader", e);
       }
     }
   }
 
   private void enque(final SocketReadData packet) {
-    m_reading.remove(packet.getChannel());
-    m_outputQueue.offer(packet);
+    reading.remove(packet.getChannel());
+    outputQueue.offer(packet);
   }
 
   private SocketReadData getReadData(final SocketChannel channel) {
-    if (m_reading.containsKey(channel)) {
-      return m_reading.get(channel);
+    if (reading.containsKey(channel)) {
+      return reading.get(channel);
     }
     final SocketReadData packet = new SocketReadData(channel);
-    m_reading.put(channel, packet);
+    reading.put(channel, packet);
     return packet;
   }
 
   public SocketReadData take() throws InterruptedException {
-    return m_outputQueue.take();
+    return outputQueue.take();
   }
 
   public void closed(final SocketChannel channel) {
-    m_reading.remove(channel);
+    reading.remove(channel);
   }
 }
