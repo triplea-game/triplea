@@ -21,7 +21,7 @@ public abstract class MapXmlCreatorTestBase extends TestCase {
   @Override
   @Before
   protected void setUp() {
-    // setMapXmlCreator();
+    setMapXmlCreator();
   }
 
   private void setMapXmlCreator() {

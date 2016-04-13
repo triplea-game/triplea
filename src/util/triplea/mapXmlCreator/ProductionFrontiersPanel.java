@@ -32,12 +32,12 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
     allUnitNames = new TreeSet<String>(MapXmlHelper.getUnitDefinitionsMap().keySet());
   }
 
-  public static void layout(final MapXmlCreator mapXMLCreator, final JPanel stepActionPanel, final String playerName) {
+  public static void layout(final MapXmlCreator mapXmlCreator, final JPanel stepActionPanel, final String playerName) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof ProductionFrontiersPanel)
         || ((ProductionFrontiersPanel) me.get()).playerName != playerName) {
       me = Optional.of(new ProductionFrontiersPanel(stepActionPanel, playerName));
     }
-    DynamicRowsPanel.layout(mapXMLCreator);
+    DynamicRowsPanel.layout(mapXmlCreator);
   }
 
   @Override

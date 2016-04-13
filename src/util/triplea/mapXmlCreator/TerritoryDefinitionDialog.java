@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
@@ -25,7 +25,7 @@ public class TerritoryDefinitionDialog extends JDialog {
     IS_WATER, IS_VICTORY_CITY, IMPASSABLE, IS_CAPITAL
   }
 
-  public static String getDefinitionString(DEFINITION def) {
+  public static String getDefinitionString(final DEFINITION def) {
     switch (def) {
       case IS_WATER:
         return TERRITORY_DEFINITION_IS_WATER;
@@ -42,14 +42,15 @@ public class TerritoryDefinitionDialog extends JDialog {
   }
 
   public static DEFINITION valueOf(final String defString) {
-    if (defString.equals(TERRITORY_DEFINITION_IS_WATER))
+    if (defString.equals(TERRITORY_DEFINITION_IS_WATER)) {
       return DEFINITION.IS_WATER;
-    else if (defString.equals(TERRITORY_DEFINITION_IS_VICTORY_CITY))
+    } else if (defString.equals(TERRITORY_DEFINITION_IS_VICTORY_CITY)) {
       return DEFINITION.IS_VICTORY_CITY;
-    else if (defString.equals(TERRITORY_DEFINITION_IMPASSABLE))
+    } else if (defString.equals(TERRITORY_DEFINITION_IMPASSABLE)) {
       return DEFINITION.IMPASSABLE;
-    else if (defString.equals(TERRITORY_DEFINITION_IS_CAPITAL))
+    } else if (defString.equals(TERRITORY_DEFINITION_IS_CAPITAL)) {
       return DEFINITION.IS_CAPITAL;
+    }
     throw new IllegalArgumentException(
         "'" + defString + "' is not a valid string for " + DEFINITION.class);
   }
@@ -60,29 +61,30 @@ public class TerritoryDefinitionDialog extends JDialog {
   public static final String TERRITORY_DEFINITION_IMPASSABLE = "isImpassible"; // typo in engine!!!
   public static final String TERRITORY_DEFINITION_IS_CAPITAL = "capital";
 
-  private final HashMap<DEFINITION, Boolean> properties;
-  private JButton okButton;
+  private final Map<DEFINITION, Boolean> properties;
+  private final JButton okButton;
 
-  TerritoryDefinitionDialog(final MapXmlCreator mapXMLCreator, final String territoryName,
-      final HashMap<DEFINITION, Boolean> properties) {
-    this(mapXMLCreator, JOptionPane.getFrameForComponent(null), territoryName, properties);
+  TerritoryDefinitionDialog(final MapXmlCreator mapXmlCreator, final String territoryName,
+      final Map<DEFINITION, Boolean> properties) {
+    this(mapXmlCreator, JOptionPane.getFrameForComponent(null), territoryName, properties);
   }
 
-  private TerritoryDefinitionDialog(final MapXmlCreator mapXMLCreator, final Frame parentFrame,
-      final String territoryName, final HashMap<DEFINITION, Boolean> properties) {
+  private TerritoryDefinitionDialog(final MapXmlCreator mapXmlCreator, final Frame parentFrame,
+      final String territoryName, final Map<DEFINITION, Boolean> properties) {
     super(parentFrame, "Edit Territory Definitions of " + territoryName, true);
     this.properties = properties;
     okButton = new JButton("OK");
     okButton.addActionListener(new AbstractAction("OK") {
       private static final long serialVersionUID = 8014389179875584858L;
 
+      @Override
       public void actionPerformed(final ActionEvent e) {
         MapXmlHelper.getTerritoryDefintionsMap().put(territoryName, properties);
         setVisible(false);
       }
     });
     layoutCoponents(territoryName);
-    mapXMLCreator.validateAndRepaint();
+    mapXmlCreator.validateAndRepaint();
     // Listen for windowOpened event to set focus
     this.addWindowListener(new WindowAdapter() {
       @Override
@@ -91,7 +93,7 @@ public class TerritoryDefinitionDialog extends JDialog {
       }
 
       @Override
-      public void windowClosing(WindowEvent e) {
+      public void windowClosing(final WindowEvent e) {
         MapXmlHelper.getTerritoryDefintionsMap().put(territoryName, properties);
         super.windowClosing(e);
       }
@@ -115,6 +117,7 @@ public class TerritoryDefinitionDialog extends JDialog {
     final Boolean isWater = properties.get(DEFINITION.IS_WATER);
     cbIsWater.setSelected((isWater != null ? isWater : false));
     cbIsWater.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         properties.put(DEFINITION.IS_WATER, cbIsWater.isSelected());
       }
@@ -126,6 +129,7 @@ public class TerritoryDefinitionDialog extends JDialog {
     final Boolean isVictoryCity = properties.get(DEFINITION.IS_VICTORY_CITY);
     cbIsVictoryCity.setSelected((isVictoryCity != null ? isVictoryCity : false));
     cbIsVictoryCity.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         properties.put(DEFINITION.IS_VICTORY_CITY, cbIsVictoryCity.isSelected());
       }
@@ -137,6 +141,7 @@ public class TerritoryDefinitionDialog extends JDialog {
     final Boolean impassable = properties.get(DEFINITION.IMPASSABLE);
     cbImpassable.setSelected((impassable != null ? impassable : false));
     cbImpassable.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         properties.put(DEFINITION.IMPASSABLE, cbImpassable.isSelected());
       }
@@ -148,6 +153,7 @@ public class TerritoryDefinitionDialog extends JDialog {
     final Boolean isCapital = properties.get(DEFINITION.IS_CAPITAL);
     cbIsCapital.setSelected((isCapital != null ? isCapital : false));
     cbIsCapital.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         properties.put(DEFINITION.IS_CAPITAL, cbIsCapital.isSelected());
       }

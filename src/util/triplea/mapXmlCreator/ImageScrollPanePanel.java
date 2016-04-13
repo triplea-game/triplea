@@ -45,7 +45,13 @@ import util.image.FileOpen;
 public abstract class ImageScrollPanePanel {
   private static Font font = null;
 
-  protected static MapXmlCreator mapXMLCreator;
+  private static MapXmlCreator mapXmlCreator;
+
+  // TODO: Check if only usage point outside this class can be erased
+  protected static MapXmlCreator getMapXmlCreator() {
+    return mapXmlCreator;
+  }
+
   protected static Map<String, List<Polygon>> polygons = Maps.newHashMap(); // hash map for polygon
                                                                             // points
   public static boolean polygonsInvalid = true;
@@ -55,7 +61,7 @@ public abstract class ImageScrollPanePanel {
 
   protected void layout(final JPanel stepActionPanel) {
     final Dimension size = stepActionPanel.getSize();
-    JScrollPane js = new JScrollPane(createImagePanel());
+    final JScrollPane js = new JScrollPane(createImagePanel());
     js.setBorder(null);
     stepActionPanel.setLayout(new BorderLayout());
     stepActionPanel.add(js, BorderLayout.CENTER);
@@ -82,8 +88,9 @@ public abstract class ImageScrollPanePanel {
       polygons.clear();
       polygonsInvalid = false;
     }
-    if (polygons.isEmpty())
+    if (polygons.isEmpty()) {
       MapXmlCreator.mapPolygonsFile = loadPolygons();
+    }
 
     final Image mapImage = Toolkit.getDefaultToolkit().getImage(MapXmlCreator.mapImageFile.getAbsolutePath());
     if (centers.isEmpty()) {
@@ -92,57 +99,15 @@ public abstract class ImageScrollPanePanel {
 
     paintPreparation(centers);
 
-    imagePanel = new JPanel() {
-      private static final long serialVersionUID = -7130828419508975924L;
+    setImagePanel(mapImage);
 
-      @Override
-      public void paint(final Graphics g) {
-        // super.paint(g);
-        final Rectangle clipBounds = g.getClipBounds();
-        if (font == null)
-          font = g.getFont();
-        else
-          g.setFont(font);
-        // g.drawImage(mapImage, 0, 0, clipBounds.width, clipBounds.height, this);
-        // g.drawImage(mapImage, 0, 0, this);
-        g.drawImage(mapImage, clipBounds.x, clipBounds.y, clipBounds.x + clipBounds.width,
-            clipBounds.y + clipBounds.height, clipBounds.x, clipBounds.y, clipBounds.x + clipBounds.width,
-            clipBounds.y + clipBounds.height, this);
-        paintOwnSpecifics(g, centers);
-        g.setColor(Color.red);
-        final FontMetrics fontMetrics = g.getFontMetrics();
-        for (final Entry<String, Point> centerEntry : centers.entrySet()) {
-          final String centerName = centerEntry.getKey();
-          final Point item = centerEntry.getValue();
-          final int x_text_start = item.x - centerName.length() / 2 * 5;
-          final Rectangle2D stringBounds = fontMetrics.getStringBounds(centerName, g);
-          final Rectangle boxRect = new Rectangle(Math.max(0, x_text_start - 2), Math.max(0, item.y - 6),
-              (int) stringBounds.getWidth() + 4, (int) stringBounds.getHeight());
-          if (clipBounds.intersects(boxRect)) {
-            g.setColor(Color.white);
-            g.fillRect(boxRect.x, boxRect.y, boxRect.width, boxRect.height);
-            g.setColor(Color.red);
-            g.drawString(centerName, Math.max(0, x_text_start), item.y + 5);
-          }
-          boxRect.width += boxRect.width;
-          boxRect.height += boxRect.height;
-          if (clipBounds.intersects(boxRect))
-            paintCenterSpecifics(g, centerName, fontMetrics, item, x_text_start);
-        }
-      }
+    return imagePanel;
+  }
 
-    };
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        // set up the image panel size dimensions ...etc
-        imagePanel
-            .setPreferredSize(new Dimension(mapImage.getWidth(mapXMLCreator), mapImage.getHeight(mapXMLCreator)));
-      }
-    });
-    imagePanel
-        .setPreferredSize(new Dimension(mapImage.getWidth(mapXMLCreator), mapImage.getHeight(mapXMLCreator)));
-
+  /**
+   *
+   */
+  protected void addMouseAdapterToImagePanel() {
     final MouseAdapter imageMouseAdapter = new MouseAdapter() {
       private final Cursor defCursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
       private final Cursor hndCursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
@@ -171,21 +136,80 @@ public abstract class ImageScrollPanePanel {
       }
 
       @Override
-      public void mousePressed(MouseEvent e) {
+      public void mousePressed(final MouseEvent e) {
         imagePanel.setCursor(hndCursor);
         pp.setLocation(e.getPoint());
       }
 
       @Override
-      public void mouseReleased(MouseEvent e) {
+      public void mouseReleased(final MouseEvent e) {
         imagePanel.setCursor(defCursor);
         pp.setLocation(e.getPoint());
       }
     };
     imagePanel.addMouseListener(imageMouseAdapter);
     imagePanel.addMouseMotionListener(imageMouseAdapter);
+  }
 
-    return imagePanel;
+  private void setImagePanel(final Image mapImage) {
+    imagePanel = getNewImagePanel(mapImage);
+
+    final Dimension mapImageDim = getImageDimension(mapImage);
+    SwingUtilities.invokeLater(() -> imagePanel
+        .setPreferredSize(mapImageDim));
+    imagePanel
+        .setPreferredSize(mapImageDim);
+
+
+    addMouseAdapterToImagePanel();
+  }
+
+  private JPanel getNewImagePanel(final Image mapImage) {
+    return new JPanel() {
+      private static final long serialVersionUID = -7130828419508975924L;
+
+      @Override
+      public void paint(final Graphics g) {
+
+        final Rectangle clipBounds = g.getClipBounds();
+        if (font == null) {
+          font = g.getFont();
+        } else {
+          g.setFont(font);
+        }
+
+        g.drawImage(mapImage, clipBounds.x, clipBounds.y, clipBounds.x + clipBounds.width,
+            clipBounds.y + clipBounds.height, clipBounds.x, clipBounds.y, clipBounds.x + clipBounds.width,
+            clipBounds.y + clipBounds.height, this);
+        paintOwnSpecifics(g, centers);
+        g.setColor(Color.red);
+        final FontMetrics fontMetrics = g.getFontMetrics();
+        for (final Entry<String, Point> centerEntry : centers.entrySet()) {
+          final String centerName = centerEntry.getKey();
+          final Point item = centerEntry.getValue();
+          final int x_text_start = item.x - centerName.length() / 2 * 5;
+          final Rectangle2D stringBounds = fontMetrics.getStringBounds(centerName, g);
+          final Rectangle boxRect = new Rectangle(Math.max(0, x_text_start - 2), Math.max(0, item.y - 6),
+              (int) stringBounds.getWidth() + 4, (int) stringBounds.getHeight());
+          if (clipBounds.intersects(boxRect)) {
+            g.setColor(Color.white);
+            g.fillRect(boxRect.x, boxRect.y, boxRect.width, boxRect.height);
+            g.setColor(Color.red);
+            g.drawString(centerName, Math.max(0, x_text_start), item.y + 5);
+          }
+          boxRect.width += boxRect.width;
+          boxRect.height += boxRect.height;
+          if (clipBounds.intersects(boxRect)) {
+            paintCenterSpecifics(g, centerName, fontMetrics, item, x_text_start);
+          }
+        }
+      }
+
+    };
+  }
+
+  private Dimension getImageDimension(final Image mapImage) {
+    return new Dimension(mapImage.getWidth(mapXmlCreator), mapImage.getHeight(mapXmlCreator));
   }
 
   protected JPanel getImagePanel() {
@@ -195,10 +219,12 @@ public abstract class ImageScrollPanePanel {
   private static File loadPolygons() {
     File file = null;
     if (MapXmlCreator.mapPolygonsFile == null) {
-      if (MapXmlCreator.mapFolderLocation != null && MapXmlCreator.mapFolderLocation.exists())
+      if (MapXmlCreator.mapFolderLocation != null && MapXmlCreator.mapFolderLocation.exists()) {
         file = new File(MapXmlCreator.mapFolderLocation, "polygons.txt");
-      if (file == null || !file.exists())
+      }
+      if (file == null || !file.exists()) {
         file = new File(MapXmlCreator.mapImageFile.getParent() + File.separator + "polygons.txt");
+      }
     } else {
       file = MapXmlCreator.mapPolygonsFile;
     }
@@ -275,6 +301,10 @@ public abstract class ImageScrollPanePanel {
       ex.printStackTrace();
     }
     return centers;
+  }
+
+  protected static void setMapXmlCreator(final MapXmlCreator mapXmlCreator) {
+    setMapXmlCreator(mapXmlCreator);
   }
 
   public ImageScrollPanePanel() {

@@ -22,15 +22,15 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
 
   private TerritoryDefinitionsPanel() {}
 
-  public static void layout(final MapXmlCreator mapXMLCreator) {
-    ImageScrollPanePanel.mapXMLCreator = mapXMLCreator;
-    new TerritoryDefinitionsPanel().layout(mapXMLCreator.getStepActionPanel());
+  public static void layout(final MapXmlCreator mapXmlCreator) {
+    setMapXmlCreator(mapXmlCreator);
+    new TerritoryDefinitionsPanel().layout(mapXmlCreator.getStepActionPanel());
   }
 
   @Override
   protected void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
       final Point item, final int x_text_start) {
-    final HashMap<DEFINITION, Boolean> territoryDefinition = MapXmlHelper.getTerritoryDefintionsMap().get(centerName);
+    final Map<DEFINITION, Boolean> territoryDefinition = MapXmlHelper.getTerritoryDefintionsMap().get(centerName);
     if (territoryDefinition != null) {
       final int y_value = item.y + 10;
       short definition_count = 0;
@@ -96,32 +96,32 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
   }
 
   @Override
-  protected void paintOwnSpecifics(Graphics g, Map<String, Point> centers) {}
+  protected void paintOwnSpecifics(final Graphics g, final Map<String, Point> centers) {}
 
   @Override
   protected void mouseClickedOnImage(final Map<String, Point> centers, final MouseEvent e) {
     final Point point = e.getPoint();
     final String territoryName = findTerritoryName(point, polygons);
     if (SwingUtilities.isRightMouseButton(e)) {
-      String territoryNameNew =
+      final String territoryNameNew =
           JOptionPane.showInputDialog(getImagePanel(), "Enter the territory name:", territoryName);
-      if (territoryNameNew == null || territoryNameNew.trim().length() == 0)
+      if (territoryNameNew == null || territoryNameNew.trim().length() == 0) {
         return;
+      }
       if (!territoryName.equals(territoryNameNew) && centers.containsKey(territoryNameNew)
           && JOptionPane.showConfirmDialog(getImagePanel(),
-              "Another center exists with the same name. Are you sure you want to replace it with this one?") != 0)
+              "Another center exists with the same name. Are you sure you want to replace it with this one?") != 0) {
         return;
+      }
       centers.put(territoryNameNew, centers.get(territoryName));
     } else {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          HashMap<DEFINITION, Boolean> territoyDefintions = MapXmlHelper.getTerritoryDefintionsMap().get(territoryName);
-          if (territoyDefintions == null)
-            territoyDefintions = Maps.newHashMap();
-          new TerritoryDefinitionDialog(mapXMLCreator, territoryName, territoyDefintions);
-          getImagePanel().repaint();
+      SwingUtilities.invokeLater(() -> {
+        Map<DEFINITION, Boolean> territoyDefintions = MapXmlHelper.getTerritoryDefintionsMap().get(territoryName);
+        if (territoyDefintions == null) {
+          territoyDefintions = Maps.newHashMap();
         }
+        new TerritoryDefinitionDialog(getMapXmlCreator(), territoryName, territoyDefintions);
+        getImagePanel().repaint();
       });
     }
   }

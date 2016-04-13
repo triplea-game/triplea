@@ -51,10 +51,10 @@ public class GameSettingsPanel extends DynamicRowsPanel {
     super(stepActionPanel);
   }
 
-  public static void layout(final MapXmlCreator mapXMLCreator) {
+  public static void layout(final MapXmlCreator mapXmlCreator) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof GameSettingsPanel))
-      me = Optional.of(new GameSettingsPanel(mapXMLCreator.getStepActionPanel()));
-    DynamicRowsPanel.layout(mapXMLCreator);
+      me = Optional.of(new GameSettingsPanel(mapXmlCreator.getStepActionPanel()));
+    DynamicRowsPanel.layout(mapXmlCreator);
   }
 
   @Override

@@ -4,10 +4,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 
 import javax.swing.JButton;
@@ -22,7 +20,7 @@ import util.image.FileOpen;
 
 public class MapPropertiesPanel {
 
-  public static void layout(final MapXmlCreator mapXMLCreator) {
+  public static void layout(final MapXmlCreator mapXmlCreator) {
 
     if (!MapXmlHelper.getXmlStringsMap().containsKey("info_@name")) {
       for (final String newKey : new String[] {"info_@name", "info_@version"}) {
@@ -30,8 +28,9 @@ public class MapPropertiesPanel {
       }
     }
 
-    if (MapXmlHelper.getResourceList().isEmpty())
+    if (MapXmlHelper.getResourceList().isEmpty()) {
       MapXmlHelper.addResourceList("");
+    }
 
     final JTextField textFieldMapName = new JTextField(MapXmlHelper.getXmlStringsMap().get("info_@name"));
     final JTextField textFieldMapVersion = new JTextField(MapXmlHelper.getXmlStringsMap().get("info_@version"));
@@ -54,14 +53,14 @@ public class MapPropertiesPanel {
     final JLabel labelWaterFilter = new JLabel("Water Territory Filter");
     final JLabel labelWaterFilterExample = new JLabel("e.g. 'Sea Zone'");
 
-    GridBagLayout gbl_panel_1 = new GridBagLayout();
-    gbl_panel_1.rowHeights = new int[] {32, 32, 32, 32, 32, 32, 32, 0};
-    gbl_panel_1.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-    final JPanel stepActionPanel = mapXMLCreator.getStepActionPanel();
-    stepActionPanel.setLayout(gbl_panel_1);
+    final GridBagLayout gridBadConstLabelPanel = new GridBagLayout();
+    gridBadConstLabelPanel.rowHeights = getRowHeights();
+    gridBadConstLabelPanel.rowWeights = getRowWeights();
+    final JPanel stepActionPanel = mapXmlCreator.getStepActionPanel();
+    stepActionPanel.setLayout(gridBadConstLabelPanel);
 
     // Map Name
-    GridBagConstraints gridBadConstLabelMapName = new GridBagConstraints();
+    final GridBagConstraints gridBadConstLabelMapName = new GridBagConstraints();
     gridBadConstLabelMapName.insets = new Insets(0, 0, 5, 5);
     gridBadConstLabelMapName.anchor = GridBagConstraints.NORTHEAST;
     gridBadConstLabelMapName.gridheight = 32;
@@ -69,25 +68,18 @@ public class MapPropertiesPanel {
     gridBadConstLabelMapName.gridx = 0;
     stepActionPanel.add(labelMapName, gridBadConstLabelMapName);
 
-    textFieldMapName.addFocusListener(new FocusListener() {
-
-      @Override
-      public void focusLost(FocusEvent e) {
-        MapXmlHelper.putXmlStrings("info_@name", textFieldMapName.getText());
-      }
-
-      @Override
-      public void focusGained(FocusEvent e) {}
-    });
+    textFieldMapName.addFocusListener(FocusListenerFocusLost
+        .withAction(() -> MapXmlHelper.putXmlStrings("info_@name", textFieldMapName.getText())));
     textFieldMapName.setMaximumSize(new Dimension(0, 0));
-    textFieldMapName.setColumns(30);
-    GridBagConstraints gridBadConstTextFieldMapName = (GridBagConstraints) gridBadConstLabelMapName.clone();
+    final int columns = 30;
+    textFieldMapName.setColumns(columns);
+    final GridBagConstraints gridBadConstTextFieldMapName = (GridBagConstraints) gridBadConstLabelMapName.clone();
     gridBadConstTextFieldMapName.anchor = GridBagConstraints.NORTH;
     gridBadConstTextFieldMapName.gridx = 1;
     textFieldMapName.setMaximumSize(textFieldMapName.getPreferredSize());
     stepActionPanel.add(textFieldMapName, gridBadConstTextFieldMapName);
 
-    GridBagConstraints gridBadConstLabelMapNameExample = (GridBagConstraints) gridBadConstLabelMapName.clone();
+    final GridBagConstraints gridBadConstLabelMapNameExample = (GridBagConstraints) gridBadConstLabelMapName.clone();
     gridBadConstLabelMapNameExample.anchor = GridBagConstraints.NORTHWEST;
     gridBadConstLabelMapNameExample.gridx = 2;
     stepActionPanel.add(labelMapNameExample, gridBadConstLabelMapNameExample);
@@ -95,18 +87,10 @@ public class MapPropertiesPanel {
     // Map Version
     stepActionPanel.add(labelMapVersion, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapName, 2, 2));
 
-    textFieldMapVersion.addFocusListener(new FocusListener() {
-
-      @Override
-      public void focusLost(FocusEvent e) {
-        MapXmlHelper.putXmlStrings("info_@version", textFieldMapVersion.getText());
-      }
-
-      @Override
-      public void focusGained(FocusEvent e) {}
-    });
+    textFieldMapVersion.addFocusListener(FocusListenerFocusLost
+        .withAction(() -> MapXmlHelper.putXmlStrings("info_@version", textFieldMapVersion.getText())));
     textFieldMapVersion.setMaximumSize(new Dimension(0, 0));
-    textFieldMapVersion.setColumns(30);
+    textFieldMapVersion.setColumns(columns);
     stepActionPanel.add(textFieldMapVersion, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapName, 1, 2));
 
 
@@ -115,18 +99,10 @@ public class MapPropertiesPanel {
     // Resource Name
     stepActionPanel.add(labelResourceName, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapName, 0, 3));
 
-    textFieldResourceName.addFocusListener(new FocusListener() {
-
-      @Override
-      public void focusLost(FocusEvent e) {
-        MapXmlHelper.addResourceList(0, textFieldResourceName.getText());
-      }
-
-      @Override
-      public void focusGained(FocusEvent e) {}
-    });
+    textFieldResourceName.addFocusListener(FocusListenerFocusLost
+        .withAction(() -> MapXmlHelper.addResourceList(0, textFieldResourceName.getText())));
     textFieldResourceName.setMaximumSize(new Dimension(0, 0));
-    textFieldResourceName.setColumns(30);
+    textFieldResourceName.setColumns(columns);
     stepActionPanel.add(textFieldResourceName, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapName, 1, 3));
 
     stepActionPanel.add(labelResourceNameExample,
@@ -137,25 +113,12 @@ public class MapPropertiesPanel {
 
     textFieldMapImageFile.setEnabled(false);
     textFieldMapImageFile.setMaximumSize(new Dimension(0, 0));
-    textFieldMapImageFile.setColumns(30);
-    textFieldMapImageFile.addMouseListener(new MouseListener() {
+    textFieldMapImageFile.setColumns(columns);
+    textFieldMapImageFile.addMouseListener(new MouseAdapter() {
       @Override
-      public void mouseClicked(MouseEvent e) {
+      public void mouseClicked(final MouseEvent e) {
         buttonSelectMapImageFile.doClick();
       }
-
-      @Override
-      public void mouseEntered(MouseEvent e) {}
-
-      @Override
-      public void mouseExited(MouseEvent e) {}
-
-      @Override
-      public void mousePressed(MouseEvent e) {}
-
-      @Override
-      public void mouseReleased(MouseEvent e) {}
-
     });
     stepActionPanel.add(textFieldMapImageFile, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapName, 1, 4));
 
@@ -190,25 +153,12 @@ public class MapPropertiesPanel {
 
     textFieldCentersFile.setEnabled(false);
     textFieldCentersFile.setMaximumSize(new Dimension(0, 0));
-    textFieldCentersFile.setColumns(30);
-    textFieldCentersFile.addMouseListener(new MouseListener() {
+    textFieldCentersFile.setColumns(columns);
+    textFieldCentersFile.addMouseListener(new MouseAdapter() {
       @Override
-      public void mouseClicked(MouseEvent e) {
+      public void mouseClicked(final MouseEvent e) {
         buttonSelectCentersFile.doClick();
       }
-
-      @Override
-      public void mouseEntered(MouseEvent e) {}
-
-      @Override
-      public void mouseExited(MouseEvent e) {}
-
-      @Override
-      public void mousePressed(MouseEvent e) {}
-
-      @Override
-      public void mouseReleased(MouseEvent e) {}
-
     });
     stepActionPanel.add(textFieldCentersFile, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapName, 1, 5));
 
@@ -225,23 +175,23 @@ public class MapPropertiesPanel {
         MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapName, 0, 6, GridBagConstraints.NORTHWEST));
 
     textFieldWaterFilter.setEnabled(MapXmlCreator.mapCentersFile != null);
-    textFieldWaterFilter.addFocusListener(new FocusListener() {
-
-      @Override
-      public void focusLost(FocusEvent e) {
-        MapXmlCreator.waterFilterString = textFieldWaterFilter.getText();
-      }
-
-      @Override
-      public void focusGained(FocusEvent e) {}
-    });
-    textFieldWaterFilter.setColumns(30);
+    textFieldWaterFilter.addFocusListener(
+        FocusListenerFocusLost.withAction(() -> MapXmlCreator.waterFilterString = textFieldWaterFilter.getText()));
+    textFieldWaterFilter.setColumns(columns);
     textFieldWaterFilter.setMaximumSize(textFieldWaterFilter.getPreferredSize());
     stepActionPanel.add(textFieldWaterFilter, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapName, 1, 6));
 
     stepActionPanel.add(labelWaterFilterExample, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapNameExample, 2, 6));
 
-    mapXMLCreator.setAutoFillActionListener(null);
+    mapXmlCreator.setAutoFillActionListener(null);
+  }
+
+  private static double[] getRowWeights() {
+    return new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+  }
+
+  private static int[] getRowHeights() {
+    return new int[] {32, 32, 32, 32, 32, 32, 32, 0};
   }
 
   public static void selectCentersFile() {

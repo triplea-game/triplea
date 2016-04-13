@@ -155,11 +155,11 @@ public class MapXmlHelper {
     mapXmlData.setResourceList(resourceList);
   }
 
-  public static Map<String, HashMap<DEFINITION, Boolean>> getTerritoryDefintionsMap() {
+  public static Map<String, Map<DEFINITION, Boolean>> getTerritoryDefintionsMap() {
     return mapXmlData.getTerritoryDefintionsMap();
   }
 
-  public static void setTerritoryDefintions(final Map<String, HashMap<DEFINITION, Boolean>> territoryDefintions) {
+  public static void setTerritoryDefintions(final Map<String, Map<DEFINITION, Boolean>> territoryDefintions) {
     mapXmlData.setTerritoryDefintionsMap(territoryDefintions);
   }
 
@@ -699,7 +699,7 @@ public class MapXmlHelper {
           getTerritoyProductionsMap().put(attachmentAttatchTo,
               Integer.parseInt(attatchmentOptionAttr.get(XML_NODE_NAME_VALUE)));
         } else {
-          HashMap<DEFINITION, Boolean> terrDefinitions = getTerritoryDefintionsMap().get(attachmentAttatchTo);
+          Map<DEFINITION, Boolean> terrDefinitions = getTerritoryDefintionsMap().get(attachmentAttatchTo);
           if (terrDefinitions == null) {
             terrDefinitions = Maps.newHashMap();
             getTerritoryDefintionsMap().put(attachmentAttatchTo, terrDefinitions);
@@ -1157,7 +1157,7 @@ public class MapXmlHelper {
   }
 
   private static void addAttachmentsFromTerritoryDefinitions(final Map<String, List<String>> territoryAttatchments) {
-    for (final Entry<String, HashMap<DEFINITION, Boolean>> territoryDefinition : getTerritoryDefintionsMap()
+    for (final Entry<String, Map<DEFINITION, Boolean>> territoryDefinition : getTerritoryDefintionsMap()
         .entrySet()) {
       final String territoryName = territoryDefinition.getKey();
       for (final Entry<DEFINITION, Boolean> definition : territoryDefinition.getValue().entrySet()) {
@@ -1178,11 +1178,11 @@ public class MapXmlHelper {
 
   public static boolean appendFromTerritoryDefinitions(final Document doc, final Element map) {
     boolean territoryAttatchmentNeeded = false;
-    for (final Entry<String, HashMap<DEFINITION, Boolean>> entryTerritoryDefinition : getTerritoryDefintionsMap()
+    for (final Entry<String, Map<DEFINITION, Boolean>> entryTerritoryDefinition : getTerritoryDefintionsMap()
         .entrySet()) {
       final Element territory = doc.createElement(XML_NODE_NAME_TERRITORY);
       territory.setAttribute(XML_ATTR_PROPERTY_NAME_NAME, entryTerritoryDefinition.getKey());
-      final HashMap<DEFINITION, Boolean> territoryDefinition = entryTerritoryDefinition.getValue();
+      final Map<DEFINITION, Boolean> territoryDefinition = entryTerritoryDefinition.getValue();
       final int territoryDefinitionSize = territoryDefinition.size();
       final Boolean isWater = territoryDefinition.get(DEFINITION.IS_WATER);
       if (isWater != null && isWater) {

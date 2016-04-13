@@ -28,6 +28,8 @@ import util.triplea.mapXmlCreator.TerritoryDefinitionDialog.DEFINITION;
 
 
 final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
+  private static final String MSG_TITLE_AUTO_FILL_RESULT = "Auto-Fill Result";
+  // TODO: consider rework HTML strings for XML file creation and parsing
   static final String HTML_CANAL_KEY_POSTFIX = ": ";
   static final String HTML_CANAL_KEY_PREFIX = "<br/> - ";
   private static final double PI_HALF = Math.PI / 2;
@@ -39,11 +41,11 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
 
   private CanalDefinitionsPanel() {}
 
-  public static void layout(final MapXmlCreator mapXMLCreator) {
-    ImageScrollPanePanel.mapXMLCreator = mapXMLCreator;
+  public static void layout(final MapXmlCreator mapXmlCreator) {
+    setMapXmlCreator(mapXmlCreator);
     final CanalDefinitionsPanel panel = new CanalDefinitionsPanel();
-    panel.layout(mapXMLCreator.getStepActionPanel());
-    mapXMLCreator.setAutoFillAction(SwingAction.of(e -> {
+    panel.layout(mapXmlCreator.getStepActionPanel());
+    mapXmlCreator.setAutoFillAction(SwingAction.of(e -> {
       final int prevCanalCount = MapXmlHelper.getCanalDefinitionsMap().size();
       if (prevCanalCount > 0) {
         if (JOptionPane.YES_OPTION != MapXmlUIHelper.showYesNoOptionDialog("Auto-Fill Warning",
@@ -61,10 +63,11 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
 
       final boolean noNewCanalsBuild = MapXmlHelper.getCanalDefinitionsMap().isEmpty();
       if (noNewCanalsBuild) {
-        JOptionPane.showMessageDialog(null, "No canals have been build!", "Auto-Fill Result",
+        JOptionPane.showMessageDialog(null, "No canals have been build!", MSG_TITLE_AUTO_FILL_RESULT,
             JOptionPane.PLAIN_MESSAGE);
       } else {
-        JOptionPane.showMessageDialog(null, MapXmlHelper.getHtmlStringFromCanalDefinitions(), "Auto-Fill Result",
+        JOptionPane.showMessageDialog(null, MapXmlHelper.getHtmlStringFromCanalDefinitions(),
+            MSG_TITLE_AUTO_FILL_RESULT,
             JOptionPane.PLAIN_MESSAGE);
       }
       if (prevCanalCount > 0 || !noNewCanalsBuild) {
@@ -108,17 +111,15 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
 
   public void paintOwnSpecificsToLandTerritories(final Graphics g, final Map<String, Point> centers,
       final Entry<String, CanalTerritoriesTuple> canalDef) {
-    Set<String> terrSet1;
-    Set<String> remainingTerrs;
     g.setColor(Color.GREEN);
-    terrSet1 = canalDef.getValue().getLandTerritories();
-    remainingTerrs = new TreeSet<String>(terrSet1);
-    for (final String terr1 : terrSet1) {
-      final Point center1 = centers.get(terr1);
-      remainingTerrs.remove(terr1);
-      for (final String terr2 : remainingTerrs) {
-        final Point center2 = centers.get(terr2);
-        g.drawLine(center1.x, center1.y, center2.x, center2.y);
+    final Set<String> terrLandSet = canalDef.getValue().getLandTerritories();
+    final Set<String> terrLandRemainingSet = new TreeSet<String>(terrLandSet);
+    for (final String terrLand : terrLandSet) {
+      final Point centerLandTerr = centers.get(terrLand);
+      terrLandRemainingSet.remove(terrLand);
+      for (final String terrLandRemaining : terrLandRemainingSet) {
+        final Point centerLandRemainingTerr = centers.get(terrLandRemaining);
+        g.drawLine(centerLandTerr.x, centerLandTerr.y, centerLandRemainingTerr.x, centerLandRemainingTerr.y);
       }
     }
   }

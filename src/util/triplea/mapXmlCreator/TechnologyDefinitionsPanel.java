@@ -28,10 +28,10 @@ public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
     super(stepActionPanel);
   }
 
-  public static void layout(final MapXmlCreator mapXMLCreator) {
+  public static void layout(final MapXmlCreator mapXmlCreator) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof TechnologyDefinitionsPanel))
-      me = Optional.of(new TechnologyDefinitionsPanel(mapXMLCreator.getStepActionPanel()));
-    DynamicRowsPanel.layout(mapXMLCreator);
+      me = Optional.of(new TechnologyDefinitionsPanel(mapXmlCreator.getStepActionPanel()));
+    DynamicRowsPanel.layout(mapXmlCreator);
   }
 
   @Override

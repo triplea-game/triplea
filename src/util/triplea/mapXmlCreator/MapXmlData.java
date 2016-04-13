@@ -2,7 +2,6 @@ package util.triplea.mapXmlCreator;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,12 +19,12 @@ public class MapXmlData {
 
   private Map<String, String> xmlStringsMap = Maps.newLinkedHashMap();
   private List<String> resourceList = new ArrayList<String>();
-  private Map<String, HashMap<DEFINITION, Boolean>> territoryDefintionsMap =
-      new HashMap<String, HashMap<DEFINITION, Boolean>>();
-  private Map<String, Set<String>> territoryConnectionsMap = new HashMap<String, Set<String>>();
+  private Map<String, Map<DEFINITION, Boolean>> territoryDefintionsMap =
+      Maps.newHashMap();
+  private Map<String, Set<String>> territoryConnectionsMap = Maps.newHashMap();
   private List<String> playerNames = new ArrayList<String>();
-  private Map<String, String> playerAllianceMap = new HashMap<String, String>();
-  private Map<String, Integer> playerInitResourcesMap = new HashMap<String, Integer>();
+  private Map<String, String> playerAllianceMap = Maps.newHashMap();
+  private Map<String, Integer> playerInitResourcesMap = Maps.newHashMap();
   private Map<String, List<Integer>> unitDefinitionsMap = Maps.newLinkedHashMap();
   private Map<String, List<String>> gamePlaySequenceMap = Maps.newLinkedHashMap();
   private Map<String, Triple<String, String, Integer>> playerSequenceMap =
@@ -34,13 +33,13 @@ public class MapXmlData {
       Maps.newLinkedHashMap();
   private Map<String, List<String>> productionFrontiersMap = Maps.newLinkedHashMap();
   private Map<String, List<String>> unitAttatchmentsMap = Maps.newLinkedHashMap();
-  private Map<String, Integer> territoyProductionsMap = new HashMap<String, Integer>();
+  private Map<String, Integer> territoyProductionsMap = Maps.newHashMap();
   private Map<String, CanalTerritoriesTuple> canalDefinitionsMap =
-      new HashMap<String, CanalTerritoriesTuple>();
-  private Map<String, String> territoryOwnershipsMap = new HashMap<String, String>();
+      Maps.newHashMap();
+  private Map<String, String> territoryOwnershipsMap = Maps.newHashMap();
   private Map<String, Map<String, Map<String, Integer>>> unitPlacementsMap =
-      new HashMap<String, Map<String, Map<String, Integer>>>();
-  private Map<String, List<String>> gameSettingsMap = new HashMap<String, List<String>>();
+      Maps.newHashMap();
+  private Map<String, List<String>> gameSettingsMap = Maps.newHashMap();
 
   public MapXmlData() {
     initialize();
@@ -48,8 +47,8 @@ public class MapXmlData {
 
   @SuppressWarnings("unused")
   // Maybe for testing needed
-  private MapXmlData(final Map<String, String> xmlStringsMap, final List<String> resourceList,
-      final Map<String, HashMap<DEFINITION, Boolean>> territoryDefintionsMap,
+  public MapXmlData(final Map<String, String> xmlStringsMap, final List<String> resourceList,
+      final Map<String, Map<DEFINITION, Boolean>> territoryDefintionsMap,
       final Map<String, Set<String>> territoryConnectionsMap, final List<String> playerNames,
       final Map<String, String> playerAllianceMap,
       final Map<String, Integer> playerInitResourcesMap, final Map<String, List<Integer>> unitDefinitionsMap,
@@ -109,7 +108,7 @@ public class MapXmlData {
     return xmlStringsMap;
   }
 
-  public void setXmlStringsMap(Map<String, String> xmlStringsMap) {
+  public void setXmlStringsMap(final Map<String, String> xmlStringsMap) {
     this.xmlStringsMap = xmlStringsMap;
   }
 
@@ -117,15 +116,15 @@ public class MapXmlData {
     return resourceList;
   }
 
-  public void setResourceList(List<String> resourceList) {
+  public void setResourceList(final List<String> resourceList) {
     this.resourceList = resourceList;
   }
 
-  public Map<String, HashMap<DEFINITION, Boolean>> getTerritoryDefintionsMap() {
+  public Map<String, Map<DEFINITION, Boolean>> getTerritoryDefintionsMap() {
     return territoryDefintionsMap;
   }
 
-  public void setTerritoryDefintionsMap(Map<String, HashMap<DEFINITION, Boolean>> territoryDefintionsMap) {
+  public void setTerritoryDefintionsMap(final Map<String, Map<DEFINITION, Boolean>> territoryDefintionsMap) {
     this.territoryDefintionsMap = territoryDefintionsMap;
   }
 
@@ -133,7 +132,7 @@ public class MapXmlData {
     return territoryConnectionsMap;
   }
 
-  public void setTerritoryConnectionsMap(Map<String, Set<String>> territoryConnectionsMap) {
+  public void setTerritoryConnectionsMap(final Map<String, Set<String>> territoryConnectionsMap) {
     this.territoryConnectionsMap = territoryConnectionsMap;
   }
 
@@ -141,7 +140,7 @@ public class MapXmlData {
     return playerNames;
   }
 
-  public void setPlayerNames(List<String> playerNames) {
+  public void setPlayerNames(final List<String> playerNames) {
     this.playerNames = playerNames;
   }
 
@@ -149,7 +148,7 @@ public class MapXmlData {
     return playerAllianceMap;
   }
 
-  public void setPlayerAllianceMap(Map<String, String> playerAllianceMap) {
+  public void setPlayerAllianceMap(final Map<String, String> playerAllianceMap) {
     this.playerAllianceMap = playerAllianceMap;
   }
 
@@ -157,7 +156,7 @@ public class MapXmlData {
     return playerInitResourcesMap;
   }
 
-  public void setPlayerInitResourcesMap(Map<String, Integer> playerInitResourcesMap) {
+  public void setPlayerInitResourcesMap(final Map<String, Integer> playerInitResourcesMap) {
     this.playerInitResourcesMap = playerInitResourcesMap;
   }
 
@@ -165,7 +164,7 @@ public class MapXmlData {
     return unitDefinitionsMap;
   }
 
-  public void setUnitDefinitionsMap(Map<String, List<Integer>> unitDefinitionsMap) {
+  public void setUnitDefinitionsMap(final Map<String, List<Integer>> unitDefinitionsMap) {
     this.unitDefinitionsMap = unitDefinitionsMap;
   }
 
@@ -173,7 +172,7 @@ public class MapXmlData {
     return gamePlaySequenceMap;
   }
 
-  public void setGamePlaySequenceMap(Map<String, List<String>> gamePlaySequenceMap) {
+  public void setGamePlaySequenceMap(final Map<String, List<String>> gamePlaySequenceMap) {
     this.gamePlaySequenceMap = gamePlaySequenceMap;
   }
 
@@ -181,7 +180,7 @@ public class MapXmlData {
     return playerSequenceMap;
   }
 
-  public void setPlayerSequenceMap(Map<String, Triple<String, String, Integer>> playerSequenceMap) {
+  public void setPlayerSequenceMap(final Map<String, Triple<String, String, Integer>> playerSequenceMap) {
     this.playerSequenceMap = playerSequenceMap;
   }
 
@@ -189,7 +188,7 @@ public class MapXmlData {
     return technologyDefinitionsMap;
   }
 
-  public void setTechnologyDefinitionsMap(Map<String, List<String>> technologyDefinitionsMap) {
+  public void setTechnologyDefinitionsMap(final Map<String, List<String>> technologyDefinitionsMap) {
     this.technologyDefinitionsMap = technologyDefinitionsMap;
   }
 
@@ -197,7 +196,7 @@ public class MapXmlData {
     return productionFrontiersMap;
   }
 
-  public void setProductionFrontiersMap(Map<String, List<String>> productionFrontiersMap) {
+  public void setProductionFrontiersMap(final Map<String, List<String>> productionFrontiersMap) {
     this.productionFrontiersMap = productionFrontiersMap;
   }
 
@@ -205,7 +204,7 @@ public class MapXmlData {
     return unitAttatchmentsMap;
   }
 
-  public void setUnitAttatchmentsMap(Map<String, List<String>> unitAttatchmentsMap) {
+  public void setUnitAttatchmentsMap(final Map<String, List<String>> unitAttatchmentsMap) {
     this.unitAttatchmentsMap = unitAttatchmentsMap;
   }
 
@@ -213,7 +212,7 @@ public class MapXmlData {
     return territoyProductionsMap;
   }
 
-  public void setTerritoyProductionsMap(Map<String, Integer> territoyProductionsMap) {
+  public void setTerritoyProductionsMap(final Map<String, Integer> territoyProductionsMap) {
     this.territoyProductionsMap = territoyProductionsMap;
   }
 
@@ -221,7 +220,7 @@ public class MapXmlData {
     return canalDefinitionsMap;
   }
 
-  public void setCanalDefinitionsMap(Map<String, CanalTerritoriesTuple> canalDefinitionsMap) {
+  public void setCanalDefinitionsMap(final Map<String, CanalTerritoriesTuple> canalDefinitionsMap) {
     this.canalDefinitionsMap = canalDefinitionsMap;
   }
 
@@ -229,7 +228,7 @@ public class MapXmlData {
     return territoryOwnershipsMap;
   }
 
-  public void setTerritoryOwnershipsMap(Map<String, String> territoryOwnershipsMap) {
+  public void setTerritoryOwnershipsMap(final Map<String, String> territoryOwnershipsMap) {
     this.territoryOwnershipsMap = territoryOwnershipsMap;
   }
 
@@ -237,7 +236,7 @@ public class MapXmlData {
     return unitPlacementsMap;
   }
 
-  public void setUnitPlacementsMap(Map<String, Map<String, Map<String, Integer>>> unitPlacementsMap) {
+  public void setUnitPlacementsMap(final Map<String, Map<String, Map<String, Integer>>> unitPlacementsMap) {
     this.unitPlacementsMap = unitPlacementsMap;
   }
 
@@ -245,7 +244,7 @@ public class MapXmlData {
     return gameSettingsMap;
   }
 
-  public void setGameSettingsMap(Map<String, List<String>> gameSettingsMap) {
+  public void setGameSettingsMap(final Map<String, List<String>> gameSettingsMap) {
     this.gameSettingsMap = gameSettingsMap;
   }
 
@@ -253,7 +252,7 @@ public class MapXmlData {
     return notes;
   }
 
-  public void setNotes(String notes) {
+  public void setNotes(final String notes) {
     this.notes = notes;
   }
 
@@ -261,7 +260,7 @@ public class MapXmlData {
     return mapXMLFile;
   }
 
-  public void setMapXMLFile(File mapXMLFile) {
+  public void setMapXMLFile(final File mapXMLFile) {
     this.mapXMLFile = mapXMLFile;
   }
 
@@ -269,17 +268,17 @@ public class MapXmlData {
    * The method separates the MapXml territoryConnectionsMap into connections starting in a land territory and those
    * starting in a water territory.
    * Each connection is only in one of the maps.
-   * 
+   *
    * <p>
    * <b>Example:</b>
-   * 
+   *
    * <p>
    * Output:
    * <ul>
    * <li>map1 { land1 -> {water1, water2} }
    * <li>map2 { water3 -> {land2, land3} }
    * </ul>
-   * 
+   *
    * @param landWaterTerritoyConnections - map of landTerritory -> waterTerritories with a connection to landTerritory
    * @param waterLandTerritoyConnections - map of waterTerritory -> landTerritories with a connection to waterTerritory
    */
@@ -292,8 +291,9 @@ public class MapXmlData {
         @SuppressWarnings("unchecked")
         final Set<String> landTerrValue = (Set<String>) terrConn.getValue().stream()
             .filter(terr -> !MapXmlHelper.getTerritoryDefintionsMap().get(terr).get(DEFINITION.IS_WATER));
-        if (!landTerrValue.isEmpty())
+        if (!landTerrValue.isEmpty()) {
           waterLandTerritoyConnections.put(terrConn.getKey(), landTerrValue);
+        }
       } else {
         // terrConn.Key is land territory, get water entries in terrConn.Value
         @SuppressWarnings("unchecked")
@@ -307,7 +307,7 @@ public class MapXmlData {
   /**
    * The method assumes that a connection is not represented in both provided maps.
    * It enhances the first map with the symmetric fitting entries from the second map.
-   * 
+   *
    * <p>
    * <b>Example:</b>
    * <p>
@@ -322,7 +322,7 @@ public class MapXmlData {
    * <li>map1 = { land1 -> {water1, water2, water3} }
    * <li>map2 = { water3 -> {land2, land3} }
    * </ul>
-   * 
+   *
    * @param landWaterTerritoyConnections - map of landTerritory -> waterTerritories with a connection to landTerritory
    * @param waterLandTerritoyConnections - map of waterTerritory -> landTerritories with a connection to waterTerritory
    */
@@ -337,8 +337,9 @@ public class MapXmlData {
           final Set<String> newWaterTerrs = Sets.newLinkedHashSet();
           newWaterTerrs.add(waterTerr);
           landWaterTerritoyConnections.put(landTerr, newWaterTerrs);
-        } else
+        } else {
           waterTerrs.add(waterTerr);
+        }
       }
     }
   }
@@ -348,7 +349,7 @@ public class MapXmlData {
    * into a water territory or vice versa. They are represented in a new map with map.key values being the land
    * territories
    * and a map.value value being the list of water territories linked to the map.key land territory.
-   * 
+   *
    * @return map of landTerritory -> waterTerritories with a connection to landTerritory
    */
   public static Map<String, Set<String>> getLandWaterTerritoryConnections() {
