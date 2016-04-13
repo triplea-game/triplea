@@ -19,49 +19,49 @@ public class ClientQuarantineConversation extends QuarantineConversation {
     READ_CHALLENGE, READ_ERROR, READ_NAMES, READ_ADDRESS
   }
 
-  private final IConnectionLogin m_login;
-  private final SocketChannel m_channel;
-  private final NIOSocket m_socket;
-  private STEP m_step = STEP.READ_CHALLENGE;
-  private String m_localName;
-  private final String m_macAddress;
-  private String m_serverName;
-  private InetSocketAddress m_networkVisibleAddress;
-  private InetSocketAddress m_serverLocalAddress;
-  private Map<String, String> m_challengeProperties;
-  private Map<String, String> m_challengeResponse;
-  private final CountDownLatch m_showLatch = new CountDownLatch(1);
-  private final CountDownLatch m_doneShowLatch = new CountDownLatch(1);
-  private volatile boolean m_closed = false;
-  private volatile String m_errorMessage;
+  private final IConnectionLogin login;
+  private final SocketChannel channel;
+  private final NIOSocket socket;
+  private final CountDownLatch showLatch = new CountDownLatch(1);
+  private final CountDownLatch doneShowLatch = new CountDownLatch(1);
+  private final String macAddress;
+  private STEP step = STEP.READ_CHALLENGE;
+  private String localName;
+  private String serverName;
+  private InetSocketAddress networkVisibleAddress;
+  private InetSocketAddress serverLocalAddress;
+  private Map<String, String> challengeProperties;
+  private Map<String, String> challengeResponse;
+  private volatile boolean isClosed = false;
+  private volatile String errorMessage;
 
   public ClientQuarantineConversation(final IConnectionLogin login, final SocketChannel channel, final NIOSocket socket,
       final String localName, final String mac) {
-    m_login = login;
-    m_localName = localName;
-    m_macAddress = mac;
-    m_socket = socket;
-    m_channel = channel;
+    this.login = login;
+    this.localName = localName;
+    macAddress = mac;
+    this.socket = socket;
+    this.channel = channel;
     // Send the local name
-    send(m_localName);
+    send(this.localName);
     // Send the mac address
-    send(m_macAddress);
+    send(macAddress);
   }
 
   public String getLocalName() {
-    return m_localName;
+    return localName;
   }
 
   public String getMacAddress() {
-    return m_macAddress;
+    return macAddress;
   }
 
   public String getErrorMessage() {
-    return m_errorMessage;
+    return errorMessage;
   }
 
   public String getServerName() {
-    return m_serverName;
+    return serverName;
   }
 
   public void showCredentials() {
@@ -73,17 +73,17 @@ public class ClientQuarantineConversation extends QuarantineConversation {
      * So we have complex code to switch back and forth.
      */
     try {
-      m_showLatch.await();
+      showLatch.await();
     } catch (final InterruptedException e) {
     }
-    if (m_login != null && m_challengeProperties != null) {
+    if (login != null && challengeProperties != null) {
       try {
-        if (m_closed) {
+        if (isClosed) {
           return;
         }
-        m_challengeResponse = m_login.getProperties(m_challengeProperties);
+        challengeResponse = login.getProperties(challengeProperties);
       } finally {
-        m_doneShowLatch.countDown();
+        doneShowLatch.countDown();
       }
     }
   }
@@ -92,7 +92,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
   @SuppressWarnings("unchecked")
   public ACTION message(final Object o) {
     try {
-      switch (m_step) {
+      switch (step) {
         case READ_CHALLENGE:
           // read name, send challenge
           final Map<String, String> challenge = (Map<String, String>) o;
@@ -100,70 +100,70 @@ public class ClientQuarantineConversation extends QuarantineConversation {
             s_logger.log(Level.FINER, "read challenge:" + challenge);
           }
           if (challenge != null) {
-            m_challengeProperties = challenge;
-            m_showLatch.countDown();
+            challengeProperties = challenge;
+            showLatch.countDown();
             try {
-              m_doneShowLatch.await();
+              doneShowLatch.await();
             } catch (final InterruptedException e) {
               // ignore
             }
-            if (m_closed) {
+            if (isClosed) {
               return ACTION.NONE;
             }
             if (s_logger.isLoggable(Level.FINER)) {
-              s_logger.log(Level.FINER, "writing response" + m_challengeResponse);
+              s_logger.log(Level.FINER, "writing response" + challengeResponse);
             }
-            send((Serializable) m_challengeResponse);
+            send((Serializable) challengeResponse);
           } else {
-            m_showLatch.countDown();
+            showLatch.countDown();
             if (s_logger.isLoggable(Level.FINER)) {
               s_logger.log(Level.FINER, "sending null response");
             }
             send(null);
           }
-          m_step = STEP.READ_ERROR;
+          step = STEP.READ_ERROR;
           return ACTION.NONE;
         case READ_ERROR:
           if (o != null) {
             if (s_logger.isLoggable(Level.FINER)) {
               s_logger.log(Level.FINER, "error:" + o);
             }
-            m_errorMessage = (String) o;
+            errorMessage = (String) o;
             // acknowledge the error
             send(null);
             return ACTION.TERMINATE;
           }
-          m_step = STEP.READ_NAMES;
+          step = STEP.READ_NAMES;
           return ACTION.NONE;
         case READ_NAMES:
           final String[] strings = ((String[]) o);
           if (s_logger.isLoggable(Level.FINER)) {
             s_logger.log(Level.FINER, "new local name:" + strings[0]);
           }
-          m_localName = strings[0];
-          m_serverName = strings[1];
-          m_step = STEP.READ_ADDRESS;
+          localName = strings[0];
+          serverName = strings[1];
+          step = STEP.READ_ADDRESS;
           return ACTION.NONE;
         case READ_ADDRESS:
           // this is the adress that others see us as
           final InetSocketAddress[] address = (InetSocketAddress[]) o;
           // this is the address the server thinks he is
-          m_networkVisibleAddress = address[0];
-          m_serverLocalAddress = address[1];
+          networkVisibleAddress = address[0];
+          serverLocalAddress = address[1];
           if (s_logger.isLoggable(Level.FINE)) {
-            s_logger.log(Level.FINE, "Server local address:" + m_serverLocalAddress);
-            s_logger.log(Level.FINE, "channel remote address:" + m_channel.socket().getRemoteSocketAddress());
-            s_logger.log(Level.FINE, "network visible address:" + m_networkVisibleAddress);
-            s_logger.log(Level.FINE, "channel local adresss:" + m_channel.socket().getLocalSocketAddress());
+            s_logger.log(Level.FINE, "Server local address:" + serverLocalAddress);
+            s_logger.log(Level.FINE, "channel remote address:" + channel.socket().getRemoteSocketAddress());
+            s_logger.log(Level.FINE, "network visible address:" + networkVisibleAddress);
+            s_logger.log(Level.FINE, "channel local adresss:" + channel.socket().getLocalSocketAddress());
           }
           return ACTION.UNQUARANTINE;
         default:
           throw new IllegalStateException("Invalid state");
       }
     } catch (final Throwable t) {
-      m_closed = true;
-      m_showLatch.countDown();
-      m_doneShowLatch.countDown();
+      isClosed = true;
+      showLatch.countDown();
+      doneShowLatch.countDown();
       s_logger.log(Level.SEVERE, "error with connection", t);
       return ACTION.TERMINATE;
     }
@@ -172,21 +172,21 @@ public class ClientQuarantineConversation extends QuarantineConversation {
   private void send(final Serializable object) {
     // this messenger is quarantined, so to and from dont matter
     final MessageHeader header = new MessageHeader(Node.NULL_NODE, Node.NULL_NODE, object);
-    m_socket.send(m_channel, header);
+    socket.send(channel, header);
   }
 
   public InetSocketAddress getNetworkVisibleSocketAdress() {
-    return m_networkVisibleAddress;
+    return networkVisibleAddress;
   }
 
   public InetSocketAddress getServerLocalAddress() {
-    return m_serverLocalAddress;
+    return serverLocalAddress;
   }
 
   @Override
   public void close() {
-    m_closed = true;
-    m_showLatch.countDown();
-    m_doneShowLatch.countDown();
+    isClosed = true;
+    showLatch.countDown();
+    doneShowLatch.countDown();
   }
 }
