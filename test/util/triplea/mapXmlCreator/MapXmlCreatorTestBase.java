@@ -25,7 +25,7 @@ public abstract class MapXmlCreatorTestBase extends TestCase {
   }
 
   private void setMapXmlCreator() {
-    mapXmlCreator = new MapXmlCreator(true);
+    // mapXmlCreator = new MapXmlCreator(true);
   }
 
   protected MapXmlCreator getMapXmlCreator() {
