@@ -304,7 +304,7 @@ public abstract class ImageScrollPanePanel {
   }
 
   protected static void setMapXmlCreator(final MapXmlCreator mapXmlCreator) {
-    setMapXmlCreator(mapXmlCreator);
+    ImageScrollPanePanel.mapXmlCreator = mapXmlCreator;
   }
 
   public ImageScrollPanePanel() {
