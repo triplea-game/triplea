@@ -2,10 +2,10 @@ package util.triplea.mapXmlCreator;
 
 import org.junit.Ignore;
 
+@Ignore
 public class CanalDefinitionsPanelTest extends MapXmlCreatorTestBase {
 
 
-  @Ignore
   public void testLayout() {
     // //TODO: find a way to allow Travis CI build without failing with
     // // "java.awt.HeadlessException:
