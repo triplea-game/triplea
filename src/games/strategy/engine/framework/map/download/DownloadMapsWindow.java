@@ -366,7 +366,7 @@ public class DownloadMapsWindow extends JFrame {
   }
 
   private static ActionListener removeAction(JList<String> gamesList, List<DownloadFileDescription> maps,
-      DefaultListModel listModel) {//TODO change FSAS.remove so that it uses DefaultListModel<String> instead.
+      DefaultListModel<String> listModel) {
     return (e) -> {
       final List<String> selectedValues = gamesList.getSelectedValuesList();
       final List<DownloadFileDescription> selectedMaps =

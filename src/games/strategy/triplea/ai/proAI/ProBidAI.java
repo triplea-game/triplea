@@ -1765,11 +1765,11 @@ public class ProBidAI {
             continue;
           }
           for (final Unit u : neighbor.getUnits()) {
-            Route r1 = new Route();
+            Route route1 = new Route();
             for (Route r : routes){
-              r1 = Route.join(r1,r);
+              route1 = Route.join(route1,r);
             }
-            if (unitCondition.match(u) && Matches.UnitHasEnoughMovementForRoute(r1).match(u)) {
+            if (unitCondition.match(u) && Matches.UnitHasEnoughMovementForRoute(route1).match(u)) {
               units.add(u);
             }
           }

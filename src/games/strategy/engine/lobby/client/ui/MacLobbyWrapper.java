@@ -16,7 +16,7 @@ public class MacLobbyWrapper {
     // new Application();
     Application.getApplication().setQuitHandler(new QuitHandler(){
       @Override
-      public void handleQuitRequestWith(QuitEvent arg0, QuitResponse arg1) {
+      public void handleQuitRequestWith(QuitEvent quitEvent, QuitResponse quitResponse) {
         if (frame != null) {
           frame.shutdown();
         } else {
