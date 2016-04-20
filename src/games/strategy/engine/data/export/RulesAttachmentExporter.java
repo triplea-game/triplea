@@ -134,10 +134,8 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
     try {
       oValue = field.get(attachment);
     } catch (final IllegalArgumentException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (final IllegalAccessException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     String intList = "";

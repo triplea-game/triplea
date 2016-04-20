@@ -367,7 +367,5 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   @Override
-  public void validate(final GameData data) throws GameParseException {
-    // TODO Auto-generated method stub
-  }
+  public void validate(final GameData data) throws GameParseException {}
 }

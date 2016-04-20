@@ -617,9 +617,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @Override
-  public void validate(final GameData data) throws GameParseException {
-    // TODO Auto-generated method stub
-  }
+  public void validate(final GameData data) throws GameParseException {}
 
   /**
    * setTakeUnitControl (and getTakeUnitControl) DO NOTHING. They are kept for backwards compatibility only, otherwise

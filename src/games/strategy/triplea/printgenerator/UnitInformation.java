@@ -82,10 +82,8 @@ class UnitInformation {
       unitInformation.write("\r\n");
       unitInformation.close();
     } catch (final FileNotFoundException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (final IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }

@@ -92,7 +92,6 @@ class CountryChart {
     } catch (final FileNotFoundException e) {
       e.printStackTrace();
     } catch (final IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }

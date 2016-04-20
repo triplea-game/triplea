@@ -45,7 +45,7 @@ public class MapXmlData {
     initialize();
   }
 
-  @SuppressWarnings("unused")
+  
   // Maybe for testing needed
   public MapXmlData(final Map<String, String> xmlStringsMap, final List<String> resourceList,
       final Map<String, Map<DEFINITION, Boolean>> territoryDefintionsMap,

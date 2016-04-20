@@ -1648,7 +1648,6 @@ public class WW2V3_41_Test extends TestCase {
       // Set as NEW capital
       taKiangsu.setCapital("Chinese");
     } catch (final GameParseException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     // Remove all units
