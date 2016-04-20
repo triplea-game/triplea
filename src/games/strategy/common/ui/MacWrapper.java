@@ -1,8 +1,9 @@
 package games.strategy.common.ui;
 
+import com.apple.eawt.AppEvent.QuitEvent;
 import com.apple.eawt.Application;
-import com.apple.eawt.ApplicationAdapter;
-import com.apple.eawt.ApplicationEvent;
+import com.apple.eawt.QuitHandler;
+import com.apple.eawt.QuitResponse;
 
 /**
  * Utility class to wrap Mac OS X-specific shutdown handler.
@@ -15,9 +16,10 @@ public class MacWrapper {
   private static MainGameFrame shutdownFrame;
 
   static {
-    Application.getApplication().addApplicationListener(new ApplicationAdapter() {
+    Application.getApplication().setQuitHandler(new QuitHandler(){
+
       @Override
-      public void handleQuit(final ApplicationEvent event) {
+      public void handleQuitRequestWith(QuitEvent arg0, QuitResponse arg1) {
         if (shutdownFrame != null) {
           shutdownFrame.shutdown();
         } else {

@@ -1735,7 +1735,15 @@ public class Matches {
       }
     };
   }
-
+  
+  public static Match<Unit> UnitHasEnoughMovementForRoutes(List<Route> route) {
+    return UnitHasEnoughMovementForRoute(Route.create(route));
+  }
+  
+  public static Match<Unit> UnitHasEnoughMovementForRoute(List<Territory> territories) {
+    return UnitHasEnoughMovementForRoute(new Route(territories));
+  }
+  
   public static Match<Unit> UnitHasEnoughMovementForRoute(final Route route) {
     return new Match<Unit>() {
       @Override
