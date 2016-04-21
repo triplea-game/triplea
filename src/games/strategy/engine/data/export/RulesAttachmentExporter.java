@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.attachments.RulesAttachment;
@@ -134,9 +135,9 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
     try {
       oValue = field.get(attachment);
     } catch (final IllegalArgumentException e) {
-      e.printStackTrace();
+      ClientLogger.logError(e);
     } catch (final IllegalAccessException e) {
-      e.printStackTrace();
+      ClientLogger.logError(e);
     }
     String intList = "";
     final HashMap<Integer, Integer> intMap = (HashMap<Integer, Integer>) oValue;

@@ -63,28 +63,20 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
   private IntegerMap<UnitType> m_purchase = null;
   private String m_resource = null;
   private int m_resourceCount = 0;
-  private LinkedHashMap<String, Boolean> m_support = null; // never use a map of other attachments, inside of an
-                                                           // attachment. java will not
-                                                           // be able to deserialize it.
-  private ArrayList<String> m_relationshipChange = new ArrayList<String>(); // List of relationshipChanges that should
-                                                                            // be executed when this
-                                                                            // trigger hits.
+  private LinkedHashMap<String, Boolean> m_support = null; // never use a map of other attachments, inside of an attachment. java will not be able to deserialize it.
+  private ArrayList<String> m_relationshipChange = new ArrayList<String>(); // List of relationshipChanges that should be executed when this trigger hits.
   private String m_victory = null;
   private ArrayList<Tuple<String, String>> m_activateTrigger = new ArrayList<Tuple<String, String>>();
   private ArrayList<String> m_changeOwnership = new ArrayList<String>();
   // raw property changes below:
-  private ArrayList<UnitType> m_unitType = new ArrayList<UnitType>(); // really m_unitTypes, but we are not going to
-                                                                      // rename because it will
-                                                                      // break all existing maps
+  private ArrayList<UnitType> m_unitType = new ArrayList<UnitType>(); // really m_unitTypes, but we are not going to rename because it will break all existing maps
   private Tuple<String, String> m_unitAttachmentName = null; // covers UnitAttachment, UnitSupportAttachment
   private ArrayList<Tuple<String, String>> m_unitProperty = null;
   private ArrayList<Territory> m_territories = new ArrayList<Territory>();
   private Tuple<String, String> m_territoryAttachmentName = null; // covers TerritoryAttachment, CanalAttachment
   private ArrayList<Tuple<String, String>> m_territoryProperty = null;
   private ArrayList<PlayerID> m_players = new ArrayList<PlayerID>();
-  private Tuple<String, String> m_playerAttachmentName = null; // covers PlayerAttachment, TriggerAttachment,
-                                                               // RulesAttachment,
-                                                               // TechAttachment, UserActionAttachment
+  private Tuple<String, String> m_playerAttachmentName = null; // covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment, UserActionAttachment
   private ArrayList<Tuple<String, String>> m_playerProperty = null;
   private ArrayList<RelationshipType> m_relationshipTypes = new ArrayList<RelationshipType>();
   private Tuple<String, String> m_relationshipTypeAttachmentName = null; // covers RelationshipTypeAttachment
@@ -2465,9 +2457,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
       for (final PlayerID aPlayer : t.getPlayers()) {
         for (final Territory ter : t.getPlacement().keySet()) {
           for (int i = 0; i < eachMultiple; ++i) {
-            // aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " +
-            // aPlayer.getName() + " places " +
-            // t.getPlacement().get(ter).toString() + " in territory " + ter.getName());
             placeUnits(t, ter, t.getPlacement().get(ter), aPlayer, data, aBridge);
           }
         }
@@ -2630,14 +2619,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
       }
     }
   }
-
-  // All triggers can be activated in only 1 of 2 places: default or when
-  // default = t.getWhen.isEmpty() (this means when was not set, and so the trigger should activate in its default
-  // place, like before
-  // purchase phase for production frontier trigger changes
-  // when = !t.getWhen.isEmpty() (this means when was set, and so the trigger should not activate in its default place,
-  // and instead should
-  // activate before or after a specific stepName
+  
   public static Match<TriggerAttachment> prodMatch() {
     return new Match<TriggerAttachment>() {
       @Override

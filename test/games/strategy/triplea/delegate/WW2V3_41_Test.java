@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
@@ -1648,7 +1649,7 @@ public class WW2V3_41_Test extends TestCase {
       // Set as NEW capital
       taKiangsu.setCapital("Chinese");
     } catch (final GameParseException e) {
-      e.printStackTrace();
+      ClientLogger.logError(e);
     }
     // Remove all units
     removeFrom(kiangsu, kiangsu.getUnits().getUnits());

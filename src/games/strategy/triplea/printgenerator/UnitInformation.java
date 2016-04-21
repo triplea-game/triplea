@@ -1,13 +1,13 @@
 package games.strategy.triplea.printgenerator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -81,11 +81,9 @@ class UnitInformation {
       }
       unitInformation.write("\r\n");
       unitInformation.close();
-    } catch (final FileNotFoundException e) {
-      e.printStackTrace();
     } catch (final IOException e) {
-      e.printStackTrace();
-    }
+      ClientLogger.logError(e);
+    } 
   }
 
   private int getCostInformation(final UnitType type) {
