@@ -1,6 +1,7 @@
 package games.strategy.engine.data;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.net.GUID;
@@ -59,13 +60,8 @@ public class Card extends GameDataComponent implements Serializable {
 
   @Override
   public int hashCode() {
-    if (name != null || owner == null || uid == null || this.getData() == null) {
-      final String text =
-          "Card.toString() -> Possible java de-serialization error: Card "
-              + (name == null ? "with UNKNOWN name " : "'" + name + "'") + " owned by " + (owner == null
-                  ? "UNKNOWN OWNER" : owner.getName())
-              + " with id: " + getID();
-      CardDeserializationErrorLazyMessage.printError(text);
+    final Optional<String> errorText = checkDeserializationEroorAndGetText();
+    if (errorText.isPresent()) {
       return 0;
     }
     return uid.hashCode();
@@ -73,18 +69,31 @@ public class Card extends GameDataComponent implements Serializable {
 
   @Override
   public String toString() {
+    final Optional<String> errorText = checkDeserializationEroorAndGetText();
+    if (errorText.isPresent()) {
+      return errorText.get();
+    } else {
+      return name + " owned by " + owner.getName();
+    }
+  }
+
+  private Optional<String> checkDeserializationEroorAndGetText() {
     // TODO: Check if this problem from Unit class also exists here
     // none of these should happen,... except that they did a couple times.
     if (name == null || owner == null || uid == null || this.getData() == null) {
-      final String text =
-          "Card.toString() -> Possible java de-serialization error: Card "
-              + (name == null ? "with UNKNOWN NAME" : "'" + name + "'") + " owned by " + (owner == null
-                  ? "UNKNOWN OWNER" : owner.getName())
-              + " with id: " + getID();
-      CardDeserializationErrorLazyMessage.printError(text);
-      return text;
+      final GameData gameData = this.getData();
+      final StringBuilder sb = new StringBuilder();
+      sb.append("Card.toString() -> Possible java de-serialization error: Card "
+          + (name == null ? "with UNKNOWN NAME" : "'" + name + "'"));
+      sb.append(" owned by " + (owner == null ? "UNKNOWN OWNER" : owner.getName()));
+      sb.append(" with id: " + getID());
+      sb.append((gameData == null ? " no GameData reference"
+          : " of game " + gameData.getGameName() + " version " + gameData.getGameVersion()));
+      final String errorText = sb.toString();
+      CardDeserializationErrorLazyMessage.printError(errorText);
+      return Optional.of(errorText);
     }
-    return name + " owned by " + owner.getName();
+    return Optional.empty();
   }
 
   public String toStringNoOwner() {

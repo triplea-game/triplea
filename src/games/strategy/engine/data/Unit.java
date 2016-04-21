@@ -1,6 +1,7 @@
 package games.strategy.engine.data;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import com.google.common.base.Preconditions;
 
@@ -51,6 +52,7 @@ public class Unit extends GameDataComponent implements Serializable {
    */
   @Deprecated
   protected Territory getTerritoryUnitIsIn() {
+    // TODO: Add Multithreading
     for (final Territory t : this.getData().getMap().getTerritories()) {
       if (t.getUnits().getUnits().contains(this)) {
         return t;
@@ -97,35 +99,43 @@ public class Unit extends GameDataComponent implements Serializable {
 
   @Override
   public int hashCode() {
-    if (m_type == null || m_owner == null || m_uid == null || this.getData() == null) {
-      final String text =
-          "Unit.toString() -> Possible java de-serialization error: "
-              + (m_type == null ? "Unit of UNKNOWN TYPE" : m_type.getName()) + " owned by " + (m_owner == null
-                  ? "UNKNOWN OWNER" : m_owner.getName())
-              + " in territory: " + ((this.getData() != null && this.getData().getMap() != null)
-                  ? getTerritoryUnitIsIn() : "UNKNOWN TERRITORY")
-              + " with id: " + getID();
-      UnitDeserializationErrorLazyMessage.printError(text);
+    final Optional<String> errorText = checkDeserializationErrorAndGetText();
+    if (errorText.isPresent()) {
       return 0;
+    } else {
+      return m_uid.hashCode();
     }
-    return m_uid.hashCode();
   }
 
   @Override
   public String toString() {
+    final Optional<String> errorText = checkDeserializationErrorAndGetText();
+    if (errorText.isPresent()) {
+      return errorText.get();
+    } else {
+      return m_type.getName() + " owned by " + m_owner.getName();
+    }
+  }
+
+
+  private Optional<String> checkDeserializationErrorAndGetText() {
     // TODO: none of these should happen,... except that they did a couple times.
     if (m_type == null || m_owner == null || m_uid == null || this.getData() == null) {
-      final String text =
-          "Unit.toString() -> Possible java de-serialization error: "
-              + (m_type == null ? "Unit of UNKNOWN TYPE" : m_type.getName()) + " owned by " + (m_owner == null
-                  ? "UNKNOWN OWNER" : m_owner.getName())
-              + " in territory: " + ((this.getData() != null && this.getData().getMap() != null)
-                  ? getTerritoryUnitIsIn() : "UNKNOWN TERRITORY")
-              + " with id: " + getID();
-      UnitDeserializationErrorLazyMessage.printError(text);
-      return text;
+      final GameData gameData = this.getData();
+      final StringBuilder sb = new StringBuilder();
+      sb.append("Unit.toString() -> Possible java de-serialization error: "
+          + "Unit of " + (m_type == null ? "UNKNOWN TYPE" : m_type.getName()));
+      sb.append(" owned by " + (m_owner == null
+          ? "UNKNOWN OWNER" : m_owner.getName()));
+      sb.append(" in territory: " + ((gameData != null && gameData.getMap() != null)
+          ? getTerritoryUnitIsIn() : "UNKNOWN TERRITORY"));
+      sb.append((gameData == null ? " no GameData reference"
+          : " of game " + gameData.getGameName() + " version " + gameData.getGameVersion()));
+      final String errorText = sb.toString();
+      UnitDeserializationErrorLazyMessage.printError(errorText);
+      return Optional.of(errorText);
     }
-    return m_type.getName() + " owned by " + m_owner.getName();
+    return Optional.empty();
   }
 
   public String toStringNoOwner() {

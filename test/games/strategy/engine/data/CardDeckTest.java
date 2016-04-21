@@ -1,5 +1,10 @@
 package games.strategy.engine.data;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +31,8 @@ public class CardDeckTest extends TestCase {
 
   @Test
   public void testCardDeck() {
-    assertNotNull(cardDeck);
-    assertEquals(deckSizeAtStart, cardDeck.getDeckSize());
+    assertThat(cardDeck, is(notNullValue()));
+    assertThat(cardDeck.getDeckSize(), is(equalTo(deckSizeAtStart)));
   }
 
   @Test
@@ -35,7 +40,7 @@ public class CardDeckTest extends TestCase {
     final int stacksCounter = 4;
     final List<List<Card>> stacks = cardDeck.getStacksForAllCards(stacksCounter);
     // Deck should be empty now
-    assertEquals(0, cardDeck.getDeckSize());
+    assertThat(cardDeck.getDeckSize(), is(equalTo(0)));
 
     final int cardsPerStack = deckSizeAtStart / stacksCounter;
     int cardsCounter = 0;
@@ -44,8 +49,7 @@ public class CardDeckTest extends TestCase {
       cardsCounter += stackSize;
       assertTrue(cardsPerStack <= stackSize);
     }
-
-    assertEquals(deckSizeAtStart, cardsCounter);
+    assertThat(cardsCounter, is(equalTo(deckSizeAtStart)));
   }
 
   @Test
@@ -54,10 +58,10 @@ public class CardDeckTest extends TestCase {
     final List<List<Card>> stacks = cardDeck.getStacksWithEvenSize(stacksCounter);
     final int cardsPerStack = deckSizeAtStart / stacksCounter;
     final int expectedRemainingCards = deckSizeAtStart - stacksCounter * cardsPerStack;
-    assertEquals(expectedRemainingCards, cardDeck.getDeckSize());
+    assertThat(cardDeck.getDeckSize(), is(equalTo(expectedRemainingCards)));
 
     for (final List<Card> stack : stacks) {
-      assertEquals(stack.size(), cardsPerStack);
+      assertThat(stack.size(), is(equalTo(cardsPerStack)));
     }
   }
 

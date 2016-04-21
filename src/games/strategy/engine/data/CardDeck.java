@@ -29,25 +29,9 @@ public class CardDeck {
    * @return list of stacks
    */
   public List<List<Card>> getStacksForAllCards(final int stacks) {
-    final List<List<Card>> result = new ArrayList<List<Card>>(stacks);
     final int stackSizeMin = cards.size() / stacks;
     final int stacksWithAdditionalCard = cards.size() % stacks;
-    for (int stackNr = 0; stackNr < stacks; ++stackNr) {
-      // initialize currentStack if needed with one card already
-      final List<Card> currentStack;
-      if (stackNr < stacksWithAdditionalCard) {
-        currentStack = new ArrayList<Card>(stackSizeMin + 1);
-        currentStack.add(drawRandomCard());
-      } else {
-        currentStack = new ArrayList<Card>(stackSizeMin);
-      }
-
-      for (int i = 0; i < stackSizeMin; ++i) {
-        currentStack.add(drawRandomCard());
-      }
-      result.add(currentStack);
-    }
-    return result;
+    return getStacksFromDeck(stacks, stackSizeMin, stacksWithAdditionalCard);
   }
 
   /**
@@ -57,10 +41,23 @@ public class CardDeck {
    * @return list of evenly sized stacks
    */
   public List<List<Card>> getStacksWithEvenSize(final int stacks) {
-    final List<List<Card>> result = new ArrayList<List<Card>>(stacks);
     final int stackSizeMin = cards.size() / stacks;
-    for (int stackNr = 0; stackNr < stacks; ++stackNr) {
-      final List<Card> currentStack = new ArrayList<Card>(stackSizeMin);
+    return getStacksFromDeck(stacks, stackSizeMin, 0);
+  }
+
+  private List<List<Card>> getStacksFromDeck(final int numberOfStacks, final int stackSizeMin,
+      final int stacksWithAdditionalCard) {
+    final List<List<Card>> result = new ArrayList<List<Card>>(numberOfStacks);
+    for (int stackNr = 0; stackNr < numberOfStacks; ++stackNr) {
+      // initialize currentStack if needed with one card already
+      final List<Card> currentStack;
+      if (stackNr < stacksWithAdditionalCard) {
+        currentStack = new ArrayList<Card>(stackSizeMin + 1);
+        currentStack.add(drawRandomCard());
+      } else {
+        currentStack = new ArrayList<Card>(stackSizeMin);
+      }
+
       for (int i = 0; i < stackSizeMin; ++i) {
         currentStack.add(drawRandomCard());
       }
