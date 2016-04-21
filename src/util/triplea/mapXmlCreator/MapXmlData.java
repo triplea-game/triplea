@@ -45,8 +45,6 @@ public class MapXmlData {
     initialize();
   }
 
-  
-  // Maybe for testing needed
   public MapXmlData(final Map<String, String> xmlStringsMap, final List<String> resourceList,
       final Map<String, Map<DEFINITION, Boolean>> territoryDefintionsMap,
       final Map<String, Set<String>> territoryConnectionsMap, final List<String> playerNames,
