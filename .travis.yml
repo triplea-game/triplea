@@ -9,13 +9,18 @@ install: true
 script:
 - gradle test -i
 before_deploy:
+## Run the travis setup, will download install4j and configure it
 - chmod +x ./.travis/setup && ./.travis/setup
+## Add the travis build number to the game engine version
 - GAME_CONFIG=game_engine.properties
 - ENGINE_VERSION=$(grep "engine_version" $GAME_CONFIG | sed 's/.*= *//g')
 - export TAGGED_VERSION="$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER"
 - sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" $GAME_CONFIG
+## Create the installers
 - gradle release
+## Push a tag to github, will trigger the releases process 
 - chmod +x ./.travis/push_tag && ./.travis/push_tag
+## rest is commented out, work in progress.. does not work and needs some debugging.
 #- echo "showing build artifacts" && ls build/distributions/
 #- DEPLOY_DEST="$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
 #- LOBBY_ARTIFACT="triplea-${TAGGED_VERSION}-server.zip"
