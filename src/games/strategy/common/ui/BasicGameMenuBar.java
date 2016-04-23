@@ -50,9 +50,9 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
+import com.apple.eawt.AboutHandler;
+import com.apple.eawt.AppEvent.AboutEvent;
 import com.apple.eawt.Application;
-import com.apple.eawt.ApplicationAdapter;
-import com.apple.eawt.ApplicationEvent;
 
 import games.strategy.common.swing.SwingAction;
 import games.strategy.common.swing.SwingComponents;
@@ -378,14 +378,13 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     } else
     // On Mac OS X, put the About menu where Mac users expect it to be
     {
-      Application.getApplication().addApplicationListener(new ApplicationAdapter() {
+      Application.getApplication().setAboutHandler(new AboutHandler(){
         @Override
-        public void handleAbout(final ApplicationEvent event) {
-          // otherwise the default About menu will still show appear
-          event.setHandled(true);
+        public void handleAbout(AboutEvent paramAboutEvent) {
           JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(),
               JOptionPane.PLAIN_MESSAGE);
         }
+        
       });
     }
   }
