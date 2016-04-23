@@ -98,6 +98,11 @@ public abstract class AbstractDelegate implements IDelegate {
     return m_bridge;
   }
 
+  // TODO: change m_player to private and replace accesses to it from child classes with this method call
+  protected PlayerID getPlayer() {
+    return m_player;
+  }
+
   protected GameData getData() {
     return m_bridge.getData();
   }

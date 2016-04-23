@@ -507,7 +507,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       // possibility to ignore battle altogether
       if (!attackingUnits.isEmpty()) {
-        final ITripleaPlayer remotePlayer = getRemotePlayer(aBridge);
+        final ITripleaPlayer remotePlayer = (ITripleaPlayer) getRemotePlayer(aBridge);
         if (territory.isWater() && games.strategy.triplea.Properties.getSeaBattlesMayBeIgnored(data)) {
           if (!remotePlayer.selectAttackUnits(territory)) {
             final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);

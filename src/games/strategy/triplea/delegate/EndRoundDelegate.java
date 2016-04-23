@@ -27,6 +27,7 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.CountDownLatchHandler;
@@ -281,7 +282,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
           + (winners.isEmpty() ? "" : " by " + MyFormatter.defaultNamedToTextList(winners, ", ", false));
       // we send the bridge, because we can call this method from outside this delegate, which
       // means our local copy of m_bridge could be null.
-      getDisplay(aBridge).reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true);
+      ((ITripleaDisplay) getDisplay(aBridge)).reportMessageToAll(("<html>" + status + "</html>"), title, true, false,
+          true);
       final boolean stopGame;
       if (HeadlessGameServer.headless()) {
         // a terrible dirty hack, but I can't think of a better way to do it right now. If we are headless, end the
