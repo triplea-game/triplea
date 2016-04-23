@@ -16,6 +16,9 @@ before_deploy:
 - ENGINE_VERSION=$(grep "engine_version" $GAME_CONFIG | sed 's/.*= *//g')
 - export TAGGED_VERSION="$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER"
 - sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" $GAME_CONFIG
+## Download tutorial map
+- mkdir -p maps
+- (cd maps; wget https://github.com/triplea-maps/tutorial/releases/download/0.66/tutorial.zip)
 ## Create the installers
 - gradle release
 ## Push a tag to github, will trigger the releases process 
