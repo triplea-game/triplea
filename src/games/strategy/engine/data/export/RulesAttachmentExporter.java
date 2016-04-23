@@ -104,16 +104,7 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
         value = value + ":" + iWarPlayer.next().getName();
       }
       return printCountOption(option, value, "" + count);
-    } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException("e: " + e + " for mAtWarPlayersHandler on field: " + field.getName()
-          + " on Attachment: " + attachment.getName());
-    } catch (final IllegalAccessException e) {
-      throw new AttachmentExportException("e: " + e + " for mAtWarPlayersHandler on field: " + field.getName()
-          + " on Attachment: " + attachment.getName());
-    } catch (final SecurityException e) {
-      throw new AttachmentExportException("e: " + e + " for mAtWarPlayersHandler on field: " + field.getName()
-          + " on Attachment: " + attachment.getName());
-    } catch (final NoSuchFieldException e) {
+    } catch (final IllegalArgumentException | IllegalAccessException | SecurityException | NoSuchFieldException e) {
       throw new AttachmentExportException("e: " + e + " for mAtWarPlayersHandler on field: " + field.getName()
           + " on Attachment: " + attachment.getName());
     }
@@ -134,10 +125,8 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
     Object oValue = null;
     try {
       oValue = field.get(attachment);
-    } catch (final IllegalArgumentException e) {
-      ClientLogger.logError(e);
-    } catch (final IllegalAccessException e) {
-      ClientLogger.logError(e);
+    } catch (final IllegalArgumentException | IllegalAccessException e) {
+      ClientLogger.logError("Failed to get attachment: " + attachment + ", from field: " + field,  e);
     }
     String intList = "";
     final HashMap<Integer, Integer> intMap = (HashMap<Integer, Integer>) oValue;
@@ -180,10 +169,7 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
         return "";
       }
       return super.printCountOption("techs", returnValue, "" + ((RulesAttachment) attachment).getTechCount());
-    } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mTechHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-    } catch (final IllegalAccessException e) {
+    } catch (final IllegalArgumentException | IllegalAccessException e) {
       throw new AttachmentExportException(
           "e: " + e + " for mTechHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
     }

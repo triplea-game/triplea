@@ -82,7 +82,7 @@ class UnitInformation {
       unitInformation.write("\r\n");
       unitInformation.close();
     } catch (final IOException e) {
-      ClientLogger.logError(e);
+      ClientLogger.logError("There was an error while trying to save." + e);
     } 
   }
 
