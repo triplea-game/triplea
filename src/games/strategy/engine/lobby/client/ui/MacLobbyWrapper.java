@@ -1,8 +1,9 @@
 package games.strategy.engine.lobby.client.ui;
 
+import com.apple.eawt.AppEvent.QuitEvent;
 import com.apple.eawt.Application;
-import com.apple.eawt.ApplicationAdapter;
-import com.apple.eawt.ApplicationEvent;
+import com.apple.eawt.QuitHandler;
+import com.apple.eawt.QuitResponse;
 
 /**
  * TODO This class should be merged with games.strategy.common.ui.MacWrapper.
@@ -13,10 +14,9 @@ public class MacLobbyWrapper {
   // i think the java validator triggers this
   public static void registerMacShutdownHandler(final LobbyFrame frame) {
     // new Application();
-    final Application application = Application.getApplication();
-    application.addApplicationListener(new ApplicationAdapter() {
+    Application.getApplication().setQuitHandler(new QuitHandler(){
       @Override
-      public void handleQuit(final ApplicationEvent event) {
+      public void handleQuitRequestWith(QuitEvent quitEvent, QuitResponse quitResponse) {
         if (frame != null) {
           frame.shutdown();
         } else {

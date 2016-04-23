@@ -570,4 +570,12 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
     }
     return ownedFightersOnOwnedCarriers;
   }
+
+  public static Route create(List<Route> routes) {
+    Route route = new Route();
+    for(Route r : routes){
+      route = Route.join(route, r);
+    }
+    return route;
+  }
 }
