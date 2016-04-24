@@ -35,8 +35,8 @@ class UnitInformation {
     m_unitInfoMap = unitInfoMap;
     m_unitTypeIterator = m_unitInfoMap.keySet().iterator();
     m_printData.getOutDir().mkdir();
+    final File outFile = new File(m_printData.getOutDir(), "General Information.csv");
     try {
-      final File outFile = new File(m_printData.getOutDir(), "General Information.csv");
       unitInformation = new FileWriter(outFile);
       for (int i = 0; i < 8; i++) {
         unitInformation.write(",");
@@ -82,7 +82,7 @@ class UnitInformation {
       unitInformation.write("\r\n");
       unitInformation.close();
     } catch (final IOException e) {
-      ClientLogger.logError("There was an error while trying to save." + e);
+      ClientLogger.logError("There was an error while trying to save File " + outFile.toString() , e);
     } 
   }
 
