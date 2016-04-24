@@ -65,6 +65,7 @@ import org.xml.sax.SAXException;
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -303,9 +304,7 @@ public class MapXmlCreator extends JFrame {
       try {
         loadXmlFromFilePath(myFile.getAbsolutePath());
       } catch (SAXException | IOException | ParserConfigurationException e) {
-        // TODO Auto-generated catch block
-        log(Level.SEVERE, "Default Map XML File could not be loaded from '" + myFile.getAbsolutePath() + "'.");
-        e.printStackTrace();
+        getLogger().log(Level.WARNING, "Default Map XML File could not be loaded from '" + myFile.getAbsolutePath() + "'.", e);
         throw new IllegalStateException(
             "Default Map XML File could not be loaded from '" + myFile.getAbsolutePath() + "'.");
       }
@@ -1073,7 +1072,6 @@ public class MapXmlCreator extends JFrame {
       Logger.getLogger(MapXmlCreator.MAP_XML_CREATOR_LOGGER_NAME).log(Level.INFO,
           "Game XML written to " + newFile.getCanonicalPath());
     } catch (final IOException | HeadlessException | TransformerException | ParserConfigurationException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }
@@ -1101,8 +1099,7 @@ public class MapXmlCreator extends JFrame {
     try {
       return loadXmlFromFilePath(gameXMLPath);
     } catch (final IOException | HeadlessException | ParserConfigurationException | ParseException | SAXException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+        ClientLogger.logError(e);
       return loadXML();
     }
   }

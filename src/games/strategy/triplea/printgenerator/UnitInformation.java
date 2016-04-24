@@ -1,13 +1,13 @@
 package games.strategy.triplea.printgenerator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -35,8 +35,8 @@ class UnitInformation {
     m_unitInfoMap = unitInfoMap;
     m_unitTypeIterator = m_unitInfoMap.keySet().iterator();
     m_printData.getOutDir().mkdir();
+    final File outFile = new File(m_printData.getOutDir(), "General Information.csv");
     try {
-      final File outFile = new File(m_printData.getOutDir(), "General Information.csv");
       unitInformation = new FileWriter(outFile);
       for (int i = 0; i < 8; i++) {
         unitInformation.write(",");
@@ -81,13 +81,9 @@ class UnitInformation {
       }
       unitInformation.write("\r\n");
       unitInformation.close();
-    } catch (final FileNotFoundException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
     } catch (final IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+      ClientLogger.logError("There was an error while trying to save File " + outFile.toString() , e);
+    } 
   }
 
   private int getCostInformation(final UnitType type) {

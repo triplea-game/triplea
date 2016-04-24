@@ -1457,7 +1457,6 @@ public class MovePanel extends AbstractMovePanel {
 
   @Override
   protected boolean doneMoveAction() {
-    // TODO Auto-generated method stub
     if (m_undoableMovesPanel.getCountOfMovesMade() == 0) {
       final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(MovePanel.this),
           "Are you sure you dont want to move?", "End Move", JOptionPane.YES_NO_OPTION);
@@ -1472,7 +1471,6 @@ public class MovePanel extends AbstractMovePanel {
 
   @Override
   protected boolean setCancelButton() {
-    // TODO Auto-generated method stub
     return true;
   }
 
