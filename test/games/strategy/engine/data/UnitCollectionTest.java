@@ -36,17 +36,9 @@ public class UnitCollectionTest {
   private Unit unitDefaultPlayer1;
   private Unit unitDefaultPlayer2;
   private Unit unitDefaultPlayer3;
-
   private int unitCountDefaultPlayerUnitTypeOne;
   private int unitCountDefaultPlayerUnitTypeTwo;
-
   private int unitCountDefaultPlayer;
-  private int unitCountOtherPlayerUnitTypeOne;
-  private int unitCountOtherPlayerUnitTypeTwo;
-  private int unitCountOtherPlayer;
-
-  private int unitCountUnitTypeOne;
-  private int unitCountUnitTypeTwo;
 
   private Unit unitOtherPlayer1;
   private Unit unitOtherPlayer2;
@@ -55,6 +47,12 @@ public class UnitCollectionTest {
   private Unit unitOtherPlayer5;
   private Unit unitOtherPlayer6;
   private Unit unitOtherPlayer7;
+  private int unitCountOtherPlayerUnitTypeOne;
+  private int unitCountOtherPlayerUnitTypeTwo;
+  private int unitCountOtherPlayer;
+
+  private int unitCountUnitTypeOne;
+  private int unitCountUnitTypeTwo;
 
   int defaultPlayerNotifyChangedCounter = 0;
 
