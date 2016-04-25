@@ -555,7 +555,6 @@ public class MapCreator extends JFrame {
       }
     
     boolean laf = false;
-    
     if(args.length == 1){
       try {
         UIManager.setLookAndFeel(args[0]);
