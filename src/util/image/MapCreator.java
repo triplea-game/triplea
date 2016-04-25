@@ -73,7 +73,7 @@ public class MapCreator extends JFrame {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());//Fallback Look and Feel
       } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
           | UnsupportedLookAndFeelException e) {
-        ClientLogger.logError("Default Look and Feel could not be applied", e);
+        ClientLogger.logError("Default Look and Feel could not be applied:" + e.getMessage());
       }
     
     handleCommandLineArgs(args);
@@ -550,7 +550,7 @@ public class MapCreator extends JFrame {
         UIManager.setLookAndFeel(args[0]);
       } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
           | UnsupportedLookAndFeelException e) {
-        ClientLogger.logError("Look and feel could not be applied to the Map Creator" + e.getMessage());
+        ClientLogger.logError("Look and feel could not be applied to the Map Creator:" + e.getMessage());
       }
     }
   }
