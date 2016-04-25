@@ -99,11 +99,11 @@ import games.strategy.util.Triple;
 
 public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMenuBar {
   private static final long serialVersionUID = -1447295944297939539L;
-  protected final CustomGameFrame m_frame;
+  protected final CustomGameFrame frame;
   protected SoftJEditorPane gameNotesPane;
 
   public BasicGameMenuBar(final CustomGameFrame frame) {
-    m_frame = frame;
+    this.frame = frame;
     createFileMenu(this);
     createGameSpecificMenus(this);
     final InGameLobbyWatcherWrapper watcher = createLobbyMenu(this);
@@ -137,14 +137,14 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 
   private void addChangeProAISettings(final JMenu parentMenu) {
     boolean areThereProAIs = false;
-    final Set<IGamePlayer> players = (m_frame).getLocalPlayers().getLocalPlayers();
+    final Set<IGamePlayer> players = (frame).getLocalPlayers().getLocalPlayers();
     for (final IGamePlayer player : players) {
       if (player instanceof ProAI) {
         areThereProAIs = true;
       }
     }
     if (areThereProAIs) {
-      ProAI.initialize((TripleAFrame) m_frame);
+      ProAI.initialize((TripleAFrame) frame);
       parentMenu.addSeparator();
       parentMenu.add(SwingAction.of("Show Hard AI Logs", e -> ProAI.showSettingsWindow())).setMnemonic(KeyEvent.VK_X);
       parentMenu.addSeparator();
@@ -175,7 +175,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
             final JEditorPane pane = gameNotesPane.getComponent();
             final JScrollPane scroll = new JScrollPane(pane);
             scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-            final JDialog dialog = new JDialog(m_frame);
+            final JDialog dialog = new JDialog(frame);
             dialog.setModal(false);
             // needs java 1.6 at least...
             // dialog.setModalityType(ModalityType.MODELESS);
@@ -203,7 +203,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
             if (dialog.getHeight() > 600) {
               dialog.setSize(dialog.getWidth(), 600);
             }
-            dialog.setLocationRelativeTo(m_frame);
+            dialog.setLocationRelativeTo(frame);
             dialog.addWindowListener(new WindowAdapter() {
               @Override
               public void windowOpened(final WindowEvent e) {
@@ -218,10 +218,10 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
   }
 
   protected InGameLobbyWatcherWrapper createLobbyMenu(final JMenuBar menuBar) {
-    if (!(m_frame.getGame() instanceof ServerGame)) {
+    if (!(frame.getGame() instanceof ServerGame)) {
       return null;
     }
-    final ServerGame serverGame = (ServerGame) m_frame.getGame();
+    final ServerGame serverGame = (ServerGame) frame.getGame();
     final InGameLobbyWatcherWrapper watcher = serverGame.getInGameLobbyWatcher();
     if (watcher == null || !watcher.isActive()) {
       return watcher;
@@ -229,7 +229,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     final JMenu lobby = new JMenu("Lobby");
     lobby.setMnemonic(KeyEvent.VK_L);
     menuBar.add(lobby);
-    lobby.add(new EditGameCommentAction(watcher, m_frame));
+    lobby.add(new EditGameCommentAction(watcher, frame));
     lobby.add(new RemoveGameFromLobbyAction(watcher));
     return watcher;
   }
@@ -292,7 +292,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
   protected void addShowPlayers(final JMenu menuGame) {
     if (!getGame().getData().getProperties().getEditableProperties().isEmpty()) {
       final AbstractAction optionsAction =
-          SwingAction.of("Show Who is Who...", e -> PlayersPanel.showPlayers(getGame(), m_frame));
+          SwingAction.of("Show Who is Who...", e -> PlayersPanel.showPlayers(getGame(), frame));
       menuGame.add(optionsAction);
     }
   }
@@ -372,7 +372,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     if (System.getProperty("mrj.version") == null) {
       parentMenu.addSeparator();
       parentMenu.add(SwingAction.of("About...", e -> {
-        JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(),
+        JOptionPane.showMessageDialog(frame, editorPane, "About " + frame.getGame().getData().getGameName(),
             JOptionPane.PLAIN_MESSAGE);
       })).setMnemonic(KeyEvent.VK_A);
     } else
@@ -381,7 +381,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       Application.getApplication().setAboutHandler(new AboutHandler(){
         @Override
         public void handleAbout(AboutEvent paramAboutEvent) {
-          JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(),
+          JOptionPane.showMessageDialog(frame, editorPane, "About " + frame.getGame().getData().getGameName(),
               JOptionPane.PLAIN_MESSAGE);
         }
         
@@ -467,10 +467,10 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 
   protected void addSaveMenu(final JMenu parent) {
     final JMenuItem menuFileSave = new JMenuItem(SwingAction.of("Save...", e -> {
-      final File f = getSaveGameLocationDialog(m_frame);
+      final File f = getSaveGameLocationDialog(frame);
       if (f != null) {
         getGame().saveGame(f);
-        JOptionPane.showMessageDialog(m_frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
       }
     }));
     menuFileSave.setMnemonic(KeyEvent.VK_S);
@@ -498,7 +498,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         final HistoryLog historyLog = new HistoryLog();
         historyLog.printFullTurn(data, false, GameStepPropertiesHelper.getTurnSummaryPlayers(data));
         final PBEMMessagePoster poster = new PBEMMessagePoster(getData(), currentPlayer, round, title);
-        PBEMMessagePoster.postTurn(title, historyLog, true, poster, null, m_frame, null);
+        PBEMMessagePoster.postTurn(title, historyLog, true, poster, null, frame, null);
       } finally {
         data.releaseReadLock();
       }
@@ -511,7 +511,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 
   protected void addExitMenu(final JMenu parentMenu) {
     final boolean isMac = GameRunner.isMac();
-    final JMenuItem leaveGameMenuExit = new JMenuItem(SwingAction.of("Leave Game", e -> m_frame.leaveGame()));
+    final JMenuItem leaveGameMenuExit = new JMenuItem(SwingAction.of("Leave Game", e -> frame.leaveGame()));
     leaveGameMenuExit.setMnemonic(KeyEvent.VK_L);
     if (isMac) { // On Mac OS X, the command-Q is reserved for the Quit action,
                  // so set the command-L key combo for the Leave Game action
@@ -525,9 +525,9 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     // Mac OS X automatically creates a Quit menu item under the TripleA menu,
     // so all we need to do is register that menu item with triplea's shutdown mechanism
     if (isMac) {
-      MacWrapper.registerMacShutdownHandler(m_frame);
+      MacWrapper.registerMacShutdownHandler(frame);
     } else { // On non-Mac operating systems, we need to manually create an Exit menu item
-      final JMenuItem menuFileExit = new JMenuItem(SwingAction.of("Exit", e -> m_frame.shutdown()));
+      final JMenuItem menuFileExit = new JMenuItem(SwingAction.of("Exit", e -> frame.shutdown()));
       menuFileExit.setMnemonic(KeyEvent.VK_E);
       parentMenu.add(menuFileExit);
     }
@@ -597,8 +597,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         final LookAndFeel lf = (LookAndFeel) c.newInstance();
         lookAndFeels.put(lf.getName(), s);
       }
-    } catch (final Exception t) {
-      t.printStackTrace();
+    } catch (final Exception e) {
+      ClientLogger.logError("An Error occured while getting LookAndFeels", e);
       // we know all machines have these 3, so use them
       lookAndFeels.clear();
       lookAndFeels.put("Original", UIManager.getSystemLookAndFeelClassName());
@@ -624,7 +624,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       final JList<String> list = lookAndFeel.getFirst();
       final String currentKey = lookAndFeel.getThird();
       final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
-      if (JOptionPane.showConfirmDialog(m_frame, list) == JOptionPane.OK_OPTION) {
+      if (JOptionPane.showConfirmDialog(frame, list) == JOptionPane.OK_OPTION) {
         final String selectedValue = (String) list.getSelectedValue();
         if (selectedValue == null) {
           return;
@@ -633,7 +633,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
           return;
         }
         GameRunner2.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
-        EventThreadJOptionPane.showMessageDialog(m_frame, "The look and feel will update when you restart TripleA",
+        EventThreadJOptionPane.showMessageDialog(frame, "The look and feel will update when you restart TripleA",
             new CountDownLatchHandler(true));
       }
     })).setMnemonic(KeyEvent.VK_F);
@@ -661,7 +661,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     chatTimeBox.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        m_frame.setShowChatTime(chatTimeBox.isSelected());
+        frame.setShowChatTime(chatTimeBox.isSelected());
       }
     });
     chatTimeBox.setSelected(false);
@@ -699,7 +699,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     if (!getGame().getData().getProperties().getEditableProperties().isEmpty()) {
       final AbstractAction optionsAction = SwingAction.of("View Game Options...", e -> {
         final PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties().getEditableProperties(), false);
-        JOptionPane.showMessageDialog(m_frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
       });
       menuGame.add(optionsAction).setMnemonic(KeyEvent.VK_O);
     }
@@ -728,7 +728,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
     defaultFileName = defaultFileName + ".xml";
     chooser.setSelectedFile(new File(rootDir, defaultFileName));
-    if (chooser.showSaveDialog(m_frame) != JOptionPane.OK_OPTION) {
+    if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
       return;
     }
     final GameData data = getData();
@@ -750,10 +750,10 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
   }
 
   public IGame getGame() {
-    return m_frame.getGame();
+    return frame.getGame();
   }
 
   public GameData getData() {
-    return m_frame.getGame().getData();
+    return frame.getGame().getData();
   }
 }
