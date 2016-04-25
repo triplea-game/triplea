@@ -147,7 +147,7 @@ public class GameDataExporter {
   }
 
   @SuppressWarnings("unchecked")
-  private void propertyList(final GameData data) {
+  private void propertyList(final GameData data) {//TODO: Unchecked Reflection
     xmlfile.append("    <propertyList>\n");
     final GameProperties gameProperties = data.getProperties();
     try {
