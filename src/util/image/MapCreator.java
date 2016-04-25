@@ -26,6 +26,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import games.strategy.common.swing.SwingAction;
 import games.strategy.common.swing.SwingComponents;
@@ -544,7 +546,29 @@ public class MapCreator extends JFrame {
 
   private static void handleCommandLineArgs(final String[] args) {
     final String[] properties = getProperties();
-    if (args.length == 1) {
+    
+      try {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());//Fallback Look and Feel
+      } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+          | UnsupportedLookAndFeelException e) {
+        ClientLogger.logError("Default Look and Feel could not be applied", e);
+      }
+    
+    boolean laf = false;
+    
+    if(args.length == 1){
+      try {
+        UIManager.setLookAndFeel(args[0]);
+        laf = true;
+      } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+          | UnsupportedLookAndFeelException e) {
+        ClientLogger.logError("Look and feel could not be applied to the Map Creator", e);
+      } catch(ClassCastException e){
+        ClientLogger.logQuietly("Argument is not a Look and Feel");
+      }
+    }
+    
+    if (args.length == 1 && !laf) {
       String value;
       if (args[0].startsWith(TRIPLEA_MAP_FOLDER)) {
         value = getValue(args[0]);
