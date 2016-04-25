@@ -9,6 +9,46 @@
     <br>
     <br>Again, Only Maps meeting all above listed high quality requirements and having undergone extensive testing are located here. Maps from this section can be 
              considered classics, and it should usually be no problem finding an opponent for any of them.
+- url: https://github.com/triplea-maps/minimap/releases/download/0.7/minimap.zip
+  mapName: MiniMap
+  version: 0.1
+  description: |
+    <br>Mini
+- url: https://github.com/triplea-maps/big_world/releases/download/0.3/big_world.zip
+  mapName: Big World
+  version: 0.1
+  description: |
+    <br>WWII style map
+- url: https://github.com/triplea-maps/great_war/releases/download/0.5/great_war.zip
+  mapName: Great War
+  version: 0.1
+  description: |
+    <br>WWI map
+- url: https://github.com/triplea-maps/capture_the_flag/releases/download/0.7/capture_the_flag.zip
+  mapName: Capture the Flag
+  version: 0.1
+  description: |
+    <br>Small even balanced map
+- url: https://github.com/triplea-maps/middle_earth/releases/download/0.13/middle_earth.zip
+  mapName: Middle Earth
+  version: 0.1
+  description: |
+    <br>Lord of the Rings
+- url: https://github.com/triplea-maps/napoleonic_empire/releases/download/0.1/napoleonic_empire.zip
+  mapName: Napoleonic Empire
+  version: 0.1
+  description: |
+    <br>Preindustrial Napoleonic era European conquest
+- url: https://github.com/triplea-maps/new_world_order/releases/download/0.11/new_world_order.zip
+  mapName:
+  version: 0.1
+  description: |
+    <br>Classic european theatre World War II Map
+- url: https://github.com/triplea-maps/the_pact_of_steel/releases/download/0.18/the_pact_of_steel.zip
+  mapName:
+  version: 0.1
+  description: |
+    <br>Revised World War II map with Italian Axis Power
 - url: https://github.com/triplea-maps/total_world_war/releases/download/0.8/total_world_war.zip
   mapName: Total_World_War
   version: 2.7.7.2
@@ -755,6 +795,17 @@
     <br>This means that any map ending in "<MapName>-<SkinName>" you must have the map that is the <MapName> part in order to use the skin.
     <br>
     <br>To use the skin, start a game and go to the top of the screen.  Click "view" then click "map skins", and then select the skin you want.
+- url: https://github.com/triplea-maps/napoleonic_empire-political_map_skin/releases/download/0.5/napoleonic_empire-political_map_skin.zip
+  mapName: Napoleanic Empire Map Skin
+  mapType: MAP_SKIN
+  version: 0.1
+  description: |
+     <br>Napoleanic Empire Map Skin
+- url: https://github.com/triplea-maps/middle_earth-map_skin2/releases/download/0.9/middle_earth-map_skin2.zip
+  mapName: Middle Earth Map Skin
+  mapType: MAP_SKIN
+  description: |
+    <br>Lord of the Rings Map Skin
 - url: https://github.com/triplea-maps/world_war_ii_global-battlemap_skin/releases/download/0.1/world_war_ii_global-battlemap_skin.zip
   mapName: World War II Global-battlemap_skin
   mapType: MAP_SKIN
