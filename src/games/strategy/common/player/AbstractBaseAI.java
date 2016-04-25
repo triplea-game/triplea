@@ -1,6 +1,5 @@
 package games.strategy.common.player;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ui.AbstractUIContext;
 import games.strategy.util.ThreadUtil;
 
@@ -21,10 +20,6 @@ public abstract class AbstractBaseAI extends AbstractBasePlayer {
    * Pause the game to allow the human player to see what is going on.
    */
   protected void pause() {
-    try {
-      ThreadUtil.sleep(AbstractUIContext.getAIPauseDuration());
-    } catch (final Exception e) {
-      ClientLogger.logError("There was an Error trying to Pause the Game", e);
-    }
+     ThreadUtil.sleep(AbstractUIContext.getAIPauseDuration());
   }
 }
