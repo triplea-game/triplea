@@ -544,104 +544,13 @@ public class MapCreator extends JFrame {
     // example: java -classpath triplea.jar -Dtriplea.map.folder="C:/Users" util/image/CenterPicker
   }
 
-  private static String getValue(final String arg) {
-    final int index = arg.indexOf('=');
-    if (index == -1) {
-      return "";
-    }
-    return arg.substring(index + 1);
-  }
-
   private static void handleCommandLineArgs(final String[] args) {
-    final String[] properties = getProperties();
-    boolean laf = false;
     if(args.length == 1){
       try {
         UIManager.setLookAndFeel(args[0]);
-        laf = true;
       } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
           | UnsupportedLookAndFeelException e) {
-        ClientLogger.logError("Look and feel could not be applied to the Map Creator", e);
-      } catch(ClassCastException e){
-        ClientLogger.logQuietly("Argument is not a Look and Feel");
-      }
-    }
-    
-    if (args.length == 1 && !laf) {
-      String value;
-      if (args[0].startsWith(TRIPLEA_MAP_FOLDER)) {
-        value = getValue(args[0]);
-      } else {
-        value = args[0];
-      }
-      final File mapFolder = new File(value);
-      if (mapFolder.exists()) {
-        s_mapFolderLocation = mapFolder;
-      } else {
-        System.out.println("Could not find directory: " + value);
-      }
-    }
-    boolean usagePrinted = false;
-    for (final String arg2 : args) {
-      boolean found = false;
-      String arg = arg2;
-      final int indexOf = arg.indexOf('=');
-      if (indexOf > 0) {
-        arg = arg.substring(0, indexOf);
-        for (final String propertie : properties) {
-          if (arg.equals(propertie)) {
-            final String value = getValue(arg2);
-            System.getProperties().setProperty(propertie, value);
-            System.out.println(propertie + ":" + value);
-            found = true;
-            break;
-          }
-        }
-      }
-      if (!found) {
-        System.out.println("Unrecogized:" + arg2);
-        if (!usagePrinted) {
-          usagePrinted = true;
-          System.out.println("Arguments\r\n" + "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n" + "   "
-              + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n" + "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\r\n" + "   "
-              + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
-        }
-      }
-    }
-    final String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
-    if (folderString != null && folderString.length() > 0) {
-      final File mapFolder = new File(folderString);
-      if (mapFolder.exists()) {
-        s_mapFolderLocation = mapFolder;
-      } else {
-        System.out.println("Could not find directory: " + folderString);
-      }
-    }
-    final String zoomString = System.getProperty(TRIPLEA_UNIT_ZOOM);
-    if (zoomString != null && zoomString.length() > 0) {
-      try {
-        s_unit_zoom = Double.parseDouble(zoomString);
-        System.out.println("Unit Zoom Percent to use: " + s_unit_zoom);
-      } catch (final Exception ex) {
-        System.err.println("Not a decimal percentage: " + zoomString);
-      }
-    }
-    final String widthString = System.getProperty(TRIPLEA_UNIT_WIDTH);
-    if (widthString != null && widthString.length() > 0) {
-      try {
-        s_unit_width = Integer.parseInt(widthString);
-        System.out.println("Unit Width to use: " + s_unit_width);
-      } catch (final Exception ex) {
-        System.err.println("Not an integer: " + widthString);
-      }
-    }
-    final String heightString = System.getProperty(TRIPLEA_UNIT_HEIGHT);
-    if (heightString != null && heightString.length() > 0) {
-      try {
-        s_unit_height = Integer.parseInt(heightString);
-        System.out.println("Unit Height to use: " + s_unit_height);
-      } catch (final Exception ex) {
-        System.err.println("Not an integer: " + heightString);
+        ClientLogger.logError("Look and feel could not be applied to the Map Creator" + e.getMessage());
       }
     }
   }
