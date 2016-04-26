@@ -8,7 +8,6 @@ import games.strategy.util.PointFileReaderWriter;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FontMetrics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -698,50 +697,6 @@ public class MapData {
       boundingRect.translate(0, mapHeight);
     }
     return boundingRect;
-  }
-
-  /**
-   * Find the best rectangle inside the territory to place the name in. Finds the rectangle
-   * that can fit the name, that is the closest to the vertical center, and has a large width at
-   * that location. If there isn't any rectangles that can fit the name then default back to the
-   * bounding rectangle.
-   */
-  public Rectangle getBestTerritoryNameRect(final Territory territory, final FontMetrics fontMetrics) {
-    final Rectangle territoryBounds = getBoundingRect(territory);
-    Rectangle maxRectangle = territoryBounds;
-    final int minX = territoryBounds.x;
-    final int minY = territoryBounds.y;
-    final int maxX = minX + territoryBounds.width;
-    final int maxY = minY + territoryBounds.height;
-    final int centerY = minY + territoryBounds.height / 2;
-    final List<Polygon> polygons = m_polys.get(territory.getName());
-    final int minWidth = fontMetrics.stringWidth(territory.getName());
-    final int increment = fontMetrics.getAscent();
-    int maxScore = 0;
-    for (int startX = minX; startX < maxX - increment; startX += increment) {
-      for (int startY = minY; startY < maxY - increment; startY += increment) {
-        for (int endX = maxX; endX > startX; endX -= increment) {
-          final Rectangle current = new Rectangle(startX, startY, endX - startX, increment);
-          final int verticalFromEdge = territoryBounds.height / 2 - Math.abs(centerY - (startY + increment));
-          final int score = verticalFromEdge * current.width;
-          if (current.width > minWidth && score > maxScore) {
-            boolean isContained = false;
-            for (final Polygon polygon : polygons) {
-              if (polygon.contains(current)) {
-                maxScore = score;
-                maxRectangle = current;
-                isContained = true;
-                break;
-              }
-            }
-            if (isContained) {
-              break;
-            }
-          }
-        }
-      }
-    }
-    return maxRectangle;
   }
 
   /**
