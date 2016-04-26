@@ -706,17 +706,17 @@ public class MapData {
    * that location. If there isn't any rectangles that can fit the name then default back to the
    * bounding rectangle.
    */
-  public Rectangle getBestTerritoryNameRect(final Territory t, final FontMetrics fm) {
-    final Rectangle territoryBounds = getBoundingRect(t);
+  public Rectangle getBestTerritoryNameRect(final Territory territory, final FontMetrics fontMetrics) {
+    final Rectangle territoryBounds = getBoundingRect(territory);
     Rectangle maxRectangle = territoryBounds;
     final int minX = territoryBounds.x;
     final int minY = territoryBounds.y;
     final int maxX = minX + territoryBounds.width;
     final int maxY = minY + territoryBounds.height;
     final int centerY = minY + territoryBounds.height / 2;
-    final List<Polygon> polygons = m_polys.get(t.getName());
-    final int minWidth = fm.stringWidth(t.getName());
-    final int increment = fm.getAscent();
+    final List<Polygon> polygons = m_polys.get(territory.getName());
+    final int minWidth = fontMetrics.stringWidth(territory.getName());
+    final int increment = fontMetrics.getAscent();
     int maxScore = 0;
     for (int startX = minX; startX < maxX - increment; startX += increment) {
       for (int startY = minY; startY < maxY - increment; startY += increment) {
