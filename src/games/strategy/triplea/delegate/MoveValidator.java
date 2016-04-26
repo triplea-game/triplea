@@ -1,17 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
 import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -21,6 +9,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.CanalAttachment;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -37,6 +26,18 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Provides some static methods for validating movement.
@@ -1407,9 +1408,8 @@ public class MoveValidator {
   }
 
   /**
-   * Used for testing a single territory, either as part of a route, or just by itself. Returns Optional.empty if either
-   * there are no canals or there is at least 1 canal that can be passed through otherwise returns a failure message
-   * indicating why the canal can't be passed through.
+   * Used for testing a single territory, either as part of a route, or just by itself. Returns Optional.empty if it
+   * can be passed through otherwise returns a failure message indicating why the canal can't be passed through.
    *
    * @param territory
    * @param route
@@ -1430,8 +1430,10 @@ public class MoveValidator {
         continue;
       }
       failureMessage = canPassThroughCanal(canalAttachment, units, player, data);
-      if (!failureMessage.isPresent()) {
+      if (!Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && !failureMessage.isPresent()) {
         return Optional.empty();
+      } else if (Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && failureMessage.isPresent()) {
+        return failureMessage;
       }
     }
     return failureMessage;
