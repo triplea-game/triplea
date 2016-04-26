@@ -25,7 +25,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
 import games.strategy.common.swing.SwingAction;
@@ -369,7 +368,6 @@ public class EnginePreferences extends JDialog {
         ProcessRunnerUtil.populateBasicJavaArgs(commands);
         final String javaClass = "util.image.MapCreator";
         commands.add(javaClass);
-        commands.add(UIManager.getLookAndFeel().getClass().getName());
         ProcessRunnerUtil.exec(commands);
 
     }));
