@@ -90,8 +90,7 @@ public class MapData {
   public static final String DECORATIONS_FILE = "decorations.txt";
   // default colour if none is defined.
   private final List<Color> m_defaultColours = new ArrayList<Color>(Arrays.asList(new Color[] {Color.RED,
-      Color.MAGENTA,
-      Color.YELLOW, Color.ORANGE, Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY}));
+      Color.MAGENTA, Color.YELLOW, Color.ORANGE, Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY}));
   // maps PlayerName as String to Color
   private final Map<String, Color> m_playerColors = new HashMap<String, Color>();
   // maps String -> List of points
