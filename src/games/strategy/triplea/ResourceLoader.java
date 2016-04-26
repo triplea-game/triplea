@@ -87,8 +87,10 @@ public class ResourceLoader {
     candidates.add(new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps", zipName));
 
     String normalizedZipName = normalizeMapZipName(zipName);
-    candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), normalizedZipName));
-
+    
+    if(!normalizedZipName.equals(zipName)){
+      candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), normalizedZipName));
+    }
 
     final Collection<File> existing = Match.getMatches(candidates, new Match<File>() {
       @Override
