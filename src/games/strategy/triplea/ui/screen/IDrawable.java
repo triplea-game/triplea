@@ -192,28 +192,26 @@ class TerritoryNameDrawable implements IDrawable {
   private Rectangle getBestTerritoryNameRect(final MapData mapData, final Territory territory,
       final FontMetrics fontMetrics) {
     final Rectangle territoryBounds = mapData.getBoundingRect(territory);
-    Rectangle maxRectangle = territoryBounds;
-    final int minX = territoryBounds.x;
-    final int minY = territoryBounds.y;
-    final int maxX = minX + territoryBounds.width;
-    final int maxY = minY + territoryBounds.height;
-    final int centerY = minY + territoryBounds.height / 2;
-    final List<Polygon> polygons = mapData.getPolygons(territory.getName());
+    Rectangle result = territoryBounds;
+    final int maxX = territoryBounds.x + territoryBounds.width;
+    final int maxY = territoryBounds.y + territoryBounds.height;
+    final int centerY = territoryBounds.y + territoryBounds.height / 2;
     final int minWidth = fontMetrics.stringWidth(territory.getName());
     final int increment = fontMetrics.getAscent();
     int maxScore = 0;
-    for (int startX = minX; startX < maxX - increment; startX += increment) {
-      for (int startY = minY; startY < maxY - increment; startY += increment) {
+    for (int startX = territoryBounds.x; startX < maxX - increment; startX += increment) {
+      for (int startY = territoryBounds.y; startY < maxY - increment; startY += increment) {
         for (int endX = maxX; endX > startX; endX -= increment) {
           final Rectangle current = new Rectangle(startX, startY, endX - startX, increment);
           final int verticalFromEdge = territoryBounds.height / 2 - Math.abs(centerY - (startY + increment));
           final int score = verticalFromEdge * current.width;
           if (current.width > minWidth && score > maxScore) {
             boolean isContained = false;
+            final List<Polygon> polygons = mapData.getPolygons(territory.getName());
             for (final Polygon polygon : polygons) {
               if (polygon.contains(current)) {
                 maxScore = score;
-                maxRectangle = current;
+                result = current;
                 isContained = true;
                 break;
               }
@@ -225,7 +223,7 @@ class TerritoryNameDrawable implements IDrawable {
         }
       }
     }
-    return maxRectangle;
+    return result;
   }
 
   private void draw(final Rectangle bounds, final Graphics2D graphics, final int x, final int y, final Image img,
