@@ -40,12 +40,12 @@
   description: |
     <br>Preindustrial Napoleonic era European conquest
 - url: https://github.com/triplea-maps/new_world_order/releases/download/0.11/new_world_order.zip
-  mapName:
+  mapName: New World Order
   version: 0.1
   description: |
     <br>Classic european theatre World War II Map
 - url: https://github.com/triplea-maps/the_pact_of_steel/releases/download/0.18/the_pact_of_steel.zip
-  mapName:
+  mapName: The Pact of Steel
   version: 0.1
   description: |
     <br>Revised World War II map with Italian Axis Power
