@@ -26,13 +26,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import games.strategy.common.swing.SwingAction;
 import games.strategy.common.swing.SwingComponents;
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.UrlConstants;
@@ -69,14 +67,7 @@ public class MapCreator extends JFrame {
   }
 
   public static void main(final String[] args) {
-      try {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());//Fallback Look and Feel
-      } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-          | UnsupportedLookAndFeelException e) {
-        ClientLogger.logError("Default Look and Feel could not be applied:" + e.getMessage());
-      }
-    
-    handleCommandLineArgs(args);
+    GameRunner2.setupLookAndFeel();
     final MapCreator creator = new MapCreator();
     creator.setSize(800, 600);
     creator.setLocationRelativeTo(null);
@@ -542,16 +533,5 @@ public class MapCreator extends JFrame {
     commands.add(javaClass);
     ProcessRunnerUtil.exec(commands);
     // example: java -classpath triplea.jar -Dtriplea.map.folder="C:/Users" util/image/CenterPicker
-  }
-
-  private static void handleCommandLineArgs(final String[] args) {
-    if(args.length == 1){
-      try {
-        UIManager.setLookAndFeel(args[0]);
-      } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-          | UnsupportedLookAndFeelException e) {
-        ClientLogger.logError("Look and feel could not be applied to the Map Creator:" + e.getMessage());
-      }
-    }
   }
 }
