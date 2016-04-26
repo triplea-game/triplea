@@ -191,6 +191,8 @@ class TerritoryNameDrawable implements IDrawable {
    */
   private Rectangle getBestTerritoryNameRect(final MapData mapData, final Territory territory,
       final FontMetrics fontMetrics) {
+
+    // Find bounding rectangle and use to create parameters for a grid across the territory
     final Rectangle territoryBounds = mapData.getBoundingRect(territory);
     Rectangle result = territoryBounds;
     final int maxX = territoryBounds.x + territoryBounds.width;
@@ -199,13 +201,19 @@ class TerritoryNameDrawable implements IDrawable {
     final int minWidth = fontMetrics.stringWidth(territory.getName());
     final int increment = fontMetrics.getAscent();
     int maxScore = 0;
+
+    // Loop through the grid moving the starting point and determining max width at that point
     for (int startX = territoryBounds.x; startX < maxX - increment; startX += increment) {
       for (int startY = territoryBounds.y; startY < maxY - increment; startY += increment) {
         for (int endX = maxX; endX > startX; endX -= increment) {
+
+          // Find current rectangle and the 'score' based on how close to vertical center and width
           final Rectangle current = new Rectangle(startX, startY, endX - startX, increment);
           final int verticalFromEdge = territoryBounds.height / 2 - Math.abs(centerY - (startY + increment));
           final int score = verticalFromEdge * current.width;
           if (current.width > minWidth && score > maxScore) {
+
+            // Check to make sure rectangle is contained in the territory
             boolean isContained = false;
             final List<Polygon> polygons = mapData.getPolygons(territory.getName());
             for (final Polygon polygon : polygons) {
