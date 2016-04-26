@@ -1,7 +1,14 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Territory;
+import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.util.PointFileReaderWriter;
+
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -24,12 +31,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.util.PointFileReaderWriter;
 
 /**
  * contains data about the territories useful for drawing
@@ -88,7 +89,8 @@ public class MapData {
   public static final String KAMIKAZE_FILE = "kamikaze_place.txt";
   public static final String DECORATIONS_FILE = "decorations.txt";
   // default colour if none is defined.
-  private final List<Color> m_defaultColours = new ArrayList<Color>(Arrays.asList(new Color[] {Color.RED, Color.MAGENTA,
+  private final List<Color> m_defaultColours = new ArrayList<Color>(Arrays.asList(new Color[] {Color.RED,
+      Color.MAGENTA,
       Color.YELLOW, Color.ORANGE, Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY}));
   // maps PlayerName as String to Color
   private final Map<String, Color> m_playerColors = new HashMap<String, Color>();
@@ -697,6 +699,50 @@ public class MapData {
       boundingRect.translate(0, mapHeight);
     }
     return boundingRect;
+  }
+
+  /**
+   * Find the best rectangle inside the territory to place the name in. Finds the rectangle
+   * that can fit the name, that is the closest to the vertical center, and has a large width at
+   * that location. If there isn't any rectangles that can fit the name then default back to the
+   * bounding rectangle.
+   */
+  public Rectangle getBestTerritoryNameRect(final Territory t, final FontMetrics fm) {
+    final Rectangle territoryBounds = getBoundingRect(t);
+    Rectangle maxRectangle = territoryBounds;
+    final int minX = territoryBounds.x;
+    final int minY = territoryBounds.y;
+    final int maxX = minX + territoryBounds.width;
+    final int maxY = minY + territoryBounds.height;
+    final int centerY = minY + territoryBounds.height / 2;
+    final List<Polygon> polygons = m_polys.get(t.getName());
+    final int minWidth = fm.stringWidth(t.getName());
+    final int increment = fm.getAscent();
+    int maxScore = 0;
+    for (int startX = minX; startX < maxX - increment; startX += increment) {
+      for (int startY = minY; startY < maxY - increment; startY += increment) {
+        for (int endX = maxX; endX > startX; endX -= increment) {
+          final Rectangle current = new Rectangle(startX, startY, endX - startX, increment);
+          final int verticalFromEdge = territoryBounds.height / 2 - Math.abs(centerY - (startY + increment));
+          final int score = verticalFromEdge * current.width;
+          if (current.width > minWidth && score > maxScore) {
+            boolean isContained = false;
+            for (final Polygon polygon : polygons) {
+              if (polygon.contains(current)) {
+                maxScore = score;
+                maxRectangle = current;
+                isContained = true;
+                break;
+              }
+            }
+            if (isContained) {
+              break;
+            }
+          }
+        }
+      }
+    }
+    return maxRectangle;
   }
 
   /**

@@ -1,5 +1,19 @@
 package games.strategy.triplea.ui.screen;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
+import games.strategy.engine.data.Unit;
+import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.image.MapImage;
+import games.strategy.triplea.image.TileImageFactory;
+import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.MapData;
+import games.strategy.triplea.util.Stopwatch;
+
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.GradientPaint;
@@ -18,20 +32,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TerritoryEffect;
-import games.strategy.engine.data.Unit;
-import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.image.TileImageFactory;
-import games.strategy.triplea.ui.IUIContext;
-import games.strategy.triplea.ui.MapData;
-import games.strategy.triplea.util.Stopwatch;
 
 public interface IDrawable {
   public Logger s_logger = Logger.getLogger(IDrawable.class.getName());
@@ -128,26 +128,29 @@ class TerritoryNameDrawable implements IDrawable {
         return;
       }
     }
-    final Rectangle territoryBounds = mapData.getBoundingRect(territory);
+
+    // get font metrics
     graphics.setFont(MapImage.getPropertyMapFont());
     graphics.setColor(MapImage.getPropertyTerritoryNameAndPUAndCommentcolor());
     final FontMetrics fm = graphics.getFontMetrics();
+
+    // if we specify a placement point, use it otherwise try to center it
     int x;
     int y;
-    // if we specify a placement point, use it
-    // otherwise, put it in the center
     final Point namePlace = mapData.getNamePlacementPoint(territory);
     if (namePlace == null) {
+      final Rectangle territoryBounds = mapData.getBestTerritoryNameRect(territory, fm);
       x = territoryBounds.x;
       y = territoryBounds.y;
-      x += (int) territoryBounds.getWidth() >> 1;
-      y += (int) territoryBounds.getHeight() >> 1;
-      x -= fm.stringWidth(territory.getName()) >> 1;
-      y += fm.getAscent() >> 1;
+      x += (int) territoryBounds.getWidth() / 2;
+      y += (int) territoryBounds.getHeight() / 2;
+      x -= fm.stringWidth(territory.getName()) / 2;
+      y += fm.getAscent() / 2;
     } else {
       x = namePlace.x;
       y = namePlace.y;
     }
+
     // draw comments above names
     if (showComments && drawComments && commentText != null) {
       final Point place = mapData.getCommentMarkerLocation(territory);
