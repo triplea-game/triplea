@@ -203,13 +203,13 @@ class TerritoryNameDrawable implements IDrawable {
     int maxScore = 0;
 
     // Loop through the grid moving the starting point and determining max width at that point
-    for (int startX = territoryBounds.x; startX < maxX - increment; startX += increment) {
-      for (int startY = territoryBounds.y; startY < maxY - increment; startY += increment) {
-        for (int endX = maxX; endX > startX; endX -= increment) {
+    for (int leftX = territoryBounds.x; leftX < maxX - increment; leftX += increment) {
+      for (int topY = territoryBounds.y; topY < maxY - increment; topY += increment) {
+        for (int rightX = maxX; rightX > leftX; rightX -= increment) {
 
           // Find current rectangle and the 'score' based on how close to vertical center and width
-          final Rectangle current = new Rectangle(startX, startY, endX - startX, increment);
-          final int verticalFromEdge = territoryBounds.height / 2 - Math.abs(centerY - (startY + increment));
+          final Rectangle current = new Rectangle(leftX, topY, rightX - leftX, increment);
+          final int verticalFromEdge = territoryBounds.height / 2 - Math.abs(centerY - (topY + increment));
           final int score = verticalFromEdge * current.width;
           if (current.width > minWidth && score > maxScore) {
 
