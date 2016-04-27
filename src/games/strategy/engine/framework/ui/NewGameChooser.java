@@ -51,6 +51,7 @@ public class NewGameChooser extends JDialog {
     setupListeners();
     setWidgetActivation();
     updateInfoPanel();
+    refreshGameList();
   }
 
   private void createComponents() {
@@ -109,9 +110,7 @@ public class NewGameChooser extends JDialog {
     NewGameChooser chooser = new NewGameChooser(parent);
     chooser.setSize(800, 600);
     chooser.setLocationRelativeTo(parent);
-    if (defaultGameName != null) {
-      chooser.selectGame(defaultGameName);
-    }
+    chooser.selectGame(defaultGameName);
     chooser.setVisible(true);
     // chooser is now visible and waits for user action
     final NewGameChooserEntry choosen = chooser.m_choosen;
@@ -127,7 +126,8 @@ public class NewGameChooser extends JDialog {
   }
 
   private void selectGame(final String gameName) {
-    if (gameName == null) {
+    if (gameName == null || gameName.equals("-")) {
+      m_gameList.setSelectedIndex(0);//For some reason this is not working like it should...
       return;
     }
     final NewGameChooserEntry entry = m_gameListModel.findByName(gameName);
