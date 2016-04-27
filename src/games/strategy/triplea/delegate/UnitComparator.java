@@ -1,10 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
@@ -12,6 +7,10 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 
 public class UnitComparator {
   public static Comparator<Unit> getLowestToHighestMovementComparator() {
@@ -180,13 +179,13 @@ public class UnitComparator {
   /**
    * Return a Comparator that will order the specified units in preferred move order.
    */
-  public static Comparator<Unit> getMovableUnitsComparator(final List<Unit> units, final Route route,
-      final PlayerID player, final boolean noTies) {
+  public static Comparator<Unit> getMovableUnitsComparator(final List<Unit> units, final Route route) {
     final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator(units);
     return new Comparator<Unit>() {
       @Override
       public int compare(final Unit u1, final Unit u2) {
-        // ensure units have enough movement
+
+        // Ensure units have enough movement
         final int left1 = TripleAUnit.get(u1).getMovementLeft();
         final int left2 = TripleAUnit.get(u2).getMovementLeft();
         if (route != null) {
@@ -197,28 +196,23 @@ public class UnitComparator {
             return 1;
           }
         }
-        Collection<Unit> transporting1 = TripleAUnit.get(u1).getTransporting();
-        Collection<Unit> transporting2 = TripleAUnit.get(u2).getTransporting();
-        if (transporting1 == null) {
-          transporting1 = Collections.emptyList();
-        }
-        if (transporting2 == null) {
-          transporting2 = Collections.emptyList();
-        }
-        // prefer transports for which dependents are also selected
+
+        // Prefer transports for which dependents are also selected
+        final Collection<Unit> transporting1 = TripleAUnit.get(u1).getTransporting();
+        final Collection<Unit> transporting2 = TripleAUnit.get(u2).getTransporting();
         final int hasDepends1 = units.containsAll(transporting1) ? 1 : 0;
         final int hasDepends2 = units.containsAll(transporting2) ? 1 : 0;
         if (hasDepends1 != hasDepends2) {
           return hasDepends1 - hasDepends2;
         }
-        // sort by decreasing transport capacity (only valid for transports)
+
+        // Sort by decreasing transport capacity (only valid for transports)
         final int compareCapacity = decreasingCapacityComparator.compare(u1, u2);
         if (compareCapacity != 0) {
           return compareCapacity;
         }
-        // sort by increasing movement normally,
-        // but by decreasing movement during loading
-        // (to filter out armour that has already moved)
+
+        // Sort by increasing movement normally, but by decreasing movement during loading
         if (left1 != left2) {
           if (route != null && route.isLoad()) {
             return left2 - left1;
@@ -226,12 +220,8 @@ public class UnitComparator {
             return left1 - left2;
           }
         }
-        // if noTies is set, sort by hashcode so that result is deterministic
-        if (noTies) {
-          return u1.hashCode() - u2.hashCode();
-        } else {
-          return 0;
-        }
+
+        return u1.hashCode() - u2.hashCode();
       }
     };
   }
@@ -246,7 +236,7 @@ public class UnitComparator {
     final Comparator<Unit> unloadableTransportsComparator =
         getUnloadableTransportsComparator(units, route, player, false);
     // if noTies is set, sort by hashcode so that result is deterministic
-    final Comparator<Unit> movableUnitsComparator = getMovableUnitsComparator(units, route, player, noTies);
+    final Comparator<Unit> movableUnitsComparator = getMovableUnitsComparator(units, route);
     return new Comparator<Unit>() {
       @Override
       public int compare(final Unit u1, final Unit u2) {
