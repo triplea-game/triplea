@@ -129,7 +129,6 @@ class TerritoryNameDrawable implements IDrawable {
       }
     }
 
-    // get font metrics
     graphics.setFont(MapImage.getPropertyMapFont());
     graphics.setColor(MapImage.getPropertyTerritoryNameAndPUAndCommentcolor());
     final FontMetrics fm = graphics.getFontMetrics();
@@ -140,12 +139,8 @@ class TerritoryNameDrawable implements IDrawable {
     final Point namePlace = mapData.getNamePlacementPoint(territory);
     if (namePlace == null) {
       final Rectangle territoryBounds = getBestTerritoryNameRect(mapData, territory, fm);
-      x = territoryBounds.x;
-      y = territoryBounds.y;
-      x += (int) territoryBounds.getWidth() / 2;
-      y += (int) territoryBounds.getHeight() / 2;
-      x -= fm.stringWidth(territory.getName()) / 2;
-      y += fm.getAscent() / 2;
+      x = territoryBounds.x + (int) territoryBounds.getWidth() / 2 - fm.stringWidth(territory.getName()) / 2;
+      y = territoryBounds.y + (int) territoryBounds.getHeight() / 2 + fm.getAscent() / 2;
     } else {
       x = namePlace.x;
       y = namePlace.y;
@@ -203,14 +198,14 @@ class TerritoryNameDrawable implements IDrawable {
     int maxScore = 0;
 
     // Loop through the grid moving the starting point and determining max width at that point
-    for (int leftX = territoryBounds.x; leftX < maxX - increment; leftX += increment) {
-      for (int topY = territoryBounds.y; topY < maxY - increment; topY += increment) {
-        for (int rightX = maxX; rightX > leftX; rightX -= increment) {
+    for (int x = territoryBounds.x; x < maxX - increment; x += increment) {
+      for (int y = territoryBounds.y; y < maxY - increment; y += increment) {
+        for (int endX = maxX; endX > x; endX -= increment) {
 
-          // Find current rectangle and the 'score' based on how close to vertical center and width
-          final Rectangle current = new Rectangle(leftX, topY, rightX - leftX, increment);
-          final int verticalFromEdge = territoryBounds.height / 2 - Math.abs(centerY - (topY + increment));
-          final int score = verticalFromEdge * current.width;
+          // Find current rectangle then 'score' based on how close to vertical center and width
+          final Rectangle current = new Rectangle(x, y, endX - x, increment);
+          final int verticalDistanceFromEdge = territoryBounds.height / 2 - Math.abs(centerY - y - increment);
+          final int score = verticalDistanceFromEdge * current.width;
           if (current.width > minWidth && score > maxScore) {
 
             // Check to make sure rectangle is contained in the territory
