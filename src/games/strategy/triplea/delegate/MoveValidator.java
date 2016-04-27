@@ -1472,12 +1472,11 @@ public class MoveValidator {
     }
     for (final Territory borderTerritory : canalAttachment.getLandTerritories()) {
       if (!data.getRelationshipTracker().canMoveThroughCanals(player, borderTerritory.getOwner())) {
-        return Optional.of("Must own " + borderTerritory.getName() + " to go through "
-            + canalAttachment.getCanalName());
+        return Optional.of("Must control " + canalAttachment.getCanalName() + " to move through");
       }
       if (AbstractMoveDelegate.getBattleTracker(data).wasConquered(borderTerritory)) {
-        return Optional.of("Cannot move through " + canalAttachment.getCanalName() + " without owning "
-            + borderTerritory.getName() + " for an entire turn");
+        return Optional.of("Must control " + canalAttachment.getCanalName()
+            + " for an entire turn to move through");
       }
     }
     return Optional.empty();
