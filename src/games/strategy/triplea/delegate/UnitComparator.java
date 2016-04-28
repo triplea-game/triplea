@@ -221,7 +221,7 @@ public class UnitComparator {
           }
         }
 
-        return u1.hashCode() - u2.hashCode();
+        return Integer.compare(u1.hashCode(), u2.hashCode());
       }
     };
   }
