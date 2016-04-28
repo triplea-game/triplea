@@ -1431,7 +1431,7 @@ public class MoveValidator {
       }
       failureMessage = canPassThroughCanal(canalAttachment, units, player, data);
       if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && !failureMessage.isPresent())
-          || Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && failureMessage.isPresent()) {
+          || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && failureMessage.isPresent())) {
         break; // If need to control only 1 canal and can pass OR need to control all canals and can't pass
       }
     }
