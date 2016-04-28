@@ -201,10 +201,12 @@ class TerritoryNameDrawable implements IDrawable {
     for (int x = territoryBounds.x; x < maxX - increment; x += increment) {
       for (int y = territoryBounds.y; y < maxY - increment; y += increment) {
         for (int endX = maxX; endX > x; endX -= increment) {
-
-          // Find current rectangle then 'score' based on how close to vertical center and width
           final Rectangle current = new Rectangle(x, y, endX - x, increment);
+
+          // Ranges from 0 when at very top or bottom of territory to height/2 when at vertical center
           final int verticalDistanceFromEdge = territoryBounds.height / 2 - Math.abs(centerY - y - increment);
+
+          // Score rectangle based on how close to vertical center and territory width at location
           final int score = verticalDistanceFromEdge * current.width;
           if (current.width > minWidth && score > maxScore) {
 
