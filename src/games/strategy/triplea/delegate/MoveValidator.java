@@ -1427,12 +1427,13 @@ public class MoveValidator {
     final Set<CanalAttachment> canalAttachments = CanalAttachment.get(territory);
     for (final CanalAttachment canalAttachment : canalAttachments) {
       if (!isCanalOnRoute(canalAttachment, route, data)) {
-        continue;
+        continue; // Only check canals that are on the route
       }
       failureMessage = canPassThroughCanal(canalAttachment, units, player, data);
-      if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && !failureMessage.isPresent())
-          || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && failureMessage.isPresent())) {
-        break; // If need to control only 1 canal and can pass OR need to control all canals and can't pass
+      final boolean canPass = !failureMessage.isPresent();
+      if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && canPass)
+          || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && !canPass)) {
+        break; // If need to control any canal and can pass OR need to control all canals and can't pass
       }
     }
     return failureMessage;
