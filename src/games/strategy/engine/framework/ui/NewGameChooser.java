@@ -127,7 +127,6 @@ public class NewGameChooser extends JDialog {
 
   private void selectGame(final String gameName) {
     if (gameName == null || gameName.equals("-")) {
-      //TODO add a method selecting the first entry of the List...
       return;
     }
     final NewGameChooserEntry entry = m_gameListModel.findByName(gameName);
@@ -259,6 +258,9 @@ public class NewGameChooser extends JDialog {
             if (name != null) {
               m_gameList.setSelectedValue(found, true);
             }
+          }
+          else{
+            m_gameList.setSelectedIndex(0);
           }
         } finally {
           m_gameList.setEnabled(true);
