@@ -127,6 +127,7 @@ public class NewGameChooser extends JDialog {
 
   private void selectGame(final String gameName) {
     if (gameName == null || gameName.equals("-")) {
+      m_gameList.setSelectedIndex(0);
       return;
     }
     final NewGameChooserEntry entry = m_gameListModel.findByName(gameName);
@@ -184,7 +185,7 @@ public class NewGameChooser extends JDialog {
   private void setWidgetActivation() {}
 
   private void setupListeners() {
-    m_refreshGamesButton.addActionListener(e -> refreshGameList());
+    m_refreshGamesButton.addActionListener(e -> refreshGameListBackground());
     m_okButton.addActionListener(e -> selectAndReturn());
     m_cancelButton.addActionListener(e -> cancelAndReturn());
     m_gameList.addListSelectionListener(e -> updateInfoPanel());
@@ -245,29 +246,26 @@ public class NewGameChooser extends JDialog {
   private void refreshGameList() {
     m_gameList.setEnabled(false);
     final NewGameChooserEntry selected = getSelected();
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
         try {
           refreshNewGameChooserModel();
           m_gameListModel = getNewGameChooserModel();
           m_gameList.setModel(m_gameListModel);
-          if (selected != null) {
-            final String name = selected.getGameData().getGameName();
-            final NewGameChooserEntry found = m_gameListModel.findByName(name);
-            if (name != null) {
-              m_gameList.setSelectedValue(found, true);
-            }
-          }
-          else{
-            m_gameList.setSelectedIndex(0);
+          if(selected != null){
+            selectGame(selected.getGameData().getGameName());
           }
         } finally {
           m_gameList.setEnabled(true);
         }
+  }
+  
+  private void refreshGameListBackground(){
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        refreshGameList();
       }
     });
-  }
+  };
 
   private void selectAndReturn() {
     m_choosen = getSelected();
