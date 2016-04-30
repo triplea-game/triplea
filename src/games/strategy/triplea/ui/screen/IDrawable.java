@@ -5,8 +5,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
-import games.strategy.performance.Perf;
-import games.strategy.performance.PerfTimer;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -140,11 +138,9 @@ class TerritoryNameDrawable implements IDrawable {
     int y;
     final Point namePlace = mapData.getNamePlacementPoint(territory);
     if (namePlace == null) {
-      try (PerfTimer timer = Perf.startTimer("Place land territory name for " + territory.getName())) {
-        final Rectangle territoryBounds = getBestTerritoryNameRect(mapData, territory, fm);
-        x = territoryBounds.x + (int) territoryBounds.getWidth() / 2 - fm.stringWidth(territory.getName()) / 2;
-        y = territoryBounds.y + (int) territoryBounds.getHeight() / 2 + fm.getAscent() / 2;
-      }
+      final Rectangle territoryBounds = getBestTerritoryNameRect(mapData, territory, fm);
+      x = territoryBounds.x + (int) territoryBounds.getWidth() / 2 - fm.stringWidth(territory.getName()) / 2;
+      y = territoryBounds.y + (int) territoryBounds.getHeight() / 2 + fm.getAscent() / 2;
     } else {
       x = namePlace.x;
       y = namePlace.y;
