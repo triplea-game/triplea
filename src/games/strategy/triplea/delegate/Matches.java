@@ -2428,7 +2428,7 @@ public class Matches {
           final Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
           final Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsAirTransportable);
           if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
-            if (MoveDelegate.mapTransports(route, paratroops, airTransports, true)
+            if (MoveDelegate.mapTransportsToLoad(paratroops, airTransports)
                 .containsKey(dependent)) {
               return true;
             }

@@ -233,7 +233,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
         // Load capable bombers by default>
         final Map<Unit, Unit> unitsToCapableAirTransports =
-            MoveDelegate.mapTransports(route, paratroops, airTransports, true);
+            MoveDelegate.mapTransportsToLoad(paratroops, airTransports);
         final HashMap<Unit, Collection<Unit>> dependentUnits = new HashMap<Unit, Collection<Unit>>();
         final Collection<Unit> singleCollection = new ArrayList<Unit>();
         for (final Unit unit : unitsToCapableAirTransports.keySet()) {

@@ -1292,7 +1292,7 @@ public class MoveValidator {
     if (!allParatroops.containsAll(paratroopsRequiringTransport)) {
       return false;
     }
-    final Map<Unit, Unit> transportLoadMap = MoveDelegate.mapTransports(route, units, airTransports, true);
+    final Map<Unit, Unit> transportLoadMap = MoveDelegate.mapTransportsToLoad(units, airTransports);
     if (!transportLoadMap.keySet().containsAll(paratroopsRequiringTransport)) {
       return false;
     }
@@ -1353,7 +1353,7 @@ public class MoveValidator {
       // Map<Unit, Unit> airTransportsAndParatroops = MoveDelegate.mapTransports(route, paratroopsRequiringTransport,
       // airTransports);
       final Map<Unit, Unit> airTransportsAndParatroops =
-          MoveDelegate.mapTransports(route, paratroopsRequiringTransport, airTransports, true);
+          MoveDelegate.mapTransportsToLoad(paratroopsRequiringTransport, airTransports);
       for (final Unit paratroop : airTransportsAndParatroops.keySet()) {
         if (Matches.unitHasMoved.match(paratroop)) {
           result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);

@@ -153,7 +153,7 @@ public class MovePerformer implements Serializable {
         final Collection<Unit> paratroops = Match.getMatches(arrived, Matches.UnitIsAirTransportable);
         if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
           final Map<Unit, Unit> transportingAir =
-              MoveDelegate.mapTransports(route, paratroops, airTransports, true);
+              MoveDelegate.mapTransportsToLoad(paratroops, airTransports);
           dependentOnSomethingTilTheEndOfRoute.addAll(transportingAir.keySet());
         }
         final Collection<Unit> presentFromStartTilEnd = new ArrayList<Unit>(arrived);

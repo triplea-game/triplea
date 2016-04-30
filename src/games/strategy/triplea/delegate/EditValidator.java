@@ -90,7 +90,7 @@ public class EditValidator {
             return "Can't add land units to water without enough transports";
           }
           final Map<Unit, Unit> mapLoading =
-              MoveDelegate.mapTransports(null, landUnitsToAdd, seaTransports, true);
+              MoveDelegate.mapTransportsToLoad(landUnitsToAdd, seaTransports);
           if (!mapLoading.keySet().containsAll(landUnitsToAdd)) {
             return "Can't add land units to water without enough transports";
           }

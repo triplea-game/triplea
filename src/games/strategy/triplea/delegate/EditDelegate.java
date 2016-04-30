@@ -101,7 +101,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
           if (seaTransports.isEmpty()) {
             return "Can't add land units to water without enough transports";
           }
-          mapLoading = MoveDelegate.mapTransports(null, landUnitsToAdd, seaTransports, true);
+          mapLoading = MoveDelegate.mapTransportsToLoad(landUnitsToAdd, seaTransports);
           if (!mapLoading.keySet().containsAll(landUnitsToAdd)) {
             return "Can't add land units to water without enough transports";
           }

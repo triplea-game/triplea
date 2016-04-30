@@ -963,7 +963,7 @@ public class MovePanel extends AbstractMovePanel {
         public boolean match(final Collection<Unit> units) {
           final Collection<Unit> unitsToLoad = Match.getMatches(units, Matches.UnitIsAirTransportable);
           final Map<Unit, Unit> unitMap =
-              MoveDelegate.mapTransports(route, unitsToLoad, airTransportsToLoad, true);
+              MoveDelegate.mapTransportsToLoad(unitsToLoad, airTransportsToLoad);
           boolean ableToLoad = true;
           for (final Unit unit : unitsToLoad) {
             if (!unitMap.keySet().contains(unit)) {
@@ -982,7 +982,7 @@ public class MovePanel extends AbstractMovePanel {
         final String action = "load";
         loadedUnits = UserChooseUnits(defaultSelections, unitsToLoadMatch, unitsToLoad, title, action);
         final Map<Unit, Unit> mapping =
-            MoveDelegate.mapTransports(route, loadedUnits, airTransportsToLoad, true);
+            MoveDelegate.mapTransportsToLoad(loadedUnits, airTransportsToLoad);
         for (final Unit unit : mapping.keySet()) {
           final Collection<Unit> unitsColl = new ArrayList<Unit>();
           unitsColl.add(unit);

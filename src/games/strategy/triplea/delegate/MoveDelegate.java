@@ -631,24 +631,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
   /**
    * This method is static so it can be called from the client side.
    *
-   * @return a map of unit -> transport (null if no mapping can be
-   *         done either because there is not sufficient transport capacity or because
-   *         a unit is not with its transport)
-   */
-  public static Map<Unit, Unit> mapTransports(final Route route, final Collection<Unit> units,
-      final Collection<Unit> transportsToLoad, final boolean isload) {
-    if (isload) {
-      return mapTransportsToLoad(units, transportsToLoad);
-    }
-    if (route != null && route.isUnload()) {
-      return mapTransportsAlreadyLoaded(units, route.getStart().getUnits().getUnits());
-    }
-    return mapTransportsAlreadyLoaded(units, units);
-  }
-
-  /**
-   * This method is static so it can be called from the client side.
-   *
    * @return list of max number of each type of unit that may be loaded
    */
   public static List<Unit> mapAirTransportPossibilities(final Route route, final Collection<Unit> units,
@@ -687,7 +669,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
    * Returns a map of unit -> transport. Tries to find transports to load all
    * units. If it can't succeed returns an empty Map.
    */
-  private static Map<Unit, Unit> mapTransportsToLoad(final Collection<Unit> units, final Collection<Unit> transports) {
+  public static Map<Unit, Unit> mapTransportsToLoad(final Collection<Unit> units, final Collection<Unit> transports) {
     final List<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
     int transportIndex = 0;
     final Comparator<Unit> transportCostComparator = new Comparator<Unit>() {
