@@ -5,6 +5,8 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
+import games.strategy.performance.Perf;
+import games.strategy.performance.PerfTimer;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -138,9 +140,11 @@ class TerritoryNameDrawable implements IDrawable {
     int y;
     final Point namePlace = mapData.getNamePlacementPoint(territory);
     if (namePlace == null) {
-      final Rectangle territoryBounds = getBestTerritoryNameRect(mapData, territory, fm);
-      x = territoryBounds.x + (int) territoryBounds.getWidth() / 2 - fm.stringWidth(territory.getName()) / 2;
-      y = territoryBounds.y + (int) territoryBounds.getHeight() / 2 + fm.getAscent() / 2;
+      try (PerfTimer timer = Perf.startTimer("Place land territory name for " + territory.getName())) {
+        final Rectangle territoryBounds = getBestTerritoryNameRect(mapData, territory, fm);
+        x = territoryBounds.x + (int) territoryBounds.getWidth() / 2 - fm.stringWidth(territory.getName()) / 2;
+        y = territoryBounds.y + (int) territoryBounds.getHeight() / 2 + fm.getAscent() / 2;
+      }
     } else {
       x = namePlace.x;
       y = namePlace.y;
@@ -187,41 +191,35 @@ class TerritoryNameDrawable implements IDrawable {
   private Rectangle getBestTerritoryNameRect(final MapData mapData, final Territory territory,
       final FontMetrics fontMetrics) {
 
-    // Find bounding rectangle and use to create parameters for a grid across the territory
+    // Find bounding rectangle and parameters for creating a grid (20 x 20) across the territory
     final Rectangle territoryBounds = mapData.getBoundingRect(territory);
     Rectangle result = territoryBounds;
     final int maxX = territoryBounds.x + territoryBounds.width;
     final int maxY = territoryBounds.y + territoryBounds.height;
     final int centerY = territoryBounds.y + territoryBounds.height / 2;
-    final int minWidth = fontMetrics.stringWidth(territory.getName());
-    final int increment = fontMetrics.getAscent();
+    final int incrementX = (int) Math.ceil(territoryBounds.width / 20.0);
+    final int incrementY = (int) Math.ceil(territoryBounds.height / 20.0);
+    final int nameWidth = fontMetrics.stringWidth(territory.getName());
+    final int nameHeight = fontMetrics.getAscent();
     int maxScore = 0;
 
     // Loop through the grid moving the starting point and determining max width at that point
-    for (int x = territoryBounds.x; x < maxX - increment; x += increment) {
-      for (int y = territoryBounds.y; y < maxY - increment; y += increment) {
-        for (int endX = maxX; endX > x; endX -= increment) {
-          final Rectangle current = new Rectangle(x, y, endX - x, increment);
+    for (int x = territoryBounds.x; x < maxX - nameWidth; x += incrementX) {
+      for (int y = territoryBounds.y; y < maxY - nameHeight; y += incrementY) {
+        for (int endX = maxX; endX > x; endX -= incrementX) {
+          final Rectangle rectangle = new Rectangle(x, y, endX - x, nameHeight);
 
           // Ranges from 0 when at very top or bottom of territory to height/2 when at vertical center
-          final int verticalDistanceFromEdge = territoryBounds.height / 2 - Math.abs(centerY - y - increment);
+          final int verticalDistanceFromEdge = territoryBounds.height / 2 - Math.abs(centerY - nameHeight - y);
 
           // Score rectangle based on how close to vertical center and territory width at location
-          final int score = verticalDistanceFromEdge * current.width;
-          if (current.width > minWidth && score > maxScore) {
+          final int score = verticalDistanceFromEdge * rectangle.width;
+          if (rectangle.width > nameWidth && score > maxScore) {
 
             // Check to make sure rectangle is contained in the territory
-            boolean isContained = false;
-            final List<Polygon> polygons = mapData.getPolygons(territory.getName());
-            for (final Polygon polygon : polygons) {
-              if (polygon.contains(current)) {
-                maxScore = score;
-                result = current;
-                isContained = true;
-                break;
-              }
-            }
-            if (isContained) {
+            if (isRectangleContainedInTerritory(rectangle, territory, mapData)) {
+              maxScore = score;
+              result = rectangle;
               break;
             }
           }
@@ -229,6 +227,17 @@ class TerritoryNameDrawable implements IDrawable {
       }
     }
     return result;
+  }
+
+  private boolean isRectangleContainedInTerritory(final Rectangle rectangle, final Territory territory,
+      final MapData mapData) {
+    final List<Polygon> polygons = mapData.getPolygons(territory.getName());
+    for (final Polygon polygon : polygons) {
+      if (polygon.contains(rectangle)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private void draw(final Rectangle bounds, final Graphics2D graphics, final int x, final int y, final Image img,
