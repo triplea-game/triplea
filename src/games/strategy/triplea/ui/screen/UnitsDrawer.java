@@ -77,9 +77,9 @@ public class UnitsDrawer implements IDrawable {
         m_damaged > 0 || m_bombingUnitDamage > 0, m_disabled);
     graphics.drawImage(img, m_placementPoint.x - bounds.x, m_placementPoint.y - bounds.y, null);
     if(!type.getName().equals("aaGun") && !type.getName().equals("factory")){//TODO add every "static" non-movable unit type of every map.
-      final int xoffset = Math.round(img.getWidth(null) * 0.8f);//If someone wants to put more afford in this feature he could add an algorithm calculation the right-bottom corner
-      final int yoffset = Math.round(img.getHeight(null) * 0.6f);
       final Image flag = m_uiContext.getFlagImageFactory().getSmallFlag(owner);
+      final int xoffset = img.getWidth(null) - flag.getWidth(null);//If someone wants to put more afford in this feature he could add an algorithm calculation the right-bottom corner
+      final int yoffset = img.getHeight(null) - flag.getHeight(null);
       graphics.drawImage(flag, (m_placementPoint.x - bounds.x) + xoffset, (m_placementPoint.y - bounds.y) + yoffset, null);
     }
     // more then 1 unit of this category
