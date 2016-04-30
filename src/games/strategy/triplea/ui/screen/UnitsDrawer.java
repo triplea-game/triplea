@@ -34,7 +34,6 @@ public class UnitsDrawer implements IDrawable {
   private final boolean m_overflow;
   private final String m_territoryName;
   private final IUIContext m_uiContext;
-
   public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint,
       final int damaged, final int bombingUnitDamage, final boolean disabled, final boolean overflow,
       final String territoryName, final IUIContext uiContext2) {
@@ -77,6 +76,12 @@ public class UnitsDrawer implements IDrawable {
     final Image img = m_uiContext.getUnitImageFactory().getImage(type, owner, data,
         m_damaged > 0 || m_bombingUnitDamage > 0, m_disabled);
     graphics.drawImage(img, m_placementPoint.x - bounds.x, m_placementPoint.y - bounds.y, null);
+    if(!type.getName().equals("aaGun") && !type.getName().equals("factory")){//TODO add every "static" non-movable unit type of every map.
+      final int xoffset = Math.round(img.getWidth(null) * 0.8f);//If someone wants to put more afford in this feature he could add an algorithm calculation the right-bottom corner
+      final int yoffset = Math.round(img.getHeight(null) * 0.6f);
+      final Image flag = m_uiContext.getFlagImageFactory().getSmallFlag(owner);
+      graphics.drawImage(flag, (m_placementPoint.x - bounds.x) + xoffset, (m_placementPoint.y - bounds.y) + yoffset, null);
+    }
     // more then 1 unit of this category
     if (m_count != 1) {
       final int stackSize = mapData.getDefaultUnitsStackSize();
