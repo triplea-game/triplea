@@ -1,27 +1,5 @@
 package games.strategy.triplea.ui;
 
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JOptionPane;
-
 import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -54,6 +32,28 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
+
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JOptionPane;
 
 public class MovePanel extends AbstractMovePanel {
   private static final long serialVersionUID = 5004515340964828564L;
@@ -130,9 +130,10 @@ public class MovePanel extends AbstractMovePanel {
   private void sortUnitsToMove(final List<Unit> units, final Route route) {
     if (units == null || units.isEmpty()) {
       return;
-    } else if ( route == null ) {
-      Exception nullRouteError = (new IllegalArgumentException("route is not supposed to be null"));
-      ClientLogger.logQuietly("Programming error, route should not be null here. Aborting sort operation and returning.",  nullRouteError );
+    } else if (route == null) {
+      final Exception nullRouteError = (new IllegalArgumentException("route is not supposed to be null"));
+      ClientLogger.logQuietly(
+          "Programming error, route should not be null here. Aborting sort operation and returning.", nullRouteError);
     }
 
     final Comparator<Unit> unitComparator;
@@ -962,7 +963,7 @@ public class MovePanel extends AbstractMovePanel {
         public boolean match(final Collection<Unit> units) {
           final Collection<Unit> unitsToLoad = Match.getMatches(units, Matches.UnitIsAirTransportable);
           final Map<Unit, Unit> unitMap =
-              MoveDelegate.mapTransports(route, unitsToLoad, airTransportsToLoad, true, player);
+              MoveDelegate.mapTransports(route, unitsToLoad, airTransportsToLoad, true);
           boolean ableToLoad = true;
           for (final Unit unit : unitsToLoad) {
             if (!unitMap.keySet().contains(unit)) {
@@ -981,7 +982,7 @@ public class MovePanel extends AbstractMovePanel {
         final String action = "load";
         loadedUnits = UserChooseUnits(defaultSelections, unitsToLoadMatch, unitsToLoad, title, action);
         final Map<Unit, Unit> mapping =
-            MoveDelegate.mapTransports(route, loadedUnits, airTransportsToLoad, true, player);
+            MoveDelegate.mapTransports(route, loadedUnits, airTransportsToLoad, true);
         for (final Unit unit : mapping.keySet()) {
           final Collection<Unit> unitsColl = new ArrayList<Unit>();
           unitsColl.add(unit);
@@ -1102,7 +1103,7 @@ public class MovePanel extends AbstractMovePanel {
         m_forced.add(territory);
       }
       updateRouteAndMouseShadowUnits(
-          getRoute(getFirstSelectedTerritory(), getFirstSelectedTerritory(), m_selectedUnits));
+      getRoute(getFirstSelectedTerritory(), getFirstSelectedTerritory(), m_selectedUnits));
     }
 
     private CompositeMatch<Unit> getUnloadableMatch() {
@@ -1438,10 +1439,10 @@ public class MovePanel extends AbstractMovePanel {
   public KeyListener getUndoMoveKeyListener() {
     return new KeyListener() {
       @Override
-      public void keyTyped(KeyEvent e) {}
+      public void keyTyped(final KeyEvent e) {}
 
       @Override
-      public void keyPressed(KeyEvent e) {
+      public void keyPressed(final KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_U &&
             getMap().getHighlightedUnits() != null && !getMap().getHighlightedUnits().isEmpty()) {
           m_undoableMovesPanel.undoMoves(getMap().getHighlightedUnits());
@@ -1449,7 +1450,7 @@ public class MovePanel extends AbstractMovePanel {
       }
 
       @Override
-      public void keyReleased(KeyEvent e) {}
+      public void keyReleased(final KeyEvent e) {}
     };
 
   }

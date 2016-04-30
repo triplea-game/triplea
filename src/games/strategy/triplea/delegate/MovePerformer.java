@@ -1,16 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -33,6 +22,17 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class MovePerformer implements Serializable {
   private static final long serialVersionUID = 3752242292777658310L;
@@ -153,7 +153,7 @@ public class MovePerformer implements Serializable {
         final Collection<Unit> paratroops = Match.getMatches(arrived, Matches.UnitIsAirTransportable);
         if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
           final Map<Unit, Unit> transportingAir =
-              MoveDelegate.mapAirTransports(route, paratroops, airTransports, true, id);
+              MoveDelegate.mapTransports(route, paratroops, airTransports, true);
           dependentOnSomethingTilTheEndOfRoute.addAll(transportingAir.keySet());
         }
         final Collection<Unit> presentFromStartTilEnd = new ArrayList<Unit>(arrived);
@@ -175,14 +175,18 @@ public class MovePerformer implements Serializable {
                   Matches.unitIsBeingTransported().invert()));
           final CompositeMatchOr<Unit> allBombingRaid = new CompositeMatchOr<Unit>(Matches.UnitIsStrategicBomber);
           final boolean canCreateAirBattle =
-              !enemyTargetsTotal.isEmpty() && games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data)
+              !enemyTargetsTotal.isEmpty()
+                  && games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data)
                   && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, true);
           if (canCreateAirBattle) {
             allBombingRaid.add(Matches.unitCanEscort);
           }
           final boolean allCanBomb = Match.allMatch(arrived, allBombingRaid);
-          final Collection<Unit> enemyTargets = Match.getMatches(enemyTargetsTotal, Matches.unitIsOfTypes(UnitAttachment
-              .getAllowedBombingTargetsIntersection(Match.getMatches(arrived, Matches.UnitIsStrategicBomber), data)));
+          final Collection<Unit> enemyTargets =
+              Match.getMatches(enemyTargetsTotal,
+                  Matches.unitIsOfTypes(UnitAttachment
+                      .getAllowedBombingTargetsIntersection(Match.getMatches(arrived, Matches.UnitIsStrategicBomber),
+                          data)));
           final boolean targetsOrEscort = !enemyTargets.isEmpty()
               || (!enemyTargetsTotal.isEmpty() && canCreateAirBattle && Match.allMatch(arrived, Matches.unitCanEscort));
           boolean targetedAttack = false;
@@ -236,9 +240,11 @@ public class MovePerformer implements Serializable {
             // We are in non-combat move phase, and we are taking over friendly territories. No need for a battle. (This
             // could get really
             // difficult if we want these recorded in battle records).
-            for (final Territory t : route.getMatches(new CompositeMatchAnd<Territory>(
-                Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
-                Matches.TerritoryIsBlitzable(id, data)))) {
+            for (final Territory t : route
+                .getMatches(new CompositeMatchAnd<Territory>(
+                    Matches
+                        .territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
+                    Matches.TerritoryIsBlitzable(id, data)))) {
               if (Matches.isTerritoryEnemy(id, data).match(t) || Matches.territoryHasEnemyUnits(id, data).match(t)) {
                 continue;
               }

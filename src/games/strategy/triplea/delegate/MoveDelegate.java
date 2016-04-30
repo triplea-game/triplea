@@ -636,7 +636,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
    *         a unit is not with its transport)
    */
   public static Map<Unit, Unit> mapTransports(final Route route, final Collection<Unit> units,
-      final Collection<Unit> transportsToLoad, final boolean isload, final PlayerID player) {
+      final Collection<Unit> transportsToLoad, final boolean isload) {
     if (isload) {
       return mapTransportsToLoad(units, transportsToLoad);
     }
@@ -644,18 +644,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
       return mapTransportsAlreadyLoaded(units, route.getStart().getUnits().getUnits());
     }
     return mapTransportsAlreadyLoaded(units, units);
-  }
-
-  /**
-   * This method is static so it can be called from the client side.
-   *
-   * @return a map of unit -> air transport (null if no mapping can be
-   *         done either because there is not sufficient transport capacity or because
-   *         a unit is not with its transport)
-   */
-  public static Map<Unit, Unit> mapAirTransports(final Route route, final Collection<Unit> units,
-      final Collection<Unit> transportsToLoad, final boolean isload, final PlayerID player) {
-    return mapTransports(route, units, transportsToLoad, isload, player);
   }
 
   /**
