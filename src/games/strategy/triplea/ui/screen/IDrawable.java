@@ -1,5 +1,19 @@
 package games.strategy.triplea.ui.screen;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
+import games.strategy.engine.data.Unit;
+import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.image.MapImage;
+import games.strategy.triplea.image.TileImageFactory;
+import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.MapData;
+import games.strategy.triplea.util.Stopwatch;
+
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.GradientPaint;
@@ -18,20 +32,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TerritoryEffect;
-import games.strategy.engine.data.Unit;
-import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.image.TileImageFactory;
-import games.strategy.triplea.ui.IUIContext;
-import games.strategy.triplea.ui.MapData;
-import games.strategy.triplea.util.Stopwatch;
 
 public interface IDrawable {
   public Logger s_logger = Logger.getLogger(IDrawable.class.getName());
@@ -128,26 +128,24 @@ class TerritoryNameDrawable implements IDrawable {
         return;
       }
     }
-    final Rectangle territoryBounds = mapData.getBoundingRect(territory);
+
     graphics.setFont(MapImage.getPropertyMapFont());
     graphics.setColor(MapImage.getPropertyTerritoryNameAndPUAndCommentcolor());
     final FontMetrics fm = graphics.getFontMetrics();
+
+    // if we specify a placement point, use it otherwise try to center it
     int x;
     int y;
-    // if we specify a placement point, use it
-    // otherwise, put it in the center
     final Point namePlace = mapData.getNamePlacementPoint(territory);
     if (namePlace == null) {
-      x = territoryBounds.x;
-      y = territoryBounds.y;
-      x += (int) territoryBounds.getWidth() >> 1;
-      y += (int) territoryBounds.getHeight() >> 1;
-      x -= fm.stringWidth(territory.getName()) >> 1;
-      y += fm.getAscent() >> 1;
+      final Rectangle territoryBounds = getBestTerritoryNameRect(mapData, territory, fm);
+      x = territoryBounds.x + (int) territoryBounds.getWidth() / 2 - fm.stringWidth(territory.getName()) / 2;
+      y = territoryBounds.y + (int) territoryBounds.getHeight() / 2 + fm.getAscent() / 2;
     } else {
       x = namePlace.x;
       y = namePlace.y;
     }
+
     // draw comments above names
     if (showComments && drawComments && commentText != null) {
       final Point place = mapData.getCommentMarkerLocation(territory);
@@ -178,6 +176,64 @@ class TerritoryNameDrawable implements IDrawable {
             y + fm.getLeading() + fm.getAscent(), img, prod, drawFromTopLeft);
       }
     }
+  }
+
+  /**
+   * Find the best rectangle inside the territory to place the name in. Finds the rectangle
+   * that can fit the name, that is the closest to the vertical center, and has a large width at
+   * that location. If there isn't any rectangles that can fit the name then default back to the
+   * bounding rectangle.
+   */
+  private Rectangle getBestTerritoryNameRect(final MapData mapData, final Territory territory,
+      final FontMetrics fontMetrics) {
+
+    // Find bounding rectangle and parameters for creating a grid (20 x 20) across the territory
+    final Rectangle territoryBounds = mapData.getBoundingRect(territory);
+    Rectangle result = territoryBounds;
+    final int maxX = territoryBounds.x + territoryBounds.width;
+    final int maxY = territoryBounds.y + territoryBounds.height;
+    final int centerY = territoryBounds.y + territoryBounds.height / 2;
+    final int incrementX = (int) Math.ceil(territoryBounds.width / 20.0);
+    final int incrementY = (int) Math.ceil(territoryBounds.height / 20.0);
+    final int nameWidth = fontMetrics.stringWidth(territory.getName());
+    final int nameHeight = fontMetrics.getAscent();
+    int maxScore = 0;
+
+    // Loop through the grid moving the starting point and determining max width at that point
+    for (int x = territoryBounds.x; x < maxX - nameWidth; x += incrementX) {
+      for (int y = territoryBounds.y; y < maxY - nameHeight; y += incrementY) {
+        for (int endX = maxX; endX > x; endX -= incrementX) {
+          final Rectangle rectangle = new Rectangle(x, y, endX - x, nameHeight);
+
+          // Ranges from 0 when at very top or bottom of territory to height/2 when at vertical center
+          final int verticalDistanceFromEdge = territoryBounds.height / 2 - Math.abs(centerY - nameHeight - y);
+
+          // Score rectangle based on how close to vertical center and territory width at location
+          final int score = verticalDistanceFromEdge * rectangle.width;
+          if (rectangle.width > nameWidth && score > maxScore) {
+
+            // Check to make sure rectangle is contained in the territory
+            if (isRectangleContainedInTerritory(rectangle, territory, mapData)) {
+              maxScore = score;
+              result = rectangle;
+              break;
+            }
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  private boolean isRectangleContainedInTerritory(final Rectangle rectangle, final Territory territory,
+      final MapData mapData) {
+    final List<Polygon> polygons = mapData.getPolygons(territory.getName());
+    for (final Polygon polygon : polygons) {
+      if (polygon.contains(rectangle)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private void draw(final Rectangle bounds, final Graphics2D graphics, final int x, final int y, final Image img,
