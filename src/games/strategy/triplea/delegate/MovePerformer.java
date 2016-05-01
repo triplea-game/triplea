@@ -17,6 +17,7 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.MovePanel;
+import games.strategy.triplea.util.TransportUtils;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
@@ -144,7 +145,7 @@ public class MovePerformer implements Serializable {
         final CompositeMatch<Territory> mustFightThrough = getMustFightThroughMatch(id, data);
         final Collection<Unit> arrived = Collections.unmodifiableList(Util.intersection(units, arrivingUnits[0]));
         final Collection<Unit> arrivedCopyForBattles = new ArrayList<Unit>(arrived);
-        final Map<Unit, Unit> transporting = MoveDelegate.mapTransports(route, arrived, transportsToLoad);
+        final Map<Unit, Unit> transporting = TransportUtils.mapTransports(route, arrived, transportsToLoad);
         // If we have paratrooper land units being carried by air units, they should be dropped off in the last
         // territory. This means they
         // are still dependent during the middle steps of the route.
@@ -152,8 +153,7 @@ public class MovePerformer implements Serializable {
         final Collection<Unit> airTransports = Match.getMatches(arrived, Matches.UnitIsAirTransport);
         final Collection<Unit> paratroops = Match.getMatches(arrived, Matches.UnitIsAirTransportable);
         if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
-          final Map<Unit, Unit> transportingAir =
-              MoveDelegate.mapTransportsToLoad(paratroops, airTransports);
+          final Map<Unit, Unit> transportingAir = TransportUtils.mapTransportsToLoad(paratroops, airTransports);
           dependentOnSomethingTilTheEndOfRoute.addAll(transportingAir.keySet());
         }
         final Collection<Unit> presentFromStartTilEnd = new ArrayList<Unit>(arrived);
