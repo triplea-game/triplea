@@ -1288,7 +1288,7 @@ public class MoveValidator {
     }
     final List<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
     final List<Unit> allParatroops =
-        MoveDelegate.mapAirTransportPossibilities(route, paratroopsRequiringTransport, airTransports, false, player);
+        MoveDelegate.findUnitsToLoadOnAirTransports(paratroopsRequiringTransport, airTransports);
     if (!allParatroops.containsAll(paratroopsRequiringTransport)) {
       return false;
     }

@@ -977,7 +977,7 @@ public class MovePanel extends AbstractMovePanel {
       if (!airTransportsToLoad.isEmpty()) {
         // Get a list of the units that could be loaded on the transport (based upon transport capacity)
         final List<Unit> unitsToLoad =
-            MoveDelegate.mapAirTransportPossibilities(route, capableUnitsToLoad, airTransportsToLoad, true, player);
+            MoveDelegate.findUnitsToLoadOnAirTransports(capableUnitsToLoad, airTransportsToLoad);
         final String title = "Load air transports";
         final String action = "load";
         loadedUnits = UserChooseUnits(defaultSelections, unitsToLoadMatch, unitsToLoad, title, action);

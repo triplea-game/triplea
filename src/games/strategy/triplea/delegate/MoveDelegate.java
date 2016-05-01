@@ -627,16 +627,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
   }
 
   /**
-   * This method is static so it can be called from the client side.
-   *
-   * @return list of max number of each type of unit that may be loaded
-   */
-  public static List<Unit> mapAirTransportPossibilities(final Route route, final Collection<Unit> units,
-      final Collection<Unit> transportsToLoad, final boolean isload, final PlayerID player) {
-    return mapAirTransportsToLoad2(units, Match.getMatches(transportsToLoad, Matches.UnitIsAirTransport));
-  }
-
-  /**
    * Returns a map of unit -> transport. Unit must already be loaded in the
    * transport. If no units are loaded in the transports then an empty Map will
    * be returned.
@@ -756,7 +746,9 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
     };
   }
 
-  private static List<Unit> mapAirTransportsToLoad2(final Collection<Unit> units, final Collection<Unit> transports) {
+  public static List<Unit> findUnitsToLoadOnAirTransports(final Collection<Unit> units, final Collection<Unit> transports) {
+    final Collection<Unit> airTransports = Match.getMatches(transports, Matches.UnitIsAirTransport);
+
     final Comparator<Unit> c = new Comparator<Unit>() {
       @Override
       public int compare(final Unit o1, final Unit o2) {
@@ -773,13 +765,13 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
 
     // Get a list of the unit categories
     final Collection<UnitCategory> unitTypes = UnitSeperator.categorize(units, null, false, true);
-    final Collection<UnitCategory> transportTypes = UnitSeperator.categorize(transports, null, false, false);
+    final Collection<UnitCategory> transportTypes = UnitSeperator.categorize(airTransports, null, false, false);
     for (final UnitCategory unitType : unitTypes) {
       final int transportCost = unitType.getTransportCost();
       for (final UnitCategory transportType : transportTypes) {
         final int transportCapacity = UnitAttachment.get(transportType.getType()).getTransportCapacity();
         if (transportCost > 0 && transportCapacity >= transportCost) {
-          final int transportCount = Match.countMatches(transports, Matches.unitIsOfType(transportType.getType()));
+          final int transportCount = Match.countMatches(airTransports, Matches.unitIsOfType(transportType.getType()));
           final int ttlTransportCapacity = transportCount * (int) Math.floor(transportCapacity / transportCost);
           totalLoad.addAll(Match.getNMatches(units, ttlTransportCapacity, Matches.unitIsOfType(unitType.getType())));
         }
