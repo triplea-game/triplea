@@ -37,7 +37,6 @@ public class NewGameChooser extends JDialog {
 
   private JButton m_okButton;
   private JButton m_cancelButton;
-  private JButton m_refreshGamesButton;
   private JList<NewGameChooserEntry> m_gameList;
   private JPanel m_infoPanel;
   private JEditorPane m_notesPanel;
@@ -57,7 +56,6 @@ public class NewGameChooser extends JDialog {
   private void createComponents() {
     m_okButton = new JButton("OK");
     m_cancelButton = new JButton("Cancel");
-    m_refreshGamesButton = new JButton("Refresh Game List");
     m_gameListModel = getNewGameChooserModel();
     m_gameList = new JList<>(m_gameListModel);
     m_infoPanel = new JPanel();
@@ -92,7 +90,6 @@ public class NewGameChooser extends JDialog {
     add(buttonsPanel, BorderLayout.SOUTH);
     buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
     buttonsPanel.add(Box.createHorizontalStrut(30));
-    buttonsPanel.add(m_refreshGamesButton);
     buttonsPanel.add(Box.createGlue());
     buttonsPanel.add(m_okButton);
     buttonsPanel.add(m_cancelButton);
@@ -185,7 +182,6 @@ public class NewGameChooser extends JDialog {
   private void setWidgetActivation() {}
 
   private void setupListeners() {
-    m_refreshGamesButton.addActionListener(e -> refreshGameListBackground());
     m_okButton.addActionListener(e -> selectAndReturn());
     m_cancelButton.addActionListener(e -> cancelAndReturn());
     m_gameList.addListSelectionListener(e -> updateInfoPanel());
@@ -257,15 +253,6 @@ public class NewGameChooser extends JDialog {
           m_gameList.setEnabled(true);
         }
   }
-  
-  private void refreshGameListBackground(){
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        refreshGameList();
-      }
-    });
-  };
 
   private void selectAndReturn() {
     m_choosen = getSelected();
