@@ -337,6 +337,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     addMapFontAndColorEditorMenu(menuView);
     addChatTimeMenu(menuView);
     addShowCommentLog(menuView);
+    addShowUnitNation(menuView);
     // The menuItem to turn TabbedProduction on or off
     addTabbedProduction(menuView);
     addShowGameUuid(menuView);
@@ -436,6 +437,15 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     final JCheckBoxMenuItem showCommentLog = new JCheckBoxMenuItem("Show Comment Log");
     showCommentLog.setModel(frame.getShowCommentLogButtonModel());
     parentMenu.add(showCommentLog).setMnemonic(KeyEvent.VK_L);
+  }
+  
+  /**
+   * @param parentMenu
+   */
+  private void addShowUnitNation(final JMenu parentMenu) {
+    final JCheckBoxMenuItem showUnitNation = new JCheckBoxMenuItem("Show Unit's Nation");
+    showUnitNation.setModel(frame.getShowUnitNationButtonModel());
+    parentMenu.add(showUnitNation).setMnemonic(KeyEvent.VK_N);
   }
 
   /**

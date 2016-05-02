@@ -97,7 +97,7 @@ import games.strategy.util.LocalizeHTML;
 import games.strategy.util.SoftJEditorPane;
 import games.strategy.util.Triple;
 
-public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMenuBar {
+public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMenuBar {
   private static final long serialVersionUID = -1447295944297939539L;
   protected final CustomGameFrame frame;
   protected SoftJEditorPane gameNotesPane;
@@ -151,7 +151,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     }
   }
 
-  protected void createGameSpecificMenus(final JMenuBar menuBar) {}
+  protected abstract void createGameSpecificMenus(final JMenuBar menuBar);
 
   public void dispose() {
     if (gameNotesPane != null) {
@@ -351,9 +351,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     parentMenu.add(guidesLink);
   }
 
-  protected void addGameSpecificHelpMenus(final JMenu helpMenu) {}
-
-
+  protected abstract void addGameSpecificHelpMenus(final JMenu helpMenu);
 
   protected void addAboutMenu(final JMenu parentMenu) {
     final String text = "<h2>" + getData().getGameName() + "</h2>" + "<p><b>Engine Version:</b> "
@@ -384,11 +382,9 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
           JOptionPane.showMessageDialog(frame, editorPane, "About " + frame.getGame().getData().getGameName(),
               JOptionPane.PLAIN_MESSAGE);
         }
-        
       });
     }
   }
-
 
   protected void createFileMenu(final JMenuBar menuBar) {
     final JMenu fileMenu = new JMenu("File");

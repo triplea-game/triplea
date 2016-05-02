@@ -154,6 +154,7 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.ui.history.HistoryDetailsPanel;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.triplea.ui.history.HistoryPanel;
+import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.Util;
@@ -202,6 +203,7 @@ public class TripleAFrame extends MainGameFrame {
   private EditPanel m_editPanel;
   private final ButtonModel m_editModeButtonModel;
   private final ButtonModel m_showCommentLogButtonModel;
+  private final ButtonModel m_showUnitNationButtonModel;
   private IEditDelegate m_editDelegate;
   private JSplitPane m_gameCenterPanel;
   private Territory m_territoryLastEntered;
@@ -232,6 +234,9 @@ public class TripleAFrame extends MainGameFrame {
     m_showCommentLogButtonModel = new JToggleButton.ToggleButtonModel();
     m_showCommentLogButtonModel.addActionListener(m_showCommentLogAction);
     m_showCommentLogButtonModel.setSelected(false);
+    m_showUnitNationButtonModel = new JToggleButton.ToggleButtonModel();
+    m_showUnitNationButtonModel.addActionListener(m_showUnitNationAction);
+    m_showUnitNationButtonModel.setSelected(true);
     m_menu = new TripleaMenu(this);
     this.setJMenuBar(m_menu);
     final ImageScrollModel model = new ImageScrollModel();
@@ -557,6 +562,7 @@ public class TripleAFrame extends MainGameFrame {
     m_showHistoryAction = null;
     m_showMapOnlyAction = null;
     m_showCommentLogAction = null;
+    m_showUnitNationAction = null;
     localPlayers = null;
     m_editPanel = null;
     m_messageAndDialogThreadPool = null;
@@ -2269,6 +2275,10 @@ public class TripleAFrame extends MainGameFrame {
   public ButtonModel getShowCommentLogButtonModel() {
     return m_showCommentLogButtonModel;
   }
+  
+  public ButtonModel getShowUnitNationButtonModel() {
+    return m_showUnitNationButtonModel;
+  }
 
   public boolean getEditMode() {
     boolean isEditMode = false;
@@ -2287,7 +2297,7 @@ public class TripleAFrame extends MainGameFrame {
 
     @Override
     public void actionPerformed(final ActionEvent ae) {
-      if (((ButtonModel) ae.getSource()).isSelected()) {
+      if (m_showCommentLogButtonModel.isSelected()) {
         showCommentLog();
       } else {
         hideCommentLog();
@@ -2322,6 +2332,18 @@ public class TripleAFrame extends MainGameFrame {
       }
     }
   };
+
+  private AbstractAction m_showUnitNationAction = new AbstractAction(){
+    private static final long serialVersionUID = -8436991329658666015L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      UnitsDrawer.setNationVisible(m_showUnitNationButtonModel.isSelected());
+      getMapPanel().resetMap();
+    }
+    
+  };
+  
   private AbstractAction m_showHistoryAction = new AbstractAction("Show history") {
     private static final long serialVersionUID = -3960551522512897374L;
 
