@@ -137,7 +137,8 @@ public class UnitComparator {
     return new Comparator<Unit>() {
       @Override
       public int compare(final Unit t1, final Unit t2) {
-        // check if transport is incapable due to game state
+
+        // Check if transport is incapable due to game state
         final boolean isIncapable1 = incapableTransportMatch.match(t1);
         final boolean isIncapable2 = incapableTransportMatch.match(t2);
         if (!isIncapable1 && isIncapable2) {
@@ -146,7 +147,8 @@ public class UnitComparator {
         if (isIncapable1 && !isIncapable2) {
           return 1;
         }
-        // prioritize allied transports
+
+        // Prioritize allied transports
         final boolean isAlliedTrn1 = !t1.getOwner().equals(player);
         final boolean isAlliedTrn2 = !t2.getOwner().equals(player);
         if (isAlliedTrn1 && !isAlliedTrn2) {
@@ -155,20 +157,23 @@ public class UnitComparator {
         if (!isAlliedTrn1 && isAlliedTrn2) {
           return 1;
         }
-        // sort by decreasing transport capacity
+
+        // Sort by decreasing transport capacity
         final int compareCapacity = decreasingCapacityComparator.compare(t1, t2);
         if (compareCapacity != 0) {
           return compareCapacity;
         }
-        // sort by increasing movement
+
+        // Sort by increasing movement
         final int left1 = TripleAUnit.get(t1).getMovementLeft();
         final int left2 = TripleAUnit.get(t2).getMovementLeft();
         if (left1 != left2) {
           return left1 - left2;
         }
-        // if noTies is set, sort by hashcode so that result is deterministic
+
+        // If noTies is set, sort by hashcode so that result is deterministic
         if (noTies) {
-          return t1.hashCode() - t2.hashCode();
+          return Integer.compare(t1.hashCode(), t2.hashCode());
         } else {
           return 0;
         }
