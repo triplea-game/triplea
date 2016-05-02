@@ -141,7 +141,7 @@ public class MovePanel extends AbstractMovePanel {
     if (route.isUnload() && Match.someMatch(units, Matches.UnitIsLand)) {
       unitComparator = UnitComparator.getUnloadableUnitsComparator(units, route, getUnitOwner(units), true);
     } else {
-      unitComparator = UnitComparator.getMovableUnitsComparator(units, route, getUnitOwner(units), true);
+      unitComparator = UnitComparator.getMovableUnitsComparator(units, route);
     }
 
     Collections.sort(units, unitComparator);
@@ -155,7 +155,7 @@ public class MovePanel extends AbstractMovePanel {
       return;
     }
     Collections.sort(transports,
-        UnitComparator.getLoadableTransportsComparator(transports, route, getUnitOwner(transports), true));
+        UnitComparator.getLoadableTransportsComparator(transports, route, getUnitOwner(transports)));
   }
 
   /**
