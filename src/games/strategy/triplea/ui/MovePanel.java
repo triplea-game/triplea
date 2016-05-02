@@ -155,7 +155,7 @@ public class MovePanel extends AbstractMovePanel {
       return;
     }
     Collections.sort(transports,
-        UnitComparator.getLoadableTransportsComparator(transports, route, getUnitOwner(transports), true));
+        UnitComparator.getLoadableTransportsComparator(transports, route, getUnitOwner(transports)));
   }
 
   /**

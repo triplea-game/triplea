@@ -80,7 +80,7 @@ public class UnitComparator {
    * Return a Comparator that will order the specified transports in preferred load order.
    */
   public static Comparator<Unit> getLoadableTransportsComparator(final List<Unit> transports, final Route route,
-      final PlayerID player, final boolean noTies) {
+      final PlayerID player) {
     final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator(transports);
     final Match<Unit> incapableTransportMatch = Matches.transportCannotUnload(route.getEnd());
     return new Comparator<Unit>() {
@@ -88,7 +88,8 @@ public class UnitComparator {
       public int compare(final Unit u1, final Unit u2) {
         final TripleAUnit t1 = TripleAUnit.get(u1);
         final TripleAUnit t2 = TripleAUnit.get(u2);
-        // check if transport is incapable due to game state
+
+        // Check if transport is incapable due to game state
         final boolean isIncapable1 = incapableTransportMatch.match(t1);
         final boolean isIncapable2 = incapableTransportMatch.match(t2);
         if (!isIncapable1 && isIncapable2) {
@@ -97,7 +98,8 @@ public class UnitComparator {
         if (isIncapable1 && !isIncapable2) {
           return 1;
         }
-        // use allied transports as a last resort
+
+        // Use allied transports as a last resort
         final boolean isAlliedTrn1 = !t1.getOwner().equals(player);
         final boolean isAlliedTrn2 = !t2.getOwner().equals(player);
         if (!isAlliedTrn1 && isAlliedTrn2) {
@@ -106,23 +108,21 @@ public class UnitComparator {
         if (isAlliedTrn1 && !isAlliedTrn2) {
           return 1;
         }
-        // sort by decreasing transport capacity
+
+        // Sort by decreasing transport capacity
         final int compareCapacity = decreasingCapacityComparator.compare(t1, t2);
         if (compareCapacity != 0) {
           return compareCapacity;
         }
-        // sort by decreasing movement
+
+        // Sort by decreasing movement
         final int left1 = t1.getMovementLeft();
         final int left2 = t1.getMovementLeft();
         if (left1 != left2) {
           return left2 - left1;
         }
-        // if noTies is set, sort by hashcode so that result is deterministic
-        if (noTies) {
-          return t1.hashCode() - t2.hashCode();
-        } else {
-          return 0;
-        }
+
+        return Integer.compare(t1.hashCode(), t2.hashCode());
       }
     };
   }
