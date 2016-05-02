@@ -1,14 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
@@ -42,6 +33,15 @@ import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 import games.strategy.util.Util;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Useful match interfaces.
@@ -1735,15 +1735,15 @@ public class Matches {
       }
     };
   }
-  
-  public static Match<Unit> UnitHasEnoughMovementForRoutes(List<Route> route) {
+
+  public static Match<Unit> UnitHasEnoughMovementForRoutes(final List<Route> route) {
     return UnitHasEnoughMovementForRoute(Route.create(route));
   }
-  
-  public static Match<Unit> UnitHasEnoughMovementForRoute(List<Territory> territories) {
+
+  public static Match<Unit> UnitHasEnoughMovementForRoute(final List<Territory> territories) {
     return UnitHasEnoughMovementForRoute(new Route(territories));
   }
-  
+
   public static Match<Unit> UnitHasEnoughMovementForRoute(final Route route) {
     return new Match<Unit>() {
       @Override
@@ -2428,7 +2428,7 @@ public class Matches {
           final Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
           final Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsAirTransportable);
           if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
-            if (MoveDelegate.mapAirTransports(route, paratroops, airTransports, true, currentPlayer)
+            if (MoveDelegate.mapTransportsToLoad(paratroops, airTransports)
                 .containsKey(dependent)) {
               return true;
             }

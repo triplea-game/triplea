@@ -1,12 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
@@ -26,6 +19,13 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Triple;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Edit game state
@@ -101,7 +101,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
           if (seaTransports.isEmpty()) {
             return "Can't add land units to water without enough transports";
           }
-          mapLoading = MoveDelegate.mapTransports(null, landUnitsToAdd, seaTransports, true, player);
+          mapLoading = MoveDelegate.mapTransportsToLoad(landUnitsToAdd, seaTransports);
           if (!mapLoading.keySet().containsAll(landUnitsToAdd)) {
             return "Can't add land units to water without enough transports";
           }

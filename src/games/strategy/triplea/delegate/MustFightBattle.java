@@ -1,17 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
@@ -44,6 +32,18 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Handles logic for battles in which fighting actually occurs.
@@ -233,7 +233,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
         // Load capable bombers by default>
         final Map<Unit, Unit> unitsToCapableAirTransports =
-            MoveDelegate.mapAirTransports(route, paratroops, airTransports, true, m_attacker);
+            MoveDelegate.mapTransportsToLoad(paratroops, airTransports);
         final HashMap<Unit, Collection<Unit>> dependentUnits = new HashMap<Unit, Collection<Unit>>();
         final Collection<Unit> singleCollection = new ArrayList<Unit>();
         for (final Unit unit : unitsToCapableAirTransports.keySet()) {
@@ -384,7 +384,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       // play a sound
       if (Match.someMatch(m_attackingUnits, Matches.UnitIsSea)
           || Match.someMatch(m_defendingUnits, Matches.UnitIsSea)) {
-        if (Match.allMatch(m_attackingUnits, Matches.UnitIsSub) || (Match.someMatch(m_attackingUnits, Matches.UnitIsSub)
+        if (Match.allMatch(m_attackingUnits, Matches.UnitIsSub)
+            || (Match.someMatch(m_attackingUnits, Matches.UnitIsSub)
             && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))) {
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_SUBS, m_attacker);
         } else {
@@ -887,7 +888,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
           attackerWins(bridge);
         } else if (shouldEndBattleDueToMaxRounds()
             || (Match.allMatch(m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())
-                && Match.allMatch(m_defendingUnits, Matches.unitHasDefendValueOfAtLeast(1).invert()))) {
+            && Match.allMatch(m_defendingUnits, Matches.unitHasDefendValueOfAtLeast(1).invert()))) {
           endBattle(bridge);
           nobodyWins(bridge);
         }
@@ -1846,8 +1847,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       // submerge defending subs
       submergeUnits(defendingSubs, true, bridge);
       // checking defending air on attacking subs
-    } else
-      if (Match.allMatch(m_defendingUnits, Matches.UnitIsAir) && Match.someMatch(m_attackingUnits, Matches.UnitIsSub)) {
+    } else if (Match.allMatch(m_defendingUnits, Matches.UnitIsAir)
+        && Match.someMatch(m_attackingUnits, Matches.UnitIsSub)) {
       // Get all attacking subs in the territory
       final List<Unit> attackingSubs = Match.getMatches(m_attackingUnits, Matches.UnitIsSub);
       // submerge attacking subs
@@ -2034,7 +2035,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       bridge.addChange(change);
     }
     /**
-     * TODO  This code is actually a bug- the property is intended to tell if the return fire is
+     * TODO This code is actually a bug- the property is intended to tell if the return fire is
      * RESTRICTED- but it's used as if it's ALLOWED. The reason is the default values on the
      * property definition. However, fixing this will entail a fix to the XML to reverse
      * all values. We'll leave it as is for now and try to figure out a patch strategy later.
@@ -2361,7 +2362,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     unitList.removeAll(Match.getMatches(unitList,
         Matches.UnitCanBeInBattle(attacking, !m_battleSite.isWater(), m_data,
             (removeForNextRound ? m_round + 1 : m_round), true, doNotIncludeAA, doNotIncludeSeaBombardmentUnits)
-        .invert()));
+            .invert()));
     // remove any disabled units from combat
     unitList.removeAll(Match.getMatches(unitList, Matches.UnitIsDisabled));
     // remove capturableOnEntering units (veqryn)
@@ -2514,9 +2515,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
         final List<Unit> allyOfAttackerUnits = m_battleSite.getUnits().getMatches(Matches.UnitIsNotInfrastructure);
         if (!allyOfAttackerUnits.isEmpty()) {
           final PlayerID abandonedToPlayer = AbstractBattle.findPlayerWithMostUnits(allyOfAttackerUnits);
-          bridge.getHistoryWriter().addChildToEvent(
-              abandonedToPlayer.getName() + " takes over " + m_battleSite.getName() + " as there are no defenders left",
-              allyOfAttackerUnits);
+          bridge.getHistoryWriter()
+              .addChildToEvent(
+                  abandonedToPlayer.getName() + " takes over " + m_battleSite.getName()
+                      + " as there are no defenders left",
+                  allyOfAttackerUnits);
           // should we create a new battle records to show the ally capturing the territory (in the case where they
           // didn't already own/allied it)?
           m_battleTracker.takeOver(m_battleSite, abandonedToPlayer, bridge, null, allyOfAttackerUnits);

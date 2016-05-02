@@ -1288,11 +1288,11 @@ public class MoveValidator {
     }
     final List<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
     final List<Unit> allParatroops =
-        MoveDelegate.mapAirTransportPossibilities(route, paratroopsRequiringTransport, airTransports, false, player);
+        MoveDelegate.findUnitsToLoadOnAirTransports(paratroopsRequiringTransport, airTransports);
     if (!allParatroops.containsAll(paratroopsRequiringTransport)) {
       return false;
     }
-    final Map<Unit, Unit> transportLoadMap = MoveDelegate.mapAirTransports(route, units, airTransports, true, player);
+    final Map<Unit, Unit> transportLoadMap = MoveDelegate.mapTransportsToLoad(units, airTransports);
     if (!transportLoadMap.keySet().containsAll(paratroopsRequiringTransport)) {
       return false;
     }
@@ -1353,7 +1353,7 @@ public class MoveValidator {
       // Map<Unit, Unit> airTransportsAndParatroops = MoveDelegate.mapTransports(route, paratroopsRequiringTransport,
       // airTransports);
       final Map<Unit, Unit> airTransportsAndParatroops =
-          MoveDelegate.mapAirTransports(route, paratroopsRequiringTransport, airTransports, true, player);
+          MoveDelegate.mapTransportsToLoad(paratroopsRequiringTransport, airTransports);
       for (final Unit paratroop : airTransportsAndParatroops.keySet()) {
         if (Matches.unitHasMoved.match(paratroop)) {
           result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
