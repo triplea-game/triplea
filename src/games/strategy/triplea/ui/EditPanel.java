@@ -1,5 +1,33 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.NamedAttachable;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.RelationshipType;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.BattleCalculator;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MoveValidator;
+import games.strategy.triplea.delegate.TechAdvance;
+import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.delegate.TechnologyDelegate;
+import games.strategy.triplea.delegate.UnitBattleComparator;
+import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
+import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
+import games.strategy.util.Triple;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -35,34 +63,6 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.ProductionRule;
-import games.strategy.engine.data.RelationshipType;
-import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.Route;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.BattleCalculator;
-import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MoveValidator;
-import games.strategy.triplea.delegate.TechAdvance;
-import games.strategy.triplea.delegate.TechTracker;
-import games.strategy.triplea.delegate.TechnologyDelegate;
-import games.strategy.triplea.delegate.UnitBattleComparator;
-import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
-import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
-import games.strategy.util.Triple;
 
 public class EditPanel extends ActionPanel {
   private static final long serialVersionUID = 5043639777373556106L;
@@ -454,15 +454,16 @@ public class EditPanel extends ActionPanel {
         final JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder());
-        final JLabel helpText = new JLabel(
-            "<html><b>Click the buttons inside the relationship squares to change the relationships between players.</b>"
-                + "<br />Please note that none of this is validated by the engine or map, so the results are not guaranteed to be perfectly what you expect."
-                + "<br />In addition, any maps that use triggers could be royalled messed up by changing editing political relationships:"
-                + "<br /><em>Example: Take a map where America gets some benefit (like upgraded factories) after it goes to war for the first time, "
-                + "<br />and the american player accidentally clicked to go to war, and now wishes to undo that change. Changing America from being at war to "
-                + "<br />not being at war will not undo the benefit if it has already happened. And later, when America goes to war (for real this time), that "
-                + "<br />benefit may or may not be applied a second time, totally depending on how the map was coded (and this is not the map's fault either, "
-                + "<br />since you are using edit mode).  So if you change anything here, be on the look out for unintended consequences!</em></html>");
+        final JLabel helpText =
+            new JLabel(
+                "<html><b>Click the buttons inside the relationship squares to change the relationships between players.</b>"
+                    + "<br />Please note that none of this is validated by the engine or map, so the results are not guaranteed to be perfectly what you expect."
+                    + "<br />In addition, any maps that use triggers could be royalled messed up by changing editing political relationships:"
+                    + "<br /><em>Example: Take a map where America gets some benefit (like upgraded factories) after it goes to war for the first time, "
+                    + "<br />and the american player accidentally clicked to go to war, and now wishes to undo that change. Changing America from being at war to "
+                    + "<br />not being at war will not undo the benefit if it has already happened. And later, when America goes to war (for real this time), that "
+                    + "<br />benefit may or may not be applied a second time, totally depending on how the map was coded (and this is not the map's fault either, "
+                    + "<br />since you are using edit mode).  So if you change anything here, be on the look out for unintended consequences!</em></html>");
         panel.add(helpText, BorderLayout.NORTH);
         final PoliticalStateOverview pui = new PoliticalStateOverview(getData(), m_frame.getUIContext(), true);
         panel.add(pui, BorderLayout.CENTER);
@@ -474,7 +475,8 @@ public class EditPanel extends ActionPanel {
         // just the scroll bars plus the window sides
         final int availWidth = screenResolution.width - 40;
         scroll.setPreferredSize(
-            new Dimension((scroll.getPreferredSize().width > availWidth ? availWidth : scroll.getPreferredSize().width),
+            new Dimension(
+                (scroll.getPreferredSize().width > availWidth ? availWidth : scroll.getPreferredSize().width),
                 (scroll.getPreferredSize().height > availHeight ? availHeight : scroll.getPreferredSize().height)));
         final int option = JOptionPane.showConfirmDialog(m_frame, scroll, "Change Political Relationships",
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -496,7 +498,8 @@ public class EditPanel extends ActionPanel {
     setBorder(new EmptyBorder(5, 5, 0, 0));
     add(m_actionLabel);
     final JButton performMove = new JButton(m_performMoveAction);
-    performMove.setToolTipText(
+    performMove
+        .setToolTipText(
         "<html>When in Edit Mode, you can perform special actions according to whatever phase you are in, by switching back to the 'Action' tab.<br /> "
             + "So if you are in the 'Move' phase, you can move units virtually anywhere, because Edit Mode turns off the movement validation.<br /> "
             + "You can use 'Action' tab during Edit Mode to do things not available by the other edit buttons.</html>");
@@ -543,30 +546,25 @@ public class EditPanel extends ActionPanel {
         final TripleAUnit u1 = TripleAUnit.get(unit1);
         final TripleAUnit u2 = TripleAUnit.get(unit2);
         if (UnitAttachment.get(u1.getType()).getTransportCapacity() != -1) {
-          // sort transports
-          Collection<Unit> transporting1 = u1.getTransporting();
-          Collection<Unit> transporting2 = u2.getTransporting();
-          if (transporting1 == null) {
-            transporting1 = Collections.emptyList();
-          }
-          if (transporting2 == null) {
-            transporting2 = Collections.emptyList();
-          }
-          // sort by decreasing transport capacity
+
+          // Sort by decreasing transport capacity
+          final Collection<Unit> transporting1 = u1.getTransporting();
+          final Collection<Unit> transporting2 = u2.getTransporting();
           final int cost1 = MoveValidator.getTransportCost(transporting1);
           final int cost2 = MoveValidator.getTransportCost(transporting2);
           if (cost1 != cost2) {
             return cost2 - cost1;
           }
         }
-        // sort by increasing movement left
+
+        // Sort by increasing movement left
         final int left1 = u1.getMovementLeft();
         final int left2 = u2.getMovementLeft();
         if (left1 != left2) {
           return left1 - left2;
         }
-        // sort by hashcode so that result is deterministic
-        return u1.hashCode() - u2.hashCode();
+
+        return Integer.compare(u1.hashCode(), u2.hashCode());
       }
     };
     return removableUnitsOrder;
