@@ -19,6 +19,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatch;
@@ -1076,7 +1077,7 @@ public class MoveValidator {
       for (final Unit unit : TransportTracker.getUnitsLoadedOnAlliedTransportsThisTurn(units)) {
         result.addDisallowedUnit(CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND, unit);
       }
-      final Collection<Unit> transports = MoveDelegate.mapTransports(route, units, null).values();
+      final Collection<Unit> transports = TransportUtils.mapTransports(route, units, null).values();
       final boolean isScramblingOrKamikazeAttacksEnabled =
           games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data)
               || games.strategy.triplea.Properties.getUseKamikazeSuicideAttacks(data);
@@ -1206,7 +1207,7 @@ public class MoveValidator {
           }
         }
       }
-      final Map<Unit, Unit> unitsToTransports = MoveDelegate.mapTransports(route, land, transportsToLoad);
+      final Map<Unit, Unit> unitsToTransports = TransportUtils.mapTransports(route, land, transportsToLoad);
       final Iterator<Unit> iter = land.iterator();
       // CompositeMatch<Unit> landUnitsAtSea = new CompositeMatchOr<Unit>(Matches.unitIsLandAndOwnedBy(player),
       // Matches.UnitCanBeTransported);
@@ -1288,11 +1289,11 @@ public class MoveValidator {
     }
     final List<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
     final List<Unit> allParatroops =
-        MoveDelegate.findUnitsToLoadOnAirTransports(paratroopsRequiringTransport, airTransports);
+        TransportUtils.findUnitsToLoadOnAirTransports(paratroopsRequiringTransport, airTransports);
     if (!allParatroops.containsAll(paratroopsRequiringTransport)) {
       return false;
     }
-    final Map<Unit, Unit> transportLoadMap = MoveDelegate.mapTransportsToLoad(units, airTransports);
+    final Map<Unit, Unit> transportLoadMap = TransportUtils.mapTransportsToLoad(units, airTransports);
     if (!transportLoadMap.keySet().containsAll(paratroopsRequiringTransport)) {
       return false;
     }
@@ -1353,7 +1354,7 @@ public class MoveValidator {
       // Map<Unit, Unit> airTransportsAndParatroops = MoveDelegate.mapTransports(route, paratroopsRequiringTransport,
       // airTransports);
       final Map<Unit, Unit> airTransportsAndParatroops =
-          MoveDelegate.mapTransportsToLoad(paratroopsRequiringTransport, airTransports);
+          TransportUtils.mapTransportsToLoad(paratroopsRequiringTransport, airTransports);
       for (final Unit paratroop : airTransportsAndParatroops.keySet()) {
         if (Matches.unitHasMoved.match(paratroop)) {
           result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);

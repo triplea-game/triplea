@@ -16,13 +16,13 @@ import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.UnitComparator;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
+import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatch;
@@ -204,7 +204,7 @@ public class MovePanel extends AbstractMovePanel {
     }
     sortTransportsToUnload(candidateTransports, route);
     // unitsToUnload are actually dependents, but need to select transports
-    final Map<Unit, Unit> unitsToTransports = MoveDelegate.mapTransports(route, unitsToUnload, candidateTransports);
+    final Map<Unit, Unit> unitsToTransports = TransportUtils.mapTransports(route, unitsToUnload, candidateTransports);
     final Set<Unit> defaultSelections = new HashSet<Unit>(unitsToTransports.values());
     // match criteria to ensure that chosen transports will match selected units
     final Match<Collection<Unit>> transportsToUnloadMatch = new Match<Collection<Unit>>() {
@@ -637,7 +637,7 @@ public class MovePanel extends AbstractMovePanel {
     capableTransports.removeAll(alliedTransports);
     // First, load capable transports
     final Map<Unit, Unit> unitsToCapableTransports =
-        MoveDelegate.mapTransports(route, availableUnits, capableTransports);
+        TransportUtils.mapTransports(route, availableUnits, capableTransports);
     for (final Unit unit : unitsToCapableTransports.keySet()) {
       final Unit transport = unitsToCapableTransports.get(unit);
       final int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
@@ -646,7 +646,8 @@ public class MovePanel extends AbstractMovePanel {
     }
     availableUnits.removeAll(unitsToCapableTransports.keySet());
     // Next, load allied transports
-    final Map<Unit, Unit> unitsToAlliedTransports = MoveDelegate.mapTransports(route, availableUnits, alliedTransports);
+    final Map<Unit, Unit> unitsToAlliedTransports =
+        TransportUtils.mapTransports(route, availableUnits, alliedTransports);
     for (final Unit unit : unitsToAlliedTransports.keySet()) {
       final Unit transport = unitsToAlliedTransports.get(unit);
       final int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
@@ -660,7 +661,7 @@ public class MovePanel extends AbstractMovePanel {
     // are selected, since it may not be obvious
     if (getSelectedEndpointTerritory() == null) {
       final Map<Unit, Unit> unitsToIncapableTransports =
-          MoveDelegate.mapTransports(route, availableUnits, incapableTransports);
+          TransportUtils.mapTransports(route, availableUnits, incapableTransports);
       for (final Unit unit : unitsToIncapableTransports.keySet()) {
         final Unit transport = unitsToIncapableTransports.get(unit);
         final int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
@@ -962,8 +963,7 @@ public class MovePanel extends AbstractMovePanel {
         @Override
         public boolean match(final Collection<Unit> units) {
           final Collection<Unit> unitsToLoad = Match.getMatches(units, Matches.UnitIsAirTransportable);
-          final Map<Unit, Unit> unitMap =
-              MoveDelegate.mapTransportsToLoad(unitsToLoad, airTransportsToLoad);
+          final Map<Unit, Unit> unitMap = TransportUtils.mapTransportsToLoad(unitsToLoad, airTransportsToLoad);
           boolean ableToLoad = true;
           for (final Unit unit : unitsToLoad) {
             if (!unitMap.keySet().contains(unit)) {
@@ -977,12 +977,11 @@ public class MovePanel extends AbstractMovePanel {
       if (!airTransportsToLoad.isEmpty()) {
         // Get a list of the units that could be loaded on the transport (based upon transport capacity)
         final List<Unit> unitsToLoad =
-            MoveDelegate.findUnitsToLoadOnAirTransports(capableUnitsToLoad, airTransportsToLoad);
+            TransportUtils.findUnitsToLoadOnAirTransports(capableUnitsToLoad, airTransportsToLoad);
         final String title = "Load air transports";
         final String action = "load";
         loadedUnits = UserChooseUnits(defaultSelections, unitsToLoadMatch, unitsToLoad, title, action);
-        final Map<Unit, Unit> mapping =
-            MoveDelegate.mapTransportsToLoad(loadedUnits, airTransportsToLoad);
+        final Map<Unit, Unit> mapping = TransportUtils.mapTransportsToLoad(loadedUnits, airTransportsToLoad);
         for (final Unit unit : mapping.keySet()) {
           final Collection<Unit> unitsColl = new ArrayList<Unit>();
           unitsColl.add(unit);
@@ -1227,7 +1226,7 @@ public class MovePanel extends AbstractMovePanel {
       final List<Unit> defaultSelections = new ArrayList<Unit>(units.size());
       if (route.isLoad()) {
         final Collection<Unit> transportsToLoad = new ArrayList<Unit>(getTransportsToLoad(route, units, false));
-        defaultSelections.addAll(MoveDelegate.mapTransports(route, units, transportsToLoad).keySet());
+        defaultSelections.addAll(TransportUtils.mapTransports(route, units, transportsToLoad).keySet());
       } else {
         defaultSelections.addAll(units);
       }

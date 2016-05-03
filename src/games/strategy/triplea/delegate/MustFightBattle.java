@@ -24,6 +24,7 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
+import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
@@ -233,7 +234,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
         // Load capable bombers by default>
         final Map<Unit, Unit> unitsToCapableAirTransports =
-            MoveDelegate.mapTransportsToLoad(paratroops, airTransports);
+            TransportUtils.mapTransportsToLoad(paratroops, airTransports);
         final HashMap<Unit, Collection<Unit>> dependentUnits = new HashMap<Unit, Collection<Unit>>();
         final Collection<Unit> singleCollection = new ArrayList<Unit>();
         for (final Unit unit : unitsToCapableAirTransports.keySet()) {

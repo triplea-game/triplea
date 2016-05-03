@@ -23,6 +23,7 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
+import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatch;
@@ -2428,7 +2429,7 @@ public class Matches {
           final Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
           final Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsAirTransportable);
           if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
-            if (MoveDelegate.mapTransportsToLoad(paratroops, airTransports)
+            if (TransportUtils.mapTransportsToLoad(paratroops, airTransports)
                 .containsKey(dependent)) {
               return true;
             }
