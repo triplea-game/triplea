@@ -14,6 +14,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.util.TransportUtils;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
@@ -101,7 +102,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
           if (seaTransports.isEmpty()) {
             return "Can't add land units to water without enough transports";
           }
-          mapLoading = MoveDelegate.mapTransportsToLoad(landUnitsToAdd, seaTransports);
+          mapLoading = TransportUtils.mapTransportsToLoad(landUnitsToAdd, seaTransports);
           if (!mapLoading.keySet().containsAll(landUnitsToAdd)) {
             return "Can't add land units to water without enough transports";
           }

@@ -9,6 +9,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.util.TransportUtils;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -89,8 +90,7 @@ public class EditValidator {
           if (seaTransports.isEmpty()) {
             return "Can't add land units to water without enough transports";
           }
-          final Map<Unit, Unit> mapLoading =
-              MoveDelegate.mapTransportsToLoad(landUnitsToAdd, seaTransports);
+          final Map<Unit, Unit> mapLoading = TransportUtils.mapTransportsToLoad(landUnitsToAdd, seaTransports);
           if (!mapLoading.keySet().containsAll(landUnitsToAdd)) {
             return "Can't add land units to water without enough transports";
           }
