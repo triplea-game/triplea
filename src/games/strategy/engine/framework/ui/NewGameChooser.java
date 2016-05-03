@@ -24,6 +24,7 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.util.LocalizeHTML;
 
 public class NewGameChooser extends JDialog {
@@ -32,7 +33,7 @@ public class NewGameChooser extends JDialog {
   // Use synchronization when accessing s_cachedGameModel, it is accessed by both
   // the Swing AWT event thread and also background threads, which parses available
   // maps in the background when a game is not playing
-  private static NewGameChooserModel s_cachedGameModel = null;
+  private static NewGameChooserModel cachedGameModel = null;
   private static ClearGameChooserCacheMessenger cacheClearedMessenger;
 
   private JButton okButton;
@@ -50,7 +51,9 @@ public class NewGameChooser extends JDialog {
     setupListeners();
     setWidgetActivation();
     updateInfoPanel();
+    WaitDialog loadingScreen = new WaitDialog(owner, "Loading Maps...");
     refreshGameList();
+//    SwingUtilities.invokeLater(() -> {loadingScreen.setVisible(false);loadingScreen.dispose();}); dispose() is throwing a "Exception: null" exception
   }
 
   private void createComponents() {
@@ -157,12 +160,9 @@ public class NewGameChooser extends JDialog {
       }
     }
     // scroll to the top of the notes screen
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (notesPanel != null) {
-          notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-        }
+    SwingUtilities.invokeLater(() ->{
+      if (notesPanel != null) {
+        notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
       }
     });
   }
@@ -209,16 +209,16 @@ public class NewGameChooser extends JDialog {
 
   /** Populates the NewGameChooserModel cache if empty, then returns the cached instance */
   public synchronized static NewGameChooserModel getNewGameChooserModel() {
-    if (s_cachedGameModel == null) {
+    if (cachedGameModel == null) {
       refreshNewGameChooserModel();
     }
-    return s_cachedGameModel;
+    return cachedGameModel;
   }
 
   public synchronized static void refreshNewGameChooserModel() {
     clearNewGameChooserModel();
     cacheClearedMessenger = new ClearGameChooserCacheMessenger();
-    s_cachedGameModel = new NewGameChooserModel(cacheClearedMessenger);
+    cachedGameModel = new NewGameChooserModel(cacheClearedMessenger);
   }
 
   public static void clearNewGameChooserModel() {
@@ -230,9 +230,9 @@ public class NewGameChooser extends JDialog {
   }
 
   private synchronized static void synchronizedClear() {
-    if (s_cachedGameModel != null) {
-      s_cachedGameModel.clear();
-      s_cachedGameModel = null;
+    if (cachedGameModel != null) {
+      cachedGameModel.clear();
+      cachedGameModel = null;
     }
   }
 
