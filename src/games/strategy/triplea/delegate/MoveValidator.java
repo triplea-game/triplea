@@ -935,19 +935,6 @@ public class MoveValidator {
     return route.hasNeutralBeforeEnd();
   }
 
-  public static int getTransportCost(final Collection<Unit> units) {
-    if (units == null) {
-      return 0;
-    }
-    int cost = 0;
-    final Iterator<Unit> iter = units.iterator();
-    while (iter.hasNext()) {
-      final Unit item = iter.next();
-      cost += UnitAttachment.get(item.getType()).getTransportCost();
-    }
-    return cost;
-  }
-
   private static Collection<Unit> getUnitsThatCantGoOnWater(final Collection<Unit> units) {
     final Collection<Unit> retUnits = new ArrayList<Unit>();
     for (final Unit unit : units) {

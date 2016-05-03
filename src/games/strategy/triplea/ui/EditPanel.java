@@ -23,6 +23,7 @@ import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -550,8 +551,8 @@ public class EditPanel extends ActionPanel {
           // Sort by decreasing transport capacity
           final Collection<Unit> transporting1 = u1.getTransporting();
           final Collection<Unit> transporting2 = u2.getTransporting();
-          final int cost1 = MoveValidator.getTransportCost(transporting1);
-          final int cost2 = MoveValidator.getTransportCost(transporting2);
+          final int cost1 = TransportUtils.getTransportCost(transporting1);
+          final int cost2 = TransportUtils.getTransportCost(transporting2);
           if (cost1 != cost2) {
             return cost2 - cost1;
           }

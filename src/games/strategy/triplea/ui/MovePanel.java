@@ -216,7 +216,7 @@ public class MovePanel extends AbstractMovePanel {
         final IntegerMap<Unit> capacityMap = new IntegerMap<Unit>();
         for (final Unit transport : sortedTransports) {
           final Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
-          capacityMap.add(transport, MoveValidator.getTransportCost(transporting));
+          capacityMap.add(transport, TransportUtils.getTransportCost(transporting));
         }
         boolean hasChanged = false;
         final Comparator<Unit> increasingCapacityComparator =
