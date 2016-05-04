@@ -110,26 +110,6 @@ public class TransportUtils {
     return mapping;
   }
 
-  private static Comparator<Unit> transportsThatPreviouslyUnloadedComeLast() {
-    return new Comparator<Unit>() {
-      @Override
-      public int compare(final Unit t1, final Unit t2) {
-        if (t1 == t2 || t1.equals(t2)) {
-          return 0;
-        }
-        final boolean t1previous = TransportTracker.hasTransportUnloadedInPreviousPhase(t1);
-        final boolean t2previous = TransportTracker.hasTransportUnloadedInPreviousPhase(t2);
-        if (t1previous == t2previous) {
-          return 0;
-        }
-        if (t1previous == false) {
-          return -1;
-        }
-        return 1;
-      }
-    };
-  }
-
   public static List<Unit> findUnitsToLoadOnAirTransports(final Collection<Unit> units,
       final Collection<Unit> transports) {
     final Collection<Unit> airTransports = Match.getMatches(transports, Matches.UnitIsAirTransport);
