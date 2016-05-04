@@ -56,7 +56,7 @@ public class NewGameChooser extends JDialog {
     loadingScreen.setVisible(false);
      try{
       loadingScreen.dispose();
-      }catch(NullPointerException e){}//This catches a NullPointerException throw by any substance look and feel due to a Bug
+      }catch(NullPointerException e){}//This catches a NullPointerException thrown by any substance look and feel due to a Bug
   }
 
   private void createComponents() {
