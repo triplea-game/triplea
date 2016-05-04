@@ -22,11 +22,8 @@ import java.util.Map;
 public class TransportUtils {
 
   /**
-   * This method is static so it can be called from the client side.
-   *
-   * @return a map of unit -> transport (null if no mapping can be
-   *         done either because there is not sufficient transport capacity or because
-   *         a unit is not with its transport)
+   * Returns a map of unit -> transport (null if no mapping can be done either because there is not sufficient transport
+   * capacity or because a unit is not with its transport)
    */
   public static Map<Unit, Unit> mapTransports(final Route route, final Collection<Unit> units,
       final Collection<Unit> transportsToLoad) {
@@ -40,9 +37,8 @@ public class TransportUtils {
   }
 
   /**
-   * Returns a map of unit -> transport. Unit must already be loaded in the
-   * transport. If no units are loaded in the transports then an empty Map will
-   * be returned.
+   * Returns a map of unit -> transport. Unit must already be loaded in the transport. If no units are loaded in the
+   * transports then an empty Map will be returned.
    */
   private static Map<Unit, Unit> mapTransportsAlreadyLoaded(final Collection<Unit> units,
       final Collection<Unit> transports) {
@@ -67,8 +63,8 @@ public class TransportUtils {
   }
 
   /**
-   * Returns a map of unit -> transport. Tries to find transports to load all
-   * units. If it can't succeed returns an empty Map.
+   * Returns a map of unit -> transport. Tries to find transports to load all units. If it can't succeed returns an
+   * empty Map.
    */
   public static Map<Unit, Unit> mapTransportsToLoad(final Collection<Unit> units, final Collection<Unit> transports) {
     final List<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
