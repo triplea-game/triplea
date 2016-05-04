@@ -5,9 +5,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
-import games.strategy.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -67,8 +65,8 @@ public class TransportUtils {
    * empty Map.
    */
   public static Map<Unit, Unit> mapTransportsToLoad(final Collection<Unit> units, final Collection<Unit> transports) {
-    final List<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
-    int transportIndex = 0;
+
+    // Sort units with the highest transport cost first
     final Comparator<Unit> transportCostComparator = new Comparator<Unit>() {
       @Override
       public int compare(final Unit o1, final Unit o2) {
@@ -77,58 +75,35 @@ public class TransportUtils {
         return cost2 - cost1;
       }
     };
-
-    // fill the units with the highest cost first which allows easy loading of 2 infantry and 2 tanks on 2 transports in
-    // WW2V2 rules
+    final List<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
     Collections.sort(canBeTransported, transportCostComparator);
-    final List<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
+
+    // Sort transports with the lowest capacity first
     final Comparator<Unit> transportCapacityComparator = new Comparator<Unit>() {
       @Override
       public int compare(final Unit o1, final Unit o2) {
         final int capacityLeft1 = TransportTracker.getAvailableCapacity(o1);
         final int capacityLeft2 = TransportTracker.getAvailableCapacity(o1);
-        if (capacityLeft1 != capacityLeft2) {
-          return capacityLeft1 - capacityLeft2;
-        }
-        final int capacity1 = UnitAttachment.get((o1).getUnitType()).getTransportCapacity();
-        final int capacity2 = UnitAttachment.get((o2).getUnitType()).getTransportCapacity();
-        return capacity1 - capacity2;
+        return capacityLeft1 - capacityLeft2;
       }
     };
-
-    // fill transports with the lowest capacity first
+    final List<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
     Collections.sort(canTransport, transportCapacityComparator);
+
+    // Add max units to transports
     final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
-    final IntegerMap<Unit> addedLoad = new IntegerMap<Unit>();
-    final Comparator<Unit> previouslyLoadedToLast = transportsThatPreviouslyUnloadedComeLast();
-    for (final Unit land : canBeTransported) {
-      final UnitAttachment landUA = UnitAttachment.get(land.getType());
-      final int cost = landUA.getTransportCost();
-      boolean loaded = false;
-
-      // we want to try to distribute units evenly to all the transports
-      // if the user has 2 infantry, and selects two transports to load
-      // we should put 1 infantry in each transport.
-      // the algorithm below does not guarantee even distribution in all cases
-      // but it solves most of the cases
-      final List<Unit> shiftedToEnd = Util.shiftElementsToEnd(canTransport, transportIndex);
-
-      // review the following loop in light of bug ticket 2827064- previously unloaded trns perhaps shouldn't be
-      // included.
-      Collections.sort(shiftedToEnd, previouslyLoadedToLast);
-      final Iterator<Unit> transportIter = shiftedToEnd.iterator();
-      while (transportIter.hasNext() && !loaded) {
-        transportIndex++;
-        if (transportIndex >= canTransport.size()) {
-          transportIndex = 0;
+    for (final Unit transport : canTransport) {
+      int capacity = TransportTracker.getAvailableCapacity(transport);
+      for (final Iterator<Unit> it = canBeTransported.iterator(); it.hasNext();) {
+        if (capacity <= 0) {
+          break;
         }
-        final Unit transport = transportIter.next();
-        int capacity = TransportTracker.getAvailableCapacity(transport);
-        capacity -= addedLoad.getInt(transport);
+        final Unit unit = it.next();
+        final int cost = UnitAttachment.get((unit).getType()).getTransportCost();
         if (capacity >= cost) {
-          addedLoad.add(transport, cost);
-          mapping.put(land, transport);
-          loaded = true;
+          capacity -= cost;
+          mapping.put(unit, transport);
+          it.remove();
         }
       }
     }
