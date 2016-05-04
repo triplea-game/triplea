@@ -53,7 +53,10 @@ public class NewGameChooser extends JDialog {
     updateInfoPanel();
     WaitDialog loadingScreen = new WaitDialog(owner, "Loading Maps...");
     refreshGameList();
-//    SwingUtilities.invokeLater(() -> {loadingScreen.setVisible(false);loadingScreen.dispose();}); dispose() is throwing a "Exception: null" exception
+    loadingScreen.setVisible(false);
+     try{
+      loadingScreen.dispose();
+      }catch(NullPointerException e){}//This catches a NullPointerException throw by any substance look and feel due to a Bug
   }
 
   private void createComponents() {
