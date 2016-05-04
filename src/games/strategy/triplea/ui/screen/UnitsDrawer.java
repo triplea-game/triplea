@@ -36,7 +36,10 @@ public class UnitsDrawer implements IDrawable {
   private final String territoryName;
   private final IUIContext uiContext;
   private final static List<String> STATIC_UNITS = Arrays.asList("aaGun","factory");//TODO add every "static" non-movable unit type of every map.
-  private static byte drawUnitNationMode = 2;
+  private static UnitFlag drawUnitNationMode = UnitFlag.NEXT_TO;
+  public enum UnitFlag {
+    NONE, BELOW, NEXT_TO
+  }
   public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint,
       final int damaged, final int bombingUnitDamage, final boolean disabled, final boolean overflow,
       final String territoryName, final IUIContext uiContext2) {
@@ -78,7 +81,7 @@ public class UnitsDrawer implements IDrawable {
     final PlayerID owner = data.getPlayerList().getPlayerID(playerName);
     final Image img = uiContext.getUnitImageFactory().getImage(type, owner, data, damaged > 0 || bombingUnitDamage > 0, disabled);
     //If Mode 2 is selected the nation Flag gets drawn below the Unit
-    if(!STATIC_UNITS.contains(type.getName()) && drawUnitNationMode == 2){
+    if(!STATIC_UNITS.contains(type.getName()) && drawUnitNationMode.equals(UnitFlag.BELOW)){
       final Image flag = uiContext.getFlagImageFactory().getFlag(owner);
       final int xoffset = img.getWidth(null) / 2 - flag.getWidth(null) / 2;//centered flag in the middle
       final int yoffset = img.getHeight(null) / 2 - flag.getHeight(null) / 4 - 5;//centered flag in the middle moved it 1/2 - 5 down 
@@ -87,10 +90,11 @@ public class UnitsDrawer implements IDrawable {
     //This Method draws the unit Image
     graphics.drawImage(img, placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
     //If Mode 1 is selected the nation Flag gets drawn next to the Unit
-    if(!STATIC_UNITS.contains(type.getName()) && drawUnitNationMode == 1){
+    if(!STATIC_UNITS.contains(type.getName()) && drawUnitNationMode.equals(UnitFlag.NEXT_TO)){
       final Image flag = uiContext.getFlagImageFactory().getSmallFlag(owner);
       final int xoffset = img.getWidth(null) - flag.getWidth(null);//If someone wants to put more effort in this, he could add an algorithm to calculate the real
       final int yoffset = img.getHeight(null) - flag.getHeight(null);//lower right corner - transparency/alpha channel etc.
+      //currently the flag is drawn in the lower right corner of the image's bounds -> offsets on some unit images
       //This Method draws the Flag in the lower right corner of the unit image. Since the position is the upper left corner we have to move the picture up by the height and left by the width.
       graphics.drawImage(flag, (placementPoint.x - bounds.x) + xoffset, (placementPoint.y - bounds.y) + yoffset, null);
     }
@@ -190,7 +194,7 @@ public class UnitsDrawer implements IDrawable {
     return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
   }
   
-  public static void setNationVisible(byte i){
-    drawUnitNationMode = i;
+  public static void setUnitFlagDrawMode(UnitFlag unitFlag){
+    drawUnitNationMode = unitFlag;
   }
 }

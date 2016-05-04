@@ -407,30 +407,21 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
   private void addUnitNationDrawMenu(final JMenu parentMenu){
     final JMenu unitSizeMenu = new JMenu();
     unitSizeMenu.setMnemonic(KeyEvent.VK_N);
-    unitSizeMenu.setText("Show Unit Nation");
+    unitSizeMenu.setText("Set Flag Display Mode");
+    
     final ButtonGroup unitNationGroup = new ButtonGroup();
-    final JRadioButtonMenuItem nationOption0 = new JRadioButtonMenuItem("Hide Nation");
-    final JRadioButtonMenuItem nationOption1 = new JRadioButtonMenuItem("Next to Unit");
-    final JRadioButtonMenuItem nationOption2 = new JRadioButtonMenuItem("Below Unit");
-    nationOption0.addActionListener(SwingAction.of(e -> {
-      UnitsDrawer.setNationVisible((byte)0);
+    unitSizeMenu.add(createRadioButtonItem("Hide Nation", unitNationGroup, SwingAction.of(e -> {
+      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlag.NONE);
       frame.getMapPanel().resetMap();
-    }));
-    nationOption1.addActionListener(SwingAction.of(e -> {
-      UnitsDrawer.setNationVisible((byte)1);
+      }), false));
+    unitSizeMenu.add(createRadioButtonItem("Next to Unit", unitNationGroup, SwingAction.of(e -> {
+      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlag.NEXT_TO);
       frame.getMapPanel().resetMap();
-    }));
-    nationOption2.addActionListener(SwingAction.of(e -> {
-      UnitsDrawer.setNationVisible((byte)2);
+      }), true));
+    unitSizeMenu.add(createRadioButtonItem("Below Unit", unitNationGroup, SwingAction.of(e -> {
+      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlag.BELOW);
       frame.getMapPanel().resetMap();
-    }));
-    nationOption2.setSelected(true);
-    unitNationGroup.add(nationOption0);
-    unitSizeMenu.add(nationOption0);
-    unitNationGroup.add(nationOption1);
-    unitSizeMenu.add(nationOption1);
-    unitNationGroup.add(nationOption2);
-    unitSizeMenu.add(nationOption2);
+      }), false));
     parentMenu.add(unitSizeMenu);
   }
 
@@ -1296,5 +1287,12 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     unitSizeMenu.add(radioItem56);
     unitSizeMenu.add(radioItem50);
     parentMenu.add(unitSizeMenu);
+  }
+  private JRadioButtonMenuItem createRadioButtonItem(String text, ButtonGroup group, Action action, boolean selected){
+    final JRadioButtonMenuItem buttonItem = new JRadioButtonMenuItem(text);
+    buttonItem.addActionListener(action);
+    buttonItem.setSelected(selected);
+    group.add(buttonItem);
+    return buttonItem;
   }
 }
