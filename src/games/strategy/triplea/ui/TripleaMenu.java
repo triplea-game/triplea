@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -407,21 +408,25 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
   private void addUnitNationDrawMenu(final JMenu parentMenu){
     final JMenu unitSizeMenu = new JMenu();
     unitSizeMenu.setMnemonic(KeyEvent.VK_N);
-    unitSizeMenu.setText("Set Flag Display Mode");
+    unitSizeMenu.setText("Flag Display Mode");
     
-    final ButtonGroup unitNationGroup = new ButtonGroup();
-    unitSizeMenu.add(createRadioButtonItem("Hide Nation", unitNationGroup, SwingAction.of(e -> {
-      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlag.NONE);
-      frame.getMapPanel().resetMap();
-      }), false));
-    unitSizeMenu.add(createRadioButtonItem("Next to Unit", unitNationGroup, SwingAction.of(e -> {
-      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlag.NEXT_TO);
-      frame.getMapPanel().resetMap();
-      }), true));
-    unitSizeMenu.add(createRadioButtonItem("Below Unit", unitNationGroup, SwingAction.of(e -> {
-      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlag.BELOW);
-      frame.getMapPanel().resetMap();
-      }), false));
+    Preferences prefs = Preferences.userNodeForPackage(getClass());
+    String setting = prefs.get("UNIT_FLAG_DRAW_MODE", UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString());
+    
+    if(UnitsDrawer.UnitFlagDrawMode.NONE.toString().equals(setting)){
+      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.NONE, prefs);
+    }
+    if(UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString().equals(setting)){
+      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.NEXT_TO, prefs);    
+    }
+    if(UnitsDrawer.UnitFlagDrawMode.BELOW.toString().equals(setting)){
+      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.BELOW, prefs);
+    }
+    
+    final ButtonGroup unitFlagSettingGroup = new ButtonGroup();
+    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Hide Nation", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.NONE, setting, prefs));
+    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Next to Unit", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.NEXT_TO, setting, prefs));
+    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Below Unit", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.BELOW, setting, prefs));
     parentMenu.add(unitSizeMenu);
   }
 
@@ -1294,5 +1299,12 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     buttonItem.setSelected(selected);
     group.add(buttonItem);
     return buttonItem;
+  }
+  
+  private JRadioButtonMenuItem createFlagDrawModeRadionButtonItem(String text, ButtonGroup group, UnitsDrawer.UnitFlagDrawMode drawMode, String setting, Preferences prefs){
+    return createRadioButtonItem(text, group, SwingAction.of(e -> {
+      UnitsDrawer.setUnitFlagDrawMode(drawMode, prefs);
+      frame.getMapPanel().resetMap();
+      }), setting.equals(drawMode.toString()));
   }
 }
