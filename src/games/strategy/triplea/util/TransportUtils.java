@@ -5,6 +5,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
@@ -60,14 +61,51 @@ public class TransportUtils {
   }
 
   /**
-   * Returns a map of unit -> transport. Tries to find transports to load all units.
+   * Returns a map of unit -> transport. Tries to load units evenly across all transports.
    */
-  public static Map<Unit, Unit> mapTransportsToLoad(final Collection<Unit> units, final Collection<Unit> transports) {
+  public static Map<Unit, Unit> mapTransportsToLoad(final Collection<Unit> units,
+      final Collection<Unit> transports) {
 
     final List<Unit> canBeTransported = sortByTransportCostDescending(units);
     final List<Unit> canTransport = sortByTransportCapacityAscending(transports);
 
-    // Add max units to transports
+    // Add units to transports evenly
+    final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
+    final IntegerMap<Unit> addedLoad = new IntegerMap<Unit>();
+    for (final Unit unit : canBeTransported) {
+
+      // Find first transport that has enough capacity
+      final int cost = UnitAttachment.get((unit).getType()).getTransportCost();
+      Unit loadedTransport = null;
+      for (final Unit transport : canTransport) {
+        final int capacity = TransportTracker.getAvailableCapacity(transport) - addedLoad.getInt(transport);
+        if (capacity >= cost) {
+          addedLoad.add(transport, cost);
+          mapping.put(unit, transport);
+          loadedTransport = transport;
+          break; // skip to next unit after loaded
+        }
+      }
+
+      // Move loaded transport to end of list
+      if (loadedTransport != null) {
+        canTransport.remove(loadedTransport);
+        canTransport.add(loadedTransport);
+      }
+    }
+    return mapping;
+  }
+
+  /**
+   * Returns a map of unit -> transport. Tries load max units into each transport before moving to next.
+   */
+  public static Map<Unit, Unit> mapTransportsToLoadUsingMinTransports(final Collection<Unit> units,
+      final Collection<Unit> transports) {
+
+    final List<Unit> canBeTransported = sortByTransportCostDescending(units);
+    final List<Unit> canTransport = sortByTransportCapacityAscending(transports);
+
+    // Add max units to each transport
     final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
     for (final Unit transport : canTransport) {
       int capacity = TransportTracker.getAvailableCapacity(transport);
