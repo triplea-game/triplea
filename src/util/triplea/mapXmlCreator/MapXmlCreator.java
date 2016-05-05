@@ -62,8 +62,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.xml.sax.SAXException;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
-
 import games.strategy.common.swing.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameParser;
@@ -1096,12 +1094,12 @@ public class MapXmlCreator extends JFrame {
     final String gameXMLPath =
         MapXmlUIHelper.selectFile("Game XML File", MapXmlHelper.getMapXMLFile(), FILE_NAME_ENDING_XML).getPathString();
     MapXmlCreator.log(Level.INFO, "Load Game XML from " + gameXMLPath);
-    try {
-      return loadXmlFromFilePath(gameXMLPath);
-    } catch (final IOException | HeadlessException | ParserConfigurationException | ParseException | SAXException e) {
-        ClientLogger.logError(e);
-      return loadXML();
-    }
+      try {
+        return loadXmlFromFilePath(gameXMLPath);
+      } catch (SAXException | IOException | ParserConfigurationException e) {
+        ClientLogger.logError("Failed to load XML File: " + gameXMLPath,e);
+        return loadXML();
+      }
   }
 
   /**
