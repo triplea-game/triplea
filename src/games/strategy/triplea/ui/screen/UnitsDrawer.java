@@ -81,23 +81,36 @@ public class UnitsDrawer implements IDrawable {
     }
     final PlayerID owner = data.getPlayerList().getPlayerID(playerName);
     final Image img = uiContext.getUnitImageFactory().getImage(type, owner, data, damaged > 0 || bombingUnitDamage > 0, disabled);
-    //If Mode 2 is selected the nation Flag gets drawn below the Unit
-    if(!STATIC_UNITS.contains(type.getName()) && drawUnitNationMode.equals(UnitFlagDrawMode.BELOW)){
-      final Image flag = uiContext.getFlagImageFactory().getFlag(owner);
-      final int xoffset = img.getWidth(null) / 2 - flag.getWidth(null) / 2;//centered flag in the middle
-      final int yoffset = img.getHeight(null) / 2 - flag.getHeight(null) / 4 - 5;//centered flag in the middle moved it 1/2 - 5 down 
-      graphics.drawImage(flag, (placementPoint.x - bounds.x) + xoffset, (placementPoint.y - bounds.y) + yoffset, null);
-    }
-    //This Method draws the unit Image
-    graphics.drawImage(img, placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
-    //If Mode 1 is selected the nation Flag gets drawn next to the Unit
-    if(!STATIC_UNITS.contains(type.getName()) && drawUnitNationMode.equals(UnitFlagDrawMode.NEXT_TO)){
-      final Image flag = uiContext.getFlagImageFactory().getSmallFlag(owner);
-      final int xoffset = img.getWidth(null) - flag.getWidth(null);//If someone wants to put more effort in this, he could add an algorithm to calculate the real
-      final int yoffset = img.getHeight(null) - flag.getHeight(null);//lower right corner - transparency/alpha channel etc.
-      //currently the flag is drawn in the lower right corner of the image's bounds -> offsets on some unit images
-      //This Method draws the Flag in the lower right corner of the unit image. Since the position is the upper left corner we have to move the picture up by the height and left by the width.
-      graphics.drawImage(flag, (placementPoint.x - bounds.x) + xoffset, (placementPoint.y - bounds.y) + yoffset, null);
+    
+    switch(drawUnitNationMode){
+      case BELOW:
+        //If unit is not in the "excluded list" it will get drawn
+        if(!STATIC_UNITS.contains(type.getName())){
+          final Image flag = uiContext.getFlagImageFactory().getFlag(owner);
+          final int xoffset = img.getWidth(null) / 2 - flag.getWidth(null) / 2;//centered flag in the middle
+          final int yoffset = img.getHeight(null) / 2 - flag.getHeight(null) / 4 - 5;//centered flag in the middle moved it 1/2 - 5 down 
+          graphics.drawImage(flag, (placementPoint.x - bounds.x) + xoffset, (placementPoint.y - bounds.y) + yoffset, null);
+        }
+        //This Method draws the unit Image
+        graphics.drawImage(img, placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
+        break;
+      case NEXT_TO:
+        //This Method draws the unit Image
+        graphics.drawImage(img, placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
+        //If unit is not in the "excluded list" it will get drawn
+        if(!STATIC_UNITS.contains(type.getName())){
+          final Image flag = uiContext.getFlagImageFactory().getSmallFlag(owner);
+          final int xoffset = img.getWidth(null) - flag.getWidth(null);//If someone wants to put more effort in this, he could add an algorithm to calculate the real
+          final int yoffset = img.getHeight(null) - flag.getHeight(null);//lower right corner - transparency/alpha channel etc.
+          //currently the flag is drawn in the lower right corner of the image's bounds -> offsets on some unit images
+          //This Method draws the Flag in the lower right corner of the unit image. Since the position is the upper left corner we have to move the picture up by the height and left by the width.
+          graphics.drawImage(flag, (placementPoint.x - bounds.x) + xoffset, (placementPoint.y - bounds.y) + yoffset, null);
+        } 
+        break;
+      case NONE:
+        //This Method draws the unit Image
+        graphics.drawImage(img, placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
+        break;
     }
     // more then 1 unit of this category
     if (count != 1) {
