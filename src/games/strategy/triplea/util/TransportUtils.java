@@ -177,7 +177,7 @@ public class TransportUtils {
       @Override
       public int compare(final Unit o1, final Unit o2) {
         final int capacityLeft1 = TransportTracker.getAvailableCapacity(o1);
-        final int capacityLeft2 = TransportTracker.getAvailableCapacity(o1);
+        final int capacityLeft2 = TransportTracker.getAvailableCapacity(o2);
         return capacityLeft1 - capacityLeft2;
       }
     };
