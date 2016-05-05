@@ -21,8 +21,7 @@ import java.util.Map;
 public class TransportUtils {
 
   /**
-   * Returns a map of unit -> transport (null if no mapping can be done either because there is not sufficient transport
-   * capacity or because a unit is not with its transport)
+   * Returns a map of unit -> transport.
    */
   public static Map<Unit, Unit> mapTransports(final Route route, final Collection<Unit> units,
       final Collection<Unit> transportsToLoad) {
@@ -33,31 +32,6 @@ public class TransportUtils {
       return mapTransportsAlreadyLoaded(units, route.getStart().getUnits().getUnits());
     }
     return mapTransportsAlreadyLoaded(units, units);
-  }
-
-  /**
-   * Returns a map of unit -> transport. Unit must already be loaded in the transport.
-   */
-  private static Map<Unit, Unit> mapTransportsAlreadyLoaded(final Collection<Unit> units,
-      final Collection<Unit> transports) {
-    final Collection<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
-    final Collection<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
-    final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
-    final Iterator<Unit> land = canBeTransported.iterator();
-    while (land.hasNext()) {
-      final Unit currentTransported = land.next();
-      final Unit transport = TransportTracker.transportedBy(currentTransported);
-
-      // already being transported, make sure it is in transports
-      if (transport == null) {
-        continue;
-      }
-      if (!canTransport.contains(transport)) {
-        continue;
-      }
-      mapping.put(currentTransported, transport);
-    }
-    return mapping;
   }
 
   /**
@@ -171,6 +145,31 @@ public class TransportUtils {
       cost += UnitAttachment.get(item.getType()).getTransportCost();
     }
     return cost;
+  }
+
+  /**
+   * Returns a map of unit -> transport. Unit must already be loaded in the transport.
+   */
+  private static Map<Unit, Unit> mapTransportsAlreadyLoaded(final Collection<Unit> units,
+      final Collection<Unit> transports) {
+    final Collection<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
+    final Collection<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
+    final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
+    final Iterator<Unit> land = canBeTransported.iterator();
+    while (land.hasNext()) {
+      final Unit currentTransported = land.next();
+      final Unit transport = TransportTracker.transportedBy(currentTransported);
+
+      // already being transported, make sure it is in transports
+      if (transport == null) {
+        continue;
+      }
+      if (!canTransport.contains(transport)) {
+        continue;
+      }
+      mapping.put(currentTransported, transport);
+    }
+    return mapping;
   }
 
   private static List<Unit> sortByTransportCapacityAscending(final Collection<Unit> transports) {
