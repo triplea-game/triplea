@@ -637,7 +637,7 @@ public class MovePanel extends AbstractMovePanel {
     capableTransports.removeAll(alliedTransports);
     // First, load capable transports
     final Map<Unit, Unit> unitsToCapableTransports =
-        TransportUtils.mapTransports(route, availableUnits, capableTransports);
+        TransportUtils.mapTransportsToLoadUsingMinTransports(availableUnits, capableTransports);
     for (final Unit unit : unitsToCapableTransports.keySet()) {
       final Unit transport = unitsToCapableTransports.get(unit);
       final int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
@@ -647,7 +647,7 @@ public class MovePanel extends AbstractMovePanel {
     availableUnits.removeAll(unitsToCapableTransports.keySet());
     // Next, load allied transports
     final Map<Unit, Unit> unitsToAlliedTransports =
-        TransportUtils.mapTransports(route, availableUnits, alliedTransports);
+        TransportUtils.mapTransportsToLoadUsingMinTransports(availableUnits, alliedTransports);
     for (final Unit unit : unitsToAlliedTransports.keySet()) {
       final Unit transport = unitsToAlliedTransports.get(unit);
       final int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
@@ -661,7 +661,7 @@ public class MovePanel extends AbstractMovePanel {
     // are selected, since it may not be obvious
     if (getSelectedEndpointTerritory() == null) {
       final Map<Unit, Unit> unitsToIncapableTransports =
-          TransportUtils.mapTransports(route, availableUnits, incapableTransports);
+          TransportUtils.mapTransportsToLoadUsingMinTransports(availableUnits, incapableTransports);
       for (final Unit unit : unitsToIncapableTransports.keySet()) {
         final Unit transport = unitsToIncapableTransports.get(unit);
         final int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
