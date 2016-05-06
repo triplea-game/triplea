@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 public class TransportUtils {
@@ -47,24 +48,12 @@ public class TransportUtils {
     final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
     final IntegerMap<Unit> addedLoad = new IntegerMap<Unit>();
     for (final Unit unit : canBeTransported) {
-
-      // Find first transport that has enough capacity
-      final int cost = UnitAttachment.get((unit).getType()).getTransportCost();
-      Unit loadedTransport = null;
-      for (final Unit transport : canTransport) {
-        final int capacity = TransportTracker.getAvailableCapacity(transport) - addedLoad.getInt(transport);
-        if (capacity >= cost) {
-          addedLoad.add(transport, cost);
-          mapping.put(unit, transport);
-          loadedTransport = transport;
-          break; // skip to next unit after loaded
-        }
-      }
+      final Optional<Unit> transport = loadUnitIntoFirstAvailableTransport(unit, canTransport, mapping, addedLoad);
 
       // Move loaded transport to end of list
-      if (loadedTransport != null) {
-        canTransport.remove(loadedTransport);
-        canTransport.add(loadedTransport);
+      if (transport.isPresent()) {
+        canTransport.remove(transport.get());
+        canTransport.add(transport.get());
       }
     }
     return mapping;
@@ -84,9 +73,6 @@ public class TransportUtils {
     for (final Unit transport : canTransport) {
       int capacity = TransportTracker.getAvailableCapacity(transport);
       for (final Iterator<Unit> it = canBeTransported.iterator(); it.hasNext();) {
-        if (capacity <= 0) {
-          break;
-        }
         final Unit unit = it.next();
         final int cost = UnitAttachment.get((unit).getType()).getTransportCost();
         if (capacity >= cost) {
@@ -198,6 +184,20 @@ public class TransportUtils {
     final List<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
     Collections.sort(canBeTransported, transportCostComparator);
     return canBeTransported;
+  }
+
+  private static Optional<Unit> loadUnitIntoFirstAvailableTransport(final Unit unit, final List<Unit> canTransport,
+      final Map<Unit, Unit> mapping, final IntegerMap<Unit> addedLoad) {
+    final int cost = UnitAttachment.get((unit).getType()).getTransportCost();
+    for (final Unit transport : canTransport) {
+      final int capacity = TransportTracker.getAvailableCapacity(transport) - addedLoad.getInt(transport);
+      if (capacity >= cost) {
+        addedLoad.add(transport, cost);
+        mapping.put(unit, transport);
+        return Optional.of(transport);
+      }
+    }
+    return Optional.empty();
   }
 
 }
