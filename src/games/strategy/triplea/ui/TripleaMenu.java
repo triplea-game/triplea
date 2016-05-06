@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -94,6 +95,7 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.printgenerator.SetupFrame;
 import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
+import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.ui.IntTextField;
 import games.strategy.util.IllegalCharacterRemover;
@@ -121,10 +123,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     addMoveHelpMenu(helpMenu);
     addUnitHelpMenu(helpMenu);
   }
-
-  /**
-   * @param parentMenu
-   */
+  
   private void addMoveHelpMenu(final JMenu parentMenu) {
     parentMenu.add(SwingAction.of("Movement/Selection help...", e -> {
       // html formatted string
@@ -316,9 +315,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     addSaveScreenshot(menuGame);
   }
 
-  /**
-   * @param menuBar
-   */
   private void createViewMenu(final JMenuBar menuBar) {
     final JMenu menuView = new JMenu("View");
     menuView.setMnemonic(KeyEvent.VK_V);
@@ -327,6 +323,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     addUnitSizeMenu(menuView);
     addLockMap(menuView);
     addShowUnits(menuView);
+    addUnitNationDrawMenu(menuView);
     if (getUIContext().getMapData().useTerritoryEffectMarkers()) {
       addShowTerritoryEffects(menuView);
     }
@@ -342,10 +339,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     addShowGameUuid(menuView);
     addSetLookAndFeel(menuView);
   }
-
-  /**
-   * @param parentMenu
-   */
+  
   private void addEditMode(final JMenu parentMenu) {
     final JCheckBoxMenuItem editMode = new JCheckBoxMenuItem("Enable Edit Mode");
     editMode.setModel(frame.getEditModeButtonModel());
@@ -410,10 +404,32 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     });
     menuGame.add(mapZoom).setMnemonic(KeyEvent.VK_Z);
   }
+  
+  private void addUnitNationDrawMenu(final JMenu parentMenu){
+    final JMenu unitSizeMenu = new JMenu();
+    unitSizeMenu.setMnemonic(KeyEvent.VK_N);
+    unitSizeMenu.setText("Flag Display Mode");
+    
+    Preferences prefs = Preferences.userNodeForPackage(getClass());
+    String setting = prefs.get("UNIT_FLAG_DRAW_MODE", UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString());
+    
+    if(UnitsDrawer.UnitFlagDrawMode.NONE.toString().equals(setting)){
+      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.NONE, prefs);
+    }
+    if(UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString().equals(setting)){
+      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.NEXT_TO, prefs);    
+    }
+    if(UnitsDrawer.UnitFlagDrawMode.BELOW.toString().equals(setting)){
+      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.BELOW, prefs);
+    }
+    
+    final ButtonGroup unitFlagSettingGroup = new ButtonGroup();
+    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Hide Nation", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.NONE, setting, prefs));
+    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Next to Unit", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.NEXT_TO, setting, prefs));
+    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Below Unit", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.BELOW, setting, prefs));
+    parentMenu.add(unitSizeMenu);
+  }
 
-  /**
-   * @param parentMenu
-   */
   private void addShowVerifiedDice(final JMenu parentMenu) {
     final Action showVerifiedDice = SwingAction.of("Show Verified Dice..",
         e -> new VerifiedRandomNumbersDialog(frame.getRootPane()).setVisible(true));
@@ -422,25 +438,16 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     }
   }
 
-  /**
-   * @param parentMenu
-   */
   private void addSaveScreenshot(final JMenu parentMenu) {
     parentMenu.add(frame.getSaveScreenshotAction()).setMnemonic(KeyEvent.VK_E);
   }
 
-  /**
-   * @param parentMenu
-   */
   private void addShowCommentLog(final JMenu parentMenu) {
     final JCheckBoxMenuItem showCommentLog = new JCheckBoxMenuItem("Show Comment Log");
     showCommentLog.setModel(frame.getShowCommentLogButtonModel());
     parentMenu.add(showCommentLog).setMnemonic(KeyEvent.VK_L);
   }
 
-  /**
-   * @param parentMenu
-   */
   private static void addShowEnemyCasualties(final JMenu parentMenu) {
     final JCheckBoxMenuItem showEnemyCasualties = new JCheckBoxMenuItem("Confirm Enemy Casualties");
     showEnemyCasualties.setMnemonic(KeyEvent.VK_E);
@@ -739,10 +746,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     parentMenu.add(showAIBattlesBox);
   }
 
-
-  /**
-   * @param parentMenu
-   */
   private void addShowDiceStats(final JMenu parentMenu) {
     final Action showDiceStats = SwingAction.of("Show Dice Stats...", e -> {
       final IRandomStats randomStats =
@@ -811,17 +814,11 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
         KeyStroke.getKeyStroke(KeyEvent.VK_B, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
   }
 
-  /**
-   * @param parentMenu
-   */
   private void addExportStatsFull(final JMenu parentMenu) {
     final Action showDiceStats = SwingAction.of("Export Full Game Stats...", e -> createAndSaveStats(true));
     parentMenu.add(showDiceStats).setMnemonic(KeyEvent.VK_F);
   }
 
-  /**
-   * @param parentMenu
-   */
   private void addExportStats(final JMenu parentMenu) {
     final Action showDiceStats = SwingAction.of("Export Short Game Stats...", e -> createAndSaveStats(false));
     parentMenu.add(showDiceStats).setMnemonic(KeyEvent.VK_S);
@@ -1105,9 +1102,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     showMapDetails.setEnabled(getUIContext().getMapData().getHasRelief());
   }
 
-  /**
-   * @param menuGame
-   */
   private void addShowMapDetails(final JMenu menuGame) {
     showMapDetails = new JCheckBoxMenuItem("Show Map Details");
     showMapDetails.setMnemonic(KeyEvent.VK_D);
@@ -1132,9 +1126,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     menuGame.add(showMapDetails);
   }
 
-  /**
-   * @param menuGame
-   */
   private void addShowMapBlends(final JMenu menuGame) {
     showMapBlends = new JCheckBoxMenuItem("Show Map Blends");
     showMapBlends.setMnemonic(KeyEvent.VK_B);
@@ -1168,9 +1159,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     menuGame.add(showMapBlends);
   }
 
-  /**
-   * @param menuGame
-   */
   private void addMapSkinsMenu(final JMenu menuGame) {
     // beagles Mapskin code
     // creates a sub menu of radiobuttons for each available mapdir
@@ -1209,9 +1197,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     }
   }
 
-  /**
-   * @param parentMenu
-   */
   private void addExportSetupCharts(final JMenu parentMenu) {
     final JMenuItem menuFileExport = new JMenuItem(SwingAction.of("Export Setup Charts...", e -> {
       final JFrame frame = new JFrame("Export Setup Files");
@@ -1307,5 +1292,19 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     unitSizeMenu.add(radioItem56);
     unitSizeMenu.add(radioItem50);
     parentMenu.add(unitSizeMenu);
+  }
+  private JRadioButtonMenuItem createRadioButtonItem(String text, ButtonGroup group, Action action, boolean selected){
+    final JRadioButtonMenuItem buttonItem = new JRadioButtonMenuItem(text);
+    buttonItem.addActionListener(action);
+    buttonItem.setSelected(selected);
+    group.add(buttonItem);
+    return buttonItem;
+  }
+  
+  private JRadioButtonMenuItem createFlagDrawModeRadionButtonItem(String text, ButtonGroup group, UnitsDrawer.UnitFlagDrawMode drawMode, String setting, Preferences prefs){
+    return createRadioButtonItem(text, group, SwingAction.of(e -> {
+      UnitsDrawer.setUnitFlagDrawMode(drawMode, prefs);
+      frame.getMapPanel().resetMap();
+      }), setting.equals(drawMode.toString()));
   }
 }
