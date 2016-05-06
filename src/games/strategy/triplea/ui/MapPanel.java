@@ -213,25 +213,11 @@ public class MapPanel extends ImageScrollerLargeView {
   public void setRoute(final Route route, final Point start, final Point end, final Image cursorImage) {
     if (route == null) {
       routeDescription = null;
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          repaint();
-        }
-      });
+      SwingUtilities.invokeLater(() ->  repaint());
       return;
     }
-    final RouteDescription newVal = new RouteDescription(route, start, end, cursorImage);
-    if (routeDescription != null && routeDescription.equals(newVal)) {
-      return;
-    }
-    routeDescription = newVal;
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        repaint();
-      }
-    });
+    routeDescription = new RouteDescription(route, start, end, cursorImage);
+    SwingUtilities.invokeLater(() -> repaint());
   }
 
   public void addMapSelectionListener(final MapSelectionListener listener) {
