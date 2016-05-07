@@ -9,12 +9,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataComponent;
 
@@ -25,12 +27,12 @@ import games.strategy.engine.data.GameDataComponent;
  */
 public class GameProperties extends GameDataComponent {
   private static final long serialVersionUID = -1448163357090677564L;
-  private final Map<String, Object> m_constantProperties = new HashMap<String, Object>();
+  private final Map<String, Object> constantProperties = new HashMap<String, Object>();
   // a set of IEditableProperties
-  private final Map<String, IEditableProperty> m_editableProperties = new HashMap<String, IEditableProperty>();
+  private final Map<String, IEditableProperty> editableProperties = new HashMap<String, IEditableProperty>();
   // This list is used to keep track of order properties were
   // added.
-  private final List<String> m_ordering = new ArrayList<String>();
+  private final List<String> ordering = new ArrayList<String>();
 
   /**
    * Creates a new instance of Properties
@@ -54,11 +56,11 @@ public class GameProperties extends GameDataComponent {
   public void set(final String key, final Object value) {
     // TODO should only accept serializable, not object
     if (value == null) {
-      m_constantProperties.remove(key);
-      m_ordering.remove(key);
+      constantProperties.remove(key);
+      ordering.remove(key);
     } else {
-      m_constantProperties.put(key, value);
-      m_ordering.add(key);
+      constantProperties.put(key, value);
+      ordering.add(key);
     }
   }
 
@@ -69,10 +71,10 @@ public class GameProperties extends GameDataComponent {
    *         (The object returned should not be modified, as modifications will not appear globally.)
    */
   public Object get(final String key) {
-    if (m_editableProperties.containsKey(key)) {
-      return m_editableProperties.get(key).getValue();
+    if (editableProperties.containsKey(key)) {
+      return editableProperties.get(key).getValue();
     }
-    return m_constantProperties.get(key);
+    return constantProperties.get(key);
   }
 
   public boolean get(final String key, final boolean defaultValue) {
@@ -109,8 +111,8 @@ public class GameProperties extends GameDataComponent {
 
   public void addEditableProperty(final IEditableProperty property) {
     // add to the editable properties
-    m_editableProperties.put(property.getName(), property);
-    m_ordering.add(property.getName());
+    editableProperties.put(property.getName(), property);
+    ordering.add(property.getName());
   }
 
   /**
@@ -120,9 +122,9 @@ public class GameProperties extends GameDataComponent {
    */
   public List<IEditableProperty> getEditableProperties() {
     final List<IEditableProperty> properties = new ArrayList<IEditableProperty>();
-    for (final String propertyName : m_ordering) {
-      if (m_editableProperties.containsKey(propertyName)) {
-        properties.add(m_editableProperties.get(propertyName));
+    for (final String propertyName : ordering) {
+      if (editableProperties.containsKey(propertyName)) {
+        properties.add(editableProperties.get(propertyName));
       }
     }
     return properties;
@@ -162,12 +164,8 @@ public class GameProperties extends GameDataComponent {
     List<IEditableProperty> editableProperties = null;
     try {
       editableProperties = streamToIEditablePropertiesList(byteArray);
-    } catch (final ClassNotFoundException e) {
-      e.printStackTrace();
-    } catch (final ClassCastException e) {
-      e.printStackTrace();
-    } catch (final IOException e) {
-      e.printStackTrace();
+    } catch (final ClassNotFoundException | ClassCastException | IOException  e) {
+      ClientLogger.logError("An Error occured whilst trying to apply a Byte Map to Property. Bytes: " + Arrays.toString(byteArray), e);
     }
     applyListToChangeProperties(editableProperties, gamePropertiesToBeChanged);
   }
@@ -181,7 +179,7 @@ public class GameProperties extends GameDataComponent {
       if (prop == null || prop.getName() == null) {
         continue;
       }
-      final IEditableProperty p = gamePropertiesToBeChanged.m_editableProperties.get(prop.getName());
+      final IEditableProperty p = gamePropertiesToBeChanged.editableProperties.get(prop.getName());
       if (p != null && prop.getName().equals(p.getName()) && p.validate(prop.getValue())) {
         p.setValue(prop.getValue());
       }

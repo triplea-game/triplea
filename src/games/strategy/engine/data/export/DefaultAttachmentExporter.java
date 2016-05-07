@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
@@ -85,12 +86,11 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
             }
             throw new AttachmentExportException(
                 "unknown handler for field: " + field + " of class: " + field.getType());
-          } catch (final NullPointerException npe) {
-            System.err.println("npe: field: " + fieldName);
-            npe.printStackTrace();
+          } catch (final NullPointerException e) {
+            ClientLogger.logError("NullPointer Exception on Field " + fieldName, e);
           } catch (final NoSuchMethodException e) {
-            System.err.println("no method: set" + (Character.toUpperCase(fieldName.charAt(2)) + fieldName.substring(3))
-                + " found on: " + attachment.getClass().getCanonicalName());
+            ClientLogger.logError("NoSuchMethodException Method: " + (Character.toUpperCase(fieldName.charAt(2)) + fieldName.substring(3))
+                + " found on: " + attachment.getClass().getCanonicalName(), e);
           }
         }
       }

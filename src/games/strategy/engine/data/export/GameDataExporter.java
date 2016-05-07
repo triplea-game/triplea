@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
@@ -146,23 +147,18 @@ public class GameDataExporter {
   }
 
   @SuppressWarnings("unchecked")
-  private void propertyList(final GameData data) {
+  private void propertyList(final GameData data) {//TODO: Unchecked Reflection
     xmlfile.append("    <propertyList>\n");
+    final GameProperties gameProperties = data.getProperties();
     try {
-      final GameProperties gameProperties = data.getProperties();
       final Field conPropField = GameProperties.class.getDeclaredField("m_constantProperties");
       conPropField.setAccessible(true);
       final Field edPropField = GameProperties.class.getDeclaredField("m_editableProperties");
       edPropField.setAccessible(true);
       printConstantProperties((Map<String, Object>) conPropField.get(gameProperties));
       printEditableProperties((Map<String, IEditableProperty>) edPropField.get(gameProperties));
-    } catch (final SecurityException e) {
-      e.printStackTrace();
-    } catch (final NoSuchFieldException e) {
-    } catch (final IllegalArgumentException e) {
-      e.printStackTrace();
-    } catch (final IllegalAccessException e) {
-      e.printStackTrace();
+    } catch (final SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+      ClientLogger.logError("An Error occured whilst trying trying to setup the Property List", e);
     }
     xmlfile.append("    </propertyList>\n");
   }
@@ -202,12 +198,8 @@ public class GameDataExporter {
           possibleValues = possibleValues + "," + values.next();
         }
         typeString = "            <list>" + possibleValues + "</list>\n";
-      } catch (final NoSuchFieldException e) {
-        e.printStackTrace();
-      } catch (final IllegalArgumentException e) {
-        e.printStackTrace();
-      } catch (final IllegalAccessException e) {
-        e.printStackTrace();
+      } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+        ClientLogger.logError("An Error occured whilst trying to print the Property \"" + value +"\"", e);
       }
     }
     if (prop.getClass().equals(NumberProperty.class)) {
@@ -219,14 +211,8 @@ public class GameDataExporter {
         final int max = maxField.getInt(prop);
         final int min = minField.getInt(prop);
         typeString = "            <number min=\"" + min + "\" max=\"" + max + "\"/>\n";
-      } catch (final SecurityException e) {
-        e.printStackTrace();
-      } catch (final NoSuchFieldException e) {
-        e.printStackTrace();
-      } catch (final IllegalArgumentException e) {
-        e.printStackTrace();
-      } catch (final IllegalAccessException e) {
-        e.printStackTrace();
+      } catch (final SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+        ClientLogger.logError("An Error occured whilst trying to print a Number-XML Tag", e);
       }
     }
     xmlfile.append("        <property name=\"" + prop.getName() + "\" value=\"" + value + "\" editable=\"true\">\n");
@@ -405,8 +391,8 @@ public class GameDataExporter {
 
   private void printAttachments(final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachmentPlusValues,
       final boolean currentAttachmentObjects) {
+    final IAttachment attachment = attachmentPlusValues.getFirst();
     try {
-      final IAttachment attachment = attachmentPlusValues.getFirst();
       // TODO: none of the attachment exporter classes have been updated since TripleA version 1.3.2.2
       final String attachmentOptions;
       if (currentAttachmentObjects) {
@@ -449,7 +435,7 @@ public class GameDataExporter {
         xmlfile.append("        </attachment>\n");
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logError("An Error occured whilst trying to print the Attachment \"" + attachment.getName() + "\"", e);
     }
   }
 
@@ -593,14 +579,8 @@ public class GameDataExporter {
         mDelegateField.setAccessible(true);
         final String delegate = (String) mDelegateField.get(step);
         xmlfile.append("            <step name=\"" + step.getName() + "\" delegate=\"" + delegate + "\"");
-      } catch (final NullPointerException npe) {
-        npe.printStackTrace();
-      } catch (final NoSuchFieldException e) {
-        e.printStackTrace();
-      } catch (final IllegalArgumentException e) {
-        e.printStackTrace();
-      } catch (final IllegalAccessException e) {
-        e.printStackTrace();
+      } catch (final NullPointerException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+        ClientLogger.logError("An Error occured whilst trying to sequence in game " + data.getGameName(), e);
       }
       if (step.getPlayerID() != null) {
         xmlfile.append(" player=\"" + step.getPlayerID().getName() + "\"");

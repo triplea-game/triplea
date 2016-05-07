@@ -1,13 +1,13 @@
 package games.strategy.triplea.printgenerator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -19,10 +19,10 @@ import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 
 class UnitInformation {
-  private Map<UnitType, UnitAttachment> m_unitInfoMap;
-  private Iterator<UnitType> m_unitTypeIterator;
-  private GameData m_data;
-  private PrintGenerationData m_printData;
+  private Map<UnitType, UnitAttachment> unitInfoMap;
+  private Iterator<UnitType> unitTypeIterator;
+  private GameData data;
+  private PrintGenerationData printData;
 
   private static String capitalizeFirst(final String s) {
     return (s.length() > 0) ? Character.toUpperCase(s.charAt(0)) + s.substring(1) : s;
@@ -30,13 +30,13 @@ class UnitInformation {
 
   protected void saveToFile(final PrintGenerationData printData, final Map<UnitType, UnitAttachment> unitInfoMap) {
     FileWriter unitInformation = null;
-    m_printData = printData;
-    m_data = m_printData.getData();
-    m_unitInfoMap = unitInfoMap;
-    m_unitTypeIterator = m_unitInfoMap.keySet().iterator();
-    m_printData.getOutDir().mkdir();
+    this.printData = printData;
+    data = this.printData.getData();
+    this.unitInfoMap = unitInfoMap;
+    unitTypeIterator = this.unitInfoMap.keySet().iterator();
+    this.printData.getOutDir().mkdir();
+    final File outFile = new File(this.printData.getOutDir(), "General Information.csv");
     try {
-      final File outFile = new File(m_printData.getOutDir(), "General Information.csv");
       unitInformation = new FileWriter(outFile);
       for (int i = 0; i < 8; i++) {
         unitInformation.write(",");
@@ -50,9 +50,9 @@ class UnitInformation {
           + ",Can Produce Units?,Marine?,Transport Cost,AA Gun?,Air Unit?,Strategic Bomber?,Carrier Cost,"
           + "Sea Unit?,Hit Points?,Transport Capacity,Carrier Capacity,Submarine?,Destroyer?");
       unitInformation.write("\r\n");
-      while (m_unitTypeIterator.hasNext()) {
-        final UnitType currentType = m_unitTypeIterator.next();
-        final UnitAttachment currentAttachment = m_unitInfoMap.get(currentType);
+      while (unitTypeIterator.hasNext()) {
+        final UnitType currentType = unitTypeIterator.next();
+        final UnitAttachment currentAttachment = this.unitInfoMap.get(currentType);
         if (currentType.getName().equals(Constants.AAGUN_TYPE)) {
           unitInformation.write(currentType.getName() + ",");
         } else {
@@ -81,32 +81,28 @@ class UnitInformation {
       }
       unitInformation.write("\r\n");
       unitInformation.close();
-    } catch (final FileNotFoundException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
     } catch (final IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+      ClientLogger.logError("There was an error while trying to save File " + outFile.toString() , e);
+    } 
   }
 
   private int getCostInformation(final UnitType type) {
-    if (m_data.getProductionFrontierList().getProductionFrontier("production") != null) {
+    if (data.getProductionFrontierList().getProductionFrontier("production") != null) {
       final List<ProductionRule> productionRules =
-          m_data.getProductionFrontierList().getProductionFrontier("production").getRules();
+          data.getProductionFrontierList().getProductionFrontier("production").getRules();
       final Iterator<ProductionRule> productionIterator = productionRules.iterator();
       while (productionIterator.hasNext()) {
         final ProductionRule currentRule = productionIterator.next();
         final NamedAttachable currentType = currentRule.getResults().keySet().iterator().next();
         if (currentType.equals(type)) {
-          final int cost = currentRule.getCosts().getInt(m_data.getResourceList().getResource(Constants.PUS));
+          final int cost = currentRule.getCosts().getInt(data.getResourceList().getResource(Constants.PUS));
           return cost;
         }
       }
     } else {
-      if (BattleCalculator.getCostsForTUV(m_data.getPlayerList().getPlayers().iterator().next(), m_data)
+      if (BattleCalculator.getCostsForTUV(data.getPlayerList().getPlayers().iterator().next(), data)
           .getInt(type) > 0) {
-        return BattleCalculator.getCostsForTUV(m_data.getPlayerList().getPlayers().iterator().next(), m_data)
+        return BattleCalculator.getCostsForTUV(data.getPlayerList().getPlayers().iterator().next(), data)
             .getInt(type);
       }
     }

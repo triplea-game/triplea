@@ -11,7 +11,6 @@ import games.strategy.net.ILoginValidator;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
 import games.strategy.net.ServerMessenger;
-import sun.nio.ch.SocketAdaptor;
 
 public class ServerQuarantineConversation extends QuarantineConversation {
   /**
@@ -113,8 +112,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           send(new InetSocketAddress[] {(InetSocketAddress) m_channel.socket().getRemoteSocketAddress(),
               m_serverMessenger.getLocalNode().getSocketAddress()});
           // Login succeeded, so notify the ServerMessenger about the login with the name, mac, etc.
-          m_serverMessenger.NotifyPlayerLogin(m_remoteName,
-              ((SocketAdaptor) m_channel.socket()).getInetAddress().getHostAddress(), m_remoteMac);
+          m_serverMessenger.NotifyPlayerLogin(m_remoteName, m_channel.socket().getInetAddress().getHostAddress(), m_remoteMac);
           // We are good
           return ACTION.UNQUARANTINE;
         case ACK_ERROR:
