@@ -23,7 +23,7 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
-import games.strategy.triplea.ui.display.ITripleaDisplay;
+import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatch;
@@ -331,7 +331,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     removeUnitsThatNoLongerExist();
     // we have already started
     if (m_stack.isExecuting()) {
-      final ITripleaDisplay display = getDisplay(bridge);
+      final ITripleADisplay display = getDisplay(bridge);
       display.showBattle(m_battleID, m_battleSite, getBattleTitle(),
           removeNonCombatants(m_attackingUnits, true, m_attacker, false, false, false),
           removeNonCombatants(m_defendingUnits, false, m_defender, false, false, false), m_killed,
@@ -367,7 +367,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     updateDefendingAAUnits();
     // list the steps
     m_stepStrings = determineStepStrings(true, bridge);
-    final ITripleaDisplay display = getDisplay(bridge);
+    final ITripleADisplay display = getDisplay(bridge);
     display.showBattle(m_battleID, m_battleSite, getBattleTitle(),
         removeNonCombatants(m_attackingUnits, true, m_attacker, false, false, false),
         removeNonCombatants(m_defendingUnits, false, m_defender, false, false, false), m_killed,
@@ -981,7 +981,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
           updateOffensiveAAUnits();
           updateDefendingAAUnits();
           m_stepStrings = determineStepStrings(false, bridge);
-          final ITripleaDisplay display = getDisplay(bridge);
+          final ITripleADisplay display = getDisplay(bridge);
           display.listBattleSteps(m_battleID, m_stepStrings);
           // continue fighting
           // the recursive step

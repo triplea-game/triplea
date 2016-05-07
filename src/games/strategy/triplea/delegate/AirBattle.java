@@ -29,7 +29,7 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
-import games.strategy.triplea.ui.display.ITripleaDisplay;
+import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
@@ -247,7 +247,7 @@ public class AirBattle extends AbstractBattle {
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         if (!m_isOver) {
           m_steps = determineStepStrings(false, bridge);
-          final ITripleaDisplay display = getDisplay(bridge);
+          final ITripleADisplay display = getDisplay(bridge);
           display.listBattleSteps(m_battleID, m_steps);
           m_round++;
           // continue fighting
