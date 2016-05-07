@@ -5,6 +5,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.util.TransportUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -60,7 +61,7 @@ public class UnitComparator {
     final IntegerMap<Unit> capacityMap = new IntegerMap<Unit>(transports.size() + 1, 1);
     for (final Unit transport : transports) {
       final Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
-      capacityMap.add(transport, MoveValidator.getTransportCost(transporting));
+      capacityMap.add(transport, TransportUtils.getTransportCost(transporting));
     }
     return new Comparator<Unit>() {
       @Override
