@@ -1,11 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -16,14 +10,22 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.util.TransportUtils;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Tracks which transports are carrying which units. Also tracks the capacity
  * that has been unloaded. To reset the unloaded call clearUnloadedCapacity().
  */
 public class TransportTracker {
+
   public static int getCost(final Collection<Unit> units) {
-    return MoveValidator.getTransportCost(units);
+    return TransportUtils.getTransportCost(units);
   }
 
   private static void assertTransport(final Unit u) {

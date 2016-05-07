@@ -223,6 +223,8 @@ public interface Constants {
   public static final String ABANDONED_TERRITORIES_MAY_BE_TAKEN_OVER_IMMEDIATELY =
       "Abandoned Territories May Be Taken Over Immediately";
   public static final String DISABLED_PLAYERS_ASSETS_DELETED = "Disabled Players Assets Deleted";
+  public static final String CONTROL_ALL_CANALS_BETWEEN_TERRITORIES_TO_PASS =
+      "Control All Canals Between Territories To Pass";
   // relationships stuff (Edwin, with help from Veqryn and Frig)
   public static final String RELATIONSHIP_TYPE_SELF = "self_relation";
   public static final String RELATIONSHIP_TYPE_NULL = "null_relation";

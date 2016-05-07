@@ -1,5 +1,11 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Territory;
+import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.util.PointFileReaderWriter;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -24,12 +30,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.util.PointFileReaderWriter;
 
 /**
  * contains data about the territories useful for drawing
@@ -88,8 +88,8 @@ public class MapData {
   public static final String KAMIKAZE_FILE = "kamikaze_place.txt";
   public static final String DECORATIONS_FILE = "decorations.txt";
   // default colour if none is defined.
-  private final List<Color> m_defaultColours = new ArrayList<Color>(Arrays.asList(new Color[] {Color.RED, Color.MAGENTA,
-      Color.YELLOW, Color.ORANGE, Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY}));
+  private final List<Color> m_defaultColours = new ArrayList<Color>(Arrays.asList(new Color[] {Color.RED,
+      Color.MAGENTA, Color.YELLOW, Color.ORANGE, Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY}));
   // maps PlayerName as String to Color
   private final Map<String, Color> m_playerColors = new HashMap<String, Color>();
   // maps String -> List of points

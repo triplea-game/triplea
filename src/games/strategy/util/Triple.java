@@ -62,9 +62,7 @@ public class Triple<F, S, T> implements Serializable  {
       return false;
     }
 
-    // ignore parameterization, just perform equals-check on components
-	@SuppressWarnings("rawtypes")
-    final Triple other = (Triple) obj;
+    final Triple<?,?,?> other = (Triple<?,?,?>) obj;
     return Objects.equals(tuple, other.tuple) &&
         Objects.equals(getThird(), other.getThird() );
   }

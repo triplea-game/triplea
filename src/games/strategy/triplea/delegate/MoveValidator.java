@@ -1,5 +1,33 @@
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseEditDelegate;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ResourceCollection;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
+import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attachments.CanalAttachment;
+import games.strategy.triplea.attachments.PlayerAttachment;
+import games.strategy.triplea.attachments.RulesAttachment;
+import games.strategy.triplea.attachments.TechAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
+import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
+import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.util.TransportUtils;
+import games.strategy.triplea.util.UnitCategory;
+import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.util.CompositeMatch;
+import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.CompositeMatchOr;
+import games.strategy.util.InverseMatch;
+import games.strategy.util.Match;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,32 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
-import games.strategy.common.delegate.BaseEditDelegate;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.ResourceCollection;
-import games.strategy.engine.data.Route;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attachments.CanalAttachment;
-import games.strategy.triplea.attachments.PlayerAttachment;
-import games.strategy.triplea.attachments.RulesAttachment;
-import games.strategy.triplea.attachments.TechAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
-import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
-import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
-import games.strategy.util.InverseMatch;
-import games.strategy.util.Match;
 
 /**
  * Provides some static methods for validating movement.
@@ -933,19 +935,6 @@ public class MoveValidator {
     return route.hasNeutralBeforeEnd();
   }
 
-  public static int getTransportCost(final Collection<Unit> units) {
-    if (units == null) {
-      return 0;
-    }
-    int cost = 0;
-    final Iterator<Unit> iter = units.iterator();
-    while (iter.hasNext()) {
-      final Unit item = iter.next();
-      cost += UnitAttachment.get(item.getType()).getTransportCost();
-    }
-    return cost;
-  }
-
   private static Collection<Unit> getUnitsThatCantGoOnWater(final Collection<Unit> units) {
     final Collection<Unit> retUnits = new ArrayList<Unit>();
     for (final Unit unit : units) {
@@ -1075,7 +1064,7 @@ public class MoveValidator {
       for (final Unit unit : TransportTracker.getUnitsLoadedOnAlliedTransportsThisTurn(units)) {
         result.addDisallowedUnit(CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND, unit);
       }
-      final Collection<Unit> transports = MoveDelegate.mapTransports(route, units, null).values();
+      final Collection<Unit> transports = TransportUtils.mapTransports(route, units, null).values();
       final boolean isScramblingOrKamikazeAttacksEnabled =
           games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data)
               || games.strategy.triplea.Properties.getUseKamikazeSuicideAttacks(data);
@@ -1205,7 +1194,7 @@ public class MoveValidator {
           }
         }
       }
-      final Map<Unit, Unit> unitsToTransports = MoveDelegate.mapTransports(route, land, transportsToLoad);
+      final Map<Unit, Unit> unitsToTransports = TransportUtils.mapTransports(route, land, transportsToLoad);
       final Iterator<Unit> iter = land.iterator();
       // CompositeMatch<Unit> landUnitsAtSea = new CompositeMatchOr<Unit>(Matches.unitIsLandAndOwnedBy(player),
       // Matches.UnitCanBeTransported);
@@ -1287,11 +1276,11 @@ public class MoveValidator {
     }
     final List<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
     final List<Unit> allParatroops =
-        MoveDelegate.mapAirTransportPossibilities(route, paratroopsRequiringTransport, airTransports, false, player);
+        TransportUtils.findUnitsToLoadOnAirTransports(paratroopsRequiringTransport, airTransports);
     if (!allParatroops.containsAll(paratroopsRequiringTransport)) {
       return false;
     }
-    final Map<Unit, Unit> transportLoadMap = MoveDelegate.mapAirTransports(route, units, airTransports, true, player);
+    final Map<Unit, Unit> transportLoadMap = TransportUtils.mapTransportsToLoad(units, airTransports);
     if (!transportLoadMap.keySet().containsAll(paratroopsRequiringTransport)) {
       return false;
     }
@@ -1352,7 +1341,7 @@ public class MoveValidator {
       // Map<Unit, Unit> airTransportsAndParatroops = MoveDelegate.mapTransports(route, paratroopsRequiringTransport,
       // airTransports);
       final Map<Unit, Unit> airTransportsAndParatroops =
-          MoveDelegate.mapAirTransports(route, paratroopsRequiringTransport, airTransports, true, player);
+          TransportUtils.mapTransportsToLoad(paratroopsRequiringTransport, airTransports);
       for (final Unit paratroop : airTransportsAndParatroops.keySet()) {
         if (Matches.unitHasMoved.match(paratroop)) {
           result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
@@ -1407,9 +1396,8 @@ public class MoveValidator {
   }
 
   /**
-   * Used for testing a single territory, either as part of a route, or just by itself. Returns Optional.empty if either
-   * there are no canals or there is at least 1 canal that can be passed through otherwise returns a failure message
-   * indicating why the canal can't be passed through.
+   * Used for testing a single territory, either as part of a route, or just by itself. Returns Optional.empty if it
+   * can be passed through otherwise returns a failure message indicating why the canal can't be passed through.
    *
    * @param territory
    * @param route
@@ -1427,11 +1415,13 @@ public class MoveValidator {
     final Set<CanalAttachment> canalAttachments = CanalAttachment.get(territory);
     for (final CanalAttachment canalAttachment : canalAttachments) {
       if (!isCanalOnRoute(canalAttachment, route, data)) {
-        continue;
+        continue; // Only check canals that are on the route
       }
       failureMessage = canPassThroughCanal(canalAttachment, units, player, data);
-      if (!failureMessage.isPresent()) {
-        return Optional.empty();
+      final boolean canPass = !failureMessage.isPresent();
+      if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && canPass)
+          || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && !canPass)) {
+        break; // If need to control any canal and can pass OR need to control all canals and can't pass
       }
     }
     return failureMessage;
@@ -1470,12 +1460,11 @@ public class MoveValidator {
     }
     for (final Territory borderTerritory : canalAttachment.getLandTerritories()) {
       if (!data.getRelationshipTracker().canMoveThroughCanals(player, borderTerritory.getOwner())) {
-        return Optional.of("Must own " + borderTerritory.getName() + " to go through "
-            + canalAttachment.getCanalName());
+        return Optional.of("Must control " + canalAttachment.getCanalName() + " to move through");
       }
       if (AbstractMoveDelegate.getBattleTracker(data).wasConquered(borderTerritory)) {
-        return Optional.of("Cannot move through " + canalAttachment.getCanalName() + " without owning "
-            + borderTerritory.getName() + " for an entire turn");
+        return Optional.of("Must control " + canalAttachment.getCanalName()
+            + " for an entire turn to move through");
       }
     }
     return Optional.empty();
