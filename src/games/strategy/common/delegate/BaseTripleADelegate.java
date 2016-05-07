@@ -11,8 +11,8 @@ import games.strategy.triplea.TripleA;
 import games.strategy.triplea.ai.weakAI.WeakAI;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.delegate.PoliticsDelegate;
-import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.display.ITripleaDisplay;
+import games.strategy.triplea.player.ITripleAPlayer;
+import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
@@ -100,34 +100,34 @@ public abstract class BaseTripleADelegate extends AbstractDelegate implements ID
   }
 
   @Override
-  protected ITripleaDisplay getDisplay() {
+  protected ITripleADisplay getDisplay() {
     return getDisplay(m_bridge);
   }
 
-  protected static ITripleaDisplay getDisplay(final IDelegateBridge bridge) {
-    return (ITripleaDisplay) bridge.getDisplayChannelBroadcaster();
+  protected static ITripleADisplay getDisplay(final IDelegateBridge bridge) {
+    return (ITripleADisplay) bridge.getDisplayChannelBroadcaster();
   }
 
   @Override
-  protected ITripleaPlayer getRemotePlayer() {
+  protected ITripleAPlayer getRemotePlayer() {
     return getRemotePlayer(m_bridge);
   }
 
-  protected static ITripleaPlayer getRemotePlayer(final IDelegateBridge bridge) {
-    return (ITripleaPlayer) bridge.getRemotePlayer();
+  protected static ITripleAPlayer getRemotePlayer(final IDelegateBridge bridge) {
+    return (ITripleAPlayer) bridge.getRemotePlayer();
   }
 
   @Override
-  protected ITripleaPlayer getRemotePlayer(final PlayerID player) {
+  protected ITripleAPlayer getRemotePlayer(final PlayerID player) {
     return getRemotePlayer(player, m_bridge);
   }
 
-  protected static ITripleaPlayer getRemotePlayer(final PlayerID player, final IDelegateBridge bridge) {
+  protected static ITripleAPlayer getRemotePlayer(final PlayerID player, final IDelegateBridge bridge) {
     // if its the null player, return a do nothing proxy
     if (player.isNull()) {
       return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
     }
-    return (ITripleaPlayer) bridge.getRemotePlayer(player);
+    return (ITripleAPlayer) bridge.getRemotePlayer(player);
   }
 }
 

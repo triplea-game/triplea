@@ -68,7 +68,7 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
-import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.CompositeMatchAnd;
@@ -950,8 +950,8 @@ public class RevisedTest extends TestCase {
         return null;
       }
     };
-    final ITripleaPlayer player = (ITripleaPlayer) Proxy
-        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleaPlayer.class}, handler);
+    final ITripleAPlayer player = (ITripleAPlayer) Proxy
+        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleAPlayer.class}, handler);
     bridge.setRemote(player);
     // int PUsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
     final int pusBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
@@ -1437,7 +1437,7 @@ public class RevisedTest extends TestCase {
     assertError(error);
   }
 
-  private ITripleaPlayer getDummyPlayer() {
+  private ITripleAPlayer getDummyPlayer() {
     return new DummyTripleAPlayer();
   }
 
