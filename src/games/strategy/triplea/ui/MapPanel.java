@@ -590,6 +590,7 @@ public class MapPanel extends ImageScrollerLargeView {
       final AffineTransform t = new AffineTransform();
       t.translate(m_scale * normalizeX(routeDescription.getEnd().getX() - getXOffset()),
           m_scale * normalizeY(routeDescription.getEnd().getY() - getYOffset()));
+      t.translate(mouseShadowImage.getWidth() / -2, mouseShadowImage.getHeight() / -2);
       t.scale(m_scale, m_scale);
       g2d.drawImage(mouseShadowImage, t, this);
     }
@@ -788,7 +789,7 @@ public class MapPanel extends ImageScrollerLargeView {
     final int xSpace = 5;
     final BufferedImage img = Util.createImage(categories.size() * (xSpace + icon_width),
         uiContext.getUnitImageFactory().getUnitImageHeight(), true);
-    final Graphics2D g = (Graphics2D) img.getGraphics();
+    final Graphics2D g = img.createGraphics();
     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
     g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
     g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
