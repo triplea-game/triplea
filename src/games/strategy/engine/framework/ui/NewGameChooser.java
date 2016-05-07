@@ -10,8 +10,6 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -20,7 +18,6 @@ import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -45,7 +42,6 @@ public class NewGameChooser extends JDialog {
   private JEditorPane notesPanel;
   private NewGameChooserModel gameListModel;
   private NewGameChooserEntry choosen;
-  private boolean finishedRefreshing = false;
 
   private NewGameChooser(final Frame owner) {
     super(owner, "Select a Game", true);
@@ -54,16 +50,7 @@ public class NewGameChooser extends JDialog {
     setupListeners();
     setWidgetActivation();
     updateInfoPanel();
-    Timer timer = new Timer();
-    timer.schedule(new TimerTask(){
-      @Override
-      public void run() {
-        if(!finishedRefreshing){
-          JOptionPane.showMessageDialog(owner, "Loading the Maps took more than 5 seconds... \n Thanks for your patience.");
-        }
-      }}, 5000);
     refreshGameList();
-    finishedRefreshing = true;
   }
 
   private void createComponents() {
