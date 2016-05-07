@@ -21,7 +21,7 @@ import games.strategy.util.Tuple;
 /**
  * Interface the TriplePlayer presents to Delegates through IRemoteMessenger
  */
-public interface ITripleaPlayer extends IRemotePlayer {
+public interface ITripleAPlayer_ren extends IRemotePlayer {
   /**
    * Select casualties
    *

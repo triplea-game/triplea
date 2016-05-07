@@ -36,7 +36,7 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
-import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.player.ITripleAPlayer_ren;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
@@ -483,7 +483,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       @Override
       public void run() {
         try {
-          final ITripleaPlayer defender = (ITripleaPlayer) bridge.getRemotePlayer(m_defender);
+          final ITripleAPlayer_ren defender = (ITripleAPlayer_ren) bridge.getRemotePlayer(m_defender);
           defender.confirmEnemyCasualties(m_battleID, "Press space to continue", m_attacker);
         } catch (final ConnectionLostException cle) {
           // somone else will deal with this
@@ -498,7 +498,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     };
     final Thread t = new Thread(r, "click to continue waiter");
     t.start();
-    final ITripleaPlayer attacker = (ITripleaPlayer) bridge.getRemotePlayer(m_attacker);
+    final ITripleAPlayer_ren attacker = (ITripleAPlayer_ren) bridge.getRemotePlayer(m_attacker);
     attacker.confirmOwnCasualties(m_battleID, "Press space to continue");
     try {
       bridge.leaveDelegateExecution();
@@ -573,7 +573,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final String annotation =
             m_attacker.getName() + " fixing dice to allocate cost of strategic bombing raid against "
                 + m_defender.getName() + " in " + m_battleSite.getName();
-        final ITripleaPlayer attacker = (ITripleaPlayer) bridge.getRemotePlayer(m_attacker);
+        final ITripleAPlayer_ren attacker = (ITripleAPlayer_ren) bridge.getRemotePlayer(m_attacker);
         // does not take into account bombers with dice sides higher than getDiceSides
         m_dice = attacker.selectFixedDice(rollCount, 0, true, annotation, m_data.getDiceSides());
       } else {

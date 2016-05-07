@@ -40,7 +40,7 @@ import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.player.ITripleAPlayer_ren;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatchAnd;
@@ -488,11 +488,11 @@ public class BattleCalculator {
     }
     final GameData data = bridge.getData();
     final boolean isEditMode = BaseEditDelegate.getEditMode(data);
-    ITripleaPlayer tripleaPlayer;
+    ITripleAPlayer_ren tripleaPlayer;
     if (player.isNull()) {
       tripleaPlayer = new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
     } else {
-      tripleaPlayer = (ITripleaPlayer) bridge.getRemotePlayer(player);
+      tripleaPlayer = (ITripleAPlayer_ren) bridge.getRemotePlayer(player);
     }
     Map<Unit, Collection<Unit>> dependents;
     if (headLess) {

@@ -51,7 +51,7 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.player.ITripleAPlayer_ren;
 import games.strategy.triplea.ui.BattleDisplay;
 import games.strategy.triplea.ui.PlaceData;
 import games.strategy.triplea.ui.TripleAFrame;
@@ -65,7 +65,7 @@ import games.strategy.util.Tuple;
  * It should be using a Change done in a delegate, and done through an IDelegate, which we get through
  * getPlayerBridge().getRemote()
  */
-public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements IGamePlayer, ITripleaPlayer {
+public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements IGamePlayer, ITripleAPlayer_ren {
   private boolean m_soundPlayedAlreadyCombatMove = false;
   private boolean m_soundPlayedAlreadyNonCombatMove = false;
   private boolean m_soundPlayedAlreadyPurchase = false;

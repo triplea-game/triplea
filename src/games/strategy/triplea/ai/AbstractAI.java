@@ -41,7 +41,7 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.player.ITripleAPlayer_ren;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -64,7 +64,7 @@ import games.strategy.util.Tuple;
  * through an IDelegate using a change).
  * <p>
  */
-public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlayer, IGamePlayer {
+public abstract class AbstractAI extends AbstractBaseAI implements ITripleAPlayer_ren, IGamePlayer {
   private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
 
   /**
@@ -77,8 +77,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     super(name, type);
   }
 
-  public final Class<ITripleaPlayer> getRemotePlayerType() {
-    return ITripleaPlayer.class;
+  public final Class<ITripleAPlayer_ren> getRemotePlayerType() {
+    return ITripleAPlayer_ren.class;
   }
 
   /************************

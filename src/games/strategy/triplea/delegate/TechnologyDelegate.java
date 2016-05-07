@@ -32,7 +32,7 @@ import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.player.ITripleAPlayer_ren;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
@@ -216,7 +216,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     int remainder = 0;
     final int diceSides = data.getDiceSides();
     if (BaseEditDelegate.getEditMode(data)) {
-      final ITripleaPlayer tripleaPlayer = getRemotePlayer();
+      final ITripleAPlayer_ren tripleaPlayer = getRemotePlayer();
       random = tripleaPlayer.selectFixedDice(techRolls, diceSides, true, annotation, diceSides);
       techHits = getTechHits(random);
     } else if (isLL_TECH_ONLY()) {
@@ -375,7 +375,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     final String annotation = m_player.getName() + " rolling to see what tech advances are aquired";
     int[] random;
     if (isSelectableTechRoll() || BaseEditDelegate.getEditMode(getData())) {
-      final ITripleaPlayer tripleaPlayer = getRemotePlayer();
+      final ITripleAPlayer_ren tripleaPlayer = getRemotePlayer();
       random = tripleaPlayer.selectFixedDice(hits, 0, true, annotation, available.size());
     } else {
       random = new int[hits];

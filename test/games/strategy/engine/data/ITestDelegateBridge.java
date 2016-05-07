@@ -3,7 +3,7 @@ package games.strategy.engine.data;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.random.IRandomSource;
-import games.strategy.triplea.ui.display.ITripleaDisplay;
+import games.strategy.triplea.ui.display.ITripleADisplay_ren;
 
 /**
  * Not for actual use, suitable for testing. Never returns messages, but can get
@@ -24,5 +24,5 @@ public interface ITestDelegateBridge extends IDelegateBridge {
 
   public void setRemote(IRemotePlayer remote);
 
-  public void setDisplay(ITripleaDisplay display);
+  public void setDisplay(ITripleADisplay_ren display);
 }

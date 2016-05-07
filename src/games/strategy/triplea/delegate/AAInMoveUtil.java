@@ -23,7 +23,7 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.player.ITripleAPlayer_ren;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
@@ -58,11 +58,11 @@ class AAInMoveUtil implements Serializable {
     return games.strategy.triplea.Properties.getAATerritoryRestricted(getData());
   }
 
-  private ITripleaPlayer getRemotePlayer(final PlayerID id) {
-    return (ITripleaPlayer) m_bridge.getRemotePlayer(id);
+  private ITripleAPlayer_ren getRemotePlayer(final PlayerID id) {
+    return (ITripleAPlayer_ren) m_bridge.getRemotePlayer(id);
   }
 
-  private ITripleaPlayer getRemotePlayer() {
+  private ITripleAPlayer_ren getRemotePlayer() {
     return getRemotePlayer(m_player);
   }
 

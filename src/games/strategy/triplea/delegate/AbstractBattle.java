@@ -22,8 +22,8 @@ import games.strategy.triplea.TripleA;
 import games.strategy.triplea.ai.weakAI.WeakAI;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord.BattleResultDescription;
-import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.display.ITripleaDisplay;
+import games.strategy.triplea.player.ITripleAPlayer_ren;
+import games.strategy.triplea.ui.display.ITripleADisplay_ren;
 import games.strategy.util.IntegerMap;
 
 abstract public class AbstractBattle implements IBattle, Serializable {
@@ -313,23 +313,23 @@ abstract public class AbstractBattle implements IBattle, Serializable {
     BattleDelegate.markDamaged(damaged, bridge, addPreviousHits);
   }
 
-  protected static ITripleaDisplay getDisplay(final IDelegateBridge bridge) {
-    return (ITripleaDisplay) bridge.getDisplayChannelBroadcaster();
+  protected static ITripleADisplay_ren getDisplay(final IDelegateBridge bridge) {
+    return (ITripleADisplay_ren) bridge.getDisplayChannelBroadcaster();
   }
 
   protected static ISound getSoundChannel(final IDelegateBridge bridge) {
     return bridge.getSoundChannelBroadcaster();
   }
 
-  protected static ITripleaPlayer getRemote(final IDelegateBridge bridge) {
-    return (ITripleaPlayer) bridge.getRemotePlayer();
+  protected static ITripleAPlayer_ren getRemote(final IDelegateBridge bridge) {
+    return (ITripleAPlayer_ren) bridge.getRemotePlayer();
   }
 
-  protected static ITripleaPlayer getRemote(final PlayerID player, final IDelegateBridge bridge) {
+  protected static ITripleAPlayer_ren getRemote(final PlayerID player, final IDelegateBridge bridge) {
     // if its the null player, return a do nothing proxy
     if (player.isNull()) {
       return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
     }
-    return (ITripleaPlayer) bridge.getRemotePlayer(player);
+    return (ITripleAPlayer_ren) bridge.getRemotePlayer(player);
   }
 }

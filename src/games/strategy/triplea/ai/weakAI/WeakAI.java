@@ -38,7 +38,7 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.player.ITripleAPlayer_ren;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
@@ -50,7 +50,7 @@ import games.strategy.util.Util;
 /*
  * A very weak ai, based on some simple rules.<p>
  */
-public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
+public class WeakAI extends AbstractAI implements IGamePlayer, ITripleAPlayer_ren {
   private final static Logger s_logger = Logger.getLogger(WeakAI.class.getName());
 
   /** Creates new TripleAPlayer */

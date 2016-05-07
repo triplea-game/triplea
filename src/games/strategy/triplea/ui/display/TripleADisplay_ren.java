@@ -17,11 +17,11 @@ import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.ui.TripleAFrame;
 
-public class TripleaDisplay implements ITripleaDisplay {
+public class TripleADisplay_ren implements ITripleADisplay_ren {
   private IDisplayBridge m_displayBridge;
   private final TripleAFrame m_ui;
 
-  public TripleaDisplay(final TripleAFrame ui) {
+  public TripleADisplay_ren(final TripleAFrame ui) {
     m_ui = ui;
   }
 

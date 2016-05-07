@@ -44,7 +44,7 @@ import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.NotificationMessages;
-import games.strategy.triplea.ui.display.ITripleaDisplay;
+import games.strategy.triplea.ui.display.ITripleADisplay_ren;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -1655,7 +1655,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
           }
           aBridge.getHistoryWriter().startEvent(
               "Note to players " + MyFormatter.defaultNamedToTextList(t.getPlayers()) + ": " + messageForRecord);
-          ((ITripleaDisplay) aBridge.getDisplayChannelBroadcaster()).reportMessageToPlayers(t.getPlayers(), null,
+          ((ITripleADisplay_ren) aBridge.getDisplayChannelBroadcaster()).reportMessageToPlayers(t.getPlayers(), null,
               ("<html>" + message.trim() + "</html>"), NOTIFICATION);
         }
       }

@@ -13,7 +13,7 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 
-public interface ITripleaDisplay extends IDisplay {
+public interface ITripleADisplay_ren extends IDisplay {
   /**
    * Sends a message to all TripleAFrame that have joined the game, possibly including observers.
    *

@@ -18,7 +18,7 @@ import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
-import games.strategy.triplea.ui.display.DummyTripleaDisplay;
+import games.strategy.triplea.ui.display.DummyTripleADisplay_ren;
 import junit.framework.AssertionFailedError;
 
 public class GameDataTestUtil {
@@ -143,7 +143,7 @@ public class GameDataTestUtil {
   }
 
   public static ITestDelegateBridge getDelegateBridge(final PlayerID player, final GameData data) {
-    return new TestDelegateBridge(data, player, new DummyTripleaDisplay());
+    return new TestDelegateBridge(data, player, new DummyTripleADisplay_ren());
   }
 
   public static void load(final Collection<Unit> units, final Route route) {

@@ -78,8 +78,8 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
-import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.display.DummyTripleaDisplay;
+import games.strategy.triplea.player.ITripleAPlayer_ren;
+import games.strategy.triplea.ui.display.DummyTripleADisplay_ren;
 import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
@@ -1097,8 +1097,8 @@ public class WW2V3_41_Test extends TestCase {
         return true;
       }
     };
-    final ITripleaPlayer player = (ITripleaPlayer) Proxy
-        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleaPlayer.class}, handler);
+    final ITripleAPlayer_ren player = (ITripleAPlayer_ren) Proxy
+        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleAPlayer_ren.class}, handler);
     bridge.setRemote(player);
     // Perform the combat movement
     move.setDelegateBridgeAndPlayer(bridge);
@@ -1422,7 +1422,7 @@ public class WW2V3_41_Test extends TestCase {
         return null;
       }
     });
-    bridge.setDisplay(new DummyTripleaDisplay() {
+    bridge.setDisplay(new DummyTripleADisplay_ren() {
       @Override
       public void listBattleSteps(final GUID battleID, final List<String> steps) {
         for (final String s : steps) {

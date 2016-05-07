@@ -22,7 +22,7 @@ import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.player.ITripleAPlayer_ren;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 
@@ -111,8 +111,8 @@ public class LHTRTest extends TestCase {
         return null;
       }
     };
-    final ITripleaPlayer player = (ITripleaPlayer) Proxy
-        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleaPlayer.class}, handler);
+    final ITripleAPlayer_ren player = (ITripleAPlayer_ren) Proxy
+        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleAPlayer_ren.class}, handler);
     bridge.setRemote(player);
     // move 1 fighter over the aa gun in caucus
     final Route route = new Route();
@@ -166,8 +166,8 @@ public class LHTRTest extends TestCase {
         return null;
       }
     };
-    final ITripleaPlayer player = (ITripleaPlayer) Proxy
-        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleaPlayer.class}, handler);
+    final ITripleAPlayer_ren player = (ITripleAPlayer_ren) Proxy
+        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleAPlayer_ren.class}, handler);
     bridge.setRemote(player);
     final int PUsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
@@ -205,8 +205,8 @@ public class LHTRTest extends TestCase {
         return null;
       }
     };
-    final ITripleaPlayer player = (ITripleaPlayer) Proxy
-        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleaPlayer.class}, handler);
+    final ITripleAPlayer_ren player = (ITripleAPlayer_ren) Proxy
+        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleAPlayer_ren.class}, handler);
     bridge.setRemote(player);
     final int PUsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);

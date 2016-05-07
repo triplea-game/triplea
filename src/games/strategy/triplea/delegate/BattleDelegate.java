@@ -40,7 +40,7 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
-import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.player.ITripleAPlayer_ren;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
@@ -258,7 +258,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
    */
   private void addBombardmentSources() {
     final PlayerID attacker = m_bridge.getPlayerID();
-    final ITripleaPlayer remotePlayer = getRemotePlayer();
+    final ITripleAPlayer_ren remotePlayer = getRemotePlayer();
     final Match<Unit> ownedAndCanBombard =
         new CompositeMatchAnd<Unit>(Matches.unitCanBombard(attacker), Matches.unitIsOwnedBy(attacker));
     final Map<Territory, Collection<IBattle>> adjBombardment = getPossibleBombardingTerritories();
@@ -372,7 +372,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       battleTerritories.put(battle.getTerritory(), battle);
     }
-    final ITripleaPlayer remotePlayer = getRemotePlayer();
+    final ITripleAPlayer_ren remotePlayer = getRemotePlayer();
     Territory bombardingTerritory = null;
     if (!territories.isEmpty()) {
       bombardingTerritory = remotePlayer.selectBombardingTerritory(u, uTerritory, territories, true);
@@ -507,7 +507,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       // possibility to ignore battle altogether
       if (!attackingUnits.isEmpty()) {
-        final ITripleaPlayer remotePlayer = getRemotePlayer(aBridge);
+        final ITripleAPlayer_ren remotePlayer = getRemotePlayer(aBridge);
         if (territory.isWater() && games.strategy.triplea.Properties.getSeaBattlesMayBeIgnored(data)) {
           if (!remotePlayer.selectAttackUnits(territory)) {
             final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
