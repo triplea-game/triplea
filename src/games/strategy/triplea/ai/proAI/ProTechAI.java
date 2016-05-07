@@ -429,7 +429,7 @@ public final class ProTechAI {
             continue;
           }
           for (final Unit u : neighbor.getUnits()) {
-            if (unitCondition.match(u) && MoveValidator.hasEnoughMovement(u, dist)) {
+            if (unitCondition.match(u) && Matches.UnitHasEnoughMovementForRoutes(routes).match(u)) {
               units.add(u);
             }
           }
@@ -501,10 +501,10 @@ public final class ProTechAI {
       }
     }
     for (final Unit u : unitDistance.keySet()) {
-      if (lz != null && MoveValidator.hasEnoughMovement(u, unitDistance.getInt(u) + distance.getInt(lz))) {
+      if (lz != null && Matches.UnitHasEnoughMovementForRoute(checked).match(u)) {
         units.add(u);
       } else if (ac != null && Matches.UnitCanLandOnCarrier.match(u)
-          && MoveValidator.hasEnoughMovement(u, unitDistance.getInt(u) + distance.getInt(ac))) {
+          && Matches.UnitHasEnoughMovementForRoute(checked).match(u)) {
         units.add(u);
       }
     }

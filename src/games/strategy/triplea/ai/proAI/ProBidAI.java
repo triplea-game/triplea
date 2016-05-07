@@ -1765,7 +1765,11 @@ public class ProBidAI {
             continue;
           }
           for (final Unit u : neighbor.getUnits()) {
-            if (unitCondition.match(u) && MoveValidator.hasEnoughMovement(u, dist)) {
+            Route route1 = new Route();
+            for (Route r : routes){
+              route1 = Route.join(route1,r);
+            }
+            if (unitCondition.match(u) && Matches.UnitHasEnoughMovementForRoute(route1).match(u)) {
               units.add(u);
             }
           }
@@ -1837,10 +1841,10 @@ public class ProBidAI {
       }
     }
     for (final Unit u : unitDistance.keySet()) {
-      if (lz != null && MoveValidator.hasEnoughMovement(u, unitDistance.getInt(u) + distance.getInt(lz))) {
+      if (lz != null && Matches.UnitHasEnoughMovementForRoute(new Route(checked)).match(u)) {
         units.add(u);
       } else if (ac != null && Matches.UnitCanLandOnCarrier.match(u)
-          && MoveValidator.hasEnoughMovement(u, unitDistance.getInt(u) + distance.getInt(ac))) {
+          && Matches.UnitHasEnoughMovementForRoute(new Route(checked)).match(u)) {
         units.add(u);
       }
     }

@@ -60,8 +60,7 @@ public class Tuple<T, S> implements Serializable {
     }
     
     // ignore parameterization, just perform equals-check on components
-	@SuppressWarnings("rawtypes")
-	final Tuple other = (Tuple) obj;
+	final Tuple<?,?> other = (Tuple<?,?>) obj;
     return Objects.equals(getFirst(), other.getFirst())
         && Objects.equals(getSecond(), other.getSecond());
   }

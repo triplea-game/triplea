@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
@@ -63,8 +64,8 @@ public class UnitImageFactory {
     final Image image = Toolkit.getDefaultToolkit().getImage(url);
     try {
       Util.ensureImageLoaded(image);
-    } catch (final InterruptedException ex) {
-      ex.printStackTrace();
+    } catch (final InterruptedException e) {
+      ClientLogger.logError("Loading the Image " + fileName + " was Interrputed", e);
     }
     return image;
   }
