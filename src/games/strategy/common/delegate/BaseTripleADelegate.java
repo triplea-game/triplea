@@ -1,14 +1,12 @@
 package games.strategy.common.delegate;
 
-import java.io.Serializable;
 import java.util.HashSet;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.delegate.IDelegate;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.TripleA;
 import games.strategy.triplea.ai.weakAI.WeakAI;
+import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
@@ -20,9 +18,7 @@ import games.strategy.util.Match;
  * Base class designed to make writing custom TripleA delegates simpler.
  * Code common to all TripleA delegates is implemented here.
  */
-public abstract class BaseTripleADelegate extends AbstractDelegate implements IDelegate {
-  private boolean m_startBaseStepsFinished = false;
-  private boolean m_endBaseStepsFinished = false;
+public abstract class BaseTripleADelegate extends BaseDelegate {
 
   /**
    * Creates a new instance of the Delegate
@@ -31,59 +27,14 @@ public abstract class BaseTripleADelegate extends AbstractDelegate implements ID
     super();
   }
 
-  /**
-   * Called before the delegate will run.
-   * All classes should call super.start if they override this.
-   * Persistent delegates like Edit Delegate should not extend BaseDelegate, because we do not want to fire triggers in the edit delegate.
-   */
   @Override
-  public void start() {
-    super.start();
-    if (!m_startBaseStepsFinished) {
-      m_startBaseStepsFinished = true;
-      triggerWhenTriggerAttachments(TriggerAttachment.BEFORE);
-    }
+  protected void triggerOnStart() {
+    triggerWhenTriggerAttachments(AbstractTriggerAttachment.BEFORE);
   }
 
-  /**
-   * Called before the delegate will stop running.
-   * All classes should call super.end if they override this.
-   * Persistent delegates like Edit Delegate should not extend BaseDelegate, because we do not want to fire triggers in the edit delegate.
-   */
   @Override
-  public void end() {
-    super.end();
-    // we are firing triggers, for maps that include them
-    if (!m_endBaseStepsFinished) {
-      m_endBaseStepsFinished = true;
-      triggerWhenTriggerAttachments(TriggerAttachment.AFTER);
-    }
-    // these should probably be somewhere else, but we are relying on the fact that reloading a save go into the start step,
-    // but nothing goes into the end step, and therefore there is no way to save then have the end step repeat itself
-    m_startBaseStepsFinished = false;
-    m_endBaseStepsFinished = false;
-  }
-
-  /**
-   * Returns the state of the Delegate.
-   * All classes should super.saveState if they override this.
-   */
-  @Override
-  public Serializable saveState() {
-    final BaseDelegateState state = new BaseDelegateState();
-    state.m_startBaseStepsFinished = m_startBaseStepsFinished;
-    state.m_endBaseStepsFinished = m_endBaseStepsFinished;
-    return state;
-  }
-
-  /**
-   * Loads the delegates state
-   */
-  @Override
-  public void loadState(final Serializable state) {
-    final BaseDelegateState s = (BaseDelegateState) state;
-    m_startBaseStepsFinished = s.m_startBaseStepsFinished;
-    m_endBaseStepsFinished = s.m_endBaseStepsFinished;
+  protected void triggerOnEnd() {
+    triggerWhenTriggerAttachments(AbstractTriggerAttachment.AFTER);
   }
 
   private void triggerWhenTriggerAttachments(final String beforeOrAfter) {
@@ -101,39 +52,21 @@ public abstract class BaseTripleADelegate extends AbstractDelegate implements ID
 
   @Override
   protected ITripleaDisplay getDisplay() {
-    return getDisplay(m_bridge);
-  }
-
-  protected static ITripleaDisplay getDisplay(final IDelegateBridge bridge) {
-    return (ITripleaDisplay) bridge.getDisplayChannelBroadcaster();
+    return (ITripleaDisplay) getDisplay(m_bridge);
   }
 
   @Override
   protected ITripleaPlayer getRemotePlayer() {
-    return getRemotePlayer(m_bridge);
-  }
-
-  protected static ITripleaPlayer getRemotePlayer(final IDelegateBridge bridge) {
-    return (ITripleaPlayer) bridge.getRemotePlayer();
+    return (ITripleaPlayer) getRemotePlayer(m_bridge);
   }
 
   @Override
   protected ITripleaPlayer getRemotePlayer(final PlayerID player) {
-    return getRemotePlayer(player, m_bridge);
-  }
-
-  protected static ITripleaPlayer getRemotePlayer(final PlayerID player, final IDelegateBridge bridge) {
     // if its the null player, return a do nothing proxy
     if (player.isNull()) {
       return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
     }
-    return (ITripleaPlayer) bridge.getRemotePlayer(player);
+    return (ITripleaPlayer) m_bridge.getRemotePlayer(player);
   }
-}
 
-
-class BaseDelegateState implements Serializable {
-  private static final long serialVersionUID = 7130686697155151908L;
-  public boolean m_startBaseStepsFinished = false;
-  public boolean m_endBaseStepsFinished = false;
 }
