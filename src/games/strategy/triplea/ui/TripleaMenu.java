@@ -424,9 +424,9 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     }
     
     final ButtonGroup unitFlagSettingGroup = new ButtonGroup();
-    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Hide Nation", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.NONE, setting, prefs));
-    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Next to Unit", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.NEXT_TO, setting, prefs));
-    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Below Unit", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.BELOW, setting, prefs));
+    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("None", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.NONE, setting, prefs));
+    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Small", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.NEXT_TO, setting, prefs));
+    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Large", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.BELOW, setting, prefs));
     parentMenu.add(unitSizeMenu);
   }
 
