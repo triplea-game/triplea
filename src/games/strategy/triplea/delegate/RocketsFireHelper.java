@@ -26,7 +26,7 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleAPlayer_ren;
+import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
@@ -170,7 +170,7 @@ public class RocketsFireHelper {
   private Territory getTarget(final Collection<Territory> targets, final PlayerID player, final IDelegateBridge bridge,
       final Territory from) {
     // ask even if there is only once choice, that will allow the user to not attack if he doesn't want to
-    return ((ITripleAPlayer_ren) bridge.getRemotePlayer()).whereShouldRocketsAttack(targets, from);
+    return ((ITripleAPlayer) bridge.getRemotePlayer()).whereShouldRocketsAttack(targets, from);
   }
 
   private void fireRocket(final PlayerID player, final Territory attackedTerritory, final IDelegateBridge bridge,
@@ -222,7 +222,7 @@ public class RocketsFireHelper {
         target = enemyTargets.iterator().next();
       } else {
         while (target == null) {
-          final ITripleAPlayer_ren iplayer = (ITripleAPlayer_ren) bridge.getRemotePlayer(player);
+          final ITripleAPlayer iplayer = (ITripleAPlayer) bridge.getRemotePlayer(player);
           target = iplayer.whatShouldBomberBomb(attackedTerritory, enemyTargets, rockets);
         }
       }
@@ -435,7 +435,7 @@ public class RocketsFireHelper {
     }
   }
 
-  private ITripleAPlayer_ren getRemote(final IDelegateBridge bridge) {
-    return (ITripleAPlayer_ren) bridge.getRemotePlayer();
+  private ITripleAPlayer getRemote(final IDelegateBridge bridge) {
+    return (ITripleAPlayer) bridge.getRemotePlayer();
   }
 }

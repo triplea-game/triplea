@@ -75,7 +75,7 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.ui.display.DummyTripleADisplay_ren;
+import games.strategy.triplea.ui.display.DummyTripleADisplay;
 import games.strategy.util.IllegalCharacterRemover;
 import games.strategy.util.Tuple;
 
@@ -529,7 +529,7 @@ class ObjectiveProperties {
 
 
 class ObjectivePanelDummyDelegateBridge implements IDelegateBridge {
-  private final DummyTripleADisplay_ren m_display = new DummyTripleADisplay_ren();
+  private final DummyTripleADisplay m_display = new DummyTripleADisplay();
   private final DummySoundChannel m_soundChannel = new DummySoundChannel();
   private final DelegateHistoryWriter m_writer = new DelegateHistoryWriter(new DummyGameModifiedChannel());
   private final GameData m_data;

@@ -104,12 +104,12 @@ import games.strategy.util.LocalizeHTML;
 /**
  * Main menu for the triplea frame.
  */
-public class TripleAMenu_ren extends BasicGameMenuBar<TripleAFrame> {
+public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
   private static final long serialVersionUID = 987243661147503593L;
   private JCheckBoxMenuItem showMapDetails;
   private JCheckBoxMenuItem showMapBlends;
 
-  TripleAMenu_ren(final TripleAFrame frame) {
+  TripleAMenu(final TripleAFrame frame) {
     super(frame);
     setWidgetActivation();
   }
@@ -777,7 +777,7 @@ public class TripleAMenu_ren extends BasicGameMenuBar<TripleAFrame> {
             GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
         panel.add(diceSidesText, new GridBagConstraints(2, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
             GridBagConstraints.BOTH, new Insets(0, 20, 0, 10), 0, 0));
-        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(TripleAMenu_ren.this), panel, "Roll Dice",
+        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(TripleAMenu.this), panel, "Roll Dice",
             JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
         try {
           final int numberOfDice = Integer.parseInt(numberOfText.getText());

@@ -15,12 +15,12 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
-import games.strategy.triplea.player.ITripleAPlayer_ren;
+import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
-public class DummyTripleAPlayer implements ITripleAPlayer_ren {
+public class DummyTripleAPlayer implements ITripleAPlayer {
   @Override
   public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer) {}
 

@@ -15,7 +15,7 @@ import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.DummySoundChannel;
 import games.strategy.sound.ISound;
-import games.strategy.triplea.ui.display.ITripleADisplay_ren;
+import games.strategy.triplea.ui.display.ITripleADisplay;
 
 /**
  * Not for actual use, suitable for testing. Never returns messages, but can get
@@ -47,7 +47,7 @@ public class TestDelegateBridge implements ITestDelegateBridge {
   }
 
   @Override
-  public void setDisplay(final ITripleADisplay_ren display) {
+  public void setDisplay(final ITripleADisplay display) {
     m_dummyDisplay = display;
   }
 

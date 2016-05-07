@@ -34,7 +34,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleAPlayer_ren;
+import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -878,7 +878,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
             + MyFormatter.attachmentNameToText(this.getName()) + ")";
         aBridge.getHistoryWriter().startEvent(notificationMessage);
         changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, objectiveMet, true);
-        ((ITripleAPlayer_ren) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage,
+        ((ITripleAPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage,
             notificationMessage);
       }
     }

@@ -31,13 +31,13 @@ import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.weakAI.DoesNothingAI;
 import games.strategy.triplea.ai.weakAI.WeakAI;
 import games.strategy.triplea.delegate.EditDelegate;
-import games.strategy.triplea.player.ITripleAPlayer_ren;
+import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.HeadlessUIContext;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.display.DummyTripleADisplay_ren;
-import games.strategy.triplea.ui.display.ITripleADisplay_ren;
-import games.strategy.triplea.ui.display.TripleADisplay_ren;
+import games.strategy.triplea.ui.display.DummyTripleADisplay;
+import games.strategy.triplea.ui.display.ITripleADisplay;
+import games.strategy.triplea.ui.display.TripleADisplay;
 
 public class TripleA extends AbstractGameLoader implements IGameLoader {
   private static final long serialVersionUID = -8374315848374732436L;
@@ -46,7 +46,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
   public static final String FAST_COMPUTER_PLAYER_TYPE = "Fast (AI)";
   public static final String PRO_COMPUTER_PLAYER_TYPE = "Hard (AI)";
   public static final String DOESNOTHINGAI_COMPUTER_PLAYER_TYPE = "Does Nothing (AI)";
-  protected transient ITripleADisplay_ren display;
+  protected transient ITripleADisplay display;
 
   public TripleA() {
 
@@ -110,7 +110,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
       } else {
         headlessFrameUI = null;
       }
-      display = new DummyTripleADisplay_ren(headlessFrameUI);
+      display = new DummyTripleADisplay(headlessFrameUI);
       soundChannel = new DummySoundChannel();
       game.addDisplay(display);
       game.addSoundChannel(soundChannel);
@@ -127,7 +127,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
       SwingAction.invokeAndWait(() -> {
         final TripleAFrame frame;
         frame = new TripleAFrame(game, localPlayers);
-        display = new TripleADisplay_ren(frame);
+        display = new TripleADisplay(frame);
         game.addDisplay(display);
         soundChannel = new DefaultSoundChannel(localPlayers);
         game.addSoundChannel(soundChannel);
@@ -162,7 +162,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
 
   @Override
   public Class<? extends IChannelSubscribor> getDisplayType() {
-    return ITripleADisplay_ren.class;
+    return ITripleADisplay.class;
   }
 
   @Override
@@ -172,7 +172,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
 
   @Override
   public Class<? extends IRemote> getRemotePlayerType() {
-    return ITripleAPlayer_ren.class;
+    return ITripleAPlayer.class;
   }
 
   @Override

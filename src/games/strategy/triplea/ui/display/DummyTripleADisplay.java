@@ -14,13 +14,13 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 
-public class DummyTripleADisplay_ren implements ITripleADisplay_ren {
+public class DummyTripleADisplay implements ITripleADisplay {
   private final MainGameFrame m_ui;
 
   /**
    * A display which does absolutely nothing
    */
-  public DummyTripleADisplay_ren() {
+  public DummyTripleADisplay() {
     m_ui = null;
   }
 
@@ -30,7 +30,7 @@ public class DummyTripleADisplay_ren implements ITripleADisplay_ren {
    * @param ui
    *        MainGameFrame which we will call .stopGame() on if this DummyTripleaDisplay has .shutDown() called.
    */
-  public DummyTripleADisplay_ren(final MainGameFrame ui) {
+  public DummyTripleADisplay(final MainGameFrame ui) {
     m_ui = ui;
   }
 

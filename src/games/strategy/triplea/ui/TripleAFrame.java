@@ -210,7 +210,7 @@ public class TripleAFrame extends MainGameFrame {
   private PlayerID currentStepPlayer;
   private Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<PlayerID, Boolean>();
   private ThreadPool messageAndDialogThreadPool;
-  private TripleAMenu_ren menu;
+  private TripleAMenu menu;
 
   /** Creates new TripleAFrame */
   public TripleAFrame(final IGame game, final LocalPlayers players) {
@@ -232,7 +232,7 @@ public class TripleAFrame extends MainGameFrame {
     showCommentLogButtonModel = new JToggleButton.ToggleButtonModel();
     showCommentLogButtonModel.addActionListener(m_showCommentLogAction);
     showCommentLogButtonModel.setSelected(false);
-    menu = new TripleAMenu_ren(this);
+    menu = new TripleAMenu(this);
     this.setJMenuBar(menu);
     final ImageScrollModel model = new ImageScrollModel();
     model.setScrollX(uiContext.getMapData().scrollWrapX());

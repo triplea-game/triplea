@@ -15,7 +15,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleAPlayer_ren;
+import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.MovePanel;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.util.CompositeMatch;
@@ -60,11 +60,11 @@ public class MovePerformer implements Serializable {
     }
   }
 
-  private ITripleAPlayer_ren getRemotePlayer(final PlayerID id) {
-    return (ITripleAPlayer_ren) m_bridge.getRemotePlayer(id);
+  private ITripleAPlayer getRemotePlayer(final PlayerID id) {
+    return (ITripleAPlayer) m_bridge.getRemotePlayer(id);
   }
 
-  private ITripleAPlayer_ren getRemotePlayer() {
+  private ITripleAPlayer getRemotePlayer() {
     return getRemotePlayer(m_player);
   }
 

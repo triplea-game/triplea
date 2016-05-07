@@ -48,7 +48,7 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.ui.display.DummyTripleADisplay_ren;
+import games.strategy.triplea.ui.display.DummyTripleADisplay;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
@@ -387,7 +387,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 
 class DummyDelegateBridge implements IDelegateBridge {
   private final PlainRandomSource m_randomSource = new PlainRandomSource();
-  private final DummyTripleADisplay_ren m_display = new DummyTripleADisplay_ren();
+  private final DummyTripleADisplay m_display = new DummyTripleADisplay();
   private final DummySoundChannel m_soundChannel = new DummySoundChannel();
   private final DummyPlayer m_attackingPlayer;
   private final DummyPlayer m_defendingPlayer;
