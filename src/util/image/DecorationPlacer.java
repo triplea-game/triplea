@@ -24,12 +24,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.swing.Action;
 import javax.swing.BoxLayout;
@@ -700,23 +700,8 @@ public class DecorationPlacer extends JFrame {
    * @param java
    *        .awt.point p a point on the map
    */
-  private String findTerritoryName(final Point p) {
-    String seaName = null;
-    // try to find a land territory.
-    // sea zones often surround a land territory
-    for (final String name : m_polygons.keySet()) {
-      final Collection<Polygon> polygons = m_polygons.get(name);
-      for (final Polygon poly : polygons) {
-        if (poly.contains(p)) {
-          if (name.endsWith("Sea Zone") || name.startsWith("Sea Zone")) {
-            seaName = name;
-          } else {
-            return name;
-          }
-        } // if
-      } // while
-    } // while
-    return seaName;
+  private Optional<String> findTerritoryName(final Point p) {
+    return Util.findTerritoryName(p, m_polygons);
   }
 
   /**
@@ -756,11 +741,11 @@ public class DecorationPlacer extends JFrame {
     } else if (rightMouse && !ctrlDown && s_createNewImageOnRightClick && s_staticImageForPlacing != null
         && m_currentSelectedImage == null) {
       // create a new point here in this territory
-      final String territoryName = findTerritoryName(m_currentMousePoint);
-      if (territoryName != null) {
+      final Optional<String> territoryName = findTerritoryName(m_currentMousePoint);
+      if (territoryName.isPresent()) {
         final List<Point> points = new ArrayList<Point>();
         points.add(new Point(m_currentMousePoint));
-        m_currentImagePoints.put(territoryName, Tuple.of(s_staticImageForPlacing, points));
+        m_currentImagePoints.put(territoryName.get(), Tuple.of(s_staticImageForPlacing, points));
       }
     } else if (rightMouse && !ctrlDown && s_imagePointType.isCanHaveMultiplePoints()) {
       // if none selected find the image we are clicking on, and duplicate it (not replace/move it)

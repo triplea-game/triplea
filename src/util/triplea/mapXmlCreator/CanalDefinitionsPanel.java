@@ -24,6 +24,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.ui.Util;
 import util.triplea.mapXmlCreator.TerritoryDefinitionDialog.DEFINITION;
 
 
@@ -170,10 +171,11 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
       return;
     }
 
-    final String newTerrName = findTerritoryName(e.getPoint(), polygons);
-    if (newTerrName == null) {
+    final Optional<String> newTerrNameOptional = Util.findTerritoryName(e.getPoint(), polygons);
+    if (!newTerrNameOptional.isPresent()) {
       return;
     }
+    final String newTerrName = newTerrNameOptional.get();
 
     Boolean newTerrIsWater = MapXmlHelper.getTerritoryDefintionsMap().get(newTerrName).get(DEFINITION.IS_WATER);
     if (newTerrIsWater == null) {

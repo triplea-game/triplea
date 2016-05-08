@@ -8,12 +8,18 @@ import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MediaTracker;
+import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JOptionPane;
@@ -24,6 +30,8 @@ import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
 public final class Util {
+  public final static String territorySeaZoneInfix = "Sea Zone";
+
   // all we have is static methods
   private Util() {}
 
@@ -156,5 +164,58 @@ public final class Util {
     originalGraphics.setColor(Color.WHITE);
     originalGraphics.drawString(text, loginStringX, loginStringY);
     return img;
+  }
+
+  /**
+   * java.lang.String findTerritoryName(java.awt.Point)
+   * Finds a land territory name or some sea zone name where the point is contained in according to the territory name
+   * -> polygons map.
+   *
+   * @param java.awt.point p - a point on the map
+   * @param Map<String, List<Polygon>> terrPolygons - a map territory name -> polygons
+   * @return Optional<String>
+   */
+  public static Optional<String> findTerritoryName(final Point p, final Map<String, List<Polygon>> terrPolygons) {
+    return Optional.ofNullable(findTerritoryName(p, terrPolygons, null));
+  }
+
+  /**
+   * java.lang.String findTerritoryName(java.awt.Point)
+   * Finds a land territory name or some sea zone name where the point is contained in according to the territory name
+   * -> polygons map. If no land or sea territory has been found a default name is returned.
+   *
+   * @param java.awt.point p - a point on the map
+   * @param Map<String, List<Polygon>> terrPolygons - a map territory name -> polygons
+   * @param String defaultTerrName - default territory name that gets returns if nothing was found
+   * @return found territory name of defaultTerrName
+   */
+  public static String findTerritoryName(final Point p, final Map<String, List<Polygon>> terrPolygons,
+      final String defaultTerrName) {
+    String lastWaterTerrName = defaultTerrName;
+    // try to find a land territory.
+    // sea zones often surround a land territory
+    for (final String terrName : terrPolygons.keySet()) {
+      final Collection<Polygon> polygons = terrPolygons.get(terrName);
+      for (final Polygon poly : polygons) {
+        if (poly.contains(p)) {
+          if (Util.isTerritoryNameIndicatingWater(terrName)) {
+            lastWaterTerrName = terrName;
+          } else {
+            return terrName;
+          }
+        } // if p is contained
+      } // polygons collection loop
+    } // terrPolygons map loop
+    return lastWaterTerrName;
+  }
+
+  /**
+   * Checks whether name indicates water or not (meaning name starts or ends with default text).
+   *
+   * @param territoryName - territory name
+   * @return true if yes, false otherwise
+   */
+  public static boolean isTerritoryNameIndicatingWater(final String territoryName) {
+    return territoryName.endsWith(territorySeaZoneInfix) || territoryName.startsWith(territorySeaZoneInfix);
   }
 }

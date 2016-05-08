@@ -1,11 +1,5 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.util.PointFileReaderWriter;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -30,6 +24,13 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
+
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Territory;
+import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.ui.Util;
+import games.strategy.util.PointFileReaderWriter;
 
 /**
  * contains data about the territories useful for drawing
@@ -375,13 +376,13 @@ public class MapData {
     while (seaIter.hasNext()) {
       final List<String> contained = new ArrayList<String>();
       final String seaTerritory = seaIter.next();
-      if (!(seaTerritory.endsWith("Sea Zone") || seaTerritory.startsWith("Sea Zone"))) {
+      if (!Util.isTerritoryNameIndicatingWater(seaTerritory)) {
         continue;
       }
       final Iterator<String> landIter = getTerritories().iterator();
       while (landIter.hasNext()) {
         final String landTerritory = landIter.next();
-        if (landTerritory.endsWith("Sea Zone") || landTerritory.startsWith("Sea Zone")) {
+        if (Util.isTerritoryNameIndicatingWater(landTerritory)) {
           continue;
         }
         final Polygon landPoly = getPolygons(landTerritory).iterator().next();
@@ -606,7 +607,7 @@ public class MapData {
       while (polyIter.hasNext()) {
         final Polygon poly = polyIter.next();
         if (poly.contains(x, y)) {
-          if (name.endsWith("Sea Zone") || name.startsWith("Sea Zone")) {
+          if (Util.isTerritoryNameIndicatingWater(name)) {
             seaName = name;
           } else {
             return name;

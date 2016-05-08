@@ -7,10 +7,12 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.swing.JOptionPane;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.ui.Util;
 
 
 public class TerritoryOwnershipPanel extends ImageScrollPanePanel {
@@ -35,11 +37,12 @@ public class TerritoryOwnershipPanel extends ImageScrollPanePanel {
       final Point item, final int x_text_start) {
 
     String ownership = MapXmlHelper.getTerritoryOwnershipsMap().get(centerName);
-    if (ownership == null)
+    if (ownership == null) {
       ownership = MapXmlHelper.playerNeutral;
+    }
     final Rectangle2D prodStringBounds = fontMetrics.getStringBounds(ownership, g);
     final Rectangle2D centerStringBounds = fontMetrics.getStringBounds(centerName, g);
-    double wDiff = (centerStringBounds.getWidth() - prodStringBounds.getWidth()) / 2;
+    final double wDiff = (centerStringBounds.getWidth() - prodStringBounds.getWidth()) / 2;
     g.setColor(Color.yellow);
     g.fillRect(Math.max(0, x_text_start - 2 + (int) wDiff), item.y + 6, (int) prodStringBounds.getWidth() + 4,
         (int) prodStringBounds.getHeight());
@@ -52,29 +55,31 @@ public class TerritoryOwnershipPanel extends ImageScrollPanePanel {
   protected void paintPreparation(final Map<String, Point> centers) {}
 
   @Override
-  protected void paintOwnSpecifics(Graphics g, Map<String, Point> centers) {}
+  protected void paintOwnSpecifics(final Graphics g, final Map<String, Point> centers) {}
 
   @Override
   protected void mouseClickedOnImage(final Map<String, Point> centers, final MouseEvent e) {
-    final Point point = e.getPoint();
-    final String territoryName = findTerritoryName(point, polygons);
-
-    if (territoryName == null)
+    final Optional<String> territoryNameOptional = Util.findTerritoryName(e.getPoint(), polygons);
+    if (!territoryNameOptional.isPresent()) {
       return;
+    }
+    final String territoryName = territoryNameOptional.get();
 
     final String currValue = MapXmlHelper.getTerritoryOwnershipsMap().get(territoryName);
-    String inputText = (String) JOptionPane.showInputDialog(null,
+    final String inputText = (String) JOptionPane.showInputDialog(null,
         "Which player should be the initial owner of territory '" + territoryName + "'?",
         "Choose Owner of " + territoryName,
         JOptionPane.QUESTION_MESSAGE, null, players, // Array of choices
         (currValue != null ? currValue : lastChosenPlayer)); // Initial choice
     final boolean inputIsNeutralPlayer = MapXmlHelper.playerNeutral.equals(inputText);
-    if (inputText == null || inputText.equals(currValue) || inputIsNeutralPlayer && currValue == null)
+    if (inputText == null || inputText.equals(currValue) || inputIsNeutralPlayer && currValue == null) {
       return;
-    if (inputIsNeutralPlayer)
+    }
+    if (inputIsNeutralPlayer) {
       MapXmlHelper.getTerritoryOwnershipsMap().remove(territoryName);
-    else
+    } else {
       MapXmlHelper.putTerritoyOwnerships(territoryName, inputText);
+    }
     lastChosenPlayer = inputText;
 
     repaint();

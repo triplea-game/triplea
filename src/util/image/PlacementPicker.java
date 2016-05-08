@@ -24,7 +24,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -526,22 +525,7 @@ public class PlacementPicker extends JFrame {
    *        .awt.point p a point on the map
    */
   private String findTerritoryName(final Point p) {
-    String seaName = "there be dragons";
-    // try to find a land territory.
-    // sea zones often surround a land territory
-    for (final String name : m_polygons.keySet()) {
-      final Collection<Polygon> polygons = m_polygons.get(name);
-      for (final Polygon poly : polygons) {
-        if (poly.contains(p)) {
-          if (name.endsWith("Sea Zone") || name.startsWith("Sea Zone")) {
-            seaName = name;
-          } else {
-            return name;
-          }
-        } // if
-      } // while
-    } // while
-    return seaName;
+    return Util.findTerritoryName(p, m_polygons, "there be dragons");
   }
 
   /**
