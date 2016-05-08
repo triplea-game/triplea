@@ -189,13 +189,11 @@ public class PlacePanel extends AbstractMovePanel {
 
   @Override
   protected final void cleanUpSpecific() {
-    // TODO Auto-generated method stub
     getMap().removeMapSelectionListener(PLACE_MAP_SELECTION_LISTENER);
   }
 
   @Override
   protected final void setUpSpecific() {
-    // TODO Auto-generated method stub
     getMap().addMapSelectionListener(PLACE_MAP_SELECTION_LISTENER);
   }
 

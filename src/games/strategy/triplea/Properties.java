@@ -673,5 +673,9 @@ public class Properties implements Constants {
     return data.getProperties().get(DISABLED_PLAYERS_ASSETS_DELETED, false);
   }
 
+  public static boolean getControlAllCanalsBetweenTerritoriesToPass(final GameData data) {
+    return data.getProperties().get(CONTROL_ALL_CANALS_BETWEEN_TERRITORIES_TO_PASS, false);
+  }
+
   private Properties() {}
 }

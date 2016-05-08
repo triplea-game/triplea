@@ -1,7 +1,6 @@
 package games.strategy.triplea.printgenerator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -48,8 +48,8 @@ class CountryChart {
       availableUnits = m_data.getUnitTypeList().iterator();
     }
     FileWriter countryFileWriter = null;
+    final File outFile = new File(m_printData.getOutDir(), player.getName() + ".csv");
     try {
-      final File outFile = new File(m_printData.getOutDir(), player.getName() + ".csv");
       countryFileWriter = new FileWriter(outFile, true);
       // Print Title
       final int numUnits = m_data.getUnitTypeList().size();
@@ -89,11 +89,8 @@ class CountryChart {
         countryFileWriter.write("\r\n");
       }
       countryFileWriter.close();
-    } catch (final FileNotFoundException e) {
-      e.printStackTrace();
     } catch (final IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      ClientLogger.logError("Failed Saving to File " + outFile.toString(), e);
     }
   }
 }
