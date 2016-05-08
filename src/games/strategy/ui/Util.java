@@ -30,7 +30,7 @@ import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
 public final class Util {
-  public final static String territorySeaZoneInfix = "Sea Zone";
+  public final static String TERRITORY_SEA_ZONE_INFIX = "Sea Zone";
 
   // all we have is static methods
   private Util() {}
@@ -216,6 +216,6 @@ public final class Util {
    * @return true if yes, false otherwise
    */
   public static boolean isTerritoryNameIndicatingWater(final String territoryName) {
-    return territoryName.endsWith(territorySeaZoneInfix) || territoryName.startsWith(territorySeaZoneInfix);
+    return territoryName.endsWith(TERRITORY_SEA_ZONE_INFIX) || territoryName.startsWith(TERRITORY_SEA_ZONE_INFIX);
   }
 }

@@ -162,8 +162,8 @@ public class ConnectionFinder {
         "Territory Definitions", 1) == 0) {
       final String waterString = JOptionPane.showInputDialog(null,
           "Enter a string or regex that determines if the territory is Water? \r\n(e.g.: "
-              + Util.territorySeaZoneInfix + ")",
-          Util.territorySeaZoneInfix);
+              + Util.TERRITORY_SEA_ZONE_INFIX + ")",
+          Util.TERRITORY_SEA_ZONE_INFIX);
       territoryDefinitions = doTerritoryDefinitions(allTerritories, waterString);
     }
     try {

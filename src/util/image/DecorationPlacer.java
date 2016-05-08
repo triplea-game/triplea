@@ -693,18 +693,6 @@ public class DecorationPlacer extends JFrame {
   }
 
   /**
-   * java.lang.String findTerritoryName(java.awt.Point)
-   * Finds a land territory name or
-   * some sea zone name.
-   *
-   * @param java
-   *        .awt.point p a point on the map
-   */
-  private Optional<String> findTerritoryName(final Point p) {
-    return Util.findTerritoryName(p, m_polygons);
-  }
-
-  /**
    * mouseEvent(java.awt.Point, java.lang.boolean, java.lang.boolean)
    *
    * @param java
@@ -741,7 +729,7 @@ public class DecorationPlacer extends JFrame {
     } else if (rightMouse && !ctrlDown && s_createNewImageOnRightClick && s_staticImageForPlacing != null
         && m_currentSelectedImage == null) {
       // create a new point here in this territory
-      final Optional<String> territoryName = findTerritoryName(m_currentMousePoint);
+      final Optional<String> territoryName = Util.findTerritoryName(m_currentMousePoint, m_polygons);
       if (territoryName.isPresent()) {
         final List<Point> points = new ArrayList<Point>();
         points.add(new Point(m_currentMousePoint));

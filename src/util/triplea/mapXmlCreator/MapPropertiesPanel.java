@@ -52,7 +52,7 @@ public class MapPropertiesPanel {
     final JLabel labelCentersFile = new JLabel("Map Centers File:");
     final JButton buttonSelectCentersFile = new JButton("Browse");
     final JLabel labelWaterFilter = new JLabel("Water Territory Filter");
-    final JLabel labelWaterFilterExample = new JLabel("e.g. '" + Util.territorySeaZoneInfix + "'");
+    final JLabel labelWaterFilterExample = new JLabel("e.g. '" + Util.TERRITORY_SEA_ZONE_INFIX + "'");
 
     final GridBagLayout gridBadConstLabelPanel = new GridBagLayout();
     gridBadConstLabelPanel.rowHeights = getRowHeights();
