@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -59,55 +60,54 @@ import games.strategy.util.Version;
 public class GameData implements java.io.Serializable {
   private static final long serialVersionUID = -2612710634080125728L;
   public static final String GAME_UUID = "GAME_UUID";
-  private final ReadWriteLock m_readWriteLock = new ReentrantReadWriteLock();
-  private transient LockUtil m_lockUtil = new LockUtil();
-  private volatile transient boolean m_forceInSwingEventThread = false;
-  private String m_gameName;
-  private Version m_gameVersion;
-  private int m_diceSides;
-  private transient ListenerList<TerritoryListener> m_territoryListeners = new ListenerList<TerritoryListener>();
-  private transient ListenerList<GameDataChangeListener> m_dataChangeListeners =
+  private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+  private transient LockUtil lockUtil = new LockUtil();
+  private volatile transient boolean forceInSwingEventThread = false;
+  private String gameName;
+  private Version gameVersion;
+  private int diceSides;
+  private transient ListenerList<TerritoryListener> territoryListeners = new ListenerList<TerritoryListener>();
+  private transient ListenerList<GameDataChangeListener> dataChangeListeners =
       new ListenerList<GameDataChangeListener>();
-  private transient ListenerList<GameMapListener> m_gameMapListeners = new ListenerList<GameMapListener>();
-  private final AllianceTracker m_alliances = new AllianceTracker(this);
+  private transient ListenerList<GameMapListener> gameMapListeners = new ListenerList<GameMapListener>();
+  private final AllianceTracker alliances = new AllianceTracker(this);
   // Tracks current relationships between players, this is empty if relationships aren't used
-  private final RelationshipTracker m_relationships = new RelationshipTracker(this);
-  private final DelegateList m_delegateList;
-  private final GameMap m_map = new GameMap(this);
-  private final PlayerList m_playerList = new PlayerList(this);
-  private final ProductionFrontierList m_productionFrontierList = new ProductionFrontierList(this);
-  private final ProductionRuleList m_productionRuleList = new ProductionRuleList(this);
-  private final RepairFrontierList m_repairFrontierList = new RepairFrontierList(this);
-  private final RepairRuleList m_repairRuleList = new RepairRuleList(this);
-  private final ResourceList m_resourceList = new ResourceList(this);
-  private final GameSequence m_sequence = new GameSequence(this);
-  private final UnitTypeList m_unitTypeList = new UnitTypeList(this);
+  private final RelationshipTracker relationships = new RelationshipTracker(this);
+  private final DelegateList delegateList;
+  private final GameMap map = new GameMap(this);
+  private final PlayerList playerList = new PlayerList(this);
+  private final ProductionFrontierList productionFrontierList = new ProductionFrontierList(this);
+  private final ProductionRuleList productionRuleList = new ProductionRuleList(this);
+  private final RepairFrontierList repairFrontierList = new RepairFrontierList(this);
+  private final RepairRuleList repairRuleList = new RepairRuleList(this);
+  private final ResourceList resourceList = new ResourceList(this);
+  private final GameSequence sequence = new GameSequence(this);
+  private final UnitTypeList unitTypeList = new UnitTypeList(this);
   // Tracks all relationshipTypes that are in the current game, default there will be the SelfRelation and the
-  // NullRelation any other
-  // relations are mapdesigner created.
-  private final RelationshipTypeList m_relationshipTypeList = new RelationshipTypeList(this);
-  private final GameProperties m_properties = new GameProperties(this);
-  private final UnitsList m_unitsList = new UnitsList();
-  private final TechnologyFrontier m_technologyFrontier = new TechnologyFrontier("allTechsForGame", this);
-  private transient ResourceLoader m_resourceLoader;
-  private IGameLoader m_loader;
-  private final History m_gameHistory = new History(this);
-  private volatile transient boolean m_testLockIsHeld = false;
-  private final List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> m_attachmentOrderAndValues =
+  // NullRelation any other relations are map designer created.
+  private final RelationshipTypeList relationshipTypeList = new RelationshipTypeList(this);
+  private final GameProperties properties = new GameProperties(this);
+  private final UnitsList unitsList = new UnitsList();
+  private final TechnologyFrontier technologyFrontier = new TechnologyFrontier("allTechsForGame", this);
+  private transient ResourceLoader resourceLoader;
+  private IGameLoader loader;
+  private final History gameHistory = new History(this);
+  private volatile transient boolean testLockIsHeld = false;
+  private final List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> attachmentOrderAndValues =
       new ArrayList<Tuple<IAttachment, ArrayList<Tuple<String, String>>>>();
-  private final Hashtable<String, TerritoryEffect> m_territoryEffectList = new Hashtable<String, TerritoryEffect>();
-  private final BattleRecordsList m_battleRecordsList = new BattleRecordsList(this);
+  private final Hashtable<String, TerritoryEffect> territoryEffectList = new Hashtable<String, TerritoryEffect>();
+  private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
 
   /** Creates new GameData */
   public GameData() {
     super();
-    m_delegateList = new DelegateList(this);
-    m_properties.set(GAME_UUID, UUID.randomUUID().toString());
+    delegateList = new DelegateList(this);
+    properties.set(GAME_UUID, UUID.randomUUID().toString());
   }
 
   private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
     in.defaultReadObject();
-    m_lockUtil = new LockUtil();
+    lockUtil = new LockUtil();
   }
 
   /**
@@ -117,7 +117,7 @@ public class GameData implements java.io.Serializable {
    * @return the map for this game.
    */
   public GameMap getMap() {
-    return m_map;
+    return map;
   }
 
   /**
@@ -125,13 +125,13 @@ public class GameData implements java.io.Serializable {
    * do not currently hold the read or write lock
    */
   private void ensureLockHeld() {
-    if (!m_testLockIsHeld) {
+    if (!testLockIsHeld) {
       return;
     }
-    if (m_readWriteLock == null) {
+    if (readWriteLockMissing()) {
       return;
     }
-    if (!m_lockUtil.isLockHeld(m_readWriteLock.readLock()) && !m_lockUtil.isLockHeld(m_readWriteLock.writeLock())) {
+    if (!lockUtil.isLockHeld(readWriteLock.readLock()) && !lockUtil.isLockHeld(readWriteLock.writeLock())) {
       new Exception("Lock not held").printStackTrace(System.out);
     }
   }
@@ -141,14 +141,14 @@ public class GameData implements java.io.Serializable {
    */
   public UnitsList getUnits() {
     // ensureLockHeld();
-    return m_unitsList;
+    return unitsList;
   }
 
   /**
    * @return list of Players in the game
    */
   public PlayerList getPlayerList() {
-    return m_playerList;
+    return playerList;
   }
 
   /**
@@ -156,7 +156,7 @@ public class GameData implements java.io.Serializable {
    */
   public ResourceList getResourceList() {
     ensureLockHeld();
-    return m_resourceList;
+    return resourceList;
   }
 
   /**
@@ -164,7 +164,7 @@ public class GameData implements java.io.Serializable {
    */
   public ProductionFrontierList getProductionFrontierList() {
     ensureLockHeld();
-    return m_productionFrontierList;
+    return productionFrontierList;
   }
 
   /**
@@ -172,7 +172,7 @@ public class GameData implements java.io.Serializable {
    */
   public ProductionRuleList getProductionRuleList() {
     ensureLockHeld();
-    return m_productionRuleList;
+    return productionRuleList;
   }
 
   /**
@@ -180,7 +180,7 @@ public class GameData implements java.io.Serializable {
    */
   public TechnologyFrontier getTechnologyFrontier() {
     ensureLockHeld();
-    return m_technologyFrontier;
+    return technologyFrontier;
   }
 
   /**
@@ -188,7 +188,7 @@ public class GameData implements java.io.Serializable {
    */
   public RepairFrontierList getRepairFrontierList() {
     ensureLockHeld();
-    return m_repairFrontierList;
+    return repairFrontierList;
   }
 
   /**
@@ -196,7 +196,7 @@ public class GameData implements java.io.Serializable {
    */
   public RepairRuleList getRepairRuleList() {
     ensureLockHeld();
-    return m_repairRuleList;
+    return repairRuleList;
   }
 
   /**
@@ -204,7 +204,7 @@ public class GameData implements java.io.Serializable {
    */
   public AllianceTracker getAllianceTracker() {
     ensureLockHeld();
-    return m_alliances;
+    return alliances;
   }
 
   /**
@@ -212,7 +212,7 @@ public class GameData implements java.io.Serializable {
    *         event thread.
    */
   public boolean areChangesOnlyInSwingEventThread() {
-    return m_forceInSwingEventThread;
+    return forceInSwingEventThread;
   }
 
   /**
@@ -220,153 +220,133 @@ public class GameData implements java.io.Serializable {
    * the swing event thread.
    */
   public void forceChangesOnlyInSwingEventThread() {
-    m_forceInSwingEventThread = true;
+    forceInSwingEventThread = true;
   }
 
   public GameSequence getSequence() {
     ensureLockHeld();
-    return m_sequence;
+    return sequence;
   }
 
   public UnitTypeList getUnitTypeList() {
     ensureLockHeld();
-    return m_unitTypeList;
+    return unitTypeList;
   }
 
   public DelegateList getDelegateList() {
     ensureLockHeld();
-    return m_delegateList;
+    return delegateList;
   }
 
   public UnitHolder getUnitHolder(final String name, final String type) {
     ensureLockHeld();
     if (type.equals(UnitHolder.PLAYER)) {
-      return m_playerList.getPlayerID(name);
+      return playerList.getPlayerID(name);
     } else if (type.equals(UnitHolder.TERRITORY)) {
-      return m_map.getTerritory(name);
+      return map.getTerritory(name);
     } else {
       throw new IllegalStateException("Invalid type:" + type);
     }
   }
 
   public GameProperties getProperties() {
-    return m_properties;
+    return properties;
   }
 
   public void addTerritoryListener(final TerritoryListener listener) {
-    m_territoryListeners.add(listener);
+    territoryListeners.add(listener);
   }
 
   public void removeTerritoryListener(final TerritoryListener listener) {
-    m_territoryListeners.remove(listener);
+    territoryListeners.remove(listener);
   }
 
   public void addDataChangeListener(final GameDataChangeListener listener) {
-    m_dataChangeListeners.add(listener);
+    dataChangeListeners.add(listener);
   }
 
   public void removeDataChangeListener(final GameDataChangeListener listener) {
-    m_dataChangeListeners.remove(listener);
+    dataChangeListeners.remove(listener);
   }
 
   public void addGameMapListener(final GameMapListener listener) {
-    m_gameMapListeners.add(listener);
+    gameMapListeners.add(listener);
   }
 
   public void removeGameMapListener(final GameMapListener listener) {
-    m_gameMapListeners.remove(listener);
+    gameMapListeners.remove(listener);
   }
 
   void notifyTerritoryUnitsChanged(final Territory t) {
-    final Iterator<TerritoryListener> iter = m_territoryListeners.iterator();
-    while (iter.hasNext()) {
-      final TerritoryListener listener = iter.next();
-      listener.unitsChanged(t);
-    }
+    territoryListeners.forEach(territoryListener -> territoryListener.unitsChanged(t));
   }
 
   void notifyTerritoryAttachmentChanged(final Territory t) {
-    final Iterator<TerritoryListener> iter = m_territoryListeners.iterator();
-    while (iter.hasNext()) {
-      final TerritoryListener listener = iter.next();
-      listener.attachmentChanged(t);
-    }
+    territoryListeners.forEach(territoryListener -> territoryListener.attachmentChanged(t));
   }
 
   void notifyTerritoryOwnerChanged(final Territory t) {
-    final Iterator<TerritoryListener> iter = m_territoryListeners.iterator();
-    while (iter.hasNext()) {
-      final TerritoryListener listener = iter.next();
-      listener.ownerChanged(t);
-    }
+    territoryListeners.forEach(territoryListener -> territoryListener.ownerChanged(t));
   }
 
   void notifyGameDataChanged(final Change aChange) {
-    final Iterator<GameDataChangeListener> iter = m_dataChangeListeners.iterator();
-    while (iter.hasNext()) {
-      final GameDataChangeListener listener = iter.next();
-      listener.gameDataChanged(aChange);
-    }
+    dataChangeListeners.forEach(dataChangelistener -> dataChangelistener.gameDataChanged(aChange));
   }
 
   void notifyMapDataChanged() {
-    final Iterator<GameMapListener> iter = m_gameMapListeners.iterator();
-    while (iter.hasNext()) {
-      final GameMapListener listener = iter.next();
-      listener.gameMapDataChanged();
-    }
+    gameMapListeners.forEach(gameMapListener -> gameMapListener.gameMapDataChanged());
   }
 
   public IGameLoader getGameLoader() {
-    return m_loader;
+    return loader;
   }
 
   void setGameLoader(final IGameLoader loader) {
-    m_loader = loader;
+    this.loader = loader;
   }
 
-  void setGameVersion(final Version version) {
-    m_gameVersion = version;
+  void setGameVersion(final Version gameVersion) {
+    this.gameVersion = gameVersion;
   }
 
   public Version getGameVersion() {
-    return m_gameVersion;
+    return gameVersion;
   }
 
   void setGameName(final String gameName) {
-    m_gameName = gameName;
+    this.gameName = gameName;
   }
 
   public String getGameName() {
-    return m_gameName;
+    return gameName;
   }
 
   void setDiceSides(final int diceSides) {
     if (diceSides > 0 && diceSides <= 200) {
-      m_diceSides = diceSides;
+      this.diceSides = diceSides;
     } else {
-      m_diceSides = 6;
+      this.diceSides = 6;
     }
   }
 
   public int getDiceSides() {
-    return m_diceSides;
+    return diceSides;
   }
 
   public History getHistory() {
     // don't ensure the lock is held when getting the history
     // history operations often acquire the write lock
     // and we cant acquire the write lock if we have the read lock
-    return m_gameHistory;
+    return gameHistory;
   }
 
   /**
    * Not to be called by mere mortals.
    */
   public void postDeSerialize() {
-    m_territoryListeners = new ListenerList<TerritoryListener>();
-    m_dataChangeListeners = new ListenerList<GameDataChangeListener>();
-    m_gameMapListeners = new ListenerList<GameMapListener>();
+    territoryListeners = new ListenerList<TerritoryListener>();
+    dataChangeListeners = new ListenerList<GameDataChangeListener>();
+    gameMapListeners = new ListenerList<GameMapListener>();
   }
 
   /**
@@ -375,19 +355,17 @@ public class GameData implements java.io.Serializable {
    * until the release method is called
    */
   public void acquireReadLock() {
-    // this can happen in very odd cirumcstances while deserializing
-    if (m_readWriteLock == null) {
+    if (readWriteLockMissing()) {
       return;
     }
-    m_lockUtil.acquireLock(m_readWriteLock.readLock());
+    lockUtil.acquireLock(readWriteLock.readLock());
   }
 
   public void releaseReadLock() {
-    // this can happen in very odd cirumcstances while deserializing
-    if (m_readWriteLock == null) {
+    if (readWriteLockMissing()) {
       return;
     }
-    m_lockUtil.releaseLock(m_readWriteLock.readLock());
+    lockUtil.releaseLock(readWriteLock.readLock());
   }
 
   /**
@@ -396,28 +374,34 @@ public class GameData implements java.io.Serializable {
    * until the release method is called
    */
   public void acquireWriteLock() {
-    // this can happen in very odd cirumcstances while deserializing
-    if (m_readWriteLock == null) {
+    if (readWriteLockMissing()) {
       return;
     }
-    m_lockUtil.acquireLock(m_readWriteLock.writeLock());
+    lockUtil.acquireLock(readWriteLock.writeLock());
   }
 
   public void releaseWriteLock() {
-    // this can happen in very odd cirumcstances while deserializing
-    if (m_readWriteLock == null) {
+    if (readWriteLockMissing()) {
       return;
     }
-    m_lockUtil.releaseLock(m_readWriteLock.writeLock());
+    lockUtil.releaseLock(readWriteLock.writeLock());
+  }
+
+  /**
+   * @return boolean, whether readWriteLock is missing
+   *         This can happen in very odd circumstances while deserializing.
+   */
+  private boolean readWriteLockMissing() {
+    return readWriteLock == null;
   }
 
   public void clearAllListeners() {
-    m_dataChangeListeners.clear();
-    m_territoryListeners.clear();
-    m_gameMapListeners.clear();
-    if (m_resourceLoader != null) {
-      m_resourceLoader.close();
-      m_resourceLoader = null;
+    dataChangeListeners.clear();
+    territoryListeners.clear();
+    gameMapListeners.clear();
+    if (resourceLoader != null) {
+      resourceLoader.close();
+      resourceLoader = null;
     }
   }
 
@@ -426,15 +410,16 @@ public class GameData implements java.io.Serializable {
    * read or write lock is held.
    */
   public void testLocksOnRead() {
-    m_testLockIsHeld = true;
+    testLockIsHeld = true;
   }
+
   public void addToAttachmentOrderAndValues(
       final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachmentAndValues) {
-    m_attachmentOrderAndValues.add(attachmentAndValues);
+    attachmentOrderAndValues.add(attachmentAndValues);
   }
 
   public List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> getAttachmentOrderAndValues() {
-    return m_attachmentOrderAndValues;
+    return attachmentOrderAndValues;
   }
 
   /**
@@ -444,7 +429,7 @@ public class GameData implements java.io.Serializable {
    */
   public RelationshipTypeList getRelationshipTypeList() {
     ensureLockHeld();
-    return m_relationshipTypeList;
+    return relationshipTypeList;
   }
 
   /**
@@ -452,51 +437,55 @@ public class GameData implements java.io.Serializable {
    */
   public RelationshipTracker getRelationshipTracker() {
     ensureLockHeld();
-    return m_relationships;
+    return relationships;
   }
 
   public Hashtable<String, TerritoryEffect> getTerritoryEffectList() {
-    return m_territoryEffectList;
+    return territoryEffectList;
   }
 
   public BattleRecordsList getBattleRecordsList() {
-    return m_battleRecordsList;
+    return battleRecordsList;
   }
 
   /**
-   * Call this before starting the game, and before the game data has been sent to the clients, in order to make any
-   * final modifications to
-   * the game data.
+   * Call this before starting the game and before the game data has been sent to the clients in order to make any
+   * final modifications to the game data.
    * For example, this method will remove player delegates for players who have been disabled.
    */
   public void doPreGameStartDataModifications(final PlayerListing playerListing) {
     final Set<PlayerID> playersWhoShouldBeRemoved = new HashSet<PlayerID>();
-    for (final PlayerID p : m_playerList.getPlayers()) {
-      if (p.getCanBeDisabled() && !playerListing.getPlayersEnabledListing().get(p.getName())) {
-        p.setIsDisabled(true);
-        playersWhoShouldBeRemoved.add(p);
-      }
-    }
+    final Map<String, Boolean> playersEnabledListing = playerListing.getPlayersEnabledListing();
+    playerList.getPlayers().stream()
+        .filter(p -> (p.getCanBeDisabled() && !playersEnabledListing.get(p.getName())))
+        .forEach(p -> {
+          p.setIsDisabled(true);
+          playersWhoShouldBeRemoved.add(p);
+        });
     if (!playersWhoShouldBeRemoved.isEmpty()) {
-      final int currentIndex = m_sequence.getStepIndex();
-      int index = 0;
-      int toSubtract = 0;
-      final Iterator<GameStep> stepIter = m_sequence.iterator();
-      while (stepIter.hasNext()) {
-        final GameStep step = stepIter.next();
-        if (playersWhoShouldBeRemoved.contains(step.getPlayerID())) {
-          stepIter.remove();
-          if (index < currentIndex) {
-            toSubtract++;
-          }
-        }
-        index++;
-      }
-      m_sequence.setStepIndex(Math.max(0, Math.min(m_sequence.size() - 1, currentIndex - toSubtract)));
+      removePlayerStepsFromSequence(playersWhoShouldBeRemoved);
     }
   }
 
-  public void performChange(Change change) {
+  private void removePlayerStepsFromSequence(final Set<PlayerID> playersWhoShouldBeRemoved) {
+    final int currentIndex = sequence.getStepIndex();
+    int index = 0;
+    int toSubtract = 0;
+    final Iterator<GameStep> stepIter = sequence.iterator();
+    while (stepIter.hasNext()) {
+      final GameStep step = stepIter.next();
+      if (playersWhoShouldBeRemoved.contains(step.getPlayerID())) {
+        stepIter.remove();
+        if (index < currentIndex) {
+          toSubtract++;
+        }
+      }
+      index++;
+    }
+    sequence.setStepIndex(Math.max(0, Math.min(sequence.size() - 1, currentIndex - toSubtract)));
+  }
+
+  public void performChange(final Change change) {
     if (areChangesOnlyInSwingEventThread() && !SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread");
     }
