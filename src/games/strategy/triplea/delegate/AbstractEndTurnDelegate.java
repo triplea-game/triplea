@@ -33,7 +33,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -174,7 +174,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 
   protected void showEndTurnReport(final String endTurnReport) {
     if (endTurnReport != null && endTurnReport.trim().length() > 6 && !m_player.isAI()) {
-      final ITripleaPlayer currentPlayer = getRemotePlayer(m_player);
+      final ITripleAPlayer currentPlayer = getRemotePlayer(m_player);
       final String player = m_player.getName();
       currentPlayer.reportMessage("<html><b style=\"font-size:120%\" >" + END_TURN_REPORT_STRING + player
           + "</b><br /><br />" + endTurnReport + "</html>", END_TURN_REPORT_STRING + player);
