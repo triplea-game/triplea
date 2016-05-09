@@ -27,6 +27,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.ui.Util;
 import games.strategy.util.AlphanumComparator;
 import util.image.ConnectionFinder;
 
@@ -208,7 +209,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
     }
 
     final Point point = e.getPoint();
-    final Optional<String> territoryName = Optional.of(findTerritoryName(point, polygons));
+    final Optional<String> territoryName = Util.findTerritoryName(point, polygons);
 
     if (!territoryName.isPresent()) {
       return;

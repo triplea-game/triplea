@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import games.strategy.ui.Util;
 import games.strategy.util.AlphanumComparator;
 import games.strategy.util.PointFileReaderWriter;
 
@@ -160,7 +161,9 @@ public class ConnectionFinder {
     if (JOptionPane.showConfirmDialog(null, "Do you also want to create the Territory Definitions?",
         "Territory Definitions", 1) == 0) {
       final String waterString = JOptionPane.showInputDialog(null,
-          "Enter a string or regex that determines if the territory is Water? \r\n(eg: Sea Zone)", "Sea Zone");
+          "Enter a string or regex that determines if the territory is Water? \r\n(e.g.: "
+              + Util.TERRITORY_SEA_ZONE_INFIX + ")",
+          Util.TERRITORY_SEA_ZONE_INFIX);
       territoryDefinitions = doTerritoryDefinitions(allTerritories, waterString);
     }
     try {

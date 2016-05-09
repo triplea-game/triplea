@@ -24,7 +24,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -518,33 +517,6 @@ public class PlacementPicker extends JFrame {
   }
 
   /**
-   * java.lang.String findTerritoryName(java.awt.Point)
-   * Finds a land territory name or
-   * some sea zone name.
-   *
-   * @param java
-   *        .awt.point p a point on the map
-   */
-  private String findTerritoryName(final Point p) {
-    String seaName = "there be dragons";
-    // try to find a land territory.
-    // sea zones often surround a land territory
-    for (final String name : m_polygons.keySet()) {
-      final Collection<Polygon> polygons = m_polygons.get(name);
-      for (final Polygon poly : polygons) {
-        if (poly.contains(p)) {
-          if (name.endsWith("Sea Zone") || name.startsWith("Sea Zone")) {
-            seaName = name;
-          } else {
-            return name;
-          }
-        } // if
-      } // while
-    } // while
-    return seaName;
-  }
-
-  /**
    * mouseEvent(java.awt.Point, java.lang.boolean, java.lang.boolean)
    * Usage:
    * left button start in territory
@@ -561,7 +533,7 @@ public class PlacementPicker extends JFrame {
    */
   private void mouseEvent(final Point point, final boolean ctrlDown, final boolean rightMouse) {
     if (!rightMouse && !ctrlDown) {
-      m_currentCountry = findTerritoryName(point);
+      m_currentCountry = Util.findTerritoryName(point, m_polygons, "there be dragons");
       // If there isn't an existing array, create one
       if (m_placements == null || m_placements.get(m_currentCountry) == null) {
         m_currentPlacements = new ArrayList<Point>();

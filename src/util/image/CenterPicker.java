@@ -20,7 +20,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -286,22 +285,7 @@ public class CenterPicker extends JFrame {
    *        .awt.point p a point on the map
    */
   private String findTerritoryName(final Point p) {
-    String seaName = "unknown";
-    // try to find a land territory.
-    // sea zones often surround a land territory
-    for (final String name : m_polygons.keySet()) {
-      final Collection<Polygon> polygons = m_polygons.get(name);
-      for (final Polygon poly : polygons) {
-        if (poly.contains(p)) {
-          if (name.endsWith("Sea Zone") || name.startsWith("Sea Zone")) {
-            seaName = name;
-          } else {
-            return name;
-          }
-        } // if
-      } // while
-    } // while
-    return seaName;
+    return Util.findTerritoryName(p, m_polygons, "unknown");
   }
 
   /**

@@ -97,7 +97,7 @@ public class ReliefImageBreaker {
       System.exit(0);
     }
     for (final String territoryName : m_mapData.getTerritories()) {
-      final boolean seaZone = territoryName.endsWith("Sea Zone") || territoryName.startsWith("Sea Zone");
+      final boolean seaZone = Util.isTerritoryNameIndicatingWater(territoryName);
       if (!seaZone && m_seaZoneOnly) {
         continue;
       }

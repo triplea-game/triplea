@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -262,28 +261,6 @@ public abstract class ImageScrollPanePanel {
       }
     }
     return file;
-  }
-
-  final public static String territoryNameUnknown = "unknown";
-  final public static String territorySeaZoneInfix = "Sea Zone";
-
-  protected static String findTerritoryName(final Point p, final Map<String, List<Polygon>> polygons) {
-    String seaName = territoryNameUnknown;
-    // try to find a land or sea territory.
-    // sea zones often surround a land territory
-    for (final String name : polygons.keySet()) {
-      final Collection<Polygon> polygonsCollection = polygons.get(name);
-      for (final Polygon poly : polygonsCollection) {
-        if (poly.contains(p)) {
-          if (name.contains(territorySeaZoneInfix)) {
-            seaName = name;
-          } else {
-            return name;
-          }
-        }
-      }
-    }
-    return seaName;
   }
 
   private static Map<String, Point> loadCenters() {
