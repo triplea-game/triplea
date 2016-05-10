@@ -119,6 +119,8 @@ public class MapPanel extends ImageScrollerLargeView {
       @Override
       public void scrolled(final int x, final int y) {
         SwingUtilities.invokeLater(() -> repaint());
+      }
+    });
     recreateTiles(data, this.uiContext);
     this.uiContext.addActive(new Active() {
       @Override
@@ -799,7 +801,6 @@ public class MapPanel extends ImageScrollerLargeView {
     return uiContext.getMapData().getHelpImage();
   }
 }
-
 
 class RouteDescription {
   private final Route m_route;
