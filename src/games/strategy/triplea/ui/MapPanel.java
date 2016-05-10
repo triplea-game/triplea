@@ -206,7 +206,7 @@ public class MapPanel extends ImageScrollerLargeView {
       SwingUtilities.invokeLater(() ->  repaint());
       return;
     }
-    RouteDescripton newRouteDescription = new RouteDescription(route, start, end, cursorImage);
+    RouteDescription newRouteDescription = new RouteDescription(route, start, end, cursorImage);
     if(routeDescription != null && routeDescription.equals(newRouteDescription)){
       return;
     }
