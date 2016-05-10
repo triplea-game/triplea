@@ -118,14 +118,7 @@ public class MapPanel extends ImageScrollerLargeView {
     this.addScrollListener(new ScrollListener() {
       @Override
       public void scrolled(final int x, final int y) {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            repaint();
-          }
-        });
-      }
-    });
+        SwingUtilities.invokeLater(() -> repaint());
     recreateTiles(data, this.uiContext);
     this.uiContext.addActive(new Active() {
       @Override
@@ -181,12 +174,7 @@ public class MapPanel extends ImageScrollerLargeView {
    */
   public void setUnitHighlight(final Map<Territory, List<Unit>> units) {
     highlightedUnits = units;
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        repaint();
-      }
-    });
+    SwingUtilities.invokeLater(() -> repaint());
   }
 
   protected Map<Territory, List<Unit>> getHighlightedUnits() {
