@@ -204,7 +204,11 @@ public class MapPanel extends ImageScrollerLargeView {
       SwingUtilities.invokeLater(() ->  repaint());
       return;
     }
-    routeDescription = new RouteDescription(route, start, end, cursorImage);
+    RouteDescripton newRouteDescription = new RouteDescription(route, start, end, cursorImage);
+    if(routeDescription != null && routeDescription.equals(newRouteDescription)){
+      return;
+    }
+    }
     SwingUtilities.invokeLater(() -> repaint());
   }
 
@@ -298,12 +302,7 @@ public class MapPanel extends ImageScrollerLargeView {
 
   public void resetMap() {
     tileManager.resetTiles(m_data, uiContext.getMapData());
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        repaint();
-      }
-    });
+    SwingUtilities.invokeLater(() -> repaint());
     initSmallMap();
     // m_smallMapImageManager.update(m_data, m_uiContext.getMapData());
   }
@@ -397,13 +396,7 @@ public class MapPanel extends ImageScrollerLargeView {
   public void updateCountries(final Collection<Territory> countries) {
     tileManager.updateTerritories(countries, m_data, uiContext.getMapData());
     smallMapImageManager.update(m_data, uiContext.getMapData());
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        smallView.repaint();
-        repaint();
-      }
-    });
+    SwingUtilities.invokeLater(() -> {smallView.repaint();repaint();});
   }
 
   public void setGameData(final GameData data) {
@@ -423,35 +416,20 @@ public class MapPanel extends ImageScrollerLargeView {
     @Override
     public void unitsChanged(final Territory territory) {
       updateCountries(Collections.singleton(territory));
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          repaint();
-        }
-      });
+      SwingUtilities.invokeLater(() -> repaint());
     }
 
     @Override
     public void ownerChanged(final Territory territory) {
       smallMapImageManager.updateTerritoryOwner(territory, m_data, uiContext.getMapData());
       updateCountries(Collections.singleton(territory));
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          repaint();
-        }
-      });
+      SwingUtilities.invokeLater(() -> repaint());
     }
 
     @Override
     public void attachmentChanged(final Territory territory) {
       updateCountries(Collections.singleton(territory));
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          repaint();
-        }
-      });
+      SwingUtilities.invokeLater(() -> repaint());
     }
   };
   private final GameDataChangeListener TECH_UPDATE_LISTENER = new GameDataChangeListener() {
@@ -464,12 +442,7 @@ public class MapPanel extends ImageScrollerLargeView {
         return;
       }
       tileManager.resetTiles(m_data, uiContext.getMapData());
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          repaint();
-        }
-      });
+      SwingUtilities.invokeLater(() -> repaint());
     }
 
     private void getPlayersWithTechChanges(final Change aChange, final Set<PlayerID> players) {
@@ -745,12 +718,7 @@ public class MapPanel extends ImageScrollerLargeView {
     if (units == null || units.isEmpty()) {
       movementLeftForCurrentUnits = "";
       mouseShadowImage = null;
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          repaint();
-        }
-      });
+      SwingUtilities.invokeLater(() -> repaint());
       return;
     }
     final Tuple<Integer, Integer> movementLeft =
@@ -950,12 +918,7 @@ class BackgroundDrawer implements Runnable {
       } finally {
         data.releaseReadLock();
       }
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          mapPanel.repaint();
-        }
-      });
+      SwingUtilities.invokeLater(() -> mapPanel.repaint());
     }
   }
 }
