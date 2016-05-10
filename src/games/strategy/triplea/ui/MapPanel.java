@@ -398,7 +398,10 @@ public class MapPanel extends ImageScrollerLargeView {
   public void updateCountries(final Collection<Territory> countries) {
     tileManager.updateTerritories(countries, m_data, uiContext.getMapData());
     smallMapImageManager.update(m_data, uiContext.getMapData());
-    SwingUtilities.invokeLater(() -> {smallView.repaint();repaint();});
+    SwingUtilities.invokeLater(() -> {
+      smallView.repaint();
+      repaint();
+    });
   }
 
   public void setGameData(final GameData data) {
