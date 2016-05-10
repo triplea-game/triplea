@@ -32,17 +32,16 @@ public class NewGameChooser extends JDialog {
   // Use synchronization when accessing s_cachedGameModel, it is accessed by both
   // the Swing AWT event thread and also background threads, which parses available
   // maps in the background when a game is not playing
-  private static NewGameChooserModel s_cachedGameModel = null;
+  private static NewGameChooserModel cachedGameModel = null;
   private static ClearGameChooserCacheMessenger cacheClearedMessenger;
 
-  private JButton m_okButton;
-  private JButton m_cancelButton;
-  private JButton m_refreshGamesButton;
-  private JList<NewGameChooserEntry> m_gameList;
-  private JPanel m_infoPanel;
-  private JEditorPane m_notesPanel;
-  private NewGameChooserModel m_gameListModel;
-  private NewGameChooserEntry m_choosen;
+  private JButton okButton;
+  private JButton cancelButton;
+  private JList<NewGameChooserEntry> gameList;
+  private JPanel infoPanel;
+  private JEditorPane notesPanel;
+  private NewGameChooserModel gameListModel;
+  private NewGameChooserEntry choosen;
 
   private NewGameChooser(final Frame owner) {
     super(owner, "Select a Game", true);
@@ -51,20 +50,20 @@ public class NewGameChooser extends JDialog {
     setupListeners();
     setWidgetActivation();
     updateInfoPanel();
+    refreshGameList();
   }
 
   private void createComponents() {
-    m_okButton = new JButton("OK");
-    m_cancelButton = new JButton("Cancel");
-    m_refreshGamesButton = new JButton("Refresh Game List");
-    m_gameListModel = getNewGameChooserModel();
-    m_gameList = new JList<>(m_gameListModel);
-    m_infoPanel = new JPanel();
-    m_infoPanel.setLayout(new BorderLayout());
-    m_notesPanel = new JEditorPane();
-    m_notesPanel.setEditable(false);
-    m_notesPanel.setContentType("text/html");
-    m_notesPanel.setBackground(new JLabel().getBackground());
+    okButton = new JButton("OK");
+    cancelButton = new JButton("Cancel");
+    gameListModel = getNewGameChooserModel();
+    gameList = new JList<>(gameListModel);
+    infoPanel = new JPanel();
+    infoPanel.setLayout(new BorderLayout());
+    notesPanel = new JEditorPane();
+    notesPanel.setEditable(false);
+    notesPanel.setContentType("text/html");
+    notesPanel.setBackground(new JLabel().getBackground());
   }
 
   private void layoutCoponents() {
@@ -74,7 +73,7 @@ public class NewGameChooser extends JDialog {
     final JScrollPane listScroll = new JScrollPane();
     listScroll.setBorder(null);
     listScroll.getViewport().setBorder(null);
-    listScroll.setViewportView(m_gameList);
+    listScroll.setViewportView(gameList);
     final JPanel leftPanel = new JPanel();
     leftPanel.setLayout(new GridBagLayout());
     final JLabel gamesLabel = new JLabel("Games");
@@ -84,55 +83,53 @@ public class NewGameChooser extends JDialog {
     leftPanel.add(listScroll, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.EAST,
         GridBagConstraints.BOTH, new Insets(0, 10, 0, 0), 0, 0));
     mainSplit.setLeftComponent(leftPanel);
-    mainSplit.setRightComponent(m_infoPanel);
+    mainSplit.setRightComponent(infoPanel);
     mainSplit.setBorder(null);
     listScroll.setMinimumSize(new Dimension(200, 0));
     final JPanel buttonsPanel = new JPanel();
     add(buttonsPanel, BorderLayout.SOUTH);
     buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
     buttonsPanel.add(Box.createHorizontalStrut(30));
-    buttonsPanel.add(m_refreshGamesButton);
     buttonsPanel.add(Box.createGlue());
-    buttonsPanel.add(m_okButton);
-    buttonsPanel.add(m_cancelButton);
+    buttonsPanel.add(okButton);
+    buttonsPanel.add(cancelButton);
     buttonsPanel.add(Box.createGlue());
     final JScrollPane notesScroll = new JScrollPane();
-    notesScroll.setViewportView(m_notesPanel);
+    notesScroll.setViewportView(notesPanel);
     notesScroll.setBorder(null);
     notesScroll.getViewport().setBorder(null);
-    m_infoPanel.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-    m_infoPanel.add(Box.createHorizontalStrut(10), BorderLayout.WEST);
-    m_infoPanel.add(notesScroll, BorderLayout.CENTER);
+    infoPanel.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+    infoPanel.add(Box.createHorizontalStrut(10), BorderLayout.WEST);
+    infoPanel.add(notesScroll, BorderLayout.CENTER);
   }
 
   public static NewGameChooserEntry chooseGame(final Frame parent, final String defaultGameName) {
     NewGameChooser chooser = new NewGameChooser(parent);
     chooser.setSize(800, 600);
     chooser.setLocationRelativeTo(parent);
-    if (defaultGameName != null) {
-      chooser.selectGame(defaultGameName);
-    }
+    chooser.selectGame(defaultGameName);
     chooser.setVisible(true);
     // chooser is now visible and waits for user action
-    final NewGameChooserEntry choosen = chooser.m_choosen;
+    final NewGameChooserEntry choosen = chooser.choosen;
     // remove all system resources (we have been having a problem with a memory leak related to this somehow)
     chooser.setVisible(false);
     chooser.removeAll();
-    chooser.m_notesPanel.setText("");
-    chooser.m_notesPanel.removeAll();
-    chooser.m_notesPanel = null;
+    chooser.notesPanel.setText("");
+    chooser.notesPanel.removeAll();
+    chooser.notesPanel = null;
     chooser.dispose();
     chooser = null;
     return choosen;
   }
 
   private void selectGame(final String gameName) {
-    if (gameName == null) {
+    if (gameName == null || gameName.equals("-")) {
+      gameList.setSelectedIndex(0);
       return;
     }
-    final NewGameChooserEntry entry = m_gameListModel.findByName(gameName);
+    final NewGameChooserEntry entry = gameListModel.findByName(gameName);
     if (entry != null) {
-      m_gameList.setSelectedValue(entry, true);
+      gameList.setSelectedValue(entry, true);
     }
   }
 
@@ -153,19 +150,16 @@ public class NewGameChooser extends JDialog {
         // so we send the map dir name so that our localizing of image links can get a new resource loader if needed
         notes.append(LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim(), null, mapNameDir));
       }
-      m_notesPanel.setText(notes.toString());
+      notesPanel.setText(notes.toString());
     } else {
-      if (m_notesPanel != null) {
-        m_notesPanel.setText("");
+      if (notesPanel != null) {
+        notesPanel.setText("");
       }
     }
     // scroll to the top of the notes screen
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (m_notesPanel != null) {
-          m_notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-        }
+    SwingUtilities.invokeLater(() ->{
+      if (notesPanel != null) {
+        notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
       }
     });
   }
@@ -175,21 +169,20 @@ public class NewGameChooser extends JDialog {
   }
 
   private NewGameChooserEntry getSelected() {
-    final int selected = m_gameList.getSelectedIndex();
+    final int selected = gameList.getSelectedIndex();
     if (selected == -1) {
       return null;
     }
-    return m_gameListModel.get(selected);
+    return gameListModel.get(selected);
   }
 
   private void setWidgetActivation() {}
 
   private void setupListeners() {
-    m_refreshGamesButton.addActionListener(e -> refreshGameList());
-    m_okButton.addActionListener(e -> selectAndReturn());
-    m_cancelButton.addActionListener(e -> cancelAndReturn());
-    m_gameList.addListSelectionListener(e -> updateInfoPanel());
-    m_gameList.addMouseListener(new MouseListener() {
+    okButton.addActionListener(e -> selectAndReturn());
+    cancelButton.addActionListener(e -> cancelAndReturn());
+    gameList.addListSelectionListener(e -> updateInfoPanel());
+    gameList.addMouseListener(new MouseListener() {
       @Override
       public void mouseClicked(final MouseEvent event) {
         if (event.getClickCount() == 2) {
@@ -213,16 +206,16 @@ public class NewGameChooser extends JDialog {
 
   /** Populates the NewGameChooserModel cache if empty, then returns the cached instance */
   public synchronized static NewGameChooserModel getNewGameChooserModel() {
-    if (s_cachedGameModel == null) {
+    if (cachedGameModel == null) {
       refreshNewGameChooserModel();
     }
-    return s_cachedGameModel;
+    return cachedGameModel;
   }
 
   public synchronized static void refreshNewGameChooserModel() {
     clearNewGameChooserModel();
     cacheClearedMessenger = new ClearGameChooserCacheMessenger();
-    s_cachedGameModel = new NewGameChooserModel(cacheClearedMessenger);
+    cachedGameModel = new NewGameChooserModel(cacheClearedMessenger);
   }
 
   public static void clearNewGameChooserModel() {
@@ -234,9 +227,9 @@ public class NewGameChooser extends JDialog {
   }
 
   private synchronized static void synchronizedClear() {
-    if (s_cachedGameModel != null) {
-      s_cachedGameModel.clear();
-      s_cachedGameModel = null;
+    if (cachedGameModel != null) {
+      cachedGameModel.clear();
+      cachedGameModel = null;
     }
   }
 
@@ -244,36 +237,27 @@ public class NewGameChooser extends JDialog {
    * Refreshes the game list (from disk) then caches the new list
    */
   private void refreshGameList() {
-    m_gameList.setEnabled(false);
+    gameList.setEnabled(false);
     final NewGameChooserEntry selected = getSelected();
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
         try {
           refreshNewGameChooserModel();
-          m_gameListModel = getNewGameChooserModel();
-          m_gameList.setModel(m_gameListModel);
-          if (selected != null) {
-            final String name = selected.getGameData().getGameName();
-            final NewGameChooserEntry found = m_gameListModel.findByName(name);
-            if (name != null) {
-              m_gameList.setSelectedValue(found, true);
-            }
+          gameListModel = getNewGameChooserModel();
+          gameList.setModel(gameListModel);
+          if(selected != null){
+            selectGame(selected.getGameData().getGameName());
           }
         } finally {
-          m_gameList.setEnabled(true);
+          gameList.setEnabled(true);
         }
-      }
-    });
   }
 
   private void selectAndReturn() {
-    m_choosen = getSelected();
+    choosen = getSelected();
     setVisible(false);
   }
 
   private void cancelAndReturn() {
-    m_choosen = null;
+    choosen = null;
     setVisible(false);
   }
 }
