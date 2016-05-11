@@ -32,7 +32,7 @@ public class MapXmlData {
   private Map<String, List<String>> technologyDefinitionsMap =
       Maps.newLinkedHashMap();
   private Map<String, List<String>> productionFrontiersMap = Maps.newLinkedHashMap();
-  private Map<String, List<String>> unitAttatchmentsMap = Maps.newLinkedHashMap();
+  private Map<String, List<String>> unitAttachmentsMap = Maps.newLinkedHashMap();
   private Map<String, Integer> territoyProductionsMap = Maps.newHashMap();
   private Map<String, CanalTerritoriesTuple> canalDefinitionsMap =
       Maps.newHashMap();
@@ -53,7 +53,7 @@ public class MapXmlData {
       final Map<String, List<String>> gamePlaySequenceMap,
       final Map<String, Triple<String, String, Integer>> playerSequenceMap,
       final Map<String, List<String>> technologyDefinitionsMap, final Map<String, List<String>> productionFrontiersMap,
-      final Map<String, List<String>> unitAttatchmentsMap, final Map<String, Integer> territoyProductionsMap,
+      final Map<String, List<String>> unitAttachmentsMap, final Map<String, Integer> territoyProductionsMap,
       final Map<String, CanalTerritoriesTuple> canalDefinitionsMap,
       final Map<String, String> territoryOwnershipsMap,
       final Map<String, Map<String, Map<String, Integer>>> unitPlacementsMap,
@@ -71,7 +71,7 @@ public class MapXmlData {
     this.playerSequenceMap = playerSequenceMap;
     this.technologyDefinitionsMap = technologyDefinitionsMap;
     this.productionFrontiersMap = productionFrontiersMap;
-    this.unitAttatchmentsMap = unitAttatchmentsMap;
+    this.unitAttachmentsMap = unitAttachmentsMap;
     this.territoyProductionsMap = territoyProductionsMap;
     this.canalDefinitionsMap = canalDefinitionsMap;
     this.territoryOwnershipsMap = territoryOwnershipsMap;
@@ -93,7 +93,7 @@ public class MapXmlData {
     getPlayerSequenceMap().clear();
     getProductionFrontiersMap().clear();
     getTechnologyDefinitionsMap().clear();
-    getUnitAttatchmentsMap().clear();
+    getUnitAttachmentsMap().clear();
     getTerritoyProductionsMap().clear();
     getCanalDefinitionsMap().clear();
     getTerritoryOwnershipsMap().clear();
@@ -198,12 +198,12 @@ public class MapXmlData {
     this.productionFrontiersMap = productionFrontiersMap;
   }
 
-  public Map<String, List<String>> getUnitAttatchmentsMap() {
-    return unitAttatchmentsMap;
+  public Map<String, List<String>> getUnitAttachmentsMap() {
+    return unitAttachmentsMap;
   }
 
-  public void setUnitAttatchmentsMap(final Map<String, List<String>> unitAttatchmentsMap) {
-    this.unitAttatchmentsMap = unitAttatchmentsMap;
+  public void setUnitAttachmentsMap(final Map<String, List<String>> unitAttachmentsMap) {
+    this.unitAttachmentsMap = unitAttachmentsMap;
   }
 
   public Map<String, Integer> getTerritoyProductionsMap() {
