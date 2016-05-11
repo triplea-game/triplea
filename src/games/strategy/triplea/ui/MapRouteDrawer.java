@@ -7,8 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +18,7 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
+import games.strategy.util.Tuple;
 
 /**
  * Draws a route on a map.
@@ -51,13 +52,14 @@ public class MapRouteDrawer {
     if(Arrays.asList(points).contains(null)){//If the Array is null at some point
       return;
     }
-    
+
+    final GeneralPath path = getSmoothPath(points);
+    path.transform(new AffineTransform(1, 0, 0, 1, -xOffset, -yOffset));
+    graphics.draw(path);
     if(numTerritories <= 1 || points.length <= 2){
-      drawLineWithTranslate(graphics, new Line2D.Float(routeDescription.getStart(), routeDescription.getEnd()), xOffset, yOffset);
       graphics.fillOval((routeDescription.getEnd().x - xOffset) - jointsize / 2, (routeDescription.getEnd().y - yOffset) - jointsize / 2, jointsize, jointsize);
     }
     else{
-      drawCurvedPath(graphics, points, view);
       drawMoveLength(graphics, routeDescription, points, xOffset, yOffset, view, mapData.scrollWrapX(), mapData.scrollWrapY(), numTerritories, movementLeftForCurrentUnits);
     }
     drawJoints(graphics, points, xOffset, yOffset, jointsize);
@@ -76,27 +78,11 @@ public class MapRouteDrawer {
 
   private static double[] getIndex(Point[] points) {
     final double[] index = new double[points.length];
-    for(int i = 0; i < points.length; i++){
-      index[i] = i;
+    index[0] = 0;
+    for (int i = 1; i < points.length; i++) {
+      index[i] = index[i - 1] + points[i].distance(points[i - 1]);
     }
     return index;
-  }
-
-  @SuppressWarnings("unused")//Could be useful
-  private static double sqrtDistance(Point point1, Point point2) {
-    return Math.sqrt(getDistance(point1, point2));
-  }
-  
-  private static double getDistance(Point point1, Point point2){
-    //double c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2)); Pythagoras' theorem
-    return Math.sqrt(Math.pow(Math.abs(point2.getX() - point1.getX()), 2) + Math.pow(Math.abs(point2.getY() - point1.getY()), 2));
-  }
-
-  private static void drawLineWithTranslate(Graphics2D graphics, Line2D line2D, double translateX, double translateY) {
-      final Line2D line = (Line2D) line2D;
-      final Point2D point1 = new Point2D.Double(line.getP1().getX() - translateX, line.getP1().getY() - translateY);
-      final Point2D point2 = new Point2D.Double(line.getP2().getX() - translateX, line.getP2().getY() - translateY);
-      graphics.draw(new Line2D.Double(point1, point2));
   }
   
   private static Point[] getRoutePoints(RouteDescription routeDescription, MapData mapData){
@@ -113,29 +99,6 @@ public class MapRouteDrawer {
       points[numTerritories - 1] = new Point(routeDescription.getEnd());
     }
     return points;
-  }
-  
-  private static double[] pointsXToDoubleArray(Point[] points){
-    double[] result = new double[points.length];
-    for(int i = 0; i < points.length; i++){
-      result[i] = points[i].getX();
-    }
-    return result;
-  }
-  private static double[] pointsYToDoubleArray(Point[] points){
-    double[] result = new double[points.length];
-    for(int i = 0; i < points.length; i++){
-      result[i] = points[i].getY();
-    }
-    return result;
-  }
-  
-  private static double[] getCoords(PolynomialSplineFunction curve, float stepSize){
-    final double[] coords = new double[(int) (curve.getN() / stepSize)];
-    for(int i = 0; i < curve.getN() / stepSize; i++){
-      coords[i] = curve.value(i * stepSize);
-    }
-    return coords;
   }
   
   private static void drawMoveLength(Graphics2D graphics, RouteDescription routeDescription, Point[] points, int xOffset, int yOffset, MapPanel view, boolean scrollWrapX, boolean scrollWrapY, int numTerritories, String movementLeftForCurrentUnits){
@@ -167,18 +130,111 @@ public class MapRouteDrawer {
         graphics.drawImage(movementImage, cursorPos.x + textXOffset - xOffset + translateX, cursorPos.y + textYOffset - yOffset - translateY, null);
       }
   }
-  
-  private static void drawCurvedPath(Graphics2D graphics, Point[] points, MapPanel view){
-    final double[] index = getIndex(points);
-    final float stepSize = 0.01f;//TODO calculating a step size that makes sense
-    final PolynomialSplineFunction xcurve = splineInterpolator.interpolate(index, pointsXToDoubleArray(points));
-    final PolynomialSplineFunction ycurve = splineInterpolator.interpolate(index, pointsYToDoubleArray(points));
-    final double[] xcoords = getCoords(xcurve, stepSize);
-    final double[] ycoords = getCoords(ycurve, stepSize);
-    
-    for(int i = 1; i < xcoords.length; i++){
-      //TODO maybe a line is not the best way to draw this...
-      drawLineWithTranslate(graphics, new Line2D.Double(xcoords[i-1], ycoords[i-1], xcoords[i], ycoords[i]), view.getXOffset(), view.getYOffset());
+
+  private static final double minStepSizeCurveXValue = 5f;
+  private static final int maxPointsNeededForSmoothing = 3;
+
+  /**
+   * Generates a smooth path which includes the original points.
+   *
+   * @param points - points array
+   * @return smooth path through provided points.
+   */
+  private static GeneralPath getSmoothPath(final Point[] points) {
+    final GeneralPath result = new GeneralPath();
+    if (points.length > 1) {
+      result.moveTo(points[0].x, points[0].y);
+    }
+    if (points.length == 2) {
+      result.lineTo(points[1].x, points[1].y);
+    } else if (points.length > 2) {
+      addSmoothSegmentsToPath(result, points);
+    }
+    return result;
+  }
+
+  /**
+   * Interpolates x and y values of the points-path and adds smooth segments from point to point to the path using the
+   * interpolation result.
+   *
+   * @param path - path to be enhanced by smooth segments
+   * @param points - original points
+   */
+  private static void addSmoothSegmentsToPath(final GeneralPath path, final Point[] points) {
+    // Interpolates x and y values in separate curves
+    final double[] curvesXValues = getIndex(points);
+    final Tuple<PolynomialSplineFunction, PolynomialSplineFunction> curves =
+        buildSplineFunctions(points, curvesXValues);
+    final PolynomialSplineFunction xCurve = curves.getFirst();
+    final PolynomialSplineFunction yCurve = curves.getSecond();
+    // For each given point (to which one specific x value in curveXValues belongs)
+    // use spline functions to get additional points for building the smooth path.
+    // But no more needed than maxPointsNeededForDrawing.
+    for (int curvesXValueIndex = 1; curvesXValueIndex < curvesXValues.length; curvesXValueIndex++) {
+      // Get even currentStepSize between current and previous curvesXValues
+      final double diffCurvesXValues = curvesXValues[curvesXValueIndex] - curvesXValues[curvesXValueIndex - 1];
+      final int stepsUntilNextCurveXValue =
+          Math.min(maxPointsNeededForSmoothing, (int) Math.ceil((diffCurvesXValues) / minStepSizeCurveXValue));
+      final double currentStepSize = diffCurvesXValues / stepsUntilNextCurveXValue;
+      // Collect interpolated values from xCurve and yCurve after each step
+      final double xCurveValues[] = new double[stepsUntilNextCurveXValue];
+      final double yCurveValues[] = new double[stepsUntilNextCurveXValue];
+      // intermediate points from curve
+      int curvesValueIndex = 0;
+      for (double curvesXValue = curvesXValues[curvesXValueIndex - 1]; curvesValueIndex < stepsUntilNextCurveXValue
+          - 1; ++curvesValueIndex) {
+        curvesXValue += currentStepSize;
+        xCurveValues[curvesValueIndex] = xCurve.value(curvesXValue);
+        yCurveValues[curvesValueIndex] = yCurve.value(curvesXValue);
+      }
+      // next given point
+      xCurveValues[curvesValueIndex] = points[curvesXValueIndex].x;
+      yCurveValues[curvesValueIndex] = points[curvesXValueIndex].y;
+      addSegmentToPath(path, xCurveValues, yCurveValues);
+    }
+  }
+
+  /**
+   * Interpolates a 2d path represented by its points and their distances/weights to their previous point.
+   * 
+   * @param points - path points
+   * @param curveXValues - distances/weights between points and their previous point
+   * @return Tuple of PolynomialSplineFunction, first for xCurve, second for yCurve
+   */
+  private static Tuple<PolynomialSplineFunction, PolynomialSplineFunction> buildSplineFunctions(final Point[] points,
+      final double[] curveXValues) {
+    final double[] xCurveYValues = new double[points.length];
+    final double[] yCurveYValues = new double[points.length];
+    for (int i = 0; i < points.length; i++) {
+      xCurveYValues[i] = points[i].getX();
+      yCurveYValues[i] = points[i].getY();
+    }
+    return Tuple.of(splineInterpolator.interpolate(curveXValues, xCurveYValues),
+        splineInterpolator.interpolate(curveXValues, yCurveYValues));
+  }
+
+  /**
+   * Adds a segment to the path from the current point to the point
+   * ( xCurveValues[xCurveValues.length - 1], yCurveValues[yCurveValues.length - 1])
+   * and uses array points in between for smoothing if possible.
+   * 
+   * @param path - path to add segment to
+   * @param xCurveValues - array of xCurveValues
+   * @param yCurveValues - array of yCurveValues
+   */
+  private static void addSegmentToPath(final GeneralPath path, final double[] xCurveValues,
+      final double[] yCurveValues) {
+    switch (xCurveValues.length) {
+      case 3:
+        path.curveTo(xCurveValues[0], yCurveValues[0], xCurveValues[1], yCurveValues[1], xCurveValues[2],
+            yCurveValues[2]);
+        break;
+      case 2:
+        path.quadTo(xCurveValues[0], yCurveValues[0], xCurveValues[1], yCurveValues[1]);
+        break;
+      case 1:
+        path.lineTo(xCurveValues[0], yCurveValues[0]);
+        break;
     }
   }
   
