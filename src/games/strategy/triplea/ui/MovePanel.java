@@ -587,6 +587,7 @@ public class MovePanel extends AbstractMovePanel {
     candidateTransportsMatch.add(Matches.UnitIsTransport);
     candidateTransportsMatch.add(Matches.alliedUnit(unitOwner, getGameData()));
     final List<Unit> candidateTransports = Match.getMatches(endOwnedUnits, candidateTransportsMatch);
+
     // remove transports that don't have enough capacity
     final Iterator<Unit> transportIter = candidateTransports.iterator();
     while (transportIter.hasNext()) {
@@ -596,10 +597,12 @@ public class MovePanel extends AbstractMovePanel {
         transportIter.remove();
       }
     }
+
     // nothing to choose
     if (candidateTransports.isEmpty()) {
       return Collections.emptyList();
     }
+
     // sort transports in preferred load order
     sortTransportsToLoad(candidateTransports, route);
     final List<Unit> availableUnits = new ArrayList<Unit>(unitsToLoad);
@@ -609,9 +612,8 @@ public class MovePanel extends AbstractMovePanel {
       availableCapacityMap.put(transport, capacity);
     }
     final Set<Unit> defaultSelections = new HashSet<Unit>();
+
     // Algorithm to choose defaultSelections (transports to load)
-    // This algorithm uses mapTransports(), except mapTransports operates on
-    // transports that have already been selected for loading.
     // We are trying to determine which transports are the best defaults to select for loading,
     // and so we need a modified algorithm based strictly on candidateTransports order:
     // - owned, capable transports are chosen first; attempt to fill them
@@ -621,6 +623,7 @@ public class MovePanel extends AbstractMovePanel {
     // UnitChooser later on so that it is obvious to the player.
     boolean useAlliedTransports = false;
     final Collection<Unit> capableTransports = new ArrayList<Unit>(candidateTransports);
+
     // only allow incapable transports for updateUnitsThatCanMoveOnRoute
     // so that we can have a nice UI error shown if these transports
     // are selected, since it may not be obvious
@@ -635,6 +638,7 @@ public class MovePanel extends AbstractMovePanel {
     };
     final Collection<Unit> alliedTransports = Match.getMatches(capableTransports, alliedMatch);
     capableTransports.removeAll(alliedTransports);
+
     // First, load capable transports
     final Map<Unit, Unit> unitsToCapableTransports =
         TransportUtils.mapTransportsToLoadUsingMinTransports(availableUnits, capableTransports);
@@ -645,6 +649,7 @@ public class MovePanel extends AbstractMovePanel {
       defaultSelections.add(transport);
     }
     availableUnits.removeAll(unitsToCapableTransports.keySet());
+
     // Next, load allied transports
     final Map<Unit, Unit> unitsToAlliedTransports =
         TransportUtils.mapTransportsToLoadUsingMinTransports(availableUnits, alliedTransports);
@@ -656,6 +661,7 @@ public class MovePanel extends AbstractMovePanel {
       useAlliedTransports = true;
     }
     availableUnits.removeAll(unitsToAlliedTransports.keySet());
+
     // only allow incapable transports for updateUnitsThatCanMoveOnRoute
     // so that we can have a nice UI error shown if these transports
     // are selected, since it may not be obvious
@@ -672,10 +678,12 @@ public class MovePanel extends AbstractMovePanel {
     } else {
       candidateTransports.removeAll(incapableTransports);
     }
+
     // return defaults if we aren't allowed to prompt
     if (disablePrompts) {
       return defaultSelections;
     }
+
     // force UnitChooser to pop up if we are choosing allied transports
     if (!useAlliedTransports) {
       if (candidateTransports.size() == 1) {
@@ -691,19 +699,10 @@ public class MovePanel extends AbstractMovePanel {
       // mixed transport categories, but there is no UI to manage that anyway.
       // Players will need to load incrementally in such cases.
       if (defaultSelections.containsAll(candidateTransports)) {
-        boolean spaceLeft = false;
-        for (final Unit transport : candidateTransports) {
-          final int capacity = availableCapacityMap.getInt(transport);
-          if (capacity >= minTransportCost) {
-            spaceLeft = true;
-            break;
-          }
-        }
-        if (!spaceLeft) {
-          return candidateTransports;
-        }
+        return candidateTransports;
       }
     }
+
     // the match criteria to ensure that chosen transports will match selected units
     final Match<Collection<Unit>> transportsToLoadMatch = new Match<Collection<Unit>>() {
       @Override
