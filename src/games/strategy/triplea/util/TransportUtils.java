@@ -2,6 +2,7 @@ package games.strategy.triplea.util;
 
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
@@ -42,7 +43,7 @@ public class TransportUtils {
       final Collection<Unit> transports) {
 
     final List<Unit> canBeTransported = sortByTransportCostDescending(units);
-    final List<Unit> canTransport = sortByTransportCapacityAscending(transports);
+    final List<Unit> canTransport = sortByTransportCapacityAscendingThenMovesDescending(transports);
 
     // Add units to transports evenly
     final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
@@ -66,7 +67,7 @@ public class TransportUtils {
       final Collection<Unit> transports) {
 
     final List<Unit> canBeTransported = sortByTransportCostDescending(units);
-    final List<Unit> canTransport = sortByTransportCapacityAscending(transports);
+    final List<Unit> canTransport = sortByTransportCapacityAscendingThenMovesDescending(transports);
 
     // Add max units to each transport
     final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
@@ -158,13 +159,18 @@ public class TransportUtils {
     return mapping;
   }
 
-  private static List<Unit> sortByTransportCapacityAscending(final Collection<Unit> transports) {
+  private static List<Unit> sortByTransportCapacityAscendingThenMovesDescending(final Collection<Unit> transports) {
     final Comparator<Unit> transportCapacityComparator = new Comparator<Unit>() {
       @Override
       public int compare(final Unit o1, final Unit o2) {
         final int capacityLeft1 = TransportTracker.getAvailableCapacity(o1);
         final int capacityLeft2 = TransportTracker.getAvailableCapacity(o2);
-        return capacityLeft1 - capacityLeft2;
+        if (capacityLeft1 != capacityLeft2) {
+          return Integer.compare(capacityLeft1, capacityLeft2);
+        }
+        final int movementLeft1 = TripleAUnit.get(o1).getMovementLeft();
+        final int movementLeft2 = TripleAUnit.get(o2).getMovementLeft();
+        return Integer.compare(movementLeft2, movementLeft1);
       }
     };
     final List<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
