@@ -88,15 +88,25 @@ public class TransportUtils {
 
   public static List<Unit> findUnitsToLoadOnAirTransports(final Collection<Unit> units,
       final Collection<Unit> transports) {
-
     final Collection<Unit> airTransports = Match.getMatches(transports, Matches.UnitIsAirTransport);
-    final List<Unit> canBeTransported = sortByTransportCostDescending(units);
+
+
+    final Comparator<Unit> c = new Comparator<Unit>() {
+      @Override
+      public int compare(final Unit o1, final Unit o2) {
+        final int cost1 = UnitAttachment.get((o1).getUnitType()).getTransportCost();
+        final int cost2 = UnitAttachment.get((o2).getUnitType()).getTransportCost();
+        // descending transportCost
+        return Integer.compare(cost2, cost1);
+      }
+    };
+    Collections.sort((List<Unit>) units, c);
 
     // Define the max of all units that could be loaded
-    final List<Unit> totalLoad = new ArrayList<>();
+    final List<Unit> totalLoad = new ArrayList<Unit>();
 
     // Get a list of the unit categories
-    final Collection<UnitCategory> unitTypes = UnitSeperator.categorize(canBeTransported, null, false, true);
+    final Collection<UnitCategory> unitTypes = UnitSeperator.categorize(units, null, false, true);
     final Collection<UnitCategory> transportTypes = UnitSeperator.categorize(airTransports, null, false, false);
     for (final UnitCategory unitType : unitTypes) {
       final int transportCost = unitType.getTransportCost();
@@ -105,8 +115,7 @@ public class TransportUtils {
         if (transportCost > 0 && transportCapacity >= transportCost) {
           final int transportCount = Match.countMatches(airTransports, Matches.unitIsOfType(transportType.getType()));
           final int ttlTransportCapacity = transportCount * (int) Math.floor(transportCapacity / transportCost);
-          totalLoad.addAll(Match.getNMatches(canBeTransported, ttlTransportCapacity,
-              Matches.unitIsOfType(unitType.getType())));
+          totalLoad.addAll(Match.getNMatches(units, ttlTransportCapacity, Matches.unitIsOfType(unitType.getType())));
         }
       }
     }
