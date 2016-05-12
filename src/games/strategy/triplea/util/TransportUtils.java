@@ -96,7 +96,7 @@ public class TransportUtils {
         final int cost1 = UnitAttachment.get((o1).getUnitType()).getTransportCost();
         final int cost2 = UnitAttachment.get((o2).getUnitType()).getTransportCost();
         // descending transportCost
-        return cost2 - cost1;
+        return Integer.compare(cost2, cost1);
       }
     };
     Collections.sort((List<Unit>) units, c);
@@ -184,7 +184,7 @@ public class TransportUtils {
       public int compare(final Unit o1, final Unit o2) {
         final int cost1 = UnitAttachment.get((o1).getUnitType()).getTransportCost();
         final int cost2 = UnitAttachment.get((o2).getUnitType()).getTransportCost();
-        return cost2 - cost1;
+        return Integer.compare(cost2, cost1);
       }
     };
     final List<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
