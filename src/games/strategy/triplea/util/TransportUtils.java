@@ -46,8 +46,8 @@ public class TransportUtils {
     final List<Unit> canTransport = sortByTransportCapacityAscendingThenMovesDescending(transports);
 
     // Add units to transports evenly
-    final Map<Unit, Unit> mapping = new HashMap<>();
-    final IntegerMap<Unit> addedLoad = new IntegerMap<>();
+    final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
+    final IntegerMap<Unit> addedLoad = new IntegerMap<Unit>();
     for (final Unit unit : canBeTransported) {
       final Optional<Unit> transport = loadUnitIntoFirstAvailableTransport(unit, canTransport, mapping, addedLoad);
 
@@ -70,7 +70,7 @@ public class TransportUtils {
     final List<Unit> canTransport = sortByTransportCapacityAscendingThenMovesDescending(transports);
 
     // Add max units to each transport
-    final Map<Unit, Unit> mapping = new HashMap<>();
+    final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
     for (final Unit transport : canTransport) {
       int capacity = TransportTracker.getAvailableCapacity(transport);
       for (final Iterator<Unit> it = canBeTransported.iterator(); it.hasNext();) {
@@ -88,8 +88,9 @@ public class TransportUtils {
 
   public static List<Unit> findUnitsToLoadOnAirTransports(final Collection<Unit> units,
       final Collection<Unit> transports) {
-    final Collection<Unit> airTransports = Match.getMatches(transports, Matches.UnitIsAirTransport);
 
+    final Collection<Unit> airTransports = Match.getMatches(transports, Matches.UnitIsAirTransport);
+    final List<Unit> canBeTransported = sortByTransportCostDescending(units);
 
     final Comparator<Unit> c = new Comparator<Unit>() {
       @Override
@@ -106,7 +107,7 @@ public class TransportUtils {
     final List<Unit> totalLoad = new ArrayList<Unit>();
 
     // Get a list of the unit categories
-    final Collection<UnitCategory> unitTypes = UnitSeperator.categorize(units, null, false, true);
+    final Collection<UnitCategory> unitTypes = UnitSeperator.categorize(canBeTransported, null, false, true);
     final Collection<UnitCategory> transportTypes = UnitSeperator.categorize(airTransports, null, false, false);
     for (final UnitCategory unitType : unitTypes) {
       final int transportCost = unitType.getTransportCost();
@@ -115,7 +116,8 @@ public class TransportUtils {
         if (transportCost > 0 && transportCapacity >= transportCost) {
           final int transportCount = Match.countMatches(airTransports, Matches.unitIsOfType(transportType.getType()));
           final int ttlTransportCapacity = transportCount * (int) Math.floor(transportCapacity / transportCost);
-          totalLoad.addAll(Match.getNMatches(units, ttlTransportCapacity, Matches.unitIsOfType(unitType.getType())));
+          totalLoad.addAll(Match.getNMatches(canBeTransported, ttlTransportCapacity,
+              Matches.unitIsOfType(unitType.getType())));
         }
       }
     }
@@ -142,7 +144,7 @@ public class TransportUtils {
       final Collection<Unit> transports) {
     final Collection<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
     final Collection<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
-    final Map<Unit, Unit> mapping = new HashMap<>();
+    final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
     final Iterator<Unit> land = canBeTransported.iterator();
     while (land.hasNext()) {
       final Unit currentTransported = land.next();
