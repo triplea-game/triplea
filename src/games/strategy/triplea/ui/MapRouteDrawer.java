@@ -52,14 +52,15 @@ public class MapRouteDrawer {
     if(Arrays.asList(points).contains(null)){//If the Array is null at some point
       return;
     }
-
-    final GeneralPath path = getSmoothPath(points);
-    path.transform(new AffineTransform(1, 0, 0, 1, -xOffset, -yOffset));
-    graphics.draw(path);
+    
     if(numTerritories <= 1 || points.length <= 2){
       graphics.fillOval((routeDescription.getEnd().x - xOffset) - jointsize / 2, (routeDescription.getEnd().y - yOffset) - jointsize / 2, jointsize, jointsize);
+      graphics.drawLine((routeDescription.getStart().x - xOffset) - jointsize / 2, (routeDescription.getStart().y - yOffset) - jointsize / 2, (routeDescription.getEnd().x - xOffset) - jointsize / 2, (routeDescription.getEnd().y - yOffset) - jointsize / 2);
     }
     else{
+      final GeneralPath path = getSmoothPath(points);
+      path.transform(new AffineTransform(1, 0, 0, 1, -xOffset, -yOffset));
+      graphics.draw(path);
       drawMoveLength(graphics, routeDescription, points, xOffset, yOffset, view, mapData.scrollWrapX(), mapData.scrollWrapY(), numTerritories, movementLeftForCurrentUnits);
     }
     drawJoints(graphics, points, xOffset, yOffset, jointsize);
