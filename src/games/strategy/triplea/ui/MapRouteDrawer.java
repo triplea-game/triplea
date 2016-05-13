@@ -55,7 +55,7 @@ public class MapRouteDrawer {
     
     if(numTerritories <= 1 || points.length <= 2){
       graphics.fillOval((routeDescription.getEnd().x - xOffset) - jointsize / 2, (routeDescription.getEnd().y - yOffset) - jointsize / 2, jointsize, jointsize);
-      graphics.drawLine((routeDescription.getStart().x - xOffset) - jointsize / 2, (routeDescription.getStart().y - yOffset) - jointsize / 2, (routeDescription.getEnd().x - xOffset) - jointsize / 2, (routeDescription.getEnd().y - yOffset) - jointsize / 2);
+      graphics.drawLine(routeDescription.getStart().x - xOffset, routeDescription.getStart().y - yOffset, routeDescription.getEnd().x - xOffset, routeDescription.getEnd().y - yOffset);
     }
     else{
       final GeneralPath path = getSmoothPath(points);
@@ -191,7 +191,7 @@ public class MapRouteDrawer {
       // next given point
       xCurveValues[curvesValueIndex] = points[curvesXValueIndex].x;
       yCurveValues[curvesValueIndex] = points[curvesXValueIndex].y;
-      addSegmentToPath(path, xCurveValues, yCurveValues);
+      path.curveTo(xCurveValues[0], yCurveValues[0], xCurveValues[1], yCurveValues[1], xCurveValues[2], yCurveValues[2]);
     }
   }
 
@@ -212,31 +212,6 @@ public class MapRouteDrawer {
     }
     return Tuple.of(splineInterpolator.interpolate(curveXValues, xCurveYValues),
         splineInterpolator.interpolate(curveXValues, yCurveYValues));
-  }
-
-  /**
-   * Adds a segment to the path from the current point to the point
-   * ( xCurveValues[xCurveValues.length - 1], yCurveValues[yCurveValues.length - 1])
-   * and uses array points in between for smoothing if possible.
-   * 
-   * @param path - path to add segment to
-   * @param xCurveValues - array of xCurveValues
-   * @param yCurveValues - array of yCurveValues
-   */
-  private static void addSegmentToPath(final GeneralPath path, final double[] xCurveValues,
-      final double[] yCurveValues) {
-    switch (xCurveValues.length) {
-      case 3:
-        path.curveTo(xCurveValues[0], yCurveValues[0], xCurveValues[1], yCurveValues[1], xCurveValues[2],
-            yCurveValues[2]);
-        break;
-      case 2:
-        path.quadTo(xCurveValues[0], yCurveValues[0], xCurveValues[1], yCurveValues[1]);
-        break;
-      case 1:
-        path.lineTo(xCurveValues[0], yCurveValues[0]);
-        break;
-    }
   }
   
   private static void setupTextImage(Graphics2D textG2D, String textRouteMovement, String unitMovementLeft){
