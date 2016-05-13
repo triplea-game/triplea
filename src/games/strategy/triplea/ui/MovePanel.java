@@ -207,7 +207,8 @@ public class MovePanel extends AbstractMovePanel {
     sortTransportsToUnload(candidateTransports, route);
 
     // unitsToUnload are actually dependents, but need to select transports
-    final Map<Unit, Unit> unitsToTransports = TransportUtils.mapTransports(route, unitsToUnload, candidateTransports);
+    final Map<Unit, Unit> unitsToTransports =
+        TransportUtils.mapTransportsAlreadyLoaded(unitsToUnload, candidateTransports);
     final Set<Unit> defaultSelections = new HashSet<Unit>(unitsToTransports.values());
 
     // Match criteria to ensure that chosen transports will match selected units

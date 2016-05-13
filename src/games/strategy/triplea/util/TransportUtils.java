@@ -144,23 +144,21 @@ public class TransportUtils {
   /**
    * Returns a map of unit -> transport. Unit must already be loaded in the transport.
    */
-  private static Map<Unit, Unit> mapTransportsAlreadyLoaded(final Collection<Unit> units,
+  public static Map<Unit, Unit> mapTransportsAlreadyLoaded(final Collection<Unit> units,
       final Collection<Unit> transports) {
+
     final Collection<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
     final Collection<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
+
     final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
-    final Iterator<Unit> land = canBeTransported.iterator();
-    while (land.hasNext()) {
-      final Unit currentTransported = land.next();
+    for (final Unit currentTransported : canBeTransported) {
       final Unit transport = TransportTracker.transportedBy(currentTransported);
 
-      // already being transported, make sure it is in transports
-      if (transport == null) {
+      // Already being transported, make sure it is in transports
+      if (transport == null || !canTransport.contains(transport)) {
         continue;
       }
-      if (!canTransport.contains(transport)) {
-        continue;
-      }
+
       mapping.put(currentTransported, transport);
     }
     return mapping;
