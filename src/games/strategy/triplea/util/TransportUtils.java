@@ -43,7 +43,7 @@ public class TransportUtils {
       final Collection<Unit> transports) {
 
     final List<Unit> canBeTransported = sortByTransportCostDescending(units);
-    final List<Unit> canTransport = sortByTransportCapacityAscendingThenMovesDescending(transports);
+    final List<Unit> canTransport = sortByTransportCapacityDescendingThenMovesDescending(transports);
 
     // Add units to transports evenly
     final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
@@ -67,22 +67,37 @@ public class TransportUtils {
       final Collection<Unit> transports) {
 
     final List<Unit> canBeTransported = sortByTransportCostDescending(units);
-    final List<Unit> canTransport = sortByTransportCapacityAscendingThenMovesDescending(transports);
+    final List<Unit> canTransport = sortByTransportCapacityDescendingThenMovesDescending(transports);
 
     // Add max units to each transport
     final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
+    Optional<Unit> finalTransport = Optional.empty();
     for (final Unit transport : canTransport) {
-      int capacity = TransportTracker.getAvailableCapacity(transport);
-      for (final Iterator<Unit> it = canBeTransported.iterator(); it.hasNext();) {
-        final Unit unit = it.next();
-        final int cost = UnitAttachment.get((unit).getType()).getTransportCost();
-        if (capacity >= cost) {
-          capacity -= cost;
-          mapping.put(unit, transport);
-          it.remove();
+
+      // Check if remaining units can all be loaded into 1 transport
+      final int capacity = TransportTracker.getAvailableCapacity(transport);
+      final int remainingCost = getTransportCost(canBeTransported);
+      if (remainingCost <= capacity) {
+        if (!finalTransport.isPresent() || capacity < TransportTracker.getAvailableCapacity(finalTransport.get())) {
+          finalTransport = Optional.of(transport);
         }
+        continue; // skip transports until the smallest one all units fit in with the most moves
       }
+
+      // Check if we've found the final transport to load remaining units
+      if (finalTransport.isPresent()) {
+        break;
+      }
+
+      // Load max units into current transport
+      loadMaxUnits(transport, canBeTransported, mapping);
     }
+
+    // Load remaining units in final transport
+    if (finalTransport.isPresent()) {
+      loadMaxUnits(finalTransport.get(), canBeTransported, mapping);
+    }
+
     return mapping;
   }
 
@@ -151,14 +166,14 @@ public class TransportUtils {
     return mapping;
   }
 
-  private static List<Unit> sortByTransportCapacityAscendingThenMovesDescending(final Collection<Unit> transports) {
+  private static List<Unit> sortByTransportCapacityDescendingThenMovesDescending(final Collection<Unit> transports) {
     final Comparator<Unit> transportCapacityComparator = new Comparator<Unit>() {
       @Override
       public int compare(final Unit o1, final Unit o2) {
         final int capacityLeft1 = TransportTracker.getAvailableCapacity(o1);
         final int capacityLeft2 = TransportTracker.getAvailableCapacity(o2);
         if (capacityLeft1 != capacityLeft2) {
-          return Integer.compare(capacityLeft1, capacityLeft2);
+          return Integer.compare(capacityLeft2, capacityLeft1);
         }
         final int movementLeft1 = TripleAUnit.get(o1).getMovementLeft();
         final int movementLeft2 = TripleAUnit.get(o2).getMovementLeft();
@@ -196,6 +211,20 @@ public class TransportUtils {
       }
     }
     return Optional.empty();
+  }
+
+  private static void loadMaxUnits(final Unit transport, final List<Unit> canBeTransported,
+      final Map<Unit, Unit> mapping) {
+    int capacity = TransportTracker.getAvailableCapacity(transport);
+    for (final Iterator<Unit> it = canBeTransported.iterator(); it.hasNext();) {
+      final Unit unit = it.next();
+      final int cost = UnitAttachment.get((unit).getType()).getTransportCost();
+      if (capacity >= cost) {
+        capacity -= cost;
+        mapping.put(unit, transport);
+        it.remove();
+      }
+    }
   }
 
 }
