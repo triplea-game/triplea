@@ -101,6 +101,29 @@ public class TransportUtils {
     return mapping;
   }
 
+  /**
+   * Returns a map of unit -> transport. Unit must already be loaded in the transport.
+   */
+  public static Map<Unit, Unit> mapTransportsAlreadyLoaded(final Collection<Unit> units,
+      final Collection<Unit> transports) {
+
+    final Collection<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
+    final Collection<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
+
+    final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
+    for (final Unit currentTransported : canBeTransported) {
+      final Unit transport = TransportTracker.transportedBy(currentTransported);
+
+      // Already being transported, make sure it is in transports
+      if (transport == null || !canTransport.contains(transport)) {
+        continue;
+      }
+
+      mapping.put(currentTransported, transport);
+    }
+    return mapping;
+  }
+
   public static List<Unit> findUnitsToLoadOnAirTransports(final Collection<Unit> units,
       final Collection<Unit> transports) {
 
@@ -139,29 +162,6 @@ public class TransportUtils {
       cost += UnitAttachment.get(item.getType()).getTransportCost();
     }
     return cost;
-  }
-
-  /**
-   * Returns a map of unit -> transport. Unit must already be loaded in the transport.
-   */
-  public static Map<Unit, Unit> mapTransportsAlreadyLoaded(final Collection<Unit> units,
-      final Collection<Unit> transports) {
-
-    final Collection<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
-    final Collection<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
-
-    final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
-    for (final Unit currentTransported : canBeTransported) {
-      final Unit transport = TransportTracker.transportedBy(currentTransported);
-
-      // Already being transported, make sure it is in transports
-      if (transport == null || !canTransport.contains(transport)) {
-        continue;
-      }
-
-      mapping.put(currentTransported, transport);
-    }
-    return mapping;
   }
 
   private static List<Unit> sortByTransportCapacityDescendingThenMovesDescending(final Collection<Unit> transports) {
