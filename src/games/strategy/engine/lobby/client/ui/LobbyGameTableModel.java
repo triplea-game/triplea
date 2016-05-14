@@ -48,9 +48,7 @@ public class LobbyGameTableModel extends AbstractTableModel {
         updateGame(gameId, description);
       }
       
-      /**
-       * @deprecated Call gameUpdated instead, it will add or update
-       */
+      /** @deprecated Call gameUpdated instead, it will add or update */
       @Override
       public void gameAdded(final GUID gameId, final GameDescription description) {
         assertSentFromServer();
