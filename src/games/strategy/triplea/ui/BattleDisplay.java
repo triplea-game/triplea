@@ -113,7 +113,8 @@ public class BattleDisplay extends JPanel {
   // private MovePerformer m_tempMovePerformer;
   private final IUIContext m_uiContext;
   private final JLabel m_messageLabel = new JLabel();
-  private final Action m_nullAction = SwingAction.of(" ", e -> {
+  private final String NULL_ACTION_TEXT = " ";
+  private final Action m_nullAction = SwingAction.of(NULL_ACTION_TEXT, e -> {
   });
 
   public BattleDisplay(final GameData data, final Territory territory, final PlayerID attacker, final PlayerID defender,
@@ -324,19 +325,7 @@ public class BattleDisplay extends JPanel {
   private void waitForSpaceBarClick(final String message) {
     final CountDownLatch continueLatch = new CountDownLatch(1);
     // set the action in the swing thread.
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionButton.setAction(new AbstractAction(message) {
-          private static final long serialVersionUID = 4489826259192394858L;
-
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            continueLatch.countDown();
-          }
-        });
-      }
-    });
+    SwingAction.setActionInSwingThread(message, () -> continueLatch.countDown());
     m_mapPanel.getUIContext().addShutdownLatch(continueLatch);
     // wait for the button to be pressed.
     try {
@@ -345,31 +334,15 @@ public class BattleDisplay extends JPanel {
     } finally {
       m_mapPanel.getUIContext().removeShutdownLatch(continueLatch);
     }
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionButton.setAction(m_nullAction);
-      }
-    });
+    SwingAction.setActionInSwingThread(NULL_ACTION_TEXT, () -> m_actionButton.setAction(m_nullAction));
   }
 
 
   public void endBattle(final String message, final Window enclosingFrame) {
     m_steps.walkToLastStep();
-    final Action close = new AbstractAction(message + " : (Press Space to close)") {
-      private static final long serialVersionUID = 4219274012228245826L;
 
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        enclosingFrame.setVisible(false);
-      }
-    };
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionButton.setAction(close);
-      }
-    });
+    String updatedButtonText = message + " : (Press Space to close)";
+    SwingAction.setActionInSwingThread(updatedButtonText, () -> enclosingFrame.setVisible(false));
   }
 
   public void notifyRetreat(final Collection<Unit> retreating) {
