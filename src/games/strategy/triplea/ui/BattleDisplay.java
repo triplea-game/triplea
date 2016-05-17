@@ -342,7 +342,7 @@ public class BattleDisplay extends JPanel {
     m_steps.walkToLastStep();
 
     final Action close = SwingAction.of(message + " : (Press Space to close)", e -> enclosingFrame.setVisible(false));
-    SwingUtilities.invokeLater(() -> m_actionButton.setAction(close));
+    SwingAction.setActionInSwingThread(() -> m_actionButton.setAction(close));
   }
 
   public void notifyRetreat(final Collection<Unit> retreating) {
