@@ -66,4 +66,11 @@ public class SwingAction {
       ClientLogger.logQuietly(e);
     }
   }
+
+  /**
+   * Useful for when you want to set an action on a button inside of the Swing thread
+   */
+  public static void setActionInSwingThread(String buttonName, Runnable action) {
+    SwingUtilities.invokeLater(() -> SwingAction.of(buttonName, e -> action.run()));
+  }
 }
