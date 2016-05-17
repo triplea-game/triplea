@@ -80,6 +80,7 @@ import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.Util;
 import games.strategy.util.Match;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
 /**
@@ -314,29 +315,13 @@ public class BattleDisplay extends JPanel {
       // TODO: This value should find its way into a setting. For now it is hardcoded since
       // just having another confusing value to set would not help very much. Needs to be some
       // context/explanation around it for a user to really want to set it.
-      try {
-        Thread.sleep(1500);
-      } catch (InterruptedException e) {
-      }
+      ThreadUtil.sleep(1500);
     }
   }
 
   private void waitForSpaceBarClick(final String message) {
     final CountDownLatch continueLatch = new CountDownLatch(1);
-    // set the action in the swing thread.
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionButton.setAction(new AbstractAction(message) {
-          private static final long serialVersionUID = 4489826259192394858L;
-
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            continueLatch.countDown();
-          }
-        });
-      }
-    });
+    SwingUtilities.invokeLater(() -> m_actionButton.setAction(SwingAction.of(message, e -> continueLatch.countDown())));
     m_mapPanel.getUIContext().addShutdownLatch(continueLatch);
     // wait for the button to be pressed.
     try {
@@ -345,31 +330,14 @@ public class BattleDisplay extends JPanel {
     } finally {
       m_mapPanel.getUIContext().removeShutdownLatch(continueLatch);
     }
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionButton.setAction(m_nullAction);
-      }
-    });
+    SwingUtilities.invokeLater(() -> m_actionButton.setAction(m_nullAction));
   }
 
 
   public void endBattle(final String message, final Window enclosingFrame) {
     m_steps.walkToLastStep();
-    final Action close = new AbstractAction(message + " : (Press Space to close)") {
-      private static final long serialVersionUID = 4219274012228245826L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        enclosingFrame.setVisible(false);
-      }
-    };
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionButton.setAction(close);
-      }
-    });
+    final Action close = SwingAction.of(message + " : (Press Space to close)", e -> enclosingFrame.setVisible(false));
+    SwingUtilities.invokeLater(() -> m_actionButton.setAction(close));
   }
 
   public void notifyRetreat(final Collection<Unit> retreating) {
