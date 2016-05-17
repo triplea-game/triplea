@@ -44,6 +44,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   private static final long serialVersionUID = 3926503672972937677L;
   private JButton m_startLocal;
+  private JButton m_startTutorial;
   private JButton m_startPBEM;
   private JButton m_hostGame;
   private JButton m_connectToHostedGame;
@@ -74,6 +75,8 @@ public class MetaSetupPanel extends SetupPanel {
     m_startLocal = new JButton("Start Local Game");
     m_startLocal.setToolTipText(
         "<html>Start a game on this computer. <br>You can play against a friend sitting besides you (hotseat mode), <br>or against one of the AIs.</html>");
+    m_startTutorial = new JButton("Start Tutorial");
+    m_startTutorial.setToolTipText("Start a Tutorial introducing you to TripleA");
     m_startPBEM = new JButton("Start PBEM (Play-By-Email/Forum) Game");
     m_startPBEM.setToolTipText(
         "<html>Starts a game which will be emailed back and forth between all players, <br>or be posted to an online forum or message board.</html>");
@@ -104,13 +107,15 @@ public class MetaSetupPanel extends SetupPanel {
         new Insets(10, 0, 0, 0), 0, 0));
     add(m_startLocal, new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
-    add(m_startPBEM, new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+    add(m_startTutorial, new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
-    add(m_hostGame, new GridBagConstraints(0, 4, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+    add(m_startPBEM, new GridBagConstraints(0, 4, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
-    add(m_connectToHostedGame, new GridBagConstraints(0, 5, 1, 1, 0, 0, GridBagConstraints.CENTER,
+    add(m_hostGame, new GridBagConstraints(0, 5, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+        new Insets(10, 0, 0, 0), 0, 0));
+    add(m_connectToHostedGame, new GridBagConstraints(0, 6, 1, 1, 0, 0, GridBagConstraints.CENTER,
         GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
-    add(m_enginePreferences, new GridBagConstraints(0, 6, 1, 1, 0, 0, GridBagConstraints.CENTER,
+    add(m_enginePreferences, new GridBagConstraints(0, 7, 1, 1, 0, 0, GridBagConstraints.CENTER,
         GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
     add(m_ruleBook, new GridBagConstraints(0, 8, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
@@ -128,6 +133,12 @@ public class MetaSetupPanel extends SetupPanel {
       @Override
       public void actionPerformed(final ActionEvent e) {
         m_model.showLocal();
+      }
+    });
+    m_startTutorial.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        //TODO start tutorial Map
       }
     });
     m_startPBEM.addActionListener(new ActionListener() {
