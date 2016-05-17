@@ -340,20 +340,9 @@ public class BattleDisplay extends JPanel {
 
   public void endBattle(final String message, final Window enclosingFrame) {
     m_steps.walkToLastStep();
-    final Action close = new AbstractAction(message + " : (Press Space to close)") {
-      private static final long serialVersionUID = 4219274012228245826L;
 
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        enclosingFrame.setVisible(false);
-      }
-    };
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionButton.setAction(close);
-      }
-    });
+    final Action close = SwingAction.of(message + " : (Press Space to close)", e -> enclosingFrame.setVisible(false));
+    SwingUtilities.invokeLater(() -> m_actionButton.setAction(close));
   }
 
   public void notifyRetreat(final Collection<Unit> retreating) {
