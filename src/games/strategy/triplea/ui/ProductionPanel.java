@@ -10,19 +10,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 
 import games.strategy.common.swing.SwingAction;
@@ -241,7 +232,7 @@ public class ProductionPanel extends JPanel {
       final JLabel info = new JLabel("  ");
       final JLabel name = new JLabel("  ");
       final Color defaultForegroundLabelColor = name.getForeground();
-      Icon icon = null;
+      Optional<ImageIcon> icon = Optional.empty();
       final StringBuilder tooltip = new StringBuilder();
       final Set<NamedAttachable> results = new HashSet<NamedAttachable>(m_rule.getResults().keySet());
       final Iterator<NamedAttachable> iter = results.iterator();
@@ -266,7 +257,7 @@ public class ProductionPanel extends JPanel {
           }
         } else if (resourceOrUnit instanceof Resource) {
           final Resource resource = (Resource) resourceOrUnit;
-          icon = m_uiContext.getResourceImageFactory().getIcon(resource, m_data, true);
+          icon = Optional.of(m_uiContext.getResourceImageFactory().getIcon(resource, m_data, true));
           info.setText("resource");
           tooltip.append(resource.getName() + ": resource");
           name.setText(resource.getName());
@@ -284,7 +275,7 @@ public class ProductionPanel extends JPanel {
       } else {
         text = "<html> x " + ResourceCollection.toStringForHTML(m_cost, m_data) + "</html>";
       }
-      final JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
+      final JLabel label = icon.isPresent() ? new JLabel(text, icon.get(), SwingConstants.LEFT) : new JLabel( text, SwingConstants.LEFT);
       final String toolTipText = "<html>" + tooltip.toString() + "</html>";
       info.setToolTipText(toolTipText);
       label.setToolTipText(toolTipText);

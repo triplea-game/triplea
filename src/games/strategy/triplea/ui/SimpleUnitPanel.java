@@ -3,12 +3,11 @@ package games.strategy.triplea.ui;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
@@ -97,7 +96,11 @@ public class SimpleUnitPanel extends JPanel {
     final JLabel label = new JLabel();
     label.setText(" x " + quantity);
     if (unit instanceof UnitType) {
-      label.setIcon(m_uiContext.getUnitImageFactory().getIcon((UnitType) unit, player, data, damaged, disabled));
+      Optional<ImageIcon>
+          icon = m_uiContext.getUnitImageFactory().getIcon((UnitType) unit, player, data, damaged, disabled);
+      if(icon.isPresent()) {
+        label.setIcon(icon.get());
+      }
     } else if (unit instanceof Resource) {
       label.setIcon(m_uiContext.getResourceImageFactory().getIcon((Resource) unit, data, true));
     }

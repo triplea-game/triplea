@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -289,11 +290,16 @@ class SingleUnitPanel extends JPanel {
     setMin(min);
     m_textField.setShowMaxAndMin(showMaxAndMin);
     final TripleAUnit taUnit = TripleAUnit.get(unit);
-    final Image img = m_context.getUnitImageFactory().getImage(m_unit.getType(), m_unit.getOwner(), m_data,
-        taUnit.getUnitDamage() > 0 || taUnit.getHits() > 0, taUnit.getDisabled());
+
+
     setCount(currentValue);
     setLayout(new GridBagLayout());
-    final JLabel label = new JLabel(new ImageIcon(img));
+
+    boolean isDamaged = taUnit.getUnitDamage() > 0 || taUnit.getHits() > 0;
+    final JLabel label = m_context.createUnitImageJLabel(m_unit.getType(), m_unit.getOwner(), m_data,
+        isDamaged ? IUIContext.UnitDamage.DAMAGED : IUIContext.UnitDamage.NOT_DAMAGED,
+        taUnit.getDisabled() ? IUIContext.UnitEnable.DISABLED : IUIContext.UnitEnable.ENABLED);
+
     add(label, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
         new Insets(0, 0, 0, 10), 0, 0));
     add(m_textField, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,

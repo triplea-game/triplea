@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -562,16 +563,22 @@ class ChooserEntry {
     @Override
     public void paint(final Graphics g) {
       super.paint(g);
-      g.drawImage(uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
-          m_forceDamaged || m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled()), 0, 0, this);
+      Optional<Image> image = uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
+          m_forceDamaged || m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled());
+      if(image.isPresent()) {
+        g.drawImage(image.get(), 0, 0, this);
+      }
+
       final Iterator<UnitOwner> iter = m_category.getDependents().iterator();
       int index = 1;
       while (iter.hasNext()) {
         final UnitOwner holder = iter.next();
         final int x = uiContext.getUnitImageFactory().getUnitImageWidth() * index;
-        final Image unitImg =
+        final Optional<Image> unitImg =
             uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), m_data, false, false);
-        g.drawImage(unitImg, x, 0, this);
+        if(unitImg.isPresent()) {
+          g.drawImage(unitImg.get(), x, 0, this);
+        }
         index++;
       }
     }
