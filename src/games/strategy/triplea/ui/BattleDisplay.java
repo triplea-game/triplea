@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -304,27 +306,30 @@ public class BattleDisplay extends JPanel {
 
   protected void waitForConfirmation(final String message) {
     if (SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("This cant be in dispatch thread");
+      throw new IllegalStateException("This can not be in dispatch thread");
     }
 
-    if (getConfirmDefensiveRolls()) {
-      waitForSpaceBarClick(message);
-    } else {
-      // Sleep for a short period, allows users to see the dice rolls before the game
-      // moves on.
-      // TODO: This value should find its way into a setting. For now it is hardcoded since
-      // just having another confusing value to set would not help very much. Needs to be some
-      // context/explanation around it for a user to really want to set it.
-      ThreadUtil.sleep(1500);
-    }
-  }
-
-  private void waitForSpaceBarClick(final String message) {
     final CountDownLatch continueLatch = new CountDownLatch(1);
     SwingUtilities.invokeLater(() -> m_actionButton.setAction(SwingAction.of(message, e -> continueLatch.countDown())));
     m_mapPanel.getUIContext().addShutdownLatch(continueLatch);
-    // wait for the button to be pressed.
+
+    // Set a auto-wait expiration if the option is set.
+    if(!getConfirmDefensiveRolls()) {
+      final int maxWaitTime = 1500;
+      Timer t = new Timer();
+      t.schedule(new TimerTask() {
+        @Override
+        public void run() {
+          continueLatch.countDown();
+          if (continueLatch.getCount() > 0) {
+            SwingUtilities.invokeLater(() -> m_actionButton.setAction(m_nullAction));
+          }
+        }
+      }, maxWaitTime);
+    }
+
     try {
+      // wait for the button to be pressed.
       continueLatch.await();
     } catch (final InterruptedException ie) {
     } finally {
