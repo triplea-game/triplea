@@ -68,12 +68,15 @@ public class SwingAction {
   }
 
   /**
-   * Useful for when you want to set an action on a button inside of the Swing thread
+   * Useful for when you want to set an action on a button inside of the Swing thread, and also change the button name.
    */
   public static void setActionInSwingThread(String updatedButtonText, Runnable buttonAction) {
     SwingUtilities.invokeLater(() -> SwingAction.of(updatedButtonText, e -> buttonAction.run()));
   }
 
+  /**
+   * Useful for when you want to set an action on a button inside of the Swing thread
+   */
   public static void setActionInSwingThread(Runnable buttonAction) {
     SwingUtilities.invokeLater(() -> buttonAction.run());
   }
