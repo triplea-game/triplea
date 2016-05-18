@@ -6,8 +6,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -139,15 +137,8 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   private void setupListeners() {
-    m_startLocal.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_model.showLocal();
-      }
-    });
-    m_startTutorial.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
+    m_startLocal.addActionListener(e -> m_model.showLocal());
+    m_startTutorial.addActionListener(e -> {
         GameSelectorModel gameSelectorModel = new GameSelectorModel();
         NewGameChooserEntry tutorialEntry = new NewGameChooserModel(new ClearGameChooserCacheMessenger()).findByName("Tutorial");
         gameSelectorModel.load(tutorialEntry);
@@ -163,51 +154,15 @@ public class MetaSetupPanel extends SetupPanel {
         ILauncher tutorialLauncher = new LocalLauncher(gameSelectorModel, new PlainRandomSource(), playerListing);
         tutorialLauncher.launch(MetaSetupPanel.this);
         //TODO launching is causing  a NullPointerException - fix it!
-      }
-    });
-    m_startPBEM.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_model.showPBEM();
-      }
-    });
-    m_hostGame.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_model.showServer(MetaSetupPanel.this);
-      }
-    });
-    m_connectToHostedGame.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_model.showClient(MetaSetupPanel.this);
-      }
-    });
-    m_connectToLobby.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        connectToLobby();
-      }
-    });
-    m_enginePreferences.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        enginePreferences();
-      }
-    });
-    m_ruleBook.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        ruleBook();
-      }
-    });
+      });
+    m_startPBEM.addActionListener(e -> m_model.showPBEM());
+    m_hostGame.addActionListener(e -> m_model.showServer(MetaSetupPanel.this));
+    m_connectToHostedGame.addActionListener(e -> m_model.showClient(MetaSetupPanel.this));
+    m_connectToLobby.addActionListener(e -> connectToLobby());
+    m_enginePreferences.addActionListener(e -> enginePreferences());
+    m_ruleBook.addActionListener(e -> ruleBook());
     m_donate.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
-    m_about.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        about();
-      }
-    });
+    m_about.addActionListener(e -> about());
   }
 
   private static void ruleBook() {
