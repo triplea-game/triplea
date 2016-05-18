@@ -10,7 +10,7 @@
     <br>Again, Only Maps meeting all above listed high quality requirements and having undergone extensive testing are located here. Maps from this section can be 
              considered classics, and it should usually be no problem finding an opponent for any of them.
 - mapName: MiniMap
-  url: https://github.com/triplea-maps/minimap/releases/download/0.7/minimap.zip
+  url: https://github.com/triplea-maps/minimap/releases/download/0.11/minimap.zip
   version: 0.1
   description: |
     <br>Mini
@@ -35,7 +35,7 @@
   description: |
     <br>Lord of the Rings
 - mapName: Napoleonic Empire
-  url: https://github.com/triplea-maps/napoleonic_empire/releases/download/0.1/napoleonic_empire.zip
+  url: https://github.com/triplea-maps/napoleonic_empire/releases/download/0.3/napoleonic_empire.zip
   version: 0.1
   description: |
     <br>Preindustrial Napoleonic era European conquest
@@ -193,7 +193,7 @@
     <br>
   version: 1.9.3
 - mapName: Diplomacy
-  url: https://github.com/triplea-maps/diplomacy/releases/download/0.6/diplomacy.zip
+  url: https://github.com/triplea-maps/diplomacy/releases/download/0.8/diplomacy.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_diplomacy_mini.png" />
     <br>An adaptation of the game "Diplomacy" for TripleA.
@@ -262,7 +262,7 @@
     <br>Includes two 6-Army-Free-For-All variants.
   version: 2.8
 - mapName: World War II Pacific
-  url: https://github.com/triplea-maps/world_war_ii_pacific/releases/download/0.5/world_war_ii_pacific.zip
+  url: https://github.com/triplea-maps/world_war_ii_pacific/releases/download/0.9/world_war_ii_pacific.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_pacific_1940_mini.png" />
     <br>
@@ -298,7 +298,7 @@
     <br>
   version: 3.0
 - mapName: World War II Global
-  url: https://github.com/triplea-maps/world_war_ii_global/releases/download/0.5/world_war_ii_global.zip
+  url: https://github.com/triplea-maps/world_war_ii_global/releases/download/0.7/world_war_ii_global.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_global_1940_mini.png" />
     <br>
@@ -638,7 +638,7 @@
     <br>if you play it, help it be perfected by giving feedback!
   version: 1.2
 - mapName: StarWarsGalacticWar
-  url: https://github.com/triplea-maps/star_wars_galactic_war/releases/download/0.9/star_wars_galactic_war.zip
+  url: https://github.com/triplea-maps/star_wars_galactic_war/releases/download/0.12/star_wars_galactic_war.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_starwars_galactic_war_mini.png" />
     <br>created by Frostion 
@@ -648,7 +648,7 @@
     <br>All 8 factions have different unit types and starting conditions, therefore they must rely on different tactics to prevail. The map has neutrals, pirates, local forces and other hazards that can obstruct the battle plans of the factions. (These are not meant to be played. They are meant to be under AI control.) Galactic War is a 4v4 map, but 2v2 and Free-for-all versions are included, designed to be played separately or along with StarWarsTatooineWar.  
   version: 1.2
 - mapName: StarWarsTatooineWar
-  url: https://github.com/triplea-maps/star_wars_tatooine_war/releases/download/0.9/star_wars_tatooine_war.zip
+  url: https://github.com/triplea-maps/star_wars_tatooine_war/releases/download/0.12/star_wars_tatooine_war.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_starwars_tatooine_war_mini.png" />
     <br>created by Frostion 
@@ -1026,7 +1026,7 @@
     <br>
   version: 1.3.2
 - mapName: Eastern_Front
-  url: https://github.com/triplea-maps/eastern_front/releases/download/0.3/eastern_front.zip
+  url: https://github.com/triplea-maps/eastern_front/releases/download/0.5/eastern_front.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_eastern_front_mini.png" />
     <br>Eastern Front by RODTHEGOD
@@ -1163,7 +1163,7 @@
         A map of the First Punic War between Rome and Carthage.
   version: 1.0.1
 - mapName: Ancient Times
-  url: https://github.com/triplea-maps/ancient_times/releases/download/0.3/ancient_times.zip
+  url: https://github.com/triplea-maps/ancient_times/releases/download/0.5/ancient_times.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ancient_times_mini.png" />
     <br>
@@ -1274,7 +1274,7 @@
     <br>
   version: 1.0.4
 - mapName: Caribbean_Trade_War
-  url: https://github.com/triplea-maps/caribbean_trade_war/releases/download/0.11/caribbean_trade_war.zip
+  url: https://github.com/triplea-maps/caribbean_trade_war/releases/download/0.14/caribbean_trade_war.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_caribbean_trade_war_mini.png" />
     <br>
@@ -1376,7 +1376,7 @@
     <br>Technically, all maps are still usually getting updates here and there, but maps in this category are usually very new (2-6 weeks), or have bugs, 
         or the map maker does not consider them to be ready for release.
 - mapName: Invasion_USA
-  url: https://github.com/triplea-maps/invasion_usa/releases/download/0.40/invasion_usa.zip 
+  url: https://github.com/triplea-maps/invasion_usa/releases/download/0.42/invasion_usa.zip 
   description: |
     UNDER SIEGE: America is an updated mod for Hobbes__ map Invasion USA
     <br />Objective:
