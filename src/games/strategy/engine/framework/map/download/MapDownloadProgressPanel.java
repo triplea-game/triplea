@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -37,7 +37,7 @@ public final class MapDownloadProgressPanel extends JPanel {
 
 
 
-  public MapDownloadProgressPanel(final JFrame parent) {
+  public MapDownloadProgressPanel(final JDialog parent) {
     downloadCoordinator = new DownloadCoordinator();
     downloadCoordinator.setAllDownloadCompleteAction(() -> {
       parent.setVisible(false);

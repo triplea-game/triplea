@@ -173,7 +173,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
     JButton downloadMapButton =
         SwingComponents.newJButton("Download Maps", "Click this button to install additional maps",
-            () -> DownloadMapsWindow.showDownloadMapsWindow());
+            () -> DownloadMapsWindow.showDownloadMapsWindow((JFrame) SwingUtilities.getWindowAncestor(this)));
     add(downloadMapButton, buildGridRow(0, 8, new Insets(0, 10, 10, 10)));
 
     add(m_gameOptions, buildGridRow(0, 9, new Insets(25, 10, 10, 10)));
@@ -405,7 +405,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
       setOriginalPropertiesMap(m_model.getGameData());
     } else {
       final NewGameChooserEntry entry =
-          NewGameChooser.chooseGame(JOptionPane.getFrameForComponent(this), m_model.getGameName());
+          NewGameChooser.chooseGame((JFrame) SwingUtilities.getWindowAncestor(this), m_model.getGameName());
       if (entry != null) {
         if (!entry.isGameDataLoaded()) {
           try {
