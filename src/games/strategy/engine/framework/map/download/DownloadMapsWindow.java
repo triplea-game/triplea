@@ -85,12 +85,8 @@ public class DownloadMapsWindow extends JDialog {
     dia.setVisible(true);
   }
   
-  private DownloadMapsWindow(final Optional<String> mapName, final List<DownloadFileDescription> games){
-    this(mapName, games, null);
-  }
-  
   private DownloadMapsWindow(final Optional<String> mapName, final List<DownloadFileDescription> games, JFrame parent) {
-    super(parent, "Download Maps");
+    super(parent, "Download Maps", true);
 
     progressPanel = new MapDownloadProgressPanel(this);
     if (mapName.isPresent()) {
