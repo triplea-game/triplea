@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,13 +31,22 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.config.GameEngineProperty;
 import games.strategy.engine.config.PropertyReader;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.map.download.DownloadUtils;
+import games.strategy.engine.framework.message.PlayerListing;
+import games.strategy.engine.framework.startup.launcher.ILauncher;
+import games.strategy.engine.framework.startup.launcher.LocalLauncher;
+import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
+import games.strategy.engine.framework.ui.ClearGameChooserCacheMessenger;
 import games.strategy.engine.framework.ui.NewGameChooser;
+import games.strategy.engine.framework.ui.NewGameChooserEntry;
+import games.strategy.engine.framework.ui.NewGameChooserModel;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
+import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.util.Version;
 
@@ -138,7 +148,21 @@ public class MetaSetupPanel extends SetupPanel {
     m_startTutorial.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        //TODO start tutorial Map
+        GameSelectorModel gameSelectorModel = new GameSelectorModel();
+        NewGameChooserEntry tutorialEntry = new NewGameChooserModel(new ClearGameChooserCacheMessenger()).findByName("Tutorial");
+        gameSelectorModel.load(tutorialEntry);
+        Map<String, Boolean> playersEnabled = tutorialEntry.getGameData().getPlayerList().getPlayersEnabledListing();
+        Map<String, String> playerTypes = new HashMap<>();
+        for(PlayerID player : tutorialEntry.getGameData().getPlayerList()){
+          playerTypes.put(player.getName(),
+              player.getName().startsWith("AI") || player.getName().startsWith("Neutral") ? "Hard (AI)" : "Human");
+        }
+        final PlayerListing playerListing =
+            new PlayerListing(null, playersEnabled, playerTypes, gameSelectorModel.getGameData().getGameVersion(),
+                gameSelectorModel.getGameName(), gameSelectorModel.getGameRound(), null, null);
+        ILauncher tutorialLauncher = new LocalLauncher(gameSelectorModel, new PlainRandomSource(), playerListing);
+        tutorialLauncher.launch(MetaSetupPanel.this);
+        //TODO launching is causing  a NullPointerException - fix it!
       }
     });
     m_startPBEM.addActionListener(new ActionListener() {
