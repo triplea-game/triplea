@@ -118,7 +118,6 @@ public class ClipPlayer {
 
   protected final Map<String, List<URL>> sounds = new HashMap<String, List<URL>>();
   private final Set<String> mutedClips = new HashSet<String>();
-  private final Set<String> subFolders = new HashSet<String>();
   private boolean beSilent = false;
   private final ResourceLoader resourceLoader;
   private static ClipPlayer clipPlayer;
@@ -130,11 +129,11 @@ public class ClipPlayer {
     return clipPlayer;
   }
 
-  public static synchronized ClipPlayer getInstance(final ResourceLoader resourceLoader, final GameData data) {
+  public static synchronized ClipPlayer getInstance(final ResourceLoader resourceLoader) {
     // make a new clip player if we switch resource loaders (ie: if we switch maps)
     if (clipPlayer == null || clipPlayer.resourceLoader != resourceLoader) {
       // make a new clip player with our new resource loader
-      clipPlayer = new ClipPlayer(resourceLoader, data);
+      clipPlayer = new ClipPlayer(resourceLoader);
     }
     return clipPlayer;
   }
@@ -151,13 +150,6 @@ public class ClipPlayer {
       if (muted) {
         mutedClips.add(sound);
       }
-    }
-  }
-
-  private ClipPlayer(final ResourceLoader resourceLoader, final GameData data) {
-    this(resourceLoader);
-    for (final PlayerID p : data.getPlayerList().getPlayers()) {
-      subFolders.add(p.getName());
     }
   }
 

@@ -554,9 +554,6 @@ public class AirBattle extends AbstractBattle {
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<Unit>();
-          allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingUnits);
-          allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingWaitingToDie);
           m_dice = DiceRoll.airBattle(m_attackingUnits, false, m_attacker, bridge, "Attackers Fire, ");
         }
       };

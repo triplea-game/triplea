@@ -94,7 +94,7 @@ public class UIContext extends AbstractUIContext implements IUIContext {
       @Override
       public void run() {
         // change the resource loader (this allows us to play sounds the map folder, rather than just default sounds)
-        ClipPlayer.getInstance(m_resourceLoader, data);
+        ClipPlayer.getInstance(m_resourceLoader);
       }
     };
     (new Thread(loadSounds, "Triplea sound loader")).start();
