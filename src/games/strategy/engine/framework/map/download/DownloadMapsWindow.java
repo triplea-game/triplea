@@ -326,7 +326,7 @@ public class DownloadMapsWindow extends JFrame {
     buttonsPanel.add(helpButton);
 
     toolTip = "Click this button to submit map comments and bug reports back to the map makers";
-    JButton mapFeedbackButton = SwingComponents.newJButton("Feedback", toolTip,
+    JButton mapFeedbackButton = SwingComponents.newJButton("Give Map Feedback", toolTip,
         e -> FeedbackDialog.showFeedbackDialog(gamesList.getSelectedValuesList(), maps));
     buttonsPanel.add(mapFeedbackButton);
 
