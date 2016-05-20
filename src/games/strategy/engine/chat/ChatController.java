@@ -121,7 +121,7 @@ public class ChatController implements IChatController {
       m_version++;
       getChatBroadcaster().speakerAdded(node, tag, m_version);
       final Map<INode, Tag> copy = new HashMap<>(m_chatters);
-      return Tuple.of(copy, Long.valueOf(m_version));
+      return Tuple.of(copy, m_version);
     }
   }
 

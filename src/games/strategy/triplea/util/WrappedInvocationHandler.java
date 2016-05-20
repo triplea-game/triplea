@@ -38,7 +38,7 @@ public class WrappedInvocationHandler implements InvocationHandler {
     if (method.getName().equals("equals") && args != null && args.length == 1) {
       return wrappedEquals(args[0]);
     } else if (method.getName().equals("hashCode") && args == null) {
-      return new Integer(wrappedashCode());
+      return wrappedashCode();
     } else {
       throw new IllegalStateException("how did we get here");
     }

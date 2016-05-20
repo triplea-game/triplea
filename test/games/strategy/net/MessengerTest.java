@@ -145,7 +145,7 @@ public class MessengerTest extends TestCase {
 
   public void testMultipleServer() {
     for (int i = 0; i < 100; i++) {
-      m_server.send(new Integer(i), m_client1.getLocalNode());
+      m_server.send(i, m_client1.getLocalNode());
     }
     for (int i = 0; i < 100; i++) {
       m_client1Listener.clearLastMessage();
@@ -154,7 +154,7 @@ public class MessengerTest extends TestCase {
 
   public void testMultipleClientToClient() {
     for (int i = 0; i < 100; i++) {
-      m_client1.send(new Integer(i), m_client2.getLocalNode());
+      m_client1.send(i, m_client2.getLocalNode());
     }
     for (int i = 0; i < 100; i++) {
       m_client2Listener.clearLastMessage();
