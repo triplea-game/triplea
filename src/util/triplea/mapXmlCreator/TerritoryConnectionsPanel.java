@@ -51,7 +51,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
   @Override
   protected void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
       final Point item, final int x_text_start) {
-    if (centerName.equals(selectedTerritory)) {
+    if (centerName.equals(selectedTerritory.orElse(""))) {
       final Rectangle2D stringBounds = fontMetrics.getStringBounds(centerName, g);
       g.setColor(Color.yellow);
       final int xRectPadding = 2;
@@ -222,7 +222,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
 
   private boolean needToBeRepainted(final String territoryName) {
     boolean repaint = false;
-    if (!selectedTerritory.isPresent() || selectedTerritory.equals(territoryName)) {
+    if (!selectedTerritory.isPresent() || selectedTerritory.orElse("").equals(territoryName)) {
       selectedTerritory = Optional.of(territoryName);
       repaint = true;
     } else {
