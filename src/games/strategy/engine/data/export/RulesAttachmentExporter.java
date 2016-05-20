@@ -95,7 +95,7 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
         return "";
       }
       final String option = "" + Character.toLowerCase(field.getName().charAt(2)) + field.getName().substring(3);
-      final Field atWarPlayerCountField = RulesAttachment.class.getDeclaredField("m_atWarCount");
+      final Field atWarPlayerCountField = RulesAttachment.class.getDeclaredField("m_atWarCount"); // TODO: unchecked reflection
       atWarPlayerCountField.setAccessible(true);
       final int count = atWarPlayerCountField.getInt(attachment);
       final Iterator<PlayerID> iWarPlayer = atWarPlayers.iterator();

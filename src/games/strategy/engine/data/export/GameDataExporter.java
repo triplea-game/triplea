@@ -151,7 +151,7 @@ public class GameDataExporter {
     xmlfile.append("    <propertyList>\n");
     final GameProperties gameProperties = data.getProperties();
     try {
-      final Field conPropField = GameProperties.class.getDeclaredField("m_constantProperties");
+      final Field conPropField = GameProperties.class.getDeclaredField("m_constantProperties"); // TODO: unchecked reflection
       conPropField.setAccessible(true);
       final Field edPropField = GameProperties.class.getDeclaredField("m_editableProperties");
       edPropField.setAccessible(true);
@@ -190,7 +190,7 @@ public class GameDataExporter {
     if (prop.getClass().equals(ComboProperty.class)) {
       Field listField;
       try {
-        listField = ComboProperty.class.getDeclaredField("m_possibleValues");
+        listField = ComboProperty.class.getDeclaredField("m_possibleValues"); // TODO: unchecked reflection
         listField.setAccessible(true);
         final Iterator<String> values = ((ArrayList<String>) listField.get(prop)).iterator();
         String possibleValues = values.next();
@@ -204,7 +204,7 @@ public class GameDataExporter {
     }
     if (prop.getClass().equals(NumberProperty.class)) {
       try {
-        final Field maxField = NumberProperty.class.getDeclaredField("m_max");
+        final Field maxField = NumberProperty.class.getDeclaredField("m_max"); // TODO: unchecked reflection
         final Field minField = NumberProperty.class.getDeclaredField("m_min");
         maxField.setAccessible(true);
         minField.setAccessible(true);
@@ -224,7 +224,7 @@ public class GameDataExporter {
     final Iterator<String> propertyNames = conProperties.keySet().iterator();
     while (propertyNames.hasNext()) {
       final String propName = propertyNames.next();
-      if (propName.equals("notes")) {
+      if (propName.equals("notes")) { // TODO: unchecked reflection
         // Special handling of notes property
         printNotes((String) conProperties.get(propName));
       } else if (propName.equals("EditMode") || propName.equals("GAME_UUID")
@@ -575,7 +575,7 @@ public class GameDataExporter {
     while (steps.hasNext()) {
       final GameStep step = steps.next();
       try {
-        final Field mDelegateField = GameStep.class.getDeclaredField("m_delegate");
+        final Field mDelegateField = GameStep.class.getDeclaredField("m_delegate"); // TODO: unchecked reflection
         mDelegateField.setAccessible(true);
         final String delegate = (String) mDelegateField.get(step);
         xmlfile.append("            <step name=\"" + step.getName() + "\" delegate=\"" + delegate + "\"");
