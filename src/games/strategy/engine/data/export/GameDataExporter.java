@@ -99,9 +99,7 @@ public class GameDataExporter {
         while (frontierList.hasNext()) {
           final TechnologyFrontier frontier = frontierList.next();
           returnValue.append("            <category name=\"" + frontier.getName() + "\">\n");
-          final Iterator<TechAdvance> techs = frontier.getTechs().iterator();
-          while (techs.hasNext()) {
-            final TechAdvance tech = techs.next();
+          for (TechAdvance tech : frontier.getTechs()) {
             String name = tech.getName();
             final String cat = tech.getProperty();
             for (final String definedName : TechAdvance.s_allPreDefinedTechnologyNames) {
@@ -164,9 +162,8 @@ public class GameDataExporter {
   }
 
   private void printEditableProperties(final Map<String, IEditableProperty> edProperties) {
-    final Iterator<String> propertyNames = edProperties.keySet().iterator();
-    while (propertyNames.hasNext()) {
-      printEditableProperty(edProperties.get(propertyNames.next()));
+    for (String s : edProperties.keySet()) {
+      printEditableProperty(edProperties.get(s));
     }
   }
 
@@ -221,9 +218,7 @@ public class GameDataExporter {
   }
 
   private void printConstantProperties(final Map<String, Object> conProperties) {
-    final Iterator<String> propertyNames = conProperties.keySet().iterator();
-    while (propertyNames.hasNext()) {
-      final String propName = propertyNames.next();
+    for (String propName : conProperties.keySet()) {
       if (propName.equals("notes")) {
         // Special handling of notes property
         printNotes((String) conProperties.get(propName));

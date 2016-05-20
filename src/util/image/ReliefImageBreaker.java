@@ -181,9 +181,7 @@ public class ReliefImageBreaker {
     final int width = bounds.width;
     final int height = bounds.height;
     final BufferedImage alphaChannelImage = Util.createImage(bounds.width, bounds.height, true);
-    final Iterator<Polygon> iter = m_mapData.getPolygons(territory).iterator();
-    while (iter.hasNext()) {
-      Polygon item = iter.next();
+    for (Polygon item : m_mapData.getPolygons(territory)) {
       item = new Polygon(item.xpoints, item.ypoints, item.npoints);
       item.translate(-bounds.x, -bounds.y);
       alphaChannelImage.getGraphics().fillPolygon(item);

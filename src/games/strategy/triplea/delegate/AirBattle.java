@@ -699,9 +699,8 @@ public class AirBattle extends AbstractBattle {
         : defendingGroundSeaBattleInterceptors(attacker, data);
     int maxScrambleDistance = 0;
     if (canScrambleToAirBattle) {
-      final Iterator<UnitType> utIter = data.getUnitTypeList().iterator();
-      while (utIter.hasNext()) {
-        final UnitAttachment ua = UnitAttachment.get(utIter.next());
+      for (UnitType unitType : data.getUnitTypeList()) {
+        final UnitAttachment ua = UnitAttachment.get(unitType);
         if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance()) {
           maxScrambleDistance = ua.getMaxScrambleDistance();
         }

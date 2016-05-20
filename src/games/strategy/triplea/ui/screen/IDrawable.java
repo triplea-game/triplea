@@ -618,9 +618,7 @@ class OptionalExtraTerritoryBordersDrawable implements IDrawable {
       final AffineTransform unscaled, final AffineTransform scaled) {
     final Territory territory = data.getMap().getTerritory(m_territoryName);
     final List<Polygon> polys = mapData.getPolygons(territory);
-    final Iterator<Polygon> iter2 = polys.iterator();
-    while (iter2.hasNext()) {
-      Polygon polygon = iter2.next();
+    for (Polygon polygon : polys) {
       // if we dont have to draw, dont
       if (!polygon.intersects(bounds) && !polygon.contains(bounds)) {
         continue;
@@ -655,9 +653,7 @@ class SeaZoneOutlineDrawable implements IDrawable {
       final AffineTransform unscaled, final AffineTransform scaled) {
     final Territory territory = data.getMap().getTerritory(m_territoryName);
     final List<Polygon> polys = mapData.getPolygons(territory);
-    final Iterator<Polygon> iter2 = polys.iterator();
-    while (iter2.hasNext()) {
-      Polygon polygon = iter2.next();
+    for (Polygon polygon : polys) {
       // if we dont have to draw, dont
       if (!polygon.intersects(bounds) && !polygon.contains(bounds)) {
         continue;

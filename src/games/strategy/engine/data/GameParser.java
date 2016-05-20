@@ -779,31 +779,27 @@ public class GameParser {
   }
 
   private void parseResources(final Element root) {
-    final Iterator<Element> iter = getChildren("resource", root).iterator();
-    while (iter.hasNext()) {
-      data.getResourceList().addResource(new Resource(iter.next().getAttribute("name"), data));
+    for (Element element : getChildren("resource", root)) {
+      data.getResourceList().addResource(new Resource(element.getAttribute("name"), data));
     }
   }
 
   private void parseRelationshipTypes(final Element root) {
-    final Iterator<Element> iter = getChildren("relationshipType", root).iterator();
-    while (iter.hasNext()) {
-      data.getRelationshipTypeList().addRelationshipType(new RelationshipType(iter.next().getAttribute("name"), data));
+    for (Element element : getChildren("relationshipType", root)) {
+      data.getRelationshipTypeList().addRelationshipType(new RelationshipType(element.getAttribute("name"), data));
     }
   }
 
   private void parseTerritoryEffects(final Element root) {
-    final Iterator<Element> iter = getChildren("territoryEffect", root).iterator();
-    while (iter.hasNext()) {
-      final String name = iter.next().getAttribute("name");
+    for (Element element : getChildren("territoryEffect", root)) {
+      final String name = element.getAttribute("name");
       data.getTerritoryEffectList().put(name, new TerritoryEffect(name, data));
     }
   }
 
   private void parseUnits(final Element root) {
-    final Iterator<Element> iter = getChildren("unit", root).iterator();
-    while (iter.hasNext()) {
-      data.getUnitTypeList().addUnitType(new UnitType(iter.next().getAttribute("name"), data));
+    for (Element element : getChildren("unit", root)) {
+      data.getUnitTypeList().addUnitType(new UnitType(element.getAttribute("name"), data));
     }
   }
 
@@ -894,9 +890,7 @@ public class GameParser {
   private void parseProperties(final Node root) throws GameParseException {
     final Collection<String> runningList = new ArrayList<String>();
     final GameProperties properties = data.getProperties();
-    final Iterator<Element> children = getChildren("property", root).iterator();
-    while (children.hasNext()) {
-      final Element current = children.next();
+    for (Element current : getChildren("property", root)) {
       final String editable = current.getAttribute("editable");
       final String property = current.getAttribute("name");
       String value = current.getAttribute("value");
@@ -1023,9 +1017,7 @@ public class GameParser {
 
   private void parseDelegates(final List<Element> delegateList) throws GameParseException {
     final DelegateList delegates = data.getDelegateList();
-    final Iterator<Element> iterator = delegateList.iterator();
-    while (iterator.hasNext()) {
-      final Element current = iterator.next();
+    for (Element current : delegateList) {
       // load the class
       final String className = current.getAttribute("javaClass");
       IDelegate delegate = null;
@@ -1049,9 +1041,7 @@ public class GameParser {
   }
 
   private void parseSteps(final List<Element> stepList) throws GameParseException {
-    final Iterator<Element> iterator = stepList.iterator();
-    while (iterator.hasNext()) {
-      final Element current = iterator.next();
+    for (Element current : stepList) {
       final IDelegate delegate = getDelegate(current, "delegate", true);
       final PlayerID player = getPlayerID(current, "player", false);
       final String name = current.getAttribute("name");

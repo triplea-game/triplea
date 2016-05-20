@@ -181,9 +181,8 @@ public class ProTerritoryManager {
     final boolean fromIslandOnly = Properties.getScramble_From_Island_Only(data);
     final boolean toSeaOnly = Properties.getScramble_To_Sea_Only(data);
     int maxScrambleDistance = 0;
-    final Iterator<UnitType> utIter = data.getUnitTypeList().iterator();
-    while (utIter.hasNext()) {
-      final UnitAttachment ua = UnitAttachment.get(utIter.next());
+    for (UnitType unitType : data.getUnitTypeList()) {
+      final UnitAttachment ua = UnitAttachment.get(unitType);
       if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance()) {
         maxScrambleDistance = ua.getMaxScrambleDistance();
       }
