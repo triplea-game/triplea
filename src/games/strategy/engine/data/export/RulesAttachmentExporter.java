@@ -74,13 +74,7 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
       }
       final String count = "" + ((RulesAttachment) attachment).getTerritoryCount();
       return printCountOption(fieldName.substring(2), returnValue, count);
-    } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException("e: " + e + " for territoryCountListHandler on option: " + fieldName
-          + " on Attachment: " + attachment.getName());
-    } catch (final IllegalAccessException e) {
-      throw new AttachmentExportException("e: " + e + " for territoryCountListHandler on option: " + fieldName
-          + " on Attachment: " + attachment.getName());
-    } catch (final SecurityException e) {
+    } catch (final IllegalArgumentException | SecurityException | IllegalAccessException e) {
       throw new AttachmentExportException("e: " + e + " for territoryCountListHandler on option: " + fieldName
           + " on Attachment: " + attachment.getName());
     }

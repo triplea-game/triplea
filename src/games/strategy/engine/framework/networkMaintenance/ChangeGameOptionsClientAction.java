@@ -62,13 +62,7 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
           m_serverRemote.changeToGameOptions(newBytes);
         }
       }
-    } catch (final ClassNotFoundException e1) {
-      e1.printStackTrace();
-      return;
-    } catch (final ClassCastException e1) {
-      e1.printStackTrace();
-      return;
-    } catch (final IOException e1) {
+    } catch (final ClassNotFoundException | IOException | ClassCastException e1) {
       e1.printStackTrace();
       return;
     }

@@ -457,8 +457,6 @@ public class DecorationPlacer extends JFrame {
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
     } catch (final FileNotFoundException ex) {
       ex.printStackTrace();
-    } catch (final HeadlessException ex) {
-      ex.printStackTrace();
     } catch (final Exception ex) {
       ex.printStackTrace();
     }
@@ -598,11 +596,7 @@ public class DecorationPlacer extends JFrame {
       } else {
         m_currentPoints = new HashMap<String, List<Point>>();
       }
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
-    } catch (final IOException ex) {
-      ex.printStackTrace();
-    } catch (final HeadlessException ex) {
+    } catch (final HeadlessException | IOException ex) {
       ex.printStackTrace();
     }
   }

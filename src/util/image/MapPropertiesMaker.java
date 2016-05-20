@@ -315,11 +315,7 @@ public class MapPropertiesMaker extends JFrame {
       }
       final FileInputStream in = new FileInputStream(centerName);
       properties.load(in);
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
-    } catch (final IOException ex) {
-      ex.printStackTrace();
-    } catch (final HeadlessException ex) {
+    } catch (final HeadlessException | IOException ex) {
       ex.printStackTrace();
     }
     for (final Method setter : s_mapProperties.getClass().getMethods()) {
@@ -358,8 +354,6 @@ public class MapPropertiesMaker extends JFrame {
       System.out.println(stringToWrite);
     } catch (final FileNotFoundException ex) {
       ex.printStackTrace();
-    } catch (final HeadlessException ex) {
-      ex.printStackTrace();
     } catch (final Exception ex) {
       ex.printStackTrace();
     }
@@ -374,11 +368,7 @@ public class MapPropertiesMaker extends JFrame {
       }
       try {
         outString.append(outMethod.invoke(s_mapProperties));
-      } catch (final IllegalArgumentException e) {
-        e.printStackTrace();
-      } catch (final IllegalAccessException e) {
-        e.printStackTrace();
-      } catch (final InvocationTargetException e) {
+      } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
         e.printStackTrace();
       }
     }

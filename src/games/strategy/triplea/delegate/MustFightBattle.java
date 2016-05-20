@@ -2313,8 +2313,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
             // somone else will deal with this
             // System.out.println(cle.getMessage());
             // cle.printStackTrace(System.out);
-          } catch (final GameOverException e) {
-            // ignore
           } catch (final Exception e) {
             // ignore
           }

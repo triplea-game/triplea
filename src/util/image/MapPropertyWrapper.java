@@ -155,11 +155,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
   public T getFromObject(final Object object) {
     try {
       return (T) m_getter.invoke(object);
-    } catch (final IllegalArgumentException e) {
-      e.printStackTrace();
-    } catch (final IllegalAccessException e) {
-      e.printStackTrace();
-    } catch (final InvocationTargetException e) {
+    } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
       e.printStackTrace();
     }
     return null;
@@ -171,11 +167,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     try {
       System.out.println(m_setter + "   to   " + value);
       m_setter.invoke(object, args);
-    } catch (final IllegalArgumentException e) {
-      e.printStackTrace();
-    } catch (final IllegalAccessException e) {
-      e.printStackTrace();
-    } catch (final InvocationTargetException e) {
+    } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
       e.printStackTrace();
     }
   }
