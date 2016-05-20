@@ -240,7 +240,6 @@ public class MetaSetupPanel extends SetupPanel {
       return;
     }
     final LobbyFrame lobbyFrame = new LobbyFrame(client, props);
-    NewGameChooser.clearNewGameChooserModel();
     MainFrame.getInstance().setVisible(false);
     MainFrame.getInstance().dispose();
     lobbyFrame.setVisible(true);
