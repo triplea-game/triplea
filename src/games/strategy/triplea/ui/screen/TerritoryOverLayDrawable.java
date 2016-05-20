@@ -39,9 +39,7 @@ public class TerritoryOverLayDrawable implements IDrawable {
     final Territory territory = data.getMap().getTerritory(m_territoryName);
     final List<Polygon> polys = mapData.getPolygons(territory);
     graphics.setColor(m_color);
-    final Iterator<Polygon> polyIter = polys.iterator();
-    while (polyIter.hasNext()) {
-      Polygon polygon = polyIter.next();
+    for (Polygon polygon : polys) {
       // if we dont have to draw, dont
       if (!polygon.intersects(bounds) && !polygon.contains(bounds)) {
         continue;

@@ -244,10 +244,9 @@ public class GameDataManager {
   }
 
   private void writeDelegates(final GameData data, final ObjectOutputStream out) throws IOException {
-    final Iterator<IDelegate> iter = data.getDelegateList().iterator();
-    while (iter.hasNext()) {
+    for (IDelegate iDelegate : data.getDelegateList()) {
       out.writeObject(DELEGATE_START);
-      final IDelegate delegate = iter.next();
+      final IDelegate delegate = iDelegate;
       // write out the delegate info
       out.writeObject(delegate.getName());
       out.writeObject(delegate.getDisplayName());

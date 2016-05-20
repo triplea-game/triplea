@@ -103,10 +103,9 @@ public class PointFileReaderWriter {
       final String name = keyIter.next();
       out.append(name).append(" ");
       final List<Polygon> points = mapping.get(name);
-      final Iterator<Polygon> polygonIter = points.iterator();
-      while (polygonIter.hasNext()) {
+      for (Polygon point : points) {
         out.append(" < ");
-        final Polygon polygon = polygonIter.next();
+        final Polygon polygon = point;
         for (int i = 0; i < polygon.npoints; i++) {
           out.append(" (").append(polygon.xpoints[i]).append(",").append(polygon.ypoints[i]).append(")");
         }

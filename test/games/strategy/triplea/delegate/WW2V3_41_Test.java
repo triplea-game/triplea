@@ -1013,9 +1013,7 @@ public class WW2V3_41_Test extends TestCase {
     UnitAttachment.get(destroyer(m_data)).setCanBombard("true");
     // Set the bombard strength for the DDs
     final Collection<Unit> dds = Match.getMatches(sz15.getUnits().getUnits(), Matches.UnitIsDestroyer);
-    final Iterator<Unit> ddIter = dds.iterator();
-    while (ddIter.hasNext()) {
-      final Unit unit = ddIter.next();
+    for (Unit unit : dds) {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       ua.setBombard("3");
     }

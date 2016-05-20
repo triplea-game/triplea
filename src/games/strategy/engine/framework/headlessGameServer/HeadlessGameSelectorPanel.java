@@ -192,18 +192,13 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
     final Object buttonPressed = pane.getValue();
     if (buttonPressed == null || buttonPressed.equals(cancel)) {
       // restore properties, if cancel was pressed, or window was closed
-      final Iterator<IEditableProperty> itr = m_model.getGameData().getProperties().getEditableProperties().iterator();
-      while (itr.hasNext()) {
-        final IEditableProperty property = itr.next();
+      for (IEditableProperty property : m_model.getGameData().getProperties().getEditableProperties()) {
         property.setValue(currentPropertiesMap.get(property.getName()));
       }
     } else if (buttonPressed.equals(reset)) {
       if (!m_originalPropertiesMap.isEmpty()) {
         // restore properties, if cancel was pressed, or window was closed
-        final Iterator<IEditableProperty> itr =
-            m_model.getGameData().getProperties().getEditableProperties().iterator();
-        while (itr.hasNext()) {
-          final IEditableProperty property = itr.next();
+        for (IEditableProperty property : m_model.getGameData().getProperties().getEditableProperties()) {
           property.setValue(m_originalPropertiesMap.get(property.getName()));
         }
         selectGameOptions();
