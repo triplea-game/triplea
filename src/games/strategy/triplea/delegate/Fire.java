@@ -114,9 +114,6 @@ public class Fire implements IExecutable {
       // more hits than combat units
       if (hitCount > numPossibleHits) {
         int extraHits = hitCount - numPossibleHits;
-        final Collection<Unit> remainingTargets = new ArrayList<>();
-        remainingTargets.addAll(m_attackableUnits);
-        remainingTargets.removeAll(nonTransports);
         final Collection<PlayerID> alliedHitPlayer = new ArrayList<>();
         // find the players who have transports in the attackable pile
         for (final Unit unit : transportsOnly) {
