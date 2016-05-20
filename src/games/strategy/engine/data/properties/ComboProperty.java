@@ -48,7 +48,7 @@ public class ComboProperty<T> extends AEditableProperty {
     } else {
       m_value = defaultValue;
     }
-    m_possibleValues = new ArrayList<T>(possibleValues);
+    m_possibleValues = new ArrayList<>(possibleValues);
   }
 
   @Override
@@ -68,7 +68,7 @@ public class ComboProperty<T> extends AEditableProperty {
 
   @Override
   public JComponent getEditorComponent() {
-    final JComboBox<T> box = new JComboBox<>(new Vector<T>(m_possibleValues));
+    final JComboBox<T> box = new JComboBox<>(new Vector<>(m_possibleValues));
     box.setSelectedItem(m_value);
     box.addActionListener(new ActionListener() {
       @Override

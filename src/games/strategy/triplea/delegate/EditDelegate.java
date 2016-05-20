@@ -55,7 +55,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     if (units == null || units.isEmpty()) {
       return null;
     }
-    final Collection<PlayerID> owners = new HashSet<PlayerID>();
+    final Collection<PlayerID> owners = new HashSet<>();
     for (final Unit u : units) {
       owners.add(u.getOwner());
     }
@@ -92,7 +92,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
             return "Can't add mixed nationality units to water";
           }
           final Match<Unit> friendlySeaTransports =
-              new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
+              new CompositeMatchAnd<>(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.UnitIsLand);
           if (!Match.allMatch(landUnitsToAdd, Matches.UnitCanBeTransported)) {
@@ -152,7 +152,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
         m_bridge.addChange(ChangeFactory.changeOwner(unit, player, territory));
       }
     } else {
-      final CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<Unit>();
+      final CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<>();
       enemyNonCom.add(Matches.UnitIsInfrastructure);
       enemyNonCom.add(Matches.enemyUnit(player, data));
       final Collection<Unit> units = territory.getUnits().getMatches(enemyNonCom);
@@ -248,7 +248,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       return result;
     }
     // remove anyone who is the same
-    final Collection<Unit> units = new ArrayList<Unit>(unitDamageMap.keySet());
+    final Collection<Unit> units = new ArrayList<>(unitDamageMap.keySet());
     for (final Unit u : units) {
       final int dmg = unitDamageMap.getInt(u);
       if (u.getHits() == dmg) {
@@ -258,7 +258,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     if (unitDamageMap.isEmpty()) {
       return null;
     }
-    final Collection<Unit> unitsFinal = new ArrayList<Unit>(unitDamageMap.keySet());
+    final Collection<Unit> unitsFinal = new ArrayList<>(unitDamageMap.keySet());
     logEvent("Changing unit hit damage for these " + unitsFinal.iterator().next().getOwner().getName()
         + " owned units to: " + MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false), unitsFinal);
     m_bridge.addChange(ChangeFactory.unitsHit(unitDamageMap));
@@ -276,7 +276,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       return result;
     }
     // remove anyone who is the same
-    final Collection<Unit> units = new ArrayList<Unit>(unitDamageMap.keySet());
+    final Collection<Unit> units = new ArrayList<>(unitDamageMap.keySet());
     for (final Unit u : units) {
       final int dmg = unitDamageMap.getInt(u);
       final int currentDamage = ((TripleAUnit) u).getUnitDamage();
@@ -288,7 +288,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       return null;
     }
     // we do damage to the unit
-    final Collection<Unit> unitsFinal = new ArrayList<Unit>(unitDamageMap.keySet());
+    final Collection<Unit> unitsFinal = new ArrayList<>(unitDamageMap.keySet());
     logEvent("Changing unit bombing damage for these " + unitsFinal.iterator().next().getOwner().getName()
         + " owned units to: " + MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false), unitsFinal);
     m_bridge.addChange(ChangeFactory.bombingUnitDamage(unitDamageMap));

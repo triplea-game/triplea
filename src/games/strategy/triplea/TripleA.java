@@ -54,7 +54,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
 
   @Override
   public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames) {
-    final Set<IGamePlayer> players = new HashSet<IGamePlayer>();
+    final Set<IGamePlayer> players = new HashSet<>();
     for (final String name : playerNames.keySet()) {
       final String type = playerNames.get(name);
       if (type.equals(WEAK_COMPUTER_PLAYER_TYPE)) {

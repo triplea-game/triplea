@@ -22,7 +22,7 @@ import games.strategy.net.IServerMessenger;
 public class LobbyGameController implements ILobbyGameController {
   private final static Logger s_logger = Logger.getLogger(LobbyGameController.class.getName());
   private final Object m_mutex = new Object();
-  private final Map<GUID, GameDescription> m_allGames = new HashMap<GUID, GameDescription>();
+  private final Map<GUID, GameDescription> m_allGames = new HashMap<>();
   private final ILobbyGameBroadcaster m_broadcaster;
   private final IMessenger m_messenger;
 
@@ -41,7 +41,7 @@ public class LobbyGameController implements ILobbyGameController {
   }
 
   private void connectionLost(final INode to) {
-    final List<GUID> removed = new ArrayList<GUID>();
+    final List<GUID> removed = new ArrayList<>();
     synchronized (m_mutex) {
       final Iterator<GUID> keys = m_allGames.keySet().iterator();
       while (keys.hasNext()) {
@@ -101,7 +101,7 @@ public class LobbyGameController implements ILobbyGameController {
   @Override
   public Map<GUID, GameDescription> listGames() {
     synchronized (m_mutex) {
-      final Map<GUID, GameDescription> rVal = new HashMap<GUID, GameDescription>(m_allGames);
+      final Map<GUID, GameDescription> rVal = new HashMap<>(m_allGames);
       return rVal;
     }
   }

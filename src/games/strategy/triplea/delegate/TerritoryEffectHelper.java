@@ -21,7 +21,7 @@ public class TerritoryEffectHelper {
     if (ta != null) {
       return TerritoryAttachment.get(location).getTerritoryEffect();
     } else {
-      return new ArrayList<TerritoryEffect>();
+      return new ArrayList<>();
     }
   }
 
@@ -58,7 +58,7 @@ public class TerritoryEffectHelper {
   }
 
   public static Set<UnitType> getUnitTypesThatLostBlitz(final Collection<Territory> steps) {
-    final Set<UnitType> rVal = new HashSet<UnitType>();
+    final Set<UnitType> rVal = new HashSet<>();
     for (final Territory location : steps) {
       for (final TerritoryEffect effect : getEffects(location)) {
         rVal.addAll(TerritoryEffectAttachment.get(effect).getNoBlitz());
@@ -68,7 +68,7 @@ public class TerritoryEffectHelper {
   }
 
   public static Set<UnitType> getUnitTypesForUnitsNotAllowedIntoTerritory(final Territory location) {
-    final Set<UnitType> rVal = new HashSet<UnitType>();
+    final Set<UnitType> rVal = new HashSet<>();
     for (final TerritoryEffect effect : getEffects(location)) {
       rVal.addAll(TerritoryEffectAttachment.get(effect).getUnitsNotAllowed());
     }
@@ -76,7 +76,7 @@ public class TerritoryEffectHelper {
   }
 
   public static Set<UnitType> getUnitTypesForUnitsNotAllowedIntoTerritory(final Collection<Territory> steps) {
-    final Set<UnitType> rVal = new HashSet<UnitType>();
+    final Set<UnitType> rVal = new HashSet<>();
     for (final Territory location : steps) {
       rVal.addAll(getUnitTypesForUnitsNotAllowedIntoTerritory(location));
     }

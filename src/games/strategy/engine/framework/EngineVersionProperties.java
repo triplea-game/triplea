@@ -60,7 +60,7 @@ public class EngineVersionProperties {
     m_linkAlt = props.getProperty("LINK_ALT", "http://sourceforge.net/projects/tripleamaps/files/TripleA/stable/");
     m_changelogLink = props.getProperty("CHANGELOG",
         "https://triplea.svn.sourceforge.net/svnroot/triplea/trunk/triplea/changelog.txt");
-    m_releaseNotes = new HashMap<Version, String>();
+    m_releaseNotes = new HashMap<>();
     for (final Entry<Object, Object> entry : props.entrySet()) {
       final String key = (String) entry.getKey();
       if (key != null && key.length() > 6 && key.startsWith("NOTES_")) {
@@ -88,7 +88,7 @@ public class EngineVersionProperties {
   private static EngineVersionProperties contactServerForEngineVersionProperties(final URL engineversionPropsURL) {
     // sourceforge sometimes takes a long while to return results
     // so run a couple requests in parallel, starting with delays to try and get a response quickly
-    final AtomicReference<EngineVersionProperties> ref = new AtomicReference<EngineVersionProperties>();
+    final AtomicReference<EngineVersionProperties> ref = new AtomicReference<>();
     final CountDownLatch latch = new CountDownLatch(1);
     final Runnable r = new Runnable() {
       @Override
@@ -200,7 +200,7 @@ public class EngineVersionProperties {
 
   private String getOutOfDateReleaseUpdates(final boolean showAll) {
     final StringBuilder text = new StringBuilder("<html>");
-    final List<Version> versions = new ArrayList<Version>();
+    final List<Version> versions = new ArrayList<>();
     versions.addAll(getReleaseNotes().keySet());
     Collections.sort(versions, Version.getHighestToLowestComparator(false));
     for (final Version v : versions) {
@@ -233,7 +233,7 @@ public class EngineVersionProperties {
     intro.addHyperlinkListener(hyperlinkListener);
     panel.add(intro, BorderLayout.NORTH);
     final StringBuilder releaseNotesBuilder = new StringBuilder("<html>");
-    final List<Version> versions = new ArrayList<Version>();
+    final List<Version> versions = new ArrayList<>();
     versions.addAll(getReleaseNotes().keySet());
     Collections.sort(versions, Version.getHighestToLowestComparator(false));
     for (final Version v : versions) {

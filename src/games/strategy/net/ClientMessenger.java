@@ -28,8 +28,8 @@ import games.strategy.util.ThreadUtil;
 
 public class ClientMessenger implements IClientMessenger, NIOSocketListener {
   private INode m_node;
-  private final ListenerList<IMessageListener> m_listeners = new ListenerList<IMessageListener>();
-  private final ListenerList<IMessengerErrorListener> m_errorListeners = new ListenerList<IMessengerErrorListener>();
+  private final ListenerList<IMessageListener> m_listeners = new ListenerList<>();
+  private final ListenerList<IMessengerErrorListener> m_errorListeners = new ListenerList<>();
   private final CountDownLatch m_initLatch = new CountDownLatch(1);
   private Exception m_connectionRefusedError;
   private final NIOSocket m_socket;
@@ -246,7 +246,7 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
   }
 
   private void bareBonesSendMessageToServer(final String methodName, final Object... messages) {
-    final List<Object> args = new ArrayList<Object>();
+    final List<Object> args = new ArrayList<>();
     final Class<? extends Object>[] argTypes = new Class<?>[messages.length];
     for (int i = 0; i < messages.length; i++) {
       final Object message = messages[i];

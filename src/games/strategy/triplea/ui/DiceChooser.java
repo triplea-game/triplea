@@ -41,7 +41,7 @@ public class DiceChooser extends JPanel {
     m_hitAt = hitAt;
     m_hitOnlyIfEquals = hitOnlyIfEquals;
     // m_data = data;
-    m_buttons = new ArrayList<JButton>(diceSides);
+    m_buttons = new ArrayList<>(diceSides);
     m_random = new int[numRolls];
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     createComponents();

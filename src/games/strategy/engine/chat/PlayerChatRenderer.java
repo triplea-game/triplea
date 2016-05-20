@@ -25,8 +25,8 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
   private final IGame m_game;
   private final IUIContext m_uiContext;
   int m_maxIconCounter = 0;
-  HashMap<String, List<Icon>> m_iconMap = new HashMap<String, List<Icon>>();
-  HashMap<String, Set<String>> m_playerMap = new HashMap<String, Set<String>>();
+  HashMap<String, List<Icon>> m_iconMap = new HashMap<>();
+  HashMap<String, Set<String>> m_playerMap = new HashMap<>();
 
   public PlayerChatRenderer(final IGame game, final IUIContext uiContext) {
     m_game = game;
@@ -71,10 +71,10 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
       m_game.getData().releaseReadLock();
     }
     // new HashSet removes duplicates
-    for (final INode playerNode : new HashSet<INode>(playerManager.getPlayerMapping().values()))  {
+    for (final INode playerNode : new HashSet<>(playerManager.getPlayerMapping().values()))  {
       final Set<String> players = playerManager.getPlayedBy(playerNode);
       if (players.size() > 0) {
-        final List<Icon> icons = new ArrayList<Icon>(players.size());
+        final List<Icon> icons = new ArrayList<>(players.size());
         for (final String player : players) {
           if (m_uiContext != null && m_uiContext.getFlagImageFactory() != null) {
             icons.add(new ImageIcon(m_uiContext.getFlagImageFactory().getSmallFlag(playerList.getPlayerID(player))));

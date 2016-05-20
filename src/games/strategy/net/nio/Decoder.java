@@ -37,7 +37,7 @@ public class Decoder {
    * read from them are not passed outside of the quarantine conversation.
    */
   private final ConcurrentHashMap<SocketChannel, QuarantineConversation> quarantine =
-      new ConcurrentHashMap<SocketChannel, QuarantineConversation>();
+      new ConcurrentHashMap<>();
   private final Thread thread;
 
   public Decoder(final NIOSocket nioSocket, final NIOReader reader, final IErrorReporter reporter,

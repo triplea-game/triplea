@@ -34,7 +34,7 @@ public class RelationshipInterpreter extends GameDataComponent {
   }
 
   public Set<PlayerID> getAllies(final PlayerID p1, final boolean includeSelf) {
-    final Set<PlayerID> allies = new HashSet<PlayerID>();
+    final Set<PlayerID> allies = new HashSet<>();
     for (final PlayerID player : getData().getPlayerList().getPlayers()) {
       if (Matches.RelationshipTypeIsAllied.match(getRelationshipType(p1, player))) {
         allies.add(player);
@@ -71,7 +71,7 @@ public class RelationshipInterpreter extends GameDataComponent {
   }
 
   public Set<PlayerID> getEnemies(final PlayerID p1) {
-    final Set<PlayerID> enemies = new HashSet<PlayerID>();
+    final Set<PlayerID> enemies = new HashSet<>();
     for (final PlayerID player : getData().getPlayerList().getPlayers()) {
       if (Matches.RelationshipTypeIsAtWar.match(getRelationshipType(p1, player))) {
         enemies.add(player);
@@ -102,7 +102,7 @@ public class RelationshipInterpreter extends GameDataComponent {
   }
 
   public Set<PlayerID> getNeutralities(final PlayerID p1) {
-    final Set<PlayerID> neutrals = new HashSet<PlayerID>();
+    final Set<PlayerID> neutrals = new HashSet<>();
     for (final PlayerID player : getData().getPlayerList().getPlayers()) {
       if (Matches.RelationshipTypeIsNeutral.match(getRelationshipType(p1, player))) {
         neutrals.add(player);

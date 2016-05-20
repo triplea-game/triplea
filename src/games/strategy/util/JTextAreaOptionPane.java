@@ -35,7 +35,7 @@ public class JTextAreaOptionPane {
     m_logToSystemOut = logToSystemOut;
     m_countDownLatch = countDownLatch;
     m_counter = latchCount;
-    m_parentComponentReference = new WeakReference<Window>(parentComponent);
+    m_parentComponentReference = new WeakReference<>(parentComponent);
     m_windowFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     if (icon != null) {
       m_windowFrame.setIconImage(icon);

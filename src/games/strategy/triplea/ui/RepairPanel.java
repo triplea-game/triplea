@@ -44,7 +44,7 @@ public class RepairPanel extends ActionPanel {
   @Override
   public void display(final PlayerID id) {
     super.display(id);
-    m_repair = new HashMap<Unit, IntegerMap<RepairRule>>();
+    m_repair = new HashMap<>();
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -58,7 +58,7 @@ public class RepairPanel extends ActionPanel {
         add(Box.createVerticalStrut(9));
         add(m_repairdSoFar);
         add(Box.createVerticalStrut(4));
-        m_unitsPanel.setUnitsFromRepairRuleMap(new HashMap<Unit, IntegerMap<RepairRule>>(), id, getData());
+        m_unitsPanel.setUnitsFromRepairRuleMap(new HashMap<>(), id, getData());
         add(m_unitsPanel);
         add(Box.createVerticalGlue());
         SwingUtilities.invokeLater(REFRESH);

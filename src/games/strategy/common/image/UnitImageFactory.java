@@ -21,7 +21,7 @@ import games.strategy.ui.Util;
 public class UnitImageFactory {
   private static final String FILE_NAME_BASE = "units/";
   // Image cache
-  private final Map<String, Image> images = new HashMap<String, Image>();
+  private final Map<String, Image> images = new HashMap<>();
   private ResourceLoader resourceLoader;
 
   /**

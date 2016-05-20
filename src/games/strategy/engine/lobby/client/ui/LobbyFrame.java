@@ -112,7 +112,7 @@ public class LobbyFrame extends JFrame {
     }
     final IModeratorController controller = (IModeratorController) m_client.getRemoteMessenger()
         .getRemote(ModeratorController.getModeratorControllerName());
-    final List<Action> rVal = new ArrayList<Action>();
+    final List<Action> rVal = new ArrayList<>();
     rVal.add(SwingAction.of("Boot " + clickedOn.getName(), e -> {
       if (!confirm("Boot " + clickedOn.getName())) {
         return;
@@ -120,7 +120,7 @@ public class LobbyFrame extends JFrame {
       controller.boot(clickedOn);
     }));
     rVal.add(SwingAction.of("Ban Player", e -> {
-      final List<String> banTypes = new ArrayList<String>();
+      final List<String> banTypes = new ArrayList<>();
       // too many choices is confusing our mods, just give them 3 choices: name, everything, or cancel.
       // banTypes.add("IP Address");
       // banTypes.add("Mac Address");
@@ -141,7 +141,7 @@ public class LobbyFrame extends JFrame {
       if (selectedBanType.equals("Cancel")) {
         return;
       }
-      final List<String> timeUnits = new ArrayList<String>();
+      final List<String> timeUnits = new ArrayList<>();
       timeUnits.add("Minute");
       timeUnits.add("Hour");
       timeUnits.add("Day");
@@ -211,7 +211,7 @@ public class LobbyFrame extends JFrame {
       controller.boot(clickedOn);
     }));
     rVal.add(SwingAction.of("Mute Player", e -> {
-      final List<String> muteTypes = new ArrayList<String>();
+      final List<String> muteTypes = new ArrayList<>();
       // too many choices is confusing our mods, just give them 3 choices: name, everything, or cancel.
       // muteTypes.add("IP Address");
       // muteTypes.add("Mac Address");
@@ -232,7 +232,7 @@ public class LobbyFrame extends JFrame {
       if (selectedMuteType.equals("Cancel")) {
         return;
       }
-      final List<String> timeUnits = new ArrayList<String>();
+      final List<String> timeUnits = new ArrayList<>();
       timeUnits.add("Minute");
       timeUnits.add("Hour");
       timeUnits.add("Day");

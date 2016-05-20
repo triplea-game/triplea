@@ -17,12 +17,12 @@ public class Util {
    */
   public static <T> List<T> intersection(final Collection<T> c1, final Collection<T> c2) {
     if (c1 == null || c2 == null) {
-      return new ArrayList<T>();
+      return new ArrayList<>();
     }
     if (c1.size() == 0 || c2.size() == 0) {
-      return new ArrayList<T>();
+      return new ArrayList<>();
     }
-    final List<T> intersection = new ArrayList<T>();
+    final List<T> intersection = new ArrayList<>();
     for (final T current : c1) {
       if (c2.contains(current)) {
         intersection.add(current);
@@ -58,12 +58,12 @@ public class Util {
    */
   public static <T> List<T> difference(final Collection<T> c1, final Collection<T> c2) {
     if (c1 == null || c1.size() == 0) {
-      return new ArrayList<T>(0);
+      return new ArrayList<>(0);
     }
     if (c2 == null || c2.size() == 0) {
-      return new ArrayList<T>(c1);
+      return new ArrayList<>(c1);
     }
-    final List<T> difference = new ArrayList<T>();
+    final List<T> difference = new ArrayList<>();
     for (final T current : c1) {
       if (!c2.contains(current)) {
         difference.add(current);
@@ -101,7 +101,7 @@ public class Util {
    * returns a list of everything in source, with the first count units moved to the end
    */
   public static <T> List<T> shiftElementsToEnd(final List<T> source, final int count) {
-    final ArrayList<T> rVal = new ArrayList<T>(source.size());
+    final ArrayList<T> rVal = new ArrayList<>(source.size());
     for (int i = count; i < source.size(); i++) {
       rVal.add(source.get(i));
     }
@@ -142,7 +142,7 @@ public class Util {
   }
 
   public static <T> void reorder(final List<T> reorder, final List<T> order) {
-    final IntegerMap<T> map = new IntegerMap<T>();
+    final IntegerMap<T> map = new IntegerMap<>();
     for (final T o : order) {
       map.put(o, order.indexOf(o));
     }

@@ -92,8 +92,8 @@ public class TableSorter extends AbstractTableModel {
   private JTableHeader tableHeader;
   private final MouseListener mouseListener;
   private final TableModelListener tableModelListener;
-  private final Map<Class<?>, Comparator<Object>> columnComparators = new HashMap<Class<?>, Comparator<Object>>();
-  private final List<Directive> sortingColumns = new ArrayList<Directive>();
+  private final Map<Class<?>, Comparator<Object>> columnComparators = new HashMap<>();
+  private final List<Directive> sortingColumns = new ArrayList<>();
 
   public TableSorter() {
     this.mouseListener = new MouseHandler();
@@ -287,7 +287,7 @@ public class TableSorter extends AbstractTableModel {
   }
 
   public List<Object> getRowAt(final int row) {
-    final List<Object> objects = new ArrayList<Object>();
+    final List<Object> objects = new ArrayList<>();
     for (int i = 0; i < tableModel.getColumnCount(); i++) {
       objects.add(getValueAt(row, i));
     }

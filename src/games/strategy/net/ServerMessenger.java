@@ -49,16 +49,16 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private final Node node;
   private boolean shutdown = false;
   private final NIOSocket nioSocket;
-  private final CopyOnWriteArrayList<IMessageListener> listeners = new CopyOnWriteArrayList<IMessageListener>();
+  private final CopyOnWriteArrayList<IMessageListener> listeners = new CopyOnWriteArrayList<>();
   private final CopyOnWriteArrayList<IMessengerErrorListener> errorListeners =
-      new CopyOnWriteArrayList<IMessengerErrorListener>();
+      new CopyOnWriteArrayList<>();
   private final CopyOnWriteArrayList<IConnectionChangeListener> connectionListeners =
-      new CopyOnWriteArrayList<IConnectionChangeListener>();
+      new CopyOnWriteArrayList<>();
   private boolean acceptNewConnection = false;
   private ILoginValidator loginValidator;
   // all our nodes
-  private final ConcurrentHashMap<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<INode, SocketChannel>();
-  private final ConcurrentHashMap<SocketChannel, INode> channelToNode = new ConcurrentHashMap<SocketChannel, INode>();
+  private final ConcurrentHashMap<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<SocketChannel, INode> channelToNode = new ConcurrentHashMap<>();
 
   // A hack, till I think of something better
   public ServerMessenger(final String name, final int portNumber, final IObjectStreamFactory streamFactory)
@@ -108,7 +108,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
    */
   @Override
   public Set<INode> getNodes() {
-    final Set<INode> rVal = new HashSet<INode>(nodeToChannel.keySet());
+    final Set<INode> rVal = new HashSet<>(nodeToChannel.keySet());
     rVal.add(node);
     return rVal;
   }
@@ -180,7 +180,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   }
 
   private final Object m_cachedListLock = new Object();
-  private final HashMap<String, String> m_cachedMacAddresses = new HashMap<String, String>();
+  private final HashMap<String, String> m_cachedMacAddresses = new HashMap<>();
 
   @Override
   public String GetPlayerMac(final String name) {
@@ -196,7 +196,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   // We need to cache whether players are muted, because otherwise the database would have to be accessed each time a
   // message was sent,
   // which can be very slow
-  private final List<String> m_liveMutedUsernames = new ArrayList<String>();
+  private final List<String> m_liveMutedUsernames = new ArrayList<>();
 
   public boolean IsUsernameMuted(final String username) {
     synchronized (m_cachedListLock) {
@@ -216,7 +216,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     }
   }
 
-  private final List<String> m_liveMutedIpAddresses = new ArrayList<String>();
+  private final List<String> m_liveMutedIpAddresses = new ArrayList<>();
 
   public boolean IsIpMuted(final String ip) {
     synchronized (m_cachedListLock) {
@@ -236,7 +236,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     }
   }
 
-  private final List<String> m_liveMutedMacAddresses = new ArrayList<String>();
+  private final List<String> m_liveMutedMacAddresses = new ArrayList<>();
 
   public boolean IsMacMuted(final String mac) {
     synchronized (m_cachedListLock) {
@@ -304,7 +304,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     }
   }
 
-  private final HashMap<String, String> m_playersThatLeftMacs_Last10 = new HashMap<String, String>();
+  private final HashMap<String, String> m_playersThatLeftMacs_Last10 = new HashMap<>();
 
   public HashMap<String, String> GetPlayersThatLeftMacs_Last10() {
     return m_playersThatLeftMacs_Last10;
@@ -374,7 +374,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   }
 
   private void bareBonesSendChatMessage(final String message, final INode to) {
-    final List<Object> args = new ArrayList<Object>();
+    final List<Object> args = new ArrayList<>();
     final Class<? extends Object>[] argTypes = new Class<?>[1];
     args.add(message);
     argTypes[0] = args.get(0).getClass();
@@ -393,7 +393,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   }
 
   // The following code is used in hosted lobby games by the host for player mini-banning and mini-muting
-  private final List<String> m_miniBannedUsernames = new ArrayList<String>();
+  private final List<String> m_miniBannedUsernames = new ArrayList<>();
 
   @Override
   public boolean IsUsernameMiniBanned(final String username) {
@@ -422,7 +422,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     }
   }
 
-  private final List<String> m_miniBannedIpAddresses = new ArrayList<String>();
+  private final List<String> m_miniBannedIpAddresses = new ArrayList<>();
 
   @Override
   public boolean IsIpMiniBanned(final String ip) {
@@ -451,7 +451,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     }
   }
 
-  private final List<String> m_miniBannedMacAddresses = new ArrayList<String>();
+  private final List<String> m_miniBannedMacAddresses = new ArrayList<>();
 
   @Override
   public boolean IsMacMiniBanned(final String mac) {
@@ -496,7 +496,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
       return;
     }
     final SocketChannel fromChannel = nodeToChannel.get(msg.getFrom());
-    final List<SocketChannel> nodes = new ArrayList<SocketChannel>(nodeToChannel.values());
+    final List<SocketChannel> nodes = new ArrayList<>(nodeToChannel.values());
     if (logger.isLoggable(Level.FINEST)) {
       logger.log(Level.FINEST, "broadcasting to" + nodes);
     }

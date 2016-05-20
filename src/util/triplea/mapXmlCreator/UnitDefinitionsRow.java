@@ -104,7 +104,7 @@ class UnitDefinitionsRow extends DynamicRow {
 
   @Override
   protected ArrayList<JComponent> getComponentList() {
-    final ArrayList<JComponent> componentList = new ArrayList<JComponent>();
+    final ArrayList<JComponent> componentList = new ArrayList<>();
     componentList.add(textFieldUnitName);
     componentList.add(textFieldBuyCost);
     componentList.add(textFieldBuyQuantity);

@@ -270,7 +270,7 @@ public class ProMatches {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
-        final CompositeMatch<Unit> subOnly = new CompositeMatchOr<Unit>(
+        final CompositeMatch<Unit> subOnly = new CompositeMatchOr<>(
             Matches.UnitIsInfrastructure, Matches.UnitIsSub, Matches.enemyUnit(player, data).invert());
         return (Properties.getIgnoreSubInMovement(data) && t.getUnits().allMatch(subOnly))
             || Matches.territoryHasNoEnemyUnits(player, data).match(t);

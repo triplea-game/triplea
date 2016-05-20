@@ -7,7 +7,7 @@ import games.strategy.net.INode;
  */
 public class MessageContext {
   // the current caller of the remote or channel
-  private static final ThreadLocal<INode> m_sender = new ThreadLocal<INode>();
+  private static final ThreadLocal<INode> m_sender = new ThreadLocal<>();
 
   // should only be called by EndPoint
   public static void setSenderNodeForThread(final INode node) {

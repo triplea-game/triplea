@@ -78,7 +78,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
       post.addRequestHeader("Accept-Language", "en-us");
       post.addRequestHeader("Cache-Control", "no-cache");
       post.addRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-      final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+      final List<NameValuePair> parameters = new ArrayList<>();
       parameters.add(new NameValuePair("user", getUsername()));
       parameters.add(new NameValuePair("passwrd", getPassword()));
       post.setRequestBody(parameters.toArray(new NameValuePair[parameters.size()]));
@@ -155,7 +155,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
             new PostMethod("http://www.axisandallies.org/forums/index.php?action=post2;start=0;board=40");
         try {
           // Construct the multi part post
-          final List<Part> parts = new ArrayList<Part>();
+          final List<Part> parts = new ArrayList<>();
           parts.add(createStringPart("topic", m_topicId));
           parts.add(createStringPart("subject", subject));
           parts.add(createStringPart("icon", "xx"));

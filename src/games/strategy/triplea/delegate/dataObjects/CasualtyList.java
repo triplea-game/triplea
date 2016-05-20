@@ -26,16 +26,16 @@ public class CasualtyList implements Serializable {
     if (damaged == null) {
       throw new IllegalArgumentException("null damaged");
     }
-    m_killed = new ArrayList<Unit>(killed);
-    m_damaged = new ArrayList<Unit>(damaged);
+    m_killed = new ArrayList<>(killed);
+    m_damaged = new ArrayList<>(damaged);
   }
 
   /**
    * Creates a new blank CasualtyList with empty lists
    */
   public CasualtyList() {
-    m_killed = new ArrayList<Unit>();
-    m_damaged = new ArrayList<Unit>();
+    m_killed = new ArrayList<>();
+    m_damaged = new ArrayList<>();
   }
 
   /**
@@ -56,7 +56,7 @@ public class CasualtyList implements Serializable {
    * Can have multiple of the same unit, to show multiple hits to that unit.
    */
   public List<Unit> getKilledAndDamaged() {
-    final List<Unit> all = new ArrayList<Unit>(m_killed);
+    final List<Unit> all = new ArrayList<>(m_killed);
     all.addAll(m_damaged);
     return all;
   }

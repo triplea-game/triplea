@@ -56,7 +56,7 @@ public class PurchasePanel extends ActionPanel {
   @Override
   public void display(final PlayerID id) {
     super.display(id);
-    m_purchase = new IntegerMap<ProductionRule>();
+    m_purchase = new IntegerMap<>();
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -70,7 +70,7 @@ public class PurchasePanel extends ActionPanel {
         add(Box.createVerticalStrut(9));
         add(m_purchasedLabel);
         add(Box.createVerticalStrut(4));
-        m_purhcasedUnits.setUnitsFromProductionRuleMap(new IntegerMap<ProductionRule>(), id, getData());
+        m_purhcasedUnits.setUnitsFromProductionRuleMap(new IntegerMap<>(), id, getData());
         add(m_purhcasedUnits);
         getData().acquireReadLock();
         try {

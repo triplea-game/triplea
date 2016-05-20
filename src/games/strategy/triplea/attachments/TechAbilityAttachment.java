@@ -68,13 +68,13 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public static final String ABILITY_CAN_BLITZ = "canBlitz";
   public static final String ABILITY_CAN_BOMBARD = "canBombard";
   // attachment fields
-  private IntegerMap<UnitType> m_attackBonus = new IntegerMap<UnitType>();
-  private IntegerMap<UnitType> m_defenseBonus = new IntegerMap<UnitType>();
-  private IntegerMap<UnitType> m_movementBonus = new IntegerMap<UnitType>();
-  private IntegerMap<UnitType> m_radarBonus = new IntegerMap<UnitType>();
-  private IntegerMap<UnitType> m_airAttackBonus = new IntegerMap<UnitType>();
-  private IntegerMap<UnitType> m_airDefenseBonus = new IntegerMap<UnitType>();
-  private IntegerMap<UnitType> m_productionBonus = new IntegerMap<UnitType>();
+  private IntegerMap<UnitType> m_attackBonus = new IntegerMap<>();
+  private IntegerMap<UnitType> m_defenseBonus = new IntegerMap<>();
+  private IntegerMap<UnitType> m_movementBonus = new IntegerMap<>();
+  private IntegerMap<UnitType> m_radarBonus = new IntegerMap<>();
+  private IntegerMap<UnitType> m_airAttackBonus = new IntegerMap<>();
+  private IntegerMap<UnitType> m_airDefenseBonus = new IntegerMap<>();
+  private IntegerMap<UnitType> m_productionBonus = new IntegerMap<>();
   // -1 means not set
   private int m_minimumTerritoryValueForProductionBonus = -1;
   // -1 means not set
@@ -85,19 +85,19 @@ public class TechAbilityAttachment extends DefaultAttachment {
   // -1 means not set // not needed because this is controlled in the unit attachment with
   // private int m_rocketDiceSides = -1;
   // bombingBonus and bombingMaxDieSides
-  private IntegerMap<UnitType> m_rocketDiceNumber = new IntegerMap<UnitType>();
+  private IntegerMap<UnitType> m_rocketDiceNumber = new IntegerMap<>();
   private int m_rocketDistance = 0;
   private int m_rocketNumberPerTerritory = 0;
-  private HashMap<UnitType, HashSet<String>> m_unitAbilitiesGained = new HashMap<UnitType, HashSet<String>>();
+  private HashMap<UnitType, HashSet<String>> m_unitAbilitiesGained = new HashMap<>();
   private boolean m_airborneForces = false;
-  private IntegerMap<UnitType> m_airborneCapacity = new IntegerMap<UnitType>();
-  private HashSet<UnitType> m_airborneTypes = new HashSet<UnitType>();
+  private IntegerMap<UnitType> m_airborneCapacity = new IntegerMap<>();
+  private HashSet<UnitType> m_airborneTypes = new HashSet<>();
   private int m_airborneDistance = 0;
-  private HashSet<UnitType> m_airborneBases = new HashSet<UnitType>();
-  private HashMap<String, HashSet<UnitType>> m_airborneTargettedByAA = new HashMap<String, HashSet<UnitType>>();
-  private IntegerMap<UnitType> m_attackRollsBonus = new IntegerMap<UnitType>();
-  private IntegerMap<UnitType> m_defenseRollsBonus = new IntegerMap<UnitType>();
-  private IntegerMap<UnitType> m_bombingBonus = new IntegerMap<UnitType>();
+  private HashSet<UnitType> m_airborneBases = new HashSet<>();
+  private HashMap<String, HashSet<UnitType>> m_airborneTargettedByAA = new HashMap<>();
+  private IntegerMap<UnitType> m_attackRollsBonus = new IntegerMap<>();
+  private IntegerMap<UnitType> m_defenseRollsBonus = new IntegerMap<>();
+  private IntegerMap<UnitType> m_bombingBonus = new IntegerMap<>();
 
   public TechAbilityAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -139,7 +139,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public void resetAttackBonus() {
-    m_attackBonus = new IntegerMap<UnitType>();
+    m_attackBonus = new IntegerMap<>();
   }
 
   /**
@@ -177,7 +177,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public void resetDefenseBonus() {
-    m_defenseBonus = new IntegerMap<UnitType>();
+    m_defenseBonus = new IntegerMap<>();
   }
 
   /**
@@ -215,7 +215,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public void resetMovementBonus() {
-    m_movementBonus = new IntegerMap<UnitType>();
+    m_movementBonus = new IntegerMap<>();
   }
 
   /**
@@ -253,7 +253,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public void resetRadarBonus() {
-    m_radarBonus = new IntegerMap<UnitType>();
+    m_radarBonus = new IntegerMap<>();
   }
 
   /**
@@ -291,7 +291,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public void resetAirAttackBonus() {
-    m_airAttackBonus = new IntegerMap<UnitType>();
+    m_airAttackBonus = new IntegerMap<>();
   }
 
   /**
@@ -329,7 +329,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public void resetAirDefenseBonus() {
-    m_airDefenseBonus = new IntegerMap<UnitType>();
+    m_airDefenseBonus = new IntegerMap<>();
   }
 
   /**
@@ -367,7 +367,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public void resetProductionBonus() {
-    m_productionBonus = new IntegerMap<UnitType>();
+    m_productionBonus = new IntegerMap<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -494,7 +494,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public void resetRocketDiceNumber() {
-    m_rocketDiceNumber = new IntegerMap<UnitType>();
+    m_rocketDiceNumber = new IntegerMap<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -560,7 +560,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     HashSet<String> abilities = m_unitAbilitiesGained.get(ut);
     if (abilities == null) {
-      abilities = new HashSet<String>();
+      abilities = new HashSet<>();
     }
     // start at 1
     for (int i = 1; i < s.length; i++) {
@@ -588,7 +588,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public void resetUnitAbilitiesGained() {
-    m_unitAbilitiesGained = new HashMap<UnitType, HashSet<String>>();
+    m_unitAbilitiesGained = new HashMap<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -644,7 +644,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public void resetAirborneCapacity() {
-    m_airborneCapacity = new IntegerMap<UnitType>();
+    m_airborneCapacity = new IntegerMap<>();
   }
 
   /**
@@ -676,7 +676,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public void resetAirborneTypes() {
-    m_airborneTypes = new HashSet<UnitType>();
+    m_airborneTypes = new HashSet<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -730,7 +730,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public void resetAirborneBases() {
-    m_airborneBases = new HashSet<UnitType>();
+    m_airborneBases = new HashSet<>();
   }
 
   /**
@@ -743,7 +743,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
       throw new GameParseException("airborneTargettedByAA must have at least two fields" + thisErrorMsg());
     }
     final String aaType = s[0];
-    final HashSet<UnitType> unitTypes = new HashSet<UnitType>();
+    final HashSet<UnitType> unitTypes = new HashSet<>();
     for (int i = 1; i < s.length; i++) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
       if (ut == null) {
@@ -768,7 +768,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public void resetAirborneTargettedByAA() {
-    m_airborneTargettedByAA = new HashMap<String, HashSet<UnitType>>();
+    m_airborneTargettedByAA = new HashMap<>();
   }
 
   /**
@@ -806,7 +806,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public void resetAttackRollsBonus() {
-    m_attackRollsBonus = new IntegerMap<UnitType>();
+    m_attackRollsBonus = new IntegerMap<>();
   }
 
   /**
@@ -844,7 +844,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public void resetDefenseRollsBonus() {
-    m_defenseRollsBonus = new IntegerMap<UnitType>();
+    m_defenseRollsBonus = new IntegerMap<>();
   }
 
   /**
@@ -882,7 +882,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public void resetBombingBonus() {
-    m_bombingBonus = new IntegerMap<UnitType>();
+    m_bombingBonus = new IntegerMap<>();
   }
 
   // Static Methods for interpreting data in attachments
@@ -1073,7 +1073,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private static HashSet<String> getUnitAbilitiesGained(final UnitType ut, final PlayerID player, final GameData data) {
-    final HashSet<String> rVal = new HashSet<String>();
+    final HashSet<String> rVal = new HashSet<>();
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
       if (taa != null) {
@@ -1108,7 +1108,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static IntegerMap<UnitType> getAirborneCapacity(final PlayerID player, final GameData data) {
-    final IntegerMap<UnitType> capacityMap = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> capacityMap = new IntegerMap<>();
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
       if (taa != null) {
@@ -1128,7 +1128,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static Set<UnitType> getAirborneTypes(final PlayerID player, final GameData data) {
-    final Set<UnitType> airborneUnits = new HashSet<UnitType>();
+    final Set<UnitType> airborneUnits = new HashSet<>();
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
       if (taa != null) {
@@ -1150,7 +1150,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static Set<UnitType> getAirborneBases(final PlayerID player, final GameData data) {
-    final Set<UnitType> airborneBases = new HashSet<UnitType>();
+    final Set<UnitType> airborneBases = new HashSet<>();
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
       if (taa != null) {
@@ -1162,7 +1162,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public static HashMap<String, HashSet<UnitType>> getAirborneTargettedByAA(final PlayerID player,
       final GameData data) {
-    final HashMap<String, HashSet<UnitType>> rVal = new HashMap<String, HashSet<UnitType>>();
+    final HashMap<String, HashSet<UnitType>> rVal = new HashMap<>();
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
       if (taa != null) {
@@ -1171,7 +1171,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           for (final Entry<String, HashSet<UnitType>> entry : mapAA.entrySet()) {
             HashSet<UnitType> current = rVal.get(entry.getKey());
             if (current == null) {
-              current = new HashSet<UnitType>();
+              current = new HashSet<>();
             }
             current.addAll(entry.getValue());
             rVal.put(entry.getKey(), current);
@@ -1273,7 +1273,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allJets = Match.getMatches(data.getUnitTypeList().getAllUnitTypes(),
-              new CompositeMatchAnd<UnitType>(Matches.UnitTypeIsAir, Matches.UnitTypeIsStrategicBomber.invert()));
+              new CompositeMatchAnd<>(Matches.UnitTypeIsAir, Matches.UnitTypeIsStrategicBomber.invert()));
           final boolean ww2v3TechModel = games.strategy.triplea.Properties.getWW2V3TechModel(data);
           for (final UnitType jet : allJets) {
             if (ww2v3TechModel) {

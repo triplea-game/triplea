@@ -334,8 +334,8 @@ public class OddsCalculatorPanel extends JPanel {
       public void actionPerformed(final ActionEvent e) {
         m_attackerOrderOfLosses = null;
         m_defenderOrderOfLosses = null;
-        List<Unit> getdefenders = new ArrayList<Unit>();
-        List<Unit> getattackers = new ArrayList<Unit>();
+        List<Unit> getdefenders = new ArrayList<>();
+        List<Unit> getattackers = new ArrayList<>();
         getdefenders = m_defendingUnitsPanel.getUnits();
         getattackers = m_attackingUnitsPanel.getUnits();
         m_SwapSidesCombo.setSelectedItem(getAttacker());
@@ -380,10 +380,10 @@ public class OddsCalculatorPanel extends JPanel {
   }
 
   private Collection<TerritoryEffect> getTerritoryEffects() {
-    final Collection<TerritoryEffect> territoryEffects = new ArrayList<TerritoryEffect>();
+    final Collection<TerritoryEffect> territoryEffects = new ArrayList<>();
     if (m_territoryEffectsJList != null) {
       final List<Object> selectedObjects = Arrays.asList(m_territoryEffectsJList.getSelectedValuesList());
-      final List<String> selected = new ArrayList<String>();
+      final List<String> selected = new ArrayList<>();
       for (final Object obj : selectedObjects) {
         selected.add((String) obj);
       }
@@ -408,7 +408,7 @@ public class OddsCalculatorPanel extends JPanel {
     if (!SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread");
     }
-    final AtomicReference<AggregateResults> results = new AtomicReference<AggregateResults>();
+    final AtomicReference<AggregateResults> results = new AtomicReference<>();
     final WaitDialog dialog =
         new WaitDialog(this, "Calculating Odds (" + m_calculator.getThreadCount() + " threads)", new AbstractAction() {
           private static final long serialVersionUID = -2148507015083214974L;
@@ -418,8 +418,8 @@ public class OddsCalculatorPanel extends JPanel {
             m_calculator.cancel();
           }
         });
-    final AtomicReference<Collection<Unit>> defenders = new AtomicReference<Collection<Unit>>();
-    final AtomicReference<Collection<Unit>> attackers = new AtomicReference<Collection<Unit>>();
+    final AtomicReference<Collection<Unit>> defenders = new AtomicReference<>();
+    final AtomicReference<Collection<Unit>> attackers = new AtomicReference<>();
     dialog.pack();
     dialog.setLocationRelativeTo(this);
     final Thread calcThread = new Thread(new Runnable() {
@@ -443,7 +443,7 @@ public class OddsCalculatorPanel extends JPanel {
           }
           final List<Unit> defending = m_defendingUnitsPanel.getUnits();
           final List<Unit> attacking = m_attackingUnitsPanel.getUnits();
-          List<Unit> bombarding = new ArrayList<Unit>();
+          List<Unit> bombarding = new ArrayList<>();
           if (isLand()) {
             bombarding = Match.getMatches(attacking, Matches.unitCanBombard(getAttacker()));
             attacking.removeAll(bombarding);
@@ -728,18 +728,18 @@ public class OddsCalculatorPanel extends JPanel {
   private void createComponents() {
     m_data.acquireReadLock();
     try {
-      final Collection<PlayerID> playerList = new ArrayList<PlayerID>(m_data.getPlayerList().getPlayers());
+      final Collection<PlayerID> playerList = new ArrayList<>(m_data.getPlayerList().getPlayers());
       if (doesPlayerHaveUnitsOnMap(PlayerID.NULL_PLAYERID, m_data)) {
         playerList.add(PlayerID.NULL_PLAYERID);
       }
-      m_attackerCombo = new JComboBox<>(new Vector<PlayerID>(playerList));
-      m_defenderCombo = new JComboBox<>(new Vector<PlayerID>(playerList));
-      m_SwapSidesCombo = new JComboBox<>(new Vector<PlayerID>(playerList));
+      m_attackerCombo = new JComboBox<>(new Vector<>(playerList));
+      m_defenderCombo = new JComboBox<>(new Vector<>(playerList));
+      m_SwapSidesCombo = new JComboBox<>(new Vector<>(playerList));
       final Hashtable<String, TerritoryEffect> allTerritoryEffects = m_data.getTerritoryEffectList();
       if (allTerritoryEffects == null || allTerritoryEffects.isEmpty()) {
         m_territoryEffectsJList = null;
       } else {
-        final Vector<String> effectNames = new Vector<String>();
+        final Vector<String> effectNames = new Vector<>();
         effectNames.add(NO_EFFECTS);
         effectNames.addAll(allTerritoryEffects.keySet());
         m_territoryEffectsJList = new JList<>(effectNames);
@@ -847,13 +847,13 @@ public class OddsCalculatorPanel extends JPanel {
       Collections.reverse(attackers);
       final int attackPower = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(attackers, defenders,
           false, false, m_data, m_location, territoryEffects, isAmphibiousBattle,
-          (isAmphibiousBattle ? attackers : new ArrayList<Unit>())), m_data);
+          (isAmphibiousBattle ? attackers : new ArrayList<>())), m_data);
       // defender is never amphibious
       final int defensePower =
           DiceRoll
               .getTotalPower(
                   DiceRoll.getUnitPowerAndRollsForNormalBattles(defenders, attackers, true, false,
-                      m_data, m_location, territoryEffects, isAmphibiousBattle, new ArrayList<Unit>()),
+                      m_data, m_location, territoryEffects, isAmphibiousBattle, new ArrayList<>()),
                   m_data);
       m_attackerUnitsTotalPower.setText("Power: " + attackPower);
       m_defenderUnitsTotalPower.setText("Power: " + defensePower);
@@ -906,7 +906,7 @@ class PlayerUnitsPanel extends JPanel {
   private final boolean m_defender;
   private boolean m_isLand = true;
   private List<UnitCategory> m_categories = null;
-  private final ListenerList<WidgetChangedListener> m_listeners = new ListenerList<WidgetChangedListener>();
+  private final ListenerList<WidgetChangedListener> m_listeners = new ListenerList<>();
   private final WidgetChangedListener m_listenerUnitPanel = new WidgetChangedListener() {
     @Override
     public void widgetChanged() {
@@ -929,7 +929,7 @@ class PlayerUnitsPanel extends JPanel {
   }
 
   public List<Unit> getUnits() {
-    final List<Unit> allUnits = new ArrayList<Unit>();
+    final List<Unit> allUnits = new ArrayList<>();
     for (final Component c : getComponents()) {
       final UnitPanel panel = (UnitPanel) c;
       allUnits.addAll(panel.getUnits());
@@ -943,7 +943,7 @@ class PlayerUnitsPanel extends JPanel {
 
   public void init(final PlayerID id, final List<Unit> units, final boolean land) {
     m_isLand = land;
-    m_categories = new ArrayList<UnitCategory>(categorize(id, units));
+    m_categories = new ArrayList<>(categorize(id, units));
     Collections.sort(m_categories, new Comparator<UnitCategory>() {
       @Override
       public int compare(final UnitCategory o1, final UnitCategory o2) {
@@ -976,7 +976,7 @@ class PlayerUnitsPanel extends JPanel {
       if (m_defender) {
         predicate = Matches.UnitTypeIsNotSea;
       } else {
-        predicate = new CompositeMatchOr<UnitType>(Matches.UnitTypeIsNotSea, Matches.unitTypeCanBombard(id));
+        predicate = new CompositeMatchOr<>(Matches.UnitTypeIsNotSea, Matches.unitTypeCanBombard(id));
       }
     } else {
       predicate = Matches.UnitTypeIsSeaOrAir;
@@ -1017,7 +1017,7 @@ class PlayerUnitsPanel extends JPanel {
    * available if the unit is producable, or if a player has one
    */
   private Collection<UnitType> getUnitTypes(final PlayerID player) {
-    Collection<UnitType> rVal = new HashSet<UnitType>();
+    Collection<UnitType> rVal = new HashSet<>();
     final ProductionFrontier frontier = player.getProductionFrontier();
     if (frontier != null) {
       for (final ProductionRule rule : frontier) {
@@ -1067,7 +1067,7 @@ class UnitPanel extends JPanel {
   private final UnitCategory m_category;
   private final ScrollableTextField m_textField;
   private final GameData m_data;
-  private final ListenerList<WidgetChangedListener> m_listeners = new ListenerList<WidgetChangedListener>();
+  private final ListenerList<WidgetChangedListener> m_listeners = new ListenerList<>();
   private final ScrollableTextFieldListener m_listenerTextField = new ScrollableTextFieldListener() {
     @Override
     public void changedValue(final ScrollableTextField field) {
@@ -1287,7 +1287,7 @@ class OrderOfLossesInputPanel extends JPanel {
     final JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
     if (categories != null) {
-      final Set<UnitType> typesUsed = new HashSet<UnitType>();
+      final Set<UnitType> typesUsed = new HashSet<>();
       for (final UnitCategory category : categories) {
         // no duplicates or infrastructure allowed. no sea if land, no land if sea.
         if (typesUsed.contains(category.getType()) || Matches.UnitTypeIsInfrastructure.match(category.getType())

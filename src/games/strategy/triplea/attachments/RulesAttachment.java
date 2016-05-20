@@ -49,7 +49,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
   // Do Not Export (do not include in IAttachment).
   private int m_techCount = -1;
   // condition for having specific relationships
-  private ArrayList<String> m_relationship = new ArrayList<String>();
+  private ArrayList<String> m_relationship = new ArrayList<>();
   // condition for being at war
   private HashSet<PlayerID> m_atWarPlayers = null;
   @InternalDoNotExport
@@ -61,7 +61,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
   // condition for having had a battle in some territory, attacker or defender, win
   // or lost, etc. these next 9 variables use m_territoryCount for determining the number needed.
   private ArrayList<Tuple<String, ArrayList<Territory>>> m_battle =
-      new ArrayList<Tuple<String, ArrayList<Territory>>>();
+      new ArrayList<>();
   // ownership related
   private String[] m_alliedOwnershipTerritories = null;
   private String[] m_directOwnershipTerritories = null;
@@ -75,7 +75,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
   private String[] m_alliedPresenceTerritories = null;
   private String[] m_enemyPresenceTerritories = null;
   // used with above 3 to determine the type of unit that must be present
-  private IntegerMap<String> m_unitPresence = new IntegerMap<String>();
+  private IntegerMap<String> m_unitPresence = new IntegerMap<>();
 
 
   /** Creates new RulesAttachment */
@@ -134,7 +134,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
    * that trigger.
    */
   public static Set<RulesAttachment> getNationalObjectives(final PlayerID player) {
-    final Set<RulesAttachment> natObjs = new HashSet<RulesAttachment>();
+    final Set<RulesAttachment> natObjs = new HashSet<>();
     final Map<String, IAttachment> map = player.getAttachments();
     for (final Map.Entry<String, IAttachment> entry : map.entrySet()) {
       final IAttachment attachment = entry.getValue();
@@ -207,7 +207,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
         throw new GameParseException("round must either be currentRound or two numbers like: 2-4" + thisErrorMsg());
       }
     }
-    final ArrayList<Territory> terrs = new ArrayList<Territory>();
+    final ArrayList<Territory> terrs = new ArrayList<>();
     final GameMap map = getData().getMap();
     // this loop starts on 4, so do not replace with an enhanced for loop
     for (int i = 4; i < s.length; i++) {
@@ -234,7 +234,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
   }
 
   public void resetBattle() {
-    m_battle = new ArrayList<Tuple<String, ArrayList<Territory>>>();
+    m_battle = new ArrayList<>();
   }
 
   /**
@@ -288,7 +288,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
   }
 
   public void resetRelationship() {
-    m_relationship = new ArrayList<String>();
+    m_relationship = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -545,7 +545,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
   }
 
   public void resetUnitPresence() {
-    m_unitPresence = new IntegerMap<String>();
+    m_unitPresence = new IntegerMap<>();
   }
 
   public int getAtWarCount() {
@@ -576,7 +576,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
     if (s.length < 1 || s.length == 1 && count != -1) {
       throw new GameParseException("Empty enemy list" + thisErrorMsg());
     }
-    m_atWarPlayers = new HashSet<PlayerID>();
+    m_atWarPlayers = new HashSet<>();
     for (int i = count == -1 ? 0 : 1; i < s.length; i++) {
       final PlayerID player = getData().getPlayerList().getPlayerID(s[i]);
       if (player == null) {
@@ -619,7 +619,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
     if (s.length < 1 || s.length == 1 && count != -1) {
       throw new GameParseException("Empty tech list" + thisErrorMsg());
     }
-    m_techs = new ArrayList<TechAdvance>();
+    m_techs = new ArrayList<>();
     for (int i = count == -1 ? 0 : 1; i < s.length; i++) {
       TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(s[i]);
       if (ta == null) {
@@ -667,9 +667,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
     if (objectiveMet && m_conditions.size() > 0) {
       if (testedConditions == null) {
         testedConditions = testAllConditionsRecursive(
-            getAllConditionsRecursive(new HashSet<ICondition>(m_conditions), null), null, aBridge);
+            getAllConditionsRecursive(new HashSet<>(m_conditions), null), null, aBridge);
       }
-      objectiveMet = areConditionsMet(new ArrayList<ICondition>(m_conditions), testedConditions, m_conditionType);
+      objectiveMet = areConditionsMet(new ArrayList<>(m_conditions), testedConditions, m_conditionType);
     }
     // check switch (on/off)
     if (objectiveMet) {
@@ -1026,7 +1026,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
         allUnits.retainAll(Match.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
       } else if (exclType.equals("enemy_surface")) { // any enemy units (not trn/sub) in the territory
         allUnits.retainAll(
-            Match.getMatches(allUnits, new CompositeMatchAnd<Unit>(Matches.enemyUnitOfAnyOfThesePlayers(players, data),
+            Match.getMatches(allUnits, new CompositeMatchAnd<>(Matches.enemyUnitOfAnyOfThesePlayers(players, data),
                 Matches.UnitIsNotSub, Matches.UnitIsNotTransportButCouldBeCombatTransport)));
       } else {
         return false;

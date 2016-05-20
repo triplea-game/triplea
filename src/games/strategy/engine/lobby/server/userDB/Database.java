@@ -98,7 +98,7 @@ public class Database {
           return;
         }
         final ResultSet rs = conn.getMetaData().getTables(null, null, null, null);
-        final List<String> existing = new ArrayList<String>();
+        final List<String> existing = new ArrayList<>();
         while (rs.next()) {
           existing.add(rs.getString("TABLE_NAME").toUpperCase());
         }

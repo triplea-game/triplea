@@ -76,7 +76,7 @@ public class LobbyLogin {
       final String mac = MacFinder.GetHashedMacAddress();
       final ClientMessenger messenger = new ClientMessenger(m_serverProperties.host, m_serverProperties.port,
           panel.getUserName(), mac, new IConnectionLogin() {
-            private final AtomicReference<String> m_internalError = new AtomicReference<String>();
+            private final AtomicReference<String> m_internalError = new AtomicReference<>();
 
             @Override
             public void notifyFailedLogin(String message) {
@@ -88,7 +88,7 @@ public class LobbyLogin {
 
             @Override
             public Map<String, String> getProperties(final Map<String, String> challengProperties) {
-              final Map<String, String> props = new HashMap<String, String>();
+              final Map<String, String> props = new HashMap<>();
               if (panel.isAnonymous()) {
                 props.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
               } else {
@@ -142,7 +142,7 @@ public class LobbyLogin {
 
             @Override
             public Map<String, String> getProperties(final Map<String, String> challengProperties) {
-              final Map<String, String> props = new HashMap<String, String>();
+              final Map<String, String> props = new HashMap<>();
               props.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
               props.put(LobbyLoginValidator.EMAIL_KEY, createAccount.getEmail());
               props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt(createAccount.getPassword()));

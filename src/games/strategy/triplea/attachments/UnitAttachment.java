@@ -64,7 +64,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private static Collection<UnitType> getUnitTypesFromUnitList(final Collection<Unit> units) {
-    final Collection<UnitType> types = new ArrayList<UnitType>();
+    final Collection<UnitType> types = new ArrayList<>();
     for (final Unit u : units) {
       if (!types.contains(u.getType())) {
         types.add(u.getType());
@@ -84,7 +84,7 @@ public class UnitAttachment extends DefaultAttachment {
   // a colon delimited list of transports where this unit may invade from, it supports "none"
   // and if empty it allows you to invade from all
   private String[] m_canInvadeOnlyFrom = null;
-  private IntegerMap<Resource> m_fuelCost = new IntegerMap<Resource>();
+  private IntegerMap<Resource> m_fuelCost = new IntegerMap<>();
   private boolean m_canNotMoveDuringCombatMove = false;
   private Tuple<Integer, String> m_movementLimit = null;
   // combat related
@@ -142,7 +142,7 @@ public class UnitAttachment extends DefaultAttachment {
   // if false, we instantly kill anything our AA shot hits
   private boolean m_damageableAA = false;
   // if these enemy units are present, the gun does not fire at all
-  private HashSet<UnitType> m_willNotFireIfPresent = new HashSet<UnitType>();
+  private HashSet<UnitType> m_willNotFireIfPresent = new HashSet<>();
   // strategic bombing related
   private boolean m_isStrategicBomber = false;
   private int m_bombingMaxDieSides = -1;
@@ -160,8 +160,8 @@ public class UnitAttachment extends DefaultAttachment {
   private boolean m_canProduceUnits = false;
   // -1 means either it can't produce any, or it produces at the value of the territory it is located in
   private int m_canProduceXUnits = -1;
-  private IntegerMap<UnitType> m_createsUnitsList = new IntegerMap<UnitType>();
-  private IntegerMap<Resource> m_createsResourcesList = new IntegerMap<Resource>();
+  private IntegerMap<UnitType> m_createsUnitsList = new IntegerMap<>();
+  private IntegerMap<Resource> m_createsResourcesList = new IntegerMap<>();
   // damage related
   private int m_hitPoints = 1;
   private boolean m_canBeDamaged = false;
@@ -184,8 +184,8 @@ public class UnitAttachment extends DefaultAttachment {
   // multiple colon delimited lists of the unit combos required for
   // this unit to be built somewhere. (units must be in same
   // territory, owned by player, not be disabled)
-  private ArrayList<String[]> m_requiresUnits = new ArrayList<String[]>();
-  private IntegerMap<UnitType> m_consumesUnits = new IntegerMap<UnitType>();
+  private ArrayList<String[]> m_requiresUnits = new ArrayList<>();
+  private IntegerMap<UnitType> m_consumesUnits = new IntegerMap<>();
   // a colon delimited list of territories where this unit may not be placed
   // also an allowed setter is "setUnitPlacementOnlyAllowedIn",
   // which just creates m_unitPlacementRestrictions with an inverted list of territories
@@ -205,25 +205,25 @@ public class UnitAttachment extends DefaultAttachment {
   // a colon delimited list of the units this unit can repair.
   // (units must be in same territory, unless this unit is land
   // and the repaired unit is sea)
-  private IntegerMap<UnitType> m_repairsUnits = new IntegerMap<UnitType>();
-  private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
-  private ArrayList<Tuple<String, PlayerID>> m_destroyedWhenCapturedBy = new ArrayList<Tuple<String, PlayerID>>();
+  private IntegerMap<UnitType> m_repairsUnits = new IntegerMap<>();
+  private IntegerMap<UnitType> m_givesMovement = new IntegerMap<>();
+  private ArrayList<Tuple<String, PlayerID>> m_destroyedWhenCapturedBy = new ArrayList<>();
   // also an allowed setter is "setDestroyedWhenCapturedFrom" which will just create m_destroyedWhenCapturedBy with a
   // specific list
   private LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>> m_whenCapturedChangesInto =
-      new LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>>();
-  private ArrayList<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<PlayerID>();
-  private ArrayList<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<PlayerID>();
+      new LinkedHashMap<>();
+  private ArrayList<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<>();
+  private ArrayList<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<>();
   // a set of information for dealing with special abilities or
   // loss of abilities when a unit takes x-y amount of damage
   private ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> m_whenCombatDamaged =
-      new ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>>();
+      new ArrayList<>();
   // a kind of support attachment for giving actual unit
   // attachment abilities or other to a unit, when in the
   // precense or on the same route with another unit
-  private ArrayList<String> m_receivesAbilityWhenWith = new ArrayList<String>();
+  private ArrayList<String> m_receivesAbilityWhenWith = new ArrayList<>();
   // currently used for: placement in original territories only
-  private HashSet<String> m_special = new HashSet<String>();
+  private HashSet<String> m_special = new HashSet<>();
 
   /** Creates new UnitAttachment */
   public UnitAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -393,7 +393,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetCanBeGivenByTerritoryTo() {
-    m_canBeGivenByTerritoryTo = new ArrayList<PlayerID>();
+    m_canBeGivenByTerritoryTo = new ArrayList<>();
   }
 
   /**
@@ -429,7 +429,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetCanBeCapturedOnEnteringBy() {
-    m_canBeCapturedOnEnteringBy = new ArrayList<PlayerID>();
+    m_canBeCapturedOnEnteringBy = new ArrayList<>();
   }
 
   /**
@@ -455,7 +455,7 @@ public class UnitAttachment extends DefaultAttachment {
       throw new GameParseException("whenCapturedChangesInto: No player named: " + s[1] + thisErrorMsg());
     }
     getBool(s[2]);
-    final IntegerMap<UnitType> unitsToMake = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> unitsToMake = new IntegerMap<>();
     for (int i = 3; i < s.length; i++) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
       if (ut == null) {
@@ -482,7 +482,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetWhenCapturedChangesInto() {
-    m_whenCapturedChangesInto = new LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>>();
+    m_whenCapturedChangesInto = new LinkedHashMap<>();
   }
 
   /**
@@ -537,7 +537,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetDestroyedWhenCapturedBy() {
-    m_destroyedWhenCapturedBy = new ArrayList<Tuple<String, PlayerID>>();
+    m_destroyedWhenCapturedBy = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -847,7 +847,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetRepairsUnits() {
-    m_repairsUnits = new IntegerMap<UnitType>();
+    m_repairsUnits = new IntegerMap<>();
   }
 
   /**
@@ -881,7 +881,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetSpecial() {
-    m_special = new HashSet<String>();
+    m_special = new HashSet<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -952,7 +952,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetRequiresUnits() {
-    m_requiresUnits = new ArrayList<String[]>();
+    m_requiresUnits = new ArrayList<>();
   }
 
   /**
@@ -1000,7 +1000,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetWhenCombatDamaged() {
-    m_whenCombatDamaged = new ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>>();
+    m_whenCombatDamaged = new ArrayList<>();
   }
 
   /**
@@ -1027,12 +1027,12 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetReceivesAbilityWhenWith() {
-    m_receivesAbilityWhenWith = new ArrayList<String>();
+    m_receivesAbilityWhenWith = new ArrayList<>();
   }
 
   private static IntegerMap<Tuple<String, String>> getReceivesAbilityWhenWithMap(final Collection<Unit> units,
       final String filterForAbility, final GameData data) {
-    final IntegerMap<Tuple<String, String>> map = new IntegerMap<Tuple<String, String>>();
+    final IntegerMap<Tuple<String, String>> map = new IntegerMap<>();
     final Collection<UnitType> canReceive =
         getUnitTypesFromUnitList(Match.getMatches(units, Matches.UnitCanReceivesAbilityWhenWith()));
     for (final UnitType ut : canReceive) {
@@ -1052,10 +1052,10 @@ public class UnitAttachment extends DefaultAttachment {
   public static Collection<Unit> getUnitsWhichReceivesAbilityWhenWith(final Collection<Unit> units,
       final String filterForAbility, final GameData data) {
     if (Match.noneMatch(units, Matches.UnitCanReceivesAbilityWhenWith())) {
-      return new ArrayList<Unit>();
+      return new ArrayList<>();
     }
-    final Collection<Unit> unitsCopy = new ArrayList<Unit>(units);
-    final HashSet<Unit> whichReceiveNoDuplicates = new HashSet<Unit>();
+    final Collection<Unit> unitsCopy = new ArrayList<>(units);
+    final HashSet<Unit> whichReceiveNoDuplicates = new HashSet<>();
     final IntegerMap<Tuple<String, String>> whichGive =
         getReceivesAbilityWhenWithMap(unitsCopy, filterForAbility, data);
     for (final Tuple<String, String> abilityUnitType : whichGive.keySet()) {
@@ -1790,7 +1790,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetGivesMovement() {
-    m_givesMovement = new IntegerMap<UnitType>();
+    m_givesMovement = new IntegerMap<>();
   }
 
   /**
@@ -1833,7 +1833,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetConsumesUnits() {
-    m_consumesUnits = new IntegerMap<UnitType>();
+    m_consumesUnits = new IntegerMap<>();
   }
 
   /**
@@ -1876,7 +1876,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetCreatesUnitsList() {
-    m_createsUnitsList = new IntegerMap<UnitType>();
+    m_createsUnitsList = new IntegerMap<>();
   }
 
   /**
@@ -1917,7 +1917,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetCreatesResourcesList() {
-    m_createsResourcesList = new IntegerMap<Resource>();
+    m_createsResourcesList = new IntegerMap<>();
   }
 
   /**
@@ -1960,7 +1960,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetFuelCost() {
-    m_fuelCost = new IntegerMap<Resource>();
+    m_fuelCost = new IntegerMap<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2012,7 +2012,7 @@ public class UnitAttachment extends DefaultAttachment {
       return;
     }
     if (m_bombingTargets == null) {
-      m_bombingTargets = new HashSet<UnitType>();
+      m_bombingTargets = new HashSet<>();
     }
     final String[] s = value.split(":");
     for (final String u : s) {
@@ -2033,7 +2033,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (m_bombingTargets != null) {
       return m_bombingTargets;
     }
-    return new HashSet<UnitType>(data.getUnitTypeList().getAllUnitTypes());
+    return new HashSet<>(data.getUnitTypeList().getAllUnitTypes());
   }
 
   public void clearBombingTargets() {
@@ -2047,7 +2047,7 @@ public class UnitAttachment extends DefaultAttachment {
   public static Set<UnitType> getAllowedBombingTargetsIntersection(final Collection<Unit> bombersOrRockets,
       final GameData data) {
     if (bombersOrRockets.isEmpty()) {
-      return new HashSet<UnitType>();
+      return new HashSet<>();
     }
     Collection<UnitType> allowedTargets = data.getUnitTypeList().getAllUnitTypes();
     for (final Unit u : bombersOrRockets) {
@@ -2057,7 +2057,7 @@ public class UnitAttachment extends DefaultAttachment {
         allowedTargets = games.strategy.util.Util.intersection(allowedTargets, bombingTargets);
       }
     }
-    return new HashSet<UnitType>(allowedTargets);
+    return new HashSet<>(allowedTargets);
   }
 
   // Do not delete, we keep this both for backwards compatibility, and for user convenience when making maps
@@ -2330,7 +2330,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   public static Set<String> getAllOfTypeAAs(final Collection<Unit> aaUnits, final Collection<Unit> targets,
       final Match<Unit> typeOfAA, final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed) {
-    final Set<String> rVal = new HashSet<String>();
+    final Set<String> rVal = new HashSet<>();
     for (final Unit u : Match.getMatches(aaUnits,
         Matches.UnitIsAAthatCanHitTheseUnits(targets, typeOfAA, airborneTechTargetsAllowed))) {
       rVal.add(UnitAttachment.get(u.getType()).getTypeAA());
@@ -2339,11 +2339,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public static List<String> getAllOfTypeAAs(final Collection<Unit> aaUnitsAlreadyVerified) {
-    final Set<String> aaSet = new HashSet<String>();
+    final Set<String> aaSet = new HashSet<>();
     for (final Unit u : aaUnitsAlreadyVerified) {
       aaSet.add(UnitAttachment.get(u.getType()).getTypeAA());
     }
-    final List<String> rVal = new ArrayList<String>(aaSet);
+    final List<String> rVal = new ArrayList<>(aaSet);
     Collections.sort(rVal);
     return rVal;
   }
@@ -2361,7 +2361,7 @@ public class UnitAttachment extends DefaultAttachment {
       return;
     }
     if (m_targetsAA == null) {
-      m_targetsAA = new HashSet<UnitType>();
+      m_targetsAA = new HashSet<>();
     }
     final String[] s = value.split(":");
     for (final String u : s) {
@@ -2382,7 +2382,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (m_targetsAA != null) {
       return m_targetsAA;
     }
-    final HashSet<UnitType> airTypes = new HashSet<UnitType>();
+    final HashSet<UnitType> airTypes = new HashSet<>();
     final Iterator<UnitType> utIter = data.getUnitTypeList().iterator();
     while (utIter.hasNext()) {
       final UnitType ut = utIter.next();
@@ -2433,7 +2433,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetWillNotFireIfPresent() {
-    m_willNotFireIfPresent = new HashSet<UnitType>();
+    m_willNotFireIfPresent = new HashSet<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2609,7 +2609,7 @@ public class UnitAttachment extends DefaultAttachment {
         max = 1;
       }
     }
-    final CompositeMatchAnd<Unit> stackingMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOfType(ut));
+    final CompositeMatchAnd<Unit> stackingMatch = new CompositeMatchAnd<>(Matches.unitIsOfType(ut));
     final String stackingType = stackingLimit.getSecond();
     if (stackingType.equals("owned")) {
       stackingMatch.add(Matches.unitIsOwnedBy(owner));
@@ -2754,7 +2754,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public Collection<UnitType> getListedUnits(final String[] list) {
-    final List<UnitType> rVal = new ArrayList<UnitType>();
+    final List<UnitType> rVal = new ArrayList<>();
     for (final String name : list) {
       // Validate all units exist
       final UnitType ut = getData().getUnitTypeList().getUnitType(name);
@@ -2767,7 +2767,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public Collection<Territory> getListedTerritories(final String[] list) throws GameParseException {
-    final List<Territory> rVal = new ArrayList<Territory>();
+    final List<Territory> rVal = new ArrayList<>();
     for (final String name : list) {
       // Validate all territories exist
       final Territory territory = getData().getMap().getTerritory(name);
@@ -3204,7 +3204,7 @@ public class UnitAttachment extends DefaultAttachment {
     }
     if (getRequiresUnits() != null && getRequiresUnits().size() > 0
         && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData())) {
-      final List<String> totalUnitsListed = new ArrayList<String>();
+      final List<String> totalUnitsListed = new ArrayList<>();
       for (final String[] list : getRequiresUnits()) {
         totalUnitsListed.addAll(Arrays.asList(list));
       }

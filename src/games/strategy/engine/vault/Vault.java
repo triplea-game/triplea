@@ -45,11 +45,11 @@ public class Vault {
   private final KeyGenerator m_keyGen;
   private final IChannelMessenger m_channelMessenger;
   // Maps VaultID -> SecretKey
-  private final ConcurrentMap<VaultID, SecretKey> m_secretKeys = new ConcurrentHashMap<VaultID, SecretKey>();
+  private final ConcurrentMap<VaultID, SecretKey> m_secretKeys = new ConcurrentHashMap<>();
   // maps ValutID -> encrypted byte[]
-  private final ConcurrentMap<VaultID, byte[]> m_unverifiedValues = new ConcurrentHashMap<VaultID, byte[]>();
+  private final ConcurrentMap<VaultID, byte[]> m_unverifiedValues = new ConcurrentHashMap<>();
   // maps VaultID -> byte[]
-  private final ConcurrentMap<VaultID, byte[]> m_verifiedValues = new ConcurrentHashMap<VaultID, byte[]>();
+  private final ConcurrentMap<VaultID, byte[]> m_verifiedValues = new ConcurrentHashMap<>();
   private final Object m_waitForLock = new Object();
 
   /**
@@ -205,7 +205,7 @@ public class Vault {
   }
 
   public List<VaultID> knownIds() {
-    final ArrayList<VaultID> rVal = new ArrayList<VaultID>(m_verifiedValues.keySet());
+    final ArrayList<VaultID> rVal = new ArrayList<>(m_verifiedValues.keySet());
     rVal.addAll(m_unverifiedValues.keySet());
     return rVal;
   }

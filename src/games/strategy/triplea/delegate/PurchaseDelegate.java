@@ -66,19 +66,19 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
         // First set up a match for what we want to have fire as a default in this delegate. List out as a composite
         // match OR.
         // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-        final Match<TriggerAttachment> purchaseDelegateTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
+        final Match<TriggerAttachment> purchaseDelegateTriggerMatch = new CompositeMatchAnd<>(
             AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
             new CompositeMatchOr<TriggerAttachment>(TriggerAttachment.prodMatch(),
                 TriggerAttachment.prodFrontierEditMatch(), TriggerAttachment.purchaseMatch()));
         // get all possible triggers based on this match.
         final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
-            new HashSet<PlayerID>(Collections.singleton(m_player)), purchaseDelegateTriggerMatch, m_bridge);
+            new HashSet<>(Collections.singleton(m_player)), purchaseDelegateTriggerMatch, m_bridge);
         if (!toFirePossible.isEmpty()) {
           // get all conditions possibly needed by these triggers, and then test them.
           final HashMap<ICondition, Boolean> testedConditions =
               TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
           // get all triggers that are satisfied based on the tested conditions.
-          final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(
+          final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
               Match.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
           // now list out individual types to fire, once for each of the matches above.
           TriggerAttachment.triggerProductionChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
@@ -181,7 +181,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
           int currentlyBuilt = m_player.getUnits().countMatches(Matches.unitIsOfType(type));
 
           final CompositeMatch<Unit> unitTypeOwnedBy =
-              new CompositeMatchAnd<Unit>(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(m_player));
+              new CompositeMatchAnd<>(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(m_player));
           final Collection<Territory> allTerrs = getData().getMap().getTerritories();
           for (final Territory t : allTerrs) {
             currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);
@@ -197,10 +197,10 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     }
     // remove first, since add logs PUs remaining
     final Iterator<NamedAttachable> iter = results.keySet().iterator();
-    final Collection<Unit> totalUnits = new ArrayList<Unit>();
-    final Collection<UnitType> totalUnitTypes = new ArrayList<UnitType>();
-    final Collection<Resource> totalResources = new ArrayList<Resource>();
-    final Collection<NamedAttachable> totalAll = new ArrayList<NamedAttachable>();
+    final Collection<Unit> totalUnits = new ArrayList<>();
+    final Collection<UnitType> totalUnitTypes = new ArrayList<>();
+    final Collection<Resource> totalResources = new ArrayList<>();
+    final Collection<NamedAttachable> totalAll = new ArrayList<>();
     final CompositeChange changes = new CompositeChange();
     // add changes for added resources
     // and find all added units
@@ -266,8 +266,8 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     }
     // remove first, since add logs PUs remaining
     final CompositeChange changes = new CompositeChange();
-    final Set<Unit> repairUnits = new HashSet<Unit>(repairMap.keySet());
-    final IntegerMap<Unit> damageMap = new IntegerMap<Unit>();
+    final Set<Unit> repairUnits = new HashSet<>(repairMap.keySet());
+    final IntegerMap<Unit> damageMap = new IntegerMap<>();
     for (final Unit u : repairUnits) {
       final int repairCount = repairMap.getInt(u);
       // Display appropriate damaged/repaired factory and factory damage totals
@@ -292,7 +292,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     } else {
       transcriptText = m_player.getName() + " repair nothing; " + remaining;
     }
-    m_bridge.getHistoryWriter().startEvent(transcriptText, new HashSet<Unit>(damageMap.keySet()));
+    m_bridge.getHistoryWriter().startEvent(transcriptText, new HashSet<>(damageMap.keySet()));
     // commit changes
     if (!changes.isEmpty()) {
       m_bridge.addChange(changes);
@@ -301,10 +301,10 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   }
 
   private IntegerMap<Unit> getUnitRepairs(final Map<Unit, IntegerMap<RepairRule>> repairRules) {
-    final IntegerMap<Unit> repairMap = new IntegerMap<Unit>();
+    final IntegerMap<Unit> repairMap = new IntegerMap<>();
     for (final Unit u : repairRules.keySet()) {
       final IntegerMap<RepairRule> rules = repairRules.get(u);
-      final TreeSet<RepairRule> repRules = new TreeSet<RepairRule>(repairRuleComparator);
+      final TreeSet<RepairRule> repRules = new TreeSet<>(repairRuleComparator);
       repRules.addAll(rules.keySet());
       for (final RepairRule repairRule : repRules) {
         final int quantity = rules.getInt(repairRule) * repairRule.getResults().getInt(u.getType());
@@ -326,7 +326,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   };
 
   private IntegerMap<Resource> getCosts(final IntegerMap<ProductionRule> productionRules, final PlayerID player) {
-    final IntegerMap<Resource> costs = new IntegerMap<Resource>();
+    final IntegerMap<Resource> costs = new IntegerMap<>();
     final Iterator<ProductionRule> rules = productionRules.keySet().iterator();
     while (rules.hasNext()) {
       final ProductionRule rule = rules.next();
@@ -339,7 +339,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
       final PlayerID player) {
     final Collection<Unit> units = repairRules.keySet();
     final Iterator<Unit> iter = units.iterator();
-    final IntegerMap<Resource> costs = new IntegerMap<Resource>();
+    final IntegerMap<Resource> costs = new IntegerMap<>();
     while (iter.hasNext()) {
       final Unit u = iter.next();
       final Iterator<RepairRule> rules = repairRules.get(u).keySet().iterator();
@@ -356,7 +356,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   }
 
   private IntegerMap<NamedAttachable> getResults(final IntegerMap<ProductionRule> productionRules) {
-    final IntegerMap<NamedAttachable> costs = new IntegerMap<NamedAttachable>();
+    final IntegerMap<NamedAttachable> costs = new IntegerMap<>();
     final Iterator<ProductionRule> rules = productionRules.keySet().iterator();
     while (rules.hasNext()) {
       final ProductionRule rule = rules.next();

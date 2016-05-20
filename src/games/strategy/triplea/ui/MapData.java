@@ -89,10 +89,10 @@ public class MapData {
   public static final String KAMIKAZE_FILE = "kamikaze_place.txt";
   public static final String DECORATIONS_FILE = "decorations.txt";
   // default colour if none is defined.
-  private final List<Color> m_defaultColours = new ArrayList<Color>(Arrays.asList(new Color[] {Color.RED,
+  private final List<Color> m_defaultColours = new ArrayList<>(Arrays.asList(new Color[] {Color.RED,
       Color.MAGENTA, Color.YELLOW, Color.ORANGE, Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY}));
   // maps PlayerName as String to Color
-  private final Map<String, Color> m_playerColors = new HashMap<String, Color>();
+  private final Map<String, Color> m_playerColors = new HashMap<>();
   // maps String -> List of points
   private Map<String, List<Point>> m_place;
   // maps String -> Collection of Polygons
@@ -123,7 +123,7 @@ public class MapData {
   private Set<String> m_undrawnTerritoriesNames;
   private Map<Image, List<Point>> m_decorations;
   private Map<String, Image> m_territoryNameImages;
-  private final Map<String, Image> m_effectImages = new HashMap<String, Image>();
+  private final Map<String, Image> m_effectImages = new HashMap<>();
   private final ResourceLoader m_resourceLoader;
   private BufferedImage m_vcImage;
   private BufferedImage m_blockadeImage;
@@ -192,7 +192,7 @@ public class MapData {
   }
 
   private void loadTerritoryNames() {
-    m_territoryNameImages = new HashMap<String, Image>();
+    m_territoryNameImages = new HashMap<>();
     if (!m_resourceLoader.hasPath("territoryNames/")) {
       return;
     }
@@ -214,7 +214,7 @@ public class MapData {
       m_decorations = Collections.emptyMap();
       return;
     }
-    m_decorations = new HashMap<Image, List<Point>>();
+    m_decorations = new HashMap<>();
     try (InputStream stream = decorations.openStream()) {
       final Map<String, List<Point>> points = PointFileReaderWriter.readOneToMany(stream);
       for (final String name : points.keySet()) {
@@ -307,7 +307,7 @@ public class MapData {
   public boolean shouldDrawTerritoryName(final String territoryName) {
     if (m_undrawnTerritoriesNames == null) {
       final String property = m_mapProperties.getProperty(PROPERTY_DONT_DRAW_TERRITORY_NAMES, "");
-      m_undrawnTerritoriesNames = new HashSet<String>(Arrays.asList(property.split(",")));
+      m_undrawnTerritoriesNames = new HashSet<>(Arrays.asList(property.split(",")));
     }
     return !m_undrawnTerritoriesNames.contains(territoryName);
   }
@@ -371,10 +371,10 @@ public class MapData {
   }
 
   private void initializeContains() {
-    m_contains = new HashMap<String, List<String>>();
+    m_contains = new HashMap<>();
     final Iterator<String> seaIter = getTerritories().iterator();
     while (seaIter.hasNext()) {
-      final List<String> contained = new ArrayList<String>();
+      final List<String> contained = new ArrayList<>();
       final String seaTerritory = seaIter.next();
       if (!Util.isTerritoryNameIndicatingWater(seaTerritory)) {
         continue;
@@ -716,7 +716,7 @@ public class MapData {
         final Polygon item = polygons.get(i);
         if (item.intersects(bounds) || item.contains(bounds) || bounds.contains(item.getBounds2D())) {
           if (rVal == null) {
-            rVal = new ArrayList<String>(4);
+            rVal = new ArrayList<>(4);
           }
           rVal.add(terr);
           // only add it once

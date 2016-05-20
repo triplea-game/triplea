@@ -87,7 +87,7 @@ public class RocketsFireHelper {
 
   private void fireWW2V2(final IDelegateBridge bridge, final PlayerID player, final Set<Territory> rocketTerritories) {
     final GameData data = bridge.getData();
-    final Set<Territory> attackedTerritories = new HashSet<Territory>();
+    final Set<Territory> attackedTerritories = new HashSet<>();
     final boolean oneAttackPerTerritory = !isRocketAttacksPerFactoryInfinite(data);
     for (final Territory territory : rocketTerritories) {
       final Set<Territory> targets = getTargetsWithinRange(territory, data, player);
@@ -109,7 +109,7 @@ public class RocketsFireHelper {
 
   private void fireWW2V1(final IDelegateBridge bridge, final PlayerID player, final Set<Territory> rocketTerritories) {
     final GameData data = bridge.getData();
-    final Set<Territory> targets = new HashSet<Territory>();
+    final Set<Territory> targets = new HashSet<>();
     for (final Territory territory : rocketTerritories) {
       targets.addAll(getTargetsWithinRange(territory, data, player));
     }
@@ -125,7 +125,7 @@ public class RocketsFireHelper {
   }
 
   Set<Territory> getTerritoriesWithRockets(final GameData data, final PlayerID player) {
-    final Set<Territory> territories = new HashSet<Territory>();
+    final Set<Territory> territories = new HashSet<>();
     final CompositeMatch<Unit> ownedRockets = rocketMatch(player, data);
     final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(data);
     for (final Territory current : data.getMap()) {
@@ -140,25 +140,25 @@ public class RocketsFireHelper {
   }
 
   CompositeMatch<Unit> rocketMatch(final PlayerID player, final GameData data) {
-    return new CompositeMatchAnd<Unit>(Matches.UnitIsRocket, Matches.unitIsOwnedBy(player), Matches.UnitIsNotDisabled,
+    return new CompositeMatchAnd<>(Matches.UnitIsRocket, Matches.unitIsOwnedBy(player), Matches.UnitIsNotDisabled,
         Matches.unitIsBeingTransported().invert(), Matches.unitIsSubmerged(data).invert(), Matches.unitHasNotMoved);
   }
 
   private Set<Territory> getTargetsWithinRange(final Territory territory, final GameData data, final PlayerID player) {
     final int maxDistance = TechAbilityAttachment.getRocketDistance(player, data);
     final Collection<Territory> possible = data.getMap().getNeighbors(territory, maxDistance);
-    final Set<Territory> hasFactory = new HashSet<Territory>();
+    final Set<Territory> hasFactory = new HashSet<>();
     final CompositeMatchAnd<Territory> allowed =
-        new CompositeMatchAnd<Territory>(Matches.territoryAllowsRocketsCanFlyOver(player, data));
+        new CompositeMatchAnd<>(Matches.territoryAllowsRocketsCanFlyOver(player, data));
     if (!isRocketsCanFlyOverImpassables(data)) {
       allowed.add(Matches.TerritoryIsNotImpassable);
     }
     final CompositeMatchAnd<Unit> attackableUnits =
-        new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert());
+        new CompositeMatchAnd<>(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert());
     for (final Territory current : possible) {
       final Route route = data.getMap().getRoute(territory, current, allowed);
       if (route != null && route.numberOfSteps() <= maxDistance) {
-        if (current.getUnits().someMatch(new CompositeMatchAnd<Unit>(attackableUnits,
+        if (current.getUnits().someMatch(new CompositeMatchAnd<>(attackableUnits,
             Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(current).invert()))) {
           hasFactory.add(current);
         }
@@ -181,16 +181,16 @@ public class RocketsFireHelper {
     final boolean DamageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
     // unit damage vs territory damage
     final Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(
-        new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert()));
+        new CompositeMatchAnd<>(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert()));
     final Collection<Unit> enemyTargetsTotal =
         Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).invert());
-    final Collection<Unit> targets = new ArrayList<Unit>();
+    final Collection<Unit> targets = new ArrayList<>();
     final Collection<Unit> rockets;
     // attackFrom could be null if WW2V1
     if (attackFrom == null) {
       rockets = null;
     } else {
-      rockets = new ArrayList<Unit>(Match.getMatches(attackFrom.getUnits().getUnits(), rocketMatch(player, data)));
+      rockets = new ArrayList<>(Match.getMatches(attackFrom.getUnits().getUnits(), rocketMatch(player, data)));
     }
     final int numberOfAttacks = (rockets == null ? 1
         : Math.min(TechAbilityAttachment.getRocketNumberPerTerritory(player, data),
@@ -202,7 +202,7 @@ public class RocketsFireHelper {
     if (DamageFromBombingDoneToUnits) {
       // TODO: rockets needs to be completely redone to allow for multiple rockets to fire at different targets, etc
       // etc.
-      final HashSet<UnitType> legalTargetsForTheseRockets = new HashSet<UnitType>();
+      final HashSet<UnitType> legalTargetsForTheseRockets = new HashSet<>();
       if (rockets == null) {
         legalTargetsForTheseRockets.addAll(data.getUnitTypeList().getAllUnitTypes());
       } else {
@@ -363,7 +363,7 @@ public class RocketsFireHelper {
       // Record production lost
       // DelegateFinder.moveDelegate(data).PUsLost(attackedTerritory, cost);
       // apply the hits to the targets
-      final IntegerMap<Unit> damageMap = new IntegerMap<Unit>();
+      final IntegerMap<Unit> damageMap = new IntegerMap<>();
       damageMap.put(target, totalDamage);
       bridge.addChange(ChangeFactory.bombingUnitDamage(damageMap));
       // attackedTerritory.notifyChanged();
@@ -405,7 +405,7 @@ public class RocketsFireHelper {
       final Change rocketCharge = ChangeFactory.changeResourcesChange(attacked, PUs, -cost);
       bridge.addChange(rocketCharge);
     }
-    bridge.getHistoryWriter().addChildToEvent(transcript, rockets == null ? null : new ArrayList<Unit>(rockets));
+    bridge.getHistoryWriter().addChildToEvent(transcript, rockets == null ? null : new ArrayList<>(rockets));
     // this is null in WW2V1
     if (attackFrom != null) {
       if (rockets != null && !rockets.isEmpty()) {

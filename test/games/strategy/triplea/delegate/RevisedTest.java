@@ -559,7 +559,7 @@ public class RevisedTest extends TestCase {
     eeToSz5.add(sz5);
     // load the transport in the baltic
     final List<Unit> infantry = eastEurope.getUnits()
-        .getMatches(new CompositeMatchAnd<Unit>(Matches.unitIsOfType(infantryType), Matches.unitIsOwnedBy(japanese)));
+        .getMatches(new CompositeMatchAnd<>(Matches.unitIsOfType(infantryType), Matches.unitIsOwnedBy(japanese)));
     assertEquals(1, infantry.size());
     final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
     String error = moveDelegate.move(infantry, eeToSz5, Collections.<Unit>singletonList(transport));
@@ -739,7 +739,7 @@ public class RevisedTest extends TestCase {
     sz45To50.setStart(sz45);
     sz45To50.add(sz50);
     final List<Unit> japSub =
-        sz45.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsSub, Matches.unitIsOwnedBy(japanese)));
+        sz45.getUnits().getMatches(new CompositeMatchAnd<>(Matches.UnitIsSub, Matches.unitIsOwnedBy(japanese)));
     error = moveDelegate.move(japSub, sz45To50);
     // make sure no error
     assertNull(error);
@@ -1389,7 +1389,7 @@ public class RevisedTest extends TestCase {
     load(germany.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(germany, sz5));
     load(germany.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(germany, sz5));
     // attack sz 6
-    move(sz5.getUnits().getMatches(new CompositeMatchOr<Unit>(Matches.UnitCanBlitz, Matches.UnitIsTransport)),
+    move(sz5.getUnits().getMatches(new CompositeMatchOr<>(Matches.UnitCanBlitz, Matches.UnitIsTransport)),
         new Route(sz5, sz6));
     // unload transports, 1 each to a different country
     // this move is illegal now

@@ -162,7 +162,7 @@ public class SelectAndViewEditor extends EditorPanel {
    *        the list of beans
    */
   public void setBeans(final List<? extends IBean> beans) {
-    m_selector.setModel(new DefaultComboBoxModel<IBean>( beans.toArray(new IBean[beans.size()])));
+    m_selector.setModel(new DefaultComboBoxModel<>(beans.toArray(new IBean[beans.size()])));
     updateView();
   }
 

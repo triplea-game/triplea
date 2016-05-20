@@ -91,9 +91,9 @@ public abstract class BaseTripleADelegate extends AbstractDelegate implements ID
     if (games.strategy.triplea.Properties.getTriggers(data)) {
       final String stepName = data.getSequence().getStep().getName();
       // we use AND in order to make sure there are uses and when is set correctly.
-      final Match<TriggerAttachment> baseDelegateWhenTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
+      final Match<TriggerAttachment> baseDelegateWhenTriggerMatch = new CompositeMatchAnd<>(
           TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(beforeOrAfter, stepName));
-      TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(data.getPlayerList().getPlayers()),
+      TriggerAttachment.collectAndFireTriggers(new HashSet<>(data.getPlayerList().getPlayers()),
           baseDelegateWhenTriggerMatch, m_bridge, beforeOrAfter, stepName);
     }
     PoliticsDelegate.chainAlliancesTogether(m_bridge);

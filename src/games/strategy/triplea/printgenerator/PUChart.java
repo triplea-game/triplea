@@ -39,11 +39,11 @@ class PUChart {
   PUChart(final PrintGenerationData printData) {
     m_data = printData.getData();
     m_playerIterator = m_data.getPlayerList().iterator();
-    m_moneyMap = new IntegerMap<PlayerID>();
+    m_moneyMap = new IntegerMap<>();
     m_numPlayers = m_data.getPlayerList().size();
     m_playerArray = new PlayerID[m_numPlayers];
     m_moneyArray = new Integer[m_numPlayers];
-    m_avoidMap = new HashMap<Integer, Integer>();
+    m_avoidMap = new HashMap<>();
     m_PUImage = new BufferedImage(600, 600, BufferedImage.TYPE_INT_ARGB);
     m_g2d = m_PUImage.createGraphics();
     m_outDir = printData.getOutDir();

@@ -48,7 +48,7 @@ public class IPFinder {
       final InetAddress ip1 = InetAddress.getLocalHost();
       return ip1;
     }
-    final List<InetAddress> allButLoopback = new ArrayList<InetAddress>();
+    final List<InetAddress> allButLoopback = new ArrayList<>();
     while (enum1.hasMoreElements()) {
       final NetworkInterface netface = (NetworkInterface) enum1.nextElement();
       final Enumeration<InetAddress> enum2 = netface.getInetAddresses();

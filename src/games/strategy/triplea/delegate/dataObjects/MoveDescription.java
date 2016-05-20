@@ -22,9 +22,9 @@ public class MoveDescription extends AbstractMoveDescription {
     m_route = route;
     m_transportsThatCanBeLoaded = transportsThatCanBeLoaded;
     if (dependentUnits != null && !dependentUnits.isEmpty()) {
-      m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
+      m_dependentUnits = new HashMap<>();
       for (final Entry<Unit, Collection<Unit>> entry : dependentUnits.entrySet()) {
-        m_dependentUnits.put(entry.getKey(), new HashSet<Unit>(entry.getValue()));
+        m_dependentUnits.put(entry.getKey(), new HashSet<>(entry.getValue()));
       }
     } else {
       m_dependentUnits = null;
@@ -64,7 +64,7 @@ public class MoveDescription extends AbstractMoveDescription {
 
   public Map<Unit, Collection<Unit>> getDependentUnits() {
     if (m_dependentUnits == null) {
-      return new HashMap<Unit, Collection<Unit>>();
+      return new HashMap<>();
     }
     return m_dependentUnits;
   }

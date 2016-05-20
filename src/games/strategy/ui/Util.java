@@ -43,7 +43,7 @@ public final class Util {
     if (SwingUtilities.isEventDispatchThread()) {
       return task.run();
     }
-    final AtomicReference<T> results = new AtomicReference<T>();
+    final AtomicReference<T> results = new AtomicReference<>();
     SwingAction.invokeAndWait(() -> results.set(task.run()));
     return results.get();
   }

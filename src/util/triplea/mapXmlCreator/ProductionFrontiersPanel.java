@@ -29,7 +29,7 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
   public ProductionFrontiersPanel(final JPanel stepActionPanel, final String playerName) {
     super(stepActionPanel);
     this.playerName = playerName;
-    allUnitNames = new TreeSet<String>(MapXmlHelper.getUnitDefinitionsMap().keySet());
+    allUnitNames = new TreeSet<>(MapXmlHelper.getUnitDefinitionsMap().keySet());
   }
 
   public static void layout(final MapXmlCreator mapXmlCreator, final JPanel stepActionPanel, final String playerName) {
@@ -52,7 +52,7 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
             "Auto-Fill Overwrite Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE)) {
           MapXmlHelper.clearProductionFrontiers();
           for (final String playerName : MapXmlHelper.getPlayerNames()) {
-            MapXmlHelper.putProductionFrontiers(playerName, new ArrayList<String>(allUnitNames));
+            MapXmlHelper.putProductionFrontiers(playerName, new ArrayList<>(allUnitNames));
           }
           // Update UI
           repaintOwnPanel();
@@ -111,7 +111,7 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
       // UI Update
       setRows((GridBagLayout) getOwnPanel().getLayout(), MapXmlHelper.getUnitDefinitionsMap().size());
       final String[] allUnitNamesArray2 = allUnitNames.toArray(new String[allUnitNames.size()]);
-      final HashSet<String> freeUnitNames = new HashSet<String>(allUnitNames);
+      final HashSet<String> freeUnitNames = new HashSet<>(allUnitNames);
       freeUnitNames.removeAll(curr_playersUnitNames);
       final String newUnitName = freeUnitNames.iterator().next();
       if (newUnitName == null) {

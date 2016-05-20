@@ -49,7 +49,7 @@ public class Pact_of_Steel_2_Test extends TestCase {
     // this National Objective russia has to own at least 3 of the 5 territories by itself
     final RulesAttachment russian_easternEurope =
         RulesAttachment.get(russians, "objectiveAttachmentRussians1_EasternEurope");
-    final Collection<Territory> terrs = new ArrayList<Territory>();
+    final Collection<Territory> terrs = new ArrayList<>();
     terrs.add(Norway);
     terrs.add(Eastern_Europe);
     terrs.add(East_Balkans);
@@ -188,7 +188,7 @@ public class Pact_of_Steel_2_Test extends TestCase {
    */
   private Collection<Unit> getUnits(final IntegerMap<UnitType> units, final PlayerID from) {
     final Iterator<UnitType> iter = units.keySet().iterator();
-    final Collection<Unit> rVal = new ArrayList<Unit>(units.totalValues());
+    final Collection<Unit> rVal = new ArrayList<>(units.totalValues());
     while (iter.hasNext()) {
       final UnitType type = iter.next();
       rVal.addAll(from.getUnits().getUnits(type, units.getInt(type)));

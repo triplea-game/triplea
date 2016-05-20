@@ -39,7 +39,7 @@ public abstract class DynamicRowsPanel {
   }
 
   private final JPanel stepActionPanel;
-  private final ArrayList<JButton> finalRowButtons = new ArrayList<JButton>();
+  private final ArrayList<JButton> finalRowButtons = new ArrayList<>();
   boolean dataIsConsistent = true;
 
   public LinkedHashSet<DynamicRow> rows = Sets.newLinkedHashSet();

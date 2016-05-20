@@ -45,7 +45,7 @@ public class IndividualUnitPanelGrouped extends JPanel {
   private final IUIContext m_uiContext;
   private final Map<String, Collection<Unit>> m_unitsToChooseFrom;
   private final Collection<Tuple<String, IndividualUnitPanel>> m_entries =
-      new ArrayList<Tuple<String, IndividualUnitPanel>>();
+      new ArrayList<>();
   private final JLabel m_leftToSelect = new JLabel();
   private JButton m_autoSelectButton;
   private JButton m_selectNoneButton;
@@ -190,7 +190,7 @@ public class IndividualUnitPanelGrouped extends JPanel {
   }
 
   public Map<String, IntegerMap<Unit>> getSelected() {
-    final HashMap<String, IntegerMap<Unit>> selectedUnits = new HashMap<String, IntegerMap<Unit>>();
+    final HashMap<String, IntegerMap<Unit>> selectedUnits = new HashMap<>();
     for (final Tuple<String, IndividualUnitPanel> entry : m_entries) {
       selectedUnits.put(entry.getFirst(), entry.getSecond().getSelected());
     }

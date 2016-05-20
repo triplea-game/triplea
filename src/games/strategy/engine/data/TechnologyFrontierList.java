@@ -8,7 +8,7 @@ import games.strategy.triplea.delegate.TechAdvance;
 
 public class TechnologyFrontierList extends GameDataComponent {
   private static final long serialVersionUID = 2958122401265284935L;
-  private final List<TechnologyFrontier> m_technologyFrontiers = new ArrayList<TechnologyFrontier>();
+  private final List<TechnologyFrontier> m_technologyFrontiers = new ArrayList<>();
 
   public TechnologyFrontierList(final GameData data) {
     super(data);
@@ -38,7 +38,7 @@ public class TechnologyFrontierList extends GameDataComponent {
   }
 
   public List<TechAdvance> getAdvances() {
-    final List<TechAdvance> techs = new ArrayList<TechAdvance>();
+    final List<TechAdvance> techs = new ArrayList<>();
     for (final TechnologyFrontier t : m_technologyFrontiers) {
       techs.addAll(t.getTechs());
     }

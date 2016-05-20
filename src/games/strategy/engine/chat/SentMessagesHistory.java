@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class SentMessagesHistory {
-  private final List<String> m_history = new ArrayList<String>();
+  private final List<String> m_history = new ArrayList<>();
   private int m_HistoryPosition;
 
   SentMessagesHistory() {}

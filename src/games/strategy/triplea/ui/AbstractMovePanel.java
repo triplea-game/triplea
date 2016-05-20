@@ -135,7 +135,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   @SuppressWarnings("unchecked")
   protected final void updateMoves() {
     m_undoableMoves = (List<UndoableMove>) getMoveDelegate().getMovesMade();
-    m_undoableMovesPanel.setMoves(new ArrayList<AbstractUndoableMove>(m_undoableMoves));
+    m_undoableMovesPanel.setMoves(new ArrayList<>(m_undoableMoves));
   }
 
   public final void cancelMove() {

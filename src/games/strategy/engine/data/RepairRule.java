@@ -6,8 +6,8 @@ import games.strategy.util.IntegerMap;
 
 public class RepairRule extends DefaultNamed implements Serializable {
   private static final long serialVersionUID = -45646671022993959L;
-  private final IntegerMap<Resource> m_cost = new IntegerMap<Resource>();
-  private final IntegerMap<NamedAttachable> m_results = new IntegerMap<NamedAttachable>();
+  private final IntegerMap<Resource> m_cost = new IntegerMap<>();
+  private final IntegerMap<NamedAttachable> m_results = new IntegerMap<>();
 
   /** Creates new RepairRule */
   public RepairRule(final String name, final GameData data) {

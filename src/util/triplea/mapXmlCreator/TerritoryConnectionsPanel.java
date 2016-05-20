@@ -110,9 +110,9 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
         "Now scanning for connections ... ");
     // sort so that they are in alphabetic order (makes xml's prettier and easier to update in future)
     final List<String> allTerritories =
-        polygons == null ? new ArrayList<String>() : new ArrayList<String>(polygons.keySet());
+        polygons == null ? new ArrayList<>() : new ArrayList<>(polygons.keySet());
     Collections.sort(allTerritories, new AlphanumComparator());
-    final List<String> allAreas = new ArrayList<String>(territoryAreas.keySet());
+    final List<String> allAreas = new ArrayList<>(territoryAreas.keySet());
     Collections.sort(allAreas, new AlphanumComparator());
     for (final String territory : allTerritories) {
       final Set<String> thisTerritoryConnections = Sets.newLinkedHashSet();
@@ -151,7 +151,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
     final Map<String, List<Area>> territoryAreas = Maps.newHashMap();
     for (final String territoryName : polygons.keySet()) {
       final List<Polygon> listOfPolygons = polygons.get(territoryName);
-      final List<Area> listOfAreas = new ArrayList<Area>();
+      final List<Area> listOfAreas = new ArrayList<>();
       for (final Polygon p : listOfPolygons) {
         listOfAreas.add(new Area(p));
       }

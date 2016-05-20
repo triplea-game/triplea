@@ -38,7 +38,7 @@ public class Tile {
   private final int m_y;
   private final double m_scale;
   private final Lock m_lock = new ReentrantLock();
-  private final List<IDrawable> m_contents = new ArrayList<IDrawable>();
+  private final List<IDrawable> m_contents = new ArrayList<>();
 
   public Tile(final Rectangle bounds, final int x, final int y, final double scale) {
     // s_logger.log(Level.FINER, "Tile created for:" + bounds);
@@ -61,13 +61,13 @@ public class Tile {
     Tile.S_TILE_LOCKUTIL.acquireLock(m_lock);
     try {
       if (m_imageRef == null) {
-        m_imageRef = new SoftReference<Image>(createBlankImage());
+        m_imageRef = new SoftReference<>(createBlankImage());
         m_isDirty = true;
       }
       Image image = m_imageRef.get();
       if (image == null) {
         image = createBlankImage();
-        m_imageRef = new SoftReference<Image>(image);
+        m_imageRef = new SoftReference<>(image);
         m_isDirty = true;
       }
       if (m_isDirty) {
@@ -187,7 +187,7 @@ public class Tile {
   public List<IDrawable> getDrawables() {
     Tile.S_TILE_LOCKUTIL.acquireLock(m_lock);
     try {
-      return new ArrayList<IDrawable>(m_contents);
+      return new ArrayList<>(m_contents);
     } finally {
       Tile.S_TILE_LOCKUTIL.releaseLock(m_lock);
     }

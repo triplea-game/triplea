@@ -28,7 +28,7 @@ public class BombingUnitDamageChange extends Change {
       }
     }
     m_hits = hits.copy();
-    m_undoHits = new IntegerMap<Unit>();
+    m_undoHits = new IntegerMap<>();
     for (final Unit item : m_hits.keySet()) {
       m_undoHits.put(item, item.getHits());
     }

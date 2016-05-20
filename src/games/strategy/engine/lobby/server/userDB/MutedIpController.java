@@ -124,7 +124,7 @@ public class MutedIpController {
   }
 
   public List<String> getIPsThatAreStillMuted(final List<String> ips) {
-    final List<String> results = new ArrayList<String>();
+    final List<String> results = new ArrayList<>();
     final String sql = "select ip, mute_till from muted_ips where ip = ?";
     final Connection con = Database.getConnection();
     try {

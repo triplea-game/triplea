@@ -46,9 +46,9 @@ public class CenterPicker extends JFrame {
   // The map image will be stored here
   private Image m_image;
   // hash map for center points
-  private Map<String, Point> m_centers = new HashMap<String, Point>();
+  private Map<String, Point> m_centers = new HashMap<>();
   // hash map for polygon points
-  private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>();
+  private Map<String, List<Polygon>> m_polygons = new HashMap<>();
   private final JLabel m_location = new JLabel();
   private static File s_mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";

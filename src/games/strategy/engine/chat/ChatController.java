@@ -30,7 +30,7 @@ public class ChatController implements IChatController {
   private final IModeratorController m_moderatorController;
   private final IChannelMessenger m_channelMessenger;
   private final String m_chatName;
-  private final Map<INode, Tag> m_chatters = new HashMap<INode, Tag>();
+  private final Map<INode, Tag> m_chatters = new HashMap<>();
   protected final Object m_mutex = new Object();
   private final String m_chatChannel;
   private long m_version;
@@ -120,7 +120,7 @@ public class ChatController implements IChatController {
       m_chatters.put(node, tag);
       m_version++;
       getChatBroadcaster().speakerAdded(node, tag, m_version);
-      final Map<INode, Tag> copy = new HashMap<INode, Tag>(m_chatters);
+      final Map<INode, Tag> copy = new HashMap<>(m_chatters);
       return Tuple.of(copy, Long.valueOf(m_version));
     }
   }

@@ -295,7 +295,7 @@ public class HistoryPanel extends JPanel {
   }
 
   // remember which paths were expanded
-  final Collection<TreePath> m_stayExpandedPaths = new ArrayList<TreePath>();
+  final Collection<TreePath> m_stayExpandedPaths = new ArrayList<>();
   private boolean m_mouseOverPanel = false;
   // to distinguish the first mouse over panel event from the others
   boolean m_mouseWasOverPanel = false;
@@ -303,7 +303,7 @@ public class HistoryPanel extends JPanel {
   TreePath m_lastParent = null;
 
   private boolean addToStayExpanded(final Enumeration<TreePath> paths) {
-    final Collection<TreePath> expandPaths = new ArrayList<TreePath>();
+    final Collection<TreePath> expandPaths = new ArrayList<>();
     while (paths.hasMoreElements()) {
       expandPaths.add(paths.nextElement());
     }
@@ -355,7 +355,7 @@ public class HistoryPanel extends JPanel {
       final Enumeration<TreePath> expandedDescendants = m_tree.getExpandedDescendants(root);
       final TreePath selectedPath = m_tree.getSelectionPath();
       // fill stack with nodes that should be collapsed
-      final Stack<TreePath> collapsePaths = new Stack<TreePath>();
+      final Stack<TreePath> collapsePaths = new Stack<>();
       while (expandedDescendants.hasMoreElements()) {
         final TreePath currentDescendant = expandedDescendants.nextElement();
         if (!currentDescendant.isDescendant(newPath)

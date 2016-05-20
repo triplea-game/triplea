@@ -184,14 +184,14 @@ public class ChatTest extends TestCase {
 
 class TestChatListener implements IChatListener {
   public List<INode> m_players;
-  public List<String> m_messages = new ArrayList<String>();
-  public List<Boolean> m_thirdPerson = new ArrayList<Boolean>();
-  public List<String> m_from = new ArrayList<String>();
+  public List<String> m_messages = new ArrayList<>();
+  public List<Boolean> m_thirdPerson = new ArrayList<>();
+  public List<String> m_from = new ArrayList<>();
 
   @Override
   public void updatePlayerList(final Collection<INode> players) {
     synchronized (this) {
-      m_players = new ArrayList<INode>(players);
+      m_players = new ArrayList<>(players);
     }
   }
 

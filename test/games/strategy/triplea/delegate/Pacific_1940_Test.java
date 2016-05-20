@@ -42,7 +42,7 @@ public class Pacific_1940_Test extends TestCase {
    */
   private Collection<Unit> getUnits(final IntegerMap<UnitType> units, final PlayerID from) {
     final Iterator<UnitType> iter = units.keySet().iterator();
-    final Collection<Unit> rVal = new ArrayList<Unit>(units.totalValues());
+    final Collection<Unit> rVal = new ArrayList<>(units.totalValues());
     while (iter.hasNext()) {
       final UnitType type = iter.next();
       rVal.addAll(from.getUnits().getUnits(type, units.getInt(type)));

@@ -34,7 +34,7 @@ public class OddsCalculatorTest extends TestCase {
 
   public void testUnbalancedFight() {
     final Territory germany = m_data.getMap().getTerritory("Germany");
-    final List<Unit> defendingUnits = new ArrayList<Unit>(germany.getUnits().getUnits());
+    final List<Unit> defendingUnits = new ArrayList<>(germany.getUnits().getUnits());
     final PlayerID russians = GameDataTestUtil.russians(m_data);
     final PlayerID germans = GameDataTestUtil.germans(m_data);
     final List<Unit> attackingUnits = GameDataTestUtil.infantry(m_data).create(100, russians);
@@ -52,7 +52,7 @@ public class OddsCalculatorTest extends TestCase {
     // 1 british tank in eastern canada, defending one german tank
     // odds for win/loss/tie are all equal
     final Territory eastCanada = m_data.getMap().getTerritory("Eastern Canada");
-    final List<Unit> defendingUnits = new ArrayList<Unit>(eastCanada.getUnits().getUnits());
+    final List<Unit> defendingUnits = new ArrayList<>(eastCanada.getUnits().getUnits());
     final PlayerID germans = GameDataTestUtil.germans(m_data);
     final PlayerID british = GameDataTestUtil.british(m_data);
     final List<Unit> attackingUnits = GameDataTestUtil.armour(m_data).create(1, germans, false);

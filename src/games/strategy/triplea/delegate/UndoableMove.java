@@ -32,16 +32,16 @@ public class UndoableMove extends AbstractUndoableMove {
   private String m_description;
   // this move is dependent on these moves
   // these moves cant be undone until this one has been
-  private final Set<UndoableMove> m_iDependOn = new HashSet<UndoableMove>();
+  private final Set<UndoableMove> m_iDependOn = new HashSet<>();
   // these moves depend on me
   // we cant be undone until this is empty
-  private final Set<UndoableMove> m_dependOnMe = new HashSet<UndoableMove>();
+  private final Set<UndoableMove> m_dependOnMe = new HashSet<>();
   // list of countries we took over
-  private final Set<Territory> m_conquered = new HashSet<Territory>();
+  private final Set<Territory> m_conquered = new HashSet<>();
   // transports loaded by this move
-  private final Set<Unit> m_loaded = new HashSet<Unit>();
+  private final Set<Unit> m_loaded = new HashSet<>();
   // transports unloaded by this move
-  private final Set<Unit> m_unloaded = new HashSet<Unit>();
+  private final Set<Unit> m_unloaded = new HashSet<>();
   private final Route m_route;
 
   public void addToConquered(final Territory t) {
@@ -127,7 +127,7 @@ public class UndoableMove extends AbstractUndoableMove {
           if (routeUnitUsedToMove != null && routeUnitUsedToMove.getEnd() != null) {
             final Territory end = routeUnitUsedToMove.getEnd();
             final Collection<Unit> enemyTargetsTotal = end.getUnits()
-                .getMatches(new CompositeMatchAnd<Unit>(Matches.enemyUnit(bridge.getPlayerID(), data),
+                .getMatches(new CompositeMatchAnd<>(Matches.enemyUnit(bridge.getPlayerID(), data),
                     Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(end).invert(),
                     Matches.unitIsBeingTransported().invert()));
             final Collection<Unit> enemyTargets = Match.getMatches(enemyTargetsTotal,
@@ -144,8 +144,8 @@ public class UndoableMove extends AbstractUndoableMove {
               target = enemyTargets.iterator().next();
             }
             if (target != null) {
-              targets = new HashMap<Unit, HashSet<Unit>>();
-              targets.put(target, new HashSet<Unit>(Collections.singleton(unit)));
+              targets = new HashMap<>();
+              targets.put(target, new HashSet<>(Collections.singleton(unit)));
             }
           }
           final Change change = battle.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit), targets);

@@ -10,7 +10,7 @@ import java.util.prefs.Preferences;
 public class ChatIgnoreList {
   private static final Logger log = Logger.getLogger(ChatIgnoreList.class.getName());
   private final Object m_lock = new Object();
-  private final Set<String> m_ignore = new HashSet<String>();
+  private final Set<String> m_ignore = new HashSet<>();
 
   public ChatIgnoreList() {
     final Preferences prefs = getPrefNode();

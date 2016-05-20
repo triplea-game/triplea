@@ -75,7 +75,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
     final JPanel items = new JPanel();
     items.setLayout(new BoxLayout(items, BoxLayout.Y_AXIS));
     // we want the newest move at the top
-    m_moves = new ArrayList<AbstractUndoableMove>(m_moves);
+    m_moves = new ArrayList<>(m_moves);
     Collections.reverse(m_moves);
     final Iterator<AbstractUndoableMove> iter = m_moves.iterator();
     if (iter.hasNext()) {

@@ -254,8 +254,8 @@ public class MessengerTest extends TestCase {
 
   public void testManyClients() throws UnknownHostException, CouldNotLogInException, IOException, InterruptedException {
     final int count = 5;
-    final List<ClientMessenger> clients = new ArrayList<ClientMessenger>();
-    final List<MessageListener> listeners = new ArrayList<MessageListener>();
+    final List<ClientMessenger> clients = new ArrayList<>();
+    final List<MessageListener> listeners = new ArrayList<>();
     for (int i = 0; i < count; i++) {
       final String name = "newClient" + i;
       final String mac = MacFinder.GetHashedMacAddress();
@@ -278,8 +278,8 @@ public class MessengerTest extends TestCase {
 
 
 class MessageListener implements IMessageListener {
-  private final List<Serializable> messages = new ArrayList<Serializable>();
-  private final ArrayList<INode> senders = new ArrayList<INode>();
+  private final List<Serializable> messages = new ArrayList<>();
+  private final ArrayList<INode> senders = new ArrayList<>();
   private final Object lock = new Object();
 
   public MessageListener() {}

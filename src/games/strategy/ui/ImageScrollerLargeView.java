@@ -80,7 +80,7 @@ public class ImageScrollerLargeView extends JComponent {
   private boolean m_insideFasterPosition;
   private int m_insideCount = 0;
   private int m_edge = NONE;
-  private final List<ScrollListener> m_scrollListeners = new ArrayList<ScrollListener>();
+  private final List<ScrollListener> m_scrollListeners = new ArrayList<>();
 
   public ImageScrollerLargeView(final Dimension dimension, final ImageScrollModel model) {
     super();
@@ -138,7 +138,7 @@ public class ImageScrollerLargeView extends JComponent {
   }
 
   private void notifyScollListeners() {
-    for (final ScrollListener element : new ArrayList<ScrollListener>(m_scrollListeners)) {
+    for (final ScrollListener element : new ArrayList<>(m_scrollListeners)) {
       element.scrolled(m_model.getX(), m_model.getY());
     }
   }

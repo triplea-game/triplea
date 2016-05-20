@@ -41,7 +41,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   // directOwnershipTerritories, directExclusionTerritories,
   // directPresenceTerritories, or any of the other territory lists
   // only used if the attachment begins with "objectiveAttachment"
-  protected ArrayList<PlayerID> m_players = new ArrayList<PlayerID>();
+  protected ArrayList<PlayerID> m_players = new ArrayList<>();
   protected int m_objectiveValue = 0;
   // only matters for objectiveValue, does not affect the condition
   protected int m_uses = -1;
@@ -78,7 +78,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 
   public ArrayList<PlayerID> getPlayers() {
     if (m_players.isEmpty()) {
-      return new ArrayList<PlayerID>(Collections.singletonList((PlayerID) getAttachedTo()));
+      return new ArrayList<>(Collections.singletonList((PlayerID) getAttachedTo()));
     } else {
       return m_players;
     }
@@ -89,7 +89,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   public void resetPlayers() {
-    m_players = new ArrayList<PlayerID>();
+    m_players = new ArrayList<>();
   }
 
   @Override
@@ -222,7 +222,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       m_turns = null;
       return;
     }
-    m_turns = new HashMap<Integer, Integer>();
+    m_turns = new HashMap<>();
     final String[] s = turns.split(":");
     if (s.length < 1) {
       throw new GameParseException("Empty turn list" + thisErrorMsg());
@@ -284,7 +284,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     final GameMap gameMap = data.getMap();
     if (name.equals("original") || name.equals("enemy")) // get all originally owned territories
     {
-      final Set<Territory> originalTerrs = new HashSet<Territory>();
+      final Set<Territory> originalTerrs = new HashSet<>();
       for (final PlayerID player : players) {
         originalTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
       }
@@ -292,7 +292,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       return originalTerrs;
     } else if (name.equals("originalNoWater")) // get all originally owned territories, but no water or impassibles
     {
-      final Set<Territory> originalTerrs = new HashSet<Territory>();
+      final Set<Territory> originalTerrs = new HashSet<>();
       for (final PlayerID player : players) {
         originalTerrs.addAll(Match.getMatches(OriginalOwnerTracker.getOriginallyOwned(data, player),
             // TODO: does this account for occupiedTerrOf???
@@ -301,14 +301,14 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       setTerritoryCount(String.valueOf(originalTerrs.size()));
       return originalTerrs;
     } else if (name.equals("controlled")) {
-      final Set<Territory> ownedTerrs = new HashSet<Territory>();
+      final Set<Territory> ownedTerrs = new HashSet<>();
       for (final PlayerID player : players) {
         ownedTerrs.addAll(gameMap.getTerritoriesOwnedBy(player));
       }
       setTerritoryCount(String.valueOf(ownedTerrs.size()));
       return ownedTerrs;
     } else if (name.equals("controlledNoWater")) {
-      final Set<Territory> ownedTerrsNoWater = new HashSet<Territory>();
+      final Set<Territory> ownedTerrsNoWater = new HashSet<>();
       for (final PlayerID player : players) {
         ownedTerrsNoWater.addAll(Match.getMatches(gameMap.getTerritoriesOwnedBy(player),
             Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
@@ -316,7 +316,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       setTerritoryCount(String.valueOf(ownedTerrsNoWater.size()));
       return ownedTerrsNoWater;
     } else if (name.equals("all")) {
-      final Set<Territory> allTerrs = new HashSet<Territory>();
+      final Set<Territory> allTerrs = new HashSet<>();
       for (final PlayerID player : players) {
         allTerrs.addAll(gameMap.getTerritoriesOwnedBy(player));
         allTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
@@ -324,11 +324,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       setTerritoryCount(String.valueOf(allTerrs.size()));
       return allTerrs;
     } else if (name.equals("map")) {
-      final Set<Territory> allTerrs = new HashSet<Territory>(gameMap.getTerritories());
+      final Set<Territory> allTerrs = new HashSet<>(gameMap.getTerritories());
       setTerritoryCount(String.valueOf(allTerrs.size()));
       return allTerrs;
     } else { // The list just contained 1 territory
-      final Set<Territory> terr = new HashSet<Territory>();
+      final Set<Territory> terr = new HashSet<>();
       final Territory t = data.getMap().getTerritory(name);
       if (t == null) {
         throw new IllegalStateException("No territory called:" + name + thisErrorMsg());
@@ -383,7 +383,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
    */
   public Set<Territory> getListedTerritories(final String[] list, final boolean testFirstItemForCount,
       final boolean mustSetTerritoryCount) {
-    final Set<Territory> rVal = new HashSet<Territory>();
+    final Set<Territory> rVal = new HashSet<>();
     // this list is null, empty, or contains "", so return a blank list of territories
     if (list == null || list.length == 0 || (list.length == 1 && (list[0] == null || list[0].length() == 0))) {
       return rVal;

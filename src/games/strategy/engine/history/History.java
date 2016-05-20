@@ -29,7 +29,7 @@ import games.strategy.triplea.ui.history.HistoryPanel;
 
 public class History extends DefaultTreeModel implements java.io.Serializable {
   private final HistoryWriter m_writer = new HistoryWriter(this);
-  private final List<Change> m_changes = new ArrayList<Change>();
+  private final List<Change> m_changes = new ArrayList<>();
   private final GameData m_data;
   private HistoryNode m_currentNode;
 
@@ -134,7 +134,7 @@ public class History extends DefaultTreeModel implements java.io.Serializable {
       while (m_changes.size() > lastChange) {
         m_changes.remove(lastChange);
       }
-      final List<HistoryNode> nodesToRemove = new ArrayList<HistoryNode>();
+      final List<HistoryNode> nodesToRemove = new ArrayList<>();
       final Enumeration<?> enumeration = ((DefaultMutableTreeNode) this.getRoot()).preorderEnumeration();
       enumeration.nextElement();
       boolean startRemoving = false;
@@ -188,7 +188,7 @@ public class History extends DefaultTreeModel implements java.io.Serializable {
  */
 class SerializedHistory implements Serializable {
   private static final long serialVersionUID = -5808427923253751651L;
-  private final List<SerializationWriter> m_Writers = new ArrayList<SerializationWriter>();
+  private final List<SerializationWriter> m_Writers = new ArrayList<>();
   private final GameData m_data;
 
   public SerializedHistory(final History history, final GameData data, final List<Change> changes) {

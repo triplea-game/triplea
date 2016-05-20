@@ -403,8 +403,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       final GameData data = getGameData();
       if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
         final Match<Unit> myDamaged =
-            new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(id), Matches.UnitHasTakenSomeBombingUnitDamage);
-        final Collection<Unit> damagedUnits = new ArrayList<Unit>();
+            new CompositeMatchAnd<>(Matches.unitIsOwnedBy(id), Matches.UnitHasTakenSomeBombingUnitDamage);
+        final Collection<Unit> damagedUnits = new ArrayList<>();
         for (final Territory t : data.getMap().getTerritories()) {
           damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myDamaged));
         }
@@ -728,7 +728,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       return null;
     }
     final IntegerMap<Resource> playerResourceCollection = id.getResources().getResourcesCopy();
-    final IntegerMap<Resource> attackTokens = new IntegerMap<Resource>();
+    final IntegerMap<Resource> attackTokens = new IntegerMap<>();
     for (final Resource possible : resourcesAndAttackValues.keySet()) {
       final int amount = playerResourceCollection.getInt(possible);
       if (amount > 0) {
@@ -739,7 +739,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       return null;
     }
     final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> rVal =
-        new HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>>();
+        new HashMap<>();
     for (final Entry<Resource, Integer> entry : attackTokens.entrySet()) {
       final Resource r = entry.getKey();
       final int max = entry.getValue();
@@ -749,13 +749,13 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         final Territory t = selectionEntry.getKey();
         HashMap<Unit, IntegerMap<Resource>> currentTerr = rVal.get(t);
         if (currentTerr == null) {
-          currentTerr = new HashMap<Unit, IntegerMap<Resource>>();
+          currentTerr = new HashMap<>();
         }
         for (final Entry<Unit, Integer> unitEntry : selectionEntry.getValue().entrySet()) {
           final Unit u = unitEntry.getKey();
           IntegerMap<Resource> currentUnit = currentTerr.get(u);
           if (currentUnit == null) {
-            currentUnit = new IntegerMap<Resource>();
+            currentUnit = new IntegerMap<>();
           }
           currentUnit.add(r, unitEntry.getValue());
           currentTerr.put(u, currentUnit);

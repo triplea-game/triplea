@@ -76,7 +76,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   private final SelectAndViewEditor m_forumPosterEditor;
   private final SelectAndViewEditor m_emailSenderEditor;
   private final SelectAndViewEditor m_webPosterEditor;
-  private final List<PBEMLocalPlayerComboBoxSelector> m_playerTypes = new ArrayList<PBEMLocalPlayerComboBoxSelector>();
+  private final List<PBEMLocalPlayerComboBoxSelector> m_playerTypes = new ArrayList<>();
   private final JPanel m_localPlayerPanel = new JPanel();
   private final JButton m_localPlayerSelection = new JButton("Select Local Players and AI's");
 
@@ -166,7 +166,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
    *        the game data
    */
   private void loadDiceServer(final GameData data) {
-    final List<IRemoteDiceServer> diceRollers = new ArrayList<IRemoteDiceServer>(PropertiesDiceRoller.loadFromFile());
+    final List<IRemoteDiceServer> diceRollers = new ArrayList<>(PropertiesDiceRoller.loadFromFile());
     diceRollers.add(new InternalDiceServer());
     for (final IRemoteDiceServer diceRoller : diceRollers) {
       final IRemoteDiceServer cached =
@@ -196,7 +196,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
    */
   private void loadForumPosters(final GameData data) {
     // get the forum posters,
-    final List<IForumPoster> forumPosters = new ArrayList<IForumPoster>();
+    final List<IForumPoster> forumPosters = new ArrayList<>();
     forumPosters.add((IForumPoster) findCachedOrCreateNew(NullForumPoster.class));
     forumPosters.add((IForumPoster) findCachedOrCreateNew(AxisAndAlliesForumPoster.class));
     forumPosters.add((IForumPoster) findCachedOrCreateNew(TripleAWarClubForumPoster.class));
@@ -216,7 +216,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   }
 
   private void loadWebPosters(final GameData data) {
-    final List<IWebPoster> webPosters = new ArrayList<IWebPoster>();
+    final List<IWebPoster> webPosters = new ArrayList<>();
     webPosters.add((IWebPoster) findCachedOrCreateNew(NullWebPoster.class));
     final TripleAWebPoster poster = (TripleAWebPoster) findCachedOrCreateNew(TripleAWebPoster.class);
     poster.setParties(data.getPlayerList().getNames());
@@ -240,7 +240,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
    */
   private void loadEmailSender(final GameData data) {
     // The list of email, either loaded from cache or created
-    final List<IEmailSender> emailSenders = new ArrayList<IEmailSender>();
+    final List<IEmailSender> emailSenders = new ArrayList<>();
     emailSenders.add((IEmailSender) findCachedOrCreateNew(NullEmailSender.class));
     emailSenders.add((IEmailSender) findCachedOrCreateNew(GmailEmailSender.class));
     emailSenders.add((IEmailSender) findCachedOrCreateNew(HotmailEmailSender.class));
@@ -404,8 +404,8 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     // create local launcher
     final String gameUUID = (String) m_gameSelectorModel.getGameData().getProperties().get(GameData.GAME_UUID);
     final PBEMDiceRoller randomSource = new PBEMDiceRoller((IRemoteDiceServer) m_diceServerEditor.getBean(), gameUUID);
-    final Map<String, String> playerTypes = new HashMap<String, String>();
-    final Map<String, Boolean> playersEnabled = new HashMap<String, Boolean>();
+    final Map<String, String> playerTypes = new HashMap<>();
+    final Map<String, Boolean> playersEnabled = new HashMap<>();
     for (final PBEMLocalPlayerComboBoxSelector player : m_playerTypes) {
       playerTypes.put(player.getPlayerName(), player.getPlayerType());
       playersEnabled.put(player.getPlayerName(), player.isPlayerEnabled());
@@ -595,7 +595,7 @@ enum LocalBeanCache {
   private final File m_file;
   private final Object m_mutex = new Object();
 
-  Map<String, IBean> m_map = new HashMap<String, IBean>();
+  Map<String, IBean> m_map = new HashMap<>();
 
   private LocalBeanCache() {
     m_file = new File(ClientFileSystemHelper.getUserRootFolder(), "local.cache");
@@ -635,7 +635,7 @@ enum LocalBeanCache {
         e.printStackTrace();
       }
     }
-    return new HashMap<String, IBean>();
+    return new HashMap<>();
   }
 
   /**

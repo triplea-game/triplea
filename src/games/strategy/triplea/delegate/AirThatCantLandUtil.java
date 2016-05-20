@@ -37,11 +37,11 @@ public class AirThatCantLandUtil {
 
   public Collection<Territory> getTerritoriesWhereAirCantLand(final PlayerID player) {
     final GameData data = m_bridge.getData();
-    final Collection<Territory> cantLand = new ArrayList<Territory>();
+    final Collection<Territory> cantLand = new ArrayList<>();
     final Iterator<Territory> territories = data.getMap().getTerritories().iterator();
     while (territories.hasNext()) {
       final Territory current = territories.next();
-      final CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<Unit>();
+      final CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<>();
       ownedAir.add(Matches.UnitIsAir);
       ownedAir.add(Matches.unitIsOwnedBy(player));
       final Collection<Unit> air = current.getUnits().getMatches(ownedAir);
@@ -58,7 +58,7 @@ public class AirThatCantLandUtil {
     final Iterator<Territory> territories = getTerritoriesWhereAirCantLand(player).iterator();
     while (territories.hasNext()) {
       final Territory current = territories.next();
-      final CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<Unit>();
+      final CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<>();
       ownedAir.add(Matches.UnitIsAir);
       ownedAir.add(Matches.alliedUnit(player, data));
       final Collection<Unit> air = current.getUnits().getMatches(ownedAir);
@@ -73,7 +73,7 @@ public class AirThatCantLandUtil {
 
   private void removeAirThatCantLand(final PlayerID player, final Territory territory,
       final Collection<Unit> airUnits) {
-    final Collection<Unit> toRemove = new ArrayList<Unit>(airUnits.size());
+    final Collection<Unit> toRemove = new ArrayList<>(airUnits.size());
     // if we cant land on land then none can
     if (!territory.isWater()) {
       toRemove.addAll(airUnits);

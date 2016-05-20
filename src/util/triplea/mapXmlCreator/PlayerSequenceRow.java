@@ -27,8 +27,8 @@ class PlayerSequenceRow extends DynamicRow {
     super(sequenceName, parentRowPanel, stepActionPanel);
 
     textFieldSequenceName = new JTextField(sequenceName);
-    comboBoxGameSequenceName = new JComboBox<String>(gameSequenceNames);
-    comboBoxPlayerName = new JComboBox<String>(playerNames);
+    comboBoxGameSequenceName = new JComboBox<>(gameSequenceNames);
+    comboBoxPlayerName = new JComboBox<>(playerNames);
     final Integer maxCountInteger = Integer.valueOf(maxCount);
     textFieldMaxCount = new JTextField(maxCountInteger == null ? "0" : Integer.toString(maxCountInteger));
 
@@ -116,7 +116,7 @@ class PlayerSequenceRow extends DynamicRow {
 
   @Override
   protected ArrayList<JComponent> getComponentList() {
-    final ArrayList<JComponent> componentList = new ArrayList<JComponent>();
+    final ArrayList<JComponent> componentList = new ArrayList<>();
     componentList.add(textFieldSequenceName);
     componentList.add(comboBoxGameSequenceName);
     componentList.add(comboBoxPlayerName);

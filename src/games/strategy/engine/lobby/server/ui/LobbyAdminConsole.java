@@ -130,7 +130,7 @@ public class LobbyAdminConsole extends JFrame {
     final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
     final JComboBox<String> combo = new JComboBox<>(model);
     model.addElement("");
-    for (final INode node : new TreeSet<INode>(m_server.getMessenger().getNodes())) {
+    for (final INode node : new TreeSet<>(m_server.getMessenger().getNodes())) {
       if (!node.equals(m_server.getMessenger().getLocalNode())) {
         model.addElement(node.getName());
       }
@@ -176,7 +176,7 @@ public class LobbyAdminConsole extends JFrame {
     final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
     final JComboBox<String> combo = new JComboBox<>(model);
     model.addElement("");
-    for (final INode node : new TreeSet<INode>(m_server.getMessenger().getNodes())) {
+    for (final INode node : new TreeSet<>(m_server.getMessenger().getNodes())) {
       if (!node.equals(m_server.getMessenger().getLocalNode())) {
         model.addElement(node.getName());
       }

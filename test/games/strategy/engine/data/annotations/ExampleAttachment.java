@@ -15,7 +15,7 @@ public class ExampleAttachment extends DefaultAttachment {
   private int m_techCost;
   private boolean m_heavyBomber;
   private String m_attribute;
-  private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
+  private IntegerMap<UnitType> m_givesMovement = new IntegerMap<>();
   @InternalDoNotExport
   private String m_notAProperty = "str";
 
@@ -118,7 +118,7 @@ public class ExampleAttachment extends DefaultAttachment {
   }
 
   public void resetGivesMovement() {
-    m_givesMovement = new IntegerMap<UnitType>();
+    m_givesMovement = new IntegerMap<>();
   }
 
   @Override

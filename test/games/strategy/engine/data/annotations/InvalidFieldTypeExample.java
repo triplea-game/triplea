@@ -29,7 +29,7 @@ public class InvalidFieldTypeExample extends DefaultAttachment {
   public void clearMovement() {}
 
   public IntegerMap<UnitType> getGivesMovement() {
-    return new IntegerMap<UnitType>();
+    return new IntegerMap<>();
   }
 
   @Override

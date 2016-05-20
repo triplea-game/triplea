@@ -141,7 +141,7 @@ public class MicroWebPosterEditor extends EditorPanel {
     } else {
       hostUrl = (String) m_hosts.getSelectedItem() + "/";
     }
-    final ArrayList<String> players = new ArrayList<String>();
+    final ArrayList<String> players = new ArrayList<>();
     try {
       final URL url = new URL(hostUrl + "getplayers.php");
       final BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
@@ -198,7 +198,7 @@ public class MicroWebPosterEditor extends EditorPanel {
           sb.append((String) comboBoxes[i].getSelectedItem());
           sb.append("\n");
         }
-        final java.util.List<Part> parts = new ArrayList<Part>();
+        final java.util.List<Part> parts = new ArrayList<>();
         parts.add(TripleAWebPoster.createStringPart("siteid", m_id.getText()));
         parts.add(TripleAWebPoster.createStringPart("players", sb.toString()));
         parts.add(TripleAWebPoster.createStringPart("gamename", m_gameName.getText()));

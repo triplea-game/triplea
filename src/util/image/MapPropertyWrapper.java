@@ -87,7 +87,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     m_getter = getter;
     // m_defaultValue = defaultValue;
     if (defaultValue instanceof Collection) {
-      m_property = new ComboProperty<T>(name, description, defaultValue, possibleValues);
+      m_property = new ComboProperty<>(name, description, defaultValue, possibleValues);
     } else {
       throw new IllegalArgumentException(
           "Can not instantiate PropertyWrapper with: " + defaultValue.getClass().getCanonicalName());
@@ -181,7 +181,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
   }
 
   private static List<MapPropertyWrapper> createProperties(final Object object) {
-    final List<MapPropertyWrapper> properties = new ArrayList<MapPropertyWrapper>();
+    final List<MapPropertyWrapper> properties = new ArrayList<>();
     for (final Method setter : object.getClass().getMethods()) {
       final boolean startsWithSet = setter.getName().startsWith("set");
       if (!startsWithSet) {

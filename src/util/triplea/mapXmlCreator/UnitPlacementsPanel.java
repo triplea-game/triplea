@@ -91,7 +91,7 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
   protected void paintPreparation(final Map<String, Point> centers) {
     for (final String centerName : centers.keySet()) {
       if (MapXmlHelper.getUnitPlacementsMap().get(centerName) == null) {
-        MapXmlHelper.putUnitPlacements(centerName, new HashMap<String, Map<String, Integer>>());
+        MapXmlHelper.putUnitPlacements(centerName, new HashMap<>());
       }
     }
   }
@@ -206,8 +206,8 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
         }
       });
 
-      final LinkedHashMap<String, Integer> allPlayerPlacements = new LinkedHashMap<String, Integer>(playerPlacements);
-      final ArrayList<String> emptyPlayerUnitTypes = new ArrayList<String>(playerUnitTypes);
+      final LinkedHashMap<String, Integer> allPlayerPlacements = new LinkedHashMap<>(playerPlacements);
+      final ArrayList<String> emptyPlayerUnitTypes = new ArrayList<>(playerUnitTypes);
       emptyPlayerUnitTypes.removeAll(this.playerPlacements.keySet());
       for (final String unitType : emptyPlayerUnitTypes) {
         allPlayerPlacements.put(unitType, 0);

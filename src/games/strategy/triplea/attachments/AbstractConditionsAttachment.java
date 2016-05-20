@@ -32,7 +32,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   protected static final String DEFAULT_CHANCE = "1:1";
   protected static final String CHANCE = "chance";
   // list of conditions that this condition can
-  protected ArrayList<RulesAttachment> m_conditions = new ArrayList<RulesAttachment>();
+  protected ArrayList<RulesAttachment> m_conditions = new ArrayList<>();
   // contain
   // m_conditionType modifies the relationship of m_conditions
   protected String m_conditionType = AND;
@@ -72,7 +72,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
         throw new GameParseException("Could not find rule. name:" + subString + thisErrorMsg());
       }
       if (m_conditions == null) {
-        m_conditions = new ArrayList<RulesAttachment>();
+        m_conditions = new ArrayList<>();
       }
       m_conditions.add(condition);
     }
@@ -95,7 +95,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 
   @Override
   public void resetConditions() {
-    m_conditions = new ArrayList<RulesAttachment>();
+    m_conditions = new ArrayList<>();
   }
 
   @Override
@@ -185,7 +185,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     if (testedConditions.containsKey(this)) {
       return testedConditions.get(this);
     }
-    return areConditionsMet(new ArrayList<ICondition>(this.getConditions()), testedConditions,
+    return areConditionsMet(new ArrayList<>(this.getConditions()), testedConditions,
         this.getConditionType()) != this.getInvert();
   }
 
@@ -201,14 +201,14 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   public static HashSet<ICondition> getAllConditionsRecursive(final HashSet<ICondition> startingListOfConditions,
       HashSet<ICondition> allConditionsNeededSoFar) {
     if (allConditionsNeededSoFar == null) {
-      allConditionsNeededSoFar = new HashSet<ICondition>();
+      allConditionsNeededSoFar = new HashSet<>();
     }
     allConditionsNeededSoFar.addAll(startingListOfConditions);
     for (final ICondition condition : startingListOfConditions) {
       for (final ICondition subCondition : condition.getConditions()) {
         if (!allConditionsNeededSoFar.contains(subCondition)) {
           allConditionsNeededSoFar.addAll(getAllConditionsRecursive(
-              new HashSet<ICondition>(Collections.singleton(subCondition)), allConditionsNeededSoFar));
+              new HashSet<>(Collections.singleton(subCondition)), allConditionsNeededSoFar));
         }
       }
     }
@@ -226,11 +226,11 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   public static HashMap<ICondition, Boolean> testAllConditionsRecursive(final HashSet<ICondition> rules,
       HashMap<ICondition, Boolean> allConditionsTestedSoFar, final IDelegateBridge aBridge) {
     if (allConditionsTestedSoFar == null) {
-      allConditionsTestedSoFar = new HashMap<ICondition, Boolean>();
+      allConditionsTestedSoFar = new HashMap<>();
     }
     for (final ICondition c : rules) {
       if (!allConditionsTestedSoFar.containsKey(c)) {
-        testAllConditionsRecursive(new HashSet<ICondition>(c.getConditions()), allConditionsTestedSoFar, aBridge);
+        testAllConditionsRecursive(new HashSet<>(c.getConditions()), allConditionsTestedSoFar, aBridge);
         allConditionsTestedSoFar.put(c, c.isSatisfied(allConditionsTestedSoFar, aBridge));
       }
     }

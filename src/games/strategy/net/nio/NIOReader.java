@@ -25,13 +25,13 @@ import java.util.logging.Logger;
  */
 public class NIOReader {
   private static final Logger logger = Logger.getLogger(NIOReader.class.getName());
-  private final LinkedBlockingQueue<SocketReadData> outputQueue = new LinkedBlockingQueue<SocketReadData>();
+  private final LinkedBlockingQueue<SocketReadData> outputQueue = new LinkedBlockingQueue<>();
   private volatile boolean running = true;
-  private final Map<SocketChannel, SocketReadData> reading = new ConcurrentHashMap<SocketChannel, SocketReadData>();
+  private final Map<SocketChannel, SocketReadData> reading = new ConcurrentHashMap<>();
   private final IErrorReporter errorReporter;
   private final Selector selector;
   private final Object socketsToAddMutex = new Object();
-  private final List<SocketChannel> socketsToAdd = new ArrayList<SocketChannel>();
+  private final List<SocketChannel> socketsToAdd = new ArrayList<>();
   private long totalBytes;
 
   public NIOReader(final IErrorReporter reporter, final String threadSuffix) {
@@ -73,7 +73,7 @@ public class NIOReader {
       if (socketsToAdd.isEmpty()) {
         return;
       }
-      toAdd = new ArrayList<SocketChannel>(socketsToAdd);
+      toAdd = new ArrayList<>(socketsToAdd);
       socketsToAdd.clear();
     }
     for (final SocketChannel channel : toAdd) {

@@ -38,7 +38,7 @@ import games.strategy.util.Triple;
  */
 public class IndividualUnitPanel extends JPanel {
   private static final long serialVersionUID = -4222938655315991715L;
-  private final List<SingleUnitPanel> m_entries = new ArrayList<SingleUnitPanel>();
+  private final List<SingleUnitPanel> m_entries = new ArrayList<>();
   private final JTextArea m_title;
   private int m_max = -1;
   private final JLabel m_leftToSelect = new JLabel();
@@ -224,7 +224,7 @@ public class IndividualUnitPanel extends JPanel {
   }
 
   public IntegerMap<Unit> getSelected() {
-    final IntegerMap<Unit> selectedUnits = new IntegerMap<Unit>();
+    final IntegerMap<Unit> selectedUnits = new IntegerMap<>();
     for (final SingleUnitPanel entry : m_entries) {
       selectedUnits.put(entry.getUnit(), entry.getCount());
     }

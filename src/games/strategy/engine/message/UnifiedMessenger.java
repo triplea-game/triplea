@@ -41,16 +41,16 @@ public class UnifiedMessenger {
   // maps String -> EndPoint
   // these are the end points that
   // have local implementors
-  private final Map<String, EndPoint> m_localEndPoints = new HashMap<String, EndPoint>();
+  private final Map<String, EndPoint> m_localEndPoints = new HashMap<>();
   private final Object m_pendingLock = new Object();
   // threads wait on these latches for the hub to return invocations
   // the latch should be removed from the map when you countdown the last result
   // access should be synchronized on m_pendingLock
   // TODO: how do these get shutdown when we exit a game or close triplea?
-  private final Map<GUID, CountDownLatch> m_pendingInvocations = new HashMap<GUID, CountDownLatch>();
+  private final Map<GUID, CountDownLatch> m_pendingInvocations = new HashMap<>();
   // after the remote has invoked, the results are placed here
   // access should be synchronized on m_pendingLock
-  private final Map<GUID, RemoteMethodCallResults> m_results = new HashMap<GUID, RemoteMethodCallResults>();
+  private final Map<GUID, RemoteMethodCallResults> m_results = new HashMap<>();
   // only non null for the server
   private UnifiedMessengerHub m_hub;
   private final IMessengerErrorListener m_messengerErrorListener = new IMessengerErrorListener() {
@@ -374,7 +374,7 @@ class EndPoint {
   private final Object m_implementorsMutext = new Object();
   private final String m_name;
   private final Class<?> m_remoteClass;
-  private final List<Object> m_implementors = new ArrayList<Object>();
+  private final List<Object> m_implementors = new ArrayList<>();
   private final boolean m_singleThreaded;
 
   public EndPoint(final String name, final Class<?> remoteClass, final boolean singleThreaded) {
@@ -490,9 +490,9 @@ class EndPoint {
     // copy the implementors
     List<Object> implementorsCopy;
     synchronized (m_implementorsMutext) {
-      implementorsCopy = new ArrayList<Object>(m_implementors);
+      implementorsCopy = new ArrayList<>(m_implementors);
     }
-    final List<RemoteMethodCallResults> results = new ArrayList<RemoteMethodCallResults>(implementorsCopy.size());
+    final List<RemoteMethodCallResults> results = new ArrayList<>(implementorsCopy.size());
     for (final Object implementor : implementorsCopy) {
       results.add(invokeSingle(call, implementor, messageOriginator));
     }

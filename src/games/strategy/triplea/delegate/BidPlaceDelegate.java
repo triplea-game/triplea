@@ -68,7 +68,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
   @Override
   protected List<Territory> getAllProducers(final Territory to, final PlayerID player,
       final Collection<Unit> unitsToPlace) {
-    final List<Territory> producers = new ArrayList<Territory>();
+    final List<Territory> producers = new ArrayList<>();
     producers.add(to);
     return producers;
   }
@@ -112,16 +112,16 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
   protected Collection<Unit> getUnitsToBePlacedLand(final Territory to, final Collection<Unit> units,
       final PlayerID player) {
     final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
-    final Collection<Unit> placeableUnits = new ArrayList<Unit>();
+    final Collection<Unit> placeableUnits = new ArrayList<>();
     final CompositeMatch<Unit> groundUnits =
         // we add factories and constructions later
-        new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.UnitIsNotConstruction);
-    final CompositeMatch<Unit> airUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitIsNotConstruction);
+        new CompositeMatchAnd<>(Matches.UnitIsLand, Matches.UnitIsNotConstruction);
+    final CompositeMatch<Unit> airUnits = new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.UnitIsNotConstruction);
     placeableUnits.addAll(Match.getMatches(units, groundUnits));
     placeableUnits.addAll(Match.getMatches(units, airUnits));
     if (Match.someMatch(units, Matches.UnitIsConstruction)) {
       final IntegerMap<String> constructionsMap = howManyOfEachConstructionCanPlace(to, to, units, player);
-      final Collection<Unit> skipUnit = new ArrayList<Unit>();
+      final Collection<Unit> skipUnit = new ArrayList<>();
       for (final Unit currentUnit : Match.getMatches(units, Matches.UnitIsConstruction)) {
         final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
         if (maxUnits > 0) {
@@ -146,8 +146,8 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       }
     }
     // now check stacking limits
-    final Collection<Unit> placeableUnits2 = new ArrayList<Unit>();
-    final Collection<UnitType> typesAlreadyChecked = new ArrayList<UnitType>();
+    final Collection<Unit> placeableUnits2 = new ArrayList<>();
+    final Collection<UnitType> typesAlreadyChecked = new ArrayList<>();
     for (final Unit currentUnit : placeableUnits) {
       final UnitType ut = currentUnit.getType();
       if (typesAlreadyChecked.contains(ut)) {

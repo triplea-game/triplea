@@ -557,7 +557,7 @@ public class MapXmlHelper {
       } else if (productionRule.getNodeName().equals(XML_NODE_NAME_PRODUCTION_FRONTIER)) {
         final String playerName =
             productionRule.getAttributes().getNamedItem(XML_ATTR_ATTACHMENT_NAME_NAME).getNodeValue().substring(10);
-        final ArrayList<String> frontierRules = new ArrayList<String>();
+        final ArrayList<String> frontierRules = new ArrayList<>();
         final NodeList productionFrontierChildNodes = productionRule.getChildNodes();
         for (int pr_i = 0; pr_i < productionFrontierChildNodes.getLength(); ++pr_i) {
           final Node productionFrontierChildNode = productionFrontierChildNodes.item(pr_i);
@@ -577,7 +577,7 @@ public class MapXmlHelper {
       final Node gamePlayChildNode = gamePlayChildNodes.item(p_i);
       if (gamePlayChildNode.getNodeName().equals(XML_NODE_NAME_DELEGATE)) {
         final HashMap<String, String> attrDelegate = getAttributesMap(gamePlayChildNode.getAttributes());
-        final ArrayList<String> newValues = new ArrayList<String>();
+        final ArrayList<String> newValues = new ArrayList<>();
         newValues
             .add(attrDelegate.get(XML_ATTR_ATTACHMENT_NAME_JAVA_CLASS).replace(TRIPLEA_JAVA_CLASS_DELEGATE_PATH, ""));
         newValues.add(attrDelegate.get(XML_ATTR_STEP_NAME_DISPLAY));
@@ -635,7 +635,7 @@ public class MapXmlHelper {
 
   private static void parsePropertyNode(final Node property) {
     final HashMap<String, String> propertyAttr = getAttributesMap(property.getAttributes());
-    final ArrayList<String> settingValues = new ArrayList<String>();
+    final ArrayList<String> settingValues = new ArrayList<>();
     final String propertyName = propertyAttr.get(XML_ATTR_PROPERTY_NAME_NAME);
     if (propertyName.equals(XML_ATTR_VALUE_PROPERTY_NAME_NOTES)
         || propertyName.equals(XML_ATTR_VALUE_PROPERTY_NAME_MAP_NAME)) {
@@ -729,7 +729,7 @@ public class MapXmlHelper {
       final Node attatchmentOption = attatchmentOptionNodes.item(pr_i);
       if (attatchmentOption.getNodeName().equals(XML_NODE_NAME_OPTION)) {
         final HashMap<String, String> attatchmentOptionAttr = getAttributesMap(attatchmentOption.getAttributes());
-        final ArrayList<String> values = new ArrayList<String>();
+        final ArrayList<String> values = new ArrayList<>();
         values.add(attachmentAttatchTo); // playerName
         values.add(attatchmentOptionAttr.get(XML_NODE_NAME_VALUE));
         getTechnologyDefinitionsMap().put(
@@ -745,7 +745,7 @@ public class MapXmlHelper {
       final Node attatchmentOption = attatchmentOptionNodes.item(pr_i);
       if (attatchmentOption.getNodeName().equals(XML_NODE_NAME_OPTION)) {
         final HashMap<String, String> attatchmentOptionAttr = getAttributesMap(attatchmentOption.getAttributes());
-        final ArrayList<String> values = new ArrayList<String>();
+        final ArrayList<String> values = new ArrayList<>();
         values.add(attachmentAttatchTo); // unitName
         values.add(attatchmentOptionAttr.get(XML_NODE_NAME_VALUE));
         getUnitAttatchmentsMap().put(
@@ -760,7 +760,7 @@ public class MapXmlHelper {
 
     CanalTerritoriesTuple canalDef = null;
     String newCanalName = null;
-    final SortedSet<String> newLandTerritories = new TreeSet<String>();
+    final SortedSet<String> newLandTerritories = new TreeSet<>();
     for (int pr_i = 0; pr_i < attatchmentOptionNodes.getLength(); ++pr_i) {
       final Node attatchmentOption = attatchmentOptionNodes.item(pr_i);
       if (attatchmentOption.getNodeName().equals(XML_NODE_NAME_OPTION)) {
@@ -780,7 +780,7 @@ public class MapXmlHelper {
       }
     }
     if (canalDef == null) {
-      final SortedSet<String> newWaterTerritories = new TreeSet<String>();
+      final SortedSet<String> newWaterTerritories = new TreeSet<>();
       newWaterTerritories.add(attachmentAttatchTo);
       getCanalDefinitionsMap().put(newCanalName, new CanalTerritoriesTuple(newWaterTerritories, newLandTerritories));
     } else {
@@ -806,7 +806,7 @@ public class MapXmlHelper {
         }
       }
     }
-    final ArrayList<Integer> newValues = new ArrayList<Integer>();
+    final ArrayList<Integer> newValues = new ArrayList<>();
     newValues.add(Integer.parseInt(attrMapCost.get(XML_ATTR_RESULT_NAME_QUANTITY)));
     newValues.add(Integer.parseInt(attrMapResult.get(XML_ATTR_RESULT_NAME_QUANTITY)));
     putUnitDefinitions(attrMapResult.get(XML_ATTR_RESULT_NAME_RESOURCE_OR_UNIT), newValues);
@@ -1043,7 +1043,7 @@ public class MapXmlHelper {
       initialize.appendChild(ownerInitialize);
       final HashMap<String, ArrayList<String>> playerTerritories = Maps.newHashMap();
       for (final String player : getPlayerNames()) {
-        playerTerritories.put(player, new ArrayList<String>());
+        playerTerritories.put(player, new ArrayList<>());
       }
       for (final Entry<String, String> ownershipEntry : getTerritoryOwnershipsMap().entrySet()) {
         playerTerritories.get(ownershipEntry.getValue()).add(ownershipEntry.getKey());
@@ -1148,7 +1148,7 @@ public class MapXmlHelper {
       final Integer production = productionEntry.getValue();
       if (production > 0) {
         final String territoryName = productionEntry.getKey();
-        final ArrayList<String> attatchmentOptions = new ArrayList<String>();
+        final ArrayList<String> attatchmentOptions = new ArrayList<>();
         attatchmentOptions.add(territoryName);
         attatchmentOptions.add(production.toString());
         territoryAttatchments.put("production_" + territoryName, attatchmentOptions);
@@ -1162,7 +1162,7 @@ public class MapXmlHelper {
       final String territoryName = territoryDefinition.getKey();
       for (final Entry<DEFINITION, Boolean> definition : territoryDefinition.getValue().entrySet()) {
         if (definition.getValue() == Boolean.TRUE) {
-          final ArrayList<String> attatchmentOptions = new ArrayList<String>();
+          final ArrayList<String> attatchmentOptions = new ArrayList<>();
           attatchmentOptions.add(territoryName);
           attatchmentOptions.add("true");
           // TODO: handle capital different based on owner
@@ -1290,7 +1290,7 @@ public class MapXmlHelper {
         final String allianceName = allianceEntry.getValue();
         ArrayList<String> players = alliances.get(allianceName);
         if (players == null) {
-          players = new ArrayList<String>();
+          players = new ArrayList<>();
           alliances.put(allianceName, players);
         }
         players.add(allianceEntry.getKey());
@@ -1388,7 +1388,7 @@ public class MapXmlHelper {
       final String playerName = definitionValues.get(0);
       List<Element> elementList = playerAttatchOptions.get(playerName);
       if (elementList == null) {
-        elementList = new ArrayList<Element>();
+        elementList = new ArrayList<>();
         playerAttatchOptions.put(playerName, elementList);
       }
       elementList.add(option);
@@ -1414,11 +1414,11 @@ public class MapXmlHelper {
   }
 
   public static void filterForWaterTerrsWithAtLeastOneWaterNeighbor(final Set<String> waterTerrs2) {
-    final Set<String> waterTerrs2Copy = new TreeSet<String>(waterTerrs2);
+    final Set<String> waterTerrs2Copy = new TreeSet<>(waterTerrs2);
     for (final Iterator<String> iter_waterTerr2 = waterTerrs2.iterator(); iter_waterTerr2.hasNext();) {
       final String waterTerr2 = iter_waterTerr2.next();
       waterTerrs2Copy.remove(waterTerr2);
-      final Set<String> waterTerrs2ReqNeighbors = new TreeSet<String>(waterTerrs2Copy);
+      final Set<String> waterTerrs2ReqNeighbors = new TreeSet<>(waterTerrs2Copy);
       final Set<String> waterTerr2Neightbors = getTerritoryConnectionsMap().get(waterTerr2);
       if (waterTerr2Neightbors != null) {
         for (final String waterTerr2Neighbor : waterTerr2Neightbors) {
@@ -1443,17 +1443,17 @@ public class MapXmlHelper {
     if (!landTerrNeighbors.contains(landTerr2) && !landTerrNeighbors2.contains(landTerr)) {
       return;
     }
-    final Set<String> waterTerrs2 = new TreeSet<String>(landWaterTerrConn2.getValue());
+    final Set<String> waterTerrs2 = new TreeSet<>(landWaterTerrConn2.getValue());
     waterTerrs2.retainAll(waterTerrs);
     if (waterTerrs2.size() > 1) {
       filterForWaterTerrsWithAtLeastOneWaterNeighbor(waterTerrs2);
       // create canal only if at least 2 water territories remain
       if (waterTerrs2.size() > 1) {
-        final Set<String> newLandSet = new TreeSet<String>();
+        final Set<String> newLandSet = new TreeSet<>();
         newLandSet.add(landTerr);
         newLandSet.add(landTerr2);
         final CanalTerritoriesTuple terrTuple =
-            new CanalTerritoriesTuple(new TreeSet<String>(waterTerrs2), newLandSet);
+            new CanalTerritoriesTuple(new TreeSet<>(waterTerrs2), newLandSet);
         putCanalDefinitions("Canal" + getCanalDefinitionsMap().size(), terrTuple);
       }
     }

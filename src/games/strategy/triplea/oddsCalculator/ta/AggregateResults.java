@@ -20,7 +20,7 @@ public class AggregateResults implements Serializable {
   private long m_time;
 
   public AggregateResults(final int expectedCount) {
-    m_results = new ArrayList<BattleResults>(expectedCount);
+    m_results = new ArrayList<>(expectedCount);
   }
 
   public void addResult(final BattleResults result) {
@@ -56,13 +56,13 @@ public class AggregateResults implements Serializable {
   public List<Unit> GetAverageAttackingUnitsRemaining() {
     // can be null!
     final BattleResults results = GetBattleResultsClosestToAverage();
-    return results == null ? new ArrayList<Unit>() : results.getRemainingAttackingUnits();
+    return results == null ? new ArrayList<>() : results.getRemainingAttackingUnits();
   }
 
   public List<Unit> GetAverageDefendingUnitsRemaining() {
     // can be null!
     final BattleResults results = GetBattleResultsClosestToAverage();
-    return results == null ? new ArrayList<Unit>() : results.getRemainingDefendingUnits();
+    return results == null ? new ArrayList<>() : results.getRemainingDefendingUnits();
   }
 
   public double getAverageAttackingUnitsLeft() {

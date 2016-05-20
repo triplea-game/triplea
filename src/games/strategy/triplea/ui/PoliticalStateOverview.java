@@ -38,7 +38,7 @@ public class PoliticalStateOverview extends JPanel {
   private final GameData m_data;
   private final boolean m_editable;
   private final Set<Triple<PlayerID, PlayerID, RelationshipType>> m_editChanges =
-      new HashSet<Triple<PlayerID, PlayerID, RelationshipType>>();
+      new HashSet<>();
 
   /**
    * Constructs this panel
@@ -134,7 +134,7 @@ public class PoliticalStateOverview extends JPanel {
         @Override
         public void actionPerformed(final ActionEvent e) {
           final List<RelationshipType> types =
-              new ArrayList<RelationshipType>(m_data.getRelationshipTypeList().getAllRelationshipTypes());
+              new ArrayList<>(m_data.getRelationshipTypeList().getAllRelationshipTypes());
           types.remove(m_data.getRelationshipTypeList().getNullRelation());
           types.remove(m_data.getRelationshipTypeList().getSelfRelation());
           final Object[] possibilities = types.toArray();

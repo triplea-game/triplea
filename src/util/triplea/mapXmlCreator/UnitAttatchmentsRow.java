@@ -112,7 +112,7 @@ class UnitAttatchmentsRow extends DynamicRow {
 
   @Override
   protected ArrayList<JComponent> getComponentList() {
-    final ArrayList<JComponent> componentList = new ArrayList<JComponent>();
+    final ArrayList<JComponent> componentList = new ArrayList<>();
     componentList.add(textFieldAttatchmentName);
     componentList.add(textFieldValue);
     return componentList;

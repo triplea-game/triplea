@@ -18,15 +18,15 @@ public class IntegerMap<T> implements Cloneable, Serializable {
 
   /** Creates new IntegerMap */
   public IntegerMap() {
-    mapValues = new HashMap<T, Integer>();
+    mapValues = new HashMap<>();
   }
 
   public IntegerMap(final int size) {
-    mapValues = new HashMap<T, Integer>(size);
+    mapValues = new HashMap<>(size);
   }
 
   public IntegerMap(final int size, final float loadFactor) {
-    mapValues = new HashMap<T, Integer>(size, loadFactor);
+    mapValues = new HashMap<>(size, loadFactor);
   }
 
   public IntegerMap(final T object, final int value) {
@@ -46,7 +46,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    * @param integerMap
    */
   public IntegerMap(final IntegerMap<T> integerMap) {
-    mapValues = new HashMap<T, Integer>(integerMap.size());
+    mapValues = new HashMap<>(integerMap.size());
     for (final T t : integerMap.keySet()) {
       mapValues.put(t, integerMap.getInt(t));
     }
@@ -59,7 +59,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    * @param integerMaps
    */
   public IntegerMap(final IntegerMap<T>[] integerMaps) {
-    mapValues = new HashMap<T, Integer>();
+    mapValues = new HashMap<>();
     for (final IntegerMap<T> integerMap : integerMaps) {
       this.add(integerMap);
     }
@@ -316,7 +316,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
   }
 
   public IntegerMap<T> copy() {
-    final IntegerMap<T> copy = new IntegerMap<T>();
+    final IntegerMap<T> copy = new IntegerMap<>();
     copy.add(this);
     return copy;
   }
@@ -354,7 +354,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
   }
 
   public Collection<T> getKeyMatches(final Match<T> matcher) {
-    final Collection<T> values = new ArrayList<T>();
+    final Collection<T> values = new ArrayList<>();
     for (final T obj : mapValues.keySet()) {
       if (matcher.match(obj)) {
         values.add(obj);
@@ -374,7 +374,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
   }
 
   public void removeNonMatchingKeys(final Match<T> aMatch) {
-    final Match<T> match = new InverseMatch<T>(aMatch);
+    final Match<T> match = new InverseMatch<>(aMatch);
     removeMatchingKeys(match);
   }
 

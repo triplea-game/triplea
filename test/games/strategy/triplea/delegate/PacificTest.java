@@ -113,7 +113,7 @@ public class PacificTest extends DelegateTest {
 
   private Collection<Unit> getUnits(final IntegerMap<UnitType> units, final Territory from) {
     final Iterator<UnitType> iter = units.keySet().iterator();
-    final Collection<Unit> rVal = new ArrayList<Unit>(units.totalValues());
+    final Collection<Unit> rVal = new ArrayList<>(units.totalValues());
     while (iter.hasNext()) {
       final UnitType type = iter.next();
       rVal.addAll(from.getUnits().getUnits(type, units.getInt(type)));
@@ -208,7 +208,7 @@ public class PacificTest extends DelegateTest {
     route.add(SZ16);
     route.add(SZ27);
     route.add(NewBrit);
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
     final String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -223,7 +223,7 @@ public class PacificTest extends DelegateTest {
     route.add(SZ8);
     route.add(SZ20);
     route.add(Midway);
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
     final String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -239,7 +239,7 @@ public class PacificTest extends DelegateTest {
     route.add(SZ8);
     route.add(SZ20);
     route.add(Midway);
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
     final String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -252,7 +252,7 @@ public class PacificTest extends DelegateTest {
     route.add(SZ7);
     route.add(SZ8);
     route.add(SZ20);
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
     final String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -265,7 +265,7 @@ public class PacificTest extends DelegateTest {
     m_delegate.setDelegateBridgeAndPlayer(bridge);
     bridge.setStepName("japaneseNonCombatMove");
     m_delegate.start();
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 1);
     final Route route = new Route();
     route.setStart(Bonin);

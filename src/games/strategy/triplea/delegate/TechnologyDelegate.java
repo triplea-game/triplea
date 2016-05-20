@@ -55,7 +55,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   @Override
   public void initialize(final String name, final String displayName) {
     super.initialize(name, displayName);
-    m_techs = new HashMap<PlayerID, Collection<TechAdvance>>();
+    m_techs = new HashMap<>();
     m_techCost = -1;
   }
 
@@ -80,12 +80,12 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Match<TriggerAttachment> technologyDelegateTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
+      final Match<TriggerAttachment> technologyDelegateTriggerMatch = new CompositeMatchAnd<>(
           AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
           new CompositeMatchOr<TriggerAttachment>(TriggerAttachment.techAvailableMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
-          new HashSet<PlayerID>(Collections.singleton(m_player)), technologyDelegateTriggerMatch, m_bridge);
+          new HashSet<>(Collections.singleton(m_player)), technologyDelegateTriggerMatch, m_bridge);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
         final HashMap<ICondition, Boolean> testedConditions =
@@ -94,7 +94,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
         final List<TriggerAttachment> toFireTestedAndSatisfied =
             Match.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions));
         // now list out individual types to fire, once for each of the matches above.
-        TriggerAttachment.triggerAvailableTechChange(new HashSet<TriggerAttachment>(toFireTestedAndSatisfied), m_bridge,
+        TriggerAttachment.triggerAvailableTechChange(new HashSet<>(toFireTestedAndSatisfied), m_bridge,
             null, null, true, true, true, true);
       }
     }
@@ -268,7 +268,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     }
     // Put in techs so they can be activated later.
     m_techs.put(m_player, advances);
-    final List<String> advancesAsString = new ArrayList<String>();
+    final List<String> advancesAsString = new ArrayList<>();
     final Iterator<TechAdvance> iter = advances.iterator();
     int count = advances.size();
     final StringBuilder text = new StringBuilder();
@@ -355,7 +355,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   private Collection<TechAdvance> getTechAdvances(int hits) {
-    List<TechAdvance> available = new ArrayList<TechAdvance>();
+    List<TechAdvance> available = new ArrayList<>();
     if (hits > 0 && isWW2V3TechModel()) {
       available = getAvailableAdvancesForCategory(m_techCategory);
       hits = 1;
@@ -371,7 +371,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     if (hits == 0) {
       return Collections.emptyList();
     }
-    final Collection<TechAdvance> newAdvances = new ArrayList<TechAdvance>(hits);
+    final Collection<TechAdvance> newAdvances = new ArrayList<>(hits);
     final String annotation = m_player.getName() + " rolling to see what tech advances are aquired";
     int[] random;
     if (isSelectableTechRoll() || BaseEditDelegate.getEditMode(getData())) {
@@ -379,7 +379,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       random = tripleaPlayer.selectFixedDice(hits, 0, true, annotation, available.size());
     } else {
       random = new int[hits];
-      final List<Integer> rolled = new ArrayList<Integer>();
+      final List<Integer> rolled = new ArrayList<>();
       // generating discrete rolls. messy, can't think of a more elegant way
       // hits guaranteed to be less than available at this point.
       for (int i = 0; i < hits; i++) {
@@ -393,7 +393,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
         rolled.add(roll);
       }
     }
-    final List<Integer> rolled = new ArrayList<Integer>();
+    final List<Integer> rolled = new ArrayList<>();
     for (final int element : random) {
       final int index = element;
       // check in case of dice chooser.

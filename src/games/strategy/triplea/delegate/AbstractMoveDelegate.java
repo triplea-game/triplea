@@ -25,7 +25,7 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
  */
 public abstract class AbstractMoveDelegate extends BaseTripleADelegate implements IMoveDelegate {
   // A collection of UndoableMoves
-  protected List<UndoableMove> m_movesToUndo = new ArrayList<UndoableMove>();
+  protected List<UndoableMove> m_movesToUndo = new ArrayList<>();
   // protected final TransportTracker m_transportTracker = new TransportTracker();
   // if we are in the process of doing a move. this instance will allow us to resume the move
   protected MovePerformer m_tempMovePerformer;
@@ -82,7 +82,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 
   @Override
   public List<UndoableMove> getMovesMade() {
-    return new ArrayList<UndoableMove>(m_movesToUndo);
+    return new ArrayList<>(m_movesToUndo);
   }
 
   @Override
@@ -132,7 +132,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   @Override
   public String move(final Collection<Unit> units, final Route route,
       final Collection<Unit> transportsThatCanBeLoaded) {
-    return move(units, route, transportsThatCanBeLoaded, new HashMap<Unit, Collection<Unit>>());
+    return move(units, route, transportsThatCanBeLoaded, new HashMap<>());
   }
 
   @Override

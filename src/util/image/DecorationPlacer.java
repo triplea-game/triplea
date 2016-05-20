@@ -97,11 +97,11 @@ public class DecorationPlacer extends JFrame {
   // The map image will be stored here
   private Image m_image;
   // hash map for image points
-  private Map<String, List<Point>> m_currentPoints = new HashMap<String, List<Point>>();
+  private Map<String, List<Point>> m_currentPoints = new HashMap<>();
   // hash map for center points
-  private Map<String, Point> m_centers = new HashMap<String, Point>();
+  private Map<String, Point> m_centers = new HashMap<>();
   // hash map for polygon points
-  private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>();
+  private Map<String, List<Polygon>> m_polygons = new HashMap<>();
   private final JLabel m_location = new JLabel();
   private static File s_mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
@@ -110,7 +110,7 @@ public class DecorationPlacer extends JFrame {
   private Point m_currentMousePoint = new Point(0, 0);
   private Triple<String, Image, Point> m_currentSelectedImage = null;
   private Map<String, Tuple<Image, List<Point>>> m_currentImagePoints =
-      new HashMap<String, Tuple<Image, List<Point>>>();
+      new HashMap<>();
   private static boolean s_highlightAll = false;
   private static boolean s_createNewImageOnRightClick = false;
   private static Image s_staticImageForPlacing = null;
@@ -433,10 +433,10 @@ public class DecorationPlacer extends JFrame {
    * Saves the centers to disk.
    */
   private void saveImagePoints() {
-    m_currentPoints = new HashMap<String, List<Point>>();
+    m_currentPoints = new HashMap<>();
     for (final Entry<String, Tuple<Image, List<Point>>> entry : m_currentImagePoints.entrySet()) {
       // remove duplicates
-      final LinkedHashSet<Point> pointSet = new LinkedHashSet<Point>();
+      final LinkedHashSet<Point> pointSet = new LinkedHashSet<>();
       pointSet.addAll(entry.getValue().getSecond());
       entry.getValue().getSecond().clear();
       entry.getValue().getSecond().addAll(pointSet);
@@ -515,7 +515,7 @@ public class DecorationPlacer extends JFrame {
 
   private void loadImagesAndPoints() {
     s_cheapMutex = true;
-    m_currentImagePoints = new HashMap<String, Tuple<Image, List<Point>>>();
+    m_currentImagePoints = new HashMap<>();
     m_currentSelectedImage = null;
     selectImagePointType();
     final Object[] miscOrNamesOptions = {"Folder Full of Images", "Text File Full of Points"};
@@ -596,7 +596,7 @@ public class DecorationPlacer extends JFrame {
         final FileInputStream in = new FileInputStream(centerName.getPathString());
         m_currentPoints = PointFileReaderWriter.readOneToMany(in);
       } else {
-        m_currentPoints = new HashMap<String, List<Point>>();
+        m_currentPoints = new HashMap<>();
       }
     } catch (final FileNotFoundException ex) {
       ex.printStackTrace();
@@ -635,7 +635,7 @@ public class DecorationPlacer extends JFrame {
         List<Point> points = m_currentPoints.get(entry.getKey());
         if (points == null) {
           System.out.println("Did NOT find point for: " + entry.getKey());
-          points = new ArrayList<Point>();
+          points = new ArrayList<>();
           final Point p = new Point(entry.getValue().x - (width / 2),
               entry.getValue().y + addY + ((s_showFromTopLeft ? -1 : 1) * (height / 2)));
           points.add(p);
@@ -657,7 +657,7 @@ public class DecorationPlacer extends JFrame {
   private void fillCurrentImagePointsBasedOnImageFolder(final boolean pointsAreExactlyTerritoryNames) {
     final int addY = (s_imagePointType == ImagePointType.comments ? ((-ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS))
         : (s_imagePointType == ImagePointType.pu_place ? (ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS) : 0));
-    final List<String> allTerritories = new ArrayList<String>(m_centers.keySet());
+    final List<String> allTerritories = new ArrayList<>(m_centers.keySet());
     for (final File file : s_currentImageFolderLocation.listFiles()) {
       if (!file.getPath().endsWith(".png") && !file.getPath().endsWith(".gif")) {
         continue;
@@ -668,7 +668,7 @@ public class DecorationPlacer extends JFrame {
       List<Point> points = (m_currentPoints != null
           ? m_currentPoints.get((pointsAreExactlyTerritoryNames ? possibleTerritoryName : imageName)) : null);
       if (points == null) {
-        points = new ArrayList<Point>();
+        points = new ArrayList<>();
         Point p = m_centers.get(possibleTerritoryName);
         if (p == null) {
           System.out.println("Did NOT find point for: " + possibleTerritoryName);
@@ -731,7 +731,7 @@ public class DecorationPlacer extends JFrame {
       // create a new point here in this territory
       final Optional<String> territoryName = Util.findTerritoryName(m_currentMousePoint, m_polygons);
       if (territoryName.isPresent()) {
-        final List<Point> points = new ArrayList<Point>();
+        final List<Point> points = new ArrayList<>();
         points.add(new Point(m_currentMousePoint));
         m_currentImagePoints.put(territoryName.get(), Tuple.of(s_staticImageForPlacing, points));
       }

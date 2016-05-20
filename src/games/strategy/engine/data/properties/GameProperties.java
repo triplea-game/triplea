@@ -27,12 +27,12 @@ import games.strategy.engine.data.GameDataComponent;
  */
 public class GameProperties extends GameDataComponent {
   private static final long serialVersionUID = -1448163357090677564L;
-  private final Map<String, Object> constantProperties = new HashMap<String, Object>();
+  private final Map<String, Object> constantProperties = new HashMap<>();
   // a set of IEditableProperties
-  private final Map<String, IEditableProperty> editableProperties = new HashMap<String, IEditableProperty>();
+  private final Map<String, IEditableProperty> editableProperties = new HashMap<>();
   // This list is used to keep track of order properties were
   // added.
-  private final List<String> ordering = new ArrayList<String>();
+  private final List<String> ordering = new ArrayList<>();
 
   /**
    * Creates a new instance of Properties
@@ -121,7 +121,7 @@ public class GameProperties extends GameDataComponent {
    * @return a list of IEditableProperty
    */
   public List<IEditableProperty> getEditableProperties() {
-    final List<IEditableProperty> properties = new ArrayList<IEditableProperty>();
+    final List<IEditableProperty> properties = new ArrayList<>();
     for (final String propertyName : ordering) {
       if (editableProperties.containsKey(propertyName)) {
         properties.add(editableProperties.get(propertyName));

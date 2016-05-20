@@ -15,7 +15,7 @@ public class AllianceTrackerTest extends TestCase {
     // get the xml file
     final URL url = this.getClass().getResource("Test.xml");
     final InputStream input = url.openStream();
-    m_data = (new GameParser()).parse(input, new AtomicReference<String>(), false);
+    m_data = (new GameParser()).parse(input, new AtomicReference<>(), false);
   }
 
   public void testAddAlliance() throws Exception {

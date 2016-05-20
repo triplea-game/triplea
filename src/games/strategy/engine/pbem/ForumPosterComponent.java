@@ -143,7 +143,7 @@ public class ForumPosterComponent extends JPanel {
     m_historyLog.printFullTurn(m_data, m_showDetailsCheckbox.isSelected(), allowedIDs);
     if (m_includeTerritoryAllPlayersCheckbox.isSelected()) {
       for (final PlayerID player : m_data.getPlayerList().getPlayers()) {
-        final Collection<PlayerID> players = new ArrayList<PlayerID>();
+        final Collection<PlayerID> players = new ArrayList<>();
         players.add(player);
         m_historyLog.printTerritorySummary(m_data, players);
       }

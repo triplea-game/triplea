@@ -24,11 +24,11 @@ import games.strategy.util.Match;
  */
 public class GameMap extends GameDataComponent implements Iterable<Territory> {
   private static final long serialVersionUID = -4606700588396439283L;
-  private final List<Territory> m_territories = new ArrayList<Territory>();
+  private final List<Territory> m_territories = new ArrayList<>();
   // note that all entries are unmodifiable
-  private final Map<Territory, Set<Territory>> m_connections = new HashMap<Territory, Set<Territory>>();
+  private final Map<Territory, Set<Territory>> m_connections = new HashMap<>();
   // for fast lookup based on the string name of the territory
-  private final Map<String, Territory> m_territoryLookup = new HashMap<String, Territory>();
+  private final Map<String, Territory> m_territoryLookup = new HashMap<>();
   // nil if the map is not grid-based
   // otherwise, m_gridDimensions.length is the number of dimensions,
   // and each element is the size of a dimension
@@ -181,11 +181,11 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     m_connections.remove(t1);
     m_territoryLookup.remove(t1.getName());
     // remove territory from other connections
-    final Map<Territory, Set<Territory>> tempConnections = new HashMap<Territory, Set<Territory>>();
+    final Map<Territory, Set<Territory>> tempConnections = new HashMap<>();
     for (final Entry<Territory, Set<Territory>> entry : m_connections.entrySet()) {
       if (entry.getValue().contains(t1)) {
         final Set<Territory> current = entry.getValue();
-        final Set<Territory> modified = new HashSet<Territory>(current);
+        final Set<Territory> modified = new HashSet<>(current);
         modified.remove(t1);
         tempConnections.put(entry.getKey(), modified);
       }
@@ -234,7 +234,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   private void setConnection(final Territory from, final Territory to) {
     // preserves the unmodifiable nature of the entries
     final Set<Territory> current = m_connections.get(from);
-    final Set<Territory> modified = new HashSet<Territory>(current);
+    final Set<Territory> modified = new HashSet<>(current);
     modified.add(to);
     m_connections.put(from, Collections.unmodifiableSet(modified));
   }
@@ -276,7 +276,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       return getNeighbors(t);
     }
     final Set<Territory> possible = m_connections.get(t);
-    final Set<Territory> passed = new HashSet<Territory>();
+    final Set<Territory> passed = new HashSet<>();
     if (possible == null) {
       return passed;
     }
@@ -308,7 +308,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (distance == 1) {
       return start;
     }
-    final Set<Territory> neighbors = getNeighbors(start, new HashSet<Territory>(start), --distance);
+    final Set<Territory> neighbors = getNeighbors(start, new HashSet<>(start), --distance);
     neighbors.remove(territory);
     return neighbors;
   }
@@ -332,7 +332,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (distance == 1) {
       return start;
     }
-    final Set<Territory> neighbors = getNeighbors(start, new HashSet<Territory>(start), --distance, cond);
+    final Set<Territory> neighbors = getNeighbors(start, new HashSet<>(start), --distance, cond);
     neighbors.remove(territory);
     return neighbors;
   }
@@ -346,7 +346,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *         other.
    */
   public Set<Territory> getNeighbors(final Set<Territory> frontier, final int distance, final Match<Territory> cond) {
-    final Set<Territory> rVal = getNeighbors(frontier, new HashSet<Territory>(frontier), distance, cond);
+    final Set<Territory> rVal = getNeighbors(frontier, new HashSet<>(frontier), distance, cond);
     rVal.removeAll(frontier);
     return rVal;
   }
@@ -359,7 +359,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *         other.
    */
   public Set<Territory> getNeighbors(final Set<Territory> frontier, final int distance) {
-    final Set<Territory> rVal = getNeighbors(frontier, new HashSet<Territory>(frontier), distance);
+    final Set<Territory> rVal = getNeighbors(frontier, new HashSet<>(frontier), distance);
     rVal.removeAll(frontier);
     return rVal;
   }
@@ -370,7 +370,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       return searched;
     }
     final Iterator<Territory> iter = frontier.iterator();
-    final Set<Territory> newFrontier = new HashSet<Territory>();
+    final Set<Territory> newFrontier = new HashSet<>();
     while (iter.hasNext()) {
       final Territory t = iter.next();
       newFrontier.addAll(getNeighbors(t, cond));
@@ -385,7 +385,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       return searched;
     }
     final Iterator<Territory> iter = frontier.iterator();
-    final Set<Territory> newFrontier = new HashSet<Territory>();
+    final Set<Territory> newFrontier = new HashSet<>();
     while (iter.hasNext()) {
       final Territory t = iter.next();
       newFrontier.addAll(getNeighbors(t));
@@ -450,7 +450,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   public Route getRoute_IgnoreEnd(final Territory t1, final Territory t2, final Match<Territory> match) {
-    return getRoute(t1, t2, new CompositeMatchOr<Territory>(Matches.territoryIs(t2), match));
+    return getRoute(t1, t2, new CompositeMatchOr<>(Matches.territoryIs(t2), match));
   }
 
   /**
@@ -477,7 +477,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (t1 == t2) {
       return new Route(t1);
     }
-    final CompositeMatch<Territory> allCond = new CompositeMatchOr<Territory>(matches.keySet());
+    final CompositeMatch<Territory> allCond = new CompositeMatchOr<>(matches.keySet());
     if (getNeighbors(t1, allCond).contains(t2)) {
       return new Route(t1, t2);
     }
@@ -538,9 +538,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (t1.equals(t2)) {
       return 0;
     }
-    final Set<Territory> frontier = new HashSet<Territory>();
+    final Set<Territory> frontier = new HashSet<>();
     frontier.add(t1);
-    return getDistance(0, new HashSet<Territory>(), frontier, t2, cond);
+    return getDistance(0, new HashSet<>(), frontier, t2, cond);
   }
 
   /**
@@ -555,7 +555,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *         or -1 if they are not connected. (Distance includes to the end)
    */
   public int getDistance_IgnoreEndForCondition(final Territory t1, final Territory t2, final Match<Territory> cond) {
-    return getDistance(t1, t2, new CompositeMatchOr<Territory>(Matches.territoryIs(t2), cond));
+    return getDistance(t1, t2, new CompositeMatchOr<>(Matches.territoryIs(t2), cond));
   }
 
   /**
@@ -568,7 +568,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     // add the frontier to the searched
     searched.addAll(frontier);
     // find the new frontier
-    final Set<Territory> newFrontier = new HashSet<Territory>();
+    final Set<Territory> newFrontier = new HashSet<>();
     final Iterator<Territory> frontierIterator = frontier.iterator();
     while (frontierIterator.hasNext()) {
       final Territory onFrontier = frontierIterator.next();
@@ -593,7 +593,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   public IntegerMap<Territory> getDistance(final Territory target, final Collection<Territory> territories,
       final Match<Territory> condition) {
-    final IntegerMap<Territory> rVal = new IntegerMap<Territory>();
+    final IntegerMap<Territory> rVal = new IntegerMap<>();
     if (target == null || territories == null || territories.isEmpty()) {
       return rVal;
     }
@@ -614,7 +614,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   public List<Territory> getTerritoriesOwnedBy(final PlayerID player) {
     final Iterator<Territory> iter = m_territories.iterator();
-    final List<Territory> owner = new ArrayList<Territory>();
+    final List<Territory> owner = new ArrayList<>();
     while (iter.hasNext()) {
       final Territory territory = iter.next();
       if (territory.getOwner().equals(player)) {

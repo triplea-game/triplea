@@ -40,7 +40,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   // especially for actions such as when france declares war on germany and it automatically causes UK to declare war as
   // well. it is good to
   // set "actionAccept" to "UK" so UK can accept this action to go through.
-  protected ArrayList<PlayerID> m_actionAccept = new ArrayList<PlayerID>();
+  protected ArrayList<PlayerID> m_actionAccept = new ArrayList<>();
 
   public static Match<AbstractUserActionAttachment> isSatisfiedMatch(
       final HashMap<ICondition, Boolean> testedConditions) {
@@ -140,7 +140,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   public void resetActionAccept() {
-    m_actionAccept = new ArrayList<PlayerID>();
+    m_actionAccept = new ArrayList<>();
   }
 
   /**

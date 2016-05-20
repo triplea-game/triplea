@@ -102,7 +102,7 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
       }
       newUnitName = newUnitName.trim();
 
-      final ArrayList<Integer> newValue = new ArrayList<Integer>();
+      final ArrayList<Integer> newValue = new ArrayList<>();
       newValue.add(0);
       newValue.add(1);
       MapXmlHelper.putUnitDefinitions(newUnitName, newValue);

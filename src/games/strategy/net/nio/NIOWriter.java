@@ -27,9 +27,9 @@ public class NIOWriter {
   private final IErrorReporter m_errorReporter;
   // this is the data we are writing
   private final Map<SocketChannel, List<SocketWriteData>> m_writing =
-      new HashMap<SocketChannel, List<SocketWriteData>>();
+      new HashMap<>();
   // these are the sockets we arent selecting on, but should now
-  private List<SocketChannel> m_socketsToWake = new ArrayList<SocketChannel>();
+  private List<SocketChannel> m_socketsToWake = new ArrayList<>();
   // the writing thread and threads adding data to write synchronize on this lock
   private final Object m_mutex = new Object();
   private long m_totalBytes = 0;
@@ -68,7 +68,7 @@ public class NIOWriter {
         return;
       }
       socketsToWriteCopy = m_socketsToWake;
-      m_socketsToWake = new ArrayList<SocketChannel>();
+      m_socketsToWake = new ArrayList<>();
     }
     for (final SocketChannel channel : socketsToWriteCopy) {
       try {
@@ -202,7 +202,7 @@ public class NIOWriter {
       if (m_writing.containsKey(channel)) {
         m_writing.get(channel).add(data);
       } else {
-        final List<SocketWriteData> values = new ArrayList<SocketWriteData>();
+        final List<SocketWriteData> values = new ArrayList<>();
         values.add(data);
         m_writing.put(channel, values);
         m_socketsToWake.add(channel);

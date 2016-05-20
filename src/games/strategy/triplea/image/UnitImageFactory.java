@@ -38,9 +38,9 @@ public class UnitImageFactory {
   private static int UNIT_COUNTER_OFFSET_HEIGHT = UNIT_ICON_HEIGHT;
   private static final String FILE_NAME_BASE = "units/";
   // maps Point -> image
-  private final Map<String, Image> m_images = new HashMap<String, Image>();
+  private final Map<String, Image> m_images = new HashMap<>();
   // maps Point -> Icon
-  private final Map<String, ImageIcon> m_icons = new HashMap<String, ImageIcon>();
+  private final Map<String, ImageIcon> m_icons = new HashMap<>();
   // Scaling factor for unit images
   private double m_scaleFactor;
   private ResourceLoader m_resourceLoader;

@@ -22,7 +22,7 @@ public class TripleAProcessRunner {
   }
 
   public static void startGame(final String savegamePath, final String classpath, final Long maxMemory) {
-    final List<String> commands = new ArrayList<String>();
+    final List<String> commands = new ArrayList<>();
     if (maxMemory != null && maxMemory > (32 * 1024 * 1024)) {
       ProcessRunnerUtil.populateBasicJavaArgs(commands, classpath, maxMemory);
     } else {
@@ -59,7 +59,7 @@ public class TripleAProcessRunner {
 
   public static void hostGame(final int port, final String playerName, final String comments, final String password,
       final Messengers messengers) {
-    final List<String> commands = new ArrayList<String>();
+    final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands);
     commands.add("-D" + GameRunner2.TRIPLEA_SERVER_PROPERTY + "=true");
     commands.add("-D" + GameRunner2.TRIPLEA_PORT_PROPERTY + "=" + port);
@@ -128,7 +128,7 @@ public class TripleAProcessRunner {
   // newClassPath can be null
   public static void joinGame(final int port, final String hostAddressIP, final String newClassPath,
       final Messengers messengers) {
-    final List<String> commands = new ArrayList<String>();
+    final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
     commands.add("-D" + GameRunner2.TRIPLEA_CLIENT_PROPERTY + "=true");
     commands.add("-D" + GameRunner2.TRIPLEA_PORT_PROPERTY + "=" + port);

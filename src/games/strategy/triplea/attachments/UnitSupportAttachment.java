@@ -38,7 +38,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   @InternalDoNotExport
   private boolean m_enemy = false;
   private String m_bonusType = null;
-  private ArrayList<PlayerID> m_players = new ArrayList<PlayerID>();
+  private ArrayList<PlayerID> m_players = new ArrayList<>();
   private boolean m_impArtTech = false;
   // strings
   // roll or strength
@@ -53,7 +53,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   public static Set<UnitSupportAttachment> get(final UnitType u) {
-    final Set<UnitSupportAttachment> supports = new HashSet<UnitSupportAttachment>();
+    final Set<UnitSupportAttachment> supports = new HashSet<>();
     final Map<String, IAttachment> map = u.getAttachments();
     final Iterator<String> objsIter = map.keySet().iterator();
     while (objsIter.hasNext()) {
@@ -75,7 +75,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   public static Set<UnitSupportAttachment> get(final GameData data) {
-    final Set<UnitSupportAttachment> supports = new HashSet<UnitSupportAttachment>();
+    final Set<UnitSupportAttachment> supports = new HashSet<>();
     data.acquireReadLock();
     try {
       final Iterator<UnitType> i = data.getUnitTypeList().iterator();
@@ -94,7 +94,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
       m_unitType = null;
       return;
     }
-    m_unitType = new HashSet<UnitType>();
+    m_unitType = new HashSet<>();
     final String[] s = names.split(":");
     for (final String element : s) {
       final UnitType type = getData().getUnitTypeList().getUnitType(element);
@@ -281,7 +281,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   public void resetPlayers() {
-    m_players = new ArrayList<PlayerID>();
+    m_players = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -369,7 +369,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
       rule.addUnitTypes(getTargets(data));
     }
     if (!first) {
-      rule.setPlayers(new ArrayList<PlayerID>(data.getPlayerList().getPlayers()));
+      rule.setPlayers(new ArrayList<>(data.getPlayerList().getPlayers()));
     }
     type.addAttachment(attachmentName, rule);
   }
@@ -397,7 +397,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
       return;
     }
     if (m_unitType == null) {
-      m_unitType = new HashSet<UnitType>();
+      m_unitType = new HashSet<>();
     }
     m_unitType.addAll(types);
   }

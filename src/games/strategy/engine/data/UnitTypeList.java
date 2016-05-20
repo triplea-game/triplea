@@ -12,7 +12,7 @@ import java.util.Set;
  */
 public class UnitTypeList extends GameDataComponent implements Iterable<UnitType> {
   private static final long serialVersionUID = 9002927658524651749L;
-  private final Map<String, UnitType> m_unitTypes = new HashMap<String, UnitType>();
+  private final Map<String, UnitType> m_unitTypes = new HashMap<>();
 
   /**
    * Creates new UnitTypeCollection
@@ -38,7 +38,7 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
    * @param names
    */
   public Set<UnitType> getUnitTypes(final String[] names) {
-    final Set<UnitType> types = new HashSet<UnitType>();
+    final Set<UnitType> types = new HashSet<>();
     for (final String name : names) {
       final UnitType type = m_unitTypes.get(name);
       if (type == null) {
@@ -59,6 +59,6 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
   }
 
   public Set<UnitType> getAllUnitTypes() {
-    return new LinkedHashSet<UnitType>(m_unitTypes.values());
+    return new LinkedHashSet<>(m_unitTypes.values());
   }
 }

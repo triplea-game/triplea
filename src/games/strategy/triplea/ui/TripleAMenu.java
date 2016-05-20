@@ -593,7 +593,7 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
 
   private void addMapFontAndColorEditorMenu(final JMenu parentMenu) {
     final Action mapFontOptions = SwingAction.of("Edit Map Font and Color...", e -> {
-      final List<IEditableProperty> properties = new ArrayList<IEditableProperty>();
+      final List<IEditableProperty> properties = new ArrayList<>();
       final NumberProperty fontsize =
           new NumberProperty("Font Size", null, 60, 0, MapImage.getPropertyMapFont().getSize());
       final ColorProperty territoryNameColor = new ColorProperty("Territory Name and PU Color", null,
@@ -886,10 +886,10 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
       text.append("\n");
       text.append("Turn Order: ,");
       text.append("\n");
-      final List<PlayerID> playerOrderList = new ArrayList<PlayerID>();
+      final List<PlayerID> playerOrderList = new ArrayList<>();
       playerOrderList.addAll(getData().getPlayerList().getPlayers());
       Collections.sort(playerOrderList, new PlayerOrderComparator(getData()));
-      final Set<PlayerID> playerOrderSetNoDuplicates = new LinkedHashSet<PlayerID>(playerOrderList);
+      final Set<PlayerID> playerOrderSetNoDuplicates = new LinkedHashSet<>(playerOrderList);
       final Iterator<PlayerID> playerOrderIterator = playerOrderSetNoDuplicates.iterator();
       while (playerOrderIterator.hasNext()) {
         final PlayerID currentPlayerID = playerOrderIterator.next();

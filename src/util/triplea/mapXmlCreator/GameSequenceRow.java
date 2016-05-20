@@ -96,7 +96,7 @@ class GameSequenceRow extends DynamicRow {
 
   @Override
   protected ArrayList<JComponent> getComponentList() {
-    final ArrayList<JComponent> componentList = new ArrayList<JComponent>();
+    final ArrayList<JComponent> componentList = new ArrayList<>();
     componentList.add(textFieldSequenceName);
     componentList.add(textFieldClassName);
     componentList.add(textFieldDisplayName);
@@ -134,7 +134,7 @@ class GameSequenceRow extends DynamicRow {
 
     if (!MapXmlHelper.getPlayerSequenceMap().isEmpty()) {
       // Replace Player Sequences using the deleted Game Sequence
-      final ArrayList<String> deleteKeys = new ArrayList<String>();
+      final ArrayList<String> deleteKeys = new ArrayList<>();
       for (final Entry<String, Triple<String, String, Integer>> playerSequence : MapXmlHelper.getPlayerSequenceMap()
           .entrySet()) {
         final Triple<String, String, Integer> oldTriple = playerSequence.getValue();

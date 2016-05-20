@@ -36,8 +36,8 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
   private static final double PI_HALF = Math.PI / 2;
   private static final String NEW_CANAL_OPTION = "<new Canal>";
 
-  private Set<String> selectedLandTerritories = new TreeSet<String>();
-  private Set<String> selectedWaterTerritories = new TreeSet<String>();
+  private Set<String> selectedLandTerritories = new TreeSet<>();
+  private Set<String> selectedWaterTerritories = new TreeSet<>();
   private Optional<String> currentCanalName = Optional.empty();
 
   private CanalDefinitionsPanel() {}
@@ -103,7 +103,7 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
     for (final Entry<String, CanalTerritoriesTuple> canalDef : MapXmlHelper.getCanalDefinitionsMap()
         .entrySet()) {
       final Set<String> terrSet1 = canalDef.getValue().getWaterTerritories();
-      final Set<String> remainingTerrs = new TreeSet<String>(terrSet1);
+      final Set<String> remainingTerrs = new TreeSet<>(terrSet1);
       paintOwnSpecificsToWaterTerritories(centers, g2d, fontMetrics, terrSet1, remainingTerrs, canalDef.getKey());
       paintOwnSpecificsToLandTerritories(g, centers, canalDef);
     }
@@ -114,7 +114,7 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
       final Entry<String, CanalTerritoriesTuple> canalDef) {
     g.setColor(Color.GREEN);
     final Set<String> terrLandSet = canalDef.getValue().getLandTerritories();
-    final Set<String> terrLandRemainingSet = new TreeSet<String>(terrLandSet);
+    final Set<String> terrLandRemainingSet = new TreeSet<>(terrLandSet);
     for (final String terrLand : terrLandSet) {
       final Point centerLandTerr = centers.get(terrLand);
       terrLandRemainingSet.remove(terrLand);
@@ -330,7 +330,7 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
    * @param terrCanals - list of canals the base territory is linked to
    */
   private List<String> getCanalsLinkedToTerritory(final String newTerrName, final Boolean newTerrIsWater) {
-    final List<String> terrCanals = new ArrayList<String>();
+    final List<String> terrCanals = new ArrayList<>();
     if (newTerrIsWater) {
       for (final Entry<String, CanalTerritoriesTuple> canalDef : MapXmlHelper.getCanalDefinitionsMap()
           .entrySet()) {
@@ -373,8 +373,8 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
 
   protected void clearSelection() {
     currentCanalName = Optional.empty();
-    selectedLandTerritories = new TreeSet<String>();
-    selectedWaterTerritories = new TreeSet<String>();
+    selectedLandTerritories = new TreeSet<>();
+    selectedWaterTerritories = new TreeSet<>();
   }
 
   /**
@@ -404,7 +404,7 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
   }
 
   private Set<String> getCommonNeighborsOfType(final Set<String> terrList, final boolean typeIsWater) {
-    final Set<String> commonNeighborsOfType = new TreeSet<String>();
+    final Set<String> commonNeighborsOfType = new TreeSet<>();
     final Map<String, Collection<String>> neighborsMap = getNeighborsMapWaterDefinitionBeing(terrList, typeIsWater);
     commonNeighborsOfType.addAll(neighborsMap.values().iterator().next());
     if (commonNeighborsOfType.size() >= 2) {
@@ -428,7 +428,7 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
       final boolean typeIsWater) {
     final Map<String, Collection<String>> neighborsMap = Maps.newHashMap();
     for (final String terr : terrList) {
-      neighborsMap.put(terr, new ArrayList<String>());
+      neighborsMap.put(terr, new ArrayList<>());
     }
     for (final Entry<String, Set<String>> terrConnEntry : MapXmlHelper.getTerritoryConnectionsMap().entrySet()) {
       final String terr1 = terrConnEntry.getKey();
@@ -440,7 +440,7 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
         }
       } else {
         if (MapXmlHelper.getTerritoryDefintionsMap().get(terr1).get(DEFINITION.IS_WATER) == typeIsWater) {
-          final SortedSet<String> selectedTerritoriesCopy = new TreeSet<String>(terrList);
+          final SortedSet<String> selectedTerritoriesCopy = new TreeSet<>(terrList);
           selectedTerritoriesCopy.retainAll(terrConnEntry.getValue());
           for (final String terr2 : selectedTerritoriesCopy) {
             neighborsMap.get(terr2).add(terr1);
