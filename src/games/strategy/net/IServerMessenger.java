@@ -7,33 +7,33 @@ import java.util.Set;
  * A server messenger. Additional methods for accepting new connections.
  */
 public interface IServerMessenger extends IMessenger {
-  public void setAcceptNewConnections(boolean accept);
+  void setAcceptNewConnections(boolean accept);
 
-  public boolean isAcceptNewConnections();
+  boolean isAcceptNewConnections();
 
-  public void setLoginValidator(ILoginValidator loginValidator);
+  void setLoginValidator(ILoginValidator loginValidator);
 
-  public ILoginValidator getLoginValidator();
+  ILoginValidator getLoginValidator();
 
   /**
    * Add a listener for change in connection status.
    */
-  public void addConnectionChangeListener(IConnectionChangeListener listener);
+  void addConnectionChangeListener(IConnectionChangeListener listener);
 
   /**
    * Remove a listener for change in connection status.
    */
-  public void removeConnectionChangeListener(IConnectionChangeListener listener);
+  void removeConnectionChangeListener(IConnectionChangeListener listener);
 
   /**
    * Remove the node from the network.
    */
-  public void removeConnection(INode node);
+  void removeConnection(INode node);
 
   /**
    * Get a list of nodes.
    */
-  public Set<INode> getNodes();
+  Set<INode> getNodes();
 
   void NotifyIPMiniBanningOfPlayer(String ip, Date expires);
 

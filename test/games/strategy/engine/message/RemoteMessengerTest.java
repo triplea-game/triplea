@@ -262,16 +262,16 @@ public class RemoteMessengerTest extends TestCase {
 
 
 interface IFoo extends IRemote {
-  public void foo();
+  void foo();
 }
 
 
 interface ITestRemote extends IRemote {
-  public int increment(int testVal);
+  int increment(int testVal);
 
-  public void testVoid();
+  void testVoid();
 
-  public void throwException() throws Exception;
+  void throwException() throws Exception;
 }
 
 

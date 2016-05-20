@@ -16,30 +16,30 @@ import games.strategy.util.Triple;
  * Remote interface for EditDelegate
  */
 public interface IEditDelegate extends IRemote, IPersistentDelegate {
-  public boolean getEditMode();
+  boolean getEditMode();
 
-  public String setEditMode(boolean editMode);
+  String setEditMode(boolean editMode);
 
-  public String removeUnits(Territory t, Collection<Unit> units);
+  String removeUnits(Territory t, Collection<Unit> units);
 
-  public String addUnits(Territory t, Collection<Unit> units);
+  String addUnits(Territory t, Collection<Unit> units);
 
-  public String changeTerritoryOwner(Territory t, PlayerID player);
+  String changeTerritoryOwner(Territory t, PlayerID player);
 
-  public String changePUs(PlayerID player, int PUs);
+  String changePUs(PlayerID player, int PUs);
 
-  public String changeTechTokens(PlayerID player, int tokens);
+  String changeTechTokens(PlayerID player, int tokens);
 
-  public String addTechAdvance(PlayerID player, Collection<TechAdvance> advance);
+  String addTechAdvance(PlayerID player, Collection<TechAdvance> advance);
 
-  public String removeTechAdvance(PlayerID player, Collection<TechAdvance> advance);
+  String removeTechAdvance(PlayerID player, Collection<TechAdvance> advance);
 
-  public String changeUnitHitDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory);
+  String changeUnitHitDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory);
 
-  public String changeUnitBombingDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory);
+  String changeUnitBombingDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory);
 
-  public String addComment(String message);
+  String addComment(String message);
 
-  public String changePoliticalRelationships(
+  String changePoliticalRelationships(
       Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges);
 }

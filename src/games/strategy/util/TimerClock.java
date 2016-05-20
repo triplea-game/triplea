@@ -17,9 +17,9 @@ import java.util.concurrent.atomic.AtomicReference;
 // this is an ill-fated at a shot clock for the game...
 public class TimerClock<T> extends Observable {
   public interface ITimerClockNotification {
-    public int getSecondsLeft();
+    int getSecondsLeft();
 
-    public boolean areWeInterrupting();
+    boolean areWeInterrupting();
   }
 
   public TimerClock() {}

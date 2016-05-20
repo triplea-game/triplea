@@ -19,7 +19,7 @@ public interface IDelegate {
   /**
    * Uses name as the internal unique name and displayName for display to users
    */
-  public void initialize(final String name, final String displayName);
+  void initialize(final String name, final String displayName);
 
   /**
    * Called before the delegate will run and before "start" is called.
@@ -27,34 +27,34 @@ public interface IDelegate {
    * @param iDelegateBridge
    *        the IDelegateBridge
    */
-  public void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge);
+  void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge);
 
   /**
    * Called before the delegate will run.
    */
-  public void start();
+  void start();
 
   /**
    * Called before the delegate will stop running.
    */
-  public void end();
+  void end();
 
-  public String getName();
+  String getName();
 
-  public String getDisplayName();
+  String getDisplayName();
 
-  public IDelegateBridge getBridge();
+  IDelegateBridge getBridge();
 
   /**
    * @return state of the Delegate
    */
-  public Serializable saveState();
+  Serializable saveState();
 
   /**
    * @param state
    *        the delegates state
    */
-  public void loadState(final Serializable state);
+  void loadState(final Serializable state);
 
   /**
    * @return the remote type of this delegate for use
@@ -62,7 +62,7 @@ public interface IDelegate {
    *         If the return value is null, then it indicates that this
    *         delegate should not be used as in IRemote.)
    */
-  public Class<? extends IRemote> getRemoteType();
+  Class<? extends IRemote> getRemoteType();
 
   /**
    * Do we have any user-interface things to do in this delegate or not?
@@ -76,5 +76,5 @@ public interface IDelegate {
    *
    * @return should we run the delegate in order to receive user input, or not?
    */
-  public boolean delegateCurrentlyRequiresUserInput();
+  boolean delegateCurrentlyRequiresUserInput();
 }

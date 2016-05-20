@@ -1,5 +1,5 @@
 package games.strategy.engine.config;
 
 public interface PropertyReader {
-  public String readProperty(GameEngineProperty propertyKey);
+  String readProperty(GameEngineProperty propertyKey);
 }

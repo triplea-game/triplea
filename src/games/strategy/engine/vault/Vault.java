@@ -344,9 +344,9 @@ public class Vault {
 
 
 interface IRemoteVault extends IChannelSubscribor {
-  public void addLockedValue(VaultID id, byte[] data);
+  void addLockedValue(VaultID id, byte[] data);
 
-  public void unlock(VaultID id, byte[] secretKeyBytes);
+  void unlock(VaultID id, byte[] secretKeyBytes);
 
-  public void release(VaultID id);
+  void release(VaultID id);
 }

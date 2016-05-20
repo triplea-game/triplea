@@ -11,28 +11,28 @@ public interface IGamePlayer extends IRemotePlayer {
   /**
    * Called before the game starts.
    */
-  public void initialize(IPlayerBridge bridge, PlayerID id);
+  void initialize(IPlayerBridge bridge, PlayerID id);
 
   /**
    * @return the name of the game player (what nation we are)
    */
-  public String getName();
+  String getName();
 
   /**
    * @return the type of player we are (human or a kind of ai)
    */
-  public String getType();
+  String getType();
 
   /**
    * Start the given step. stepName appears as it does in the game xml file.
    * The game step will finish executing when this method returns.
    */
-  public void start(String stepName);
+  void start(String stepName);
 
   /**
    * Called when the game is stopped (like if we are closing the window or leaving the game).
    */
-  public void stopGame();
+  void stopGame();
   /*
    * (now in superclass)
    *

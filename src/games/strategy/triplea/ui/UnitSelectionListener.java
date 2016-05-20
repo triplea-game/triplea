@@ -9,5 +9,5 @@ public interface UnitSelectionListener {
   /**
    * Note, if the mouse is clicked where there are no units, units will be empty but territory will still be correct.
    */
-  public void unitsSelected(List<Unit> units, Territory territory, MouseDetails md);
+  void unitsSelected(List<Unit> units, Territory territory, MouseDetails md);
 }

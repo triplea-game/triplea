@@ -9,5 +9,5 @@ public interface MouseOverUnitListener {
   /**
    * units will be empty if the mouse is not over any unit
    */
-  public void mouseEnter(List<Unit> units, Territory territory, MouseDetails me);
+  void mouseEnter(List<Unit> units, Territory territory, MouseDetails me);
 }

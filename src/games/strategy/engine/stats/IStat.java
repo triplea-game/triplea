@@ -6,11 +6,11 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 
 public interface IStat {
-  public String getName();
+  String getName();
 
-  public double getValue(PlayerID player, GameData data);
+  double getValue(PlayerID player, GameData data);
 
-  public double getValue(String alliance, GameData data);
+  double getValue(String alliance, GameData data);
 
-  public NumberFormat getFormatter();
+  NumberFormat getFormatter();
 }

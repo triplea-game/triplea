@@ -16,11 +16,11 @@ public interface IWebPoster extends IBean {
    *
    * @return true if the post was successful
    */
-  public boolean postTurnSummary(final GameData gameData, final String turnSummary, final String player, int round);
+  boolean postTurnSummary(final GameData gameData, final String turnSummary, final String player, int round);
 
-  public boolean getMailSaveGame();
+  boolean getMailSaveGame();
 
-  public void setMailSaveGame(boolean mail);
+  void setMailSaveGame(boolean mail);
 
   /**
    * Called to add the save game to the summary, this should only be called if getIncludeSaveGame returns true
@@ -36,49 +36,48 @@ public interface IWebPoster extends IBean {
    *
    * @return the clone
    */
-  public IWebPoster doClone();
+  IWebPoster doClone();
 
   void clearSensitiveInfo();
 
   /**
    * Get the display name
    */
-  @Override
-  public String getDisplayName();
+  @Override String getDisplayName();
 
   /**
    * Get the site id
    *
    * @return the site id
    */
-  public String getSiteId();
+  String getSiteId();
 
   /**
    * Get the host URL.
    */
-  public String getHost();
+  String getHost();
 
-  public Vector<String> getAllHosts();
+  Vector<String> getAllHosts();
 
-  public String getGameName();
+  String getGameName();
 
-  public void setSiteId(String siteId);
+  void setSiteId(String siteId);
 
-  public void setGameName(String gameName);
+  void setGameName(String gameName);
 
   /**
    * Set the host name
    */
-  public void setHost(String host);
+  void setHost(String host);
 
-  public void setAllHosts(Vector<String> hosts);
+  void setAllHosts(Vector<String> hosts);
 
-  public void addToAllHosts(String host);
+  void addToAllHosts(String host);
 
   /**
    * Opens a browser and go to the web site, identified by the site id
    */
-  public void viewSite();
+  void viewSite();
 
   /**
    * Each poster provides a message that is displayed on the progress bar when testing the poster

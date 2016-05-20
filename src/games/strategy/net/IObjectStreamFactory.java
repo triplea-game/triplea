@@ -7,7 +7,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 public interface IObjectStreamFactory {
-  public ObjectInputStream create(InputStream stream) throws IOException;
+  ObjectInputStream create(InputStream stream) throws IOException;
 
-  public ObjectOutputStream create(OutputStream stream) throws IOException;
+  ObjectOutputStream create(OutputStream stream) throws IOException;
 }

@@ -137,13 +137,13 @@ public class ChannelMessengerTest extends TestCase {
 
 
 interface IChannelBase extends IChannelSubscribor {
-  public void testNoParams();
+  void testNoParams();
 
-  public void testPrimitives(int a, short b, long c, byte d, boolean e, float f);
+  void testPrimitives(int a, short b, long c, byte d, boolean e, float f);
 
-  public void testString(String a);
+  void testString(String a);
 
-  public void testArray(int[] ints, short[] shorts, byte[] bytes, boolean[] bools, float[] floats, Object[] objects);
+  void testArray(int[] ints, short[] shorts, byte[] bytes, boolean[] bools, float[] floats, Object[] objects);
 }
 
 

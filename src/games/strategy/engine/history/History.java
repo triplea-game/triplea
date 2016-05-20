@@ -241,7 +241,7 @@ class RootHistoryNode extends HistoryNode {
 
 
 interface SerializationWriter extends Serializable {
-  public void write(HistoryWriter writer);
+  void write(HistoryWriter writer);
 }
 
 

@@ -7,5 +7,5 @@ import games.strategy.engine.message.IRemote;
  * starting the game
  */
 public interface IServerReady extends IRemote {
-  public void clientReady();
+  void clientReady();
 }

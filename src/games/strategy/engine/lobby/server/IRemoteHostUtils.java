@@ -3,19 +3,19 @@ package games.strategy.engine.lobby.server;
 import games.strategy.engine.message.IRemote;
 
 public interface IRemoteHostUtils extends IRemote {
-  public String getConnections();
+  String getConnections();
 
-  public String getChatLogHeadlessHostBot(String hashedPassword, String salt);
+  String getChatLogHeadlessHostBot(String hashedPassword, String salt);
 
-  public String mutePlayerHeadlessHostBot(String playerNameToBeMuted, int minutes, String hashedPassword, String salt);
+  String mutePlayerHeadlessHostBot(String playerNameToBeMuted, int minutes, String hashedPassword, String salt);
 
-  public String bootPlayerHeadlessHostBot(String playerNameToBeBooted, String hashedPassword, String salt);
+  String bootPlayerHeadlessHostBot(String playerNameToBeBooted, String hashedPassword, String salt);
 
-  public String banPlayerHeadlessHostBot(String playerNameToBeBanned, int hours, String hashedPassword, String salt);
+  String banPlayerHeadlessHostBot(String playerNameToBeBanned, int hours, String hashedPassword, String salt);
 
-  public String stopGameHeadlessHostBot(String hashedPassword, String salt);
+  String stopGameHeadlessHostBot(String hashedPassword, String salt);
 
-  public String shutDownHeadlessHostBot(String hashedPassword, String salt);
+  String shutDownHeadlessHostBot(String hashedPassword, String salt);
 
-  public String getSalt();
+  String getSalt();
 }

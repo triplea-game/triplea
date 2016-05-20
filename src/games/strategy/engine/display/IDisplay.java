@@ -13,7 +13,7 @@ public interface IDisplay extends IChannelSubscribor {
    *
    * @param bridge
    */
-  public void initialize(IDisplayBridge bridge);
+  void initialize(IDisplayBridge bridge);
 
-  public void shutDown();
+  void shutDown();
 }

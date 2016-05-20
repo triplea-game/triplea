@@ -12,7 +12,7 @@ public interface ILoginValidator {
    * The challenge properties to send to the client. The client will be sent the challenge properties,
    * and will be expected to return a properties object to validate its connection.
    */
-  public Map<String, String> getChallengeProperties(String userName, SocketAddress remoteAddress);
+  Map<String, String> getChallengeProperties(String userName, SocketAddress remoteAddress);
 
   /**
    * @param propertiesReadFromClient
@@ -23,6 +23,6 @@ public interface ILoginValidator {
    *        - the user name given by the client
    * @return - null if the attempt was successful, an error message otherwise
    */
-  public String verifyConnection(Map<String, String> propertiesSentToClient,
+  String verifyConnection(Map<String, String> propertiesSentToClient,
       Map<String, String> propertiesReadFromClient, String clientName, String clientMac, SocketAddress remoteAddress);
 }

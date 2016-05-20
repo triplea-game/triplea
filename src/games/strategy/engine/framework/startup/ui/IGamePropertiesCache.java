@@ -14,7 +14,7 @@ public interface IGamePropertiesCache {
    * @param gameData
    *        the game which options you want to cache
    */
-  public void cacheGameProperties(GameData gameData);
+  void cacheGameProperties(GameData gameData);
 
   /**
    * Loads cached game options into the gameData
@@ -22,5 +22,5 @@ public interface IGamePropertiesCache {
    * @param gameData
    *        the game to load the cached game options into
    */
-  public void loadCachedGamePropertiesInto(GameData gameData);
+  void loadCachedGamePropertiesInto(GameData gameData);
 }

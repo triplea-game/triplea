@@ -48,22 +48,22 @@ public interface IChannelMessenger {
    * Get a reference such that methods called on it will be multicast
    * to all subscribors of the channel
    */
-  public IChannelSubscribor getChannelBroadcastor(RemoteName channelName);
+  IChannelSubscribor getChannelBroadcastor(RemoteName channelName);
 
   /**
    * register a subscribor to a channel
    */
-  public void registerChannelSubscriber(Object implementor, RemoteName channelName);
+  void registerChannelSubscriber(Object implementor, RemoteName channelName);
 
   /**
    * unregister a subscribor to a channel
    */
-  public void unregisterChannelSubscriber(Object implementor, RemoteName channelName);
+  void unregisterChannelSubscriber(Object implementor, RemoteName channelName);
 
-  public INode getLocalNode();
+  INode getLocalNode();
 
   /**
    * Is the underlying messenger a server?
    */
-  public boolean isServer();
+  boolean isServer();
 }

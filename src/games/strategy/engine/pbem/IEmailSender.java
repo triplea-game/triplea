@@ -44,7 +44,7 @@ public interface IEmailSender extends IBean {
    *
    * @return return a clone
    */
-  public IEmailSender doClone();
+  IEmailSender doClone();
 
   String getUserName();
 
@@ -59,7 +59,7 @@ public interface IEmailSender extends IBean {
    *
    * @return true if the save game should be included in the summary
    */
-  public boolean getAlsoPostAfterCombatMove();
+  boolean getAlsoPostAfterCombatMove();
 
   /**
    * Configure if we should also post at the end of combat move
@@ -67,5 +67,5 @@ public interface IEmailSender extends IBean {
    * @param include
    *        true if the save game should be included
    */
-  public void setAlsoPostAfterCombatMove(boolean postAlso);
+  void setAlsoPostAfterCombatMove(boolean postAlso);
 }
