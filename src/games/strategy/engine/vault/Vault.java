@@ -120,13 +120,7 @@ public class Vault {
     try {
       cipher = Cipher.getInstance(ALGORITHM);
       cipher.init(Cipher.ENCRYPT_MODE, key);
-    } catch (final NoSuchAlgorithmException e) {
-      e.printStackTrace();
-      throw new IllegalStateException(e.getMessage());
-    } catch (final NoSuchPaddingException e) {
-      e.printStackTrace();
-      throw new IllegalStateException(e.getMessage());
-    } catch (final InvalidKeyException e) {
+    } catch (final NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException e) {
       e.printStackTrace();
       throw new IllegalStateException(e.getMessage());
     }
@@ -245,13 +239,7 @@ public class Vault {
       try {
         cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, key);
-      } catch (final NoSuchAlgorithmException e) {
-        e.printStackTrace();
-        throw new IllegalStateException(e.getMessage());
-      } catch (final NoSuchPaddingException e) {
-        e.printStackTrace();
-        throw new IllegalStateException(e.getMessage());
-      } catch (final InvalidKeyException e) {
+      } catch (final NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException e) {
         e.printStackTrace();
         throw new IllegalStateException(e.getMessage());
       }

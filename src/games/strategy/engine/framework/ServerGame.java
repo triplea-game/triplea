@@ -196,10 +196,6 @@ public class ServerGame extends AbstractGame {
         nonBlockingObserver.cannotJoinGame(ie.getMessage());
         return;
       }
-    } catch (final IOException ioe) {
-      ioe.printStackTrace();
-      nonBlockingObserver.cannotJoinGame(ioe.getMessage());
-      return;
     } catch (final Exception e) {
       e.printStackTrace();
       nonBlockingObserver.cannotJoinGame(e.getMessage());

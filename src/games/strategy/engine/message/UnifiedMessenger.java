@@ -510,10 +510,7 @@ class EndPoint {
     try {
       method = implementor.getClass().getMethod(call.getMethodName(), call.getArgTypes());
       method.setAccessible(true);
-    } catch (final SecurityException e) {
-      e.printStackTrace();
-      throw new IllegalStateException(e.getMessage());
-    } catch (final NoSuchMethodException e) {
+    } catch (final SecurityException | NoSuchMethodException e) {
       e.printStackTrace();
       throw new IllegalStateException(e.getMessage());
     }

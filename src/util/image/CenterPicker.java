@@ -244,10 +244,6 @@ public class CenterPicker extends JFrame {
       out.flush();
       out.close();
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
-    } catch (final HeadlessException ex) {
-      ex.printStackTrace();
     } catch (final Exception ex) {
       ex.printStackTrace();
     }
@@ -267,11 +263,7 @@ public class CenterPicker extends JFrame {
       final FileInputStream in = new FileInputStream(centerName);
       m_centers = PointFileReaderWriter.readOneToOne(in);
       repaint();
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
-    } catch (final IOException ex) {
-      ex.printStackTrace();
-    } catch (final HeadlessException ex) {
+    } catch (final HeadlessException | IOException ex) {
       ex.printStackTrace();
     }
   }

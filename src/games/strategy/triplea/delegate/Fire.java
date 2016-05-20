@@ -205,8 +205,6 @@ public class Fire implements IExecutable {
           // somone else will deal with this
           // System.out.println(cle.getMessage());
           // cle.printStackTrace(System.out);
-        } catch (final GameOverException e) {
-          // ignore
         } catch (final Exception e) {
           // ignore
         }

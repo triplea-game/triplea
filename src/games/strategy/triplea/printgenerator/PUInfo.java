@@ -71,8 +71,6 @@ public class PUInfo {
       }
       resourceWriter.write("\r\n");
       resourceWriter.close();
-    } catch (final FileNotFoundException e) {
-      e.printStackTrace();
     } catch (final IOException e) {
       e.printStackTrace();
     }

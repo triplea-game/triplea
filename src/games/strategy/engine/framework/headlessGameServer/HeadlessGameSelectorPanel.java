@@ -84,8 +84,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
     if (fileName != null && fileName.length() > 1) {
       try {
         fileName = URLDecoder.decode(fileName, "UTF-8");
-      } catch (final IllegalArgumentException e) {// ignore
-      } catch (final UnsupportedEncodingException e) {// ignore
+      } catch (final IllegalArgumentException | UnsupportedEncodingException e) {// ignore
       }
     }
     m_fileNameText.setText(getLimitedFileNameText(fileName));

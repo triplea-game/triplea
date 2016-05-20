@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
@@ -761,14 +762,8 @@ public class AirBattle extends AbstractBattle {
       public void run() {
         try {
           getRemote(firingPlayer, bridge).confirmEnemyCasualties(battleID, "Press space to continue", hitPlayer);
-        } catch (final ConnectionLostException cle) {
-          // somone else will deal with this
-          // System.out.println(cle.getMessage());
-          // cle.printStackTrace(System.out);
-        } catch (final GameOverException e) {
-          // ignore
         } catch (final Exception e) {
-          // ignore
+          ClientLogger.logQuietly(e);
         }
       }
     };

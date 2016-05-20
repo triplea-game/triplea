@@ -202,8 +202,6 @@ public class HeadlessConsoleController {
           return;
         }
       }
-    } catch (final IOException e) {
-      e.printStackTrace();
     } catch (final Exception e) {
       e.printStackTrace();
     }
@@ -239,8 +237,6 @@ public class HeadlessConsoleController {
           messenger.removeConnection(node);
         }
       }
-    } catch (final IOException e) {
-      e.printStackTrace();
     } catch (final Exception e) {
       e.printStackTrace();
     }
@@ -308,8 +304,6 @@ public class HeadlessConsoleController {
           messenger.removeConnection(node);
         }
       }
-    } catch (final IOException e) {
-      e.printStackTrace();
     } catch (final Exception e) {
       e.printStackTrace();
     }

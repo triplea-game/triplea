@@ -90,8 +90,6 @@ public class ConnectionFinder {
         }
         territoryAreas.put(territoryName, listOfAreas);
       }
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
     } catch (final IOException ex) {
       ex.printStackTrace();
     }
