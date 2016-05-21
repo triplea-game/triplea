@@ -717,7 +717,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleAPlayer {
             // 2) we can potentially attack another territory
             if (!owned.isWater()
                 && data.getMap().getNeighbors(owned, Matches.territoryHasEnemyLandUnits(player, data)).size() > 1) {
-              units = Utils.getUnitsUpToStrength(remainingStrengthNeeded, units, true, false);
+              units = Utils.getUnitsUpToStrength(remainingStrengthNeeded, units, false);
             }
             remainingStrengthNeeded -= AIUtils.strength(units, true, false);
             if (units.size() > 0) {
