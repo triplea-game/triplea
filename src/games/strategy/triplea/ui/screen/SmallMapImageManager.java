@@ -29,13 +29,13 @@ public class SmallMapImageManager {
   public SmallMapImageManager(final ImageScrollerSmallView view, final BufferedImage offscreen,
       final TileManager tileManager) {
     m_view = view;
-    m_offscreen = Util.copyImage(offscreen, false);
+    m_offscreen = Util.copyImage(offscreen);
     m_tileManager = tileManager;
   }
 
   public void updateOffscreenImage(final BufferedImage offscreen) {
     m_offscreen.flush();
-    m_offscreen = Util.copyImage(offscreen, false);
+    m_offscreen = Util.copyImage(offscreen);
   }
 
   public void update(final GameData data, final MapData mapData) {
