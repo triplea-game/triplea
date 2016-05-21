@@ -125,6 +125,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
       }
     } else {
       SwingAction.invokeAndWait(() -> {
+        try{
         final TripleAFrame frame;
         frame = new TripleAFrame(game, localPlayers);
         display = new TripleADisplay(frame);
@@ -137,6 +138,9 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
         connectPlayers(players, frame);
         frame.setExtendedState(Frame.MAXIMIZED_BOTH);
         frame.toFront();
+        }catch(Exception e){
+          e.printStackTrace();
+        }
       });
 
     }
