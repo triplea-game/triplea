@@ -36,14 +36,14 @@ public class Utils {
   }
 
   public static List<Unit> getUnitsUpToStrength(final double maxStrength, final Collection<Unit> units,
-      final boolean attacking, final boolean sea) {
-    if (AIUtils.strength(units, attacking, sea) < maxStrength) {
+      final boolean sea) {
+    if (AIUtils.strength(units, true, sea) < maxStrength) {
       return new ArrayList<Unit>(units);
     }
     final ArrayList<Unit> rVal = new ArrayList<Unit>();
     for (final Unit u : units) {
       rVal.add(u);
-      if (AIUtils.strength(rVal, attacking, sea) > maxStrength) {
+      if (AIUtils.strength(rVal, true, sea) > maxStrength) {
         return rVal;
       }
     }
