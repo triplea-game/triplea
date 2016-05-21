@@ -107,13 +107,11 @@ public class UnitType extends NamedAttachable implements Serializable {
       }
       final Set<UnitType> all = data.getUnitTypeList().getAllUnitTypes();
       all.removeAll(unitsSoFar);
-      if (true || !all.isEmpty()) {
-        rVal.put(PlayerID.NULL_PLAYERID, getPlayerUnitsWithImages(PlayerID.NULL_PLAYERID, data, uiContext));
-        unitsSoFar.addAll(rVal.get(PlayerID.NULL_PLAYERID));
-        all.removeAll(unitsSoFar);
-        if (!all.isEmpty()) {
-          rVal.put(null, new ArrayList<UnitType>(all));
-        }
+      rVal.put(PlayerID.NULL_PLAYERID, getPlayerUnitsWithImages(PlayerID.NULL_PLAYERID, data, uiContext));
+      unitsSoFar.addAll(rVal.get(PlayerID.NULL_PLAYERID));
+      all.removeAll(unitsSoFar);
+      if (!all.isEmpty()) {
+        rVal.put(null, new ArrayList<UnitType>(all));
       }
     } finally {
       data.releaseReadLock();
