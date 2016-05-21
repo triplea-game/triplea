@@ -39,11 +39,7 @@ public class Version implements Serializable, Comparable<Object> {
    * xx.xx or xx where xx is a positive integer
    */
   public Version(final String version) {
-    this(version, ".");
-  }
-
-  public Version(final String version, final String delimiter) {
-    final StringTokenizer tokens = new StringTokenizer(version, delimiter, false);
+    final StringTokenizer tokens = new StringTokenizer(version, ".", false);
     if (tokens.countTokens() < 1) {
       throw new IllegalArgumentException("invalid version string:" + version);
     }
@@ -138,11 +134,11 @@ public class Version implements Serializable, Comparable<Object> {
     return compareTo(other, ignoreMicro) < 0;
   }
 
-  public boolean isLessThan(final Version other, final boolean ignoreMicro) {
-    return compareTo(other, ignoreMicro) > 0;
+  public boolean isLessThan(final Version other) {
+    return compareTo(other, false) > 0;
   }
 
-  public static Comparator<Version> getHighestToLowestComparator(final boolean ignoreMicro) {
+  public static Comparator<Version> getHighestToLowestComparator() {
     return new Comparator<Version>() {
       @Override
       public int compare(final Version v1, final Version v2) {
@@ -153,9 +149,9 @@ public class Version implements Serializable, Comparable<Object> {
         } else if (v2 == null) {
           return -1;
         }
-        if (v1.equals(v2, ignoreMicro)) {
+        if (v1.equals(v2, false)) {
           return 0;
-        } else if (v1.isGreaterThan(v2, ignoreMicro)) {
+        } else if (v1.isGreaterThan(v2, false)) {
           return -1;
         } else {
           return 1;

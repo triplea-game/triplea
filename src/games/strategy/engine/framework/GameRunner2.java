@@ -732,7 +732,7 @@ public class GameRunner2 {
       if (latestEngineOut == null) {
         return false;
       }
-      if (ClientContext.engineVersion().getVersion().isLessThan(latestEngineOut.getLatestVersionOut(), false)) {
+      if (ClientContext.engineVersion().getVersion().isLessThan(latestEngineOut.getLatestVersionOut())) {
         SwingUtilities.invokeLater(new Runnable() {
           @Override
           public void run() {
