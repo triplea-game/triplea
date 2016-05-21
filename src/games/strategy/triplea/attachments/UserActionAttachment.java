@@ -46,29 +46,10 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
   }
 
   public static UserActionAttachment get(final PlayerID player, final String nameOfAttachment) {
-    return get(player, nameOfAttachment, null);
-  }
-
-  public static UserActionAttachment get(final PlayerID player, final String nameOfAttachment,
-      final Collection<PlayerID> playersToSearch) {
     UserActionAttachment rVal = (UserActionAttachment) player.getAttachment(nameOfAttachment);
     if (rVal == null) {
-      if (playersToSearch == null) {
-        throw new IllegalStateException(
-            "UserActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
-      } else {
-        for (final PlayerID otherPlayer : playersToSearch) {
-          if (otherPlayer == player) {
-            continue;
-          }
-          rVal = (UserActionAttachment) otherPlayer.getAttachment(nameOfAttachment);
-          if (rVal != null) {
-            return rVal;
-          }
-        }
-        throw new IllegalStateException(
-            "UserActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
-      }
+      throw new IllegalStateException(
+          "UserActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
     }
     return rVal;
   }
