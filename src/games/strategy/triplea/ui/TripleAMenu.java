@@ -201,7 +201,7 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
           i++;
           hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + ">"
               + "<td>" + getUnitImageURL(ut, player) + "</td>" + "<td>" + ut.getName() + "</td>" + "<td>"
-              + costs.get(player).get(ut).toStringForHTML() + "</td>" + "<td>" + ut.getTooltip(player, true)
+              + costs.get(player).get(ut).toStringForHTML() + "</td>" + "<td>" + ut.getTooltip(player)
               + "</td></tr>");
         }
         i++;

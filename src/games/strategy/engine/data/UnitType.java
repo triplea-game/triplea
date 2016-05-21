@@ -80,11 +80,11 @@ public class UnitType extends NamedAttachable implements Serializable {
     return getName().hashCode();
   }
 
-  public String getTooltip(final PlayerID playerId, final boolean useHTML) {
+  public String getTooltip(final PlayerID playerId) {
     final String customTip = TooltipProperties.getInstance().getToolTip(this, playerId);
     if (customTip == null || customTip.trim().length() <= 0) {
       return UnitAttachment.get(this).toStringShortAndOnlyImportantDifferences(
-          (playerId == null ? PlayerID.NULL_PLAYERID : playerId), useHTML, false);
+          (playerId == null ? PlayerID.NULL_PLAYERID : playerId), true, false);
     } else {
       return LocalizeHTML.localizeImgLinksInHTML(customTip.trim());
     }
