@@ -189,7 +189,7 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
       final Map<PlayerID, Map<UnitType, ResourceCollection>> costs =
           BattleCalculator.getResourceCostsForTUV(data, true);
       final Map<PlayerID, List<UnitType>> playerUnitTypes =
-          UnitType.getAllPlayerUnitsWithImages(data, getUIContext(), true);
+          UnitType.getAllPlayerUnitsWithImages(data, getUIContext());
       for (final Entry<PlayerID, List<UnitType>> entry : playerUnitTypes.entrySet()) {
         final PlayerID player = entry.getKey();
         hints.append("<p><table border=\"1\" bgcolor=\"" + color1 + "\">");
