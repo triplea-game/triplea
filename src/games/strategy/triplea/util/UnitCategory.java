@@ -35,17 +35,12 @@ public class UnitCategory implements Comparable<Object> {
     final TripleAUnit taUnit = (TripleAUnit) unit;
     m_type = taUnit.getType();
     m_owner = taUnit.getOwner();
-    m_movement = false ? taUnit.getMovementLeft() : -1;
-    m_transportCost = false ? UnitAttachment.get((unit).getUnitType()).getTransportCost() : -1;
-    // m_originatingTerr = categorizeTerritory ? taUnit.getOriginatedFrom() : null;
+    m_movement =  -1;
+    m_transportCost = -1;
     m_damaged = taUnit.getHits();
     m_bombingDamage = taUnit.getUnitDamage();
     m_disabled = Matches.UnitIsDisabled.match(unit);
-    if (false) {
-      createDependents(taUnit.getDependents());
-    } else {
-      m_dependents = Collections.emptyList();
-    }
+    m_dependents = Collections.emptyList();
   }
 
   public UnitCategory(final Unit unit, final Collection<Unit> dependents, final int movement, final int transportCost) {
