@@ -184,34 +184,40 @@ public class MovePanel extends AbstractMovePanel {
     }
     final List<Unit> candidateTransports =
         Match.getMatches(allUnits, Matches.unitIsTransportingSomeCategories(candidateUnits));
-    // remove all incapable transports
+
+    // Remove all incapable transports
     final Collection<Unit> incapableTransports =
         Match.getMatches(candidateTransports, Matches.transportCannotUnload(route.getEnd()));
     candidateTransports.removeAll(incapableTransports);
     if (candidateTransports.size() == 0) {
       return Collections.emptyList();
     }
-    // just one transport, dont bother to ask
+
+    // Just one transport, don't bother to ask
     if (candidateTransports.size() == 1) {
       return unitsToUnload;
     }
-    // are the transports all of the same type
-    // if they are, then don't ask
+
+    // Are the transports all of the same type and if they are, then don't ask
     final Collection<UnitCategory> categories =
         UnitSeperator.categorize(candidateTransports, m_mustMoveWithDetails.getMustMoveWith(), true, false);
     if (categories.size() == 1) {
       return unitsToUnload;
     }
     sortTransportsToUnload(candidateTransports, route);
+
     // unitsToUnload are actually dependents, but need to select transports
-    final Map<Unit, Unit> unitsToTransports = TransportUtils.mapTransports(route, unitsToUnload, candidateTransports);
+    final Map<Unit, Unit> unitsToTransports =
+        TransportUtils.mapTransportsAlreadyLoaded(unitsToUnload, candidateTransports);
     final Set<Unit> defaultSelections = new HashSet<Unit>(unitsToTransports.values());
-    // match criteria to ensure that chosen transports will match selected units
+
+    // Match criteria to ensure that chosen transports will match selected units
     final Match<Collection<Unit>> transportsToUnloadMatch = new Match<Collection<Unit>>() {
       @Override
       public boolean match(final Collection<Unit> units) {
         final List<Unit> sortedTransports = Match.getMatches(units, Matches.UnitIsTransport);
         final Collection<Unit> availableUnits = new ArrayList<Unit>(unitsToUnload);
+
         // track the changing capacities of the transports as we assign units
         final IntegerMap<Unit> capacityMap = new IntegerMap<Unit>();
         for (final Unit transport : sortedTransports) {
@@ -221,13 +227,16 @@ public class MovePanel extends AbstractMovePanel {
         boolean hasChanged = false;
         final Comparator<Unit> increasingCapacityComparator =
             UnitComparator.getIncreasingCapacityComparator(sortedTransports);
+
         // This algorithm will ensure that it is actually possible to distribute
         // the selected units amongst the current selection of chosen transports.
         do {
           hasChanged = false;
-          // sort transports by increasing capacity
+
+          // Sort transports by increasing capacity
           Collections.sort(sortedTransports, increasingCapacityComparator);
-          // try to remove one unit from each transport, in succession
+
+          // Try to remove one unit from each transport, in succession
           final Iterator<Unit> transportIter = sortedTransports.iterator();
           while (transportIter.hasNext()) {
             final Unit transport = transportIter.next();
@@ -240,9 +249,11 @@ public class MovePanel extends AbstractMovePanel {
             while (unitIter.hasNext()) {
               final Unit unit = unitIter.next();
               final Collection<UnitCategory> unitCategory = UnitSeperator.categorize(Collections.singleton(unit));
-              // is one of the transported units of the same type we want to unload?
+
+              // Is one of the transported units of the same type we want to unload?
               if (Util.someIntersect(transCategories, unitCategory)) {
-                // unload the unit, remove the transport from our list, and continue
+
+                // Unload the unit, remove the transport from our list, and continue
                 hasChanged = true;
                 unitIter.remove();
                 transportIter.remove();
@@ -250,14 +261,15 @@ public class MovePanel extends AbstractMovePanel {
               }
             }
           }
-          // repeat until there are no units left or no changes occur
+          // Repeat until there are no units left or no changes occur
         } while (availableUnits.size() > 0 && hasChanged);
-        // if we haven't seen all of the transports (and removed them)
-        // then there are extra transports that don't fit.
+
+        // If we haven't seen all of the transports (and removed them) then there are extra transports that don't fit
         return (sortedTransports.size() == 0);
       }
     };
-    // choosing what transports to unload
+
+    // Choosing what transports to unload
     final UnitChooser chooser = new UnitChooser(candidateTransports, defaultSelections,
         m_mustMoveWithDetails.getMustMoveWith(), /* categorizeMovement */true, /* categorizeTransportCost */false,
         getGameData(), /* allowTwoHit */false, getMap().getUIContext(), transportsToUnloadMatch);
@@ -273,7 +285,6 @@ public class MovePanel extends AbstractMovePanel {
     final Collection<Unit> chosenUnits =
         UserChooseUnits(defaultSelections, transportsToUnloadMatch, candidateTransports, title, action);
     final Collection<Unit> choosenTransports = Match.getMatches(chosenUnits, Matches.UnitIsTransport);
-    // Collection<Unit> choosenTransports = Match.getMatches(chooser.getSelected(), Matches.UnitIsTransport);
     final List<Unit> allUnitsInSelectedTransports = new ArrayList<Unit>();
     for (final Unit transport : choosenTransports) {
       final Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
@@ -287,7 +298,8 @@ public class MovePanel extends AbstractMovePanel {
     final List<Unit> sortedTransports = new ArrayList<Unit>(choosenTransports);
     Collections.sort(sortedTransports, UnitComparator.getIncreasingCapacityComparator(sortedTransports));
     final Collection<Unit> selectedUnits = new ArrayList<Unit>(unitsToUnload);
-    // first pass: choose one unit from each selected transport
+
+    // First pass: choose one unit from each selected transport
     for (final Unit transport : sortedTransports) {
       boolean hasChanged = false;
       final Iterator<Unit> selectedIter = selectedUnits.iterator();
@@ -309,7 +321,8 @@ public class MovePanel extends AbstractMovePanel {
         }
       }
     }
-    // now fill remaining slots in preferred unit order
+
+    // Now fill remaining slots in preferred unit order
     for (final Unit selected : selectedUnits) {
       final Iterator<Unit> candidateIter = allUnitsInSelectedTransports.iterator();
       while (candidateIter.hasNext()) {

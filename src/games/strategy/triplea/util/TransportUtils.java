@@ -2,6 +2,7 @@ package games.strategy.triplea.util;
 
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
@@ -42,7 +43,7 @@ public class TransportUtils {
       final Collection<Unit> transports) {
 
     final List<Unit> canBeTransported = sortByTransportCostDescending(units);
-    final List<Unit> canTransport = sortByTransportCapacityAscending(transports);
+    final List<Unit> canTransport = sortByTransportCapacityDescendingThenMovesDescending(transports);
 
     // Add units to transports evenly
     final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
@@ -66,45 +67,74 @@ public class TransportUtils {
       final Collection<Unit> transports) {
 
     final List<Unit> canBeTransported = sortByTransportCostDescending(units);
-    final List<Unit> canTransport = sortByTransportCapacityAscending(transports);
+    final List<Unit> canTransport = sortByTransportCapacityDescendingThenMovesDescending(transports);
 
     // Add max units to each transport
     final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
+    Optional<Unit> finalTransport = Optional.empty();
     for (final Unit transport : canTransport) {
-      int capacity = TransportTracker.getAvailableCapacity(transport);
-      for (final Iterator<Unit> it = canBeTransported.iterator(); it.hasNext();) {
-        final Unit unit = it.next();
-        final int cost = UnitAttachment.get((unit).getType()).getTransportCost();
-        if (capacity >= cost) {
-          capacity -= cost;
-          mapping.put(unit, transport);
-          it.remove();
+
+      // Check if remaining units can all be loaded into 1 transport
+      final int capacity = TransportTracker.getAvailableCapacity(transport);
+      final int remainingCost = getTransportCost(canBeTransported);
+      if (remainingCost <= capacity) {
+        if (!finalTransport.isPresent() || capacity < TransportTracker.getAvailableCapacity(finalTransport.get())) {
+          finalTransport = Optional.of(transport);
         }
+        continue; // skip transports until the smallest one all units fit in with the most moves
       }
+
+      // Check if we've found the final transport to load remaining units
+      if (finalTransport.isPresent()) {
+        break;
+      }
+
+      // Load max units into current transport
+      loadMaxUnits(transport, canBeTransported, mapping);
+    }
+
+    // Load remaining units in final transport
+    if (finalTransport.isPresent()) {
+      loadMaxUnits(finalTransport.get(), canBeTransported, mapping);
+    }
+
+    return mapping;
+  }
+
+  /**
+   * Returns a map of unit -> transport. Unit must already be loaded in the transport.
+   */
+  public static Map<Unit, Unit> mapTransportsAlreadyLoaded(final Collection<Unit> units,
+      final Collection<Unit> transports) {
+
+    final Collection<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
+    final Collection<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
+
+    final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
+    for (final Unit currentTransported : canBeTransported) {
+      final Unit transport = TransportTracker.transportedBy(currentTransported);
+
+      // Already being transported, make sure it is in transports
+      if (transport == null || !canTransport.contains(transport)) {
+        continue;
+      }
+
+      mapping.put(currentTransported, transport);
     }
     return mapping;
   }
 
   public static List<Unit> findUnitsToLoadOnAirTransports(final Collection<Unit> units,
       final Collection<Unit> transports) {
-    final Collection<Unit> airTransports = Match.getMatches(transports, Matches.UnitIsAirTransport);
 
-    final Comparator<Unit> c = new Comparator<Unit>() {
-      @Override
-      public int compare(final Unit o1, final Unit o2) {
-        final int cost1 = UnitAttachment.get((o1).getUnitType()).getTransportCost();
-        final int cost2 = UnitAttachment.get((o2).getUnitType()).getTransportCost();
-        // descending transportCost
-        return cost2 - cost1;
-      }
-    };
-    Collections.sort((List<Unit>) units, c);
+    final Collection<Unit> airTransports = Match.getMatches(transports, Matches.UnitIsAirTransport);
+    final List<Unit> canBeTransported = sortByTransportCostDescending(units);
 
     // Define the max of all units that could be loaded
     final List<Unit> totalLoad = new ArrayList<Unit>();
 
     // Get a list of the unit categories
-    final Collection<UnitCategory> unitTypes = UnitSeperator.categorize(units, null, false, true);
+    final Collection<UnitCategory> unitTypes = UnitSeperator.categorize(canBeTransported, null, false, true);
     final Collection<UnitCategory> transportTypes = UnitSeperator.categorize(airTransports, null, false, false);
     for (final UnitCategory unitType : unitTypes) {
       final int transportCost = unitType.getTransportCost();
@@ -113,7 +143,8 @@ public class TransportUtils {
         if (transportCost > 0 && transportCapacity >= transportCost) {
           final int transportCount = Match.countMatches(airTransports, Matches.unitIsOfType(transportType.getType()));
           final int ttlTransportCapacity = transportCount * (int) Math.floor(transportCapacity / transportCost);
-          totalLoad.addAll(Match.getNMatches(units, ttlTransportCapacity, Matches.unitIsOfType(unitType.getType())));
+          totalLoad.addAll(Match.getNMatches(canBeTransported, ttlTransportCapacity,
+              Matches.unitIsOfType(unitType.getType())));
         }
       }
     }
@@ -133,38 +164,18 @@ public class TransportUtils {
     return cost;
   }
 
-  /**
-   * Returns a map of unit -> transport. Unit must already be loaded in the transport.
-   */
-  private static Map<Unit, Unit> mapTransportsAlreadyLoaded(final Collection<Unit> units,
-      final Collection<Unit> transports) {
-    final Collection<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
-    final Collection<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
-    final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
-    final Iterator<Unit> land = canBeTransported.iterator();
-    while (land.hasNext()) {
-      final Unit currentTransported = land.next();
-      final Unit transport = TransportTracker.transportedBy(currentTransported);
-
-      // already being transported, make sure it is in transports
-      if (transport == null) {
-        continue;
-      }
-      if (!canTransport.contains(transport)) {
-        continue;
-      }
-      mapping.put(currentTransported, transport);
-    }
-    return mapping;
-  }
-
-  private static List<Unit> sortByTransportCapacityAscending(final Collection<Unit> transports) {
+  private static List<Unit> sortByTransportCapacityDescendingThenMovesDescending(final Collection<Unit> transports) {
     final Comparator<Unit> transportCapacityComparator = new Comparator<Unit>() {
       @Override
       public int compare(final Unit o1, final Unit o2) {
         final int capacityLeft1 = TransportTracker.getAvailableCapacity(o1);
         final int capacityLeft2 = TransportTracker.getAvailableCapacity(o2);
-        return capacityLeft1 - capacityLeft2;
+        if (capacityLeft1 != capacityLeft2) {
+          return Integer.compare(capacityLeft2, capacityLeft1);
+        }
+        final int movementLeft1 = TripleAUnit.get(o1).getMovementLeft();
+        final int movementLeft2 = TripleAUnit.get(o2).getMovementLeft();
+        return Integer.compare(movementLeft2, movementLeft1);
       }
     };
     final List<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
@@ -178,7 +189,7 @@ public class TransportUtils {
       public int compare(final Unit o1, final Unit o2) {
         final int cost1 = UnitAttachment.get((o1).getUnitType()).getTransportCost();
         final int cost2 = UnitAttachment.get((o2).getUnitType()).getTransportCost();
-        return cost2 - cost1;
+        return Integer.compare(cost2, cost1);
       }
     };
     final List<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
@@ -198,6 +209,20 @@ public class TransportUtils {
       }
     }
     return Optional.empty();
+  }
+
+  private static void loadMaxUnits(final Unit transport, final List<Unit> canBeTransported,
+      final Map<Unit, Unit> mapping) {
+    int capacity = TransportTracker.getAvailableCapacity(transport);
+    for (final Iterator<Unit> it = canBeTransported.iterator(); it.hasNext();) {
+      final Unit unit = it.next();
+      final int cost = UnitAttachment.get((unit).getType()).getTransportCost();
+      if (capacity >= cost) {
+        capacity -= cost;
+        mapping.put(unit, transport);
+        it.remove();
+      }
+    }
   }
 
 }
