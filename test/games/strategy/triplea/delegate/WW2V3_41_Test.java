@@ -105,14 +105,12 @@ public class WW2V3_41_Test extends TestCase {
 
   public static String fight(final BattleDelegate battle, final Territory territory) {
     for (final Entry<BattleType, Collection<Territory>> entry : battle.getBattles().getBattles().entrySet()) {
-      if (entry.getKey().isBombingRun() == false) {
-        if (entry.getValue().contains(territory)) {
-          return battle.fightBattle(territory, false, entry.getKey());
-        }
+      if (!entry.getKey().isBombingRun()  && entry.getValue().contains(territory)) {
+        return battle.fightBattle(territory, false, entry.getKey());
       }
     }
     throw new IllegalStateException(
-        "Could not find " + (false ? "bombing" : "normal") + " battle in: " + territory.getName());
+        "Could not find battle in: " + territory.getName());
   }
 
   public void testAACasualtiesLowLuckMixedRadar() {
