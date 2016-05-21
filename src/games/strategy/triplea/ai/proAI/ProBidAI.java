@@ -1947,9 +1947,7 @@ public class ProBidAI {
         }
       }
     }
-    final Iterator<Territory> eIter = enemyLandTerr.iterator();
-    while (eIter.hasNext()) {
-      final Territory enemy = eIter.next();
+    for (Territory enemy : enemyLandTerr) {
       if (doesLandExistAt(enemy, data, false)) {
         final List<Territory> newTerrs = new ArrayList<>();
         if (allied) {

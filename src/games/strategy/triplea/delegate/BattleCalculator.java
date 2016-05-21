@@ -617,10 +617,8 @@ public class BattleCalculator {
     // Get a list of all units that are amphibious and remove those that are killed
     allAmphibUnits.addAll(Match.getMatches(targets, Matches.UnitWasAmphibious));
     allAmphibUnits.removeAll(Match.getMatches(killed, Matches.UnitWasAmphibious));
-    final Iterator<Unit> allAmphibUnitsIter = allAmphibUnits.iterator();
     // Get a collection of the unit types of the amphib units
-    while (allAmphibUnitsIter.hasNext()) {
-      final Unit unit = allAmphibUnitsIter.next();
+    for (Unit unit : allAmphibUnits) {
       final UnitType ut = unit.getType();
       if (!amphibTypes.contains(ut)) {
         amphibTypes.add(ut);

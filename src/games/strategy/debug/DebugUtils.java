@@ -83,9 +83,8 @@ public class DebugUtils {
     final Properties props = System.getProperties();
     final java.util.List keys = new ArrayList(props.keySet());
     Collections.sort(keys);
-    final Iterator iter = keys.iterator();
-    while (iter.hasNext()) {
-      final String property = (String) iter.next();
+    for (Object key : keys) {
+      final String property = (String) key;
       final String value = props.getProperty(property);
       buf.append(property).append(" ").append(value).append("\n");
     }

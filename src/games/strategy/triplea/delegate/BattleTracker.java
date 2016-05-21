@@ -229,9 +229,8 @@ public class BattleTracker implements java.io.Serializable {
     }
     // say they weren't in combat
     final CompositeChange change = new CompositeChange();
-    final Iterator<Unit> attackIter = units.iterator();
-    while (attackIter.hasNext()) {
-      change.add(ChangeFactory.unitPropertyChange(attackIter.next(), false, TripleAUnit.WAS_IN_COMBAT));
+    for (Unit unit : units) {
+      change.add(ChangeFactory.unitPropertyChange(unit, false, TripleAUnit.WAS_IN_COMBAT));
     }
     bridge.addChange(change);
   }
@@ -294,9 +293,8 @@ public class BattleTracker implements java.io.Serializable {
       return;
     }
     final CompositeChange change = new CompositeChange();
-    final Iterator<Unit> attackIter = units.iterator();
-    while (attackIter.hasNext()) {
-      change.add(ChangeFactory.unitPropertyChange(attackIter.next(), true, TripleAUnit.WAS_IN_COMBAT));
+    for (Unit unit : units) {
+      change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.WAS_IN_COMBAT));
     }
     bridge.addChange(change);
     if (changeTracker != null) {
@@ -1013,9 +1011,7 @@ public class BattleTracker implements java.io.Serializable {
 
   public void removeBattle(final IBattle battle) {
     if (battle != null) {
-      final Iterator<IBattle> blocked = getBlocked(battle).iterator();
-      while (blocked.hasNext()) {
-        final IBattle current = blocked.next();
+      for (IBattle current : getBlocked(battle)) {
         removeDependency(current, battle);
       }
       m_pendingBattles.remove(battle);

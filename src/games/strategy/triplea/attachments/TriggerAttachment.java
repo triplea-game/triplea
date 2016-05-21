@@ -137,9 +137,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
       final Match<TriggerAttachment> cond) {
     final Set<TriggerAttachment> trigs = new HashSet<TriggerAttachment>();
     final Map<String, IAttachment> map = player.getAttachments();
-    final Iterator<String> iter = map.keySet().iterator();
-    while (iter.hasNext()) {
-      final IAttachment a = map.get(iter.next());
+    for (String s : map.keySet()) {
+      final IAttachment a = map.get(s);
       if (a instanceof TriggerAttachment) {
         if (cond == null || cond.match((TriggerAttachment) a)) {
           trigs.add((TriggerAttachment) a);
@@ -2232,10 +2231,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
       if (useUses) {
         t.use(aBridge);
       }
-      final Iterator<String> iter = t.getProductionRule().iterator();
-      while (iter.hasNext()) {
+      for (String s1 : t.getProductionRule()) {
         boolean add = true;
-        final String[] s = iter.next().split(":");
+        final String[] s = s1.split(":");
         final ProductionFrontier front = data.getProductionFrontierList().getProductionFrontier(s[0]);
         String rule = s[1];
         if (rule.startsWith("-")) {

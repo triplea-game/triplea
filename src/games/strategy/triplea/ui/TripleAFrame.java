@@ -808,9 +808,8 @@ public class TripleAFrame extends MainGameFrame {
     }
     messageAndDialogThreadPool.waitForAll();
     final StringBuilder buf = new StringBuilder("Units in the following territories will die: ");
-    final Iterator<Territory> iter = unitsCantFight.iterator();
-    while (iter.hasNext()) {
-      buf.append((iter.next()).getName());
+    for (Territory anUnitsCantFight : unitsCantFight) {
+      buf.append((anUnitsCantFight).getName());
       buf.append(" ");
     }
     final String ok = movePhase ? "Done Moving" : "Kill Units";
