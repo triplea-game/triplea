@@ -105,7 +105,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
         }
       } else {
         // notify the player he hasn't got enough money;
-        notifyMoney(actionChoice, false);
+        notifyMoney(actionChoice);
       }
     } else {
       // notify the player the action isn't valid anymore (shouldn't happen)
@@ -267,18 +267,12 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   /**
    * Let the player know he is being charged for money or that he hasn't got
    * enough money
-   *
-   * @param uaa
+   *  @param uaa
    *        the UserActionAttachment the player is notified about
-   * @param enough
-   *        is this a notification about enough or not enough money.
+   *
    */
-  private void notifyMoney(final UserActionAttachment uaa, final boolean enough) {
-    if (enough) {
-      sendNotification("Charging " + uaa.getCostPU() + " PU's to perform this action");
-    } else {
-      sendNotification("You don't have ennough money, you need " + uaa.getCostPU() + " PU's to perform this action");
-    }
+  private void notifyMoney(final UserActionAttachment uaa) {
+    sendNotification("You don't have enough money, you need " + uaa.getCostPU() + " PU's to perform this action");
   }
 
   /**
