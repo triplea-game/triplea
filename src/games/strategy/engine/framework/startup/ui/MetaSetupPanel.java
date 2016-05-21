@@ -2,15 +2,15 @@ package games.strategy.engine.framework.startup.ui;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,13 +30,21 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.config.GameEngineProperty;
 import games.strategy.engine.config.PropertyReader;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.map.download.DownloadUtils;
+import games.strategy.engine.framework.message.PlayerListing;
+import games.strategy.engine.framework.startup.launcher.ILauncher;
+import games.strategy.engine.framework.startup.launcher.LocalLauncher;
+import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
-import games.strategy.engine.framework.ui.NewGameChooser;
+import games.strategy.engine.framework.ui.NewGameChooserEntry;
+import games.strategy.engine.framework.ui.NewGameChooserModel;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
+import games.strategy.engine.random.PlainRandomSource;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.util.Version;
 
@@ -44,6 +52,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   private static final long serialVersionUID = 3926503672972937677L;
   private JButton m_startLocal;
+  private JButton m_startTutorial;
   private JButton m_startPBEM;
   private JButton m_hostGame;
   private JButton m_connectToHostedGame;
@@ -74,6 +83,8 @@ public class MetaSetupPanel extends SetupPanel {
     m_startLocal = new JButton("Start Local Game");
     m_startLocal.setToolTipText(
         "<html>Start a game on this computer. <br>You can play against a friend sitting besides you (hotseat mode), <br>or against one of the AIs.</html>");
+    m_startTutorial = new JButton("Start Tutorial");
+    m_startTutorial.setToolTipText("Start a Tutorial introducing you to TripleA");
     m_startPBEM = new JButton("Start PBEM (Play-By-Email/Forum) Game");
     m_startPBEM.setToolTipText(
         "<html>Starts a game which will be emailed back and forth between all players, <br>or be posted to an online forum or message board.</html>");
@@ -104,13 +115,15 @@ public class MetaSetupPanel extends SetupPanel {
         new Insets(10, 0, 0, 0), 0, 0));
     add(m_startLocal, new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
-    add(m_startPBEM, new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+    add(m_startTutorial, new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
-    add(m_hostGame, new GridBagConstraints(0, 4, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+    add(m_startPBEM, new GridBagConstraints(0, 4, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
-    add(m_connectToHostedGame, new GridBagConstraints(0, 5, 1, 1, 0, 0, GridBagConstraints.CENTER,
+    add(m_hostGame, new GridBagConstraints(0, 5, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+        new Insets(10, 0, 0, 0), 0, 0));
+    add(m_connectToHostedGame, new GridBagConstraints(0, 6, 1, 1, 0, 0, GridBagConstraints.CENTER,
         GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
-    add(m_enginePreferences, new GridBagConstraints(0, 6, 1, 1, 0, 0, GridBagConstraints.CENTER,
+    add(m_enginePreferences, new GridBagConstraints(0, 7, 1, 1, 0, 0, GridBagConstraints.CENTER,
         GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
     add(m_ruleBook, new GridBagConstraints(0, 8, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
@@ -124,55 +137,35 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   private void setupListeners() {
-    m_startLocal.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_model.showLocal();
-      }
-    });
-    m_startPBEM.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_model.showPBEM();
-      }
-    });
-    m_hostGame.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_model.showServer(MetaSetupPanel.this);
-      }
-    });
-    m_connectToHostedGame.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_model.showClient(MetaSetupPanel.this);
-      }
-    });
-    m_connectToLobby.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        connectToLobby();
-      }
-    });
-    m_enginePreferences.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        enginePreferences();
-      }
-    });
-    m_ruleBook.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        ruleBook();
-      }
-    });
+    m_startLocal.addActionListener(e -> m_model.showLocal());
+    m_startTutorial.addActionListener(e -> launchTutorialMap(MetaSetupPanel.this));
+    m_startPBEM.addActionListener(e -> m_model.showPBEM());
+    m_hostGame.addActionListener(e -> m_model.showServer(MetaSetupPanel.this));
+    m_connectToHostedGame.addActionListener(e -> m_model.showClient(MetaSetupPanel.this));
+    m_connectToLobby.addActionListener(e -> connectToLobby());
+    m_enginePreferences.addActionListener(e -> enginePreferences());
+    m_ruleBook.addActionListener(e -> ruleBook());
     m_donate.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
-    m_about.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        about();
-      }
-    });
+    m_about.addActionListener(e -> about());
+  }
+  
+  private static void launchTutorialMap(Component parent){
+    GameSelectorModel gameSelectorModel = new GameSelectorModel();
+    NewGameChooserEntry tutorialEntry = new NewGameChooserModel().findByName("Tutorial");
+    gameSelectorModel.load(tutorialEntry);
+    Map<String, Boolean> playersEnabled = tutorialEntry.getGameData().getPlayerList().getPlayersEnabledListing();
+    Map<String, String> playerTypes = new HashMap<>();
+    for(PlayerID player : tutorialEntry.getGameData().getPlayerList()){
+      playerTypes.put(player.getName(),
+          player.getName().startsWith("AI") || player.getName().startsWith("Neutral") ? "Hard (AI)" : "Human");
+    }
+    final PlayerListing playerListing =
+        new PlayerListing(null, playersEnabled, playerTypes, gameSelectorModel.getGameData().getGameVersion(),
+            gameSelectorModel.getGameName(), gameSelectorModel.getGameRound(), null, null);
+    ILauncher tutorialLauncher = new LocalLauncher(gameSelectorModel, new PlainRandomSource(), playerListing);
+    tutorialLauncher.launch(parent);
+    System.out.println("PUS" + (tutorialEntry.getGameData().getResourceList().getResource(Constants.PUS) != null));
+    //TODO launching is causing  a NullPointerException, because  - fix it!
   }
 
   private static void ruleBook() {
@@ -240,7 +233,6 @@ public class MetaSetupPanel extends SetupPanel {
       return;
     }
     final LobbyFrame lobbyFrame = new LobbyFrame(client, props);
-    NewGameChooser.clearNewGameChooserModel();
     MainFrame.getInstance().setVisible(false);
     MainFrame.getInstance().dispose();
     lobbyFrame.setVisible(true);

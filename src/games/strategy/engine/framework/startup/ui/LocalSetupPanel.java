@@ -39,13 +39,10 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
 
   public LocalSetupPanel(final GameSelectorModel model) {
     m_gameSelectorModel = model;
-    createComponents();
     layoutComponents();
     setupListeners();
     setWidgetActivation();
   }
-
-  private void createComponents() {}
 
   private void layoutComponents() {
     final GameData data = m_gameSelectorModel.getGameData();

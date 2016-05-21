@@ -64,7 +64,7 @@ public abstract class SetupPanel extends JPanel implements ISetupPanel {
 
   @Override
   public ILauncher getLauncher() {
-    throw new IllegalStateException("NOt implemented");
+    throw new IllegalStateException("Not implemented");
   }
 
   @Override
