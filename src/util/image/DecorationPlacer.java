@@ -723,7 +723,7 @@ public class DecorationPlacer extends JFrame {
       final List<Point> points = imagePoints.getSecond();
       points.remove(m_currentSelectedImage.getThird());
       points.add(new Point(m_currentMousePoint));
-      m_currentImagePoints.put(new String(m_currentSelectedImage.getFirst()),
+      m_currentImagePoints.put(m_currentSelectedImage.getFirst(),
           Tuple.of(m_currentSelectedImage.getSecond(), points));
       m_currentSelectedImage = null;
     } else if (rightMouse && !ctrlDown && s_createNewImageOnRightClick && s_staticImageForPlacing != null
@@ -757,7 +757,7 @@ public class DecorationPlacer extends JFrame {
       final List<Point> points = imagePoints.getSecond();
       points.remove(m_currentSelectedImage.getThird());
       points.add(new Point(m_currentMousePoint));
-      m_currentImagePoints.put(new String(m_currentSelectedImage.getFirst()),
+      m_currentImagePoints.put(m_currentSelectedImage.getFirst(),
           Tuple.of(m_currentSelectedImage.getSecond(), points));
       m_currentSelectedImage = null;
     } else if (rightMouse && ctrlDown) {
