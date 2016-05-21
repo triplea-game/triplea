@@ -56,12 +56,8 @@ public class UnitType extends NamedAttachable implements Serializable {
     return u;
   }
 
-  private Unit create(final PlayerID owner, final boolean isTemp) {
-    return create(owner, isTemp, 0, 0);
-  }
-
   public Unit create(final PlayerID owner) {
-    return create(owner, false);
+    return create(owner, false, 0, 0);
   }
 
   @Override
