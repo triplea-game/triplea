@@ -210,10 +210,10 @@ public class ConnectionFinder {
       final Matcher matcher = waterPattern.matcher(t);
       if (matcher.find()) {
         // <territory name="sea zone 1" water="true"/>
-        output.append("<territory name=\"" + t + "\" water=\"true\"/>\r\n");
+        output.append("<territory name=\"").append(t).append("\" water=\"true\"/>\r\n");
       } else {
         // <territory name="neutral territory 2"/>
-        output.append("<territory name=\"" + t + "\"/>\r\n");
+        output.append("<territory name=\"").append(t).append("\"/>\r\n");
       }
     }
     output.append("\r\n");
@@ -235,7 +235,7 @@ public class ConnectionFinder {
     Collections.sort(allTerritories, new AlphanumComparator());
     for (final String t1 : allTerritories) {
       for (final String t2 : connections.get(t1)) {
-        output.append("<connection t1=\"" + t1 + "\" t2=\"" + t2 + "\"/>\r\n");
+        output.append("<connection t1=\"").append(t1).append("\" t2=\"").append(t2).append("\"/>\r\n");
       }
     }
     return output;

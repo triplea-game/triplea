@@ -683,8 +683,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder();
-    sb.append("ServerModel GameData:" + (m_data == null ? "null" : m_data.getGameName()) + "\n");
-    sb.append("Connected:" + (m_serverMessenger == null ? "null" : m_serverMessenger.isConnected()) + "\n");
+    sb.append("ServerModel GameData:").append(m_data == null ? "null" : m_data.getGameName()).append("\n");
+    sb.append("Connected:").append(m_serverMessenger == null ? "null" : m_serverMessenger.isConnected()).append("\n");
     sb.append(m_serverMessenger);
     sb.append("\n");
     sb.append(m_remoteMessenger);

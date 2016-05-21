@@ -99,7 +99,8 @@ public class MapProperties {
   public String outCOLOR_MAP() {
     final StringBuilder buf = new StringBuilder();
     for (final Entry<String, Color> entry : COLOR_MAP.entrySet()) {
-      buf.append(MapData.PROPERTY_COLOR_PREFIX + entry.getKey() + "=" + colorToHex(entry.getValue()) + "\r\n");
+      buf.append(MapData.PROPERTY_COLOR_PREFIX).append(entry.getKey()).append("=").append(colorToHex(entry.getValue()))
+          .append("\r\n");
     }
     return buf.toString();
   }

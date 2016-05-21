@@ -189,9 +189,11 @@ public class ValidateAttachmentsTest extends TestCase {
           sb.append(validateAttachment(attachmentClass));
         }
       } catch (final ClassNotFoundException e) {
-        sb.append("Warning: Class " + className + " not found. Error Message: " + e.getMessage() + "\n");
+        sb.append("Warning: Class ").append(className).append(" not found. Error Message: ").append(e.getMessage())
+            .append("\n");
       } catch (final Throwable e) {
-        sb.append("Warning: Class " + className + " could not be loaded. Error Message: " + e.getMessage() + "\n");
+        sb.append("Warning: Class ").append(className).append(" could not be loaded. Error Message: ")
+            .append(e.getMessage()).append("\n");
       }
     }
     return sb.toString();
@@ -233,33 +235,34 @@ public class ValidateAttachmentsTest extends TestCase {
       final boolean startsWithSet = setter.getName().startsWith("set");
       final boolean gamePropertyAnnotation = setter.isAnnotationPresent(GameProperty.class);
       if (internalDoNotExportAnnotation && gamePropertyAnnotation) {
-        sb.append("WARNING: Class " + clazz.getCanonicalName() + " setter " + setter.getName()
-            + ": can not have both InternalDoNotExport and GameProperty annotations");
+        sb.append("WARNING: Class ").append(clazz.getCanonicalName()).append(" setter ").append(setter.getName())
+            .append(": can not have both InternalDoNotExport and GameProperty annotations");
         continue;
       } else if (startsWithSet && !(internalDoNotExportAnnotation || gamePropertyAnnotation)) {
-        sb.append("WARNING: Class " + clazz.getCanonicalName() + " setter " + setter.getName()
-            + ": begins with 'set' so must have either InternalDoNotExport or GameProperty annotation");
+        sb.append("WARNING: Class ").append(clazz.getCanonicalName()).append(" setter ").append(setter.getName())
+            .append(": begins with 'set' so must have either InternalDoNotExport or GameProperty annotation");
         continue;
       } else if (!startsWithSet && gamePropertyAnnotation) {
-        sb.append("WARNING: Class " + clazz.getCanonicalName() + " setter " + setter.getName()
-            + ": does not begin with 'set' but has GameProperty annotation");
+        sb.append("WARNING: Class ").append(clazz.getCanonicalName()).append(" setter ").append(setter.getName())
+            .append(": does not begin with 'set' but has GameProperty annotation");
         continue;
       } else if (!startsWithSet || internalDoNotExportAnnotation) {
         // no error, we are supposed to ignore things that are labeled as ignore, or do not start with 'set'
         continue;
       } else if (!startsWithSet && !gamePropertyAnnotation) {
-        sb.append("WARNING: Class " + clazz.getCanonicalName() + " setter " + setter.getName()
-            + ": I must have missed a possibility");
+        sb.append("WARNING: Class ").append(clazz.getCanonicalName()).append(" setter ").append(setter.getName())
+            .append(": I must have missed a possibility");
         continue;
       }
       Method getter;
       final GameProperty annotation = setter.getAnnotation(GameProperty.class);
       if (annotation == null) {
-        sb.append("Class " + clazz.getCanonicalName() + " has " + setter.getName()
-            + " and it doesn't have the GameProperty annotation on it\n");
+        sb.append("Class ").append(clazz.getCanonicalName()).append(" has ").append(setter.getName())
+            .append(" and it doesn't have the GameProperty annotation on it\n");
       }
       if (!setter.getReturnType().equals(void.class)) {
-        sb.append("Class " + clazz.getCanonicalName() + " has " + setter.getName() + " and it doesn't return void\n");
+        sb.append("Class ").append(clazz.getCanonicalName()).append(" has ").append(setter.getName())
+            .append(" and it doesn't return void\n");
       }
       // the property name must be derived from the method name
       final String propertyName = getPropertyName(setter);
@@ -277,13 +280,14 @@ public class ValidateAttachmentsTest extends TestCase {
         if (annotation.adds()) {
           if (!(Collection.class.isAssignableFrom(field.getType()) || Map.class.isAssignableFrom(field.getType())
               || IntegerMap.class.isAssignableFrom(field.getType()))) {
-            sb.append("Class " + clazz.getCanonicalName() + " has a setter " + setter.getName()
-                + " which adds but the field " + field.getName() + " is not a Collection or Map or IntegerMap\n");
+            sb.append("Class ").append(clazz.getCanonicalName()).append(" has a setter ").append(setter.getName())
+                .append(" which adds but the field ").append(field.getName())
+                .append(" is not a Collection or Map or IntegerMap\n");
           }
         }
       } catch (final IllegalStateException e) {
-        sb.append("Class " + clazz.getCanonicalName() + " is missing field for setter " + setter.getName()
-            + " with @GameProperty\n");
+        sb.append("Class ").append(clazz.getCanonicalName()).append(" is missing field for setter ")
+            .append(setter.getName()).append(" with @GameProperty\n");
         continue;
       }
       final String resetterName = "reset" + capitalizeFirstLetter(propertyName);
@@ -291,12 +295,12 @@ public class ValidateAttachmentsTest extends TestCase {
       try {
         resetterMethod = clazz.getMethod(resetterName);
         if (!resetterMethod.getReturnType().equals(void.class)) {
-          sb.append("Class " + clazz.getCanonicalName() + " has a reset method " + resetterMethod.getName()
-              + " that doesn't return void\n");
+          sb.append("Class ").append(clazz.getCanonicalName()).append(" has a reset method ")
+              .append(resetterMethod.getName()).append(" that doesn't return void\n");
         }
       } catch (final NoSuchMethodException e) {
-        sb.append("Class " + clazz.getCanonicalName() + " doesn't have a resetter method for property: " + propertyName
-            + "\n");
+        sb.append("Class ").append(clazz.getCanonicalName()).append(" doesn't have a resetter method for property: ")
+            .append(propertyName).append("\n");
         continue;
       }
       final String getterName = "get" + capitalizeFirstLetter(propertyName);
@@ -305,12 +309,13 @@ public class ValidateAttachmentsTest extends TestCase {
         final Class<?> type = field.getType();
         getter = clazz.getMethod(getterName);
         if (!type.equals(getter.getReturnType())) {
-          sb.append("Class " + clazz.getCanonicalName() + ". " + getterName + " returns type "
-              + getter.getReturnType().getName() + " but property field is type " + type.getName() + "\n");
+          sb.append("Class ").append(clazz.getCanonicalName()).append(". ").append(getterName).append(" returns type ")
+              .append(getter.getReturnType().getName()).append(" but property field is type ").append(type.getName())
+              .append("\n");
         }
       } catch (final NoSuchMethodException e) {
-        sb.append("Class " + clazz.getCanonicalName() + " doesn't have a valid getter method for property: "
-            + propertyName + "\n");
+        sb.append("Class ").append(clazz.getCanonicalName())
+            .append(" doesn't have a valid getter method for property: ").append(propertyName).append("\n");
         continue;
       }
       if (annotation.adds()) {
@@ -320,13 +325,13 @@ public class ValidateAttachmentsTest extends TestCase {
         try {
           clearMethod = clazz.getMethod(clearName);
         } catch (final NoSuchMethodException e) {
-          sb.append("Class " + clazz.getCanonicalName() + " doesn't have a clear method for 'adder' property "
-              + propertyName + "\n");
+          sb.append("Class ").append(clazz.getCanonicalName())
+              .append(" doesn't have a clear method for 'adder' property ").append(propertyName).append("\n");
           continue;
         }
         if (!clearMethod.getReturnType().equals(void.class)) {
-          sb.append("Class " + clazz.getCanonicalName() + " has a clear method " + clearMethod.getName()
-              + " that doesn't return void\n");
+          sb.append("Class ").append(clazz.getCanonicalName()).append(" has a clear method ")
+              .append(clearMethod.getName()).append(" that doesn't return void\n");
         }
       } else if (!Modifier.isAbstract(clazz.getModifiers())) {
         // check the symmetry of regular setters
@@ -357,27 +362,28 @@ public class ValidateAttachmentsTest extends TestCase {
           method = getter.toString();
           final Object getterValue = getter.invoke(attachment);
           if (!value.equals(getterValue)) {
-            sb.append(
-                "Class " + clazz.getCanonicalName() + ", value set could not be obtained using " + getterName + "\n");
+            sb.append("Class ").append(clazz.getCanonicalName()).append(", value set could not be obtained using ")
+                .append(getterName).append("\n");
           }
           field.setAccessible(true);
           final Object fieldValue = field.get(attachment);
           if (!getterValue.equals(fieldValue)) {
-            sb.append("Class " + clazz.getCanonicalName() + ", " + getterName + " returns type "
-                + getterValue.getClass().getName() + " but field is of type " + fieldValue.getClass().getName());
+            sb.append("Class ").append(clazz.getCanonicalName()).append(", ").append(getterName)
+                .append(" returns type ").append(getterValue.getClass().getName()).append(" but field is of type ")
+                .append(fieldValue.getClass().getName());
           }
         } catch (final NoSuchMethodException e) {
-          sb.append("Warning, Class " + clazz.getCanonicalName() + " testing '" + propertyName
-              + "', has no default constructor\n");
+          sb.append("Warning, Class ").append(clazz.getCanonicalName()).append(" testing '").append(propertyName)
+              .append("', has no default constructor\n");
         } catch (final IllegalArgumentException e) {
-          sb.append("Warning, Class " + clazz.getCanonicalName() + " testing '" + propertyName
-              + "', has error: IllegalArgumentException: " + e.getMessage() + "\n");
+          sb.append("Warning, Class ").append(clazz.getCanonicalName()).append(" testing '").append(propertyName)
+              .append("', has error: IllegalArgumentException: ").append(e.getMessage()).append("\n");
         } catch (final InstantiationException e) {
-          sb.append("Warning, Class " + clazz.getCanonicalName() + " testing '" + propertyName
-              + "', has error: InstantiationException: " + e.getMessage() + "\n");
+          sb.append("Warning, Class ").append(clazz.getCanonicalName()).append(" testing '").append(propertyName)
+              .append("', has error: InstantiationException: ").append(e.getMessage()).append("\n");
         } catch (final IllegalAccessException e) {
-          sb.append("Warning, Class " + clazz.getCanonicalName() + " testing '" + propertyName
-              + "', has error: IllegalAccessException: " + e.getMessage() + "\n");
+          sb.append("Warning, Class ").append(clazz.getCanonicalName()).append(" testing '").append(propertyName)
+              .append("', has error: IllegalAccessException: ").append(e.getMessage()).append("\n");
         } catch (final InvocationTargetException e) {
           // this only occurs if the constructor/getter or setter throws an exception, Usually it is because we pass
           // null to the constructor

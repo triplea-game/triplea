@@ -90,7 +90,7 @@ public class MapDownloadController {
             new StringBuilder("<html>Some of the maps you have are out of date, and newer versions of those maps exist."
                 + "<br>Would you like to update (re-download) the following maps now?:<br><ul>");
         for (final String map : outOfDateMaps) {
-          text.append("<li> " + map + "</li>");
+          text.append("<li> ").append(map).append("</li>");
         }
         text.append("</ul></html>");
         SwingComponents.promptUser("Update Your Maps?", text.toString(), () -> DownloadMapsWindow.showDownloadMapsWindow());

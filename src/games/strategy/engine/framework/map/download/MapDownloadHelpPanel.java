@@ -25,7 +25,7 @@ public class MapDownloadHelpPanel extends JPanel {
     StringBuilder sb = new StringBuilder();
     sb.append("<html>");
     for (String helpComment : HELP_COMMENTS) {
-      sb.append("<li>" + helpComment + "</li>");
+      sb.append("<li>").append(helpComment).append("</li>");
     }
     sb.append("</html>");
     return sb.toString();

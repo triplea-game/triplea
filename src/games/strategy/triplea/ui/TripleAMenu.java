@@ -193,20 +193,20 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
       for (final Entry<PlayerID, List<UnitType>> entry : playerUnitTypes.entrySet()) {
         final PlayerID player = entry.getKey();
         hints.append("<p><table border=\"1\" bgcolor=\"" + color1 + "\">");
-        hints.append("<tr><th style=\"font-size:120%;000000\" bgcolor=\"" + color3 + "\" colspan=\"4\">"
-            + (player == null ? "NULL" : player.getName()) + " Units</th></tr>");
-        hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
-            + "><td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr>");
+        hints.append("<tr><th style=\"font-size:120%;000000\" bgcolor=\"" + color3 + "\" colspan=\"4\">")
+            .append(player == null ? "NULL" : player.getName()).append(" Units</th></tr>");
+        hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
+            .append("><td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr>");
         for (final UnitType ut : entry.getValue()) {
           i++;
-          hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + ">"
-              + "<td>" + getUnitImageURL(ut, player) + "</td>" + "<td>" + ut.getName() + "</td>" + "<td>"
-              + costs.get(player).get(ut).toStringForHTML() + "</td>" + "<td>" + ut.getTooltip(player)
-              + "</td></tr>");
+          hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
+              .append(">").append("<td>").append(getUnitImageURL(ut, player)).append("</td>").append("<td>")
+              .append(ut.getName()).append("</td>").append("<td>").append(costs.get(player).get(ut).toStringForHTML())
+              .append("</td>").append("<td>").append(ut.getTooltip(player, true)).append("</td></tr>");
         }
         i++;
-        hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + ">"
-            + "<td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr></table></p><br />");
+        hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
+            .append(">").append("<td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr></table></p><br />");
       }
     } finally {
       data.releaseReadLock();
@@ -593,7 +593,7 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
 
   private void addMapFontAndColorEditorMenu(final JMenu parentMenu) {
     final Action mapFontOptions = SwingAction.of("Edit Map Font and Color...", e -> {
-      final List<IEditableProperty> properties = new ArrayList<>();
+      final List<IEditableProperty> properties = new ArrayList<IEditableProperty>();
       final NumberProperty fontsize =
           new NumberProperty("Font Size", null, 60, 0, MapImage.getPropertyMapFont().getSize());
       final ColorProperty territoryNameColor = new ColorProperty("Territory Name and PU Color", null,
@@ -893,11 +893,11 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
       final Iterator<PlayerID> playerOrderIterator = playerOrderSetNoDuplicates.iterator();
       while (playerOrderIterator.hasNext()) {
         final PlayerID currentPlayerID = playerOrderIterator.next();
-        text.append(currentPlayerID.getName() + ",");
+        text.append(currentPlayerID.getName()).append(",");
         final Iterator<String> allianceName =
             getData().getAllianceTracker().getAlliancesPlayerIsIn(currentPlayerID).iterator();
         while (allianceName.hasNext()) {
-          text.append(allianceName.next() + ",");
+          text.append(allianceName.next()).append(",");
         }
         text.append("\n");
       }
@@ -906,7 +906,7 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
       final EndRoundDelegate delegateEndRound = (EndRoundDelegate) getData().getDelegateList().getDelegate("endRound");
       if (delegateEndRound != null && delegateEndRound.getWinners() != null) {
         for (final PlayerID p : delegateEndRound.getWinners()) {
-          text.append(p.getName() + ",");
+          text.append(p.getName()).append(",");
         }
       } else {
         text.append("none yet; game not over,");
@@ -932,8 +932,9 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
           final ProductionRule pr = purchaseOptionsIterator.next();
           String costString = pr.toStringCosts().replaceAll("; ", ",");
           costString = costString.replaceAll(" ", ",");
-          text.append(pr.getName() + "," + pr.getResults().keySet().iterator().next().getName() + ","
-              + pr.getResults().getInt(pr.getResults().keySet().iterator().next()) + "," + costString + ",");
+          text.append(pr.getName()).append(",").append(pr.getResults().keySet().iterator().next().getName()).append(",")
+              .append(pr.getResults().getInt(pr.getResults().keySet().iterator().next())).append(",").append(costString)
+              .append(",");
           text.append("\n");
         }
         text.append("\n");

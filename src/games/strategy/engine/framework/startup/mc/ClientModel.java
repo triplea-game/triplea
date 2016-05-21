@@ -496,9 +496,9 @@ public class ClientModel implements IMessengerErrorListener {
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder();
-    sb.append(
-        "ClientModel GameData:" + (m_gameDataOnStartup == null ? "null" : m_gameDataOnStartup.getGameName()) + "\n");
-    sb.append("Connected:" + (m_messenger == null ? "null" : m_messenger.isConnected()) + "\n");
+    sb.append("ClientModel GameData:").append(m_gameDataOnStartup == null ? "null" : m_gameDataOnStartup.getGameName())
+        .append("\n");
+    sb.append("Connected:").append(m_messenger == null ? "null" : m_messenger.isConnected()).append("\n");
     sb.append(m_messenger);
     sb.append("\n");
     sb.append(m_remoteMessenger);

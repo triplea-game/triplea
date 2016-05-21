@@ -50,22 +50,22 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     if (isNationalObjectives()) {
       final String nationalObjectivesText = determineNationalObjectives(bridge);
       if (nationalObjectivesText.trim().length() > 0) {
-        endTurnReport.append(nationalObjectivesText + "<br />");
+        endTurnReport.append(nationalObjectivesText).append("<br />");
       }
     }
     // create resources if any owned units have the ability
     final String createsResourcesPositiveText = createResources(bridge, false);
     if (createsResourcesPositiveText.trim().length() > 0) {
-      endTurnReport.append(createsResourcesPositiveText + "<br />");
+      endTurnReport.append(createsResourcesPositiveText).append("<br />");
     }
     final String createsResourcesNegativeText = createResources(bridge, true);
     if (createsResourcesNegativeText.trim().length() > 0) {
-      endTurnReport.append(createsResourcesNegativeText + "<br />");
+      endTurnReport.append(createsResourcesNegativeText).append("<br />");
     }
     // create units if any owned units have the ability
     final String createsUnitsText = createUnits(bridge);
     if (createsUnitsText.trim().length() > 0) {
-      endTurnReport.append(createsUnitsText + "<br />");
+      endTurnReport.append(createsUnitsText).append("<br />");
     }
     return endTurnReport.toString();
   }
@@ -102,7 +102,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           final String transcriptText =
               player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAdd) + " in " + t.getName();
           bridge.getHistoryWriter().startEvent(transcriptText, toAdd);
-          endTurnReport.append(transcriptText + "<br />");
+          endTurnReport.append(transcriptText).append("<br />");
           final Change place = ChangeFactory.addUnits(t, toAdd);
           change.add(place);
         }
@@ -114,7 +114,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
             final String transcriptText =
                 player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAddSea) + " in " + tw.getName();
             bridge.getHistoryWriter().startEvent(transcriptText, toAddSea);
-            endTurnReport.append(transcriptText + "<br />");
+            endTurnReport.append(transcriptText).append("<br />");
             final Change place = ChangeFactory.addUnits(tw, toAddSea);
             change.add(place);
           }
@@ -128,7 +128,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
             final String transcriptText =
                 player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAddLand) + " in " + tl.getName();
             bridge.getHistoryWriter().startEvent(transcriptText, toAddLand);
-            endTurnReport.append(transcriptText + "<br />");
+            endTurnReport.append(transcriptText).append("<br />");
             final Change place = ChangeFactory.addUnits(tl, toAddLand);
             change.add(place);
           }
@@ -193,7 +193,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
             final String transcriptText = u.getUnitType().getName() + " in " + t.getName() + " creates " + toAdd + " "
                 + r.getName() + "; " + player.getName() + " end with " + total + " " + r.getName();
             bridge.getHistoryWriter().startEvent(transcriptText);
-            endTurnReport.append(transcriptText + "<br />");
+            endTurnReport.append(transcriptText).append("<br />");
             final Change resources = ChangeFactory.changeResourcesChange(player, r, toAdd);
             change.add(resources);
           }
@@ -248,7 +248,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
             Match.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
         // now list out individual types to fire, once for each of the matches above.
         endTurnReport.append(TriggerAttachment.triggerResourceChange(toFireTestedAndSatisfied, bridge, null, null, true,
-            true, true, true) + "<br />");
+            true, true, true)).append("<br />");
       }
     }
     // now do all the national objectives
@@ -277,7 +277,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           + " met a national objective for an additional " + toAdd + MyFormatter.pluralize(" PU", toAdd) + "; end with "
           + total + MyFormatter.pluralize(" PU", total);
       bridge.getHistoryWriter().startEvent(PUMessage);
-      endTurnReport.append(PUMessage + "<br />");
+      endTurnReport.append(PUMessage).append("<br />");
     }
     return endTurnReport.toString();
   }
@@ -313,7 +313,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           m_player.getName() + " collects " + toAdd + " " + MyFormatter.pluralize(r.getName(), toAdd) + "; ends with "
               + total + " " + MyFormatter.pluralize(r.getName(), total) + " total";
       aBridge.getHistoryWriter().startEvent(resourceText);
-      endTurnReport.append(resourceText + "<br />");
+      endTurnReport.append(resourceText).append("<br />");
       change.add(ChangeFactory.changeResourcesChange(m_player, r, toAdd));
     }
     if (!change.isEmpty()) {

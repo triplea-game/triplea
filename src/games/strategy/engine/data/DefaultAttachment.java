@@ -63,11 +63,11 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   protected static IllegalArgumentException getSetterExceptionMessage(final DefaultAttachment failingObject,
       final String propertyName, final String givenValue, final String... allowedValues) {
     final StringBuilder rVal = new StringBuilder();
-    rVal.append(failingObject.getClass().getName() + ": " + failingObject.getName() + ": property " + propertyName
-        + " must be either ");
+    rVal.append(failingObject.getClass().getName()).append(": ").append(failingObject.getName()).append(": property ")
+        .append(propertyName).append(" must be either ");
     rVal.append(allowedValues[0]);
     for (int i = 1; i < allowedValues.length; ++i) {
-      rVal.append(" or " + allowedValues[i]);
+      rVal.append(" or ").append(allowedValues[i]);
     }
     return new IllegalArgumentException(rVal.toString() + " ([Not Allowed] Given: " + givenValue + ")");
   }

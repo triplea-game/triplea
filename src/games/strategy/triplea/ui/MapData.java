@@ -505,7 +505,8 @@ public class MapData {
     while (territories.hasNext()) {
       final Territory terr = territories.next();
       if (!keySet.contains(terr.getName())) {
-        errors.append("No data of type " + dataTypeForErrorMessage + " for territory:" + terr.getName() + "\n");
+        errors.append("No data of type ").append(dataTypeForErrorMessage).append(" for territory:")
+            .append(terr.getName()).append("\n");
       }
     }
     if (errors.length() > 0) {

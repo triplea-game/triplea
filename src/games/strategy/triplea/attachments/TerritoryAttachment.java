@@ -754,12 +754,12 @@ public class TerritoryAttachment extends DefaultAttachment {
       sb.append(br);
       final PlayerID owner = t.getOwner();
       if (owner != null && !owner.isNull()) {
-        sb.append("Current Owner: " + t.getOwner().getName());
+        sb.append("Current Owner: ").append(t.getOwner().getName());
         sb.append(br);
       }
       final PlayerID originalOwner = getOriginalOwner();
       if (originalOwner != null) {
-        sb.append("Original Owner: " + originalOwner.getName());
+        sb.append("Original Owner: ").append(originalOwner.getName());
         sb.append(br);
       }
     }
@@ -768,7 +768,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       sb.append(br);
     }
     if (m_capital != null && m_capital.length() > 0) {
-      sb.append("A Capital of " + m_capital);
+      sb.append("A Capital of ").append(m_capital);
       sb.append(br);
     }
     if (m_victoryCity != 0) {
@@ -785,11 +785,11 @@ public class TerritoryAttachment extends DefaultAttachment {
     }
     if (m_convoyRoute) {
       if (!m_convoyAttached.isEmpty()) {
-        sb.append("Needs: " + MyFormatter.defaultNamedToTextList(m_convoyAttached) + br);
+        sb.append("Needs: ").append(MyFormatter.defaultNamedToTextList(m_convoyAttached)).append(br);
       }
       final Set<Territory> requiredBy = getWhatTerritoriesThisIsUsedInConvoysFor(t, getData());
       if (!requiredBy.isEmpty()) {
-        sb.append("Required By: " + MyFormatter.defaultNamedToTextList(requiredBy) + br);
+        sb.append("Required By: ").append(MyFormatter.defaultNamedToTextList(requiredBy)).append(br);
       }
     }
     if (m_changeUnitOwners != null && !m_changeUnitOwners.isEmpty()) {
@@ -805,7 +805,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       sb.append(br);
       for (final String value : m_whenCapturedByGoesTo) {
         final String[] s = value.split(":");
-        sb.append(s[0] + " -> " + s[1]);
+        sb.append(s[0]).append(" -> ").append(s[1]);
         sb.append(br);
       }
     }
@@ -820,13 +820,13 @@ public class TerritoryAttachment extends DefaultAttachment {
       sb.append("Production: ");
       sb.append(br);
       if (m_production > 0) {
-        sb.append("&nbsp;&nbsp;&nbsp;&nbsp;" + m_production + " PUs");
+        sb.append("&nbsp;&nbsp;&nbsp;&nbsp;").append(m_production).append(" PUs");
         sb.append(br);
       }
       if (m_resources != null) {
         if (useHTML) {
-          sb.append("&nbsp;&nbsp;&nbsp;&nbsp;"
-              + (m_resources.toStringForHTML()).replaceAll("<br>", "<br>&nbsp;&nbsp;&nbsp;&nbsp;"));
+          sb.append("&nbsp;&nbsp;&nbsp;&nbsp;")
+              .append((m_resources.toStringForHTML()).replaceAll("<br>", "<br>&nbsp;&nbsp;&nbsp;&nbsp;"));
         } else {
           sb.append(m_resources.toString());
         }
@@ -839,7 +839,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       sb.append(br);
     }
     while (iter.hasNext()) {
-      sb.append("&nbsp;&nbsp;&nbsp;&nbsp;" + iter.next().getName());
+      sb.append("&nbsp;&nbsp;&nbsp;&nbsp;").append(iter.next().getName());
       sb.append(br);
     }
     return sb.toString();
