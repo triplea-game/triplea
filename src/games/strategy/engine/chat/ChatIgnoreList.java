@@ -1,5 +1,6 @@
 package games.strategy.engine.chat;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -15,9 +16,7 @@ public class ChatIgnoreList {
   public ChatIgnoreList() {
     final Preferences prefs = getPrefNode();
     try {
-      for (final String key : prefs.keys()) {
-        m_ignore.add(key);
-      }
+      Collections.addAll(m_ignore, prefs.keys());
     } catch (final BackingStoreException e) {
       log.log(Level.FINE, e.getMessage(), e);
     }
