@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -36,8 +37,6 @@ import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
-import games.strategy.engine.framework.ui.ClearGameChooserCacheMessenger;
-import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.engine.framework.ui.NewGameChooserModel;
 import games.strategy.engine.lobby.client.LobbyClient;
@@ -45,6 +44,7 @@ import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.engine.random.PlainRandomSource;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.util.Version;
 
@@ -138,23 +138,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   private void setupListeners() {
     m_startLocal.addActionListener(e -> m_model.showLocal());
-    m_startTutorial.addActionListener(e -> {
-        GameSelectorModel gameSelectorModel = new GameSelectorModel();
-        NewGameChooserEntry tutorialEntry = new NewGameChooserModel(new ClearGameChooserCacheMessenger()).findByName("Tutorial");
-        gameSelectorModel.load(tutorialEntry);
-        Map<String, Boolean> playersEnabled = tutorialEntry.getGameData().getPlayerList().getPlayersEnabledListing();
-        Map<String, String> playerTypes = new HashMap<>();
-        for(PlayerID player : tutorialEntry.getGameData().getPlayerList()){
-          playerTypes.put(player.getName(),
-              player.getName().startsWith("AI") || player.getName().startsWith("Neutral") ? "Hard (AI)" : "Human");
-        }
-        final PlayerListing playerListing =
-            new PlayerListing(null, playersEnabled, playerTypes, gameSelectorModel.getGameData().getGameVersion(),
-                gameSelectorModel.getGameName(), gameSelectorModel.getGameRound(), null, null);
-        ILauncher tutorialLauncher = new LocalLauncher(gameSelectorModel, new PlainRandomSource(), playerListing);
-        tutorialLauncher.launch(MetaSetupPanel.this);
-        //TODO launching is causing  a NullPointerException - fix it!
-      });
+    m_startTutorial.addActionListener(e -> launchTutorialMap(MetaSetupPanel.this));
     m_startPBEM.addActionListener(e -> m_model.showPBEM());
     m_hostGame.addActionListener(e -> m_model.showServer(MetaSetupPanel.this));
     m_connectToHostedGame.addActionListener(e -> m_model.showClient(MetaSetupPanel.this));
@@ -163,6 +147,25 @@ public class MetaSetupPanel extends SetupPanel {
     m_ruleBook.addActionListener(e -> ruleBook());
     m_donate.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
     m_about.addActionListener(e -> about());
+  }
+  
+  private static void launchTutorialMap(Component parent){
+    GameSelectorModel gameSelectorModel = new GameSelectorModel();
+    NewGameChooserEntry tutorialEntry = new NewGameChooserModel().findByName("Tutorial");
+    gameSelectorModel.load(tutorialEntry);
+    Map<String, Boolean> playersEnabled = tutorialEntry.getGameData().getPlayerList().getPlayersEnabledListing();
+    Map<String, String> playerTypes = new HashMap<>();
+    for(PlayerID player : tutorialEntry.getGameData().getPlayerList()){
+      playerTypes.put(player.getName(),
+          player.getName().startsWith("AI") || player.getName().startsWith("Neutral") ? "Hard (AI)" : "Human");
+    }
+    final PlayerListing playerListing =
+        new PlayerListing(null, playersEnabled, playerTypes, gameSelectorModel.getGameData().getGameVersion(),
+            gameSelectorModel.getGameName(), gameSelectorModel.getGameRound(), null, null);
+    ILauncher tutorialLauncher = new LocalLauncher(gameSelectorModel, new PlainRandomSource(), playerListing);
+    tutorialLauncher.launch(parent);
+    System.out.println("PUS" + (tutorialEntry.getGameData().getResourceList().getResource(Constants.PUS) != null));
+    //TODO launching is causing  a NullPointerException, because  - fix it!
   }
 
   private static void ruleBook() {
