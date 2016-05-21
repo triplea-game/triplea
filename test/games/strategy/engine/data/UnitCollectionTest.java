@@ -106,20 +106,20 @@ public class UnitCollectionTest {
   }
 
   private Collection<Unit> getDefaultPlayerUnitsOfUnitTypeOne() {
-    final Collection<Unit> units = new ArrayList<Unit>();
+    final Collection<Unit> units = new ArrayList<>();
     units.add(unitDefaultPlayer1);
     return units;
   }
 
   private Collection<Unit> getDefaultPlayerUnitsOfUnitTypeTwo() {
-    final Collection<Unit> units = new ArrayList<Unit>();
+    final Collection<Unit> units = new ArrayList<>();
     units.add(unitDefaultPlayer2);
     units.add(unitDefaultPlayer3);
     return units;
   }
 
   private Collection<Unit> getOtherPlayerUnitsOfUnitTypeOne() {
-    final Collection<Unit> units = new ArrayList<Unit>();
+    final Collection<Unit> units = new ArrayList<>();
     units.add(unitOtherPlayer1);
     units.add(unitOtherPlayer2);
     units.add(unitOtherPlayer3);
@@ -127,7 +127,7 @@ public class UnitCollectionTest {
   }
 
   private Collection<Unit> getOtherPlayerUnitsOfUnitTypeTwo() {
-    final Collection<Unit> units = new ArrayList<Unit>();
+    final Collection<Unit> units = new ArrayList<>();
     units.add(unitOtherPlayer4);
     units.add(unitOtherPlayer5);
     units.add(unitOtherPlayer6);

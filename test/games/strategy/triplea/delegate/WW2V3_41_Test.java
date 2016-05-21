@@ -471,7 +471,7 @@ public class WW2V3_41_Test extends TestCase {
      * Test Building one
      */
     final UnitType aaGun = GameDataTestUtil.aaGun(m_data);
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(aaGun, 1);
     // Set up the test
     final PlayerID germans = GameDataTestUtil.germans(m_data);
@@ -589,7 +589,7 @@ public class WW2V3_41_Test extends TestCase {
     placeDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     placeDelegate.start();
     // Add the factory
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(factoryType, 1);
     addTo(british(m_data), factory(m_data).create(1, british(m_data)), m_data);
     // Place the factory
@@ -635,7 +635,7 @@ public class WW2V3_41_Test extends TestCase {
     placeDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     placeDelegate.start();
     // Add the infantry
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(infantryType, 3);
     addTo(chinese(m_data), infantry(m_data).create(1, chinese(m_data)), m_data);
     // Get the number of units before placing
@@ -648,7 +648,7 @@ public class WW2V3_41_Test extends TestCase {
      * Place units in a territory with up to 3 Chinese units
      */
     // Add the infantry
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.add(infantryType, 3);
     addTo(chinese(m_data), infantry(m_data).create(3, chinese(m_data)), m_data);
     // Get the number of units before placing
@@ -662,7 +662,7 @@ public class WW2V3_41_Test extends TestCase {
     /*
      * Place units in a territory with 3 or more Chinese units
      */
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.add(infantryType, 1);
     addTo(chinese(m_data), infantry(m_data).create(1, chinese(m_data)), m_data);
     response = placeDelegate.placeUnits(getUnits(map, chinese), yunnan);
@@ -689,7 +689,7 @@ public class WW2V3_41_Test extends TestCase {
     placeDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     placeDelegate.start();
     // Add the transport
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(transportType, 1);
     addTo(germans(m_data), transport(m_data).create(1, germans(m_data)), m_data);
     // Place it
@@ -1177,7 +1177,7 @@ public class WW2V3_41_Test extends TestCase {
     moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(m_data).start();
     final Route r = new Route(france, germany, poland);
-    final List<Unit> toMove = new ArrayList<Unit>();
+    final List<Unit> toMove = new ArrayList<>();
     // 1 armour and 1 infantry
     toMove.addAll(france.getUnits().getMatches(Matches.UnitCanBlitz));
     toMove.add(france.getUnits().getMatches(Matches.UnitIsInfantry).get(0));
@@ -1211,7 +1211,7 @@ public class WW2V3_41_Test extends TestCase {
     final Collection<Unit> paratroopers = france.getUnits().getMatches(Matches.UnitIsAirTransportable);
     assertFalse(paratroopers.isEmpty());
     final MoveValidationResult results = MoveValidator.validateMove(paratroopers, r, germans,
-        Collections.<Unit>emptyList(), new HashMap<Unit, Collection<Unit>>(), false, null, m_data);
+        Collections.<Unit>emptyList(), new HashMap<>(), false, null, m_data);
     assertFalse(results.isMoveValid());
   }
 
@@ -1227,7 +1227,7 @@ public class WW2V3_41_Test extends TestCase {
     toMove.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
     assertEquals(2, toMove.size());
     final MoveValidationResult results = MoveValidator.validateMove(toMove, r, germans, Collections.<Unit>emptyList(),
-        new HashMap<Unit, Collection<Unit>>(), false, null, m_data);
+        new HashMap<>(), false, null, m_data);
     assertFalse(results.isMoveValid());
   }
 
@@ -1243,7 +1243,7 @@ public class WW2V3_41_Test extends TestCase {
     toMove.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
     assertEquals(2, toMove.size());
     final MoveValidationResult results = MoveValidator.validateMove(toMove, r, germans, Collections.<Unit>emptyList(),
-        new HashMap<Unit, Collection<Unit>>(), false, null, m_data);
+        new HashMap<>(), false, null, m_data);
     assertFalse(results.isMoveValid());
   }
 
@@ -1260,7 +1260,7 @@ public class WW2V3_41_Test extends TestCase {
     TechAttachment.get(germans).setParatroopers("true");
     List<Unit> paratrooper = germany.getUnits().getMatches(Matches.UnitIsAirTransportable);
     paratrooper = paratrooper.subList(0, 1);
-    final List<Unit> bomberAndParatroop = new ArrayList<Unit>(paratrooper);
+    final List<Unit> bomberAndParatroop = new ArrayList<>(paratrooper);
     bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsAirTransport));
     // move to nwe, this is a valid move, and it not a partroop move
     move(bomberAndParatroop, new Route(germany, nwe));
@@ -1280,7 +1280,7 @@ public class WW2V3_41_Test extends TestCase {
     TechAttachment.get(germans).setParatroopers("true");
     final List<Unit> paratrooper = nwe.getUnits().getMatches(Matches.UnitIsAirTransportable);
     move(paratrooper, new Route(nwe, germany));
-    final List<Unit> bomberAndParatroop = new ArrayList<Unit>(paratrooper);
+    final List<Unit> bomberAndParatroop = new ArrayList<>(paratrooper);
     bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsAirTransport));
     // move the units to east poland
     final String error = moveDelegate(m_data).move(bomberAndParatroop, new Route(germany, poland, eastPoland));
@@ -1303,7 +1303,7 @@ public class WW2V3_41_Test extends TestCase {
     final List<Unit> bomber = germany.getUnits().getMatches(Matches.UnitIsAirTransport);
     move(bomber, new Route(germany, poland));
     // Pick up a paratrooper
-    final List<Unit> bomberAndParatroop = new ArrayList<Unit>(bomber);
+    final List<Unit> bomberAndParatroop = new ArrayList<>(bomber);
     bomberAndParatroop.addAll(poland.getUnits().getUnits(GameDataTestUtil.infantry(m_data), 1));
     // move them
     final String error = moveDelegate(m_data).move(bomberAndParatroop, new Route(poland, bulgaria, ukraine));
@@ -1322,7 +1322,7 @@ public class WW2V3_41_Test extends TestCase {
     moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(m_data).start();
     TechAttachment.get(germans).setParatroopers("true");
-    final List<Unit> bomberAndParatroop = new ArrayList<Unit>();
+    final List<Unit> bomberAndParatroop = new ArrayList<>();
     bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsAirTransport));
     // add 2 infantry
     bomberAndParatroop.addAll(germany.getUnits().getUnits(GameDataTestUtil.infantry(m_data), 2));
@@ -1347,7 +1347,7 @@ public class WW2V3_41_Test extends TestCase {
     TechAttachment.get(germans).setParatroopers("true");
     List<Unit> paratroopers = germany.getUnits().getMatches(Matches.UnitIsAirTransportable);
     paratroopers = paratroopers.subList(0, 1);
-    final List<Unit> bomberAndParatroop = new ArrayList<Unit>(paratroopers);
+    final List<Unit> bomberAndParatroop = new ArrayList<>(paratroopers);
     bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsAirTransport));
     final Route route = new Route(germany, poland, eastPoland);
     final List<Unit> airTransports = germany.getUnits().getMatches(Matches.UnitIsAirTransport);
@@ -1383,7 +1383,7 @@ public class WW2V3_41_Test extends TestCase {
     TechAttachment.get(germans).setParatroopers("true");
     List<Unit> paratrooper = germany.getUnits().getMatches(Matches.UnitIsAirTransportable);
     paratrooper = paratrooper.subList(0, 1);
-    final List<Unit> bomberAndParatroop = new ArrayList<Unit>(paratrooper);
+    final List<Unit> bomberAndParatroop = new ArrayList<>(paratrooper);
     bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsAirTransport));
     final List<Unit> tanks = poland.getUnits().getMatches(Matches.UnitCanBlitz);
     move(tanks, new Route(poland, eastPoland, beloRussia));
@@ -1535,12 +1535,12 @@ public class WW2V3_41_Test extends TestCase {
     final PlayerID germans = GameDataTestUtil.germans(m_data);
     final int initPUs = germans.getResources().getQuantity("PUs");
     // damage a factory
-    IntegerMap<Unit> startHits = new IntegerMap<Unit>();
+    IntegerMap<Unit> startHits = new IntegerMap<>();
     startHits.put(factory, 1);
     m_data.performChange(ChangeFactory.bombingUnitDamage(startHits));
     assertEquals(((TripleAUnit) factory).getUnitDamage(), 1);
     RepairRule repair = germans(m_data).getRepairFrontier().getRules().get(0);
-    IntegerMap<RepairRule> repairs = new IntegerMap<RepairRule>();
+    IntegerMap<RepairRule> repairs = new IntegerMap<>();
     repairs.put(repair, 1);
     String error = del.purchaseRepair(Collections.singletonMap(
         Match.getMatches(germany.getUnits().getUnits(), Matches.UnitCanBeDamaged).iterator().next(), repairs));
@@ -1557,12 +1557,12 @@ public class WW2V3_41_Test extends TestCase {
     TechTracker.addAdvance(germans, delegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION, m_data, germans));
     // damage a factory
-    startHits = new IntegerMap<Unit>();
+    startHits = new IntegerMap<>();
     startHits.put(factory, 2);
     m_data.performChange(ChangeFactory.bombingUnitDamage(startHits));
     assertEquals(((TripleAUnit) factory).getUnitDamage(), 2);
     repair = germans(m_data).getRepairFrontier().getRules().get(0);
-    repairs = new IntegerMap<RepairRule>();
+    repairs = new IntegerMap<>();
     repairs.put(repair, 2);
     error = del.purchaseRepair(Collections.singletonMap(
         Match.getMatches(germany.getUnits().getUnits(), Matches.UnitCanBeDamaged).iterator().next(), repairs));
@@ -1580,12 +1580,12 @@ public class WW2V3_41_Test extends TestCase {
     del.setDelegateBridgeAndPlayer(getDelegateBridge(germans(m_data)));
     del.start();
     // dame a factory
-    final IntegerMap<Unit> startHits = new IntegerMap<Unit>();
+    final IntegerMap<Unit> startHits = new IntegerMap<>();
     startHits.put(factory, 1);
     m_data.performChange(ChangeFactory.bombingUnitDamage(startHits));
     assertEquals(((TripleAUnit) factory).getUnitDamage(), 1);
     final RepairRule repair = germans(m_data).getRepairFrontier().getRules().get(0);
-    final IntegerMap<RepairRule> repairs = new IntegerMap<RepairRule>();
+    final IntegerMap<RepairRule> repairs = new IntegerMap<>();
     // we have 1 damaged marker, but trying to repair 2
     repairs.put(repair, 2);
     final String error = del.purchaseRepair(Collections.singletonMap(
@@ -1695,7 +1695,7 @@ public class WW2V3_41_Test extends TestCase {
    */
   private Collection<Unit> getUnits(final IntegerMap<UnitType> units, final PlayerID from) {
     final Iterator<UnitType> iter = units.keySet().iterator();
-    final Collection<Unit> rVal = new ArrayList<Unit>(units.totalValues());
+    final Collection<Unit> rVal = new ArrayList<>(units.totalValues());
     while (iter.hasNext()) {
       final UnitType type = iter.next();
       rVal.addAll(from.getUnits().getUnits(type, units.getInt(type)));

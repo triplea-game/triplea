@@ -26,8 +26,8 @@ class TechnologyDefinitionsRow extends DynamicRow {
     super(technologyName + "_" + playerName, parentRowPanel, stepActionPanel);
 
     textFieldTechnologyName = new JTextField(technologyName);
-    comboBoxPlayerName = new JComboBox<String>(playerNames);
-    comboBoxAlreadyEnabled = new JComboBox<String>(selectionTrueFalse);
+    comboBoxPlayerName = new JComboBox<>(playerNames);
+    comboBoxAlreadyEnabled = new JComboBox<>(selectionTrueFalse);
 
     Dimension dimension = textFieldTechnologyName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_LARGE;
@@ -113,7 +113,7 @@ class TechnologyDefinitionsRow extends DynamicRow {
 
   @Override
   protected ArrayList<JComponent> getComponentList() {
-    final ArrayList<JComponent> componentList = new ArrayList<JComponent>();
+    final ArrayList<JComponent> componentList = new ArrayList<>();
     componentList.add(textFieldTechnologyName);
     componentList.add(comboBoxPlayerName);
     componentList.add(comboBoxAlreadyEnabled);

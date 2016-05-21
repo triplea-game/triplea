@@ -54,7 +54,7 @@ public class OriginalOwnerTracker implements java.io.Serializable {
   }
 
   public static Collection<Territory> getOriginallyOwned(final GameData data, final PlayerID player) {
-    final Collection<Territory> rVal = new ArrayList<Territory>();
+    final Collection<Territory> rVal = new ArrayList<>();
     for (final Territory t : data.getMap()) {
       PlayerID originalOwner = getOriginalOwner(t);
       if (originalOwner == null) {

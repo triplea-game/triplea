@@ -14,7 +14,7 @@ import games.strategy.engine.data.Resource;
 
 public class PUInfo {
   private GameData m_data;
-  private final Map<PlayerID, Map<Resource, Integer>> m_infoMap = new HashMap<PlayerID, Map<Resource, Integer>>();
+  private final Map<PlayerID, Map<Resource, Integer>> m_infoMap = new HashMap<>();
   private Iterator<PlayerID> m_playerIterator;
   private PrintGenerationData m_printData;
 
@@ -25,7 +25,7 @@ public class PUInfo {
     while (m_playerIterator.hasNext()) {
       final PlayerID currentPlayer = m_playerIterator.next();
       final Iterator<Resource> resourceIterator = m_data.getResourceList().getResources().iterator();
-      final Map<Resource, Integer> resourceMap = new HashMap<Resource, Integer>();
+      final Map<Resource, Integer> resourceMap = new HashMap<>();
       while (resourceIterator.hasNext()) {
         final Resource currentResource = resourceIterator.next();
         final Integer amountOfResource = currentPlayer.getResources().getQuantity(currentResource);

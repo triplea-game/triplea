@@ -277,7 +277,7 @@ public class GameDataExporter {
     final RelationshipTracker rt = data.getRelationshipTracker();
     xmlfile.append("        <relationshipInitialize>\n");
     final Collection<PlayerID> players = data.getPlayerList().getPlayers();
-    final Collection<PlayerID> playersAlreadyDone = new HashSet<PlayerID>();
+    final Collection<PlayerID> playersAlreadyDone = new HashSet<>();
     for (final PlayerID p1 : players) {
       for (final PlayerID p2 : players) {
         if (p1.equals(p2) || playersAlreadyDone.contains(p2)) {
@@ -721,7 +721,7 @@ public class GameDataExporter {
   private void connections(final GameData data) {
     xmlfile.append("        <!-- Territory Connections -->\n");
     final GameMap map = data.getMap();
-    final ArrayList<Connection> reverseConnectionTracker = new ArrayList<Connection>();
+    final ArrayList<Connection> reverseConnectionTracker = new ArrayList<>();
     final Iterator<Territory> terrs = map.getTerritories().iterator();
     while (terrs.hasNext()) {
       final Territory ter = terrs.next();

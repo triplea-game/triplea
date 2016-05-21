@@ -33,7 +33,7 @@ class PlayerAndAlliancesRow extends DynamicRow {
     super(playerName, parentRowPanel, stepActionPanel);
 
     textFieldPlayerName = new JTextField(playerName);
-    comboBoxPlayerAlliance = new JComboBox<String>(alliances);
+    comboBoxPlayerAlliance = new JComboBox<>(alliances);
     final Integer initialResourceInteger = Integer.valueOf(initialResource);
     textFieldInitialResource =
         new JTextField(initialResourceInteger == null ? "0" : Integer.toString(initialResourceInteger));
@@ -175,7 +175,7 @@ class PlayerAndAlliancesRow extends DynamicRow {
 
   @Override
   protected ArrayList<JComponent> getComponentList() {
-    final ArrayList<JComponent> componentList = new ArrayList<JComponent>();
+    final ArrayList<JComponent> componentList = new ArrayList<>();
     componentList.add(textFieldPlayerName);
     componentList.add(comboBoxPlayerAlliance);
     componentList.add(textFieldInitialResource);
@@ -214,7 +214,7 @@ class PlayerAndAlliancesRow extends DynamicRow {
     MapXmlHelper.getPlayerInitResourcesMap().remove(currentRowName);
     if (!MapXmlHelper.getPlayerSequenceMap().isEmpty()) {
       // Replace Player Sequences using the deleted Player Name
-      final ArrayList<String> deleteKeys = new ArrayList<String>();
+      final ArrayList<String> deleteKeys = new ArrayList<>();
       for (final Entry<String, Triple<String, String, Integer>> playerSequence : MapXmlHelper.getPlayerSequenceMap()
           .entrySet()) {
         final Triple<String, String, Integer> oldTriple = playerSequence.getValue();
@@ -228,7 +228,7 @@ class PlayerAndAlliancesRow extends DynamicRow {
     }
     if (!MapXmlHelper.getTechnologyDefinitionsMap().isEmpty()) {
       // Replace Technology Definitions using the deleted Player Name
-      final ArrayList<String> deleteKeys = new ArrayList<String>();
+      final ArrayList<String> deleteKeys = new ArrayList<>();
       final String compareValue = "_" + currentRowName;
       for (final Entry<String, List<String>> technologyDefinition : MapXmlHelper.getTechnologyDefinitionsMap()
           .entrySet()) {

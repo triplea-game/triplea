@@ -17,10 +17,10 @@ import games.strategy.util.IntegerMap;
 
 public class TerritoryEffectAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 6379810228136325991L;
-  private IntegerMap<UnitType> m_combatDefenseEffect = new IntegerMap<UnitType>();
-  private IntegerMap<UnitType> m_combatOffenseEffect = new IntegerMap<UnitType>();
-  private ArrayList<UnitType> m_noBlitz = new ArrayList<UnitType>();
-  private ArrayList<UnitType> m_unitsNotAllowed = new ArrayList<UnitType>();
+  private IntegerMap<UnitType> m_combatDefenseEffect = new IntegerMap<>();
+  private IntegerMap<UnitType> m_combatOffenseEffect = new IntegerMap<>();
+  private ArrayList<UnitType> m_noBlitz = new ArrayList<>();
+  private ArrayList<UnitType> m_unitsNotAllowed = new ArrayList<>();
 
   /**
    * Creates new TerritoryEffectAttachment
@@ -69,7 +69,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<UnitType> getCombatDefenseEffect() {
-    return new IntegerMap<UnitType>(m_combatDefenseEffect);
+    return new IntegerMap<>(m_combatDefenseEffect);
   }
 
   public void clearCombatDefenseEffect() {
@@ -77,7 +77,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   public void resetCombatDefenseEffect() {
-    m_combatDefenseEffect = new IntegerMap<UnitType>();
+    m_combatDefenseEffect = new IntegerMap<>();
   }
 
   /**
@@ -97,7 +97,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<UnitType> getCombatOffenseEffect() {
-    return new IntegerMap<UnitType>(m_combatOffenseEffect);
+    return new IntegerMap<>(m_combatOffenseEffect);
   }
 
   public void clearCombatOffenseEffect() {
@@ -105,7 +105,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   public void resetCombatOffenseEffect() {
-    m_combatOffenseEffect = new IntegerMap<UnitType>();
+    m_combatOffenseEffect = new IntegerMap<>();
   }
 
   @InternalDoNotExport
@@ -166,7 +166,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   public ArrayList<UnitType> getNoBlitz() {
-    return new ArrayList<UnitType>(m_noBlitz);
+    return new ArrayList<>(m_noBlitz);
   }
 
   public void clearNoBlitz() {
@@ -174,7 +174,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   public void resetNoBlitz() {
-    m_noBlitz = new ArrayList<UnitType>();
+    m_noBlitz = new ArrayList<>();
   }
 
   /**
@@ -204,7 +204,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   public ArrayList<UnitType> getUnitsNotAllowed() {
-    return new ArrayList<UnitType>(m_unitsNotAllowed);
+    return new ArrayList<>(m_unitsNotAllowed);
   }
 
   public void clearUnitsNotAllowed() {
@@ -212,7 +212,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   public void resetUnitsNotAllowed() {
-    m_unitsNotAllowed = new ArrayList<UnitType>();
+    m_unitsNotAllowed = new ArrayList<>();
   }
 
   @Override

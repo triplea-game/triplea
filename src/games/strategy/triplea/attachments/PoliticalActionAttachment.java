@@ -31,7 +31,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment impl
   }
 
   public static Collection<PoliticalActionAttachment> getPoliticalActionAttachments(final PlayerID player) {
-    final ArrayList<PoliticalActionAttachment> returnList = new ArrayList<PoliticalActionAttachment>();
+    final ArrayList<PoliticalActionAttachment> returnList = new ArrayList<>();
     final Map<String, IAttachment> map = player.getAttachments();
     final Iterator<String> iter = map.keySet().iterator();
     while (iter.hasNext()) {
@@ -73,7 +73,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment impl
   }
 
   // list of relationship changes to be performed if this action is performed sucessfully
-  private ArrayList<String> m_relationshipChange = new ArrayList<String>();
+  private ArrayList<String> m_relationshipChange = new ArrayList<>();
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
@@ -117,14 +117,14 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment impl
   }
 
   public void resetRelationshipChange() {
-    m_relationshipChange = new ArrayList<String>();
+    m_relationshipChange = new ArrayList<>();
   }
 
   /**
    * @return a set of all other players involved in this PoliticalAction
    */
   public Set<PlayerID> getOtherPlayers() {
-    final HashSet<PlayerID> otherPlayers = new HashSet<PlayerID>();
+    final HashSet<PlayerID> otherPlayers = new HashSet<>();
     for (final String relationshipChange : m_relationshipChange) {
       final String[] s = relationshipChange.split(":");
       otherPlayers.add(getData().getPlayerList().getPlayerID(s[0]));
@@ -141,10 +141,10 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment impl
   public static Collection<PoliticalActionAttachment> getValidActions(final PlayerID player,
       final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
     if (!games.strategy.triplea.Properties.getUsePolitics(data) || !player.amNotDeadYet(data)) {
-      return new ArrayList<PoliticalActionAttachment>();
+      return new ArrayList<>();
     }
     return Match.getMatches(getPoliticalActionAttachments(player),
-        new CompositeMatchAnd<PoliticalActionAttachment>(
+        new CompositeMatchAnd<>(
             Matches.AbstractUserActionAttachmentCanBeAttempted(testedConditions),
             Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data)));
   }

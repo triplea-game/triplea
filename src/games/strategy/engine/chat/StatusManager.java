@@ -9,8 +9,8 @@ import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 
 public class StatusManager {
-  private final List<IStatusListener> m_listeners = new CopyOnWriteArrayList<IStatusListener>();
-  private final Map<INode, String> m_status = new HashMap<INode, String>();
+  private final List<IStatusListener> m_listeners = new CopyOnWriteArrayList<>();
+  private final Map<INode, String> m_status = new HashMap<>();
   private final Messengers m_messengers;
   private final Object m_mutex = new Object();
   private final IStatusChannel m_statusChannelSubscribor;

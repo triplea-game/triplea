@@ -45,32 +45,32 @@ public class PlayerAttachment extends DefaultAttachment {
   private int m_retainCapitalNumber = 1;
   // number of capitals needed before we lose ability to gain money and produce units
   private int m_retainCapitalProduceNumber = 1;
-  private ArrayList<PlayerID> m_giveUnitControl = new ArrayList<PlayerID>();
-  private ArrayList<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
+  private ArrayList<PlayerID> m_giveUnitControl = new ArrayList<>();
+  private ArrayList<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<>();
   // gives any technology researched to this player automatically
-  private ArrayList<PlayerID> m_shareTechnology = new ArrayList<PlayerID>();
+  private ArrayList<PlayerID> m_shareTechnology = new ArrayList<>();
   // allows these players to help pay for technology
-  private ArrayList<PlayerID> m_helpPayTechCost = new ArrayList<PlayerID>();
+  private ArrayList<PlayerID> m_helpPayTechCost = new ArrayList<>();
   // do we lose our money and have it disappear or is that money captured?
   private boolean m_destroysPUs = false;
   // are we immune to being blockaded?
   private boolean m_immuneToBlockade = false;
   // what resources can be used for suicide attacks, and
-  private IntegerMap<Resource> m_suicideAttackResources = new IntegerMap<Resource>();
+  private IntegerMap<Resource> m_suicideAttackResources = new IntegerMap<>();
   // at what attack power
   // what can be hit by suicide attacks
   private HashSet<UnitType> m_suicideAttackTargets = null;
   // placement limits on a flexible per player basis
   private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_placementLimit =
-      new HashSet<Triple<Integer, String, HashSet<UnitType>>>();
+      new HashSet<>();
 
   // movement limits on a flexible per player basis
   private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_movementLimit =
-      new HashSet<Triple<Integer, String, HashSet<UnitType>>>();
+      new HashSet<>();
 
   // attacking limits on a flexible per player basis
   private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_attackingLimit =
-      new HashSet<Triple<Integer, String, HashSet<UnitType>>>();
+      new HashSet<>();
 
   /** Creates new PlayerAttachment */
   public PlayerAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -96,7 +96,7 @@ public class PlayerAttachment extends DefaultAttachment {
     if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total"))) {
       throw new GameParseException("placementLimit type must be: owned, allied, or total" + thisErrorMsg());
     }
-    final HashSet<UnitType> types = new HashSet<UnitType>();
+    final HashSet<UnitType> types = new HashSet<>();
     if (s[2].equalsIgnoreCase("all")) {
       types.addAll(getData().getUnitTypeList().getAllUnitTypes());
     } else {
@@ -126,7 +126,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   public void resetPlacementLimit() {
-    m_placementLimit = new HashSet<Triple<Integer, String, HashSet<UnitType>>>();
+    m_placementLimit = new HashSet<>();
   }
 
   /**
@@ -148,7 +148,7 @@ public class PlayerAttachment extends DefaultAttachment {
     if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total"))) {
       throw new GameParseException("movementLimit type must be: owned, allied, or total" + thisErrorMsg());
     }
-    final HashSet<UnitType> types = new HashSet<UnitType>();
+    final HashSet<UnitType> types = new HashSet<>();
     if (s[2].equalsIgnoreCase("all")) {
       types.addAll(getData().getUnitTypeList().getAllUnitTypes());
     } else {
@@ -178,7 +178,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   public void resetMovementLimit() {
-    m_movementLimit = new HashSet<Triple<Integer, String, HashSet<UnitType>>>();
+    m_movementLimit = new HashSet<>();
   }
 
   /**
@@ -200,7 +200,7 @@ public class PlayerAttachment extends DefaultAttachment {
     if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total"))) {
       throw new GameParseException("attackingLimit type must be: owned, allied, or total" + thisErrorMsg());
     }
-    final HashSet<UnitType> types = new HashSet<UnitType>();
+    final HashSet<UnitType> types = new HashSet<>();
     if (s[2].equalsIgnoreCase("all")) {
       types.addAll(getData().getUnitTypeList().getAllUnitTypes());
     } else {
@@ -230,7 +230,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   public void resetAttackingLimit() {
-    m_attackingLimit = new HashSet<Triple<Integer, String, HashSet<UnitType>>>();
+    m_attackingLimit = new HashSet<>();
   }
 
   public static boolean getCanTheseUnitsMoveWithoutViolatingStackingLimit(final String limitType,
@@ -255,7 +255,7 @@ public class PlayerAttachment extends DefaultAttachment {
     }
     for (final Triple<Integer, String, HashSet<UnitType>> currentLimit : stackingLimits) {
       // first make a copy of unitsMoving
-      final Collection<Unit> copyUnitsMoving = new ArrayList<Unit>(unitsMoving);
+      final Collection<Unit> copyUnitsMoving = new ArrayList<>(unitsMoving);
       final int max = currentLimit.getFirst();
       final String type = currentLimit.getSecond();
       final HashSet<UnitType> unitsToTest = currentLimit.getThird();
@@ -293,7 +293,7 @@ public class PlayerAttachment extends DefaultAttachment {
       return;
     }
     if (m_suicideAttackTargets == null) {
-      m_suicideAttackTargets = new HashSet<UnitType>();
+      m_suicideAttackTargets = new HashSet<>();
     }
     final String[] s = value.split(":");
     for (final String u : s) {
@@ -359,7 +359,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   public void resetSuicideAttackResources() {
-    m_suicideAttackResources = new IntegerMap<Resource>();
+    m_suicideAttackResources = new IntegerMap<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -469,7 +469,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   public void resetGiveUnitControl() {
-    m_giveUnitControl = new ArrayList<PlayerID>();
+    m_giveUnitControl = new ArrayList<>();
   }
 
   /**
@@ -505,7 +505,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   public void resetCaptureUnitOnEnteringBy() {
-    m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
+    m_captureUnitOnEnteringBy = new ArrayList<>();
   }
 
   /**
@@ -541,7 +541,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   public void resetShareTechnology() {
-    m_shareTechnology = new ArrayList<PlayerID>();
+    m_shareTechnology = new ArrayList<>();
   }
 
   /**
@@ -577,7 +577,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   public void resetHelpPayTechCost() {
-    m_helpPayTechCost = new ArrayList<PlayerID>();
+    m_helpPayTechCost = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)

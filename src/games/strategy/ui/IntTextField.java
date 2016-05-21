@@ -23,7 +23,7 @@ public class IntTextField extends JTextField {
   private int m_max = Integer.MAX_VALUE;
   private int m_min = Integer.MIN_VALUE;
   private String m_terr = null;
-  private final ListenerList<IntTextFieldChangeListener> m_listeners = new ListenerList<IntTextFieldChangeListener>();
+  private final ListenerList<IntTextFieldChangeListener> m_listeners = new ListenerList<>();
 
   public static void main(final String[] args) {
     final JFrame frame = new JFrame();

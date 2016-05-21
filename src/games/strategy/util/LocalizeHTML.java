@@ -64,7 +64,7 @@ public class LocalizeHTML {
 
   private static List<String> getAllLinksFromHTML(final String htmlText, final String patternTagPattern,
       final String patternLinkPattern) {
-    final List<String> result = new ArrayList<String>();
+    final List<String> result = new ArrayList<>();
     final Pattern patternTag = Pattern.compile(patternTagPattern);
     final Pattern patternLink = Pattern.compile(patternLinkPattern);
 

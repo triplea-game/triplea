@@ -577,7 +577,7 @@ public class BattlePanel extends ActionPanel {
       final String unitName = unit.getUnitType().getName() + " in " + unitTerritory;
       final JLabel label = new JLabel("Which territory should " + unitName + " bombard?");
       this.add(label, BorderLayout.NORTH);
-      final Vector<Object> listElements = new Vector<Object>(territories);
+      final Vector<Object> listElements = new Vector<>(territories);
       if (noneAvailable) {
         listElements.add(0, "None");
       }

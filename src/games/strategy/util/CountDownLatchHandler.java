@@ -9,7 +9,7 @@ import java.util.concurrent.CountDownLatch;
  * Is Thread Safe.
  */
 public class CountDownLatchHandler {
-  private final List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();
+  private final List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<>();
   private volatile boolean m_isShutDown = false;
   private final boolean m_releaseLatchOnInterrupt;
 

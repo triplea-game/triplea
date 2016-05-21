@@ -56,7 +56,7 @@ public class AdvancedUtils {
 
   private static Route trimRouteBeforeFirstTerMatching(final Route route, final int newRouteJumpCount,
       final Match<Territory> match) {
-    final List<Territory> newTers = new ArrayList<Territory>();
+    final List<Territory> newTers = new ArrayList<>();
     int i = 0;
     for (final Territory ter : route.getAllTerritories()) {
       if (match.match(ter) && i != 0) {
@@ -77,7 +77,7 @@ public class AdvancedUtils {
   public static Route trimRouteBeforeFirstTerWithEnemyUnits(final Route route, final int newRouteJumpCount,
       final PlayerID player, final GameData data) {
     return trimRouteBeforeFirstTerMatching(route, newRouteJumpCount,
-        Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1),
+        Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<>(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1),
             Matches.unitIsEnemyOf(data, player))));
   }
 
@@ -91,16 +91,16 @@ public class AdvancedUtils {
 
   private static List<Territory> getTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(final GameData data,
       final Territory start, final int maxDistance, final Match<Territory> match, final Match<Territory> routeMatch) {
-    final HashSet<Territory> processed = new HashSet<Territory>();
+    final HashSet<Territory> processed = new HashSet<>();
     processed.add(start);
-    final List<Territory> result = new ArrayList<Territory>();
-    HashSet<Territory> nextSet = new HashSet<Territory>(data.getMap().getNeighbors(start));
+    final List<Territory> result = new ArrayList<>();
+    HashSet<Territory> nextSet = new HashSet<>(data.getMap().getNeighbors(start));
     if (match.match(start)) {
       result.add(start);
     }
     int dist = 1;
     while (nextSet.size() > 0 && dist <= maxDistance) {
-      final HashSet<Territory> newSet = new HashSet<Territory>();
+      final HashSet<Territory> newSet = new HashSet<>();
       for (final Territory ter : nextSet) {
         processed.add(ter);
         if (routeMatch.match(ter)) {
@@ -125,12 +125,12 @@ public class AdvancedUtils {
       return units;
     }
     // Clone the current list
-    final ArrayList<Unit> result = new ArrayList<Unit>(units);
+    final ArrayList<Unit> result = new ArrayList<>(units);
     Unit seekedCarrier = null;
     int indexToPlaceCarrierAt = -1;
     int spaceLeftOnSeekedCarrier = -1;
     int processedPlaneCount = 0;
-    final List<Unit> filledCarriers = new ArrayList<Unit>();
+    final List<Unit> filledCarriers = new ArrayList<>();
     // Loop through all units, starting from the right, and rearrange units
     for (int i = result.size() - 1; i >= 0; i--) {
       final Unit unit = result.get(i);
@@ -147,7 +147,7 @@ public class AdvancedUtils {
         // If this is the first carrier seek
         if (seekedCarrier == null) {
           final int seekedCarrierIndex = getIndexOfLastUnitMatching(result,
-              new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
+              new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
               result.size() - 1);
           if (seekedCarrierIndex == -1) {
             // No carriers left
@@ -177,7 +177,7 @@ public class AdvancedUtils {
             filledCarriers.add(seekedCarrier);
             // Find the next carrier
             seekedCarrier = getLastUnitMatching(result,
-                new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
+                new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
                 result.size() - 1);
             if (seekedCarrier == null) {
               // No carriers left
@@ -199,7 +199,7 @@ public class AdvancedUtils {
             result.add(carrierPlaceLocation, seekedCarrier);
             filledCarriers.add(seekedCarrier);
             // Move the planes down to the carrier
-            final List<Unit> planesBetweenHereAndCarrier = new ArrayList<Unit>();
+            final List<Unit> planesBetweenHereAndCarrier = new ArrayList<>();
             for (int i2 = i; i2 < carrierPlaceLocation; i2++) {
               final Unit unit2 = result.get(i2);
               final UnitAttachment ua2 = UnitAttachment.get(unit2.getUnitType());
@@ -218,7 +218,7 @@ public class AdvancedUtils {
             }
             // Find the next carrier
             seekedCarrier = getLastUnitMatching(result,
-                new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
+                new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
                 result.size() - 1);
             if (seekedCarrier == null) {
               // No carriers left

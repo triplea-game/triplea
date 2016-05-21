@@ -73,7 +73,7 @@ public class AutoPlacementFinder {
    */
   static void calculate() {
     // create hash map of placements
-    final Map<String, Collection<Point>> m_placements = new HashMap<String, Collection<Point>>();
+    final Map<String, Collection<Point>> m_placements = new HashMap<>();
     // ask user where the map is
     final String mapDir = s_mapFolderLocation == null ? getMapDirectory() : s_mapFolderLocation.getName();
     if (mapDir == null) {
@@ -202,7 +202,7 @@ public class AutoPlacementFinder {
       final String name = terrIter.next();
       List<Point> points;
       if (s_mapData.hasContainedTerritory(name)) {
-        final Set<Polygon> containedPolygons = new HashSet<Polygon>();
+        final Set<Polygon> containedPolygons = new HashSet<>();
         for (final String containedName : s_mapData.getContainedTerritory(name)) {
           containedPolygons.addAll(s_mapData.getPolygons(containedName));
         }
@@ -275,8 +275,8 @@ public class AutoPlacementFinder {
    */
   static List<Point> getPlacementsStartingAtMiddle(final Collection<Polygon> countryPolygons, final Rectangle bounding,
       final Point center) {
-    final List<Rectangle2D> placementRects = new ArrayList<Rectangle2D>();
-    final List<Point> placementPoints = new ArrayList<Point>();
+    final List<Rectangle2D> placementRects = new ArrayList<>();
+    final List<Point> placementPoints = new ArrayList<>();
     final Rectangle2D place = new Rectangle2D.Double(center.x, center.y, PLACEHEIGHT, PLACEWIDTH);
     int x = center.x - (PLACEHEIGHT / 2);
     int y = center.y - (PLACEWIDTH / 2);
@@ -334,8 +334,8 @@ public class AutoPlacementFinder {
    */
   static List<Point> getPlacementsStartingAtTopLeft(final Collection<Polygon> countryPolygons, final Rectangle bounding,
       final Point center, final Collection<Polygon> containedCountryPolygons) {
-    final List<Rectangle2D> placementRects = new ArrayList<Rectangle2D>();
-    final List<Point> placementPoints = new ArrayList<Point>();
+    final List<Rectangle2D> placementRects = new ArrayList<>();
+    final List<Point> placementPoints = new ArrayList<>();
     final Rectangle2D place = new Rectangle2D.Double(center.x, center.y, PLACEHEIGHT, PLACEWIDTH);
     for (int x = bounding.x + 1; x < bounding.width + bounding.x; x++) {
       for (int y = bounding.y + 1; y < bounding.height + bounding.y; y++) {

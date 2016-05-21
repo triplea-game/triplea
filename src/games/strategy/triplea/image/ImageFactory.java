@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 import games.strategy.triplea.ResourceLoader;
 
 public class ImageFactory {
-  private final Map<String, Image> m_images = new HashMap<String, Image>();
+  private final Map<String, Image> m_images = new HashMap<>();
   private ResourceLoader m_resourceLoader;
 
   public void setResourceLoader(final ResourceLoader loader) {

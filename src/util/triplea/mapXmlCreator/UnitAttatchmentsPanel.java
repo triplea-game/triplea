@@ -40,11 +40,11 @@ public class UnitAttatchmentsPanel extends DynamicRowsPanel {
   }
 
   protected void layoutComponents() {
-    final ArrayList<ArrayList<String>> unitAttatchments = new ArrayList<ArrayList<String>>();
+    final ArrayList<ArrayList<String>> unitAttatchments = new ArrayList<>();
     for (final Entry<String, List<String>> unitAttatchmentEntry : MapXmlHelper.getUnitAttatchmentsMap().entrySet()) {
       final String unitAttatmentKey = unitAttatchmentEntry.getKey();
       if (unitAttatmentKey.endsWith("_" + unitName)) {
-        final ArrayList<String> newAttachment = new ArrayList<String>();
+        final ArrayList<String> newAttachment = new ArrayList<>();
         newAttachment.add(unitAttatmentKey.substring(0, unitAttatmentKey.lastIndexOf("_" + unitName)));
         newAttachment.add(unitAttatchmentEntry.getValue().get(1));
         unitAttatchments.add(newAttachment);
@@ -113,7 +113,7 @@ public class UnitAttatchmentsPanel extends DynamicRowsPanel {
         return;
       }
 
-      final ArrayList<String> unitAttatchment = new ArrayList<String>();
+      final ArrayList<String> unitAttatchment = new ArrayList<>();
       unitAttatchment.add(unitName);
       unitAttatchment.add("");
       MapXmlHelper.putUnitAttatchments(newUnitAttatchmentKey, unitAttatchment);

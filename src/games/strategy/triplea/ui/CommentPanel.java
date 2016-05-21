@@ -92,7 +92,7 @@ public class CommentPanel extends JPanel {
     m_save.setMargin(inset);
     m_save.setFocusable(false);
     // create icon map
-    m_iconMap = new HashMap<PlayerID, Icon>();
+    m_iconMap = new HashMap<>();
     for (final PlayerID playerId : m_data.getPlayerList().getPlayers()) {
       m_iconMap.put(playerId, new ImageIcon(m_frame.getUIContext().getFlagImageFactory().getSmallFlag(playerId)));
     }

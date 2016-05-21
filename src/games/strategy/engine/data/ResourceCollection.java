@@ -5,7 +5,7 @@ import games.strategy.util.IntegerMap;
 
 public class ResourceCollection extends GameDataComponent {
   private static final long serialVersionUID = -1247795977888113757L;
-  private final IntegerMap<Resource> m_resources = new IntegerMap<Resource>();
+  private final IntegerMap<Resource> m_resources = new IntegerMap<>();
 
   /**
    * Creates new ResourceCollection
@@ -91,7 +91,7 @@ public class ResourceCollection extends GameDataComponent {
   }
 
   public IntegerMap<Resource> getResourcesCopy() {
-    return new IntegerMap<Resource>(m_resources);
+    return new IntegerMap<>(m_resources);
   }
 
   public int getQuantity(final String name) {
@@ -254,7 +254,7 @@ public class ResourceCollection extends GameDataComponent {
    *        multiply this Collection times times.
    */
   public void multiply(final int times) {
-    final IntegerMap<Resource> base = new IntegerMap<Resource>(m_resources);
+    final IntegerMap<Resource> base = new IntegerMap<>(m_resources);
     add(base, times - 1);
   }
 

@@ -58,7 +58,7 @@ public class UnitComparator {
 
   private static Comparator<Unit> getCapacityComparator(final List<Unit> transports, final boolean increasing) {
     // this makes it more efficient
-    final IntegerMap<Unit> capacityMap = new IntegerMap<Unit>(transports.size() + 1, 1);
+    final IntegerMap<Unit> capacityMap = new IntegerMap<>(transports.size() + 1, 1);
     for (final Unit transport : transports) {
       final Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
       capacityMap.add(transport, TransportUtils.getTransportCost(transporting));

@@ -59,9 +59,9 @@ public class UnitSeperator {
     // are equal in a special way
     HashMap<UnitCategory, UnitCategory> categories;
     if (sort) {
-      categories = new HashMap<UnitCategory, UnitCategory>();
+      categories = new HashMap<>();
     } else {
-      categories = new LinkedHashMap<UnitCategory, UnitCategory>();
+      categories = new LinkedHashMap<>();
     }
     for (final Unit current : units) {
       int unitMovement = -1;
@@ -90,9 +90,9 @@ public class UnitSeperator {
       }
     }
     if (sort) {
-      return new TreeSet<UnitCategory>(categories.keySet());
+      return new TreeSet<>(categories.keySet());
     } else {
-      return new LinkedHashSet<UnitCategory>(categories.keySet());
+      return new LinkedHashSet<>(categories.keySet());
     }
   }
 

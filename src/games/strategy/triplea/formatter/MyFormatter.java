@@ -30,7 +30,7 @@ public class MyFormatter {
   private static Map<String, String> s_plural;
 
   static {
-    s_plural = new HashMap<String, String>();
+    s_plural = new HashMap<>();
     s_plural.put("armour", "armour");
     s_plural.put("infantry", "infantry");
     s_plural.put("artillery", "artilleries");
@@ -43,7 +43,7 @@ public class MyFormatter {
 
   public static String unitsToTextNoOwner(final Collection<Unit> units, final PlayerID owner) {
     final Iterator<Unit> iter = units.iterator();
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     while (iter.hasNext()) {
       final Unit unit = iter.next();
       if (unit == null || unit.getUnitType() == null) {
@@ -57,7 +57,7 @@ public class MyFormatter {
     }
     final StringBuilder buf = new StringBuilder();
     // sort on unit name
-    final List<UnitType> sortedList = new ArrayList<UnitType>(map.keySet());
+    final List<UnitType> sortedList = new ArrayList<>(map.keySet());
     final Comparator<UnitType> comp = new Comparator<UnitType>() {
       @Override
       public int compare(final UnitType u1, final UnitType u2) {
@@ -86,7 +86,7 @@ public class MyFormatter {
 
   public static String unitsToText(final Collection<Unit> units) {
     final Iterator<Unit> iter = units.iterator();
-    final IntegerMap<UnitOwner> map = new IntegerMap<UnitOwner>();
+    final IntegerMap<UnitOwner> map = new IntegerMap<>();
     while (iter.hasNext()) {
       final Unit unit = iter.next();
       final UnitOwner owner = new UnitOwner(unit.getType(), unit.getOwner());
@@ -240,7 +240,7 @@ public class MyFormatter {
   public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list, final String seperator,
       final boolean showQuantity) {
     final Iterator<? extends DefaultNamed> iter = list.iterator();
-    final IntegerMap<DefaultNamed> map = new IntegerMap<DefaultNamed>();
+    final IntegerMap<DefaultNamed> map = new IntegerMap<>();
     while (iter.hasNext()) {
       final DefaultNamed unit = iter.next();
       if (unit == null || unit.getName() == null) {
@@ -250,7 +250,7 @@ public class MyFormatter {
     }
     final StringBuilder buf = new StringBuilder();
     // sort on unit name
-    final List<DefaultNamed> sortedList = new ArrayList<DefaultNamed>(map.keySet());
+    final List<DefaultNamed> sortedList = new ArrayList<>(map.keySet());
     final Comparator<DefaultNamed> comp = new Comparator<DefaultNamed>() {
       @Override
       public int compare(final DefaultNamed u1, final DefaultNamed u2) {

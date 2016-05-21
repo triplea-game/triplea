@@ -12,7 +12,7 @@ import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 
 public class RelationshipTypeList extends GameDataComponent implements Iterable<RelationshipType> {
   private static final long serialVersionUID = 6590541694575435151L;
-  private final HashMap<String, RelationshipType> m_relationshipTypes = new HashMap<String, RelationshipType>();
+  private final HashMap<String, RelationshipType> m_relationshipTypes = new HashMap<>();
 
   /**
    * convenience method to return the RELATIONSHIP_TYPE_SELF relation (the relation you have with yourself)

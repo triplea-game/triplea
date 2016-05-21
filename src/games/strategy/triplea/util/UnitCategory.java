@@ -26,7 +26,7 @@ public class UnitCategory implements Comparable<Object> {
   // private final Territory m_originatingTerr;
   private final PlayerID m_owner;
   // the units in the category, may be duplicates.
-  private final List<Unit> m_units = new ArrayList<Unit>();
+  private final List<Unit> m_units = new ArrayList<>();
   private int m_damaged = 0;
   private int m_bombingDamage = 0;
   private boolean m_disabled = false;
@@ -95,7 +95,7 @@ public class UnitCategory implements Comparable<Object> {
   }
 
   private void createDependents(final Collection<Unit> dependents) {
-    m_dependents = new ArrayList<UnitOwner>();
+    m_dependents = new ArrayList<>();
     if (dependents == null) {
       return;
     }

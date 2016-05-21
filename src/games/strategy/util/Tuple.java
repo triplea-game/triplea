@@ -20,7 +20,7 @@ public class Tuple<T, S> implements Serializable {
    *    Tuple<String,Integer> myTuple = new Tuple<String,Integer>("abc",123);
    */
   public static <T,S> Tuple<T,S> of( final T first, final S second ) {
-    return new Tuple<T,S>(first,second);
+    return new Tuple<>(first, second);
   }
 
   private Tuple(final T first, final S second) {

@@ -223,7 +223,7 @@ public class RemoteMessengerTest extends TestCase {
       clientRM.registerRemote(foo, test);
       serverUM.getHub().waitForNodesToImplement(test.getName(), 200);
       assertTrue(serverUM.getHub().hasImplementors(test.getName()));
-      final AtomicReference<ConnectionLostException> rme = new AtomicReference<ConnectionLostException>(null);
+      final AtomicReference<ConnectionLostException> rme = new AtomicReference<>(null);
       final Runnable r = new Runnable() {
         @Override
         public void run() {

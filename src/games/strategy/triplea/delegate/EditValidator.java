@@ -80,7 +80,7 @@ public class EditValidator {
             return "Can't add mixed nationality units to water";
           }
           final Match<Unit> friendlySeaTransports =
-              new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
+              new CompositeMatchAnd<>(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.UnitIsLand);
           if (!Match.allMatch(landUnitsToAdd, Matches.UnitCanBeTransported)) {
@@ -97,14 +97,14 @@ public class EditValidator {
         }
         if (Match.someMatch(units, Matches.UnitIsAir)) {
           if (Match.someMatch(units,
-              new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier.invert()))) {
+              new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier.invert()))) {
             return "Can not add air to water unless it can land on carriers";
           }
           // Set up matches
           final Match<Unit> friendlyCarriers =
-              new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.alliedUnit(player, data));
+              new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.alliedUnit(player, data));
           final Match<Unit> friendlyAirUnits =
-              new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.alliedUnit(player, data));
+              new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.alliedUnit(player, data));
           // Determine transport capacity
           final int carrierCapacityTotal =
               AirMovementValidator.carrierCapacity(territory.getUnits().getMatches(friendlyCarriers), territory)
@@ -229,7 +229,7 @@ public class EditValidator {
     if ((result = validateTerritoryBasic(data, territory)) != null) {
       return result;
     }
-    final Collection<Unit> units = new ArrayList<Unit>(unitDamageMap.keySet());
+    final Collection<Unit> units = new ArrayList<>(unitDamageMap.keySet());
     if (!territory.getUnits().getUnits().containsAll(units)) {
       return "Selected Territory does not contain all of the selected units";
     }
@@ -262,7 +262,7 @@ public class EditValidator {
     if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
       return "Game does not allow bombing damage";
     }
-    final Collection<Unit> units = new ArrayList<Unit>(unitDamageMap.keySet());
+    final Collection<Unit> units = new ArrayList<>(unitDamageMap.keySet());
     if (!territory.getUnits().getUnits().containsAll(units)) {
       return "Selected Territory does not contain all of the selected units";
     }

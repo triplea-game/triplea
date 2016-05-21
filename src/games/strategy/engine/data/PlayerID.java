@@ -139,7 +139,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
     boolean hasFactory = false;
     boolean ownsLand = false;
     for (final Territory t : data.getMap().getTerritories()) {
-      if (t.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(this),
+      if (t.getUnits().someMatch(new CompositeMatchAnd<>(Matches.unitIsOwnedBy(this),
           Matches.unitHasAttackValueOfAtLeast(1), Matches.UnitCanMove, Matches.UnitIsLand))) {
         return true;
       }
@@ -147,7 +147,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
         ownsLand = true;
       }
       if (t.getUnits()
-          .someMatch(new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(this), Matches.UnitCanProduceUnits))) {
+          .someMatch(new CompositeMatchAnd<>(Matches.unitIsOwnedBy(this), Matches.UnitCanProduceUnits))) {
         hasFactory = true;
       }
       if (ownsLand && hasFactory) {
@@ -158,7 +158,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
   }
 
   public static LinkedHashMap<String, String> currentPlayers(final GameData data) {
-    final LinkedHashMap<String, String> rVal = new LinkedHashMap<String, String>();
+    final LinkedHashMap<String, String> rVal = new LinkedHashMap<>();
     if (data == null) {
       return rVal;
     }

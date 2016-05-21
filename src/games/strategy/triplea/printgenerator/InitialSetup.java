@@ -14,7 +14,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 public class InitialSetup {
   private Iterator<UnitType> m_unitTypeIterator;
   private Iterator<PlayerID> m_playerIterator;
-  private final Map<UnitType, UnitAttachment> m_unitInfoMap = new HashMap<UnitType, UnitAttachment>();
+  private final Map<UnitType, UnitAttachment> m_unitInfoMap = new HashMap<>();
   private GameData m_data;
   private PrintGenerationData m_printData;
 

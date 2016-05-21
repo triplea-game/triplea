@@ -59,7 +59,7 @@ public class NullWebPoster implements IWebPoster {
 
   @Override
   public Vector<String> getAllHosts() {
-    return new Vector<String>();
+    return new Vector<>();
   }
 
   @Override

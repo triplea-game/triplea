@@ -30,9 +30,9 @@ public class DiceImageFactory {
   private final ResourceLoader m_resourceLoader;
   private static final Color s_ignored = new Color(100, 100, 100, 200);
   // maps Integer -> Image
-  private final Map<Integer, Image> m_images = new HashMap<Integer, Image>();
-  private final Map<Integer, Image> m_imagesHit = new HashMap<Integer, Image>();
-  private final Map<Integer, Image> m_imagesIgnored = new HashMap<Integer, Image>();
+  private final Map<Integer, Image> m_images = new HashMap<>();
+  private final Map<Integer, Image> m_imagesHit = new HashMap<>();
+  private final Map<Integer, Image> m_imagesIgnored = new HashMap<>();
 
   public DiceImageFactory(final ResourceLoader loader, final int diceSides) {
     final int PIP_SIZE = 6;

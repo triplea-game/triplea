@@ -32,11 +32,11 @@ import games.strategy.triplea.Constants;
 public class AvailableGames {
   private static final boolean s_delayedParsing = false;
   private static final String ZIP_EXTENSION = ".zip";
-  private final TreeMap<String, URI> m_availableGames = new TreeMap<String, URI>();
-  private final Set<String> m_availableMapFolderOrZipNames = new HashSet<String>();
+  private final TreeMap<String, URI> m_availableGames = new TreeMap<>();
+  private final Set<String> m_availableMapFolderOrZipNames = new HashSet<>();
 
   public AvailableGames() {
-    final Set<String> mapNamePropertyList = new HashSet<String>();
+    final Set<String> mapNamePropertyList = new HashSet<>();
     populateAvailableGames(m_availableGames, m_availableMapFolderOrZipNames, mapNamePropertyList);
     // System.out.println(mapNamePropertyList);
     // System.out.println(m_availableMapFolderOrZipNames);
@@ -45,11 +45,11 @@ public class AvailableGames {
   }
 
   public List<String> getGameNames() {
-    return new ArrayList<String>(m_availableGames.keySet());
+    return new ArrayList<>(m_availableGames.keySet());
   }
 
   public Set<String> getAvailableMapFolderOrZipNames() {
-    return new HashSet<String>(m_availableMapFolderOrZipNames);
+    return new HashSet<>(m_availableMapFolderOrZipNames);
   }
 
   /**
@@ -81,7 +81,7 @@ public class AvailableGames {
   }
 
   private static List<File> allMapFiles() {
-    final List<File> rVal = new ArrayList<File>();
+    final List<File> rVal = new ArrayList<>();
     // prioritize user maps folder over root folder
     rVal.addAll(safeListFiles(ClientFileSystemHelper.getUserMapsFolder()));
     rVal.addAll(safeListFiles(NewGameChooserModel.getDefaultMapsDir()));
@@ -149,7 +149,7 @@ public class AvailableGames {
       return false;
     }
     InputStream input = null;
-    final AtomicReference<String> gameName = new AtomicReference<String>();
+    final AtomicReference<String> gameName = new AtomicReference<>();
     try {
       input = uri.toURL().openStream();
       try {
@@ -199,7 +199,7 @@ public class AvailableGames {
     if (uri == null) {
       return null;
     }
-    final AtomicReference<String> gameName = new AtomicReference<String>();
+    final AtomicReference<String> gameName = new AtomicReference<>();
     GameData data = null;
     InputStream input = null;
     boolean error = false;

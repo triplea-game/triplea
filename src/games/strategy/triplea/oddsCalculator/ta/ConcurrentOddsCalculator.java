@@ -35,7 +35,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   private static final int MAX_THREADS = Math.max(1, Runtime.getRuntime().availableProcessors());
   private int m_currentThreads = MAX_THREADS;
   private final ExecutorService m_executor;
-  private final CopyOnWriteArrayList<OddsCalculator> m_workers = new CopyOnWriteArrayList<OddsCalculator>();
+  private final CopyOnWriteArrayList<OddsCalculator> m_workers = new CopyOnWriteArrayList<>();
   // do not let calc be set up til data is set
   private volatile boolean m_isDataSet = false;
   // do not let calc start until it is set
@@ -54,7 +54,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   private final Object m_mutexSetGameData = new Object();
   // do not let multiple calculations or setting calc data happen at same time
   private final Object m_mutexCalcIsRunning = new Object();
-  private final List<OddsCalculatorListener> m_listeners = new ArrayList<OddsCalculatorListener>();
+  private final List<OddsCalculatorListener> m_listeners = new ArrayList<>();
 
   public ConcurrentOddsCalculator(final String threadNamePrefix) {
     m_executor = Executors.newFixedThreadPool(MAX_THREADS,
@@ -265,7 +265,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
       final long start = System.currentTimeMillis();
       // Create worker thread pool and start all workers
       int totalRunCount = 0;
-      final List<Future<AggregateResults>> list = new ArrayList<Future<AggregateResults>>();
+      final List<Future<AggregateResults>> list = new ArrayList<>();
       for (final OddsCalculator worker : m_workers) {
         if (!getIsReady()) {
           // we could have attempted to set a new game data, while the old one was still being set, causing it to abort
@@ -283,8 +283,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
       }
       // Wait for all worker futures to complete and combine results
       final AggregateResults results = new AggregateResults(totalRunCount);
-      final Set<InterruptedException> interruptExceptions = new HashSet<InterruptedException>();
-      final Map<String, Set<ExecutionException>> executionExceptions = new HashMap<String, Set<ExecutionException>>();
+      final Set<InterruptedException> interruptExceptions = new HashSet<>();
+      final Map<String, Set<ExecutionException>> executionExceptions = new HashMap<>();
       for (final Future<AggregateResults> future : list) {
         try {
           final AggregateResults result = future.get();
@@ -295,7 +295,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
           final String cause = e.getCause().getLocalizedMessage();
           Set<ExecutionException> exceptions = executionExceptions.get(cause);
           if (exceptions == null) {
-            exceptions = new HashSet<ExecutionException>();
+            exceptions = new HashSet<>();
           }
           exceptions.add(e);
           executionExceptions.put(cause, exceptions);

@@ -44,7 +44,7 @@ public class ProductionPanel extends JPanel {
   private static final long serialVersionUID = -1539053979479586609L;
 
   protected final IUIContext m_uiContext;
-  protected List<Rule> m_rules = new ArrayList<Rule>();
+  protected List<Rule> m_rules = new ArrayList<>();
   protected JLabel m_left = new JLabel();
   protected JButton m_done;
   protected PlayerID m_id;
@@ -176,7 +176,7 @@ public class ProductionPanel extends JPanel {
   Action m_done_action = SwingAction.of("Done", e -> m_dialog.setVisible(false));
 
   private IntegerMap<ProductionRule> getProduction() {
-    final IntegerMap<ProductionRule> prod = new IntegerMap<ProductionRule>();
+    final IntegerMap<ProductionRule> prod = new IntegerMap<>();
     for (final Rule rule : m_rules) {
       final int quantity = rule.getQuantity();
       if (quantity != 0) {
@@ -231,7 +231,7 @@ public class ProductionPanel extends JPanel {
     private int m_quantity;
     private final ProductionRule m_rule;
     private final PlayerID id;
-    private final Set<ScrollableTextField> m_textFields = new HashSet<ScrollableTextField>();
+    private final Set<ScrollableTextField> m_textFields = new HashSet<>();
 
     protected JPanel getPanelComponent() {
       final JPanel panel = new JPanel();
@@ -243,7 +243,7 @@ public class ProductionPanel extends JPanel {
       final Color defaultForegroundLabelColor = name.getForeground();
       Icon icon = null;
       final StringBuilder tooltip = new StringBuilder();
-      final Set<NamedAttachable> results = new HashSet<NamedAttachable>(m_rule.getResults().keySet());
+      final Set<NamedAttachable> results = new HashSet<>(m_rule.getResults().keySet());
       final Iterator<NamedAttachable> iter = results.iterator();
       while (iter.hasNext()) {
         final NamedAttachable resourceOrUnit = iter.next();

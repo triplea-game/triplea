@@ -34,7 +34,7 @@ class BattleStepsPanel extends JPanel implements Active {
   // when we reach the target step, or when we want to walk the step
   // notifyAll on this object
   private final Object m_mutex = new Object();
-  private final List<CountDownLatch> m_waiters = new ArrayList<CountDownLatch>();
+  private final List<CountDownLatch> m_waiters = new ArrayList<>();
   private boolean m_hasWalkThread = false;
 
   BattleStepsPanel() {

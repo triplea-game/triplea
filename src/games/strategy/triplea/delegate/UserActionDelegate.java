@@ -64,7 +64,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 
   public HashMap<ICondition, Boolean> getTestedConditions() {
     final HashSet<ICondition> allConditionsNeeded = AbstractConditionsAttachment.getAllConditionsRecursive(
-        new HashSet<ICondition>(UserActionAttachment.getUserActionAttachments(m_player)), null);
+        new HashSet<>(UserActionAttachment.getUserActionAttachments(m_player)), null);
     return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_bridge);
   }
 
@@ -240,7 +240,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   private void notifyOtherPlayers(final UserActionAttachment uaa, final String notification) {
     if (!"NONE".equals(notification)) {
       // we can send it to just uaa.getOtherPlayers(), or we can send it to all players. both are good options.
-      final Collection<PlayerID> currentPlayer = new ArrayList<PlayerID>();
+      final Collection<PlayerID> currentPlayer = new ArrayList<>();
       currentPlayer.add(m_player);
       final Collection<PlayerID> otherPlayers = getData().getPlayerList().getPlayers();
       otherPlayers.removeAll(currentPlayer);

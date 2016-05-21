@@ -83,11 +83,11 @@ public class ClientModel implements IMessengerErrorListener {
   // are a client game, and the game data lives on the server
   // however, if we cancel, we want to restore the old game data.
   private GameData m_gameDataOnStartup;
-  private Map<String, String> m_playersToNodes = new HashMap<String, String>();
-  private Map<String, Boolean> m_playersEnabledListing = new HashMap<String, Boolean>();
-  private Collection<String> m_playersAllowedToBeDisabled = new HashSet<String>();
+  private Map<String, String> m_playersToNodes = new HashMap<>();
+  private Map<String, Boolean> m_playersEnabledListing = new HashMap<>();
+  private Collection<String> m_playersAllowedToBeDisabled = new HashSet<>();
   private Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder =
-      new LinkedHashMap<String, Collection<String>>();
+      new LinkedHashMap<>();
 
   ClientModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
     m_typePanelModel = typePanelModel;
@@ -199,9 +199,9 @@ public class ClientModel implements IMessengerErrorListener {
   public List<String> getAvailableServerGames() {
     final Set<String> games = getServerStartup().getAvailableGames();
     if (games == null) {
-      return new ArrayList<String>();
+      return new ArrayList<>();
     }
-    return new ArrayList<String>(games);
+    return new ArrayList<>(games);
   }
 
   public void shutDown() {
@@ -324,7 +324,7 @@ public class ClientModel implements IMessengerErrorListener {
       return;
     }
     m_objectStreamFactory.setData(data);
-    final Map<String, String> playerMapping = new HashMap<String, String>();
+    final Map<String, String> playerMapping = new HashMap<>();
     for (final String player : m_playersToNodes.keySet()) {
       final String playedBy = m_playersToNodes.get(player);
       if (playedBy.equals(m_messenger.getLocalNode().getName())) {
@@ -410,25 +410,25 @@ public class ClientModel implements IMessengerErrorListener {
 
   public Map<String, String> getPlayerToNodesMapping() {
     synchronized (this) {
-      return new HashMap<String, String>(m_playersToNodes);
+      return new HashMap<>(m_playersToNodes);
     }
   }
 
   public Map<String, Boolean> getPlayersEnabledListing() {
     synchronized (this) {
-      return new HashMap<String, Boolean>(m_playersEnabledListing);
+      return new HashMap<>(m_playersEnabledListing);
     }
   }
 
   public Collection<String> getPlayersAllowedToBeDisabled() {
     synchronized (this) {
-      return new HashSet<String>(m_playersAllowedToBeDisabled);
+      return new HashSet<>(m_playersAllowedToBeDisabled);
     }
   }
 
   public Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap() {
     synchronized (this) {
-      return new LinkedHashMap<String, Collection<String>>(m_playerNamesAndAlliancesInTurnOrder);
+      return new LinkedHashMap<>(m_playerNamesAndAlliancesInTurnOrder);
     }
   }
 

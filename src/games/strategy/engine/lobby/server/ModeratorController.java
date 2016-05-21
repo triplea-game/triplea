@@ -335,7 +335,7 @@ public class ModeratorController extends AbstractModeratorController implements 
   @Override
   public String getInformationOn(final INode node) {
     assertUserIsAdmin();
-    final Set<String> aliases = new TreeSet<String>();
+    final Set<String> aliases = new TreeSet<>();
     for (final INode currentNode : m_serverMessenger.getNodes()) {
       if (currentNode.getAddress().equals(node.getAddress())) {
         aliases.add(currentNode.getName());

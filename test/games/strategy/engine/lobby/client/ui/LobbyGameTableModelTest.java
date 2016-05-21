@@ -50,7 +50,7 @@ public class LobbyGameTableModelTest {
 
   @Before
   public void setUp() {
-    fakeGameMap = new HashMap<GUID, GameDescription>();
+    fakeGameMap = new HashMap<>();
     fakeGame = Tuple.of(new GUID(), mockGameDescription);
     fakeGameMap.put(fakeGame.getFirst(), fakeGame.getSecond());
 

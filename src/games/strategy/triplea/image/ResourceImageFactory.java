@@ -18,9 +18,9 @@ public class ResourceImageFactory {
   public static final int LARGE_RESOURCE_ICON_SIZE = 24;
   private static final String FILE_NAME_BASE = "resources/";
   // maps Point -> image
-  private final Map<String, Image> m_images = new HashMap<String, Image>();
+  private final Map<String, Image> m_images = new HashMap<>();
   // maps Point -> Icon
-  private final Map<String, ImageIcon> m_icons = new HashMap<String, ImageIcon>();
+  private final Map<String, ImageIcon> m_icons = new HashMap<>();
   // Scaling factor for images
   private double m_scaleFactor;
   private ResourceLoader m_resourceLoader;

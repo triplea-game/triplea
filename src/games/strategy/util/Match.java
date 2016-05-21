@@ -30,18 +30,18 @@ public abstract class Match<T> {
   public static final Match NEVER_MATCH = new NeverMatch<>();
 
   public final static <T> Match<T> getAlwaysMatch() {
-    return new AlwaysMatch<T>();
+    return new AlwaysMatch<>();
   }
 
   public final static <T> Match<T> getNeverMatch() {
-    return new NeverMatch<T>();
+    return new NeverMatch<>();
   }
 
   /**
    * Returns the elements of the collection that match.
    */
   public final static <T> List<T> getMatches(final Collection<T> collection, final Match<T> aMatch) {
-    final List<T> matches = new ArrayList<T>();
+    final List<T> matches = new ArrayList<>();
     for (final T current : collection) {
       if (aMatch.match(current)) {
         matches.add(current);
@@ -62,7 +62,7 @@ public abstract class Match<T> {
     if (max < 0) {
       throw new IllegalArgumentException("max must be positive, instead its:" + max);
     }
-    final List<T> matches = new ArrayList<T>(Math.min(max, collection.size()));
+    final List<T> matches = new ArrayList<>(Math.min(max, collection.size()));
     for (final T current : collection) {
       if (aMatch.match(current)) {
         matches.add(current);
@@ -128,7 +128,7 @@ public abstract class Match<T> {
    * return the keys where the value keyed by the key matches valueMatch
    */
   public static <K, V> Set<K> getKeysWhereValueMatch(final Map<K, V> aMap, final Match<V> valueMatch) {
-    final Set<K> rVal = new HashSet<K>();
+    final Set<K> rVal = new HashSet<>();
     final Iterator<K> keys = aMap.keySet().iterator();
     while (keys.hasNext()) {
       final K key = keys.next();
@@ -147,7 +147,7 @@ public abstract class Match<T> {
   public abstract boolean match(T o);
 
   public final Match<T> invert() {
-    return new InverseMatch<T>(this);
+    return new InverseMatch<>(this);
   }
 }
 

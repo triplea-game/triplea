@@ -28,7 +28,7 @@ public class BanPlayerAction extends AbstractAction {
     final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
     final JComboBox<String> combo = new JComboBox<>(model);
     model.addElement("");
-    for (final INode node : new TreeSet<INode>(m_messenger.getNodes())) {
+    for (final INode node : new TreeSet<>(m_messenger.getNodes())) {
       if (!node.equals(m_messenger.getLocalNode())) {
         model.addElement(node.getName());
       }

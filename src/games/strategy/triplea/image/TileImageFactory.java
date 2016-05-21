@@ -54,7 +54,7 @@ public final class TileImageFactory {
   private static final Logger s_logger = Logger.getLogger(TileImageFactory.class.getName());
   private double m_scale = 1;
   // maps image name to ImageRef
-  private HashMap<String, ImageRef> m_imageCache = new HashMap<String, ImageRef>();
+  private HashMap<String, ImageRef> m_imageCache = new HashMap<>();
 
   static {
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
@@ -395,7 +395,7 @@ public final class TileImageFactory {
  * getImage method ensures that the image will be loaded before returning.
  */
 class ImageRef {
-  public static final ReferenceQueue<Image> s_referenceQueue = new ReferenceQueue<Image>();
+  public static final ReferenceQueue<Image> s_referenceQueue = new ReferenceQueue<>();
   public static final Logger s_logger = Logger.getLogger(ImageRef.class.getName());
   private static final AtomicInteger s_imageCount = new AtomicInteger();
 
@@ -422,7 +422,7 @@ class ImageRef {
 
   // private final Object m_hardRef;
   public ImageRef(final Image image) {
-    m_image = new SoftReference<Image>(image, s_referenceQueue);
+    m_image = new SoftReference<>(image, s_referenceQueue);
     // m_hardRef = image;
     s_logger.finer("Added soft reference image. Image count:" + s_imageCount.incrementAndGet());
   }

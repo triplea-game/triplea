@@ -114,7 +114,7 @@ public class HeadlessGameServer {
   }
 
   public Set<String> getAvailableGames() {
-    return new HashSet<String>(m_availableGames.getGameNames());
+    return new HashSet<>(m_availableGames.getGameNames());
   }
 
   public synchronized void setGameMapTo(final String gameName) {

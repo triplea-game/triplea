@@ -28,7 +28,7 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   public static Set<Territory> getAllCanalSeaZones(final String canalName, final GameData data) {
-    final Set<Territory> rVal = new HashSet<Territory>();
+    final Set<Territory> rVal = new HashSet<>();
     for (final Territory t : data.getMap()) {
       final Set<CanalAttachment> canalAttachments = get(t);
       if (canalAttachments.isEmpty()) {
@@ -48,7 +48,7 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   public static Set<CanalAttachment> get(final Territory t) {
-    final Set<CanalAttachment> rVal = new HashSet<CanalAttachment>();
+    final Set<CanalAttachment> rVal = new HashSet<>();
     final Map<String, IAttachment> map = t.getAttachments();
     final Iterator<String> iter = map.keySet().iterator();
     while (iter.hasNext()) {
@@ -93,7 +93,7 @@ public class CanalAttachment extends DefaultAttachment {
       m_landTerritories = null;
       return;
     }
-    final HashSet<Territory> terrs = new HashSet<Territory>();
+    final HashSet<Territory> terrs = new HashSet<>();
     for (final String name : landTerritories.split(":")) {
       final Territory territory = getData().getMap().getTerritory(name);
       if (territory == null) {
@@ -129,7 +129,7 @@ public class CanalAttachment extends DefaultAttachment {
       return;
     }
     if (m_excludedUnits == null) {
-      m_excludedUnits = new HashSet<UnitType>();
+      m_excludedUnits = new HashSet<>();
     }
     if (value.equalsIgnoreCase("NONE")) {
       return;
@@ -154,7 +154,7 @@ public class CanalAttachment extends DefaultAttachment {
 
   public HashSet<UnitType> getExcludedUnits(final GameData data) {
     if (m_excludedUnits == null) {
-      return new HashSet<UnitType>(
+      return new HashSet<>(
           Match.getMatches(getData().getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsAir));
     }
     return m_excludedUnits;

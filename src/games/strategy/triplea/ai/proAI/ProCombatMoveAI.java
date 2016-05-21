@@ -111,7 +111,7 @@ public class ProCombatMoveAI {
     determineUnitsToAttackWith(attackOptions, alreadyMovedUnits);
 
     // Get all transport final territories
-    ProMoveUtils.calculateAmphibRoutes(player, new ArrayList<>(), new ArrayList<>(), new ArrayList<Collection<Unit>>(),
+    ProMoveUtils.calculateAmphibRoutes(player, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
         territoryManager.getAttackOptions().getTerritoryMap(), true);
 
     // Determine max enemy counter attack units and remove territories where transports are exposed
@@ -153,7 +153,7 @@ public class ProCombatMoveAI {
     // Calculate amphib attack routes and perform moves
     moveUnits.clear();
     moveRoutes.clear();
-    final List<Collection<Unit>> transportsToLoad = new ArrayList<Collection<Unit>>();
+    final List<Collection<Unit>> transportsToLoad = new ArrayList<>();
     ProMoveUtils.calculateAmphibRoutes(player, moveUnits, moveRoutes, transportsToLoad, attackMap, true);
     ProMoveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
 
@@ -537,7 +537,7 @@ public class ProCombatMoveAI {
     }
 
     // Find land territories with no can't move units and adjacent to enemy land units
-    final List<Unit> alreadyMovedUnits = new ArrayList<Unit>();
+    final List<Unit> alreadyMovedUnits = new ArrayList<>();
     for (final Territory t : ProData.myUnitTerritories) {
       final boolean hasAlliedLandUnits =
           Match.someMatch(t.getUnits().getUnits(),
@@ -637,7 +637,7 @@ public class ProCombatMoveAI {
             }
             final ProBattleResult result =
                 calc.calculateBattleResults(player, unloadTerritory, enemyAttackOptions.getMax(unloadTerritory)
-                    .getMaxUnits(), new ArrayList<>(defenders), new HashSet<Unit>(), false);
+                    .getMaxUnits(), new ArrayList<>(defenders), new HashSet<>(), false);
             final ProBattleResult minResult =
                 calc.calculateBattleResults(player, unloadTerritory, enemyAttackOptions.getMax(unloadTerritory)
                     .getMaxUnits(), territoryTransportAndBombardMap.get(unloadTerritory), new HashSet<>(), false);

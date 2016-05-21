@@ -18,11 +18,11 @@ public class MapXmlData {
   private File mapXMLFile;
 
   private Map<String, String> xmlStringsMap = Maps.newLinkedHashMap();
-  private List<String> resourceList = new ArrayList<String>();
+  private List<String> resourceList = new ArrayList<>();
   private Map<String, Map<DEFINITION, Boolean>> territoryDefintionsMap =
       Maps.newHashMap();
   private Map<String, Set<String>> territoryConnectionsMap = Maps.newHashMap();
-  private List<String> playerNames = new ArrayList<String>();
+  private List<String> playerNames = new ArrayList<>();
   private Map<String, String> playerAllianceMap = Maps.newHashMap();
   private Map<String, Integer> playerInitResourcesMap = Maps.newHashMap();
   private Map<String, List<Integer>> unitDefinitionsMap = Maps.newLinkedHashMap();

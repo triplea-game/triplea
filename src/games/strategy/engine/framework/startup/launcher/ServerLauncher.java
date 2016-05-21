@@ -66,7 +66,7 @@ public class ServerLauncher extends AbstractLauncher {
   // we need to track these, because when we loose connections to them
   // we can ignore the connection lost
   private final List<INode> m_observersThatTriedToJoinDuringStartup =
-      Collections.synchronizedList(new ArrayList<INode>());
+      Collections.synchronizedList(new ArrayList<>());
   private InGameLobbyWatcherWrapper m_inGameLobbyWatcher;
 
   public ServerLauncher(final int clientCount, final IRemoteMessenger remoteMessenger,

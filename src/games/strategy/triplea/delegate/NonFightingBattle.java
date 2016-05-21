@@ -33,10 +33,10 @@ import games.strategy.util.Util;
  */
 public class NonFightingBattle extends AbstractBattle {
   private static final long serialVersionUID = -1699534010648145123L;
-  private final Set<Territory> m_attackingFrom = new HashSet<Territory>();
-  private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<Territory>();
+  private final Set<Territory> m_attackingFrom = new HashSet<>();
+  private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<>();
   // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
-  private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<Territory, Collection<Unit>>();
+  private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<>();
 
   public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
       final GameData data) {
@@ -58,7 +58,7 @@ public class NonFightingBattle extends AbstractBattle {
     m_attackingFrom.add(attackingFrom);
     m_attackingUnits.addAll(units);
     if (m_attackingFromMap.get(attackingFrom) == null) {
-      m_attackingFromMap.put(attackingFrom, new ArrayList<Unit>());
+      m_attackingFromMap.put(attackingFrom, new ArrayList<>());
     }
     final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
     attackingFromMapUnits.addAll(units);
@@ -116,7 +116,7 @@ public class NonFightingBattle extends AbstractBattle {
   }
 
   boolean hasAttackingUnits() {
-    final CompositeMatch<Unit> attackingLand = new CompositeMatchAnd<Unit>();
+    final CompositeMatch<Unit> attackingLand = new CompositeMatchAnd<>();
     attackingLand.add(Matches.alliedUnit(m_attacker, m_data));
     attackingLand.add(Matches.UnitIsLand);
     final boolean someAttacking = m_battleSite.getUnits().someMatch(attackingLand);
@@ -134,7 +134,7 @@ public class NonFightingBattle extends AbstractBattle {
     Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
     // handle possible null pointer
     if (attackingFromMapUnits == null) {
-      attackingFromMapUnits = new ArrayList<Unit>();
+      attackingFromMapUnits = new ArrayList<>();
     }
     attackingFromMapUnits.removeAll(units);
     if (attackingFromMapUnits.isEmpty()) {
@@ -189,7 +189,7 @@ public class NonFightingBattle extends AbstractBattle {
       if (m_dependentUnits.get(holder) != null) {
         m_dependentUnits.get(holder).addAll(transporting);
       } else {
-        m_dependentUnits.put(holder, new LinkedHashSet<Unit>(transporting));
+        m_dependentUnits.put(holder, new LinkedHashSet<>(transporting));
       }
     }
   }

@@ -96,7 +96,7 @@ public class DBExplorerPanel extends JPanel {
   private static TableModel createTableModel(final ResultSet rs) {
     try {
       final DefaultTableModel model = new DefaultTableModel();
-      final List<String> columnNames = new ArrayList<String>();
+      final List<String> columnNames = new ArrayList<>();
       final int count = rs.getMetaData().getColumnCount();
       if (count <= 0) {
         return null;
@@ -109,7 +109,7 @@ public class DBExplorerPanel extends JPanel {
       }
       int index = 1;
       while (rs.next()) {
-        final List<String> values = new ArrayList<String>();
+        final List<String> values = new ArrayList<>();
         values.add("" + index++);
         for (final String column : columnNames) {
           values.add(rs.getString(column));

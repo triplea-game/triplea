@@ -278,7 +278,7 @@ public class PointFileReaderWriter {
     if (mapping.containsKey(name)) {
       throw new IOException("name found twice:" + name);
     }
-    final List<Point> points = new ArrayList<Point>();
+    final List<Point> points = new ArrayList<>();
     while (tokens.hasMoreTokens()) {
       final String xString = tokens.nextToken(",(), ");
       if (!tokens.hasMoreTokens()) {

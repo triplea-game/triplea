@@ -174,7 +174,7 @@ public class VictoryTest extends TestCase {
     testBridge.setStepName("italianPurchase");
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
     purchaseDelegate.start();
-    final IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
+    final IntegerMap<ProductionRule> purchaseList = new IntegerMap<>();
     final ProductionRule armourtest = gameData.getProductionRuleList().getProductionRule("buyArmourtest");
     assertNotNull(armourtest);
     italianResources.subtract(armourtest.getCosts());
@@ -188,7 +188,7 @@ public class VictoryTest extends TestCase {
     testBridge.setStepName("italianPurchase");
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
     purchaseDelegate.start();
-    final IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
+    final IntegerMap<ProductionRule> purchaseList = new IntegerMap<>();
     final ProductionRule armourtest = gameData.getProductionRuleList().getProductionRule("buyArmourtest2");
     assertNotNull(armourtest);
     italianResources.subtract(armourtest.getCosts());
@@ -203,7 +203,7 @@ public class VictoryTest extends TestCase {
     testBridge.setStepName("italianPurchase");
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
     purchaseDelegate.start();
-    final IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
+    final IntegerMap<ProductionRule> purchaseList = new IntegerMap<>();
     final ProductionRule buyArmour = gameData.getProductionRuleList().getProductionRule("buyArmour");
     assertNotNull(buyArmour);
     italianResources.subtract(buyArmour.getCosts());
@@ -217,7 +217,7 @@ public class VictoryTest extends TestCase {
     testBridge.setStepName("italianPurchase");
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
     purchaseDelegate.start();
-    final IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
+    final IntegerMap<ProductionRule> purchaseList = new IntegerMap<>();
     final ProductionRule buyArmour = gameData.getProductionRuleList().getProductionRule("buyArmourtest3");
     assertNotNull(buyArmour);
     italianResources.subtract(buyArmour.getCosts());

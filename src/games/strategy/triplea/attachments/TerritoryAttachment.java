@@ -24,9 +24,9 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   public static boolean doWeHaveEnoughCapitalsToProduce(final PlayerID player, final GameData data) {
     final List<Territory> capitalsListOriginal =
-        new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(player, data));
+        new ArrayList<>(TerritoryAttachment.getAllCapitals(player, data));
     final List<Territory> capitalsListOwned =
-        new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data));
+        new ArrayList<>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data));
     final PlayerAttachment pa = PlayerAttachment.get(player);
 
     if (pa == null) {
@@ -50,8 +50,8 @@ public class TerritoryAttachment extends DefaultAttachment {
    * @param data
    */
   public static Territory getFirstOwnedCapitalOrFirstUnownedCapital(final PlayerID player, final GameData data) {
-    final List<Territory> capitals = new ArrayList<Territory>();
-    final List<Territory> noNeighborCapitals = new ArrayList<Territory>();
+    final List<Territory> capitals = new ArrayList<>();
+    final List<Territory> noNeighborCapitals = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
       if (ta != null && ta.getCapital() != null) {
@@ -89,7 +89,7 @@ public class TerritoryAttachment extends DefaultAttachment {
    * will return empty list if none controlled, never returns null
    */
   public static List<Territory> getAllCapitals(final PlayerID player, final GameData data) {
-    final List<Territory> capitals = new ArrayList<Territory>();
+    final List<Territory> capitals = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
       if (ta != null && ta.getCapital() != null) {
@@ -116,7 +116,7 @@ public class TerritoryAttachment extends DefaultAttachment {
    * will return empty list if none controlled, never returns null
    */
   public static List<Territory> getAllCurrentlyOwnedCapitals(final PlayerID player, final GameData data) {
-    final List<Territory> capitals = new ArrayList<Territory>();
+    final List<Territory> capitals = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
       if (ta != null && ta.getCapital() != null) {
@@ -186,16 +186,16 @@ public class TerritoryAttachment extends DefaultAttachment {
   private boolean m_isImpassible = false;
   private PlayerID m_originalOwner = null;
   private boolean m_convoyRoute = false;
-  private HashSet<Territory> m_convoyAttached = new HashSet<Territory>();
-  private ArrayList<PlayerID> m_changeUnitOwners = new ArrayList<PlayerID>();
-  private ArrayList<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
+  private HashSet<Territory> m_convoyAttached = new HashSet<>();
+  private ArrayList<PlayerID> m_changeUnitOwners = new ArrayList<>();
+  private ArrayList<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<>();
   private boolean m_navalBase = false;
   private boolean m_airBase = false;
   private boolean m_kamikazeZone = false;
   private int m_unitProduction = 0;
   private boolean m_blockadeZone = false;
-  private ArrayList<TerritoryEffect> m_territoryEffect = new ArrayList<TerritoryEffect>();
-  private ArrayList<String> m_whenCapturedByGoesTo = new ArrayList<String>();
+  private ArrayList<TerritoryEffect> m_territoryEffect = new ArrayList<>();
+  private ArrayList<String> m_whenCapturedByGoesTo = new ArrayList<>();
   private ResourceCollection m_resources = null;
 
   /** Creates new TerritoryAttachment */
@@ -496,7 +496,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public void resetChangeUnitOwners() {
-    m_changeUnitOwners = new ArrayList<PlayerID>();
+    m_changeUnitOwners = new ArrayList<>();
   }
 
   /**
@@ -532,7 +532,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public void resetCaptureUnitOnEnteringBy() {
-    m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
+    m_captureUnitOnEnteringBy = new ArrayList<>();
   }
 
   /**
@@ -571,7 +571,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public void resetWhenCapturedByGoesTo() {
-    m_whenCapturedByGoesTo = new ArrayList<String>();
+    m_whenCapturedByGoesTo = new ArrayList<>();
   }
 
   /**
@@ -606,7 +606,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public void resetTerritoryEffect() {
-    m_territoryEffect = new ArrayList<TerritoryEffect>();
+    m_territoryEffect = new ArrayList<>();
   }
 
   /**
@@ -643,7 +643,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public void resetConvoyAttached() {
-    m_convoyAttached = new HashSet<Territory>();
+    m_convoyAttached = new HashSet<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -719,7 +719,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public static Set<Territory> getWhatTerritoriesThisIsUsedInConvoysFor(final Territory t, final GameData data) {
-    final Set<Territory> rVal = new HashSet<Territory>();
+    final Set<Territory> rVal = new HashSet<>();
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
     if (ta == null || !ta.getConvoyRoute()) {
       return null;

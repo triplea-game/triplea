@@ -37,7 +37,7 @@ public class UnitType extends NamedAttachable implements Serializable {
 
   public List<Unit> create(final int quantity, final PlayerID owner, final boolean isTemp, final int hitsTaken,
       final int bombingUnitDamage) {
-    final List<Unit> collection = new ArrayList<Unit>();
+    final List<Unit> collection = new ArrayList<>();
     for (int i = 0; i < quantity; i++) {
       collection.add(create(owner, isTemp, hitsTaken, bombingUnitDamage));
     }
@@ -95,13 +95,13 @@ public class UnitType extends NamedAttachable implements Serializable {
    */
   public static Map<PlayerID, List<UnitType>> getAllPlayerUnitsWithImages(final GameData data,
       final IUIContext uiContext, final boolean forceIncludeNeutralPlayer) {
-    final LinkedHashMap<PlayerID, List<UnitType>> rVal = new LinkedHashMap<PlayerID, List<UnitType>>();
+    final LinkedHashMap<PlayerID, List<UnitType>> rVal = new LinkedHashMap<>();
     data.acquireReadLock();
     try {
       for (final PlayerID p : data.getPlayerList().getPlayers()) {
         rVal.put(p, getPlayerUnitsWithImages(p, data, uiContext));
       }
-      final HashSet<UnitType> unitsSoFar = new HashSet<UnitType>();
+      final HashSet<UnitType> unitsSoFar = new HashSet<>();
       for (final List<UnitType> l : rVal.values()) {
         unitsSoFar.addAll(l);
       }
@@ -112,7 +112,7 @@ public class UnitType extends NamedAttachable implements Serializable {
         unitsSoFar.addAll(rVal.get(PlayerID.NULL_PLAYERID));
         all.removeAll(unitsSoFar);
         if (!all.isEmpty()) {
-          rVal.put(null, new ArrayList<UnitType>(all));
+          rVal.put(null, new ArrayList<>(all));
         }
       }
     } finally {
@@ -123,7 +123,7 @@ public class UnitType extends NamedAttachable implements Serializable {
 
   private static List<UnitType> getPlayerUnitsWithImages(final PlayerID player, final GameData data,
       final IUIContext uiContext) {
-    final ArrayList<UnitType> rVal = new ArrayList<UnitType>();
+    final ArrayList<UnitType> rVal = new ArrayList<>();
     data.acquireReadLock();
     try {
       // add first based on current production ability

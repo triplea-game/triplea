@@ -208,7 +208,7 @@ public class TripleAFrame extends MainGameFrame {
   private List<Unit> unitsBeingMousedOver;
   private PlayerID lastStepPlayer;
   private PlayerID currentStepPlayer;
-  private Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<PlayerID, Boolean>();
+  private Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<>();
   private ThreadPool messageAndDialogThreadPool;
   private TripleAMenu menu;
 
@@ -852,7 +852,7 @@ public class TripleAFrame extends MainGameFrame {
     messageAndDialogThreadPool.runTask(new Runnable() {
       @Override
       public void run() {
-        final AtomicReference<TechResultsDisplay> displayRef = new AtomicReference<TechResultsDisplay>();
+        final AtomicReference<TechResultsDisplay> displayRef = new AtomicReference<>();
         SwingAction.invokeAndWait(() -> {
           final TechResultsDisplay display = new TechResultsDisplay(msg, uiContext, data);
           displayRef.set(display);
@@ -892,13 +892,13 @@ public class TripleAFrame extends MainGameFrame {
       return potentialTargets.iterator().next();
     }
     messageAndDialogThreadPool.waitForAll();
-    final AtomicReference<Unit> selected = new AtomicReference<Unit>();
+    final AtomicReference<Unit> selected = new AtomicReference<>();
     final String message = "Select bombing target in " + territory.getName();
     @SuppressWarnings("rawtypes")
     final Tuple<JPanel, JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList>>() {
       @Override
       public Tuple<JPanel, JList> run() {
-        final JList<Unit> list = new JList<>(new Vector<Unit>(potentialTargets));
+        final JList<Unit> list = new JList<>(new Vector<>(potentialTargets));
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
         final JPanel panel = new JPanel();
@@ -956,7 +956,7 @@ public class TripleAFrame extends MainGameFrame {
       @Override
       public Tuple<JPanel, JList> run() {
         mapPanel.centerOn(currentTerritory);
-        final JList<Territory> list = new JList<>(new Vector<Territory>(candidates));
+        final JList<Territory> list = new JList<>(new Vector<>(candidates));
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
         final JPanel panel = new JPanel();
@@ -985,7 +985,7 @@ public class TripleAFrame extends MainGameFrame {
       final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick) {
     if (messageAndDialogThreadPool == null) {
       return Tuple.of(territoryChoices.iterator().next(),
-          (Set<Unit>) new HashSet<Unit>(Match.getNMatches(unitChoices, unitsPerPick, Match.<Unit>getAlwaysMatch())));
+          (Set<Unit>) new HashSet<>(Match.getNMatches(unitChoices, unitsPerPick, Match.<Unit>getAlwaysMatch())));
     }
     // total hacks
     messageAndDialogThreadPool.waitForAll();
@@ -1045,21 +1045,21 @@ public class TripleAFrame extends MainGameFrame {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Should not be called from dispatch thread");
     }
-    final HashMap<Territory, IntegerMap<Unit>> selection = new HashMap<Territory, IntegerMap<Unit>>();
+    final HashMap<Territory, IntegerMap<Unit>> selection = new HashMap<>();
     if (possibleUnitsToAttack == null || possibleUnitsToAttack.isEmpty() || attackResourceToken == null
         || maxNumberOfAttacksAllowed <= 0 || messageAndDialogThreadPool == null) {
       return selection;
     }
     messageAndDialogThreadPool.waitForAll();
     final CountDownLatch continueLatch = new CountDownLatch(1);
-    final Collection<IndividualUnitPanelGrouped> unitPanels = new ArrayList<IndividualUnitPanelGrouped>();
+    final Collection<IndividualUnitPanelGrouped> unitPanels = new ArrayList<>();
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
         final HashMap<String, Collection<Unit>> possibleUnitsToAttackStringForm =
-            new HashMap<String, Collection<Unit>>();
+            new HashMap<>();
         for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet()) {
-          final List<Unit> units = new ArrayList<Unit>(entry.getValue());
+          final List<Unit> units = new ArrayList<>(entry.getValue());
           Collections.sort(units,
               new UnitBattleComparator(false, BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(data),
                   TerritoryEffectHelper.getEffects(entry.getKey()), data, true, false));
@@ -1148,8 +1148,8 @@ public class TripleAFrame extends MainGameFrame {
       throw new IllegalStateException("Should not be called from dispatch thread");
     }
     final CountDownLatch continueLatch = new CountDownLatch(1);
-    final HashMap<Territory, Collection<Unit>> selection = new HashMap<Territory, Collection<Unit>>();
-    final Collection<Tuple<Territory, UnitChooser>> choosers = new ArrayList<Tuple<Territory, UnitChooser>>();
+    final HashMap<Territory, Collection<Unit>> selection = new HashMap<>();
+    final Collection<Tuple<Territory, UnitChooser>> choosers = new ArrayList<>();
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -1255,7 +1255,7 @@ public class TripleAFrame extends MainGameFrame {
       throw new IllegalStateException("Should not be called from dispatch thread");
     }
     final CountDownLatch continueLatch = new CountDownLatch(1);
-    final Collection<Unit> selection = new ArrayList<Unit>();
+    final Collection<Unit> selection = new ArrayList<>();
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -1377,9 +1377,9 @@ public class TripleAFrame extends MainGameFrame {
     }
     messageAndDialogThreadPool.waitForAll();
     mapPanel.centerOn(from);
-    final AtomicReference<Territory> selected = new AtomicReference<Territory>();
+    final AtomicReference<Territory> selected = new AtomicReference<>();
     SwingAction.invokeAndWait(() -> {
-      final JList<Territory> list = new JList<>(new Vector<Territory>(candidates));
+      final JList<Territory> list = new JList<>(new Vector<>(candidates));
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       list.setSelectedIndex(0);
       final JPanel panel = new JPanel();
@@ -2305,8 +2305,8 @@ public class TripleAFrame extends MainGameFrame {
     }
     messageAndDialogThreadPool.waitForAll();
     mapPanel.centerOn(where);
-    final AtomicReference<ScrollableTextField> textRef = new AtomicReference<ScrollableTextField>();
-    final AtomicReference<JPanel> panelRef = new AtomicReference<JPanel>();
+    final AtomicReference<ScrollableTextField> textRef = new AtomicReference<>();
+    final AtomicReference<JPanel> panelRef = new AtomicReference<>();
     SwingAction.invokeAndWait(() -> {
       final JPanel panel = new JPanel();
       panel.setLayout(new BorderLayout());
@@ -2324,9 +2324,9 @@ public class TripleAFrame extends MainGameFrame {
         getUIContext().getCountDownLatchHandler());
     if (choice == 0) {
       // arrayList.subList() is not serializable
-      return new ArrayList<Unit>(new ArrayList<Unit>(fighters).subList(0, textRef.get().getValue()));
+      return new ArrayList<>(new ArrayList<>(fighters).subList(0, textRef.get().getValue()));
     } else {
-      return new ArrayList<Unit>(0);
+      return new ArrayList<>(0);
     }
   }
 

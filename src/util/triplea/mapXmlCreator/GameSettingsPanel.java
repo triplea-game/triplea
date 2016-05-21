@@ -45,7 +45,7 @@ public class GameSettingsPanel extends DynamicRowsPanel {
     // TODO: maybe list is incomplete!
   }
 
-  private final TreeSet<String> settingNames = new TreeSet<String>();
+  private final TreeSet<String> settingNames = new TreeSet<>();
 
   public GameSettingsPanel(final JPanel stepActionPanel) {
     super(stepActionPanel);
@@ -149,7 +149,7 @@ public class GameSettingsPanel extends DynamicRowsPanel {
       if (suggestedSettingName == null || suggestedSettingName.isEmpty())
         return;
 
-      final ArrayList<String> newSettingValue = new ArrayList<String>();
+      final ArrayList<String> newSettingValue = new ArrayList<>();
       final boolean settingIsBoolean = isBoolean(suggestedSettingName);
       String newValue;
       if (settingIsBoolean)

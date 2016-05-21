@@ -41,11 +41,11 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate {
   }
 
   private Collection<Unit> getProductionUnits(final Collection<Territory> territories, final PlayerID player) {
-    final Collection<Unit> productionUnits = new ArrayList<Unit>();
+    final Collection<Unit> productionUnits = new ArrayList<>();
     if (!(isProductionPerXTerritoriesRestricted() || isProductionPerValuedTerritoryRestricted())) {
       return productionUnits;
     }
-    IntegerMap<UnitType> productionPerXTerritories = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> productionPerXTerritories = new IntegerMap<>();
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     // if they have no rules attachments, but are calling NoPU purchase, and have the game property
     // isProductionPerValuedTerritoryRestricted, then they want 1 infantry for each territory with PU value > 0
@@ -57,7 +57,7 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate {
     } else {
       return productionUnits;
     }
-    final Collection<UnitType> unitTypes = new ArrayList<UnitType>(productionPerXTerritories.keySet());
+    final Collection<UnitType> unitTypes = new ArrayList<>(productionPerXTerritories.keySet());
     for (final UnitType ut : unitTypes) {
       int unitCount = 0;
       int terrCount = 0;

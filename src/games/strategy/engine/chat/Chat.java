@@ -27,7 +27,7 @@ import games.strategy.util.Tuple;
  * <p>
  */
 public class Chat {
-  private final List<IChatListener> m_listeners = new CopyOnWriteArrayList<IChatListener>();
+  private final List<IChatListener> m_listeners = new CopyOnWriteArrayList<>();
   private final Messengers m_messengers;
   private final String m_chatChannelName;
   private final String m_chatName;
@@ -42,11 +42,11 @@ public class Chat {
   // initialization
   // synchronizes access to queue
   private final Object m_mutexQueue = new Object();
-  private List<Runnable> m_queuedInitMessages = new ArrayList<Runnable>();
-  private final List<ChatMessage> m_chatHistory = new ArrayList<ChatMessage>();
+  private List<Runnable> m_queuedInitMessages = new ArrayList<>();
+  private final List<ChatMessage> m_chatHistory = new ArrayList<>();
   private final StatusManager m_statusManager;
   private final ChatIgnoreList m_ignoreList = new ChatIgnoreList();
-  private final HashMap<INode, LinkedHashSet<String>> m_notesMap = new HashMap<INode, LinkedHashSet<String>>();
+  private final HashMap<INode, LinkedHashSet<String>> m_notesMap = new HashMap<>();
   private static final String TAG_MODERATOR = "[Mod]";
   private final CHAT_SOUND_PROFILE m_chatSoundProfile;
 
@@ -63,7 +63,7 @@ public class Chat {
   }
 
   private static LinkedHashSet<String> getTagText(final Tag tag) {
-    final LinkedHashSet<String> rVal = new LinkedHashSet<String>();
+    final LinkedHashSet<String> rVal = new LinkedHashSet<>();
     if (tag == Tag.NONE) {
       return null;
     }
@@ -146,7 +146,7 @@ public class Chat {
         final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
         final Map<INode, Tag> chatters = init.getFirst();
         synchronized (m_mutexNodes) {
-          m_nodes = new ArrayList<INode>(chatters.keySet());
+          m_nodes = new ArrayList<>(chatters.keySet());
         }
         m_chatInitVersion = init.getSecond().longValue();
         (new Runnable() {
@@ -220,7 +220,7 @@ public class Chat {
       if (m_nodes == null) {
         return;
       }
-      final List<INode> playerNames = new ArrayList<INode>(m_nodes);
+      final List<INode> playerNames = new ArrayList<>(m_nodes);
       Collections.sort(playerNames);
       for (final IChatListener listener : m_listeners) {
         listener.updatePlayerList(playerNames);
@@ -248,14 +248,14 @@ public class Chat {
     return m_messengers.getMessenger().getServerNode();
   }
 
-  private final List<INode> m_playersThatLeft_Last10 = new ArrayList<INode>();
+  private final List<INode> m_playersThatLeft_Last10 = new ArrayList<>();
 
   public List<INode> GetPlayersThatLeft_Last10() {
-    return new ArrayList<INode>(m_playersThatLeft_Last10);
+    return new ArrayList<>(m_playersThatLeft_Last10);
   }
 
   public List<INode> GetOnlinePlayers() {
-    return new ArrayList<INode>(m_nodes);
+    return new ArrayList<>(m_nodes);
   }
 
   private final IChatChannel m_chatChannelSubscribor = new IChatChannel() {

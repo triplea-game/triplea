@@ -29,7 +29,7 @@ public final class DownloadFileParser {
     @SuppressWarnings("unchecked")
     List<Map<String,Object>> yamlData = (List<Map<String,Object>>) (new Yaml()).load(is);
 
-    final List<DownloadFileDescription> rVal = new ArrayList<DownloadFileDescription>();
+    final List<DownloadFileDescription> rVal = new ArrayList<>();
     for( Map<String,Object> yaml : yamlData ) {
       String url = (String) yaml.get(Tags.url.toString());
       String description = (String) yaml.get(Tags.description.toString());

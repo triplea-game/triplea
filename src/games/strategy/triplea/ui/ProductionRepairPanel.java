@@ -46,14 +46,14 @@ public class ProductionRepairPanel extends JPanel {
   private final JFrame m_owner = null;
   private JDialog m_dialog;
   private final IUIContext m_uiContext;
-  private final List<Rule> m_rules = new ArrayList<Rule>();
+  private final List<Rule> m_rules = new ArrayList<>();
   private final JLabel m_left = new JLabel();
   private JButton m_done;
   private PlayerID m_id;
   private boolean m_bid;
   private Collection<PlayerID> m_allowedPlayersToRepair;
   private GameData m_data;
-  private static HashMap<Unit, Integer> m_repairCount = new HashMap<Unit, Integer>();
+  private static HashMap<Unit, Integer> m_repairCount = new HashMap<>();
 
   public static HashMap<Unit, IntegerMap<RepairRule>> getProduction(final PlayerID id,
       final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
@@ -129,7 +129,7 @@ public class ProductionRepairPanel extends JPanel {
       this.m_id = player;
       this.m_allowedPlayersToRepair = allowedPlayersToRepair;
       final CompositeMatchAnd<Unit> myDamagedUnits =
-          new CompositeMatchAnd<Unit>(Matches.unitIsOwnedByOfAnyOfThesePlayers(m_allowedPlayersToRepair),
+          new CompositeMatchAnd<>(Matches.unitIsOwnedByOfAnyOfThesePlayers(m_allowedPlayersToRepair),
               Matches.UnitHasTakenSomeBombingUnitDamage);
       final Collection<Territory> terrsWithPotentiallyDamagedUnits =
           Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
@@ -185,12 +185,12 @@ public class ProductionRepairPanel extends JPanel {
   Action m_done_action = SwingAction.of("Done", e -> m_dialog.setVisible(false));
 
   private HashMap<Unit, IntegerMap<RepairRule>> getProduction() {
-    final HashMap<Unit, IntegerMap<RepairRule>> prod = new HashMap<Unit, IntegerMap<RepairRule>>();
+    final HashMap<Unit, IntegerMap<RepairRule>> prod = new HashMap<>();
     // IntegerMap<RepairRule> repairRule = new IntegerMap<RepairRule>();
     for (final Rule rule : m_rules) {
       final int quantity = rule.getQuantity();
       if (quantity != 0) {
-        final IntegerMap<RepairRule> repairRule = new IntegerMap<RepairRule>();
+        final IntegerMap<RepairRule> repairRule = new IntegerMap<>();
         final Unit unit = rule.getUnit();
         repairRule.put(rule.getProductionRule(), quantity);
         prod.put(unit, repairRule);

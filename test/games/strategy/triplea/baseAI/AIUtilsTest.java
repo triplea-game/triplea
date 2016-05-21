@@ -35,7 +35,7 @@ public class AIUtilsTest extends TestCase {
 
   public void testSortByCost() {
     final Territory germany = m_data.getMap().getTerritory("Germany");
-    final List<Unit> sorted = new ArrayList<Unit>(germany.getUnits().getUnits());
+    final List<Unit> sorted = new ArrayList<>(germany.getUnits().getUnits());
     Collections.sort(sorted, AIUtils.getCostComparator());
     assertEquals(sorted.get(0).getUnitType().getName(), "infantry");
   }

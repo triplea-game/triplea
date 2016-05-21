@@ -24,11 +24,11 @@ public class PropertiesUI extends JPanel {
     properties.addEditableProperty(new BooleanProperty("bool2 default true", null, true));
     properties.addEditableProperty(new StringProperty("String", null, "default"));
     properties.addEditableProperty(new NumberProperty("Number [10,20]", null, 20, 12, 15));
-    final Collection<String> listValues = new ArrayList<String>();
+    final Collection<String> listValues = new ArrayList<>();
     listValues.add("apples");
     listValues.add("oranges");
     listValues.add("bananas");
-    properties.addEditableProperty(new ComboProperty<String>("List", null, "apples", listValues));
+    properties.addEditableProperty(new ComboProperty<>("List", null, "apples", listValues));
     final PropertiesUI ui = new PropertiesUI(properties, true);
     final JFrame frame = new JFrame();
     frame.getContentPane().add(ui);

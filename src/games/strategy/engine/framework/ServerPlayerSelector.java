@@ -36,7 +36,7 @@ public class ServerPlayerSelector extends JFrame {
     getContentPane().add(namePanel);
     getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     getContentPane().add(new JLabel("Choose player location."));
-    m_playerChoices = new ArrayList<PlayerChoice>();
+    m_playerChoices = new ArrayList<>();
     for (final String player : players) {
       final PlayerChoice current = new PlayerChoice(player);
       m_playerChoices.add(current);
@@ -82,7 +82,7 @@ public class ServerPlayerSelector extends JFrame {
       if (!isVisible()) {
         return;
       }
-      m_remote = new ArrayList<String>();
+      m_remote = new ArrayList<>();
       for (final PlayerChoice choice : m_playerChoices) {
         if (choice.isRemote()) {
           m_remote.add(choice.getPlayerName());

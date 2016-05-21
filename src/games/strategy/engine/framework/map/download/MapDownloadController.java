@@ -83,7 +83,7 @@ public class MapDownloadController {
       if (downloads == null || downloads.isEmpty()) {
         return false;
       }
-      final List<String> outOfDateMaps = new ArrayList<String>();
+      final List<String> outOfDateMaps = new ArrayList<>();
       populateOutOfDateMapsListing(outOfDateMaps, downloads);
       if (!outOfDateMaps.isEmpty()) {
         final StringBuilder text =

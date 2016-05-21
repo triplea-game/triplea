@@ -23,7 +23,7 @@ import games.strategy.util.Match;
 public class BasicPoliticalAI {
   public static List<PoliticalActionAttachment> getPoliticalActionsTowardsWar(final PlayerID id,
       final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
-    final List<PoliticalActionAttachment> acceptableActions = new ArrayList<PoliticalActionAttachment>();
+    final List<PoliticalActionAttachment> acceptableActions = new ArrayList<>();
     for (final PoliticalActionAttachment nextAction : PoliticalActionAttachment.getValidActions(id, testedConditions,
         data)) {
       if (wantToPerFormActionTowardsWar(nextAction, id, data)) {
@@ -36,7 +36,7 @@ public class BasicPoliticalAI {
   public static List<PoliticalActionAttachment> getPoliticalActionsOther(final PlayerID id,
       final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
     final List<PoliticalActionAttachment> warActions = getPoliticalActionsTowardsWar(id, testedConditions, data);
-    final List<PoliticalActionAttachment> acceptableActions = new ArrayList<PoliticalActionAttachment>();
+    final List<PoliticalActionAttachment> acceptableActions = new ArrayList<>();
     final Collection<PoliticalActionAttachment> validActions =
         PoliticalActionAttachment.getValidActions(id, testedConditions, data);
     validActions.removeAll(warActions);

@@ -22,7 +22,7 @@ import games.strategy.net.Node;
  */
 public class DummyMessenger implements IServerMessenger {
   private final CopyOnWriteArrayList<IConnectionChangeListener> m_connectionChangeListeners =
-      new CopyOnWriteArrayList<IConnectionChangeListener>();
+      new CopyOnWriteArrayList<>();
 
   public DummyMessenger() {
     try {
@@ -84,7 +84,7 @@ public class DummyMessenger implements IServerMessenger {
    */
   @Override
   public Set<INode> getNodes() {
-    return new HashSet<INode>();
+    return new HashSet<>();
   }
 
   /**

@@ -10,7 +10,7 @@ import java.util.List;
  * matches added.
  */
 public abstract class CompositeMatch<T> extends Match<T> {
-  private final List<Match<T>> m_matches = new ArrayList<Match<T>>(4);
+  private final List<Match<T>> m_matches = new ArrayList<>(4);
 
   /** Creates new CompositeMatch */
   public CompositeMatch() {}
@@ -26,7 +26,7 @@ public abstract class CompositeMatch<T> extends Match<T> {
    * Add the inverse of a match. Equivalant to add(new InverseMatch(aMatch))
    */
   public void addInverse(final Match<T> aMatch) {
-    add(new InverseMatch<T>(aMatch));
+    add(new InverseMatch<>(aMatch));
   }
 
   /**

@@ -63,7 +63,7 @@ public class PBEMDiceRoller implements IRandomSource {
   @Override
   public int[] getRandom(final int max, final int count, final String annotation) throws IllegalStateException {
     if (!SwingUtilities.isEventDispatchThread()) {
-      final AtomicReference<int[]> result = new AtomicReference<int[]>();
+      final AtomicReference<int[]> result = new AtomicReference<>();
       SwingAction.invokeAndWait(() -> result.set(getRandom(max, count, annotation)));
       return result.get();
     }

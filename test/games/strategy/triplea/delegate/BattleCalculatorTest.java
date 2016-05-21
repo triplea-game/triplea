@@ -140,7 +140,7 @@ public class BattleCalculatorTest extends TestCase {
           final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
           final boolean allowMultipleHitsPerUnit) {
         final List<Unit> selected = Match.getNMatches(selectFrom, count, Matches.UnitIsStrategicBomber);
-        return new CasualtyDetails(selected, new ArrayList<Unit>(), false);
+        return new CasualtyDetails(selected, new ArrayList<>(), false);
       }
     });
     // don't allow rolling, 6 of each is deterministic
@@ -178,7 +178,7 @@ public class BattleCalculatorTest extends TestCase {
           final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
           final boolean allowMultipleHitsPerUnit) {
         final List<Unit> selected = Match.getNMatches(selectFrom, count, Matches.UnitIsStrategicBomber);
-        return new CasualtyDetails(selected, new ArrayList<Unit>(), false);
+        return new CasualtyDetails(selected, new ArrayList<>(), false);
       }
     });
     // only 1 roll, a hit

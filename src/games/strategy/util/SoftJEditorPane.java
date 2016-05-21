@@ -30,13 +30,13 @@ public class SoftJEditorPane {
 
   public synchronized JEditorPane getComponent() {
     if (component == null) {
-      component = new SoftReference<JEditorPane>(createComponent());
+      component = new SoftReference<>(createComponent());
     }
 
     JEditorPane editorPane = this.component.get();
     if (editorPane == null) {
       editorPane = createComponent();
-      this.component = new SoftReference<JEditorPane>(editorPane);
+      this.component = new SoftReference<>(editorPane);
     }
     return editorPane;
   }

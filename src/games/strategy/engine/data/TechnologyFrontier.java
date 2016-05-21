@@ -10,7 +10,7 @@ import games.strategy.util.Util;
 
 public class TechnologyFrontier extends GameDataComponent implements Iterable<TechAdvance> {
   private static final long serialVersionUID = -5245743727479551766L;
-  private final List<TechAdvance> m_techs = new ArrayList<TechAdvance>();
+  private final List<TechAdvance> m_techs = new ArrayList<>();
   private List<TechAdvance> m_cachedTechs;
   private final String m_name;
 

@@ -71,9 +71,9 @@ import games.strategy.util.Tuple;
 public class MapPanel extends ImageScrollerLargeView {
   private static final long serialVersionUID = -3571551538356292556L;
   private static Logger logger = Logger.getLogger(MapPanel.class.getName());
-  private final ListenerList<MapSelectionListener> mapSelectionListeners = new ListenerList<MapSelectionListener>();
-  private final ListenerList<UnitSelectionListener> unitSelectionListeners = new ListenerList<UnitSelectionListener>();
-  private final ListenerList<MouseOverUnitListener> mouseOverUnitsListeners = new ListenerList<MouseOverUnitListener>();
+  private final ListenerList<MapSelectionListener> mapSelectionListeners = new ListenerList<>();
+  private final ListenerList<UnitSelectionListener> unitSelectionListeners = new ListenerList<>();
+  private final ListenerList<MouseOverUnitListener> mouseOverUnitsListeners = new ListenerList<>();
   private GameData m_data;
   // the territory that the mouse is
   private Territory currentTerritory;
@@ -85,14 +85,14 @@ public class MapPanel extends ImageScrollerLargeView {
   private final SmallMapImageManager smallMapImageManager;
   // keep a reference to the images from the last paint to
   // prevent them from being gcd
-  private final List<Object> images = new ArrayList<Object>();
+  private final List<Object> images = new ArrayList<>();
   private RouteDescription routeDescription;
   private final TileManager tileManager;
   private final BackgroundDrawer backgroundDrawer;
   private BufferedImage mouseShadowImage = null;
   private String movementLeftForCurrentUnits = "";
   private final IUIContext uiContext;
-  private final LinkedBlockingQueue<Tile> undrawnTiles = new LinkedBlockingQueue<Tile>();
+  private final LinkedBlockingQueue<Tile> undrawnTiles = new LinkedBlockingQueue<>();
   private Map<Territory, List<Unit>> highlightedUnits;
   private Cursor hiddenCursor = null;
 
@@ -441,7 +441,7 @@ public class MapPanel extends ImageScrollerLargeView {
     @Override
     public void gameDataChanged(final Change aChange) {
       // find the players with tech changes
-      final Set<PlayerID> playersWithTechChange = new HashSet<PlayerID>();
+      final Set<PlayerID> playersWithTechChange = new HashSet<>();
       getPlayersWithTechChanges(aChange, playersWithTechChange);
       if (playersWithTechChange.isEmpty()) {
         return;
@@ -503,8 +503,8 @@ public class MapPanel extends ImageScrollerLargeView {
     g2d.clip(new Rectangle2D.Double(0, 0, (getImageWidth() * m_scale), (getImageHeight() * m_scale)));
     int x = m_model.getX();
     int y = m_model.getY();
-    final List<Tile> images = new ArrayList<Tile>();
-    final List<Tile> undrawnTiles = new ArrayList<Tile>();
+    final List<Tile> images = new ArrayList<>();
+    final List<Tile> undrawnTiles = new ArrayList<>();
     final Stopwatch stopWatch = new Stopwatch(logger, Level.FINER, "Paint");
     // make sure we use the same data for the entire paint
     final GameData data = m_data;
@@ -885,7 +885,7 @@ class BackgroundDrawer implements Runnable {
   private final WeakReference<MapPanel> m_mapPanelRef;
 
   BackgroundDrawer(final MapPanel panel) {
-    m_mapPanelRef = new WeakReference<MapPanel>(panel);
+    m_mapPanelRef = new WeakReference<>(panel);
   }
 
   public void stop() {

@@ -23,7 +23,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 public class ExecutionStack implements Serializable {
   private static final long serialVersionUID = -8675285470515074530L;
   private IExecutable m_current;
-  private final Stack<IExecutable> m_stack = new Stack<IExecutable>();
+  private final Stack<IExecutable> m_stack = new Stack<>();
 
   public void execute(final IDelegateBridge bridge) {
     // we were interrupted before, resume where we left off

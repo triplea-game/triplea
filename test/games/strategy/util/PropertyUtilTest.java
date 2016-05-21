@@ -26,7 +26,7 @@ public class PropertyUtilTest {
     PropertyUtil.set("uses", "3", testClass);
     uses = (Integer) PropertyUtil.getPropertyFieldObject("uses", testClass);
     assertThat(uses, is(3));
-    final IntegerMap<String> unitPresence = new IntegerMap<String>();
+    final IntegerMap<String> unitPresence = new IntegerMap<>();
     unitPresence.add("Blah", 3);
     PropertyUtil.set("unitPresence", unitPresence, testClass);
     assertThat(PropertyUtil.getPropertyFieldObject("unitPresence", testClass), is(unitPresence));

@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 @SuppressWarnings("unchecked")
 public class MatchTest extends TestCase {
-  Collection<Integer> m_ints = new ArrayList<Integer>();
+  Collection<Integer> m_ints = new ArrayList<>();
   Match<Integer> m_pos = new Match<Integer>() {
     @Override
     public boolean match(final Integer o) {
@@ -66,7 +66,7 @@ public class MatchTest extends TestCase {
   }
 
   public void testAnd() {
-    CompositeMatch<Integer> and = new CompositeMatchAnd<Integer>(m_pos, m_neg);
+    CompositeMatch<Integer> and = new CompositeMatchAnd<>(m_pos, m_neg);
     assertTrue(!and.match(new Integer(1)));
     assertTrue(!Match.someMatch(m_ints, and));
     assertTrue(!Match.someMatch(m_ints, and));
@@ -75,7 +75,7 @@ public class MatchTest extends TestCase {
     assertTrue(!Match.someMatch(m_ints, and));
     assertTrue(!Match.allMatch(m_ints, and));
     assertEquals(0, Match.getMatches(m_ints, and).size());
-    and = new CompositeMatchAnd<Integer>(m_pos, m_pos);
+    and = new CompositeMatchAnd<>(m_pos, m_pos);
     assertTrue(and.match(new Integer(1)));
     assertTrue(Match.someMatch(m_ints, and));
     assertTrue(!Match.allMatch(m_ints, and));
@@ -83,7 +83,7 @@ public class MatchTest extends TestCase {
   }
 
   public void testOr() {
-    final CompositeMatch<Integer> or = new CompositeMatchOr<Integer>(m_pos, m_neg);
+    final CompositeMatch<Integer> or = new CompositeMatchOr<>(m_pos, m_neg);
     assertTrue(or.match(new Integer(1)));
     assertTrue(Match.someMatch(m_ints, or));
     assertTrue(!Match.allMatch(m_ints, or));
@@ -95,7 +95,7 @@ public class MatchTest extends TestCase {
   }
 
   public void testMap() {
-    final HashMap<String, String> map = new HashMap<String, String>();
+    final HashMap<String, String> map = new HashMap<>();
     map.put("a", "b");
     map.put("b", "c");
     map.put("c", "d");

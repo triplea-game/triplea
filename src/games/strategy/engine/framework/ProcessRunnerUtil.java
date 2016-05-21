@@ -119,7 +119,7 @@ public class ProcessRunnerUtil {
     System.out.println("Free Memory:" + runtime.freeMemory() / mb);
     System.out.println("Total Memory:" + runtime.totalMemory() / mb);
     System.out.println("Max Memory:" + runtime.maxMemory() / mb);
-    final List<String> commands = new ArrayList<String>();
+    final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands);
     final String javaClass = "util.image.MapCreator";
     commands.add(javaClass);

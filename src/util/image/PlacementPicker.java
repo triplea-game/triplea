@@ -63,7 +63,7 @@ public class PlacementPicker extends JFrame {
   private Point m_currentSquare;
   private Image m_image;
   private final JLabel m_location = new JLabel();
-  private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>();
+  private Map<String, List<Polygon>> m_polygons = new HashMap<>();
   private Map<String, List<Point>> m_placements;
   private List<Point> m_currentPlacements;
   private String m_currentCountry;
@@ -427,7 +427,7 @@ public class PlacementPicker extends JFrame {
         }
         if (s_showIncompleteMode) {
           g.setColor(Color.green);
-          final Set<String> territories = new HashSet<String>(m_polygons.keySet());
+          final Set<String> territories = new HashSet<>(m_polygons.keySet());
           final Iterator<String> terrIter = territories.iterator();
           while (terrIter.hasNext()) {
             final String terr = terrIter.next();
@@ -536,9 +536,9 @@ public class PlacementPicker extends JFrame {
       m_currentCountry = Util.findTerritoryName(point, m_polygons, "there be dragons");
       // If there isn't an existing array, create one
       if (m_placements == null || m_placements.get(m_currentCountry) == null) {
-        m_currentPlacements = new ArrayList<Point>();
+        m_currentPlacements = new ArrayList<>();
       } else {
-        m_currentPlacements = new ArrayList<Point>(m_placements.get(m_currentCountry));
+        m_currentPlacements = new ArrayList<>(m_placements.get(m_currentCountry));
       }
       JOptionPane.showMessageDialog(this, m_currentCountry);
     } else if (!rightMouse && ctrlDown) {
@@ -549,10 +549,10 @@ public class PlacementPicker extends JFrame {
       if (m_currentPlacements != null) {
         // If there isn't an existing hashmap, create one
         if (m_placements == null) {
-          m_placements = new HashMap<String, List<Point>>();
+          m_placements = new HashMap<>();
         }
         m_placements.put(m_currentCountry, m_currentPlacements);
-        m_currentPlacements = new ArrayList<Point>();
+        m_currentPlacements = new ArrayList<>();
         System.out.println("done:" + m_currentCountry);
       }
     } else if (rightMouse) {

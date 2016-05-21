@@ -36,7 +36,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
   private JButton m_selectTerritoryButton = null;
   private JButton m_selectUnitsButton = null;
   private Territory m_pickedTerritory = null;
-  private Set<Unit> m_pickedUnits = new HashSet<Unit>();
+  private Set<Unit> m_pickedUnits = new HashSet<>();
   private List<Territory> m_territoryChoices = null;
   private List<Unit> m_unitChoices = null;
   private int m_unitsPerPick = 1;
@@ -57,7 +57,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
   public void display(final PlayerID id) {
     super.display(id);
     m_pickedTerritory = null;
-    m_pickedUnits = new HashSet<Unit>();
+    m_pickedUnits = new HashSet<>();
     m_currentAction = null;
     m_currentHighlightedTerritory = null;
     SwingUtilities.invokeLater(new Runnable() {

@@ -126,7 +126,7 @@ public class TabbedProductionPanel extends ProductionPanel {
   }
 
   private void checkLists(final List<Tuple<String, List<Rule>>> ruleLists) {
-    final List<Rule> rulesCopy = new ArrayList<Rule>(m_rules);
+    final List<Rule> rulesCopy = new ArrayList<>(m_rules);
     for (final Tuple<String, List<Rule>> tuple : ruleLists) {
       for (final Rule rule : tuple.getSecond()) {
         rulesCopy.remove(rule);
@@ -148,14 +148,14 @@ public class TabbedProductionPanel extends ProductionPanel {
   }
 
   private List<Tuple<String, List<Rule>>> getDefaultRuleLists() {
-    final List<Tuple<String, List<Rule>>> ruleLists = new ArrayList<Tuple<String, List<Rule>>>();
-    final ArrayList<Rule> allRules = new ArrayList<Rule>();
-    final ArrayList<Rule> landRules = new ArrayList<Rule>();
-    final ArrayList<Rule> airRules = new ArrayList<Rule>();
-    final ArrayList<Rule> seaRules = new ArrayList<Rule>();
-    final ArrayList<Rule> constructRules = new ArrayList<Rule>();
-    final ArrayList<Rule> upgradeConsumesRules = new ArrayList<Rule>();
-    final ArrayList<Rule> resourceRules = new ArrayList<Rule>();
+    final List<Tuple<String, List<Rule>>> ruleLists = new ArrayList<>();
+    final ArrayList<Rule> allRules = new ArrayList<>();
+    final ArrayList<Rule> landRules = new ArrayList<>();
+    final ArrayList<Rule> airRules = new ArrayList<>();
+    final ArrayList<Rule> seaRules = new ArrayList<>();
+    final ArrayList<Rule> constructRules = new ArrayList<>();
+    final ArrayList<Rule> upgradeConsumesRules = new ArrayList<>();
+    final ArrayList<Rule> resourceRules = new ArrayList<>();
     for (final Rule rule : m_rules) {
       allRules.add(rule);
       final NamedAttachable resourceOrUnit = rule.getProductionRule().getResults().keySet().iterator().next();

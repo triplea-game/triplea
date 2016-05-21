@@ -39,7 +39,7 @@ import games.strategy.util.Match;
  */
 public class EndRoundDelegate extends BaseTripleADelegate {
   private boolean m_gameOver = false;
-  private Collection<PlayerID> m_winners = new ArrayList<PlayerID>();
+  private Collection<PlayerID> m_winners = new ArrayList<>();
 
   /** Creates a new instance of EndRoundDelegate */
   public EndRoundDelegate() {}
@@ -109,18 +109,18 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
       final Match<TriggerAttachment> endRoundDelegateTriggerMatch =
-          new CompositeMatchAnd<TriggerAttachment>(AbstractTriggerAttachment.availableUses,
+          new CompositeMatchAnd<>(AbstractTriggerAttachment.availableUses,
               AbstractTriggerAttachment.whenOrDefaultMatch(null, null), new CompositeMatchOr<TriggerAttachment>(
-                  TriggerAttachment.activateTriggerMatch(), TriggerAttachment.victoryMatch()));
+              TriggerAttachment.activateTriggerMatch(), TriggerAttachment.victoryMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
-          new HashSet<PlayerID>(data.getPlayerList().getPlayers()), endRoundDelegateTriggerMatch, m_bridge);
+          new HashSet<>(data.getPlayerList().getPlayers()), endRoundDelegateTriggerMatch, m_bridge);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
         final HashMap<ICondition, Boolean> testedConditions =
             TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
         // get all triggers that are satisfied based on the tested conditions.
-        final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(
+        final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
             Match.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
         // now list out individual types to fire, once for each of the matches above.
         TriggerAttachment.triggerActivateTriggerOther(testedConditions, toFireTestedAndSatisfied, m_bridge, null, null,
@@ -374,5 +374,5 @@ class EndRoundExtendedDelegateState implements Serializable {
   Serializable superState;
   // add other variables here:
   public boolean m_gameOver = false;
-  public Collection<PlayerID> m_winners = new ArrayList<PlayerID>();
+  public Collection<PlayerID> m_winners = new ArrayList<>();
 }

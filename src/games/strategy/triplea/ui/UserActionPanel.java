@@ -90,7 +90,7 @@ public class UserActionPanel extends ActionPanel {
       final IUserActionDelegate iUserActionsDelegate) {
     m_firstRun = firstRun;
 
-    m_validUserActions = new ArrayList<UserActionAttachment>(iUserActionsDelegate.getValidActions());
+    m_validUserActions = new ArrayList<>(iUserActionsDelegate.getValidActions());
     Collections.sort(m_validUserActions, new UserActionComparator(getCurrentPlayer(), getData()));
     if (m_validUserActions.isEmpty()) {
       // No Valid User actions, do nothing

@@ -42,7 +42,7 @@ public class LocalLauncher extends AbstractLauncher {
       final Messengers messengers = new Messengers(messenger);
       final Set<IGamePlayer> gamePlayers =
           m_gameData.getGameLoader().createPlayers(m_playerListing.getLocalPlayerTypes());
-      game = new ServerGame(m_gameData, gamePlayers, new HashMap<String, INode>(), messengers);
+      game = new ServerGame(m_gameData, gamePlayers, new HashMap<>(), messengers);
       game.setRandomSource(m_randomSource);
       // for debugging, we can use a scripted random source
       if (ScriptedRandomSource.useScriptedRandom()) {

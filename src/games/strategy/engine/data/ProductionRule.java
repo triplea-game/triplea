@@ -8,8 +8,8 @@ import games.strategy.util.IntegerMap;
 
 public class ProductionRule extends DefaultNamed implements Serializable {
   private static final long serialVersionUID = -6598296283127741307L;
-  private IntegerMap<Resource> m_cost = new IntegerMap<Resource>();
-  private IntegerMap<NamedAttachable> m_results = new IntegerMap<NamedAttachable>();
+  private IntegerMap<Resource> m_cost = new IntegerMap<>();
+  private IntegerMap<NamedAttachable> m_results = new IntegerMap<>();
 
   /** Creates new ProductionRule */
   public ProductionRule(final String name, final GameData data) {

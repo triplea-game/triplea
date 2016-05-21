@@ -263,7 +263,7 @@ public class EnginePreferences extends JDialog {
             new NumberProperty("Max seconds to wait for an observer joining a running game",
                 "Max seconds to wait for an observer joining a running game", 9000,
                 GameRunner2.MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME, GameRunner2.getServerObserverJoinWaitTime());
-        final List<IEditableProperty> list = new ArrayList<IEditableProperty>();
+        final List<IEditableProperty> list = new ArrayList<>();
         list.add(clientWait);
         list.add(observerWait);
         final PropertiesUI ui = new PropertiesUI(list, true);
@@ -364,7 +364,7 @@ public class EnginePreferences extends JDialog {
 
     }));
     m_mapCreator.addActionListener(SwingAction.of("Run the Map Creator", e -> {
-        final List<String> commands = new ArrayList<String>();
+        final List<String> commands = new ArrayList<>();
         ProcessRunnerUtil.populateBasicJavaArgs(commands);
         final String javaClass = "util.image.MapCreator";
         commands.add(javaClass);

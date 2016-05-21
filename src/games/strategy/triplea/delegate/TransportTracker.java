@@ -44,7 +44,7 @@ public class TransportTracker {
    * Could be null.
    */
   public static Collection<Unit> transporting(final Unit transport) {
-    return new ArrayList<Unit>(((TripleAUnit) transport).getTransporting());
+    return new ArrayList<>(((TripleAUnit) transport).getTransporting());
   }
 
   /**
@@ -52,7 +52,7 @@ public class TransportTracker {
    * Could be null.
    */
   public static Collection<Unit> transporting(final Unit transport, final Collection<Unit> transportedUnitsPossible) {
-    return new ArrayList<Unit>(((TripleAUnit) transport).getTransporting(transportedUnitsPossible));
+    return new ArrayList<>(((TripleAUnit) transport).getTransporting(transportedUnitsPossible));
   }
 
   public static boolean isTransporting(final Unit transport) {
@@ -70,7 +70,7 @@ public class TransportTracker {
   public static Collection<Unit> transportingAndUnloaded(final Unit transport) {
     Collection<Unit> rVal = transporting(transport);
     if (rVal == null) {
-      rVal = new ArrayList<Unit>();
+      rVal = new ArrayList<>();
     }
     rVal.addAll(unloaded(transport));
     return rVal;
@@ -80,7 +80,7 @@ public class TransportTracker {
    * Returns a map of transport -> collection of transported units.
    */
   public static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units) {
-    final Map<Unit, Collection<Unit>> returnVal = new HashMap<Unit, Collection<Unit>>();
+    final Map<Unit, Collection<Unit>> returnVal = new HashMap<>();
     for (final Unit transported : units) {
       final Unit transport = transportedBy(transported);
       Collection<Unit> transporting = null;
@@ -99,7 +99,7 @@ public class TransportTracker {
    */
   public static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> transports,
       final Collection<Unit> transportedUnits) {
-    final Map<Unit, Collection<Unit>> returnVal = new HashMap<Unit, Collection<Unit>>();
+    final Map<Unit, Collection<Unit>> returnVal = new HashMap<>();
     for (final Unit transported : transportedUnits) {
       final Unit transport = transportedBy(transported);
       Collection<Unit> transporting = null;
@@ -131,7 +131,7 @@ public class TransportTracker {
     if (!transport.getTransporting().contains(unit)) {
       throw new IllegalStateException("Not being carried, unit:" + unit + " transport:" + transport);
     }
-    final ArrayList<Unit> newUnloaded = new ArrayList<Unit>(transport.getUnloaded());
+    final ArrayList<Unit> newUnloaded = new ArrayList<>(transport.getUnloaded());
     newUnloaded.add(unit);
     change.add(ChangeFactory.unitPropertyChange(unit, territory, TripleAUnit.UNLOADED_TO));
     if (!GameStepPropertiesHelper.isNonCombatMove(unit.getData(), true)) {
@@ -161,7 +161,7 @@ public class TransportTracker {
     if (!transport.getTransporting().contains(unit)) {
       throw new IllegalStateException("Not being carried, unit:" + unit + " transport:" + transport);
     }
-    final ArrayList<Unit> newUnloaded = new ArrayList<Unit>(transport.getUnloaded());
+    final ArrayList<Unit> newUnloaded = new ArrayList<>(transport.getUnloaded());
     newUnloaded.add(unit);
     change.add(ChangeFactory.unitPropertyChange(unit, territory, TripleAUnit.UNLOADED_TO));
     if (!GameStepPropertiesHelper.isNonCombatMove(unit.getData(), true)) {
@@ -189,7 +189,7 @@ public class TransportTracker {
     final CompositeChange change = new CompositeChange();
     // clear the loaded by
     change.add(ChangeFactory.unitPropertyChange(unit, transport, TripleAUnit.TRANSPORTED_BY));
-    final Collection<Unit> newCarrying = new ArrayList<Unit>(transport.getTransporting());
+    final Collection<Unit> newCarrying = new ArrayList<>(transport.getTransporting());
     if (newCarrying.contains(unit)) {
       throw new IllegalStateException("Already carrying, transport:" + transport + " unt:" + unit);
     }
@@ -217,7 +217,7 @@ public class TransportTracker {
   }
 
   public static Collection<Unit> getUnitsLoadedOnAlliedTransportsThisTurn(final Collection<Unit> units) {
-    final Collection<Unit> rVal = new ArrayList<Unit>();
+    final Collection<Unit> rVal = new ArrayList<>();
     for (final Unit u : units) {
       // a unit loaded onto an allied transport
       // cannot be unloaded in the same turn, so

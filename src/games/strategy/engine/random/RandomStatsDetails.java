@@ -23,11 +23,11 @@ public class RandomStatsDetails implements Serializable {
   private final Map<PlayerID, IntegerMap<Integer>> m_data;
   private final IntegerMap<Integer> m_totalMap;
   private final DiceStatistic m_totalStats;
-  private final Map<PlayerID, DiceStatistic> m_playerStats = new HashMap<PlayerID, DiceStatistic>();
+  private final Map<PlayerID, DiceStatistic> m_playerStats = new HashMap<>();
 
   public RandomStatsDetails(final Map<PlayerID, IntegerMap<Integer>> randomStats, final int diceSides) {
     m_data = randomStats;
-    m_totalMap = new IntegerMap<Integer>();
+    m_totalMap = new IntegerMap<>();
     for (final Entry<PlayerID, IntegerMap<Integer>> entry : m_data.entrySet()) {
       m_totalMap.add(entry.getValue());
     }
@@ -123,7 +123,7 @@ public class RandomStatsDetails implements Serializable {
       final String title, final String indentation) {
     final StringBuilder sb = new StringBuilder();
     sb.append(indentation + title + "\n");
-    for (final Integer key : new TreeSet<Integer>(diceRolls.keySet())) {
+    for (final Integer key : new TreeSet<>(diceRolls.keySet())) {
       final int value = diceRolls.getInt(key);
       sb.append(indentation + indentation + indentation + key + " was rolled " + value + " times" + "\n");
     }
@@ -169,7 +169,7 @@ public class RandomStatsDetails implements Serializable {
     panel.setBorder(BorderFactory.createEtchedBorder());
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     panel.add(new JLabel("<html><b>" + title + "</b></html>"));
-    for (final Integer key : new TreeSet<Integer>(diceRolls.keySet())) {
+    for (final Integer key : new TreeSet<>(diceRolls.keySet())) {
       final int value = diceRolls.getInt(key);
       final JLabel label = new JLabel(key + " was rolled " + value + " times");
       panel.add(label);

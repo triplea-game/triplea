@@ -42,7 +42,7 @@ public class GameStepPropertiesHelper {
       final String allowedPlayers =
           data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_turnSummaryPlayers);
       if (allowedPlayers != null) {
-        allowedIDs = new HashSet<PlayerID>();
+        allowedIDs = new HashSet<>();
         for (final String p : allowedPlayers.split(":")) {
           final PlayerID id = data.getPlayerList().getPlayerID(p);
           if (id == null) {
@@ -250,7 +250,7 @@ public class GameStepPropertiesHelper {
    *         empty. never null.
    */
   public static Set<PlayerID> getCombinedTurns(final GameData data, final PlayerID player) {
-    final Set<PlayerID> allowedIDs = new HashSet<PlayerID>();
+    final Set<PlayerID> allowedIDs = new HashSet<>();
     data.acquireReadLock();
     try {
       final String allowedPlayers =
@@ -344,7 +344,7 @@ public class GameStepPropertiesHelper {
    *         empty. never null.
    */
   public static Set<PlayerID> getRepairPlayers(final GameData data, final PlayerID player) {
-    final Set<PlayerID> allowedIDs = new HashSet<PlayerID>();
+    final Set<PlayerID> allowedIDs = new HashSet<>();
     data.acquireReadLock();
     try {
       final String allowedPlayers =

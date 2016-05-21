@@ -23,14 +23,14 @@ public class UnitsThatCantFightUtil {
 
   // TODO Used to notify of kamikazi attacks
   public Collection<Territory> getTerritoriesWhereUnitsCantFight(final PlayerID player) {
-    final CompositeMatch<Unit> enemyAttackUnits = new CompositeMatchAnd<Unit>();
+    final CompositeMatch<Unit> enemyAttackUnits = new CompositeMatchAnd<>();
     enemyAttackUnits.add(Matches.enemyUnit(player, m_data));
     enemyAttackUnits.add(Matches.unitCanAttack(player));
-    final Collection<Territory> cantFight = new ArrayList<Territory>();
+    final Collection<Territory> cantFight = new ArrayList<>();
     for (final Territory current : m_data.getMap()) {
       // get all owned non-combat units
-      final CompositeMatch<Unit> ownedUnitsMatch = new CompositeMatchAnd<Unit>();
-      ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.UnitIsInfrastructure));
+      final CompositeMatch<Unit> ownedUnitsMatch = new CompositeMatchAnd<>();
+      ownedUnitsMatch.add(new InverseMatch<>(Matches.UnitIsInfrastructure));
       if (current.isWater()) {
         ownedUnitsMatch.add(Matches.UnitIsLand.invert());
       }
@@ -38,7 +38,7 @@ public class UnitsThatCantFightUtil {
       // All owned units
       final int countAllOwnedUnits = current.getUnits().countMatches(ownedUnitsMatch);
       // only noncombat units
-      ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.unitCanAttack(player)));
+      ownedUnitsMatch.add(new InverseMatch<>(Matches.unitCanAttack(player)));
       final Collection<Unit> nonCombatUnits = current.getUnits().getMatches(ownedUnitsMatch);
       if (nonCombatUnits.isEmpty() || nonCombatUnits.size() != countAllOwnedUnits) {
         continue;

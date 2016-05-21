@@ -41,7 +41,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   // negates m_dominatingFirstRoundAttack
   protected boolean m_negateDominatingFirstRoundAttack = false;
   // automatically produces 1 unit of a certain
-  protected IntegerMap<UnitType> m_productionPerXTerritories = new IntegerMap<UnitType>();
+  protected IntegerMap<UnitType> m_productionPerXTerritories = new IntegerMap<>();
   // type per every X territories owned
   // stops the user from placing units in any territory that already contains more than this
   protected int m_placementPerTerritory = -1;
@@ -162,7 +162,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   }
 
   public void resetProductionPerXTerritories() {
-    m_productionPerXTerritories = new IntegerMap<UnitType>();
+    m_productionPerXTerritories = new IntegerMap<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)

@@ -34,7 +34,7 @@ import games.strategy.triplea.help.HelpSupport;
 public class TripleAWebPoster implements IWebPoster {
   private static final long serialVersionUID = -3013355800798928625L;
   private String m_host = MicroWebPosterEditor.HTTP_BLANK;
-  private Vector<String> m_allHosts = new Vector<String>();
+  private Vector<String> m_allHosts = new Vector<>();
   private String m_siteId = "";
   private boolean m_mailSaveGame = true;
   private String m_gameName = "";
@@ -44,7 +44,7 @@ public class TripleAWebPoster implements IWebPoster {
   private String[] parties;
 
   private static Collection<String> getAlliances(final GameData gameData) {
-    final Collection<String> rVal = new TreeSet<String>();
+    final Collection<String> rVal = new TreeSet<>();
     for (final String alliance : gameData.getAllianceTracker().getAlliances()) {
       if (gameData.getAllianceTracker().getPlayersInAlliance(alliance).size() > 1) {
         rVal.add(alliance);
@@ -76,7 +76,7 @@ public class TripleAWebPoster implements IWebPoster {
   public boolean postTurnSummary(final GameData gameData, final String turnSummary, final String player,
       final int round) {
     try {
-      final List<Part> parts = new ArrayList<Part>();
+      final List<Part> parts = new ArrayList<>();
       parts.add(createStringPart("siteid", m_siteId));
       if (gameData != null) {
         parts.add(createStringPart("production", getProductionData(gameData)));
@@ -192,7 +192,7 @@ public class TripleAWebPoster implements IWebPoster {
     final TripleAWebPoster clone = new TripleAWebPoster();
     clone.setMailSaveGame(getMailSaveGame());
     clone.setHost(getHost());
-    clone.setAllHosts(new Vector<String>(getAllHosts()));
+    clone.setAllHosts(new Vector<>(getAllHosts()));
     clone.setSiteId(getSiteId());
     clone.setGameName(getGameName());
     return clone;

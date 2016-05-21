@@ -48,7 +48,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
   private JButton m_gameOptions;
   private final GameSelectorModel m_model;
   private final IGamePropertiesCache m_gamePropertiesCache = new FileBackedGamePropertiesCache();
-  private final Map<String, Object> m_originalPropertiesMap = new HashMap<String, Object>();
+  private final Map<String, Object> m_originalPropertiesMap = new HashMap<>();
 
   public GameSelectorPanel(final GameSelectorModel model) {
     m_model = model;
@@ -271,7 +271,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
   private void selectGameOptions() {
     // backup current game properties before showing dialog
-    final Map<String, Object> currentPropertiesMap = new HashMap<String, Object>();
+    final Map<String, Object> currentPropertiesMap = new HashMap<>();
     for (final IEditableProperty property : m_model.getGameData().getProperties().getEditableProperties()) {
       currentPropertiesMap.put(property.getName(), property.getValue());
     }

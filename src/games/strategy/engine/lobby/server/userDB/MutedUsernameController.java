@@ -125,7 +125,7 @@ public class MutedUsernameController {
   }
 
   public List<String> getUsernamesThatAreStillMuted(final List<String> usernames) {
-    final List<String> results = new ArrayList<String>();
+    final List<String> results = new ArrayList<>();
     final String sql = "select username, mute_till from muted_usernames where username = ?";
     final Connection con = Database.getConnection();
     try {

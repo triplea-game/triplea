@@ -36,12 +36,12 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
    * @return the collection of available dice rollers
    */
   public static Collection<PropertiesDiceRoller> loadFromFile() {
-    final List<PropertiesDiceRoller> rollers = new ArrayList<PropertiesDiceRoller>();
+    final List<PropertiesDiceRoller> rollers = new ArrayList<>();
     final File f = new File(ClientFileSystemHelper.getRootFolder(), "dice_servers");
     if (!f.exists()) {
       throw new IllegalStateException("No dice server folder:" + f);
     }
-    final java.util.List<Properties> propFiles = new ArrayList<Properties>();
+    final java.util.List<Properties> propFiles = new ArrayList<>();
     final File[] files = f.listFiles();
     for (final File file : files) {
       if (!file.isDirectory() && file.getName().endsWith(".properties")) {

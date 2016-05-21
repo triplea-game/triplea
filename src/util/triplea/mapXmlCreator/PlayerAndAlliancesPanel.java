@@ -20,7 +20,7 @@ import games.strategy.common.swing.SwingAction;
 
 public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
 
-  private final TreeSet<String> alliances = new TreeSet<String>();
+  private final TreeSet<String> alliances = new TreeSet<>();
 
   public PlayerAndAlliancesPanel(final JPanel stepActionPanel) {
     super(stepActionPanel);
@@ -171,7 +171,7 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
           alliances.iterator().next()); // Initial choice
       if (removeAllianceName == null || removeAllianceName.isEmpty())
         return;
-      final ArrayList<String> playerStillUsing = new ArrayList<String>();
+      final ArrayList<String> playerStillUsing = new ArrayList<>();
       for (final DynamicRow row : rows) {
         if (((PlayerAndAlliancesRow) row).isAllianceSelected(removeAllianceName))
           playerStillUsing.add(row.getRowName());

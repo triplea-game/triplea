@@ -42,7 +42,7 @@ public class SmallMapImageManager {
     final Stopwatch stopwatch = new Stopwatch(s_logger, Level.FINEST, "Small map updating took");
     final Graphics onScreenGraphics = m_view.getOffScreenImage().getGraphics();
     onScreenGraphics.drawImage(m_offscreen, 0, 0, null);
-    for (final UnitsDrawer drawer : new ArrayList<UnitsDrawer>(m_tileManager.getUnitDrawables())) {
+    for (final UnitsDrawer drawer : new ArrayList<>(m_tileManager.getUnitDrawables())) {
       final int x = (int) (drawer.getPlacementPoint().x * m_view.getRatioX());
       final int y = (int) (drawer.getPlacementPoint().y * m_view.getRatioY());
       onScreenGraphics.setColor(mapData.getPlayerColor(drawer.getPlayer()).darker());

@@ -20,7 +20,7 @@ public class RouteFinder {
   public RouteFinder(final GameMap map, final Match<Territory> condition) {
     m_map = map;
     m_condition = condition;
-    m_previous = new HashMap<Territory, Territory>();
+    m_previous = new HashMap<>();
   }
 
   public Route findRoute(final Territory start, final Territory end) {
@@ -35,7 +35,7 @@ public class RouteFinder {
   }
 
   private boolean calculate(final Set<Territory> startSet, final Territory end) {
-    final Set<Territory> nextSet = new HashSet<Territory>();
+    final Set<Territory> nextSet = new HashSet<>();
     for (final Territory t : startSet) {
       final Set<Territory> neighbors = m_map.getNeighbors(t, m_condition);
       for (final Territory neighbor : neighbors) {
@@ -55,7 +55,7 @@ public class RouteFinder {
   }
 
   private Route getRoute(final Territory start, final Territory destination) {
-    final List<Territory> route = new ArrayList<Territory>();
+    final List<Territory> route = new ArrayList<>();
     Territory current = destination;
     while (current != start) {
       if (current == null) {

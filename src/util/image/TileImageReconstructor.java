@@ -42,7 +42,7 @@ public class TileImageReconstructor {
       "TileImageReconstructor Log\r\n\r\n", "", "TileImageReconstructor Log", null, 500, 300, true, 1, null);
   private static int sizeX = -1;
   private static int sizeY = -1;
-  private static Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>();
+  private static Map<String, List<Polygon>> m_polygons = new HashMap<>();
 
   public static void main(final String[] args) throws Exception {
     handleCommandLineArgs(args);

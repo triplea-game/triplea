@@ -20,10 +20,10 @@ public class SerializationTest extends TestCase {
     final URL url = this.getClass().getResource("Test.xml");
     // get the source data
     InputStream input = url.openStream();
-    m_dataSource = (new GameParser()).parse(input, new AtomicReference<String>(), false);
+    m_dataSource = (new GameParser()).parse(input, new AtomicReference<>(), false);
     // get the sink data
     input = url.openStream();
-    m_dataSink = (new GameParser()).parse(input, new AtomicReference<String>(), false);
+    m_dataSink = (new GameParser()).parse(input, new AtomicReference<>(), false);
   }
 
   private Object serialize(final Object anObject) throws Exception {

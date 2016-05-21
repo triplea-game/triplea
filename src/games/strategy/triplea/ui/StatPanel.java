@@ -51,7 +51,7 @@ public class StatPanel extends AbstractStatPanel {
   private JTable m_statsTable;
   private JTable m_techTable;
   private Image m_statsImage = null;
-  protected final Map<PlayerID, ImageIcon> m_mapPlayerImage = new HashMap<PlayerID, ImageIcon>();
+  protected final Map<PlayerID, ImageIcon> m_mapPlayerImage = new HashMap<>();
   protected IUIContext m_uiContext;
 
   /** Creates a new instance of InfoPanel */
@@ -183,13 +183,13 @@ public class StatPanel extends AbstractStatPanel {
     public void setStatCollums() {
       m_stats = new IStat[] {new PUStat(), new ProductionStat(), new UnitsStat(), new TUVStat()};
       if (Match.someMatch(m_data.getMap().getTerritories(), Matches.TerritoryIsVictoryCity)) {
-        final List<IStat> stats = new ArrayList<IStat>(Arrays.asList(m_stats));
+        final List<IStat> stats = new ArrayList<>(Arrays.asList(m_stats));
         stats.add(new VictoryCityStat());
         m_stats = stats.toArray(new IStat[stats.size()]);
       }
       // only add the vps in pacific
       if (m_data.getProperties().get(Constants.PACIFIC_THEATER, false)) {
-        final List<IStat> stats = new ArrayList<IStat>(Arrays.asList(m_stats));
+        final List<IStat> stats = new ArrayList<>(Arrays.asList(m_stats));
         stats.add(new VPStat());
         m_stats = stats.toArray(new IStat[stats.size()]);
       }
@@ -308,7 +308,7 @@ public class StatPanel extends AbstractStatPanel {
       m_data.addDataChangeListener(this);
       initColList();
       /* Load the country -> col mapping */
-      colMap = new HashMap<String, Integer>();
+      colMap = new HashMap<>();
       for (int i = 0; i < colList.length; i++) {
         colMap.put(colList[i], Integer.valueOf(i + 1));
       }
@@ -329,7 +329,7 @@ public class StatPanel extends AbstractStatPanel {
         m_data.releaseReadLock();
       }
       /* Load the technology -> row mapping */
-      rowMap = new HashMap<String, Integer>();
+      rowMap = new HashMap<>();
       final Iterator<TechAdvance> iter = TechAdvance.getTechAdvances(m_data, null).iterator();
       int row = 0;
       if (useTech) {
@@ -356,7 +356,7 @@ public class StatPanel extends AbstractStatPanel {
     }
 
     private void initColList() {
-      final java.util.List<PlayerID> players = new ArrayList<PlayerID>(m_data.getPlayerList().getPlayers());
+      final java.util.List<PlayerID> players = new ArrayList<>(m_data.getPlayerList().getPlayers());
       colList = new String[players.size()];
       for (int i = 0; i < players.size(); i++) {
         colList[i] = players.get(i).getName();

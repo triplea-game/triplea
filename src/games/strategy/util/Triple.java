@@ -19,7 +19,7 @@ public class Triple<F, S, T> implements Serializable  {
    *    Triple<String,Integer,String> myTriple = new Triple<String,Integer,String>("abc",123,"xyz");
    */
   public static <F,S,T> Triple<F, S, T> of( F first, S second, T third ) {
-    return new Triple<F, S, T>(first,second,third);
+    return new Triple<>(first, second, third);
   }
 
   private Triple(final F first, final S second, final T third) {

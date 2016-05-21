@@ -82,7 +82,7 @@ public class ModeratorControllerTest extends TestCase {
 
 
 class ConnectionChangeListener implements IConnectionChangeListener {
-  final List<INode> m_removed = new ArrayList<INode>();
+  final List<INode> m_removed = new ArrayList<>();
 
   @Override
   public void connectionAdded(final INode to) {}

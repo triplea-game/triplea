@@ -77,14 +77,14 @@ public class ConnectionFinder {
     if (s_mapFolderLocation == null && polyFile != null) {
       s_mapFolderLocation = polyFile.getParentFile();
     }
-    final Map<String, List<Area>> territoryAreas = new HashMap<String, List<Area>>();
+    final Map<String, List<Area>> territoryAreas = new HashMap<>();
     Map<String, List<Polygon>> mapOfPolygons = null;
     try {
       final FileInputStream in = new FileInputStream(polyFile);
       mapOfPolygons = PointFileReaderWriter.readOneToManyPolygons(in);
       for (final String territoryName : mapOfPolygons.keySet()) {
         final List<Polygon> listOfPolygons = mapOfPolygons.get(territoryName);
-        final List<Area> listOfAreas = new ArrayList<Area>();
+        final List<Area> listOfAreas = new ArrayList<>();
         for (final Polygon p : listOfPolygons) {
           listOfAreas.add(new Area(p));
         }
@@ -123,16 +123,16 @@ public class ConnectionFinder {
       } catch (final NumberFormatException ex) {
       }
     }
-    final Map<String, Collection<String>> connections = new HashMap<String, Collection<String>>();
+    final Map<String, Collection<String>> connections = new HashMap<>();
     System.out.println("Now Scanning for Connections");
     // sort so that they are in alphabetic order (makes xml's prettier and easier to update in future)
     final List<String> allTerritories =
-        mapOfPolygons == null ? new ArrayList<String>() : new ArrayList<String>(mapOfPolygons.keySet());
+        mapOfPolygons == null ? new ArrayList<>() : new ArrayList<>(mapOfPolygons.keySet());
     Collections.sort(allTerritories, new AlphanumComparator());
-    final List<String> allAreas = new ArrayList<String>(territoryAreas.keySet());
+    final List<String> allAreas = new ArrayList<>(territoryAreas.keySet());
     Collections.sort(allAreas, new AlphanumComparator());
     for (final String territory : allTerritories) {
-      final Set<String> thisTerritoryConnections = new LinkedHashSet<String>();
+      final Set<String> thisTerritoryConnections = new LinkedHashSet<>();
       final List<Polygon> currentPolygons = mapOfPolygons.get(territory);
       for (final Polygon currentPolygon : currentPolygons) {
         final Shape scaledShape = scale(currentPolygon, scalePixels);
@@ -231,7 +231,7 @@ public class ConnectionFinder {
     final StringBuffer output = new StringBuffer();
     output.append("<!-- Territory Connections -->\r\n");
     // sort for pretty xml's
-    final List<String> allTerritories = new ArrayList<String>(connections.keySet());
+    final List<String> allTerritories = new ArrayList<>(connections.keySet());
     Collections.sort(allTerritories, new AlphanumComparator());
     for (final String t1 : allTerritories) {
       for (final String t2 : connections.get(t1)) {
@@ -314,7 +314,7 @@ public class ConnectionFinder {
    * @return a Point2D object that represents the center of mass of the given shape
    */
   private static Point2D getCentroid(final Shape currentShape) {
-    final ArrayList<Point2D> pointList = new ArrayList<Point2D>(32);
+    final ArrayList<Point2D> pointList = new ArrayList<>(32);
     final PathIterator pathIterator = currentShape.getPathIterator(null);
     int lastMoveToIndex = -1;
     while (!pathIterator.isDone()) {

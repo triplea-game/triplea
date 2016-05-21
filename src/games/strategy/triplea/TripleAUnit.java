@@ -146,7 +146,7 @@ public class TripleAUnit extends Unit {
     if (unloaded == null || unloaded.isEmpty()) {
       m_unloaded = Collections.emptyList();
     } else {
-      m_unloaded = new ArrayList<Unit>(unloaded);
+      m_unloaded = new ArrayList<>(unloaded);
     }
   }
 
@@ -428,7 +428,7 @@ public class TripleAUnit extends Unit {
 
   public static Unit getBiggestProducer(final Collection<Unit> units, final Territory producer, final PlayerID player,
       final GameData data, final boolean accountForDamage) {
-    final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<Unit>(
+    final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<>(
         Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
     if (producer.isWater()) {
       factoryMatch.add(Matches.UnitIsLand.invert());
@@ -439,7 +439,7 @@ public class TripleAUnit extends Unit {
     if (factories.isEmpty()) {
       return null;
     }
-    final IntegerMap<Unit> productionPotential = new IntegerMap<Unit>();
+    final IntegerMap<Unit> productionPotential = new IntegerMap<>();
     Unit highestUnit = factories.iterator().next();
     int highestCapacity = Integer.MIN_VALUE;
     for (final Unit u : factories) {
@@ -532,7 +532,7 @@ public class TripleAUnit extends Unit {
     // must look for m_hits, m_unitDamage,
     final TripleAUnit taUnit = (TripleAUnit) unitGivingAttributes;
     final int combatDamage = taUnit.getHits();
-    final IntegerMap<Unit> hits = new IntegerMap<Unit>();
+    final IntegerMap<Unit> hits = new IntegerMap<>();
     if (combatDamage > 0) {
       for (final Unit u : unitsThatWillGetAttributes) {
         hits.put(u, combatDamage);
@@ -542,7 +542,7 @@ public class TripleAUnit extends Unit {
       changes.add(ChangeFactory.unitsHit(hits));
     }
     final int unitDamage = taUnit.getUnitDamage();
-    final IntegerMap<Unit> damageMap = new IntegerMap<Unit>();
+    final IntegerMap<Unit> damageMap = new IntegerMap<>();
     if (unitDamage > 0) {
       for (final Unit u : unitsThatWillGetAttributes) {
         final TripleAUnit taNew = (TripleAUnit) u;

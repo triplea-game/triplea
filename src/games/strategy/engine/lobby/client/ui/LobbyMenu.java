@@ -347,7 +347,7 @@ public class LobbyMenu extends JMenuBar {
   }
 
   private long requestTimespanSupplication() {
-    final List<String> timeUnits = new ArrayList<String>();
+    final List<String> timeUnits = new ArrayList<>();
     timeUnits.add("Minute");
     timeUnits.add("Hour");
     timeUnits.add("Day");

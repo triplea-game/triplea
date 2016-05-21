@@ -233,7 +233,7 @@ public class BattleDisplay extends JPanel {
     } finally {
       m_data.releaseReadLock();
     }
-    final Collection<Unit> dependentUnitsReturned = new ArrayList<Unit>();
+    final Collection<Unit> dependentUnitsReturned = new ArrayList<>();
     final Iterator<Collection<Unit>> dependentUnitsCollections = dependentsMap.values().iterator();
     while (dependentUnitsCollections.hasNext()) {
       final Collection<Unit> dependentCollection = dependentUnitsCollections.next();
@@ -526,7 +526,7 @@ public class BattleDisplay extends JPanel {
       imagePanel.add(m_retreatTerritory);
       imagePanel.setBorder(new EmptyBorder(10, 10, 10, 0));
       this.add(imagePanel, BorderLayout.EAST);
-      final Vector<Territory> listElements = new Vector<Territory>(possible);
+      final Vector<Territory> listElements = new Vector<>(possible);
       m_list = new JList<>(listElements);
       m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       if (listElements.size() >= 1) {
@@ -566,7 +566,7 @@ public class BattleDisplay extends JPanel {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("This method should not be run in the event dispatch thread");
     }
-    final AtomicReference<CasualtyDetails> casualtyDetails = new AtomicReference<CasualtyDetails>();
+    final AtomicReference<CasualtyDetails> casualtyDetails = new AtomicReference<>();
     final CountDownLatch continueLatch = new CountDownLatch(1);
     SwingUtilities.invokeLater(new Runnable() {
       @Override
@@ -832,7 +832,7 @@ class BattleModel extends DefaultTableModel {
     m_data = data;
     m_attack = attack;
     // were going to modify the units
-    m_units = new ArrayList<Unit>(units);
+    m_units = new ArrayList<>(units);
     m_location = battleLocation;
     m_battleType = battleType;
     m_territoryEffects = territoryEffects;
@@ -872,9 +872,9 @@ class BattleModel extends DefaultTableModel {
     // Soft code the # of columns
     final List<TableData>[] columns = new List[m_data.getDiceSides() + 1];
     for (int i = 0; i < columns.length; i++) {
-      columns[i] = new ArrayList<TableData>();
+      columns[i] = new ArrayList<>();
     }
-    final List<Unit> units = new ArrayList<Unit>(m_units);
+    final List<Unit> units = new ArrayList<>(m_units);
     DiceRoll.sortByStrength(units, !m_attack);
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap;
     m_data.acquireReadLock();

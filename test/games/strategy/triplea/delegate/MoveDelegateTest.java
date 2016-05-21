@@ -48,7 +48,7 @@ public class MoveDelegateTest extends DelegateTest {
 
   private static Collection<Unit> getUnits(final IntegerMap<UnitType> units, final Territory from) {
     final Iterator<UnitType> iter = units.keySet().iterator();
-    final Collection<Unit> rVal = new ArrayList<Unit>(units.totalValues());
+    final Collection<Unit> rVal = new ArrayList<>(units.totalValues());
     while (iter.hasNext()) {
       final UnitType type = iter.next();
       rVal.addAll(from.getUnits().getUnits(type, units.getInt(type)));
@@ -79,7 +79,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testCantMoveEnemy() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 1);
     final Route route = new Route();
     route.setStart(algeria);
@@ -93,7 +93,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testSimpleMove() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     final Route route = new Route();
     route.setStart(egypt);
@@ -107,7 +107,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testSimpleMoveLength2() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     final Route route = new Route();
     route.setStart(egypt);
@@ -122,7 +122,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testCanReturnToCarrier() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 3);
     final Route route = new Route();
     route.setStart(congoSeaZone);
@@ -133,7 +133,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testLandOnCarrier() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 2);
     final Route route = new Route();
     route.setStart(egypt);
@@ -151,7 +151,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testCantLandWithNoCarrier() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 2);
     final Route route = new Route();
     route.setStart(egypt);
@@ -170,7 +170,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testNotEnoughCarrierCapacity() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 5);
     final Route route = new Route();
     route.setStart(egypt);
@@ -188,7 +188,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testLandMoveToWaterWithNoTransports() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     final Route route = new Route();
     route.setStart(egypt);
@@ -203,7 +203,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testSeaMove() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(carrier, 2);
     final Route route = new Route();
     route.setStart(redSea);
@@ -218,7 +218,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testSeaCantMoveToLand() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(carrier, 2);
     final Route route = new Route();
     route.setStart(redSea);
@@ -233,7 +233,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testLandMoveToWaterWithTransportsFull() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 1);
     map.put(infantry, 2);
     final Route route = new Route();
@@ -249,7 +249,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testAirCanFlyOverWater() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(bomber, 2);
     final Route route = new Route();
     route.setStart(egypt);
@@ -261,7 +261,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testLandMoveToWaterWithTransportsEmpty() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     final Route route = new Route();
     route.setStart(egypt);
@@ -277,7 +277,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testBlitzWithArmour() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     final Route route = new Route();
     route.setStart(egypt);
@@ -294,7 +294,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testCant2StepBlitzWithNonBlitzingUnits() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 1);
     Route route = new Route();
     route.setStart(egypt);
@@ -316,7 +316,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testCantBlitzNuetral() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     final Route route = new Route();
     route.setStart(equatorialAfrica);
@@ -331,7 +331,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testOverrunNeutral() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     final Route route = new Route();
     route.setStart(equatorialAfrica);
@@ -349,7 +349,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testAirCanOverFlyEnemy() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(bomber, 2);
     final Route route = new Route();
     route.setStart(egypt);
@@ -361,14 +361,14 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testOverrunNeutralMustStop() {
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     Route route = new Route();
     route.setStart(equatorialAfrica);
     route.add(westAfrica);
     String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(armour, 2);
     route = new Route();
     route.setStart(westAfrica);
@@ -378,7 +378,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testmultipleMovesExceedingMovementLimit() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 2);
     Route route = new Route();
     route.setStart(eastAfrica);
@@ -402,7 +402,7 @@ public class MoveDelegateTest extends DelegateTest {
 
   public void testMovingUnitsWithMostMovement() {
     // move 2 tanks to equatorial africa
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     Route route = new Route();
     route.setStart(egypt);
@@ -429,14 +429,14 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testTransportsMustStayWithUnits() {
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     Route route = new Route();
     route.setStart(egypt);
     route.add(redSea);
     String results = m_delegate.move(getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
     assertValid(results);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(transport, 2);
     route = new Route();
     route.setStart(redSea);
@@ -446,14 +446,14 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testUnitsStayWithTransports() {
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     Route route = new Route();
     route.setStart(egypt);
     route.add(redSea);
     String results = m_delegate.move(getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
     assertValid(results);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(armour, 2);
     route = new Route();
     route.setStart(redSea);
@@ -463,7 +463,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testUnload() {
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 2);
     final Route route = new Route();
     route.setStart(congoSeaZone);
@@ -534,20 +534,20 @@ public class MoveDelegateTest extends DelegateTest {
     route3.setStart(japanSeaZone);
     route3.add(sfeSeaZone);
     final Collection<Unit> remainingTrns = Match.getMatches(japanSeaZone.getUnits().getUnits(),
-        new CompositeMatchAnd<Unit>(Matches.unitHasNotMoved, Matches.UnitWasNotLoadedThisTurn));
+        new CompositeMatchAnd<>(Matches.unitHasNotMoved, Matches.UnitWasNotLoadedThisTurn));
     results = m_delegate.move(remainingTrns, route3);
     assertNull(results);
   }
 
   public void testUnloadedCantMove() {
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 2);
     Route route = new Route();
     route.setStart(congoSeaZone);
     route.add(equatorialAfrica);
     String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     // only 2 originially, would have to move the 2 we just unloaded
     // as well
     map.put(infantry, 4);
@@ -560,14 +560,14 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   public void testUnloadingTransportsCantMove() {
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 4);
     Route route = new Route();
     route.setStart(congoSeaZone);
     route.add(equatorialAfrica);
     String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(transport, 2);
     route = new Route();
     route.setStart(congoSeaZone);
@@ -582,7 +582,7 @@ public class MoveDelegateTest extends DelegateTest {
     Route route = new Route();
     route.setStart(egypt);
     route.add(redSea);
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 1);
     String results = m_delegate.move(getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
     assertValid(results);
@@ -590,7 +590,7 @@ public class MoveDelegateTest extends DelegateTest {
     route = new Route();
     route.setStart(eastAfrica);
     route.add(redSea);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(infantry, 2);
     results = m_delegate.move(getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
     assertValid(results);
@@ -598,7 +598,7 @@ public class MoveDelegateTest extends DelegateTest {
     route = new Route();
     route.setStart(redSea);
     route.add(indianOcean);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(armour, 1);
     map.put(transport, 1);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
@@ -607,7 +607,7 @@ public class MoveDelegateTest extends DelegateTest {
     route = new Route();
     route.setStart(redSea);
     route.add(westCompass);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(infantry, 2);
     map.put(transport, 1);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
@@ -619,7 +619,7 @@ public class MoveDelegateTest extends DelegateTest {
     Route route = new Route();
     route.setStart(congoSeaZone);
     route.add(angolaSeaZone);
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(transport, 1);
     map.put(infantry, 2);
     String results = m_delegate.move(getUnits(map, route.getStart()), route);
@@ -628,7 +628,7 @@ public class MoveDelegateTest extends DelegateTest {
     route = new Route();
     route.setStart(angolaSeaZone);
     route.add(congoSeaZone);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(transport, 1);
     map.put(infantry, 2);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
@@ -639,7 +639,7 @@ public class MoveDelegateTest extends DelegateTest {
     route = new Route();
     route.setStart(congoSeaZone);
     route.add(angolaSeaZone);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(infantry, 2);
     map.put(transport, 1);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
@@ -656,7 +656,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.setStart(egypt);
     route.add(kenya);
     route.add(southAfrica);
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     final String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertError(results);
@@ -667,7 +667,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.setStart(egypt);
     route.add(kenya);
     route.add(southAfrica);
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 2);
     final String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -678,7 +678,7 @@ public class MoveDelegateTest extends DelegateTest {
     final Route route = new Route();
     route.setStart(equatorialAfrica);
     route.add(westAfrica);
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 1);
     final String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -691,7 +691,7 @@ public class MoveDelegateTest extends DelegateTest {
     Route route = new Route();
     route.setStart(congoSeaZone);
     route.add(southAtlantic);
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 2);
     map.put(transport, 1);
     String results = m_delegate.move(getUnits(map, route.getStart()), route);
@@ -709,7 +709,7 @@ public class MoveDelegateTest extends DelegateTest {
     Route route = new Route();
     route.setStart(equatorialAfrica);
     route.add(westAfrica);
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 1);
     String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -718,7 +718,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.setStart(equatorialAfrica);
     route.add(westAfrica);
     route.add(algeria);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(armour, 1);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertError(results);
@@ -726,7 +726,7 @@ public class MoveDelegateTest extends DelegateTest {
     route = new Route();
     route.setStart(equatorialAfrica);
     route.add(westAfrica);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(armour, 1);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -736,7 +736,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.add(westAfricaSeaZone);
     route.add(westAfrica);
     route.add(equatorialAfrica);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(fighter, 3);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -747,7 +747,7 @@ public class MoveDelegateTest extends DelegateTest {
     Route route = new Route();
     route.setStart(equatorialAfrica);
     route.add(libya);
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 1);
     String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -756,7 +756,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.setStart(equatorialAfrica);
     route.add(libya);
     route.add(algeria);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(armour, 1);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -768,7 +768,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.setStart(egypt);
     route.add(kenya);
     route.add(southAfrica);
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 1);
     String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -777,7 +777,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.setStart(congoSeaZone);
     route.add(westAfricaSea);
     route.add(northAtlantic);
-    Collection<Unit> units = new ArrayList<Unit>();
+    Collection<Unit> units = new ArrayList<>();
     units.addAll(Match.getMatches(m_data.getMap().getTerritory(congoSeaZone.toString()).getUnits().getUnits(),
         Matches.UnitIsCarrier));
     results = m_delegate.move(units, route);
@@ -787,7 +787,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.setStart(redSea);
     route.add(eastMediteranean);
     route.add(blackSea);
-    units = new ArrayList<Unit>();
+    units = new ArrayList<>();
     units.addAll(
         Match.getMatches(m_data.getMap().getTerritory(redSea.toString()).getUnits().getUnits(), Matches.UnitIsCarrier));
     results = m_delegate.move(units, route);
@@ -799,7 +799,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.add(southAtlantic);
     route.add(angolaSeaZone);
     route.add(southAfricaSeaZone);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(fighter, 1);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertError(results);
@@ -810,7 +810,7 @@ public class MoveDelegateTest extends DelegateTest {
     Route route = new Route();
     route.setStart(congoSeaZone);
     route.add(westAfricaSeaZone);
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(transport, 1);
     map.put(infantry, 2);
     String results = m_delegate.move(getUnits(map, route.getStart()), route);
@@ -818,7 +818,7 @@ public class MoveDelegateTest extends DelegateTest {
     route = new Route();
     route.setStart(westAfricaSeaZone);
     route.add(westAfrica);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(infantry, 1);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -829,7 +829,7 @@ public class MoveDelegateTest extends DelegateTest {
     Route route = new Route();
     route.setStart(egypt);
     route.add(libya);
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(bomber, 1);
     String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -837,7 +837,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.setStart(libya);
     route.add(algeria);
     // planes cannot leave a battle zone, but the territory was empty so no battle occurred
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(bomber, 1);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -849,7 +849,7 @@ public class MoveDelegateTest extends DelegateTest {
     final Route route = new Route();
     route.setStart(egypt);
     route.add(libya);
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(bomber, 1);
     final String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -861,7 +861,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.setStart(egypt);
     route.add(libya);
     route.add(algeria);
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(bomber, 6);
     map.put(fighter, 6);
     map.put(armour, 6);
@@ -874,7 +874,7 @@ public class MoveDelegateTest extends DelegateTest {
     Route route = new Route();
     route.setStart(congoSeaZone);
     route.add(southBrazilSeaZone);
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(transport, 2);
     map.put(infantry, 4);
     String results = m_delegate.move(getUnits(map, route.getStart()), route);
@@ -883,7 +883,7 @@ public class MoveDelegateTest extends DelegateTest {
     route = new Route();
     route.setStart(southBrazilSeaZone);
     route.add(brazil);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(infantry, 4);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -903,7 +903,7 @@ public class MoveDelegateTest extends DelegateTest {
     Route route = new Route();
     route.setStart(northSea);
     route.add(balticSeaZone);
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(transport, 1);
     map.put(infantry, 2);
     // Move from the NorthSea to the BalticSea and validate the move
@@ -913,19 +913,19 @@ public class MoveDelegateTest extends DelegateTest {
     route = new Route();
     route.setStart(balticSeaZone);
     route.add(finlandNorway);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(infantry, 2);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
     // Get the attacking sea units that will retreat
-    final List<Unit> retreatingSeaUnits = new ArrayList<Unit>();
+    final List<Unit> retreatingSeaUnits = new ArrayList<>();
     retreatingSeaUnits.addAll(balticSeaZone.getUnits().getMatches(Matches.enemyUnit(germans, m_data)));
     // Get the attacking land units that will retreat and their number
-    final List<Unit> retreatingLandUnits = new ArrayList<Unit>();
+    final List<Unit> retreatingLandUnits = new ArrayList<>();
     retreatingLandUnits.addAll(finlandNorway.getUnits().getMatches(Matches.enemyUnit(germans, m_data)));
     final Integer retreatingLandSizeInt = retreatingLandUnits.size();
     // Get the defending land units that and their number
-    final List<Unit> defendingLandUnits = new ArrayList<Unit>();
+    final List<Unit> defendingLandUnits = new ArrayList<>();
     defendingLandUnits.addAll(finlandNorway.getUnits().getMatches(Matches.enemyUnit(british, m_data)));
     final Integer defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
@@ -964,7 +964,7 @@ public class MoveDelegateTest extends DelegateTest {
     Route route = new Route();
     route.setStart(northSea);
     route.add(balticSeaZone);
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(transport, 1);
     map.put(infantry, 2);
     // Move from the NorthSea to the BalticSea and validate the move
@@ -974,19 +974,19 @@ public class MoveDelegateTest extends DelegateTest {
     route = new Route();
     route.setStart(balticSeaZone);
     route.add(finlandNorway);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(infantry, 2);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
     // Get the attacking sea units that will retreat
-    final List<Unit> retreatingSeaUnits = new ArrayList<Unit>();
+    final List<Unit> retreatingSeaUnits = new ArrayList<>();
     retreatingSeaUnits.addAll(balticSeaZone.getUnits().getMatches(Matches.enemyUnit(germans, m_data)));
     // Get the attacking land units that will retreat and their number
-    final List<Unit> retreatingLandUnits = new ArrayList<Unit>();
+    final List<Unit> retreatingLandUnits = new ArrayList<>();
     retreatingLandUnits.addAll(finlandNorway.getUnits().getMatches(Matches.enemyUnit(germans, m_data)));
     final Integer retreatingLandSizeInt = retreatingLandUnits.size();
     // Get the defending land units that and their number
-    final List<Unit> defendingLandUnits = new ArrayList<Unit>();
+    final List<Unit> defendingLandUnits = new ArrayList<>();
     defendingLandUnits.addAll(finlandNorway.getUnits().getMatches(Matches.enemyUnit(british, m_data)));
     final Integer defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
@@ -1025,7 +1025,7 @@ public class MoveDelegateTest extends DelegateTest {
     Route route = new Route();
     route.setStart(northSea);
     route.add(balticSeaZone);
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(transport, 1);
     map.put(infantry, 2);
     // Move from the NorthSea to the BalticSea and validate the move
@@ -1035,19 +1035,19 @@ public class MoveDelegateTest extends DelegateTest {
     route = new Route();
     route.setStart(balticSeaZone);
     route.add(karelia);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(infantry, 2);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
     // Get the attacking sea units that will retreat
-    final List<Unit> retreatingSeaUnits = new ArrayList<Unit>();
+    final List<Unit> retreatingSeaUnits = new ArrayList<>();
     retreatingSeaUnits.addAll(balticSeaZone.getUnits().getMatches(Matches.enemyUnit(germans, m_data)));
     // Get the attacking land units that will retreat and their number
-    final List<Unit> retreatingLandUnits = new ArrayList<Unit>();
+    final List<Unit> retreatingLandUnits = new ArrayList<>();
     retreatingLandUnits.addAll(karelia.getUnits().getMatches(Matches.isUnitAllied(russians, m_data)));
     final Integer retreatingLandSizeInt = retreatingLandUnits.size();
     // Get the defending land units that and their number
-    final List<Unit> defendingLandUnits = new ArrayList<Unit>();
+    final List<Unit> defendingLandUnits = new ArrayList<>();
     retreatingLandUnits.addAll(karelia.getUnits().getMatches(Matches.isUnitAllied(british, m_data)));
     final Integer defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
@@ -1080,7 +1080,7 @@ public class MoveDelegateTest extends DelegateTest {
     Route route = new Route();
     route.setStart(northSea);
     route.add(balticSeaZone);
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(transport, 1);
     map.put(infantry, 2);
     // Move from the NorthSea to the BalticSea and validate the move
@@ -1090,19 +1090,19 @@ public class MoveDelegateTest extends DelegateTest {
     route = new Route();
     route.setStart(balticSeaZone);
     route.add(karelia);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(infantry, 2);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
     // Get the attacking sea units that will retreat
-    final List<Unit> retreatingSeaUnits = new ArrayList<Unit>();
+    final List<Unit> retreatingSeaUnits = new ArrayList<>();
     retreatingSeaUnits.addAll(balticSeaZone.getUnits().getMatches(Matches.enemyUnit(germans, m_data)));
     // Get the attacking land units that will retreat and their number
-    final List<Unit> retreatingLandUnits = new ArrayList<Unit>();
+    final List<Unit> retreatingLandUnits = new ArrayList<>();
     retreatingLandUnits.addAll(karelia.getUnits().getMatches(Matches.isUnitAllied(russians, m_data)));
     final Integer retreatingLandSizeInt = retreatingLandUnits.size();
     // Get the defending land units that and their number
-    final List<Unit> defendingLandUnits = new ArrayList<Unit>();
+    final List<Unit> defendingLandUnits = new ArrayList<>();
     retreatingLandUnits.addAll(karelia.getUnits().getMatches(Matches.isUnitAllied(british, m_data)));
     final Integer defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
@@ -1133,7 +1133,7 @@ public class MoveDelegateTest extends DelegateTest {
     final Route route = new Route();
     route.setStart(egypt);
     route.add(eastMediteranean);
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 3);
     map.put(bomber, 3);
     final String results = m_delegate.move(getUnits(map, route.getStart()), route);
@@ -1147,7 +1147,7 @@ public class MoveDelegateTest extends DelegateTest {
     final Route route = new Route();
     route.setStart(equatorialAfrica);
     route.add(algeria);
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     final String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertError(results);
@@ -1160,7 +1160,7 @@ public class MoveDelegateTest extends DelegateTest {
     final Route route = new Route();
     route.setStart(equatorialAfrica);
     route.add(westAfrica);
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     final String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertError(results);
@@ -1171,7 +1171,7 @@ public class MoveDelegateTest extends DelegateTest {
     Route route = new Route();
     route.setStart(equatorialAfrica);
     route.add(libya);
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 1);
     String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -1183,7 +1183,7 @@ public class MoveDelegateTest extends DelegateTest {
     route = new Route();
     route.setStart(equatorialAfrica);
     route.add(libya);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(armour, 1);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -1197,7 +1197,7 @@ public class MoveDelegateTest extends DelegateTest {
     final Route route = new Route();
     route.setStart(congo);
     route.add(kenya);
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -1214,7 +1214,7 @@ public class MoveDelegateTest extends DelegateTest {
     Route route = new Route();
     route.setStart(equatorialAfrica);
     route.add(westAfrica);
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 1);
     String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -1240,7 +1240,7 @@ public class MoveDelegateTest extends DelegateTest {
     final Route route = new Route();
     route.setStart(equatorialAfrica);
     route.add(libya);
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 1);
     final String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -1256,7 +1256,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.setStart(egypt);
     route.add(eastMediteranean);
     route.add(blackSea);
-    final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
     final String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -1272,7 +1272,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.add(southAtlantic);
     route.add(antarticSea);
     route.add(angolaSeaZone);
-    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
     String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
@@ -1281,7 +1281,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.add(southAtlantic);
     route.add(antarticSea);
     route.add(angolaSeaZone);
-    map = new IntegerMap<UnitType>();
+    map = new IntegerMap<>();
     map.put(fighter, 1);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);

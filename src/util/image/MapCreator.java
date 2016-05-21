@@ -521,7 +521,7 @@ public class MapCreator extends JFrame {
   }
 
   private static void runUtility(final String javaClass) {
-    final List<String> commands = new ArrayList<String>();
+    final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands, s_memory);
     if (s_mapFolderLocation != null && s_mapFolderLocation.exists()) {
       // no need for quotes, that will just screw up the process builder

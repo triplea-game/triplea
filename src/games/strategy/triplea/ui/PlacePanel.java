@@ -142,7 +142,7 @@ public class PlacePanel extends AbstractMovePanel {
           units = Match.getMatches(units, Matches.UnitIsSea);
         } else {
           final CompositeMatch<Unit> unitIsSeaOrCanLandOnCarrier =
-              new CompositeMatchOr<Unit>(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
+              new CompositeMatchOr<>(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
           units = Match.getMatches(units, unitIsSeaOrCanLandOnCarrier);
         }
       } else {

@@ -31,7 +31,7 @@ public class MessengerLoginTest extends TestCase {
 
       @Override
       public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
-        return new HashMap<String, String>();
+        return new HashMap<>();
       }
     };
     final IConnectionLogin login = new IConnectionLogin() {
@@ -42,7 +42,7 @@ public class MessengerLoginTest extends TestCase {
 
       @Override
       public Map<String, String> getProperties(final Map<String, String> challengProperties) {
-        return new HashMap<String, String>();
+        return new HashMap<>();
       }
     };
     final ServerMessenger server = new ServerMessenger("test", SERVER_PORT);
@@ -69,7 +69,7 @@ public class MessengerLoginTest extends TestCase {
 
       @Override
       public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
-        return new HashMap<String, String>();
+        return new HashMap<>();
       }
     };
     final IConnectionLogin login = new IConnectionLogin() {
@@ -78,7 +78,7 @@ public class MessengerLoginTest extends TestCase {
 
       @Override
       public Map<String, String> getProperties(final Map<String, String> challengProperties) {
-        return new HashMap<String, String>();
+        return new HashMap<>();
       }
     };
     final ServerMessenger server = new ServerMessenger("test", SERVER_PORT);
@@ -116,7 +116,7 @@ public class MessengerLoginTest extends TestCase {
       @Override
       public Map<String, String> getProperties(final Map<String, String> challengProperties) {
         final String salt = challengProperties.get(ClientLoginValidator.SALT_PROPERTY);
-        final HashMap<String, String> rVal = new HashMap<String, String>();
+        final HashMap<String, String> rVal = new HashMap<>();
         rVal.put(ClientLogin.PASSWORD_PROPERTY, MD5Crypt.crypt("foo", salt));
         rVal.put(ClientLogin.ENGINE_VERSION_PROPERTY, ClientContext.engineVersion().toString());
         return rVal;

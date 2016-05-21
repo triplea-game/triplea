@@ -11,7 +11,7 @@ import games.strategy.net.Messengers;
 
 public class StatusController implements IStatusController {
   private final Object m_mutex = new Object();
-  private final Map<INode, String> m_status = new HashMap<INode, String>();
+  private final Map<INode, String> m_status = new HashMap<>();
   private final Messengers m_messengers;
 
   public StatusController(final Messengers messengers) {
@@ -39,7 +39,7 @@ public class StatusController implements IStatusController {
   @Override
   public Map<INode, String> getAllStatus() {
     synchronized (m_mutex) {
-      return new HashMap<INode, String>(m_status);
+      return new HashMap<>(m_status);
     }
   }
 

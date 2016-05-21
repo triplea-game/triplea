@@ -9,7 +9,7 @@ import games.strategy.util.IntegerMap;
 
 public class RandomStats implements IRandomStats {
   private final IRemoteMessenger m_remoteMessenger;
-  private final Map<PlayerID, IntegerMap<Integer>> m_randomStats = new HashMap<PlayerID, IntegerMap<Integer>>();
+  private final Map<PlayerID, IntegerMap<Integer>> m_randomStats = new HashMap<>();
 
   public RandomStats(final IRemoteMessenger remoteMessenger) {
     m_remoteMessenger = remoteMessenger;
@@ -23,7 +23,7 @@ public class RandomStats implements IRandomStats {
   public synchronized void addRandom(final int[] random, final PlayerID player, final DiceType diceType) {
     IntegerMap<Integer> map = m_randomStats.get(player);
     if (map == null) {
-      map = new IntegerMap<Integer>();
+      map = new IntegerMap<>();
     }
     for (final int element : random) {
       map.add(Integer.valueOf(element + 1), 1);
@@ -35,7 +35,7 @@ public class RandomStats implements IRandomStats {
   public synchronized void addRandom(final int random, final PlayerID player, final DiceType diceType) {
     IntegerMap<Integer> map = m_randomStats.get(player);
     if (map == null) {
-      map = new IntegerMap<Integer>();
+      map = new IntegerMap<>();
     }
     map.add(Integer.valueOf(random + 1), 1);
     m_randomStats.put((diceType == DiceType.COMBAT ? player : null), map);

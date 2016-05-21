@@ -44,20 +44,20 @@ public class PlayerListing implements Serializable {
       final String gameRound, final Collection<String> playersAllowedToBeDisabled,
       final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrderLinkedHashMap) {
     m_playerToNodeListing =
-        playerToNodeListing == null ? new HashMap<String, String>() : new HashMap<String, String>(playerToNodeListing);
-    m_playersEnabledListing = playersEnabledListing == null ? new HashMap<String, Boolean>()
-        : new HashMap<String, Boolean>(playersEnabledListing);
+        playerToNodeListing == null ? new HashMap<>() : new HashMap<>(playerToNodeListing);
+    m_playersEnabledListing = playersEnabledListing == null ? new HashMap<>()
+        : new HashMap<>(playersEnabledListing);
     m_localPlayerTypes =
-        localPlayerTypes == null ? new HashMap<String, String>() : new HashMap<String, String>(localPlayerTypes);
+        localPlayerTypes == null ? new HashMap<>() : new HashMap<>(localPlayerTypes);
     m_playersAllowedToBeDisabled =
-        playersAllowedToBeDisabled == null ? new HashSet<String>() : new HashSet<String>(playersAllowedToBeDisabled);
+        playersAllowedToBeDisabled == null ? new HashSet<>() : new HashSet<>(playersAllowedToBeDisabled);
     m_gameVersion = gameVersion;
     m_gameName = gameName;
     m_gameRound = gameRound;
-    m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<String, Collection<String>>();
+    m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
     if (playerNamesAndAlliancesInTurnOrderLinkedHashMap != null) {
       for (final Entry<String, Collection<String>> entry : playerNamesAndAlliancesInTurnOrderLinkedHashMap.entrySet()) {
-        m_playerNamesAndAlliancesInTurnOrder.put(entry.getKey(), new HashSet<String>(entry.getValue()));
+        m_playerNamesAndAlliancesInTurnOrder.put(entry.getKey(), new HashSet<>(entry.getValue()));
       }
     }
   }

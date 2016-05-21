@@ -24,7 +24,7 @@ public class Utils {
    * All the territories that border one of our territories
    */
   public static List<Territory> getNeighboringEnemyLandTerritories(final GameData data, final PlayerID player) {
-    final ArrayList<Territory> rVal = new ArrayList<Territory>();
+    final ArrayList<Territory> rVal = new ArrayList<>();
     for (final Territory t : data.getMap()) {
       if (Matches.isTerritoryEnemy(player, data).match(t) && !t.getOwner().isNull()) {
         if (!data.getMap().getNeighbors(t, Matches.isTerritoryOwnedBy(player)).isEmpty()) {
@@ -38,9 +38,9 @@ public class Utils {
   public static List<Unit> getUnitsUpToStrength(final double maxStrength, final Collection<Unit> units,
       final boolean attacking, final boolean sea) {
     if (AIUtils.strength(units, attacking, sea) < maxStrength) {
-      return new ArrayList<Unit>(units);
+      return new ArrayList<>(units);
     }
-    final ArrayList<Unit> rVal = new ArrayList<Unit>();
+    final ArrayList<Unit> rVal = new ArrayList<>();
     for (final Unit u : units) {
       rVal.add(u);
       if (AIUtils.strength(rVal, attacking, sea) > maxStrength) {
@@ -66,7 +66,7 @@ public class Utils {
     for (final Territory t : data.getMap().getTerritories()) {
       if (endCondition.match(t)) {
         final CompositeMatchOr<Territory> routeOrEnd =
-            new CompositeMatchOr<Territory>(routeCondition, Matches.territoryIs(t));
+            new CompositeMatchOr<>(routeCondition, Matches.territoryIs(t));
         final Route r = data.getMap().getRoute(start, t, routeOrEnd);
         if (r != null) {
           if (shortestRoute == null || r.getLength() < shortestRoute.getLength()) {
@@ -91,7 +91,7 @@ public class Utils {
 
   // returns all territories that are water territories (veqryn)
   public static List<Territory> onlyWaterTerr(final GameData data, final List<Territory> allTerr) {
-    final List<Territory> water = new ArrayList<Territory>(allTerr);
+    final List<Territory> water = new ArrayList<>(allTerr);
     final Iterator<Territory> wFIter = water.iterator();
     while (wFIter.hasNext()) {
       final Territory waterFact = wFIter.next();
@@ -109,8 +109,8 @@ public class Utils {
   public static List<Territory> findUnitTerr(final GameData data, final PlayerID player,
       final Match<Unit> unitCondition) {
     // Return territories containing a certain unit or set of Units
-    final CompositeMatch<Unit> limitShips = new CompositeMatchAnd<Unit>(unitCondition);
-    final List<Territory> shipTerr = new ArrayList<Territory>();
+    final CompositeMatch<Unit> limitShips = new CompositeMatchAnd<>(unitCondition);
+    final List<Territory> shipTerr = new ArrayList<>();
     final Collection<Territory> tNeighbors = data.getMap().getTerritories();
     for (final Territory t2 : tNeighbors) {
       if (t2.getUnits().someMatch(limitShips)) {

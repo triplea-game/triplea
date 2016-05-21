@@ -65,12 +65,12 @@ public class ProductionTabsProperties {
     if (m_ruleLists != null) {
       return m_ruleLists;
     }
-    m_ruleLists = new ArrayList<Tuple<String, List<Rule>>>();
+    m_ruleLists = new ArrayList<>();
     final int iTabs = getNumberOfTabs();
     for (int i = 1; i <= iTabs; i++) {
       final String tabName = m_properties.getProperty(TAB_NAME + "." + i);
       final List<String> tabValues = Arrays.asList(m_properties.getProperty(TAB_UNITS + "." + i).split(":"));
-      final List<Rule> ruleList = new ArrayList<Rule>();
+      final List<Rule> ruleList = new ArrayList<>();
       for (final Rule rule : m_rules) {
         if (tabValues.contains(rule.getProductionRule().getResults().keySet().iterator().next().getName())) {
           ruleList.add(rule);

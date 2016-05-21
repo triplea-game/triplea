@@ -43,14 +43,14 @@ import games.strategy.util.Tuple;
 public class TileManager {
   private static final Logger s_logger = Logger.getLogger(TileManager.class.getName());
   public final static int TILE_SIZE = 256;
-  private List<Tile> m_tiles = new ArrayList<Tile>();
+  private List<Tile> m_tiles = new ArrayList<>();
   private final Lock m_lock = new ReentrantLock();
-  private final Map<String, IDrawable> m_territoryOverlays = new HashMap<String, IDrawable>();
+  private final Map<String, IDrawable> m_territoryOverlays = new HashMap<>();
   // maps territoryname - collection of drawables
-  private final Map<String, Set<IDrawable>> m_territoryDrawables = new HashMap<String, Set<IDrawable>>();
+  private final Map<String, Set<IDrawable>> m_territoryDrawables = new HashMap<>();
   // maps territoryname - collection of tiles where the territory is drawn
-  private final Map<String, Set<Tile>> m_territoryTiles = new HashMap<String, Set<Tile>>();
-  private final Collection<UnitsDrawer> m_allUnitDrawables = new ArrayList<UnitsDrawer>();
+  private final Map<String, Set<Tile>> m_territoryTiles = new HashMap<>();
+  private final Collection<UnitsDrawer> m_allUnitDrawables = new ArrayList<>();
   private final IUIContext m_uiContext;
 
   public TileManager(final IUIContext uiContext) {
@@ -96,7 +96,7 @@ public class TileManager {
     }
     Tile.S_TILE_LOCKUTIL.acquireLock(m_lock);
     try {
-      final List<Tile> rVal = new ArrayList<Tile>();
+      final List<Tile> rVal = new ArrayList<>();
       for (final Tile tile : m_tiles) {
         final Rectangle tileBounds = tile.getBounds();
         if (bounds.contains(tileBounds) || tileBounds.intersects(bounds)) {
@@ -128,7 +128,7 @@ public class TileManager {
   public Collection<UnitsDrawer> getUnitDrawables() {
     Tile.S_TILE_LOCKUTIL.acquireLock(m_lock);
     try {
-      return new ArrayList<UnitsDrawer>(m_allUnitDrawables);
+      return new ArrayList<>(m_allUnitDrawables);
     } finally {
       Tile.S_TILE_LOCKUTIL.releaseLock(m_lock);
     }
@@ -138,7 +138,7 @@ public class TileManager {
     Tile.S_TILE_LOCKUTIL.acquireLock(m_lock);
     try {
       // create our tiles
-      m_tiles = new ArrayList<Tile>();
+      m_tiles = new ArrayList<>();
       for (int x = 0; (x) * TILE_SIZE < bounds.width; x++) {
         for (int y = 0; (y) * TILE_SIZE < bounds.height; y++) {
           m_tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), x, y,
@@ -243,8 +243,8 @@ public class TileManager {
   }
 
   private void drawTerritory(final Territory territory, final GameData data, final MapData mapData) {
-    final Set<Tile> drawnOn = new HashSet<Tile>();
-    final Set<IDrawable> drawing = new HashSet<IDrawable>();
+    final Set<Tile> drawnOn = new HashSet<>();
+    final Set<IDrawable> drawing = new HashSet<>();
     if (m_territoryOverlays.get(territory.getName()) != null) {
       drawing.add(m_territoryOverlays.get(territory.getName()));
     }
@@ -481,7 +481,7 @@ public class TileManager {
 
   private void drawForCreate(final Territory selected, final GameData data, final MapData mapData,
       final Rectangle bounds, final Graphics2D graphics, final boolean drawOutline) {
-    final Set<IDrawable> drawablesSet = new HashSet<IDrawable>();
+    final Set<IDrawable> drawablesSet = new HashSet<>();
     final List<Tile> intersectingTiles = getTiles(bounds);
     for (final Tile tile : intersectingTiles) {
       drawablesSet.addAll(tile.getDrawables());
@@ -490,7 +490,7 @@ public class TileManager {
     // but we want to draw them unscaled here
     // so unscale them
     if (m_uiContext.getScale() != 1) {
-      final List<IDrawable> toAdd = new ArrayList<IDrawable>();
+      final List<IDrawable> toAdd = new ArrayList<>();
       final Iterator<IDrawable> iter = drawablesSet.iterator();
       while (iter.hasNext()) {
         final IDrawable drawable = iter.next();
@@ -501,7 +501,7 @@ public class TileManager {
       }
       drawablesSet.addAll(toAdd);
     }
-    final List<IDrawable> orderedDrawables = new ArrayList<IDrawable>(drawablesSet);
+    final List<IDrawable> orderedDrawables = new ArrayList<>(drawablesSet);
     Collections.sort(orderedDrawables, new DrawableComparator());
     for (final IDrawable drawer : orderedDrawables) {
       if (drawer.getLevel() >= IDrawable.UNITS_LEVEL) {

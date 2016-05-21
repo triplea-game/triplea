@@ -116,7 +116,7 @@ public class GameSelectorModel extends Observable {
     }
     final GameDataManager manager = new GameDataManager();
     GameData newData;
-    final AtomicReference<String> gameName = new AtomicReference<String>();
+    final AtomicReference<String> gameName = new AtomicReference<>();
     try {
       // if the file name is xml, load it as a new game
       if (file.getName().toLowerCase().endsWith("xml")) {
