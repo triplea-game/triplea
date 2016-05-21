@@ -35,15 +35,13 @@ import games.strategy.engine.framework.startup.ui.MainFrame;
 
 public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   private static final long serialVersionUID = -2044689419834812524L;
-  private final ClearGameChooserCacheMessenger clearCacheMessenger;
 
   private enum ZipProcessingResult {
     SUCCESS, ERROR
   }
 
 
-  public NewGameChooserModel(ClearGameChooserCacheMessenger clearCacheMessenger) {
-    this.clearCacheMessenger = clearCacheMessenger;
+  public NewGameChooserModel() {
     populate();
   }
 
@@ -88,9 +86,6 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   private Set<NewGameChooserEntry> parseMapFiles() {
     final Set<NewGameChooserEntry> parsedMapSet = Sets.newHashSet();
     for (final File map : allMapFiles()) {
-      if (clearCacheMessenger.isCancelled()) {
-        return ImmutableSet.of();
-      }
       if (map.isDirectory()) {
         parsedMapSet.addAll(populateFromDirectory(map));
       } else if (map.isFile() && map.getName().toLowerCase().endsWith(".zip")) {
