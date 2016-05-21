@@ -14,7 +14,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
   private int m_currentIndex;
   private int m_round = 1;
   private int m_roundOffset = 0;
-  private transient Object m_currentStepMutex = new Object();
+  private transient final Object currentStepMutex = new Object();
 
   public GameSequence(final GameData data) {
     super(data);
@@ -101,7 +101,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
    * @return boolean wether the round has changed
    */
   public boolean next() {
-    synchronized (m_currentStepMutex) {
+    synchronized (currentStepMutex) {
       m_currentIndex++;
       if (m_currentIndex >= m_steps.size()) {
         m_currentIndex = 0;
@@ -118,7 +118,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
    * Does not change any data or fields.
    */
   public boolean testWeAreOnLastStep() {
-    synchronized (m_currentStepMutex) {
+    synchronized (currentStepMutex) {
       if (m_currentIndex + 1 >= m_steps.size()) {
         return true;
       }
@@ -127,7 +127,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
   }
 
   public GameStep getStep() {
-    synchronized (m_currentStepMutex) {
+    synchronized (currentStepMutex) {
       // since we can now delete game steps mid game, it is a good idea to test if our index is out of range
       if (m_currentIndex < 0) {
         m_currentIndex = 0;
@@ -158,8 +158,8 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
   /** make sure transient lock object is initialized on deserialization. */
   private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
     in.defaultReadObject();
-    if (m_currentStepMutex == null) {
-      m_currentStepMutex = new Object();
+    if (currentStepMutex == null) {
+      currentStepMutex = new Object();
     }
   }
 }
