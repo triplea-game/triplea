@@ -78,7 +78,7 @@ public class ClientModel implements IMessengerErrorListener {
   private IChatPanel m_chatPanel;
   private ClientGame m_game;
   private boolean m_hostIsHeadlessBot = false;
-  private final WaitWindow m_gameLoadingWindow = new WaitWindow("Loading game, please wait.");
+  private final WaitWindow m_gameLoadingWindow = new WaitWindow();
   // we set the game data to be null, since we
   // are a client game, and the game data lives on the server
   // however, if we cancel, we want to restore the old game data.

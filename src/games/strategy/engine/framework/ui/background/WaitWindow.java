@@ -15,9 +15,9 @@ public class WaitWindow extends JWindow {
   private Timer m_timer = new Timer();
   private boolean m_finished = false;
 
-  public WaitWindow(final String waitMessage) {
+  public WaitWindow() {
     setSize(200, 80);
-    final WaitPanel mainPanel = new WaitPanel(waitMessage);
+    final WaitPanel mainPanel = new WaitPanel("Loading game, please wait.");
     setLocationRelativeTo(null);
     mainPanel.setBorder(new LineBorder(Color.BLACK));
     setLayout(new BorderLayout());

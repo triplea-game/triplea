@@ -28,7 +28,7 @@ abstract public class AbstractLauncher implements ILauncher {
     if (m_headless) {
       m_gameLoadingWindow = null;
     } else {
-      m_gameLoadingWindow = new WaitWindow("Loading game, please wait.");
+      m_gameLoadingWindow = new WaitWindow();
     }
     m_gameSelectorModel = gameSelectorModel;
     m_gameData = gameSelectorModel.getGameData();
