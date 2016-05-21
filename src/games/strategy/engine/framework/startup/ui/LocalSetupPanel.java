@@ -216,7 +216,7 @@ class LocalPlayerComboBoxSelector {
     } else {
       m_playerAlliances = playerAlliances.toString();
     }
-    m_alliances = new JLabel(m_playerAlliances.toString());
+    m_alliances = new JLabel(m_playerAlliances);
     setWidgetActivation();
   }
 

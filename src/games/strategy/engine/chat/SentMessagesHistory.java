@@ -21,7 +21,7 @@ class SentMessagesHistory {
     if (m_HistoryPosition == m_history.size()) {
       return "";
     }
-    return m_history.get(m_HistoryPosition).toString();
+    return m_history.get(m_HistoryPosition);
   }
 
   public void append(final String s) {

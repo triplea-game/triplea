@@ -1087,7 +1087,7 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
         return;
       }
       try (final FileWriter writer = new FileWriter(chooser.getSelectedFile())) {
-        writer.write(getUnitStatsTable().toString().replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
+        writer.write(getUnitStatsTable().replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
             .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHTML.PATTERN_HTML_IMG_TAG, ""));
       } catch (final IOException e1) {
         ClientLogger.logQuietly(e1);
