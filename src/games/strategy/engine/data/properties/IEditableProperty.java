@@ -22,20 +22,20 @@ public interface IEditableProperty {
    *
    * @return the name
    */
-  public String getName();
+  String getName();
 
   /**
    * Get the value of the property
    *
    * @return the value
    */
-  public Object getValue();
+  Object getValue();
 
   /**
    * @param value
    * @return is the object a valide object for setting as our value
    */
-  public boolean validate(Object value);
+  boolean validate(Object value);
 
   /**
    * Set the value of the property (programmatically), GUI would normally use the editor
@@ -45,22 +45,22 @@ public interface IEditableProperty {
    * @throws ClassCastException
    *         if the type of value is wrong
    */
-  public void setValue(Object value) throws ClassCastException;
+  void setValue(Object value) throws ClassCastException;
 
   /**
    * @return component used to edit this property
    */
-  public JComponent getEditorComponent();
+  JComponent getEditorComponent();
 
   /**
    * Get the view (read only) component for this property
    */
-  public JComponent getViewComponent();
+  JComponent getViewComponent();
 
   /**
    * Description of what this property is, can be used for tooltip.
    */
-  public String getDescription();
+  String getDescription();
 
-  public int getRowsNeeded();
+  int getRowsNeeded();
 }

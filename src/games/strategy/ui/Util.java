@@ -35,8 +35,8 @@ public final class Util {
   // all we have is static methods
   private Util() {}
 
-  public static interface Task<T> {
-    public T run();
+  public interface Task<T> {
+    T run();
   }
 
   public static <T> T runInSwingEventThread(final Task<T> task) {

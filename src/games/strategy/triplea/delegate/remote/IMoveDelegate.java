@@ -21,7 +21,7 @@ public interface IMoveDelegate extends IAbstractMoveDelegate, IAbstractForumPost
    *        - transports that can be loaded while moving, must be non null
    * @return an error message if the move can't be made, null otherwise
    */
-  public String move(Collection<Unit> units, Route route, Collection<Unit> m_transportsThatCanBeLoaded);
+  String move(Collection<Unit> units, Route route, Collection<Unit> m_transportsThatCanBeLoaded);
 
   /**
    * @param units
@@ -34,7 +34,7 @@ public interface IMoveDelegate extends IAbstractMoveDelegate, IAbstractForumPost
    *        - units that will be made into new dependents if this move is successful, must be non null
    * @return an error message if the move can't be made, null otherwise
    */
-  public String move(Collection<Unit> units, Route route, Collection<Unit> m_transportsThatCanBeLoaded,
+  String move(Collection<Unit> units, Route route, Collection<Unit> m_transportsThatCanBeLoaded,
       Map<Unit, Collection<Unit>> newDependents);
 
   /**
@@ -46,7 +46,7 @@ public interface IMoveDelegate extends IAbstractMoveDelegate, IAbstractForumPost
    *        - the route to move along
    * @return an error message if the move cant be made, null otherwise
    */
-  public String move(Collection<Unit> units, Route route);
+  String move(Collection<Unit> units, Route route);
 
   /**
    * Get what air units must move before the end of the players turn
@@ -55,14 +55,14 @@ public interface IMoveDelegate extends IAbstractMoveDelegate, IAbstractForumPost
    *        referring player ID
    * @return a list of territories with air units that must move of player ID
    */
-  public Collection<Territory> getTerritoriesWhereAirCantLand(PlayerID player);
+  Collection<Territory> getTerritoriesWhereAirCantLand(PlayerID player);
 
-  public Collection<Territory> getTerritoriesWhereAirCantLand();
+  Collection<Territory> getTerritoriesWhereAirCantLand();
 
   /**
    * Get what units must have combat ability
    *
    * @return a list of Territories with units that can't fight
    */
-  public Collection<Territory> getTerritoriesWhereUnitsCantFight();
+  Collection<Territory> getTerritoriesWhereUnitsCantFight();
 }

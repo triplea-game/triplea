@@ -9,5 +9,5 @@ public interface IGameStepAdvancer extends IRemote {
    * starts a certain step.
    * The method should not return until the player has finished the step.
    */
-  public void startPlayerStep(String stepName, PlayerID player);
+  void startPlayerStep(String stepName, PlayerID player);
 }

@@ -14,24 +14,24 @@ public interface NIOSocketListener {
    * Messages on this channel will not be read until after this method returns, allowing for setup of the
    * channel.
    */
-  public void socketUnqaurantined(SocketChannel channel, QuarantineConversation conversation);
+  void socketUnqaurantined(SocketChannel channel, QuarantineConversation conversation);
 
   /**
    * An error occured on the channel and it was shut down.
    */
-  public void socketError(SocketChannel channel, Exception error);
+  void socketError(SocketChannel channel, Exception error);
 
-  public void messageReceived(MessageHeader message, SocketChannel channel);
+  void messageReceived(MessageHeader message, SocketChannel channel);
 
   /**
    * Get the remote node id for this channel, or null if the remote node id is not yet known.
    * The node may be unknown if the channel is still quarantined
    */
-  public INode getRemoteNode(SocketChannel channel);
+  INode getRemoteNode(SocketChannel channel);
 
   /**
    * Get the node id for the local machine, or null if the remote node is not yet known.
    * The node must be known by the time we have an unquarantined channel.
    */
-  public INode getLocalNode();
+  INode getLocalNode();
 }

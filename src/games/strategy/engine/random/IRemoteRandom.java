@@ -11,10 +11,10 @@ public interface IRemoteRandom extends IRemote {
    *        - the vaultID where the server has stored his numbers
    * @return the vault id for which we have locked the data
    */
-  public int[] generate(int max, int count, String annotation, VaultID serverVaultID);
+  int[] generate(int max, int count, String annotation, VaultID serverVaultID);
 
   /**
    * unlock the random number last generated.
    */
-  public void verifyNumbers();
+  void verifyNumbers();
 }

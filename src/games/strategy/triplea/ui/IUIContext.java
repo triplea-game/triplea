@@ -17,97 +17,97 @@ import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.util.CountDownLatchHandler;
 
 public interface IUIContext {
-  public Cursor getCursor();
+  Cursor getCursor();
 
-  public double getScale();
+  double getScale();
 
-  public void setScale(double scale);
+  void setScale(double scale);
 
-  public void setDefaultMapDir(GameData data);
+  void setDefaultMapDir(GameData data);
 
-  public void setMapDir(GameData data, String mapDir);
+  void setMapDir(GameData data, String mapDir);
 
-  public MapData getMapData();
+  MapData getMapData();
 
-  public TileImageFactory getTileImageFactory();
+  TileImageFactory getTileImageFactory();
 
-  public UnitImageFactory getUnitImageFactory();
+  UnitImageFactory getUnitImageFactory();
 
-  public ResourceImageFactory getResourceImageFactory();
+  ResourceImageFactory getResourceImageFactory();
 
-  public MapImage getMapImage();
+  MapImage getMapImage();
 
-  public FlagIconImageFactory getFlagImageFactory();
+  FlagIconImageFactory getFlagImageFactory();
 
-  public PUImageFactory getPUImageFactory();
+  PUImageFactory getPUImageFactory();
 
-  public DiceImageFactory getDiceImageFactory();
+  DiceImageFactory getDiceImageFactory();
 
-  public void removeActive(Active actor);
+  void removeActive(Active actor);
 
-  public void addActive(Active actor);
+  void addActive(Active actor);
 
-  public void addShutdownLatch(CountDownLatch latch);
+  void addShutdownLatch(CountDownLatch latch);
 
-  public void removeShutdownLatch(CountDownLatch latch);
+  void removeShutdownLatch(CountDownLatch latch);
 
-  public CountDownLatchHandler getCountDownLatchHandler();
+  CountDownLatchHandler getCountDownLatchHandler();
 
-  public void addShutdownWindow(Window window);
+  void addShutdownWindow(Window window);
 
-  public void removeShutdownWindow(Window window);
+  void removeShutdownWindow(Window window);
 
-  public boolean isShutDown();
+  boolean isShutDown();
 
-  public void shutDown();
+  void shutDown();
 
-  public boolean getShowUnits();
+  boolean getShowUnits();
 
-  public void setShowUnits(boolean aBool);
+  void setShowUnits(boolean aBool);
 
-  public OptionalExtraBorderLevel getDrawTerritoryBordersAgain();
+  OptionalExtraBorderLevel getDrawTerritoryBordersAgain();
 
-  public void setDrawTerritoryBordersAgain(OptionalExtraBorderLevel level);
+  void setDrawTerritoryBordersAgain(OptionalExtraBorderLevel level);
 
-  public void resetDrawTerritoryBordersAgain();
+  void resetDrawTerritoryBordersAgain();
 
-  public void setDrawTerritoryBordersAgainToMedium();
+  void setDrawTerritoryBordersAgainToMedium();
 
-  public void setShowTerritoryEffects(boolean aBool);
+  void setShowTerritoryEffects(boolean aBool);
 
-  public boolean getShowTerritoryEffects();
+  boolean getShowTerritoryEffects();
 
-  public boolean getShowMapOnly();
+  boolean getShowMapOnly();
 
-  public void setShowMapOnly(boolean aBool);
+  void setShowMapOnly(boolean aBool);
 
-  public boolean getLockMap();
+  boolean getLockMap();
 
-  public void setLockMap(boolean aBool);
+  void setLockMap(boolean aBool);
 
-  public boolean getShowEndOfTurnReport();
+  boolean getShowEndOfTurnReport();
 
-  public void setShowEndOfTurnReport(boolean value);
+  void setShowEndOfTurnReport(boolean value);
 
-  public boolean getShowTriggeredNotifications();
+  boolean getShowTriggeredNotifications();
 
-  public void setShowTriggeredNotifications(boolean value);
+  void setShowTriggeredNotifications(boolean value);
 
-  public boolean getShowTriggerChanceSuccessful();
+  boolean getShowTriggerChanceSuccessful();
 
-  public void setShowTriggerChanceSuccessful(boolean value);
+  void setShowTriggerChanceSuccessful(boolean value);
 
-  public boolean getShowTriggerChanceFailure();
+  boolean getShowTriggerChanceFailure();
 
-  public void setShowTriggerChanceFailure(boolean value);
+  void setShowTriggerChanceFailure(boolean value);
 
-  public boolean getShowBattlesBetweenAIs();
+  boolean getShowBattlesBetweenAIs();
 
-  public void setShowBattlesBetweenAIs(boolean aBool);
+  void setShowBattlesBetweenAIs(boolean aBool);
 
-  public LocalPlayers getLocalPlayers();
+  LocalPlayers getLocalPlayers();
 
-  public void setLocalPlayers(LocalPlayers players);
+  void setLocalPlayers(LocalPlayers players);
 
-  public void setUnitScaleFactor(double scaleFactor);
+  void setUnitScaleFactor(double scaleFactor);
 }

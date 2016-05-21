@@ -25,19 +25,19 @@ public interface IDelegateBridge {
    *
    * @return remote for the current player.
    */
-  public IRemotePlayer getRemotePlayer();
+  IRemotePlayer getRemotePlayer();
 
   /**
    * Get a remote reference to the given player.
    */
-  public IRemotePlayer getRemotePlayer(PlayerID id);
+  IRemotePlayer getRemotePlayer(PlayerID id);
 
-  public PlayerID getPlayerID();
+  PlayerID getPlayerID();
 
   /**
    * Returns the current step name
    */
-  public String getStepName();
+  String getStepName();
 
   /**
    * Add a change to game data. Use this rather than changing gameData
@@ -46,12 +46,12 @@ public interface IDelegateBridge {
    *
    * @param aChange
    */
-  public void addChange(Change aChange);
+  void addChange(Change aChange);
 
   /**
    * equivalent to getRandom(max,1,annotation)[0]
    */
-  public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation);
+  int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation);
 
   /**
    * Return a random value to be used by the delegate.
@@ -64,7 +64,7 @@ public interface IDelegateBridge {
    *        a string used to describe the random event.
    *        <p>
    */
-  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
+  int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
       final String annotation);
 
   /**
@@ -73,7 +73,7 @@ public interface IDelegateBridge {
    * The delegate history writer allows writing to the game history.
    * <p>
    */
-  public IDelegateHistoryWriter getHistoryWriter();
+  IDelegateHistoryWriter getHistoryWriter();
 
   /**
    * Return an object that implements the IDisplay interface for the game.
@@ -82,7 +82,7 @@ public interface IDelegateBridge {
    * machines
    * <p>
    */
-  public IDisplay getDisplayChannelBroadcaster();
+  IDisplay getDisplayChannelBroadcaster();
 
   /**
    * Return an object that implements the ISound interface for the game.
@@ -91,13 +91,13 @@ public interface IDelegateBridge {
    * machines
    * <p>
    */
-  public ISound getSoundChannelBroadcaster();
+  ISound getSoundChannelBroadcaster();
 
   /**
    * @return the propertie for this step.
    *         <p>
    */
-  public Properties getStepProperties();
+  Properties getStepProperties();
 
   /**
    * After this step finishes executing, the next delegate will not be called.
@@ -106,11 +106,11 @@ public interface IDelegateBridge {
    * shutdown.
    * <p>
    */
-  public void stopGameSequence();
+  void stopGameSequence();
 
-  public void leaveDelegateExecution();
+  void leaveDelegateExecution();
 
-  public void enterDelegateExecution();
+  void enterDelegateExecution();
 
-  public GameData getData();
+  GameData getData();
 }

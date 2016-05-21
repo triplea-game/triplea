@@ -23,7 +23,7 @@ public interface ISound extends IChannelSubscribor {
    *        The player who's sound we want to play (ie: russians infantry might make different sounds from german
    *        infantry, etc). Can be null.
    */
-  public void playSoundForAll(final String clipName, final PlayerID playerID);
+  void playSoundForAll(final String clipName, final PlayerID playerID);
 
 
   /**
@@ -42,7 +42,7 @@ public interface ISound extends IChannelSubscribor {
    * @param includeObservers
    *        Whether to include non-playing machines
    */
-  public void playSoundToPlayers(final String clipName,
+  void playSoundToPlayers(final String clipName,
       final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
       final boolean includeObservers);
 

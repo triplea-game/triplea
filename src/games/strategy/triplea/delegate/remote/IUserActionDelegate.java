@@ -7,7 +7,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.attachments.UserActionAttachment;
 
 public interface IUserActionDelegate extends IRemote, IDelegate {
-  public void attemptAction(UserActionAttachment actionChoice);
+  void attemptAction(UserActionAttachment actionChoice);
 
-  public Collection<UserActionAttachment> getValidActions();
+  Collection<UserActionAttachment> getValidActions();
 }

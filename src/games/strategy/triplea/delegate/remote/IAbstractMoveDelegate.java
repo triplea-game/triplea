@@ -14,7 +14,7 @@ public interface IAbstractMoveDelegate extends IRemote, IDelegate {
    *
    * @return a list of UndoableMoves or UndoablePlacements
    */
-  public abstract List<?> getMovesMade();
+  List<?> getMovesMade();
 
 
   /**
@@ -22,5 +22,5 @@ public interface IAbstractMoveDelegate extends IRemote, IDelegate {
    *        - an index in the list getMovesMade
    * @return an error string if the move could not be undone, null otherwise
    */
-  public abstract String undoMove(int moveIndex);
+  String undoMove(int moveIndex);
 }

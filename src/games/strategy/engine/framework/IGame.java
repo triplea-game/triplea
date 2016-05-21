@@ -21,61 +21,61 @@ import games.strategy.sound.ISound;
  * Allows access to the games communication interfaces, and to listen to the current game step.
  */
 public interface IGame {
-  public static final RemoteName GAME_MODIFICATION_CHANNEL =
+  RemoteName GAME_MODIFICATION_CHANNEL =
       new RemoteName("games.strategy.engine.framework.IGame.GAME_MODIFICATION_CHANNEL", IGameModifiedChannel.class);
 
-  public GameData getData();
+  GameData getData();
 
-  public void addGameStepListener(GameStepListener listener);
+  void addGameStepListener(GameStepListener listener);
 
-  public void removeGameStepListener(GameStepListener listener);
+  void removeGameStepListener(GameStepListener listener);
 
-  public IMessenger getMessenger();
+  IMessenger getMessenger();
 
-  public IChannelMessenger getChannelMessenger();
+  IChannelMessenger getChannelMessenger();
 
-  public IRemoteMessenger getRemoteMessenger();
+  IRemoteMessenger getRemoteMessenger();
 
-  public Vault getVault();
+  Vault getVault();
 
   /**
    * Should not be called outside of engine code.
    */
-  public void addChange(Change aChange);
+  void addChange(Change aChange);
 
-  public boolean canSave();
+  boolean canSave();
 
-  public IRandomSource getRandomSource();
+  IRandomSource getRandomSource();
 
   /**
    * add a display that will recieve broadcasts from the IDelegateBridge.getDisplayBroadvaster
    */
-  public void addDisplay(IDisplay display);
+  void addDisplay(IDisplay display);
 
   /**
    * remove a display
    */
-  public void removeDisplay(IDisplay display);
+  void removeDisplay(IDisplay display);
 
-  public void addSoundChannel(ISound display);
+  void addSoundChannel(ISound display);
 
-  public void removeSoundChannel(ISound display);
+  void removeSoundChannel(ISound display);
 
   /**
    * Is the game over. Game over does not relate to the state of the game (eg check-mate in chess)
    * but to the game being shut down and all players have left.
    * <p>
    */
-  public boolean isGameOver();
+  boolean isGameOver();
 
   /**
    * @return a listing of who is playing who.
    */
-  public PlayerManager getPlayerManager();
+  PlayerManager getPlayerManager();
 
   /**
    * Save the game to the given directory.
    * The file should exist and be writeable.
    */
-  public void saveGame(File f);
+  void saveGame(File f);
 }

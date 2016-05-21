@@ -20,14 +20,14 @@ public interface IChatController extends IRemote {
   /**
    * Join the chat, returns the chatters currently in the chat.
    */
-  public Tuple<Map<INode, Tag>, Long> joinChat();
+  Tuple<Map<INode, Tag>, Long> joinChat();
 
   /**
    * Leave the chat, and ask that everyone stops bothering me.
    */
-  public void leaveChat();
+  void leaveChat();
 
-  public enum Tag {
+  enum Tag {
     MODERATOR, NONE
   }
 }

@@ -4,14 +4,14 @@ public interface IRemoteModelListener {
   /**
    * The players available have changed.
    */
-  public void playerListChanged();
+  void playerListChanged();
 
   /**
    * The players taken have changed
    */
-  public void playersTakenChanged();
+  void playersTakenChanged();
 
-  public static IRemoteModelListener NULL_LISTENER = new IRemoteModelListener() {
+  IRemoteModelListener NULL_LISTENER = new IRemoteModelListener() {
     @Override
     public void playerListChanged() {}
 

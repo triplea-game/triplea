@@ -7,12 +7,12 @@ package games.strategy.engine.history;
  * be used by the GameData
  */
 public interface IDelegateHistoryWriter {
-  public void startEvent(String eventName);
+  void startEvent(String eventName);
 
-  public void startEvent(String eventName, Object renderingData);
+  void startEvent(String eventName, Object renderingData);
 
-  public void addChildToEvent(String child);
+  void addChildToEvent(String child);
 
-  public void addChildToEvent(String child, Object renderingData);
+  void addChildToEvent(String child, Object renderingData);
   // public void setRenderingData(Object renderingData);
 }

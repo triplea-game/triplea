@@ -18,6 +18,6 @@ public interface ITechDelegate extends IRemote, IDelegate {
    *        if WW2V3TechModel is used it set rollCount
    * @return TechResults. If the tech could not be rolled, then a message saying why.
    */
-  public TechResults rollTech(int rollCount, TechnologyFrontier techToRollFor, int newTokens,
+  TechResults rollTech(int rollCount, TechnologyFrontier techToRollFor, int newTokens,
       IntegerMap<PlayerID> whoPaysHowMuch);
 }

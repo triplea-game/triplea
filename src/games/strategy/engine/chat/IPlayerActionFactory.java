@@ -8,7 +8,7 @@ import javax.swing.Action;
 import games.strategy.net.INode;
 
 public interface IPlayerActionFactory {
-  public static final IPlayerActionFactory NULL_FACTORY = new IPlayerActionFactory() {
+  IPlayerActionFactory NULL_FACTORY = new IPlayerActionFactory() {
     @Override
     public List<Action> mouseOnPlayer(final INode clickedOn) {
       return Collections.emptyList();
@@ -18,5 +18,5 @@ public interface IPlayerActionFactory {
   /**
    * The mouse has been clicked on a player, create a list of actions to be displayed
    */
-  public List<Action> mouseOnPlayer(INode clickedOn);
+  List<Action> mouseOnPlayer(INode clickedOn);
 }

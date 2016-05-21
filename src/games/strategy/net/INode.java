@@ -17,20 +17,20 @@ public interface INode extends Serializable, Comparable<INode> {
   /**
    * @return the display/user name for the node
    */
-  public String getName();
+  String getName();
 
   /**
    * @return the adress for the node as seen by the server
    */
-  public InetAddress getAddress();
+  InetAddress getAddress();
 
   /**
    * @return the port for the node as seen by the server
    */
-  public int getPort();
+  int getPort();
 
   /**
    * @return the adress for the node as seen by the server
    */
-  public InetSocketAddress getSocketAddress();
+  InetSocketAddress getSocketAddress();
 }

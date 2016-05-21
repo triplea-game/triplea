@@ -13,36 +13,36 @@ import games.strategy.engine.framework.startup.launcher.ILauncher;
  * entire setup model).
  */
 public interface ISetupPanel extends java.io.Serializable {
-  public void addObserver(final Observer observer);
+  void addObserver(final Observer observer);
 
-  public void removeObserver(final Observer observer);
+  void removeObserver(final Observer observer);
 
-  abstract void notifyObservers();
+  void notifyObservers();
 
   /**
    * Subclasses that have chat override this.
    */
-  public IChatPanel getChatPanel();
+  IChatPanel getChatPanel();
 
   /**
    * Cleanup should occur here that occurs when we cancel
    */
-  public abstract void cancel();
+  void cancel();
 
-  public abstract void shutDown();
+  void shutDown();
 
   /**
    * Can we start the game?
    */
-  public abstract boolean canGameStart();
+  boolean canGameStart();
 
-  public abstract void setWidgetActivation();
+  void setWidgetActivation();
 
-  public void preStartGame();
+  void preStartGame();
 
-  public void postStartGame();
+  void postStartGame();
 
-  public ILauncher getLauncher();
+  ILauncher getLauncher();
 
-  public List<Action> getUserActions();
+  List<Action> getUserActions();
 }

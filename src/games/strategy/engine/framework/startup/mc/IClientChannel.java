@@ -8,17 +8,17 @@ import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 
 public interface IClientChannel extends IChannelSubscribor {
-  public static final RemoteName CHANNEL_NAME =
+  RemoteName CHANNEL_NAME =
       new RemoteName("games.strategy.engine.framework.ui.IClientChannel.CHANNEL", IClientChannel.class);
 
-  public void playerListingChanged(PlayerListing listing);
+  void playerListingChanged(PlayerListing listing);
 
   /**
    * @param gameData
    * @param players
    *        who is playing who
    */
-  public void doneSelectingPlayers(byte[] gameData, Map<String, INode> players);
+  void doneSelectingPlayers(byte[] gameData, Map<String, INode> players);
 
-  public void gameReset();
+  void gameReset();
 }

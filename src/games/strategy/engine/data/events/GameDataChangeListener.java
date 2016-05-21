@@ -6,5 +6,5 @@ import games.strategy.engine.data.Change;
  * A GameDataChangeListener will be notified on changes to the GameData
  */
 public interface GameDataChangeListener {
-  public void gameDataChanged(Change aChange);
+  void gameDataChanged(Change aChange);
 }

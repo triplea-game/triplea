@@ -14,10 +14,10 @@ public interface IObserverWaitingToJoin extends IRemote {
    * This method should not return until the client is ready to start the game.
    * This includes the display running, with all remote and channel listeners set up.
    */
-  public void joinGame(byte[] gameData, Map<String, INode> players);
+  void joinGame(byte[] gameData, Map<String, INode> players);
 
   /**
    * You could not join the game, usually this is due to an error.
    */
-  public void cannotJoinGame(String reason);
+  void cannotJoinGame(String reason);
 }

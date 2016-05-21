@@ -9,19 +9,19 @@ import games.strategy.net.INode;
  */
 public interface IChatChannel extends IChannelSubscribor {
   // we get the sender from MessageContext
-  public void chatOccured(final String message);
+  void chatOccured(final String message);
 
-  public void meMessageOccured(final String message);
+  void meMessageOccured(final String message);
 
-  public void slapOccured(final String playerName);
+  void slapOccured(final String playerName);
 
-  public void speakerAdded(final INode node, final Tag tag, final long version);
+  void speakerAdded(final INode node, final Tag tag, final long version);
 
-  public void speakerRemoved(final INode node, final long version);
+  void speakerRemoved(final INode node, final long version);
 
-  public void speakerTagUpdated(final INode node, final Tag tag);
+  void speakerTagUpdated(final INode node, final Tag tag);
 
   // purely here to keep connections open and stop NATs and crap from thinking that our connection is closed when it is
   // not.
-  public void ping();
+  void ping();
 }

@@ -653,5 +653,5 @@ public class ServerGame extends AbstractGame {
 
 
 interface IServerRemote extends IRemote {
-  public byte[] getSavedGame();
+  byte[] getSavedGame();
 }
