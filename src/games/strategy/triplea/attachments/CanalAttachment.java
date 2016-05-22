@@ -50,9 +50,8 @@ public class CanalAttachment extends DefaultAttachment {
   public static Set<CanalAttachment> get(final Territory t) {
     final Set<CanalAttachment> rVal = new HashSet<>();
     final Map<String, IAttachment> map = t.getAttachments();
-    final Iterator<String> iter = map.keySet().iterator();
-    while (iter.hasNext()) {
-      final IAttachment attachment = map.get(iter.next());
+    for (String s : map.keySet()) {
+      final IAttachment attachment = map.get(s);
       final String name = attachment.getName();
       if (name.startsWith(Constants.CANAL_ATTACHMENT_PREFIX)) {
         rVal.add((CanalAttachment) attachment);

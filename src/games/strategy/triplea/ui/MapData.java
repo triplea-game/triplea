@@ -372,16 +372,13 @@ public class MapData {
 
   private void initializeContains() {
     m_contains = new HashMap<>();
-    final Iterator<String> seaIter = getTerritories().iterator();
-    while (seaIter.hasNext()) {
+    for (String s : getTerritories()) {
       final List<String> contained = new ArrayList<>();
-      final String seaTerritory = seaIter.next();
+      final String seaTerritory = s;
       if (!Util.isTerritoryNameIndicatingWater(seaTerritory)) {
         continue;
       }
-      final Iterator<String> landIter = getTerritories().iterator();
-      while (landIter.hasNext()) {
-        final String landTerritory = landIter.next();
+      for (String landTerritory : getTerritories()) {
         if (Util.isTerritoryNameIndicatingWater(landTerritory)) {
           continue;
         }
@@ -708,9 +705,7 @@ public class MapData {
    */
   public List<String> territoriesThatOverlap(final Rectangle2D bounds) {
     List<String> rVal = null;
-    final Iterator<String> terrIter = getTerritories().iterator();
-    while (terrIter.hasNext()) {
-      final String terr = terrIter.next();
+    for (String terr : getTerritories()) {
       final List<Polygon> polygons = getPolygons(terr);
       for (int i = 0; i < polygons.size(); i++) {
         final Polygon item = polygons.get(i);

@@ -38,10 +38,8 @@ public class AirThatCantLandUtil {
   public Collection<Territory> getTerritoriesWhereAirCantLand(final PlayerID player) {
     final GameData data = m_bridge.getData();
     final Collection<Territory> cantLand = new ArrayList<>();
-    final Iterator<Territory> territories = data.getMap().getTerritories().iterator();
-    while (territories.hasNext()) {
-      final Territory current = territories.next();
-      final CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<>();
+    for (Territory current : data.getMap().getTerritories()) {
+      final CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<Unit>();
       ownedAir.add(Matches.UnitIsAir);
       ownedAir.add(Matches.unitIsOwnedBy(player));
       final Collection<Unit> air = current.getUnits().getMatches(ownedAir);
@@ -55,10 +53,8 @@ public class AirThatCantLandUtil {
   public void removeAirThatCantLand(final PlayerID player, final boolean spareAirInSeaZonesBesideFactories) {
     final GameData data = m_bridge.getData();
     final GameMap map = data.getMap();
-    final Iterator<Territory> territories = getTerritoriesWhereAirCantLand(player).iterator();
-    while (territories.hasNext()) {
-      final Territory current = territories.next();
-      final CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<>();
+    for (Territory current : getTerritoriesWhereAirCantLand(player)) {
+      final CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<Unit>();
       ownedAir.add(Matches.UnitIsAir);
       ownedAir.add(Matches.alliedUnit(player, data));
       final Collection<Unit> air = current.getUnits().getMatches(ownedAir);
@@ -83,9 +79,7 @@ public class AirThatCantLandUtil {
       // find the carrier capacity
       final Collection<Unit> carriers = territory.getUnits().getMatches(Matches.alliedUnit(player, m_bridge.getData()));
       int capacity = AirMovementValidator.carrierCapacity(carriers, territory);
-      final Iterator<Unit> iter = airUnits.iterator();
-      while (iter.hasNext()) {
-        final Unit unit = iter.next();
+      for (Unit unit : airUnits) {
         final UnitAttachment ua = UnitAttachment.get(unit.getType());
         final int cost = ua.getCarrierCost();
         if (cost == -1 || cost > capacity) {

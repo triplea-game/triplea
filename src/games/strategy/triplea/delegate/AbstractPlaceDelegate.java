@@ -1313,9 +1313,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         unitMapTO.add(ua.getConstructionType(), 1);
       }
       // account for units already in the territory, based on max
-      final Iterator<String> mapString = unitMapHeld.keySet().iterator();
-      while (mapString.hasNext()) {
-        final String constructionType = mapString.next();
+      for (String constructionType : unitMapHeld.keySet()) {
         int unitMax = unitMapMaxType.getInt(constructionType);
         if (wasFactoryThereAtStart && !constructionType.equals("factory") && !constructionType.endsWith("structure")) {
           unitMax =
@@ -1330,17 +1328,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       }
     }
     // deal with already placed units
-    final Iterator<Unit> unitAlready = Match.getMatches(unitsPlacedAlready, Matches.UnitIsConstruction).iterator();
-    while (unitAlready.hasNext()) {
-      final Unit currentUnit = unitAlready.next();
+    for (Unit currentUnit : Match.getMatches(unitsPlacedAlready, Matches.UnitIsConstruction)) {
       final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
       unitMapTypePerTurn.add(ua.getConstructionType(), -1);
     }
     // modify this list based on how many we can place per turn
-    final IntegerMap<String> unitsAllowed = new IntegerMap<>();
-    final Iterator<String> mapString2 = unitMapHeld.keySet().iterator();
-    while (mapString2.hasNext()) {
-      final String constructionType = mapString2.next();
+    final IntegerMap<String> unitsAllowed = new IntegerMap<String>();
+    for (String constructionType : unitMapHeld.keySet()) {
       final int unitAllowed =
           Math.max(0, Math.min(unitMapTypePerTurn.getInt(constructionType), unitMapHeld.getInt(constructionType)));
       if (unitAllowed > 0) {
@@ -1590,10 +1584,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (factoryUnits.size() == 0) {
       throw new IllegalStateException("No factory in territory:" + territory);
     }
-    final Iterator<Unit> iter = factoryUnits.iterator();
     // final GameData data = getData();
-    while (iter.hasNext()) {
-      final Unit factory2 = iter.next();
+    for (Unit factory2 : factoryUnits) {
       if (m_player.equals(OriginalOwnerTracker.getOriginalOwner(factory2))) {
         return OriginalOwnerTracker.getOriginalOwner(factory2);
       }
@@ -1706,7 +1698,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   protected Collection<Territory> getListedTerritories(final String[] list) {
-    final List<Territory> rVal = new ArrayList<>();
+    final List<Territory> rVal = new ArrayList<Territory>();
     if (list == null) {
       return rVal;
     }

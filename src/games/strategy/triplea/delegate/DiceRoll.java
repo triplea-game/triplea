@@ -1070,9 +1070,8 @@ public class DiceRoll implements Externalizable {
   }
 
   public static boolean isAmphibious(final Collection<Unit> m_units) {
-    final Iterator<Unit> unitIter = m_units.iterator();
-    while (unitIter.hasNext()) {
-      final TripleAUnit checkedUnit = (TripleAUnit) unitIter.next();
+    for (Unit m_unit : m_units) {
+      final TripleAUnit checkedUnit = (TripleAUnit) m_unit;
       if (checkedUnit.getWasAmphibious()) {
         return true;
       }
