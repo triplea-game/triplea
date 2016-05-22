@@ -1648,7 +1648,7 @@ Changes for 1.5
 
 * Fixed serious bug in DefaultAttachment.getRawProperty() and getFieldIncludingFromSuperClasses, and also updated attachment/annotation test to search super's fields. (veqryn) 
 
-* Making some small fixes to attachment/annotation test, and renaming any methods with attatch to attach. (veqryn)
+* Making some small fixes to attachment/annotation test, and renaming any methods with attach to attach. (veqryn)
 
 * Added wait window to TripleA's startup. (frigoref)
 
@@ -3051,13 +3051,13 @@ Changes for 1.2.1
 
 * Abstract victory conditions to read teams/players from XML rather than hardcoded values (ComradeKev)
 
-* Add negateDominatingFirstRoundAttack option for RulesAttatchment- negates dominatingFirstRoundAttack for player (ComradeKev)
+* Add negateDominatingFirstRoundAttack option for RulesAttachment- negates dominatingFirstRoundAttack for player (ComradeKev)
  
-* Add dominatingFirstRoundAttack option for RulesAttatchment- defenders roll at 1 (ComradeKev)
+* Add dominatingFirstRoundAttack option for RulesAttachment- defenders roll at 1 (ComradeKev)
 
-* Add placementInCapitalRestricted option for RulesAttatchment- restricts unit placement to capital (ComradeKev)
+* Add placementInCapitalRestricted option for RulesAttachment- restricts unit placement to capital (ComradeKev)
 
-* Add unlimitedProduction option for RulesAttatchment- bypasses limitation of unit placement to factory production (ComradeKev)
+* Add unlimitedProduction option for RulesAttachment- bypasses limitation of unit placement to factory production (ComradeKev)
 
 * Add 'Neutrals Are Blitzable' property with value of TRUE to NWO (ComradeKev)
 
@@ -4312,7 +4312,7 @@ Change for 0.7.2
 
 * shift click on a unit (or territory) to select all units in the territory (sgb)
 
-* rename attatchment to attachment (sgb)
+* rename attachment to attachment (sgb)
 
 * remove singleton image factories, move to UIContext (sgb)
 
@@ -4343,7 +4343,7 @@ changes for 0.7.1
 
 * fixed no pop up movement for scaled units (sgb)
 
-* removed territory attatchments for sea zones in big world map (sgb)
+* removed territory attachments for sea zones in big world map (sgb)
 
 * Fixed missing connections in big world map, north to south brazil, and sea of Okhotsk to West Bering Sea (kc1189)
 
