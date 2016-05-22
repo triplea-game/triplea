@@ -1,15 +1,24 @@
 package games.strategy.debug;
 
+import games.strategy.common.swing.SwingAction;
+import games.strategy.triplea.ui.ErrorHandler;
+
+import javax.swing.SwingUtilities;
+
 public class ErrorConsole extends GenericConsole {
   private static final long serialVersionUID = -3489030525309243438L;
-  private static ErrorConsole s_console;
-
+  private static ErrorConsole console;
 
   public static ErrorConsole getConsole() {
-    if (s_console == null) {
-      s_console = new ErrorConsole();
+    if (console == null) {
+      SwingAction.invokeAndWait(() -> {
+        console = new ErrorConsole();
+        console.displayStandardOutput();
+        console.displayStandardError();
+        ErrorHandler.registerExceptionHandler();
+      });
     }
-    return s_console;
+    return console;
   }
 
   @Override
