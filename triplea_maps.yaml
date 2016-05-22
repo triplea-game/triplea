@@ -25,7 +25,7 @@
   description: |
     <br>WWI map
 - mapName: Capture the Flag
-  url: https://github.com/triplea-maps/capture_the_flag/releases/download/0.7/capture_the_flag.zip
+  url: https://github.com/triplea-maps/capture_the_flag/releases/download/0.9/capture_the_flag.zip
   version: 0.1
   description: |
     <br>Small even balanced map
@@ -527,7 +527,7 @@
     <br>
   version: 1.8
 - mapName: Red_Sun_Over_China
-  url: https://github.com/triplea-maps/red_sun_over_china/releases/download/0.1/red_sun_over_china.zip
+  url: https://github.com/triplea-maps/red_sun_over_china/releases/download/0.6/red_sun_over_china.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_red_sun_over_china_mini.png" />
     <br>This is a mod based on the Second Sino-Japanese War, starting in January 1938. 
@@ -1376,7 +1376,7 @@
     <br>Technically, all maps are still usually getting updates here and there, but maps in this category are usually very new (2-6 weeks), or have bugs, 
         or the map maker does not consider them to be ready for release.
 - mapName: Invasion_USA
-  url: https://github.com/triplea-maps/invasion_usa/releases/download/0.42/invasion_usa.zip 
+  url: https://github.com/triplea-maps/invasion_usa/releases/download/0.44/invasion_usa.zip 
   description: |
     UNDER SIEGE: America is an updated mod for Hobbes__ map Invasion USA
     <br />Objective:
