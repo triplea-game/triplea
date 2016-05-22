@@ -317,6 +317,22 @@
     <br>http://tripleadev.1671093.n2.nabble.com/World-War-II-Global-1940-Original-tp7314662p7314662.html
     <br>
   version: 3.9
+- mapName: World War II Global Balanced
+  url: https://github.com/regularkyd/G40Balanced/blob/master/World%20War%20II%20G40%20Balanced.zip
+  description: |
+    <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_global_1940_mini.png" />
+    <br>
+    <br><b>G40 Balanced (Balance Mod 2.0)</b>
+    <br>
+    <br>Mod Creators: Adam514 and regularkid
+    <br>Mod Squad Contributors: Deathbringer1974, dust, dss85, Gencre, redrum, Young Grasshopper
+    <br>
+    <br>A revised TripleA adaptiona of World War II Global, designed for enhanced balance, gameplay, and historicality.
+    <br>Check out the forum threads here:
+    <br>http://www.axisandallies.org/forums/index.php?topic=37883
+    <br>http://www.axisandallies.org/forums/index.php?topic=37553
+    <br>
+  version: 2.0
 - mapName: World War II v5 1942
   url: https://github.com/triplea-maps/world_war_ii_v5_1942/releases/download/0.3/world_war_ii_v5_1942.zip
   description: |
