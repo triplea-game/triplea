@@ -39,10 +39,6 @@ public final class MapDownloadProgressPanel extends JPanel {
 
   public MapDownloadProgressPanel(final JDialog parent) {
     downloadCoordinator = new DownloadCoordinator();
-    downloadCoordinator.setAllDownloadCompleteAction(() -> {
-      parent.setVisible(false);
-      parent.dispose();
-    });
   }
 
 
