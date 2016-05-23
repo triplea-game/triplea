@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -563,13 +564,15 @@ public class MapPanel extends ImageScrollerLargeView {
           if (r == null) {
             continue;
           }
-          final BufferedImage highlight =
-              (BufferedImage) uiContext.getUnitImageFactory().getHighlightImage(category.getType(),
-                  category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
-          final AffineTransform t = new AffineTransform();
-          t.translate(normalizeX(r.getX() - getXOffset()) * m_scale, normalizeY(r.getY() - getYOffset()) * m_scale);
-          t.scale(m_scale, m_scale);
-          g2d.drawImage(highlight, t, this);
+
+          Optional<Image> image = uiContext.getUnitImageFactory().getHighlightImage(category.getType(),
+              category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());;
+          if(image.isPresent()) {
+            final AffineTransform t = new AffineTransform();
+            t.translate(normalizeX(r.getX() - getXOffset()) * m_scale, normalizeY(r.getY() - getYOffset()) * m_scale);
+            t.scale(m_scale, m_scale);
+            g2d.drawImage(image.get(), t, this);
+          }
         }
       }
     }

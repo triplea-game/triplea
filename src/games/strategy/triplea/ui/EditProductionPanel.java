@@ -3,6 +3,7 @@ package games.strategy.triplea.ui;
 import java.awt.Image;
 import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.swing.JFrame;
@@ -87,8 +88,8 @@ public class EditProductionPanel extends ProductionPanel {
           try {
             final UnitImageFactory imageFactory = m_uiContext.getUnitImageFactory();
             if (imageFactory != null) {
-              final Image unitImage = imageFactory.getImage(ut, player, data, false, false);
-              if (unitImage != null) {
+              final Optional<Image> unitImage = imageFactory.getImage(ut, player, data, false, false);
+              if (unitImage.isPresent()) {
                 unitsAllowed.add(ut);
                 final IntegerMap<NamedAttachable> result = new IntegerMap<>();
                 result.add(ut, 1);

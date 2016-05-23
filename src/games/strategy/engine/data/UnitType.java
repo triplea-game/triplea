@@ -8,8 +8,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -159,14 +161,16 @@ public class UnitType extends NamedAttachable implements Serializable {
           try {
             final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
             if (imageFactory != null) {
-              final Image unitImage = imageFactory.getImage(ut, player, data, false, false);
-              if (unitImage != null) {
+              final Optional<Image> unitImage = imageFactory.getImage(ut, player, data, false, false);
+              if (unitImage.isPresent()) {
                 if (!rVal.contains(ut)) {
                   rVal.add(ut);
                 }
               }
             }
-          } catch (final Exception e) { // ignore
+          } catch (final Exception e) {
+            // TODO: does this cause excessive logging noise, or is the message useful?
+            ClientLogger.logQuietly("Quietly ignoring an exception while drawing unit type: "+ ut + ", " , e);
           }
         }
       }
