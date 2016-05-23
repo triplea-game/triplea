@@ -154,9 +154,7 @@ public class UnitAutoChooserTest extends TestCase {
 
   private void setUnits(final Collection<Unit> c, final Unit... objects) {
     c.clear();
-    for (final Unit object : objects) {
-      c.add(object);
-    }
+    Collections.addAll(c, objects);
   }
 
   // The MovePanel and EditPanel use the UnitAutoChooser in this mode
