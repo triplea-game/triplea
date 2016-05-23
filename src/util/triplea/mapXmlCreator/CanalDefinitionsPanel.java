@@ -280,7 +280,7 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
             null, terrCanals.toArray(new String[terrCanals.size()]), // Array of choices
             terrCanals.get(0))); // Initial choice
       }
-      if (terrCanals.isEmpty() || NEW_CANAL_OPTION.equals(currentCanalName)) {
+      if (terrCanals.isEmpty() || NEW_CANAL_OPTION.equals(currentCanalName.orElse(""))) {
         final String suggestedCanalName = getSuggestedCanalName();
         currentCanalName = Optional.ofNullable(JOptionPane.showInputDialog(null,
             "Which canal should be selected for territory '" + newTerrName + "?", suggestedCanalName));
