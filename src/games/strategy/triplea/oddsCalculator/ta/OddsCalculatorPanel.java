@@ -1086,7 +1086,7 @@ class UnitPanel extends JPanel {
     final Image img = m_context.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
         m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled());
     final String toolTipText = "<html>" + m_category.getType().getName() + ":  " + costs.getInt(m_category.getType())
-        + " cost, <br /> &nbsp;&nbsp;&nbsp;&nbsp; " + m_category.getType().getTooltip(m_category.getOwner(), true)
+        + " cost, <br /> &nbsp;&nbsp;&nbsp;&nbsp; " + m_category.getType().getTooltip(m_category.getOwner())
         + "</html>";
     setCount(m_category.getUnits().size());
     setLayout(new GridBagLayout());
@@ -1300,7 +1300,7 @@ class OrderOfLossesInputPanel extends JPanel {
         final String unitName =
             OddsCalculator.OOL_ALL + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + category.getType().getName();
         final String toolTipText = "<html>" + category.getType().getName() + ":  "
-            + category.getType().getTooltip(category.getOwner(), true) + "</html>";
+            + category.getType().getTooltip(category.getOwner()) + "</html>";
         final JButton button = new JButton(new ImageIcon(img));
         button.setToolTipText(toolTipText);
         button.addActionListener(new ActionListener() {
