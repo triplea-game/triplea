@@ -11,8 +11,8 @@ public class CompositeMatchOr<T> extends CompositeMatch<T> {
   @SuppressWarnings("unchecked")
   public CompositeMatchOr(final Match<?>... matches) {//TODO rewrite in order to remove Suppressed Warning
     super();
-    for (final Match<T> m : (Match<T>[])matches) {
-      add(m);
+    for (final Match<?> m : matches) {
+      add((Match<T>)m);
     }
   }
 
