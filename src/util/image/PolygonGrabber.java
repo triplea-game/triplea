@@ -516,7 +516,7 @@ public class PolygonGrabber extends JFrame {
       final Point p = new Point(item.getValue());
       for (final Polygon polygon : m_current) {
         if (polygon.contains(p)) {
-          options.add(item.getKey().toString());
+          options.add(item.getKey());
         } // if
       } // while
     } // while

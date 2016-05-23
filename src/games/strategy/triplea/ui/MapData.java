@@ -331,7 +331,7 @@ public class MapData {
   }
 
   public String getMapBlendMode() {
-    return String.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_MAPBLENDMODE, "normal")).toString();
+    return String.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_MAPBLENDMODE, "normal"));
   }
 
   public float getMapBlendAlpha() {
