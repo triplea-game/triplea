@@ -103,16 +103,14 @@ public class WW2V3_41_Test extends TestCase {
     return GameDataTestUtil.getDelegateBridge(player, m_data);
   }
 
-  public static String fight(final BattleDelegate battle, final Territory territory, final boolean bombing) {
+  public static String fight(final BattleDelegate battle, final Territory territory) {
     for (final Entry<BattleType, Collection<Territory>> entry : battle.getBattles().getBattles().entrySet()) {
-      if (entry.getKey().isBombingRun() == bombing) {
-        if (entry.getValue().contains(territory)) {
-          return battle.fightBattle(territory, bombing, entry.getKey());
-        }
+      if (!entry.getKey().isBombingRun()  && entry.getValue().contains(territory)) {
+        return battle.fightBattle(territory, false, entry.getKey());
       }
     }
     throw new IllegalStateException(
-        "Could not find " + (bombing ? "bombing" : "normal") + " battle in: " + territory.getName());
+        "Could not find battle in: " + territory.getName());
   }
 
   public void testAACasualtiesLowLuckMixedRadar() {
@@ -342,7 +340,7 @@ public class WW2V3_41_Test extends TestCase {
     battleDelegate.start();
     assertEquals(2, TransportTracker.transporting(transports.get(0)).size());
     // fight the battle
-    assertValid(fight(battleDelegate, sz7, false));
+    assertValid(fight(battleDelegate, sz7));
     // make sure the infantry die with the transport
     assertTrue(sz7.getUnits().toString(), sz7.getUnits().getMatches(Matches.unitOwnedBy(british)).isEmpty());
   }
@@ -971,7 +969,7 @@ public class WW2V3_41_Test extends TestCase {
     bridge.setRandomSource(new ScriptedRandomSource(3, 2, 5, 5, 5, 5, 0, 0));
     battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     battleDelegate(m_data).start();
-    fight(battleDelegate(m_data), eg, false);
+    fight(battleDelegate(m_data), eg);
     // end result should be 2 italian infantry.
     assertEquals(2, eg.getUnits().size());
   }
@@ -1034,7 +1032,7 @@ public class WW2V3_41_Test extends TestCase {
     bridge.setRandomSource(new ScriptedRandomSource(3, 2, 6, 6, 1, 1));
     battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     battleDelegate(m_data).start();
-    fight(battleDelegate(m_data), eg, false);
+    fight(battleDelegate(m_data), eg);
     // 1 defending inf remaining
     assertEquals(1, eg.getUnits().size());
   }
@@ -1444,7 +1442,7 @@ public class WW2V3_41_Test extends TestCase {
     bridge.setRandomSource(new ScriptedRandomSource(5, 5, 5, 5, 5, 5, 5, 5, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1));
     battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     battleDelegate(m_data).start();
-    fight(battleDelegate(m_data), egypt, false);
+    fight(battleDelegate(m_data), egypt);
   }
 
   public void testDefencelessTransportsDie() {
@@ -1474,7 +1472,7 @@ public class WW2V3_41_Test extends TestCase {
     bridge.setRandomSource(new ScriptedRandomSource(1, 5, 5, 5, 5, 5, 5, 5, 5));
     battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     battleDelegate(m_data).start();
-    fight(battleDelegate(m_data), sz5, false);
+    fight(battleDelegate(m_data), sz5);
     // make sure the transports died
     assertTrue(sz5.getUnits().getMatches(Matches.unitIsOwnedBy(germans(m_data))).isEmpty());
   }
