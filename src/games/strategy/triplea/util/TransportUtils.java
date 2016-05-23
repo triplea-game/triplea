@@ -46,8 +46,8 @@ public class TransportUtils {
     final List<Unit> canTransport = sortByTransportCapacityDescendingThenMovesDescending(transports);
 
     // Add units to transports evenly
-    final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
-    final IntegerMap<Unit> addedLoad = new IntegerMap<Unit>();
+    final Map<Unit, Unit> mapping = new HashMap<>();
+    final IntegerMap<Unit> addedLoad = new IntegerMap<>();
     for (final Unit unit : canBeTransported) {
       final Optional<Unit> transport = loadUnitIntoFirstAvailableTransport(unit, canTransport, mapping, addedLoad);
 
@@ -70,7 +70,7 @@ public class TransportUtils {
     final List<Unit> canTransport = sortByTransportCapacityDescendingThenMovesDescending(transports);
 
     // Add max units to each transport
-    final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
+    final Map<Unit, Unit> mapping = new HashMap<>();
     Optional<Unit> finalTransport = Optional.empty();
     for (final Unit transport : canTransport) {
 
@@ -159,7 +159,7 @@ public class TransportUtils {
       final Collection<Unit> transports) {
     final Collection<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
     final Collection<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
-    final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
+    final Map<Unit, Unit> mapping = new HashMap<>();
     final Iterator<Unit> land = canBeTransported.iterator();
     while (land.hasNext()) {
       final Unit currentTransported = land.next();
