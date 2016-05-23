@@ -80,15 +80,6 @@ public class ScriptedRandomSource implements IRandomSource {
     m_rolled += count;
     final int[] rVal = new int[count];
     for (int i = 0; i < count; i++) {
-      if (m_numbers[m_currentIndex] == PAUSE) {
-        try {
-          final Object o = new Object();
-          synchronized (o) {
-            o.wait();
-          }
-        } catch (final InterruptedException e) {
-        }
-      }
       if (m_numbers[m_currentIndex] == ERROR) {
         throw new IllegalStateException("Random number generator generating scripted error");
       }
