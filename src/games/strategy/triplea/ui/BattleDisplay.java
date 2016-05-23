@@ -310,7 +310,8 @@ public class BattleDisplay extends JPanel {
     }
 
     final CountDownLatch continueLatch = new CountDownLatch(1);
-    SwingUtilities.invokeLater(() -> m_actionButton.setAction(SwingAction.of(message, e -> continueLatch.countDown())));
+    AbstractAction buttonAction = SwingAction.of(message, e -> continueLatch.countDown());
+    SwingUtilities.invokeLater(() -> m_actionButton.setAction(buttonAction));
     m_mapPanel.getUIContext().addShutdownLatch(continueLatch);
 
     // Set a auto-wait expiration if the option is set.
