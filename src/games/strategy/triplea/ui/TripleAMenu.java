@@ -988,8 +988,8 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
       }
       text.append("\n");
       clone.getHistory().gotoNode(clone.getHistory().getLastNode());
-      @SuppressWarnings("rawtypes")
-      final Enumeration nodes = ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
+      @SuppressWarnings("unchecked")
+      final Enumeration<HistoryNode> nodes = ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
       PlayerID currentPlayer = null;
       int round = 0;
       while (nodes.hasMoreElements()) {
