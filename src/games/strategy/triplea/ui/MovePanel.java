@@ -139,7 +139,7 @@ public class MovePanel extends AbstractMovePanel {
     final Comparator<Unit> unitComparator;
     // sort units based on which transports are allowed to unload
     if (route.isUnload() && Match.someMatch(units, Matches.UnitIsLand)) {
-      unitComparator = UnitComparator.getUnloadableUnitsComparator(units, route, getUnitOwner(units), true);
+      unitComparator = UnitComparator.getUnloadableUnitsComparator(units, route, getUnitOwner(units));
     } else {
       unitComparator = UnitComparator.getMovableUnitsComparator(units, route);
     }

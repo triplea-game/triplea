@@ -237,7 +237,7 @@ public class UnitComparator {
    * If needed it may also inspect the transport holding the units.
    */
   public static Comparator<Unit> getUnloadableUnitsComparator(final List<Unit> units, final Route route,
-      final PlayerID player, final boolean noTies) {
+      final PlayerID player) {
     // compare transports
     final Comparator<Unit> unloadableTransportsComparator =
         getUnloadableTransportsComparator(units, route, player, false);
