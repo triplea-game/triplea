@@ -82,7 +82,6 @@ import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.Util;
 import games.strategy.util.Match;
-import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
 /**
