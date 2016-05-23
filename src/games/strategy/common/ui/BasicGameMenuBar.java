@@ -99,7 +99,7 @@ import games.strategy.util.Triple;
 public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMenuBar {
   private static final long serialVersionUID = -1447295944297939539L;
   protected final CustomGameFrame frame;
-  protected JEditorPane gameNotesPane;
+  protected JLabel gameNotesPane;
 
   public BasicGameMenuBar(final CustomGameFrame frame) {
     this.frame = frame;
@@ -158,7 +158,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     }
   }
 
-  public JEditorPane getGameNotesJEditorPane() {
+  public JLabel getGameNotesJEditorPane() {
     return gameNotesPane;
   }
 
@@ -168,11 +168,11 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     final String notesProperty = getData().getProperties().get("notes", "");
     if (notesProperty != null && notesProperty.trim().length() != 0) {
       final String notes = LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim());
-      gameNotesPane = new JEditorPane();
-      gameNotesPane.setText(notes);
-      parentMenu.add(SwingAction.of("Game Notes...", e ->
+      gameNotesPane = new JLabel();
+      gameNotesPane.setText("<html>" + notes + "</html>");
+      parentMenu.add(SwingAction.of("<html>Game Notes...</html>", e ->
           SwingUtilities.invokeLater(() -> {
-            final JEditorPane pane = gameNotesPane;
+            final JLabel pane = gameNotesPane;
             final JScrollPane scroll = new JScrollPane(pane);
             scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
             final JDialog dialog = new JDialog(frame);

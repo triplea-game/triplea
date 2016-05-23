@@ -16,7 +16,7 @@ import games.strategy.engine.data.GameData;
 
 public class NotesPanel extends JPanel {
   private static final long serialVersionUID = 2746643868463714526L;
-  protected final JEditorPane m_gameNotesPane;
+  protected final JLabel m_gameNotesPane;
   protected final GameData m_data;
   final JButton m_refresh = new JButton("Refresh Notes");
 
@@ -26,7 +26,7 @@ public class NotesPanel extends JPanel {
   // so instead we keep the main copy in the BasicGameMenuBar, and then give it to the notes tab. this prevents out of
   // memory errors for
   // maps with large images in their games notes.
-  public NotesPanel(final GameData data, final JEditorPane gameNotesPane) {
+  public NotesPanel(final GameData data, final JLabel gameNotesPane) {
     m_data = data;
     m_gameNotesPane = gameNotesPane;
     initLayout();
@@ -43,7 +43,6 @@ public class NotesPanel extends JPanel {
         }
       });
     }));
-    // layoutNotes();
     removeNotes();
   }
 
@@ -52,7 +51,6 @@ public class NotesPanel extends JPanel {
     NotesPanel.this.add(new JLabel(" "));
     NotesPanel.this.add(m_refresh);
     NotesPanel.this.add(new JLabel(" "));
-    // NotesPanel.this.invalidate();
   }
 
   void layoutNotes() {
@@ -66,7 +64,6 @@ public class NotesPanel extends JPanel {
     final JScrollPane scroll = new JScrollPane(m_gameNotesPane);
     scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
     NotesPanel.this.add(scroll);
-    // NotesPanel.this.invalidate();
   }
 
   public boolean isEmpty() {
