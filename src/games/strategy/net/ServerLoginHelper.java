@@ -59,9 +59,8 @@ class ServerLoginHelper {
       }
       out.writeObject(challenge);
       out.flush();
-      @SuppressWarnings("rawtypes")
-      final Map credentials = (Map) in.readObject();//TODO rewrite in order to remove Suppressed Warning
-      final Set<Map.Entry<?,?>> entries = credentials.entrySet();
+      final Map<String, String> credentials = (Map<String, String>) in.readObject();//TODO rewrite in order to remove Suppressed Warning
+      final Set<Map.Entry<String, String>> entries = credentials.entrySet();
       for (final Map.Entry<?,?> entry : entries) {
         // check what we read is a string
         if (!(entry.getKey() instanceof String) && !(entry.getValue() instanceof String)) {

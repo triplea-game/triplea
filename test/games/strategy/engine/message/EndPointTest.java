@@ -6,10 +6,9 @@ import java.util.List;
 import junit.framework.TestCase;
 
 public class EndPointTest extends TestCase {
-  @SuppressWarnings("rawtypes")
   public void testEndPoint() {
     final EndPoint endPoint = new EndPoint("", Comparator.class, false);
-    endPoint.addImplementor(new Comparator() {
+    endPoint.addImplementor(new Comparator<Object>() {
       @Override
       public int compare(final Object o1, final Object o2) {
         return 2;

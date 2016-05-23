@@ -78,13 +78,11 @@ public class MapProperties {
     COLOR_MAP.put("Impassible", new Color(0xD8BA7C));
   }
 
-  @SuppressWarnings("rawtypes")
-  public Tuple<PropertiesUI, List<MapPropertyWrapper>> propertyWrapperUI(final boolean editable) {
+  public Tuple<PropertiesUI, List<MapPropertyWrapper<Object>>> propertyWrapperUI(final boolean editable) {
     return MapPropertyWrapper.createPropertiesUI(this, editable);
   }
 
-  @SuppressWarnings("rawtypes")
-  public void writePropertiesToObject(final List<MapPropertyWrapper> properties) {
+  public void writePropertiesToObject(final List<MapPropertyWrapper<Object>> properties) {
     MapPropertyWrapper.writePropertiesToObject(this, properties);
   }
 
