@@ -143,11 +143,6 @@ public class GameRunner2 {
       showMainFrame();
     }
     (new Thread(() -> setupLogging())).start();
-    (new Thread(() -> {
-      ErrorConsole.getConsole().displayStandardError();
-      ErrorConsole.getConsole().displayStandardOutput();
-      ErrorHandler.registerExceptionHandler();
-    })).start();
 
     setupProxies();
     (new Thread(() -> checkForUpdates())).start();
