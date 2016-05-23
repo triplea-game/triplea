@@ -45,9 +45,9 @@ public class MatchTest extends TestCase {
   }
 
   public void testNever() {
-    assertTrue(!Match.someMatch(m_ints, Match.NEVER_MATCH));
-    assertTrue(!Match.allMatch(m_ints, Match.NEVER_MATCH));
-    assertEquals(0, Match.getMatches(m_ints, Match.NEVER_MATCH).size());
+    assertTrue(!Match.someMatch(m_ints, (Match<Integer>)Match.NEVER_MATCH));
+    assertTrue(!Match.allMatch(m_ints, (Match<Integer>)Match.NEVER_MATCH));
+    assertEquals(0, Match.getMatches(m_ints, (Match<Integer>)Match.NEVER_MATCH).size());
   }
 
   public void testMatches() {
@@ -60,9 +60,9 @@ public class MatchTest extends TestCase {
   }
 
   public void testAlways() {
-    assertTrue(Match.someMatch(m_ints, Match.ALWAYS_MATCH));
-    assertTrue(Match.allMatch(m_ints, Match.ALWAYS_MATCH));
-    assertEquals(7, Match.getMatches(m_ints, Match.ALWAYS_MATCH).size());
+    assertTrue(Match.someMatch(m_ints, (Match<Integer>)Match.ALWAYS_MATCH));
+    assertTrue(Match.allMatch(m_ints, (Match<Integer>)Match.ALWAYS_MATCH));
+    assertEquals(7, Match.getMatches(m_ints, (Match<Integer>)Match.ALWAYS_MATCH).size());
   }
 
   public void testAnd() {
@@ -99,7 +99,7 @@ public class MatchTest extends TestCase {
     map.put("a", "b");
     map.put("b", "c");
     map.put("c", "d");
-    assertEquals(Match.getKeysWhereValueMatch(map, Match.ALWAYS_MATCH).size(), 3);
-    assertEquals(Match.getKeysWhereValueMatch(map, Match.NEVER_MATCH).size(), 0);
+    assertEquals(Match.getKeysWhereValueMatch(map, (Match<String>)Match.ALWAYS_MATCH).size(), 3);
+    assertEquals(Match.getKeysWhereValueMatch(map, (Match<String>)Match.NEVER_MATCH).size(), 0);
   }
 }
