@@ -107,17 +107,6 @@ public class TransportUtils {
     final Collection<Unit> airTransports = Match.getMatches(transports, Matches.UnitIsAirTransport);
     final List<Unit> canBeTransported = sortByTransportCostDescending(units);
 
-    final Comparator<Unit> c = new Comparator<Unit>() {
-      @Override
-      public int compare(final Unit o1, final Unit o2) {
-        final int cost1 = UnitAttachment.get((o1).getUnitType()).getTransportCost();
-        final int cost2 = UnitAttachment.get((o2).getUnitType()).getTransportCost();
-        // descending transportCost
-        return Integer.compare(cost2, cost1);
-      }
-    };
-    Collections.sort((List<Unit>) units, c);
-
     // Define the max of all units that could be loaded
     final List<Unit> totalLoad = new ArrayList<Unit>();
 
