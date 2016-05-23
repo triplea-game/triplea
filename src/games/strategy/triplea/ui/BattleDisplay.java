@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -80,6 +82,7 @@ import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.Util;
 import games.strategy.util.Match;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
 /**
@@ -303,73 +306,44 @@ public class BattleDisplay extends JPanel {
 
   protected void waitForConfirmation(final String message) {
     if (SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("This cant be in dispatch thread");
+      throw new IllegalStateException("This can not be in dispatch thread");
     }
 
-    if (getConfirmDefensiveRolls()) {
-      waitForSpaceBarClick(message);
-    } else {
-      // Sleep for a short period, allows users to see the dice rolls before the game
-      // moves on.
-      // TODO: This value should find its way into a setting. For now it is hardcoded since
-      // just having another confusing value to set would not help very much. Needs to be some
-      // context/explanation around it for a user to really want to set it.
-      try {
-        Thread.sleep(1500);
-      } catch (InterruptedException e) {
-      }
-    }
-  }
-
-  private void waitForSpaceBarClick(final String message) {
     final CountDownLatch continueLatch = new CountDownLatch(1);
-    // set the action in the swing thread.
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionButton.setAction(new AbstractAction(message) {
-          private static final long serialVersionUID = 4489826259192394858L;
-
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            continueLatch.countDown();
-          }
-        });
-      }
-    });
+    AbstractAction buttonAction = SwingAction.of(message, e -> continueLatch.countDown());
+    SwingUtilities.invokeLater(() -> m_actionButton.setAction(buttonAction));
     m_mapPanel.getUIContext().addShutdownLatch(continueLatch);
-    // wait for the button to be pressed.
+
+    // Set a auto-wait expiration if the option is set.
+    if(!getConfirmDefensiveRolls()) {
+      final int maxWaitTime = 1500;
+      Timer t = new Timer();
+      t.schedule(new TimerTask() {
+        @Override
+        public void run() {
+          continueLatch.countDown();
+          if (continueLatch.getCount() > 0) {
+            SwingUtilities.invokeLater(() -> m_actionButton.setAction(m_nullAction));
+          }
+        }
+      }, maxWaitTime);
+    }
+
     try {
+      // wait for the button to be pressed.
       continueLatch.await();
     } catch (final InterruptedException ie) {
     } finally {
       m_mapPanel.getUIContext().removeShutdownLatch(continueLatch);
     }
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionButton.setAction(m_nullAction);
-      }
-    });
+    SwingUtilities.invokeLater(() -> m_actionButton.setAction(m_nullAction));
   }
 
 
   public void endBattle(final String message, final Window enclosingFrame) {
     m_steps.walkToLastStep();
-    final Action close = new AbstractAction(message + " : (Press Space to close)") {
-      private static final long serialVersionUID = 4219274012228245826L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        enclosingFrame.setVisible(false);
-      }
-    };
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionButton.setAction(close);
-      }
-    });
+    final Action close = SwingAction.of(message + " : (Press Space to close)", e -> enclosingFrame.setVisible(false));
+    SwingUtilities.invokeLater(() -> m_actionButton.setAction(close));
   }
 
   public void notifyRetreat(final Collection<Unit> retreating) {
