@@ -884,9 +884,14 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
     // we add factories and constructions later
     if (water || wasFactoryThereAtStart || (!water && isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player))) {
+<<<<<<< refs/remotes/triplea-game/master
       final Match<Unit> seaOrLandMatch = water ? Matches.UnitIsSea : Matches.UnitIsLand;
       placeableUnits
           .addAll(Match.getMatches(units, new CompositeMatchAnd<>(seaOrLandMatch, Matches.UnitIsNotConstruction)));
+=======
+      placeableUnits.addAll(Match.getMatches(units,
+          new CompositeMatchAnd<Unit>(water ? Matches.UnitIsSea : Matches.UnitIsLand, Matches.UnitIsNotConstruction)));
+>>>>>>> Resolved Errors
       if (!water) {
         placeableUnits.addAll(
             Match.getMatches(units, new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.UnitIsNotConstruction)));
