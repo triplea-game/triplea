@@ -86,7 +86,7 @@ public class AdvancedUtils {
   public static List<Territory> getTerritoriesWithinXDistanceOfYMatchingZ(final GameData data, final Territory start,
       final int maxDistance, final Match<Territory> match) {
     return getTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, start, maxDistance, match,
-        Match.ALWAYS_MATCH);
+        (Match<Territory>)Match.ALWAYS_MATCH);
   }
 
   private static List<Territory> getTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(final GameData data,
