@@ -3,6 +3,7 @@ package games.strategy.net;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 class ClientLoginHelper {
@@ -24,15 +25,18 @@ class ClientLoginHelper {
       // write the object output streams magic number
       out.flush();
       final ObjectInputStream in = new ObjectInputStream(streams.getBufferedIn());
-      @SuppressWarnings("rawtypes")
-      final Map challenge = (Map) in.readObject();
+      Object challengeObject = in.readObject();
+      Map<String, String> challenge = null;
+      if(challengeObject instanceof Map){
+        challenge = (Map<String, String>) challengeObject;
+      }
       // the degenerate case
       if (challenge == null) {
         out.writeObject(null);
         out.flush();
         return true;
       }
-      final Set<Map.Entry<?,?>> entries = challenge.entrySet();//TODO someone needs to rewrite this in order to remove the Supressed Warning
+      final Set<Entry<String,String>> entries = challenge.entrySet();//TODO someone needs to rewrite this in order to remove the Supressed Warning
       for (final Map.Entry<?,?> entry : entries) {
         // check what we read is a string
         if (!(entry.getKey() instanceof String) && !(entry.getValue() instanceof String)) {
