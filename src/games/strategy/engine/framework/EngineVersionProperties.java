@@ -55,7 +55,7 @@ public class EngineVersionProperties {
     final Version showUpdatesFromTemp =
         new Version(props.getProperty("SHOW_FROM", ClientContext.engineVersion().getVersion().toStringFull(".")));
     m_showUpdatesFrom =
-        (ClientContext.engineVersion().getVersion().isLessThan(showUpdatesFromTemp, false) ? ClientContext.engineVersion().getVersion() : showUpdatesFromTemp);
+        (ClientContext.engineVersion().getVersion().isLessThan(showUpdatesFromTemp) ? ClientContext.engineVersion().getVersion() : showUpdatesFromTemp);
     m_link = props.getProperty("LINK", "http://triplea.sourceforge.net/");
     m_linkAlt = props.getProperty("LINK_ALT", "http://sourceforge.net/projects/tripleamaps/files/TripleA/stable/");
     m_changelogLink = props.getProperty("CHANGELOG",
@@ -202,9 +202,9 @@ public class EngineVersionProperties {
     final StringBuilder text = new StringBuilder("<html>");
     final List<Version> versions = new ArrayList<>();
     versions.addAll(getReleaseNotes().keySet());
-    Collections.sort(versions, Version.getHighestToLowestComparator(false));
+    Collections.sort(versions, Version.getHighestToLowestComparator());
     for (final Version v : versions) {
-      if (showAll || ClientContext.engineVersion().getVersion().isLessThan(v, false)) {
+      if (showAll || ClientContext.engineVersion().getVersion().isLessThan(v)) {
         text.append("<br />" + getReleaseNotes().get(v) + "<br /><br />");
       }
     }
@@ -235,9 +235,9 @@ public class EngineVersionProperties {
     final StringBuilder releaseNotesBuilder = new StringBuilder("<html>");
     final List<Version> versions = new ArrayList<>();
     versions.addAll(getReleaseNotes().keySet());
-    Collections.sort(versions, Version.getHighestToLowestComparator(false));
+    Collections.sort(versions, Version.getHighestToLowestComparator());
     for (final Version v : versions) {
-      if (getShowUpdatesFrom().equals(v, false) || getShowUpdatesFrom().isLessThan(v, false)) {
+      if (getShowUpdatesFrom().equals(v, false) || getShowUpdatesFrom().isLessThan(v)) {
         releaseNotesBuilder.append("<br />" + getReleaseNotes().get(v) + "<br /><br />");
       }
     }
