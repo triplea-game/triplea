@@ -1,14 +1,5 @@
 package games.strategy.triplea.util;
 
-import games.strategy.engine.data.Route;
-import games.strategy.engine.data.Unit;
-import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,6 +9,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Unit;
+import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 
 
 public class TransportUtils {
@@ -72,14 +72,14 @@ public class TransportUtils {
     // Add max units to each transport
     final Map<Unit, Unit> mapping = new HashMap<>();
     Optional<Unit> finalTransport = Optional.empty();
-    for (final Unit transport : canTransport) {
+    for (final Unit currentTransport : canTransport) {
 
       // Check if remaining units can all be loaded into 1 transport
-      final int capacity = TransportTracker.getAvailableCapacity(transport);
+      final int capacity = TransportTracker.getAvailableCapacity(currentTransport);
       final int remainingCost = getTransportCost(canBeTransported);
       if (remainingCost <= capacity) {
         if (!finalTransport.isPresent() || capacity < TransportTracker.getAvailableCapacity(finalTransport.get())) {
-          finalTransport = Optional.of(transport);
+          finalTransport = Optional.of(currentTransport);
         }
         continue; // skip transports until the smallest one all units fit in with the most moves
       }
@@ -89,8 +89,7 @@ public class TransportUtils {
         break;
       }
 
-      // Load max units into current transport
-      loadMaxUnits(transport, canBeTransported, mapping);
+      loadMaxUnits(currentTransport, canBeTransported, mapping);
     }
 
     // Load remaining units in final transport
@@ -148,7 +147,7 @@ public class TransportUtils {
       final Collection<Unit> transports) {
     final Collection<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
     final Collection<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
-    final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
+    final Map<Unit, Unit> mapping = new HashMap<>();
     final Iterator<Unit> land = canBeTransported.iterator();
     while (land.hasNext()) {
       final Unit currentTransported = land.next();
