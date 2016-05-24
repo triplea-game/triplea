@@ -884,8 +884,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
     // we add factories and constructions later
     if (water || wasFactoryThereAtStart || (!water && isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player))) {
-      placeableUnits.addAll(Match.getMatches(units,
-          new CompositeMatchAnd<>(water ? Matches.UnitIsSea : Matches.UnitIsLand, Matches.UnitIsNotConstruction)));
+      final Match<Unit> seaOrLandMatch = water ? Matches.UnitIsSea : Matches.UnitIsLand;
+      placeableUnits
+          .addAll(Match.getMatches(units, new CompositeMatchAnd<>(seaOrLandMatch, Matches.UnitIsNotConstruction)));
       if (!water) {
         placeableUnits.addAll(
             Match.getMatches(units, new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.UnitIsNotConstruction)));
