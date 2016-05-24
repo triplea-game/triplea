@@ -180,8 +180,8 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     }
   }
 
-  private static List<MapPropertyWrapper<Object>> createProperties(final Object object) {
-    final List<MapPropertyWrapper<Object>> properties = new ArrayList<>();
+  private static List<MapPropertyWrapper<?>> createProperties(final Object object) {
+    final List<MapPropertyWrapper<?>> properties = new ArrayList<>();
     for (final Method setter : object.getClass().getMethods()) {
       final boolean startsWithSet = setter.getName().startsWith("set");
       if (!startsWithSet) {
@@ -213,7 +213,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
         continue;
       }
       try {
-        final MapPropertyWrapper<Object> wrapper = new MapPropertyWrapper<>(propertyName, null, currentValue, setter, getter);
+        final MapPropertyWrapper<?> wrapper = new MapPropertyWrapper<>(propertyName, null, currentValue, setter, getter);
         properties.add(wrapper);
       } catch (final Exception e) {
         e.printStackTrace();
@@ -223,8 +223,8 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     return properties;
   }
 
-  public static void writePropertiesToObject(final Object object, final List<MapPropertyWrapper<Object>> properties) {
-    for (final MapPropertyWrapper<Object> p : properties) {
+  public static void writePropertiesToObject(final Object object, final List<MapPropertyWrapper<?>> properties) {
+    for (final MapPropertyWrapper<?> p : properties) {
       p.setToObject(object);
     }
   }
@@ -234,9 +234,9 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     return new PropertiesUI(properties, editable);
   }
 
-  public static Tuple<PropertiesUI, List<MapPropertyWrapper<Object>>> createPropertiesUI(final Object object,
+  public static Tuple<PropertiesUI, List<MapPropertyWrapper<?>>> createPropertiesUI(final Object object,
       final boolean editable) {
-    final List<MapPropertyWrapper<Object>> properties = createProperties(object);
+    final List<MapPropertyWrapper<?>> properties = createProperties(object);
     final PropertiesUI ui = new PropertiesUI(properties, editable);
     return Tuple.of(ui, properties);
   }
@@ -248,7 +248,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
 
   public static void main(final String[] args) {
     final MapProperties mapProperties = new MapProperties();
-    final List<MapPropertyWrapper<Object>> properties = createProperties(mapProperties);
+    final List<MapPropertyWrapper<?>> properties = createProperties(mapProperties);
     final PropertiesUI ui = createPropertiesUI(properties, true);
     final JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

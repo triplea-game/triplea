@@ -994,7 +994,7 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
       int round = 0;
       while (nodes.hasMoreElements()) {
         // we want to export on change of turn
-        final HistoryNode element = (HistoryNode) nodes.nextElement();
+        final HistoryNode element = nodes.nextElement();
         if (element instanceof Round) {
           round++;
         }

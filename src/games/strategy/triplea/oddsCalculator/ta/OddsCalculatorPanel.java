@@ -18,7 +18,6 @@ import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -382,11 +381,7 @@ public class OddsCalculatorPanel extends JPanel {
   private Collection<TerritoryEffect> getTerritoryEffects() {
     final Collection<TerritoryEffect> territoryEffects = new ArrayList<>();
     if (m_territoryEffectsJList != null) {
-      final List<Object> selectedObjects = Arrays.asList(m_territoryEffectsJList.getSelectedValuesList());
-      final List<String> selected = new ArrayList<>();
-      for (final Object obj : selectedObjects) {
-        selected.add((String) obj);
-      }
+      final List<String> selected = m_territoryEffectsJList.getSelectedValuesList();
       m_data.acquireReadLock();
       try {
         final Hashtable<String, TerritoryEffect> allTerritoryEffects = m_data.getTerritoryEffectList();

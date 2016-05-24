@@ -85,7 +85,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private final SmallMapImageManager smallMapImageManager;
   // keep a reference to the images from the last paint to
   // prevent them from being gcd
-  private final List<Object> images = new ArrayList<>();
+  private final List<Tile> images = new ArrayList<>();
   private RouteDescription routeDescription;
   private final TileManager tileManager;
   private final BackgroundDrawer backgroundDrawer;
@@ -624,7 +624,7 @@ public class MapPanel extends ImageScrollerLargeView {
         if (tile.isDirty()) {
           undrawnTiles.add(tile);
         } else if (forceInMemory) {
-          images.add(tile.getRawImage());
+          images.add(tile);
         }
       }
     }
