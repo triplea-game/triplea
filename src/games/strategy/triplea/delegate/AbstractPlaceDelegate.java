@@ -258,9 +258,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
               + MyFormatter.unitsToTextNoOwner(unitsCanBePlacedByThisProducer));
         }
       }
-      @SuppressWarnings("unchecked")
       final Collection<Unit> placedUnits =
-          Match.getNMatches(unitsCanBePlacedByThisProducer, maxPlaceable, (Match<Unit>)Match.ALWAYS_MATCH);
+          Match.getNMatches(unitsCanBePlacedByThisProducer, maxPlaceable, Match.getAlwaysMatch());
       performPlaceFrom(producer, placedUnits, at, player);
       unitsLeftToPlace.removeAll(placedUnits);
     }
@@ -884,14 +883,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
     // we add factories and constructions later
     if (water || wasFactoryThereAtStart || (!water && isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player))) {
-<<<<<<< refs/remotes/triplea-game/master
       final Match<Unit> seaOrLandMatch = water ? Matches.UnitIsSea : Matches.UnitIsLand;
       placeableUnits
           .addAll(Match.getMatches(units, new CompositeMatchAnd<>(seaOrLandMatch, Matches.UnitIsNotConstruction)));
-=======
-      placeableUnits.addAll(Match.getMatches(units,
-          new CompositeMatchAnd<Unit>(water ? Matches.UnitIsSea : Matches.UnitIsLand, Matches.UnitIsNotConstruction)));
->>>>>>> Resolved Errors
       if (!water) {
         placeableUnits.addAll(
             Match.getMatches(units, new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.UnitIsNotConstruction)));
@@ -1431,8 +1425,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         continue;
       }
       Collections.sort(canBePlacedHere, getHardestToPlaceWithRequiresUnitsRestrictions(true));
-      @SuppressWarnings("unchecked")
-      final Collection<Unit> placedHere = Match.getNMatches(canBePlacedHere, productionHere, (Match<Unit>)Match.ALWAYS_MATCH);
+      final Collection<Unit> placedHere = Match.getNMatches(canBePlacedHere, productionHere, Match.getAlwaysMatch());
       unitsLeftToPlace.removeAll(placedHere);
     }
     if (unitsLeftToPlace.isEmpty()) {

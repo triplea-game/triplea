@@ -6,7 +6,6 @@ import java.util.HashMap;
 
 import junit.framework.TestCase;
 
-@SuppressWarnings("unchecked")
 public class MatchTest extends TestCase {
   Collection<Integer> m_ints = new ArrayList<>();
   Match<Integer> m_pos = new Match<Integer>() {
@@ -45,9 +44,9 @@ public class MatchTest extends TestCase {
   }
 
   public void testNever() {
-    assertTrue(!Match.someMatch(m_ints, (Match<Integer>)Match.NEVER_MATCH));
-    assertTrue(!Match.allMatch(m_ints, (Match<Integer>)Match.NEVER_MATCH));
-    assertEquals(0, Match.getMatches(m_ints, (Match<Integer>)Match.NEVER_MATCH).size());
+    assertTrue(!Match.someMatch(m_ints, Match.getNeverMatch()));
+    assertTrue(!Match.allMatch(m_ints, Match.getNeverMatch()));
+    assertEquals(0, Match.getMatches(m_ints, Match.getNeverMatch()).size());
   }
 
   public void testMatches() {
@@ -60,9 +59,9 @@ public class MatchTest extends TestCase {
   }
 
   public void testAlways() {
-    assertTrue(Match.someMatch(m_ints, (Match<Integer>)Match.ALWAYS_MATCH));
-    assertTrue(Match.allMatch(m_ints, (Match<Integer>)Match.ALWAYS_MATCH));
-    assertEquals(7, Match.getMatches(m_ints, (Match<Integer>)Match.ALWAYS_MATCH).size());
+    assertTrue(Match.someMatch(m_ints, Match.getAlwaysMatch()));
+    assertTrue(Match.allMatch(m_ints, Match.getAlwaysMatch()));
+    assertEquals(7, Match.getMatches(m_ints, Match.getAlwaysMatch()).size());
   }
 
   public void testAnd() {
@@ -99,7 +98,7 @@ public class MatchTest extends TestCase {
     map.put("a", "b");
     map.put("b", "c");
     map.put("c", "d");
-    assertEquals(Match.getKeysWhereValueMatch(map, (Match<String>)Match.ALWAYS_MATCH).size(), 3);
-    assertEquals(Match.getKeysWhereValueMatch(map, (Match<String>)Match.NEVER_MATCH).size(), 0);
+    assertEquals(Match.getKeysWhereValueMatch(map, Match.getAlwaysMatch()).size(), 3);
+    assertEquals(Match.getKeysWhereValueMatch(map, Match.getNeverMatch()).size(), 0);
   }
 }
