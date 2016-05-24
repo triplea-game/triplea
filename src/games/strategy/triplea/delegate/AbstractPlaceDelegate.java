@@ -260,7 +260,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       }
       @SuppressWarnings("unchecked")
       final Collection<Unit> placedUnits =
-          Match.getNMatches(unitsCanBePlacedByThisProducer, maxPlaceable, Match.ALWAYS_MATCH);
+          Match.getNMatches(unitsCanBePlacedByThisProducer, maxPlaceable, (Match<Unit>)Match.ALWAYS_MATCH);
       performPlaceFrom(producer, placedUnits, at, player);
       unitsLeftToPlace.removeAll(placedUnits);
     }
@@ -885,7 +885,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     // we add factories and constructions later
     if (water || wasFactoryThereAtStart || (!water && isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player))) {
       placeableUnits.addAll(Match.getMatches(units,
-          new CompositeMatchAnd<>(water ? Matches.UnitIsSea : Matches.UnitIsLand, Matches.UnitIsNotConstruction)));
+          new CompositeMatchAnd<Unit>(water ? Matches.UnitIsSea : Matches.UnitIsLand, Matches.UnitIsNotConstruction)));
       if (!water) {
         placeableUnits.addAll(
             Match.getMatches(units, new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.UnitIsNotConstruction)));
@@ -1426,7 +1426,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       }
       Collections.sort(canBePlacedHere, getHardestToPlaceWithRequiresUnitsRestrictions(true));
       @SuppressWarnings("unchecked")
-      final Collection<Unit> placedHere = Match.getNMatches(canBePlacedHere, productionHere, Match.ALWAYS_MATCH);
+      final Collection<Unit> placedHere = Match.getNMatches(canBePlacedHere, productionHere, (Match<Unit>)Match.ALWAYS_MATCH);
       unitsLeftToPlace.removeAll(placedHere);
     }
     if (unitsLeftToPlace.isEmpty()) {
