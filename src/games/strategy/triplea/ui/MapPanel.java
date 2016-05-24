@@ -566,7 +566,7 @@ public class MapPanel extends ImageScrollerLargeView {
           }
 
           Optional<Image> image = uiContext.getUnitImageFactory().getHighlightImage(category.getType(),
-              category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());;
+              category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
           if(image.isPresent()) {
             final AffineTransform t = new AffineTransform();
             t.translate(normalizeX(r.getX() - getXOffset()) * m_scale, normalizeY(r.getY() - getYOffset()) * m_scale);

@@ -63,7 +63,7 @@ public class ProductionPanel extends JPanel {
     if (parent != null) {
       String title = "Produce";
       JPanel contents = this;
-      m_dialog = SwingComponents.newJDialogModal(parent, title , contents);
+      m_dialog = SwingComponents.newJDialogModal(parent, title, contents);
     }
     this.m_bid = bid;
     this.m_data = data;
@@ -275,7 +275,8 @@ public class ProductionPanel extends JPanel {
       } else {
         text = "<html> x " + ResourceCollection.toStringForHTML(m_cost, m_data) + "</html>";
       }
-      final JLabel label = icon.isPresent() ? new JLabel(text, icon.get(), SwingConstants.LEFT) : new JLabel( text, SwingConstants.LEFT);
+      final JLabel label =
+          icon.isPresent() ? new JLabel(text, icon.get(), SwingConstants.LEFT) : new JLabel(text, SwingConstants.LEFT);
       final String toolTipText = "<html>" + tooltip.toString() + "</html>";
       info.setToolTipText(toolTipText);
       label.setToolTipText(toolTipText);
