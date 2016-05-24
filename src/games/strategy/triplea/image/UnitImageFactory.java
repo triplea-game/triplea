@@ -118,31 +118,29 @@ public class UnitImageFactory {
     if (m_images.containsKey(fullName)) {
       return Optional.of(m_images.get(fullName));
     }
-    try (PerfTimer timer = Perf.startTimer("Load an image")) {
-      final Optional<Image> image = getBaseImage(baseName, player);
-      if (!image.isPresent()) {
-        return Optional.empty();
-      }
-      Image baseImage = image.get();
-
-
-      // We want to scale units according to the given scale factor.
-      // We use smooth scaling since the images are cached to allow
-      // to take our time in doing the scaling.
-      // Image observer is null, since the image should have been
-      // guaranteed to be loaded.
-      final int width = (int) (baseImage.getWidth(null) * m_scaleFactor);
-      final int height = (int) (baseImage.getHeight(null) * m_scaleFactor);
-      final Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-      // Ensure the scaling is completed.
-      try {
-        Util.ensureImageLoaded(scaledImage);
-      } catch (final InterruptedException ex) {
-        ex.printStackTrace();
-      }
-      m_images.put(fullName, scaledImage);
-      return Optional.of(scaledImage);
+    final Optional<Image> image = getBaseImage(baseName, player);
+    if (!image.isPresent()) {
+      return Optional.empty();
     }
+    Image baseImage = image.get();
+
+
+    // We want to scale units according to the given scale factor.
+    // We use smooth scaling since the images are cached to allow
+    // to take our time in doing the scaling.
+    // Image observer is null, since the image should have been
+    // guaranteed to be loaded.
+    final int width = (int) (baseImage.getWidth(null) * m_scaleFactor);
+    final int height = (int) (baseImage.getHeight(null) * m_scaleFactor);
+    final Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    // Ensure the scaling is completed.
+    try {
+      Util.ensureImageLoaded(scaledImage);
+    } catch (final InterruptedException ex) {
+      ex.printStackTrace();
+    }
+    m_images.put(fullName, scaledImage);
+    return Optional.of(scaledImage);
   }
 
   public Optional<URL> getBaseImageURL(final String baseImageName, final PlayerID id) {
