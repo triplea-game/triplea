@@ -293,7 +293,6 @@ public class GameSelectorModel extends Observable {
         && (userPreferredDefaultGameURI.contains(root) || userPreferredDefaultGameURI.contains(user))) {
       // if the user has a preferred URI, then we load it, and don't bother parsing or doing anything with the whole
       // game model list
-      boolean refreshedAlready = false;
       try {
         final URI defaultURI = new URI(userPreferredDefaultGameURI);
         selectedGame = new NewGameChooserEntry(defaultURI);
