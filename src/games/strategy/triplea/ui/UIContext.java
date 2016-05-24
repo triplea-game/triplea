@@ -136,7 +136,8 @@ public class UIContext extends AbstractUIContext implements IUIContext {
     return m_unitImageFactory;
   }
 
-  @Override public JLabel createUnitImageJLabel(UnitType type, PlayerID player, GameData data,
+  @Override
+  public JLabel createUnitImageJLabel(UnitType type, PlayerID player, GameData data,
       UnitDamage damaged, UnitEnable disabled) {
     Optional<ImageIcon>
         image = this.getUnitImageFactory().getIcon(type,player,data,damaged == UnitDamage.DAMAGED, disabled == UnitEnable.DISABLED);
