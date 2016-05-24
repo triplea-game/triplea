@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -82,7 +83,6 @@ import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.Util;
 import games.strategy.util.Match;
-import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
 /**
@@ -244,13 +244,11 @@ public class BattleDisplay extends JPanel {
     }
     for (final UnitCategory category : UnitSeperator.categorize(aKilledUnits, dependentsMap, false, false)) {
       final JPanel panel = new JPanel();
-      JLabel unit = new JLabel(
-          m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, false, false));
+      JLabel unit = m_uiContext.createUnitImageJLabel(category.getType(), category.getOwner(), m_data);
       panel.add(unit);
       panel.add(new JLabel("x " + category.getUnits().size()));
       for (final UnitOwner owner : category.getDependents()) {
-        unit = new JLabel(
-            m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data, false, false));
+        unit = m_uiContext.createUnitImageJLabel(owner.getType(), owner.getOwner(), m_data);
         panel.add(unit);
         // TODO this size is of the transport collection size, not the transportED collection size.
         panel.add(new JLabel("x " + category.getUnits().size()));
@@ -932,14 +930,13 @@ class Renderer implements TableCellRenderer {
 class TableData {
   static final TableData NULL = new TableData();
   private int m_count;
-  private Icon m_icon;
+  private Optional<ImageIcon> m_icon;
 
   private TableData() {}
 
   TableData(final PlayerID player, final int count, final UnitType type, final GameData data, final boolean damaged,
       final boolean disabled, final IUIContext uiContext) {
     m_count = count;
-    // TODO Kev determine if we need to identify if the unit is hit/disabled
     m_icon = uiContext.getUnitImageFactory().getIcon(type, player, data, damaged, disabled);
   }
 
@@ -949,7 +946,9 @@ class TableData {
       stamp.setIcon(null);
     } else {
       stamp.setText("x" + m_count);
-      stamp.setIcon(m_icon);
+      if(m_icon.isPresent()) {
+        stamp.setIcon(m_icon.get());
+      }
     }
   }
 }
@@ -1013,20 +1012,12 @@ class CasualtyNotificationPanel extends JPanel {
       final UnitCategory category = categoryIter.next();
       final JPanel panel = new JPanel();
       // TODO Kev determine if we need to identify if the unit is hit/disabled
-      final JLabel unit =
-          new JLabel(m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data,
-              damaged ? category.hasDamageOrBombingUnitDamage() : false, disabled ? category.getDisabled() : false));
+      Optional<ImageIcon> unitImage = m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data,
+          damaged ? category.hasDamageOrBombingUnitDamage() : false, disabled ? category.getDisabled() : false);
+      final JLabel unit = unitImage.isPresent() ? new JLabel(unitImage.get()) : new JLabel();
       panel.add(unit);
       for (final UnitOwner owner : category.getDependents()) {
-        // Don't use damaged icons for dependent units (bug 2984310)?
-        unit.add(new JLabel(
-            m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data, false, false)));
-        /*
-         * //we don't want to use the damaged icon for units that have just been damaged
-         * boolean useDamagedIcon = category.getDamaged() && !damaged;
-         * unit.add(new JLabel(m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data,
-         * useDamagedIcon)));
-         */
+        unit.add(m_uiContext.createUnitImageJLabel(owner.getType(), owner.getOwner(), m_data));
       }
       panel.add(new JLabel("x " + category.getUnits().size()));
       if (damaged) {
