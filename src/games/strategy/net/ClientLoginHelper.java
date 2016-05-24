@@ -25,11 +25,7 @@ class ClientLoginHelper {
       // write the object output streams magic number
       out.flush();
       final ObjectInputStream in = new ObjectInputStream(streams.getBufferedIn());
-      Object challengeObject = in.readObject();
-      Map<String, String> challenge = null;
-      if(challengeObject instanceof Map){
-        challenge = (Map<String, String>) challengeObject;
-      }
+      Map<String, String> challenge = (Map<String, String>) in.readObject();
       // the degenerate case
       if (challenge == null) {
         out.writeObject(null);

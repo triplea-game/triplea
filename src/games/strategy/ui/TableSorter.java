@@ -74,19 +74,9 @@ public class TableSorter extends AbstractTableModel {
   public static final int NOT_SORTED = 0;
   public static final int ASCENDING = 1;
   private static Directive EMPTY_DIRECTIVE = new Directive(-1, NOT_SORTED);
-  public static final Comparator<Object> COMPARABLE_COMAPRATOR = new Comparator<Object>() {
-    @SuppressWarnings("unchecked")
-    @Override
-    public int compare(final Object o1, final Object o2) {
-      return ((Comparable<Object>) o1).compareTo(o2);//TODO needs to be rewritten in order to remove the warning
-    }
-  };
-  public static final Comparator<Object> LEXICAL_COMPARATOR = new Comparator<Object>() {
-    @Override
-    public int compare(final Object o1, final Object o2) {
-      return o1.toString().compareTo(o2.toString());
-    }
-  };
+  @SuppressWarnings("unchecked")
+  public static final Comparator<Object> COMPARABLE_COMAPRATOR = (Comparator<Object>)(o1, o2) -> ((Comparable<Object>) o1).compareTo(o2);//TODO needs to be rewritten in order to remove the warning
+  public static final Comparator<Object> LEXICAL_COMPARATOR = (Comparator<Object>)(o1, o2) -> o1.toString().compareTo(o2.toString());
   private Row[] viewToModel;
   private int[] modelToView;
   private JTableHeader tableHeader;

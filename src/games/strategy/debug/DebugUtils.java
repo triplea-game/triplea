@@ -80,11 +80,7 @@ public class DebugUtils {
   public static String getProperties() {
     final StringBuilder buf = new StringBuilder("SYSTEM PROPERTIES\n");
     final Properties props = System.getProperties();
-    final List<Object> keysObject = new ArrayList<>(props.keySet());
-    final List<String> keys = new ArrayList<>();
-    for(Object keyObject : keysObject){
-      keys.add((String) keyObject);
-    }
+    final List<String> keys = new ArrayList<>(props.stringPropertyNames());
     Collections.sort(keys);
     final Iterator<String> iter = keys.iterator();
     while (iter.hasNext()) {
