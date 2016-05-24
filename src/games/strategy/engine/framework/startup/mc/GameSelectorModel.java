@@ -293,13 +293,10 @@ public class GameSelectorModel extends Observable {
         && (userPreferredDefaultGameURI.contains(root) || userPreferredDefaultGameURI.contains(user))) {
       // if the user has a preferred URI, then we load it, and don't bother parsing or doing anything with the whole
       // game model list
-      boolean refreshedAlready = false;
       try {
         final URI defaultURI = new URI(userPreferredDefaultGameURI);
         selectedGame = new NewGameChooserEntry(defaultURI);
       } catch (final Exception e) {
-        NewGameChooser.refreshNewGameChooserModel();
-        refreshedAlready = true;
         selectedGame = selectByName(ui, forceFactoryDefault);
         if (selectedGame == null) {
           return;
@@ -309,30 +306,11 @@ public class GameSelectorModel extends Observable {
         try {
           selectedGame.fullyParseGameData();
         } catch (final GameParseException e) {
-          if (!refreshedAlready) {
-            NewGameChooser.refreshNewGameChooserModel();
-            refreshedAlready = true;
-          }
           loadDefaultGame(ui, true);
           return;
         }
       }
-      // since we are not forceFactoryDefault, and since we are loading purely from the URI without loading the new game
-      // chooser model, we
-      // might as well refresh it in a separate thread
-      if (!refreshedAlready) {
-        new Thread(new Runnable() {
-          @Override
-          public void run() {
-            NewGameChooser.refreshNewGameChooserModel();
-          }
-        }).start();
-      }
     } else {
-      if (!forceFactoryDefault) {
-        // we would rather have their game data refreshed after leaving a game
-        NewGameChooser.refreshNewGameChooserModel();
-      }
       selectedGame = selectByName(ui, forceFactoryDefault);
       if (selectedGame == null) {
         return;
