@@ -42,7 +42,6 @@ import games.strategy.engine.framework.startup.launcher.IServerReady;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.ui.ClientOptions;
 import games.strategy.engine.framework.startup.ui.MainFrame;
-import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.gamePlayer.IGamePlayer;

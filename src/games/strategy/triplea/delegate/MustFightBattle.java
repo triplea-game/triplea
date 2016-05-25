@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;

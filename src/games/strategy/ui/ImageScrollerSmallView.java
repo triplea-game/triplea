@@ -17,8 +17,6 @@ import java.util.Observer;
 import javax.swing.JComponent;
 import javax.swing.border.EtchedBorder;
 
-import games.strategy.debug.ClientLogger;
-
 /**
  * A small image that tracks a selection area within a small image. Generally
  * used in conjunction with a ImageScrollerLarrgeView.

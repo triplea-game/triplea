@@ -16,7 +16,6 @@ import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.ScriptedRandomSource;
-import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.util.ThreadUtil;

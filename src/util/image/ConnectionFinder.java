@@ -9,7 +9,6 @@ import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ import java.util.regex.Pattern;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.ui.Util;
 import games.strategy.util.AlphanumComparator;
 import games.strategy.util.PointFileReaderWriter;
@@ -92,7 +92,7 @@ public class ConnectionFinder {
         territoryAreas.put(territoryName, listOfAreas);
       }
     } catch (final IOException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
     if (!dimensionsSet) {
       final String lineWidth = JOptionPane.showInputDialog(null,

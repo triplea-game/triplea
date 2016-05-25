@@ -18,7 +18,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -317,7 +316,7 @@ public class MapPropertiesMaker extends JFrame {
       final FileInputStream in = new FileInputStream(centerName);
       properties.load(in);
     } catch (final HeadlessException | IOException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
     for (final Method setter : s_mapProperties.getClass().getMethods()) {
       final boolean startsWithSet = setter.getName().startsWith("set");
