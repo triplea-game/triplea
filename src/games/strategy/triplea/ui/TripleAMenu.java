@@ -123,7 +123,7 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
     addMoveHelpMenu(helpMenu);
     addUnitHelpMenu(helpMenu);
   }
-  
+
   private void addMoveHelpMenu(final JMenu parentMenu) {
     parentMenu.add(SwingAction.of("Movement/Selection help...", e -> {
       // html formatted string
@@ -202,7 +202,7 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
           hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
               .append(">").append("<td>").append(getUnitImageURL(ut, player)).append("</td>").append("<td>")
               .append(ut.getName()).append("</td>").append("<td>").append(costs.get(player).get(ut).toStringForHTML())
-              .append("</td>").append("<td>").append(ut.getTooltip(player, true)).append("</td></tr>");
+              .append("</td>").append("<td>").append(ut.getTooltip(player)).append("</td></tr>");
         }
         i++;
         hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
@@ -339,7 +339,7 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
     addShowGameUuid(menuView);
     addSetLookAndFeel(menuView);
   }
-  
+
   private void addEditMode(final JMenu parentMenu) {
     final JCheckBoxMenuItem editMode = new JCheckBoxMenuItem("Enable Edit Mode");
     editMode.setModel(frame.getEditModeButtonModel());
@@ -404,25 +404,25 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
     });
     menuGame.add(mapZoom).setMnemonic(KeyEvent.VK_Z);
   }
-  
+
   private void addUnitNationDrawMenu(final JMenu parentMenu){
     final JMenu unitSizeMenu = new JMenu();
     unitSizeMenu.setMnemonic(KeyEvent.VK_N);
     unitSizeMenu.setText("Flag Display Mode");
-    
+
     Preferences prefs = Preferences.userNodeForPackage(getClass());
     String setting = prefs.get("UNIT_FLAG_DRAW_MODE", UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString());
-    
+
     if(UnitsDrawer.UnitFlagDrawMode.NONE.toString().equals(setting)){
       UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.NONE, prefs);
     }
     if(UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString().equals(setting)){
-      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.NEXT_TO, prefs);    
+      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.NEXT_TO, prefs);
     }
     if(UnitsDrawer.UnitFlagDrawMode.BELOW.toString().equals(setting)){
       UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.BELOW, prefs);
     }
-    
+
     final ButtonGroup unitFlagSettingGroup = new ButtonGroup();
     unitSizeMenu.add(createFlagDrawModeRadionButtonItem("None", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.NONE, setting, prefs));
     unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Small", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.NEXT_TO, setting, prefs));
@@ -1301,7 +1301,7 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
     group.add(buttonItem);
     return buttonItem;
   }
-  
+
   private JRadioButtonMenuItem createFlagDrawModeRadionButtonItem(String text, ButtonGroup group, UnitsDrawer.UnitFlagDrawMode drawMode, String setting, Preferences prefs){
     return createRadioButtonItem(text, group, SwingAction.of(e -> {
       UnitsDrawer.setUnitFlagDrawMode(drawMode, prefs);
