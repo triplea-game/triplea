@@ -58,7 +58,7 @@ public class DiceImageFactory {
         }
       }
       if (img != null) {
-        images.put(Integer.valueOf(i), img);
+        images.put(i, img);
       } else {
         final Image canvas = Util.createImage(DIE_WIDTH, DIE_HEIGHT, true);
         final Graphics graphics = canvas.getGraphics();
@@ -100,7 +100,7 @@ public class DiceImageFactory {
           final int heightOffset = graphics.getFontMetrics().getHeight();
           graphics.drawString(number, (DIE_WIDTH - widthOffset) / 2, (DIE_HEIGHT + heightOffset) / 2 - 2);
         }
-        images.put(Integer.valueOf(i), canvas);
+        images.put(i, canvas);
         graphics.dispose();
       }
     }
@@ -137,11 +137,11 @@ public class DiceImageFactory {
     }
     switch (type) {
       case HIT:
-        return m_imagesHit.get(Integer.valueOf(i));
+        return m_imagesHit.get(i);
       case MISS:
-        return m_images.get(Integer.valueOf(i));
+        return m_images.get(i);
       case IGNORED:
-        return m_imagesIgnored.get(Integer.valueOf(i));
+        return m_imagesIgnored.get(i);
       default:
         throw new IllegalStateException("??");
     }

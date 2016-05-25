@@ -244,8 +244,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
           end = getInt(s2[1]);
         }
       }
-      final Integer t = Integer.valueOf(start);
-      final Integer u = Integer.valueOf(end);
+      final Integer t = start;
+      final Integer u = end;
       m_turns.put(t, u);
     }
   }

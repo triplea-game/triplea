@@ -113,7 +113,7 @@ public class UnitAttachmentsPanel extends DynamicRowsPanel {
         return;
       }
 
-      final ArrayList<String> unitAttachment = new ArrayList<String>();
+      final ArrayList<String> unitAttachment = new ArrayList<>();
       unitAttachment.add(unitName);
       unitAttachment.add("");
       MapXmlHelper.putUnitAttachments(newUnitAttachmentKey, unitAttachment);
