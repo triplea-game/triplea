@@ -43,8 +43,6 @@ public class EngineVersionProperties {
   private final String m_linkAlt;
   private final String m_changelogLink;
   private volatile boolean m_done = false;
-  // only for testing when sourceforge is down
-  // private static final String s_linkToTripleA = "http://www.tripleawarclub.org/lobby/latest_version.properties";
   private static final String s_linkToTripleA = "http://triplea.sourceforge.net/latest/latest_version.properties";
 
   private EngineVersionProperties(final URL url) {
@@ -99,7 +97,6 @@ public class EngineVersionProperties {
           try {
             latch.await(2, TimeUnit.SECONDS);
           } catch (final InterruptedException e) {
-            // ClientLogger.logQuietly(e);
           }
           if (ref.get() != null) {
             break;
@@ -109,7 +106,6 @@ public class EngineVersionProperties {
         try {
           latch.await(15, TimeUnit.SECONDS);
         } catch (final InterruptedException e) {
-          // ClientLogger.logQuietly(e);
         }
       }
 
