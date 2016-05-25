@@ -18,6 +18,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.LocalPlayers;
@@ -64,7 +65,7 @@ public abstract class AbstractUIContext implements IUIContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
   }
 
@@ -81,7 +82,7 @@ public abstract class AbstractUIContext implements IUIContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -135,7 +136,7 @@ public abstract class AbstractUIContext implements IUIContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -327,8 +328,8 @@ public abstract class AbstractUIContext implements IUIContext {
   protected void closeActor(final Active actor) {
     try {
       actor.deactivate();
-    } catch (final RuntimeException re) {
-      re.printStackTrace();
+    } catch (final RuntimeException e) {
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -362,7 +363,7 @@ public abstract class AbstractUIContext implements IUIContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
   }
 
@@ -396,7 +397,7 @@ public abstract class AbstractUIContext implements IUIContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
   }
 
@@ -413,7 +414,7 @@ public abstract class AbstractUIContext implements IUIContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
   }
 
@@ -430,7 +431,7 @@ public abstract class AbstractUIContext implements IUIContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
   }
 

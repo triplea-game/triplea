@@ -38,6 +38,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.debug.ClientLogger;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 
@@ -190,16 +191,12 @@ public class CenterPicker extends JFrame {
    * creates the image map and makes sure
    * it is properly loaded.
    *
-   * @param java
+   * @param mapName
    *        .lang.String mapName the path of image map
    */
   private void createImage(final String mapName) {
     m_image = Toolkit.getDefaultToolkit().createImage(mapName);
-    try {
-      Util.ensureImageLoaded(m_image);
-    } catch (final InterruptedException ex) {
-      ex.printStackTrace();
-    }
+    Util.ensureImageLoaded(m_image);
   }
 
   /**
@@ -245,7 +242,7 @@ public class CenterPicker extends JFrame {
       out.close();
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
     } catch (final Exception ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
   }
 
@@ -264,7 +261,7 @@ public class CenterPicker extends JFrame {
       m_centers = PointFileReaderWriter.readOneToOne(in);
       repaint();
     } catch (final HeadlessException | IOException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
   }
 

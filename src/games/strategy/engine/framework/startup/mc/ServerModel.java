@@ -25,6 +25,7 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.ChatPanel;
@@ -337,7 +338,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         new GameDataManager().saveGame(sink, m_data);
         bytes = sink.toByteArray();
       } catch (final IOException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
         throw new IllegalStateException(e);
       }
       return bytes;
@@ -356,7 +357,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         GameProperties.toOutputStream(sink, currentEditableProperties);
         bytes = sink.toByteArray();
       } catch (final IOException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
       return bytes;
     }
@@ -418,7 +419,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           InputStream oinput = new BufferedInputStream(input);) {
         headless.loadGameSave(oinput, fileName);
       } catch (final Exception e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
 
@@ -434,7 +435,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       try {
         headless.loadGameOptions(bytes);
       } catch (final Exception e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
   };

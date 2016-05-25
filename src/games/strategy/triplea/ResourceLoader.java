@@ -151,7 +151,7 @@ public class ResourceLoader {
       try {
         urls[i] = f.toURI().toURL();
       } catch (final MalformedURLException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
         throw new IllegalStateException(e.getMessage());
       }
     }

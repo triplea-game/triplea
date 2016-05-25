@@ -15,6 +15,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.common.player.AbstractHumanPlayer;
 import games.strategy.common.swing.SwingAction;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
@@ -156,7 +157,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     try {
       ui.setEditDelegate((IEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit"));
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
     SwingUtilities.invokeLater(new Runnable() {
       @Override
@@ -203,9 +204,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
-      // for some reason the client is not seeing or getting these errors, so print to err too
-      System.err.println(errorContext);
-      e.printStackTrace();
+      ClientLogger.logQuietly(errorContext, e);
       throw new IllegalStateException(errorContext, e);
     }
 
@@ -229,7 +228,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
           + getPlayerBridge().getRemoteDelegate().getClass();
       // for some reason the client is not seeing or getting these errors, so print to err too
       System.err.println(errorContext);
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(errorContext, e);
     }
     final UserActionAttachment actionChoice = ui.getUserActionChoice(getPlayerID(), firstRun, iUserActionDelegate);
@@ -262,7 +261,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
           + getPlayerBridge().getRemoteDelegate().getClass();
       // for some reason the client is not seeing or getting these errors, so print to err too
       System.err.println(errorContext);
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(errorContext, e);
     }
 
@@ -297,7 +296,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
           + getPlayerBridge().getRemoteDelegate().getClass();
       // for some reason the client is not seeing or getting these errors, so print to err too
       System.err.println(errorContext);
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(errorContext, e);
     }
 
@@ -350,7 +349,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
           + getPlayerBridge().getRemoteDelegate().getClass();
       // for some reason the client is not seeing or getting these errors, so print to err too
       System.err.println(errorContext);
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(errorContext, e);
     }
     if (airCantLand.isEmpty()) {
@@ -370,9 +369,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
-      // for some reason the client is not seeing or getting these errors, so print to err too
-      System.err.println(errorContext);
-      e.printStackTrace();
+      ClientLogger.logQuietly(errorContext, e);
       throw new IllegalStateException(errorContext, e);
     }
     if (unitsCantFight.isEmpty()) {
@@ -420,7 +417,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
                   + ", Remote class name: " + getPlayerBridge().getRemoteDelegate().getClass();
               // for some reason the client is not seeing or getting these errors, so print to err too
               System.err.println(errorContext);
-              e.printStackTrace();
+              ClientLogger.logQuietly(e);
               throw new IllegalStateException(errorContext, e);
             }
             error = purchaseDel.purchaseRepair(repair);
@@ -445,7 +442,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
           + getPlayerBridge().getRemoteDelegate().getClass();
       // for some reason the client is not seeing or getting these errors, so print to err too
       System.err.println(errorContext);
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(errorContext, e);
     }
     error = purchaseDel.purchase(prod);
@@ -466,15 +463,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
-      // for some reason the client is not seeing or getting these errors, so print to err too
-      System.err.println(errorContext);
-      e.printStackTrace();
+      ClientLogger.logQuietly(errorContext, e); // TODO: this code is triplicated in the code..
       throw new IllegalStateException(errorContext, e);
     }
-    /*
-     * if (!battleDel.stuffToDoInThisDelegate())
-     * return;
-     */
+
     final PlayerID id = getPlayerID();
     while (true) {
       if (getPlayerBridge().isGameOver()) {
@@ -521,7 +513,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
           + getPlayerBridge().getRemoteDelegate().getClass();
       // for some reason the client is not seeing or getting these errors, so print to err too
       System.err.println(errorContext);
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(errorContext, e);
     }
     while (true) {
@@ -560,7 +552,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
           + getPlayerBridge().getRemoteDelegate().getClass();
       // for some reason the client is not seeing or getting these errors, so print to err too
       System.err.println(errorContext);
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(errorContext, e);
     }
     if (!m_soundPlayedAlreadyEndTurn && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(getPlayerID(), data)) {

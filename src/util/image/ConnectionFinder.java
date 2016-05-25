@@ -36,6 +36,7 @@ import games.strategy.util.PointFileReaderWriter;
  * Inputs - a polygons.txt file
  * Outputs - a list of connections between the Polygons
  */
+// TODO: get this moved to its own package tree
 public class ConnectionFinder {
   private static File s_mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";

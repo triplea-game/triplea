@@ -34,6 +34,7 @@ import javax.swing.SwingUtilities;
 
 import com.google.common.collect.Maps;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.util.PointFileReaderWriter;
 import util.image.FileOpen;
 
@@ -265,13 +266,12 @@ public abstract class ImageScrollPanePanel {
 
   private static Map<String, Point> loadCenters() {
     centers.clear();
+    String fileName = "Load Centers from " + MapXmlCreator.mapCentersFile.getAbsolutePath();
     try {
-      Logger.getLogger(MapXmlCreator.MAP_XML_CREATOR_LOGGER_NAME).log(Level.INFO,
-          "Load Centers from " + MapXmlCreator.mapCentersFile.getAbsolutePath());
       final FileInputStream in = new FileInputStream(MapXmlCreator.mapCentersFile);
       centers = PointFileReaderWriter.readOneToOne(in);
-    } catch (final HeadlessException | IOException ex) {
-      ex.printStackTrace();
+    } catch (final Exception ex) {
+      ClientLogger.logQuietly("failed to load file: " + "Load Centers from " + fileName, ex);
     }
     return centers;
   }

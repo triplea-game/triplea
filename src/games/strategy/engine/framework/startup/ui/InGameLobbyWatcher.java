@@ -11,6 +11,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.debug.HeartBeat;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.PlayerID;
@@ -128,7 +129,7 @@ public class InGameLobbyWatcher {
       rm.registerRemote(rhu, RemoteHostUtils.getRemoteHostUtilsName(um.getLocalNode()));
       return new InGameLobbyWatcher(messenger, rm, gameMessenger, parent, oldWatcher);
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return null;
     }
   }

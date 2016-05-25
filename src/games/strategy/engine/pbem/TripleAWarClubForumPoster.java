@@ -17,6 +17,7 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.help.HelpSupport;
@@ -156,7 +157,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
       }
     } catch (final Exception e) {
       m_turnSummaryRef = e.getMessage();
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return false;
     }
     return true;

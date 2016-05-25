@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PropertyUtil;
@@ -133,7 +134,7 @@ public class ValidateAttachmentsTest extends TestCase {
       file = new File(file.getParent(), "classes");
     } catch (final URISyntaxException e) {
       fail(e.getMessage());
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
     final String errors = findAttachmentsAndValidate(file);
     if (errors.length() > 0) {

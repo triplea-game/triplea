@@ -97,7 +97,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly("Failed to save value: " + aBool, ex);
     }
   }
 
@@ -108,7 +108,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly("faild to save value: " + aBool, ex);
     }
   }
 
@@ -119,7 +119,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly("faild to save value: " + aString, ex);
     }
   }
 
@@ -130,7 +130,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly("faild to save value: " + aFloat, ex);
     }
   }
 
@@ -274,7 +274,7 @@ public final class TileImageFactory {
       }
       loadingImages.done();
     } catch (final IOException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
 
     // This does the blend
@@ -285,7 +285,7 @@ public final class TileImageFactory {
       try {
         reliefFile = loadCompatibleImage(urlBlankRelief);
       } catch (final IOException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
     // This fixes the blank land territories
@@ -408,7 +408,7 @@ class ImageRef {
             s_referenceQueue.remove();
             s_logger.finer("Removed soft reference image. Image count:" + s_imageCount.decrementAndGet());
           } catch (final InterruptedException e) {
-            e.printStackTrace();
+            ClientLogger.logQuietly(e);
           }
         }
       }

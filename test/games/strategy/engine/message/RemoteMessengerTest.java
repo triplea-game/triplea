@@ -3,6 +3,7 @@ package games.strategy.engine.message;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
@@ -215,7 +216,7 @@ public class RemoteMessengerTest extends TestCase {
               started.set(true);
               lock.wait();
             } catch (final InterruptedException e) {
-              e.printStackTrace();
+              // ignore interrupted exception
             }
           }
         }

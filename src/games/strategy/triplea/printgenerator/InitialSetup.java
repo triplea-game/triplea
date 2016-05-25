@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
@@ -49,7 +50,7 @@ public class InitialSetup {
       new PlayerOrder().saveToFile(m_printData);
       new PUChart(m_printData).saveToFile();
     } catch (final IOException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 }

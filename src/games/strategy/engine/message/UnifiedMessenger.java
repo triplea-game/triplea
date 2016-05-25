@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.net.GUID;
 import games.strategy.net.IMessageListener;
 import games.strategy.net.IMessenger;
@@ -402,7 +403,7 @@ class EndPoint {
         try {
           m_numberMutext.wait();
         } catch (final InterruptedException e) {
-          e.printStackTrace();
+          ClientLogger.logQuietly(e);
         }
       }
     }
@@ -511,7 +512,7 @@ class EndPoint {
       method = implementor.getClass().getMethod(call.getMethodName(), call.getArgTypes());
       method.setAccessible(true);
     } catch (final SecurityException | NoSuchMethodException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(e.getMessage());
     }
     MessageContext.setSenderNodeForThread(messageOriginator);
@@ -521,14 +522,10 @@ class EndPoint {
     } catch (final InvocationTargetException e) {
       return new RemoteMethodCallResults(e.getTargetException());
     } catch (final IllegalAccessException e) {
-      // this shouldnt happen
-      System.err.println("error in call:" + call);
-      e.printStackTrace();
+      ClientLogger.logQuietly("error in call:" + call, e);
       return new RemoteMethodCallResults(e);
     } catch (final IllegalArgumentException e) {
-      // this shouldnt happen
-      System.err.println("error in call:" + call);
-      e.printStackTrace();
+      ClientLogger.logQuietly("error in call:" + call, e);
       return new RemoteMethodCallResults(e);
     } finally {
       MessageContext.setSenderNodeForThread(null);

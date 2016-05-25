@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Resource;
 import games.strategy.triplea.ResourceLoader;
@@ -79,11 +80,7 @@ public class ResourceImageFactory {
       throw new IllegalStateException("Cant load: " + baseImageName + "  looking in: " + fileName);
     }
     final Image image = Toolkit.getDefaultToolkit().getImage(url);
-    try {
-      Util.ensureImageLoaded(image);
-    } catch (final InterruptedException ex) {
-      ex.printStackTrace();
-    }
+    Util.ensureImageLoaded(image);
     return image;
   }
 

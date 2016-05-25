@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Properties;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -91,7 +92,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
         try {
           remoteName = ServerGame.getRemoteName(delegate);
         } catch (final Exception e) {
-          e.printStackTrace();
+          ClientLogger.logQuietly(e);
           final String errorMessage =
               "IDelegate IRemote interface class returned null or was not correct interface. CurrentStep: "
                   + m_currentStep + ", and CurrentDelegate: " + m_currentDelegate;

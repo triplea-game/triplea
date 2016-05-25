@@ -47,6 +47,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.debug.ClientLogger;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 
@@ -299,16 +300,12 @@ public class PolygonGrabber extends JFrame {
    * We create the image of the map here and
    * assure that it is loaded properly.
    *
-   * @param java
+   * @param mapName
    *        .lang.String mapName the path of the image map
    */
   private void createImage(final String mapName) {
     final Image image = Toolkit.getDefaultToolkit().createImage(mapName);
-    try {
-      Util.ensureImageLoaded(image);
-    } catch (final InterruptedException ex) {
-      ex.printStackTrace();
-    }
+    Util.ensureImageLoaded(image);
     m_bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
     final Graphics g = m_bufferedImage.getGraphics();
     g.drawImage(image, 0, 0, this);
@@ -371,9 +368,9 @@ public class PolygonGrabber extends JFrame {
    * Saves the polygons to disk.
    */
   private void savePolygons() {
+    final String polyName =
+        new FileSave("Where To Save Polygons.txt ?", "polygons.txt", s_mapFolderLocation).getPathString();
     try {
-      final String polyName =
-          new FileSave("Where To Save Polygons.txt ?", "polygons.txt", s_mapFolderLocation).getPathString();
       if (polyName == null) {
         return;
       }
@@ -382,10 +379,8 @@ public class PolygonGrabber extends JFrame {
       out.flush();
       out.close();
       System.out.println("Data written to :" + new File(polyName).getCanonicalPath());
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
     } catch (final Exception ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly("file save name: " + polyName, ex);
     }
   }
 
@@ -394,17 +389,22 @@ public class PolygonGrabber extends JFrame {
    * Loads a pre-defined file with map polygon points.
    */
   private void loadPolygons() {
+    System.out.println("Load a polygon file");
+    final String polyName = new FileOpen("Load A Polygon File", s_mapFolderLocation, ".txt").getPathString();
     try {
-      System.out.println("Load a polygon file");
-      final String polyName = new FileOpen("Load A Polygon File", s_mapFolderLocation, ".txt").getPathString();
       if (polyName == null) {
         return;
       }
       final FileInputStream in = new FileInputStream(polyName);
       m_polygons = PointFileReaderWriter.readOneToManyPolygons(in);
       repaint();
-    } catch (final HeadlessException | IOException ex) {
-      ex.printStackTrace();
+    } catch (final FileNotFoundException ex) {
+      ClientLogger.logQuietly("file name = " + polyName, ex);
+    } catch (final IOException ex) {
+      ClientLogger.logQuietly(ex);
+    } catch (final HeadlessException ex) {
+      // TODO: fix control flow via exception handling.
+      ClientLogger.logQuietly(ex);
     }
   }
 

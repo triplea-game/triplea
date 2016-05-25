@@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import games.strategy.common.swing.SwingComponents;
+import games.strategy.debug.ClientLogger;
 import games.strategy.util.ThreadUtil;
 
 /**
@@ -39,7 +40,7 @@ public class DownloadCoordinator {
           // pause for a brief while before the next iteration, helps avoid a Github too many requests error
           ThreadUtil.sleep(250);
         } catch (Exception e) {
-          e.printStackTrace();
+          ClientLogger.logQuietly(e);
           throw e;
         }
       }

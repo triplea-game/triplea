@@ -1008,7 +1008,7 @@ public class TripleAFrame extends MainGameFrame {
       try {
         latch1.await();
       } catch (final InterruptedException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
     actionButtons.changeToPickTerritoryAndUnits(player);
@@ -1030,7 +1030,7 @@ public class TripleAFrame extends MainGameFrame {
       try {
         latch2.await();
       } catch (final InterruptedException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
     if (actionButtons != null && actionButtons.getCurrent() != null) {
@@ -1131,7 +1131,7 @@ public class TripleAFrame extends MainGameFrame {
     try {
       continueLatch.await();
     } catch (final InterruptedException ex) {
-      ex.printStackTrace();
+      // ignore interrupted exception
     } finally {
       mapPanel.getUIContext().removeShutdownLatch(continueLatch);
     }
@@ -1238,7 +1238,7 @@ public class TripleAFrame extends MainGameFrame {
     try {
       continueLatch.await();
     } catch (final InterruptedException ex) {
-      ex.printStackTrace();
+      // ignore interrupted exception
     } finally {
       mapPanel.getUIContext().removeShutdownLatch(continueLatch);
     }
@@ -1550,7 +1550,7 @@ public class TripleAFrame extends MainGameFrame {
           }
         });
       } catch (final Exception e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
   };

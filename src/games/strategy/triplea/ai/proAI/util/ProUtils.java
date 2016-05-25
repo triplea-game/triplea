@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.proAI.util;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameStep;
@@ -265,7 +266,7 @@ public class ProUtils {
     try {
       ThreadUtil.sleep(AbstractUIContext.getAIPauseDuration());
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 }

@@ -134,11 +134,7 @@ public class UnitImageFactory {
     final int height = (int) (baseImage.getHeight(null) * m_scaleFactor);
     final Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
     // Ensure the scaling is completed.
-    try {
-      Util.ensureImageLoaded(scaledImage);
-    } catch (final InterruptedException ex) {
-      ex.printStackTrace();
-    }
+    Util.ensureImageLoaded(scaledImage);
     m_images.put(fullName, scaledImage);
     return Optional.of(scaledImage);
   }

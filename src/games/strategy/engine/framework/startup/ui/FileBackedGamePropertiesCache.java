@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.IEditableProperty;
@@ -48,7 +49,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
       out.writeObject(serializableMap);
       out.close();
     } catch (final IOException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -76,9 +77,9 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
         in.close();
       }
     } catch (final IOException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     } catch (final ClassNotFoundException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 

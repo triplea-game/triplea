@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAUnit;
@@ -924,7 +925,7 @@ class AddGridGameMapChange extends Change {
             m_horizontalConnections, m_verticalConnections, m_diagonalConnections, true);
         map.notifyChanged();
       } catch (final Exception e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
   }

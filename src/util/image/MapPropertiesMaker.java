@@ -44,6 +44,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.ui.DoubleTextField;
 import games.strategy.ui.IntTextField;
@@ -352,10 +353,8 @@ public class MapPropertiesMaker extends JFrame {
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
       System.out.println("");
       System.out.println(stringToWrite);
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
-    } catch (final Exception ex) {
-      ex.printStackTrace();
+    } catch (final Exception e) {
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -369,7 +368,7 @@ public class MapPropertiesMaker extends JFrame {
       try {
         outString.append(outMethod.invoke(s_mapProperties));
       } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
     return outString.toString();

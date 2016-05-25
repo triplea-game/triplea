@@ -66,12 +66,12 @@ public class NewGameChooserEntry {
     } catch (final SAXParseException e) {
       String msg = "Could not parse:" + m_url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber();
       ClientLogger.logError(msg);
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       error = e.getMessage();
     } catch (final Exception e) {
       String msg = "Could not parse:" + m_url;
       ClientLogger.logError(msg);
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       error = e.getMessage();
     }
     if (error != null) {
@@ -95,10 +95,10 @@ public class NewGameChooserEntry {
     } catch (final SAXParseException e) {
       System.err.println(
           "Could not parse:" + m_url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     } catch (final Exception e) {
       System.err.println("Could not parse:" + m_url);
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 

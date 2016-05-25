@@ -46,6 +46,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.ui.Util;
@@ -379,16 +380,12 @@ public class PlacementPicker extends JFrame {
    * creates the image map and makes sure
    * it is properly loaded.
    *
-   * @param java
+   * @param mapName
    *        .lang.String mapName the path of image map
    */
   private void createImage(final String mapName) {
     m_image = Toolkit.getDefaultToolkit().createImage(mapName);
-    try {
-      Util.ensureImageLoaded(m_image);
-    } catch (final InterruptedException ex) {
-      ex.printStackTrace();
-    }
+    Util.ensureImageLoaded(m_image);
   }
 
   /**
@@ -473,9 +470,9 @@ public class PlacementPicker extends JFrame {
    * Saves the placements to disk.
    */
   private void savePlacements() {
-    try {
       final String fileName =
           new FileSave("Where To Save place.txt ?", "place.txt", s_mapFolderLocation).getPathString();
+    try {
       if (fileName == null) {
         return;
       }
@@ -484,10 +481,8 @@ public class PlacementPicker extends JFrame {
       out.flush();
       out.close();
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
     } catch (final Exception ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly("fileName = " + fileName, ex);
     }
   }
 
@@ -496,9 +491,9 @@ public class PlacementPicker extends JFrame {
    * Loads a pre-defined file with map placement points.
    */
   private void loadPlacements() {
+    System.out.println("Load a placement file");
+    final String placeName = new FileOpen("Load A Placement File", s_mapFolderLocation, ".txt").getPathString();
     try {
-      System.out.println("Load a placement file");
-      final String placeName = new FileOpen("Load A Placement File", s_mapFolderLocation, ".txt").getPathString();
       if (placeName == null) {
         return;
       }
@@ -506,7 +501,7 @@ public class PlacementPicker extends JFrame {
       m_placements = PointFileReaderWriter.readOneToMany(in);
       repaint();
     } catch (final HeadlessException | IOException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
   }
 

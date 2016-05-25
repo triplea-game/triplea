@@ -50,6 +50,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
@@ -344,11 +345,7 @@ public class DecorationPlacer extends JFrame {
    */
   private static Image createImage(final String mapName) {
     final Image image = Toolkit.getDefaultToolkit().createImage(mapName);
-    try {
-      Util.ensureImageLoaded(image);
-    } catch (final InterruptedException ex) {
-      ex.printStackTrace();
-    }
+    Util.ensureImageLoaded(image);
     return image;
   }
 
@@ -455,10 +452,8 @@ public class DecorationPlacer extends JFrame {
       out.flush();
       out.close();
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
     } catch (final Exception ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
     System.out.println("");
   }
@@ -597,7 +592,7 @@ public class DecorationPlacer extends JFrame {
         m_currentPoints = new HashMap<>();
       }
     } catch (final HeadlessException | IOException ex) {
-      ex.printStackTrace();
+       ClientLogger.logQuietly(ex);
     }
   }
 

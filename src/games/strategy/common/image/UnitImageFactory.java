@@ -62,11 +62,7 @@ public class UnitImageFactory {
       throw new IllegalStateException("Cant load: " + baseImageName + "  looking in: " + fileName);
     }
     final Image image = Toolkit.getDefaultToolkit().getImage(url);
-    try {
-      Util.ensureImageLoaded(image);
-    } catch (final InterruptedException e) {
-      ClientLogger.logError("Loading the Image " + fileName + " was Interrputed", e);
-    }
+    Util.ensureImageLoaded(image);
     return image;
   }
 

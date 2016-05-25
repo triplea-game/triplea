@@ -28,6 +28,7 @@ import javax.swing.WindowConstants;
 
 import games.strategy.common.swing.SwingAction;
 import games.strategy.common.swing.SwingComponents;
+import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -229,7 +230,7 @@ public class BattlePanel extends ActionPanel {
       try {
         SwingUtilities.invokeLater(r);
       } catch (final Exception e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
       return;
     }

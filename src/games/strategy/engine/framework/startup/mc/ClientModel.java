@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.IChatPanel;
@@ -253,7 +254,7 @@ public class ClientModel implements IMessengerErrorListener {
       try {
         latch.await(GameRunner2.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
       } catch (final InterruptedException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
   };
@@ -266,7 +267,7 @@ public class ClientModel implements IMessengerErrorListener {
       try {
         latch.await(GameRunner2.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
       } catch (final InterruptedException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
 
@@ -320,7 +321,7 @@ public class ClientModel implements IMessengerErrorListener {
       // up to 60 seconds for a freaking huge game
       data = new GameDataManager().loadGame(new ByteArrayInputStream(gameData), null);
     } catch (final IOException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
       return;
     }
     m_objectStreamFactory.setData(data);
@@ -350,7 +351,7 @@ public class ClientModel implements IMessengerErrorListener {
               data.getGameLoader().startGame(m_game, playerSet, false);
               data.testLocksOnRead();
             } catch (final Exception e) {
-              e.printStackTrace();
+              ClientLogger.logQuietly(e);
               m_messenger.shutDown();
               m_gameLoadingWindow.doneWait();
               // an ugly hack, we need a better

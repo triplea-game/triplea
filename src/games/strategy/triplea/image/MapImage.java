@@ -11,6 +11,7 @@ import java.util.prefs.Preferences;
 
 import javax.imageio.ImageIO;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
@@ -28,24 +29,9 @@ public class MapImage {
     try {
       return ImageIO.read(mapFileUrl);
     } catch (final IOException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(e.getMessage());
     }
-    // Image img = Toolkit.getDefaultToolkit().createImage(mapFileUrl);
-    // MediaTracker tracker = new MediaTracker( new Panel());
-    // tracker.addImage(img, 1 );
-    // try
-    // {
-    // tracker.waitForAll();
-    // if(tracker.isErrorAny())
-    // throw new IllegalStateException("Error loading");
-    // return img;
-    // }
-    // catch(InterruptedException ie)
-    // {
-    // ie.printStackTrace();
-    // return loadImage(loader, name);
-    // }
   }
 
   private BufferedImage m_smallMapImage;

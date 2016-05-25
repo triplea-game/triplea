@@ -15,6 +15,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.RemoteName;
@@ -62,7 +63,7 @@ public class Vault {
       mSecretKeyFactory = SecretKeyFactory.getInstance(ALGORITHM);
       m_keyGen = KeyGenerator.getInstance(ALGORITHM);
     } catch (final NoSuchAlgorithmException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException("Nothing known about algorithm:" + ALGORITHM);
     }
   }
@@ -121,7 +122,7 @@ public class Vault {
       cipher = Cipher.getInstance(ALGORITHM);
       cipher.init(Cipher.ENCRYPT_MODE, key);
     } catch (final NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(e.getMessage());
     }
     // join the data and known value into one array
@@ -130,7 +131,7 @@ public class Vault {
     try {
       encrypted = cipher.doFinal(dataAndCheck);
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(e.getMessage());
     }
     // tell the world
@@ -240,7 +241,7 @@ public class Vault {
         cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, key);
       } catch (final NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
         throw new IllegalStateException(e.getMessage());
       }
       final byte[] encrypted = m_unverifiedValues.remove(id);
