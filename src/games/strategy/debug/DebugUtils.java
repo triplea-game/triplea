@@ -84,7 +84,7 @@ public class DebugUtils {
     Collections.sort(keys);
     final Iterator<String> iter = keys.iterator();
     while (iter.hasNext()) {
-      final String property = (String) iter.next();
+      final String property = iter.next();
       final String value = props.getProperty(property);
       buf.append(property).append(" ").append(value).append("\n");
     }
