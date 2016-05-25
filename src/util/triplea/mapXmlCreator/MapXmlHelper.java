@@ -557,7 +557,7 @@ public class MapXmlHelper {
       } else if (productionRule.getNodeName().equals(XML_NODE_NAME_PRODUCTION_FRONTIER)) {
         final String playerName =
             productionRule.getAttributes().getNamedItem(XML_ATTR_ATTACHMENT_NAME_NAME).getNodeValue().substring(10);
-        final ArrayList<String> frontierRules = new ArrayList<String>();
+        final ArrayList<String> frontierRules = new ArrayList<>();
         final NodeList productionFrontierChildNodes = productionRule.getChildNodes();
         for (int pr_i = 0; pr_i < productionFrontierChildNodes.getLength(); ++pr_i) {
           final Node productionFrontierChildNode = productionFrontierChildNodes.item(pr_i);
@@ -577,7 +577,7 @@ public class MapXmlHelper {
       final Node gamePlayChildNode = gamePlayChildNodes.item(p_i);
       if (gamePlayChildNode.getNodeName().equals(XML_NODE_NAME_DELEGATE)) {
         final HashMap<String, String> attrDelegate = getAttributesMap(gamePlayChildNode.getAttributes());
-        final ArrayList<String> newValues = new ArrayList<String>();
+        final ArrayList<String> newValues = new ArrayList<>();
         newValues
             .add(attrDelegate.get(XML_ATTR_ATTACHMENT_NAME_JAVA_CLASS).replace(TRIPLEA_JAVA_CLASS_DELEGATE_PATH, ""));
         newValues.add(attrDelegate.get(XML_ATTR_STEP_NAME_DISPLAY));
@@ -635,7 +635,7 @@ public class MapXmlHelper {
 
   private static void parsePropertyNode(final Node property) {
     final HashMap<String, String> propertyAttr = getAttributesMap(property.getAttributes());
-    final ArrayList<String> settingValues = new ArrayList<String>();
+    final ArrayList<String> settingValues = new ArrayList<>();
     final String propertyName = propertyAttr.get(XML_ATTR_PROPERTY_NAME_NAME);
     if (propertyName.equals(XML_ATTR_VALUE_PROPERTY_NAME_NOTES)
         || propertyName.equals(XML_ATTR_VALUE_PROPERTY_NAME_MAP_NAME)) {
@@ -1043,7 +1043,7 @@ public class MapXmlHelper {
       initialize.appendChild(ownerInitialize);
       final HashMap<String, ArrayList<String>> playerTerritories = Maps.newHashMap();
       for (final String player : getPlayerNames()) {
-        playerTerritories.put(player, new ArrayList<String>());
+        playerTerritories.put(player, new ArrayList<>());
       }
       for (final Entry<String, String> ownershipEntry : getTerritoryOwnershipsMap().entrySet()) {
         playerTerritories.get(ownershipEntry.getValue()).add(ownershipEntry.getKey());
@@ -1290,7 +1290,7 @@ public class MapXmlHelper {
         final String allianceName = allianceEntry.getValue();
         ArrayList<String> players = alliances.get(allianceName);
         if (players == null) {
-          players = new ArrayList<String>();
+          players = new ArrayList<>();
           alliances.put(allianceName, players);
         }
         players.add(allianceEntry.getKey());
@@ -1388,7 +1388,7 @@ public class MapXmlHelper {
       final String playerName = definitionValues.get(0);
       List<Element> elementList = playerAttachOptions.get(playerName);
       if (elementList == null) {
-        elementList = new ArrayList<Element>();
+        elementList = new ArrayList<>();
         playerAttachOptions.put(playerName, elementList);
       }
       elementList.add(option);
