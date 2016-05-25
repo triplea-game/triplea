@@ -117,7 +117,7 @@ public class ClipPlayer {
 
 
   protected final Map<String, List<URL>> sounds = new HashMap<>();
-  private final Set<String> mutedClips = new HashSet<String>();
+  private final Set<String> mutedClips = new HashSet<>();
   private boolean beSilent = false;
   private final ResourceLoader resourceLoader;
   private static ClipPlayer clipPlayer;
@@ -333,7 +333,7 @@ public class ClipPlayer {
       resourcePath = SoundProperties.getInstance(resourceLoader).getDefaultEraFolder() + "/" + pathName;
     }
     resourcePath = resourcePath.replace('\\', '/');
-    final List<URL> availableSounds = new ArrayList<URL>();
+    final List<URL> availableSounds = new ArrayList<>();
     if ("NONE".equals(resourcePath)) {
       sounds.put(pathName, availableSounds);
       return availableSounds;
@@ -353,7 +353,7 @@ public class ClipPlayer {
    *        (URL uses '/', not File.separator or '\')
    */
   protected List<URL> findClipFiles(final String resourceAndPathURL) {
-    final List<URL> availableSounds = new ArrayList<URL>();
+    final List<URL> availableSounds = new ArrayList<>();
     final URL thisSoundURL = resourceLoader.getResource(resourceAndPathURL);
     if (thisSoundURL == null) {
       return availableSounds;
