@@ -69,7 +69,6 @@ public class TransportUtils {
     final List<Unit> canBeTransported = sortByTransportCostDescending(units);
     final List<Unit> canTransport = sortByTransportCapacityDescendingThenMovesDescending(transports);
 
-    // Add max units to each transport
     final Map<Unit, Unit> mapping = new HashMap<>();
     Optional<Unit> finalTransport = Optional.empty();
     for (final Unit currentTransport : canTransport) {
