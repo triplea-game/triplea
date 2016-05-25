@@ -81,7 +81,7 @@ public class TransportUtils {
         if (!finalTransport.isPresent() || capacity < TransportTracker.getAvailableCapacity(finalTransport.get())) {
           finalTransport = Optional.of(currentTransport);
         }
-        continue; // skip transports until the smallest one all units fit in with the most moves
+        continue; // Check all transports to find the one with the least remaining capacity that can fit all units
       }
 
       // Check if we've found the final transport to load remaining units
