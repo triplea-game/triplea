@@ -14,7 +14,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
   private int m_currentIndex;
   private int m_round = 1;
   private int m_roundOffset = 0;
-  private transient final Object currentStepMutex = new Object();
+  private transient static final Object currentStepMutex = new Object();
 
   public GameSequence(final GameData data) {
     super(data);
@@ -156,10 +156,8 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
   }
 
   /** make sure transient lock object is initialized on deserialization. */
+  @SuppressWarnings("static-method") // this uses a magic Java method signature to update reflection, do not change to static
   private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
     in.defaultReadObject();
-    if (currentStepMutex == null) {
-      currentStepMutex = new Object();
-    }
   }
 }
