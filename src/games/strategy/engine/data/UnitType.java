@@ -92,7 +92,7 @@ public class UnitType extends NamedAttachable implements Serializable {
    * Will return a key of NULL for any units which we do not have art for.
    */
   public static Map<PlayerID, List<UnitType>> getAllPlayerUnitsWithImages(final GameData data,
-      final IUIContext uiContext, final boolean forceIncludeNeutralPlayer) {
+      final IUIContext uiContext) {
     final LinkedHashMap<PlayerID, List<UnitType>> rVal = new LinkedHashMap<>();
     data.acquireReadLock();
     try {
@@ -105,13 +105,8 @@ public class UnitType extends NamedAttachable implements Serializable {
       }
       final Set<UnitType> all = data.getUnitTypeList().getAllUnitTypes();
       all.removeAll(unitsSoFar);
-      if (forceIncludeNeutralPlayer || !all.isEmpty()) {
-        rVal.put(PlayerID.NULL_PLAYERID, getPlayerUnitsWithImages(PlayerID.NULL_PLAYERID, data, uiContext));
-        unitsSoFar.addAll(rVal.get(PlayerID.NULL_PLAYERID));
-        all.removeAll(unitsSoFar);
-        if (!all.isEmpty()) {
-          rVal.put(null, new ArrayList<>(all));
-        }
+      if (!all.isEmpty()) {
+        rVal.put(null, new ArrayList<>(all));
       }
     } finally {
       data.releaseReadLock();
