@@ -59,7 +59,7 @@ public final class SoundOptions {
     
     final ArrayList<IEditableProperty> properties = SoundPath.getSoundOptions(soundType);
     final Object pressedButton = PropertiesSelector.getButton(parent, "Sound Options", properties,
-        new Object[] {ok, selectAll, selectNone, cancel});
+        ok, selectAll, selectNone, cancel);
     if (pressedButton == null || pressedButton.equals(cancel)) {
     } else if (pressedButton.equals(ok)) {
       for (final IEditableProperty property : properties) {
