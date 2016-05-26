@@ -18,6 +18,7 @@ public interface Constants {
   String PLAYER_NAME_NEUTRAL = "Neutral";
   String PLAYER_NAME_PUPPET_STATES = "Puppet_States";
   String PLAYER_NAME_RUSSIANS = "Russians";
+  // Attachment names
   String UNIT_ATTACHMENT_NAME = "unitAttachment";
   String INF_ATTACHMENT_NAME = "infAttachment";
   String TECH_ATTACHMENT_NAME = "techAttachment";
