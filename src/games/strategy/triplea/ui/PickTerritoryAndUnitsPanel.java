@@ -170,7 +170,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
         } else if (Match.allMatch(m_unitChoices, Matches.unitIsOfType(m_unitChoices.get(0).getType()))) {
           // if we have only 1 unit type, set it to that
           m_pickedUnits.clear();
-          m_pickedUnits.addAll(Match.getNMatches(m_unitChoices, m_unitsPerPick, Match.<Unit>getAlwaysMatch()));
+          m_pickedUnits.addAll(Match.getNMatches(m_unitChoices, m_unitsPerPick, Match.getAlwaysMatch()));
         } else {
           EventThreadJOptionPane.showMessageDialog(m_parent, "Must Choose Units For This Territory",
               "Must Choose Units For This Territory", JOptionPane.WARNING_MESSAGE, new CountDownLatchHandler(true));
@@ -195,7 +195,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
     public void actionPerformed(final ActionEvent event) {
       m_currentAction = SelectUnitsAction;
       setWidgetActivation();
-      final UnitChooser unitChooser = new UnitChooser(m_unitChoices, Collections.<Unit, Collection<Unit>>emptyMap(),
+      final UnitChooser unitChooser = new UnitChooser(m_unitChoices, Collections.emptyMap(),
           getData(), false, getMap().getUIContext());
       unitChooser.setMaxAndShowMaxButton(m_unitsPerPick);
       if (JOptionPane.OK_OPTION == EventThreadJOptionPane.showConfirmDialog(m_parent, unitChooser, "Select Units",

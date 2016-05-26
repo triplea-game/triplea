@@ -985,7 +985,7 @@ public class TripleAFrame extends MainGameFrame {
       final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick) {
     if (messageAndDialogThreadPool == null) {
       return Tuple.of(territoryChoices.iterator().next(),
-          (Set<Unit>) new HashSet<>(Match.getNMatches(unitChoices, unitsPerPick, Match.<Unit>getAlwaysMatch())));
+          (Set<Unit>) new HashSet<>(Match.getNMatches(unitChoices, unitsPerPick, Match.getAlwaysMatch())));
     }
     // total hacks
     messageAndDialogThreadPool.waitForAll();
@@ -1176,7 +1176,7 @@ public class TripleAFrame extends MainGameFrame {
           final int maxAllowed =
               Math.min(BattleDelegate.getMaxScrambleCount(possibleScramblers.get(from).getFirst()), possible.size());
           final UnitChooser chooser =
-              new UnitChooser(possible, Collections.<Unit, Collection<Unit>>emptyMap(), data, false, uiContext);
+              new UnitChooser(possible, Collections.emptyMap(), data, false, uiContext);
           chooser.setMaxAndShowMaxButton(maxAllowed);
           choosers.add(Tuple.of(from, chooser));
           panelChooser.add(chooser);
@@ -1276,7 +1276,7 @@ public class TripleAFrame extends MainGameFrame {
         panelChooser.add(new JLabel(" "));
         final int maxAllowed = possible.size();
         final UnitChooser chooser =
-            new UnitChooser(possible, Collections.<Unit, Collection<Unit>>emptyMap(), data, false, uiContext);
+            new UnitChooser(possible, Collections.emptyMap(), data, false, uiContext);
         chooser.setMaxAndShowMaxButton(maxAllowed);
         panelChooser.add(chooser);
         chooserScrollPane = new JScrollPane(panelChooser);

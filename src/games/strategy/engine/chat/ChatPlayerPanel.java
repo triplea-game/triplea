@@ -105,7 +105,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
       m_chat.getStatusManager().addStatusListener(m_statusListener);
     } else {
       // empty our player list
-      updatePlayerList(Collections.<INode>emptyList());
+      updatePlayerList(Collections.emptyList());
     }
     repaint();
   }

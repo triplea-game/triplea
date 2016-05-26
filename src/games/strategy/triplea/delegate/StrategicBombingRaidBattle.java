@@ -318,8 +318,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   private void showBattle(final IDelegateBridge bridge) {
     final String title = "Bombing raid in " + m_battleSite.getName();
     getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_attackingUnits, m_defendingUnits, null, null, null,
-        Collections.<Unit, Collection<Unit>>emptyMap(), m_attacker, m_defender, isAmphibious(), getBattleType(),
-        Collections.<Unit>emptySet());
+        Collections.emptyMap(), m_attacker, m_defender, isAmphibious(), getBattleType(),
+        Collections.emptySet());
     getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
   }
 
@@ -477,7 +477,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final String currentTypeAA) {
     getDisplay(bridge).casualtyNotification(m_battleID, REMOVE_PREFIX + currentTypeAA + CASUALTIES_SUFFIX, dice,
         m_attacker, new ArrayList<>(casualties.getKilled()), new ArrayList<>(casualties.getDamaged()),
-        Collections.<Unit, Collection<Unit>>emptyMap());
+        Collections.emptyMap());
     final Runnable r = new Runnable() {
       @Override
       public void run() {

@@ -288,7 +288,7 @@ public class AutoPlacementFinder {
         } else {
           x--;
         }
-        isPlacement(countryPolygons, Collections.<Polygon>emptySet(), placementRects, placementPoints, place, x, y);
+        isPlacement(countryPolygons, Collections.emptySet(), placementRects, placementPoints, place, x, y);
       }
       for (int j = 0; j < Math.abs(step); j++) {
         if (step > 0) {
@@ -296,7 +296,7 @@ public class AutoPlacementFinder {
         } else {
           y--;
         }
-        isPlacement(countryPolygons, Collections.<Polygon>emptySet(), placementRects, placementPoints, place, x, y);
+        isPlacement(countryPolygons, Collections.emptySet(), placementRects, placementPoints, place, x, y);
       }
       step = -step;
       if (step > 0) {

@@ -149,7 +149,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
         }
       }
     } else {
-      updatePlayerList(Collections.<INode>emptyList());
+      updatePlayerList(Collections.emptyList());
     }
   }
 
