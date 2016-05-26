@@ -834,7 +834,7 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
     if (rows == null) {
       cellSizes.put(table, rows = new HashMap<>());
     }
-    Map<Integer, Integer> rowheights = (Map<Integer, Integer>) rows.get(new Integer(row));
+    Map<Integer, Integer> rowheights = rows.get(new Integer(row));
     if (rowheights == null) {
       rows.put(new Integer(row), rowheights = new HashMap<>());
     }
@@ -866,7 +866,7 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
     if (rows == null) {
       return 0;
     }
-    final Map<?,?> rowheights = (Map<?,?>) rows.get(new Integer(row));
+    final Map<?,?> rowheights = rows.get(new Integer(row));
     if (rowheights == null) {
       return 0;
     }

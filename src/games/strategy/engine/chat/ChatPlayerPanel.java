@@ -219,7 +219,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     if (index == -1) {
       return;
     }
-    final INode player = (INode) m_listModel.get(index);
+    final INode player = m_listModel.get(index);
     final JPopupMenu menu = new JPopupMenu();
     boolean hasActions = false;
     for (final IPlayerActionFactory factory : m_actionFactories) {

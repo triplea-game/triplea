@@ -437,7 +437,7 @@ class HistoryTreeCellRenderer extends DefaultTreeCellRenderer {
           icon.setImage(m_uiContext.getFlagImageFactory().getSmallFlag(player));
           setIcon(icon);
         } else {
-          final String text = ((Step) value).toString() + " (" + player.getName() + ")";
+          final String text = value.toString() + " (" + player.getName() + ")";
           super.getTreeCellRendererComponent(tree, text, sel, expanded, leaf, row, haveFocus);
         }
       } else {

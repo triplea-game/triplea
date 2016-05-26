@@ -59,7 +59,7 @@ public class ImageShrinker {
     param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
     param.setCompressionQuality((float) 1.0);
     encoder.setOutput(out);
-    encoder.write((IIOMetadata) null, new IIOImage(thumbImage, null, null), param);
+    encoder.write(null, new IIOImage(thumbImage, null, null), param);
     out.close();
     System.out.println("Image successfully written to " + file.getPath());
     System.exit(0);
