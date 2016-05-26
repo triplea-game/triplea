@@ -10,7 +10,7 @@ import java.util.Comparator;
  * - Change "compare(Object o1, Object o2)" to "compare(String s1, String s2)"
  * - Remove the type checking and casting in compare().
  * To use this class:
- * Use the static "sort" method from the java.util.Collections class:
+ * Use the static "sort" method from the java.tools.Collections class:
  * Collections.sort(your list, new AlphanumComparator());
  */
 public class AlphanumComparator implements Comparator<String> {

@@ -10,11 +10,11 @@ import java.io.Serializable;
  * improved using the new 2002/1/26 initialization algorithm By Sean Luke, October 2004.
  *
  *
- * MersenneTwister is a drop-in subclass replacement for java.util.Random. It is properly synchronized and can be
+ * MersenneTwister is a drop-in subclass replacement for java.tools.Random. It is properly synchronized and can be
  * used in a multithreaded environment. On modern VMs such as HotSpot, it is approximately 1/3 slower than
- * java.util.Random.
+ * java.tools.Random.
  *
- * MersenneTwisterFast is not a subclass of java.util.Random. It has the same public methods as Random does, however,
+ * MersenneTwisterFast is not a subclass of java.tools.Random. It has the same public methods as Random does, however,
  * and it is
  * algorithmically identical to MersenneTwister. MersenneTwisterFast has hard-code inlined all of its methods directly,
  * and made all of them
@@ -23,7 +23,7 @@ import java.io.Serializable;
  * MersenneTwisterFast
  * instance cannot be shared by multiple threads. But all this helps MersenneTwisterFast achieve well over twice the
  * speed of
- * MersenneTwister. java.util.Random is about 1/3 slower than MersenneTwisterFast.
+ * MersenneTwister. java.tools.Random is about 1/3 slower than MersenneTwisterFast.
  *
  *
  * <h3>About the Mersenne Twister</h3>
@@ -104,7 +104,7 @@ public class MersenneTwister extends java.util.Random implements Serializable {
   synchronized public void setSeed(final long seed) {
     // it's always good style to call super
     super.setSeed(seed);
-    // Due to a bug in java.util.Random clear up to 1.2, we're
+    // Due to a bug in java.tools.Random clear up to 1.2, we're
     // doing our own Gaussian variable.
     haveNextNextGaussian = false;
     m_mt = new int[N];

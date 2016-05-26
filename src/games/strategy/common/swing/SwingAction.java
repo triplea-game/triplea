@@ -29,7 +29,7 @@ public class SwingAction {
 
   /**
    * @param name Name for the abstract action, passed along to the AbstractAction constructor.
-   * @param swingAction Lambda java.util.function.Consumer object, accepts one arg and returns void.
+   * @param swingAction Lambda java.tools.function.Consumer object, accepts one arg and returns void.
    */
   public static AbstractAction of(final String name, final Consumer<ActionEvent> swingAction) {
     return new AbstractAction(name) {
