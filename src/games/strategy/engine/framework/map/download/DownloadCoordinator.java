@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.util.ThreadUtil;
 
 /**
