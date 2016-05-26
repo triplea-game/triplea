@@ -36,6 +36,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -632,7 +633,7 @@ enum LocalBeanCache {
         // on error we delete the cache file, if we can
         m_file.delete();
         System.err.println("Serialization cache invalid: " + e.getMessage());
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
     return new HashMap<>();

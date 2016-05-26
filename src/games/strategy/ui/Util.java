@@ -52,11 +52,15 @@ public final class Util {
     private static final long serialVersionUID = 1800075529163275600L;
   };
 
-  public static void ensureImageLoaded(final Image anImage) throws InterruptedException {
+  public static void ensureImageLoaded(final Image anImage) {
     final MediaTracker tracker = new MediaTracker(c);
     tracker.addImage(anImage, 1);
-    tracker.waitForAll();
-    tracker.removeImage(anImage);
+    try {
+      tracker.waitForAll();
+      tracker.removeImage(anImage);
+    } catch(InterruptedException ignored) {
+      // ignore interrupted
+    }
   }
 
   public static Image copyImage(final BufferedImage img) {

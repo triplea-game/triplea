@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.headlessGameServer;
 
 import java.awt.BorderLayout;
+
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -16,6 +17,7 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.common.swing.SwingAction;
 import games.strategy.common.ui.MacWrapper;
 import games.strategy.common.ui.MainGameFrame;
@@ -136,7 +138,7 @@ public class HeadlessGameServerUI extends MainGameFrame {
           }
         });
       } catch (final Exception e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
   };

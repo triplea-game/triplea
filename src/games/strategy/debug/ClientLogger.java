@@ -13,9 +13,7 @@ public class ClientLogger {
 
   private static void log(final PrintStream stream, final Throwable e) {
     stream.println("Exception: " + e.getMessage());
-    for (final StackTraceElement stackTraceElement : e.getStackTrace()) {
-      stream.println(stackTraceElement.toString());
-    }
+    e.printStackTrace(stream);
   }
 
   public static void logQuietly(final String msg) {

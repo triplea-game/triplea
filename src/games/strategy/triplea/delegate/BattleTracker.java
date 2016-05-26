@@ -910,11 +910,10 @@ public class BattleTracker implements java.io.Serializable {
     return null;
   }
 
-  public Collection<IBattle> getPendingBattles(final Territory t, final Boolean bombing, final BattleType type) {
+  public Collection<IBattle> getPendingBattles(final Territory t, final BattleType type) {
     final Collection<IBattle> battles = new HashSet<>();
     for (final IBattle battle : m_pendingBattles) {
-      if (battle.getTerritory().equals(t) && (bombing == null || battle.isBombingRun() == bombing)
-          && (type == null || type.equals(battle.getBattleType()))) {
+      if (battle.getTerritory().equals(t) && (type == null || type.equals(battle.getBattleType()))) {
         battles.add(battle);
       }
     }

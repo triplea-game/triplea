@@ -17,7 +17,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -38,6 +37,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.debug.ClientLogger;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 
@@ -190,16 +190,12 @@ public class CenterPicker extends JFrame {
    * creates the image map and makes sure
    * it is properly loaded.
    *
-   * @param java
+   * @param mapName
    *        .lang.String mapName the path of image map
    */
   private void createImage(final String mapName) {
     m_image = Toolkit.getDefaultToolkit().createImage(mapName);
-    try {
-      Util.ensureImageLoaded(m_image);
-    } catch (final InterruptedException ex) {
-      ex.printStackTrace();
-    }
+    Util.ensureImageLoaded(m_image);
   }
 
   /**
@@ -244,12 +240,8 @@ public class CenterPicker extends JFrame {
       out.flush();
       out.close();
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
-    } catch (final HeadlessException ex) {
-      ex.printStackTrace();
     } catch (final Exception ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
   }
 
@@ -267,12 +259,8 @@ public class CenterPicker extends JFrame {
       final FileInputStream in = new FileInputStream(centerName);
       m_centers = PointFileReaderWriter.readOneToOne(in);
       repaint();
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
-    } catch (final IOException ex) {
-      ex.printStackTrace();
-    } catch (final HeadlessException ex) {
-      ex.printStackTrace();
+    } catch (final HeadlessException | IOException ex) {
+      ClientLogger.logQuietly(ex);
     }
   }
 

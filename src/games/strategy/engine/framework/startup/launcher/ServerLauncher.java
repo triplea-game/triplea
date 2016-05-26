@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.common.ui.InGameLobbyWatcherWrapper;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameDataManager;
@@ -135,7 +136,7 @@ public class ServerLauncher extends AbstractLauncher {
       try {
         gameDataAsBytes = gameDataToBytes(m_gameData);
       } catch (final IOException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
         throw new IllegalStateException(e.getMessage());
       }
       final Set<IGamePlayer> localPlayerSet =
@@ -243,7 +244,7 @@ public class ServerLauncher extends AbstractLauncher {
                 }
               }
             } catch (final InterruptedException e) {
-              e.printStackTrace();
+              ClientLogger.logQuietly(e);
             }
             stopGame();
           } catch (final Exception e) {
@@ -283,7 +284,7 @@ public class ServerLauncher extends AbstractLauncher {
                 m_gameSelectorModel.load(f, null);
               }
             } catch (final Exception e) {
-              e.printStackTrace();
+              ClientLogger.logQuietly(e);
               m_gameSelectorModel.resetGameDataToNull();
             }
           } else {
@@ -416,7 +417,7 @@ public class ServerLauncher extends AbstractLauncher {
     try {
       m_serverGame.saveGame(f);
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       if (m_headless && HeadlessGameServer.getInstance() != null) {
         HeadlessGameServer.getInstance().printThreadDumpsAndStatus();
         // TODO: We seem to be getting this bug once a week (1.8.0.1 and previous versions). Trying a fix for 1.8.0.3,
@@ -465,7 +466,7 @@ class ServerReady implements IServerReady {
     try {
       m_latch.await();
     } catch (final InterruptedException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -474,7 +475,7 @@ class ServerReady implements IServerReady {
     try {
       didNotTimeOut = m_latch.await(timeout, timeUnit);
     } catch (final InterruptedException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
     return didNotTimeOut;
   }

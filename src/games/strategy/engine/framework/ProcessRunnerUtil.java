@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
@@ -99,14 +100,14 @@ public class ProcessRunnerUtil {
               // just read
             }
           } catch (final IOException e) {
-            e.printStackTrace();
+            ClientLogger.logQuietly(e);
           }
         }
       }, "Process ouput gobbler");
       t.setDaemon(true);
       t.start();
-    } catch (final IOException ioe) {
-      ioe.printStackTrace();
+    } catch (final IOException e) {
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -148,7 +149,7 @@ public class ProcessRunnerUtil {
               }
             }
           } catch (final IOException e) {
-            e.printStackTrace();
+            ClientLogger.logQuietly(e);
           }
           System.out.println("Finished Gobbling");
           latch.countDown();
@@ -156,8 +157,8 @@ public class ProcessRunnerUtil {
       }, "Process ouput gobbler");
       t.setDaemon(true);
       t.start();
-    } catch (final IOException ioe) {
-      ioe.printStackTrace();
+    } catch (final IOException e) {
+      ClientLogger.logQuietly(e);
     }
     ThreadUtil.sleep(5000);
     System.out.println("Finished");

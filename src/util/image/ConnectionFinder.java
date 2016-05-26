@@ -9,7 +9,6 @@ import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ import java.util.regex.Pattern;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.ui.Util;
 import games.strategy.util.AlphanumComparator;
 import games.strategy.util.PointFileReaderWriter;
@@ -36,6 +36,7 @@ import games.strategy.util.PointFileReaderWriter;
  * Inputs - a polygons.txt file
  * Outputs - a list of connections between the Polygons
  */
+// TODO: get this moved to its own package tree
 public class ConnectionFinder {
   private static File s_mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
@@ -90,10 +91,8 @@ public class ConnectionFinder {
         }
         territoryAreas.put(territoryName, listOfAreas);
       }
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
     } catch (final IOException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
     if (!dimensionsSet) {
       final String lineWidth = JOptionPane.showInputDialog(null,
@@ -210,10 +209,10 @@ public class ConnectionFinder {
       final Matcher matcher = waterPattern.matcher(t);
       if (matcher.find()) {
         // <territory name="sea zone 1" water="true"/>
-        output.append("<territory name=\"" + t + "\" water=\"true\"/>\r\n");
+        output.append("<territory name=\"").append(t).append("\" water=\"true\"/>\r\n");
       } else {
         // <territory name="neutral territory 2"/>
-        output.append("<territory name=\"" + t + "\"/>\r\n");
+        output.append("<territory name=\"").append(t).append("\"/>\r\n");
       }
     }
     output.append("\r\n");
@@ -235,7 +234,7 @@ public class ConnectionFinder {
     Collections.sort(allTerritories, new AlphanumComparator());
     for (final String t1 : allTerritories) {
       for (final String t2 : connections.get(t1)) {
-        output.append("<connection t1=\"" + t1 + "\" t2=\"" + t2 + "\"/>\r\n");
+        output.append("<connection t1=\"").append(t1).append("\" t2=\"").append(t2).append("\"/>\r\n");
       }
     }
     return output;

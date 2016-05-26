@@ -122,17 +122,22 @@ public class RandomStatsDetails implements Serializable {
   private static String getStatsString(final IntegerMap<Integer> diceRolls, final DiceStatistic diceStats,
       final String title, final String indentation) {
     final StringBuilder sb = new StringBuilder();
-    sb.append(indentation + title + "\n");
+    sb.append(indentation).append(title).append("\n");
     for (final Integer key : new TreeSet<>(diceRolls.keySet())) {
       final int value = diceRolls.getInt(key);
-      sb.append(indentation + indentation + indentation + key + " was rolled " + value + " times" + "\n");
+      sb.append(indentation).append(indentation).append(indentation).append(key).append(" was rolled ").append(value)
+          .append(" times").append("\n");
     }
     final DecimalFormat format = new DecimalFormat("#0.000");
-    sb.append(indentation + indentation + "Average roll : " + format.format(diceStats.getAverage()) + "\n");
-    sb.append(indentation + indentation + "Median : " + format.format(diceStats.getMedian()) + "\n");
-    sb.append(indentation + indentation + "Variance : " + format.format(diceStats.getVariance()) + "\n");
-    sb.append(indentation + indentation + "Standard Deviation : " + format.format(diceStats.getStdDeviation()) + "\n");
-    sb.append(indentation + indentation + "Total rolls : " + diceStats.getTotal() + "\n");
+    sb.append(indentation).append(indentation).append("Average roll : ").append(format.format(diceStats.getAverage()))
+        .append("\n");
+    sb.append(indentation).append(indentation).append("Median : ").append(format.format(diceStats.getMedian()))
+        .append("\n");
+    sb.append(indentation).append(indentation).append("Variance : ").append(format.format(diceStats.getVariance()))
+        .append("\n");
+    sb.append(indentation).append(indentation).append("Standard Deviation : ")
+        .append(format.format(diceStats.getStdDeviation())).append("\n");
+    sb.append(indentation).append(indentation).append("Total rolls : ").append(diceStats.getTotal()).append("\n");
     return sb.toString();
   }
 

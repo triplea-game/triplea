@@ -19,6 +19,7 @@ import java.util.zip.GZIPOutputStream;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
@@ -180,7 +181,7 @@ public class GameDataManager {
      * }
      * } catch (final Exception e)
      * {
-     * e.printStackTrace();
+     * ClientLogger.logQuietly(e);
      * }
      * }
      */
@@ -198,7 +199,7 @@ public class GameDataManager {
         instance.initialize(name, displayName);
         data.getDelegateList().addDelegate(instance);
       } catch (final Exception e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
         throw new IOException(e.getMessage());
       }
       final String next = (String) input.readObject();
@@ -279,7 +280,7 @@ public class GameDataManager {
       try {
         data = manager.loadGame(save);
       } catch (final IOException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
         return;
       }
     }
@@ -291,7 +292,7 @@ public class GameDataManager {
       try {
         System.in.read();
       } catch (final IOException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
   }

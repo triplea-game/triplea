@@ -74,7 +74,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
       return "Edit Mode can only be toggled during players turn";
     }
     logEvent((editMode ? EDITMODE_ON : EDITMODE_OFF), null);
-    m_bridge.addChange(ChangeFactory.setProperty(Constants.EDIT_MODE, new Boolean(editMode), getData()));
+    m_bridge.addChange(ChangeFactory.setProperty(Constants.EDIT_MODE, editMode, getData()));
     return null;
   }
 

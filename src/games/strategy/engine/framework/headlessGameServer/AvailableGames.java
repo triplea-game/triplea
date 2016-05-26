@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
@@ -138,8 +139,8 @@ public class AvailableGames {
         zis.closeEntry();
         entry = zis.getNextEntry();
       }
-    } catch (final IOException ioe) {
-      ioe.printStackTrace();
+    } catch (final IOException e) {
+      ClientLogger.logQuietly("Map: "+ map, e);
     }
   }
 

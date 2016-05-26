@@ -36,7 +36,7 @@ public class DownloadCoordinator {
           // pause for a brief while before the next iteration, helps avoid a Github too many requests error
           ThreadUtil.sleep(250);
         } catch (Exception e) {
-          e.printStackTrace();
+          ClientLogger.logQuietly(e);
           throw e;
         }
       }

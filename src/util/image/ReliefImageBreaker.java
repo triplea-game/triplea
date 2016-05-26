@@ -22,6 +22,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.ui.ImageIoCompletionWatcher;
 import games.strategy.ui.Util;
@@ -167,8 +168,8 @@ public class ReliefImageBreaker {
       try {
         tracker.waitForAll();
         return img;
-      } catch (final InterruptedException ie) {
-        ie.printStackTrace();
+      } catch (final InterruptedException e) {
+        ClientLogger.logQuietly("interrupted while loading images", e);
         return loadImage();
       }
     } else {

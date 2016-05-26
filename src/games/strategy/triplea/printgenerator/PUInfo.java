@@ -1,13 +1,13 @@
 package games.strategy.triplea.printgenerator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
@@ -71,10 +71,8 @@ public class PUInfo {
       }
       resourceWriter.write("\r\n");
       resourceWriter.close();
-    } catch (final FileNotFoundException e) {
-      e.printStackTrace();
     } catch (final IOException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 }

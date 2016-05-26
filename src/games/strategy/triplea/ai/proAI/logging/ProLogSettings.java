@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ai.proAI.ProAI;
 
 /**
@@ -54,10 +55,10 @@ public class ProLogSettings implements Serializable {
       try {
         prefs.flush();
       } catch (final BackingStoreException ex) {
-        ex.printStackTrace();
+        ClientLogger.logQuietly(ex);
       }
     } catch (final Exception ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
   }
 }

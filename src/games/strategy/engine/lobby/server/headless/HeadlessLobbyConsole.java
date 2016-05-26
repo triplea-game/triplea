@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.Formatter;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.debug.DebugUtils;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.ui.DBExplorerPanel;
@@ -124,7 +125,7 @@ public class HeadlessLobbyConsole {
         System.exit(0);
       }
     } catch (final IOException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -139,9 +140,8 @@ public class HeadlessLobbyConsole {
         print(rs);
         rs.close();
       }
-    } catch (final SQLException sqle) {
-      sqle.printStackTrace();
-      out.println(sqle.getMessage());
+    } catch (final SQLException e) {
+      ClientLogger.logQuietly(e);
     }
   }
 

@@ -37,10 +37,8 @@ class ZoomableImage extends JComponent {
     tracker.addImage(anImage, 1);
     try {
       tracker.waitForAll(1);
-    } catch (final InterruptedException ie) {
-      ie.printStackTrace();
-      System.err.println("<<<<<<<<<<<<<<<<<<<<<<>trying again to load Image");
-      ensureImageLoaded(anImage);
+    } catch (final InterruptedException e) {
+      // ignore interrupted exception
     }
   }
 

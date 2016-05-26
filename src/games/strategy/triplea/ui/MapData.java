@@ -25,6 +25,7 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ResourceLoader;
@@ -183,7 +184,7 @@ public class MapData {
       }
       initializeContains();
     } catch (final IOException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
   }
 
@@ -231,7 +232,7 @@ public class MapData {
     try {
       return Double.parseDouble(m_mapProperties.getProperty(PROPERTY_UNITS_SCALE));
     } catch (final NumberFormatException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return 1.0;
     }
   }
@@ -246,7 +247,7 @@ public class MapData {
     try {
       return Integer.parseInt(m_mapProperties.getProperty(PROPERTY_UNITS_WIDTH));
     } catch (final NumberFormatException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
     }
   }
@@ -261,7 +262,7 @@ public class MapData {
     try {
       return Integer.parseInt(m_mapProperties.getProperty(PROPERTY_UNITS_HEIGHT));
     } catch (final NumberFormatException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
     }
   }
@@ -277,7 +278,7 @@ public class MapData {
     try {
       return Integer.parseInt(m_mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_WIDTH));
     } catch (final NumberFormatException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return getDefaultUnitWidth() / 4;
     }
   }
@@ -293,7 +294,7 @@ public class MapData {
     try {
       return Integer.parseInt(m_mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT));
     } catch (final NumberFormatException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return getDefaultUnitHeight();
     }
   }
@@ -505,7 +506,8 @@ public class MapData {
     while (territories.hasNext()) {
       final Territory terr = territories.next();
       if (!keySet.contains(terr.getName())) {
-        errors.append("No data of type " + dataTypeForErrorMessage + " for territory:" + terr.getName() + "\n");
+        errors.append("No data of type ").append(dataTypeForErrorMessage).append(" for territory:")
+            .append(terr.getName()).append("\n");
       }
     }
     if (errors.length() > 0) {
@@ -786,7 +788,7 @@ public class MapData {
     try {
       return ImageIO.read(url);
     } catch (final IOException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(e.getMessage());
     }
   }

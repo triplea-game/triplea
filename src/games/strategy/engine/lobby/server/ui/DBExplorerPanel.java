@@ -18,6 +18,7 @@ import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.lobby.server.userDB.Database;
 
 public class DBExplorerPanel extends JPanel {
@@ -86,8 +87,8 @@ public class DBExplorerPanel extends JPanel {
           m_table.setModel(model);
         }
       }
-    } catch (final SQLException sqle) {
-      sqle.printStackTrace();
+    } catch (final SQLException e) {
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -118,7 +119,7 @@ public class DBExplorerPanel extends JPanel {
       }
       return model;
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return null;
     }
   }

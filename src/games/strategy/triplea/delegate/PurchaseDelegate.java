@@ -376,7 +376,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     final IntegerMap<Resource> left = m_player.getResources().getResourcesCopy();
     left.subtract(costs);
     for (final Entry<Resource, Integer> entry : left.entrySet()) {
-      returnString.append(entry.getValue() + " " + entry.getKey().getName() + "; ");
+      returnString.append(entry.getValue()).append(" ").append(entry.getKey().getName()).append("; ");
     }
     for (final Resource resource : costs.keySet()) {
       final float quantity = costs.getInt(resource);

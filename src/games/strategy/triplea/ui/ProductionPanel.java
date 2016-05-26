@@ -246,7 +246,7 @@ public class ProductionPanel extends JPanel {
           final int movement = attach.getMovement(id);
           final int defense = attach.getDefense(id);
           info.setText(attack + "/" + defense + "/" + movement);
-          tooltip.append(type.getName() + ": " + type.getTooltip(id));
+          tooltip.append(type.getName()).append(": ").append(type.getTooltip(id));
           name.setText(type.getName());
           if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() == 1) {
             name.setForeground(Color.CYAN);
@@ -259,7 +259,7 @@ public class ProductionPanel extends JPanel {
           final Resource resource = (Resource) resourceOrUnit;
           icon = Optional.of(m_uiContext.getResourceImageFactory().getIcon(resource, m_data, true));
           info.setText("resource");
-          tooltip.append(resource.getName() + ": resource");
+          tooltip.append(resource.getName()).append(": resource");
           name.setText(resource.getName());
           name.setForeground(Color.GREEN);
         }

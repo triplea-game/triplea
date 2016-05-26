@@ -34,7 +34,7 @@ public class RemoteHostUtils implements IRemoteHostUtils {
         sb.append("  null\n");
       } else {
         for (final INode node : nodes) {
-          sb.append("  " + node + "\n");
+          sb.append("  ").append(node).append("\n");
         }
       }
       return sb.toString();

@@ -18,7 +18,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -44,6 +43,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.ui.DoubleTextField;
 import games.strategy.ui.IntTextField;
@@ -314,12 +314,8 @@ public class MapPropertiesMaker extends JFrame {
       }
       final FileInputStream in = new FileInputStream(centerName);
       properties.load(in);
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
-    } catch (final IOException ex) {
-      ex.printStackTrace();
-    } catch (final HeadlessException ex) {
-      ex.printStackTrace();
+    } catch (final HeadlessException | IOException ex) {
+      ClientLogger.logQuietly(ex);
     }
     for (final Method setter : s_mapProperties.getClass().getMethods()) {
       final boolean startsWithSet = setter.getName().startsWith("set");
@@ -355,12 +351,8 @@ public class MapPropertiesMaker extends JFrame {
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
       System.out.println("");
       System.out.println(stringToWrite);
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
-    } catch (final HeadlessException ex) {
-      ex.printStackTrace();
-    } catch (final Exception ex) {
-      ex.printStackTrace();
+    } catch (final Exception e) {
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -373,12 +365,8 @@ public class MapPropertiesMaker extends JFrame {
       }
       try {
         outString.append(outMethod.invoke(s_mapProperties));
-      } catch (final IllegalArgumentException e) {
-        e.printStackTrace();
-      } catch (final IllegalAccessException e) {
-        e.printStackTrace();
-      } catch (final InvocationTargetException e) {
-        e.printStackTrace();
+      } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
+        ClientLogger.logQuietly(e);
       }
     }
     return outString.toString();

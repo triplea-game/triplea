@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAUnit;
@@ -924,7 +925,7 @@ class AddGridGameMapChange extends Change {
             m_horizontalConnections, m_verticalConnections, m_diagonalConnections, true);
         map.notifyChanged();
       } catch (final Exception e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
   }
@@ -1028,9 +1029,9 @@ class ObjectPropertyChange extends Change {
    */
   private Object resolve(final Object value) {
     if (value instanceof Boolean) {
-      return Boolean.valueOf(((Boolean) value).booleanValue());
+      return ((Boolean) value).booleanValue();
     } else if (value instanceof Integer) {
-      return Integer.valueOf(((Integer) value).intValue());
+      return ((Integer) value).intValue();
     }
     return value;
   }

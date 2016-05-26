@@ -25,6 +25,7 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.ChatPanel;
@@ -337,7 +338,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         new GameDataManager().saveGame(sink, m_data);
         bytes = sink.toByteArray();
       } catch (final IOException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
         throw new IllegalStateException(e);
       }
       return bytes;
@@ -356,7 +357,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         GameProperties.toOutputStream(sink, currentEditableProperties);
         bytes = sink.toByteArray();
       } catch (final IOException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
       return bytes;
     }
@@ -418,7 +419,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           InputStream oinput = new BufferedInputStream(input);) {
         headless.loadGameSave(oinput, fileName);
       } catch (final Exception e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
 
@@ -434,7 +435,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       try {
         headless.loadGameOptions(bytes);
       } catch (final Exception e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
   };
@@ -683,8 +684,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder();
-    sb.append("ServerModel GameData:" + (m_data == null ? "null" : m_data.getGameName()) + "\n");
-    sb.append("Connected:" + (m_serverMessenger == null ? "null" : m_serverMessenger.isConnected()) + "\n");
+    sb.append("ServerModel GameData:").append(m_data == null ? "null" : m_data.getGameName()).append("\n");
+    sb.append("Connected:").append(m_serverMessenger == null ? "null" : m_serverMessenger.isConnected()).append("\n");
     sb.append(m_serverMessenger);
     sb.append("\n");
     sb.append(m_remoteMessenger);

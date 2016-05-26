@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -51,7 +52,7 @@ public class LocalLauncher extends AbstractLauncher {
     } catch( MapNotFoundException e ) {
       exceptionLoadingGame = e;
     } catch (final Exception ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
       exceptionLoadingGame = ex;
     } finally {
       m_gameLoadingWindow.doneWait();

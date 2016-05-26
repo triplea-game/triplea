@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -114,9 +113,6 @@ public class Fire implements IExecutable {
       // more hits than combat units
       if (hitCount > numPossibleHits) {
         int extraHits = hitCount - numPossibleHits;
-        final Collection<Unit> remainingTargets = new ArrayList<>();
-        remainingTargets.addAll(m_attackableUnits);
-        remainingTargets.removeAll(nonTransports);
         final Collection<PlayerID> alliedHitPlayer = new ArrayList<>();
         // find the players who have transports in the attackable pile
         for (final Unit unit : transportsOnly) {
@@ -205,8 +201,6 @@ public class Fire implements IExecutable {
           // somone else will deal with this
           // System.out.println(cle.getMessage());
           // cle.printStackTrace(System.out);
-        } catch (final GameOverException e) {
-          // ignore
         } catch (final Exception e) {
           // ignore
         }

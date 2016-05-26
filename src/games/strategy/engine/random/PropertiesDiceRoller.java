@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import games.strategy.debug.ClientLogger;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
@@ -53,7 +54,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
           }
         } catch (final IOException e) {
           System.out.println("error reading file:" + file);
-          e.printStackTrace();
+          ClientLogger.logQuietly(e);
         }
       }
     }
@@ -194,7 +195,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
         // -1 since we are 0 based
         rVal[i] = Integer.parseInt(tokenizer.nextToken()) - 1;
       } catch (final NumberFormatException ex) {
-        ex.printStackTrace();
+        ClientLogger.logQuietly("Number format parsing: " + string, ex);
         throw new IOException(ex.getMessage());
       }
     }

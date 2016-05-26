@@ -758,9 +758,10 @@ public class MapXmlCreator extends JFrame {
     for (final String settingName : settings) {
       final char firstLetter = settingName.charAt(0);
       if (firstLetter == lastFirstLetteretter) {
-        sb.append("<tr><td>" + settingName + "</td></tr>");
+        sb.append("<tr><td>").append(settingName).append("</td></tr>");
       } else {
-        sb.append("<tr><td><big>" + firstLetter + "</big>" + settingName.substring(1) + "</td></tr>");
+        sb.append("<tr><td><big>").append(firstLetter).append("</big>").append(settingName.substring(1))
+            .append("</td></tr>");
       }
       lastFirstLetteretter = firstLetter;
       if (settingNr % third_size_setting == 0) {
@@ -1070,7 +1071,7 @@ public class MapXmlCreator extends JFrame {
       Logger.getLogger(MapXmlCreator.MAP_XML_CREATOR_LOGGER_NAME).log(Level.INFO,
           "Game XML written to " + newFile.getCanonicalPath());
     } catch (final IOException | HeadlessException | TransformerException | ParserConfigurationException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 

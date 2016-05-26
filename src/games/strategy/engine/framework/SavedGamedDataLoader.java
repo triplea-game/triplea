@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.swing.JFileChooser;
 
+import games.strategy.debug.ClientLogger;
 /**
  * <p>
  * Title: TripleA
@@ -29,7 +30,7 @@ public class SavedGamedDataLoader implements IGameDataLoader {
       try {
         return new GameDataManager().loadGame(f);
       } catch (final Exception e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
         System.exit(0);
         return null;
       }

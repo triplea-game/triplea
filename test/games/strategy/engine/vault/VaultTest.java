@@ -2,6 +2,7 @@ package games.strategy.engine.vault;
 
 import java.io.IOException;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.message.UnifiedMessenger;
@@ -47,14 +48,14 @@ public class VaultTest extends TestCase {
         m_server.shutDown();
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
     try {
       if (m_client1 != null) {
         m_client1.shutDown();
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 

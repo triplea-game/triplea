@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.StatusManager;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
@@ -76,7 +77,7 @@ public class LobbyServer {
     try {
       LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("server-logging.properties"));
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
     Logger.getAnonymousLogger().info("Redirecting std out");
     System.setErr(new LoggingPrintStream("ERROR", Level.SEVERE));

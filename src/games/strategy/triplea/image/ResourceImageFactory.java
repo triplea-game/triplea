@@ -17,8 +17,6 @@ public class ResourceImageFactory {
   public static final int DEFAULT_RESOURCE_ICON_SIZE = 12;
   public static final int LARGE_RESOURCE_ICON_SIZE = 24;
   private static final String FILE_NAME_BASE = "resources/";
-  // maps Point -> image
-  private final Map<String, Image> m_images = new HashMap<>();
   // maps Point -> Icon
   private final Map<String, ImageIcon> m_icons = new HashMap<>();
   // Scaling factor for images
@@ -67,7 +65,6 @@ public class ResourceImageFactory {
 
   // Clear the image and icon cache
   private void clearImageCache() {
-    m_images.clear();
     m_icons.clear();
   }
 
@@ -79,11 +76,7 @@ public class ResourceImageFactory {
       throw new IllegalStateException("Cant load: " + baseImageName + "  looking in: " + fileName);
     }
     final Image image = Toolkit.getDefaultToolkit().getImage(url);
-    try {
-      Util.ensureImageLoaded(image);
-    } catch (final InterruptedException ex) {
-      ex.printStackTrace();
-    }
+    Util.ensureImageLoaded(image);
     return image;
   }
 

@@ -1474,7 +1474,7 @@ public class ProBidAI {
         // territories we have already assaulted
         // this can be easily changed
         final HashSet<Integer> ignore = new HashSet<>();
-        ignore.add(Integer.valueOf(1));
+        ignore.add(1);
         final List<Route> r = new ArrayList<>();
         final List<Unit> ships =
             findAttackers(location, 3, ignore, ePlayer, data, enemyShip, Matches.territoryIsBlockedSea(ePlayer, data),
@@ -1705,7 +1705,7 @@ public class ProBidAI {
   private static float determineEnemyBlitzStrength(final Territory blitzHere, final List<Route> blitzTerrRoutes,
       final List<Territory> blockTerr, final GameData data, final PlayerID ePlayer) {
     final HashSet<Integer> ignore = new HashSet<>();
-    ignore.add(Integer.valueOf(1));
+    ignore.add(1);
     final CompositeMatch<Unit> blitzUnit =
         new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanBlitz, Matches.UnitCanMove);
     final CompositeMatch<Territory> validBlitzRoute =
@@ -1760,7 +1760,7 @@ public class ProBidAI {
             continue;
           }
           q.add(neighbor);
-          final Integer dist = Integer.valueOf(distance.getInt(neighbor));
+          final Integer dist = distance.getInt(neighbor);
           if (ignoreDistance.contains(dist)) {
             continue;
           }

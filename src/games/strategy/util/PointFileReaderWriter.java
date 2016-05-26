@@ -189,8 +189,8 @@ public class PointFileReaderWriter {
         }
         current = reader.readLine();
       }
-    } catch (final IOException ioe) {
-      ioe.printStackTrace();
+    } catch (final IOException e) {
+      ClientLogger.logQuietly(e);
       System.exit(0);
     }
     return mapping;

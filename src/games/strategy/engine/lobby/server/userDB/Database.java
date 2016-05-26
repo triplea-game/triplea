@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.util.ThreadUtil;
@@ -282,9 +283,8 @@ public class Database {
       }
       try {
         Database.restoreFromBackup(chooser.getSelectedFile());
-      } catch (final SQLException sqle) {
-        JOptionPane.showMessageDialog(null, sqle.getMessage());
-        sqle.printStackTrace();
+      } catch (final SQLException e) {
+        ClientLogger.logQuietly(e);
       }
     }
   }

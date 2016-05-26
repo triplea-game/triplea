@@ -264,7 +264,7 @@ public class TechPanel extends ActionPanel {
         listedAlready.add(advance);
       }
       final int freq = Collections.frequency(techList, advance);
-      strTechCategory.append(advance.getName() + (freq > 1 ? " (" + freq + "/" + techList.size() + ")" : ""));
+      strTechCategory.append(advance.getName()).append(freq > 1 ? " (" + freq + "/" + techList.size() + ")" : "");
       if (iterTechList.hasNext()) {
         strTechCategory.append(", ");
       }

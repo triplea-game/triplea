@@ -7,7 +7,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -18,7 +17,6 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +32,7 @@ import javax.swing.SwingUtilities;
 
 import com.google.common.collect.Maps;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.util.PointFileReaderWriter;
 import util.image.FileOpen;
 
@@ -265,17 +264,12 @@ public abstract class ImageScrollPanePanel {
 
   private static Map<String, Point> loadCenters() {
     centers.clear();
+    String fileName = "Load Centers from " + MapXmlCreator.mapCentersFile.getAbsolutePath();
     try {
-      Logger.getLogger(MapXmlCreator.MAP_XML_CREATOR_LOGGER_NAME).log(Level.INFO,
-          "Load Centers from " + MapXmlCreator.mapCentersFile.getAbsolutePath());
       final FileInputStream in = new FileInputStream(MapXmlCreator.mapCentersFile);
       centers = PointFileReaderWriter.readOneToOne(in);
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
-    } catch (final IOException ex) {
-      ex.printStackTrace();
-    } catch (final HeadlessException ex) {
-      ex.printStackTrace();
+    } catch (final Exception ex) {
+      ClientLogger.logQuietly("failed to load file: " + "Load Centers from " + fileName, ex);
     }
     return centers;
   }

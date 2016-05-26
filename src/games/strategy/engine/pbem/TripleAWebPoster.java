@@ -17,6 +17,7 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -98,7 +99,7 @@ public class TripleAWebPoster implements IWebPoster {
       }
     } catch (final Exception e) {
       m_serverMessage = e.getMessage();
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return false;
     }
     return true;

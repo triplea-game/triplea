@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
-import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Rectangle;
@@ -13,7 +12,6 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +23,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.ui.Util;
 import games.strategy.util.JTextAreaOptionPane;
@@ -117,12 +116,8 @@ public class TileImageReconstructor {
           final FileInputStream in = new FileInputStream(polyName);
           m_polygons = PointFileReaderWriter.readOneToManyPolygons(in);
         }
-      } catch (final FileNotFoundException ex) {
-        ex.printStackTrace();
-      } catch (final IOException ex) {
-        ex.printStackTrace();
-      } catch (final HeadlessException ex) {
-        ex.printStackTrace();
+      } catch (final Exception ex) {
+        ClientLogger.logQuietly(ex);
       }
     }
     createMap();
@@ -142,11 +137,7 @@ public class TileImageReconstructor {
           continue;
         }
         final Image tile = Toolkit.getDefaultToolkit().createImage(tileFile.getPath());
-        try {
-          Util.ensureImageLoaded(tile);
-        } catch (final InterruptedException ex) {
-          ex.printStackTrace();
-        }
+        Util.ensureImageLoaded(tile);
         final Rectangle tileBounds = new Rectangle(x * TileManager.TILE_SIZE, y * TileManager.TILE_SIZE,
             Math.min((x * TileManager.TILE_SIZE) + TileManager.TILE_SIZE, sizeX),
             Math.min((y * TileManager.TILE_SIZE) + TileManager.TILE_SIZE, sizeY));
@@ -168,7 +159,7 @@ public class TileImageReconstructor {
     try {
       ImageIO.write(mapImage, "png", new File(imageSaveLocation));
     } catch (final IOException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
     textOptionPane.appendNewLine("Wrote " + imageSaveLocation);
     textOptionPane.appendNewLine("\r\nAll Finished!");

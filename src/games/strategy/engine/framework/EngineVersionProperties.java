@@ -30,6 +30,7 @@ import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.util.Version;
@@ -42,8 +43,6 @@ public class EngineVersionProperties {
   private final String m_linkAlt;
   private final String m_changelogLink;
   private volatile boolean m_done = false;
-  // only for testing when sourceforge is down
-  // private static final String s_linkToTripleA = "http://www.tripleawarclub.org/lobby/latest_version.properties";
   private static final String s_linkToTripleA = "http://triplea.sourceforge.net/latest/latest_version.properties";
 
   private EngineVersionProperties(final URL url) {
@@ -79,7 +78,7 @@ public class EngineVersionProperties {
     try {
       engineversionPropsURL = new URL(s_linkToTripleA);
     } catch (final MalformedURLException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return new EngineVersionProperties(new Properties());
     }
     return contactServerForEngineVersionProperties(engineversionPropsURL);
@@ -98,7 +97,6 @@ public class EngineVersionProperties {
           try {
             latch.await(2, TimeUnit.SECONDS);
           } catch (final InterruptedException e) {
-            // e.printStackTrace();
           }
           if (ref.get() != null) {
             break;
@@ -108,7 +106,6 @@ public class EngineVersionProperties {
         try {
           latch.await(15, TimeUnit.SECONDS);
         } catch (final InterruptedException e) {
-          // e.printStackTrace();
         }
       }
 
@@ -184,12 +181,12 @@ public class EngineVersionProperties {
   private String getOutOfDateMessage() {
     final StringBuilder text = new StringBuilder("<html>");
     text.append("<h2>A new version of TripleA is out.  Please Update TripleA!</h2>");
-    text.append("<br />Your current version: " + ClientContext.engineVersion().getFullVersion());
-    text.append("<br />Latest version available for download: " + getLatestVersionOut());
-    text.append("<br /><br />Click to download: <a class=\"external\" href=\"" + getLinkToDownloadLatestVersion()
-        + "\">" + getLinkToDownloadLatestVersion() + "</a>");
-    text.append("<br />Backup Mirror: <a class=\"external\" href=\"" + getLinkAltToDownloadLatestVersion() + "\">"
-        + getLinkAltToDownloadLatestVersion() + "</a>");
+    text.append("<br />Your current version: ").append(ClientContext.engineVersion().getFullVersion());
+    text.append("<br />Latest version available for download: ").append(getLatestVersionOut());
+    text.append("<br /><br />Click to download: <a class=\"external\" href=\"").append(getLinkToDownloadLatestVersion())
+        .append("\">").append(getLinkToDownloadLatestVersion()).append("</a>");
+    text.append("<br />Backup Mirror: <a class=\"external\" href=\"").append(getLinkAltToDownloadLatestVersion())
+        .append("\">").append(getLinkAltToDownloadLatestVersion()).append("</a>");
     text.append(
         "<br /><br />Please note that installing a new version of TripleA will not remove any old copies of TripleA."
             + "<br />So be sure to either manually uninstall all older versions of TripleA, or change your shortcuts to the new TripleA.");
@@ -205,11 +202,11 @@ public class EngineVersionProperties {
     Collections.sort(versions, Version.getHighestToLowestComparator());
     for (final Version v : versions) {
       if (showAll || ClientContext.engineVersion().getVersion().isLessThan(v)) {
-        text.append("<br />" + getReleaseNotes().get(v) + "<br /><br />");
+        text.append("<br />").append(getReleaseNotes().get(v)).append("<br /><br />");
       }
     }
-    text.append("Link to full Change Log:<br /><a class=\"external\" href=\"" + getChangeLogLink() + "\">"
-        + getChangeLogLink() + "</a><br />");
+    text.append("Link to full Change Log:<br /><a class=\"external\" href=\"").append(getChangeLogLink()).append("\">")
+        .append(getChangeLogLink()).append("</a><br />");
     text.append("</html>");
     return text.toString();
   }
@@ -238,11 +235,11 @@ public class EngineVersionProperties {
     Collections.sort(versions, Version.getHighestToLowestComparator());
     for (final Version v : versions) {
       if (getShowUpdatesFrom().equals(v, false) || getShowUpdatesFrom().isLessThan(v)) {
-        releaseNotesBuilder.append("<br />" + getReleaseNotes().get(v) + "<br /><br />");
+        releaseNotesBuilder.append("<br />").append(getReleaseNotes().get(v)).append("<br /><br />");
       }
     }
-    releaseNotesBuilder.append("Link to full Change Log:<br /><a class=\"external\" href=\"" + getChangeLogLink()
-        + "\">" + getChangeLogLink() + "</a><br />");
+    releaseNotesBuilder.append("Link to full Change Log:<br /><a class=\"external\" href=\"").append(getChangeLogLink())
+        .append("\">").append(getChangeLogLink()).append("</a><br />");
     releaseNotesBuilder.append("</html>");
     final JEditorPane updates = new JEditorPane("text/html", releaseNotesBuilder.toString());
     updates.setEditable(false);

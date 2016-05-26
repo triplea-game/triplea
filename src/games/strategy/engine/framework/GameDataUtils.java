@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameObjectOutputStream;
 
@@ -27,7 +28,7 @@ public class GameDataUtils {
       sink = null;
       return manager.loadGame(source, null);
     } catch (final IOException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
       return null;
     }
   }

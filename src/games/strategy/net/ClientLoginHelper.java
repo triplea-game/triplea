@@ -4,6 +4,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 
+import games.strategy.debug.ClientLogger;
+
 class ClientLoginHelper {
   private final IConnectionLogin login;
   private final SocketStreams streams;
@@ -45,7 +47,7 @@ class ClientLoginHelper {
       login.notifyFailedLogin(response);
       return false;
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return false;
     }
   }

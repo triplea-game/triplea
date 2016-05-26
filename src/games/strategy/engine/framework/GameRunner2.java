@@ -259,7 +259,7 @@ public class GameRunner2 {
     try {
       LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("logging.properties"));
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -291,7 +291,7 @@ public class GameRunner2 {
     try {
       pref.sync();
     } catch (final BackingStoreException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -351,7 +351,7 @@ public class GameRunner2 {
         // it is in MB
         max = 1024 * 1024 * ((long) maxMemorySet);
       } catch (final NumberFormatException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
     return max;
@@ -364,7 +364,7 @@ public class GameRunner2 {
       try {
         maxMemorySet = Integer.parseInt(maxMemoryString);
       } catch (final NumberFormatException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
     return maxMemorySet;
@@ -451,8 +451,8 @@ public class GameRunner2 {
       try {
         Integer.parseInt(proxyPortArgument);
         proxyPort = proxyPortArgument;
-      } catch (final NumberFormatException nfe) {
-        nfe.printStackTrace();
+      } catch (final NumberFormatException e) {
+        ClientLogger.logQuietly(e);
       }
     }
     if (proxyHost != null || proxyPort != null) {
@@ -498,8 +498,8 @@ public class GameRunner2 {
         if (choice == ProxyChoice.USE_USER_PREFERENCES) {
           System.setProperty(HTTP_PROXYPORT, proxyPort);
         }
-      } catch (final NumberFormatException nfe) {
-        nfe.printStackTrace();
+      } catch (final NumberFormatException e) {
+        ClientLogger.logQuietly(e);
       }
     }
     if (choice == ProxyChoice.NONE) {
@@ -564,7 +564,7 @@ public class GameRunner2 {
         }
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     } finally {
       System.setProperty(JAVA_NET_USESYSTEMPROXIES, "false");
     }
@@ -589,7 +589,7 @@ public class GameRunner2 {
     try {
       pref.sync();
     } catch (final BackingStoreException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -613,7 +613,7 @@ public class GameRunner2 {
     try {
       pref.sync();
     } catch (final BackingStoreException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -636,7 +636,7 @@ public class GameRunner2 {
     try {
       pref.sync();
     } catch (final BackingStoreException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -659,7 +659,7 @@ public class GameRunner2 {
     try {
       pref.sync();
     } catch (final BackingStoreException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -773,14 +773,14 @@ public class GameRunner2 {
     try {
       img = frame.getToolkit().getImage(GameRunner2.class.getResource("ta_icon.png"));
     } catch (final Exception ex) {
-      System.out.println("icon not loaded");
+      ClientLogger.logError("ta_icon.png not loaded", ex);
     }
     final MediaTracker tracker = new MediaTracker(frame);
     tracker.addImage(img, 0);
     try {
       tracker.waitForAll();
     } catch (final InterruptedException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
     return img;
   }

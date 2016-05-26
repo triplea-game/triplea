@@ -3,6 +3,7 @@ package games.strategy.engine.framework.ui;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import games.strategy.common.swing.SwingAction;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameParseException;
@@ -184,10 +185,10 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
     } catch (final SAXParseException e) {
       String msg = "Could not parse:" + uri + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber();
       System.err.println(msg);
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     } catch (final Exception e) {
       System.err.println("Could not parse:" + uri);
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
