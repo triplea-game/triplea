@@ -48,11 +48,6 @@ public class MapRouteDrawer {
     final boolean tooFewPoints = points.length <= 2;
     final int xOffset = view.getXOffset();
     final int yOffset = view.getYOffset();
-    
-    if (!tooFewTerritories && tooFewPoints) {
-      drawMoveLength(graphics, routeDescription, points, xOffset, yOffset, view, mapData.scrollWrapX(),
-          mapData.scrollWrapY(), numTerritories, movementLeftForCurrentUnits);
-    }
     final double scale = view.getScale();
     final int jointsize = 10;
     if (tooFewTerritories || tooFewPoints) {
@@ -83,9 +78,11 @@ public class MapRouteDrawer {
 
   }
 
-  private static double[] getIndex(Point[] points) {
+  protected static double[] getIndex(Point[] points) {
     final double[] index = new double[points.length];
-    index[0] = 0;
+    if(index.length > 0){
+      index[0] = 0;
+    }
     for (int i = 1; i < points.length; i++) {
       index[i] = index[i - 1] + Math.sqrt(points[i - 1].distance(points[i]));
     }
@@ -101,7 +98,7 @@ public class MapRouteDrawer {
     graphics.draw(new Line2D.Double(point1, point2));
   }
 
-  private static Point[] getRoutePoints(RouteDescription routeDescription, MapData mapData) {
+  protected static Point[] getRoutePoints(RouteDescription routeDescription, MapData mapData) {
     final List<Territory> territories = routeDescription.getRoute().getAllTerritories();
     final int numTerritories = territories.size();
     final Point[] points = new Point[numTerritories];
@@ -117,7 +114,7 @@ public class MapRouteDrawer {
     return points;
   }
 
-  private static Tuple<double[], double[]> pointsToDoubleArrays(Point[] points) {
+  protected static Tuple<double[], double[]> pointsToDoubleArrays(Point[] points) {
     double[] xResult = new double[points.length];
     double[] yResult = new double[points.length];
     for (int i = 0; i < points.length; i++) {
@@ -127,10 +124,15 @@ public class MapRouteDrawer {
     return Tuple.of(xResult, yResult);
   }
 
-  private static double[] getCoords(PolynomialSplineFunction curve, double[] index) {
-    final double[] coords = new double[(int) Math.round(index[index.length - 1])];
-    for (int i = 0; i < coords.length; i++) {
-      coords[i] = curve.value(i);
+  protected static double[] getCoords(PolynomialSplineFunction curve, double[] index) {
+    final double detailLevel = 1.0;//Tweak this value in order to achieve good rendering results
+    final double defaultCoordSize = index[index.length - 1];
+    final double[] coords = new double[(int)Math.round(detailLevel * defaultCoordSize) + 1];
+    final double stepSize = curve.getKnots()[curve.getKnots().length - 1] / coords.length;
+    double curValue = 0;
+    for (int i = 0; i < coords.length; i ++) {
+      coords[i] = curve.value(curValue);
+      curValue += stepSize;
     }
     return coords;
   }
