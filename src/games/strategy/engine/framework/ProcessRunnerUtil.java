@@ -122,7 +122,8 @@ public class ProcessRunnerUtil {
     System.out.println("Max Memory:" + runtime.maxMemory() / mb);
     final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands);
-    final String javaClass = "util.image.MapCreator";
+
+    final String javaClass = MapCreator.class.getName();
     commands.add(javaClass);
     System.out.println("Testing ProcessRunnerUtil");
     System.out.println(commands);
