@@ -89,7 +89,7 @@ public class PlacePanel extends AbstractMovePanel {
       if (units.isEmpty()) {
         return;
       }
-      final UnitChooser chooser = new UnitChooser(units, Collections.<Unit, Collection<Unit>>emptyMap(), getData(),
+      final UnitChooser chooser = new UnitChooser(units, Collections.emptyMap(), getData(),
           false, getMap().getUIContext());
       final String messageText = "Place units in " + territory.getName();
       if (maxUnits[0] > 0) {

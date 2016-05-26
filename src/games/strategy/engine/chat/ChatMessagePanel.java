@@ -121,7 +121,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     } else {
       send.setEnabled(false);
       text.setEnabled(false);
-      updatePlayerList(Collections.<INode>emptyList());
+      updatePlayerList(Collections.emptyList());
     }
   }
 

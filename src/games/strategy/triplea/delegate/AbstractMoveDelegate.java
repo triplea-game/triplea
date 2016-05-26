@@ -126,7 +126,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 
   @Override
   public String move(final Collection<Unit> units, final Route route) {
-    return move(units, route, Collections.<Unit>emptyList());
+    return move(units, route, Collections.emptyList());
   }
 
   @Override

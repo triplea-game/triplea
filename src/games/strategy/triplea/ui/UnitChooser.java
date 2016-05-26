@@ -55,7 +55,7 @@ public class UnitChooser extends JPanel {
     m_data = data;
     m_uiContext = context;
     m_match = null;
-    createEntries(units, dependent, categorizeMovement, categorizeTransportCost, Collections.<Unit>emptyList());
+    createEntries(units, dependent, categorizeMovement, categorizeTransportCost, Collections.emptyList());
     layoutEntries();
   }
 
@@ -66,13 +66,13 @@ public class UnitChooser extends JPanel {
     m_dependents = dependent;
     m_data = data;
     m_uiContext = context;
-    createEntries(units, dependent, categorizeMovement, categorizeTransportCost, Collections.<Unit>emptyList());
+    createEntries(units, dependent, categorizeMovement, categorizeTransportCost, Collections.emptyList());
     layoutEntries();
   }
 
   public UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final GameData data,
       final boolean allowTwoHit, final IUIContext uiContext) {
-    this(units, Collections.<Unit>emptyList(), dependent, data, allowTwoHit, uiContext);
+    this(units, Collections.emptyList(), dependent, data, allowTwoHit, uiContext);
   }
 
   public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,

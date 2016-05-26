@@ -133,7 +133,7 @@ public class BattleDisplay extends JPanel {
     m_data = data;
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(territory);
     m_defenderModel = new BattleModel(defendingUnits, false, battleType, defender, m_data, m_location, territoryEffects,
-        isAmphibious, Collections.<Unit>emptySet(), m_mapPanel.getUIContext());
+        isAmphibious, Collections.emptySet(), m_mapPanel.getUIContext());
     m_attackerModel = new BattleModel(attackingUnits, true, battleType, attacker, m_data, m_location, territoryEffects,
         isAmphibious, amphibiousLandAttackers, m_mapPanel.getUIContext());
     m_defenderModel.setEnemyBattleModel(m_attackerModel);

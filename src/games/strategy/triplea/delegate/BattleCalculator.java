@@ -512,7 +512,7 @@ public class BattleCalculator {
       return editSelection;
     }
     if (dice.getHits() == 0) {
-      return new CasualtyDetails(Collections.<Unit>emptyList(), Collections.<Unit>emptyList(), true);
+      return new CasualtyDetails(Collections.emptyList(), Collections.emptyList(), true);
     }
     int hitsRemaining = dice.getHits();
     if (isTransportCasualtiesRestricted(data)) {
@@ -527,7 +527,7 @@ public class BattleCalculator {
         }
         killed.add(iter.next());
       }
-      return new CasualtyDetails(killed, Collections.<Unit>emptyList(), true);
+      return new CasualtyDetails(killed, Collections.emptyList(), true);
     }
     // Create production cost map, Maybe should do this elsewhere, but in case prices change, we do it here.
     final IntegerMap<UnitType> costs = getCostsForTUV(player, data);

@@ -319,7 +319,7 @@ public class MapPanel extends ImageScrollerLargeView {
       if (unitsChanged(null)) {
         final MouseDetails md = convert(e);
         currentUnits = null;
-        notifyMouseEnterUnit(Collections.<Unit>emptyList(), getTerritory(e.getX(), e.getY()), md);
+        notifyMouseEnterUnit(Collections.emptyList(), getTerritory(e.getX(), e.getY()), md);
       }
     }
 
@@ -373,7 +373,7 @@ public class MapPanel extends ImageScrollerLargeView {
       if (unitsChanged(tuple)) {
         currentUnits = tuple;
         if (tuple == null) {
-          notifyMouseEnterUnit(Collections.<Unit>emptyList(), getTerritory(x, y), md);
+          notifyMouseEnterUnit(Collections.emptyList(), getTerritory(x, y), md);
         } else {
           notifyMouseEnterUnit(tuple.getSecond(), tuple.getFirst(), md);
         }
