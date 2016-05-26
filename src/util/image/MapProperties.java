@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.util.Tuple;
@@ -63,19 +64,19 @@ public class MapProperties {
   public MapProperties() {
     super();
     // fill the color map
-    COLOR_MAP.put("Americans", new Color(0x666600));
-    COLOR_MAP.put("Australians", new Color(0xCCCC00));
-    COLOR_MAP.put("British", new Color(0x916400));
-    COLOR_MAP.put("Canadians", new Color(0xDBBE7F));
-    COLOR_MAP.put("Chinese", new Color(0x663E66));
-    COLOR_MAP.put("French", new Color(0x113A77));
-    COLOR_MAP.put("Germans", new Color(0x777777));
-    COLOR_MAP.put("Italians", new Color(0x0B7282));
-    COLOR_MAP.put("Japanese", new Color(0xFFD400));
-    COLOR_MAP.put("Puppet_States", new Color(0x1B5DA0));
-    COLOR_MAP.put("Russians", new Color(0xB23B00));
-    COLOR_MAP.put("Neutral", new Color(0xE2A071));
-    COLOR_MAP.put("Impassible", new Color(0xD8BA7C));
+    COLOR_MAP.put(Constants.PLAYER_NAME_AMERICANS, new Color(0x666600));
+    COLOR_MAP.put(Constants.PLAYER_NAME_AUSTRALIANS, new Color(0xCCCC00));
+    COLOR_MAP.put(Constants.PLAYER_NAME_BRITISH, new Color(0x916400));
+    COLOR_MAP.put(Constants.PLAYER_NAME_CANADIANS, new Color(0xDBBE7F));
+    COLOR_MAP.put(Constants.PLAYER_NAME_CHINESE, new Color(0x663E66));
+    COLOR_MAP.put(Constants.PLAYER_NAME_FRENCH, new Color(0x113A77));
+    COLOR_MAP.put(Constants.PLAYER_NAME_GERMANS, new Color(0x777777));
+    COLOR_MAP.put(Constants.PLAYER_NAME_ITALIANS, new Color(0x0B7282));
+    COLOR_MAP.put(Constants.PLAYER_NAME_JAPANESE, new Color(0xFFD400));
+    COLOR_MAP.put(Constants.PLAYER_NAME_PUPPET_STATES, new Color(0x1B5DA0));
+    COLOR_MAP.put(Constants.PLAYER_NAME_RUSSIANS, new Color(0xB23B00));
+    COLOR_MAP.put(Constants.PLAYER_NAME_NEUTRAL, new Color(0xE2A071));
+    COLOR_MAP.put(Constants.PLAYER_NAME_IMPASSIBLE, new Color(0xD8BA7C));
   }
 
   @SuppressWarnings("rawtypes")

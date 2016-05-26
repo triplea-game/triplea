@@ -86,7 +86,7 @@ import games.strategy.util.Tuple;
  * but it will still confirm with you by asking you the questions. Just hit 'enter' a lot if you do not know the
  * answers. <br>
  * <br>
- * Any images that this program can not find the point for, will start in the upper left corner of the map, <br>
+ * Any images that this program cannot find the point for, will start in the upper left corner of the map, <br>
  * and you may click on them to move them to their appropriate place." <br>
  * <br>
  * Do not forget to save the points when finished. To save and continue with another set of images, choose the <br>
@@ -151,7 +151,7 @@ public class DecorationPlacer extends JFrame {
               + "<br>select which territories you need a placement point for."
               + "<br><br>After selecting the point file type you want to make, the program will choose the default selections for you, "
               + "<br>but it will still confirm with you by asking you the questions. Just hit 'enter' a lot if you do not know the answers. "
-              + "<br><br>Any images that this program can not find the point for, will start in the upper left corner of the map, "
+              + "<br><br>Any images that this program cannot find the point for, will start in the upper left corner of the map, "
               + "<br>and you may click on them to move them to their appropriate place."
               + "<br><br>Do not forget to save the points when finished. To save and continue with another set of images, choose the "
               + "<br>option to 'Save Current And Keep On Map And Load New'.  To reset all currently image points, use 'Load Image Points'."

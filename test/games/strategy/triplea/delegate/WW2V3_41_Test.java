@@ -105,7 +105,7 @@ public class WW2V3_41_Test extends TestCase {
 
   public static String fight(final BattleDelegate battle, final Territory territory) {
     for (final Entry<BattleType, Collection<Territory>> entry : battle.getBattles().getBattles().entrySet()) {
-      if (!entry.getKey().isBombingRun()  && entry.getValue().contains(territory)) {
+      if (!entry.getKey().isBombingRun() && entry.getValue().contains(territory)) {
         return battle.fightBattle(territory, false, entry.getKey());
       }
     }
@@ -263,7 +263,8 @@ public class WW2V3_41_Test extends TestCase {
     final TechnologyFrontier mech = new TechnologyFrontier("", m_data);
     mech.addAdvance(TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_MECHANIZED_INFANTRY, m_data, null));
     // Add tech token
-    m_data.performChange(ChangeFactory.changeResourcesChange(germans, m_data.getResourceList().getResource(Constants.TECH_TOKENS), 1));
+    m_data.performChange(
+        ChangeFactory.changeResourcesChange(germans, m_data.getResourceList().getResource(Constants.TECH_TOKENS), 1));
     // Check to make sure it was successful
     final int initTokens = germans.getResources().getQuantity("techTokens");
     assertEquals(1, initTokens);
@@ -1614,15 +1615,15 @@ public class WW2V3_41_Test extends TestCase {
     final Collection<Unit> moveUnits = hupeh.getUnits().getUnits();
     // Get Owner prior to battle
     final String preOwner = kiangsu.getOwner().getName();
-    assertEquals(preOwner, "Japanese");
+    assertEquals(preOwner, Constants.PLAYER_NAME_JAPANESE);
     // add a VALID attack
     final String validResults = moveDelegate.move(moveUnits, new Route(hupeh, kiangsu));
     assertValid(validResults);
     // Ensure owner after attack doesn't match attacker
     final String postOwner = kiangsu.getOwner().getName();
-    assertNotSame(postOwner, "British");
+    assertNotSame(postOwner, Constants.PLAYER_NAME_BRITISH);
     // Check that original owner is now owner
-    assertEquals(postOwner, "Chinese");
+    assertEquals(postOwner, Constants.PLAYER_NAME_CHINESE);
   }
 
   public void testOccupiedTerrOfAttachmentWithCapital() {
@@ -1645,7 +1646,7 @@ public class WW2V3_41_Test extends TestCase {
       final String noVal = null;
       taMongolia.setCapital(noVal);
       // Set as NEW capital
-      taKiangsu.setCapital("Chinese");
+      taKiangsu.setCapital(Constants.PLAYER_NAME_CHINESE);
     } catch (final GameParseException e) {
       ClientLogger.logError(e);
     }
@@ -1658,15 +1659,15 @@ public class WW2V3_41_Test extends TestCase {
     final Collection<Unit> moveUnits = hupeh.getUnits().getUnits();
     // Get Owner prior to battle
     final String preOwner = kiangsu.getOwner().getName();
-    assertEquals(preOwner, "Japanese");
+    assertEquals(preOwner, Constants.PLAYER_NAME_JAPANESE);
     // add a VALID attack
     final String validResults = moveDelegate.move(moveUnits, new Route(hupeh, kiangsu));
     assertValid(validResults);
     // Ensure owner after attack doesn't match attacker
     final String postOwner = kiangsu.getOwner().getName();
-    assertNotSame(postOwner, "British");
+    assertNotSame(postOwner, Constants.PLAYER_NAME_BRITISH);
     // Check that original owner is now owner
-    assertEquals(postOwner, "Chinese");
+    assertEquals(postOwner, Constants.PLAYER_NAME_CHINESE);
   }
 
   public void testTwoStepBlitz() {

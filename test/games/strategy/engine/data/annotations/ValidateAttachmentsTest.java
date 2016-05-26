@@ -237,7 +237,7 @@ public class ValidateAttachmentsTest extends TestCase {
       final boolean gamePropertyAnnotation = setter.isAnnotationPresent(GameProperty.class);
       if (internalDoNotExportAnnotation && gamePropertyAnnotation) {
         sb.append("WARNING: Class ").append(clazz.getCanonicalName()).append(" setter ").append(setter.getName())
-            .append(": can not have both InternalDoNotExport and GameProperty annotations");
+            .append(": cannot have both InternalDoNotExport and GameProperty annotations");
         continue;
       } else if (startsWithSet && !(internalDoNotExportAnnotation || gamePropertyAnnotation)) {
         sb.append("WARNING: Class ").append(clazz.getCanonicalName()).append(" setter ").append(setter.getName())

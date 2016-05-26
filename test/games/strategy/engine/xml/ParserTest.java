@@ -108,7 +108,8 @@ public class ParserTest extends TestCase {
     TestAttachment att = (TestAttachment) gameData.getResourceList().getResource("gold")
         .getAttachment(Constants.RESOURCE_ATTACHMENT_NAME);
     assertEquals(att.getValue(), "gold");
-    att = (TestAttachment) gameData.getUnitTypeList().getUnitType("inf").getAttachment(Constants.INF_ATTACHMENT_NAME);
+    att = (TestAttachment) gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF)
+        .getAttachment(Constants.INF_ATTACHMENT_NAME);
     assertEquals(att.getValue(), "inf");
     att = (TestAttachment) gameData.getMap().getTerritory("us").getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
     assertEquals(att.getValue(), "us of a");

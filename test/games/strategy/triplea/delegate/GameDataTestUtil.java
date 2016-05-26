@@ -23,31 +23,31 @@ import junit.framework.AssertionFailedError;
 
 public class GameDataTestUtil {
   public static PlayerID germans(final GameData data) {
-    return data.getPlayerList().getPlayerID("Germans");
+    return data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_GERMANS);
   }
 
   public static PlayerID italians(final GameData data) {
-    return data.getPlayerList().getPlayerID("Italians");
+    return data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_ITALIANS);
   }
 
   public static PlayerID russians(final GameData data) {
-    return data.getPlayerList().getPlayerID("Russians");
+    return data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_RUSSIANS);
   }
 
   public static PlayerID americans(final GameData data) {
-    return data.getPlayerList().getPlayerID("Americans");
+    return data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_AMERICANS);
   }
 
   public static PlayerID british(final GameData data) {
-    return data.getPlayerList().getPlayerID("British");
+    return data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_BRITISH);
   }
 
   public static PlayerID japanese(final GameData data) {
-    return data.getPlayerList().getPlayerID("Japanese");
+    return data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_JAPANESE);
   }
 
   public static PlayerID chinese(final GameData data) {
-    return data.getPlayerList().getPlayerID("Chinese");
+    return data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_CHINESE);
   }
 
   public static Territory territory(final String name, final GameData data) {
@@ -59,47 +59,47 @@ public class GameDataTestUtil {
   }
 
   public static UnitType armour(final GameData data) {
-    return unitType("armour", data);
+    return unitType(Constants.UNIT_TYPE_ARMOUR, data);
   }
 
   public static UnitType aaGun(final GameData data) {
-    return unitType("aaGun", data);
+    return unitType(Constants.UNIT_TYPE_AAGUN, data);
   }
 
   public static UnitType transport(final GameData data) {
-    return unitType("transport", data);
+    return unitType(Constants.UNIT_TYPE_TRANSPORT, data);
   }
 
   public static UnitType battleship(final GameData data) {
-    return unitType("battleship", data);
+    return unitType(Constants.UNIT_TYPE_BATTLESHIP, data);
   }
 
   public static UnitType carrier(final GameData data) {
-    return unitType("carrier", data);
+    return unitType(Constants.UNIT_TYPE_CARRIER, data);
   }
 
   public static UnitType fighter(final GameData data) {
-    return unitType("fighter", data);
+    return unitType(Constants.UNIT_TYPE_FIGHTER, data);
   }
 
   public static UnitType destroyer(final GameData data) {
-    return unitType("destroyer", data);
+    return unitType(Constants.UNIT_TYPE_DESTROYER, data);
   }
 
   public static UnitType submarine(final GameData data) {
-    return unitType("submarine", data);
+    return unitType(Constants.UNIT_TYPE_SUBMARINE, data);
   }
 
   public static UnitType infantry(final GameData data) {
-    return unitType("infantry", data);
+    return unitType(Constants.UNIT_TYPE_INFANTRY, data);
   }
 
   public static UnitType bomber(final GameData data) {
-    return unitType("bomber", data);
+    return unitType(Constants.UNIT_TYPE_BOMBER, data);
   }
 
   public static UnitType factory(final GameData data) {
-    return unitType("factory", data);
+    return unitType(Constants.UNIT_TYPE_FACTORY, data);
   }
 
   private static UnitType unitType(final String name, final GameData data) {

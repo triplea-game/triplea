@@ -272,7 +272,7 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
     if (player != null) {
       return player.getTechnologyFrontierList().getFrontiers();
     }
-    throw new IllegalStateException("Player can not be null");
+    throw new IllegalStateException("Player cannot be null");
   }
 
   @Override

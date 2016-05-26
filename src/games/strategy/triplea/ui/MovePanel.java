@@ -1509,7 +1509,7 @@ public class MovePanel extends AbstractMovePanel {
     final CompositeMatchAnd<Unit> moveableUnitOwnedByMe =
         new CompositeMatchAnd<>(Matches.unitIsOwnedBy(getCurrentPlayer()), Matches.unitHasMovementLeft);
     if (!m_nonCombat) {
-      // if not non combat, can not move aa units
+      // if not non combat, cannot move aa units
       moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
     }
     final int size = allTerritories.size();
@@ -1557,7 +1557,7 @@ public class MovePanel extends AbstractMovePanel {
     final CompositeMatchAnd<Unit> moveableUnitOwnedByMe =
         new CompositeMatchAnd<>(Matches.unitIsOwnedBy(getCurrentPlayer()), Matches.unitHasMovementLeft);
     if (!m_nonCombat) {
-      // if not non combat, can not move aa units
+      // if not non combat, cannot move aa units
       moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
     }
     final Map<Territory, List<Unit>> highlight = new HashMap<>();

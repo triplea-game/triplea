@@ -90,7 +90,7 @@ public class ExampleAttachment extends DefaultAttachment {
   public void setGivesMovement(final String value) {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new IllegalStateException("Unit Attachments: givesMovement can not be empty or have more than two fields");
+      throw new IllegalStateException("Unit Attachments: givesMovement cannot be empty or have more than two fields");
     }
     String unitTypeToProduce;
     unitTypeToProduce = s[1];

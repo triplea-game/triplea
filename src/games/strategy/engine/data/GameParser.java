@@ -1465,7 +1465,7 @@ public class GameParser {
         hits = Integer.parseInt(hitsTakenString);
         if (hits < 0 || hits > UnitAttachment.get(type).getHitPoints() - 1) {
           throw new GameParseException(
-              "hitsTaken can not be less than zero or greater than one less than total hitpPoints");
+              "hitsTaken cannot be less than zero or greater than one less than total hitpPoints");
         }
       } else {
         hits = 0;
@@ -1474,7 +1474,7 @@ public class GameParser {
       if (unitDamageString != null && unitDamageString.trim().length() > 0) {
         unitDamage = Integer.parseInt(unitDamageString);
         if (unitDamage < 0) {
-          throw new GameParseException("unitDamage can not be less than zero");
+          throw new GameParseException("unitDamage cannot be less than zero");
         }
       } else {
         unitDamage = 0;

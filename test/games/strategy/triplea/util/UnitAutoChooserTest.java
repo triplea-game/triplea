@@ -109,11 +109,11 @@ public class UnitAutoChooserTest extends TestCase {
   @Override
   public void setUp() throws Exception {
     m_data = LoadGameUtil.loadTestGame("revised_test.xml");
-    british = m_data.getPlayerList().getPlayerID(Constants.BRITISH);
-    armour = m_data.getUnitTypeList().getUnitType(Constants.ARMOUR_TYPE);
-    infantry = m_data.getUnitTypeList().getUnitType(Constants.INFANTRY_TYPE);
-    transport = m_data.getUnitTypeList().getUnitType(Constants.TRANSPORT_TYPE);
-    battleship = m_data.getUnitTypeList().getUnitType(Constants.BATTLESHIP_TYPE);
+    british = m_data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_BRITISH);
+    armour = m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_ARMOUR);
+    infantry = m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INFANTRY);
+    transport = m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_TRANSPORT);
+    battleship = m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_BATTLESHIP);
   }
 
   @Override

@@ -237,7 +237,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
       } else if (!Matches.unitHasNotMoved.match(u)) {
         result.addDisallowedUnit("Must Not Have Previously Moved Airborne Forces", u);
       } else if (Matches.UnitIsAirborne.match(u)) {
-        result.addDisallowedUnit("Can Not Move Units Already Airborne", u);
+        result.addDisallowedUnit("Cannot Move Units Already Airborne", u);
       } else {
         airborne.add(u);
       }
@@ -261,14 +261,14 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
     final boolean land = Matches.TerritoryIsLand.match(end);
     final boolean sea = Matches.TerritoryIsWater.match(end);
     if (someLand && someSea) {
-      return result.setErrorReturnResult("Can Not Mix Land and Sea Units");
+      return result.setErrorReturnResult("Cannot Mix Land and Sea Units");
     } else if (someLand) {
       if (!land) {
-        return result.setErrorReturnResult("Can Not Move Land Units To Sea");
+        return result.setErrorReturnResult("Cannot Move Land Units To Sea");
       }
     } else if (someSea) {
       if (!sea) {
-        return result.setErrorReturnResult("Can Not Move Sea Units To Land");
+        return result.setErrorReturnResult("Cannot Move Sea Units To Land");
       }
     }
     if (onlyWhereUnderAttackAlready) {

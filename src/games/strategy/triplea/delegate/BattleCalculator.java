@@ -442,7 +442,7 @@ public class BattleCalculator {
     }
     // We need to choose which planes die based on their position in the list and the individual AA rolls
     if (hits > planeHP) {
-      throw new IllegalStateException("Can not have more hits than number of die rolls");
+      throw new IllegalStateException("Cannot have more hits than number of die rolls");
     }
     if (hits < planeHP) {
       final List<Die> rolls = dice.getRolls(highestAttack);

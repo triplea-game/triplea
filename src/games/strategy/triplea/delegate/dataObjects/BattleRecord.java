@@ -43,7 +43,7 @@ public class BattleRecord extends GameDataComponent {
   private int m_bombingDamage = 0;
   private BattleType m_battleType;
   private BattleResults m_battleResults;
-  // Something in IBattle (formerly part of BattleResults) can not be Serialized, which can causing MAJOR problems. So
+  // Something in IBattle (formerly part of BattleResults) cannot be Serialized, which can causing MAJOR problems. So
   // the IBattle should
   // never be part of BattleResults or BattleRecord.
 

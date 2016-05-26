@@ -76,7 +76,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
     return false;
   }
 
-  public static final PlayerID NULL_PLAYERID = new PlayerID("Neutral", true, false, null) {
+  public static final PlayerID NULL_PLAYERID = new PlayerID(Constants.PLAYER_NAME_NEUTRAL, true, false, null) {
     // compatible with 0.9.0.2 saved games
     private static final long serialVersionUID = -6596127754502509049L;
 
@@ -173,10 +173,10 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
   }
 
   public PlayerAttachment getPlayerAttachment() {
-    return  (PlayerAttachment) getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
+    return (PlayerAttachment) getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
   }
 
   public TechAttachment getTechAttachment() {
-    return (TechAttachment)   getAttachment(Constants.TECH_ATTACHMENT_NAME);
+    return (TechAttachment) getAttachment(Constants.TECH_ATTACHMENT_NAME);
   }
 }

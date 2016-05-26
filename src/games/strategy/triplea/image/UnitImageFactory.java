@@ -208,7 +208,7 @@ public class UnitImageFactory {
     StringBuilder name = new StringBuilder(32);
     name.append(type.getName());
     if (!type.getName().endsWith("_hit") && !type.getName().endsWith("_disabled")) {
-      if (type.getName().equals(Constants.AAGUN_TYPE)) {
+      if (type.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
         if (TechTracker.hasRocket(id) && UnitAttachment.get(type).getIsRocket()) {
           name = new StringBuilder("rockets");
         }
@@ -256,7 +256,7 @@ public class UnitImageFactory {
         if (TechTracker.hasRocket(id)) {
         }
       }
-      if (type.getName().equals(Constants.FACTORY_TYPE) || UnitAttachment.get(type).getCanProduceUnits()) {
+      if (type.getName().equals(Constants.UNIT_TYPE_FACTORY) || UnitAttachment.get(type).getCanProduceUnits()) {
         if (TechTracker.hasIndustrialTechnology(id) || TechTracker.hasIncreasedFactoryProduction(id)) {
           name.append("_it");
         }

@@ -180,7 +180,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   @Override
   public boolean isSatisfied(final HashMap<ICondition, Boolean> testedConditions, final IDelegateBridge aBridge) {
     if (testedConditions == null) {
-      throw new IllegalStateException("testedCondititions can not be null");
+      throw new IllegalStateException("testedCondititions cannot be null");
     }
     if (testedConditions.containsKey(this)) {
       return testedConditions.get(this);

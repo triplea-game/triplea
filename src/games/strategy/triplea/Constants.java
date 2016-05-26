@@ -5,13 +5,19 @@ package games.strategy.triplea;
  */
 public interface Constants {
   // Player names
-  String AMERICANS = "Americans";
-  String BRITISH = "British";
-  String GERMANS = "Germans";
-  String JAPANESE = "Japanese";
-  String RUSSIANS = "Russians";
-  String ITALIANS = "Italians";
-  String CHINESE = "Chinese";
+  String PLAYER_NAME_AMERICANS = "Americans";
+  String PLAYER_NAME_AUSTRALIANS = "Australians";
+  String PLAYER_NAME_BRITISH = "British";
+  String PLAYER_NAME_CANADIANS = "Canadians";
+  String PLAYER_NAME_CHINESE = "Chinese";
+  String PLAYER_NAME_FRENCH = "French";
+  String PLAYER_NAME_GERMANS = "Germans";
+  String PLAYER_NAME_IMPASSIBLE = "Impassible";
+  String PLAYER_NAME_ITALIANS = "Italians";
+  String PLAYER_NAME_JAPANESE = "Japanese";
+  String PLAYER_NAME_NEUTRAL = "Neutral";
+  String PLAYER_NAME_PUPPET_STATES = "Puppet_States";
+  String PLAYER_NAME_RUSSIANS = "Russians";
   String UNIT_ATTACHMENT_NAME = "unitAttachment";
   String INF_ATTACHMENT_NAME = "infAttachment";
   String TECH_ATTACHMENT_NAME = "techAttachment";
@@ -123,20 +129,25 @@ public interface Constants {
   String KAMIKAZE = "Kamikaze Airplanes";
   String LHTR_HEAVY_BOMBERS = "LHTR Heavy Bombers";
   String EDIT_MODE = "EditMode";
-  // by defaul this is 0, but for lhtr, it is 1
+  // by default this is 0, but for lhtr, it is 1
   String SUPER_SUB_DEFENSE_BONUS = "Super Sub Defence Bonus";
-  String INFANTRY_TYPE = "infantry";
-  String ARMOUR_TYPE = "armour";
-  String TRANSPORT_TYPE = "transport";
-  String SUBMARINE_TYPE = "submarine";
-  String BATTLESHIP_TYPE = "battleship";
-  String CARRIER_TYPE = "carrier";
-  String FIGHTER_TYPE = "fighter";
-  String BOMBER_TYPE = "bomber";
-  String FACTORY_TYPE = "factory";
-  String AAGUN_TYPE = "aaGun";
-  String ARTILLERY = "artillery";
-  String DESTROYER = "destroyer";
+  // unit types
+  String UNIT_TYPE_INFANTRY = "infantry";
+  String UNIT_TYPE_INF = "inf";
+  String UNIT_TYPE_MOTORIZED = "motorized";
+  String UNIT_TYPE_ARMOUR = "armour";
+  String UNIT_TYPE_TRANSPORT = "transport";
+  String UNIT_TYPE_SUBMARINE = "submarine";
+  String UNIT_TYPE_BATTLESHIP = "battleship";
+  String UNIT_TYPE_MARINE = "marine";
+  String UNIT_TYPE_CARRIER = "carrier";
+  String UNIT_TYPE_FIGHTER = "fighter";
+  String UNIT_TYPE_BOMBER = "bomber";
+  String UNIT_TYPE_AIR_TRANSPORT = "air_transport";
+  String UNIT_TYPE_FACTORY = "factory";
+  String UNIT_TYPE_AAGUN = "aaGun";
+  String UNIT_TYPE_ARTILLERY = "artillery";
+  String UNIT_TYPE_DESTROYER = "destroyer";
   String LARGE_MAP_FILENAME = "largeMap.gif";
   String SMALL_MAP_FILENAME = "smallMap.jpeg";
   String MAP_NAME = "mapName";
@@ -246,4 +257,5 @@ public interface Constants {
   String PROPERTY_DEFAULT = "default";
 
   String CONFIRM_DEFENSIVE_ROLLS = "confirm_defensive_rolls";
+  String CONSTRUCTION_TYPE_FACTORY = "factory";
 }

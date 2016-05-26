@@ -13,6 +13,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
 
@@ -70,8 +71,8 @@ public class PacificTest extends DelegateTest {
     // Define units
     infantry = GameDataTestUtil.infantry(m_data);
     armor = GameDataTestUtil.armour(m_data);
-    artillery = m_data.getUnitTypeList().getUnitType("artillery");
-    marine = m_data.getUnitTypeList().getUnitType("marine");
+    artillery = m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_ARTILLERY);
+    marine = m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
     fighter = GameDataTestUtil.fighter(m_data);
     bomber = GameDataTestUtil.bomber(m_data);
     sub = GameDataTestUtil.submarine(m_data);

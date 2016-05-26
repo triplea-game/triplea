@@ -296,11 +296,13 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleAPlaye
     }
     // would we normally be allies?
     final List<String> allies = Arrays
-        .asList(new String[] {"Americans", "Australians", "British", "Canadians", "Chinese", "French", "Russians"});
+        .asList(new String[] {Constants.PLAYER_NAME_AMERICANS, Constants.PLAYER_NAME_AUSTRALIANS, Constants.PLAYER_NAME_BRITISH,
+            Constants.PLAYER_NAME_CANADIANS, Constants.PLAYER_NAME_CHINESE, Constants.PLAYER_NAME_FRENCH, Constants.PLAYER_NAME_RUSSIANS});
     if (allies.contains(getPlayerID().getName()) && allies.contains(playerSendingProposal.getName())) {
       return true;
     }
-    final List<String> axis = Arrays.asList(new String[] {"Germans", "Italians", "Japanese", "Puppet_States"});
+    final List<String> axis = Arrays.asList(new String[] {Constants.PLAYER_NAME_GERMANS, Constants.PLAYER_NAME_ITALIANS,
+        Constants.PLAYER_NAME_JAPANESE, Constants.PLAYER_NAME_PUPPET_STATES});
     if (axis.contains(getPlayerID().getName()) && axis.contains(playerSendingProposal.getName())) {
       return true;
     }

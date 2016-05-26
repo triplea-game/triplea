@@ -305,7 +305,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
   private void initTwoHitBattleship(final IDelegateBridge aBridge) {
     final GameData data = aBridge.getData();
     final boolean userEnabled = games.strategy.triplea.Properties.getTwoHitBattleships(data);
-    final UnitType battleShipUnit = data.getUnitTypeList().getUnitType(Constants.BATTLESHIP_TYPE);
+    final UnitType battleShipUnit = data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_BATTLESHIP);
     if (battleShipUnit == null) {
       return;
     }

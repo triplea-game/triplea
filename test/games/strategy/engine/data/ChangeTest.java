@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
 
+import games.strategy.triplea.Constants;
 import junit.framework.TestCase;
 
 public class ChangeTest extends TestCase {
@@ -50,7 +51,8 @@ public class ChangeTest extends TestCase {
     final Territory can = m_data.getMap().getTerritory("canada");
     assertEquals(can.getUnits().getUnitCount(), 5);
     // add some units
-    final Change change = ChangeFactory.addUnits(can, m_data.getUnitTypeList().getUnitType("inf").create(10, null));
+    final Change change =
+        ChangeFactory.addUnits(can, m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF).create(10, null));
     m_data.performChange(change);
     assertEquals(can.getUnits().getUnitCount(), 15);
     // invert the change
@@ -63,7 +65,8 @@ public class ChangeTest extends TestCase {
     final Territory can = m_data.getMap().getTerritory("canada");
     assertEquals(can.getUnits().getUnitCount(), 5);
     // remove some units
-    final Collection<Unit> units = can.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
+    final Collection<Unit> units =
+        can.getUnits().getUnits(m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     final Change change = ChangeFactory.removeUnits(can, units);
     m_data.performChange(change);
 
@@ -78,7 +81,8 @@ public class ChangeTest extends TestCase {
     final Territory can = m_data.getMap().getTerritory("canada");
     assertEquals(can.getUnits().getUnitCount(), 5);
     // remove some units
-    final Collection<Unit> units = can.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
+    final Collection<Unit> units =
+        can.getUnits().getUnits(m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     Change change = ChangeFactory.removeUnits(can, units);
     change = serialize(change);
     m_data.performChange(change);
@@ -94,7 +98,8 @@ public class ChangeTest extends TestCase {
     assertEquals(chretian.getUnits().getUnitCount(), 10);
     // add some units
     final Change change =
-        ChangeFactory.addUnits(chretian, m_data.getUnitTypeList().getUnitType("inf").create(10, null));
+        ChangeFactory.addUnits(chretian,
+            m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF).create(10, null));
     m_data.performChange(change);
     assertEquals(chretian.getUnits().getUnitCount(), 20);
     // invert the change
@@ -107,7 +112,8 @@ public class ChangeTest extends TestCase {
     final PlayerID chretian = m_data.getPlayerList().getPlayerID("chretian");
     assertEquals(chretian.getUnits().getUnitCount(), 10);
     // remove some units
-    final Collection<Unit> units = chretian.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
+    final Collection<Unit> units =
+        chretian.getUnits().getUnits(m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     final Change change = ChangeFactory.removeUnits(chretian, units);
     m_data.performChange(change);
     assertEquals(chretian.getUnits().getUnitCount(), 7);
@@ -121,7 +127,8 @@ public class ChangeTest extends TestCase {
     final Territory greenland = m_data.getMap().getTerritory("greenland");
     assertEquals(canada.getUnits().getUnitCount(), 5);
     assertEquals(greenland.getUnits().getUnitCount(), 0);
-    final Collection<Unit> units = canada.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
+    final Collection<Unit> units =
+        canada.getUnits().getUnits(m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     final Change change = ChangeFactory.moveUnits(canada, greenland, units);
     m_data.performChange(change);
     assertEquals(canada.getUnits().getUnitCount(), 2);
@@ -136,7 +143,8 @@ public class ChangeTest extends TestCase {
     final Territory greenland = m_data.getMap().getTerritory("greenland");
     assertEquals(canada.getUnits().getUnitCount(), 5);
     assertEquals(greenland.getUnits().getUnitCount(), 0);
-    final Collection<Unit> units = canada.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
+    final Collection<Unit> units =
+        canada.getUnits().getUnits(m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     Change change = ChangeFactory.moveUnits(canada, greenland, units);
     change = serialize(change);
     m_data.performChange(change);
@@ -210,7 +218,7 @@ public class ChangeTest extends TestCase {
   public void testPlayerOwnerChange() throws Exception {
     final PlayerID can = m_data.getPlayerList().getPlayerID("chretian");
     final PlayerID us = m_data.getPlayerList().getPlayerID("bush");
-    final UnitType infantry = m_data.getUnitTypeList().getUnitType("inf");
+    final UnitType infantry = m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
     final Unit inf1 = infantry.create(1, can).iterator().next();
     final Unit inf2 = infantry.create(1, us).iterator().next();
     final Collection<Unit> units = new ArrayList<>();
@@ -231,7 +239,7 @@ public class ChangeTest extends TestCase {
   public void testPlayerOwnerChangeSerialize() throws Exception {
     final PlayerID can = m_data.getPlayerList().getPlayerID("chretian");
     final PlayerID us = m_data.getPlayerList().getPlayerID("bush");
-    final UnitType infantry = m_data.getUnitTypeList().getUnitType("inf");
+    final UnitType infantry = m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
     final Unit inf1 = infantry.create(1, can).iterator().next();
     final Unit inf2 = infantry.create(1, us).iterator().next();
     final Collection<Unit> units = new ArrayList<>();

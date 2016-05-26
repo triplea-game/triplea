@@ -150,7 +150,7 @@ public class ModeratorController extends AbstractModeratorController implements 
      */
     // You can't boot the server node
     if (m_serverMessenger.getServerNode().equals(node)) {
-      throw new IllegalStateException("Can not boot server node");
+      throw new IllegalStateException("Cannot boot server node");
     }
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
@@ -165,7 +165,7 @@ public class ModeratorController extends AbstractModeratorController implements 
   public String getHeadlessHostBotSalt(final INode node) {
     assertUserIsAdmin();
     if (m_serverMessenger.getServerNode().equals(node)) {
-      throw new IllegalStateException("Can not do this for server node");
+      throw new IllegalStateException("Cannot do this for server node");
     }
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
@@ -183,7 +183,7 @@ public class ModeratorController extends AbstractModeratorController implements 
   public String getChatLogHeadlessHostBot(final INode node, final String hashedPassword, final String salt) {
     assertUserIsAdmin();
     if (m_serverMessenger.getServerNode().equals(node)) {
-      throw new IllegalStateException("Can not do this for server node");
+      throw new IllegalStateException("Cannot do this for server node");
     }
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
@@ -204,7 +204,7 @@ public class ModeratorController extends AbstractModeratorController implements 
       final String hashedPassword, final String salt) {
     assertUserIsAdmin();
     if (m_serverMessenger.getServerNode().equals(node)) {
-      throw new IllegalStateException("Can not do this for server node");
+      throw new IllegalStateException("Cannot do this for server node");
     }
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
@@ -227,7 +227,7 @@ public class ModeratorController extends AbstractModeratorController implements 
       final String hashedPassword, final String salt) {
     assertUserIsAdmin();
     if (m_serverMessenger.getServerNode().equals(node)) {
-      throw new IllegalStateException("Can not do this for server node");
+      throw new IllegalStateException("Cannot do this for server node");
     }
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
@@ -248,7 +248,7 @@ public class ModeratorController extends AbstractModeratorController implements 
       final String hashedPassword, final String salt) {
     assertUserIsAdmin();
     if (m_serverMessenger.getServerNode().equals(node)) {
-      throw new IllegalStateException("Can not do this for server node");
+      throw new IllegalStateException("Cannot do this for server node");
     }
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
@@ -269,7 +269,7 @@ public class ModeratorController extends AbstractModeratorController implements 
   public String stopGameHeadlessHostBot(final INode node, final String hashedPassword, final String salt) {
     assertUserIsAdmin();
     if (m_serverMessenger.getServerNode().equals(node)) {
-      throw new IllegalStateException("Can not do this for server node");
+      throw new IllegalStateException("Cannot do this for server node");
     }
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
@@ -289,7 +289,7 @@ public class ModeratorController extends AbstractModeratorController implements 
   public String shutDownHeadlessHostBot(final INode node, final String hashedPassword, final String salt) {
     assertUserIsAdmin();
     if (m_serverMessenger.getServerNode().equals(node)) {
-      throw new IllegalStateException("Can not shutdown server node");
+      throw new IllegalStateException("Cannot shutdown server node");
     }
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
@@ -351,7 +351,7 @@ public class ModeratorController extends AbstractModeratorController implements 
   public String getHostConnections(final INode node) {
     assertUserIsAdmin();
     if (m_serverMessenger.getServerNode().equals(node)) {
-      throw new IllegalStateException("Can not do this for server node");
+      throw new IllegalStateException("Cannot do this for server node");
     }
     final RemoteName remoteName = RemoteHostUtils.getRemoteHostUtilsName(node);
     final IRemoteHostUtils remoteHostUtils =

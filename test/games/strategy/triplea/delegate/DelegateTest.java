@@ -170,6 +170,6 @@ public class DelegateTest extends TestCase {
 
   public void testTest() {
     assertValid(null);
-    assertError("Can not do this");
+    assertError("Cannot do this");
   }
 }

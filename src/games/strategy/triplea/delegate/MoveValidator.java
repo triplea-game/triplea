@@ -157,7 +157,7 @@ public class MoveValidator {
     if (validateMovementRestrictedByTerritory(data, units, route, player, result).getError() != null) {
       return result;
     }
-    // can not enter territories owned by a player to which we are neutral towards
+    // cannot enter territories owned by a player to which we are neutral towards
     final Collection<Territory> landOnRoute = route.getMatches(Matches.TerritoryIsLand);
     if (!landOnRoute.isEmpty()) {
       // TODO: if this ever changes, we need to also update getBestRoute(), because getBestRoute is also checking to
@@ -225,7 +225,7 @@ public class MoveValidator {
     }
     for (final Territory t : route.getSteps()) {
       if (!Matches.territoryOwnerRelationshipTypeCanMoveIntoDuringCombatMove(player).match(t)) {
-        return result.setErrorReturnResult("Can not move into territories owned by " + t.getOwner().getName()
+        return result.setErrorReturnResult("Cannot move into territories owned by " + t.getOwner().getName()
             + " during Combat Movement Phase");
       }
     }
@@ -238,7 +238,7 @@ public class MoveValidator {
             .isTerritoryEnemy(player, data).invert(), false))) {
       if (!Matches.TerritoryIsBlitzable(player, data).match(route.getStart())
           && !Match.allMatch(units, Matches.UnitIsAir)) {
-        return result.setErrorReturnResult("Can not blitz out of a battle further into enemy territory");
+        return result.setErrorReturnResult("Cannot blitz out of a battle further into enemy territory");
       }
       for (final Unit u : Match.getMatches(units, new CompositeMatchAnd<>(Matches.UnitCanBlitz.invert(),
           Matches.UnitIsNotAir))) {
@@ -254,7 +254,7 @@ public class MoveValidator {
             .isTerritoryEnemy(player, data).invert(), false))) {
       if (!Matches.TerritoryIsBlitzable(player, data).match(route.getStart())
           && !Match.allMatch(units, Matches.UnitIsAir)) {
-        return result.setErrorReturnResult("Can not blitz out of a battle into enemy territory");
+        return result.setErrorReturnResult("Cannot blitz out of a battle into enemy territory");
       }
     }
     // Don't allow aa guns (and other disallowed units) to move in combat unless they are in a transport
@@ -409,8 +409,8 @@ public class MoveValidator {
     // now check if we can move over neutral or enemies territories in noncombat
     if (Match.allMatch(units, Matches.UnitIsAir)
         || (Match.noneMatch(units, Matches.UnitIsSea) && !nonParatroopersPresent(player, units, route))) {
-      // if there are non-paratroopers present, then we can not fly over stuff
-      // if there are neutral territories in the middle, we can not fly over (unless allowed to)
+      // if there are non-paratroopers present, then we cannot fly over stuff
+      // if there are neutral territories in the middle, we cannot fly over (unless allowed to)
       // otherwise we can generally fly over anything in noncombat
       if (route.someMatch(new CompositeMatchAnd<>(Matches.TerritoryIsNeutralButNotWater,
           Matches.TerritoryIsWater.invert()))
@@ -421,7 +421,7 @@ public class MoveValidator {
     // if sea units, or land units moving over/onto sea (ex: loading onto a transport), then only check if old rules
     // stop us
     else if (Match.someMatch(units, Matches.UnitIsSea) || route.someMatch(Matches.TerritoryIsWater)) {
-      // if there are neutral or owned territories, we can not move through them (only under old rules. under new rules
+      // if there are neutral or owned territories, we cannot move through them (only under old rules. under new rules
       // we can move through
       // owned sea zones.)
       if (navalMayNotNonComIntoControlled && route.someMatch(neutralOrEnemy)) {
@@ -653,7 +653,7 @@ public class MoveValidator {
           }
           if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit("attackingLimit", units, t, player,
               data)) {
-            return result.setErrorReturnResult("Units Can Not Go Over Stacking Limit");
+            return result.setErrorReturnResult("Units Cannot Go Over Stacking Limit");
           }
         } else {
           for (final Unit unit : unitsWithStackingLimits) {
@@ -669,7 +669,7 @@ public class MoveValidator {
           }
           if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit("movementLimit", units, t, player,
               data)) {
-            return result.setErrorReturnResult("Units Can Not Go Over Stacking Limit");
+            return result.setErrorReturnResult("Units Cannot Go Over Stacking Limit");
           }
         }
       }
@@ -1660,7 +1660,7 @@ public class MoveValidator {
     } else {
       defaultRoute = data.getMap().getRoute_IgnoreEnd(start, end, noImpassible);
     }
-    // since all routes require at least noImpassible, then if we can not find a route without impassibles, just return
+    // since all routes require at least noImpassible, then if we cannot find a route without impassibles, just return
     // any route
     if (defaultRoute == null) {
       // at least try for a route without impassible territories, but allowing restricted territories, since there is a

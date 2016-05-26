@@ -147,11 +147,12 @@ public class GameDataExporter {
   }
 
   @SuppressWarnings("unchecked")
-  private void propertyList(final GameData data) {//TODO: Unchecked Reflection
+  private void propertyList(final GameData data) {// TODO: Unchecked Reflection
     xmlfile.append("    <propertyList>\n");
     final GameProperties gameProperties = data.getProperties();
     try {
-      final Field conPropField = GameProperties.class.getDeclaredField("m_constantProperties"); // TODO: unchecked reflection
+      final Field conPropField = GameProperties.class.getDeclaredField("m_constantProperties"); // TODO: unchecked
+                                                                                                // reflection
       conPropField.setAccessible(true);
       final Field edPropField = GameProperties.class.getDeclaredField("m_editableProperties");
       edPropField.setAccessible(true);
@@ -199,7 +200,7 @@ public class GameDataExporter {
         }
         typeString = "            <list>" + possibleValues + "</list>\n";
       } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-        ClientLogger.logError("An Error occured whilst trying to print the Property \"" + value +"\"", e);
+        ClientLogger.logError("An Error occured whilst trying to print the Property \"" + value + "\"", e);
       }
     }
     if (prop.getClass().equals(NumberProperty.class)) {
@@ -326,7 +327,7 @@ public class GameDataExporter {
         final Iterator<UnitType> units = ucp.keySet().iterator();
         while (units.hasNext()) {
           final UnitType unit = units.next();
-          if (player == null || player.getName().equals("Neutral")) {
+          if (player == null || player.getName().equals(Constants.PLAYER_NAME_NEUTRAL)) {
             xmlfile.append("            <unitPlacement unitType=\"").append(unit.getName()).append("\" territory=\"")
                 .append(terr.getName()).append("\" quantity=\"").append(ucp.getInt(unit)).append("\"/>\n");
           } else {
@@ -345,7 +346,7 @@ public class GameDataExporter {
     final Iterator<Territory> terrs = data.getMap().getTerritories().iterator();
     while (terrs.hasNext()) {
       final Territory terr = terrs.next();
-      if (!terr.getOwner().getName().equals("Neutral")) {
+      if (!terr.getOwner().getName().equals(Constants.PLAYER_NAME_NEUTRAL)) {
         xmlfile.append("            <territoryOwner territory=\"").append(terr.getName()).append("\" owner=\"")
             .append(terr.getOwner().getName()).append("\"/>\n");
       }
@@ -441,7 +442,8 @@ public class GameDataExporter {
         xmlfile.append("        </attachment>\n");
       }
     } catch (final Exception e) {
-      ClientLogger.logError("An Error occured whilst trying to print the Attachment \"" + attachment.getName() + "\"", e);
+      ClientLogger.logError("An Error occured whilst trying to print the Attachment \"" + attachment.getName() + "\"",
+          e);
     }
   }
 
@@ -588,7 +590,8 @@ public class GameDataExporter {
         final String delegate = (String) mDelegateField.get(step);
         xmlfile.append("            <step name=\"").append(step.getName()).append("\" delegate=\"").append(delegate)
             .append("\"");
-      } catch (final NullPointerException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+      } catch (final NullPointerException | NoSuchFieldException | IllegalArgumentException
+          | IllegalAccessException e) {
         ClientLogger.logError("An Error occured whilst trying to sequence in game " + data.getGameName(), e);
       }
       if (step.getPlayerID() != null) {

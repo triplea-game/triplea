@@ -778,7 +778,7 @@ public class RevisedTest extends TestCase {
     // Get Owner prior to battle
     assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(japanese(m_data))));
     final String preOwner = fic.getOwner().getName();
-    assertEquals(preOwner, "Japanese");
+    assertEquals(preOwner, Constants.PLAYER_NAME_JAPANESE);
     // Set up the move delegate
     ITestDelegateBridge delegateBridge = getDelegateBridge(british(m_data));
     final MoveDelegate moveDelegate = moveDelegate(m_data);
@@ -802,7 +802,7 @@ public class RevisedTest extends TestCase {
     // Get Owner after to battle
     assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(british(m_data))));
     final String postOwner = fic.getOwner().getName();
-    assertEquals(postOwner, "British");
+    assertEquals(postOwner, Constants.PLAYER_NAME_BRITISH);
     /*
      * add a VALID JAPANESE attack
      */
@@ -824,7 +824,7 @@ public class RevisedTest extends TestCase {
     // Get Owner after to battle
     assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(japanese(m_data))));
     final String midOwner = fic.getOwner().getName();
-    assertEquals(midOwner, "Japanese");
+    assertEquals(midOwner, Constants.PLAYER_NAME_JAPANESE);
     /*
      * add a VALID AMERICAN attack
      */
@@ -846,7 +846,7 @@ public class RevisedTest extends TestCase {
     // Get Owner after to battle
     assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(americans(m_data))));
     final String endOwner = fic.getOwner().getName();
-    assertEquals(endOwner, "Americans");
+    assertEquals(endOwner, Constants.PLAYER_NAME_AMERICANS);
   }
 
   public void testStratBombCasualties() {

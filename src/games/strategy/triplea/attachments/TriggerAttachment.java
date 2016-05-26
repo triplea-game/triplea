@@ -320,7 +320,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
       throw new GameParseException("No TriggerAttachment named: " + s[0] + thisErrorMsg());
     }
     if (trigger == this) {
-      throw new GameParseException("Can not have a trigger activate itself!" + thisErrorMsg());
+      throw new GameParseException("Cannot have a trigger activate itself!" + thisErrorMsg());
     }
     String options = value;
     options = options.replaceFirst((s[0] + ":"), "");

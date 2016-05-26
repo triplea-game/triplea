@@ -39,7 +39,7 @@ public class TerritoryEffectHelper {
 
   private static boolean unitTypeLoosesBlitz(final UnitType type, final Territory location) {
     if (location == null || type == null) {
-      throw new IllegalStateException("Location and UnitType can not be null");
+      throw new IllegalStateException("Location and UnitType cannot be null");
     }
     for (final TerritoryEffect effect : getEffects(location)) {
       if (TerritoryEffectAttachment.get(effect).getNoBlitz().contains(type)) {
