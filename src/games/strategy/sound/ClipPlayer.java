@@ -155,7 +155,7 @@ public class ClipPlayer {
 
   /**
    * If set to true, no sounds will play.
-   * This property is persisted using the java.util.prefs API, and will persist after the vm has stopped.
+   * This property is persisted using the java.tools.prefs API, and will persist after the vm has stopped.
    *
    * @param aBool new value for m_beSilent
    */
