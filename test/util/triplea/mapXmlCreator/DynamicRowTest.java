@@ -1,12 +1,13 @@
 package util.triplea.mapXmlCreator;
 
-import java.awt.GridBagConstraints;
-
 import org.junit.Test;
 
-import junit.framework.TestCase;
+import java.awt.GridBagConstraints;
 
-public class DynamicRowTest extends TestCase { 
+import static org.junit.Assert.assertEquals;
+
+
+public class DynamicRowTest {
 
   @Test
   public void testGetGbcDefaultTemplateWith() {
