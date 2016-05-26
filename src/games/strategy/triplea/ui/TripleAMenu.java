@@ -593,7 +593,7 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
 
   private void addMapFontAndColorEditorMenu(final JMenu parentMenu) {
     final Action mapFontOptions = SwingAction.of("Edit Map Font and Color...", e -> {
-      final List<IEditableProperty> properties = new ArrayList<IEditableProperty>();
+      final List<IEditableProperty> properties = new ArrayList<>();
       final NumberProperty fontsize =
           new NumberProperty("Font Size", null, 60, 0, MapImage.getPropertyMapFont().getSize());
       final ColorProperty territoryNameColor = new ColorProperty("Territory Name and PU Color", null,
