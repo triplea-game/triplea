@@ -30,7 +30,6 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -877,7 +876,8 @@ public class MovePanel extends AbstractMovePanel {
         m_mouseLastUpdatePoint = me.getMapPoint();
         final Route route = getRoute(getFirstSelectedTerritory(), t, m_selectedUnits);
         // Load Bombers with paratroops
-        if ((!m_nonCombat || IsParatroopersCanMoveDuringNonCombat(getData())) && isParatroopers(getCurrentPlayer())
+        if ((!m_nonCombat || IsParatroopersCanMoveDuringNonCombat(getData()))
+            && TechAttachment.isParatroopers(getCurrentPlayer())
             && Match.someMatch(m_selectedUnits,
                 new CompositeMatchAnd<>(Matches.UnitIsAirTransport, Matches.unitHasNotMoved))) {
           final PlayerID player = getCurrentPlayer();
@@ -1365,14 +1365,6 @@ public class MovePanel extends AbstractMovePanel {
 
   private Territory getSelectedEndpointTerritory() {
     return m_selectedEndpointTerritory;
-  }
-
-  private static boolean isParatroopers(final PlayerID player) {
-    final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-    if (ta == null) {
-      return false;
-    }
-    return ta.getParatroopers();
   }
 
   private static boolean IsParatroopersCanMoveDuringNonCombat(final GameData data) {
