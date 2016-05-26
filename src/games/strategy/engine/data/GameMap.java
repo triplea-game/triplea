@@ -88,7 +88,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       // m_gridDimensions[i];
       listIndex += coordinate[i] * multiplier;
     }
-    return ((ArrayList<Territory>) m_territories).get(listIndex);
+    return m_territories.get(listIndex);
   }
 
   protected void reorderTerritoryList() {

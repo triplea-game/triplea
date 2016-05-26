@@ -621,7 +621,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
       final String currentKey = lookAndFeel.getThird();
       final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
       if (JOptionPane.showConfirmDialog(frame, list) == JOptionPane.OK_OPTION) {
-        final String selectedValue = (String) list.getSelectedValue();
+        final String selectedValue = list.getSelectedValue();
         if (selectedValue == null) {
           return;
         }

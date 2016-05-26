@@ -152,7 +152,7 @@ public class EnginePreferences extends JDialog {
         final String currentKey = lookAndFeel.getThird();
         final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
         if (JOptionPane.showConfirmDialog(m_parentFrame, list) == JOptionPane.OK_OPTION) {
-          final String selectedValue = (String) list.getSelectedValue();
+          final String selectedValue = list.getSelectedValue();
           if (selectedValue == null) {
             return;
           }

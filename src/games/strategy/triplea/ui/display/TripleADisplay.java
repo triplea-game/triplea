@@ -125,7 +125,7 @@ public class TripleADisplay implements ITripleADisplay {
           // if we have any local players, we are not an observer
           isObserver = false;
           if (player instanceof TripleAPlayer) {
-            if (IGameLoader.CLIENT_PLAYER_TYPE.equals(((TripleAPlayer) player).getType())) {
+            if (IGameLoader.CLIENT_PLAYER_TYPE.equals(player.getType())) {
               isClient = true;
             } else {
               isHost = true;

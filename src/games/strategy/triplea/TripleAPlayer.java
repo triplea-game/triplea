@@ -762,7 +762,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices,
       final List<Unit> unitChoices, final int unitsPerPick) {
     if (territoryChoices == null || territoryChoices.isEmpty() || unitsPerPick < 1) {
-      return Tuple.of((Territory) null, (Set<Unit>) new HashSet<Unit>());
+      return Tuple.of(null, new HashSet<Unit>());
     }
     return ui.pickTerritoryAndUnits(this.getPlayerID(), territoryChoices, unitChoices, unitsPerPick);
   }

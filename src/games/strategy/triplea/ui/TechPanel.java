@@ -122,7 +122,7 @@ public class TechPanel extends ActionPanel {
       if (choice != JOptionPane.OK_OPTION) {
         return;
       }
-      advance = (TechAdvance) list.getSelectedValue();
+      advance = list.getSelectedValue();
     }
     final int PUs = getCurrentPlayer().getResources().getQuantity(Constants.PUS);
     final String message = "Roll Tech";

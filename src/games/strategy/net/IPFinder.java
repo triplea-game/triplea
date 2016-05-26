@@ -50,10 +50,10 @@ public class IPFinder {
     }
     final List<InetAddress> allButLoopback = new ArrayList<>();
     while (enum1.hasMoreElements()) {
-      final NetworkInterface netface = (NetworkInterface) enum1.nextElement();
+      final NetworkInterface netface = enum1.nextElement();
       final Enumeration<InetAddress> enum2 = netface.getInetAddresses();
       while (enum2.hasMoreElements()) {
-        final InetAddress ip2 = (InetAddress) enum2.nextElement();
+        final InetAddress ip2 = enum2.nextElement();
         if (!ip2.isLoopbackAddress()) {
           allButLoopback.add(ip2);
         }
@@ -111,11 +111,11 @@ public class IPFinder {
   public static void main(final String[] args) throws SocketException, UnknownHostException {
     final Enumeration<NetworkInterface> enum1 = NetworkInterface.getNetworkInterfaces();
     while (enum1.hasMoreElements()) {
-      final NetworkInterface netface = (NetworkInterface) enum1.nextElement();
+      final NetworkInterface netface = enum1.nextElement();
       System.out.println("interface:" + netface);
       final Enumeration<InetAddress> enum2 = netface.getInetAddresses();
       while (enum2.hasMoreElements()) {
-        final InetAddress ip2 = (InetAddress) enum2.nextElement();
+        final InetAddress ip2 = enum2.nextElement();
         System.out.println(" address:" + ip2 + " is private:" + isPrivateNetworkAddress(ip2) + " is loopback:"
             + ip2.isLoopbackAddress());
       }
