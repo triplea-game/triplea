@@ -29,11 +29,6 @@ import games.strategy.util.LocalizeHTML;
 public class NewGameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
 
-  // Use synchronization when accessing s_cachedGameModel, it is accessed by both
-  // the Swing AWT event thread and also background threads, which parses available
-  // maps in the background when a game is not playing
-  private static NewGameChooserModel cachedGameModel = null;
-  private static ClearGameChooserCacheMessenger cacheClearedMessenger;
 
   private JButton okButton;
   private JButton cancelButton;
@@ -41,7 +36,7 @@ public class NewGameChooser extends JDialog {
   private JPanel infoPanel;
   private JEditorPane notesPanel;
   private NewGameChooserModel gameListModel;
-  private NewGameChooserEntry choosen;
+  private NewGameChooserEntry chosen;
 
   private NewGameChooser(final Frame owner) {
     super(owner, "Select a Game", true);
@@ -110,16 +105,11 @@ public class NewGameChooser extends JDialog {
     chooser.selectGame(defaultGameName);
     chooser.setVisible(true);
     // chooser is now visible and waits for user action
-    final NewGameChooserEntry choosen = chooser.choosen;
-    // remove all system resources (we have been having a problem with a memory leak related to this somehow)
+    final NewGameChooserEntry chosen = chooser.chosen;
     chooser.setVisible(false);
     chooser.removeAll();
-    chooser.notesPanel.setText("");
-    chooser.notesPanel.removeAll();
-    chooser.notesPanel = null;
     chooser.dispose();
-    chooser = null;
-    return choosen;
+    return chosen;
   }
 
   private void selectGame(final String gameName) {
@@ -206,32 +196,9 @@ public class NewGameChooser extends JDialog {
 
   /** Populates the NewGameChooserModel cache if empty, then returns the cached instance */
   public synchronized static NewGameChooserModel getNewGameChooserModel() {
-    if (cachedGameModel == null) {
-      refreshNewGameChooserModel();
-    }
-    return cachedGameModel;
+      return new NewGameChooserModel();
   }
 
-  public synchronized static void refreshNewGameChooserModel() {
-    clearNewGameChooserModel();
-    cacheClearedMessenger = new ClearGameChooserCacheMessenger();
-    cachedGameModel = new NewGameChooserModel(cacheClearedMessenger);
-  }
-
-  public static void clearNewGameChooserModel() {
-    if (cacheClearedMessenger != null) {
-      cacheClearedMessenger.sendCancel();
-      cacheClearedMessenger = null;
-    }
-    synchronizedClear();
-  }
-
-  private synchronized static void synchronizedClear() {
-    if (cachedGameModel != null) {
-      cachedGameModel.clear();
-      cachedGameModel = null;
-    }
-  }
 
   /**
    * Refreshes the game list (from disk) then caches the new list
@@ -240,7 +207,6 @@ public class NewGameChooser extends JDialog {
     gameList.setEnabled(false);
     final NewGameChooserEntry selected = getSelected();
         try {
-          refreshNewGameChooserModel();
           gameListModel = getNewGameChooserModel();
           gameList.setModel(gameListModel);
           if(selected != null){
@@ -252,12 +218,12 @@ public class NewGameChooser extends JDialog {
   }
 
   private void selectAndReturn() {
-    choosen = getSelected();
+    chosen = getSelected();
     setVisible(false);
   }
 
   private void cancelAndReturn() {
-    choosen = null;
+    chosen = null;
     setVisible(false);
   }
 }

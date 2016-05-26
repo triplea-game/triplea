@@ -11,20 +11,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
-import javax.swing.AbstractAction;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 import com.google.common.collect.Sets;
 
@@ -139,10 +129,12 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
     final Dimension buttonSize = new Dimension(80, 22);
     while (iter.hasNext()) {
       final UnitCategory category = iter.next();
-      final Icon icon = m_movePanel.getMap().getUIContext().getUnitImageFactory().getIcon(category.getType(),
+      final Optional<ImageIcon> icon = m_movePanel.getMap().getUIContext().getUnitImageFactory().getIcon(category.getType(),
           category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
-      final JLabel label = new JLabel("x" + category.getUnits().size() + " ", icon, SwingConstants.LEFT);
-      unitsBox.add(label);
+      if(icon.isPresent()) {
+        final JLabel label = new JLabel("x" + category.getUnits().size() + " ", icon.get(), SwingConstants.LEFT);
+        unitsBox.add(label);
+      }
     }
     unitsBox.add(Box.createHorizontalGlue());
     final JLabel text = new JLabel(move.getMoveLabel());

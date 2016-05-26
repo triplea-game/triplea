@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicReference;
@@ -1083,14 +1084,18 @@ class UnitPanel extends JPanel {
     m_textField = new ScrollableTextField(0, 512);
     m_textField.setShowMaxAndMin(false);
     m_textField.addChangeListener(m_listenerTextField);
-    final Image img = m_context.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
-        m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled());
+
     final String toolTipText = "<html>" + m_category.getType().getName() + ":  " + costs.getInt(m_category.getType())
         + " cost, <br /> &nbsp;&nbsp;&nbsp;&nbsp; " + m_category.getType().getTooltip(m_category.getOwner())
         + "</html>";
     setCount(m_category.getUnits().size());
     setLayout(new GridBagLayout());
-    final JLabel label = new JLabel(new ImageIcon(img));
+
+
+    final Optional<Image> img = m_context.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
+        m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled());
+
+    final JLabel label = img.isPresent() ? new JLabel(new ImageIcon(img.get())) : new JLabel();
     label.setToolTipText(toolTipText);
     add(label, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
         new Insets(0, 0, 0, 10), 0, 0));
@@ -1295,23 +1300,20 @@ class OrderOfLossesInputPanel extends JPanel {
             || (!m_land && Matches.UnitTypeIsLand.match(category.getType()))) {
           continue;
         }
-        final Image img = m_context.getUnitImageFactory().getImage(category.getType(), category.getOwner(), m_data,
-            category.hasDamageOrBombingUnitDamage(), category.getDisabled());
         final String unitName =
             OddsCalculator.OOL_ALL + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + category.getType().getName();
         final String toolTipText = "<html>" + category.getType().getName() + ":  "
             + category.getType().getTooltip(category.getOwner()) + "</html>";
-        final JButton button = new JButton(new ImageIcon(img));
-        button.setToolTipText(toolTipText);
-        button.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            textField
-                .setText((textField.getText().length() > 0 ? (textField.getText() + OddsCalculator.OOL_SEPARATOR) : "")
-                    + unitName);
-          }
-        });
-        panel.add(button);
+        final Optional<Image> img = m_context.getUnitImageFactory().getImage(category.getType(), category.getOwner(), m_data,
+            category.hasDamageOrBombingUnitDamage(), category.getDisabled());
+        if(img.isPresent()) {
+          final JButton button = new JButton(new ImageIcon(img.get()));
+          button.setToolTipText(toolTipText);
+          button.addActionListener(e -> textField
+              .setText((textField.getText().length() > 0 ? (textField.getText() + OddsCalculator.OOL_SEPARATOR) : "")
+                  + unitName));
+          panel.add(button);
+        }
         typesUsed.add(category.getType());
       }
     }

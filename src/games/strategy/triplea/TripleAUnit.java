@@ -156,7 +156,7 @@ public class TripleAUnit extends Unit {
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setWasLoadedThisTurn(final Boolean value) {
-    m_wasLoadedThisTurn = Boolean.valueOf(value.booleanValue());
+    m_wasLoadedThisTurn = value.booleanValue();
   }
 
   public Territory getUnloadedTo() {
@@ -183,7 +183,7 @@ public class TripleAUnit extends Unit {
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setWasUnloadedInCombatPhase(final Boolean value) {
-    m_wasUnloadedInCombatPhase = Boolean.valueOf(value.booleanValue());
+    m_wasUnloadedInCombatPhase = value.booleanValue();
   }
 
   public int getAlreadyMoved() {
@@ -266,7 +266,7 @@ public class TripleAUnit extends Unit {
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setWasInCombat(final Boolean value) {
-    m_wasInCombat = Boolean.valueOf(value.booleanValue());
+    m_wasInCombat = value.booleanValue();
   }
 
   public boolean getWasScrambled() {
@@ -275,7 +275,7 @@ public class TripleAUnit extends Unit {
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setWasScrambled(final Boolean value) {
-    m_wasScrambled = Boolean.valueOf(value.booleanValue());
+    m_wasScrambled = value.booleanValue();
   }
 
   public int getMaxScrambleCount() {
@@ -307,7 +307,7 @@ public class TripleAUnit extends Unit {
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setWasInAirBattle(final Boolean value) {
-    m_wasInAirBattle = Boolean.valueOf(value.booleanValue());
+    m_wasInAirBattle = value.booleanValue();
   }
 
   public boolean getWasInAirBattle() {
@@ -320,7 +320,7 @@ public class TripleAUnit extends Unit {
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setWasLoadedAfterCombat(final Boolean value) {
-    m_wasLoadedAfterCombat = Boolean.valueOf(value.booleanValue());
+    m_wasLoadedAfterCombat = value.booleanValue();
   }
 
   public List<Unit> getDependents() {
@@ -341,7 +341,7 @@ public class TripleAUnit extends Unit {
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setWasAmphibious(final Boolean value) {
-    m_wasAmphibious = Boolean.valueOf(value.booleanValue());
+    m_wasAmphibious = value.booleanValue();
   }
 
   public boolean getDisabled() {
@@ -350,7 +350,7 @@ public class TripleAUnit extends Unit {
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setDisabled(final Boolean value) {
-    m_disabled = Boolean.valueOf(value.booleanValue());
+    m_disabled = value.booleanValue();
   }
 
   /**

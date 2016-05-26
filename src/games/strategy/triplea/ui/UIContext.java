@@ -5,13 +5,17 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.net.URL;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.UnitType;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.DiceImageFactory;
@@ -130,6 +134,18 @@ public class UIContext extends AbstractUIContext implements IUIContext {
   @Override
   public UnitImageFactory getUnitImageFactory() {
     return m_unitImageFactory;
+  }
+
+  @Override
+  public JLabel createUnitImageJLabel(UnitType type, PlayerID player, GameData data,
+      UnitDamage damaged, UnitEnable disabled) {
+    Optional<ImageIcon> image = getUnitImageFactory().getIcon(type, player, data, damaged == UnitDamage.DAMAGED,
+        disabled == UnitEnable.DISABLED);
+    if (image.isPresent()) {
+      return new JLabel(image.get());
+    } else {
+      return new JLabel();
+    }
   }
 
   @Override
