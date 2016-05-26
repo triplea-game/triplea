@@ -32,7 +32,6 @@ import games.strategy.engine.config.GameEngineProperty;
 import games.strategy.engine.config.PropertyReader;
 import games.strategy.engine.framework.map.download.DownloadUtils;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
-import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;

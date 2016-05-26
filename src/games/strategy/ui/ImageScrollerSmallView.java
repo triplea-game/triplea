@@ -28,12 +28,8 @@ public class ImageScrollerSmallView extends JComponent {
 
   public ImageScrollerSmallView(final Image image, final ImageScrollModel model) {
     m_model = model;
-    try {
-      Util.ensureImageLoaded(image);
-      setDoubleBuffered(false);
-    } catch (final InterruptedException ie) {
-      ie.printStackTrace();
-    }
+    Util.ensureImageLoaded(image);
+    setDoubleBuffered(false);
     m_image = image;
     this.setBorder(new EtchedBorder());
     final int prefWidth = getInsetsWidth() + m_image.getWidth(this);
@@ -53,12 +49,8 @@ public class ImageScrollerSmallView extends JComponent {
   }
 
   public void changeImage(final Image image) {
-    try {
-      Util.ensureImageLoaded(image);
-      setDoubleBuffered(false);
-    } catch (final InterruptedException ie) {
-      ie.printStackTrace();
-    }
+    Util.ensureImageLoaded(image);
+    setDoubleBuffered(false);
     m_image.flush();
     m_image = image;
     final int prefWidth = getInsetsWidth() + m_image.getWidth(this);

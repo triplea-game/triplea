@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.properties.AEditableProperty;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.CollectionProperty;
@@ -155,12 +156,8 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
   public T getFromObject(final Object object) {
     try {
       return (T) m_getter.invoke(object);
-    } catch (final IllegalArgumentException e) {
-      e.printStackTrace();
-    } catch (final IllegalAccessException e) {
-      e.printStackTrace();
-    } catch (final InvocationTargetException e) {
-      e.printStackTrace();
+    } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
+       ClientLogger.logQuietly(e);
     }
     return null;
   }
@@ -171,12 +168,8 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     try {
       System.out.println(m_setter + "   to   " + value);
       m_setter.invoke(object, args);
-    } catch (final IllegalArgumentException e) {
-      e.printStackTrace();
-    } catch (final IllegalAccessException e) {
-      e.printStackTrace();
-    } catch (final InvocationTargetException e) {
-      e.printStackTrace();
+    } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
+       ClientLogger.logQuietly(e);
     }
   }
 
@@ -193,10 +186,10 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
       try {
         getter = object.getClass().getMethod("get" + propertyName);
       } catch (final SecurityException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
         continue;
       } catch (final NoSuchMethodException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
         continue;
       }
       final Field field = PropertyUtil.getFieldIncludingFromSuperClasses(object.getClass(), propertyName, false);
@@ -206,17 +199,17 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
         // type = field.getGenericType();
         currentValue = field.get(object);
       } catch (final IllegalArgumentException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
         continue;
       } catch (final IllegalAccessException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
         continue;
       }
       try {
         final MapPropertyWrapper wrapper = new MapPropertyWrapper(propertyName, null, currentValue, setter, getter);
         properties.add(wrapper);
       } catch (final Exception e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
         continue;
       }
     }

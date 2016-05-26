@@ -81,10 +81,7 @@ public class UnitAttachmentExporter extends DefaultAttachmentExporter {
         returnValue = returnValue + printDefaultOption("requiresUnits", value);
       }
       return returnValue;
-    } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException("e: " + e + " for mRequiresUnitsHandler on field: " + field.getName()
-          + " on Attachment: " + attachment.getName());
-    } catch (final IllegalAccessException e) {
+    } catch (final IllegalArgumentException | IllegalAccessException e) {
       throw new AttachmentExportException("e: " + e + " for mRequiresUnitsHandler on field: " + field.getName()
           + " on Attachment: " + attachment.getName());
     }

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -137,8 +138,8 @@ public class ClientGame extends AbstractGame {
         m_remoteMessenger.unregisterRemote(ServerGame.getRemoteName(gp.getPlayerID(), m_data));
         m_remoteMessenger.unregisterRemote(ServerGame.getRemoteRandomName(player));
       }
-    } catch (final RuntimeException re) {
-      re.printStackTrace();
+    } catch (final RuntimeException e) {
+      ClientLogger.logQuietly(e);
     }
     m_data.getGameLoader().shutDown();
   }
@@ -214,7 +215,7 @@ public class ClientGame extends AbstractGame {
     try (FileOutputStream fout = new FileOutputStream(f)) {
       fout.write(bytes);
     } catch (final IOException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(e.getMessage());
     }
   }

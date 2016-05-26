@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
@@ -2614,12 +2615,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
           final IDelegate delegateEndRound = data.getDelegateList().getDelegate("endRound");
           ((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage.trim(), t.getPlayers(), aBridge);
         } catch (final Exception e) {
-          e.printStackTrace();
+          ClientLogger.logQuietly(e);
         }
       }
     }
   }
-  
+
   public static Match<TriggerAttachment> prodMatch() {
     return new Match<TriggerAttachment>() {
       @Override

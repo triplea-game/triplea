@@ -215,7 +215,7 @@ public class RemoteMessengerTest extends TestCase {
               started.set(true);
               lock.wait();
             } catch (final InterruptedException e) {
-              e.printStackTrace();
+              // ignore interrupted exception
             }
           }
         }

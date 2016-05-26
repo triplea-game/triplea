@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
@@ -175,7 +176,7 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
       constructor = clazz.getConstructor(preDefinedTechConstructorParameter);
       ta = constructor.newInstance(data);
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(s + " is not a valid technology or could not be instantiated");
     }
     if (ta == null) {

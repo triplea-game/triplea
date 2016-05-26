@@ -30,6 +30,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
@@ -81,9 +82,7 @@ public class GameParser {
     Document doc = null;
     try {
       doc = getDocument(stream);
-    } catch (final IOException e) {
-      throw new IllegalStateException(e);
-    } catch (final ParserConfigurationException e) {
+    } catch (final IOException | ParserConfigurationException e) {
       throw new IllegalStateException(e);
     }
     final Element root = doc.getDocumentElement();
@@ -171,7 +170,7 @@ public class GameParser {
     try {
       validate();
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new GameParseException(e.getMessage());
     }
     return data;
@@ -1300,10 +1299,7 @@ public class GameParser {
             throw new GameParseException(className + " does not implement IAttachable");
           }
           constructors.put(className, objectClass.getConstructor(IAttachment.attachmentConstructorParameter));
-        } catch (final NoSuchMethodException exception) {
-          throw new GameParseException(
-              "Constructor for class " + className + " could not be found: " + exception.getMessage());
-        } catch (final SecurityException exception) {
+        } catch (final NoSuchMethodException | SecurityException exception) {
           throw new GameParseException(
               "Constructor for class " + className + " could not be found: " + exception.getMessage());
         }
@@ -1321,16 +1317,7 @@ public class GameParser {
         // keep a list of attachment references in the order they were added
         data.addToAttachmentOrderAndValues(
             Tuple.of(attachment, attachmentOptionValues));
-      } catch (final InstantiationException e) {
-        throw new GameParseException(
-            "Attachment of type " + className + " could not be instanciated: " + e.getMessage());
-      } catch (final IllegalAccessException e) {
-        throw new GameParseException(
-            "Attachment of type " + className + " could not be instanciated: " + e.getMessage());
-      } catch (final IllegalArgumentException e) {
-        throw new GameParseException(
-            "Attachment of type " + className + " could not be instanciated: " + e.getMessage());
-      } catch (final InvocationTargetException e) {
+      } catch (final InstantiationException | InvocationTargetException | IllegalArgumentException | IllegalAccessException e) {
         throw new GameParseException(
             "Attachment of type " + className + " could not be instanciated: " + e.getMessage());
       }

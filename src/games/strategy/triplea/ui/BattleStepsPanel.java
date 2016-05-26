@@ -14,6 +14,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import games.strategy.util.ThreadUtil;
+
 /**
  * A panel for showing the battle steps in a display.
  * Contains code for walking from the current step, to a given step
@@ -142,11 +144,7 @@ class BattleStepsPanel extends JPanel implements Active {
           m_hasWalkThread = true;
         }
         try {
-          try {
-            sleep(330);
-          } catch (final InterruptedException e) {
-            e.printStackTrace();
-          }
+          ThreadUtil.sleep(330);
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {

@@ -73,10 +73,7 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter {
         returnValue += super.printDefaultOption("availableTech", category + tList);
       }
       return returnValue;
-    } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException("e: " + e + " for mAvailableTechsHandler on field: " + field.getName()
-          + " on Attachment: " + attachment.getName());
-    } catch (final IllegalAccessException e) {
+    } catch (final IllegalArgumentException | IllegalAccessException e) {
       throw new AttachmentExportException("e: " + e + " for mAvailableTechsHandler on field: " + field.getName()
           + " on Attachment: " + attachment.getName());
     }
@@ -96,10 +93,7 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter {
         returnValue += super.printCountOption("unitProperty", s[0], s[1]);
       }
       return returnValue;
-    } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException("e: " + e + " for mUnitPropertyHandler on field: " + field.getName()
-          + " on Attachment: " + attachment.getName());
-    } catch (final IllegalAccessException e) {
+    } catch (final IllegalArgumentException | IllegalAccessException e) {
       throw new AttachmentExportException("e: " + e + " for mUnitPropertyHandler on field: " + field.getName()
           + " on Attachment: " + attachment.getName());
     }
@@ -126,10 +120,7 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter {
         }
       }
       return returnValue;
-    } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException("e: " + e + " for mPlacementHandler on field: " + field.getName()
-          + " on Attachment: " + attachment.getName());
-    } catch (final IllegalAccessException e) {
+    } catch (final IllegalArgumentException | IllegalAccessException e) {
       throw new AttachmentExportException("e: " + e + " for mPlacementHandler on field: " + field.getName()
           + " on Attachment: " + attachment.getName());
     }
@@ -158,10 +149,7 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter {
         returnValue = returnValue + add + supportAttachment.getName();
       }
       return printDefaultOption("support", returnValue);
-    } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mSupportHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-    } catch (final IllegalAccessException e) {
+    } catch (final IllegalArgumentException | IllegalAccessException e) {
       throw new AttachmentExportException(
           "e: " + e + " for mSupportHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
     }
@@ -183,10 +171,7 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter {
         return "";
       }
       return printDefaultOption("players", returnValue);
-    } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mPlayersHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-    } catch (final IllegalAccessException e) {
+    } catch (final IllegalArgumentException | IllegalAccessException e) {
       throw new AttachmentExportException(
           "e: " + e + " for mPlayersHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
     }
@@ -208,10 +193,7 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter {
         return "";
       }
       return printDefaultOption("tech", returnValue);
-    } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mTechHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-    } catch (final IllegalAccessException e) {
+    } catch (final IllegalArgumentException | IllegalAccessException e) {
       throw new AttachmentExportException(
           "e: " + e + " for mTechHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
     }
@@ -224,10 +206,7 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter {
         return "";
       }
       return super.printDefaultOption("frontier", frontier.getName());
-    } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mFrontierHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-    } catch (final IllegalAccessException e) {
+    } catch (final IllegalArgumentException | IllegalAccessException e) {
       throw new AttachmentExportException(
           "e: " + e + " for mFrontierHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
     }
@@ -247,10 +226,7 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter {
         returnValue += ":" + rule.getName();
       }
       return printDefaultOption("trigger", returnValue);
-    } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mTriggerHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-    } catch (final IllegalAccessException e) {
+    } catch (final IllegalArgumentException | IllegalAccessException e) {
       throw new AttachmentExportException(
           "e: " + e + " for mTriggerHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
     }

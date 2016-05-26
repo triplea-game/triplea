@@ -2,6 +2,7 @@ package games.strategy.engine.message;
 
 import java.io.IOException;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;
@@ -43,14 +44,14 @@ public class ChannelMessengerTest extends TestCase {
         m_server.shutDown();
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
     try {
       if (m_client1 != null) {
         m_client1.shutDown();
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 

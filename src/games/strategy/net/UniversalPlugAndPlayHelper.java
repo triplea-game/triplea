@@ -142,8 +142,7 @@ public class UniversalPlugAndPlayHelper {
     System.out.print("Adding mapping from ");
     try {
       System.out.print(m_device.getExternalIPAddress());
-    } catch (final UPNPResponseException e1) {
-    } catch (final IOException e1) {
+    } catch (final UPNPResponseException | IOException e1) {
     }
     System.out.println(":" + externalPort);
     System.out.println("To " + local.getHostAddress() + ":" + internalPort);

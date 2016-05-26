@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import games.strategy.engine.GameOverException;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -20,7 +20,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.net.GUID;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.TripleAUnit;
@@ -758,14 +757,8 @@ public class AirBattle extends AbstractBattle {
       public void run() {
         try {
           getRemote(firingPlayer, bridge).confirmEnemyCasualties(battleID, "Press space to continue", hitPlayer);
-        } catch (final ConnectionLostException cle) {
-          // somone else will deal with this
-          // System.out.println(cle.getMessage());
-          // cle.printStackTrace(System.out);
-        } catch (final GameOverException e) {
-          // ignore
         } catch (final Exception e) {
-          // ignore
+          ClientLogger.logQuietly(e);
         }
       }
     };

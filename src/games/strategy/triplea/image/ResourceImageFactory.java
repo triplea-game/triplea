@@ -76,11 +76,7 @@ public class ResourceImageFactory {
       throw new IllegalStateException("Cant load: " + baseImageName + "  looking in: " + fileName);
     }
     final Image image = Toolkit.getDefaultToolkit().getImage(url);
-    try {
-      Util.ensureImageLoaded(image);
-    } catch (final InterruptedException ex) {
-      ex.printStackTrace();
-    }
+    Util.ensureImageLoaded(image);
     return image;
   }
 

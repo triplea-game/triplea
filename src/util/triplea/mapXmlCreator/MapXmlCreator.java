@@ -1071,7 +1071,7 @@ public class MapXmlCreator extends JFrame {
       Logger.getLogger(MapXmlCreator.MAP_XML_CREATOR_LOGGER_NAME).log(Level.INFO,
           "Game XML written to " + newFile.getCanonicalPath());
     } catch (final IOException | HeadlessException | TransformerException | ParserConfigurationException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 

@@ -13,6 +13,7 @@ import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
@@ -115,7 +116,7 @@ public class UIContext extends AbstractUIContext implements IUIContext {
           m_cursor = toolkit.createCustomCursor(image, hotSpot, data.getGameName() + " Cursor");
         }
       } catch (final Exception e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
     stopWatch.done();
@@ -237,7 +238,7 @@ public class UIContext extends AbstractUIContext implements IUIContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 }

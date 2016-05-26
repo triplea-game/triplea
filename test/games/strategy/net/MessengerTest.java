@@ -8,9 +8,12 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.test.TestUtil;
 import games.strategy.util.ThreadUtil;
 import junit.framework.TestCase;
+
+import static org.junit.Assert.fail;
 
 public class MessengerTest extends TestCase {
   private static int SERVER_PORT = -1;
@@ -57,21 +60,21 @@ public class MessengerTest extends TestCase {
         m_server.shutDown();
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
     try {
       if (m_client1 != null) {
         m_client1.shutDown();
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
     try {
       if (m_client2 != null) {
         m_client2.shutDown();
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -325,8 +328,8 @@ class MessageListener implements IMessageListener {
   private void waitForMessage() {
     try {
       lock.wait(1500);
-    } catch (final InterruptedException ie) {
-      ie.printStackTrace();
+    } catch (final InterruptedException e) {
+      fail("unexpected exception: " + e.getMessage());
     }
   }
 

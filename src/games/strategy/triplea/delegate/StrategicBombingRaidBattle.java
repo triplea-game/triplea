@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 import games.strategy.common.delegate.BaseEditDelegate;
-import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
@@ -489,8 +488,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           // somone else will deal with this
           // System.out.println(cle.getMessage());
           // cle.printStackTrace(System.out);
-        } catch (final GameOverException e) {
-          // ignore
         } catch (final Exception e) {
           // ignore
         }

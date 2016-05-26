@@ -1188,9 +1188,8 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
               showMapDetails.setSelected(true);
             }
             setWidgetActivation();
-          } catch (final Exception se) {
-            se.printStackTrace();
-            JOptionPane.showMessageDialog(frame, se.getMessage(), "Error Changing Map Skin2", JOptionPane.OK_OPTION);
+          } catch (final Exception exception) {
+            ClientLogger.logError("Error Changing Map Skin2",  exception);
           }
         }// else
       }// actionPerformed

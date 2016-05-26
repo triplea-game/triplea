@@ -59,6 +59,7 @@ import javax.swing.table.TableCellRenderer;
 import com.google.common.collect.Lists;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -613,7 +614,7 @@ public class BattleDisplay extends JPanel {
     try {
       continueLatch.await();
     } catch (final InterruptedException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     } finally {
       m_mapPanel.getUIContext().removeShutdownLatch(continueLatch);
     }

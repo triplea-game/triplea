@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -2313,8 +2312,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
             // somone else will deal with this
             // System.out.println(cle.getMessage());
             // cle.printStackTrace(System.out);
-          } catch (final GameOverException e) {
-            // ignore
           } catch (final Exception e) {
             // ignore
           }

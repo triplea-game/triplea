@@ -30,6 +30,7 @@ import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.util.Version;
@@ -42,8 +43,6 @@ public class EngineVersionProperties {
   private final String m_linkAlt;
   private final String m_changelogLink;
   private volatile boolean m_done = false;
-  // only for testing when sourceforge is down
-  // private static final String s_linkToTripleA = "http://www.tripleawarclub.org/lobby/latest_version.properties";
   private static final String s_linkToTripleA = "http://triplea.sourceforge.net/latest/latest_version.properties";
 
   private EngineVersionProperties(final URL url) {
@@ -79,7 +78,7 @@ public class EngineVersionProperties {
     try {
       engineversionPropsURL = new URL(s_linkToTripleA);
     } catch (final MalformedURLException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return new EngineVersionProperties(new Properties());
     }
     return contactServerForEngineVersionProperties(engineversionPropsURL);
@@ -98,7 +97,6 @@ public class EngineVersionProperties {
           try {
             latch.await(2, TimeUnit.SECONDS);
           } catch (final InterruptedException e) {
-            // e.printStackTrace();
           }
           if (ref.get() != null) {
             break;
@@ -108,7 +106,6 @@ public class EngineVersionProperties {
         try {
           latch.await(15, TimeUnit.SECONDS);
         } catch (final InterruptedException e) {
-          // e.printStackTrace();
         }
       }
 

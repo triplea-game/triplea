@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -202,8 +201,6 @@ public class Fire implements IExecutable {
           // somone else will deal with this
           // System.out.println(cle.getMessage());
           // cle.printStackTrace(System.out);
-        } catch (final GameOverException e) {
-          // ignore
         } catch (final Exception e) {
           // ignore
         }

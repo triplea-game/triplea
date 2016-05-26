@@ -17,8 +17,6 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
-import games.strategy.performance.Perf;
-import games.strategy.performance.PerfTimer;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -134,11 +132,7 @@ public class UnitImageFactory {
     final int height = (int) (baseImage.getHeight(null) * m_scaleFactor);
     final Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
     // Ensure the scaling is completed.
-    try {
-      Util.ensureImageLoaded(scaledImage);
-    } catch (final InterruptedException ex) {
-      ex.printStackTrace();
-    }
+    Util.ensureImageLoaded(scaledImage);
     m_images.put(fullName, scaledImage);
     return Optional.of(scaledImage);
   }
@@ -163,11 +157,7 @@ public class UnitImageFactory {
     Image image = null;
     if( imageLocation.isPresent()) {
       image = Toolkit.getDefaultToolkit().getImage(getBaseImageURL(baseImageName, id).get());
-      try {
-        Util.ensureImageLoaded(image);
-      } catch (final InterruptedException ex) {
-        ClientLogger.logError("Failed to load image: " + imageLocation.get(), ex);
-      }
+      Util.ensureImageLoaded(image);
     }
     return Optional.ofNullable(image);
   }

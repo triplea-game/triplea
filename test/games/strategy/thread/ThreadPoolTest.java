@@ -71,7 +71,7 @@ public class ThreadPoolTest extends TestCase {
       try {
         iter.next().join();
       } catch (final InterruptedException ex) {
-        ex.printStackTrace();
+        // ignore interrupted exception
       }
     }
   }
