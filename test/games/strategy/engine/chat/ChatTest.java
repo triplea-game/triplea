@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.lobby.server.NullModeratorController;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.RemoteMessenger;
@@ -71,21 +72,21 @@ public class ChatTest extends TestCase {
         m_server.shutDown();
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
     try {
       if (m_client1 != null) {
         m_client1.shutDown();
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
     try {
       if (m_client2 != null) {
         m_client2.shutDown();
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -184,14 +185,14 @@ public class ChatTest extends TestCase {
 
 class TestChatListener implements IChatListener {
   public List<INode> m_players;
-  public List<String> m_messages = new ArrayList<String>();
-  public List<Boolean> m_thirdPerson = new ArrayList<Boolean>();
-  public List<String> m_from = new ArrayList<String>();
+  public List<String> m_messages = new ArrayList<>();
+  public List<Boolean> m_thirdPerson = new ArrayList<>();
+  public List<String> m_from = new ArrayList<>();
 
   @Override
   public void updatePlayerList(final Collection<INode> players) {
     synchronized (this) {
-      m_players = new ArrayList<INode>(players);
+      m_players = new ArrayList<>(players);
     }
   }
 

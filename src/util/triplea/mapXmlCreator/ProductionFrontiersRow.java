@@ -25,7 +25,7 @@ class ProductionFrontiersRow extends DynamicRow {
 
     this.playerName = playerName;
 
-    comboBoxUnitName = new JComboBox<String>(unitNames);
+    comboBoxUnitName = new JComboBox<>(unitNames);
     final Dimension dimension = comboBoxUnitName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_MEDIUM;
     comboBoxUnitName.setPreferredSize(dimension);
@@ -61,7 +61,7 @@ class ProductionFrontiersRow extends DynamicRow {
 
   @Override
   protected ArrayList<JComponent> getComponentList() {
-    final ArrayList<JComponent> componentList = new ArrayList<JComponent>();
+    final ArrayList<JComponent> componentList = new ArrayList<>();
     componentList.add(comboBoxUnitName);
     return componentList;
   }

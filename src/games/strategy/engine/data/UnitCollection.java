@@ -16,7 +16,7 @@ import games.strategy.util.Match;
  */
 public class UnitCollection extends GameDataComponent implements Iterable<Unit> {
   private static final long serialVersionUID = -3534037864426122864L;
-  private final List<Unit> m_units = new ArrayList<Unit>();
+  private final List<Unit> m_units = new ArrayList<>();
   private final NamedUnitHolder m_holder;
 
   /**
@@ -93,7 +93,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
   public boolean containsAll(final Collection<Unit> units) {
     // much faster for large sets
     if (m_units.size() > 500 && units.size() > 500) {
-      return new HashSet<Unit>(m_units).containsAll(units);
+      return new HashSet<>(m_units).containsAll(units);
     }
     return m_units.containsAll(units);
   }
@@ -107,12 +107,12 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
    */
   public Collection<Unit> getUnits(final UnitType type, final int max_units) {
     if (max_units == 0) {
-      return new ArrayList<Unit>();
+      return new ArrayList<>();
     }
     if (max_units < 0) {
       throw new IllegalArgumentException("value must be positiive.  Instead its:" + max_units);
     }
-    final Collection<Unit> rVal = new ArrayList<Unit>();
+    final Collection<Unit> rVal = new ArrayList<>();
     for (final Unit current : m_units) {
       if (current.getType().equals(type)) {
         rVal.add(current);
@@ -128,7 +128,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
    * @return integer map of UnitType
    */
   public IntegerMap<UnitType> getUnitsByType() {
-    final IntegerMap<UnitType> units = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> units = new IntegerMap<>();
     for (final UnitType type : getData().getUnitTypeList()) {
       final int count = getUnitCount(type);
       if (count > 0) {
@@ -144,7 +144,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
    * @return map of UnitType (only of units for the specified player)
    */
   public IntegerMap<UnitType> getUnitsByType(final PlayerID id) {
-    final IntegerMap<UnitType> count = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> count = new IntegerMap<>();
     for (final Unit unit : m_units) {
       if (unit.getOwner().equals(id)) {
         count.add(unit.getType(), 1);
@@ -159,7 +159,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
    * @return collection of units of each type up to max
    */
   public Collection<Unit> getUnits(final IntegerMap<UnitType> types) {
-    final Collection<Unit> units = new ArrayList<Unit>();
+    final Collection<Unit> units = new ArrayList<>();
     for (final UnitType type : types.keySet()) {
       units.addAll(getUnits(type, types.getInt(type)));
     }
@@ -175,7 +175,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
   }
 
   public Collection<Unit> getUnits() {
-    return new ArrayList<Unit>(m_units);
+    return new ArrayList<>(m_units);
   }
 
   /**
@@ -183,7 +183,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
    */
   public Set<PlayerID> getPlayersWithUnits() {
     // note nulls are handled by PlayerID.NULL_PLAYERID
-    final Set<PlayerID> ids = new HashSet<PlayerID>();
+    final Set<PlayerID> ids = new HashSet<>();
     for (final Unit unit : m_units) {
       ids.add(unit.getOwner());
     }
@@ -194,7 +194,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
    * @return the count of units each player has in this collection.
    */
   public IntegerMap<PlayerID> getPlayerUnitCounts() {
-    final IntegerMap<PlayerID> count = new IntegerMap<PlayerID>();
+    final IntegerMap<PlayerID> count = new IntegerMap<>();
     for (final Unit unit : m_units) {
       count.add(unit.getOwner(), 1);
     }
@@ -232,7 +232,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
   }
 
   public List<Unit> getMatches(final Match<Unit> predicate) {
-    final List<Unit> values = new ArrayList<Unit>();
+    final List<Unit> values = new ArrayList<>();
     for (final Unit unit : m_units) {
       if (predicate.match(unit)) {
         values.add(unit);

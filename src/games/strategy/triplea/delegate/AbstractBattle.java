@@ -22,8 +22,8 @@ import games.strategy.triplea.TripleA;
 import games.strategy.triplea.ai.weakAI.WeakAI;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord.BattleResultDescription;
-import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.display.ITripleaDisplay;
+import games.strategy.triplea.player.ITripleAPlayer;
+import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.IntegerMap;
 
 abstract public class AbstractBattle implements IBattle, Serializable {
@@ -49,11 +49,11 @@ abstract public class AbstractBattle implements IBattle, Serializable {
    * Dependent units, maps unit -> Collection of units, if unit is lost in a battle we are dependent on
    * then we lose the corresponding collection of units.
    */
-  protected final Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
-  protected List<Unit> m_attackingUnits = new ArrayList<Unit>();
-  protected List<Unit> m_defendingUnits = new ArrayList<Unit>();
-  protected List<Unit> m_amphibiousLandAttackers = new ArrayList<Unit>();
-  protected List<Unit> m_bombardingUnits = new ArrayList<Unit>();
+  protected final Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<>();
+  protected List<Unit> m_attackingUnits = new ArrayList<>();
+  protected List<Unit> m_defendingUnits = new ArrayList<>();
+  protected List<Unit> m_amphibiousLandAttackers = new ArrayList<>();
+  protected List<Unit> m_bombardingUnits = new ArrayList<>();
   protected Collection<TerritoryEffect> m_territoryEffects;
   protected BattleResultDescription m_battleResultDescription;
   protected WhoWon m_whoWon = WhoWon.NOTFINISHED;
@@ -76,7 +76,7 @@ abstract public class AbstractBattle implements IBattle, Serializable {
 
   @Override
   public Collection<Unit> getDependentUnits(final Collection<Unit> units) {
-    final Collection<Unit> rVal = new ArrayList<Unit>();
+    final Collection<Unit> rVal = new ArrayList<>();
     for (final Unit unit : units) {
       final Collection<Unit> dependent = m_dependentUnits.get(unit);
       if (dependent != null) {
@@ -103,7 +103,7 @@ abstract public class AbstractBattle implements IBattle, Serializable {
 
   @Override
   public Collection<Unit> getBombardingUnits() {
-    return new ArrayList<Unit>(m_bombardingUnits);
+    return new ArrayList<>(m_bombardingUnits);
   }
 
   @Override
@@ -113,27 +113,27 @@ abstract public class AbstractBattle implements IBattle, Serializable {
 
   @Override
   public Collection<Unit> getAmphibiousLandAttackers() {
-    return new ArrayList<Unit>(m_amphibiousLandAttackers);
+    return new ArrayList<>(m_amphibiousLandAttackers);
   }
 
   @Override
   public Collection<Unit> getAttackingUnits() {
-    return new ArrayList<Unit>(m_attackingUnits);
+    return new ArrayList<>(m_attackingUnits);
   }
 
   @Override
   public Collection<Unit> getDefendingUnits() {
-    return new ArrayList<Unit>(m_defendingUnits);
+    return new ArrayList<>(m_defendingUnits);
   }
 
   @Override
   public List<Unit> getRemainingAttackingUnits() {
-    return new ArrayList<Unit>(m_attackingUnits);
+    return new ArrayList<>(m_attackingUnits);
   }
 
   @Override
   public List<Unit> getRemainingDefendingUnits() {
-    return new ArrayList<Unit>(m_defendingUnits);
+    return new ArrayList<>(m_defendingUnits);
   }
 
   @Override
@@ -280,7 +280,7 @@ abstract public class AbstractBattle implements IBattle, Serializable {
   }
 
   public static PlayerID findPlayerWithMostUnits(final Collection<Unit> units) {
-    final IntegerMap<PlayerID> playerUnitCount = new IntegerMap<PlayerID>();
+    final IntegerMap<PlayerID> playerUnitCount = new IntegerMap<>();
     for (final Unit unit : units) {
       playerUnitCount.add(unit.getOwner(), 1);
     }
@@ -313,23 +313,23 @@ abstract public class AbstractBattle implements IBattle, Serializable {
     BattleDelegate.markDamaged(damaged, bridge, addPreviousHits);
   }
 
-  protected static ITripleaDisplay getDisplay(final IDelegateBridge bridge) {
-    return (ITripleaDisplay) bridge.getDisplayChannelBroadcaster();
+  protected static ITripleADisplay getDisplay(final IDelegateBridge bridge) {
+    return (ITripleADisplay) bridge.getDisplayChannelBroadcaster();
   }
 
   protected static ISound getSoundChannel(final IDelegateBridge bridge) {
     return bridge.getSoundChannelBroadcaster();
   }
 
-  protected static ITripleaPlayer getRemote(final IDelegateBridge bridge) {
-    return (ITripleaPlayer) bridge.getRemotePlayer();
+  protected static ITripleAPlayer getRemote(final IDelegateBridge bridge) {
+    return (ITripleAPlayer) bridge.getRemotePlayer();
   }
 
-  protected static ITripleaPlayer getRemote(final PlayerID player, final IDelegateBridge bridge) {
+  protected static ITripleAPlayer getRemote(final PlayerID player, final IDelegateBridge bridge) {
     // if its the null player, return a do nothing proxy
     if (player.isNull()) {
       return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
     }
-    return (ITripleaPlayer) bridge.getRemotePlayer(player);
+    return (ITripleAPlayer) bridge.getRemotePlayer(player);
   }
 }

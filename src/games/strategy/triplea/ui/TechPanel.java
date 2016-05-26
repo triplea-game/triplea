@@ -111,7 +111,7 @@ public class TechPanel extends ActionPanel {
         JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
         return;
       }
-      final JList<TechAdvance> list = new JList<>(new Vector<TechAdvance>(available));
+      final JList<TechAdvance> list = new JList<>(new Vector<>(available));
       final JPanel panel = new JPanel();
       panel.setLayout(new BorderLayout());
       panel.add(list, BorderLayout.CENTER);
@@ -163,7 +163,7 @@ public class TechPanel extends ActionPanel {
       return;
     }
     TechnologyFrontier category = null;
-    final JList<Object> list = new JList<Object>(new Vector<TechnologyFrontier>(techCategories)) {
+    final JList<Object> list = new JList<Object>(new Vector<>(techCategories)) {
       private static final long serialVersionUID = 35094445315520702L;
 
       @Override
@@ -219,7 +219,7 @@ public class TechPanel extends ActionPanel {
         return;
       }
       TechnologyFrontier category = null;
-      final JList<Object> list = new JList<Object>(new Vector<TechnologyFrontier>(techCategories)) {
+      final JList<Object> list = new JList<Object>(new Vector<>(techCategories)) {
         private static final long serialVersionUID = -8415987764855418565L;
 
         @Override
@@ -253,7 +253,7 @@ public class TechPanel extends ActionPanel {
     if (techList.size() <= 1) {
       return null;
     }
-    final Collection<TechAdvance> listedAlready = new HashSet<TechAdvance>();
+    final Collection<TechAdvance> listedAlready = new HashSet<>();
     final StringBuilder strTechCategory = new StringBuilder("Available Techs:  ");
     final Iterator<TechAdvance> iterTechList = techList.iterator();
     while (iterTechList.hasNext()) {
@@ -264,7 +264,7 @@ public class TechPanel extends ActionPanel {
         listedAlready.add(advance);
       }
       final int freq = Collections.frequency(techList, advance);
-      strTechCategory.append(advance.getName() + (freq > 1 ? " (" + freq + "/" + techList.size() + ")" : ""));
+      strTechCategory.append(advance.getName()).append(freq > 1 ? " (" + freq + "/" + techList.size() + ")" : "");
       if (iterTechList.hasNext()) {
         strTechCategory.append(", ");
       }
@@ -367,7 +367,7 @@ class TechTokenPanel extends JPanel {
         new Insets(10, 5, space, space), 0, 0));
     if (helpPay != null && !helpPay.isEmpty()) {
       if (m_whoPaysTextFields == null) {
-        m_whoPaysTextFields = new HashMap<PlayerID, ScrollableTextField>();
+        m_whoPaysTextFields = new HashMap<>();
       }
       helpPay.remove(player);
       int row = 4;
@@ -477,7 +477,7 @@ class TechTokenPanel extends JPanel {
     final int techCost = TechTracker.getTechCost(m_player);
     final int numberOfTechRolls = getValue();
     final int totalCost = numberOfTechRolls * techCost;
-    final IntegerMap<PlayerID> whoPaysHowMuch = new IntegerMap<PlayerID>();
+    final IntegerMap<PlayerID> whoPaysHowMuch = new IntegerMap<>();
     if (m_whoPaysTextFields == null || m_whoPaysTextFields.isEmpty()) {
       whoPaysHowMuch.put(m_player, totalCost);
     } else {

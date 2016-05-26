@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.util.JTextAreaOptionPane;
 
@@ -132,8 +133,8 @@ public class TileImageBreaker {
       try {
         tracker.waitForAll();
         return img;
-      } catch (final InterruptedException ie) {
-        ie.printStackTrace();
+      } catch (final InterruptedException e) {
+        ClientLogger.logQuietly(e);
         return loadImage();
       }
     } else {

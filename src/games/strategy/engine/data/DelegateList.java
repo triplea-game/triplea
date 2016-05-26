@@ -10,7 +10,7 @@ import games.strategy.engine.delegate.IDelegate;
 
 public class DelegateList extends GameDataComponent implements Iterable<IDelegate> {
   private static final long serialVersionUID = 4156921032854553312L;
-  private Map<String, IDelegate> m_delegates = new HashMap<String, IDelegate>();
+  private Map<String, IDelegate> m_delegates = new HashMap<>();
 
   public DelegateList(final GameData data) {
     super(data);
@@ -38,6 +38,6 @@ public class DelegateList extends GameDataComponent implements Iterable<IDelegat
   }
 
   private void readObject(final ObjectInputStream in) {
-    m_delegates = new HashMap<String, IDelegate>();
+    m_delegates = new HashMap<>();
   }
 }

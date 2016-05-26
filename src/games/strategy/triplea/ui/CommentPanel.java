@@ -30,6 +30,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.tree.TreeNode;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.history.Event;
@@ -92,7 +93,7 @@ public class CommentPanel extends JPanel {
     m_save.setMargin(inset);
     m_save.setFocusable(false);
     // create icon map
-    m_iconMap = new HashMap<PlayerID, Icon>();
+    m_iconMap = new HashMap<>();
     for (final PlayerID playerId : m_data.getPlayerList().getPlayers()) {
       m_iconMap.put(playerId, new ImageIcon(m_frame.getUIContext().getFlagImageFactory().getSmallFlag(playerId)));
     }
@@ -144,8 +145,8 @@ public class CommentPanel extends JPanel {
               m_text.insertIcon(icon);
               doc.insertString(doc.getLength(), prefix, bold);
               doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
-            } catch (final BadLocationException ble) {
-              ble.printStackTrace();
+            } catch (final BadLocationException e) {
+              ClientLogger.logQuietly(e);
             }
           }
         } finally {
@@ -202,8 +203,8 @@ public class CommentPanel extends JPanel {
             m_text.insertIcon(icon);
             doc.insertString(doc.getLength(), prefix, bold);
             doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
-          } catch (final BadLocationException ble) {
-            ble.printStackTrace();
+          } catch (final BadLocationException e) {
+            ClientLogger.logQuietly(e);
           }
         }
       }
@@ -228,8 +229,8 @@ public class CommentPanel extends JPanel {
           if (error != null) {
             doc.insertString(doc.getLength(), error + "\n", italic);
           }
-        } catch (final BadLocationException ble) {
-          ble.printStackTrace();
+        } catch (final BadLocationException e) {
+          ClientLogger.logQuietly(e);
         }
         final BoundedRangeModel scrollModel = m_scrollPane.getVerticalScrollBar().getModel();
         scrollModel.setValue(scrollModel.getMaximum());
@@ -263,7 +264,7 @@ public class CommentPanel extends JPanel {
         }
       }
     } catch (final BadLocationException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 

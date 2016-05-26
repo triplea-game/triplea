@@ -18,13 +18,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -47,6 +45,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.ui.Util;
@@ -64,7 +63,7 @@ public class PlacementPicker extends JFrame {
   private Point m_currentSquare;
   private Image m_image;
   private final JLabel m_location = new JLabel();
-  private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>();
+  private Map<String, List<Polygon>> m_polygons = new HashMap<>();
   private Map<String, List<Point>> m_placements;
   private List<Point> m_currentPlacements;
   private String m_currentCountry;
@@ -380,16 +379,12 @@ public class PlacementPicker extends JFrame {
    * creates the image map and makes sure
    * it is properly loaded.
    *
-   * @param java
+   * @param mapName
    *        .lang.String mapName the path of image map
    */
   private void createImage(final String mapName) {
     m_image = Toolkit.getDefaultToolkit().createImage(mapName);
-    try {
-      Util.ensureImageLoaded(m_image);
-    } catch (final InterruptedException ex) {
-      ex.printStackTrace();
-    }
+    Util.ensureImageLoaded(m_image);
   }
 
   /**
@@ -428,7 +423,7 @@ public class PlacementPicker extends JFrame {
         }
         if (s_showIncompleteMode) {
           g.setColor(Color.green);
-          final Set<String> territories = new HashSet<String>(m_polygons.keySet());
+          final Set<String> territories = new HashSet<>(m_polygons.keySet());
           final Iterator<String> terrIter = territories.iterator();
           while (terrIter.hasNext()) {
             final String terr = terrIter.next();
@@ -474,9 +469,9 @@ public class PlacementPicker extends JFrame {
    * Saves the placements to disk.
    */
   private void savePlacements() {
-    try {
       final String fileName =
           new FileSave("Where To Save place.txt ?", "place.txt", s_mapFolderLocation).getPathString();
+    try {
       if (fileName == null) {
         return;
       }
@@ -485,12 +480,8 @@ public class PlacementPicker extends JFrame {
       out.flush();
       out.close();
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
-    } catch (final HeadlessException ex) {
-      ex.printStackTrace();
     } catch (final Exception ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly("fileName = " + fileName, ex);
     }
   }
 
@@ -499,49 +490,18 @@ public class PlacementPicker extends JFrame {
    * Loads a pre-defined file with map placement points.
    */
   private void loadPlacements() {
+    System.out.println("Load a placement file");
+    final String placeName = new FileOpen("Load A Placement File", s_mapFolderLocation, ".txt").getPathString();
     try {
-      System.out.println("Load a placement file");
-      final String placeName = new FileOpen("Load A Placement File", s_mapFolderLocation, ".txt").getPathString();
       if (placeName == null) {
         return;
       }
       final FileInputStream in = new FileInputStream(placeName);
       m_placements = PointFileReaderWriter.readOneToMany(in);
       repaint();
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
-    } catch (final IOException ex) {
-      ex.printStackTrace();
-    } catch (final HeadlessException ex) {
-      ex.printStackTrace();
+    } catch (final HeadlessException | IOException ex) {
+      ClientLogger.logQuietly(ex);
     }
-  }
-
-  /**
-   * java.lang.String findTerritoryName(java.awt.Point)
-   * Finds a land territory name or
-   * some sea zone name.
-   *
-   * @param java
-   *        .awt.point p a point on the map
-   */
-  private String findTerritoryName(final Point p) {
-    String seaName = "there be dragons";
-    // try to find a land territory.
-    // sea zones often surround a land territory
-    for (final String name : m_polygons.keySet()) {
-      final Collection<Polygon> polygons = m_polygons.get(name);
-      for (final Polygon poly : polygons) {
-        if (poly.contains(p)) {
-          if (name.endsWith("Sea Zone") || name.startsWith("Sea Zone")) {
-            seaName = name;
-          } else {
-            return name;
-          }
-        } // if
-      } // while
-    } // while
-    return seaName;
   }
 
   /**
@@ -561,12 +521,12 @@ public class PlacementPicker extends JFrame {
    */
   private void mouseEvent(final Point point, final boolean ctrlDown, final boolean rightMouse) {
     if (!rightMouse && !ctrlDown) {
-      m_currentCountry = findTerritoryName(point);
+      m_currentCountry = Util.findTerritoryName(point, m_polygons, "there be dragons");
       // If there isn't an existing array, create one
       if (m_placements == null || m_placements.get(m_currentCountry) == null) {
-        m_currentPlacements = new ArrayList<Point>();
+        m_currentPlacements = new ArrayList<>();
       } else {
-        m_currentPlacements = new ArrayList<Point>(m_placements.get(m_currentCountry));
+        m_currentPlacements = new ArrayList<>(m_placements.get(m_currentCountry));
       }
       JOptionPane.showMessageDialog(this, m_currentCountry);
     } else if (!rightMouse && ctrlDown) {
@@ -577,10 +537,10 @@ public class PlacementPicker extends JFrame {
       if (m_currentPlacements != null) {
         // If there isn't an existing hashmap, create one
         if (m_placements == null) {
-          m_placements = new HashMap<String, List<Point>>();
+          m_placements = new HashMap<>();
         }
         m_placements.put(m_currentCountry, m_currentPlacements);
-        m_currentPlacements = new ArrayList<Point>();
+        m_currentPlacements = new ArrayList<>();
         System.out.println("done:" + m_currentCountry);
       }
     } else if (rightMouse) {

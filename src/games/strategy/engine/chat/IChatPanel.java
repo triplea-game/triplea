@@ -8,17 +8,17 @@ import javax.swing.DefaultListCellRenderer;
  * or non-headless versions as we like.
  */
 public interface IChatPanel {
-  public boolean isHeadless();
+  boolean isHeadless();
 
-  public void shutDown();
+  void shutDown();
 
-  public void setChat(final Chat chat);
+  void setChat(final Chat chat);
 
-  public Chat getChat();
+  Chat getChat();
 
-  public void setPlayerRenderer(final DefaultListCellRenderer renderer);
+  void setPlayerRenderer(final DefaultListCellRenderer renderer);
 
-  public void setShowChatTime(final boolean showTime);
+  void setShowChatTime(final boolean showTime);
 
-  public String getAllText();
+  String getAllText();
 }

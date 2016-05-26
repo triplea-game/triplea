@@ -251,7 +251,7 @@ public class ProTerritoryManager {
   }
 
   private static int getMaxScrambleCount(final Collection<Unit> airbases) {
-    if (!Match.allMatch(airbases, new CompositeMatchAnd<Unit>(Matches.UnitIsAirBase, Matches.UnitIsNotDisabled))) {
+    if (!Match.allMatch(airbases, new CompositeMatchAnd<>(Matches.UnitIsAirBase, Matches.UnitIsNotDisabled))) {
       throw new IllegalStateException("All units must be viable airbases");
     }
 

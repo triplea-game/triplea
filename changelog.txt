@@ -1,11 +1,75 @@
-Changes for 2.0.1
+Changes for 1.8.0.11
+* Minimum Java version is now Java 1.8
+
 * Removing all "Grid" games (Chess, Checkers, Go, Kings Table) as well as inaccessible puzzle games (N-Puzzle and Tic-Tac-Toe). (veqryn)
+
+* Performance improvement for bot servers to reduce CPU usage when hosting games, PR#53. (lafayette)
+
+* Performance improvement that allows games to start more quickly, background map parsing is halted when a game is launched, PR#74 (lafayette)
+
+* PNG files made 17MB smaller with lossless compression 'optipng', PR#146 (lafayette)
+
+* Install4j now used to create installer packages, PR#218 (gaborbernat)
+
+* Installer packages automatically deployed to github whenever code is merged, PR#261 (lafayette)
+
+* Performance improvement to speed up map parsing time, read only the game XML data and do not read the entire Zip file from disk. This speeds up map parsing to be typically under 100ms when before it could be a few seconds for largers maps. (lafayette)
+
+* Add support for to play mp3 audio files in addition to wav files. PR#201 (lafayette)
+
+* Bugfix - 'delete corrupt map' game crash when the confirmation dialog window was shown. PR#304 (lafayette)
+
+* Map parsing performance improvement, some maps with long territory lists will now loader faster. PR#293 (lafayette)
+
+* Code improvement - Unit test runtime reduced from 31s to 21s. PR#115 (lafayette)
+
+* Map parsing improvement - map zip data is read more efficiently, map data is loaded 10x faster. PR #240 (lafayette)
+
+* Undo unit moves with 'u' key - PR#253
+
+* AI - Added check for whether factories can be placed to purchase  #270 (redrum)
+
+* AI - consider enemy turn order  #282 (redrum)
+
+* AI - consider multi-nation attacks  (redrum)
+
+* Github Map Downloads #286
+
+* Map parsing performance improvement #293
+
+* AI - Add capital value for amphib attacks  #316
+
+* Add a 'clear' button to the error console.  #332
+
+* Add performance debug console   #333, #335 
+
+* Updated canals to check if at least 1 is passable instead of all if  #343 (redrum)
+
+* New Install4j Installers  #372  (gaborbernat)
+
+* AI - Add new Fast AI player #379
+
+* Ai remove strong ai  #394
+
+* Add total units in territory count to TerritoryPanel  #399
+
+* Show Engine Version on the UI + Consolidate Engine Version and Game Configuration  #426
+
+* AI - Update casualty selection unit value calculation to consider  #447
+
+* Map Download Overhaul - Tabbed View with Progress Bars and additional features  #449
+
+* Improve Planes Can Not Land Warning  #476
+
+* Remove Delay on the Startup Map and Engine Version Checks - #470
+
+* Default Politics Action is No - #497
 
 
 Changes for 1.8.0.9
 * Bug fix, retreat from naval combat was not possible, now fixed. (redrum)
 
-* Fixed possible infinite loop bug when a corrupt map exists in the map downloads. (lafayette)
+* Fixed possible infinite loop bug when a corrupt map exists in the map downloads, PR#76. (lafayette)
 
 * Increase scroll speed when using arrow keys. Holding down control speeds up arrow key scroll. (lafayette)
 
@@ -14,6 +78,7 @@ Changes for 1.8.0.9
 * Hard AI - Fixed calculating defenses on maps with air/naval bases to properly calculate enemy range. (redrum)
 
 * Hard AI - Fixed bug around not defending against enemy units that were transported the previous turn as they were being marked as already transported when potential enemy attacks were calculated. (redrum)
+
 
 
 Changes for 1.8.0.7
@@ -59,9 +124,9 @@ Changes for 1.8.0.7
 
 * Source code migrated to github - http://github.com/triplea-game/triplea (veqryn)
 
-* Fixed maxBuilt to include unplaced units. (LaFayette)
+* Fixed maxBuilt to include unplaced units, PR#62. (LaFayette)
 
-* Added a convenience button to undo all moves during a phase. (LaFayette)
+* Added a convenience button to undo all moves during a phase, PR#61. (LaFayette)
 
 * Removed obsolete Dynamix (land-only) AI. (veqryn)
 
@@ -1583,7 +1648,7 @@ Changes for 1.5
 
 * Fixed serious bug in DefaultAttachment.getRawProperty() and getFieldIncludingFromSuperClasses, and also updated attachment/annotation test to search super's fields. (veqryn) 
 
-* Making some small fixes to attachment/annotation test, and renaming any methods with attatch to attach. (veqryn)
+* Making some small fixes to attachment/annotation test, and renaming any methods with attach to attach. (veqryn)
 
 * Added wait window to TripleA's startup. (frigoref)
 
@@ -2986,13 +3051,13 @@ Changes for 1.2.1
 
 * Abstract victory conditions to read teams/players from XML rather than hardcoded values (ComradeKev)
 
-* Add negateDominatingFirstRoundAttack option for RulesAttatchment- negates dominatingFirstRoundAttack for player (ComradeKev)
+* Add negateDominatingFirstRoundAttack option for RulesAttachment- negates dominatingFirstRoundAttack for player (ComradeKev)
  
-* Add dominatingFirstRoundAttack option for RulesAttatchment- defenders roll at 1 (ComradeKev)
+* Add dominatingFirstRoundAttack option for RulesAttachment- defenders roll at 1 (ComradeKev)
 
-* Add placementInCapitalRestricted option for RulesAttatchment- restricts unit placement to capital (ComradeKev)
+* Add placementInCapitalRestricted option for RulesAttachment- restricts unit placement to capital (ComradeKev)
 
-* Add unlimitedProduction option for RulesAttatchment- bypasses limitation of unit placement to factory production (ComradeKev)
+* Add unlimitedProduction option for RulesAttachment- bypasses limitation of unit placement to factory production (ComradeKev)
 
 * Add 'Neutrals Are Blitzable' property with value of TRUE to NWO (ComradeKev)
 
@@ -4247,7 +4312,7 @@ Change for 0.7.2
 
 * shift click on a unit (or territory) to select all units in the territory (sgb)
 
-* rename attatchment to attachment (sgb)
+* rename attachment to attachment (sgb)
 
 * remove singleton image factories, move to UIContext (sgb)
 
@@ -4278,7 +4343,7 @@ changes for 0.7.1
 
 * fixed no pop up movement for scaled units (sgb)
 
-* removed territory attatchments for sea zones in big world map (sgb)
+* removed territory attachments for sea zones in big world map (sgb)
 
 * Fixed missing connections in big world map, north to south brazil, and sea of Okhotsk to West Bering Sea (kc1189)
 

@@ -36,7 +36,7 @@ public class LoadGameUtil {
       if (is == null) {
         throw new IllegalStateException(game + " does not exist");
       }
-      return (new GameParser()).parse(is, new AtomicReference<String>(), false);
+      return (new GameParser()).parse(is, new AtomicReference<>(), false);
     } catch (final Exception e) {
       throw new IllegalStateException(e);
     }

@@ -19,15 +19,15 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
 
   /** Creates new IntegerMap */
   public LinkedIntegerMap() {
-    m_values = new LinkedHashMap<T, Integer>();
+    m_values = new LinkedHashMap<>();
   }
 
   public LinkedIntegerMap(final int size) {
-    m_values = new LinkedHashMap<T, Integer>(size);
+    m_values = new LinkedHashMap<>(size);
   }
 
   public LinkedIntegerMap(final int size, final float loadFactor) {
-    m_values = new LinkedHashMap<T, Integer>(size, loadFactor);
+    m_values = new LinkedHashMap<>(size, loadFactor);
   }
 
   public LinkedIntegerMap(final T object, final int value) {
@@ -51,7 +51,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
      * this will also work:
      * m_values = new HashMap<T,Integer>(integerMap.m_values);
      */
-    m_values = new LinkedHashMap<T, Integer>(integerMap.size());
+    m_values = new LinkedHashMap<>(integerMap.size());
     for (final T t : integerMap.keySet()) {
       m_values.put(t, integerMap.getInt(t));
     }
@@ -64,7 +64,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
    * @param integerMap
    */
   public LinkedIntegerMap(final LinkedIntegerMap<T>[] integerMaps) {
-    m_values = new LinkedHashMap<T, Integer>();
+    m_values = new LinkedHashMap<>();
     for (final LinkedIntegerMap<T> integerMap : integerMaps) {
       this.add(integerMap);
     }
@@ -321,7 +321,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
   }
 
   public LinkedIntegerMap<T> copy() {
-    final LinkedIntegerMap<T> copy = new LinkedIntegerMap<T>();
+    final LinkedIntegerMap<T> copy = new LinkedIntegerMap<>();
     copy.add(this);
     return copy;
   }
@@ -359,7 +359,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
   }
 
   public Collection<T> getKeyMatches(final Match<T> matcher) {
-    final Collection<T> values = new ArrayList<T>();
+    final Collection<T> values = new ArrayList<>();
     for (final T obj : m_values.keySet()) {
       if (matcher.match(obj)) {
         values.add(obj);
@@ -379,7 +379,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
   }
 
   public void removeNonMatchingKeys(final Match<T> aMatch) {
-    final Match<T> match = new InverseMatch<T>(aMatch);
+    final Match<T> match = new InverseMatch<>(aMatch);
     removeMatchingKeys(match);
   }
 

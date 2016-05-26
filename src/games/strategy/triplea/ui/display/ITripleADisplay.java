@@ -13,14 +13,14 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 
-public interface ITripleaDisplay extends IDisplay {
+public interface ITripleADisplay extends IDisplay {
   /**
    * Sends a message to all TripleAFrame that have joined the game, possibly including observers.
    *
    * @param message
    * @param title
    */
-  public void reportMessageToAll(final String message, final String title, final boolean doNotIncludeHost,
+  void reportMessageToAll(final String message, final String title, final boolean doNotIncludeHost,
       final boolean doNotIncludeClients, final boolean doNotIncludeObservers);
 
   /**
@@ -33,7 +33,7 @@ public interface ITripleaDisplay extends IDisplay {
    * @param message
    * @param title
    */
-  public void reportMessageToPlayers(final Collection<PlayerID> playersToSendTo,
+  void reportMessageToPlayers(final Collection<PlayerID> playersToSendTo,
       final Collection<PlayerID> butNotThesePlayers, final String message, final String title);
 
   /**
@@ -60,7 +60,7 @@ public interface ITripleaDisplay extends IDisplay {
    *        - PlayerID of defender
    * @param isAmphibious
    */
-  public void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits,
+  void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits,
       Collection<Unit> defendingUnits, Collection<Unit> killedUnits, Collection<Unit> attackingWaitingToDie,
       Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> dependentUnits, final PlayerID attacker,
       final PlayerID defender, final boolean isAmphibious, final BattleType battleType,
@@ -74,44 +74,44 @@ public interface ITripleaDisplay extends IDisplay {
    * @param steps
    *        - a collection of strings denoting all steps in the battle
    */
-  public void listBattleSteps(GUID battleID, List<String> steps);
+  void listBattleSteps(GUID battleID, List<String> steps);
 
   /**
    * The given battle has ended.
    */
-  public void battleEnd(GUID battleID, String message);
+  void battleEnd(GUID battleID, String message);
 
   /**
    * Notify that the casualties occurred
    */
-  public void casualtyNotification(GUID battleID, String step, DiceRoll dice, PlayerID player, Collection<Unit> killed,
+  void casualtyNotification(GUID battleID, String step, DiceRoll dice, PlayerID player, Collection<Unit> killed,
       Collection<Unit> damaged, Map<Unit, Collection<Unit>> dependents);
 
   /**
    * Notify that the casualties occurred, and only the casualty
    */
-  public void deadUnitNotification(GUID battleID, PlayerID player, Collection<Unit> dead,
+  void deadUnitNotification(GUID battleID, PlayerID player, Collection<Unit> dead,
       Map<Unit, Collection<Unit>> dependents);
 
-  public void changedUnitsNotification(GUID battleID, PlayerID player, Collection<Unit> removedUnits,
+  void changedUnitsNotification(GUID battleID, PlayerID player, Collection<Unit> removedUnits,
       Collection<Unit> addedUnits, Map<Unit, Collection<Unit>> dependents);
 
   /**
    * Notification of the results of a bombing raid
    */
-  public void bombingResults(GUID battleID, List<Die> dice, int cost);
+  void bombingResults(GUID battleID, List<Die> dice, int cost);
 
   /**
    * Notify that the given player has retreated some or all of his units.
    */
-  public void notifyRetreat(String shortMessage, String message, String step, PlayerID retreatingPlayer);
+  void notifyRetreat(String shortMessage, String message, String step, PlayerID retreatingPlayer);
 
-  public void notifyRetreat(GUID battleId, Collection<Unit> retreating);
+  void notifyRetreat(GUID battleId, Collection<Unit> retreating);
 
   /**
    * Show dice for the given battle and step
    */
-  public void notifyDice(DiceRoll dice, String stepName);
+  void notifyDice(DiceRoll dice, String stepName);
 
-  public void gotoBattleStep(GUID battleId, String step);
+  void gotoBattleStep(GUID battleId, String step);
 }

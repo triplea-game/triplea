@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.util.MD5Crypt;
 
 public class MacFinder {
@@ -98,7 +99,7 @@ public class MacFinder {
         return mac;
       }
     } catch (final Throwable ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly("Error while trying to get mac address", ex);
     }
     // Next, try to get the mac address by calling the 'ipconfig -all' app that exists in Windows and possibly others.
     /*
@@ -113,6 +114,7 @@ public class MacFinder {
         return mac;
       }
     } catch (final Throwable ex) {
+      ClientLogger.logQuietly("Error while trying to get mac address", ex);
       ex.printStackTrace();
     }
     try {
@@ -123,7 +125,7 @@ public class MacFinder {
         return mac;
       }
     } catch (final Throwable ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly("Error while trying to get mac address", ex);
     }
     // Next, try to get the mac address by calling the 'ifconfig -a' app that exists in Linux and possibly others. May
     // have 1 or 2 spaces
@@ -142,7 +144,7 @@ public class MacFinder {
         return mac;
       }
     } catch (final Throwable ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly("Error while trying to get mac address", ex);
     }
     // Next, try to get the mac address by calling the '/sbin/ifconfig -a' app that exists in Linux and possibly others.
     // May have 1 or 2
@@ -161,6 +163,7 @@ public class MacFinder {
         return mac;
       }
     } catch (final Throwable ex) {
+      ClientLogger.logQuietly("Error while trying to get mac address", ex);
       ex.printStackTrace();
     }
     // Next, try to get the mac address by calling the 'dmesg' app that exists in FreeBSD and possibly others.
@@ -177,7 +180,7 @@ public class MacFinder {
         return mac;
       }
     } catch (final Throwable ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly("Error while trying to get mac address", ex);
     }
     return null;
   }
@@ -190,6 +193,7 @@ public class MacFinder {
       try {
         p = Runtime.getRuntime().exec(command);
       } catch (final IOException ex2) {
+        ClientLogger.logQuietly("Ignoring error while executing command: " + command, ex);
       }
     }
     if (p == null) {
@@ -212,7 +216,7 @@ public class MacFinder {
       in.close();
       return builder.toString();
     } catch (final IOException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly("IOException while executing command: " + command, ex);
       return null;
     }
   }

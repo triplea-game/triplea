@@ -22,7 +22,7 @@ import games.strategy.common.swing.SwingAction;
 
 public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
 
-  private final TreeSet<String> playerNames = new TreeSet<String>();
+  private final TreeSet<String> playerNames = new TreeSet<>();
 
   public TechnologyDefinitionsPanel(final JPanel stepActionPanel) {
     super(stepActionPanel);
@@ -117,7 +117,7 @@ public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
       }
       final String newRowName = newTechnologyName + "_" + suggestedPlayerName;
 
-      final ArrayList<String> newValue = new ArrayList<String>();
+      final ArrayList<String> newValue = new ArrayList<>();
       newValue.add(suggestedPlayerName);
       newValue.add("false");
       MapXmlHelper.putTechnologyDefinitions(newRowName, newValue);

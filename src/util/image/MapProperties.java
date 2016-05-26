@@ -16,7 +16,7 @@ import games.strategy.util.Tuple;
  */
 public class MapProperties {
   public final String MAP_PROPERTIES_FILENAME = MapData.MAP_PROPERTIES;
-  public Map<String, Color> COLOR_MAP = new TreeMap<String, Color>();
+  public Map<String, Color> COLOR_MAP = new TreeMap<>();
   // public double UNITS_SCALE = 0.75f;
   public String UNITS_SCALE = "0.75";
   public int UNITS_WIDTH = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
@@ -99,7 +99,8 @@ public class MapProperties {
   public String outCOLOR_MAP() {
     final StringBuilder buf = new StringBuilder();
     for (final Entry<String, Color> entry : COLOR_MAP.entrySet()) {
-      buf.append(MapData.PROPERTY_COLOR_PREFIX + entry.getKey() + "=" + colorToHex(entry.getValue()) + "\r\n");
+      buf.append(MapData.PROPERTY_COLOR_PREFIX).append(entry.getKey()).append("=").append(colorToHex(entry.getValue()))
+          .append("\r\n");
     }
     return buf.toString();
   }

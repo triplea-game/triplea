@@ -74,7 +74,7 @@ class Updater implements Runnable {
   private final WeakReference<MemoryLabel> m_label;
 
   Updater(final MemoryLabel label) {
-    m_label = new WeakReference<MemoryLabel>(label);
+    m_label = new WeakReference<>(label);
   }
 
   @Override

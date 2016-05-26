@@ -35,20 +35,20 @@ import java.util.logging.Logger;
 
 public interface IDrawable {
   public Logger s_logger = Logger.getLogger(IDrawable.class.getName());
-  public static final int BASE_MAP_LEVEL = 1;
-  public static final int POLYGONS_LEVEL = 2;
-  public static final int RELIEF_LEVEL = 3;
-  public static final int OPTIONAL_EXTRA_TERRITORY_BORDERS_MEDIUM_LEVEL = 4;
-  public static final int OPTIONAL_EXTRA_TERRITORY_BORDERS_HIGH_LEVEL = 18;
-  public static final int CONVOY_LEVEL = 5;
-  public static final int TERRITORY_EFFECT_LEVEL = 6;
-  public static final int CAPITOL_MARKER_LEVEL = 8;
-  public static final int VC_MARKER_LEVEL = 9;
-  public static final int DECORATOR_LEVEL = 11;
-  public static final int TERRITORY_TEXT_LEVEL = 13;
-  public static final int BATTLE_HIGHLIGHT_LEVEL = 14;
-  public static final int UNITS_LEVEL = 15;
-  public static final int TERRITORY_OVERLAY_LEVEL = 16;
+  int BASE_MAP_LEVEL = 1;
+  int POLYGONS_LEVEL = 2;
+  int RELIEF_LEVEL = 3;
+  int OPTIONAL_EXTRA_TERRITORY_BORDERS_MEDIUM_LEVEL = 4;
+  int OPTIONAL_EXTRA_TERRITORY_BORDERS_HIGH_LEVEL = 18;
+  int CONVOY_LEVEL = 5;
+  int TERRITORY_EFFECT_LEVEL = 6;
+  int CAPITOL_MARKER_LEVEL = 8;
+  int VC_MARKER_LEVEL = 9;
+  int DECORATOR_LEVEL = 11;
+  int TERRITORY_TEXT_LEVEL = 13;
+  int BATTLE_HIGHLIGHT_LEVEL = 14;
+  int UNITS_LEVEL = 15;
+  int TERRITORY_OVERLAY_LEVEL = 16;
 
   /**
    * This is for the optional extra territory borders. LOW means off
@@ -709,7 +709,7 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable {
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
-    final Set<PlayerID> players = new HashSet<PlayerID>();
+    final Set<PlayerID> players = new HashSet<>();
     for (final Unit u : data.getMap().getTerritory(m_territoryName).getUnits()) {
       if (!TripleAUnit.get(u).getSubmerged()) {
         players.add(u.getOwner());

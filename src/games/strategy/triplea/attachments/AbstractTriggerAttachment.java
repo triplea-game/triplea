@@ -15,7 +15,7 @@ import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
@@ -33,7 +33,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   // Do Not Export (do not include in IAttachment).
   private boolean m_usedThisRound = false;
   private String m_notification = null;
-  private ArrayList<Tuple<String, String>> m_when = new ArrayList<Tuple<String, String>>();
+  private ArrayList<Tuple<String, String>> m_when = new ArrayList<>();
 
   public AbstractTriggerAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -169,7 +169,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   public void resetWhen() {
-    m_when = new ArrayList<Tuple<String, String>>();
+    m_when = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -224,7 +224,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
             + diceSides + " Result: " + rollResult + "  for " + MyFormatter.attachmentNameToText(this.getName()) + ")";
     aBridge.getHistoryWriter().startEvent(notificationMessage);
     changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, testChance, true);
-    ((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage,
+    ((ITripleAPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage,
         notificationMessage);
     return testChance;
   }

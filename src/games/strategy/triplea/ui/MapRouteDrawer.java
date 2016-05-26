@@ -76,7 +76,7 @@ public class MapRouteDrawer {
       }
       final int yOffset = view.getYOffset();
       final int xOffset = view.getXOffset();
-      final List<Shape> shapes = new ArrayList<Shape>();
+      final List<Shape> shapes = new ArrayList<>();
       for (int i = 0; i < points.length; i++) {
         if (i == 0 || i + 1 != points.length) {
           final Ellipse2D oval = new Ellipse2D.Double(points[i].x - 3 - xOffset, points[i].y - yOffset - 3, 6, 6);

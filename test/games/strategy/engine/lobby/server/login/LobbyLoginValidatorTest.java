@@ -22,7 +22,7 @@ public class LobbyLoginValidatorTest extends TestCase {
     final SocketAddress address = new InetSocketAddress(5000);
     final String name = Util.createUniqueTimeStamp();
     final String mac = MacFinder.GetHashedMacAddress();
-    final Map<String, String> properties = new HashMap<String, String>();
+    final Map<String, String> properties = new HashMap<>();
     properties.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
     properties.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt("123", "foo"));
     properties.put(LobbyLoginValidator.EMAIL_KEY, "none@none.none");
@@ -39,7 +39,7 @@ public class LobbyLoginValidatorTest extends TestCase {
     final SocketAddress address = new InetSocketAddress(5000);
     final String name = Util.createUniqueTimeStamp();
     final String mac = MacFinder.GetHashedMacAddress();
-    final Map<String, String> properties = new HashMap<String, String>();
+    final Map<String, String> properties = new HashMap<>();
     properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
     properties.put(LobbyLoginValidator.LOBBY_VERSION, "0.1");
     assertNotNull(new LobbyLoginValidator().verifyConnection(validator.getChallengeProperties(name, address),
@@ -51,7 +51,7 @@ public class LobbyLoginValidatorTest extends TestCase {
     final SocketAddress address = new InetSocketAddress(5000);
     final String name = Util.createUniqueTimeStamp();
     final String mac = MacFinder.GetHashedMacAddress();
-    final Map<String, String> properties = new HashMap<String, String>();
+    final Map<String, String> properties = new HashMap<>();
     properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
     properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
     assertNull(new LobbyLoginValidator().verifyConnection(validator.getChallengeProperties(name, address), properties,
@@ -69,7 +69,7 @@ public class LobbyLoginValidatorTest extends TestCase {
     final String name = "bitCh" + Util.createUniqueTimeStamp();
     final String mac = MacFinder.GetHashedMacAddress();
     new BadWordController().addBadWord("bitCh");
-    final Map<String, String> properties = new HashMap<String, String>();
+    final Map<String, String> properties = new HashMap<>();
     properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
     properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
     assertEquals(LobbyLoginValidator.THATS_NOT_A_NICE_NAME, new LobbyLoginValidator()
@@ -85,7 +85,7 @@ public class LobbyLoginValidatorTest extends TestCase {
     final String password = "foo";
     final String hashedPassword = MD5Crypt.crypt(password);
     new DBUserController().createUser(name, email, hashedPassword, false);
-    final Map<String, String> properties = new HashMap<String, String>();
+    final Map<String, String> properties = new HashMap<>();
     properties.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
     properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
     final Map<String, String> challengeProperties = validator.getChallengeProperties(name, address);
@@ -106,7 +106,7 @@ public class LobbyLoginValidatorTest extends TestCase {
     final SocketAddress address = new InetSocketAddress(InetAddress.getByAddress(new byte[] {1, 1, 1, 1}), 5000);
     final String name = "name" + Util.createUniqueTimeStamp();
     final String mac = MacFinder.GetHashedMacAddress();
-    final Map<String, String> properties = new HashMap<String, String>();
+    final Map<String, String> properties = new HashMap<>();
     properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
     properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
     assertTrue((new LobbyLoginValidator().verifyConnection(validator.getChallengeProperties(name, address), properties,

@@ -83,7 +83,7 @@ public class HistoryLog extends JFrame {
     Step stepNode = null;
     Step turnStartNode = null;
     PlayerID curPlayer = null;
-    final Collection<PlayerID> players = new HashSet<PlayerID>();
+    final Collection<PlayerID> players = new HashSet<>();
     if (playersAllowed != null) {
       players.addAll(playersAllowed);
     }
@@ -178,14 +178,14 @@ public class HistoryLog extends JFrame {
         }
       }
     }
-    final Collection<PlayerID> players = new HashSet<PlayerID>();
+    final Collection<PlayerID> players = new HashSet<>();
     if (playersAllowed != null) {
       players.addAll(playersAllowed);
     }
     if (currentPlayer != null) {
       players.add(currentPlayer);
     }
-    final List<String> moveList = new ArrayList<String>();
+    final List<String> moveList = new ArrayList<>();
     boolean moving = false;
     do {
       // keep track of conquered territory during combat
@@ -270,7 +270,7 @@ public class HistoryLog extends JFrame {
                       indent + conquerStr + ". Battle score " + title.substring(title.indexOf("for attacker is")));
                   conquerStr = "";
                   // separate units by player and show casualty summary
-                  final IntegerMap<PlayerID> unitCount = new IntegerMap<PlayerID>();
+                  final IntegerMap<PlayerID> unitCount = new IntegerMap<>();
                   unitCount.add(unit.getOwner(), 1);
                   while (objIter.hasNext()) {
                     unit = (Unit) objIter.next();
@@ -389,7 +389,7 @@ public class HistoryLog extends JFrame {
     } finally {
       data.releaseReadLock();
     }
-    final Collection<PlayerID> players = new HashSet<PlayerID>();
+    final Collection<PlayerID> players = new HashSet<>();
     players.add(player);
     printTerritorySummary(players, territories);
   }
@@ -404,7 +404,7 @@ public class HistoryLog extends JFrame {
     } finally {
       data.releaseReadLock();
     }
-    final Collection<PlayerID> players = new HashSet<PlayerID>();
+    final Collection<PlayerID> players = new HashSet<>();
     players.add(player);
     printTerritorySummary(players, territories);
   }

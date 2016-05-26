@@ -14,7 +14,7 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecords;
  */
 public class BattleRecordsList extends GameDataComponent implements Serializable {
   private static final long serialVersionUID = 7515693859612849475L;
-  private final Map<Integer, BattleRecords> m_battleRecords = new HashMap<Integer, BattleRecords>();
+  private final Map<Integer, BattleRecords> m_battleRecords = new HashMap<>();
 
   public BattleRecordsList(final GameData data) {
     super(data);
@@ -63,7 +63,7 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
   }
 
   private static Map<Integer, BattleRecords> copyList(final Map<Integer, BattleRecords> records) {
-    final Map<Integer, BattleRecords> copy = new HashMap<Integer, BattleRecords>();
+    final Map<Integer, BattleRecords> copy = new HashMap<>();
     for (final Entry<Integer, BattleRecords> entry : records.entrySet()) {
       copy.put(Integer.valueOf(entry.getKey()), new BattleRecords(entry.getValue()));
     }
@@ -87,7 +87,7 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
   public static int getTUVdamageCausedByPlayer(final PlayerID attacker, final BattleRecordsList brl,
       final int beginningRound, final int endRound, final boolean currentRoundOnly, final boolean includeNullPlayer) {
     int damageCausedByAttacker = 0;
-    final Collection<BattleRecords> brs = new ArrayList<BattleRecords>();
+    final Collection<BattleRecords> brs = new ArrayList<>();
     if (currentRoundOnly) {
       if (brl != null) {
         final BattleRecords current = brl.getCurrentRoundCopy();
@@ -132,7 +132,7 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
   public static boolean getWereThereBattlesInTerritoriesMatching(final PlayerID attacker, final PlayerID defender,
       final String battleType, final Collection<Territory> anyOfTheseTerritories, final BattleRecordsList brl,
       final int beginningRound, final int endRound, final boolean currentRoundOnly) {
-    final Collection<BattleRecords> brs = new ArrayList<BattleRecords>();
+    final Collection<BattleRecords> brs = new ArrayList<>();
     if (currentRoundOnly) {
       if (brl != null && brl.getCurrentRoundCopy() != null) {
         brs.add(brl.getCurrentRoundCopy());

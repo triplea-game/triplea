@@ -31,10 +31,10 @@ import games.strategy.util.Util;
  */
 public class FinishedBattle extends AbstractBattle {
   private static final long serialVersionUID = -5852495231826940879L;
-  private final Set<Territory> m_attackingFrom = new HashSet<Territory>();
-  private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<Territory>();
+  private final Set<Territory> m_attackingFrom = new HashSet<>();
+  private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<>();
   // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
-  private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<Territory, Collection<Unit>>();
+  private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<>();
 
   public FinishedBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
       final boolean isBombingRun, final BattleType battleType, final GameData data,
@@ -78,7 +78,7 @@ public class FinishedBattle extends AbstractBattle {
     m_attackingFrom.add(attackingFrom);
     m_attackingUnits.addAll(units);
     if (m_attackingFromMap.get(attackingFrom) == null) {
-      m_attackingFromMap.put(attackingFrom, new ArrayList<Unit>());
+      m_attackingFromMap.put(attackingFrom, new ArrayList<>());
     }
     final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
     attackingFromMapUnits.addAll(units);
@@ -103,7 +103,7 @@ public class FinishedBattle extends AbstractBattle {
     Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
     // handle possible null pointer
     if (attackingFromMapUnits == null) {
-      attackingFromMapUnits = new ArrayList<Unit>();
+      attackingFromMapUnits = new ArrayList<>();
     }
     attackingFromMapUnits.removeAll(units);
     if (attackingFromMapUnits.isEmpty()) {

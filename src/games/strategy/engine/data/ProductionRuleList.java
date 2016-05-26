@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class ProductionRuleList extends GameDataComponent {
   private static final long serialVersionUID = -5313215563006788188L;
-  private final Map<String, ProductionRule> m_productionRules = new HashMap<String, ProductionRule>();
+  private final Map<String, ProductionRule> m_productionRules = new HashMap<>();
 
   public ProductionRuleList(final GameData data) {
     super(data);

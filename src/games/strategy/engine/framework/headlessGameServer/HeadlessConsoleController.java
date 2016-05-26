@@ -11,6 +11,7 @@ import java.io.PrintStream;
 import java.util.Date;
 import java.util.Set;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.debug.DebugUtils;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.HeadlessChat;
@@ -97,7 +98,7 @@ public class HeadlessConsoleController {
       }
       chat.sendMessage(message, false);
     } catch (final IOException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -202,10 +203,8 @@ public class HeadlessConsoleController {
           return;
         }
       }
-    } catch (final IOException e) {
-      e.printStackTrace();
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -239,10 +238,8 @@ public class HeadlessConsoleController {
           messenger.removeConnection(node);
         }
       }
-    } catch (final IOException e) {
-      e.printStackTrace();
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -293,25 +290,23 @@ public class HeadlessConsoleController {
           try {
             messenger.NotifyUsernameMiniBanningOfPlayer(realName, new Date(expire));
           } catch (final Exception e) {
-            e.printStackTrace();
+            ClientLogger.logQuietly(e);
           }
           try {
             messenger.NotifyIPMiniBanningOfPlayer(ip, new Date(expire));
           } catch (final Exception e) {
-            e.printStackTrace();
+            ClientLogger.logQuietly(e);
           }
           try {
             messenger.NotifyMacMiniBanningOfPlayer(mac, new Date(expire));
           } catch (final Exception e) {
-            e.printStackTrace();
+            ClientLogger.logQuietly(e);
           }
           messenger.removeConnection(node);
         }
       }
-    } catch (final IOException e) {
-      e.printStackTrace();
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -341,10 +336,10 @@ public class HeadlessConsoleController {
         try {
           game.saveGame(f);
         } catch (final Exception e) {
-          e.printStackTrace();
+          ClientLogger.logQuietly(e);
         }
       } catch (final IOException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
   }
@@ -375,12 +370,12 @@ public class HeadlessConsoleController {
         try {
           game.saveGame(f);
         } catch (final Exception e) {
-          e.printStackTrace();
+          ClientLogger.logQuietly(e);
         }
         game.stopGame();
       }
     } catch (final IOException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -400,7 +395,7 @@ public class HeadlessConsoleController {
         System.exit(0);
       }
     } catch (final IOException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -411,13 +406,14 @@ public class HeadlessConsoleController {
   private String getConnections() {
     final StringBuilder sb = new StringBuilder();
     if (server.getServerModel() != null && server.getServerModel().getMessenger() != null) {
-      sb.append("Connected: " + server.getServerModel().getMessenger().isConnected() + "\n" + "Nodes: \n");
+      sb.append("Connected: ").append(server.getServerModel().getMessenger().isConnected()).append("\n")
+          .append("Nodes: \n");
       final Set<INode> nodes = server.getServerModel().getMessenger().getNodes();
       if (nodes == null) {
         sb.append("  null\n");
       } else {
         for (final INode node : nodes) {
-          sb.append("  " + node + "\n");
+          sb.append("  ").append(node).append("\n");
         }
       }
     } else {

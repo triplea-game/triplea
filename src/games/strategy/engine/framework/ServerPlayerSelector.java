@@ -17,6 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import games.strategy.debug.ClientLogger;
+
 public class ServerPlayerSelector extends JFrame {
   private static final long serialVersionUID = 8902742935005060145L;
   private final Collection<PlayerChoice> m_playerChoices;
@@ -36,7 +38,7 @@ public class ServerPlayerSelector extends JFrame {
     getContentPane().add(namePanel);
     getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     getContentPane().add(new JLabel("Choose player location."));
-    m_playerChoices = new ArrayList<PlayerChoice>();
+    m_playerChoices = new ArrayList<>();
     for (final String player : players) {
       final PlayerChoice current = new PlayerChoice(player);
       m_playerChoices.add(current);
@@ -63,8 +65,8 @@ public class ServerPlayerSelector extends JFrame {
       } else {
         return m_remote;
       }
-    } catch (final InterruptedException ie) {
-      ie.printStackTrace();
+    } catch (final InterruptedException e) {
+      ClientLogger.logQuietly(e);
       return getRemotePlayers();
     }
   }
@@ -82,7 +84,7 @@ public class ServerPlayerSelector extends JFrame {
       if (!isVisible()) {
         return;
       }
-      m_remote = new ArrayList<String>();
+      m_remote = new ArrayList<>();
       for (final PlayerChoice choice : m_playerChoices) {
         if (choice.isRemote()) {
           m_remote.add(choice.getPlayerName());

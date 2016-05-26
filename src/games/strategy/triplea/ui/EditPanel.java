@@ -84,7 +84,7 @@ public class EditPanel extends ActionPanel {
   private Point m_mouseSelectedPoint;
   private Point m_mouseCurrentPoint;
   // use a LinkedHashSet because we want to know the order
-  private final Set<Unit> m_selectedUnits = new LinkedHashSet<Unit>();
+  private final Set<Unit> m_selectedUnits = new LinkedHashSet<>();
   private Territory m_selectedTerritory = null;
   private Territory m_currentTerritory = null;
 
@@ -120,13 +120,13 @@ public class EditPanel extends ActionPanel {
       public void actionPerformed(final ActionEvent event) {
         m_currentAction = this;
         setWidgetActivation();
-        final List<Unit> allUnits = new ArrayList<Unit>(m_selectedTerritory.getUnits().getUnits());
+        final List<Unit> allUnits = new ArrayList<>(m_selectedTerritory.getUnits().getUnits());
         sortUnitsToRemove(allUnits, m_selectedTerritory);
         final MustMoveWithDetails mustMoveWithDetails;
         try {
           getData().acquireReadLock();
           mustMoveWithDetails = MoveValidator.getMustMoveWith(m_selectedTerritory, allUnits,
-              new HashMap<Unit, Collection<Unit>>(), getData(), getCurrentPlayer());
+              new HashMap<>(), getData(), getCurrentPlayer());
         } finally {
           getData().releaseReadLock();
         }
@@ -137,7 +137,7 @@ public class EditPanel extends ActionPanel {
           // if the unit choice is ambiguous then ask the user to clarify which units to remove
           // an ambiguous selection would be if the user selects 1 of 2 tanks, but
           // the tanks have different movement.
-          final Set<UnitType> selectedUnitTypes = new HashSet<UnitType>();
+          final Set<UnitType> selectedUnitTypes = new HashSet<>();
           for (final Unit u : m_selectedUnits) {
             selectedUnitTypes.add(u.getType());
           }
@@ -166,7 +166,7 @@ public class EditPanel extends ActionPanel {
           }
           bestUnits = chooser.getSelected(true);
         } else {
-          bestUnits = new ArrayList<Unit>(m_selectedUnits);
+          bestUnits = new ArrayList<>(m_selectedUnits);
         }
         final String result = m_frame.getEditDelegate().removeUnits(m_selectedTerritory, bestUnits);
         if (result != null) {
@@ -255,7 +255,7 @@ public class EditPanel extends ActionPanel {
         Vector<TechAdvance> techs = null;
         getData().acquireReadLock();
         try {
-          techs = new Vector<TechAdvance>(TechnologyDelegate.getAvailableTechs(player, data));
+          techs = new Vector<>(TechnologyDelegate.getAvailableTechs(player, data));
         } finally {
           getData().releaseReadLock();
         }
@@ -274,7 +274,7 @@ public class EditPanel extends ActionPanel {
           CANCEL_EDIT_ACTION.actionPerformed(null);
           return;
         }
-        final Set<TechAdvance> advance = new HashSet<TechAdvance>();
+        final Set<TechAdvance> advance = new HashSet<>();
         try {
           for (final Object selection : techList.getSelectedValuesList()) {
             advance.add((TechAdvance) selection);
@@ -308,7 +308,7 @@ public class EditPanel extends ActionPanel {
         Vector<TechAdvance> techs = null;
         getData().acquireReadLock();
         try {
-          techs = new Vector<TechAdvance>(TechTracker.getCurrentTechAdvances(player, data));
+          techs = new Vector<>(TechTracker.getCurrentTechAdvances(player, data));
           // there is no way to "undo" these two techs, so do not allow them to be removed
           final Iterator<TechAdvance> iter = techs.iterator();
           while (iter.hasNext()) {
@@ -336,7 +336,7 @@ public class EditPanel extends ActionPanel {
           CANCEL_EDIT_ACTION.actionPerformed(null);
           return;
         }
-        final Set<TechAdvance> advance = new HashSet<TechAdvance>();
+        final Set<TechAdvance> advance = new HashSet<>();
         try {
           for (final Object selection : techList.getSelectedValuesList()) {
             advance.add((TechAdvance) selection);
@@ -375,7 +375,7 @@ public class EditPanel extends ActionPanel {
         Collections.reverse(units);
         // unit mapped to <max, min, current>
         final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap =
-            new HashMap<Unit, Triple<Integer, Integer, Integer>>();
+            new HashMap<>();
         for (final Unit u : units) {
           currentDamageMap.put(u, Triple.of(UnitAttachment.get(u.getType()).getHitPoints() - 1, 0, u.getHits()));
         }
@@ -421,7 +421,7 @@ public class EditPanel extends ActionPanel {
         Collections.reverse(units);
         // unit mapped to <max, min, current>
         final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap =
-            new HashMap<Unit, Triple<Integer, Integer, Integer>>();
+            new HashMap<>();
         for (final Unit u : units) {
           currentDamageMap.put(u,
               Triple.of(((TripleAUnit) u).getHowMuchDamageCanThisUnitTakeTotal(u, m_selectedTerritory), 0,
@@ -645,7 +645,7 @@ public class EditPanel extends ActionPanel {
       }
       final boolean rightMouse = md.isRightButton();
       if (!m_selectedUnits.isEmpty() && !(m_selectedTerritory == t)) {
-        deselectUnits(new ArrayList<Unit>(m_selectedUnits), t, md);
+        deselectUnits(new ArrayList<>(m_selectedUnits), t, md);
         m_selectedTerritory = null;
       }
       if (rightMouse && (m_selectedTerritory == t)) {
@@ -669,7 +669,7 @@ public class EditPanel extends ActionPanel {
           m_selectedUnits.clear();
         } else {
           // remove the last element
-          m_selectedUnits.remove(new ArrayList<Unit>(m_selectedUnits).get(m_selectedUnits.size() - 1));
+          m_selectedUnits.remove(new ArrayList<>(m_selectedUnits).get(m_selectedUnits.size() - 1));
         }
       }
       // user has clicked on a specific unit
@@ -754,7 +754,7 @@ public class EditPanel extends ActionPanel {
         return;
       }
       if (!units.isEmpty()) {
-        final Map<Territory, List<Unit>> highlight = new HashMap<Territory, List<Unit>>();
+        final Map<Territory, List<Unit>> highlight = new HashMap<>();
         highlight.put(territory, units);
         getMap().setUnitHighlight(highlight);
       } else {
@@ -806,7 +806,7 @@ public class EditPanel extends ActionPanel {
           // open production panel for adding new units
           final IntegerMap<ProductionRule> production =
               EditProductionPanel.getProduction(player, m_frame, getData(), getMap().getUIContext());
-          final Collection<Unit> units = new ArrayList<Unit>();
+          final Collection<Unit> units = new ArrayList<>();
           for (final ProductionRule productionRule : production.keySet()) {
             final int quantity = production.getInt(productionRule);
             final NamedAttachable resourceOrUnit = productionRule.getResults().keySet().iterator().next();

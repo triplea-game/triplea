@@ -54,7 +54,7 @@ public interface IRemoteMessenger {
    *        the name the remote is registered under.
    * @return a remote reference to the registered remote.
    */
-  public IRemote getRemote(RemoteName name);
+  IRemote getRemote(RemoteName name);
 
   /**
    * @param name
@@ -63,7 +63,7 @@ public interface IRemoteMessenger {
    *        whether we need to wait for the results or not
    * @return a remote reference to the registered remote.
    */
-  public IRemote getRemote(RemoteName name, boolean ignoreResults);
+  IRemote getRemote(RemoteName name, boolean ignoreResults);
 
   /**
    * @param remoteInterface
@@ -74,19 +74,19 @@ public interface IRemoteMessenger {
    * @param name
    *        - the name that implementor will be registered under
    */
-  public void registerRemote(Object implementor, RemoteName name);
+  void registerRemote(Object implementor, RemoteName name);
 
   /**
    * Remove the remote registered under name.
    */
-  public void unregisterRemote(String name);
+  void unregisterRemote(String name);
 
   /**
    * Remove the remote registered under name.
    */
-  public void unregisterRemote(RemoteName name);
+  void unregisterRemote(RemoteName name);
 
-  public boolean hasLocalImplementor(RemoteName name);
+  boolean hasLocalImplementor(RemoteName name);
 
-  public boolean isServer();
+  boolean isServer();
 }

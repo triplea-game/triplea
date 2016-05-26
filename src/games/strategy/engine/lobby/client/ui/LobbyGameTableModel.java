@@ -36,7 +36,7 @@ public class LobbyGameTableModel extends AbstractTableModel {
   public LobbyGameTableModel(final IMessenger messenger, final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger) {
 
-    gameList = new ArrayList<Tuple<GUID,GameDescription>>();
+    gameList = new ArrayList<>();
 
     m_messenger = messenger;
     m_channelMessenger = channelMessenger;
@@ -47,7 +47,8 @@ public class LobbyGameTableModel extends AbstractTableModel {
         assertSentFromServer();
         updateGame(gameId, description);
       }
-
+      
+      /** @deprecated Call gameUpdated instead, it will add or update */
       @Override
       public void gameAdded(final GUID gameId, final GameDescription description) {
         assertSentFromServer();

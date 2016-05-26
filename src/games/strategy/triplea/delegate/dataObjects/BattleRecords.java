@@ -22,7 +22,7 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 public class BattleRecords extends GameDataComponent implements Serializable {
   private static final long serialVersionUID = 1473664374777905497L;
   private final HashMap<PlayerID, HashMap<GUID, BattleRecord>> m_records =
-      new HashMap<PlayerID, HashMap<GUID, BattleRecord>>();
+      new HashMap<>();
 
   public BattleRecords(final GameData data) {
     super(data);
@@ -34,7 +34,7 @@ public class BattleRecords extends GameDataComponent implements Serializable {
     for (final Entry<PlayerID, HashMap<GUID, BattleRecord>> entry : records.m_records.entrySet()) {
       final PlayerID p = entry.getKey();
       final HashMap<GUID, BattleRecord> record = entry.getValue();
-      final HashMap<GUID, BattleRecord> map = new HashMap<GUID, BattleRecord>();
+      final HashMap<GUID, BattleRecord> map = new HashMap<>();
       for (final Entry<GUID, BattleRecord> entry2 : record.entrySet()) {
         map.put(entry2.getKey(), new BattleRecord(entry2.getValue()));
       }
@@ -43,7 +43,7 @@ public class BattleRecords extends GameDataComponent implements Serializable {
   }
 
   public static Collection<BattleRecord> getAllRecords(final BattleRecords brs) {
-    final Collection<BattleRecord> records = new ArrayList<BattleRecord>();
+    final Collection<BattleRecord> records = new ArrayList<>();
     for (final HashMap<GUID, BattleRecord> playerMap : brs.m_records.values()) {
       for (final BattleRecord r : playerMap.values()) {
         records.add(r);
@@ -53,7 +53,7 @@ public class BattleRecords extends GameDataComponent implements Serializable {
   }
 
   public static Collection<BattleRecord> getRecordsForPlayerID(final PlayerID player, final BattleRecords brs) {
-    final Collection<BattleRecord> playerRecords = new ArrayList<BattleRecord>();
+    final Collection<BattleRecord> playerRecords = new ArrayList<>();
     if (brs.m_records.get(player) == null) {
       return playerRecords;
     }
@@ -168,7 +168,7 @@ public class BattleRecords extends GameDataComponent implements Serializable {
       final BattleType battleType, final GameData data) {
     HashMap<GUID, BattleRecord> current = m_records.get(currentPlayerAndAttacker);
     if (current == null) {
-      current = new HashMap<GUID, BattleRecord>();
+      current = new HashMap<>();
     }
     final BattleRecord initial = new BattleRecord(battleSite, currentPlayerAndAttacker, battleType, data);
     current.put(battleID, initial);

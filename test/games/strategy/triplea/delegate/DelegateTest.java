@@ -89,7 +89,7 @@ public class DelegateTest extends TestCase {
     // get the xml file
     final URL url = this.getClass().getResource("DelegateTest.xml");
     final InputStream input = url.openStream();
-    m_data = (new GameParser()).parse(input, new AtomicReference<String>(), false);
+    m_data = (new GameParser()).parse(input, new AtomicReference<>(), false);
     input.close();
     british = GameDataTestUtil.british(m_data);
     british.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());

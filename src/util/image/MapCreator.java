@@ -29,6 +29,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingAction;
 import games.strategy.common.swing.SwingComponents;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.ProcessRunnerUtil;
@@ -387,7 +388,7 @@ public class MapCreator extends JFrame {
             try {
               TileImageBreaker.main(new String[0]);
             } catch (final Exception e) {
-              e.printStackTrace();
+              ClientLogger.logQuietly(e);
             }
           }
         }).start();
@@ -406,7 +407,7 @@ public class MapCreator extends JFrame {
             try {
               DecorationPlacer.main(new String[0]);
             } catch (final Exception e) {
-              e.printStackTrace();
+              ClientLogger.logQuietly(e);
             }
           }
         }).start();
@@ -442,7 +443,7 @@ public class MapCreator extends JFrame {
             try {
               ConnectionFinder.main(new String[0]);
             } catch (final Exception e) {
-              e.printStackTrace();
+              ClientLogger.logQuietly(e);
             }
           }
         }).start();
@@ -470,7 +471,7 @@ public class MapCreator extends JFrame {
             try {
               ReliefImageBreaker.main(new String[0]);
             } catch (final Exception e) {
-              e.printStackTrace();
+              ClientLogger.logQuietly(e);
             }
           }
         }).start();
@@ -489,7 +490,7 @@ public class MapCreator extends JFrame {
             try {
               ImageShrinker.main(new String[0]);
             } catch (final Exception e) {
-              e.printStackTrace();
+              ClientLogger.logQuietly(e);
             }
           }
         }).start();
@@ -508,7 +509,7 @@ public class MapCreator extends JFrame {
             try {
               TileImageReconstructor.main(new String[0]);
             } catch (final Exception e) {
-              e.printStackTrace();
+              ClientLogger.logQuietly(e);
             }
           }
         }).start();
@@ -521,7 +522,7 @@ public class MapCreator extends JFrame {
   }
 
   private static void runUtility(final String javaClass) {
-    final List<String> commands = new ArrayList<String>();
+    final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands, s_memory);
     if (s_mapFolderLocation != null && s_mapFolderLocation.exists()) {
       // no need for quotes, that will just screw up the process builder

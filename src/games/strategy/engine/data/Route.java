@@ -29,9 +29,9 @@ import games.strategy.util.Util;
  */
 public class Route implements java.io.Serializable, Iterable<Territory> {
   private static final long serialVersionUID = 8743882455488948557L;
-  final static List<Territory> emptyTerritoryList = Collections.unmodifiableList(new ArrayList<Territory>());
+  final static List<Territory> emptyTerritoryList = Collections.unmodifiableList(new ArrayList<>());
   final static Integer defaultMovementCost = new Integer(1);
-  private final List<Territory> m_steps = new ArrayList<Territory>();
+  private final List<Territory> m_steps = new ArrayList<>();
   private Territory m_start;
 
   public Route() {}
@@ -79,9 +79,9 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
         throw new IllegalArgumentException("Cannot join, r1 doesnt end where r2 starts. r1:" + r1 + " r2:" + r2);
       }
     }
-    final Collection<Territory> c1 = new ArrayList<Territory>(r1.m_steps);
+    final Collection<Territory> c1 = new ArrayList<>(r1.m_steps);
     c1.add(r1.getStart());
-    final Collection<Territory> c2 = new ArrayList<Territory>(r2.m_steps);
+    final Collection<Territory> c2 = new ArrayList<>(r2.m_steps);
     if (!Util.intersection(c1, c2).isEmpty()) {
       return null;
     }
@@ -343,7 +343,7 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
   }
 
   public List<Territory> getAllTerritories() {
-    final ArrayList<Territory> list = new ArrayList<Territory>(m_steps);
+    final ArrayList<Territory> list = new ArrayList<>(m_steps);
     list.add(0, m_start);
     return list;
   }
@@ -353,7 +353,7 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
    */
   public List<Territory> getSteps() {
     if (numberOfSteps() > 0) {
-      return new ArrayList<Territory>(m_steps);
+      return new ArrayList<>(m_steps);
     }
     return emptyTerritoryList;
   }
@@ -364,7 +364,7 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
    */
   public List<Territory> getMiddleSteps() {
     if (numberOfSteps() > 1) {
-      return new ArrayList<Territory>(m_steps).subList(0, numberOfSteps() - 1);
+      return new ArrayList<>(m_steps).subList(0, numberOfSteps() - 1);
     }
     return emptyTerritoryList;
   }
@@ -535,7 +535,7 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
 
   public static ResourceCollection getMovementFuelCostCharge(final Collection<Unit> unitsAll, final Route route,
       final PlayerID currentPlayer, final GameData data /* , final boolean mustFight */) {
-    final Set<Unit> units = new HashSet<Unit>(unitsAll);
+    final Set<Unit> units = new HashSet<>(unitsAll);
     /*
      * if (!mustFight)
      * {units.removeAll(getOwnedAirMovingWithOwnedCarriers(unitsAll, currentPlayer, data));}
@@ -552,17 +552,17 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
   protected static Set<Unit> getOwnedAirMovingWithOwnedCarriers(final Collection<Unit> unitsAll,
       final PlayerID currentPlayer, final GameData data) {
     final Collection<Unit> ownedFighters =
-        Match.getMatches(unitsAll, new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.UnitIsAir,
+        Match.getMatches(unitsAll, new CompositeMatchAnd<>(Matches.UnitCanLandOnCarrier, Matches.UnitIsAir,
             Matches.unitIsOwnedBy(currentPlayer)));
     if (ownedFighters.isEmpty()) {
-      return new HashSet<Unit>();
+      return new HashSet<>();
     }
     final Collection<Unit> ownedCarriers = Match.getMatches(unitsAll,
-        new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.UnitIsSea, Matches.unitIsOwnedBy(currentPlayer)));
+        new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.UnitIsSea, Matches.unitIsOwnedBy(currentPlayer)));
     if (ownedCarriers.isEmpty()) {
-      return new HashSet<Unit>();
+      return new HashSet<>();
     }
-    final Set<Unit> ownedFightersOnOwnedCarriers = new HashSet<Unit>();
+    final Set<Unit> ownedFightersOnOwnedCarriers = new HashSet<>();
     for (final Unit carrier : ownedCarriers) {
       final Collection<Unit> carrying = MoveValidator.getCanCarry(carrier, ownedFighters, currentPlayer, data);
       ownedFighters.removeAll(carrying);

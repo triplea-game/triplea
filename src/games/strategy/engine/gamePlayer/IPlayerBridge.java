@@ -13,24 +13,24 @@ public interface IPlayerBridge {
   /**
    * Return the game data
    */
-  public GameData getGameData();
+  GameData getGameData();
 
   /**
    * Get a remote reference to the current delegate, the type of the reference
    * is declared by the delegates getRemoteType() method
    */
-  public IRemote getRemoteDelegate();
+  IRemote getRemoteDelegate();
 
   /**
    * Get a remote reference to the named delegate, the type of the reference
    * is declared by the delegates getRemoteType() method
    */
-  public IRemote getRemotePersistentDelegate(String name);
+  IRemote getRemotePersistentDelegate(String name);
 
   /**
    * Get the name of the current step being exectued.
    */
-  public String getStepName();
+  String getStepName();
 
   /*
    * Get the name of the current delegate being executed. TODO: add this in to next release
@@ -39,10 +39,10 @@ public interface IPlayerBridge {
   /**
    * Get the properties for the current step.
    */
-  public Properties getStepProperties();
+  Properties getStepProperties();
 
   /**
    * is the game over?
    */
-  public boolean isGameOver();
+  boolean isGameOver();
 }

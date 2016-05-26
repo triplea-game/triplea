@@ -20,7 +20,7 @@ public interface ICondition extends IAttachment {
    * @param conditions
    * @throws GameParseException
    */
-  public void setConditions(final String conditions) throws GameParseException;
+  void setConditions(final String conditions) throws GameParseException;
 
   /**
    * Returns attached RulesAttachments.
@@ -28,31 +28,31 @@ public interface ICondition extends IAttachment {
    * a class that
    * implements ICondition.
    */
-  public List<RulesAttachment> getConditions();
+  List<RulesAttachment> getConditions();
 
-  public void clearConditions();
+  void clearConditions();
 
-  public void resetConditions();
+  void resetConditions();
 
-  public void setConditionType(final String s) throws GameParseException;
+  void setConditionType(final String s) throws GameParseException;
 
-  public void resetConditionType();
+  void resetConditionType();
 
   /**
    * Modifies the attached conditions, with things like AND, OR, XOR, or requiring a specific number of attached
    * conditions to be true (like
    * exactly 3, or 4-6 only).
    */
-  public String getConditionType();
+  String getConditionType();
 
-  public void setInvert(final String s);
+  void setInvert(final String s);
 
-  public void resetInvert();
+  void resetInvert();
 
   /**
    * Logical negation of the entire condition.
    */
-  public boolean getInvert();
+  boolean getInvert();
 
   /**
    * Tests if the attachment, as a whole, is satisfied. This includes and takes account of all conditions that make up
@@ -71,7 +71,7 @@ public interface ICondition extends IAttachment {
    * @param testedConditions
    * @param aBridge
    */
-  public boolean isSatisfied(HashMap<ICondition, Boolean> testedConditions, final IDelegateBridge aBridge);
+  boolean isSatisfied(HashMap<ICondition, Boolean> testedConditions, final IDelegateBridge aBridge);
 
   /**
    * HashMap<ICondition, Boolean> testedConditions must be filled with completed tests of all conditions already, or
@@ -81,5 +81,5 @@ public interface ICondition extends IAttachment {
    * @param testedConditions
    * @param aBridge
    */
-  public boolean isSatisfied(HashMap<ICondition, Boolean> testedConditions);
+  boolean isSatisfied(HashMap<ICondition, Boolean> testedConditions);
 }

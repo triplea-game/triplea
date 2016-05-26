@@ -13,7 +13,7 @@ public class IntegerMapTest extends TestCase {
   }
 
   public void testAdd() {
-    final IntegerMap<Object> map = new IntegerMap<Object>();
+    final IntegerMap<Object> map = new IntegerMap<>();
     map.add(v1, 5);
     assertEquals(map.getInt(v1), 5);
     map.add(v1, 10);
@@ -25,12 +25,12 @@ public class IntegerMapTest extends TestCase {
   }
 
   public void testPositive() {
-    IntegerMap<Object> map = new IntegerMap<Object>();
+    IntegerMap<Object> map = new IntegerMap<>();
     map.add(v1, 5);
     map.add(v2, 3);
     map.add(v3, 0);
     assertTrue(map.isPositive());
-    map = new IntegerMap<Object>();
+    map = new IntegerMap<>();
     map.add(v1, 5);
     map.add(v2, -3);
     map.add(v3, 1);
@@ -38,10 +38,10 @@ public class IntegerMapTest extends TestCase {
   }
 
   public void testAddMap() {
-    final IntegerMap<Object> map1 = new IntegerMap<Object>();
+    final IntegerMap<Object> map1 = new IntegerMap<>();
     map1.add(v1, 5);
     map1.add(v2, 3);
-    final IntegerMap<Object> map2 = new IntegerMap<Object>();
+    final IntegerMap<Object> map2 = new IntegerMap<>();
     map2.add(v1, 5);
     map2.add(v2, -3);
     map2.add(v3, 1);
@@ -52,10 +52,10 @@ public class IntegerMapTest extends TestCase {
   }
 
   public void testGreaterThan() {
-    final IntegerMap<Object> map1 = new IntegerMap<Object>();
+    final IntegerMap<Object> map1 = new IntegerMap<>();
     map1.add(v1, 5);
     map1.add(v2, 3);
-    final IntegerMap<Object> map2 = new IntegerMap<Object>();
+    final IntegerMap<Object> map2 = new IntegerMap<>();
     map2.add(v1, 5);
     map2.add(v2, 3);
     map2.add(v3, 1);

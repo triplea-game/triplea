@@ -23,9 +23,9 @@ class UnitDefinitionsRow extends DynamicRow {
     super(unitName, parentRowPanel, stepActionPanel);
 
     textFieldUnitName = new JTextField(unitName);
-    final Integer buyCostInteger = Integer.valueOf(buyCost);
+    final Integer buyCostInteger = buyCost;
     textFieldBuyCost = new JTextField(buyCostInteger == null ? "0" : Integer.toString(buyCostInteger));
-    final Integer buyQuantityInteger = Integer.valueOf(buyQuantity);
+    final Integer buyQuantityInteger = buyQuantity;
     textFieldBuyQuantity = new JTextField(buyQuantityInteger == null ? "1" : Integer.toString(buyQuantityInteger));
 
     Dimension dimension = textFieldUnitName.getPreferredSize();
@@ -104,7 +104,7 @@ class UnitDefinitionsRow extends DynamicRow {
 
   @Override
   protected ArrayList<JComponent> getComponentList() {
-    final ArrayList<JComponent> componentList = new ArrayList<JComponent>();
+    final ArrayList<JComponent> componentList = new ArrayList<>();
     componentList.add(textFieldUnitName);
     componentList.add(textFieldBuyCost);
     componentList.add(textFieldBuyQuantity);

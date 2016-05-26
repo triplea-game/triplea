@@ -28,7 +28,7 @@ public class TechTracker implements java.io.Serializable {
    * @param data
    */
   public static Collection<TechAdvance> getCurrentTechAdvances(final PlayerID id, final GameData data) {
-    final Collection<TechAdvance> rVal = new ArrayList<TechAdvance>();
+    final Collection<TechAdvance> rVal = new ArrayList<>();
     final TechAttachment attachment = TechAttachment.get(id);
     // search all techs
     for (final TechAdvance ta : TechAdvance.getTechAdvances(data)) {
@@ -49,7 +49,7 @@ public class TechTracker implements java.io.Serializable {
    */
   public static Collection<TechnologyFrontier> getFullyResearchedPlayerTechCategories(final GameData data,
       final PlayerID id) {
-    final Collection<TechnologyFrontier> rVal = new ArrayList<TechnologyFrontier>();
+    final Collection<TechnologyFrontier> rVal = new ArrayList<>();
     final TechAttachment attachment = TechAttachment.get(id);
     for (final TechnologyFrontier tf : TechAdvance.getPlayerTechCategories(data, id)) {
       boolean has = true;

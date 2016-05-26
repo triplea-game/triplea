@@ -9,5 +9,5 @@ import games.strategy.engine.data.GameData;
  * Performs the loading of game data.
  */
 public interface IGameDataLoader {
-  public GameData loadData();
+  GameData loadData();
 }

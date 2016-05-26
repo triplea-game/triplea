@@ -27,7 +27,7 @@ public class ChangeTest extends TestCase {
     final URL url = this.getClass().getResource("Test.xml");
     // System.out.println(url);
     final InputStream input = url.openStream();
-    m_data = (new GameParser()).parse(input, new AtomicReference<String>(), false);
+    m_data = (new GameParser()).parse(input, new AtomicReference<>(), false);
   }
 
   private Change serialize(final Change aChange) throws Exception {
@@ -213,7 +213,7 @@ public class ChangeTest extends TestCase {
     final UnitType infantry = m_data.getUnitTypeList().getUnitType("inf");
     final Unit inf1 = infantry.create(1, can).iterator().next();
     final Unit inf2 = infantry.create(1, us).iterator().next();
-    final Collection<Unit> units = new ArrayList<Unit>();
+    final Collection<Unit> units = new ArrayList<>();
     units.add(inf1);
     units.add(inf2);
     assertEquals(can, inf1.getOwner());
@@ -234,7 +234,7 @@ public class ChangeTest extends TestCase {
     final UnitType infantry = m_data.getUnitTypeList().getUnitType("inf");
     final Unit inf1 = infantry.create(1, can).iterator().next();
     final Unit inf2 = infantry.create(1, us).iterator().next();
-    final Collection<Unit> units = new ArrayList<Unit>();
+    final Collection<Unit> units = new ArrayList<>();
     units.add(inf1);
     units.add(inf2);
     assertEquals(can, inf1.getOwner());

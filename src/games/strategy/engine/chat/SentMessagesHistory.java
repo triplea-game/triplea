@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class SentMessagesHistory {
-  private final List<String> m_history = new ArrayList<String>();
+  private final List<String> m_history = new ArrayList<>();
   private int m_HistoryPosition;
 
   SentMessagesHistory() {}
@@ -21,7 +21,7 @@ class SentMessagesHistory {
     if (m_HistoryPosition == m_history.size()) {
       return "";
     }
-    return m_history.get(m_HistoryPosition).toString();
+    return m_history.get(m_HistoryPosition);
   }
 
   public void append(final String s) {

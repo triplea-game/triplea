@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.common.ui.MainGameFrame;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.history.IDelegateHistoryWriter;
@@ -123,7 +124,7 @@ public class PBEMMessagePoster implements Serializable {
           historyWriter.startEvent("Turn Summary: " + m_turnSummaryRef);
         }
       } catch (final Exception e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
     boolean emailSuccess = true;
@@ -137,7 +138,7 @@ public class PBEMMessagePoster implements Serializable {
       } catch (final IOException e) {
         emailSuccess = false;
         m_emailSendStatus = "Failed! Error " + e.getMessage();
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
     boolean webSiteSuccess = true;
@@ -155,7 +156,7 @@ public class PBEMMessagePoster implements Serializable {
       } catch (final Exception e) {
         webSiteSuccess = false;
         m_webPostStatus = "Failed! Error: " + e.getMessage();
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
     if (historyWriter != null) {
@@ -227,7 +228,7 @@ public class PBEMMessagePoster implements Serializable {
     final IForumPoster turnSummaryMsgr = posterPBEM.getForumPoster();
     final StringBuilder sb = new StringBuilder();
     if (turnSummaryMsgr != null) {
-      sb.append(message).append("Post " + title + " ");
+      sb.append(message).append("Post ").append(title).append(" ");
       if (includeSaveGame) {
         sb.append("and save game ");
       }
@@ -239,7 +240,8 @@ public class PBEMMessagePoster implements Serializable {
     }
     final IWebPoster webPoster = posterPBEM.getWebPoster();
     if (webPoster != null) {
-      sb.append("Send game state of '" + webPoster.getGameName() + "' to " + webPoster.getHost() + "?\n");
+      sb.append("Send game state of '").append(webPoster.getGameName()).append("' to ").append(webPoster.getHost())
+          .append("?\n");
     }
     message = sb.toString();
     final int choice = JOptionPane.showConfirmDialog(mainGameFrame, message, "Post " + title + "?", 2, -1, null);
@@ -267,7 +269,7 @@ public class PBEMMessagePoster implements Serializable {
             }
           } catch (final Exception e) {
             postOk = false;
-            e.printStackTrace();
+            ClientLogger.logQuietly(e);
           }
           posterPBEM.setTurnSummary(historyLog.toString());
           try {
@@ -283,7 +285,7 @@ public class PBEMMessagePoster implements Serializable {
             }
           } catch (final Exception e) {
             postOk = false;
-            e.printStackTrace();
+            ClientLogger.logQuietly(e);
           }
           if (postingDelegate != null) {
             postingDelegate.setHasPostedTurnSummary(postOk);
@@ -315,8 +317,8 @@ public class PBEMMessagePoster implements Serializable {
                   (new StringBuilder()).append("INFO TripleA PBEM/PBF poster couldn't delete temporary savegame: ")
                       .append(saveGameFile.getCanonicalPath()).toString());
             }
-          } catch (final IOException ioe) {
-            ioe.printStackTrace();
+          } catch (final IOException e) {
+            ClientLogger.logQuietly("save game file = " + saveGameFile, e);
           }
           progressWindow.setVisible(false);
           progressWindow.removeAll();

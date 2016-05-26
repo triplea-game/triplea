@@ -98,7 +98,7 @@ public class MoveValidatorTest extends DelegateTest {
   }
 
   public void testHasUnitsThatCantGoOnWater() {
-    final Collection<Unit> units = new ArrayList<Unit>();
+    final Collection<Unit> units = new ArrayList<>();
     units.addAll(infantry.create(1, british));
     units.addAll(armour.create(1, british));
     units.addAll(transport.create(1, british));

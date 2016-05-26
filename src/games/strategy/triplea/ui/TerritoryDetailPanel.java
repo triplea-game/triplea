@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -136,17 +137,19 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
         panel.add(Box.createVerticalStrut(15));
       }
       // TODO Kev determine if we need to identify if the unit is hit/disabled
-      final ImageIcon unitIcon = uiContext.getUnitImageFactory().getIcon(item.getType(), item.getOwner(), data,
+      final Optional<ImageIcon> unitIcon = uiContext.getUnitImageFactory().getIcon(item.getType(), item.getOwner(), data,
           item.hasDamageOrBombingUnitDamage(), item.getDisabled());
-      final ImageIcon flagIcon = new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
-      // overlay flag onto upper-right of icon
-      final Icon flaggedUnitIcon =
-          new OverlayIcon(unitIcon, flagIcon, unitIcon.getIconWidth() - (flagIcon.getIconWidth() / 2), 0);
-      final JLabel label = new JLabel("x" + item.getUnits().size(), flaggedUnitIcon, SwingConstants.LEFT);
-      final String toolTipText =
-          "<html>" + item.getType().getName() + ": " + item.getType().getTooltip(currentPlayer, true) + "</html>";
-      label.setToolTipText(toolTipText);
-      panel.add(label);
+      if(unitIcon.isPresent()) {
+        // overlay flag onto upper-right of icon
+        final ImageIcon flagIcon = new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
+        final Icon flaggedUnitIcon =
+            new OverlayIcon(unitIcon.get(), flagIcon, unitIcon.get().getIconWidth() - (flagIcon.getIconWidth() / 2), 0);
+        final JLabel label = new JLabel("x" + item.getUnits().size(), flaggedUnitIcon, SwingConstants.LEFT);
+        final String toolTipText =
+            "<html>" + item.getType().getName() + ": " + item.getType().getTooltip(currentPlayer) + "</html>";
+        label.setToolTipText(toolTipText);
+        panel.add(label);
+      }
     }
     return panel;
   }

@@ -18,7 +18,7 @@ public class UnitBattleComparator implements Comparator<Unit> {
   private final boolean m_bonus;
   private final boolean m_ignorePrimaryPower;
   private final Collection<TerritoryEffect> m_territoryEffects;
-  private final Collection<UnitType> m_multiHitpointCanRepair = new HashSet<UnitType>();
+  private final Collection<UnitType> m_multiHitpointCanRepair = new HashSet<>();
 
   public UnitBattleComparator(final boolean defending, final IntegerMap<UnitType> costs,
       final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean bonus,

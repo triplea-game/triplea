@@ -35,7 +35,7 @@ import games.strategy.engine.random.PlainRandomSource;
 public class LocalSetupPanel extends SetupPanel implements Observer {
   private static final long serialVersionUID = 2284030734590389060L;
   private final GameSelectorModel m_gameSelectorModel;
-  private final List<LocalPlayerComboBoxSelector> m_playerTypes = new ArrayList<LocalPlayerComboBoxSelector>();
+  private final List<LocalPlayerComboBoxSelector> m_playerTypes = new ArrayList<>();
 
   public LocalSetupPanel(final GameSelectorModel model) {
     m_gameSelectorModel = model;
@@ -158,8 +158,8 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
   @Override
   public ILauncher getLauncher() {
     final IRandomSource randomSource = new PlainRandomSource();
-    final Map<String, String> playerTypes = new HashMap<String, String>();
-    final Map<String, Boolean> playersEnabled = new HashMap<String, Boolean>();
+    final Map<String, String> playerTypes = new HashMap<>();
+    final Map<String, Boolean> playersEnabled = new HashMap<>();
     for (final LocalPlayerComboBoxSelector player : m_playerTypes) {
       playerTypes.put(player.getPlayerName(), player.getPlayerType());
       playersEnabled.put(player.getPlayerName(), player.isPlayerEnabled());
@@ -216,7 +216,7 @@ class LocalPlayerComboBoxSelector {
     } else {
       m_playerAlliances = playerAlliances.toString();
     }
-    m_alliances = new JLabel(m_playerAlliances.toString());
+    m_alliances = new JLabel(m_playerAlliances);
     setWidgetActivation();
   }
 

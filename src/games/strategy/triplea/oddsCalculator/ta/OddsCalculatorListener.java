@@ -7,5 +7,5 @@ public interface OddsCalculatorListener {
   /**
    * We have finished copying the game data(s).
    */
-  public void dataReady();
+  void dataReady();
 }

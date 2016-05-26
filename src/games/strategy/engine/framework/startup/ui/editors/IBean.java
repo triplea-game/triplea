@@ -12,14 +12,14 @@ public interface IBean extends Serializable {
    *
    * @return the display name
    */
-  public String getDisplayName();
+  String getDisplayName();
 
   /**
    * Returns the editor for this IBean
    *
    * @return the editor
    */
-  public EditorPanel getEditor();
+  EditorPanel getEditor();
 
   /**
    * Method to check of two beans are of the same type,
@@ -29,7 +29,7 @@ public interface IBean extends Serializable {
    *        the bean to check against
    * @return true if they are the same type
    */
-  public boolean sameType(IBean other);
+  boolean sameType(IBean other);
 
   /**
    * Get the help text which the editor will display, the text should be HTML

@@ -17,7 +17,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
-import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.MovePanel;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
@@ -32,16 +32,16 @@ public class UndoableMove extends AbstractUndoableMove {
   private String m_description;
   // this move is dependent on these moves
   // these moves cant be undone until this one has been
-  private final Set<UndoableMove> m_iDependOn = new HashSet<UndoableMove>();
+  private final Set<UndoableMove> m_iDependOn = new HashSet<>();
   // these moves depend on me
   // we cant be undone until this is empty
-  private final Set<UndoableMove> m_dependOnMe = new HashSet<UndoableMove>();
+  private final Set<UndoableMove> m_dependOnMe = new HashSet<>();
   // list of countries we took over
-  private final Set<Territory> m_conquered = new HashSet<Territory>();
+  private final Set<Territory> m_conquered = new HashSet<>();
   // transports loaded by this move
-  private final Set<Unit> m_loaded = new HashSet<Unit>();
+  private final Set<Unit> m_loaded = new HashSet<>();
   // transports unloaded by this move
-  private final Set<Unit> m_unloaded = new HashSet<Unit>();
+  private final Set<Unit> m_unloaded = new HashSet<>();
   private final Route m_route;
 
   public void addToConquered(final Territory t) {
@@ -104,7 +104,7 @@ public class UndoableMove extends AbstractUndoableMove {
     }
     // if we are moving out of a battle zone, mark it
     // this can happen for air units moving out of a battle zone
-    for (final IBattle battle : battleTracker.getPendingBattles(m_route.getStart(), null, null)) {
+    for (final IBattle battle : battleTracker.getPendingBattles(m_route.getStart(), null)) {
       if (battle == null || battle.isOver()) {
         continue;
       }
@@ -127,7 +127,7 @@ public class UndoableMove extends AbstractUndoableMove {
           if (routeUnitUsedToMove != null && routeUnitUsedToMove.getEnd() != null) {
             final Territory end = routeUnitUsedToMove.getEnd();
             final Collection<Unit> enemyTargetsTotal = end.getUnits()
-                .getMatches(new CompositeMatchAnd<Unit>(Matches.enemyUnit(bridge.getPlayerID(), data),
+                .getMatches(new CompositeMatchAnd<>(Matches.enemyUnit(bridge.getPlayerID(), data),
                     Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(end).invert(),
                     Matches.unitIsBeingTransported().invert()));
             final Collection<Unit> enemyTargets = Match.getMatches(enemyTargetsTotal,
@@ -137,15 +137,15 @@ public class UndoableMove extends AbstractUndoableMove {
                 && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
                 && !games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data)) {
               while (target == null) {
-                target = ((ITripleaPlayer) bridge.getRemotePlayer(bridge.getPlayerID())).whatShouldBomberBomb(end,
+                target = ((ITripleAPlayer) bridge.getRemotePlayer(bridge.getPlayerID())).whatShouldBomberBomb(end,
                     enemyTargets, Collections.singletonList(unit));
               }
             } else if (!enemyTargets.isEmpty()) {
               target = enemyTargets.iterator().next();
             }
             if (target != null) {
-              targets = new HashMap<Unit, HashSet<Unit>>();
-              targets.put(target, new HashSet<Unit>(Collections.singleton(unit)));
+              targets = new HashMap<>();
+              targets.put(target, new HashSet<>(Collections.singleton(unit)));
             }
           }
           final Change change = battle.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit), targets);

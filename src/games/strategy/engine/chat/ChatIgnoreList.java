@@ -1,5 +1,6 @@
 package games.strategy.engine.chat;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -10,14 +11,12 @@ import java.util.prefs.Preferences;
 public class ChatIgnoreList {
   private static final Logger log = Logger.getLogger(ChatIgnoreList.class.getName());
   private final Object m_lock = new Object();
-  private final Set<String> m_ignore = new HashSet<String>();
+  private final Set<String> m_ignore = new HashSet<>();
 
   public ChatIgnoreList() {
     final Preferences prefs = getPrefNode();
     try {
-      for (final String key : prefs.keys()) {
-        m_ignore.add(key);
-      }
+      Collections.addAll(m_ignore, prefs.keys());
     } catch (final BackingStoreException e) {
       log.log(Level.FINE, e.getMessage(), e);
     }

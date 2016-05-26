@@ -17,12 +17,12 @@ import games.strategy.engine.message.IRemote;
  * and meta data needed by the engine.
  */
 public interface IGameLoader extends java.io.Serializable {
-  public static final String CLIENT_PLAYER_TYPE = "Client";
+  String CLIENT_PLAYER_TYPE = "Client";
 
   /**
    * Return an array of player types that can play on the server.
    */
-  public String[] getServerPlayerTypes();
+  String[] getServerPlayerTypes();
 
   /**
    * Create the players. Given a map of playerName -> type,
@@ -30,32 +30,32 @@ public interface IGameLoader extends java.io.Serializable {
    *
    * @return a Set of GamePlayers
    */
-  public Set<IGamePlayer> createPlayers(Map<String, String> players);
+  Set<IGamePlayer> createPlayers(Map<String, String> players);
 
   /**
    * The game is about to start.
    *
    * @throws Exception
    */
-  public void startGame(IGame game, Set<IGamePlayer> players, boolean headless) throws Exception;
+  void startGame(IGame game, Set<IGamePlayer> players, boolean headless) throws Exception;
 
   /**
    * Get the type of the display
    *
    * @return an interface that extends IChannelSubscrobor
    */
-  public Class<? extends IChannelSubscribor> getDisplayType();
+  Class<? extends IChannelSubscribor> getDisplayType();
 
-  public Class<? extends IChannelSubscribor> getSoundType();
+  Class<? extends IChannelSubscribor> getSoundType();
 
   /**
    * Get the type of the GamePlayer.
    * <p>
    * The type must extend IRemote, and is to be used by an IRemoteManager to allow a player to be contacted remotately
    */
-  public Class<? extends IRemote> getRemotePlayerType();
+  Class<? extends IRemote> getRemotePlayerType();
 
-  public void shutDown();
+  void shutDown();
 
   /**
    * A game may use a subclass of Unit to allow associating data with a particular unit. The
@@ -64,5 +64,5 @@ public interface IGameLoader extends java.io.Serializable {
    * Games that do not want to subclasses of units should simply return a DefaultUnitFactory.
    * <p>
    */
-  public IUnitFactory getUnitFactory();
+  IUnitFactory getUnitFactory();
 }

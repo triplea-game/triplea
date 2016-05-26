@@ -29,20 +29,20 @@ public class SmallMapImageManager {
   public SmallMapImageManager(final ImageScrollerSmallView view, final BufferedImage offscreen,
       final TileManager tileManager) {
     m_view = view;
-    m_offscreen = Util.copyImage(offscreen, false);
+    m_offscreen = Util.copyImage(offscreen);
     m_tileManager = tileManager;
   }
 
   public void updateOffscreenImage(final BufferedImage offscreen) {
     m_offscreen.flush();
-    m_offscreen = Util.copyImage(offscreen, false);
+    m_offscreen = Util.copyImage(offscreen);
   }
 
   public void update(final GameData data, final MapData mapData) {
     final Stopwatch stopwatch = new Stopwatch(s_logger, Level.FINEST, "Small map updating took");
     final Graphics onScreenGraphics = m_view.getOffScreenImage().getGraphics();
     onScreenGraphics.drawImage(m_offscreen, 0, 0, null);
-    for (final UnitsDrawer drawer : new ArrayList<UnitsDrawer>(m_tileManager.getUnitDrawables())) {
+    for (final UnitsDrawer drawer : new ArrayList<>(m_tileManager.getUnitDrawables())) {
       final int x = (int) (drawer.getPlacementPoint().x * m_view.getRatioX());
       final int y = (int) (drawer.getPlacementPoint().y * m_view.getRatioY());
       onScreenGraphics.setColor(mapData.getPlayerColor(drawer.getPlayer()).darker());

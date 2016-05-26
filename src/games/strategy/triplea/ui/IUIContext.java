@@ -5,6 +5,8 @@ import java.awt.Window;
 import java.util.concurrent.CountDownLatch;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.triplea.image.DiceImageFactory;
 import games.strategy.triplea.image.FlagIconImageFactory;
@@ -16,98 +18,111 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.util.CountDownLatchHandler;
 
+
+import javax.swing.JLabel;
+
 public interface IUIContext {
-  public Cursor getCursor();
+  Cursor getCursor();
 
-  public double getScale();
+  double getScale();
 
-  public void setScale(double scale);
+  void setScale(double scale);
 
-  public void setDefaultMapDir(GameData data);
+  void setDefaultMapDir(GameData data);
 
-  public void setMapDir(GameData data, String mapDir);
+  void setMapDir(GameData data, String mapDir);
 
-  public MapData getMapData();
+  MapData getMapData();
 
-  public TileImageFactory getTileImageFactory();
+  TileImageFactory getTileImageFactory();
 
-  public UnitImageFactory getUnitImageFactory();
+  UnitImageFactory getUnitImageFactory();
 
-  public ResourceImageFactory getResourceImageFactory();
+  enum UnitDamage { DAMAGED, NOT_DAMAGED }
+  enum UnitEnable { DISABLED, ENABLED }
 
-  public MapImage getMapImage();
+  default JLabel createUnitImageJLabel(final UnitType type, final PlayerID player, final GameData data) {
+    return createUnitImageJLabel(type, player, data, UnitDamage.NOT_DAMAGED, UnitEnable.ENABLED);
+  }
 
-  public FlagIconImageFactory getFlagImageFactory();
+  JLabel createUnitImageJLabel(final UnitType type, final PlayerID player, final GameData data, final UnitDamage damaged,
+      final UnitEnable disabled);
 
-  public PUImageFactory getPUImageFactory();
+  ResourceImageFactory getResourceImageFactory();
 
-  public DiceImageFactory getDiceImageFactory();
+  MapImage getMapImage();
 
-  public void removeActive(Active actor);
+  FlagIconImageFactory getFlagImageFactory();
 
-  public void addActive(Active actor);
+  PUImageFactory getPUImageFactory();
 
-  public void addShutdownLatch(CountDownLatch latch);
+  DiceImageFactory getDiceImageFactory();
 
-  public void removeShutdownLatch(CountDownLatch latch);
+  void removeActive(Active actor);
 
-  public CountDownLatchHandler getCountDownLatchHandler();
+  void addActive(Active actor);
 
-  public void addShutdownWindow(Window window);
+  void addShutdownLatch(CountDownLatch latch);
 
-  public void removeShutdownWindow(Window window);
+  void removeShutdownLatch(CountDownLatch latch);
 
-  public boolean isShutDown();
+  CountDownLatchHandler getCountDownLatchHandler();
 
-  public void shutDown();
+  void addShutdownWindow(Window window);
 
-  public boolean getShowUnits();
+  void removeShutdownWindow(Window window);
 
-  public void setShowUnits(boolean aBool);
+  boolean isShutDown();
 
-  public OptionalExtraBorderLevel getDrawTerritoryBordersAgain();
+  void shutDown();
 
-  public void setDrawTerritoryBordersAgain(OptionalExtraBorderLevel level);
+  boolean getShowUnits();
 
-  public void resetDrawTerritoryBordersAgain();
+  void setShowUnits(boolean aBool);
 
-  public void setDrawTerritoryBordersAgainToMedium();
+  OptionalExtraBorderLevel getDrawTerritoryBordersAgain();
 
-  public void setShowTerritoryEffects(boolean aBool);
+  void setDrawTerritoryBordersAgain(OptionalExtraBorderLevel level);
 
-  public boolean getShowTerritoryEffects();
+  void resetDrawTerritoryBordersAgain();
 
-  public boolean getShowMapOnly();
+  void setDrawTerritoryBordersAgainToMedium();
 
-  public void setShowMapOnly(boolean aBool);
+  void setShowTerritoryEffects(boolean aBool);
 
-  public boolean getLockMap();
+  boolean getShowTerritoryEffects();
 
-  public void setLockMap(boolean aBool);
+  boolean getShowMapOnly();
 
-  public boolean getShowEndOfTurnReport();
+  void setShowMapOnly(boolean aBool);
 
-  public void setShowEndOfTurnReport(boolean value);
+  boolean getLockMap();
 
-  public boolean getShowTriggeredNotifications();
+  void setLockMap(boolean aBool);
 
-  public void setShowTriggeredNotifications(boolean value);
+  boolean getShowEndOfTurnReport();
 
-  public boolean getShowTriggerChanceSuccessful();
+  void setShowEndOfTurnReport(boolean value);
 
-  public void setShowTriggerChanceSuccessful(boolean value);
+  boolean getShowTriggeredNotifications();
 
-  public boolean getShowTriggerChanceFailure();
+  void setShowTriggeredNotifications(boolean value);
 
-  public void setShowTriggerChanceFailure(boolean value);
+  boolean getShowTriggerChanceSuccessful();
 
-  public boolean getShowBattlesBetweenAIs();
+  void setShowTriggerChanceSuccessful(boolean value);
 
-  public void setShowBattlesBetweenAIs(boolean aBool);
+  boolean getShowTriggerChanceFailure();
 
-  public LocalPlayers getLocalPlayers();
+  void setShowTriggerChanceFailure(boolean value);
 
-  public void setLocalPlayers(LocalPlayers players);
+  boolean getShowBattlesBetweenAIs();
 
-  public void setUnitScaleFactor(double scaleFactor);
+  void setShowBattlesBetweenAIs(boolean aBool);
+
+  LocalPlayers getLocalPlayers();
+
+  void setLocalPlayers(LocalPlayers players);
+
+  void setUnitScaleFactor(double scaleFactor);
 }

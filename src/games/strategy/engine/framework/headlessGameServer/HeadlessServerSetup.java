@@ -26,7 +26,7 @@ import games.strategy.util.ThreadUtil;
  */
 public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   private static final long serialVersionUID = 9021977178348892504L;
-  private final List<Observer> m_listeners = new CopyOnWriteArrayList<Observer>();
+  private final List<Observer> m_listeners = new CopyOnWriteArrayList<>();
   private final ServerModel m_model;
   private final GameSelectorModel m_gameSelectorModel;
   private final InGameLobbyWatcherWrapper m_lobbyWatcher = new InGameLobbyWatcherWrapper();

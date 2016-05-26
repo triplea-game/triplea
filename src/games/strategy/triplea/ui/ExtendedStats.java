@@ -54,7 +54,7 @@ public class ExtendedStats extends StatPanel {
       } else {
         final GenericResourceStat resourceStat = new GenericResourceStat();
         resourceStat.init(r.getName());
-        final List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
+        final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(m_statsExtended));
         statsExtended.add(resourceStat);
         m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
       }
@@ -63,13 +63,13 @@ public class ExtendedStats extends StatPanel {
     if (games.strategy.triplea.Properties.getTechDevelopment(data)) {
       // add tech tokens
       if (data.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
-        final List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
+        final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(m_statsExtended));
         statsExtended.add(new TechTokenStat());
         m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
       }
       // add number of techs
       if (true) {
-        final List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
+        final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(m_statsExtended));
         statsExtended.add(new TechCountStat());
         m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
       }
@@ -77,7 +77,7 @@ public class ExtendedStats extends StatPanel {
       for (final TechAdvance ta : TechAdvance.getTechAdvances(m_data)) {
         final GenericTechNameStat techNameStat = new GenericTechNameStat();
         techNameStat.init(ta);
-        final List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
+        final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(m_statsExtended));
         statsExtended.add(techNameStat);
         m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
       }
@@ -88,7 +88,7 @@ public class ExtendedStats extends StatPanel {
       final UnitType ut = allUnitTypes.next();
       final GenericUnitNameStat unitNameStat = new GenericUnitNameStat();
       unitNameStat.init(ut);
-      final List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
+      final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(m_statsExtended));
       statsExtended.add(unitNameStat);
       m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
     }
@@ -207,7 +207,7 @@ public class ExtendedStats extends StatPanel {
     public double getValue(final PlayerID player, final GameData data) {
       int rVal = 0;
       final Match<Unit> ownedBy =
-          new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(m_ut));
+          new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(m_ut));
       for (final Territory place : data.getMap().getTerritories()) {
         rVal += place.getUnits().countMatches(ownedBy);
       }

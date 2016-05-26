@@ -2,6 +2,7 @@ package games.strategy.engine.message;
 
 import java.io.IOException;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;
@@ -43,14 +44,14 @@ public class ChannelMessengerTest extends TestCase {
         m_server.shutDown();
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
     try {
       if (m_client1 != null) {
         m_client1.shutDown();
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -137,13 +138,13 @@ public class ChannelMessengerTest extends TestCase {
 
 
 interface IChannelBase extends IChannelSubscribor {
-  public void testNoParams();
+  void testNoParams();
 
-  public void testPrimitives(int a, short b, long c, byte d, boolean e, float f);
+  void testPrimitives(int a, short b, long c, byte d, boolean e, float f);
 
-  public void testString(String a);
+  void testString(String a);
 
-  public void testArray(int[] ints, short[] shorts, byte[] bytes, boolean[] bools, float[] floats, Object[] objects);
+  void testArray(int[] ints, short[] shorts, byte[] bytes, boolean[] bools, float[] floats, Object[] objects);
 }
 
 

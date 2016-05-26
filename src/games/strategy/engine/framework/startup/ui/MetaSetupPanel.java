@@ -32,7 +32,6 @@ import games.strategy.engine.config.GameEngineProperty;
 import games.strategy.engine.config.PropertyReader;
 import games.strategy.engine.framework.map.download.DownloadUtils;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
-import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
@@ -51,7 +50,6 @@ public class MetaSetupPanel extends SetupPanel {
   private JButton m_enginePreferences;
   private JButton m_ruleBook;
   private JButton m_donate;
-  private JButton m_about;
 
   private final SetupPanelModel m_model;
 
@@ -90,9 +88,6 @@ public class MetaSetupPanel extends SetupPanel {
         "<html>Download a manual of how to play <br>(it is also included in the directory TripleA was installed to).</html>");
     m_donate = new JButton("Donate");
     m_donate.setToolTipText("Help Support TripleA's development.");
-    m_about = new JButton("About");
-    m_about.setToolTipText(
-        "<html>See info about version number, developers, <br>official website, and a quick instruction on how to play.</html>");
   }
 
   private void layoutComponents() {
@@ -115,8 +110,6 @@ public class MetaSetupPanel extends SetupPanel {
     add(m_ruleBook, new GridBagConstraints(0, 8, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
     add(m_donate, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
-        new Insets(10, 0, 0, 0), 0, 0));
-    add(m_about, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
     // top space
     add(new JPanel(), new GridBagConstraints(0, 100, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -167,12 +160,6 @@ public class MetaSetupPanel extends SetupPanel {
       }
     });
     m_donate.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
-    m_about.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        about();
-      }
-    });
   }
 
   private static void ruleBook() {
@@ -187,49 +174,6 @@ public class MetaSetupPanel extends SetupPanel {
     EnginePreferences.showEnginePreferences(this);
   }
 
-  private void about() {
-    final String text =
-        "<h2>TripleA</h2>" + "<p><b>Engine Version:</b> " + ClientContext.engineVersion()
-            + "<br><b>Authors:</b> Sean Bridges, and many others. Current Developers: Veqryn (Chris Duncan)."
-            + "<br>TripleA is an open-source game engine, allowing people to play many different games and maps."
-            + "<br>For more information please visit:<br>"
-            + "<b>Site:</b> <a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a><br>"
-            + "<b>Forum:</b> <a hlink='http://triplea.sourceforge.net/mywiki/Forum'>http://triplea.sourceforge.net/mywiki/Forum</a><br>"
-            + "<b>Ladder:</b> <a hlink='http://www.tripleawarclub.org/'>http://www.tripleawarclub.org/</a></p>"
-            + "<p><b>Very Basic How to Play:</b>"
-            + "<br>Though some games have special rules enforced, most games follow most of these basic guidelines.<br><ol>"
-            + "<li>Players start their turn by choosing what they will produce.  They spend the money they gathered during their "
-            + "<br>last turn on new units or even technology.  Units are displayed on the purchase screen as having x Cost, and "
-            + "<br>their attack/defense/movement values.  These units will be put on the board at the end of the player's turn.</li>"
-            + "<li>That Player then does a <em>Combat Move</em>, which means moving units to all the places they wish to attack this "
-            + "<br>turn.  Simply click on a unit, then move your mouse to the territory you wish to attack, and then click again "
-            + "<br>to drop it there.  You can deselect a unit by right-clicking.  You can select a path for a unit to take by holding "
-            + "<br>down 'ctrl' and clicking on all the territories on the way to the final territory.  Pressing shift or ctrl while "
-            + "<br>selecting a unit will select all units in that territory.</li>"
-            + "<li>Then everyone resolves all the combat battles.  This involves rolling dice for the attacking units and the "
-            + "<br>defending units too.  For example, a <em>Tank</em> might attack at a <em>3</em> meaning that when you roll the dice you need "
-            + "<br>a 3 or less for him to <em>hit</em> the enemy.  If the tank hits the enemy, then the other player chooses one of his "
-            + "<br>units to die, and the battle continues.  After each round of dice, the attacker chooses to retreat or press on "
-            + "<br>until he has defeated all enemy units in that territory.  The game rolls the dice for you automatically.</li>"
-            + "<li>After this, the Player may move any units that have not yet moved as a <em>Non-Combat</em> move, and any air units "
-            + "<br>return to friendly territories to land.</li>"
-            + "<li>When the player has completed all of this, then he or she may place the units that they have purchased at the "
-            + "<br>beginning of their turn.  Then the game engine counts out the value of the territories they control and gives "
-            + "<br>them that much money.  The next nation then begins their turn.  Games last until one side surrenders.</li></ol>"
-            + "To see specific rules for each game, click <em>Game Notes</em> from inside that game, "
-            + "<br> accessible from the <em>Help</em> menu button at the top of the screen inside a game.</p>";
-    final JEditorPane editorPane = new JEditorPane();
-    editorPane.setBorder(null);
-    editorPane.setBackground(getBackground());
-    editorPane.setEditable(false);
-    editorPane.setContentType("text/html");
-    editorPane.setText(text);
-    final JScrollPane scroll = new JScrollPane(editorPane, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    scroll.setBorder(null);
-    JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(getParent()), editorPane, "About...",
-        JOptionPane.PLAIN_MESSAGE);
-  }
 
   private void connectToLobby() {
     final LobbyServerProperties props = getLobbyServerProperties();
@@ -240,7 +184,6 @@ public class MetaSetupPanel extends SetupPanel {
       return;
     }
     final LobbyFrame lobbyFrame = new LobbyFrame(client, props);
-    NewGameChooser.clearNewGameChooserModel();
     MainFrame.getInstance().setVisible(false);
     MainFrame.getInstance().dispose();
     lobbyFrame.setVisible(true);

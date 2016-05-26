@@ -3,7 +3,6 @@ package games.strategy.triplea.ui;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +11,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -38,7 +38,7 @@ import games.strategy.util.Triple;
  */
 public class IndividualUnitPanel extends JPanel {
   private static final long serialVersionUID = -4222938655315991715L;
-  private final List<SingleUnitPanel> m_entries = new ArrayList<SingleUnitPanel>();
+  private final List<SingleUnitPanel> m_entries = new ArrayList<>();
   private final JTextArea m_title;
   private int m_max = -1;
   private final JLabel m_leftToSelect = new JLabel();
@@ -224,7 +224,7 @@ public class IndividualUnitPanel extends JPanel {
   }
 
   public IntegerMap<Unit> getSelected() {
-    final IntegerMap<Unit> selectedUnits = new IntegerMap<Unit>();
+    final IntegerMap<Unit> selectedUnits = new IntegerMap<>();
     for (final SingleUnitPanel entry : m_entries) {
       selectedUnits.put(entry.getUnit(), entry.getCount());
     }
@@ -289,11 +289,16 @@ class SingleUnitPanel extends JPanel {
     setMin(min);
     m_textField.setShowMaxAndMin(showMaxAndMin);
     final TripleAUnit taUnit = TripleAUnit.get(unit);
-    final Image img = m_context.getUnitImageFactory().getImage(m_unit.getType(), m_unit.getOwner(), m_data,
-        taUnit.getUnitDamage() > 0 || taUnit.getHits() > 0, taUnit.getDisabled());
+
+
     setCount(currentValue);
     setLayout(new GridBagLayout());
-    final JLabel label = new JLabel(new ImageIcon(img));
+
+    boolean isDamaged = taUnit.getUnitDamage() > 0 || taUnit.getHits() > 0;
+    final JLabel label = m_context.createUnitImageJLabel(m_unit.getType(), m_unit.getOwner(), m_data,
+        isDamaged ? IUIContext.UnitDamage.DAMAGED : IUIContext.UnitDamage.NOT_DAMAGED,
+        taUnit.getDisabled() ? IUIContext.UnitEnable.DISABLED : IUIContext.UnitEnable.ENABLED);
+
     add(label, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
         new Insets(0, 0, 0, 10), 0, 0));
     add(m_textField, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,

@@ -33,7 +33,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -98,7 +98,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
                 + " lost to blockades)" + "; end with " + total + MyFormatter.pluralize(" PU", total) + " total";
       }
       m_bridge.getHistoryWriter().startEvent(transcriptText);
-      endTurnReport.append(transcriptText + "<br />");
+      endTurnReport.append(transcriptText).append("<br />");
       // do war bonds
       final int bonds = rollWarBonds(m_bridge, m_player, data);
       if (bonds > 0) {
@@ -107,7 +107,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
         final String bondText = m_player.getName() + " collect " + bonds + MyFormatter.pluralize(" PU", bonds)
             + " from War Bonds; end with " + total + MyFormatter.pluralize(" PU", total) + " total";
         m_bridge.getHistoryWriter().startEvent(bondText);
-        endTurnReport.append("<br />" + bondText + "<br />");
+        endTurnReport.append("<br />").append(bondText).append("<br />");
       }
       if (total < 0) {
         toAdd -= total;
@@ -122,8 +122,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
         final CompositeChange ccVP = new CompositeChange(changeVP, changeCapVP);
         m_bridge.addChange(ccVP);
       }
-      endTurnReport.append("<br />" + addOtherResources(m_bridge));
-      endTurnReport.append("<br />" + doNationalObjectivesAndOtherEndTurnEffects(m_bridge));
+      endTurnReport.append("<br />").append(addOtherResources(m_bridge));
+      endTurnReport.append("<br />").append(doNationalObjectivesAndOtherEndTurnEffects(m_bridge));
       // now we do upkeep costs, including upkeep cost as a percentage of our entire income for this turn (including
       // NOs)
       final int currentPUs = m_player.getResources().getQuantity(PUs);
@@ -156,7 +156,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
             + " in order to maintain current relationships with other players, and ends the turn with " + newTotal
             + MyFormatter.pluralize(" PU", newTotal);
         m_bridge.getHistoryWriter().startEvent(transcriptText2);
-        endTurnReport.append("<br />" + transcriptText2 + "<br />");
+        endTurnReport.append("<br />").append(transcriptText2).append("<br />");
         final Change upkeep = ChangeFactory.changeResourcesChange(m_player, PUs, relationshipUpkeepTotalCost);
         m_bridge.addChange(upkeep);
       }
@@ -174,7 +174,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 
   protected void showEndTurnReport(final String endTurnReport) {
     if (endTurnReport != null && endTurnReport.trim().length() > 6 && !m_player.isAI()) {
-      final ITripleaPlayer currentPlayer = getRemotePlayer(m_player);
+      final ITripleAPlayer currentPlayer = getRemotePlayer(m_player);
       final String player = m_player.getName();
       currentPlayer.reportMessage("<html><b style=\"font-size:120%\" >" + END_TURN_REPORT_STRING + player
           + "</b><br /><br />" + endTurnReport + "</html>", END_TURN_REPORT_STRING + player);
@@ -294,7 +294,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     final Collection<Territory> territories = aBridge.getData().getMap().getTerritories();
     final CompositeChange change = new CompositeChange();
     final Collection<Tuple<Territory, Collection<Unit>>> changeList =
-        new ArrayList<Tuple<Territory, Collection<Unit>>>();
+        new ArrayList<>();
     for (final Territory currTerritory : territories) {
       final TerritoryAttachment ta = TerritoryAttachment.get(currTerritory, true);
       // if ownership should change in this territory
@@ -304,7 +304,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
           if (PossibleNewOwners.contains(terrNewOwner)) {
             // PlayerOwnerChange
             final Collection<Unit> units =
-                currTerritory.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitOwnedBy(Player),
+                currTerritory.getUnits().getMatches(new CompositeMatchAnd<>(Matches.unitOwnedBy(Player),
                     Matches.UnitCanBeGivenByTerritoryTo(terrNewOwner)));
             if (!units.isEmpty()) {
               change.add(ChangeFactory.changeOwner(units, terrNewOwner, currTerritory));
@@ -365,17 +365,17 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     if (blockable.isEmpty()) {
       return 0;
     }
-    final Match<Unit> enemyUnits = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data));
+    final Match<Unit> enemyUnits = new CompositeMatchAnd<>(Matches.enemyUnit(player, data));
     int totalLoss = 0;
     final boolean rollDiceForBlockadeDamage = games.strategy.triplea.Properties.getConvoyBlockadesRollDiceForCost(data);
-    final Collection<String> transcripts = new ArrayList<String>();
+    final Collection<String> transcripts = new ArrayList<>();
     final HashMap<Territory, Tuple<Integer, List<Territory>>> damagePerBlockadeZone =
-        new HashMap<Territory, Tuple<Integer, List<Territory>>>();
+        new HashMap<>();
     boolean rolledDice = false;
     for (final Territory b : blockable) {
       // match will check for land, convoy zones, and also contested territories
       final List<Territory> viableNeighbors =
-          Match.getMatches(map.getNeighbors(b), new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(player),
+          Match.getMatches(map.getNeighbors(b), new CompositeMatchAnd<>(Matches.isTerritoryOwnedBy(player),
               Matches.territoryCanCollectIncomeFrom(player, data)));
       final int maxLoss = getProduction(viableNeighbors);
       if (maxLoss <= 0) {
@@ -428,14 +428,14 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     // now we need to make sure that we didn't deal more damage than the territories are worth, in the case of having
     // multiple sea zones
     // touching the same land zone.
-    final List<Territory> blockadeZonesSorted = new ArrayList<Territory>(damagePerBlockadeZone.keySet());
+    final List<Territory> blockadeZonesSorted = new ArrayList<>(damagePerBlockadeZone.keySet());
     Collections.sort(blockadeZonesSorted, getSingleBlockadeThenHighestToLowestBlockadeDamage(damagePerBlockadeZone));
     // we want to match highest damage to largest producer first, that is why we sort twice
-    final IntegerMap<Territory> totalDamageTracker = new IntegerMap<Territory>();
+    final IntegerMap<Territory> totalDamageTracker = new IntegerMap<>();
     for (final Territory b : blockadeZonesSorted) {
       final Tuple<Integer, List<Territory>> tuple = damagePerBlockadeZone.get(b);
       int damageForZone = tuple.getFirst();
-      final List<Territory> terrsLosingIncome = new ArrayList<Territory>(tuple.getSecond());
+      final List<Territory> terrsLosingIncome = new ArrayList<>(tuple.getSecond());
       Collections.sort(terrsLosingIncome,
           getSingleNeighborBlockadesThenHighestToLowestProduction(blockadeZonesSorted, map));
       final Iterator<Territory> iter = terrsLosingIncome.iterator();
@@ -451,10 +451,10 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     if (rollDiceForBlockadeDamage && (realTotalLoss > 0 || (rolledDice && !transcripts.isEmpty()))) {
       final String mainline = "Total Cost from Convoy Blockades: " + realTotalLoss;
       aBridge.getHistoryWriter().startEvent(mainline);
-      endTurnReport.append(mainline + "<br />");
+      endTurnReport.append(mainline).append("<br />");
       for (final String t : transcripts) {
         aBridge.getHistoryWriter().addChildToEvent(t);
-        endTurnReport.append("* " + t + "<br />");
+        endTurnReport.append("* ").append(t).append("<br />");
       }
       endTurnReport.append("<br />");
     }
@@ -510,10 +510,10 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
           return 0;
         }
         // if a territory is only touching 1 blockadeZone, we must take it first
-        final Collection<Territory> neighborBlockades1 = new ArrayList<Territory>(map.getNeighbors(t1));
+        final Collection<Territory> neighborBlockades1 = new ArrayList<>(map.getNeighbors(t1));
         neighborBlockades1.retainAll(blockadeZones);
         final int n1 = neighborBlockades1.size();
-        final Collection<Territory> neighborBlockades2 = new ArrayList<Territory>(map.getNeighbors(t2));
+        final Collection<Territory> neighborBlockades2 = new ArrayList<>(map.getNeighbors(t2));
         neighborBlockades2.retainAll(blockadeZones);
         final int n2 = neighborBlockades2.size();
         if (n1 == 1 && n2 != 1) {

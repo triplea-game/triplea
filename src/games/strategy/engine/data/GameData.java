@@ -66,10 +66,10 @@ public class GameData implements java.io.Serializable {
   private String gameName;
   private Version gameVersion;
   private int diceSides;
-  private transient ListenerList<TerritoryListener> territoryListeners = new ListenerList<TerritoryListener>();
+  private transient ListenerList<TerritoryListener> territoryListeners = new ListenerList<>();
   private transient ListenerList<GameDataChangeListener> dataChangeListeners =
-      new ListenerList<GameDataChangeListener>();
-  private transient ListenerList<GameMapListener> gameMapListeners = new ListenerList<GameMapListener>();
+      new ListenerList<>();
+  private transient ListenerList<GameMapListener> gameMapListeners = new ListenerList<>();
   private final AllianceTracker alliances = new AllianceTracker(this);
   // Tracks current relationships between players, this is empty if relationships aren't used
   private final RelationshipTracker relationships = new RelationshipTracker(this);
@@ -94,8 +94,8 @@ public class GameData implements java.io.Serializable {
   private final History gameHistory = new History(this);
   private volatile transient boolean testLockIsHeld = false;
   private final List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> attachmentOrderAndValues =
-      new ArrayList<Tuple<IAttachment, ArrayList<Tuple<String, String>>>>();
-  private final Hashtable<String, TerritoryEffect> territoryEffectList = new Hashtable<String, TerritoryEffect>();
+      new ArrayList<>();
+  private final Hashtable<String, TerritoryEffect> territoryEffectList = new Hashtable<>();
   private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
 
   /** Creates new GameData */
@@ -344,9 +344,9 @@ public class GameData implements java.io.Serializable {
    * Not to be called by mere mortals.
    */
   public void postDeSerialize() {
-    territoryListeners = new ListenerList<TerritoryListener>();
-    dataChangeListeners = new ListenerList<GameDataChangeListener>();
-    gameMapListeners = new ListenerList<GameMapListener>();
+    territoryListeners = new ListenerList<>();
+    dataChangeListeners = new ListenerList<>();
+    gameMapListeners = new ListenerList<>();
   }
 
   /**
@@ -454,7 +454,7 @@ public class GameData implements java.io.Serializable {
    * For example, this method will remove player delegates for players who have been disabled.
    */
   public void doPreGameStartDataModifications(final PlayerListing playerListing) {
-    final Set<PlayerID> playersWhoShouldBeRemoved = new HashSet<PlayerID>();
+    final Set<PlayerID> playersWhoShouldBeRemoved = new HashSet<>();
     final Map<String, Boolean> playersEnabledListing = playerListing.getPlayersEnabledListing();
     playerList.getPlayers().stream()
         .filter(p -> (p.getCanBeDisabled() && !playersEnabledListing.get(p.getName())))

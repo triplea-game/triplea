@@ -24,12 +24,12 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
   // the messenger we are based on
   private final IMessenger m_messenger;
   // maps end points to a list of nodes with implementors
-  private final Map<String, Collection<INode>> m_endPoints = new HashMap<String, Collection<INode>>();
+  private final Map<String, Collection<INode>> m_endPoints = new HashMap<>();
   // changes to the list of endpoints, or reads to it, should be made
   // only while holding this lock
   private final Object m_endPointMutex = new Object();
   // the invocations that are currently in progress
-  private final Map<GUID, InvocationInProgress> m_invocations = new ConcurrentHashMap<GUID, InvocationInProgress>();
+  private final Map<GUID, InvocationInProgress> m_invocations = new ConcurrentHashMap<>();
 
   public UnifiedMessengerHub(final IMessenger messenger, final UnifiedMessenger localUnified) {
     m_messenger = messenger;
@@ -53,7 +53,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
         final HasEndPointImplementor hasEndPoint = (HasEndPointImplementor) msg;
         Collection<INode> nodes = m_endPoints.get(hasEndPoint.endPointName);
         if (nodes == null) {
-          nodes = new ArrayList<INode>();
+          nodes = new ArrayList<>();
           m_endPoints.put(hasEndPoint.endPointName, nodes);
         }
         if (nodes.contains(from)) {
@@ -77,7 +77,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
       }
     } else if (msg instanceof HubInvoke) {
       final HubInvoke invoke = (HubInvoke) msg;
-      final Collection<INode> endPointCols = new ArrayList<INode>();
+      final Collection<INode> endPointCols = new ArrayList<>();
       synchronized (m_endPointMutex) {
         if (m_endPoints.containsKey(invoke.call.getRemoteName())) {
           endPointCols.addAll(m_endPoints.get(invoke.call.getRemoteName()));

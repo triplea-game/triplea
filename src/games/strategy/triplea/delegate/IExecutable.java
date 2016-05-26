@@ -8,5 +8,5 @@ public interface IExecutable extends Serializable {
   /**
    * See the documentation to IExecutionStack.
    */
-  public void execute(ExecutionStack stack, IDelegateBridge bridge);
+  void execute(ExecutionStack stack, IDelegateBridge bridge);
 }

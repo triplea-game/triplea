@@ -22,6 +22,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -56,6 +59,7 @@ import javax.swing.table.TableCellRenderer;
 import com.google.common.collect.Lists;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -233,7 +237,7 @@ public class BattleDisplay extends JPanel {
     } finally {
       m_data.releaseReadLock();
     }
-    final Collection<Unit> dependentUnitsReturned = new ArrayList<Unit>();
+    final Collection<Unit> dependentUnitsReturned = new ArrayList<>();
     final Iterator<Collection<Unit>> dependentUnitsCollections = dependentsMap.values().iterator();
     while (dependentUnitsCollections.hasNext()) {
       final Collection<Unit> dependentCollection = dependentUnitsCollections.next();
@@ -241,13 +245,11 @@ public class BattleDisplay extends JPanel {
     }
     for (final UnitCategory category : UnitSeperator.categorize(aKilledUnits, dependentsMap, false, false)) {
       final JPanel panel = new JPanel();
-      JLabel unit = new JLabel(
-          m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, false, false));
+      JLabel unit = m_uiContext.createUnitImageJLabel(category.getType(), category.getOwner(), m_data);
       panel.add(unit);
       panel.add(new JLabel("x " + category.getUnits().size()));
       for (final UnitOwner owner : category.getDependents()) {
-        unit = new JLabel(
-            m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data, false, false));
+        unit = m_uiContext.createUnitImageJLabel(owner.getType(), owner.getOwner(), m_data);
         panel.add(unit);
         // TODO this size is of the transport collection size, not the transportED collection size.
         panel.add(new JLabel("x " + category.getUnits().size()));
@@ -303,73 +305,44 @@ public class BattleDisplay extends JPanel {
 
   protected void waitForConfirmation(final String message) {
     if (SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("This cant be in dispatch thread");
+      throw new IllegalStateException("This can not be in dispatch thread");
     }
 
-    if (getConfirmDefensiveRolls()) {
-      waitForSpaceBarClick(message);
-    } else {
-      // Sleep for a short period, allows users to see the dice rolls before the game
-      // moves on.
-      // TODO: This value should find its way into a setting. For now it is hardcoded since
-      // just having another confusing value to set would not help very much. Needs to be some
-      // context/explanation around it for a user to really want to set it.
-      try {
-        Thread.sleep(1500);
-      } catch (InterruptedException e) {
-      }
-    }
-  }
-
-  private void waitForSpaceBarClick(final String message) {
     final CountDownLatch continueLatch = new CountDownLatch(1);
-    // set the action in the swing thread.
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionButton.setAction(new AbstractAction(message) {
-          private static final long serialVersionUID = 4489826259192394858L;
-
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            continueLatch.countDown();
-          }
-        });
-      }
-    });
+    AbstractAction buttonAction = SwingAction.of(message, e -> continueLatch.countDown());
+    SwingUtilities.invokeLater(() -> m_actionButton.setAction(buttonAction));
     m_mapPanel.getUIContext().addShutdownLatch(continueLatch);
-    // wait for the button to be pressed.
+
+    // Set a auto-wait expiration if the option is set.
+    if(!getConfirmDefensiveRolls()) {
+      final int maxWaitTime = 1500;
+      Timer t = new Timer();
+      t.schedule(new TimerTask() {
+        @Override
+        public void run() {
+          continueLatch.countDown();
+          if (continueLatch.getCount() > 0) {
+            SwingUtilities.invokeLater(() -> m_actionButton.setAction(m_nullAction));
+          }
+        }
+      }, maxWaitTime);
+    }
+
     try {
+      // wait for the button to be pressed.
       continueLatch.await();
     } catch (final InterruptedException ie) {
     } finally {
       m_mapPanel.getUIContext().removeShutdownLatch(continueLatch);
     }
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionButton.setAction(m_nullAction);
-      }
-    });
+    SwingUtilities.invokeLater(() -> m_actionButton.setAction(m_nullAction));
   }
 
 
   public void endBattle(final String message, final Window enclosingFrame) {
     m_steps.walkToLastStep();
-    final Action close = new AbstractAction(message + " : (Press Space to close)") {
-      private static final long serialVersionUID = 4219274012228245826L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        enclosingFrame.setVisible(false);
-      }
-    };
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionButton.setAction(close);
-      }
-    });
+    final Action close = SwingAction.of(message + " : (Press Space to close)", e -> enclosingFrame.setVisible(false));
+    SwingUtilities.invokeLater(() -> m_actionButton.setAction(close));
   }
 
   public void notifyRetreat(final Collection<Unit> retreating) {
@@ -526,7 +499,7 @@ public class BattleDisplay extends JPanel {
       imagePanel.add(m_retreatTerritory);
       imagePanel.setBorder(new EmptyBorder(10, 10, 10, 0));
       this.add(imagePanel, BorderLayout.EAST);
-      final Vector<Territory> listElements = new Vector<Territory>(possible);
+      final Vector<Territory> listElements = new Vector<>(possible);
       m_list = new JList<>(listElements);
       m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       if (listElements.size() >= 1) {
@@ -566,7 +539,7 @@ public class BattleDisplay extends JPanel {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("This method should not be run in the event dispatch thread");
     }
-    final AtomicReference<CasualtyDetails> casualtyDetails = new AtomicReference<CasualtyDetails>();
+    final AtomicReference<CasualtyDetails> casualtyDetails = new AtomicReference<>();
     final CountDownLatch continueLatch = new CountDownLatch(1);
     SwingUtilities.invokeLater(new Runnable() {
       @Override
@@ -641,7 +614,7 @@ public class BattleDisplay extends JPanel {
     try {
       continueLatch.await();
     } catch (final InterruptedException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     } finally {
       m_mapPanel.getUIContext().removeShutdownLatch(continueLatch);
     }
@@ -832,7 +805,7 @@ class BattleModel extends DefaultTableModel {
     m_data = data;
     m_attack = attack;
     // were going to modify the units
-    m_units = new ArrayList<Unit>(units);
+    m_units = new ArrayList<>(units);
     m_location = battleLocation;
     m_battleType = battleType;
     m_territoryEffects = territoryEffects;
@@ -872,9 +845,9 @@ class BattleModel extends DefaultTableModel {
     // Soft code the # of columns
     final List<TableData>[] columns = new List[m_data.getDiceSides() + 1];
     for (int i = 0; i < columns.length; i++) {
-      columns[i] = new ArrayList<TableData>();
+      columns[i] = new ArrayList<>();
     }
-    final List<Unit> units = new ArrayList<Unit>(m_units);
+    final List<Unit> units = new ArrayList<>(m_units);
     DiceRoll.sortByStrength(units, !m_attack);
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap;
     m_data.acquireReadLock();
@@ -958,14 +931,13 @@ class Renderer implements TableCellRenderer {
 class TableData {
   static final TableData NULL = new TableData();
   private int m_count;
-  private Icon m_icon;
+  private Optional<ImageIcon> m_icon;
 
   private TableData() {}
 
   TableData(final PlayerID player, final int count, final UnitType type, final GameData data, final boolean damaged,
       final boolean disabled, final IUIContext uiContext) {
     m_count = count;
-    // TODO Kev determine if we need to identify if the unit is hit/disabled
     m_icon = uiContext.getUnitImageFactory().getIcon(type, player, data, damaged, disabled);
   }
 
@@ -975,7 +947,9 @@ class TableData {
       stamp.setIcon(null);
     } else {
       stamp.setText("x" + m_count);
-      stamp.setIcon(m_icon);
+      if(m_icon.isPresent()) {
+        stamp.setIcon(m_icon.get());
+      }
     }
   }
 }
@@ -1039,20 +1013,12 @@ class CasualtyNotificationPanel extends JPanel {
       final UnitCategory category = categoryIter.next();
       final JPanel panel = new JPanel();
       // TODO Kev determine if we need to identify if the unit is hit/disabled
-      final JLabel unit =
-          new JLabel(m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data,
-              damaged ? category.hasDamageOrBombingUnitDamage() : false, disabled ? category.getDisabled() : false));
+      Optional<ImageIcon> unitImage = m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data,
+          damaged ? category.hasDamageOrBombingUnitDamage() : false, disabled ? category.getDisabled() : false);
+      final JLabel unit = unitImage.isPresent() ? new JLabel(unitImage.get()) : new JLabel();
       panel.add(unit);
       for (final UnitOwner owner : category.getDependents()) {
-        // Don't use damaged icons for dependent units (bug 2984310)?
-        unit.add(new JLabel(
-            m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data, false, false)));
-        /*
-         * //we don't want to use the damaged icon for units that have just been damaged
-         * boolean useDamagedIcon = category.getDamaged() && !damaged;
-         * unit.add(new JLabel(m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data,
-         * useDamagedIcon)));
-         */
+        unit.add(m_uiContext.createUnitImageJLabel(owner.getType(), owner.getOwner(), m_data));
       }
       panel.add(new JLabel("x " + category.getUnits().size()));
       if (damaged) {

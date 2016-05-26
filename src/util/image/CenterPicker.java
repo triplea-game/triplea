@@ -17,10 +17,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +37,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.debug.ClientLogger;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 
@@ -47,9 +46,9 @@ public class CenterPicker extends JFrame {
   // The map image will be stored here
   private Image m_image;
   // hash map for center points
-  private Map<String, Point> m_centers = new HashMap<String, Point>();
+  private Map<String, Point> m_centers = new HashMap<>();
   // hash map for polygon points
-  private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>();
+  private Map<String, List<Polygon>> m_polygons = new HashMap<>();
   private final JLabel m_location = new JLabel();
   private static File s_mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
@@ -191,16 +190,12 @@ public class CenterPicker extends JFrame {
    * creates the image map and makes sure
    * it is properly loaded.
    *
-   * @param java
+   * @param mapName
    *        .lang.String mapName the path of image map
    */
   private void createImage(final String mapName) {
     m_image = Toolkit.getDefaultToolkit().createImage(mapName);
-    try {
-      Util.ensureImageLoaded(m_image);
-    } catch (final InterruptedException ex) {
-      ex.printStackTrace();
-    }
+    Util.ensureImageLoaded(m_image);
   }
 
   /**
@@ -245,12 +240,8 @@ public class CenterPicker extends JFrame {
       out.flush();
       out.close();
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
-    } catch (final HeadlessException ex) {
-      ex.printStackTrace();
     } catch (final Exception ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
   }
 
@@ -268,12 +259,8 @@ public class CenterPicker extends JFrame {
       final FileInputStream in = new FileInputStream(centerName);
       m_centers = PointFileReaderWriter.readOneToOne(in);
       repaint();
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
-    } catch (final IOException ex) {
-      ex.printStackTrace();
-    } catch (final HeadlessException ex) {
-      ex.printStackTrace();
+    } catch (final HeadlessException | IOException ex) {
+      ClientLogger.logQuietly(ex);
     }
   }
 
@@ -286,22 +273,7 @@ public class CenterPicker extends JFrame {
    *        .awt.point p a point on the map
    */
   private String findTerritoryName(final Point p) {
-    String seaName = "unknown";
-    // try to find a land territory.
-    // sea zones often surround a land territory
-    for (final String name : m_polygons.keySet()) {
-      final Collection<Polygon> polygons = m_polygons.get(name);
-      for (final Polygon poly : polygons) {
-        if (poly.contains(p)) {
-          if (name.endsWith("Sea Zone") || name.startsWith("Sea Zone")) {
-            seaName = name;
-          } else {
-            return name;
-          }
-        } // if
-      } // while
-    } // while
-    return seaName;
+    return Util.findTerritoryName(p, m_polygons, "unknown");
   }
 
   /**

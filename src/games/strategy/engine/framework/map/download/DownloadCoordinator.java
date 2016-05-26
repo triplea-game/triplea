@@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import games.strategy.common.swing.SwingComponents;
+import games.strategy.debug.ClientLogger;
 import games.strategy.util.ThreadUtil;
 
 /**
@@ -22,8 +23,6 @@ public class DownloadCoordinator {
 
   private final List<DownloadFile> downloadList = Lists.newCopyOnWriteArrayList();
   private final Set<DownloadFileDescription> downloadSet = Sets.newHashSet();
-
-  private Optional<Runnable> downloadCompleteAction = Optional.empty();
 
   private boolean downloadPromptAlreadyShown = false;
   private volatile boolean cancelled = false;
@@ -38,26 +37,10 @@ public class DownloadCoordinator {
       while (!cancelled) {
         try {
           startNextDownloads();
-          // pause for a brief while before the next iteration
-          ThreadUtil.sleep(50);
-
-          if (shouldShowDownloadsFinishedPrompt()) {
-            // TODO: we ignore the threading problem here, we may enter this code block multiple times.
-            // It's a difficult situation to create for the user, and the worst case is multiple map download
-            // complete dialogs appearing - which is not a big deal.
-            downloadPromptAlreadyShown = true;
-            String windowTitle ="Map Downloads Completed";
-            String windowMsg = "Map downloads are complete, would you like to continue downloading more maps?";
-            Runnable userClicksYesAction = () -> {}; // do nothing, dialog will just close
-            Runnable userClicksNoAction =  () -> { // user clicked no, close the window
-              if (downloadCompleteAction.isPresent()) {
-                downloadCompleteAction.get().run();
-              }
-            };
-            SwingComponents.promptUser(windowTitle, windowMsg, userClicksYesAction, userClicksNoAction);
-          }
+          // pause for a brief while before the next iteration, helps avoid a Github too many requests error
+          ThreadUtil.sleep(250);
         } catch (Exception e) {
-          e.printStackTrace();
+          ClientLogger.logQuietly(e);
           throw e;
         }
       }
@@ -71,21 +54,11 @@ public class DownloadCoordinator {
     }
   }
 
-  private boolean shouldShowDownloadsFinishedPrompt() {
-    boolean doneDownloading = countDownloadsInProgress() == 0;
-    boolean downloadedSomething = downloadList.size() > 0;
-    boolean noMoreDownloads = countWaiting() == 0;
-
-    return !cancelled && !downloadPromptAlreadyShown && doneDownloading && downloadedSomething && noMoreDownloads;
-  }
 
   private long countDownloadsInProgress() {
     return count(download -> download.isInProgress());
   }
 
-  private long countWaiting() {
-    return count(download -> download.isWaiting());
-  }
 
   private long count(Predicate<DownloadFile> filter) {
     return downloadList.stream().filter(filter).count();
@@ -122,14 +95,6 @@ public class DownloadCoordinator {
     }
     downloadList.add(new DownloadFile(download, progressUpdateListener, completionListener));
   }
-
-  /**
-   * Set a callback object to be called when all queued downloads have completed.
-   */
-  public void setAllDownloadCompleteAction(Runnable closeAction) {
-    this.downloadCompleteAction = Optional.of(closeAction);
-  }
-
 
   /**
    * Will prevent any new downloads from starting. Downloads in progress will continue, but they

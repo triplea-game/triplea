@@ -17,6 +17,7 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.help.HelpSupport;
@@ -52,7 +53,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
     GameRunner2.addProxy(m_hostConfiguration);
     m_hostConfiguration.setHost("www.tripleawarclub.org");
     final PostMethod post = new PostMethod("http://www.tripleawarclub.org/user.php");
-    final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+    final List<NameValuePair> parameters = new ArrayList<>();
     parameters.add(new NameValuePair("uname", getUsername()));
     parameters.add(new NameValuePair("pass", getPassword()));
     parameters.add(new NameValuePair("submit", "Login"));
@@ -109,7 +110,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
       } finally {
         get.releaseConnection();
       }
-      final List<Part> parts = new ArrayList<Part>();
+      final List<Part> parts = new ArrayList<>();
       parts.add(createStringPart("subject", subject));
       parts.add(createStringPart("message", summary));
       parts.add(createStringPart("forum", s_forumId));
@@ -156,7 +157,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
       }
     } catch (final Exception e) {
       m_turnSummaryRef = e.getMessage();
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return false;
     }
     return true;

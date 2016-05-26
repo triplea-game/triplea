@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -35,6 +36,7 @@ import javax.swing.SwingUtilities;
 import com.google.common.collect.Maps;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.ui.Util;
 
 
 public class UnitPlacementsPanel extends ImageScrollPanePanel {
@@ -89,7 +91,7 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
   protected void paintPreparation(final Map<String, Point> centers) {
     for (final String centerName : centers.keySet()) {
       if (MapXmlHelper.getUnitPlacementsMap().get(centerName) == null) {
-        MapXmlHelper.putUnitPlacements(centerName, new HashMap<String, Map<String, Integer>>());
+        MapXmlHelper.putUnitPlacements(centerName, new HashMap<>());
       }
     }
   }
@@ -99,12 +101,11 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
 
   @Override
   protected void mouseClickedOnImage(final Map<String, Point> centers, final MouseEvent e) {
-    final Point point = e.getPoint();
-    final String territoryName = findTerritoryName(point, polygons);
-
-    if (territoryName == null) {
+    final Optional<String> terrNameOptional = Util.findTerritoryName(e.getPoint(), polygons);
+    if (!terrNameOptional.isPresent()) {
       return;
     }
+    final String territoryName = terrNameOptional.get();
 
     final Map<String, Map<String, Integer>> placements = MapXmlHelper.getUnitPlacementsMap().get(territoryName);
     String suggestedPlayer;
@@ -205,8 +206,8 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
         }
       });
 
-      final LinkedHashMap<String, Integer> allPlayerPlacements = new LinkedHashMap<String, Integer>(playerPlacements);
-      final ArrayList<String> emptyPlayerUnitTypes = new ArrayList<String>(playerUnitTypes);
+      final LinkedHashMap<String, Integer> allPlayerPlacements = new LinkedHashMap<>(playerPlacements);
+      final ArrayList<String> emptyPlayerUnitTypes = new ArrayList<>(playerUnitTypes);
       emptyPlayerUnitTypes.removeAll(this.playerPlacements.keySet());
       for (final String unitType : emptyPlayerUnitTypes) {
         allPlayerPlacements.put(unitType, 0);

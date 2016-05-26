@@ -31,7 +31,7 @@ public class UnitsList implements java.io.Serializable, Iterable<Unit> {
   }
 
   public void refresh() {
-    m_allUnits = new HashMap<GUID, Unit>();
+    m_allUnits = new HashMap<>();
   }
 
   UnitsList() {

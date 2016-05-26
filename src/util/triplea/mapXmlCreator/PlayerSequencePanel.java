@@ -21,8 +21,8 @@ import games.strategy.util.Triple;
 
 public class PlayerSequencePanel extends DynamicRowsPanel {
 
-  private final TreeSet<String> gameSequenceNames = new TreeSet<String>();
-  private final TreeSet<String> playerNames = new TreeSet<String>();
+  private final TreeSet<String> gameSequenceNames = new TreeSet<>();
+  private final TreeSet<String> playerNames = new TreeSet<>();
 
   public PlayerSequencePanel(final JPanel stepActionPanel) {
     super(stepActionPanel);

@@ -23,7 +23,7 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
@@ -35,7 +35,7 @@ class AAInMoveUtil implements Serializable {
   private static final long serialVersionUID = 1787497998642717678L;
   private transient IDelegateBridge m_bridge;
   private transient PlayerID m_player;
-  private Collection<Unit> m_casualties = new ArrayList<Unit>();
+  private Collection<Unit> m_casualties = new ArrayList<>();
   private final ExecutionStack m_executionStack = new ExecutionStack();
 
   AAInMoveUtil() {}
@@ -58,11 +58,11 @@ class AAInMoveUtil implements Serializable {
     return games.strategy.triplea.Properties.getAATerritoryRestricted(getData());
   }
 
-  private ITripleaPlayer getRemotePlayer(final PlayerID id) {
-    return (ITripleaPlayer) m_bridge.getRemotePlayer(id);
+  private ITripleAPlayer getRemotePlayer(final PlayerID id) {
+    return (ITripleAPlayer) m_bridge.getRemotePlayer(id);
   }
 
-  private ITripleaPlayer getRemotePlayer() {
+  private ITripleAPlayer getRemotePlayer() {
     return getRemotePlayer(m_player);
   }
 
@@ -80,10 +80,10 @@ class AAInMoveUtil implements Serializable {
 
   private void populateExecutionStack(final Route route, final Collection<Unit> units,
       final Comparator<Unit> decreasingMovement, final UndoableMove currentMove) {
-    final List<Unit> targets = new ArrayList<Unit>(units);
+    final List<Unit> targets = new ArrayList<>(units);
     // select units with lowest movement first
     Collections.sort(targets, decreasingMovement);
-    final List<IExecutable> executables = new ArrayList<IExecutable>();
+    final List<IExecutable> executables = new ArrayList<>();
     final Iterator<Territory> iter = getTerritoriesWhereAAWillFire(route, units).iterator();
     while (iter.hasNext()) {
       final Territory location = iter.next();
@@ -122,7 +122,7 @@ class AAInMoveUtil implements Serializable {
     final Match<Unit> hasAA = Matches.UnitIsAAthatCanFire(units, airborneTechTargetsAllowed, movingPlayer,
         Matches.UnitIsAAforFlyOverOnly, 1, true, data);
     // AA guns in transports shouldn't be able to fire
-    final List<Territory> territoriesWhereAAWillFire = new ArrayList<Territory>();
+    final List<Territory> territoriesWhereAAWillFire = new ArrayList<>();
     for (final Territory current : route.getMiddleSteps()) {
       if (current.getUnits().someMatch(hasAA)) {
         territoriesWhereAAWillFire.add(current);
@@ -188,7 +188,7 @@ class AAInMoveUtil implements Serializable {
           UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(getData());
       final Set<UnitType> airborneTypesTargettedToo = airborneTechTargetsAllowed.get(currentTypeAA);
       final Collection<Unit> validTargetedUnitsForThisRoll =
-          Match.getMatches(units, new CompositeMatchOr<Unit>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
+          Match.getMatches(units, new CompositeMatchOr<>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
               new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
       // once we fire the AA guns, we can't undo
       // otherwise you could keep undoing and redoing
@@ -273,16 +273,16 @@ class AAInMoveUtil implements Serializable {
       final Collection<Unit> allEnemyUnits, final Territory territory, final String currentTypeAA) {
     final CasualtyDetails casualties = BattleCalculator.getAACasualties(false, validTargetedUnitsForThisRoll,
         allFriendlyUnits, defendingAA, allEnemyUnits, dice, m_bridge, territory.getOwner(), m_player, null, territory,
-        TerritoryEffectHelper.getEffects(territory), false, new ArrayList<Unit>());
+        TerritoryEffectHelper.getEffects(territory), false, new ArrayList<>());
     getRemotePlayer().reportMessage(casualties.size() + " " + currentTypeAA + " hits in " + territory.getName(),
         casualties.size() + " " + currentTypeAA + " hits in " + territory.getName());
-    BattleDelegate.markDamaged(new ArrayList<Unit>(casualties.getDamaged()), m_bridge, true);
+    BattleDelegate.markDamaged(new ArrayList<>(casualties.getDamaged()), m_bridge, true);
     m_bridge.getHistoryWriter().addChildToEvent(
         MyFormatter.unitsToTextNoOwner(casualties.getKilled()) + " lost in " + territory.getName(),
-        new ArrayList<Unit>(casualties.getKilled()));
+        new ArrayList<>(casualties.getKilled()));
     allFriendlyUnits.removeAll(casualties.getKilled());
     if (m_casualties == null) {
-      m_casualties = new ArrayList<Unit>(casualties.getKilled());
+      m_casualties = new ArrayList<>(casualties.getKilled());
     } else {
       m_casualties.addAll(casualties.getKilled());
     }

@@ -21,13 +21,13 @@ public class AIAlgorithm {
         bestMove = a;
       }
       if (value >= beta) {
-        return new Pair<Float, Play>(value, bestMove);
+        return new Pair<>(value, bestMove);
       }
       if (value > alpha) {
         alpha = value;
       }
     }
-    return new Pair<Float, Play>(value, bestMove);
+    return new Pair<>(value, bestMove);
   }
 
   private static <Play> Pair<Float, Play> minValue(final GameState<Play> state, final float alpha, float beta) {
@@ -46,13 +46,13 @@ public class AIAlgorithm {
         bestMove = a;
       }
       if (value <= alpha) {
-        return new Pair<Float, Play>(value, bestMove);
+        return new Pair<>(value, bestMove);
       }
       if (value < beta) {
         beta = value;
       }
     }
-    return new Pair<Float, Play>(value, bestMove);
+    return new Pair<>(value, bestMove);
   }
 
   private static <Play> Pair<Float, Play> maxValue(final GameState<Play> state) {
@@ -71,7 +71,7 @@ public class AIAlgorithm {
         bestMove = a;
       }
     }
-    return new Pair<Float, Play>(value, bestMove);
+    return new Pair<>(value, bestMove);
   }
 
   private static <Play> Pair<Float, Play> minValue(final GameState<Play> state) {
@@ -90,7 +90,7 @@ public class AIAlgorithm {
         bestMove = a;
       }
     }
-    return new Pair<Float, Play>(value, bestMove);
+    return new Pair<>(value, bestMove);
   }
 
   static class Pair<First, Second> {

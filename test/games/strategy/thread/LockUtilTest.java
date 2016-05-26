@@ -22,7 +22,7 @@ public class LockUtilTest extends TestCase {
   }
 
   public void testMultipleLocks() {
-    final List<Lock> locks = new ArrayList<Lock>();
+    final List<Lock> locks = new ArrayList<>();
     for (int i = 0; i < 10; i++) {
       locks.add(new ReentrantLock());
     }

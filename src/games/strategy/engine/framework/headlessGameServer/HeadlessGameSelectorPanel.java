@@ -53,7 +53,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
   private JButton m_loadNewGame;
   private JButton m_gameOptions;
   private final GameSelectorModel m_model;
-  private final Map<String, Object> m_originalPropertiesMap = new HashMap<String, Object>();
+  private final Map<String, Object> m_originalPropertiesMap = new HashMap<>();
   private final AvailableGames m_availableGames;
 
   public HeadlessGameSelectorPanel(final GameSelectorModel model, final AvailableGames availableGames) {
@@ -84,8 +84,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
     if (fileName != null && fileName.length() > 1) {
       try {
         fileName = URLDecoder.decode(fileName, "UTF-8");
-      } catch (final IllegalArgumentException e) {// ignore
-      } catch (final UnsupportedEncodingException e) {// ignore
+      } catch (final IllegalArgumentException | UnsupportedEncodingException e) {// ignore
       }
     }
     m_fileNameText.setText(getLimitedFileNameText(fileName));
@@ -173,7 +172,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
 
   private void selectGameOptions() {
     // backup current game properties before showing dialog
-    final Map<String, Object> currentPropertiesMap = new HashMap<String, Object>();
+    final Map<String, Object> currentPropertiesMap = new HashMap<>();
     for (final IEditableProperty property : m_model.getGameData().getProperties().getEditableProperties()) {
       currentPropertiesMap.put(property.getName(), property.getValue());
     }
@@ -288,7 +287,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
         // setOriginalPropertiesMap(m_model.getGameData());
       }
     } else {
-      final Vector<String> games = new Vector<String>(m_availableGames.getGameNames());
+      final Vector<String> games = new Vector<>(m_availableGames.getGameNames());
       final JList<String> list = new JList<>(games);
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       list.setVisibleRowCount(20);

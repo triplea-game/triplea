@@ -35,8 +35,8 @@ class GameSettingsRow extends DynamicRow {
     super(settingName, parentRowPanel, stepActionPanel);
 
     isBoolean = GameSettingsPanel.isBoolean(settingName);
-    comboBoxSettingName = new JComboBox<String>(settingNames);
-    comboBoxEditable = new JComboBox<String>(selectionTrueFalse);
+    comboBoxSettingName = new JComboBox<>(settingNames);
+    comboBoxEditable = new JComboBox<>(selectionTrueFalse);
     textFieldValue = new JTextField(value);
     final Integer minCountInteger = Integer.valueOf(minNumber);
     textFieldMinNumber = new JTextField(minCountInteger == null ? "0" : Integer.toString(minCountInteger));
@@ -252,7 +252,7 @@ class GameSettingsRow extends DynamicRow {
 
   @Override
   protected ArrayList<JComponent> getComponentList() {
-    final ArrayList<JComponent> componentList = new ArrayList<JComponent>();
+    final ArrayList<JComponent> componentList = new ArrayList<>();
     componentList.add(textFieldValue);
     componentList.add(comboBoxSettingName);
     componentList.add(comboBoxEditable);

@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.debug.DebugUtils;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.IChatPanel;
@@ -114,7 +115,7 @@ public class HeadlessGameServer {
   }
 
   public Set<String> getAvailableGames() {
-    return new HashSet<String>(m_availableGames.getGameNames());
+    return new HashSet<>(m_availableGames.getGameNames());
   }
 
   public synchronized void setGameMapTo(final String gameName) {
@@ -205,7 +206,7 @@ public class HeadlessGameServer {
         try {
           chat.sendMessage(chatString, false);
         } catch (final Exception e) {
-          e.printStackTrace();
+          ClientLogger.logQuietly(e);
         }
       }
     }
@@ -265,7 +266,7 @@ public class HeadlessGameServer {
             try {
               iGame.saveGame(f);
             } catch (final Exception e) {
-              e.printStackTrace();
+              ClientLogger.logQuietly(e);
             }
             iGame.stopGame();
           }
@@ -334,7 +335,7 @@ public class HeadlessGameServer {
               }
             }
           } catch (final Exception e) {
-            e.printStackTrace();
+            ClientLogger.logQuietly(e);
           }
         }
       })).start();
@@ -375,7 +376,7 @@ public class HeadlessGameServer {
               }
             }
           } catch (final Exception e) {
-            e.printStackTrace();
+            ClientLogger.logQuietly(e);
           }
         }
       })).start();
@@ -420,23 +421,23 @@ public class HeadlessGameServer {
                 try {
                   messenger.NotifyUsernameMiniBanningOfPlayer(realName, new Date(expire));
                 } catch (final Exception e) {
-                  e.printStackTrace();
+                  ClientLogger.logQuietly(e);
                 }
                 try {
                   messenger.NotifyIPMiniBanningOfPlayer(ip, new Date(expire));
                 } catch (final Exception e) {
-                  e.printStackTrace();
+                  ClientLogger.logQuietly(e);
                 }
                 try {
                   messenger.NotifyMacMiniBanningOfPlayer(mac, new Date(expire));
                 } catch (final Exception e) {
-                  e.printStackTrace();
+                  ClientLogger.logQuietly(e);
                 }
                 messenger.removeConnection(node);
               }
             }
           } catch (final Exception e) {
-            e.printStackTrace();
+            ClientLogger.logQuietly(e);
           }
         }
       })).start();
@@ -554,7 +555,7 @@ public class HeadlessGameServer {
         ((HeadlessServerSetup) setup).repostLobbyWatcher(iGame);
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -680,7 +681,7 @@ public class HeadlessGameServer {
         return launcher != null;
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       final ServerModel model = getServerModel(setupPanelModel);
       if (model != null) {
         // if we do not do this, we can get into an infinite loop of launching a game, then crashing out,
@@ -759,8 +760,7 @@ public class HeadlessGameServer {
     try {
       server = new HeadlessGameServer(startUI);
     } catch (final Exception e) {
-      e.printStackTrace();
-      // main(new String[] {});
+      ClientLogger.logQuietly(e);
     }
     if (Boolean.parseBoolean(System.getProperty(TRIPLEA_GAME_HOST_CONSOLE_PROPERTY, "false"))) {
       startConsole(server, in, out);
@@ -782,7 +782,7 @@ public class HeadlessGameServer {
       System.setErr(new LoggingPrintStream("ERROR", Level.SEVERE));
       System.setOut(new LoggingPrintStream("OUT", Level.INFO));
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 

@@ -9,6 +9,7 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.prefs.Preferences;
 
 import games.strategy.engine.data.GameData;
@@ -36,11 +37,15 @@ public class UnitsDrawer implements IDrawable {
   private final boolean overflow;
   private final String territoryName;
   private final IUIContext uiContext;
-  private final static List<String> STATIC_UNITS = Arrays.asList("aaGun","factory");//TODO add every "static" non-movable unit type of every map.
+  private final static List<String> STATIC_UNITS = Arrays.asList("aaGun", "factory");// TODO add every "static"
+                                                                                     // non-movable unit type of every
+                                                                                     // map.
   private static UnitFlagDrawMode drawUnitNationMode = UnitFlagDrawMode.NEXT_TO;
+
   public enum UnitFlagDrawMode {
     NONE, BELOW, NEXT_TO
   }
+
   public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint,
       final int damaged, final int bombingUnitDamage, final boolean disabled, final boolean overflow,
       final String territoryName, final IUIContext uiContext2) {
@@ -67,8 +72,8 @@ public class UnitsDrawer implements IDrawable {
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
-    
-    //If there are too many Units at one point a black line is drawn to make clear which units belong to where
+
+    // If there are too many Units at one point a black line is drawn to make clear which units belong to where
     if (overflow) {
       graphics.setColor(Color.BLACK);
       graphics.fillRect(placementPoint.x - bounds.x - 2,
@@ -80,51 +85,64 @@ public class UnitsDrawer implements IDrawable {
       throw new IllegalStateException("Type not found:" + unitType);
     }
     final PlayerID owner = data.getPlayerList().getPlayerID(playerName);
-    final Image img = uiContext.getUnitImageFactory().getImage(type, owner, data, damaged > 0 || bombingUnitDamage > 0, disabled);
-    
-    switch(drawUnitNationMode){
-      case BELOW:
-        //If unit is not in the "excluded list" it will get drawn
-        if(!STATIC_UNITS.contains(type.getName())){
-          final Image flag = uiContext.getFlagImageFactory().getFlag(owner);
-          final int xoffset = img.getWidth(null) / 2 - flag.getWidth(null) / 2;//centered flag in the middle
-          final int yoffset = img.getHeight(null) / 2 - flag.getHeight(null) / 4 - 5;//centered flag in the middle moved it 1/2 - 5 down 
-          graphics.drawImage(flag, (placementPoint.x - bounds.x) + xoffset, (placementPoint.y - bounds.y) + yoffset, null);
-        }
-        //This Method draws the unit Image
-        graphics.drawImage(img, placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
-        break;
-      case NEXT_TO:
-        //This Method draws the unit Image
-        graphics.drawImage(img, placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
-        //If unit is not in the "excluded list" it will get drawn
-        if(!STATIC_UNITS.contains(type.getName())){
-          final Image flag = uiContext.getFlagImageFactory().getSmallFlag(owner);
-          final int xoffset = img.getWidth(null) - flag.getWidth(null);//If someone wants to put more effort in this, he could add an algorithm to calculate the real
-          final int yoffset = img.getHeight(null) - flag.getHeight(null);//lower right corner - transparency/alpha channel etc.
-          //currently the flag is drawn in the lower right corner of the image's bounds -> offsets on some unit images
-          //This Method draws the Flag in the lower right corner of the unit image. Since the position is the upper left corner we have to move the picture up by the height and left by the width.
-          graphics.drawImage(flag, (placementPoint.x - bounds.x) + xoffset, (placementPoint.y - bounds.y) + yoffset, null);
-        } 
-        break;
-      case NONE:
-        //This Method draws the unit Image
-        graphics.drawImage(img, placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
-        break;
+    final Optional<Image> img =
+        uiContext.getUnitImageFactory().getImage(type, owner, data, damaged > 0 || bombingUnitDamage > 0, disabled);
+
+    if (img.isPresent()) {
+      switch (drawUnitNationMode) {
+        case BELOW:
+          // If unit is not in the "excluded list" it will get drawn
+          if (!STATIC_UNITS.contains(type.getName())) {
+            final Image flag = uiContext.getFlagImageFactory().getFlag(owner);
+            final int xoffset = img.get().getWidth(null) / 2 - flag.getWidth(null) / 2;// centered flag in the middle
+            final int yoffset = img.get().getHeight(null) / 2 - flag.getHeight(null) / 4
+                - 5;// centered flag in the middle moved it 1/2 - 5 down
+            graphics.drawImage(flag, (placementPoint.x - bounds.x) + xoffset, (placementPoint.y - bounds.y) + yoffset,
+                null);
+          }
+          // This Method draws the unit Image
+          graphics.drawImage(img.get(), placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
+          break;
+        case NEXT_TO:
+          // This Method draws the unit Image
+          graphics.drawImage(img.get(), placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
+          // If unit is not in the "excluded list" it will get drawn
+          if (!STATIC_UNITS.contains(type.getName())) {
+            final Image flag = uiContext.getFlagImageFactory().getSmallFlag(owner);
+            final int xoffset = img.get().getWidth(null) - flag.getWidth(
+                null);// If someone wants to put more effort in this, he could add an algorithm to calculate the real
+            final int yoffset =
+                img.get().getHeight(null) - flag.getHeight(null);// lower right corner - transparency/alpha channel etc.
+            // currently the flag is drawn in the lower right corner of the image's bounds -> offsets on some unit
+            // images
+            // This Method draws the Flag in the lower right corner of the unit image. Since the position is the upper
+            // left corner we have to move the picture up by the height and left by the width.
+            graphics.drawImage(flag, (placementPoint.x - bounds.x) + xoffset, (placementPoint.y - bounds.y) + yoffset,
+                null);
+          }
+          break;
+        case NONE:
+          // This Method draws the unit Image
+          graphics.drawImage(img.get(), placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
+          break;
+      }
     }
     // more then 1 unit of this category
     if (count != 1) {
       final int stackSize = mapData.getDefaultUnitsStackSize();
       if (stackSize > 0) { // Display more units as a stack
         for (int i = 1; i < count && i < stackSize; i++) {
-          graphics.drawImage(img, placementPoint.x + 2 * i - bounds.x, placementPoint.y - 2 * i - bounds.y, null);
+          if (img.isPresent()) {
+            graphics.drawImage(img.get(), placementPoint.x + 2 * i - bounds.x, placementPoint.y - 2 * i - bounds.y,
+                null);
+          }
         }
         if (count > stackSize) {
           final Font font = MapImage.getPropertyMapFont();
           if (font.getSize() > 0) {
             graphics.setColor(MapImage.getPropertyUnitCountColor());
             graphics.setFont(font);
-            graphics.drawString(String.valueOf(count),//draws how many units there are
+            graphics.drawString(String.valueOf(count), // draws how many units there are
                 placementPoint.x - bounds.x + 2 * stackSize
                     + (uiContext.getUnitImageFactory().getUnitImageWidth() * 6 / 10),
                 placementPoint.y - 2 * stackSize - bounds.y
@@ -136,7 +154,7 @@ public class UnitsDrawer implements IDrawable {
         if (font.getSize() > 0) {
           graphics.setColor(MapImage.getPropertyUnitCountColor());
           graphics.setFont(font);
-          graphics.drawString(String.valueOf(count),//draws how many units there are
+          graphics.drawString(String.valueOf(count), // draws how many units there are
               placementPoint.x - bounds.x + (uiContext.getUnitImageFactory().getUnitCounterOffsetWidth()),
               placementPoint.y - bounds.y + uiContext.getUnitImageFactory().getUnitCounterOffsetHeight());
         }
@@ -177,7 +195,7 @@ public class UnitsDrawer implements IDrawable {
     // from the territory wont match the units in count
     final Territory t = data.getMap().getTerritory(territoryName);
     final UnitType type = data.getUnitTypeList().getUnitType(unitType);
-    final CompositeMatch<Unit> selectedUnits = new CompositeMatchAnd<Unit>();
+    final CompositeMatch<Unit> selectedUnits = new CompositeMatchAnd<>();
     selectedUnits.add(Matches.unitIsOfType(type));
     selectedUnits.add(Matches.unitIsOwnedBy(data.getPlayerList().getPlayerID(playerName)));
     if (damaged > 0) {
@@ -207,8 +225,8 @@ public class UnitsDrawer implements IDrawable {
   private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
     return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
   }
-  
-  public static void setUnitFlagDrawMode(UnitFlagDrawMode unitFlag, Preferences prefs){
+
+  public static void setUnitFlagDrawMode(UnitFlagDrawMode unitFlag, Preferences prefs) {
     drawUnitNationMode = unitFlag;
     prefs.put("UNIT_FLAG_DRAW_MODE", unitFlag.toString());
   }

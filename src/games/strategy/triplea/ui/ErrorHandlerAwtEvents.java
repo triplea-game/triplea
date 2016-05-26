@@ -13,5 +13,5 @@ package games.strategy.triplea.ui;
  * @see ErrorHandler.java
  */
 public interface ErrorHandlerAwtEvents {
-  public void handle(Throwable throwable);
+  void handle(Throwable throwable);
 }

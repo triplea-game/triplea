@@ -44,7 +44,7 @@ public class PlayerChooser extends JOptionPane {
   }
 
   private void createComponents() {
-    final Collection<PlayerID> players = new ArrayList<PlayerID>(m_players.getPlayers());
+    final Collection<PlayerID> players = new ArrayList<>(m_players.getPlayers());
     if (m_allowNeutral) {
       players.add(PlayerID.NULL_PLAYERID);
     }

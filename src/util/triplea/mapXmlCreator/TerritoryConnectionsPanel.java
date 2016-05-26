@@ -27,6 +27,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.ui.Util;
 import games.strategy.util.AlphanumComparator;
 import util.image.ConnectionFinder;
 
@@ -50,7 +51,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
   @Override
   protected void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
       final Point item, final int x_text_start) {
-    if (centerName.equals(selectedTerritory)) {
+    if (centerName.equals(selectedTerritory.orElse(""))) {
       final Rectangle2D stringBounds = fontMetrics.getStringBounds(centerName, g);
       g.setColor(Color.yellow);
       final int xRectPadding = 2;
@@ -109,9 +110,9 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
         "Now scanning for connections ... ");
     // sort so that they are in alphabetic order (makes xml's prettier and easier to update in future)
     final List<String> allTerritories =
-        polygons == null ? new ArrayList<String>() : new ArrayList<String>(polygons.keySet());
+        polygons == null ? new ArrayList<>() : new ArrayList<>(polygons.keySet());
     Collections.sort(allTerritories, new AlphanumComparator());
-    final List<String> allAreas = new ArrayList<String>(territoryAreas.keySet());
+    final List<String> allAreas = new ArrayList<>(territoryAreas.keySet());
     Collections.sort(allAreas, new AlphanumComparator());
     for (final String territory : allTerritories) {
       final Set<String> thisTerritoryConnections = Sets.newLinkedHashSet();
@@ -150,7 +151,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
     final Map<String, List<Area>> territoryAreas = Maps.newHashMap();
     for (final String territoryName : polygons.keySet()) {
       final List<Polygon> listOfPolygons = polygons.get(territoryName);
-      final List<Area> listOfAreas = new ArrayList<Area>();
+      final List<Area> listOfAreas = new ArrayList<>();
       for (final Polygon p : listOfPolygons) {
         listOfAreas.add(new Area(p));
       }
@@ -208,7 +209,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
     }
 
     final Point point = e.getPoint();
-    final Optional<String> territoryName = Optional.of(findTerritoryName(point, polygons));
+    final Optional<String> territoryName = Util.findTerritoryName(point, polygons);
 
     if (!territoryName.isPresent()) {
       return;
@@ -221,7 +222,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
 
   private boolean needToBeRepainted(final String territoryName) {
     boolean repaint = false;
-    if (!selectedTerritory.isPresent() || selectedTerritory.equals(territoryName)) {
+    if (!selectedTerritory.isPresent() || selectedTerritory.orElse("").equals(territoryName)) {
       selectedTerritory = Optional.of(territoryName);
       repaint = true;
     } else {

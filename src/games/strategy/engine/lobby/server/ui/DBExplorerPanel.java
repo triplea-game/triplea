@@ -18,6 +18,7 @@ import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.lobby.server.userDB.Database;
 
 public class DBExplorerPanel extends JPanel {
@@ -86,8 +87,8 @@ public class DBExplorerPanel extends JPanel {
           m_table.setModel(model);
         }
       }
-    } catch (final SQLException sqle) {
-      sqle.printStackTrace();
+    } catch (final SQLException e) {
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -96,7 +97,7 @@ public class DBExplorerPanel extends JPanel {
   private static TableModel createTableModel(final ResultSet rs) {
     try {
       final DefaultTableModel model = new DefaultTableModel();
-      final List<String> columnNames = new ArrayList<String>();
+      final List<String> columnNames = new ArrayList<>();
       final int count = rs.getMetaData().getColumnCount();
       if (count <= 0) {
         return null;
@@ -109,7 +110,7 @@ public class DBExplorerPanel extends JPanel {
       }
       int index = 1;
       while (rs.next()) {
-        final List<String> values = new ArrayList<String>();
+        final List<String> values = new ArrayList<>();
         values.add("" + index++);
         for (final String column : columnNames) {
           values.add(rs.getString(column));
@@ -118,7 +119,7 @@ public class DBExplorerPanel extends JPanel {
       }
       return model;
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return null;
     }
   }

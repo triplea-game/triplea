@@ -11,6 +11,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
@@ -55,21 +56,15 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
         try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000)) {
           GameProperties.toOutputStream(sink, properties);
           newBytes = sink.toByteArray();
-        } catch (final IOException e2) {
-          e2.printStackTrace();
+        } catch (final IOException ex) {
+          ClientLogger.logQuietly(ex);
         }
         if (newBytes != null) {
           m_serverRemote.changeToGameOptions(newBytes);
         }
       }
-    } catch (final ClassNotFoundException e1) {
-      e1.printStackTrace();
-      return;
-    } catch (final ClassCastException e1) {
-      e1.printStackTrace();
-      return;
-    } catch (final IOException e1) {
-      e1.printStackTrace();
+    } catch (final ClassNotFoundException | IOException | ClassCastException ex) {
+      ClientLogger.logQuietly(ex);
       return;
     }
   }

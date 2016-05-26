@@ -8,8 +8,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -37,7 +39,7 @@ public class UnitType extends NamedAttachable implements Serializable {
 
   public List<Unit> create(final int quantity, final PlayerID owner, final boolean isTemp, final int hitsTaken,
       final int bombingUnitDamage) {
-    final List<Unit> collection = new ArrayList<Unit>();
+    final List<Unit> collection = new ArrayList<>();
     for (int i = 0; i < quantity; i++) {
       collection.add(create(owner, isTemp, hitsTaken, bombingUnitDamage));
     }
@@ -56,12 +58,8 @@ public class UnitType extends NamedAttachable implements Serializable {
     return u;
   }
 
-  private Unit create(final PlayerID owner, final boolean isTemp) {
-    return create(owner, isTemp, 0, 0);
-  }
-
   public Unit create(final PlayerID owner) {
-    return create(owner, false);
+    return create(owner, false, 0, 0);
   }
 
   @Override
@@ -80,11 +78,11 @@ public class UnitType extends NamedAttachable implements Serializable {
     return getName().hashCode();
   }
 
-  public String getTooltip(final PlayerID playerId, final boolean useHTML) {
+  public String getTooltip(final PlayerID playerId) {
     final String customTip = TooltipProperties.getInstance().getToolTip(this, playerId);
     if (customTip == null || customTip.trim().length() <= 0) {
       return UnitAttachment.get(this).toStringShortAndOnlyImportantDifferences(
-          (playerId == null ? PlayerID.NULL_PLAYERID : playerId), useHTML, false);
+          (playerId == null ? PlayerID.NULL_PLAYERID : playerId), true, false);
     } else {
       return LocalizeHTML.localizeImgLinksInHTML(customTip.trim());
     }
@@ -95,13 +93,13 @@ public class UnitType extends NamedAttachable implements Serializable {
    */
   public static Map<PlayerID, List<UnitType>> getAllPlayerUnitsWithImages(final GameData data,
       final IUIContext uiContext, final boolean forceIncludeNeutralPlayer) {
-    final LinkedHashMap<PlayerID, List<UnitType>> rVal = new LinkedHashMap<PlayerID, List<UnitType>>();
+    final LinkedHashMap<PlayerID, List<UnitType>> rVal = new LinkedHashMap<>();
     data.acquireReadLock();
     try {
       for (final PlayerID p : data.getPlayerList().getPlayers()) {
         rVal.put(p, getPlayerUnitsWithImages(p, data, uiContext));
       }
-      final HashSet<UnitType> unitsSoFar = new HashSet<UnitType>();
+      final HashSet<UnitType> unitsSoFar = new HashSet<>();
       for (final List<UnitType> l : rVal.values()) {
         unitsSoFar.addAll(l);
       }
@@ -112,7 +110,7 @@ public class UnitType extends NamedAttachable implements Serializable {
         unitsSoFar.addAll(rVal.get(PlayerID.NULL_PLAYERID));
         all.removeAll(unitsSoFar);
         if (!all.isEmpty()) {
-          rVal.put(null, new ArrayList<UnitType>(all));
+          rVal.put(null, new ArrayList<>(all));
         }
       }
     } finally {
@@ -123,7 +121,7 @@ public class UnitType extends NamedAttachable implements Serializable {
 
   private static List<UnitType> getPlayerUnitsWithImages(final PlayerID player, final GameData data,
       final IUIContext uiContext) {
-    final ArrayList<UnitType> rVal = new ArrayList<UnitType>();
+    final ArrayList<UnitType> rVal = new ArrayList<>();
     data.acquireReadLock();
     try {
       // add first based on current production ability
@@ -159,14 +157,16 @@ public class UnitType extends NamedAttachable implements Serializable {
           try {
             final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
             if (imageFactory != null) {
-              final Image unitImage = imageFactory.getImage(ut, player, data, false, false);
-              if (unitImage != null) {
+              final Optional<Image> unitImage = imageFactory.getImage(ut, player, data, false, false);
+              if (unitImage.isPresent()) {
                 if (!rVal.contains(ut)) {
                   rVal.add(ut);
                 }
               }
             }
-          } catch (final Exception e) { // ignore
+          } catch (final Exception e) {
+            // TODO: does this cause excessive logging noise, or is the message useful?
+            ClientLogger.logQuietly("Quietly ignoring an exception while drawing unit type: "+ ut + ", " , e);
           }
         }
       }

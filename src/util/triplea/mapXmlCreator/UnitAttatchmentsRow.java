@@ -14,31 +14,31 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 
-class UnitAttatchmentsRow extends DynamicRow {
+class UnitAttachmentsRow extends DynamicRow {
 
-  private JTextField textFieldAttatchmentName;
+  private JTextField textFieldAttachmentName;
   private JTextField textFieldValue;
 
-  public UnitAttatchmentsRow(final DynamicRowsPanel parentRowPanel, final JPanel stepActionPanel, final String unitName,
-      final String attatchmentName, final String value) {
-    super(attatchmentName + "_" + unitName, parentRowPanel, stepActionPanel);
+  public UnitAttachmentsRow(final DynamicRowsPanel parentRowPanel, final JPanel stepActionPanel, final String unitName,
+      final String attachmentName, final String value) {
+    super(attachmentName + "_" + unitName, parentRowPanel, stepActionPanel);
 
-    textFieldAttatchmentName = new JTextField(attatchmentName);
-    Dimension dimension = textFieldAttatchmentName.getPreferredSize();
+    textFieldAttachmentName = new JTextField(attachmentName);
+    Dimension dimension = textFieldAttachmentName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_LARGE;
-    textFieldAttatchmentName.setPreferredSize(dimension);
-    textFieldAttatchmentName.addFocusListener(new FocusListener() {
+    textFieldAttachmentName.setPreferredSize(dimension);
+    textFieldAttachmentName.addFocusListener(new FocusListener() {
 
-      String currentValue = attatchmentName;
+      String currentValue = attachmentName;
 
       @Override
       public void focusLost(FocusEvent e) {
-        String newAttatchmentName = (String) textFieldAttatchmentName.getText().trim();
-        if (!currentValue.equals(newAttatchmentName)) {
-          final String newUnitAttatchmentKey = newAttatchmentName + "_" + unitName;
-          if (MapXmlHelper.getUnitAttatchmentsMap().containsKey(newUnitAttatchmentKey)) {
+        String newAttachmentName = (String) textFieldAttachmentName.getText().trim();
+        if (!currentValue.equals(newAttachmentName)) {
+          final String newUnitAttachmentKey = newAttachmentName + "_" + unitName;
+          if (MapXmlHelper.getUnitAttachmentsMap().containsKey(newUnitAttachmentKey)) {
             JOptionPane.showMessageDialog(stepActionPanel,
-                "Attatchment '" + newAttatchmentName + "' already exists for unit '" + unitName + "'.", "Input error",
+                "Attachment '" + newAttachmentName + "' already exists for unit '" + unitName + "'.", "Input error",
                 JOptionPane.ERROR_MESSAGE);
             parentRowPanel.setDataIsConsistent(false);
             // UI Update
@@ -46,16 +46,16 @@ class UnitAttatchmentsRow extends DynamicRow {
               public void run() {
                 stepActionPanel.revalidate();
                 stepActionPanel.repaint();
-                textFieldAttatchmentName.requestFocus();
+                textFieldAttachmentName.requestFocus();
               }
             });
             return;
           } else {
-            final String oldUnitAttatchmentKey = currentValue + "_" + unitName;
-            MapXmlHelper.getUnitAttatchmentsMap().put(newAttatchmentName,
-                MapXmlHelper.getUnitAttatchmentsMap().get(oldUnitAttatchmentKey));
-            MapXmlHelper.getUnitAttatchmentsMap().remove(oldUnitAttatchmentKey);
-            currentValue = newAttatchmentName;
+            final String oldUnitAttachmentKey = currentValue + "_" + unitName;
+            MapXmlHelper.getUnitAttachmentsMap().put(newAttachmentName,
+                MapXmlHelper.getUnitAttachmentsMap().get(oldUnitAttachmentKey));
+            MapXmlHelper.getUnitAttachmentsMap().remove(oldUnitAttachmentKey);
+            currentValue = newAttachmentName;
           }
           parentRowPanel.setDataIsConsistent(true);
         }
@@ -63,7 +63,7 @@ class UnitAttatchmentsRow extends DynamicRow {
 
       @Override
       public void focusGained(FocusEvent e) {
-        textFieldAttatchmentName.selectAll();
+        textFieldAttachmentName.selectAll();
       }
     });
 
@@ -99,7 +99,7 @@ class UnitAttatchmentsRow extends DynamicRow {
         prevValue = inputText;
 
         // everything is okay with the new value name, lets rename everything
-        final List<String> newValues = MapXmlHelper.getUnitAttatchmentsMap().get(currentRowName);
+        final List<String> newValues = MapXmlHelper.getUnitAttachmentsMap().get(currentRowName);
         newValues.set(1, inputText);
       }
 
@@ -112,15 +112,15 @@ class UnitAttatchmentsRow extends DynamicRow {
 
   @Override
   protected ArrayList<JComponent> getComponentList() {
-    final ArrayList<JComponent> componentList = new ArrayList<JComponent>();
-    componentList.add(textFieldAttatchmentName);
+    final ArrayList<JComponent> componentList = new ArrayList<>();
+    componentList.add(textFieldAttachmentName);
     componentList.add(textFieldValue);
     return componentList;
   }
 
   @Override
   public void addToParentComponent(final JComponent parent, final GridBagConstraints gbc_template) {
-    parent.add(textFieldAttatchmentName, gbc_template);
+    parent.add(textFieldAttachmentName, gbc_template);
 
     final GridBagConstraints gbc_tValue = (GridBagConstraints) gbc_template.clone();
     gbc_tValue.gridx = 1;
@@ -133,13 +133,13 @@ class UnitAttatchmentsRow extends DynamicRow {
 
   @Override
   protected void adaptRowSpecifics(final DynamicRow newRow) {
-    final UnitAttatchmentsRow newRowPlayerAndAlliancesRow = (UnitAttatchmentsRow) newRow;
-    this.textFieldAttatchmentName.setText(newRowPlayerAndAlliancesRow.textFieldAttatchmentName.getText());
+    final UnitAttachmentsRow newRowPlayerAndAlliancesRow = (UnitAttachmentsRow) newRow;
+    this.textFieldAttachmentName.setText(newRowPlayerAndAlliancesRow.textFieldAttachmentName.getText());
     this.textFieldValue.setText(newRowPlayerAndAlliancesRow.textFieldValue.getText());
   }
 
   @Override
   protected void removeRowAction() {
-    MapXmlHelper.getUnitAttatchmentsMap().remove(currentRowName);
+    MapXmlHelper.getUnitAttachmentsMap().remove(currentRowName);
   }
 }

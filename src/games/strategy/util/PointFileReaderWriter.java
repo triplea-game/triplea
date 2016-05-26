@@ -189,8 +189,8 @@ public class PointFileReaderWriter {
         }
         current = reader.readLine();
       }
-    } catch (final IOException ioe) {
-      ioe.printStackTrace();
+    } catch (final IOException e) {
+      ClientLogger.logQuietly(e);
       System.exit(0);
     }
     return mapping;
@@ -278,7 +278,7 @@ public class PointFileReaderWriter {
     if (mapping.containsKey(name)) {
       throw new IOException("name found twice:" + name);
     }
-    final List<Point> points = new ArrayList<Point>();
+    final List<Point> points = new ArrayList<>();
     while (tokens.hasMoreTokens()) {
       final String xString = tokens.nextToken(",(), ");
       if (!tokens.hasMoreTokens()) {

@@ -104,12 +104,12 @@ import games.strategy.util.LocalizeHTML;
 /**
  * Main menu for the triplea frame.
  */
-public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
+public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
   private static final long serialVersionUID = 987243661147503593L;
   private JCheckBoxMenuItem showMapDetails;
   private JCheckBoxMenuItem showMapBlends;
 
-  TripleaMenu(final TripleAFrame frame) {
+  TripleAMenu(final TripleAFrame frame) {
     super(frame);
     setWidgetActivation();
   }
@@ -123,7 +123,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     addMoveHelpMenu(helpMenu);
     addUnitHelpMenu(helpMenu);
   }
-  
+
   private void addMoveHelpMenu(final JMenu parentMenu) {
     parentMenu.add(SwingAction.of("Movement/Selection help...", e -> {
       // html formatted string
@@ -193,20 +193,20 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
       for (final Entry<PlayerID, List<UnitType>> entry : playerUnitTypes.entrySet()) {
         final PlayerID player = entry.getKey();
         hints.append("<p><table border=\"1\" bgcolor=\"" + color1 + "\">");
-        hints.append("<tr><th style=\"font-size:120%;000000\" bgcolor=\"" + color3 + "\" colspan=\"4\">"
-            + (player == null ? "NULL" : player.getName()) + " Units</th></tr>");
-        hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
-            + "><td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr>");
+        hints.append("<tr><th style=\"font-size:120%;000000\" bgcolor=\"" + color3 + "\" colspan=\"4\">")
+            .append(player == null ? "NULL" : player.getName()).append(" Units</th></tr>");
+        hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
+            .append("><td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr>");
         for (final UnitType ut : entry.getValue()) {
           i++;
-          hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + ">"
-              + "<td>" + getUnitImageURL(ut, player) + "</td>" + "<td>" + ut.getName() + "</td>" + "<td>"
-              + costs.get(player).get(ut).toStringForHTML() + "</td>" + "<td>" + ut.getTooltip(player, true)
-              + "</td></tr>");
+          hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
+              .append(">").append("<td>").append(getUnitImageURL(ut, player)).append("</td>").append("<td>")
+              .append(ut.getName()).append("</td>").append("<td>").append(costs.get(player).get(ut).toStringForHTML())
+              .append("</td>").append("<td>").append(ut.getTooltip(player)).append("</td></tr>");
         }
         i++;
-        hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + ">"
-            + "<td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr></table></p><br />");
+        hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
+            .append(">").append("<td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr></table></p><br />");
       }
     } finally {
       data.releaseReadLock();
@@ -339,7 +339,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     addShowGameUuid(menuView);
     addSetLookAndFeel(menuView);
   }
-  
+
   private void addEditMode(final JMenu parentMenu) {
     final JCheckBoxMenuItem editMode = new JCheckBoxMenuItem("Enable Edit Mode");
     editMode.setModel(frame.getEditModeButtonModel());
@@ -404,25 +404,25 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     });
     menuGame.add(mapZoom).setMnemonic(KeyEvent.VK_Z);
   }
-  
+
   private void addUnitNationDrawMenu(final JMenu parentMenu){
     final JMenu unitSizeMenu = new JMenu();
     unitSizeMenu.setMnemonic(KeyEvent.VK_N);
     unitSizeMenu.setText("Flag Display Mode");
-    
+
     Preferences prefs = Preferences.userNodeForPackage(getClass());
     String setting = prefs.get("UNIT_FLAG_DRAW_MODE", UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString());
-    
+
     if(UnitsDrawer.UnitFlagDrawMode.NONE.toString().equals(setting)){
       UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.NONE, prefs);
     }
     if(UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString().equals(setting)){
-      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.NEXT_TO, prefs);    
+      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.NEXT_TO, prefs);
     }
     if(UnitsDrawer.UnitFlagDrawMode.BELOW.toString().equals(setting)){
       UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.BELOW, prefs);
     }
-    
+
     final ButtonGroup unitFlagSettingGroup = new ButtonGroup();
     unitSizeMenu.add(createFlagDrawModeRadionButtonItem("None", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.NONE, setting, prefs));
     unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Small", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.NEXT_TO, setting, prefs));
@@ -593,7 +593,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
 
   private void addMapFontAndColorEditorMenu(final JMenu parentMenu) {
     final Action mapFontOptions = SwingAction.of("Edit Map Font and Color...", e -> {
-      final List<IEditableProperty> properties = new ArrayList<IEditableProperty>();
+      final List<IEditableProperty> properties = new ArrayList<>();
       final NumberProperty fontsize =
           new NumberProperty("Font Size", null, 60, 0, MapImage.getPropertyMapFont().getSize());
       final ColorProperty territoryNameColor = new ColorProperty("Territory Name and PU Color", null,
@@ -777,7 +777,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
             GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
         panel.add(diceSidesText, new GridBagConstraints(2, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
             GridBagConstraints.BOTH, new Insets(0, 20, 0, 10), 0, 0));
-        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(TripleaMenu.this), panel, "Roll Dice",
+        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(TripleAMenu.this), panel, "Roll Dice",
             JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
         try {
           final int numberOfDice = Integer.parseInt(numberOfText.getText());
@@ -886,18 +886,18 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
       text.append("\n");
       text.append("Turn Order: ,");
       text.append("\n");
-      final List<PlayerID> playerOrderList = new ArrayList<PlayerID>();
+      final List<PlayerID> playerOrderList = new ArrayList<>();
       playerOrderList.addAll(getData().getPlayerList().getPlayers());
       Collections.sort(playerOrderList, new PlayerOrderComparator(getData()));
-      final Set<PlayerID> playerOrderSetNoDuplicates = new LinkedHashSet<PlayerID>(playerOrderList);
+      final Set<PlayerID> playerOrderSetNoDuplicates = new LinkedHashSet<>(playerOrderList);
       final Iterator<PlayerID> playerOrderIterator = playerOrderSetNoDuplicates.iterator();
       while (playerOrderIterator.hasNext()) {
         final PlayerID currentPlayerID = playerOrderIterator.next();
-        text.append(currentPlayerID.getName() + ",");
+        text.append(currentPlayerID.getName()).append(",");
         final Iterator<String> allianceName =
             getData().getAllianceTracker().getAlliancesPlayerIsIn(currentPlayerID).iterator();
         while (allianceName.hasNext()) {
-          text.append(allianceName.next() + ",");
+          text.append(allianceName.next()).append(",");
         }
         text.append("\n");
       }
@@ -906,7 +906,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
       final EndRoundDelegate delegateEndRound = (EndRoundDelegate) getData().getDelegateList().getDelegate("endRound");
       if (delegateEndRound != null && delegateEndRound.getWinners() != null) {
         for (final PlayerID p : delegateEndRound.getWinners()) {
-          text.append(p.getName() + ",");
+          text.append(p.getName()).append(",");
         }
       } else {
         text.append("none yet; game not over,");
@@ -932,8 +932,9 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
           final ProductionRule pr = purchaseOptionsIterator.next();
           String costString = pr.toStringCosts().replaceAll("; ", ",");
           costString = costString.replaceAll(" ", ",");
-          text.append(pr.getName() + "," + pr.getResults().keySet().iterator().next().getName() + ","
-              + pr.getResults().getInt(pr.getResults().keySet().iterator().next()) + "," + costString + ",");
+          text.append(pr.getName()).append(",").append(pr.getResults().keySet().iterator().next().getName()).append(",")
+              .append(pr.getResults().getInt(pr.getResults().keySet().iterator().next())).append(",").append(costString)
+              .append(",");
           text.append("\n");
         }
         text.append("\n");
@@ -1087,7 +1088,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
         return;
       }
       try (final FileWriter writer = new FileWriter(chooser.getSelectedFile())) {
-        writer.write(getUnitStatsTable().toString().replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
+        writer.write(getUnitStatsTable().replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
             .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHTML.PATTERN_HTML_IMG_TAG, ""));
       } catch (final IOException e1) {
         ClientLogger.logQuietly(e1);
@@ -1187,9 +1188,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
               showMapDetails.setSelected(true);
             }
             setWidgetActivation();
-          } catch (final Exception se) {
-            se.printStackTrace();
-            JOptionPane.showMessageDialog(frame, se.getMessage(), "Error Changing Map Skin2", JOptionPane.OK_OPTION);
+          } catch (final Exception exception) {
+            ClientLogger.logError("Error Changing Map Skin2",  exception);
           }
         }// else
       }// actionPerformed
@@ -1300,7 +1300,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     group.add(buttonItem);
     return buttonItem;
   }
-  
+
   private JRadioButtonMenuItem createFlagDrawModeRadionButtonItem(String text, ButtonGroup group, UnitsDrawer.UnitFlagDrawMode drawMode, String setting, Preferences prefs){
     return createRadioButtonItem(text, group, SwingAction.of(e -> {
       UnitsDrawer.setUnitFlagDrawMode(drawMode, prefs);

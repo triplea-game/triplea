@@ -30,6 +30,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
@@ -54,7 +55,7 @@ import games.strategy.util.Version;
 public class GameParser {
   private static final Class<?>[] SETTER_ARGS = {String.class};
   private GameData data;
-  private final Collection<SAXParseException> errorsSAX = new ArrayList<SAXParseException>();
+  private final Collection<SAXParseException> errorsSAX = new ArrayList<>();
   public static final String DTD_FILE_NAME = "game.dtd";
   private static HashMap<String, String> newClassesForOldNames;
 
@@ -81,9 +82,7 @@ public class GameParser {
     Document doc = null;
     try {
       doc = getDocument(stream);
-    } catch (final IOException e) {
-      throw new IllegalStateException(e);
-    } catch (final ParserConfigurationException e) {
+    } catch (final IOException | ParserConfigurationException e) {
       throw new IllegalStateException(e);
     }
     final Element root = doc.getDocumentElement();
@@ -171,7 +170,7 @@ public class GameParser {
     try {
       validate();
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new GameParseException(e.getMessage());
     }
     return data;
@@ -468,7 +467,7 @@ public class GameParser {
     // if class cannot be found than it is either not a valid class or an old class that was deleted/renamed
     catch (final ClassNotFoundException cnfe) {
       if (newClassesForOldNames == null) {
-        newClassesForOldNames = new HashMap<String, String>();
+        newClassesForOldNames = new HashMap<>();
         // put in here class names that have been changed like //newClassesForOldNames.put("<oldClassName>",
         // "<newClassName>"), e.g.
         // newClassesForOldNames.put("attachment", "attachment")
@@ -509,7 +508,7 @@ public class GameParser {
   }
 
   private List<Element> getChildren(final String name, final Node node) {
-    final ArrayList<Element> found = new ArrayList<Element>();
+    final ArrayList<Element> found = new ArrayList<>();
     final NodeList children = node.getChildNodes();
     for (int i = 0; i < children.getLength(); i++) {
       final Node current = children.item(i);
@@ -532,7 +531,7 @@ public class GameParser {
   }
 
   private List<Node> getNonTextNodes(final Node node) {
-    final ArrayList<Node> found = new ArrayList<Node>();
+    final ArrayList<Node> found = new ArrayList<>();
     final NodeList children = node.getChildNodes();
     for (int i = 0; i < children.getLength(); ++i) {
       final Node current = children.item(i);
@@ -750,7 +749,7 @@ public class GameParser {
   }
 
   private Set<String> parseGridWater(final List<Element> waterNodes) {
-    final Set<String> set = new HashSet<String>();
+    final Set<String> set = new HashSet<>();
     for (final Element current : waterNodes) {
       final int x = Integer.valueOf(current.getAttribute("x"));
       final int y = Integer.valueOf(current.getAttribute("y"));
@@ -840,9 +839,9 @@ public class GameParser {
       // iterate through all players to get known allies and enemies
       for (final PlayerID currentPlayer : players) {
         // start with all players as enemies
-        final HashSet<PlayerID> enemies = new HashSet<PlayerID>(players);
+        final HashSet<PlayerID> enemies = new HashSet<>(players);
         // start with no players as allies
-        final HashSet<PlayerID> allies = new HashSet<PlayerID>();
+        final HashSet<PlayerID> allies = new HashSet<>();
         // iterate through all alliances the player is in
         if (allianceTracker.getAlliancesMap().get(currentPlayer) != null) {
           for (final String alliance : allianceTracker.getAlliancesMap().get(currentPlayer)) {
@@ -892,7 +891,7 @@ public class GameParser {
   }
 
   private void parseProperties(final Node root) throws GameParseException {
-    final Collection<String> runningList = new ArrayList<String>();
+    final Collection<String> runningList = new ArrayList<>();
     final GameProperties properties = data.getProperties();
     final Iterator<Element> children = getChildren("property", root).iterator();
     while (children.hasNext()) {
@@ -991,11 +990,11 @@ public class GameParser {
       editableProperty = new FileProperty(name, null, defaultValue);
     } else if (childName.equals("list") || childName.equals("combo")) {
       final StringTokenizer tokenizer = new StringTokenizer(child.getAttribute("values"), ",");
-      final Collection<String> values = new ArrayList<String>();
+      final Collection<String> values = new ArrayList<>();
       while (tokenizer.hasMoreElements()) {
         values.add(tokenizer.nextToken());
       }
-      editableProperty = new ComboProperty<String>(name, null, defaultValue, values);
+      editableProperty = new ComboProperty<>(name, null, defaultValue, values);
     } else if (childName.equals("number")) {
       final int max = Integer.valueOf(child.getAttribute("max")).intValue();
       final int min = Integer.valueOf(child.getAttribute("min")).intValue();
@@ -1289,7 +1288,7 @@ public class GameParser {
   }
 
   private void parseAttachments(final Element root) throws GameParseException {
-    final HashMap<String, Constructor<?>> constructors = new HashMap<String, Constructor<?>>();
+    final HashMap<String, Constructor<?>> constructors = new HashMap<>();
     for (final Element current : getChildren("attachment", root)) {
       // get class name and constructor
       final String className = current.getAttribute("javaClass");
@@ -1300,10 +1299,7 @@ public class GameParser {
             throw new GameParseException(className + " does not implement IAttachable");
           }
           constructors.put(className, objectClass.getConstructor(IAttachment.attachmentConstructorParameter));
-        } catch (final NoSuchMethodException exception) {
-          throw new GameParseException(
-              "Constructor for class " + className + " could not be found: " + exception.getMessage());
-        } catch (final SecurityException exception) {
+        } catch (final NoSuchMethodException | SecurityException exception) {
           throw new GameParseException(
               "Constructor for class " + className + " could not be found: " + exception.getMessage());
         }
@@ -1321,16 +1317,7 @@ public class GameParser {
         // keep a list of attachment references in the order they were added
         data.addToAttachmentOrderAndValues(
             Tuple.of(attachment, attachmentOptionValues));
-      } catch (final InstantiationException e) {
-        throw new GameParseException(
-            "Attachment of type " + className + " could not be instanciated: " + e.getMessage());
-      } catch (final IllegalAccessException e) {
-        throw new GameParseException(
-            "Attachment of type " + className + " could not be instanciated: " + e.getMessage());
-      } catch (final IllegalArgumentException e) {
-        throw new GameParseException(
-            "Attachment of type " + className + " could not be instanciated: " + e.getMessage());
-      } catch (final InvocationTargetException e) {
+      } catch (final InstantiationException | InvocationTargetException | IllegalArgumentException | IllegalAccessException e) {
         throw new GameParseException(
             "Attachment of type " + className + " could not be instanciated: " + e.getMessage());
       }
@@ -1368,7 +1355,7 @@ public class GameParser {
 
   private static ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)
       throws GameParseException {
-    final ArrayList<Tuple<String, String>> options = new ArrayList<Tuple<String, String>>();
+    final ArrayList<Tuple<String, String>> options = new ArrayList<>();
     for (final Element current : values) {
       // find the setter
       String name = null;
@@ -1516,7 +1503,7 @@ public class GameParser {
   }
 
   private void checkThatAllUnitsHaveAttachments(final GameData data) throws GameParseException {
-    final Collection<UnitType> errors = new ArrayList<UnitType>();
+    final Collection<UnitType> errors = new ArrayList<>();
     for (final UnitType ut : data.getUnitTypeList().getAllUnitTypes()) {
       final UnitAttachment ua = UnitAttachment.get(ut);
       if (ua == null) {

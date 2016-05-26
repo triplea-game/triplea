@@ -15,11 +15,11 @@ public class PlayerManager {
   private final Map<String, INode> m_playerMapping;
 
   public PlayerManager(final Map<String, INode> map) {
-    m_playerMapping = new HashMap<String, INode>(map);
+    m_playerMapping = new HashMap<>(map);
   }
 
   public Map<String, INode> getPlayerMapping() {
-    return new HashMap<String, INode>(m_playerMapping);
+    return new HashMap<>(m_playerMapping);
   }
 
   public boolean isEmpty() {
@@ -36,7 +36,7 @@ public class PlayerManager {
     while (iter.hasNext()) {
       final String key = iter.next();
       final INode value = m_playerMapping.get(key);
-      sb.append(key + "=" + value.getName());
+      sb.append(key).append("=").append(value.getName());
       if (iter.hasNext()) {
         sb.append(", ");
       }
@@ -45,7 +45,7 @@ public class PlayerManager {
   }
 
   public Set<INode> getNodes() {
-    return new HashSet<INode>(m_playerMapping.values());
+    return new HashSet<>(m_playerMapping.values());
   }
 
   public INode getNode(final String playerName) {
@@ -62,11 +62,11 @@ public class PlayerManager {
   }
 
   public Set<String> getPlayers() {
-    return new HashSet<String>(m_playerMapping.keySet());
+    return new HashSet<>(m_playerMapping.keySet());
   }
 
   public Set<String> getPlayedBy(final INode playerNode) {
-    final Set<String> rVal = new HashSet<String>();
+    final Set<String> rVal = new HashSet<>();
     for (final String player : m_playerMapping.keySet()) {
       if (m_playerMapping.get(player).equals(playerNode)) {
         rVal.add(player);

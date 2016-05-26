@@ -21,6 +21,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.debug.ClientLogger;
 
 /**
  * Its a bit messy, but the threads are a pain to deal with We want to be able
@@ -63,7 +64,7 @@ public class PBEMDiceRoller implements IRandomSource {
   @Override
   public int[] getRandom(final int max, final int count, final String annotation) throws IllegalStateException {
     if (!SwingUtilities.isEventDispatchThread()) {
-      final AtomicReference<int[]> result = new AtomicReference<int[]>();
+      final AtomicReference<int[]> result = new AtomicReference<>();
       SwingAction.invokeAndWait(() -> result.set(getRandom(max, count, annotation)));
       return result.get();
     }
@@ -220,8 +221,8 @@ class HttpDiceRollerDialog extends JDialog {
         });
         try {
           m_lock.wait();
-        } catch (final InterruptedException ie) {
-          ie.printStackTrace();
+        } catch (final InterruptedException e) {
+          ClientLogger.logQuietly(e);
         }
       }
       return;

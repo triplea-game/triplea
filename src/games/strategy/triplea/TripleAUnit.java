@@ -146,7 +146,7 @@ public class TripleAUnit extends Unit {
     if (unloaded == null || unloaded.isEmpty()) {
       m_unloaded = Collections.emptyList();
     } else {
-      m_unloaded = new ArrayList<Unit>(unloaded);
+      m_unloaded = new ArrayList<>(unloaded);
     }
   }
 
@@ -156,7 +156,7 @@ public class TripleAUnit extends Unit {
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setWasLoadedThisTurn(final Boolean value) {
-    m_wasLoadedThisTurn = Boolean.valueOf(value.booleanValue());
+    m_wasLoadedThisTurn = value.booleanValue();
   }
 
   public Territory getUnloadedTo() {
@@ -183,7 +183,7 @@ public class TripleAUnit extends Unit {
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setWasUnloadedInCombatPhase(final Boolean value) {
-    m_wasUnloadedInCombatPhase = Boolean.valueOf(value.booleanValue());
+    m_wasUnloadedInCombatPhase = value.booleanValue();
   }
 
   public int getAlreadyMoved() {
@@ -266,7 +266,7 @@ public class TripleAUnit extends Unit {
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setWasInCombat(final Boolean value) {
-    m_wasInCombat = Boolean.valueOf(value.booleanValue());
+    m_wasInCombat = value.booleanValue();
   }
 
   public boolean getWasScrambled() {
@@ -275,7 +275,7 @@ public class TripleAUnit extends Unit {
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setWasScrambled(final Boolean value) {
-    m_wasScrambled = Boolean.valueOf(value.booleanValue());
+    m_wasScrambled = value.booleanValue();
   }
 
   public int getMaxScrambleCount() {
@@ -307,7 +307,7 @@ public class TripleAUnit extends Unit {
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setWasInAirBattle(final Boolean value) {
-    m_wasInAirBattle = Boolean.valueOf(value.booleanValue());
+    m_wasInAirBattle = value.booleanValue();
   }
 
   public boolean getWasInAirBattle() {
@@ -320,7 +320,7 @@ public class TripleAUnit extends Unit {
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setWasLoadedAfterCombat(final Boolean value) {
-    m_wasLoadedAfterCombat = Boolean.valueOf(value.booleanValue());
+    m_wasLoadedAfterCombat = value.booleanValue();
   }
 
   public List<Unit> getDependents() {
@@ -341,7 +341,7 @@ public class TripleAUnit extends Unit {
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setWasAmphibious(final Boolean value) {
-    m_wasAmphibious = Boolean.valueOf(value.booleanValue());
+    m_wasAmphibious = value.booleanValue();
   }
 
   public boolean getDisabled() {
@@ -350,7 +350,7 @@ public class TripleAUnit extends Unit {
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setDisabled(final Boolean value) {
-    m_disabled = Boolean.valueOf(value.booleanValue());
+    m_disabled = value.booleanValue();
   }
 
   /**
@@ -428,7 +428,7 @@ public class TripleAUnit extends Unit {
 
   public static Unit getBiggestProducer(final Collection<Unit> units, final Territory producer, final PlayerID player,
       final GameData data, final boolean accountForDamage) {
-    final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<Unit>(
+    final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<>(
         Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
     if (producer.isWater()) {
       factoryMatch.add(Matches.UnitIsLand.invert());
@@ -439,7 +439,7 @@ public class TripleAUnit extends Unit {
     if (factories.isEmpty()) {
       return null;
     }
-    final IntegerMap<Unit> productionPotential = new IntegerMap<Unit>();
+    final IntegerMap<Unit> productionPotential = new IntegerMap<>();
     Unit highestUnit = factories.iterator().next();
     int highestCapacity = Integer.MIN_VALUE;
     for (final Unit u : factories) {
@@ -532,7 +532,7 @@ public class TripleAUnit extends Unit {
     // must look for m_hits, m_unitDamage,
     final TripleAUnit taUnit = (TripleAUnit) unitGivingAttributes;
     final int combatDamage = taUnit.getHits();
-    final IntegerMap<Unit> hits = new IntegerMap<Unit>();
+    final IntegerMap<Unit> hits = new IntegerMap<>();
     if (combatDamage > 0) {
       for (final Unit u : unitsThatWillGetAttributes) {
         hits.put(u, combatDamage);
@@ -542,7 +542,7 @@ public class TripleAUnit extends Unit {
       changes.add(ChangeFactory.unitsHit(hits));
     }
     final int unitDamage = taUnit.getUnitDamage();
-    final IntegerMap<Unit> damageMap = new IntegerMap<Unit>();
+    final IntegerMap<Unit> damageMap = new IntegerMap<>();
     if (unitDamage > 0) {
       for (final Unit u : unitsThatWillGetAttributes) {
         final TripleAUnit taNew = (TripleAUnit) u;

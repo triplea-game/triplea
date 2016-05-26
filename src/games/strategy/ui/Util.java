@@ -8,12 +8,18 @@ import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MediaTracker;
+import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JOptionPane;
@@ -24,18 +30,20 @@ import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
 public final class Util {
+  public final static String TERRITORY_SEA_ZONE_INFIX = "Sea Zone";
+
   // all we have is static methods
   private Util() {}
 
-  public static interface Task<T> {
-    public T run();
+  public interface Task<T> {
+    T run();
   }
 
   public static <T> T runInSwingEventThread(final Task<T> task) {
     if (SwingUtilities.isEventDispatchThread()) {
       return task.run();
     }
-    final AtomicReference<T> results = new AtomicReference<T>();
+    final AtomicReference<T> results = new AtomicReference<>();
     SwingAction.invokeAndWait(() -> results.set(task.run()));
     return results.get();
   }
@@ -44,15 +52,19 @@ public final class Util {
     private static final long serialVersionUID = 1800075529163275600L;
   };
 
-  public static void ensureImageLoaded(final Image anImage) throws InterruptedException {
+  public static void ensureImageLoaded(final Image anImage) {
     final MediaTracker tracker = new MediaTracker(c);
     tracker.addImage(anImage, 1);
-    tracker.waitForAll();
-    tracker.removeImage(anImage);
+    try {
+      tracker.waitForAll();
+      tracker.removeImage(anImage);
+    } catch(InterruptedException ignored) {
+      // ignore interrupted
+    }
   }
 
-  public static Image copyImage(final BufferedImage img, final boolean needAlpha) {
-    final BufferedImage copy = createImage(img.getWidth(), img.getHeight(), needAlpha);
+  public static Image copyImage(final BufferedImage img) {
+    final BufferedImage copy = createImage(img.getWidth(), img.getHeight(), false);
     final Graphics2D g = (Graphics2D) copy.getGraphics();
     g.drawImage(img, 0, 0, null);
     g.dispose();
@@ -64,13 +76,6 @@ public final class Util {
         JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler(true));
   }
 
-  // private static Image createVolatileImage(int width, int height)
-  // {
-  // GraphicsConfiguration localGraphicSystem =
-  // GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-  // .getDefaultConfiguration();
-  // return localGraphicSystem.createCompatibleVolatileImage(width, height);
-  // }
   /**
    * Previously used to use TYPE_INT_BGR and TYPE_INT_ABGR but caused memory
    * problems. Fix is to use 3Byte rather than INT.
@@ -81,24 +86,6 @@ public final class Util {
     } else {
       return new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
     }
-    // the code below should be the correct way to get graphics, but it is
-    // makes the ui quite
-    // unresponsive when drawing the map (as seen when updating the map for
-    // different routes
-    // in combat move phase)
-    // For jdk1.3 on linux and windows, and jdk1.4 on linux there is a very
-    // noticeable difference
-    // jdk1.4 on windows doesnt have a difference
-    // local graphic system is used to create compatible bitmaps
-    // GraphicsConfiguration localGraphicSystem =
-    // GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-    // .getDefaultConfiguration();
-    // // Create a buffered image in the most optimal format, which allows a
-    // // fast blit to the screen.
-    // BufferedImage workImage = localGraphicSystem.createCompatibleImage(width, height, needAlpha ?
-    // Transparency.TRANSLUCENT :
-    // Transparency.OPAQUE);
-    // return workImage;
   }
 
   public static Dimension getDimension(final Image anImage, final ImageObserver obs) {
@@ -156,5 +143,58 @@ public final class Util {
     originalGraphics.setColor(Color.WHITE);
     originalGraphics.drawString(text, loginStringX, loginStringY);
     return img;
+  }
+
+  /**
+   * java.lang.String findTerritoryName(java.awt.Point)
+   * Finds a land territory name or some sea zone name where the point is contained in according to the territory name
+   * -> polygons map.
+   *
+   * @param java.awt.point p - a point on the map
+   * @param Map<String, List<Polygon>> terrPolygons - a map territory name -> polygons
+   * @return Optional<String>
+   */
+  public static Optional<String> findTerritoryName(final Point p, final Map<String, List<Polygon>> terrPolygons) {
+    return Optional.ofNullable(findTerritoryName(p, terrPolygons, null));
+  }
+
+  /**
+   * java.lang.String findTerritoryName(java.awt.Point)
+   * Finds a land territory name or some sea zone name where the point is contained in according to the territory name
+   * -> polygons map. If no land or sea territory has been found a default name is returned.
+   *
+   * @param java.awt.point p - a point on the map
+   * @param Map<String, List<Polygon>> terrPolygons - a map territory name -> polygons
+   * @param String defaultTerrName - default territory name that gets returns if nothing was found
+   * @return found territory name of defaultTerrName
+   */
+  public static String findTerritoryName(final Point p, final Map<String, List<Polygon>> terrPolygons,
+      final String defaultTerrName) {
+    String lastWaterTerrName = defaultTerrName;
+    // try to find a land territory.
+    // sea zones often surround a land territory
+    for (final String terrName : terrPolygons.keySet()) {
+      final Collection<Polygon> polygons = terrPolygons.get(terrName);
+      for (final Polygon poly : polygons) {
+        if (poly.contains(p)) {
+          if (Util.isTerritoryNameIndicatingWater(terrName)) {
+            lastWaterTerrName = terrName;
+          } else {
+            return terrName;
+          }
+        } // if p is contained
+      } // polygons collection loop
+    } // terrPolygons map loop
+    return lastWaterTerrName;
+  }
+
+  /**
+   * Checks whether name indicates water or not (meaning name starts or ends with default text).
+   *
+   * @param territoryName - territory name
+   * @return true if yes, false otherwise
+   */
+  public static boolean isTerritoryNameIndicatingWater(final String territoryName) {
+    return territoryName.endsWith(TERRITORY_SEA_ZONE_INFIX) || territoryName.startsWith(TERRITORY_SEA_ZONE_INFIX);
   }
 }

@@ -15,10 +15,10 @@ public interface IConnectionLogin {
   /**
    * Get the properties to log in given the challenge Properties
    */
-  public Map<String, String> getProperties(Map<String, String> challengProperties);
+  Map<String, String> getProperties(Map<String, String> challengProperties);
 
   /**
    * A notification that the login failed. The error message supplied should be shown to the user.
    */
-  public void notifyFailedLogin(String message);
+  void notifyFailedLogin(String message);
 }

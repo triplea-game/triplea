@@ -10,7 +10,7 @@ class CanalTerritoriesTuple {
   Tuple<Set<String>, Set<String>> canalTerritoriesTuple;
 
   public CanalTerritoriesTuple() {
-    this(new TreeSet<String>(), new TreeSet<String>());
+    this(new TreeSet<>(), new TreeSet<>());
   }
 
   public CanalTerritoriesTuple(final Set<String> waterTerritories, final Set<String> landTerritories) {

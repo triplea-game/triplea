@@ -24,9 +24,9 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   public static boolean doWeHaveEnoughCapitalsToProduce(final PlayerID player, final GameData data) {
     final List<Territory> capitalsListOriginal =
-        new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(player, data));
+        new ArrayList<>(TerritoryAttachment.getAllCapitals(player, data));
     final List<Territory> capitalsListOwned =
-        new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data));
+        new ArrayList<>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data));
     final PlayerAttachment pa = PlayerAttachment.get(player);
 
     if (pa == null) {
@@ -50,8 +50,8 @@ public class TerritoryAttachment extends DefaultAttachment {
    * @param data
    */
   public static Territory getFirstOwnedCapitalOrFirstUnownedCapital(final PlayerID player, final GameData data) {
-    final List<Territory> capitals = new ArrayList<Territory>();
-    final List<Territory> noNeighborCapitals = new ArrayList<Territory>();
+    final List<Territory> capitals = new ArrayList<>();
+    final List<Territory> noNeighborCapitals = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
       if (ta != null && ta.getCapital() != null) {
@@ -89,7 +89,7 @@ public class TerritoryAttachment extends DefaultAttachment {
    * will return empty list if none controlled, never returns null
    */
   public static List<Territory> getAllCapitals(final PlayerID player, final GameData data) {
-    final List<Territory> capitals = new ArrayList<Territory>();
+    final List<Territory> capitals = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
       if (ta != null && ta.getCapital() != null) {
@@ -116,7 +116,7 @@ public class TerritoryAttachment extends DefaultAttachment {
    * will return empty list if none controlled, never returns null
    */
   public static List<Territory> getAllCurrentlyOwnedCapitals(final PlayerID player, final GameData data) {
-    final List<Territory> capitals = new ArrayList<Territory>();
+    final List<Territory> capitals = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
       if (ta != null && ta.getCapital() != null) {
@@ -186,16 +186,16 @@ public class TerritoryAttachment extends DefaultAttachment {
   private boolean m_isImpassible = false;
   private PlayerID m_originalOwner = null;
   private boolean m_convoyRoute = false;
-  private HashSet<Territory> m_convoyAttached = new HashSet<Territory>();
-  private ArrayList<PlayerID> m_changeUnitOwners = new ArrayList<PlayerID>();
-  private ArrayList<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
+  private HashSet<Territory> m_convoyAttached = new HashSet<>();
+  private ArrayList<PlayerID> m_changeUnitOwners = new ArrayList<>();
+  private ArrayList<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<>();
   private boolean m_navalBase = false;
   private boolean m_airBase = false;
   private boolean m_kamikazeZone = false;
   private int m_unitProduction = 0;
   private boolean m_blockadeZone = false;
-  private ArrayList<TerritoryEffect> m_territoryEffect = new ArrayList<TerritoryEffect>();
-  private ArrayList<String> m_whenCapturedByGoesTo = new ArrayList<String>();
+  private ArrayList<TerritoryEffect> m_territoryEffect = new ArrayList<>();
+  private ArrayList<String> m_whenCapturedByGoesTo = new ArrayList<>();
   private ResourceCollection m_resources = null;
 
   /** Creates new TerritoryAttachment */
@@ -496,7 +496,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public void resetChangeUnitOwners() {
-    m_changeUnitOwners = new ArrayList<PlayerID>();
+    m_changeUnitOwners = new ArrayList<>();
   }
 
   /**
@@ -532,7 +532,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public void resetCaptureUnitOnEnteringBy() {
-    m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
+    m_captureUnitOnEnteringBy = new ArrayList<>();
   }
 
   /**
@@ -571,7 +571,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public void resetWhenCapturedByGoesTo() {
-    m_whenCapturedByGoesTo = new ArrayList<String>();
+    m_whenCapturedByGoesTo = new ArrayList<>();
   }
 
   /**
@@ -606,7 +606,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public void resetTerritoryEffect() {
-    m_territoryEffect = new ArrayList<TerritoryEffect>();
+    m_territoryEffect = new ArrayList<>();
   }
 
   /**
@@ -643,7 +643,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public void resetConvoyAttached() {
-    m_convoyAttached = new HashSet<Territory>();
+    m_convoyAttached = new HashSet<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -719,7 +719,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public static Set<Territory> getWhatTerritoriesThisIsUsedInConvoysFor(final Territory t, final GameData data) {
-    final Set<Territory> rVal = new HashSet<Territory>();
+    final Set<Territory> rVal = new HashSet<>();
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
     if (ta == null || !ta.getConvoyRoute()) {
       return null;
@@ -754,12 +754,12 @@ public class TerritoryAttachment extends DefaultAttachment {
       sb.append(br);
       final PlayerID owner = t.getOwner();
       if (owner != null && !owner.isNull()) {
-        sb.append("Current Owner: " + t.getOwner().getName());
+        sb.append("Current Owner: ").append(t.getOwner().getName());
         sb.append(br);
       }
       final PlayerID originalOwner = getOriginalOwner();
       if (originalOwner != null) {
-        sb.append("Original Owner: " + originalOwner.getName());
+        sb.append("Original Owner: ").append(originalOwner.getName());
         sb.append(br);
       }
     }
@@ -768,7 +768,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       sb.append(br);
     }
     if (m_capital != null && m_capital.length() > 0) {
-      sb.append("A Capital of " + m_capital);
+      sb.append("A Capital of ").append(m_capital);
       sb.append(br);
     }
     if (m_victoryCity != 0) {
@@ -785,11 +785,11 @@ public class TerritoryAttachment extends DefaultAttachment {
     }
     if (m_convoyRoute) {
       if (!m_convoyAttached.isEmpty()) {
-        sb.append("Needs: " + MyFormatter.defaultNamedToTextList(m_convoyAttached) + br);
+        sb.append("Needs: ").append(MyFormatter.defaultNamedToTextList(m_convoyAttached)).append(br);
       }
       final Set<Territory> requiredBy = getWhatTerritoriesThisIsUsedInConvoysFor(t, getData());
       if (!requiredBy.isEmpty()) {
-        sb.append("Required By: " + MyFormatter.defaultNamedToTextList(requiredBy) + br);
+        sb.append("Required By: ").append(MyFormatter.defaultNamedToTextList(requiredBy)).append(br);
       }
     }
     if (m_changeUnitOwners != null && !m_changeUnitOwners.isEmpty()) {
@@ -805,7 +805,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       sb.append(br);
       for (final String value : m_whenCapturedByGoesTo) {
         final String[] s = value.split(":");
-        sb.append(s[0] + " -> " + s[1]);
+        sb.append(s[0]).append(" -> ").append(s[1]);
         sb.append(br);
       }
     }
@@ -820,13 +820,13 @@ public class TerritoryAttachment extends DefaultAttachment {
       sb.append("Production: ");
       sb.append(br);
       if (m_production > 0) {
-        sb.append("&nbsp;&nbsp;&nbsp;&nbsp;" + m_production + " PUs");
+        sb.append("&nbsp;&nbsp;&nbsp;&nbsp;").append(m_production).append(" PUs");
         sb.append(br);
       }
       if (m_resources != null) {
         if (useHTML) {
-          sb.append("&nbsp;&nbsp;&nbsp;&nbsp;"
-              + (m_resources.toStringForHTML()).replaceAll("<br>", "<br>&nbsp;&nbsp;&nbsp;&nbsp;"));
+          sb.append("&nbsp;&nbsp;&nbsp;&nbsp;")
+              .append((m_resources.toStringForHTML()).replaceAll("<br>", "<br>&nbsp;&nbsp;&nbsp;&nbsp;"));
         } else {
           sb.append(m_resources.toString());
         }
@@ -839,7 +839,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       sb.append(br);
     }
     while (iter.hasNext()) {
-      sb.append("&nbsp;&nbsp;&nbsp;&nbsp;" + iter.next().getName());
+      sb.append("&nbsp;&nbsp;&nbsp;&nbsp;").append(iter.next().getName());
       sb.append(br);
     }
     return sb.toString();

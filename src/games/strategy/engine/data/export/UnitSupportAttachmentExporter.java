@@ -44,10 +44,7 @@ public class UnitSupportAttachmentExporter extends DefaultAttachmentExporter {
         return printDefaultOption("unitType", returnValue);
       }
       return "";
-    } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mUnitTypesHandler on field: " + field + "  on Attachment: " + attachment.getName());
-    } catch (final IllegalAccessException e) {
+    } catch (final IllegalArgumentException | IllegalAccessException e) {
       throw new AttachmentExportException(
           "e: " + e + " for mUnitTypesHandler on field: " + field + "  on Attachment: " + attachment.getName());
     }

@@ -94,7 +94,7 @@ public final class ClientFileSystemHelper {
     try {
       fileName = URLDecoder.decode(fileName, "UTF-8");
     } catch (final UnsupportedEncodingException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
     final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
     if (fileName.contains(tripleaJarNameWithEngineVersion)) {
@@ -133,7 +133,7 @@ public final class ClientFileSystemHelper {
       try {
         f.mkdirs();
       } catch (final SecurityException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
     return f;

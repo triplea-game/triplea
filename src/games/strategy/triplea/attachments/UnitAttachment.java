@@ -64,7 +64,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private static Collection<UnitType> getUnitTypesFromUnitList(final Collection<Unit> units) {
-    final Collection<UnitType> types = new ArrayList<UnitType>();
+    final Collection<UnitType> types = new ArrayList<>();
     for (final Unit u : units) {
       if (!types.contains(u.getType())) {
         types.add(u.getType());
@@ -84,7 +84,7 @@ public class UnitAttachment extends DefaultAttachment {
   // a colon delimited list of transports where this unit may invade from, it supports "none"
   // and if empty it allows you to invade from all
   private String[] m_canInvadeOnlyFrom = null;
-  private IntegerMap<Resource> m_fuelCost = new IntegerMap<Resource>();
+  private IntegerMap<Resource> m_fuelCost = new IntegerMap<>();
   private boolean m_canNotMoveDuringCombatMove = false;
   private Tuple<Integer, String> m_movementLimit = null;
   // combat related
@@ -142,7 +142,7 @@ public class UnitAttachment extends DefaultAttachment {
   // if false, we instantly kill anything our AA shot hits
   private boolean m_damageableAA = false;
   // if these enemy units are present, the gun does not fire at all
-  private HashSet<UnitType> m_willNotFireIfPresent = new HashSet<UnitType>();
+  private HashSet<UnitType> m_willNotFireIfPresent = new HashSet<>();
   // strategic bombing related
   private boolean m_isStrategicBomber = false;
   private int m_bombingMaxDieSides = -1;
@@ -160,8 +160,8 @@ public class UnitAttachment extends DefaultAttachment {
   private boolean m_canProduceUnits = false;
   // -1 means either it can't produce any, or it produces at the value of the territory it is located in
   private int m_canProduceXUnits = -1;
-  private IntegerMap<UnitType> m_createsUnitsList = new IntegerMap<UnitType>();
-  private IntegerMap<Resource> m_createsResourcesList = new IntegerMap<Resource>();
+  private IntegerMap<UnitType> m_createsUnitsList = new IntegerMap<>();
+  private IntegerMap<Resource> m_createsResourcesList = new IntegerMap<>();
   // damage related
   private int m_hitPoints = 1;
   private boolean m_canBeDamaged = false;
@@ -184,8 +184,8 @@ public class UnitAttachment extends DefaultAttachment {
   // multiple colon delimited lists of the unit combos required for
   // this unit to be built somewhere. (units must be in same
   // territory, owned by player, not be disabled)
-  private ArrayList<String[]> m_requiresUnits = new ArrayList<String[]>();
-  private IntegerMap<UnitType> m_consumesUnits = new IntegerMap<UnitType>();
+  private ArrayList<String[]> m_requiresUnits = new ArrayList<>();
+  private IntegerMap<UnitType> m_consumesUnits = new IntegerMap<>();
   // a colon delimited list of territories where this unit may not be placed
   // also an allowed setter is "setUnitPlacementOnlyAllowedIn",
   // which just creates m_unitPlacementRestrictions with an inverted list of territories
@@ -205,25 +205,25 @@ public class UnitAttachment extends DefaultAttachment {
   // a colon delimited list of the units this unit can repair.
   // (units must be in same territory, unless this unit is land
   // and the repaired unit is sea)
-  private IntegerMap<UnitType> m_repairsUnits = new IntegerMap<UnitType>();
-  private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
-  private ArrayList<Tuple<String, PlayerID>> m_destroyedWhenCapturedBy = new ArrayList<Tuple<String, PlayerID>>();
+  private IntegerMap<UnitType> m_repairsUnits = new IntegerMap<>();
+  private IntegerMap<UnitType> m_givesMovement = new IntegerMap<>();
+  private ArrayList<Tuple<String, PlayerID>> m_destroyedWhenCapturedBy = new ArrayList<>();
   // also an allowed setter is "setDestroyedWhenCapturedFrom" which will just create m_destroyedWhenCapturedBy with a
   // specific list
   private LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>> m_whenCapturedChangesInto =
-      new LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>>();
-  private ArrayList<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<PlayerID>();
-  private ArrayList<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<PlayerID>();
+      new LinkedHashMap<>();
+  private ArrayList<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<>();
+  private ArrayList<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<>();
   // a set of information for dealing with special abilities or
   // loss of abilities when a unit takes x-y amount of damage
   private ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> m_whenCombatDamaged =
-      new ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>>();
+      new ArrayList<>();
   // a kind of support attachment for giving actual unit
   // attachment abilities or other to a unit, when in the
   // precense or on the same route with another unit
-  private ArrayList<String> m_receivesAbilityWhenWith = new ArrayList<String>();
+  private ArrayList<String> m_receivesAbilityWhenWith = new ArrayList<>();
   // currently used for: placement in original territories only
-  private HashSet<String> m_special = new HashSet<String>();
+  private HashSet<String> m_special = new HashSet<>();
 
   /** Creates new UnitAttachment */
   public UnitAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -393,7 +393,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetCanBeGivenByTerritoryTo() {
-    m_canBeGivenByTerritoryTo = new ArrayList<PlayerID>();
+    m_canBeGivenByTerritoryTo = new ArrayList<>();
   }
 
   /**
@@ -429,7 +429,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetCanBeCapturedOnEnteringBy() {
-    m_canBeCapturedOnEnteringBy = new ArrayList<PlayerID>();
+    m_canBeCapturedOnEnteringBy = new ArrayList<>();
   }
 
   /**
@@ -455,7 +455,7 @@ public class UnitAttachment extends DefaultAttachment {
       throw new GameParseException("whenCapturedChangesInto: No player named: " + s[1] + thisErrorMsg());
     }
     getBool(s[2]);
-    final IntegerMap<UnitType> unitsToMake = new IntegerMap<UnitType>();
+    final IntegerMap<UnitType> unitsToMake = new IntegerMap<>();
     for (int i = 3; i < s.length; i++) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
       if (ut == null) {
@@ -482,7 +482,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetWhenCapturedChangesInto() {
-    m_whenCapturedChangesInto = new LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>>();
+    m_whenCapturedChangesInto = new LinkedHashMap<>();
   }
 
   /**
@@ -537,7 +537,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetDestroyedWhenCapturedBy() {
-    m_destroyedWhenCapturedBy = new ArrayList<Tuple<String, PlayerID>>();
+    m_destroyedWhenCapturedBy = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -847,7 +847,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetRepairsUnits() {
-    m_repairsUnits = new IntegerMap<UnitType>();
+    m_repairsUnits = new IntegerMap<>();
   }
 
   /**
@@ -881,7 +881,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetSpecial() {
-    m_special = new HashSet<String>();
+    m_special = new HashSet<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -952,7 +952,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetRequiresUnits() {
-    m_requiresUnits = new ArrayList<String[]>();
+    m_requiresUnits = new ArrayList<>();
   }
 
   /**
@@ -1000,7 +1000,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetWhenCombatDamaged() {
-    m_whenCombatDamaged = new ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>>();
+    m_whenCombatDamaged = new ArrayList<>();
   }
 
   /**
@@ -1027,12 +1027,12 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetReceivesAbilityWhenWith() {
-    m_receivesAbilityWhenWith = new ArrayList<String>();
+    m_receivesAbilityWhenWith = new ArrayList<>();
   }
 
   private static IntegerMap<Tuple<String, String>> getReceivesAbilityWhenWithMap(final Collection<Unit> units,
       final String filterForAbility, final GameData data) {
-    final IntegerMap<Tuple<String, String>> map = new IntegerMap<Tuple<String, String>>();
+    final IntegerMap<Tuple<String, String>> map = new IntegerMap<>();
     final Collection<UnitType> canReceive =
         getUnitTypesFromUnitList(Match.getMatches(units, Matches.UnitCanReceivesAbilityWhenWith()));
     for (final UnitType ut : canReceive) {
@@ -1052,10 +1052,10 @@ public class UnitAttachment extends DefaultAttachment {
   public static Collection<Unit> getUnitsWhichReceivesAbilityWhenWith(final Collection<Unit> units,
       final String filterForAbility, final GameData data) {
     if (Match.noneMatch(units, Matches.UnitCanReceivesAbilityWhenWith())) {
-      return new ArrayList<Unit>();
+      return new ArrayList<>();
     }
-    final Collection<Unit> unitsCopy = new ArrayList<Unit>(units);
-    final HashSet<Unit> whichReceiveNoDuplicates = new HashSet<Unit>();
+    final Collection<Unit> unitsCopy = new ArrayList<>(units);
+    final HashSet<Unit> whichReceiveNoDuplicates = new HashSet<>();
     final IntegerMap<Tuple<String, String>> whichGive =
         getReceivesAbilityWhenWithMap(unitsCopy, filterForAbility, data);
     for (final Tuple<String, String> abilityUnitType : whichGive.keySet()) {
@@ -1790,7 +1790,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetGivesMovement() {
-    m_givesMovement = new IntegerMap<UnitType>();
+    m_givesMovement = new IntegerMap<>();
   }
 
   /**
@@ -1833,7 +1833,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetConsumesUnits() {
-    m_consumesUnits = new IntegerMap<UnitType>();
+    m_consumesUnits = new IntegerMap<>();
   }
 
   /**
@@ -1876,7 +1876,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetCreatesUnitsList() {
-    m_createsUnitsList = new IntegerMap<UnitType>();
+    m_createsUnitsList = new IntegerMap<>();
   }
 
   /**
@@ -1917,7 +1917,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetCreatesResourcesList() {
-    m_createsResourcesList = new IntegerMap<Resource>();
+    m_createsResourcesList = new IntegerMap<>();
   }
 
   /**
@@ -1960,7 +1960,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetFuelCost() {
-    m_fuelCost = new IntegerMap<Resource>();
+    m_fuelCost = new IntegerMap<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2012,7 +2012,7 @@ public class UnitAttachment extends DefaultAttachment {
       return;
     }
     if (m_bombingTargets == null) {
-      m_bombingTargets = new HashSet<UnitType>();
+      m_bombingTargets = new HashSet<>();
     }
     final String[] s = value.split(":");
     for (final String u : s) {
@@ -2033,7 +2033,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (m_bombingTargets != null) {
       return m_bombingTargets;
     }
-    return new HashSet<UnitType>(data.getUnitTypeList().getAllUnitTypes());
+    return new HashSet<>(data.getUnitTypeList().getAllUnitTypes());
   }
 
   public void clearBombingTargets() {
@@ -2047,7 +2047,7 @@ public class UnitAttachment extends DefaultAttachment {
   public static Set<UnitType> getAllowedBombingTargetsIntersection(final Collection<Unit> bombersOrRockets,
       final GameData data) {
     if (bombersOrRockets.isEmpty()) {
-      return new HashSet<UnitType>();
+      return new HashSet<>();
     }
     Collection<UnitType> allowedTargets = data.getUnitTypeList().getAllUnitTypes();
     for (final Unit u : bombersOrRockets) {
@@ -2057,7 +2057,7 @@ public class UnitAttachment extends DefaultAttachment {
         allowedTargets = games.strategy.util.Util.intersection(allowedTargets, bombingTargets);
       }
     }
-    return new HashSet<UnitType>(allowedTargets);
+    return new HashSet<>(allowedTargets);
   }
 
   // Do not delete, we keep this both for backwards compatibility, and for user convenience when making maps
@@ -2330,7 +2330,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   public static Set<String> getAllOfTypeAAs(final Collection<Unit> aaUnits, final Collection<Unit> targets,
       final Match<Unit> typeOfAA, final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed) {
-    final Set<String> rVal = new HashSet<String>();
+    final Set<String> rVal = new HashSet<>();
     for (final Unit u : Match.getMatches(aaUnits,
         Matches.UnitIsAAthatCanHitTheseUnits(targets, typeOfAA, airborneTechTargetsAllowed))) {
       rVal.add(UnitAttachment.get(u.getType()).getTypeAA());
@@ -2339,11 +2339,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public static List<String> getAllOfTypeAAs(final Collection<Unit> aaUnitsAlreadyVerified) {
-    final Set<String> aaSet = new HashSet<String>();
+    final Set<String> aaSet = new HashSet<>();
     for (final Unit u : aaUnitsAlreadyVerified) {
       aaSet.add(UnitAttachment.get(u.getType()).getTypeAA());
     }
-    final List<String> rVal = new ArrayList<String>(aaSet);
+    final List<String> rVal = new ArrayList<>(aaSet);
     Collections.sort(rVal);
     return rVal;
   }
@@ -2361,7 +2361,7 @@ public class UnitAttachment extends DefaultAttachment {
       return;
     }
     if (m_targetsAA == null) {
-      m_targetsAA = new HashSet<UnitType>();
+      m_targetsAA = new HashSet<>();
     }
     final String[] s = value.split(":");
     for (final String u : s) {
@@ -2382,7 +2382,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (m_targetsAA != null) {
       return m_targetsAA;
     }
-    final HashSet<UnitType> airTypes = new HashSet<UnitType>();
+    final HashSet<UnitType> airTypes = new HashSet<>();
     final Iterator<UnitType> utIter = data.getUnitTypeList().iterator();
     while (utIter.hasNext()) {
       final UnitType ut = utIter.next();
@@ -2433,7 +2433,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetWillNotFireIfPresent() {
-    m_willNotFireIfPresent = new HashSet<UnitType>();
+    m_willNotFireIfPresent = new HashSet<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2609,7 +2609,7 @@ public class UnitAttachment extends DefaultAttachment {
         max = 1;
       }
     }
-    final CompositeMatchAnd<Unit> stackingMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOfType(ut));
+    final CompositeMatchAnd<Unit> stackingMatch = new CompositeMatchAnd<>(Matches.unitIsOfType(ut));
     final String stackingType = stackingLimit.getSecond();
     if (stackingType.equals("owned")) {
       stackingMatch.add(Matches.unitIsOwnedBy(owner));
@@ -2754,7 +2754,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public Collection<UnitType> getListedUnits(final String[] list) {
-    final List<UnitType> rVal = new ArrayList<UnitType>();
+    final List<UnitType> rVal = new ArrayList<>();
     for (final String name : list) {
       // Validate all units exist
       final UnitType ut = getData().getUnitTypeList().getUnitType(name);
@@ -2767,7 +2767,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public Collection<Territory> getListedTerritories(final String[] list) throws GameParseException {
-    final List<Territory> rVal = new ArrayList<Territory>();
+    final List<Territory> rVal = new ArrayList<>();
     for (final String name : list) {
       // Validate all territories exist
       final Territory territory = getData().getMap().getTerritory(name);
@@ -2907,7 +2907,7 @@ public class UnitAttachment extends DefaultAttachment {
     final StringBuilder stats = new StringBuilder();
     final UnitType unitType = (UnitType) this.getAttachedTo();
     if (includeAttachedToName && unitType != null) {
-      stats.append(unitType.getName() + ":  ");
+      stats.append(unitType.getName()).append(":  ");
     }
     if (getIsAir()) {
       stats.append("Air unit, ");
@@ -2919,51 +2919,51 @@ public class UnitAttachment extends DefaultAttachment {
     final int attackRolls = getAttackRolls(player);
     final int defenseRolls = getDefenseRolls(player);
     if (getAttack(player) > 0) {
-      stats.append((attackRolls > 1 ? (attackRolls + "x ") : "") + getAttack(player) + " Attack, ");
+      stats.append(attackRolls > 1 ? (attackRolls + "x ") : "").append(getAttack(player)).append(" Attack, ");
     }
     if (getDefense(player) > 0) {
-      stats.append((defenseRolls > 1 ? (defenseRolls + "x ") : "") + getDefense(player) + " Defense, ");
+      stats.append(defenseRolls > 1 ? (defenseRolls + "x ") : "").append(getDefense(player)).append(" Defense, ");
     }
     if (getMovement(player) > 0) {
-      stats.append(getMovement(player) + " Movement, ");
+      stats.append(getMovement(player)).append(" Movement, ");
     }
     if (getHitPoints() > 1) {
-      stats.append(getHitPoints() + " Hitpoints, ");
+      stats.append(getHitPoints()).append(" Hitpoints, ");
     }
     if (getCanProduceUnits() && getCanProduceXUnits() < 0) {
       stats.append("can Produce Units Up To Territory Value, ");
     } else if (getCanProduceUnits() && getCanProduceXUnits() > 0) {
-      stats.append("can Produce " + getCanProduceXUnits() + " Units, ");
+      stats.append("can Produce ").append(getCanProduceXUnits()).append(" Units, ");
     }
     if (getCreatesUnitsList() != null && getCreatesUnitsList().size() > 0) {
       if (getCreatesUnitsList().size() > 4) {
-        stats.append("Produces " + getCreatesUnitsList().totalValues() + " Units Each Turn, ");
+        stats.append("Produces ").append(getCreatesUnitsList().totalValues()).append(" Units Each Turn, ");
       } else {
         stats.append("Produces ");
         for (final Entry<UnitType, Integer> entry : getCreatesUnitsList().entrySet()) {
-          stats.append(entry.getValue() + "x" + entry.getKey().getName() + " ");
+          stats.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
         }
         stats.append("Each Turn, ");
       }
     }
     if (getCreatesResourcesList() != null && getCreatesResourcesList().size() > 0) {
       if (getCreatesResourcesList().size() > 4) {
-        stats.append("Produces " + getCreatesResourcesList().totalValues() + " Resources Each Turn, ");
+        stats.append("Produces ").append(getCreatesResourcesList().totalValues()).append(" Resources Each Turn, ");
       } else {
         stats.append("Produces ");
         for (final Entry<Resource, Integer> entry : getCreatesResourcesList().entrySet()) {
-          stats.append(entry.getValue() + "x" + entry.getKey().getName() + " ");
+          stats.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
         }
         stats.append("Each Turn, ");
       }
     }
     if (getFuelCost() != null && getFuelCost().size() > 0) {
       if (getFuelCost().size() > 4) {
-        stats.append("Uses " + m_fuelCost.totalValues() + " Resources Each movement point, ");
+        stats.append("Uses ").append(m_fuelCost.totalValues()).append(" Resources Each movement point, ");
       } else {
         stats.append("Uses ");
         for (final Entry<Resource, Integer> entry : getFuelCost().entrySet()) {
-          stats.append(entry.getValue() + "x" + entry.getKey().getName() + " ");
+          stats.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
         }
         stats.append("Each movement point, ");
       }
@@ -2971,31 +2971,32 @@ public class UnitAttachment extends DefaultAttachment {
     if ((getIsAAforCombatOnly() || getIsAAforBombingThisUnitOnly() || getIsAAforFlyOverOnly())
         && (getAttackAA(player) > 0 || getOffensiveAttackAA(player) > 0)) {
       if (getOffensiveAttackAA(player) > 0) {
-        stats.append(getOffensiveAttackAA(player) + "/"
-            + (getOffensiveAttackAAmaxDieSides() != -1 ? getOffensiveAttackAAmaxDieSides() : getData().getDiceSides())
-            + " att ");
+        stats.append(getOffensiveAttackAA(player)).append("/").append(
+            getOffensiveAttackAAmaxDieSides() != -1 ? getOffensiveAttackAAmaxDieSides() : getData().getDiceSides())
+            .append(" att ");
       }
       if (getAttackAA(player) > 0) {
-        stats.append(getAttackAA(player) + "/"
-            + (getAttackAAmaxDieSides() != -1 ? getAttackAAmaxDieSides() : getData().getDiceSides()) + " def ");
+        stats.append(getAttackAA(player)).append("/")
+            .append(getAttackAAmaxDieSides() != -1 ? getAttackAAmaxDieSides() : getData().getDiceSides())
+            .append(" def ");
       }
       if (getIsAAforCombatOnly() && getIsAAforBombingThisUnitOnly() && getIsAAforFlyOverOnly()) {
-        stats.append(getTypeAA() + ", ");
+        stats.append(getTypeAA()).append(", ");
       } else if (getIsAAforCombatOnly() && getIsAAforFlyOverOnly()
           && !games.strategy.triplea.Properties.getAATerritoryRestricted(getData())) {
-        stats.append(getTypeAA() + " for Combat & Move Through, ");
+        stats.append(getTypeAA()).append(" for Combat & Move Through, ");
       } else if (getIsAAforBombingThisUnitOnly() && getIsAAforFlyOverOnly()
           && !games.strategy.triplea.Properties.getAATerritoryRestricted(getData())) {
-        stats.append(getTypeAA() + " for Raids & Move Through, ");
+        stats.append(getTypeAA()).append(" for Raids & Move Through, ");
       } else if (getIsAAforCombatOnly()) {
-        stats.append(getTypeAA() + " for Combat, ");
+        stats.append(getTypeAA()).append(" for Combat, ");
       } else if (getIsAAforBombingThisUnitOnly()) {
-        stats.append(getTypeAA() + " for Raids, ");
+        stats.append(getTypeAA()).append(" for Raids, ");
       } else if (getIsAAforFlyOverOnly()) {
-        stats.append(getTypeAA() + " for Move Through, ");
+        stats.append(getTypeAA()).append(" for Move Through, ");
       }
       if (getMaxAAattacks() > -1) {
-        stats.append(getMaxAAattacks() + " " + getTypeAA() + " Attacks, ");
+        stats.append(getMaxAAattacks()).append(" ").append(getTypeAA()).append(" Attacks, ");
       }
     }
     if (getIsRocket() && playerHasRockets(player)) {
@@ -3003,12 +3004,11 @@ public class UnitAttachment extends DefaultAttachment {
       final int bombingBonus = getBombingBonus();
       if ((getBombingMaxDieSides() != -1 || bombingBonus != -1)
           && games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
-        stats.append((bombingBonus != -1 ? bombingBonus + 1 : 1) + "-"
-            + (getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus != -1 ? bombingBonus : 0)
-                : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0))
-            + " Rocket Damage, ");
+        stats.append(bombingBonus != -1 ? bombingBonus + 1 : 1).append("-")
+            .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus != -1 ? bombingBonus : 0)
+                : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0)).append(" Rocket Damage, ");
       } else {
-        stats.append("1-" + getData().getDiceSides() + " Rocket Damage, ");
+        stats.append("1-").append(getData().getDiceSides()).append(" Rocket Damage, ");
       }
     }
     // line break
@@ -3025,12 +3025,13 @@ public class UnitAttachment extends DefaultAttachment {
         && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
       stats.append("can be Damaged By Raids, ");
       if (getMaxOperationalDamage() > -1) {
-        stats.append(getMaxOperationalDamage() + " Max Operational Damage, ");
+        stats.append(getMaxOperationalDamage()).append(" Max Operational Damage, ");
       }
       if ((getCanProduceUnits()) && getCanProduceXUnits() < 0) {
-        stats.append("Total Damage up to " + (getMaxDamage() > -1 ? getMaxDamage() : 2) + "x Territory Value, ");
+        stats.append("Total Damage up to ").append(getMaxDamage() > -1 ? getMaxDamage() : 2)
+            .append("x Territory Value, ");
       } else if (getMaxDamage() > -1) {
-        stats.append(getMaxDamage() + " Max Total Damage, ");
+        stats.append(getMaxDamage()).append(" Max Total Damage, ");
       }
       if (getCanDieFromReachingMaxDamage()) {
         stats.append("will Die If Max Damage Reached, ");
@@ -3042,7 +3043,8 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("can Allow Scrambling, ");
     }
     if (getCanScramble() && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData())) {
-      stats.append("can Scramble " + (getMaxScrambleDistance() > 0 ? getMaxScrambleDistance() : 1) + " Distance, ");
+      stats.append("can Scramble ").append(getMaxScrambleDistance() > 0 ? getMaxScrambleDistance() : 1)
+          .append(" Distance, ");
     }
     if (getArtillery()) {
       stats.append("can Give Attack Bonus To Other Units, ");
@@ -3057,17 +3059,14 @@ public class UnitAttachment extends DefaultAttachment {
             if (support.getUnitType() == null || support.getUnitType().isEmpty()) {
               continue;
             }
-            stats.append("gives " + support.getBonus()
-                + (support.getStrength() && support.getRoll() ? " Power&Rolls"
-                    : (support.getStrength() ? " Power" : " Rolls"))
-                + " to " + support.getNumber()
-                + (support.getAllied() && support.getEnemy() ? " Allied&Enemy "
-                    : (support.getAllied() ? " Allied " : " Enemy "))
-                + (support.getUnitType().size() > 4 ? "Units"
-                    : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false))
-                + " when " + (support.getOffence() && support.getDefence() ? "Att/Def"
-                    : (support.getOffence() ? "Attacking" : "Defending"))
-                + ", ");
+            stats.append("gives ").append(support.getBonus())
+                .append(support.getStrength() && support.getRoll() ? " Power&Rolls"
+                    : (support.getStrength() ? " Power" : " Rolls")).append(" to ").append(support.getNumber())
+                .append(support.getAllied() && support.getEnemy() ? " Allied&Enemy "
+                    : (support.getAllied() ? " Allied " : " Enemy ")).append(support.getUnitType().size() > 4 ? "Units"
+                : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false)).append(" when ")
+                .append(support.getOffence() && support.getDefence() ? "Att/Def"
+                    : (support.getOffence() ? "Attacking" : "Defending")).append(", ");
           }
         }
       }
@@ -3076,7 +3075,7 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("can Receive Attack Bonus From Other Units, ");
     }
     if (getIsMarine() != 0) {
-      stats.append(getIsMarine() + " Amphibious Attack Modifier, ");
+      stats.append(getIsMarine()).append(" Amphibious Attack Modifier, ");
     }
     if (getCanBlitz(player)) {
       stats.append("can Blitz, ");
@@ -3084,7 +3083,8 @@ public class UnitAttachment extends DefaultAttachment {
     if (!getReceivesAbilityWhenWith().isEmpty()) {
       if (getReceivesAbilityWhenWith().size() <= 2) {
         for (final String ability : getReceivesAbilityWhenWith()) {
-          stats.append("receives " + ability.split(":")[0] + " when paired with " + ability.split(":")[1] + ", ");
+          stats.append("receives ").append(ability.split(":")[0]).append(" when paired with ")
+              .append(ability.split(":")[1]).append(", ");
         }
       } else {
         stats.append("receives Abilities When Paired with Other Units, ");
@@ -3095,21 +3095,20 @@ public class UnitAttachment extends DefaultAttachment {
       final int bombingBonus = getBombingBonus();
       if ((getBombingMaxDieSides() != -1 || bombingBonus != -1)
           && games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
-        stats.append((bombingBonus != -1 ? bombingBonus + 1 : 1) + "-"
-            + (getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus != -1 ? bombingBonus : 0)
-                : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0))
-            + " Raid Damage, ");
+        stats.append(bombingBonus != -1 ? bombingBonus + 1 : 1).append("-")
+            .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus != -1 ? bombingBonus : 0)
+                : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0)).append(" Raid Damage, ");
       } else {
-        stats.append("1-" + getData().getDiceSides() + " Raid Damage, ");
+        stats.append("1-").append(getData().getDiceSides()).append(" Raid Damage, ");
       }
     }
     final int airAttack = getAirAttack(player);
     final int airDefense = getAirDefense(player);
     if (airAttack > 0 && (getIsStrategicBomber() || getCanEscort() || getCanAirBattle())) {
-      stats.append((attackRolls > 1 ? (attackRolls + "x ") : "") + airAttack + " Air Attack, ");
+      stats.append(attackRolls > 1 ? (attackRolls + "x ") : "").append(airAttack).append(" Air Attack, ");
     }
     if (airDefense > 0 && (getCanIntercept() || getCanAirBattle())) {
-      stats.append((defenseRolls > 1 ? (defenseRolls + "x ") : "") + airAttack + " Air Defense, ");
+      stats.append(defenseRolls > 1 ? (defenseRolls + "x ") : "").append(airAttack).append(" Air Defense, ");
     }
     if (getIsSub()) {
       stats.append("is Stealth, ");
@@ -3118,10 +3117,10 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("is Anti-Stealth, ");
     }
     if (getCanBombard(player) && getBombard(player) > 0) {
-      stats.append(getBombard(player) + " Bombard, ");
+      stats.append(getBombard(player)).append(" Bombard, ");
     }
     if (getBlockade() > 0) {
-      stats.append(getBlockade() + " Blockade Loss, ");
+      stats.append(getBlockade()).append(" Blockade Loss, ");
     }
     if (getIsSuicide()) {
       stats.append("Suicide/Munition Unit, ");
@@ -3147,20 +3146,20 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("is a Sea Transport, ");
     }
     if (getTransportCost() > -1) {
-      stats.append(getTransportCost() + " Transporting Cost, ");
+      stats.append(getTransportCost()).append(" Transporting Cost, ");
     }
     if (getTransportCapacity() > 0 && getIsSea()) {
-      stats.append(getTransportCapacity() + " Transporting Capacity, ");
+      stats.append(getTransportCapacity()).append(" Transporting Capacity, ");
     } else if (getTransportCapacity() > 0 && getIsAir() && playerHasParatroopers(player)) {
-      stats.append(getTransportCapacity() + " Transporting Capacity, ");
+      stats.append(getTransportCapacity()).append(" Transporting Capacity, ");
     } else if (getTransportCapacity() > 0 && playerHasMechInf(player) && !getIsSea() && !getIsAir()) {
-      stats.append(getTransportCapacity() + " Transporting Capacity, ");
+      stats.append(getTransportCapacity()).append(" Transporting Capacity, ");
     }
     if (getCarrierCost() > -1) {
-      stats.append(getCarrierCost() + " Carrier Cost, ");
+      stats.append(getCarrierCost()).append(" Carrier Cost, ");
     }
     if (getCarrierCapacity() > 0) {
-      stats.append(getCarrierCapacity() + " Carrier Capacity, ");
+      stats.append(getCarrierCapacity()).append(" Carrier Capacity, ");
     }
     if (!getWhenCombatDamaged().isEmpty()) {
       stats.append("when hit this unit loses certain abilities, ");
@@ -3170,15 +3169,15 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("<br /> &nbsp;&nbsp;&nbsp;&nbsp; ");
     }
     if (getMaxBuiltPerPlayer() > -1) {
-      stats.append(getMaxBuiltPerPlayer() + " Max Built Allowed, ");
+      stats.append(getMaxBuiltPerPlayer()).append(" Max Built Allowed, ");
     }
     if (getRepairsUnits() != null && !getRepairsUnits().isEmpty()
         && games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(getData())
         && (games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(getData())
             || games.strategy.triplea.Properties.getBattleshipsRepairAtEndOfRound(getData()))) {
       if (getRepairsUnits().size() <= 4) {
-        stats.append(
-            "can Repair: " + MyFormatter.integerDefaultNamedMapToString(getRepairsUnits(), " ", "=", false) + ", ");
+        stats.append("can Repair: ")
+            .append(MyFormatter.integerDefaultNamedMapToString(getRepairsUnits(), " ", "=", false)).append(", ");
       } else {
         stats.append("can Repair Some Units, ");
       }
@@ -3186,25 +3185,26 @@ public class UnitAttachment extends DefaultAttachment {
     if (getGivesMovement() != null && getGivesMovement().totalValues() > 0
         && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(getData())) {
       if (getGivesMovement().size() <= 4) {
-        stats.append("can Modify Unit Movement: "
-            + MyFormatter.integerDefaultNamedMapToString(getGivesMovement(), " ", "=", false) + ", ");
+        stats.append("can Modify Unit Movement: ")
+            .append(MyFormatter.integerDefaultNamedMapToString(getGivesMovement(), " ", "=", false)).append(", ");
       } else {
         stats.append("can Modify Unit Movement, ");
       }
     }
     if (getConsumesUnits() != null && getConsumesUnits().totalValues() == 1) {
-      stats.append("unit is an Upgrade Of " + getConsumesUnits().keySet().iterator().next().getName() + ", ");
+      stats.append("unit is an Upgrade Of ").append(getConsumesUnits().keySet().iterator().next().getName())
+          .append(", ");
     } else if (getConsumesUnits() != null && getConsumesUnits().totalValues() > 0) {
       if (getConsumesUnits().size() <= 4) {
-        stats.append("unit Consumes On Placement: "
-            + MyFormatter.integerDefaultNamedMapToString(getConsumesUnits(), " ", "x", true) + ", ");
+        stats.append("unit Consumes On Placement: ")
+            .append(MyFormatter.integerDefaultNamedMapToString(getConsumesUnits(), " ", "x", true)).append(", ");
       } else {
         stats.append("unit Consumes Other Units On Placement, ");
       }
     }
     if (getRequiresUnits() != null && getRequiresUnits().size() > 0
         && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData())) {
-      final List<String> totalUnitsListed = new ArrayList<String>();
+      final List<String> totalUnitsListed = new ArrayList<>();
       for (final String[] list : getRequiresUnits()) {
         totalUnitsListed.addAll(Arrays.asList(list));
       }
@@ -3233,7 +3233,8 @@ public class UnitAttachment extends DefaultAttachment {
     }
     if (getCanOnlyBePlacedInTerritoryValuedAtX() > 0
         && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData())) {
-      stats.append("must be Placed In Territory Valued >=" + getCanOnlyBePlacedInTerritoryValuedAtX() + ", ");
+      stats.append("must be Placed In Territory Valued >=").append(getCanOnlyBePlacedInTerritoryValuedAtX())
+          .append(", ");
     }
     if (getCanNotMoveDuringCombatMove()) {
       stats.append("cannot Combat Move, ");
@@ -3244,10 +3245,10 @@ public class UnitAttachment extends DefaultAttachment {
           && !(games.strategy.triplea.Properties.getWW2V2(getData())
               || games.strategy.triplea.Properties.getWW2V3(getData())
               || games.strategy.triplea.Properties.getMultipleAAPerTerritory(getData()))) {
-        stats.append("max of 1 " + getMovementLimit().getSecond() + " moving per territory, ");
+        stats.append("max of 1 ").append(getMovementLimit().getSecond()).append(" moving per territory, ");
       } else if (getMovementLimit().getFirst() < 10000) {
-        stats.append("max of " + getMovementLimit().getFirst() + " " + getMovementLimit().getSecond()
-            + " moving per territory, ");
+        stats.append("max of ").append(getMovementLimit().getFirst()).append(" ").append(getMovementLimit().getSecond())
+            .append(" moving per territory, ");
       }
     }
     if (getAttackingLimit() != null) {
@@ -3256,10 +3257,10 @@ public class UnitAttachment extends DefaultAttachment {
           && !(games.strategy.triplea.Properties.getWW2V2(getData())
               || games.strategy.triplea.Properties.getWW2V3(getData())
               || games.strategy.triplea.Properties.getMultipleAAPerTerritory(getData()))) {
-        stats.append("max of 1 " + getAttackingLimit().getSecond() + " attacking per territory, ");
+        stats.append("max of 1 ").append(getAttackingLimit().getSecond()).append(" attacking per territory, ");
       } else if (getAttackingLimit().getFirst() < 10000) {
-        stats.append("max of " + getAttackingLimit().getFirst() + " " + getAttackingLimit().getSecond()
-            + " attacking per territory, ");
+        stats.append("max of ").append(getAttackingLimit().getFirst()).append(" ")
+            .append(getAttackingLimit().getSecond()).append(" attacking per territory, ");
       }
     }
     if (getPlacementLimit() != null) {
@@ -3268,10 +3269,10 @@ public class UnitAttachment extends DefaultAttachment {
           && !(games.strategy.triplea.Properties.getWW2V2(getData())
               || games.strategy.triplea.Properties.getWW2V3(getData())
               || games.strategy.triplea.Properties.getMultipleAAPerTerritory(getData()))) {
-        stats.append("max of 1 " + getPlacementLimit().getSecond() + " placed per territory, ");
+        stats.append("max of 1 ").append(getPlacementLimit().getSecond()).append(" placed per territory, ");
       } else if (getPlacementLimit().getFirst() < 10000) {
-        stats.append("max of " + getPlacementLimit().getFirst() + " " + getPlacementLimit().getSecond()
-            + " placed per territory, ");
+        stats.append("max of ").append(getPlacementLimit().getFirst()).append(" ")
+            .append(getPlacementLimit().getSecond()).append(" placed per territory, ");
       }
     }
     if (stats.indexOf(", ") > -1) {

@@ -23,11 +23,11 @@ public class RandomStatsDetails implements Serializable {
   private final Map<PlayerID, IntegerMap<Integer>> m_data;
   private final IntegerMap<Integer> m_totalMap;
   private final DiceStatistic m_totalStats;
-  private final Map<PlayerID, DiceStatistic> m_playerStats = new HashMap<PlayerID, DiceStatistic>();
+  private final Map<PlayerID, DiceStatistic> m_playerStats = new HashMap<>();
 
   public RandomStatsDetails(final Map<PlayerID, IntegerMap<Integer>> randomStats, final int diceSides) {
     m_data = randomStats;
-    m_totalMap = new IntegerMap<Integer>();
+    m_totalMap = new IntegerMap<>();
     for (final Entry<PlayerID, IntegerMap<Integer>> entry : m_data.entrySet()) {
       m_totalMap.add(entry.getValue());
     }
@@ -122,17 +122,22 @@ public class RandomStatsDetails implements Serializable {
   private static String getStatsString(final IntegerMap<Integer> diceRolls, final DiceStatistic diceStats,
       final String title, final String indentation) {
     final StringBuilder sb = new StringBuilder();
-    sb.append(indentation + title + "\n");
-    for (final Integer key : new TreeSet<Integer>(diceRolls.keySet())) {
+    sb.append(indentation).append(title).append("\n");
+    for (final Integer key : new TreeSet<>(diceRolls.keySet())) {
       final int value = diceRolls.getInt(key);
-      sb.append(indentation + indentation + indentation + key + " was rolled " + value + " times" + "\n");
+      sb.append(indentation).append(indentation).append(indentation).append(key).append(" was rolled ").append(value)
+          .append(" times").append("\n");
     }
     final DecimalFormat format = new DecimalFormat("#0.000");
-    sb.append(indentation + indentation + "Average roll : " + format.format(diceStats.getAverage()) + "\n");
-    sb.append(indentation + indentation + "Median : " + format.format(diceStats.getMedian()) + "\n");
-    sb.append(indentation + indentation + "Variance : " + format.format(diceStats.getVariance()) + "\n");
-    sb.append(indentation + indentation + "Standard Deviation : " + format.format(diceStats.getStdDeviation()) + "\n");
-    sb.append(indentation + indentation + "Total rolls : " + diceStats.getTotal() + "\n");
+    sb.append(indentation).append(indentation).append("Average roll : ").append(format.format(diceStats.getAverage()))
+        .append("\n");
+    sb.append(indentation).append(indentation).append("Median : ").append(format.format(diceStats.getMedian()))
+        .append("\n");
+    sb.append(indentation).append(indentation).append("Variance : ").append(format.format(diceStats.getVariance()))
+        .append("\n");
+    sb.append(indentation).append(indentation).append("Standard Deviation : ")
+        .append(format.format(diceStats.getStdDeviation())).append("\n");
+    sb.append(indentation).append(indentation).append("Total rolls : ").append(diceStats.getTotal()).append("\n");
     return sb.toString();
   }
 
@@ -169,7 +174,7 @@ public class RandomStatsDetails implements Serializable {
     panel.setBorder(BorderFactory.createEtchedBorder());
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     panel.add(new JLabel("<html><b>" + title + "</b></html>"));
-    for (final Integer key : new TreeSet<Integer>(diceRolls.keySet())) {
+    for (final Integer key : new TreeSet<>(diceRolls.keySet())) {
       final int value = diceRolls.getInt(key);
       final JLabel label = new JLabel(key + " was rolled " + value + " times");
       panel.add(label);

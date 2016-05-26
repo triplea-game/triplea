@@ -61,7 +61,7 @@ public class BadWordController {
     try {
       final PreparedStatement ps = con.prepareStatement(sql);
       final ResultSet rs = ps.executeQuery();
-      final List<String> rVal = new ArrayList<String>();
+      final List<String> rVal = new ArrayList<>();
       while (rs.next()) {
         rVal.add(rs.getString(1));
       }

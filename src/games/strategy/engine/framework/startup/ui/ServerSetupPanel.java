@@ -54,7 +54,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   private JTextField m_portField;
   private JTextField m_addressField;
   private JTextField m_nameField;
-  private List<PlayerRow> m_playerRows = new ArrayList<PlayerRow>();
+  private List<PlayerRow> m_playerRows = new ArrayList<>();
   private final GameSelectorModel m_gameSelectorModel;
   private JPanel m_info;
   private JPanel m_networkPanel;
@@ -325,7 +325,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     if (!SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread");
     }
-    m_playerRows = new ArrayList<PlayerRow>();
+    m_playerRows = new ArrayList<>();
     final Map<String, String> players = m_model.getPlayersToNodeListing();
     final Map<String, Boolean> playersEnabled = m_model.getPlayersEnabledListing();
     final Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder =
@@ -364,7 +364,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       // this gets updated later
       m_enabledCheckBox.setSelected(true);
       m_types = types;
-      m_type = new JComboBox<String>(types);
+      m_type = new JComboBox<>(types);
       String previousSelection = reloadSelections.get(playerName);
       if (previousSelection.equalsIgnoreCase("Client")) {
         previousSelection = types[0];
@@ -483,7 +483,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
   @Override
   public List<Action> getUserActions() {
-    final List<Action> rVal = new ArrayList<Action>();
+    final List<Action> rVal = new ArrayList<>();
     rVal.add(new BootPlayerAction(this, m_model.getMessenger()));
     rVal.add(new BanPlayerAction(this, m_model.getMessenger()));
     rVal.add(new MutePlayerAction(this, m_model.getMessenger()));

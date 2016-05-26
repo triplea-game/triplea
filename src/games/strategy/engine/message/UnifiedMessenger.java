@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.net.GUID;
 import games.strategy.net.IMessageListener;
 import games.strategy.net.IMessenger;
@@ -41,16 +42,16 @@ public class UnifiedMessenger {
   // maps String -> EndPoint
   // these are the end points that
   // have local implementors
-  private final Map<String, EndPoint> m_localEndPoints = new HashMap<String, EndPoint>();
+  private final Map<String, EndPoint> m_localEndPoints = new HashMap<>();
   private final Object m_pendingLock = new Object();
   // threads wait on these latches for the hub to return invocations
   // the latch should be removed from the map when you countdown the last result
   // access should be synchronized on m_pendingLock
   // TODO: how do these get shutdown when we exit a game or close triplea?
-  private final Map<GUID, CountDownLatch> m_pendingInvocations = new HashMap<GUID, CountDownLatch>();
+  private final Map<GUID, CountDownLatch> m_pendingInvocations = new HashMap<>();
   // after the remote has invoked, the results are placed here
   // access should be synchronized on m_pendingLock
-  private final Map<GUID, RemoteMethodCallResults> m_results = new HashMap<GUID, RemoteMethodCallResults>();
+  private final Map<GUID, RemoteMethodCallResults> m_results = new HashMap<>();
   // only non null for the server
   private UnifiedMessengerHub m_hub;
   private final IMessengerErrorListener m_messengerErrorListener = new IMessengerErrorListener() {
@@ -374,7 +375,7 @@ class EndPoint {
   private final Object m_implementorsMutext = new Object();
   private final String m_name;
   private final Class<?> m_remoteClass;
-  private final List<Object> m_implementors = new ArrayList<Object>();
+  private final List<Object> m_implementors = new ArrayList<>();
   private final boolean m_singleThreaded;
 
   public EndPoint(final String name, final Class<?> remoteClass, final boolean singleThreaded) {
@@ -402,7 +403,7 @@ class EndPoint {
         try {
           m_numberMutext.wait();
         } catch (final InterruptedException e) {
-          e.printStackTrace();
+          ClientLogger.logQuietly(e);
         }
       }
     }
@@ -490,9 +491,9 @@ class EndPoint {
     // copy the implementors
     List<Object> implementorsCopy;
     synchronized (m_implementorsMutext) {
-      implementorsCopy = new ArrayList<Object>(m_implementors);
+      implementorsCopy = new ArrayList<>(m_implementors);
     }
-    final List<RemoteMethodCallResults> results = new ArrayList<RemoteMethodCallResults>(implementorsCopy.size());
+    final List<RemoteMethodCallResults> results = new ArrayList<>(implementorsCopy.size());
     for (final Object implementor : implementorsCopy) {
       results.add(invokeSingle(call, implementor, messageOriginator));
     }
@@ -510,11 +511,8 @@ class EndPoint {
     try {
       method = implementor.getClass().getMethod(call.getMethodName(), call.getArgTypes());
       method.setAccessible(true);
-    } catch (final SecurityException e) {
-      e.printStackTrace();
-      throw new IllegalStateException(e.getMessage());
-    } catch (final NoSuchMethodException e) {
-      e.printStackTrace();
+    } catch (final SecurityException | NoSuchMethodException e) {
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(e.getMessage());
     }
     MessageContext.setSenderNodeForThread(messageOriginator);
@@ -524,14 +522,10 @@ class EndPoint {
     } catch (final InvocationTargetException e) {
       return new RemoteMethodCallResults(e.getTargetException());
     } catch (final IllegalAccessException e) {
-      // this shouldnt happen
-      System.err.println("error in call:" + call);
-      e.printStackTrace();
+      ClientLogger.logQuietly("error in call:" + call, e);
       return new RemoteMethodCallResults(e);
     } catch (final IllegalArgumentException e) {
-      // this shouldnt happen
-      System.err.println("error in call:" + call);
-      e.printStackTrace();
+      ClientLogger.logQuietly("error in call:" + call, e);
       return new RemoteMethodCallResults(e);
     } finally {
       MessageContext.setSenderNodeForThread(null);

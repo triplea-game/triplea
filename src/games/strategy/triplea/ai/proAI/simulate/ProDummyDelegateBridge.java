@@ -17,11 +17,11 @@ import games.strategy.sound.DummySoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.delegate.MustFightBattle;
-import games.strategy.triplea.ui.display.DummyTripleaDisplay;
+import games.strategy.triplea.ui.display.DummyTripleADisplay;
 
 public class ProDummyDelegateBridge implements IDelegateBridge {
   private final PlainRandomSource m_randomSource = new PlainRandomSource();
-  private final DummyTripleaDisplay m_display = new DummyTripleaDisplay();
+  private final DummyTripleADisplay m_display = new DummyTripleADisplay();
   private final DummySoundChannel m_soundChannel = new DummySoundChannel();
   private final PlayerID m_player;
   private final ProAI m_proAI;

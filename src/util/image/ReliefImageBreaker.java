@@ -22,6 +22,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.ui.ImageIoCompletionWatcher;
 import games.strategy.ui.Util;
@@ -97,7 +98,7 @@ public class ReliefImageBreaker {
       System.exit(0);
     }
     for (final String territoryName : m_mapData.getTerritories()) {
-      final boolean seaZone = territoryName.endsWith("Sea Zone") || territoryName.startsWith("Sea Zone");
+      final boolean seaZone = Util.isTerritoryNameIndicatingWater(territoryName);
       if (!seaZone && m_seaZoneOnly) {
         continue;
       }
@@ -167,8 +168,8 @@ public class ReliefImageBreaker {
       try {
         tracker.waitForAll();
         return img;
-      } catch (final InterruptedException ie) {
-        ie.printStackTrace();
+      } catch (final InterruptedException e) {
+        ClientLogger.logQuietly("interrupted while loading images", e);
         return loadImage();
       }
     } else {

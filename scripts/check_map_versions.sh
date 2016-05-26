@@ -2,7 +2,6 @@
 
 set -u
 
-
 TOKEN_FILE="$(cd ~; pwd)/.github/token"
 
 if [ ! -f "$TOKEN_FILE" ]; then
@@ -20,6 +19,13 @@ fi
 
 ACCESS_TOKEN=$(cat "$TOKEN_FILE")
 GITHUB_AUTH="Authorization: token $ACCESS_TOKEN"
+
+if [ -z "$ACCESS_TOKEN" ]; then
+  echo "Failed to get an access token. Expected it to be in file $TOKEN_FILE"
+  exit 3
+fi
+
+
 
 FOUND_COUNT=0
 NOT_FOUND_COUNT=0
@@ -39,8 +45,7 @@ do
   for i in $(curl --silent "https://api.github.com/orgs/triplea-maps/repos?page=$j&per_page=100" | grep git_url | sed 's/.*: "//i' | sed 's/",$//'); do
     #echo  "^- url:.*$(echo $i | sed 's/.*github.com//' | sed 's/.git//')" $YAML_FILE
    URL_MAP_NAME_PART=$(echo $i | sed 's/.*github.com//' | sed 's/.git$//')
-   
-   if [ "$(egrep "^- url:.*$URL_MAP_NAME_PART/" $YAML_FILE)" == "" ]; then
+   if [ "$(egrep "url:.*$URL_MAP_NAME_PART/" $YAML_FILE)" == "" ]; then
      NOT_FOUND_LIST=$(echo $NOT_FOUND_LIST $i | sed 's/git:.*triplea-maps//g')
      NOT_FOUND_COUNT=$((NOT_FOUND_COUNT+1))
    else

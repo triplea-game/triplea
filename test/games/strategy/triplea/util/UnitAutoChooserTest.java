@@ -26,7 +26,7 @@ import games.strategy.util.PropertyUtil;
 import junit.framework.TestCase;
 
 class TestUnit {
-  static final Map<TripleAUnit, TestUnit> m_map = new HashMap<TripleAUnit, TestUnit>();
+  static final Map<TripleAUnit, TestUnit> m_map = new HashMap<>();
   TripleAUnit m_unit;
   String m_name;
 
@@ -56,7 +56,7 @@ class TestUnit {
   }
 
   protected static Set<TestUnit> createSet(final Collection<Unit> units) {
-    final Set<TestUnit> testUnitSet = new HashSet<TestUnit>();
+    final Set<TestUnit> testUnitSet = new HashSet<>();
     for (final Unit unit : units) {
       TestUnit testUnit = TestUnit.get(unit);
       if (testUnit == null) {
@@ -132,7 +132,7 @@ public class UnitAutoChooserTest extends TestCase {
     final Territory t = m_data.getMap().getTerritory("11 Sea Zone");
     ensureIn(t, trn);
     t.getUnits().getUnits();
-    final List<Unit> transporting = new ArrayList<Unit>();
+    final List<Unit> transporting = new ArrayList<>();
     for (final Unit u : units) {
       ensureIn(t, u);
       transporting.add(u);
@@ -154,21 +154,19 @@ public class UnitAutoChooserTest extends TestCase {
 
   private void setUnits(final Collection<Unit> c, final Unit... objects) {
     c.clear();
-    for (final Unit object : objects) {
-      c.add(object);
-    }
+    Collections.addAll(c, objects);
   }
 
   // The MovePanel and EditPanel use the UnitAutoChooser in this mode
   // when finding initial solutions
   public void testUnitAutoChooserWithImplicitDependentsNoMovementCategorized() {
-    final List<Unit> allUnits = new ArrayList<Unit>();
-    final List<Unit> chosenUnits = new ArrayList<Unit>();
-    final List<Unit> expectedCandidateUnits = new ArrayList<Unit>();
-    final List<Unit> expectedSelectedUnitsWithDependents = new ArrayList<Unit>();
-    final List<Unit> expectedSelectedUnits = new ArrayList<Unit>();
+    final List<Unit> allUnits = new ArrayList<>();
+    final List<Unit> chosenUnits = new ArrayList<>();
+    final List<Unit> expectedCandidateUnits = new ArrayList<>();
+    final List<Unit> expectedSelectedUnitsWithDependents = new ArrayList<>();
+    final List<Unit> expectedSelectedUnits = new ArrayList<>();
     UnitAutoChooser autoChooser = null;
-    final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<Unit, Collection<Unit>>();
+    final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<>();
     final boolean bImplicitDependents = true;
     final boolean bCategorizeMovement = false;
     // Setup units/dependencies
@@ -747,13 +745,13 @@ public class UnitAutoChooserTest extends TestCase {
 
   // This mode is currently unused.
   public void testUnitAutoChooserNoImplicitDependentsNoMovementCategorized() {
-    final List<Unit> allUnits = new ArrayList<Unit>();
-    final List<Unit> chosenUnits = new ArrayList<Unit>();
-    final List<Unit> expectedCandidateUnits = new ArrayList<Unit>();
-    final List<Unit> expectedSelectedUnitsWithDependents = new ArrayList<Unit>();
-    final List<Unit> expectedSelectedUnits = new ArrayList<Unit>();
+    final List<Unit> allUnits = new ArrayList<>();
+    final List<Unit> chosenUnits = new ArrayList<>();
+    final List<Unit> expectedCandidateUnits = new ArrayList<>();
+    final List<Unit> expectedSelectedUnitsWithDependents = new ArrayList<>();
+    final List<Unit> expectedSelectedUnits = new ArrayList<>();
     UnitAutoChooser autoChooser = null;
-    final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<Unit, Collection<Unit>>();
+    final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<>();
     final boolean bImplicitDependents = false;
     final boolean bCategorizeMovement = false;
     // Setup units/dependencies
@@ -1001,13 +999,13 @@ public class UnitAutoChooserTest extends TestCase {
   // The MovePanel and EditPanel use the UnitAutoChooser in this mode
   // when running the UnitChooser
   public void testUnitAutoChooserWithImplicitDependentsWithMovementCategorized() {
-    final List<Unit> allUnits = new ArrayList<Unit>();
-    final List<Unit> chosenUnits = new ArrayList<Unit>();
-    final List<Unit> expectedCandidateUnits = new ArrayList<Unit>();
-    final List<Unit> expectedSelectedUnitsWithDependents = new ArrayList<Unit>();
-    final List<Unit> expectedSelectedUnits = new ArrayList<Unit>();
+    final List<Unit> allUnits = new ArrayList<>();
+    final List<Unit> chosenUnits = new ArrayList<>();
+    final List<Unit> expectedCandidateUnits = new ArrayList<>();
+    final List<Unit> expectedSelectedUnitsWithDependents = new ArrayList<>();
+    final List<Unit> expectedSelectedUnits = new ArrayList<>();
     UnitAutoChooser autoChooser = null;
-    final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<Unit, Collection<Unit>>();
+    final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<>();
     final boolean bImplicitDependents = true;
     final boolean bCategorizeMovement = true;
     // Setup units/dependencies

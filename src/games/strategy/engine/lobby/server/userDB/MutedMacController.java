@@ -124,7 +124,7 @@ public class MutedMacController {
   }
 
   public List<String> getMacsThatAreStillMuted(final List<String> macs) {
-    final List<String> results = new ArrayList<String>();
+    final List<String> results = new ArrayList<>();
     final String sql = "select mac, mute_till from muted_macs where mac = ?";
     final Connection con = Database.getConnection();
     try {

@@ -11,7 +11,7 @@ public interface IBattleDelegate extends IRemote, IDelegate {
   /**
    * @return the battles currently waiting to be fought
    */
-  public BattleListing getBattles();
+  BattleListing getBattles();
 
   /**
    * Fight the battle in the given country
@@ -22,22 +22,22 @@ public interface IBattleDelegate extends IRemote, IDelegate {
    *        - fight a bombing raid
    * @return an error string if the battle could not be fought or an error occurred, null otherwise
    */
-  public String fightBattle(Territory where, boolean bombing, BattleType type);
+  String fightBattle(Territory where, boolean bombing, BattleType type);
 
   /**
    * Finish the current battle
    *
    * @return an error string if the battle could not be fought or an error occurred, null otherwise
    */
-  public String fightCurrentBattle();
+  String fightCurrentBattle();
 
   /**
    * @return The location of the currently being fought battle, or null if no battle is in progress.
    */
-  public Territory getCurrentBattleTerritory();
+  Territory getCurrentBattleTerritory();
 
   /**
    * @return The current battle if there is one, or null if there is no current battle in progress.
    */
-  public IBattle getCurrentBattle();
+  IBattle getCurrentBattle();
 }

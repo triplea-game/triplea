@@ -10,19 +10,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 
 import games.strategy.common.swing.SwingAction;
@@ -44,7 +35,7 @@ public class ProductionPanel extends JPanel {
   private static final long serialVersionUID = -1539053979479586609L;
 
   protected final IUIContext m_uiContext;
-  protected List<Rule> m_rules = new ArrayList<Rule>();
+  protected List<Rule> m_rules = new ArrayList<>();
   protected JLabel m_left = new JLabel();
   protected JButton m_done;
   protected PlayerID m_id;
@@ -72,7 +63,7 @@ public class ProductionPanel extends JPanel {
     if (parent != null) {
       String title = "Produce";
       JPanel contents = this;
-      m_dialog = SwingComponents.newJDialogModal(parent, title , contents);
+      m_dialog = SwingComponents.newJDialogModal(parent, title, contents);
     }
     this.m_bid = bid;
     this.m_data = data;
@@ -176,7 +167,7 @@ public class ProductionPanel extends JPanel {
   Action m_done_action = SwingAction.of("Done", e -> m_dialog.setVisible(false));
 
   private IntegerMap<ProductionRule> getProduction() {
-    final IntegerMap<ProductionRule> prod = new IntegerMap<ProductionRule>();
+    final IntegerMap<ProductionRule> prod = new IntegerMap<>();
     for (final Rule rule : m_rules) {
       final int quantity = rule.getQuantity();
       if (quantity != 0) {
@@ -231,7 +222,7 @@ public class ProductionPanel extends JPanel {
     private int m_quantity;
     private final ProductionRule m_rule;
     private final PlayerID id;
-    private final Set<ScrollableTextField> m_textFields = new HashSet<ScrollableTextField>();
+    private final Set<ScrollableTextField> m_textFields = new HashSet<>();
 
     protected JPanel getPanelComponent() {
       final JPanel panel = new JPanel();
@@ -241,9 +232,9 @@ public class ProductionPanel extends JPanel {
       final JLabel info = new JLabel("  ");
       final JLabel name = new JLabel("  ");
       final Color defaultForegroundLabelColor = name.getForeground();
-      Icon icon = null;
+      Optional<ImageIcon> icon = Optional.empty();
       final StringBuilder tooltip = new StringBuilder();
-      final Set<NamedAttachable> results = new HashSet<NamedAttachable>(m_rule.getResults().keySet());
+      final Set<NamedAttachable> results = new HashSet<>(m_rule.getResults().keySet());
       final Iterator<NamedAttachable> iter = results.iterator();
       while (iter.hasNext()) {
         final NamedAttachable resourceOrUnit = iter.next();
@@ -255,7 +246,7 @@ public class ProductionPanel extends JPanel {
           final int movement = attach.getMovement(id);
           final int defense = attach.getDefense(id);
           info.setText(attack + "/" + defense + "/" + movement);
-          tooltip.append(type.getName() + ": " + type.getTooltip(id, true));
+          tooltip.append(type.getName()).append(": ").append(type.getTooltip(id));
           name.setText(type.getName());
           if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() == 1) {
             name.setForeground(Color.CYAN);
@@ -266,9 +257,9 @@ public class ProductionPanel extends JPanel {
           }
         } else if (resourceOrUnit instanceof Resource) {
           final Resource resource = (Resource) resourceOrUnit;
-          icon = m_uiContext.getResourceImageFactory().getIcon(resource, m_data, true);
+          icon = Optional.of(m_uiContext.getResourceImageFactory().getIcon(resource, m_data, true));
           info.setText("resource");
-          tooltip.append(resource.getName() + ": resource");
+          tooltip.append(resource.getName()).append(": resource");
           name.setText(resource.getName());
           name.setForeground(Color.GREEN);
         }
@@ -284,7 +275,8 @@ public class ProductionPanel extends JPanel {
       } else {
         text = "<html> x " + ResourceCollection.toStringForHTML(m_cost, m_data) + "</html>";
       }
-      final JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
+      final JLabel label =
+          icon.isPresent() ? new JLabel(text, icon.get(), SwingConstants.LEFT) : new JLabel(text, SwingConstants.LEFT);
       final String toolTipText = "<html>" + tooltip.toString() + "</html>";
       info.setToolTipText(toolTipText);
       label.setToolTipText(toolTipText);

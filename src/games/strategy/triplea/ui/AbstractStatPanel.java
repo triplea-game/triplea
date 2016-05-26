@@ -42,7 +42,7 @@ public abstract class AbstractStatPanel extends JPanel {
    * @return all the alliances with more than one player.
    */
   public Collection<String> getAlliances() {
-    final Collection<String> rVal = new TreeSet<String>();
+    final Collection<String> rVal = new TreeSet<>();
     for (final String alliance : m_data.getAllianceTracker().getAlliances()) {
       if (m_data.getAllianceTracker().getPlayersInAlliance(alliance).size() > 1) {
         rVal.add(alliance);
@@ -52,7 +52,7 @@ public abstract class AbstractStatPanel extends JPanel {
   }
 
   public List<PlayerID> getPlayers() {
-    final List<PlayerID> players = new ArrayList<PlayerID>(m_data.getPlayerList().getPlayers());
+    final List<PlayerID> players = new ArrayList<>(m_data.getPlayerList().getPlayers());
     Collections.sort(players, new PlayerOrderComparator(m_data));
     return players;
   }

@@ -24,10 +24,10 @@ import java.util.concurrent.locks.Lock;
 public class LockUtil {
   // the locks the current thread has
   // because locks can be re-entrant, store this as a count
-  private final static ThreadLocal<Map<Lock, Integer>> m_locksHeld = new ThreadLocal<Map<Lock, Integer>>();
+  private final static ThreadLocal<Map<Lock, Integer>> m_locksHeld = new ThreadLocal<>();
   // a map of all the locks ever held when a lock was acquired
   // store weak references to everything so that locks don't linger here forever
-  private final static Map<Lock, Set<WeakLockRef>> m_locksHeldWhenAcquired = new WeakHashMap<Lock, Set<WeakLockRef>>();
+  private final static Map<Lock, Set<WeakLockRef>> m_locksHeldWhenAcquired = new WeakHashMap<>();
   private final Object m_mutex = new Object();
   private static ErrorReporter m_errorReporter = new ErrorReporter();
 
@@ -36,7 +36,7 @@ public class LockUtil {
   public void acquireLock(final Lock aLock) {
     synchronized (m_mutex) {
       if (m_locksHeld.get() == null) {
-        m_locksHeld.set(new HashMap<Lock, Integer>());
+        m_locksHeld.set(new HashMap<>());
       }
       // we already have the lock, increaase the count
       if (m_locksHeld.get().containsKey(aLock)) {
@@ -47,7 +47,7 @@ public class LockUtil {
       else {
         // all the locks currently held must be acquired before a lock
         if (!m_locksHeldWhenAcquired.containsKey(aLock)) {
-          m_locksHeldWhenAcquired.put(aLock, new HashSet<WeakLockRef>());
+          m_locksHeldWhenAcquired.put(aLock, new HashSet<>());
         }
         for (final Lock l : m_locksHeld.get().keySet()) {
           m_locksHeldWhenAcquired.get(aLock).add(new WeakLockRef(l));

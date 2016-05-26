@@ -30,7 +30,7 @@ public class PropertiesSelector {
       final ArrayList<IEditableProperty> properties, final Object... buttonOptions) {
     if (!SwingUtilities.isEventDispatchThread()) {
       // throw new IllegalStateException("Must run from EventDispatchThread");
-      final AtomicReference<Object> rVal = new AtomicReference<Object>();
+      final AtomicReference<Object> rVal = new AtomicReference<>();
       SwingAction.invokeAndWait(() -> rVal.set(showDialog(parent, title, properties, buttonOptions)));
       return rVal.get();
     } else {

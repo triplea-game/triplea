@@ -17,11 +17,11 @@ import games.strategy.engine.data.PlayerID;
 public class PlayerOrder {
   private Iterator<GameStep> m_gameStepIterator;
   private GameData m_data;
-  private final List<PlayerID> m_playerSet = new ArrayList<PlayerID>();
+  private final List<PlayerID> m_playerSet = new ArrayList<>();
   private PrintGenerationData m_printData;
 
   private <E> Set<E> removeDups(final Collection<E> c) {
-    return new LinkedHashSet<E>(c);
+    return new LinkedHashSet<>(c);
   }
 
   protected void saveToFile(final PrintGenerationData printData) throws IOException {

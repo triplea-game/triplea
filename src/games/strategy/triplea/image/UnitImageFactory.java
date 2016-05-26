@@ -9,9 +9,11 @@ import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.swing.ImageIcon;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
@@ -38,9 +40,9 @@ public class UnitImageFactory {
   private static int UNIT_COUNTER_OFFSET_HEIGHT = UNIT_ICON_HEIGHT;
   private static final String FILE_NAME_BASE = "units/";
   // maps Point -> image
-  private final Map<String, Image> m_images = new HashMap<String, Image>();
+  private final Map<String, Image> m_images = new HashMap<>();
   // maps Point -> Icon
-  private final Map<String, ImageIcon> m_icons = new HashMap<String, ImageIcon>();
+  private final Map<String, ImageIcon> m_icons = new HashMap<>();
   // Scaling factor for unit images
   private double m_scaleFactor;
   private ResourceLoader m_resourceLoader;
@@ -107,14 +109,20 @@ public class UnitImageFactory {
   /**
    * Return the appropriate unit image.
    */
-  public Image getImage(final UnitType type, final PlayerID player, final GameData data, final boolean damaged,
+  public Optional<Image> getImage(final UnitType type, final PlayerID player, final GameData data, final boolean damaged,
       final boolean disabled) {
     final String baseName = getBaseImageName(type, player, data, damaged, disabled);
     final String fullName = baseName + player.getName();
     if (m_images.containsKey(fullName)) {
-      return m_images.get(fullName);
+      return Optional.of(m_images.get(fullName));
     }
-    final Image baseImage = getBaseImage(baseName, player);
+    final Optional<Image> image = getBaseImage(baseName, player);
+    if (!image.isPresent()) {
+      return Optional.empty();
+    }
+    Image baseImage = image.get();
+
+
     // We want to scale units according to the given scale factor.
     // We use smooth scaling since the images are cached to allow
     // to take our time in doing the scaling.
@@ -124,43 +132,44 @@ public class UnitImageFactory {
     final int height = (int) (baseImage.getHeight(null) * m_scaleFactor);
     final Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
     // Ensure the scaling is completed.
-    try {
-      Util.ensureImageLoaded(scaledImage);
-    } catch (final InterruptedException ex) {
-      ex.printStackTrace();
-    }
+    Util.ensureImageLoaded(scaledImage);
     m_images.put(fullName, scaledImage);
-    return scaledImage;
+    return Optional.of(scaledImage);
   }
 
-  public URL getBaseImageURL(final String baseImageName, final PlayerID id) {
+  public Optional<URL> getBaseImageURL(final String baseImageName, final PlayerID id) {
     return getBaseImageURL(baseImageName, id, m_resourceLoader);
   }
 
-  public static URL getBaseImageURL(final String baseImageName, final PlayerID id,
+  private static Optional<URL> getBaseImageURL(final String baseImageName, final PlayerID id,
       final ResourceLoader resourceLoader) {
     // URL uses '/' not '\'
     final String fileName = FILE_NAME_BASE + id.getName() + "/" + baseImageName + ".png";
     final URL url = resourceLoader.getResource(fileName);
     if (url == null) {
-      throw new IllegalStateException("Cant load: " + baseImageName + "  looking in: " + fileName);
+      ClientLogger.logError("MISSING IMAGE (this unit or image will be invisible): " + baseImageName + "  looking in: " + fileName);
     }
-    return url;
+    return Optional.ofNullable(url);
   }
 
-  private Image getBaseImage(final String baseImageName, final PlayerID id) {
-    final Image image = Toolkit.getDefaultToolkit().getImage(getBaseImageURL(baseImageName, id));
-    try {
+  private Optional<Image> getBaseImage(final String baseImageName, final PlayerID id) {
+    Optional<URL> imageLocation = getBaseImageURL(baseImageName, id);
+    Image image = null;
+    if( imageLocation.isPresent()) {
+      image = Toolkit.getDefaultToolkit().getImage(getBaseImageURL(baseImageName, id).get());
       Util.ensureImageLoaded(image);
-    } catch (final InterruptedException ex) {
-      ex.printStackTrace();
     }
-    return image;
+    return Optional.ofNullable(image);
   }
 
-  public Image getHighlightImage(final UnitType type, final PlayerID player, final GameData data, final boolean damaged,
+  public Optional<Image> getHighlightImage(final UnitType type, final PlayerID player, final GameData data, final boolean damaged,
       final boolean disabled) {
-    final Image base = getImage(type, player, data, damaged, disabled);
+    final Optional<Image> baseImage = getImage(type, player, data, damaged, disabled);
+    if (!baseImage.isPresent()) {
+      return Optional.empty();
+    }
+
+    Image base = baseImage.get();
     final BufferedImage newImage = Util.createImage(base.getWidth(null), base.getHeight(null), true);
     // copy the real image
     final Graphics2D g = newImage.createGraphics();
@@ -171,23 +180,27 @@ public class UnitImageFactory {
     g.setColor(new Color(240, 240, 240, 127));
     g.fillRect(0, 0, base.getWidth(null), base.getHeight(null));
     g.dispose();
-    return newImage;
+    return Optional.of(newImage);
   }
 
   /**
    * Return a icon image for a unit.
    */
-  public ImageIcon getIcon(final UnitType type, final PlayerID player, final GameData data, final boolean damaged,
+  public Optional<ImageIcon> getIcon(final UnitType type, final PlayerID player, final GameData data, final boolean damaged,
       final boolean disabled) {
     final String baseName = getBaseImageName(type, player, data, damaged, disabled);
     final String fullName = baseName + player.getName();
     if (m_icons.containsKey(fullName)) {
-      return m_icons.get(fullName);
+      return Optional.of(m_icons.get(fullName));
     }
-    final Image img = getBaseImage(baseName, player);
-    final ImageIcon icon = new ImageIcon(img);
+    final Optional<Image> image = getBaseImage(baseName, player);
+    if(!image.isPresent()) {
+      return Optional.empty();
+    }
+
+    final ImageIcon icon = new ImageIcon(image.get());
     m_icons.put(fullName, icon);
-    return icon;
+    return Optional.of(icon);
   }
 
   private static String getBaseImageName(final UnitType type, final PlayerID id, final GameData data,

@@ -91,7 +91,7 @@ public final class ProTechAI {
       final PlayerID player, final boolean tFirst, final boolean ignoreOnlyPlanes, final List<Territory> ignoreTerr) {
     PlayerID ePlayer = null;
     final List<PlayerID> qID = getEnemyPlayers(data, player);
-    final HashMap<PlayerID, Float> ePAttackMap = new HashMap<PlayerID, Float>();
+    final HashMap<PlayerID, Float> ePAttackMap = new HashMap<>();
     final Iterator<PlayerID> playerIter = qID.iterator();
     if (location == null) {
       return -1000.0F;
@@ -107,17 +107,17 @@ public final class ProTechAI {
           0.0F;
       ePlayer = playerIter.next();
       final CompositeMatch<Unit> enemyPlane =
-          new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanMove);
+          new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanMove);
       final CompositeMatch<Unit> enemyTransport =
-          new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitIsSea, Matches.UnitIsTransport,
+          new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitIsSea, Matches.UnitIsTransport,
               Matches.UnitCanMove);
       final CompositeMatch<Unit> enemyShip =
-          new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitIsSea, Matches.UnitCanMove);
+          new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitIsSea, Matches.UnitCanMove);
       final CompositeMatch<Unit> enemyTransportable =
-          new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanBeTransported,
+          new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanBeTransported,
               Matches.UnitIsNotAA, Matches.UnitCanMove);
       final CompositeMatch<Unit> aTransport =
-          new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
+          new CompositeMatchAnd<>(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
       final List<Territory> eFTerrs = findUnitTerr(data, ePlayer, enemyPlane);
       int maxFighterDistance = 0, maxBomberDistance = 0;
       // should change this to read production frontier and tech
@@ -143,10 +143,10 @@ public final class ProTechAI {
         final List<Unit> eTUnits = eTTerr.getUnits().getMatches(aTransport);
         maxTransportDistance = Math.max(maxTransportDistance, MoveValidator.getMaxMovement(eTUnits));
       }
-      final List<Unit> alreadyLoaded = new ArrayList<Unit>();
-      final List<Route> blitzTerrRoutes = new ArrayList<Route>();
-      final List<Territory> checked = new ArrayList<Territory>();
-      final List<Unit> enemyWaterUnits = new ArrayList<Unit>();
+      final List<Unit> alreadyLoaded = new ArrayList<>();
+      final List<Route> blitzTerrRoutes = new ArrayList<>();
+      final List<Territory> checked = new ArrayList<>();
+      final List<Unit> enemyWaterUnits = new ArrayList<>();
       for (final Territory t : data.getMap().getNeighbors(location,
           onWater ? Matches.TerritoryIsWater : Matches.TerritoryIsLand)) {
         if (ignoreTerr != null && ignoreTerr.contains(t)) {
@@ -167,9 +167,9 @@ public final class ProTechAI {
         // allow units to be calculated that are in
         // territories we have already assaulted
         // this can be easily changed
-        final HashSet<Integer> ignore = new HashSet<Integer>();
-        ignore.add(Integer.valueOf(1));
-        final List<Route> r = new ArrayList<Route>();
+        final HashSet<Integer> ignore = new HashSet<>();
+        ignore.add(1);
+        final List<Route> r = new ArrayList<>();
         final List<Unit> ships =
             findAttackers(location, 3, ignore, ePlayer, data, enemyShip, Matches.territoryIsBlockedSea(ePlayer, data),
                 ignoreTerr, r, true);
@@ -201,7 +201,7 @@ public final class ProTechAI {
                 continue;
               }
             }
-            final List<Unit> loadedUnits = new ArrayList<Unit>();
+            final List<Unit> loadedUnits = new ArrayList<>();
             int availInf = 0, availOther = 0;
             for (final Unit xTrans : transports) {
               final Collection<Unit> thisTransUnits = TransportTracker.transporting(xTrans);
@@ -345,7 +345,7 @@ public final class ProTechAI {
    * Returns a list of all enemy players
    */
   private static List<PlayerID> getEnemyPlayers(final GameData data, final PlayerID player) {
-    final List<PlayerID> enemyPlayers = new ArrayList<PlayerID>();
+    final List<PlayerID> enemyPlayers = new ArrayList<>();
     for (final PlayerID players : data.getPlayerList().getPlayers()) {
       if (!data.getRelationshipTracker().isAllied(player, players)) {
         enemyPlayers.add(players);
@@ -368,14 +368,14 @@ public final class ProTechAI {
    */
   private static float determineEnemyBlitzStrength(final Territory blitzHere, final List<Route> blitzTerrRoutes,
       final List<Territory> blockTerr, final GameData data, final PlayerID ePlayer) {
-    final HashSet<Integer> ignore = new HashSet<Integer>();
-    ignore.add(Integer.valueOf(1));
+    final HashSet<Integer> ignore = new HashSet<>();
+    ignore.add(1);
     final CompositeMatch<Unit> blitzUnit =
-        new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanBlitz, Matches.UnitCanMove);
+        new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanBlitz, Matches.UnitCanMove);
     final CompositeMatch<Territory> validBlitzRoute =
-        new CompositeMatchAnd<Territory>(Matches.territoryHasNoEnemyUnits(ePlayer, data),
+        new CompositeMatchAnd<>(Matches.territoryHasNoEnemyUnits(ePlayer, data),
             Matches.TerritoryIsNotImpassableToLandUnits(ePlayer, data));
-    final List<Route> routes = new ArrayList<Route>();
+    final List<Route> routes = new ArrayList<>();
     final List<Unit> blitzUnits =
         findAttackers(blitzHere, 2, ignore, ePlayer, data, blitzUnit, validBlitzRoute, blockTerr, routes, false);
     for (final Route r : routes) {
@@ -390,10 +390,10 @@ public final class ProTechAI {
       final HashSet<Integer> ignoreDistance, final PlayerID player, final GameData data,
       final Match<Unit> unitCondition, final Match<Territory> routeCondition, final List<Territory> blocked,
       final List<Route> routes, final boolean sea) {
-    final IntegerMap<Territory> distance = new IntegerMap<Territory>();
-    final Map<Territory, Territory> visited = new HashMap<Territory, Territory>();
-    final List<Unit> units = new ArrayList<Unit>();
-    final Queue<Territory> q = new LinkedList<Territory>();
+    final IntegerMap<Territory> distance = new IntegerMap<>();
+    final Map<Territory, Territory> visited = new HashMap<>();
+    final List<Unit> units = new ArrayList<>();
+    final Queue<Territory> q = new LinkedList<>();
     q.add(start);
     Territory current = null;
     distance.put(start, 0);
@@ -424,7 +424,7 @@ public final class ProTechAI {
             continue;
           }
           q.add(neighbor);
-          final Integer dist = Integer.valueOf(distance.getInt(neighbor));
+          final Integer dist = distance.getInt(neighbor);
           if (ignoreDistance.contains(dist)) {
             continue;
           }
@@ -457,15 +457,15 @@ public final class ProTechAI {
    */
   private static List<Unit> findPlaneAttackersThatCanLand(final Territory start, final int maxDistance,
       final PlayerID player, final GameData data, final List<Territory> ignore, final List<Territory> checked) {
-    final IntegerMap<Territory> distance = new IntegerMap<Territory>();
-    final IntegerMap<Unit> unitDistance = new IntegerMap<Unit>();
-    final List<Unit> units = new ArrayList<Unit>();
-    final Queue<Territory> q = new LinkedList<Territory>();
+    final IntegerMap<Territory> distance = new IntegerMap<>();
+    final IntegerMap<Unit> unitDistance = new IntegerMap<>();
+    final List<Unit> units = new ArrayList<>();
+    final Queue<Territory> q = new LinkedList<>();
     Territory lz = null, ac = null;
     final CompositeMatch<Unit> enemyPlane =
-        new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.unitIsOwnedBy(player), Matches.UnitCanMove);
+        new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.unitIsOwnedBy(player), Matches.UnitCanMove);
     final CompositeMatch<Unit> enemyCarrier =
-        new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player), Matches.UnitCanMove);
+        new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player), Matches.UnitCanMove);
     q.add(start);
     Territory current = null;
     distance.put(start, 0);
@@ -537,10 +537,10 @@ public final class ProTechAI {
       return null;
     }
     final CompositeMatch<Unit> ignore =
-        new CompositeMatchAnd<Unit>(Matches.UnitIsInfrastructure.invert(), Matches.alliedUnit(player, data).invert());
-    final CompositeMatch<Unit> sub = new CompositeMatchAnd<Unit>(Matches.UnitIsSub.invert());
+        new CompositeMatchAnd<>(Matches.UnitIsInfrastructure.invert(), Matches.alliedUnit(player, data).invert());
+    final CompositeMatch<Unit> sub = new CompositeMatchAnd<>(Matches.UnitIsSub.invert());
     final CompositeMatch<Unit> transport =
-        new CompositeMatchAnd<Unit>(Matches.UnitIsTransport.invert(), Matches.UnitIsLand.invert());
+        new CompositeMatchAnd<>(Matches.UnitIsTransport.invert(), Matches.UnitIsLand.invert());
     final CompositeMatch<Unit> unitCond = ignore;
     if (Properties.getIgnoreTransportInMovement(data)) {
       unitCond.add(transport);
@@ -549,11 +549,11 @@ public final class ProTechAI {
       unitCond.add(sub);
     }
     final CompositeMatch<Territory> routeCond =
-        new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsThatMatch(unitCond).invert(),
+        new CompositeMatchAnd<>(Matches.territoryHasUnitsThatMatch(unitCond).invert(),
             Matches.TerritoryIsWater);
     CompositeMatch<Territory> routeCondition;
     if (attacking) {
-      routeCondition = new CompositeMatchOr<Territory>(Matches.territoryIs(destination), routeCond);
+      routeCondition = new CompositeMatchOr<>(Matches.territoryIs(destination), routeCond);
     } else {
       routeCondition = routeCond;
     }
@@ -569,7 +569,7 @@ public final class ProTechAI {
           data.getMap().getRoute(
               start,
               destination,
-              new CompositeMatchAnd<Territory>(routeCondition, Matches.territoryHasNonAllowedCanal(player, null, data)
+              new CompositeMatchAnd<>(routeCondition, Matches.territoryHasNonAllowedCanal(player, null, data)
                   .invert()));
     }
     if (r == null || r.getEnd() == null) {
@@ -594,7 +594,7 @@ public final class ProTechAI {
    */
   private static List<Territory> getNeighboringLandTerritories(final GameData data, final PlayerID player,
       final Territory check) {
-    final ArrayList<Territory> rVal = new ArrayList<Territory>();
+    final ArrayList<Territory> rVal = new ArrayList<>();
     final List<Territory> checkList = getExactNeighbors(check, 1, player, data, false);
     for (final Territory t : checkList) {
       if (Matches.isTerritoryAllied(player, data).match(t)
@@ -615,7 +615,7 @@ public final class ProTechAI {
       final PlayerID player, final GameData data, final boolean neutral) {
     // old functionality retained, i.e. no route condition is imposed.
     // feel free to change, if you are confortable all calls to this function conform.
-    final CompositeMatch<Territory> endCond = new CompositeMatchAnd<Territory>(Matches.TerritoryIsImpassable.invert());
+    final CompositeMatch<Territory> endCond = new CompositeMatchAnd<>(Matches.TerritoryIsImpassable.invert());
     if (!neutral || Properties.getNeutralsImpassable(data)) {
       endCond.add(Matches.TerritoryIsNeutralButNotWater.invert());
     }
@@ -635,10 +635,10 @@ public final class ProTechAI {
    */
   private static List<Territory> findFontier(final Territory start, final Match<Territory> endCondition,
       final Match<Territory> routeCondition, final int distance, final GameData data) {
-    final Match<Territory> canGo = new CompositeMatchOr<Territory>(endCondition, routeCondition);
-    final IntegerMap<Territory> visited = new IntegerMap<Territory>();
-    final Queue<Territory> q = new LinkedList<Territory>();
-    final List<Territory> frontier = new ArrayList<Territory>();
+    final Match<Territory> canGo = new CompositeMatchOr<>(endCondition, routeCondition);
+    final IntegerMap<Territory> visited = new IntegerMap<>();
+    final Queue<Territory> q = new LinkedList<>();
+    final List<Territory> frontier = new ArrayList<>();
     q.addAll(data.getMap().getNeighbors(start, canGo));
     Territory current = null;
     visited.put(start, 0);
@@ -675,8 +675,8 @@ public final class ProTechAI {
   private static List<Territory> findUnitTerr(final GameData data, final PlayerID player,
       final Match<Unit> unitCondition) {
     // Return territories containing a certain unit or set of Units
-    final CompositeMatch<Unit> limitShips = new CompositeMatchAnd<Unit>(unitCondition);
-    final List<Territory> shipTerr = new ArrayList<Territory>();
+    final CompositeMatch<Unit> limitShips = new CompositeMatchAnd<>(unitCondition);
+    final List<Territory> shipTerr = new ArrayList<>();
     final Collection<Territory> tNeighbors = data.getMap().getTerritories();
     for (final Territory t2 : tNeighbors) {
       if (t2.getUnits().someMatch(limitShips)) {
@@ -690,11 +690,11 @@ public final class ProTechAI {
    * Interleave infantry and artillery/armor for loading on transports
    */
   private static List<Unit> sortTransportUnits(final List<Unit> transUnits) {
-    final List<Unit> sorted = new ArrayList<Unit>();
-    final List<Unit> infantry = new ArrayList<Unit>();
-    final List<Unit> artillery = new ArrayList<Unit>();
-    final List<Unit> armor = new ArrayList<Unit>();
-    final List<Unit> others = new ArrayList<Unit>();
+    final List<Unit> sorted = new ArrayList<>();
+    final List<Unit> infantry = new ArrayList<>();
+    final List<Unit> artillery = new ArrayList<>();
+    final List<Unit> armor = new ArrayList<>();
+    final List<Unit> others = new ArrayList<>();
     for (final Unit x : transUnits) {
       if (Matches.UnitIsArtillerySupportable.match(x)) {
         infantry.add(x);
@@ -744,7 +744,7 @@ public final class ProTechAI {
   }
 
   private final static Match<Territory> TerritoryIsNotImpassableToAirUnits(final GameData data) {
-    return new InverseMatch<Territory>(TerritoryIsImpassableToAirUnits(data));
+    return new InverseMatch<>(TerritoryIsImpassableToAirUnits(data));
   }
 
   /**

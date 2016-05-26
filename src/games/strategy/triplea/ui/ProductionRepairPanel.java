@@ -8,18 +8,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 
 import games.strategy.common.swing.SwingAction;
@@ -46,14 +37,14 @@ public class ProductionRepairPanel extends JPanel {
   private final JFrame m_owner = null;
   private JDialog m_dialog;
   private final IUIContext m_uiContext;
-  private final List<Rule> m_rules = new ArrayList<Rule>();
+  private final List<Rule> m_rules = new ArrayList<>();
   private final JLabel m_left = new JLabel();
   private JButton m_done;
   private PlayerID m_id;
   private boolean m_bid;
   private Collection<PlayerID> m_allowedPlayersToRepair;
   private GameData m_data;
-  private static HashMap<Unit, Integer> m_repairCount = new HashMap<Unit, Integer>();
+  private static HashMap<Unit, Integer> m_repairCount = new HashMap<>();
 
   public static HashMap<Unit, IntegerMap<RepairRule>> getProduction(final PlayerID id,
       final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
@@ -129,7 +120,7 @@ public class ProductionRepairPanel extends JPanel {
       this.m_id = player;
       this.m_allowedPlayersToRepair = allowedPlayersToRepair;
       final CompositeMatchAnd<Unit> myDamagedUnits =
-          new CompositeMatchAnd<Unit>(Matches.unitIsOwnedByOfAnyOfThesePlayers(m_allowedPlayersToRepair),
+          new CompositeMatchAnd<>(Matches.unitIsOwnedByOfAnyOfThesePlayers(m_allowedPlayersToRepair),
               Matches.UnitHasTakenSomeBombingUnitDamage);
       final Collection<Territory> terrsWithPotentiallyDamagedUnits =
           Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
@@ -185,12 +176,12 @@ public class ProductionRepairPanel extends JPanel {
   Action m_done_action = SwingAction.of("Done", e -> m_dialog.setVisible(false));
 
   private HashMap<Unit, IntegerMap<RepairRule>> getProduction() {
-    final HashMap<Unit, IntegerMap<RepairRule>> prod = new HashMap<Unit, IntegerMap<RepairRule>>();
+    final HashMap<Unit, IntegerMap<RepairRule>> prod = new HashMap<>();
     // IntegerMap<RepairRule> repairRule = new IntegerMap<RepairRule>();
     for (final Rule rule : m_rules) {
       final int quantity = rule.getQuantity();
       if (quantity != 0) {
-        final IntegerMap<RepairRule> repairRule = new IntegerMap<RepairRule>();
+        final IntegerMap<RepairRule> repairRule = new IntegerMap<>();
         final Unit unit = rule.getUnit();
         repairRule.put(rule.getProductionRule(), quantity);
         prod.put(unit, repairRule);
@@ -264,10 +255,11 @@ public class ProductionRepairPanel extends JPanel {
       }
       m_repairResults = rule.getResults().getInt(type);
       final TripleAUnit taUnit = (TripleAUnit) repairUnit;
-      final Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data,
+      final Optional<ImageIcon> icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data,
           Matches.UnitHasTakenSomeBombingUnitDamage.match(repairUnit), Matches.UnitIsDisabled.match(repairUnit));
       final String text = "<html> x " + ResourceCollection.toStringForHTML(m_cost, m_data) + "</html>";
-      final JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
+
+      final JLabel label = icon.isPresent() ? new JLabel(text, icon.get(), SwingConstants.LEFT) : new JLabel(text, SwingConstants.LEFT);
       final JLabel info = new JLabel(territoryUnitIsIn.getName());
       m_maxRepairAmount = taUnit.getHowMuchCanThisUnitBeRepaired(repairUnit, territoryUnitIsIn);
       final JLabel remaining = new JLabel("Damage left to repair: " + m_maxRepairAmount);

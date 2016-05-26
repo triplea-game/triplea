@@ -221,7 +221,7 @@ public class LobbyGamePanel extends JPanel {
   }
 
   private List<Action> getGamesListRightClickActions(final GameDescription description) {
-    final List<Action> rVal = new ArrayList<Action>();
+    final List<Action> rVal = new ArrayList<>();
     rVal.add(getJoinGameAction());
     rVal.add(getHostGameAction());
     if (isAdmin()) {

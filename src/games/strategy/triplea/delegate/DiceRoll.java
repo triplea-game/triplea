@@ -114,12 +114,12 @@ public class DiceRoll implements Externalizable {
       final Collection<Unit> defendingAAForThisRoll, final IDelegateBridge bridge, final Territory location,
       final boolean defending) {
     {
-      final Set<Unit> duplicatesCheckSet1 = new HashSet<Unit>(validAttackingUnitsForThisRoll);
+      final Set<Unit> duplicatesCheckSet1 = new HashSet<>(validAttackingUnitsForThisRoll);
       if (validAttackingUnitsForThisRoll.size() != duplicatesCheckSet1.size()) {
         throw new IllegalStateException("Duplicate Units Detected: Original List:" + validAttackingUnitsForThisRoll
             + "  HashSet:" + duplicatesCheckSet1);
       }
-      final Set<Unit> duplicatesCheckSet2 = new HashSet<Unit>(defendingAAForThisRoll);
+      final Set<Unit> duplicatesCheckSet2 = new HashSet<>(defendingAAForThisRoll);
       if (defendingAAForThisRoll.size() != duplicatesCheckSet2.size()) {
         throw new IllegalStateException(
             "Duplicate Units Detected: Original List:" + defendingAAForThisRoll + "  HashSet:" + duplicatesCheckSet2);
@@ -129,12 +129,12 @@ public class DiceRoll implements Externalizable {
         (defending ? Matches.UnitAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero
             : Matches.UnitOffensiveAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero));
     if (defendingAA.isEmpty()) {
-      return new DiceRoll(new ArrayList<Die>(0), 0);
+      return new DiceRoll(new ArrayList<>(0), 0);
     }
     final GameData data = bridge.getData();
     final int totalAAattacksTotal = getTotalAAattacks(defendingAA, validAttackingUnitsForThisRoll);
     if (totalAAattacksTotal <= 0) {
-      return new DiceRoll(new ArrayList<Die>(0), 0);
+      return new DiceRoll(new ArrayList<>(0), 0);
     }
     // determine dicesides for everyone (we are not going to consider the possibility of different dicesides within the
     // same typeAA)
@@ -142,7 +142,7 @@ public class DiceRoll implements Externalizable {
     // final int highestAttackPower = attackThenDiceSidesForAll.getFirst();
     final int chosenDiceSizeForAll = attackThenDiceSidesForAll.getSecond();
     int hits = 0;
-    final List<Die> sortedDice = new ArrayList<Die>();
+    final List<Die> sortedDice = new ArrayList<>();
     final String typeAA = UnitAttachment.get(defendingAA.get(0).getType()).getTypeAA();
     // LOW LUCK
     if (games.strategy.triplea.Properties.getLow_Luck(data) || games.strategy.triplea.Properties.getLL_AA_ONLY(data)) {
@@ -212,7 +212,7 @@ public class DiceRoll implements Externalizable {
     // (an aa guns that is both infinite, and overstacks, ignores the overstack part because that totally doesn't make
     // any sense)
     // set up all 3 groups of aa guns
-    final List<Unit> normalNonInfiniteAA = new ArrayList<Unit>(defendingAA);
+    final List<Unit> normalNonInfiniteAA = new ArrayList<>(defendingAA);
     final List<Unit> infiniteAA = Match.getMatches(defendingAA, Matches.UnitMaxAAattacksIsInfinite);
     final List<Unit> overstackAA = Match.getMatches(defendingAA, Matches.UnitMayOverStackAA);
     overstackAA.removeAll(infiniteAA);
@@ -250,7 +250,7 @@ public class DiceRoll implements Externalizable {
     int totalPower = 0;
     int hits = 0;
     int i = 0;
-    final Set<Integer> rolledAt = new HashSet<Integer>();
+    final Set<Integer> rolledAt = new HashSet<>();
     // non-infinite, non-overstack aa
     int runningMaximum = normalNonInfiniteAAtotalAAattacks;
     final Iterator<Unit> normalAAiter = normalNonInfiniteAA.iterator();
@@ -393,7 +393,7 @@ public class DiceRoll implements Externalizable {
       return new DiceRoll(Lists.newArrayList(), 0);
     }
     int[] random = bridge.getRandom(sides, rollCount, playerRolling, diceType, annotation);
-    final List<Die> dice = new ArrayList<Die>();
+    final List<Die> dice = new ArrayList<>();
     for (int i = 0; i < rollCount; i++) {
       dice.add(new Die(random[i], 1, DieType.IGNORED));
     }
@@ -412,8 +412,8 @@ public class DiceRoll implements Externalizable {
 
     return getUnitPowerAndRollsForNormalBattles(unitsGettingPowerFor,
         allEnemyUnitsAliveOrWaitingToDie, defending, bombing, data, location, territoryEffects,
-        isAmphibiousBattle, amphibiousLandAttackers, new HashMap<Unit, IntegerMap<Unit>>(),
-        new HashMap<Unit, IntegerMap<Unit>>());
+        isAmphibiousBattle, amphibiousLandAttackers, new HashMap<>(),
+        new HashMap<>());
   }
 
   /**
@@ -427,37 +427,37 @@ public class DiceRoll implements Externalizable {
       final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibiousBattle,
       final Collection<Unit> amphibiousLandAttackers, final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
-    final Map<Unit, Tuple<Integer, Integer>> rVal = new HashMap<Unit, Tuple<Integer, Integer>>();
+    final Map<Unit, Tuple<Integer, Integer>> rVal = new HashMap<>();
     if (unitsGettingPowerFor == null || unitsGettingPowerFor.isEmpty()) {
       return rVal;
     }
     // get all supports, friendly and enemy
-    final Set<List<UnitSupportAttachment>> supportRulesFriendly = new HashSet<List<UnitSupportAttachment>>();
-    final IntegerMap<UnitSupportAttachment> supportLeftFriendly = new IntegerMap<UnitSupportAttachment>();
+    final Set<List<UnitSupportAttachment>> supportRulesFriendly = new HashSet<>();
+    final IntegerMap<UnitSupportAttachment> supportLeftFriendly = new IntegerMap<>();
     final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftFriendly =
-        new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
+        new HashMap<>();
     getSupport(unitsGettingPowerFor, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly,
         data, defending, true);
-    final Set<List<UnitSupportAttachment>> supportRulesEnemy = new HashSet<List<UnitSupportAttachment>>();
-    final IntegerMap<UnitSupportAttachment> supportLeftEnemy = new IntegerMap<UnitSupportAttachment>();
+    final Set<List<UnitSupportAttachment>> supportRulesEnemy = new HashSet<>();
+    final IntegerMap<UnitSupportAttachment> supportLeftEnemy = new IntegerMap<>();
     final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftEnemy =
-        new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
+        new HashMap<>();
     getSupport(allEnemyUnitsAliveOrWaitingToDie, supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, data,
         !defending, false);
     // copy for rolls
     final IntegerMap<UnitSupportAttachment> supportLeftFriendlyRolls =
-        new IntegerMap<UnitSupportAttachment>(supportLeftFriendly);
+        new IntegerMap<>(supportLeftFriendly);
     final IntegerMap<UnitSupportAttachment> supportLeftEnemyRolls =
-        new IntegerMap<UnitSupportAttachment>(supportLeftEnemy);
+        new IntegerMap<>(supportLeftEnemy);
     final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftFriendlyRolls =
-        new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
+        new HashMap<>();
     for (final UnitSupportAttachment usa : supportUnitsLeftFriendly.keySet()) {
-      supportUnitsLeftFriendlyRolls.put(usa, new LinkedIntegerMap<Unit>(supportUnitsLeftFriendly.get(usa)));
+      supportUnitsLeftFriendlyRolls.put(usa, new LinkedIntegerMap<>(supportUnitsLeftFriendly.get(usa)));
     }
     final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftEnemyRolls =
-        new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
+        new HashMap<>();
     for (final UnitSupportAttachment usa : supportUnitsLeftEnemy.keySet()) {
-      supportUnitsLeftEnemyRolls.put(usa, new LinkedIntegerMap<Unit>(supportUnitsLeftEnemy.get(usa)));
+      supportUnitsLeftEnemyRolls.put(usa, new LinkedIntegerMap<>(supportUnitsLeftEnemy.get(usa)));
     }
     final int diceSides = data.getDiceSides();
     for (final Unit current : unitsGettingPowerFor) {
@@ -581,9 +581,9 @@ public class DiceRoll implements Externalizable {
   private static DiceRoll rollDiceLowLuck(final List<Unit> unitsList, final boolean defending, final PlayerID player,
       final IDelegateBridge bridge, final IBattle battle, final String annotation,
       final Collection<TerritoryEffect> territoryEffects, final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
-    final List<Unit> units = new ArrayList<Unit>(unitsList);
+    final List<Unit> units = new ArrayList<>(unitsList);
     {
-      final Set<Unit> duplicatesCheckSet = new HashSet<Unit>(unitsList);
+      final Set<Unit> duplicatesCheckSet = new HashSet<>(unitsList);
       if (units.size() != duplicatesCheckSet.size()) {
         throw new IllegalStateException(
             "Duplicate Units Detected: Original List:" + units + "  HashSet:" + duplicatesCheckSet);
@@ -598,10 +598,10 @@ public class DiceRoll implements Externalizable {
             data, location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers);
     final int power = getTotalPower(unitPowerAndRollsMap, data);
     if (power == 0) {
-      return new DiceRoll(new ArrayList<Die>(0), 0);
+      return new DiceRoll(new ArrayList<>(0), 0);
     }
     int hitCount = power / data.getDiceSides();
-    final List<Die> dice = new ArrayList<Die>();
+    final List<Die> dice = new ArrayList<>();
     // We need to roll dice for the fractional part of the dice.
     final int rollFor = power % data.getDiceSides();
     final int[] random;
@@ -655,20 +655,20 @@ public class DiceRoll implements Externalizable {
       if (!((allies && rule.getAllied()) || (!allies && rule.getEnemy()))) {
         continue;
       }
-      final CompositeMatchAnd<Unit> canSupport = new CompositeMatchAnd<Unit>(
+      final CompositeMatchAnd<Unit> canSupport = new CompositeMatchAnd<>(
           Matches.unitIsOfType((UnitType) rule.getAttachedTo()), Matches.unitOwnedBy(rule.getPlayers()));
       final List<Unit> supporters = Match.getMatches(unitsGivingTheSupport, canSupport);
       int numSupport = supporters.size();
       if (numSupport <= 0) {
         continue;
       }
-      final List<Unit> impArtTechUnits = new ArrayList<Unit>();
+      final List<Unit> impArtTechUnits = new ArrayList<>();
       if (rule.getImpArtTech()) {
         impArtTechUnits.addAll(Match.getMatches(supporters, Matches.unitOwnerHasImprovedArtillerySupportTech()));
       }
       numSupport += impArtTechUnits.size();
       supportLeft.put(rule, numSupport * rule.getNumber());
-      supportUnitsLeft.put(rule, new LinkedIntegerMap<Unit>(supporters, rule.getNumber()));
+      supportUnitsLeft.put(rule, new LinkedIntegerMap<>(supporters, rule.getNumber()));
       supportUnitsLeft.get(rule).addAll(impArtTechUnits, rule.getNumber());
       final Iterator<List<UnitSupportAttachment>> iter2 = supportsAvailable.iterator();
       List<UnitSupportAttachment> ruleType = null;
@@ -682,7 +682,7 @@ public class DiceRoll implements Externalizable {
         }
       }
       if (!found) {
-        ruleType = new ArrayList<UnitSupportAttachment>();
+        ruleType = new ArrayList<>();
         supportsAvailable.add(ruleType);
       }
       if (ruleType != null) {
@@ -730,7 +730,7 @@ public class DiceRoll implements Externalizable {
               if (unitSupportMap.containsKey(u)) {
                 unitSupportMap.get(u).add(unit, rule.getBonus());
               } else {
-                unitSupportMap.put(u, new IntegerMap<Unit>(unit, rule.getBonus()));
+                unitSupportMap.put(u, new IntegerMap<>(unit, rule.getBonus()));
               }
             }
           }
@@ -747,11 +747,11 @@ public class DiceRoll implements Externalizable {
       public int compare(final Unit u1, final Unit u2) {
         Integer v1, v2;
         if (defending) {
-          v1 = Integer.valueOf(UnitAttachment.get(u1.getType()).getDefense(u1.getOwner()));
-          v2 = Integer.valueOf(UnitAttachment.get(u2.getType()).getDefense(u2.getOwner()));
+          v1 = UnitAttachment.get(u1.getType()).getDefense(u1.getOwner());
+          v2 = UnitAttachment.get(u2.getType()).getDefense(u2.getOwner());
         } else {
-          v1 = Integer.valueOf(UnitAttachment.get(u1.getType()).getAttack(u1.getOwner()));
-          v2 = Integer.valueOf(UnitAttachment.get(u2.getType()).getAttack(u2.getOwner()));
+          v1 = UnitAttachment.get(u1.getType()).getAttack(u1.getOwner());
+          v2 = UnitAttachment.get(u2.getType()).getAttack(u2.getOwner());
         }
         return v1.compareTo(v2);
       }
@@ -861,7 +861,7 @@ public class DiceRoll implements Externalizable {
   public static DiceRoll airBattle(final List<Unit> unitsList, final boolean defending, final PlayerID player,
       final IDelegateBridge bridge, final String annotation) {
     {
-      final Set<Unit> duplicatesCheckSet1 = new HashSet<Unit>(unitsList);
+      final Set<Unit> duplicatesCheckSet1 = new HashSet<>(unitsList);
       if (unitsList.size() != duplicatesCheckSet1.size()) {
         throw new IllegalStateException(
             "Duplicate Units Detected: Original List:" + unitsList + "  HashSet:" + duplicatesCheckSet1);
@@ -869,13 +869,13 @@ public class DiceRoll implements Externalizable {
     }
     final GameData data = bridge.getData();
     final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
-    final List<Unit> units = new ArrayList<Unit>(unitsList);
+    final List<Unit> units = new ArrayList<>(unitsList);
     final int rollCount = AirBattle.getAirBattleRolls(unitsList, defending);
     if (rollCount == 0) {
-      return new DiceRoll(new ArrayList<Die>(), 0);
+      return new DiceRoll(new ArrayList<>(), 0);
     }
     int[] random;
-    final List<Die> dice = new ArrayList<Die>();
+    final List<Die> dice = new ArrayList<>();
     int hitCount = 0;
     if (games.strategy.triplea.Properties.getLow_Luck(data)) {
       // bonus is normally 1 for most games
@@ -969,9 +969,9 @@ public class DiceRoll implements Externalizable {
   private static DiceRoll rollDiceNormal(final List<Unit> unitsList, final boolean defending, final PlayerID player,
       final IDelegateBridge bridge, final IBattle battle, final String annotation,
       final Collection<TerritoryEffect> territoryEffects, final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
-    final List<Unit> units = new ArrayList<Unit>(unitsList);
+    final List<Unit> units = new ArrayList<>(unitsList);
     {
-      final Set<Unit> duplicatesCheckSet = new HashSet<Unit>(unitsList);
+      final Set<Unit> duplicatesCheckSet = new HashSet<>(unitsList);
       if (units.size() != duplicatesCheckSet.size()) {
         throw new IllegalStateException(
             "Duplicate Units Detected: Original List:" + units + "  HashSet:" + duplicatesCheckSet);
@@ -988,11 +988,11 @@ public class DiceRoll implements Externalizable {
     final Tuple<Integer, Integer> totalPowerAndRolls = getTotalPowerAndRolls(unitPowerAndRollsMap, data);
     final int rollCount = totalPowerAndRolls.getSecond();
     if (rollCount == 0) {
-      return new DiceRoll(new ArrayList<Die>(), 0);
+      return new DiceRoll(new ArrayList<>(), 0);
     }
     final int[] random = bridge.getRandom(data.getDiceSides(), rollCount, player, DiceType.COMBAT, annotation);
     final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
-    final List<Die> dice = new ArrayList<Die>();
+    final List<Die> dice = new ArrayList<>();
     int hitCount = 0;
     int diceIndex = 0;
     for (final Unit current : units) {
@@ -1104,7 +1104,7 @@ public class DiceRoll implements Externalizable {
    */
   public DiceRoll(final int[] dice, final int hits, final int rollAt, final boolean hitOnlyIfEquals) {
     m_hits = hits;
-    m_rolls = new ArrayList<Die>(dice.length);
+    m_rolls = new ArrayList<>(dice.length);
     for (final int element : dice) {
       boolean hit;
       if (hitOnlyIfEquals) {
@@ -1120,7 +1120,7 @@ public class DiceRoll implements Externalizable {
   public DiceRoll() {}
 
   private DiceRoll(final List<Die> dice, final int hits) {
-    m_rolls = new ArrayList<Die>(dice);
+    m_rolls = new ArrayList<>(dice);
     m_hits = hits;
   }
 
@@ -1136,7 +1136,7 @@ public class DiceRoll implements Externalizable {
    *         0..MAX_DICE
    */
   public List<Die> getRolls(final int rollAt) {
-    final List<Die> rVal = new ArrayList<Die>();
+    final List<Die> rVal = new ArrayList<>();
     for (final Die die : m_rolls) {
       if (die.getRolledAt() == rollAt) {
         rVal.add(die);
@@ -1166,7 +1166,7 @@ public class DiceRoll implements Externalizable {
   @Override
   public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
     final int[] dice = (int[]) in.readObject();
-    m_rolls = new ArrayList<Die>(dice.length);
+    m_rolls = new ArrayList<>(dice.length);
     for (final int element : dice) {
       m_rolls.add(Die.getFromWriteValue(element));
     }

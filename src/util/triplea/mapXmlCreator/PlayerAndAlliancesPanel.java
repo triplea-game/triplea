@@ -20,7 +20,7 @@ import games.strategy.common.swing.SwingAction;
 
 public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
 
-  private final TreeSet<String> alliances = new TreeSet<String>();
+  private final TreeSet<String> alliances = new TreeSet<>();
 
   public PlayerAndAlliancesPanel(final JPanel stepActionPanel) {
     super(stepActionPanel);
@@ -171,7 +171,7 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
           alliances.iterator().next()); // Initial choice
       if (removeAllianceName == null || removeAllianceName.isEmpty())
         return;
-      final ArrayList<String> playerStillUsing = new ArrayList<String>();
+      final ArrayList<String> playerStillUsing = new ArrayList<>();
       for (final DynamicRow row : rows) {
         if (((PlayerAndAlliancesRow) row).isAllianceSelected(removeAllianceName))
           playerStillUsing.add(row.getRowName());
@@ -180,7 +180,7 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
         StringBuilder formattedPlayerList = new StringBuilder();
         final boolean plural = playerStillUsing.size() > 1;
         for (final String playerString : playerStillUsing)
-          formattedPlayerList.append("\r - " + playerString);
+          formattedPlayerList.append("\r - ").append(playerString);
         JOptionPane.showMessageDialog(getOwnPanel(), "Cannot remove alliance.\rThe following player"
             + (plural ? "s are" : " is") + " still assigned to alliance '"
             + removeAllianceName + "':"

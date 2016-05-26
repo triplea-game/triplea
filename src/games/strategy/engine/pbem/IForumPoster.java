@@ -18,14 +18,14 @@ public interface IForumPoster extends IBean {
    *        the forum subject
    * @return true if the post was successful
    */
-  public boolean postTurnSummary(String summary, final String subject);
+  boolean postTurnSummary(String summary, final String subject);
 
   /**
    * Get the reference to the posted turn summary
    *
    * @return the reference string, often a URL
    */
-  public String getTurnSummaryRef();
+  String getTurnSummaryRef();
 
   /**
    * Should the summary include the save game. When this is true the client must call addSaveGame prior to calling
@@ -33,7 +33,7 @@ public interface IForumPoster extends IBean {
    *
    * @return true if the save game should be included in the summary
    */
-  public boolean getIncludeSaveGame();
+  boolean getIncludeSaveGame();
 
   /**
    * Configure if the save game should be included in the summary post
@@ -41,14 +41,14 @@ public interface IForumPoster extends IBean {
    * @param include
    *        true if the save game should be included
    */
-  public void setIncludeSaveGame(boolean include);
+  void setIncludeSaveGame(boolean include);
 
   /**
    * Should we also post at the end of combat move
    *
    * @return true if the save game should be included in the summary
    */
-  public boolean getAlsoPostAfterCombatMove();
+  boolean getAlsoPostAfterCombatMove();
 
   /**
    * Configure if we should also post at the end of combat move
@@ -56,7 +56,7 @@ public interface IForumPoster extends IBean {
    * @param include
    *        true if the save game should be included
    */
-  public void setAlsoPostAfterCombatMove(boolean postAlso);
+  void setAlsoPostAfterCombatMove(boolean postAlso);
 
   /**
    * Called to add the save game to the summary, this should only be called if getIncludeSaveGame returns true
@@ -79,39 +79,38 @@ public interface IForumPoster extends IBean {
    *
    * @return true if save games are supported
    */
-  public boolean supportsSaveGame();
+  boolean supportsSaveGame();
 
   /**
    * Can you view the forum post with this poster
    */
-  public boolean getCanViewPosted();
+  boolean getCanViewPosted();
 
   /**
    * Get the user name to login with
    */
-  @Override
-  public String getDisplayName();
+  @Override String getDisplayName();
 
   /**
    * Get the forum id
    *
    * @return the forum id
    */
-  public String getTopicId();
+  String getTopicId();
 
   /**
    * get the user name to login
    *
    * @return the user name
    */
-  public String getUsername();
+  String getUsername();
 
   /**
    * Get the password to login
    *
    * @return the password
    */
-  public String getPassword();
+  String getPassword();
 
   /**
    * Set the forum id
@@ -119,7 +118,7 @@ public interface IForumPoster extends IBean {
    * @param forumId
    *        the new forum id
    */
-  public void setTopicId(String forumId);
+  void setTopicId(String forumId);
 
   /**
    * Set the user name
@@ -127,7 +126,7 @@ public interface IForumPoster extends IBean {
    * @param username
    *        the new user name
    */
-  public void setUsername(String username);
+  void setUsername(String username);
 
   /**
    * Set the password
@@ -135,12 +134,12 @@ public interface IForumPoster extends IBean {
    * @param password
    *        the new password
    */
-  public void setPassword(String password);
+  void setPassword(String password);
 
   /**
    * Opens a browser and go to the forum post, identified by the forumId
    */
-  public void viewPosted();
+  void viewPosted();
 
   /**
    * Remove any sensitive information, like passwords before this object is saved in as a game properties

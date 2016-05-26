@@ -26,7 +26,7 @@ public class AllUsersPanel extends JPanel {
 
   public AllUsersPanel(final IMessenger messenger) {
     m_messenger = messenger;
-    m_orderedNodes = new ArrayList<INode>();
+    m_orderedNodes = new ArrayList<>();
     createComponents();
     layoutComponents();
     setupListeners();

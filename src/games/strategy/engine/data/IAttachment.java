@@ -14,13 +14,13 @@ public interface IAttachment extends Serializable {
    * @throws GameParseException
    *         an error has occurred while validation
    */
-  public void validate(GameData data) throws GameParseException;
+  void validate(GameData data) throws GameParseException;
 
-  public Attachable getAttachedTo();
+  Attachable getAttachedTo();
 
-  public void setAttachedTo(Attachable attachable);
+  void setAttachedTo(Attachable attachable);
 
-  public String getName();
+  String getName();
 
-  public void setName(String aString);
+  void setName(String aString);
 }

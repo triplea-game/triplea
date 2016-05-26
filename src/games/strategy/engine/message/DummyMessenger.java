@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.IMessageListener;
@@ -22,13 +23,13 @@ import games.strategy.net.Node;
  */
 public class DummyMessenger implements IServerMessenger {
   private final CopyOnWriteArrayList<IConnectionChangeListener> m_connectionChangeListeners =
-      new CopyOnWriteArrayList<IConnectionChangeListener>();
+      new CopyOnWriteArrayList<>();
 
   public DummyMessenger() {
     try {
       m_node = new Node("dummy", InetAddress.getLocalHost(), 0);
     } catch (final UnknownHostException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(e.getMessage());
     }
   }
@@ -84,7 +85,7 @@ public class DummyMessenger implements IServerMessenger {
    */
   @Override
   public Set<INode> getNodes() {
-    return new HashSet<INode>();
+    return new HashSet<>();
   }
 
   /**

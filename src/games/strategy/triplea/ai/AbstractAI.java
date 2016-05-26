@@ -41,7 +41,7 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -64,7 +64,7 @@ import games.strategy.util.Tuple;
  * through an IDelegate using a change).
  * <p>
  */
-public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlayer, IGamePlayer {
+public abstract class AbstractAI extends AbstractBaseAI implements ITripleAPlayer, IGamePlayer {
   private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
 
   /**
@@ -77,8 +77,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     super(name, type);
   }
 
-  public final Class<ITripleaPlayer> getRemotePlayerType() {
-    return ITripleaPlayer.class;
+  public final Class<ITripleAPlayer> getRemotePlayerType() {
+    return ITripleAPlayer.class;
   }
 
   /************************
@@ -208,8 +208,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     final CasualtyDetails myCasualties = new CasualtyDetails(false);
     myCasualties.addToDamaged(defaultCasualties.getDamaged());
     // the list we receive should already be sorted
-    final List<Unit> selectFromSorted = new ArrayList<Unit>(selectFrom);
-    final List<Unit> interleavedTargetList = new ArrayList<Unit>(
+    final List<Unit> selectFromSorted = new ArrayList<>(selectFrom);
+    final List<Unit> interleavedTargetList = new ArrayList<>(
         AdvancedUtils.interleaveCarriersAndPlanes(selectFromSorted, numberOfPlanesThatDoNotNeedToLandOnCarriers));
     // TODO: if we are going to lose this battle by a wide margin, we may not want to interleave these units
     for (int i = 0; i < defaultCasualties.getKilled().size(); ++i) {
@@ -237,7 +237,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
   @Override
   public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
       final Territory from) {
-    final List<Unit> rVal = new ArrayList<Unit>();
+    final List<Unit> rVal = new ArrayList<>();
     for (final Unit fighter : fightersThatCanBeMoved) {
       if (Math.random() < 0.8) {
         rVal.add(fighter);
@@ -305,7 +305,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
       return true;
     }
     final Collection<String> myAlliances =
-        new HashSet<String>(getGameData().getAllianceTracker().getAlliancesPlayerIsIn(getPlayerID()));
+        new HashSet<>(getGameData().getAllianceTracker().getAlliancesPlayerIsIn(getPlayerID()));
     myAlliances.retainAll(getGameData().getAllianceTracker().getAlliancesPlayerIsIn(playerSendingProposal));
     if (!myAlliances.isEmpty()) {
       return true;
@@ -330,7 +330,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
       return null;
     }
     final IntegerMap<Resource> playerResourceCollection = id.getResources().getResourcesCopy();
-    final IntegerMap<Resource> attackTokens = new IntegerMap<Resource>();
+    final IntegerMap<Resource> attackTokens = new IntegerMap<>();
     for (final Resource possible : resourcesAndAttackValues.keySet()) {
       final int amount = playerResourceCollection.getInt(possible);
       if (amount > 0) {
@@ -341,26 +341,26 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
       return null;
     }
     final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> rVal =
-        new HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>>();
+        new HashMap<>();
     for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet()) {
       if (attackTokens.size() <= 0) {
         continue;
       }
       final Territory t = entry.getKey();
-      final List<Unit> targets = new ArrayList<Unit>(entry.getValue());
+      final List<Unit> targets = new ArrayList<>(entry.getValue());
       Collections.shuffle(targets);
       for (final Unit u : targets) {
         if (attackTokens.size() <= 0) {
           continue;
         }
-        final IntegerMap<Resource> rMap = new IntegerMap<Resource>();
+        final IntegerMap<Resource> rMap = new IntegerMap<>();
         final Resource r = attackTokens.keySet().iterator().next();
         final int num = Math.min(attackTokens.getInt(r),
             (UnitAttachment.get(u.getType()).getHitPoints() * (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
         rMap.put(r, num);
         HashMap<Unit, IntegerMap<Resource>> attMap = rVal.get(t);
         if (attMap == null) {
-          attMap = new HashMap<Unit, IntegerMap<Resource>>();
+          attMap = new HashMap<>();
         }
         attMap.put(u, rMap);
         rVal.put(t, attMap);
@@ -579,9 +579,9 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
         // only owned territories left
         final boolean nonFactoryUnitsLeft = Match.someMatch(unitChoices, Matches.UnitCanProduceUnits.invert());
         final Match<Unit> ownedFactories =
-            new CompositeMatchAnd<Unit>(Matches.UnitCanProduceUnits, Matches.unitIsOwnedBy(me));
+            new CompositeMatchAnd<>(Matches.UnitCanProduceUnits, Matches.unitIsOwnedBy(me));
         final List<Territory> capitals = TerritoryAttachment.getAllCapitals(me, data);
-        final List<Territory> test = new ArrayList<Territory>(capitals);
+        final List<Territory> test = new ArrayList<>(capitals);
         test.retainAll(territoryChoices);
         final List<Territory> territoriesWithFactories =
             Match.getMatches(territoryChoices, Matches.territoryHasUnitsThatMatch(ownedFactories));
@@ -591,7 +591,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
             picked = test.get(0);
           } else {
             if (capitals.isEmpty()) {
-              capitals.addAll(Match.getMatches(data.getMap().getTerritories(), new CompositeMatchAnd<Territory>(
+              capitals.addAll(Match.getMatches(data.getMap().getTerritories(), new CompositeMatchAnd<>(
                   Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me), Matches.TerritoryIsLand)));
             }
             final List<Territory> doesNotHaveFactoryYet =
@@ -622,7 +622,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
             picked = test.get(0);
           } else {
             if (capitals.isEmpty()) {
-              capitals.addAll(Match.getMatches(data.getMap().getTerritories(), new CompositeMatchAnd<Territory>(
+              capitals.addAll(Match.getMatches(data.getMap().getTerritories(), new CompositeMatchAnd<>(
                   Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me), Matches.TerritoryIsLand)));
             }
             if (capitals.isEmpty()) {
@@ -633,7 +633,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
               if (territoryChoices.contains(capitals.get(0))) {
                 distanceMap.put(capitals.get(0), 0);
               }
-              final List<Territory> choices = new ArrayList<Territory>();
+              final List<Territory> choices = new ArrayList<>();
               for (int i = 0; i < maxTerritoriesToPopulate; i++) {
                 final Territory choice = distanceMap.lowestKey();
                 distanceMap.removeKey(choice);
@@ -647,13 +647,13 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
       } else {
         // pick a not owned territory if possible
         final List<Territory> capitals = TerritoryAttachment.getAllCapitals(me, data);
-        final List<Territory> test = new ArrayList<Territory>(capitals);
+        final List<Territory> test = new ArrayList<>(capitals);
         test.retainAll(notOwned);
         if (!test.isEmpty()) {
           picked = test.get(0);
         } else {
           if (capitals.isEmpty()) {
-            capitals.addAll(Match.getMatches(data.getMap().getTerritories(), new CompositeMatchAnd<Territory>(
+            capitals.addAll(Match.getMatches(data.getMap().getTerritories(), new CompositeMatchAnd<>(
                 Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me), Matches.TerritoryIsLand)));
           }
           if (capitals.isEmpty()) {
@@ -666,7 +666,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
         }
       }
     }
-    final Set<Unit> unitsToPlace = new HashSet<Unit>();
+    final Set<Unit> unitsToPlace = new HashSet<>();
     if (unitChoices != null && !unitChoices.isEmpty() && unitsPerPick > 0) {
       Collections.shuffle(unitChoices);
       final List<Unit> nonFactory = Match.getMatches(unitChoices, Matches.UnitCanProduceUnits.invert());

@@ -34,7 +34,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
   }
 
   public static Collection<UserActionAttachment> getUserActionAttachments(final PlayerID player) {
-    final ArrayList<UserActionAttachment> returnList = new ArrayList<UserActionAttachment>();
+    final ArrayList<UserActionAttachment> returnList = new ArrayList<>();
     final Map<String, IAttachment> map = player.getAttachments();
     for (final Entry<String, IAttachment> entry : map.entrySet()) {
       final IAttachment a = entry.getValue();
@@ -46,35 +46,16 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
   }
 
   public static UserActionAttachment get(final PlayerID player, final String nameOfAttachment) {
-    return get(player, nameOfAttachment, null);
-  }
-
-  public static UserActionAttachment get(final PlayerID player, final String nameOfAttachment,
-      final Collection<PlayerID> playersToSearch) {
     UserActionAttachment rVal = (UserActionAttachment) player.getAttachment(nameOfAttachment);
     if (rVal == null) {
-      if (playersToSearch == null) {
-        throw new IllegalStateException(
-            "UserActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
-      } else {
-        for (final PlayerID otherPlayer : playersToSearch) {
-          if (otherPlayer == player) {
-            continue;
-          }
-          rVal = (UserActionAttachment) otherPlayer.getAttachment(nameOfAttachment);
-          if (rVal != null) {
-            return rVal;
-          }
-        }
-        throw new IllegalStateException(
-            "UserActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
-      }
+      throw new IllegalStateException(
+          "UserActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
     }
     return rVal;
   }
 
   // instance variables:
-  private ArrayList<Tuple<String, String>> m_activateTrigger = new ArrayList<Tuple<String, String>>();
+  private ArrayList<Tuple<String, String>> m_activateTrigger = new ArrayList<>();
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
@@ -135,7 +116,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
   }
 
   public void resetActivateTrigger() {
-    m_activateTrigger = new ArrayList<Tuple<String, String>>();
+    m_activateTrigger = new ArrayList<>();
   }
 
   public static void fireTriggers(final UserActionAttachment actionAttachment,
@@ -155,7 +136,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
           break;
         }
       }
-      final HashSet<TriggerAttachment> toFireSet = new HashSet<TriggerAttachment>();
+      final HashSet<TriggerAttachment> toFireSet = new HashSet<>();
       toFireSet.add(toFire);
       final String[] options = tuple.getSecond().split(":");
       final int numberOfTimesToFire = getInt(options[0]);
@@ -167,7 +148,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
         if (!testedConditionsSoFar.containsKey(toFire)) {
           // this should directly add the new tests to testConditionsToFire...
           TriggerAttachment.collectTestsForAllTriggers(toFireSet, aBridge,
-              new HashSet<ICondition>(testedConditionsSoFar.keySet()), testedConditionsSoFar);
+              new HashSet<>(testedConditionsSoFar.keySet()), testedConditionsSoFar);
         }
         if (!AbstractTriggerAttachment.isSatisfiedMatch(testedConditionsSoFar).match(toFire)) {
           continue;
@@ -183,7 +164,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
   }
 
   public Set<PlayerID> getOtherPlayers() {
-    final HashSet<PlayerID> otherPlayers = new HashSet<PlayerID>();
+    final HashSet<PlayerID> otherPlayers = new HashSet<>();
     otherPlayers.add((PlayerID) this.getAttachedTo());
     otherPlayers.addAll(m_actionAccept);
     return otherPlayers;
@@ -194,7 +175,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
    */
   public static Collection<UserActionAttachment> getValidActions(final PlayerID player,
       final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
-    return Match.getMatches(getUserActionAttachments(player), new CompositeMatchAnd<UserActionAttachment>(
+    return Match.getMatches(getUserActionAttachments(player), new CompositeMatchAnd<>(
         Matches.AbstractUserActionAttachmentCanBeAttempted(testedConditions)));
   }
 

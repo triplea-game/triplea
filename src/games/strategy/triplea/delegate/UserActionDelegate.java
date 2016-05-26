@@ -64,7 +64,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 
   public HashMap<ICondition, Boolean> getTestedConditions() {
     final HashSet<ICondition> allConditionsNeeded = AbstractConditionsAttachment.getAllConditionsRecursive(
-        new HashSet<ICondition>(UserActionAttachment.getUserActionAttachments(m_player)), null);
+        new HashSet<>(UserActionAttachment.getUserActionAttachments(m_player)), null);
     return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_bridge);
   }
 
@@ -105,7 +105,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
         }
       } else {
         // notify the player he hasn't got enough money;
-        notifyMoney(actionChoice, false);
+        notifyMoney(actionChoice);
       }
     } else {
       // notify the player the action isn't valid anymore (shouldn't happen)
@@ -240,7 +240,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   private void notifyOtherPlayers(final UserActionAttachment uaa, final String notification) {
     if (!"NONE".equals(notification)) {
       // we can send it to just uaa.getOtherPlayers(), or we can send it to all players. both are good options.
-      final Collection<PlayerID> currentPlayer = new ArrayList<PlayerID>();
+      final Collection<PlayerID> currentPlayer = new ArrayList<>();
       currentPlayer.add(m_player);
       final Collection<PlayerID> otherPlayers = getData().getPlayerList().getPlayers();
       otherPlayers.removeAll(currentPlayer);
@@ -267,18 +267,12 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   /**
    * Let the player know he is being charged for money or that he hasn't got
    * enough money
-   *
-   * @param uaa
+   *  @param uaa
    *        the UserActionAttachment the player is notified about
-   * @param enough
-   *        is this a notification about enough or not enough money.
+   *
    */
-  private void notifyMoney(final UserActionAttachment uaa, final boolean enough) {
-    if (enough) {
-      sendNotification("Charging " + uaa.getCostPU() + " PU's to perform this action");
-    } else {
-      sendNotification("You don't have ennough money, you need " + uaa.getCostPU() + " PU's to perform this action");
-    }
+  private void notifyMoney(final UserActionAttachment uaa) {
+    sendNotification("You don't have enough money, you need " + uaa.getCostPU() + " PU's to perform this action");
   }
 
   /**

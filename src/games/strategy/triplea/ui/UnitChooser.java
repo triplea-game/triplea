@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -34,7 +35,7 @@ import games.strategy.util.Match;
 
 public class UnitChooser extends JPanel {
   private static final long serialVersionUID = -4667032237550267682L;
-  private final List<ChooserEntry> m_entries = new ArrayList<ChooserEntry>();
+  private final List<ChooserEntry> m_entries = new ArrayList<>();
   private final Map<Unit, Collection<Unit>> m_dependents;
   private JTextArea m_title;
   private int m_total = -1;
@@ -171,13 +172,13 @@ public class UnitChooser extends JPanel {
   }
 
   private void checkMatches() {
-    final Collection<Unit> allSelectedUnits = new ArrayList<Unit>();
+    final Collection<Unit> allSelectedUnits = new ArrayList<>();
     for (final ChooserEntry entry : m_entries) {
       addToCollection(allSelectedUnits, entry, entry.getTotalHits(), false);
     }
     // check match against each scroll button
     for (final ChooserEntry entry : m_entries) {
-      final Collection<Unit> newSelectedUnits = new ArrayList<Unit>(allSelectedUnits);
+      final Collection<Unit> newSelectedUnits = new ArrayList<>(allSelectedUnits);
       final int totalHits = entry.getTotalHits();
       final int totalUnits = entry.getCategory().getUnits().size();
       int leftToSelect = 0;
@@ -234,7 +235,7 @@ public class UnitChooser extends JPanel {
   }
 
   private IntegerMap<UnitCategory> createDefaultSelectionsMap(final Collection<UnitCategory> categories) {
-    final IntegerMap<UnitCategory> defaultValues = new IntegerMap<UnitCategory>();
+    final IntegerMap<UnitCategory> defaultValues = new IntegerMap<>();
     for (final UnitCategory category : categories) {
       final int defaultValue = category.getUnits().size();
       defaultValues.put(category, defaultValue);
@@ -301,7 +302,7 @@ public class UnitChooser extends JPanel {
    * If units are two hit enabled, returns those with two hits (ie: those killed).
    */
   public List<Unit> getSelected(final boolean selectDependents) {
-    final List<Unit> selectedUnits = new ArrayList<Unit>();
+    final List<Unit> selectedUnits = new ArrayList<>();
     for (final ChooserEntry entry : m_entries) {
       addToCollection(selectedUnits, entry, entry.getFinalHit(), selectDependents);
     }
@@ -312,7 +313,7 @@ public class UnitChooser extends JPanel {
    * Only applicable if this dialog was constructed using multiple hit points
    */
   public List<Unit> getSelectedDamagedMultipleHitPointUnits() {
-    final List<Unit> selectedUnits = new ArrayList<Unit>();
+    final List<Unit> selectedUnits = new ArrayList<>();
     final Iterator<ChooserEntry> entries = m_entries.iterator();
     while (entries.hasNext()) {
       final ChooserEntry chooserEntry = entries.next();
@@ -399,7 +400,7 @@ class ChooserEntry {
   private final boolean m_hasMultipleHits;
   private final List<Integer> m_defaultHits;
   private final List<ScrollableTextField> m_hitTexts;
-  private final List<JLabel> m_hitLabel = new ArrayList<JLabel>();
+  private final List<JLabel> m_hitLabel = new ArrayList<>();
   private int m_leftToSelect = 0;
   private static Insets nullInsets = new Insets(0, 0, 0, 0);
   private final IUIContext m_uiContext;
@@ -412,8 +413,8 @@ class ChooserEntry {
     m_leftToSelect = leftToSelect < 0 ? category.getUnits().size() : leftToSelect;
     m_hasMultipleHits =
         allowTwoHit && category.getHitPoints() > 1 && category.getDamaged() < category.getHitPoints() - 1;
-    m_hitTexts = new ArrayList<ScrollableTextField>(Math.max(1, category.getHitPoints() - category.getDamaged()));
-    m_defaultHits = new ArrayList<Integer>(Math.max(1, category.getHitPoints() - category.getDamaged()));
+    m_hitTexts = new ArrayList<>(Math.max(1, category.getHitPoints() - category.getDamaged()));
+    m_defaultHits = new ArrayList<>(Math.max(1, category.getHitPoints() - category.getDamaged()));
     final int numUnits = category.getUnits().size();
     int hitsUsedSoFar = 0;
     for (int i = 0; i < Math.max(1, category.getHitPoints() - category.getDamaged()); i++) {
@@ -562,16 +563,22 @@ class ChooserEntry {
     @Override
     public void paint(final Graphics g) {
       super.paint(g);
-      g.drawImage(uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
-          m_forceDamaged || m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled()), 0, 0, this);
+      Optional<Image> image = uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
+          m_forceDamaged || m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled());
+      if(image.isPresent()) {
+        g.drawImage(image.get(), 0, 0, this);
+      }
+
       final Iterator<UnitOwner> iter = m_category.getDependents().iterator();
       int index = 1;
       while (iter.hasNext()) {
         final UnitOwner holder = iter.next();
         final int x = uiContext.getUnitImageFactory().getUnitImageWidth() * index;
-        final Image unitImg =
+        final Optional<Image> unitImg =
             uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), m_data, false, false);
-        g.drawImage(unitImg, x, 0, this);
+        if(unitImg.isPresent()) {
+          g.drawImage(unitImg.get(), x, 0, this);
+        }
         index++;
       }
     }

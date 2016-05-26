@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -88,7 +87,7 @@ public class Fire implements IExecutable {
     if (m_dice != null) {
       throw new IllegalStateException("Already rolled");
     }
-    final List<Unit> units = new ArrayList<Unit>(m_firingUnits);
+    final List<Unit> units = new ArrayList<>(m_firingUnits);
     String annotation;
     if (m_isHeadless) {
       annotation = "";
@@ -103,21 +102,18 @@ public class Fire implements IExecutable {
     final int hitCount = m_dice.getHits();
     AbstractBattle.getDisplay(bridge).notifyDice(m_dice, m_stepName);
     final int countTransports =
-        Match.countMatches(m_attackableUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.UnitIsSea));
+        Match.countMatches(m_attackableUnits, new CompositeMatchAnd<>(Matches.UnitIsTransport, Matches.UnitIsSea));
     if (countTransports > 0 && isTransportCasualtiesRestricted(bridge.getData())) {
       CasualtyDetails message;
       final Collection<Unit> nonTransports = Match.getMatches(m_attackableUnits,
-          new CompositeMatchOr<Unit>(Matches.UnitIsNotTransportButCouldBeCombatTransport, Matches.UnitIsNotSea));
+          new CompositeMatchOr<>(Matches.UnitIsNotTransportButCouldBeCombatTransport, Matches.UnitIsNotSea));
       final Collection<Unit> transportsOnly = Match.getMatches(m_attackableUnits,
-          new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea));
+          new CompositeMatchAnd<>(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea));
       final int numPossibleHits = AbstractBattle.getMaxHits(nonTransports);
       // more hits than combat units
       if (hitCount > numPossibleHits) {
         int extraHits = hitCount - numPossibleHits;
-        final Collection<Unit> remainingTargets = new ArrayList<Unit>();
-        remainingTargets.addAll(m_attackableUnits);
-        remainingTargets.removeAll(nonTransports);
-        final Collection<PlayerID> alliedHitPlayer = new ArrayList<PlayerID>();
+        final Collection<PlayerID> alliedHitPlayer = new ArrayList<>();
         // find the players who have transports in the attackable pile
         for (final Unit unit : transportsOnly) {
           if (!alliedHitPlayer.contains(unit.getOwner())) {
@@ -128,7 +124,7 @@ public class Fire implements IExecutable {
         // Leave enough transports for each defender for overlfows so they can select who loses them.
         while (playerIter.hasNext()) {
           final PlayerID player = playerIter.next();
-          final CompositeMatch<Unit> match = new CompositeMatchAnd<Unit>();
+          final CompositeMatch<Unit> match = new CompositeMatchAnd<>();
           match.add(Matches.UnitIsTransportButNotCombatTransport);
           match.add(Matches.unitIsOwnedBy(player));
           final Collection<Unit> playerTransports = Match.getMatches(transportsOnly, match);
@@ -194,7 +190,7 @@ public class Fire implements IExecutable {
       return;
     }
     AbstractBattle.getDisplay(bridge).casualtyNotification(m_battleID, m_stepName, m_dice, m_hitPlayer,
-        new ArrayList<Unit>(m_killed), new ArrayList<Unit>(m_damaged), m_dependentUnits);
+        new ArrayList<>(m_killed), new ArrayList<>(m_damaged), m_dependentUnits);
     final Runnable r = new Runnable() {
       @Override
       public void run() {
@@ -205,8 +201,6 @@ public class Fire implements IExecutable {
           // somone else will deal with this
           // System.out.println(cle.getMessage());
           // cle.printStackTrace(System.out);
-        } catch (final GameOverException e) {
-          // ignore
         } catch (final Exception e) {
           // ignore
         }

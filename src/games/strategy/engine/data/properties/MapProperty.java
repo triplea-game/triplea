@@ -22,7 +22,7 @@ import javax.swing.JComponent;
 public class MapProperty<T, U> extends AEditableProperty {
   private static final long serialVersionUID = -8021039503574228146L;
   private Map<T, U> m_map;
-  final List<IEditableProperty> m_properties = new ArrayList<IEditableProperty>();
+  final List<IEditableProperty> m_properties = new ArrayList<>();
 
   public MapProperty(final String name, final String description, final Map<T, U> map) {
     super(name, description);
@@ -126,7 +126,7 @@ public class MapProperty<T, U> extends AEditableProperty {
             }
           }
         }
-        final List<IEditableProperty> testProps = new ArrayList<IEditableProperty>();
+        final List<IEditableProperty> testProps = new ArrayList<>();
         resetProperties(test, testProps, this.getName(), this.getDescription());
       } catch (final Exception e) {
         return false;

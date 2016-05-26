@@ -82,7 +82,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
     final Match<PlayerID> playerCanPickMatch = getPlayerCanPickMatch();
     final List<Territory> allPickableTerritories =
         Match.getMatches(data.getMap().getTerritories(), pickableTerritoryMatch);
-    final List<PlayerID> playersCanPick = new ArrayList<PlayerID>();
+    final List<PlayerID> playersCanPick = new ArrayList<>();
     playersCanPick.addAll(Match.getMatches(data.getPlayerList().getPlayers(), playerCanPickMatch));
     // we need a main event
     if (!playersCanPick.isEmpty()) {
@@ -105,9 +105,9 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         pos += hitRandom[i];
         i++;
         final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_currentPickingPlayer, data);
-        final List<Unit> units = new ArrayList<Unit>(m_currentPickingPlayer.getUnits().getUnits());
+        final List<Unit> units = new ArrayList<>(m_currentPickingPlayer.getUnits().getUnits());
         Collections.sort(units, new UnitCostComparator(costs));
-        final Set<Unit> unitsToPlace = new HashSet<Unit>();
+        final Set<Unit> unitsToPlace = new HashSet<>();
         unitsToPlace.add(units.get(0));
         picked = allPickableTerritories.get(pos % allPickableTerritories.size());
         final CompositeChange change = new CompositeChange();
@@ -126,8 +126,8 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         Set<Unit> unitsToPlace;
         while (true) {
           pick = getRemotePlayer(m_currentPickingPlayer).pickTerritoryAndUnits(
-              new ArrayList<Territory>(allPickableTerritories),
-              new ArrayList<Unit>(m_currentPickingPlayer.getUnits().getUnits()), UNITS_PER_PICK);
+              new ArrayList<>(allPickableTerritories),
+              new ArrayList<>(m_currentPickingPlayer.getUnits().getUnits()), UNITS_PER_PICK);
           picked = pick.getFirst();
           unitsToPlace = pick.getSecond();
           if (!allPickableTerritories.contains(picked)
@@ -173,8 +173,8 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       Set<Unit> unitsToPlace;
       while (true) {
         pick = getRemotePlayer(m_currentPickingPlayer).pickTerritoryAndUnits(
-            new ArrayList<Territory>(territoriesToPickFrom),
-            new ArrayList<Unit>(m_currentPickingPlayer.getUnits().getUnits()), UNITS_PER_PICK);
+            new ArrayList<>(territoriesToPickFrom),
+            new ArrayList<>(m_currentPickingPlayer.getUnits().getUnits()), UNITS_PER_PICK);
         picked = pick.getFirst();
         unitsToPlace = pick.getSecond();
         if (!territoriesToPickFrom.contains(picked)
@@ -221,7 +221,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   }
 
   public Match<Territory> getTerritoryPickableMatch() {
-    return new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable,
+    return new CompositeMatchAnd<>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable,
         Matches.isTerritoryOwnedBy(PlayerID.NULL_PLAYERID), Matches.TerritoryIsEmpty);
   }
 

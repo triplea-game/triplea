@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
@@ -14,7 +15,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 public class InitialSetup {
   private Iterator<UnitType> m_unitTypeIterator;
   private Iterator<PlayerID> m_playerIterator;
-  private final Map<UnitType, UnitAttachment> m_unitInfoMap = new HashMap<UnitType, UnitAttachment>();
+  private final Map<UnitType, UnitAttachment> m_unitInfoMap = new HashMap<>();
   private GameData m_data;
   private PrintGenerationData m_printData;
 
@@ -49,7 +50,7 @@ public class InitialSetup {
       new PlayerOrder().saveToFile(m_printData);
       new PUChart(m_printData).saveToFile();
     } catch (final IOException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 }

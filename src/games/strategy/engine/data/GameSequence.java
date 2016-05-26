@@ -7,10 +7,8 @@ import java.util.List;
 
 public class GameSequence extends GameDataComponent implements Iterable<GameStep> {
   private static final long serialVersionUID = 6354618406598578287L;
-  // meant purely so that we never lose our step objects, and
-  // their order, completely
-  private final List<GameStep> m_allOriginalSteps = new ArrayList<GameStep>();
-  private final List<GameStep> m_steps = new ArrayList<GameStep>();
+
+  private final List<GameStep> m_steps = new ArrayList<>();
   private int m_currentIndex;
   private int m_round = 1;
   private int m_roundOffset = 0;
@@ -51,7 +49,6 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
   }
 
   protected void addStep(final GameStep step) {
-    m_allOriginalSteps.add(step);
     m_steps.add(step);
   }
 

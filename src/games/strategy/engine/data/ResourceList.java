@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class ResourceList extends GameDataComponent {
   private static final long serialVersionUID = -8812702449627698253L;
-  private final Map<String, Resource> m_resourceList = new HashMap<String, Resource>();
+  private final Map<String, Resource> m_resourceList = new HashMap<>();
 
   public ResourceList(final GameData data) {
     super(data);
@@ -26,6 +26,6 @@ public class ResourceList extends GameDataComponent {
   }
 
   public List<Resource> getResources() {
-    return new ArrayList<Resource>(m_resourceList.values());
+    return new ArrayList<>(m_resourceList.values());
   }
 }

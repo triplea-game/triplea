@@ -80,7 +80,7 @@ public class SoundPath {
   public static final String CLIP_USER_ACTION_SUCCESSFUL = "user_action_successful";
 
   public static HashSet<String> getAllSoundOptions() {
-    final HashSet<String> rVal = new HashSet<String>();
+    final HashSet<String> rVal = new HashSet<>();
     rVal.add(CLIP_CHAT_MESSAGE);
     rVal.add(CLIP_CHAT_SLAP);
     rVal.add(CLIP_CHAT_JOIN_GAME);
@@ -135,7 +135,7 @@ public class SoundPath {
 
 
   public static ArrayList<IEditableProperty> getSoundOptions(final SoundType sounds) {
-    final ArrayList<IEditableProperty> rVal = new ArrayList<IEditableProperty>();
+    final ArrayList<IEditableProperty> rVal = new ArrayList<>();
     rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_CHAT_MESSAGE, "Chat Messaging"));
     rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_CHAT_SLAP, "Chat Slapping"));
     rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_CHAT_JOIN_GAME, "Joined Chat"));

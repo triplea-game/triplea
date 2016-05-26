@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAUnit;
@@ -63,7 +64,7 @@ public class ChangeFactory {
   }
 
   public static Change changeOwner(final Unit unit, final PlayerID owner, final Territory location) {
-    final ArrayList<Unit> list = new ArrayList<Unit>(1);
+    final ArrayList<Unit> list = new ArrayList<>(1);
     list.add(unit);
     return new PlayerOwnerChange(list, owner, location);
   }
@@ -85,8 +86,8 @@ public class ChangeFactory {
   }
 
   public static Change moveUnits(final Territory start, final Territory end, Collection<Unit> units) {
-    units = new ArrayList<Unit>(units);
-    final List<Change> changes = new ArrayList<Change>(2);
+    units = new ArrayList<>(units);
+    final List<Change> changes = new ArrayList<>(2);
     changes.add(removeUnits(start, units));
     changes.add(addUnits(end, units));
     return new CompositeChange(changes);
@@ -367,7 +368,7 @@ class RelationshipChange extends Change {
     // now redraw territories in case of new hostility
     if (Matches.RelationshipTypeIsAtWar.match(data.getRelationshipTypeList().getRelationshipType(m_NewRelation))) {
       for (final Territory t : Match.getMatches(data.getMap().getTerritories(),
-          new CompositeMatchAnd<Territory>(
+          new CompositeMatchAnd<>(
               Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerID(m_player1)),
               Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerID(m_player2))))) {
         t.notifyChanged();
@@ -393,13 +394,13 @@ class AddUnits extends Change {
   private final String m_type;
 
   AddUnits(final UnitCollection collection, final Collection<Unit> units) {
-    m_units = new ArrayList<Unit>(units);
+    m_units = new ArrayList<>(units);
     m_name = collection.getHolder().getName();
     m_type = collection.getHolder().getType();
   }
 
   AddUnits(final String name, final String type, final Collection<Unit> units) {
-    m_units = new ArrayList<Unit>(units);
+    m_units = new ArrayList<>(units);
     m_type = type;
     m_name = name;
   }
@@ -433,7 +434,7 @@ class RemoveUnits extends Change {
   }
 
   RemoveUnits(final String name, final String type, final Collection<Unit> units) {
-    m_units = new ArrayList<Unit>(units);
+    m_units = new ArrayList<>(units);
     m_name = name;
     m_type = type;
   }
@@ -532,8 +533,8 @@ class PlayerOwnerChange extends Change {
   private static final long serialVersionUID = -9154938431233632882L;
 
   PlayerOwnerChange(final Collection<Unit> units, final PlayerID newOwner, final Territory location) {
-    m_old = new HashMap<GUID, String>();
-    m_new = new HashMap<GUID, String>();
+    m_old = new HashMap<>();
+    m_new = new HashMap<>();
     m_location = location.getName();
     for (final Unit unit : units) {
       m_old.put(unit.getID(), unit.getOwner().getName());
@@ -856,14 +857,14 @@ class AddGridGameMapChange extends Change {
     m_horizontalConnections = horizontalConnections;
     m_verticalConnections = verticalConnections;
     m_diagonalConnections = diagonalConnections;
-    m_oldWater = new HashSet<String>();
+    m_oldWater = new HashSet<>();
     for (final Territory t : map.getTerritories()) {
       if (t.isWater()) {
         m_oldWater.add(t.getName());
       }
     }
-    m_removeTerritoriesAndConnections = new HashMap<Territory, Set<Territory>>();
-    m_addTerritoriesAndConnections = new HashMap<Territory, Set<Territory>>();
+    m_removeTerritoriesAndConnections = new HashMap<>();
+    m_addTerritoriesAndConnections = new HashMap<>();
     if (map.getXDimension() > m_xs) {
       // we will be removing territories
       for (final Territory t : map.getTerritories()) {
@@ -924,7 +925,7 @@ class AddGridGameMapChange extends Change {
             m_horizontalConnections, m_verticalConnections, m_diagonalConnections, true);
         map.notifyChanged();
       } catch (final Exception e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
   }
@@ -979,7 +980,7 @@ class GameSequenceChange extends Change {
   private final GameStep[] m_newSteps;
 
   GameSequenceChange(final GameSequence oldSequence, final GameStep[] newSteps) {
-    final ArrayList<GameStep> oldSteps = new ArrayList<GameStep>();
+    final ArrayList<GameStep> oldSteps = new ArrayList<>();
     for (final GameStep step : oldSequence) {
       oldSteps.add(step);
     }
@@ -1028,9 +1029,9 @@ class ObjectPropertyChange extends Change {
    */
   private Object resolve(final Object value) {
     if (value instanceof Boolean) {
-      return Boolean.valueOf(((Boolean) value).booleanValue());
+      return ((Boolean) value).booleanValue();
     } else if (value instanceof Integer) {
-      return Integer.valueOf(((Integer) value).intValue());
+      return ((Integer) value).intValue();
     }
     return value;
   }

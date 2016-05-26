@@ -75,7 +75,7 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.ui.display.DummyTripleaDisplay;
+import games.strategy.triplea.ui.display.DummyTripleADisplay;
 import games.strategy.util.IllegalCharacterRemover;
 import games.strategy.util.Tuple;
 
@@ -144,7 +144,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     private static final int COLUMNS_TOTAL = 2;
     private boolean m_isDirty = true;
     private String[][] m_collectedData;
-    final Map<String, List<String>> m_sections = new LinkedHashMap<String, List<String>>();
+    final Map<String, List<String>> m_sections = new LinkedHashMap<>();
     private long m_timestamp = 0;
 
     public ObjectiveTableModel() {
@@ -158,15 +158,15 @@ public class ObjectivePanel extends AbstractStatPanel {
     }
 
     private void setObjectiveStats() {
-      m_statsObjective = new LinkedHashMap<String, Map<ICondition, String>>();
+      m_statsObjective = new LinkedHashMap<>();
       final ObjectiveProperties op = ObjectiveProperties.getInstance();
       final Collection<PlayerID> allPlayers = m_data.getPlayerList().getPlayers();
       final String gameName =
           IllegalCharacterRemover.replaceIllegalCharacter(m_data.getGameName(), '_').replaceAll(" ", "_").concat(".");
-      final Map<String, List<String>> sectionsUnsorted = new HashMap<String, List<String>>();
-      final List<String> sectionsSorters = new ArrayList<String>();
+      final Map<String, List<String>> sectionsUnsorted = new HashMap<>();
+      final List<String> sectionsSorters = new ArrayList<>();
       final Map<String, Map<ICondition, String>> statsObjectiveUnsorted =
-          new HashMap<String, Map<ICondition, String>>();
+          new HashMap<>();
       // do sections first
       for (final Entry<Object, Object> entry : op.entrySet()) {
         final String fileKey = (String) entry.getKey();
@@ -196,8 +196,8 @@ public class ObjectivePanel extends AbstractStatPanel {
       for (final String section : sectionsSorters) {
         final String key = section.split(";")[1];
         m_sections.put(key, sectionsUnsorted.get(key));
-        m_statsObjective.put(key, new LinkedHashMap<ICondition, String>());
-        statsObjectiveUnsorted.put(key, new HashMap<ICondition, String>());
+        m_statsObjective.put(key, new LinkedHashMap<>());
+        statsObjectiveUnsorted.put(key, new HashMap<>());
       }
       // now do the stuff in the sections
       for (final Entry<Object, Object> entry : op.entrySet()) {
@@ -327,7 +327,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     }
 
     public HashMap<ICondition, String> getConditionComment(final HashMap<ICondition, Boolean> testedConditions) {
-      final HashMap<ICondition, String> conditionsComments = new HashMap<ICondition, String>(testedConditions.size());
+      final HashMap<ICondition, String> conditionsComments = new HashMap<>(testedConditions.size());
       for (final Entry<ICondition, Boolean> entry : testedConditions.entrySet()) {
         final boolean satisfied = entry.getValue();
         if (entry.getKey() instanceof TriggerAttachment) {
@@ -366,7 +366,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     }
 
     public HashMap<ICondition, Boolean> getTestedConditions() {
-      final HashSet<ICondition> myConditions = new HashSet<ICondition>();
+      final HashSet<ICondition> myConditions = new HashSet<>();
       for (final Map<ICondition, String> map : m_statsObjective.values()) {
         myConditions.addAll(map.keySet());
       }
@@ -529,7 +529,7 @@ class ObjectiveProperties {
 
 
 class ObjectivePanelDummyDelegateBridge implements IDelegateBridge {
-  private final DummyTripleaDisplay m_display = new DummyTripleaDisplay();
+  private final DummyTripleADisplay m_display = new DummyTripleADisplay();
   private final DummySoundChannel m_soundChannel = new DummySoundChannel();
   private final DelegateHistoryWriter m_writer = new DelegateHistoryWriter(new DummyGameModifiedChannel());
   private final GameData m_data;

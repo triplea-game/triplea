@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
@@ -63,7 +64,7 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
 
   private static final Map<String, Class<? extends TechAdvance>> createPreDefinedTechnologyMap() {
     final HashMap<String, Class<? extends TechAdvance>> preDefinedTechMap =
-        new HashMap<String, Class<? extends TechAdvance>>();
+        new HashMap<>();
     preDefinedTechMap.put(TECH_PROPERTY_SUPER_SUBS, SuperSubsAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_JET_POWER, JetPowerAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_IMPROVED_SHIPYARDS, ImprovedShipyardsAdvance.class);
@@ -142,7 +143,7 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
       createWW2V1Advances(tf);
     }
     // now create player tech frontiers
-    final List<TechnologyFrontier> frontiers = new ArrayList<TechnologyFrontier>();
+    final List<TechnologyFrontier> frontiers = new ArrayList<>();
     if (ww2v3) {
       final TechnologyFrontier an = new TechnologyFrontier("Air and Naval Advances", data);
       final TechnologyFrontier lp = new TechnologyFrontier("Land and Production Advances", data);
@@ -153,7 +154,7 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
       frontiers.add(lp);
     } else {
       final TechnologyFrontier tas = new TechnologyFrontier("Technology Advances", data);
-      tas.addAdvance(new ArrayList<TechAdvance>(tf.getTechs()));
+      tas.addAdvance(new ArrayList<>(tf.getTechs()));
       frontiers.add(tas);
     }
     // add the frontiers
@@ -175,7 +176,7 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
       constructor = clazz.getConstructor(preDefinedTechConstructorParameter);
       ta = constructor.newInstance(data);
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(s + " is not a valid technology or could not be instantiated");
     }
     if (ta == null) {
@@ -201,12 +202,12 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
     List<TechAdvance> allAdvances;
     data.acquireReadLock();
     try {
-      allAdvances = new ArrayList<TechAdvance>(data.getTechnologyFrontier().getTechs());
+      allAdvances = new ArrayList<>(data.getTechnologyFrontier().getTechs());
     } finally {
       data.releaseReadLock();
     }
-    final List<TechAdvance> airAndNaval = new ArrayList<TechAdvance>();
-    final List<TechAdvance> landAndProduction = new ArrayList<TechAdvance>();
+    final List<TechAdvance> airAndNaval = new ArrayList<>();
+    final List<TechAdvance> landAndProduction = new ArrayList<>();
     for (final TechAdvance ta : allAdvances) {
       final String propertyString = ta.getProperty();
       if (propertyString.equals(TECH_PROPERTY_SUPER_SUBS) || propertyString.equals(TECH_PROPERTY_JET_POWER)
@@ -261,7 +262,7 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
     }
     // the game has no techs, just return empty list
     // System.out.println("No Techs");
-    return new ArrayList<TechAdvance>();
+    return new ArrayList<>();
   }
 
   /**

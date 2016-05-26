@@ -220,13 +220,13 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
     if (airborneCapacity <= 0) {
       return result.setErrorReturnResult("Airborne Bases Must Have Launch Capacity");
     } else if (airborneCapacity < units.size()) {
-      final Collection<Unit> overMax = new ArrayList<Unit>(units);
+      final Collection<Unit> overMax = new ArrayList<>(units);
       overMax.removeAll(Match.getNMatches(units, airborneCapacity, Match.ALWAYS_MATCH));
       for (final Unit u : overMax) {
         result.addDisallowedUnit("Airborne Base Capacity Has Been Reached", u);
       }
     }
-    final Collection<Unit> airborne = new ArrayList<Unit>();
+    final Collection<Unit> airborne = new ArrayList<>();
     for (final Unit u : units) {
       if (!Matches.unitIsOwnedBy(player).match(u)) {
         result.addDisallowedUnit("Must Own All Airborne Forces", u);
@@ -298,7 +298,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 
   private static Match<Unit> getAirborneMatch(final PlayerID player, final Set<UnitType> types,
       final Collection<PlayerID> unitOwners) {
-    return new CompositeMatchAnd<Unit>(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners),
+    return new CompositeMatchAnd<>(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners),
         Matches.unitIsOfTypes(types), Matches.UnitIsNotDisabled, Matches.unitHasNotMoved,
         Matches.UnitIsAirborne.invert());
   }

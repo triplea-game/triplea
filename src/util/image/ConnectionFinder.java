@@ -9,7 +9,6 @@ import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +25,8 @@ import java.util.regex.Pattern;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import games.strategy.debug.ClientLogger;
+import games.strategy.ui.Util;
 import games.strategy.util.AlphanumComparator;
 import games.strategy.util.PointFileReaderWriter;
 
@@ -35,6 +36,7 @@ import games.strategy.util.PointFileReaderWriter;
  * Inputs - a polygons.txt file
  * Outputs - a list of connections between the Polygons
  */
+// TODO: get this moved to its own package tree
 public class ConnectionFinder {
   private static File s_mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
@@ -76,23 +78,21 @@ public class ConnectionFinder {
     if (s_mapFolderLocation == null && polyFile != null) {
       s_mapFolderLocation = polyFile.getParentFile();
     }
-    final Map<String, List<Area>> territoryAreas = new HashMap<String, List<Area>>();
+    final Map<String, List<Area>> territoryAreas = new HashMap<>();
     Map<String, List<Polygon>> mapOfPolygons = null;
     try {
       final FileInputStream in = new FileInputStream(polyFile);
       mapOfPolygons = PointFileReaderWriter.readOneToManyPolygons(in);
       for (final String territoryName : mapOfPolygons.keySet()) {
         final List<Polygon> listOfPolygons = mapOfPolygons.get(territoryName);
-        final List<Area> listOfAreas = new ArrayList<Area>();
+        final List<Area> listOfAreas = new ArrayList<>();
         for (final Polygon p : listOfPolygons) {
           listOfAreas.add(new Area(p));
         }
         territoryAreas.put(territoryName, listOfAreas);
       }
-    } catch (final FileNotFoundException ex) {
-      ex.printStackTrace();
     } catch (final IOException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
     if (!dimensionsSet) {
       final String lineWidth = JOptionPane.showInputDialog(null,
@@ -122,16 +122,16 @@ public class ConnectionFinder {
       } catch (final NumberFormatException ex) {
       }
     }
-    final Map<String, Collection<String>> connections = new HashMap<String, Collection<String>>();
+    final Map<String, Collection<String>> connections = new HashMap<>();
     System.out.println("Now Scanning for Connections");
     // sort so that they are in alphabetic order (makes xml's prettier and easier to update in future)
     final List<String> allTerritories =
-        mapOfPolygons == null ? new ArrayList<String>() : new ArrayList<String>(mapOfPolygons.keySet());
+        mapOfPolygons == null ? new ArrayList<>() : new ArrayList<>(mapOfPolygons.keySet());
     Collections.sort(allTerritories, new AlphanumComparator());
-    final List<String> allAreas = new ArrayList<String>(territoryAreas.keySet());
+    final List<String> allAreas = new ArrayList<>(territoryAreas.keySet());
     Collections.sort(allAreas, new AlphanumComparator());
     for (final String territory : allTerritories) {
-      final Set<String> thisTerritoryConnections = new LinkedHashSet<String>();
+      final Set<String> thisTerritoryConnections = new LinkedHashSet<>();
       final List<Polygon> currentPolygons = mapOfPolygons.get(territory);
       for (final Polygon currentPolygon : currentPolygons) {
         final Shape scaledShape = scale(currentPolygon, scalePixels);
@@ -160,7 +160,9 @@ public class ConnectionFinder {
     if (JOptionPane.showConfirmDialog(null, "Do you also want to create the Territory Definitions?",
         "Territory Definitions", 1) == 0) {
       final String waterString = JOptionPane.showInputDialog(null,
-          "Enter a string or regex that determines if the territory is Water? \r\n(eg: Sea Zone)", "Sea Zone");
+          "Enter a string or regex that determines if the territory is Water? \r\n(e.g.: "
+              + Util.TERRITORY_SEA_ZONE_INFIX + ")",
+          Util.TERRITORY_SEA_ZONE_INFIX);
       territoryDefinitions = doTerritoryDefinitions(allTerritories, waterString);
     }
     try {
@@ -207,10 +209,10 @@ public class ConnectionFinder {
       final Matcher matcher = waterPattern.matcher(t);
       if (matcher.find()) {
         // <territory name="sea zone 1" water="true"/>
-        output.append("<territory name=\"" + t + "\" water=\"true\"/>\r\n");
+        output.append("<territory name=\"").append(t).append("\" water=\"true\"/>\r\n");
       } else {
         // <territory name="neutral territory 2"/>
-        output.append("<territory name=\"" + t + "\"/>\r\n");
+        output.append("<territory name=\"").append(t).append("\"/>\r\n");
       }
     }
     output.append("\r\n");
@@ -228,11 +230,11 @@ public class ConnectionFinder {
     final StringBuffer output = new StringBuffer();
     output.append("<!-- Territory Connections -->\r\n");
     // sort for pretty xml's
-    final List<String> allTerritories = new ArrayList<String>(connections.keySet());
+    final List<String> allTerritories = new ArrayList<>(connections.keySet());
     Collections.sort(allTerritories, new AlphanumComparator());
     for (final String t1 : allTerritories) {
       for (final String t2 : connections.get(t1)) {
-        output.append("<connection t1=\"" + t1 + "\" t2=\"" + t2 + "\"/>\r\n");
+        output.append("<connection t1=\"").append(t1).append("\" t2=\"").append(t2).append("\"/>\r\n");
       }
     }
     return output;
@@ -311,7 +313,7 @@ public class ConnectionFinder {
    * @return a Point2D object that represents the center of mass of the given shape
    */
   private static Point2D getCentroid(final Shape currentShape) {
-    final ArrayList<Point2D> pointList = new ArrayList<Point2D>(32);
+    final ArrayList<Point2D> pointList = new ArrayList<>(32);
     final PathIterator pathIterator = currentShape.getPathIterator(null);
     int lastMoveToIndex = -1;
     while (!pathIterator.isDone()) {

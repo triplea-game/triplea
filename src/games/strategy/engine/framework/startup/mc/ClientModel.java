@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.IChatPanel;
@@ -41,7 +42,6 @@ import games.strategy.engine.framework.startup.launcher.IServerReady;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.ui.ClientOptions;
 import games.strategy.engine.framework.startup.ui.MainFrame;
-import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.gamePlayer.IGamePlayer;
@@ -78,16 +78,16 @@ public class ClientModel implements IMessengerErrorListener {
   private IChatPanel m_chatPanel;
   private ClientGame m_game;
   private boolean m_hostIsHeadlessBot = false;
-  private final WaitWindow m_gameLoadingWindow = new WaitWindow("Loading game, please wait.");
+  private final WaitWindow m_gameLoadingWindow = new WaitWindow();
   // we set the game data to be null, since we
   // are a client game, and the game data lives on the server
   // however, if we cancel, we want to restore the old game data.
   private GameData m_gameDataOnStartup;
-  private Map<String, String> m_playersToNodes = new HashMap<String, String>();
-  private Map<String, Boolean> m_playersEnabledListing = new HashMap<String, Boolean>();
-  private Collection<String> m_playersAllowedToBeDisabled = new HashSet<String>();
+  private Map<String, String> m_playersToNodes = new HashMap<>();
+  private Map<String, Boolean> m_playersEnabledListing = new HashMap<>();
+  private Collection<String> m_playersAllowedToBeDisabled = new HashSet<>();
   private Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder =
-      new LinkedHashMap<String, Collection<String>>();
+      new LinkedHashMap<>();
 
   ClientModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
     m_typePanelModel = typePanelModel;
@@ -199,9 +199,9 @@ public class ClientModel implements IMessengerErrorListener {
   public List<String> getAvailableServerGames() {
     final Set<String> games = getServerStartup().getAvailableGames();
     if (games == null) {
-      return new ArrayList<String>();
+      return new ArrayList<>();
     }
-    return new ArrayList<String>(games);
+    return new ArrayList<>(games);
   }
 
   public void shutDown() {
@@ -253,7 +253,7 @@ public class ClientModel implements IMessengerErrorListener {
       try {
         latch.await(GameRunner2.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
       } catch (final InterruptedException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
   };
@@ -266,7 +266,7 @@ public class ClientModel implements IMessengerErrorListener {
       try {
         latch.await(GameRunner2.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
       } catch (final InterruptedException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
 
@@ -320,11 +320,11 @@ public class ClientModel implements IMessengerErrorListener {
       // up to 60 seconds for a freaking huge game
       data = new GameDataManager().loadGame(new ByteArrayInputStream(gameData), null);
     } catch (final IOException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
       return;
     }
     m_objectStreamFactory.setData(data);
-    final Map<String, String> playerMapping = new HashMap<String, String>();
+    final Map<String, String> playerMapping = new HashMap<>();
     for (final String player : m_playersToNodes.keySet()) {
       final String playedBy = m_playersToNodes.get(player);
       if (playedBy.equals(m_messenger.getLocalNode().getName())) {
@@ -349,9 +349,8 @@ public class ClientModel implements IMessengerErrorListener {
             try {
               data.getGameLoader().startGame(m_game, playerSet, false);
               data.testLocksOnRead();
-              NewGameChooser.clearNewGameChooserModel();
             } catch (final Exception e) {
-              e.printStackTrace();
+              ClientLogger.logQuietly(e);
               m_messenger.shutDown();
               m_gameLoadingWindow.doneWait();
               // an ugly hack, we need a better
@@ -410,25 +409,25 @@ public class ClientModel implements IMessengerErrorListener {
 
   public Map<String, String> getPlayerToNodesMapping() {
     synchronized (this) {
-      return new HashMap<String, String>(m_playersToNodes);
+      return new HashMap<>(m_playersToNodes);
     }
   }
 
   public Map<String, Boolean> getPlayersEnabledListing() {
     synchronized (this) {
-      return new HashMap<String, Boolean>(m_playersEnabledListing);
+      return new HashMap<>(m_playersEnabledListing);
     }
   }
 
   public Collection<String> getPlayersAllowedToBeDisabled() {
     synchronized (this) {
-      return new HashSet<String>(m_playersAllowedToBeDisabled);
+      return new HashSet<>(m_playersAllowedToBeDisabled);
     }
   }
 
   public Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap() {
     synchronized (this) {
-      return new LinkedHashMap<String, Collection<String>>(m_playerNamesAndAlliancesInTurnOrder);
+      return new LinkedHashMap<>(m_playerNamesAndAlliancesInTurnOrder);
     }
   }
 
@@ -497,9 +496,9 @@ public class ClientModel implements IMessengerErrorListener {
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder();
-    sb.append(
-        "ClientModel GameData:" + (m_gameDataOnStartup == null ? "null" : m_gameDataOnStartup.getGameName()) + "\n");
-    sb.append("Connected:" + (m_messenger == null ? "null" : m_messenger.isConnected()) + "\n");
+    sb.append("ClientModel GameData:").append(m_gameDataOnStartup == null ? "null" : m_gameDataOnStartup.getGameName())
+        .append("\n");
+    sb.append("Connected:").append(m_messenger == null ? "null" : m_messenger.isConnected()).append("\n");
     sb.append(m_messenger);
     sb.append("\n");
     sb.append(m_remoteMessenger);

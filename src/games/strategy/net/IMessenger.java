@@ -17,58 +17,58 @@ public interface IMessenger {
    * If the message cannot be delivered, this method will not throw an exception, but will
    * fail silently.
    */
-  public void send(Serializable msg, INode to);
+  void send(Serializable msg, INode to);
 
   /**
    * Send a message to all nodes.
    */
-  public void broadcast(Serializable msg);
+  void broadcast(Serializable msg);
 
   /**
    * Listen for messages.
    */
-  public void addMessageListener(IMessageListener listener);
+  void addMessageListener(IMessageListener listener);
 
   /**
    * Stop listening to messages.
    */
-  public void removeMessageListener(IMessageListener listener);
+  void removeMessageListener(IMessageListener listener);
 
   /**
    * Listen for errors
    */
-  public void addErrorListener(IMessengerErrorListener listener);
+  void addErrorListener(IMessengerErrorListener listener);
 
   /**
    * Stop listening for errors.
    */
-  public void removeErrorListener(IMessengerErrorListener listener);
+  void removeErrorListener(IMessengerErrorListener listener);
 
   /**
    * Get the local node
    */
-  public INode getLocalNode();
+  INode getLocalNode();
 
   /**
    * test the connection.
    */
-  public boolean isConnected();
+  boolean isConnected();
 
   /**
    * Shut the connection down.
    */
-  public void shutDown();
+  void shutDown();
 
   /**
    * Am I the server node?
    * There should only be one server node, and it should exist before other nodes.
    */
-  public boolean isServer();
+  boolean isServer();
 
   /**
    * @return local node if we are a server node.
    */
-  public INode getServerNode();
+  INode getServerNode();
 
   /**
    * Get the socket address to which we talk to the server.
@@ -77,6 +77,6 @@ public interface IMessenger {
    * if the server is behind a firewall, or a NAT, then this socket will be
    * different than the actual port we use.
    */
-  public InetSocketAddress getRemoteServerSocketAddress();
+  InetSocketAddress getRemoteServerSocketAddress();
   // TODO: add this into next release: boolean isShutDown();
 }

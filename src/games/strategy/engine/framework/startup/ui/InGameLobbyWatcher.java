@@ -11,6 +11,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.debug.HeartBeat;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.PlayerID;
@@ -108,7 +109,7 @@ public class InGameLobbyWatcher {
 
       @Override
       public Map<String, String> getProperties(final Map<String, String> challengProperties) {
-        final Map<String, String> rVal = new HashMap<String, String>();
+        final Map<String, String> rVal = new HashMap<>();
         rVal.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
         rVal.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
         rVal.put(LobbyLoginValidator.LOBBY_WATCHER_LOGIN, Boolean.TRUE.toString());
@@ -128,7 +129,7 @@ public class InGameLobbyWatcher {
       rm.registerRemote(rhu, RemoteHostUtils.getRemoteHostUtilsName(um.getLocalNode()));
       return new InGameLobbyWatcher(messenger, rm, gameMessenger, parent, oldWatcher);
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return null;
     }
   }

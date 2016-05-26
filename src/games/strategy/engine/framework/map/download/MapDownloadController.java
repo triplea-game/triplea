@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.map.download;
 
-import java.awt.Frame;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -10,7 +9,8 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.JComponent;
-import javax.swing.JOptionPane;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingComponents;
 import games.strategy.debug.ClientLogger;
@@ -45,7 +45,7 @@ public class MapDownloadController {
 
   /** Opens a new window dialog where a user can select maps to download or update */
   public void openDownloadMapScreen(JComponent parentComponent) {
-    final Frame parentFrame = JOptionPane.getFrameForComponent(parentComponent);
+    final JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(parentComponent);
     DownloadMapsWindow.showDownloadMapsWindow(parentFrame);
   }
 
@@ -83,14 +83,14 @@ public class MapDownloadController {
       if (downloads == null || downloads.isEmpty()) {
         return false;
       }
-      final List<String> outOfDateMaps = new ArrayList<String>();
+      final List<String> outOfDateMaps = new ArrayList<>();
       populateOutOfDateMapsListing(outOfDateMaps, downloads);
       if (!outOfDateMaps.isEmpty()) {
         final StringBuilder text =
             new StringBuilder("<html>Some of the maps you have are out of date, and newer versions of those maps exist."
                 + "<br>Would you like to update (re-download) the following maps now?:<br><ul>");
         for (final String map : outOfDateMaps) {
-          text.append("<li> " + map + "</li>");
+          text.append("<li> ").append(map).append("</li>");
         }
         text.append("</ul></html>");
         SwingComponents.promptUser("Update Your Maps?", text.toString(), () -> DownloadMapsWindow.showDownloadMapsWindow());

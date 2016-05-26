@@ -21,10 +21,10 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
   private final List<Collection<Unit>> m_unresolvedUnitsList;
 
   public MoveValidationResult() {
-    m_disallowedUnitWarnings = new ArrayList<String>();
-    m_disallowedUnitsList = new ArrayList<Collection<Unit>>();
-    m_unresolvedUnitWarnings = new ArrayList<String>();
-    m_unresolvedUnitsList = new ArrayList<Collection<Unit>>();
+    m_disallowedUnitWarnings = new ArrayList<>();
+    m_disallowedUnitsList = new ArrayList<>();
+    m_unresolvedUnitWarnings = new ArrayList<>();
+    m_unresolvedUnitsList = new ArrayList<>();
   }
 
   public MoveValidationResult(final MoveValidationResult toCopy) {
@@ -47,7 +47,7 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
     if (index == -1) {
       index = m_disallowedUnitWarnings.size();
       m_disallowedUnitWarnings.add(warning);
-      m_disallowedUnitsList.add(new ArrayList<Unit>());
+      m_disallowedUnitsList.add(new ArrayList<>());
     }
     final Collection<Unit> disallowedUnits = m_disallowedUnitsList.get(index);
     disallowedUnits.add(unit);
@@ -74,7 +74,7 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
     if (index == -1) {
       index = m_unresolvedUnitWarnings.size();
       m_unresolvedUnitWarnings.add(warning);
-      m_unresolvedUnitsList.add(new ArrayList<Unit>());
+      m_unresolvedUnitsList.add(new ArrayList<>());
     }
     final Collection<Unit> unresolvedUnits = m_unresolvedUnitsList.get(index);
     unresolvedUnits.add(unit);
@@ -110,7 +110,7 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
   }
 
   public Collection<Unit> getDisallowedUnits() {
-    final Set<Unit> allDisallowedUnits = new LinkedHashSet<Unit>();
+    final Set<Unit> allDisallowedUnits = new LinkedHashSet<>();
     for (final Collection<Unit> unitList : m_disallowedUnitsList) {
       for (final Unit unit : unitList) {
         allDisallowedUnits.add(unit);
@@ -120,7 +120,7 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
   }
 
   public Collection<Unit> getUnresolvedUnits() {
-    final Set<Unit> allUnresolvedUnits = new LinkedHashSet<Unit>();
+    final Set<Unit> allUnresolvedUnits = new LinkedHashSet<>();
     for (final Collection<Unit> unitList : m_unresolvedUnitsList) {
       for (final Unit unit : unitList) {
         allUnresolvedUnits.add(unit);
@@ -130,9 +130,9 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
   }
 
   public Collection<UnitCategory> getUnresolvedUnitCategories() {
-    final Set<UnitCategory> unresolvedUnitCategories = new HashSet<UnitCategory>();
+    final Set<UnitCategory> unresolvedUnitCategories = new HashSet<>();
     for (final Unit unit : getUnresolvedUnits()) {
-      unresolvedUnitCategories.add(new UnitCategory(unit, false, false, false, false));
+      unresolvedUnitCategories.add(new UnitCategory(unit));
     }
     return unresolvedUnitCategories;
   }
@@ -142,7 +142,7 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
     if (index == -1) {
       return Collections.emptyList();
     }
-    return new ArrayList<Unit>(m_disallowedUnitsList.get(index));
+    return new ArrayList<>(m_disallowedUnitsList.get(index));
   }
 
   public Collection<Unit> getUnresolvedUnits(final String warning) {
@@ -150,15 +150,15 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
     if (index == -1) {
       return Collections.emptyList();
     }
-    return new ArrayList<Unit>(m_unresolvedUnitsList.get(index));
+    return new ArrayList<>(m_unresolvedUnitsList.get(index));
   }
 
   public Collection<String> getDisallowedUnitWarnings() {
-    return new ArrayList<String>(m_disallowedUnitWarnings);
+    return new ArrayList<>(m_disallowedUnitWarnings);
   }
 
   public Collection<String> getUnresolvedUnitWarnings() {
-    return new ArrayList<String>(m_unresolvedUnitWarnings);
+    return new ArrayList<>(m_unresolvedUnitWarnings);
   }
 
   public String getDisallowedUnitWarning(final int index) {
@@ -206,7 +206,7 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
   public void removeAnyUnresolvedUnitsThatAreDisallowed() {
     final MoveValidationResult oldResult = new MoveValidationResult(this);
     final Collection<Unit> disallowedUnits = oldResult.getDisallowedUnits();
-    final Collection<Unit> unresolvedAndDisallowed = new ArrayList<Unit>(disallowedUnits);
+    final Collection<Unit> unresolvedAndDisallowed = new ArrayList<>(disallowedUnits);
     unresolvedAndDisallowed.retainAll(oldResult.getUnresolvedUnits());
     for (final String warning : oldResult.getUnresolvedUnitWarnings()) {
       for (final Unit unit : oldResult.getUnresolvedUnits(warning)) {

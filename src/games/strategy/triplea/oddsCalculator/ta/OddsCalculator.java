@@ -48,7 +48,7 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.ui.display.DummyTripleaDisplay;
+import games.strategy.triplea.ui.display.DummyTripleADisplay;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
@@ -65,10 +65,10 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
   private PlayerID m_attacker = null;
   private PlayerID m_defender = null;
   private Territory m_location = null;
-  private Collection<Unit> m_attackingUnits = new ArrayList<Unit>();
-  private Collection<Unit> m_defendingUnits = new ArrayList<Unit>();
-  private Collection<Unit> m_bombardingUnits = new ArrayList<Unit>();
-  private Collection<TerritoryEffect> m_territoryEffects = new ArrayList<TerritoryEffect>();
+  private Collection<Unit> m_attackingUnits = new ArrayList<>();
+  private Collection<Unit> m_defendingUnits = new ArrayList<>();
+  private Collection<Unit> m_bombardingUnits = new ArrayList<>();
+  private Collection<TerritoryEffect> m_territoryEffects = new ArrayList<>();
   private boolean m_keepOneAttackingLandUnit = false;
   private boolean m_amphibious = false;
   private int m_retreatAfterRound = -1;
@@ -82,7 +82,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
   private volatile boolean m_isDataSet = false;
   private volatile boolean m_isCalcSet = false;
   private volatile boolean m_isRunning = false;
-  private final List<OddsCalculatorListener> m_listeners = new ArrayList<OddsCalculatorListener>();
+  private final List<OddsCalculatorListener> m_listeners = new ArrayList<>();
 
   public OddsCalculator(final GameData data) {
     this(data, false);
@@ -108,10 +108,10 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     m_attacker = null;
     m_defender = null;
     m_location = null;
-    m_attackingUnits = new ArrayList<Unit>();
-    m_defendingUnits = new ArrayList<Unit>();
-    m_bombardingUnits = new ArrayList<Unit>();
-    m_territoryEffects = new ArrayList<TerritoryEffect>();
+    m_attackingUnits = new ArrayList<>();
+    m_defendingUnits = new ArrayList<>();
+    m_bombardingUnits = new ArrayList<>();
+    m_territoryEffects = new ArrayList<>();
     m_runCount = 0;
     if (data != null) {
       m_isDataSet = true;
@@ -265,7 +265,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
       battle.setHeadless(true);
       battle.isAmphibious();
       battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits,
-          (m_amphibious ? m_attackingUnits : new ArrayList<Unit>()), m_defender, m_territoryEffects);
+          (m_amphibious ? m_attackingUnits : new ArrayList<>()), m_defender, m_territoryEffects);
       // battle.setAttackingFromAndMap(attackingFromMap);
       bridge1.setBattle(battle);
       battle.fight(bridge);
@@ -331,7 +331,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     if (ool == null || ool.trim().length() == 0) {
       return null;
     }
-    final List<Tuple<Integer, UnitType>> map = new ArrayList<Tuple<Integer, UnitType>>();
+    final List<Tuple<Integer, UnitType>> map = new ArrayList<>();
     final String[] sections;
     if (ool.indexOf(OOL_SEPARATOR) != -1) {
       sections = ool.trim().split(OOL_SEPARATOR_REGEX);
@@ -349,8 +349,8 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
       map.add(Tuple.of(amount, type));
     }
     Collections.reverse(map);
-    final Set<Unit> unitsLeft = new HashSet<Unit>(units);
-    final List<Unit> order = new ArrayList<Unit>();
+    final Set<Unit> unitsLeft = new HashSet<>(units);
+    final List<Unit> order = new ArrayList<>();
     for (final Tuple<Integer, UnitType> section : map) {
       final List<Unit> unitsOfType =
           Match.getNMatches(unitsLeft, section.getFirst(), Matches.unitIsOfType(section.getSecond()));
@@ -387,7 +387,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 
 class DummyDelegateBridge implements IDelegateBridge {
   private final PlainRandomSource m_randomSource = new PlainRandomSource();
-  private final DummyTripleaDisplay m_display = new DummyTripleaDisplay();
+  private final DummyTripleADisplay m_display = new DummyTripleADisplay();
   private final DummySoundChannel m_soundChannel = new DummySoundChannel();
   private final DummyPlayer m_attackingPlayer;
   private final DummyPlayer m_defendingPlayer;
@@ -558,7 +558,7 @@ class DummyPlayer extends AbstractAI {
     if (battle == null) {
       return null;
     }
-    return new ArrayList<Unit>((m_isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits()));
+    return new ArrayList<>((m_isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits()));
   }
 
   private List<Unit> getEnemyUnits() {
@@ -566,7 +566,7 @@ class DummyPlayer extends AbstractAI {
     if (battle == null) {
       return null;
     }
-    return new ArrayList<Unit>((m_isAttacker ? battle.getDefendingUnits() : battle.getAttackingUnits()));
+    return new ArrayList<>((m_isAttacker ? battle.getDefendingUnits() : battle.getAttackingUnits()));
   }
 
   @Override
@@ -609,9 +609,9 @@ class DummyPlayer extends AbstractAI {
     }
     if (submerge) {
       // submerge if all air vs subs
-      final CompositeMatch<Unit> seaSub = new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsSub);
+      final CompositeMatch<Unit> seaSub = new CompositeMatchAnd<>(Matches.UnitIsSea, Matches.UnitIsSub);
       final CompositeMatch<Unit> planeNotDestroyer =
-          new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitIsDestroyer.invert());
+          new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.UnitIsDestroyer.invert());
       final List<Unit> ourUnits = getOurUnits();
       final List<Unit> enemyUnits = getEnemyUnits();
       if (ourUnits == null || enemyUnits == null) {
@@ -659,13 +659,13 @@ class DummyPlayer extends AbstractAI {
           final int enemyHP = BattleCalculator.getTotalHitpointsLeft(enemyUnits);
           final int ourPower = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(ourUnits,
               enemyUnits, !m_isAttacker, false, m_bridge.getData(), battle.getTerritory(), battle.getTerritoryEffects(),
-              battle.isAmphibious(), (battle.isAmphibious() && m_isAttacker ? ourUnits : new ArrayList<Unit>())),
+              battle.isAmphibious(), (battle.isAmphibious() && m_isAttacker ? ourUnits : new ArrayList<>())),
               m_bridge.getData());
           final int enemyPower =
               DiceRoll.getTotalPower(
                   DiceRoll.getUnitPowerAndRollsForNormalBattles(enemyUnits, ourUnits, m_isAttacker, false,
                       m_bridge.getData(), battle.getTerritory(), battle.getTerritoryEffects(), battle.isAmphibious(),
-                      (battle.isAmphibious() && !m_isAttacker ? enemyUnits : new ArrayList<Unit>())),
+                      (battle.isAmphibious() && !m_isAttacker ? enemyUnits : new ArrayList<>())),
               m_bridge.getData());
           final int diceSides = m_bridge.getData().getDiceSides();
           final int ourMetaPower = BattleCalculator.getNormalizedMetaPower(ourPower, ourHP, diceSides);
@@ -699,10 +699,10 @@ class DummyPlayer extends AbstractAI {
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
       final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
-    final List<Unit> rDamaged = new ArrayList<Unit>(defaultCasualties.getDamaged());
-    final List<Unit> rKilled = new ArrayList<Unit>(defaultCasualties.getKilled());
+    final List<Unit> rDamaged = new ArrayList<>(defaultCasualties.getDamaged());
+    final List<Unit> rKilled = new ArrayList<>(defaultCasualties.getKilled());
     if (m_keepAtLeastOneLand) {
-      final List<Unit> notKilled = new ArrayList<Unit>(selectFrom);
+      final List<Unit> notKilled = new ArrayList<>(selectFrom);
       notKilled.removeAll(rKilled);
       // no land units left, but we have a non land unit to kill and land unit was killed
       if (!Match.someMatch(notKilled, Matches.UnitIsLand) && Match.someMatch(notKilled, Matches.UnitIsNotLand)
@@ -717,7 +717,7 @@ class DummyPlayer extends AbstractAI {
       }
     }
     if (m_orderOfLosses != null && !m_orderOfLosses.isEmpty() && !rKilled.isEmpty()) {
-      final List<Unit> orderOfLosses = new ArrayList<Unit>(m_orderOfLosses);
+      final List<Unit> orderOfLosses = new ArrayList<>(m_orderOfLosses);
       orderOfLosses.retainAll(selectFrom);
       if (!orderOfLosses.isEmpty()) {
         int killedSize = rKilled.size();
@@ -728,7 +728,7 @@ class DummyPlayer extends AbstractAI {
           killedSize--;
         }
         if (killedSize > 0) {
-          final List<Unit> defaultKilled = new ArrayList<Unit>(defaultCasualties.getKilled());
+          final List<Unit> defaultKilled = new ArrayList<>(defaultCasualties.getKilled());
           defaultKilled.removeAll(rKilled);
           while (killedSize > 0) {
             rKilled.add(defaultKilled.get(0));

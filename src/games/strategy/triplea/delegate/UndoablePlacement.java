@@ -52,7 +52,7 @@ class UndoablePlacement extends AbstractUndoableMove {
     if (units.isEmpty()) {
       produced.remove(m_producerTerritory);
     }
-    currentDelegate.setProduced(new HashMap<Territory, Collection<Unit>>(produced));
+    currentDelegate.setProduced(new HashMap<>(produced));
   }
 
   @Override

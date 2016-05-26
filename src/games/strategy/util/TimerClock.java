@@ -9,6 +9,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import games.strategy.debug.ClientLogger;
+
 /**
  * A way to put a timer on a runnable task. Instead of just interrupting the task,
  * we can also notify observers about the time left to complete, notify them that it completed successfully or not,
@@ -17,9 +19,9 @@ import java.util.concurrent.atomic.AtomicReference;
 // this is an ill-fated at a shot clock for the game...
 public class TimerClock<T> extends Observable {
   public interface ITimerClockNotification {
-    public int getSecondsLeft();
+    int getSecondsLeft();
 
-    public boolean areWeInterrupting();
+    boolean areWeInterrupting();
   }
 
   public TimerClock() {}
@@ -34,7 +36,7 @@ public class TimerClock<T> extends Observable {
     final AtomicBoolean runnableFinishedSuccessfully = new AtomicBoolean(false);
     final AtomicBoolean runnableHadRuntimeException = new AtomicBoolean(false);
     // we want to catch exceptions and propagate them back up
-    final AtomicReference<RuntimeException> exception = new AtomicReference<RuntimeException>();
+    final AtomicReference<RuntimeException> exception = new AtomicReference<>();
     // start the task
     final Thread t = new Thread(new Runnable() {
       @Override
@@ -83,7 +85,7 @@ public class TimerClock<T> extends Observable {
         latch.await();
       } catch (final InterruptedException e) {
         // if we are planning on interrupting this clock, we should change this
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
     // interrupt the task if it is not yet done
@@ -101,7 +103,7 @@ public class TimerClock<T> extends Observable {
         t.join();
       } catch (final InterruptedException e) {
         // if we are planning on interrupting this clock, we should change this
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
     deleteObservers();

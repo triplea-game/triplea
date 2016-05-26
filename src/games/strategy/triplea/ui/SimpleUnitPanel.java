@@ -3,12 +3,11 @@ package games.strategy.triplea.ui;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
@@ -43,7 +42,7 @@ public class SimpleUnitPanel extends JPanel {
   public void setUnitsFromProductionRuleMap(final IntegerMap<ProductionRule> units, final PlayerID player,
       final GameData data) {
     removeAll();
-    final TreeSet<ProductionRule> productionRules = new TreeSet<ProductionRule>(productionRuleComparator);
+    final TreeSet<ProductionRule> productionRules = new TreeSet<>(productionRuleComparator);
     productionRules.addAll(units.keySet());
     for (final ProductionRule productionRule : productionRules) {
       final int quantity = units.getInt(productionRule);
@@ -65,7 +64,7 @@ public class SimpleUnitPanel extends JPanel {
     final Set<Unit> entries = units.keySet();
     for (final Unit unit : entries) {
       final IntegerMap<RepairRule> rules = units.get(unit);
-      final TreeSet<RepairRule> repairRules = new TreeSet<RepairRule>(repairRuleComparator);
+      final TreeSet<RepairRule> repairRules = new TreeSet<>(repairRuleComparator);
       repairRules.addAll(rules.keySet());
       for (final RepairRule repairRule : repairRules) {
         final int quantity = rules.getInt(repairRule);
@@ -97,7 +96,11 @@ public class SimpleUnitPanel extends JPanel {
     final JLabel label = new JLabel();
     label.setText(" x " + quantity);
     if (unit instanceof UnitType) {
-      label.setIcon(m_uiContext.getUnitImageFactory().getIcon((UnitType) unit, player, data, damaged, disabled));
+      Optional<ImageIcon>
+          icon = m_uiContext.getUnitImageFactory().getIcon((UnitType) unit, player, data, damaged, disabled);
+      if(icon.isPresent()) {
+        label.setIcon(icon.get());
+      }
     } else if (unit instanceof Resource) {
       label.setIcon(m_uiContext.getResourceImageFactory().getIcon((Resource) unit, data, true));
     }

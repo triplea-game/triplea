@@ -1,12 +1,12 @@
 package games.strategy.engine.data;
 
 public interface UnitHolder {
-  public static final String TERRITORY = "T";
-  public static final String PLAYER = "P";
+  String TERRITORY = "T";
+  String PLAYER = "P";
 
-  public UnitCollection getUnits();
+  UnitCollection getUnits();
 
-  public void notifyChanged();
+  void notifyChanged();
 
-  public String getType();
+  String getType();
 }

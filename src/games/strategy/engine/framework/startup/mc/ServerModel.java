@@ -25,6 +25,7 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.ChatPanel;
@@ -78,17 +79,17 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private IRemoteMessenger m_remoteMessenger;
   private IChannelMessenger m_channelMessenger;
   private GameData m_data;
-  private Map<String, String> m_playersToNodeListing = new HashMap<String, String>();
-  private Map<String, Boolean> m_playersEnabledListing = new HashMap<String, Boolean>();
-  private Collection<String> m_playersAllowedToBeDisabled = new HashSet<String>();
+  private Map<String, String> m_playersToNodeListing = new HashMap<>();
+  private Map<String, Boolean> m_playersEnabledListing = new HashMap<>();
+  private Collection<String> m_playersAllowedToBeDisabled = new HashSet<>();
   private Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder =
-      new LinkedHashMap<String, Collection<String>>();
+      new LinkedHashMap<>();
   private IRemoteModelListener m_listener = IRemoteModelListener.NULL_LISTENER;
   private final GameSelectorModel m_gameSelectorModel;
   private Component m_ui;
   private IChatPanel m_chatPanel;
   private ChatController m_chatController;
-  private final Map<String, String> m_localPlayerTypes = new HashMap<String, String>();
+  private final Map<String, String> m_localPlayerTypes = new HashMap<>();
   // while our server launcher is not null, delegate new/lost connections to it
   private volatile ServerLauncher m_serverLauncher;
   private CountDownLatch m_removeConnectionsLatch = null;
@@ -148,10 +149,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     synchronized (this) {
       m_data = m_gameSelectorModel.getGameData();
       if (m_data != null) {
-        m_playersToNodeListing = new HashMap<String, String>();
-        m_playersEnabledListing = new HashMap<String, Boolean>();
-        m_playersAllowedToBeDisabled = new HashSet<String>(m_data.getPlayerList().getPlayersThatMayBeDisabled());
-        m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<String, Collection<String>>();
+        m_playersToNodeListing = new HashMap<>();
+        m_playersEnabledListing = new HashMap<>();
+        m_playersAllowedToBeDisabled = new HashSet<>(m_data.getPlayerList().getPlayersThatMayBeDisabled());
+        m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
         for (final PlayerID player : m_data.getPlayerList().getPlayers()) {
           final String name = player.getName();
           if (m_headless) {
@@ -337,7 +338,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         new GameDataManager().saveGame(sink, m_data);
         bytes = sink.toByteArray();
       } catch (final IOException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
         throw new IllegalStateException(e);
       }
       return bytes;
@@ -356,7 +357,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         GameProperties.toOutputStream(sink, currentEditableProperties);
         bytes = sink.toByteArray();
       } catch (final IOException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
       return bytes;
     }
@@ -418,7 +419,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           InputStream oinput = new BufferedInputStream(input);) {
         headless.loadGameSave(oinput, fileName);
       } catch (final Exception e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
 
@@ -434,7 +435,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       try {
         headless.loadGameOptions(bytes);
       } catch (final Exception e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
   };
@@ -442,15 +443,15 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private PlayerListing getPlayerListingInternal() {
     synchronized (this) {
       if (m_data == null) {
-        return new PlayerListing(new HashMap<String, String>(), new HashMap<String, Boolean>(m_playersEnabledListing),
+        return new PlayerListing(new HashMap<>(), new HashMap<>(m_playersEnabledListing),
             getLocalPlayerTypes(), new Version(0, 0), m_gameSelectorModel.getGameName(),
-            m_gameSelectorModel.getGameRound(), new HashSet<String>(m_playersAllowedToBeDisabled),
-            new LinkedHashMap<String, Collection<String>>());
+            m_gameSelectorModel.getGameRound(), new HashSet<>(m_playersAllowedToBeDisabled),
+            new LinkedHashMap<>());
       } else {
-        return new PlayerListing(new HashMap<String, String>(m_playersToNodeListing),
-            new HashMap<String, Boolean>(m_playersEnabledListing), getLocalPlayerTypes(), m_data.getGameVersion(),
+        return new PlayerListing(new HashMap<>(m_playersToNodeListing),
+            new HashMap<>(m_playersEnabledListing), getLocalPlayerTypes(), m_data.getGameVersion(),
             m_data.getGameName(), m_data.getSequence().getRound() + "",
-            new HashSet<String>(m_playersAllowedToBeDisabled), m_playerNamesAndAlliancesInTurnOrder);
+            new HashSet<>(m_playersAllowedToBeDisabled), m_playerNamesAndAlliancesInTurnOrder);
       }
     }
   }
@@ -531,25 +532,25 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   public Map<String, String> getPlayersToNodeListing() {
     synchronized (this) {
-      return new HashMap<String, String>(m_playersToNodeListing);
+      return new HashMap<>(m_playersToNodeListing);
     }
   }
 
   public Map<String, Boolean> getPlayersEnabledListing() {
     synchronized (this) {
-      return new HashMap<String, Boolean>(m_playersEnabledListing);
+      return new HashMap<>(m_playersEnabledListing);
     }
   }
 
   public Collection<String> getPlayersAllowedToBeDisabled() {
     synchronized (this) {
-      return new HashSet<String>(m_playersAllowedToBeDisabled);
+      return new HashSet<>(m_playersAllowedToBeDisabled);
     }
   }
 
   public Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap() {
     synchronized (this) {
-      return new LinkedHashMap<String, Collection<String>>(m_playerNamesAndAlliancesInTurnOrder);
+      return new LinkedHashMap<>(m_playerNamesAndAlliancesInTurnOrder);
     }
   }
 
@@ -583,7 +584,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       return;
     }
     // we lost a node. Remove the players he plays.
-    final List<String> free = new ArrayList<String>();
+    final List<String> free = new ArrayList<>();
     synchronized (this) {
       for (final String player : m_playersToNodeListing.keySet()) {
         final String playedBy = m_playersToNodeListing.get(player);
@@ -616,7 +617,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   public Map<String, String> getLocalPlayerTypes() {
-    final Map<String, String> localPlayerMappings = new HashMap<String, String>();
+    final Map<String, String> localPlayerMappings = new HashMap<>();
     if (m_data == null) {
       return localPlayerMappings;
     }
@@ -646,7 +647,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       disallowRemoveConnections();
       // -1 since we dont count outselves
       final int clientCount = m_serverMessenger.getNodes().size() - 1;
-      final Map<String, INode> remotePlayers = new HashMap<String, INode>();
+      final Map<String, INode> remotePlayers = new HashMap<>();
       for (final String player : m_playersToNodeListing.keySet()) {
         final String playedBy = m_playersToNodeListing.get(player);
         if (playedBy == null) {
@@ -683,8 +684,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder();
-    sb.append("ServerModel GameData:" + (m_data == null ? "null" : m_data.getGameName()) + "\n");
-    sb.append("Connected:" + (m_serverMessenger == null ? "null" : m_serverMessenger.isConnected()) + "\n");
+    sb.append("ServerModel GameData:").append(m_data == null ? "null" : m_data.getGameName()).append("\n");
+    sb.append("Connected:").append(m_serverMessenger == null ? "null" : m_serverMessenger.isConnected()).append("\n");
     sb.append(m_serverMessenger);
     sb.append("\n");
     sb.append(m_remoteMessenger);

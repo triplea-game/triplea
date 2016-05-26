@@ -54,7 +54,7 @@ public final class TileImageFactory {
   private static final Logger s_logger = Logger.getLogger(TileImageFactory.class.getName());
   private double m_scale = 1;
   // maps image name to ImageRef
-  private HashMap<String, ImageRef> m_imageCache = new HashMap<String, ImageRef>();
+  private HashMap<String, ImageRef> m_imageCache = new HashMap<>();
 
   static {
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
@@ -97,7 +97,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly("Failed to save value: " + aBool, ex);
     }
   }
 
@@ -108,7 +108,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly("faild to save value: " + aBool, ex);
     }
   }
 
@@ -119,7 +119,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly("faild to save value: " + aString, ex);
     }
   }
 
@@ -130,7 +130,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly("faild to save value: " + aFloat, ex);
     }
   }
 
@@ -274,7 +274,7 @@ public final class TileImageFactory {
       }
       loadingImages.done();
     } catch (final IOException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
 
     // This does the blend
@@ -285,7 +285,7 @@ public final class TileImageFactory {
       try {
         reliefFile = loadCompatibleImage(urlBlankRelief);
       } catch (final IOException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
     }
     // This fixes the blank land territories
@@ -395,7 +395,7 @@ public final class TileImageFactory {
  * getImage method ensures that the image will be loaded before returning.
  */
 class ImageRef {
-  public static final ReferenceQueue<Image> s_referenceQueue = new ReferenceQueue<Image>();
+  public static final ReferenceQueue<Image> s_referenceQueue = new ReferenceQueue<>();
   public static final Logger s_logger = Logger.getLogger(ImageRef.class.getName());
   private static final AtomicInteger s_imageCount = new AtomicInteger();
 
@@ -408,7 +408,7 @@ class ImageRef {
             s_referenceQueue.remove();
             s_logger.finer("Removed soft reference image. Image count:" + s_imageCount.decrementAndGet());
           } catch (final InterruptedException e) {
-            e.printStackTrace();
+            ClientLogger.logQuietly(e);
           }
         }
       }
@@ -422,7 +422,7 @@ class ImageRef {
 
   // private final Object m_hardRef;
   public ImageRef(final Image image) {
-    m_image = new SoftReference<Image>(image, s_referenceQueue);
+    m_image = new SoftReference<>(image, s_referenceQueue);
     // m_hardRef = image;
     s_logger.finer("Added soft reference image. Image count:" + s_imageCount.incrementAndGet());
   }

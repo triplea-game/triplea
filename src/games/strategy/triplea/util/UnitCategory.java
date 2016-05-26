@@ -26,27 +26,21 @@ public class UnitCategory implements Comparable<Object> {
   // private final Territory m_originatingTerr;
   private final PlayerID m_owner;
   // the units in the category, may be duplicates.
-  private final List<Unit> m_units = new ArrayList<Unit>();
+  private final List<Unit> m_units = new ArrayList<>();
   private int m_damaged = 0;
   private int m_bombingDamage = 0;
   private boolean m_disabled = false;
 
-  public UnitCategory(final Unit unit, final boolean categorizeDependents, final boolean categorizeMovement,
-      final boolean categorizeTransportcost, final boolean categorizeTerritory) {
+  public UnitCategory(final Unit unit) {
     final TripleAUnit taUnit = (TripleAUnit) unit;
     m_type = taUnit.getType();
     m_owner = taUnit.getOwner();
-    m_movement = categorizeMovement ? taUnit.getMovementLeft() : -1;
-    m_transportCost = categorizeTransportcost ? UnitAttachment.get((unit).getUnitType()).getTransportCost() : -1;
-    // m_originatingTerr = categorizeTerritory ? taUnit.getOriginatedFrom() : null;
+    m_movement =  -1;
+    m_transportCost = -1;
     m_damaged = taUnit.getHits();
     m_bombingDamage = taUnit.getUnitDamage();
     m_disabled = Matches.UnitIsDisabled.match(unit);
-    if (categorizeDependents) {
-      createDependents(taUnit.getDependents());
-    } else {
-      m_dependents = Collections.emptyList();
-    }
+    m_dependents = Collections.emptyList();
   }
 
   public UnitCategory(final Unit unit, final Collection<Unit> dependents, final int movement, final int transportCost) {
@@ -95,7 +89,7 @@ public class UnitCategory implements Comparable<Object> {
   }
 
   private void createDependents(final Collection<Unit> dependents) {
-    m_dependents = new ArrayList<UnitOwner>();
+    m_dependents = new ArrayList<>();
     if (dependents == null) {
       return;
     }

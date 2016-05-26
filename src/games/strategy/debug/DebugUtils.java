@@ -25,11 +25,11 @@ public class DebugUtils {
     final ThreadInfo[] threadInfo = threadMxBean.getThreadInfo(threadMxBean.getAllThreadIds(), Integer.MAX_VALUE);
     for (final ThreadInfo info : threadInfo) {
       if (info != null) {
-        result.append("thread<" + info.getThreadId() + "," + info.getThreadName() + ">\n")
-            .append("state:" + info.getThreadState()).append("\n");
+        result.append("thread<").append(info.getThreadId()).append(",").append(info.getThreadName()).append(">\n").append("state:")
+            .append(info.getThreadState()).append("\n");
         if (info.getLockName() != null) {
-          result.append("locked on:" + info.getLockName())
-              .append(" locked owned by:<" + info.getLockOwnerId() + "," + info.getLockOwnerName() + ">\n");
+          result.append("locked on:").append(info.getLockName()).append(" locked owned by:<").append(info.getLockOwnerId())
+              .append(",").append(info.getLockOwnerName()).append(">\n");
         }
         final StackTraceElement[] stackTrace = info.getStackTrace();
         for (final StackTraceElement element : stackTrace) {
@@ -66,13 +66,13 @@ public class DebugUtils {
     final int mb = 1024 * 1024;
     final StringBuilder buf = new StringBuilder("Heap utilization statistics [MB]\r\n");
     final Runtime runtime = Runtime.getRuntime();
-    buf.append("Used Memory: " + ((runtime.totalMemory() - runtime.freeMemory()) / mb) + "\r\n");
-    buf.append("Free memory: " + (runtime.freeMemory() / mb) + "\r\n");
-    buf.append("Total memory: " + (runtime.totalMemory() / mb) + "\r\n");
-    buf.append("Max memory: " + (runtime.maxMemory() / mb) + "\r\n");
+    buf.append("Used Memory: ").append((runtime.totalMemory() - runtime.freeMemory()) / mb).append("\r\n");
+    buf.append("Free memory: ").append(runtime.freeMemory() / mb).append("\r\n");
+    buf.append("Total memory: ").append(runtime.totalMemory() / mb).append("\r\n");
+    buf.append("Max memory: ").append(runtime.maxMemory() / mb).append("\r\n");
     final int currentMaxSetting = GameRunner2.getMaxMemoryFromSystemIniFileInMB(GameRunner2.getSystemIni());
     if (currentMaxSetting > 0) {
-      buf.append("Max Memory user setting within 22% of: " + currentMaxSetting + "\r\n");
+      buf.append("Max Memory user setting within 22% of: ").append(currentMaxSetting).append("\r\n");
     }
     return buf.toString();
   }
@@ -118,8 +118,8 @@ public class DebugUtils {
     final StringBuilder builder = new StringBuilder("WINDOWS\n");
     for (final Frame f : Frame.getFrames()) {
       if (f.isVisible()) {
-        builder.append("window:").append("class " + f.getClass()).append(" size " + f.getSize())
-            .append(" title " + f.getTitle()).append("\n");
+        builder.append("window:").append("class ").append(f.getClass()).append(" size ").append(f.getSize()).append(" title ")
+            .append(f.getTitle()).append("\n");
       }
     }
     return builder.toString();

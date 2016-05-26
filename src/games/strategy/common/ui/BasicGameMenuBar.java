@@ -94,13 +94,12 @@ import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IllegalCharacterRemover;
 import games.strategy.util.LocalizeHTML;
-import games.strategy.util.SoftJEditorPane;
 import games.strategy.util.Triple;
 
 public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMenuBar {
   private static final long serialVersionUID = -1447295944297939539L;
   protected final CustomGameFrame frame;
-  protected SoftJEditorPane gameNotesPane;
+  protected JEditorPane gameNotesPane;
 
   public BasicGameMenuBar(final CustomGameFrame frame) {
     this.frame = frame;
@@ -155,11 +154,11 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
 
   public void dispose() {
     if (gameNotesPane != null) {
-      gameNotesPane.dispose();
+      gameNotesPane.setVisible(false);
     }
   }
 
-  public SoftJEditorPane getGameNotesJEditorPane() {
+  public JEditorPane getGameNotesJEditorPane() {
     return gameNotesPane;
   }
 
@@ -169,10 +168,11 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     final String notesProperty = getData().getProperties().get("notes", "");
     if (notesProperty != null && notesProperty.trim().length() != 0) {
       final String notes = LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim());
-      gameNotesPane = new SoftJEditorPane(notes);
+      gameNotesPane = new JEditorPane();
+      gameNotesPane.setText(notes);
       parentMenu.add(SwingAction.of("Game Notes...", e ->
           SwingUtilities.invokeLater(() -> {
-            final JEditorPane pane = gameNotesPane.getComponent();
+            final JEditorPane pane = gameNotesPane;
             final JScrollPane scroll = new JScrollPane(pane);
             scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
             final JDialog dialog = new JDialog(frame);
@@ -540,7 +540,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
   }
 
   public static List<String> getLookAndFeelAvailableList() {
-    final List<String> substanceLooks = new ArrayList<String>();
+    final List<String> substanceLooks = new ArrayList<>();
     for (final LookAndFeelInfo look : UIManager.getInstalledLookAndFeels()) {
       substanceLooks.add(look.getClassName());
     }
@@ -548,7 +548,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
       substanceLooks.remove("javax.swing.plaf.nimbus.NimbusLookAndFeel");
     }
     if (isJavaGreatThan5()) {
-      substanceLooks.addAll(new ArrayList<String>(
+      substanceLooks.addAll(new ArrayList<>(
           Arrays.asList(new String[] {"org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel",
               "org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel",
               "org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel",
@@ -585,7 +585,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
    * First is our JList, second is our LookAndFeels string -> class map, third is our 'current' look and feel.
    */
   public static Triple<JList<String>, Map<String, String>, String> getLookAndFeelList() {
-    final Map<String, String> lookAndFeels = new LinkedHashMap<String, String>();
+    final Map<String, String> lookAndFeels = new LinkedHashMap<>();
     try {
       final List<String> substanceLooks = getLookAndFeelAvailableList();
       for (final String s : substanceLooks) {
@@ -601,7 +601,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
       lookAndFeels.put("Metal", MetalLookAndFeel.class.getName());
       lookAndFeels.put("Platform Independent", UIManager.getCrossPlatformLookAndFeelClassName());
     }
-    final JList<String> list = new JList<>(new Vector<String>(lookAndFeels.keySet()));
+    final JList<String> list = new JList<>(new Vector<>(lookAndFeels.keySet()));
     String currentKey = null;
     for (final String s : lookAndFeels.keySet()) {
       final String currentName = UIManager.getLookAndFeel().getClass().getName();

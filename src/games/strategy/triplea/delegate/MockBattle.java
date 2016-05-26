@@ -52,10 +52,10 @@ public class MockBattle extends AbstractBattle {
   }
 
   public void setAmphibiousLandAttackers(final Collection<Unit> units) {
-    m_amphibiousLandAttackers = new ArrayList<Unit>(units);
+    m_amphibiousLandAttackers = new ArrayList<>(units);
   }
 
   public void setBombardingUnits(final Collection<Unit> units) {
-    m_bombardingUnits = new ArrayList<Unit>(units);
+    m_bombardingUnits = new ArrayList<>(units);
   }
 }

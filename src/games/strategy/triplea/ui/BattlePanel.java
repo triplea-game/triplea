@@ -28,6 +28,7 @@ import javax.swing.WindowConstants;
 
 import games.strategy.common.swing.SwingAction;
 import games.strategy.common.swing.SwingComponents;
+import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -229,7 +230,7 @@ public class BattlePanel extends ActionPanel {
       try {
         SwingUtilities.invokeLater(r);
       } catch (final Exception e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
       return;
     }
@@ -577,7 +578,7 @@ public class BattlePanel extends ActionPanel {
       final String unitName = unit.getUnitType().getName() + " in " + unitTerritory;
       final JLabel label = new JLabel("Which territory should " + unitName + " bombard?");
       this.add(label, BorderLayout.NORTH);
-      final Vector<Object> listElements = new Vector<Object>(territories);
+      final Vector<Object> listElements = new Vector<>(territories);
       if (noneAvailable) {
         listElements.add(0, "None");
       }

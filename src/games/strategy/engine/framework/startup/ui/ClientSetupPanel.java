@@ -64,7 +64,7 @@ public class ClientSetupPanel extends SetupPanel {
       // clients only get to change bot settings
       disableable.clear();
     }
-    m_playerRows = new ArrayList<PlayerRow>();
+    m_playerRows = new ArrayList<>();
     final Set<String> playerNames = playerNamesAndAlliancesInTurnOrder.keySet();
     for (final String name : playerNames) {
       final PlayerRow playerRow = new PlayerRow(name, playerNamesAndAlliancesInTurnOrder.get(name),
@@ -300,7 +300,7 @@ public class ClientSetupPanel extends SetupPanel {
     if (!isServerHeadless) {
       return Lists.newArrayList();
     }
-    final List<Action> rVal = new ArrayList<Action>();
+    final List<Action> rVal = new ArrayList<>();
     rVal.add(m_model.getHostBotSetMapClientAction(this));
     rVal.add(m_model.getHostBotChangeGameOptionsClientAction(this));
     rVal.add(m_model.getHostBotChangeGameToSaveGameClientAction(this));

@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import games.strategy.common.swing.SwingAction;
+import games.strategy.ui.Util;
 import util.image.FileOpen;
 
 
@@ -51,7 +52,7 @@ public class MapPropertiesPanel {
     final JLabel labelCentersFile = new JLabel("Map Centers File:");
     final JButton buttonSelectCentersFile = new JButton("Browse");
     final JLabel labelWaterFilter = new JLabel("Water Territory Filter");
-    final JLabel labelWaterFilterExample = new JLabel("e.g. 'Sea Zone'");
+    final JLabel labelWaterFilterExample = new JLabel("e.g. '" + Util.TERRITORY_SEA_ZONE_INFIX + "'");
 
     final GridBagLayout gridBadConstLabelPanel = new GridBagLayout();
     gridBadConstLabelPanel.rowHeights = getRowHeights();

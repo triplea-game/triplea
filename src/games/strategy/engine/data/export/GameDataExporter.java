@@ -69,12 +69,12 @@ public class GameDataExporter {
     // Since we do not keep the minimum version info in the game data, just put the current version of triplea here
     // (since we have
     // successfully started the map, it is basically correct)
-    xmlfile.append("    <triplea minimumVersion=\"" + ClientContext.engineVersion() + "\"/>\n");
+    xmlfile.append("    <triplea minimumVersion=\"").append(ClientContext.engineVersion()).append("\"/>\n");
   }
 
   private void diceSides(final GameData data) {
     final int diceSides = data.getDiceSides();
-    xmlfile.append("    <diceSides value=\"" + diceSides + "\"/>\n");
+    xmlfile.append("    <diceSides value=\"").append(diceSides).append("\"/>\n");
   }
 
   private void technology(final GameData data) {
@@ -95,10 +95,10 @@ public class GameDataExporter {
       final PlayerID player = players.next();
       final Iterator<TechnologyFrontier> frontierList = player.getTechnologyFrontierList().getFrontiers().iterator();
       if (frontierList.hasNext()) {
-        returnValue.append("        <playerTech player=\"" + player.getName() + "\">\n");
+        returnValue.append("        <playerTech player=\"").append(player.getName()).append("\">\n");
         while (frontierList.hasNext()) {
           final TechnologyFrontier frontier = frontierList.next();
-          returnValue.append("            <category name=\"" + frontier.getName() + "\">\n");
+          returnValue.append("            <category name=\"").append(frontier.getName()).append("\">\n");
           final Iterator<TechAdvance> techs = frontier.getTechs().iterator();
           while (techs.hasNext()) {
             final TechAdvance tech = techs.next();
@@ -109,7 +109,7 @@ public class GameDataExporter {
                 name = cat;
               }
             }
-            returnValue.append("                <tech name=\"" + name + "\"/>\n");
+            returnValue.append("                <tech name=\"").append(name).append("\"/>\n");
           }
           returnValue.append("            </category>\n");
         }
@@ -135,9 +135,9 @@ public class GameDataExporter {
             name = cat;
           }
         }
-        returnValue.append("            <techname name=\"" + name + "\"");
+        returnValue.append("            <techname name=\"").append(name).append("\"");
         if (!name.equals(cat)) {
-          returnValue.append(" tech=\"" + cat + "\" ");
+          returnValue.append(" tech=\"").append(cat).append("\" ");
         }
         returnValue.append("/>\n");
       }
@@ -151,7 +151,7 @@ public class GameDataExporter {
     xmlfile.append("    <propertyList>\n");
     final GameProperties gameProperties = data.getProperties();
     try {
-      final Field conPropField = GameProperties.class.getDeclaredField("m_constantProperties");
+      final Field conPropField = GameProperties.class.getDeclaredField("m_constantProperties"); // TODO: unchecked reflection
       conPropField.setAccessible(true);
       final Field edPropField = GameProperties.class.getDeclaredField("m_editableProperties");
       edPropField.setAccessible(true);
@@ -190,7 +190,7 @@ public class GameDataExporter {
     if (prop.getClass().equals(ComboProperty.class)) {
       Field listField;
       try {
-        listField = ComboProperty.class.getDeclaredField("m_possibleValues");
+        listField = ComboProperty.class.getDeclaredField("m_possibleValues"); // TODO: unchecked reflection
         listField.setAccessible(true);
         final Iterator<String> values = ((ArrayList<String>) listField.get(prop)).iterator();
         String possibleValues = values.next();
@@ -204,7 +204,7 @@ public class GameDataExporter {
     }
     if (prop.getClass().equals(NumberProperty.class)) {
       try {
-        final Field maxField = NumberProperty.class.getDeclaredField("m_max");
+        final Field maxField = NumberProperty.class.getDeclaredField("m_max"); // TODO: unchecked reflection
         final Field minField = NumberProperty.class.getDeclaredField("m_min");
         maxField.setAccessible(true);
         minField.setAccessible(true);
@@ -215,7 +215,8 @@ public class GameDataExporter {
         ClientLogger.logError("An Error occured whilst trying to print a Number-XML Tag", e);
       }
     }
-    xmlfile.append("        <property name=\"" + prop.getName() + "\" value=\"" + value + "\" editable=\"true\">\n");
+    xmlfile.append("        <property name=\"").append(prop.getName()).append("\" value=\"").append(value)
+        .append("\" editable=\"true\">\n");
     xmlfile.append(typeString);
     xmlfile.append("        </property>\n");
   }
@@ -224,7 +225,7 @@ public class GameDataExporter {
     final Iterator<String> propertyNames = conProperties.keySet().iterator();
     while (propertyNames.hasNext()) {
       final String propName = propertyNames.next();
-      if (propName.equals("notes")) {
+      if (propName.equals("notes")) { // TODO: unchecked reflection
         // Special handling of notes property
         printNotes((String) conProperties.get(propName));
       } else if (propName.equals("EditMode") || propName.equals("GAME_UUID")
@@ -247,8 +248,8 @@ public class GameDataExporter {
   }
 
   private void printConstantProperty(final String propName, final Object property) {
-    xmlfile.append(
-        "        <property name=\"" + propName + "\" value=\"" + property.toString() + "\" editable=\"false\">\n");
+    xmlfile.append("        <property name=\"").append(propName).append("\" value=\"").append(property.toString())
+        .append("\" editable=\"false\">\n");
     if (property.getClass().equals(java.lang.String.class)) {
       xmlfile.append("            <string/>\n");
     }
@@ -277,7 +278,7 @@ public class GameDataExporter {
     final RelationshipTracker rt = data.getRelationshipTracker();
     xmlfile.append("        <relationshipInitialize>\n");
     final Collection<PlayerID> players = data.getPlayerList().getPlayers();
-    final Collection<PlayerID> playersAlreadyDone = new HashSet<PlayerID>();
+    final Collection<PlayerID> playersAlreadyDone = new HashSet<>();
     for (final PlayerID p1 : players) {
       for (final PlayerID p2 : players) {
         if (p1.equals(p2) || playersAlreadyDone.contains(p2)) {
@@ -285,8 +286,9 @@ public class GameDataExporter {
         }
         final RelationshipType type = rt.getRelationshipType(p1, p2);
         final int roundValue = rt.getRoundRelationshipWasCreated(p1, p2);
-        xmlfile.append("            <relationship type=\"" + type.getName() + "\" player1=\"" + p1.getName()
-            + "\" player2=\"" + p2.getName() + "\" roundValue=\"" + roundValue + "\"/>\n");
+        xmlfile.append("            <relationship type=\"").append(type.getName()).append("\" player1=\"")
+            .append(p1.getName()).append("\" player2=\"").append(p2.getName()).append("\" roundValue=\"")
+            .append(roundValue).append("\"/>\n");
       }
       playersAlreadyDone.add(p1);
     }
@@ -302,9 +304,9 @@ public class GameDataExporter {
       while (resources.hasNext()) {
         final Resource resource = resources.next();
         if (player.getResources().getQuantity(resource.getName()) > 0) {
-          xmlfile
-              .append("            <resourceGiven player=\"" + player.getName() + "\" resource=\"" + resource.getName()
-                  + "\" quantity=\"" + player.getResources().getQuantity(resource.getName()) + "\"/>\n");
+          xmlfile.append("            <resourceGiven player=\"").append(player.getName()).append("\" resource=\"")
+              .append(resource.getName()).append("\" quantity=\"")
+              .append(player.getResources().getQuantity(resource.getName())).append("\"/>\n");
         }
       }
     }
@@ -325,11 +327,12 @@ public class GameDataExporter {
         while (units.hasNext()) {
           final UnitType unit = units.next();
           if (player == null || player.getName().equals("Neutral")) {
-            xmlfile.append("            <unitPlacement unitType=\"" + unit.getName() + "\" territory=\""
-                + terr.getName() + "\" quantity=\"" + ucp.getInt(unit) + "\"/>\n");
+            xmlfile.append("            <unitPlacement unitType=\"").append(unit.getName()).append("\" territory=\"")
+                .append(terr.getName()).append("\" quantity=\"").append(ucp.getInt(unit)).append("\"/>\n");
           } else {
-            xmlfile.append("            <unitPlacement unitType=\"" + unit.getName() + "\" territory=\""
-                + terr.getName() + "\" quantity=\"" + ucp.getInt(unit) + "\" owner=\"" + player.getName() + "\"/>\n");
+            xmlfile.append("            <unitPlacement unitType=\"").append(unit.getName()).append("\" territory=\"")
+                .append(terr.getName()).append("\" quantity=\"").append(ucp.getInt(unit)).append("\" owner=\"")
+                .append(player.getName()).append("\"/>\n");
           }
         }
       }
@@ -343,8 +346,8 @@ public class GameDataExporter {
     while (terrs.hasNext()) {
       final Territory terr = terrs.next();
       if (!terr.getOwner().getName().equals("Neutral")) {
-        xmlfile.append("            <territoryOwner territory=\"" + terr.getName() + "\" owner=\""
-            + terr.getOwner().getName() + "\"/>\n");
+        xmlfile.append("            <territoryOwner territory=\"").append(terr.getName()).append("\" owner=\"")
+            .append(terr.getOwner().getName()).append("\"/>\n");
       }
     }
     xmlfile.append("        </ownerInitialize>\n");
@@ -373,7 +376,8 @@ public class GameDataExporter {
     final StringBuffer sb = new StringBuffer("");
     boolean alreadyHasOccupiedTerrOf = false;
     for (final Tuple<String, String> current : attachmentPlusValues) {
-      sb.append("            <option name=\"" + current.getFirst() + "\" value=\"" + current.getSecond() + "\"/>\n");
+      sb.append("            <option name=\"").append(current.getFirst()).append("\" value=\"")
+          .append(current.getSecond()).append("\"/>\n");
       if (current.getFirst().equals("occupiedTerrOf")) {
         alreadyHasOccupiedTerrOf = true;
       }
@@ -383,7 +387,8 @@ public class GameDataExporter {
       final games.strategy.triplea.attachments.TerritoryAttachment ta =
           (games.strategy.triplea.attachments.TerritoryAttachment) attachment;
       if (ta.getOriginalOwner() != null) {
-        sb.append("            <option name=\"occupiedTerrOf\" value=\"" + ta.getOriginalOwner().getName() + "\"/>\n");
+        sb.append("            <option name=\"occupiedTerrOf\" value=\"").append(ta.getOriginalOwner().getName())
+            .append("\"/>\n");
       }
     }
     return sb.toString();
@@ -429,8 +434,9 @@ public class GameDataExporter {
         throw new AttachmentExportException("no attachmentType known for " + attachTo.getClass().getCanonicalName());
       }
       if (attachmentOptions.length() > 0) {
-        xmlfile.append("        <attachment name=\"" + attachment.getName() + "\" attachTo=\"" + attachTo.getName()
-            + "\" javaClass=\"" + attachment.getClass().getCanonicalName() + "\" type=\"" + type + "\">\n");
+        xmlfile.append("        <attachment name=\"").append(attachment.getName()).append("\" attachTo=\"")
+            .append(attachTo.getName()).append("\" javaClass=\"").append(attachment.getClass().getCanonicalName())
+            .append("\" type=\"").append(type).append("\">\n");
         xmlfile.append(attachmentOptions);
         xmlfile.append("        </attachment>\n");
       }
@@ -455,18 +461,18 @@ public class GameDataExporter {
     final Iterator<RepairRule> iRepairRules = data.getRepairRuleList().getRepairRules().iterator();
     while (iRepairRules.hasNext()) {
       final RepairRule rr = iRepairRules.next();
-      xmlfile.append("        <repairRule name=\"" + rr.getName() + "\">\n");
+      xmlfile.append("        <repairRule name=\"").append(rr.getName()).append("\">\n");
       final Iterator<Resource> costs = rr.getCosts().keySet().iterator();
       while (costs.hasNext()) {
         final Resource cost = costs.next();
-        xmlfile.append("            <cost resource=\"" + cost.getName() + "\" quantity=\"" + rr.getCosts().getInt(cost)
-            + "\"/>\n");
+        xmlfile.append("            <cost resource=\"").append(cost.getName()).append("\" quantity=\"")
+            .append(rr.getCosts().getInt(cost)).append("\"/>\n");
       }
       final Iterator<NamedAttachable> results = rr.getResults().keySet().iterator();
       while (results.hasNext()) {
         final NamedAttachable result = results.next();
-        xmlfile.append("            <result resourceOrUnit=\"" + result.getName() + "\" quantity=\""
-            + rr.getResults().getInt(result) + "\"/>\n");
+        xmlfile.append("            <result resourceOrUnit=\"").append(result.getName()).append("\" quantity=\"")
+            .append(rr.getResults().getInt(result)).append("\"/>\n");
       }
       xmlfile.append("        </repairRule>\n");
     }
@@ -477,10 +483,10 @@ public class GameDataExporter {
     while (frontiers.hasNext()) {
       final RepairFrontier frontier = data.getRepairFrontierList().getRepairFrontier(frontiers.next());
       xmlfile.append("\n");
-      xmlfile.append("        <repairFrontier name=\"" + frontier.getName() + "\">\n");
+      xmlfile.append("        <repairFrontier name=\"").append(frontier.getName()).append("\">\n");
       final Iterator<RepairRule> rules = frontier.getRules().iterator();
       while (rules.hasNext()) {
-        xmlfile.append("            <repairRules name=\"" + rules.next().getName() + "\"/>\n");
+        xmlfile.append("            <repairRules name=\"").append(rules.next().getName()).append("\"/>\n");
       }
       xmlfile.append("        </repairFrontier>\n");
     }
@@ -494,7 +500,8 @@ public class GameDataExporter {
       try {
         final String playerRepair = player.getRepairFrontier().getName();
         final String playername = player.getName();
-        xmlfile.append("        <playerRepair player=\"" + playername + "\" frontier=\"" + playerRepair + "\"/>\n");
+        xmlfile.append("        <playerRepair player=\"").append(playername).append("\" frontier=\"")
+            .append(playerRepair).append("\"/>\n");
       } catch (final NullPointerException npe) {
         // neutral?
       }
@@ -508,8 +515,8 @@ public class GameDataExporter {
       try {
         final String playerfrontier = player.getProductionFrontier().getName();
         final String playername = player.getName();
-        xmlfile
-            .append("        <playerProduction player=\"" + playername + "\" frontier=\"" + playerfrontier + "\"/>\n");
+        xmlfile.append("        <playerProduction player=\"").append(playername).append("\" frontier=\"")
+            .append(playerfrontier).append("\"/>\n");
       } catch (final NullPointerException npe) {
         // neutral?
       }
@@ -521,10 +528,10 @@ public class GameDataExporter {
     while (frontiers.hasNext()) {
       final ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier(frontiers.next());
       xmlfile.append("\n");
-      xmlfile.append("        <productionFrontier name=\"" + frontier.getName() + "\">\n");
+      xmlfile.append("        <productionFrontier name=\"").append(frontier.getName()).append("\">\n");
       final Iterator<ProductionRule> rules = frontier.getRules().iterator();
       while (rules.hasNext()) {
-        xmlfile.append("            <frontierRules name=\"" + rules.next().getName() + "\"/>\n");
+        xmlfile.append("            <frontierRules name=\"").append(rules.next().getName()).append("\"/>\n");
       }
       xmlfile.append("        </productionFrontier>\n");
     }
@@ -535,18 +542,18 @@ public class GameDataExporter {
     final Iterator<ProductionRule> productionRules = data.getProductionRuleList().getProductionRules().iterator();
     while (productionRules.hasNext()) {
       final ProductionRule pr = productionRules.next();
-      xmlfile.append("        <productionRule name=\"" + pr.getName() + "\">\n");
+      xmlfile.append("        <productionRule name=\"").append(pr.getName()).append("\">\n");
       final Iterator<Resource> costs = pr.getCosts().keySet().iterator();
       while (costs.hasNext()) {
         final Resource cost = costs.next();
-        xmlfile.append("            <cost resource=\"" + cost.getName() + "\" quantity=\"" + pr.getCosts().getInt(cost)
-            + "\"/>\n");
+        xmlfile.append("            <cost resource=\"").append(cost.getName()).append("\" quantity=\"")
+            .append(pr.getCosts().getInt(cost)).append("\"/>\n");
       }
       final Iterator<NamedAttachable> results = pr.getResults().keySet().iterator();
       while (results.hasNext()) {
         final NamedAttachable result = results.next();
-        xmlfile.append("            <result resourceOrUnit=\"" + result.getName() + "\" quantity=\""
-            + pr.getResults().getInt(result) + "\"/>\n");
+        xmlfile.append("            <result resourceOrUnit=\"").append(result.getName()).append("\" quantity=\"")
+            .append(pr.getResults().getInt(result)).append("\"/>\n");
       }
       xmlfile.append("        </productionRule>\n");
     }
@@ -559,12 +566,13 @@ public class GameDataExporter {
     while (delegates.hasNext()) {
       final IDelegate delegate = delegates.next();
       if (!delegate.getName().equals("edit")) {
-        xmlfile.append("        <delegate name=\"" + delegate.getName() + "\" javaClass=\""
-            + delegate.getClass().getCanonicalName() + "\" display=\"" + delegate.getDisplayName() + "\"/>\n");
+        xmlfile.append("        <delegate name=\"").append(delegate.getName()).append("\" javaClass=\"")
+            .append(delegate.getClass().getCanonicalName()).append("\" display=\"").append(delegate.getDisplayName())
+            .append("\"/>\n");
       }
     }
     sequence(data);
-    xmlfile.append("        <offset round=\"" + (data.getSequence().getRound() - 1) + "\"/>\n");
+    xmlfile.append("        <offset round=\"").append(data.getSequence().getRound() - 1).append("\"/>\n");
     xmlfile.append("    </gamePlay>\n");
   }
 
@@ -575,25 +583,26 @@ public class GameDataExporter {
     while (steps.hasNext()) {
       final GameStep step = steps.next();
       try {
-        final Field mDelegateField = GameStep.class.getDeclaredField("m_delegate");
+        final Field mDelegateField = GameStep.class.getDeclaredField("m_delegate"); // TODO: unchecked reflection
         mDelegateField.setAccessible(true);
         final String delegate = (String) mDelegateField.get(step);
-        xmlfile.append("            <step name=\"" + step.getName() + "\" delegate=\"" + delegate + "\"");
+        xmlfile.append("            <step name=\"").append(step.getName()).append("\" delegate=\"").append(delegate)
+            .append("\"");
       } catch (final NullPointerException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
         ClientLogger.logError("An Error occured whilst trying to sequence in game " + data.getGameName(), e);
       }
       if (step.getPlayerID() != null) {
-        xmlfile.append(" player=\"" + step.getPlayerID().getName() + "\"");
+        xmlfile.append(" player=\"").append(step.getPlayerID().getName()).append("\"");
       }
       if (step.getDisplayName() != null) {
-        xmlfile.append(" display=\"" + step.getDisplayName() + "\"");
+        xmlfile.append(" display=\"").append(step.getDisplayName()).append("\"");
       }
       if (step.getMaxRunCount() > -1) {
         int maxRun = step.getMaxRunCount();
         if (maxRun == 0) {
           maxRun = 1;
         }
-        xmlfile.append(" maxRunCount=\"" + maxRun + "\"");
+        xmlfile.append(" maxRunCount=\"").append(maxRun).append("\"");
       }
       xmlfile.append("/>\n");
     }
@@ -605,7 +614,7 @@ public class GameDataExporter {
     xmlfile.append("    <unitList>\n");
     final Iterator<UnitType> units = data.getUnitTypeList().iterator();
     while (units.hasNext()) {
-      xmlfile.append("        <unit name=\"" + units.next().getName() + "\"/>\n");
+      xmlfile.append("        <unit name=\"").append(units.next().getName()).append("\"/>\n");
     }
     xmlfile.append("    </unitList>\n");
   }
@@ -616,15 +625,16 @@ public class GameDataExporter {
     final Iterator<PlayerID> players = data.getPlayerList().getPlayers().iterator();
     while (players.hasNext()) {
       final PlayerID player = players.next();
-      xmlfile.append("        <player name=\"" + player.getName() + "\" optional=\"" + player.getOptional() + "\"/>\n");
+      xmlfile.append("        <player name=\"").append(player.getName()).append("\" optional=\"")
+          .append(player.getOptional()).append("\"/>\n");
     }
     final Iterator<String> alliances = data.getAllianceTracker().getAlliances().iterator();
     while (alliances.hasNext()) {
       final String allianceName = alliances.next();
       final Iterator<PlayerID> alliedPlayers = data.getAllianceTracker().getPlayersInAlliance(allianceName).iterator();
       while (alliedPlayers.hasNext()) {
-        xmlfile.append("        <alliance player=\"" + alliedPlayers.next().getName() + "\" alliance=\"" + allianceName
-            + "\"/>\n");
+        xmlfile.append("        <alliance player=\"").append(alliedPlayers.next().getName()).append("\" alliance=\"")
+            .append(allianceName).append("\"/>\n");
       }
     }
     xmlfile.append("    </playerList>\n");
@@ -646,7 +656,7 @@ public class GameDataExporter {
           || name.equals(Constants.RELATIONSHIP_TYPE_DEFAULT_ALLIED)) {
         continue;
       }
-      xmlfile.append("        <relationshipType name=\"" + name + "\"/>\n");
+      xmlfile.append("        <relationshipType name=\"").append(name).append("\"/>\n");
     }
     xmlfile.append("    </relationshipTypes>\n");
   }
@@ -661,7 +671,7 @@ public class GameDataExporter {
     final Iterator<TerritoryEffect> iter = types.iterator();
     while (iter.hasNext()) {
       final TerritoryEffect current = iter.next();
-      xmlfile.append("        <territoryEffect name=\"" + current.getName() + "\"/>\n");
+      xmlfile.append("        <territoryEffect name=\"").append(current.getName()).append("\"/>\n");
     }
     xmlfile.append("    </territoryEffectList>\n");
   }
@@ -671,7 +681,7 @@ public class GameDataExporter {
     xmlfile.append("    <resourceList>\n");
     final Iterator<Resource> resources = data.getResourceList().getResources().iterator();
     while (resources.hasNext()) {
-      xmlfile.append("        <resource name=\"" + resources.next().getName() + "\"/>\n");
+      xmlfile.append("        <resource name=\"").append(resources.next().getName()).append("\"/>\n");
     }
     xmlfile.append("    </resourceList>\n");
   }
@@ -684,7 +694,7 @@ public class GameDataExporter {
     final Iterator<Territory> terrs = map.getTerritories().iterator();
     while (terrs.hasNext()) {
       final Territory ter = terrs.next();
-      xmlfile.append("        <territory name=\"" + ter.getName() + "\"");
+      xmlfile.append("        <territory name=\"").append(ter.getName()).append("\"");
       if (ter.isWater()) {
         xmlfile.append(" water=\"true\"");
       }
@@ -721,7 +731,7 @@ public class GameDataExporter {
   private void connections(final GameData data) {
     xmlfile.append("        <!-- Territory Connections -->\n");
     final GameMap map = data.getMap();
-    final ArrayList<Connection> reverseConnectionTracker = new ArrayList<Connection>();
+    final ArrayList<Connection> reverseConnectionTracker = new ArrayList<>();
     final Iterator<Territory> terrs = map.getTerritories().iterator();
     while (terrs.hasNext()) {
       final Territory ter = terrs.next();
@@ -729,7 +739,8 @@ public class GameDataExporter {
       while (nbs.hasNext()) {
         final Territory nb = nbs.next();
         if (!reverseConnectionTracker.contains(new Connection(ter, nb))) {
-          xmlfile.append("        <connection t1=\"" + ter.getName() + "\" t2=\"" + nb.getName() + "\"/>\n");
+          xmlfile.append("        <connection t1=\"").append(ter.getName()).append("\" t2=\"").append(nb.getName())
+              .append("\"/>\n");
           reverseConnectionTracker.add(new Connection(nb, ter));
         }
       }
@@ -740,9 +751,10 @@ public class GameDataExporter {
     xmlfile.append("<?xml version=\"1.0\"?>\n");
     xmlfile.append("<!DOCTYPE game SYSTEM \"" + GameParser.DTD_FILE_NAME + "\">\n");
     xmlfile.append("<game>\n");
-    xmlfile.append(
-        "    <info name=\"" + data.getGameName() + "\" version=\"" + data.getGameVersion().toString() + "\"/>\n");
-    xmlfile.append("    <loader javaClass=\"" + data.getGameLoader().getClass().getCanonicalName() + "\"/>\n");
+    xmlfile.append("    <info name=\"").append(data.getGameName()).append("\" version=\"")
+        .append(data.getGameVersion().toString()).append("\"/>\n");
+    xmlfile.append("    <loader javaClass=\"").append(data.getGameLoader().getClass().getCanonicalName())
+        .append("\"/>\n");
   }
 
   private void finish() {

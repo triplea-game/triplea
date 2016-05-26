@@ -19,7 +19,7 @@ public class DoubleTextField extends JTextField {
   private double m_min = Double.MIN_VALUE;
   private String m_terr = null;
   private final ListenerList<DoubleTextFieldChangeListener> m_listeners =
-      new ListenerList<DoubleTextFieldChangeListener>();
+      new ListenerList<>();
 
   public static void main(final String[] args) {
     final JFrame frame = new JFrame();

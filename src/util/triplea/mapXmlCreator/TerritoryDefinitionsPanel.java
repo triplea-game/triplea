@@ -9,12 +9,14 @@ import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import com.google.common.collect.Maps;
 
+import games.strategy.ui.Util;
 import util.triplea.mapXmlCreator.TerritoryDefinitionDialog.DEFINITION;
 
 
@@ -100,8 +102,12 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
 
   @Override
   protected void mouseClickedOnImage(final Map<String, Point> centers, final MouseEvent e) {
-    final Point point = e.getPoint();
-    final String territoryName = findTerritoryName(point, polygons);
+    final Optional<String> territoryNameOptional = Util.findTerritoryName(e.getPoint(), polygons);
+    if (!territoryNameOptional.isPresent()) {
+      return;
+    }
+    final String territoryName = territoryNameOptional.get();
+
     if (SwingUtilities.isRightMouseButton(e)) {
       final String territoryNameNew =
           JOptionPane.showInputDialog(getImagePanel(), "Enter the territory name:", territoryName);

@@ -14,7 +14,7 @@ import games.strategy.engine.framework.startup.launcher.ILauncher;
 
 public abstract class SetupPanel extends JPanel implements ISetupPanel {
   private static final long serialVersionUID = 4001323470187210773L;
-  private final List<Observer> m_listeners = new CopyOnWriteArrayList<Observer>();
+  private final List<Observer> m_listeners = new CopyOnWriteArrayList<>();
 
   @Override
   public void addObserver(final Observer observer) {

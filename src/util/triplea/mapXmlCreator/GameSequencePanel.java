@@ -124,7 +124,7 @@ public class GameSequencePanel extends DynamicRowsPanel {
         return;
       }
 
-      final ArrayList<String> newValue = new ArrayList<String>();
+      final ArrayList<String> newValue = new ArrayList<>();
       newValue.add("");
       newValue.add("");
       MapXmlHelper.putGamePlaySequence(newSequenceName, newValue);

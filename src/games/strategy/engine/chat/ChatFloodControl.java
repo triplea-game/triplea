@@ -12,7 +12,7 @@ public class ChatFloodControl {
   static final int WINDOW = ONE_MINUTE;
   private final Object lock = new Object();
   private long clearTime = System.currentTimeMillis();
-  private final Map<String, Integer> messageCount = new HashMap<String, Integer>();
+  private final Map<String, Integer> messageCount = new HashMap<>();
 
   public boolean allow(final String from, final long now) {
     synchronized (lock) {

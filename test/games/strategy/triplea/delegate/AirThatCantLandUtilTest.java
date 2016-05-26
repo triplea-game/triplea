@@ -15,7 +15,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.delegate.IBattle.BattleType;
-import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 
@@ -306,14 +306,14 @@ public class AirThatCantLandUtilTest extends TestCase {
   }
 
   /** @deprecated Use a mock object instead */
-  private static ITripleaPlayer getDummyPlayer() {
+  private static ITripleAPlayer getDummyPlayer() {
     final InvocationHandler handler = new InvocationHandler() {
       @Override
       public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
         return null;
       }
     };
-    return (ITripleaPlayer) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-        new Class[] {ITripleaPlayer.class}, handler);
+    return (ITripleAPlayer) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+        new Class[] {ITripleAPlayer.class}, handler);
   }
 }

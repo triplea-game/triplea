@@ -48,7 +48,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
   private JButton m_gameOptions;
   private final GameSelectorModel m_model;
   private final IGamePropertiesCache m_gamePropertiesCache = new FileBackedGamePropertiesCache();
-  private final Map<String, Object> m_originalPropertiesMap = new HashMap<String, Object>();
+  private final Map<String, Object> m_originalPropertiesMap = new HashMap<>();
 
   public GameSelectorPanel(final GameSelectorModel model) {
     m_model = model;
@@ -82,8 +82,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     if (fileName != null && fileName.length() > 1) {
       try {
         fileName = URLDecoder.decode(fileName, "UTF-8");
-      } catch (final IllegalArgumentException e) {// ignore
-      } catch (final UnsupportedEncodingException e) {// ignore
+      } catch (final IllegalArgumentException | UnsupportedEncodingException e) {// ignore
       }
     }
     m_fileNameText.setText(getFormattedFileNameText(fileName,
@@ -173,7 +172,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
     JButton downloadMapButton =
         SwingComponents.newJButton("Download Maps", "Click this button to install additional maps",
-            () -> DownloadMapsWindow.showDownloadMapsWindow());
+            () -> DownloadMapsWindow.showDownloadMapsWindow((JFrame) SwingUtilities.getWindowAncestor(this)));
     add(downloadMapButton, buildGridRow(0, 8, new Insets(0, 10, 10, 10)));
 
     add(m_gameOptions, buildGridRow(0, 9, new Insets(25, 10, 10, 10)));
@@ -271,7 +270,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
   private void selectGameOptions() {
     // backup current game properties before showing dialog
-    final Map<String, Object> currentPropertiesMap = new HashMap<String, Object>();
+    final Map<String, Object> currentPropertiesMap = new HashMap<>();
     for (final IEditableProperty property : m_model.getGameData().getProperties().getEditableProperties()) {
       currentPropertiesMap.put(property.getName(), property.getValue());
     }
@@ -405,7 +404,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
       setOriginalPropertiesMap(m_model.getGameData());
     } else {
       final NewGameChooserEntry entry =
-          NewGameChooser.chooseGame(JOptionPane.getFrameForComponent(this), m_model.getGameName());
+          NewGameChooser.chooseGame((JFrame) SwingUtilities.getWindowAncestor(this), m_model.getGameName());
       if (entry != null) {
         if (!entry.isGameDataLoaded()) {
           try {

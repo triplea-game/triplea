@@ -12,7 +12,7 @@ import java.util.Map;
 public class PlayerList extends GameDataComponent implements Iterable<PlayerID> {
   private static final long serialVersionUID = -3895068111754745446L;
   // maps String playerName -> PlayerID
-  private final Map<String, PlayerID> m_players = new LinkedHashMap<String, PlayerID>();
+  private final Map<String, PlayerID> m_players = new LinkedHashMap<>();
 
   /**
    * Creates new PlayerCollection
@@ -49,7 +49,7 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
    * @return a new arraylist copy of the players
    */
   public List<PlayerID> getPlayers() {
-    return new ArrayList<PlayerID>(m_players.values());
+    return new ArrayList<>(m_players.values());
   }
 
   /**
@@ -61,7 +61,7 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
   }
 
   public Collection<String> getPlayersThatMayBeDisabled() {
-    final Collection<String> disableable = new HashSet<String>();
+    final Collection<String> disableable = new HashSet<>();
     for (final PlayerID p : m_players.values()) {
       // already disabled players can not be reenabled
       if (p.getCanBeDisabled() && !p.getIsDisabled()) {
@@ -72,7 +72,7 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
   }
 
   public HashMap<String, Boolean> getPlayersEnabledListing() {
-    final HashMap<String, Boolean> playersEnabledListing = new HashMap<String, Boolean>();
+    final HashMap<String, Boolean> playersEnabledListing = new HashMap<>();
     for (final PlayerID p : m_players.values()) {
       playersEnabledListing.put(p.getName(), !p.getIsDisabled());
     }

@@ -31,8 +31,8 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   private String m_lastText = "";
   private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("'('HH:mm:ss')'");
   private final ChatFloodControl floodControl = new ChatFloodControl();
-  public Set<String> m_hiddenPlayers = new HashSet<String>();
-  private final Set<INode> m_players = new HashSet<INode>();
+  public Set<String> m_hiddenPlayers = new HashSet<>();
+  private final Set<INode> m_players = new HashSet<>();
   private PrintStream m_out = null;
   private final IStatusListener m_statusListener = new IStatusListener() {
     @Override
@@ -56,7 +56,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   }
 
   public Set<INode> getAllChatters() {
-    return new HashSet<INode>(m_players);
+    return new HashSet<>(m_players);
   }
 
   public void setPrintStream(final PrintStream out) {

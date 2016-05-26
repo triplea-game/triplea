@@ -12,6 +12,7 @@ import javax.swing.DefaultListModel;
 import com.google.common.collect.Lists;
 
 import games.strategy.common.swing.SwingComponents;
+import games.strategy.debug.ClientLogger;
 import games.strategy.util.Version;
 
 public class FileSystemAccessStrategy {
@@ -50,7 +51,7 @@ public class FileSystemAccessStrategy {
         try {
           Files.delete( map.getInstallLocation().toPath());
         } catch (IOException e) {
-          e.printStackTrace();
+          ClientLogger.logQuietly(e);
         }
         map.getInstallLocation().delete();
       }
@@ -122,7 +123,7 @@ public class FileSystemAccessStrategy {
         sb.append("<li>...</li>");
         break;
       } else {
-        sb.append("<li>" + outputFunction.apply(mapList.get(i)) + "</li>");
+        sb.append("<li>").append(outputFunction.apply(mapList.get(i))).append("</li>");
       }
     }
     return sb.toString();

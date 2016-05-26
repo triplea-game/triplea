@@ -3,6 +3,7 @@ package games.strategy.triplea.ui;
 import java.awt.Image;
 import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.swing.JFrame;
@@ -24,7 +25,7 @@ public class EditProductionPanel extends ProductionPanel {
 
   public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data,
       final IUIContext uiContext) {
-    return new EditProductionPanel(uiContext).show(id, parent, data, false, new IntegerMap<ProductionRule>());
+    return new EditProductionPanel(uiContext).show(id, parent, data, false, new IntegerMap<>());
   }
 
   /** Creates new ProductionPanel */
@@ -45,7 +46,7 @@ public class EditProductionPanel extends ProductionPanel {
     m_data.acquireReadLock();
     try {
       m_id = player;
-      final Set<UnitType> unitsAllowed = new HashSet<UnitType>();
+      final Set<UnitType> unitsAllowed = new HashSet<>();
       if (player.getProductionFrontier() != null) {
         for (final ProductionRule productionRule : player.getProductionFrontier()) {
           final Rule rule = new Rule(productionRule, player);
@@ -69,9 +70,9 @@ public class EditProductionPanel extends ProductionPanel {
             final UnitType ut = u.getType();
             if (!unitsAllowed.contains(ut)) {
               unitsAllowed.add(ut);
-              final IntegerMap<NamedAttachable> result = new IntegerMap<NamedAttachable>();
+              final IntegerMap<NamedAttachable> result = new IntegerMap<>();
               result.add(ut, 1);
-              final IntegerMap<Resource> cost = new IntegerMap<Resource>();
+              final IntegerMap<Resource> cost = new IntegerMap<>();
               cost.add(data.getResourceList().getResource(Constants.PUS), 1);
               final ProductionRule newRule = new ProductionRule(ut.getName(), data, result, cost);
               final Rule rule = new Rule(newRule, player);
@@ -87,12 +88,12 @@ public class EditProductionPanel extends ProductionPanel {
           try {
             final UnitImageFactory imageFactory = m_uiContext.getUnitImageFactory();
             if (imageFactory != null) {
-              final Image unitImage = imageFactory.getImage(ut, player, data, false, false);
-              if (unitImage != null) {
+              final Optional<Image> unitImage = imageFactory.getImage(ut, player, data, false, false);
+              if (unitImage.isPresent()) {
                 unitsAllowed.add(ut);
-                final IntegerMap<NamedAttachable> result = new IntegerMap<NamedAttachable>();
+                final IntegerMap<NamedAttachable> result = new IntegerMap<>();
                 result.add(ut, 1);
-                final IntegerMap<Resource> cost = new IntegerMap<Resource>();
+                final IntegerMap<Resource> cost = new IntegerMap<>();
                 cost.add(data.getResourceList().getResource(Constants.PUS), 1);
                 final ProductionRule newRule = new ProductionRule(ut.getName(), data, result, cost);
                 final Rule rule = new Rule(newRule, player);

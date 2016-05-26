@@ -58,18 +58,18 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Match<TriggerAttachment> politicsDelegateTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
+      final Match<TriggerAttachment> politicsDelegateTriggerMatch = new CompositeMatchAnd<>(
           TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(null, null),
           new CompositeMatchOr<TriggerAttachment>(TriggerAttachment.relationshipChangeMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
-          new HashSet<PlayerID>(Collections.singleton(m_player)), politicsDelegateTriggerMatch, m_bridge);
+          new HashSet<>(Collections.singleton(m_player)), politicsDelegateTriggerMatch, m_bridge);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
         final HashMap<ICondition, Boolean> testedConditions =
             TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
         // get all triggers that are satisfied based on the tested conditions.
-        final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(
+        final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
             Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
         // now list out individual types to fire, once for each of the matches above.
         TriggerAttachment.triggerRelationshipChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
@@ -110,7 +110,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 
   public HashMap<ICondition, Boolean> getTestedConditions() {
     final HashSet<ICondition> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(
-        new HashSet<ICondition>(PoliticalActionAttachment.getPoliticalActionAttachments(m_player)), null);
+        new HashSet<>(PoliticalActionAttachment.getPoliticalActionAttachments(m_player)), null);
     return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_bridge);
   }
 
@@ -178,7 +178,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   private boolean actionIsAccepted(final PoliticalActionAttachment paa) {
     final GameData data = getData();
     final CompositeMatchOr<PoliticalActionAttachment> intoAlliedChainOrIntoOrOutOfWar =
-        new CompositeMatchOr<PoliticalActionAttachment>(
+        new CompositeMatchOr<>(
             Matches.politicalActionIsRelationshipChangeOf(null,
                 Matches.RelationshipTypeIsAlliedAndAlliancesCanChainTogether.invert(),
                 Matches.RelationshipTypeIsAlliedAndAlliancesCanChainTogether, data),
@@ -196,7 +196,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       }
     } else {
       // if alliances chain together, then our allies must have a say in anyone becoming a new ally/enemy
-      final LinkedHashSet<PlayerID> playersWhoNeedToAccept = new LinkedHashSet<PlayerID>();
+      final LinkedHashSet<PlayerID> playersWhoNeedToAccept = new LinkedHashSet<>();
       playersWhoNeedToAccept.addAll(paa.getActionAccept());
       playersWhoNeedToAccept.addAll(Match.getMatches(data.getPlayerList().getPlayers(),
           Matches.isAlliedAndAlliancesCanChainTogether(m_player, data)));
@@ -333,7 +333,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   private void notifyOtherPlayers(final PoliticalActionAttachment paa, final String notification) {
     if (!"NONE".equals(notification)) {
       // we can send it to just paa.getOtherPlayers(), or we can send it to all players. both are good options.
-      final Collection<PlayerID> currentPlayer = new ArrayList<PlayerID>();
+      final Collection<PlayerID> currentPlayer = new ArrayList<>();
       currentPlayer.add(m_player);
       final Collection<PlayerID> otherPlayers = getData().getPlayerList().getPlayers();
       otherPlayers.removeAll(currentPlayer);
@@ -541,7 +541,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     // first do alliances. then, do war (since we don't want to declare war on a potential ally).
     final Collection<PlayerID> players = data.getPlayerList().getPlayers();
     for (final PlayerID p1 : players) {
-      final HashSet<PlayerID> p1NewAllies = new HashSet<PlayerID>();
+      final HashSet<PlayerID> p1NewAllies = new HashSet<>();
       final Collection<PlayerID> p1AlliedWith =
           Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1, data));
       for (final PlayerID p2 : p1AlliedWith) {
@@ -564,7 +564,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       return;
     }
     for (final PlayerID p1 : players) {
-      final HashSet<PlayerID> p1NewWar = new HashSet<PlayerID>();
+      final HashSet<PlayerID> p1NewWar = new HashSet<>();
       final Collection<PlayerID> p1WarWith = Match.getMatches(players, Matches.isAtWar(p1, data));
       final Collection<PlayerID> p1AlliedWith =
           Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1, data));

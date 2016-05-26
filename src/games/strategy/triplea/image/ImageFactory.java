@@ -8,10 +8,11 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ResourceLoader;
 
 public class ImageFactory {
-  private final Map<String, Image> m_images = new HashMap<String, Image>();
+  private final Map<String, Image> m_images = new HashMap<>();
   private ResourceLoader m_resourceLoader;
 
   public void setResourceLoader(final ResourceLoader loader) {
@@ -40,7 +41,7 @@ public class ImageFactory {
       try {
         image = ImageIO.read(url);
       } catch (final IOException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
         throw new IllegalStateException(e.getMessage());
       }
       m_images.put(key, image);

@@ -26,7 +26,7 @@ public class CollectionProperty<T> extends AEditableProperty {
    */
   public CollectionProperty(final String name, final String description, final Collection<T> values) {
     super(name, description);
-    m_values = new ArrayList<T>(values);
+    m_values = new ArrayList<>(values);
   }
 
   @Override

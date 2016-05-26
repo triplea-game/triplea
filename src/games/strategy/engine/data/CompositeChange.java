@@ -16,11 +16,11 @@ public class CompositeChange extends Change {
   }
 
   public CompositeChange() {
-    m_changes = new ArrayList<Change>();
+    m_changes = new ArrayList<>();
   }
 
   public CompositeChange(final List<Change> changes) {
-    m_changes = new ArrayList<Change>(changes);
+    m_changes = new ArrayList<>(changes);
   }
 
   public void add(final Change... changes) {
@@ -33,7 +33,7 @@ public class CompositeChange extends Change {
 
   @Override
   public Change invert() {
-    final List<Change> newChanges = new ArrayList<Change>();
+    final List<Change> newChanges = new ArrayList<>();
     // to invert a list of changes, process the opposite of
     // each change in the reverse order of the original list
     for (int i = m_changes.size() - 1; i >= 0; i--) {
@@ -65,7 +65,7 @@ public class CompositeChange extends Change {
   }
 
   public List<Change> getChanges() {
-    return new ArrayList<Change>(m_changes);
+    return new ArrayList<>(m_changes);
   }
 
   @Override

@@ -25,7 +25,7 @@ public class ClientLogin implements IConnectionLogin {
 
   @Override
   public Map<String, String> getProperties(final Map<String, String> challengProperties) {
-    final Map<String, String> rVal = new HashMap<String, String>();
+    final Map<String, String> rVal = new HashMap<>();
     if (challengProperties.get(ClientLoginValidator.PASSWORD_REQUIRED_PROPERTY).equals(Boolean.TRUE.toString())) {
       final JPasswordField passwordField = new JPasswordField();
       passwordField.setColumns(15);

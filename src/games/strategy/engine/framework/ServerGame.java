@@ -13,6 +13,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import games.strategy.common.ui.InGameLobbyWatcherWrapper;
+import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
@@ -79,7 +80,7 @@ public class ServerGame extends AbstractGame {
       try {
         saveGame(sink);
       } catch (final IOException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
         throw new IllegalStateException(e);
       }
       return sink.toByteArray();
@@ -182,7 +183,7 @@ public class ServerGame extends AbstractGame {
           } catch (final ConnectionLostException cle) {
             System.out.println("Connection lost to observer while joining: " + newNode.getName());
           } catch (final Exception e) {
-            e.printStackTrace();
+            ClientLogger.logQuietly(e);
           }
         }
       }, "Waiting on observer to finish joining: " + newNode.getName())).start();
@@ -191,17 +192,13 @@ public class ServerGame extends AbstractGame {
           nonBlockingObserver.cannotJoinGame("Taking too long to join.");
           return;
         }
-      } catch (final InterruptedException ie) {
-        ie.printStackTrace();
-        nonBlockingObserver.cannotJoinGame(ie.getMessage());
+      } catch (final InterruptedException e) {
+        ClientLogger.logQuietly(e);
+        nonBlockingObserver.cannotJoinGame(e.getMessage());
         return;
       }
-    } catch (final IOException ioe) {
-      ioe.printStackTrace();
-      nonBlockingObserver.cannotJoinGame(ioe.getMessage());
-      return;
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       nonBlockingObserver.cannotJoinGame(e.getMessage());
       return;
     } finally {
@@ -280,9 +277,9 @@ public class ServerGame extends AbstractGame {
           runStep(false);
         }
       }
-    } catch (final GameOverException goe) {
+    } catch (final GameOverException e) {
       if (!m_isGameOver) {
-        goe.printStackTrace();
+        ClientLogger.logQuietly(e);
       }
       return;
     }
@@ -320,7 +317,7 @@ public class ServerGame extends AbstractGame {
         }
       }
     } catch (final InterruptedException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
     // shutdown
     try {
@@ -345,8 +342,8 @@ public class ServerGame extends AbstractGame {
         }
         m_remoteMessenger.unregisterRemote(getRemoteName(delegate));
       }
-    } catch (final RuntimeException re) {
-      re.printStackTrace();
+    } catch (final RuntimeException e) {
+      ClientLogger.logQuietly(e);
     } finally {
       m_delegateExecutionManager.resumeDelegateExecution();
     }
@@ -370,7 +367,7 @@ public class ServerGame extends AbstractGame {
     try (FileOutputStream out = new FileOutputStream(f)) {
       saveGame(out);
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -386,7 +383,7 @@ public class ServerGame extends AbstractGame {
     try (FileOutputStream out = new FileOutputStream(autosaveFile)) {
       saveGame(out);
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -395,7 +392,7 @@ public class ServerGame extends AbstractGame {
     try (FileOutputStream fout = new FileOutputStream(f)) {
       saveGame(fout);
     } catch (final IOException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -653,5 +650,5 @@ public class ServerGame extends AbstractGame {
 
 
 interface IServerRemote extends IRemote {
-  public byte[] getSavedGame();
+  byte[] getSavedGame();
 }

@@ -39,7 +39,7 @@ public class CompositeRouteFinder {
   }
 
   private HashSet<Territory> ToHashSet(final Collection<Territory> ters) {
-    final HashSet<Territory> result = new HashSet<Territory>();
+    final HashSet<Territory> result = new HashSet<>();
     for (final Territory ter : ters) {
       result.add(ter);
     }
@@ -48,12 +48,12 @@ public class CompositeRouteFinder {
 
   public Route findRoute(final Territory start, final Territory end) {
     final HashSet<Territory> allMatchingTers =
-        ToHashSet(Match.getMatches(m_map.getTerritories(), new CompositeMatchOr<Territory>(m_matches.keySet())));
+        ToHashSet(Match.getMatches(m_map.getTerritories(), new CompositeMatchOr<>(m_matches.keySet())));
     final HashMap<Territory, Integer> terScoreMap = CreateScoreMap(allMatchingTers, start);
-    final HashMap<Territory, Integer> routeScoreMap = new HashMap<Territory, Integer>();
+    final HashMap<Territory, Integer> routeScoreMap = new HashMap<>();
     int bestRouteToEndScore = Integer.MAX_VALUE;
-    final HashMap<Territory, Territory> previous = new HashMap<Territory, Territory>();
-    List<Territory> routeLeadersToProcess = new ArrayList<Territory>();
+    final HashMap<Territory, Territory> previous = new HashMap<>();
+    List<Territory> routeLeadersToProcess = new ArrayList<>();
     for (final Territory ter : m_map.getNeighbors(start, Matches.territoryIsInList(allMatchingTers))) {
       final int routeScore = terScoreMap.get(start) + terScoreMap.get(ter);
       routeScoreMap.put(ter, routeScore);
@@ -61,7 +61,7 @@ public class CompositeRouteFinder {
       previous.put(ter, start);
     }
     while (routeLeadersToProcess.size() > 0) {
-      final List<Territory> newLeaders = new ArrayList<Territory>();
+      final List<Territory> newLeaders = new ArrayList<>();
       for (final Territory oldLeader : routeLeadersToProcess) {
         for (final Territory ter : m_map.getNeighbors(oldLeader, Matches.territoryIsInList(allMatchingTers))) {
           final int routeScore = routeScoreMap.get(oldLeader) + terScoreMap.get(ter);
@@ -98,7 +98,7 @@ public class CompositeRouteFinder {
 
   private Route AssembleRoute(final Territory start, final Territory end,
       final HashMap<Territory, Territory> previous) {
-    final List<Territory> routeTers = new ArrayList<Territory>();
+    final List<Territory> routeTers = new ArrayList<>();
     Territory curTer = end;
     while (previous.containsKey(curTer)) {
       routeTers.add(curTer);
@@ -110,7 +110,7 @@ public class CompositeRouteFinder {
   }
 
   private HashMap<Territory, Integer> CreateScoreMap(final Collection<Territory> ters, final Territory startTer) {
-    final HashMap<Territory, Integer> result = new HashMap<Territory, Integer>();
+    final HashMap<Territory, Integer> result = new HashMap<>();
     for (final Territory ter : m_map.getTerritories()) {
       result.put(ter, GetTerScore(ter));
     }

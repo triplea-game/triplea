@@ -1,11 +1,5 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.util.PointFileReaderWriter;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -30,6 +24,14 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
+
+import games.strategy.debug.ClientLogger;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Territory;
+import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.ui.Util;
+import games.strategy.util.PointFileReaderWriter;
 
 /**
  * contains data about the territories useful for drawing
@@ -88,10 +90,10 @@ public class MapData {
   public static final String KAMIKAZE_FILE = "kamikaze_place.txt";
   public static final String DECORATIONS_FILE = "decorations.txt";
   // default colour if none is defined.
-  private final List<Color> m_defaultColours = new ArrayList<Color>(Arrays.asList(new Color[] {Color.RED,
+  private final List<Color> m_defaultColours = new ArrayList<>(Arrays.asList(new Color[] {Color.RED,
       Color.MAGENTA, Color.YELLOW, Color.ORANGE, Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY}));
   // maps PlayerName as String to Color
-  private final Map<String, Color> m_playerColors = new HashMap<String, Color>();
+  private final Map<String, Color> m_playerColors = new HashMap<>();
   // maps String -> List of points
   private Map<String, List<Point>> m_place;
   // maps String -> Collection of Polygons
@@ -122,7 +124,7 @@ public class MapData {
   private Set<String> m_undrawnTerritoriesNames;
   private Map<Image, List<Point>> m_decorations;
   private Map<String, Image> m_territoryNameImages;
-  private final Map<String, Image> m_effectImages = new HashMap<String, Image>();
+  private final Map<String, Image> m_effectImages = new HashMap<>();
   private final ResourceLoader m_resourceLoader;
   private BufferedImage m_vcImage;
   private BufferedImage m_blockadeImage;
@@ -182,7 +184,7 @@ public class MapData {
       }
       initializeContains();
     } catch (final IOException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly(ex);
     }
   }
 
@@ -191,7 +193,7 @@ public class MapData {
   }
 
   private void loadTerritoryNames() {
-    m_territoryNameImages = new HashMap<String, Image>();
+    m_territoryNameImages = new HashMap<>();
     if (!m_resourceLoader.hasPath("territoryNames/")) {
       return;
     }
@@ -213,7 +215,7 @@ public class MapData {
       m_decorations = Collections.emptyMap();
       return;
     }
-    m_decorations = new HashMap<Image, List<Point>>();
+    m_decorations = new HashMap<>();
     try (InputStream stream = decorations.openStream()) {
       final Map<String, List<Point>> points = PointFileReaderWriter.readOneToMany(stream);
       for (final String name : points.keySet()) {
@@ -230,7 +232,7 @@ public class MapData {
     try {
       return Double.parseDouble(m_mapProperties.getProperty(PROPERTY_UNITS_SCALE));
     } catch (final NumberFormatException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return 1.0;
     }
   }
@@ -245,7 +247,7 @@ public class MapData {
     try {
       return Integer.parseInt(m_mapProperties.getProperty(PROPERTY_UNITS_WIDTH));
     } catch (final NumberFormatException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
     }
   }
@@ -260,7 +262,7 @@ public class MapData {
     try {
       return Integer.parseInt(m_mapProperties.getProperty(PROPERTY_UNITS_HEIGHT));
     } catch (final NumberFormatException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
     }
   }
@@ -276,7 +278,7 @@ public class MapData {
     try {
       return Integer.parseInt(m_mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_WIDTH));
     } catch (final NumberFormatException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return getDefaultUnitWidth() / 4;
     }
   }
@@ -292,7 +294,7 @@ public class MapData {
     try {
       return Integer.parseInt(m_mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT));
     } catch (final NumberFormatException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       return getDefaultUnitHeight();
     }
   }
@@ -306,7 +308,7 @@ public class MapData {
   public boolean shouldDrawTerritoryName(final String territoryName) {
     if (m_undrawnTerritoriesNames == null) {
       final String property = m_mapProperties.getProperty(PROPERTY_DONT_DRAW_TERRITORY_NAMES, "");
-      m_undrawnTerritoriesNames = new HashSet<String>(Arrays.asList(property.split(",")));
+      m_undrawnTerritoriesNames = new HashSet<>(Arrays.asList(property.split(",")));
     }
     return !m_undrawnTerritoriesNames.contains(territoryName);
   }
@@ -330,7 +332,7 @@ public class MapData {
   }
 
   public String getMapBlendMode() {
-    return String.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_MAPBLENDMODE, "normal")).toString();
+    return String.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_MAPBLENDMODE, "normal"));
   }
 
   public float getMapBlendAlpha() {
@@ -370,18 +372,18 @@ public class MapData {
   }
 
   private void initializeContains() {
-    m_contains = new HashMap<String, List<String>>();
+    m_contains = new HashMap<>();
     final Iterator<String> seaIter = getTerritories().iterator();
     while (seaIter.hasNext()) {
-      final List<String> contained = new ArrayList<String>();
+      final List<String> contained = new ArrayList<>();
       final String seaTerritory = seaIter.next();
-      if (!(seaTerritory.endsWith("Sea Zone") || seaTerritory.startsWith("Sea Zone"))) {
+      if (!Util.isTerritoryNameIndicatingWater(seaTerritory)) {
         continue;
       }
       final Iterator<String> landIter = getTerritories().iterator();
       while (landIter.hasNext()) {
         final String landTerritory = landIter.next();
-        if (landTerritory.endsWith("Sea Zone") || landTerritory.startsWith("Sea Zone")) {
+        if (Util.isTerritoryNameIndicatingWater(landTerritory)) {
           continue;
         }
         final Polygon landPoly = getPolygons(landTerritory).iterator().next();
@@ -504,7 +506,8 @@ public class MapData {
     while (territories.hasNext()) {
       final Territory terr = territories.next();
       if (!keySet.contains(terr.getName())) {
-        errors.append("No data of type " + dataTypeForErrorMessage + " for territory:" + terr.getName() + "\n");
+        errors.append("No data of type ").append(dataTypeForErrorMessage).append(" for territory:")
+            .append(terr.getName()).append("\n");
       }
     }
     if (errors.length() > 0) {
@@ -606,7 +609,7 @@ public class MapData {
       while (polyIter.hasNext()) {
         final Polygon poly = polyIter.next();
         if (poly.contains(x, y)) {
-          if (name.endsWith("Sea Zone") || name.startsWith("Sea Zone")) {
+          if (Util.isTerritoryNameIndicatingWater(name)) {
             seaName = name;
           } else {
             return name;
@@ -715,7 +718,7 @@ public class MapData {
         final Polygon item = polygons.get(i);
         if (item.intersects(bounds) || item.contains(bounds) || bounds.contains(item.getBounds2D())) {
           if (rVal == null) {
-            rVal = new ArrayList<String>(4);
+            rVal = new ArrayList<>(4);
           }
           rVal.add(terr);
           // only add it once
@@ -785,7 +788,7 @@ public class MapData {
     try {
       return ImageIO.read(url);
     } catch (final IOException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(e.getMessage());
     }
   }

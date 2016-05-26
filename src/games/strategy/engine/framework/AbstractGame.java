@@ -34,13 +34,13 @@ abstract public class AbstractGame implements IGame {
   protected final IMessenger m_messenger;
   protected final IRemoteMessenger m_remoteMessenger;
   protected final IChannelMessenger m_channelMessenger;
-  protected final Map<PlayerID, IGamePlayer> m_gamePlayers = new HashMap<PlayerID, IGamePlayer>();
+  protected final Map<PlayerID, IGamePlayer> m_gamePlayers = new HashMap<>();
   protected volatile boolean m_isGameOver = false;
   protected final Vault m_vault;
   protected IGameModifiedChannel m_gameModifiedChannel;
   protected final PlayerManager m_playerManager;
   protected boolean m_firstRun = true;
-  protected final ListenerList<GameStepListener> m_gameStepListeners = new ListenerList<GameStepListener>();
+  protected final ListenerList<GameStepListener> m_gameStepListeners = new ListenerList<>();
 
   public AbstractGame(final GameData data, final Set<IGamePlayer> gamePlayers,
       final Map<String, INode> remotePlayerMapping, final Messengers messengers) {
@@ -49,7 +49,7 @@ abstract public class AbstractGame implements IGame {
     m_remoteMessenger = messengers.getRemoteMessenger();
     m_channelMessenger = messengers.getChannelMessenger();
     m_vault = new Vault(m_channelMessenger);
-    final Map<String, INode> allPlayers = new HashMap<String, INode>(remotePlayerMapping);
+    final Map<String, INode> allPlayers = new HashMap<>(remotePlayerMapping);
     for (final IGamePlayer player : gamePlayers) {
       // this is necessary for Server games, but not needed for client games.
       allPlayers.put(player.getName(), m_messenger.getLocalNode());

@@ -7,7 +7,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 
 public interface IPoliticsDelegate extends IRemote, IDelegate {
-  public void attemptAction(PoliticalActionAttachment actionChoice);
+  void attemptAction(PoliticalActionAttachment actionChoice);
 
-  public Collection<PoliticalActionAttachment> getValidActions();
+  Collection<PoliticalActionAttachment> getValidActions();
 }

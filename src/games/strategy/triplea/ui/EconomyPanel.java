@@ -54,7 +54,7 @@ public class EconomyPanel extends AbstractStatPanel {
     }
 
     private void setResourceCollums() {
-      final List<IStat> statList = new ArrayList<IStat>();
+      final List<IStat> statList = new ArrayList<>();
       for (final Resource resource : m_data.getResourceList().getResources()) {
         if (resource.getName().equals(Constants.TECH_TOKENS) || resource.getName().equals(Constants.VPS)) {
           continue;

@@ -41,7 +41,7 @@ public class NewGameChooserEntry {
   public NewGameChooserEntry(final URI uri)
       throws IOException, GameParseException, SAXException, EngineVersionException {
     m_url = uri;
-    final AtomicReference<String> gameName = new AtomicReference<String>();
+    final AtomicReference<String> gameName = new AtomicReference<>();
     try (InputStream input = uri.toURL().openStream()) {
       final boolean delayParsing = GameRunner2.getDelayedParsing();
       m_data = new GameParser().parse(input, gameName, delayParsing);
@@ -54,7 +54,7 @@ public class NewGameChooserEntry {
     m_data = null;
 
     String error = null;
-    final AtomicReference<String> gameName = new AtomicReference<String>();
+    final AtomicReference<String> gameName = new AtomicReference<>();
 
     try (InputStream input = m_url.toURL().openStream()) {
       m_data = new GameParser().parse(input, gameName, false);
@@ -66,12 +66,12 @@ public class NewGameChooserEntry {
     } catch (final SAXParseException e) {
       String msg = "Could not parse:" + m_url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber();
       ClientLogger.logError(msg);
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       error = e.getMessage();
     } catch (final Exception e) {
       String msg = "Could not parse:" + m_url;
       ClientLogger.logError(msg);
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       error = e.getMessage();
     }
     if (error != null) {
@@ -86,7 +86,7 @@ public class NewGameChooserEntry {
   public void delayParseGameData() {
     m_data = null;
 
-    final AtomicReference<String> gameName = new AtomicReference<String>();
+    final AtomicReference<String> gameName = new AtomicReference<>();
     try (InputStream input = m_url.toURL().openStream()) {
       m_data = new GameParser().parse(input, gameName, true);
       m_gameDataFullyLoaded = false;
@@ -95,10 +95,10 @@ public class NewGameChooserEntry {
     } catch (final SAXParseException e) {
       System.err.println(
           "Could not parse:" + m_url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     } catch (final Exception e) {
       System.err.println("Could not parse:" + m_url);
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 

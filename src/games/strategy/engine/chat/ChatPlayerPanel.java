@@ -58,13 +58,13 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   private JList<INode> m_players;
   private DefaultListModel<INode> m_listModel;
   private Chat m_chat;
-  private final Set<String> m_hiddenPlayers = new HashSet<String>();
+  private final Set<String> m_hiddenPlayers = new HashSet<>();
   private final IStatusListener m_statusListener;
   // if our renderer is overridden
   // we do not set this directly on the JList,
   // instead we feed it the node name and staus as a string
   private ListCellRenderer<Object> m_setCellRenderer = new DefaultListCellRenderer();
-  private final List<IPlayerActionFactory> m_actionFactories = new ArrayList<IPlayerActionFactory>();
+  private final List<IPlayerActionFactory> m_actionFactories = new ArrayList<>();
 
   public ChatPlayerPanel(final Chat chat) {
     createComponents();

@@ -74,12 +74,12 @@ public class ResourceLoader {
 
   private static List<String> getPaths(final String mapName) {
     if (mapName == null) {
-      return new ArrayList<String>();
+      return new ArrayList<>();
     }
     // find the primary directory/file
     final String dirName = File.separator + mapName;
     final String zipName = dirName + ".zip";
-    final List<File> candidates = new ArrayList<File>();
+    final List<File> candidates = new ArrayList<>();
     // prioritize user maps folder over root folder
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), dirName));
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), zipName));
@@ -105,7 +105,7 @@ public class ResourceLoader {
     }
     final File match = existing.iterator().next();
 
-    final List<String> rVal = new ArrayList<String>();
+    final List<String> rVal = new ArrayList<>();
     rVal.add(match.getAbsolutePath());
     // find dependencies
     try (final URLClassLoader url = new URLClassLoader(new URL[] {match.toURI().toURL()})) {
@@ -151,7 +151,7 @@ public class ResourceLoader {
       try {
         urls[i] = f.toURI().toURL();
       } catch (final MalformedURLException e) {
-        e.printStackTrace();
+        ClientLogger.logQuietly(e);
         throw new IllegalStateException(e.getMessage());
       }
     }

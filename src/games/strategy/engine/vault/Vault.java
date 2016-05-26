@@ -15,6 +15,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.RemoteName;
@@ -45,11 +46,11 @@ public class Vault {
   private final KeyGenerator m_keyGen;
   private final IChannelMessenger m_channelMessenger;
   // Maps VaultID -> SecretKey
-  private final ConcurrentMap<VaultID, SecretKey> m_secretKeys = new ConcurrentHashMap<VaultID, SecretKey>();
+  private final ConcurrentMap<VaultID, SecretKey> m_secretKeys = new ConcurrentHashMap<>();
   // maps ValutID -> encrypted byte[]
-  private final ConcurrentMap<VaultID, byte[]> m_unverifiedValues = new ConcurrentHashMap<VaultID, byte[]>();
+  private final ConcurrentMap<VaultID, byte[]> m_unverifiedValues = new ConcurrentHashMap<>();
   // maps VaultID -> byte[]
-  private final ConcurrentMap<VaultID, byte[]> m_verifiedValues = new ConcurrentHashMap<VaultID, byte[]>();
+  private final ConcurrentMap<VaultID, byte[]> m_verifiedValues = new ConcurrentHashMap<>();
   private final Object m_waitForLock = new Object();
 
   /**
@@ -62,7 +63,7 @@ public class Vault {
       mSecretKeyFactory = SecretKeyFactory.getInstance(ALGORITHM);
       m_keyGen = KeyGenerator.getInstance(ALGORITHM);
     } catch (final NoSuchAlgorithmException e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException("Nothing known about algorithm:" + ALGORITHM);
     }
   }
@@ -120,14 +121,8 @@ public class Vault {
     try {
       cipher = Cipher.getInstance(ALGORITHM);
       cipher.init(Cipher.ENCRYPT_MODE, key);
-    } catch (final NoSuchAlgorithmException e) {
-      e.printStackTrace();
-      throw new IllegalStateException(e.getMessage());
-    } catch (final NoSuchPaddingException e) {
-      e.printStackTrace();
-      throw new IllegalStateException(e.getMessage());
-    } catch (final InvalidKeyException e) {
-      e.printStackTrace();
+    } catch (final NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException e) {
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(e.getMessage());
     }
     // join the data and known value into one array
@@ -136,7 +131,7 @@ public class Vault {
     try {
       encrypted = cipher.doFinal(dataAndCheck);
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
       throw new IllegalStateException(e.getMessage());
     }
     // tell the world
@@ -205,7 +200,7 @@ public class Vault {
   }
 
   public List<VaultID> knownIds() {
-    final ArrayList<VaultID> rVal = new ArrayList<VaultID>(m_verifiedValues.keySet());
+    final ArrayList<VaultID> rVal = new ArrayList<>(m_verifiedValues.keySet());
     rVal.addAll(m_unverifiedValues.keySet());
     return rVal;
   }
@@ -245,14 +240,8 @@ public class Vault {
       try {
         cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, key);
-      } catch (final NoSuchAlgorithmException e) {
-        e.printStackTrace();
-        throw new IllegalStateException(e.getMessage());
-      } catch (final NoSuchPaddingException e) {
-        e.printStackTrace();
-        throw new IllegalStateException(e.getMessage());
-      } catch (final InvalidKeyException e) {
-        e.printStackTrace();
+      } catch (final NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException e) {
+        ClientLogger.logQuietly(e);
         throw new IllegalStateException(e.getMessage());
       }
       final byte[] encrypted = m_unverifiedValues.remove(id);
@@ -344,9 +333,9 @@ public class Vault {
 
 
 interface IRemoteVault extends IChannelSubscribor {
-  public void addLockedValue(VaultID id, byte[] data);
+  void addLockedValue(VaultID id, byte[] data);
 
-  public void unlock(VaultID id, byte[] secretKeyBytes);
+  void unlock(VaultID id, byte[] secretKeyBytes);
 
-  public void release(VaultID id);
+  void release(VaultID id);
 }

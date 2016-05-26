@@ -14,7 +14,7 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate {
    *        territory to place
    * @return an error code if the placement was not successful
    */
-  public String placeUnits(Collection<Unit> units, Territory at);
+  String placeUnits(Collection<Unit> units, Territory at);
 
   /**
    * Query what units can be produced in a given territory.
@@ -27,19 +27,19 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate {
    *        referring territory
    * @return object that contains place-able units
    */
-  public PlaceableUnits getPlaceableUnits(Collection<Unit> units, Territory at);
+  PlaceableUnits getPlaceableUnits(Collection<Unit> units, Territory at);
 
   /**
    * @return the number of placements made so far.
    *         this is not the number of units placed, but the number
    *         of times we have made successful placements
    */
-  public int getPlacementsMade();
+  int getPlacementsMade();
 
   /**
    * Get what air units must move before the end of the players turn
    *
    * @return a list of Territories with air units that must move
    */
-  public Collection<Territory> getTerritoriesWhereAirCantLand();
+  Collection<Territory> getTerritoriesWhereAirCantLand();
 }

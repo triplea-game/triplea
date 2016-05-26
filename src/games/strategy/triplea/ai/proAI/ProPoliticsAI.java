@@ -53,7 +53,7 @@ public class ProPoliticsAI {
     final List<PoliticalActionAttachment> validWarActions =
         Match.getMatches(
             actionChoicesTowardsWar,
-            new CompositeMatchAnd<PoliticalActionAttachment>(Matches
+            new CompositeMatchAnd<>(Matches
                 .AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())));
     ProLogger.trace("Valid War options: " + validWarActions);
 
