@@ -13,6 +13,8 @@ import games.strategy.test.TestUtil;
 import games.strategy.util.ThreadUtil;
 import junit.framework.TestCase;
 
+import static org.junit.Assert.fail;
+
 public class MessengerTest extends TestCase {
   private static int SERVER_PORT = -1;
   private IServerMessenger m_server;
@@ -327,7 +329,7 @@ class MessageListener implements IMessageListener {
     try {
       lock.wait(1500);
     } catch (final InterruptedException e) {
-      ClientLogger.logQuietly(e);
+      fail("unexpected exception: " + e.getMessage());
     }
   }
 
