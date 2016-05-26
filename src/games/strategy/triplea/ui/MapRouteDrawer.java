@@ -10,7 +10,6 @@ import java.awt.RenderingHints;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
@@ -28,10 +27,14 @@ public class MapRouteDrawer {
   private static final SplineInterpolator splineInterpolator = new SplineInterpolator();
 
   /**
-   * Draws the route to the screen, does nothing if null.
+   * Draws the route to the screen.
    */
   public static void drawRoute(final Graphics2D graphics, final RouteDescription routeDescription, final MapPanel view,
       final MapData mapData, final String movementLeftForCurrentUnits) {
+    // set thickness and color of the future drawings
+    graphics.setStroke(new BasicStroke(3.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+    graphics.setPaint(Color.red);
+    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     if (routeDescription == null) {
       return;
     }
@@ -39,26 +42,20 @@ public class MapRouteDrawer {
     if (route == null) {
       return;
     }
-
+    final int numTerritories = route.getAllTerritories().size();
     final Point[] points = getRoutePoints(routeDescription, mapData);
+    final boolean tooFewTerritories = numTerritories <= 1;
+    final boolean tooFewPoints = points.length <= 2;
     final int xOffset = view.getXOffset();
     final int yOffset = view.getYOffset();
-    final double scale = view.getScale();
-    final int jointsize = 10;
-    final int numTerritories = route.getAllTerritories().size();
-    // set thickness and color of the future drawings
-    graphics.setStroke(new BasicStroke(3.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-    graphics.setPaint(Color.red);
-    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-    if (Arrays.asList(points).contains(null)) {// If the Array is null at some point
-      return;
-    }
-    if (numTerritories > 1 && points.length <= 2) {
+    
+    if (!tooFewTerritories && tooFewPoints) {
       drawMoveLength(graphics, routeDescription, points, xOffset, yOffset, view, mapData.scrollWrapX(),
           mapData.scrollWrapY(), numTerritories, movementLeftForCurrentUnits);
     }
-    if (numTerritories <= 1 || points.length <= 2) {
+    final double scale = view.getScale();
+    final int jointsize = 10;
+    if (tooFewTerritories || tooFewPoints) {
       drawLineWithTranslate(graphics, new Line2D.Float(routeDescription.getStart(), routeDescription.getEnd()), xOffset,
           yOffset, scale);
       graphics.fillOval((int) (((routeDescription.getEnd().x - xOffset) - jointsize / 2) * scale),
