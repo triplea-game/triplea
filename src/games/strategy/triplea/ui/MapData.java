@@ -31,7 +31,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.ui.Util;
-import games.strategy.util.PointFileReaderWriter;
+import tools.map.making.PointFileReaderWriter;
 
 /**
  * contains data about the territories useful for drawing

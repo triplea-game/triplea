@@ -45,6 +45,7 @@ import games.strategy.ui.IntTextField;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Triple;
+import tools.map.making.MapCreator;
 
 /**
  * Class for holding various engine related options and preferences.
@@ -366,7 +367,7 @@ public class EnginePreferences extends JDialog {
     m_mapCreator.addActionListener(SwingAction.of("Run the Map Creator", e -> {
         final List<String> commands = new ArrayList<>();
         ProcessRunnerUtil.populateBasicJavaArgs(commands);
-        final String javaClass = "util.image.MapCreator";
+        final String javaClass = MapCreator.getRunnableClassName();
         commands.add(javaClass);
         ProcessRunnerUtil.exec(commands);
 
