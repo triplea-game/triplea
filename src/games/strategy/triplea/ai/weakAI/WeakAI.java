@@ -322,7 +322,6 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleAPlayer {
       firstSeaZoneOnAmphib = amphibRoute.getAllTerritories().get(1);
       lastSeaZoneOnAmphib = amphibRoute.getAllTerritories().get(amphibRoute.numberOfSteps() - 1);
     }
-    final Collection<Unit> alreadyMoved = new HashSet<>();
     final Match<Unit> ownedAndNotMoved =
         new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved);
     for (final Territory t : data.getMap()) {
@@ -338,7 +337,6 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleAPlayer {
               moveRoutes.add(r);
               final List<Unit> unitsToMove = t.getUnits().getMatches(Matches.unitIsOwnedBy(player));
               moveUnits.add(unitsToMove);
-              alreadyMoved.addAll(unitsToMove);
             }
           }
         }
@@ -847,7 +845,6 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleAPlayer {
       final IntegerMap<RepairRule> repairMap = new IntegerMap<>();
       final HashMap<Unit, IntegerMap<RepairRule>> repair = new HashMap<>();
       final Map<Unit, Territory> unitsThatCanProduceNeedingRepair = new HashMap<>();
-      final Collection<Unit> unitsThatAreDisabledNeedingRepair = new ArrayList<>();
       final CompositeMatchAnd<Unit> ourDisabled =
           new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), Matches.UnitIsDisabled);
       final int minimumUnitPrice = 3;
@@ -869,7 +866,6 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleAPlayer {
         if (Matches.UnitHasTakenSomeBombingUnitDamage.match(possibleFactoryNeedingRepair)) {
           unitsThatCanProduceNeedingRepair.put(possibleFactoryNeedingRepair, fixTerr);
         }
-        unitsThatAreDisabledNeedingRepair.addAll(Match.getMatches(fixTerr.getUnits().getUnits(), ourDisabled));
         final TripleAUnit taUnit = (TripleAUnit) possibleFactoryNeedingRepair;
         diff = taUnit.getUnitDamage();
         if (fixTerr == capitol) {

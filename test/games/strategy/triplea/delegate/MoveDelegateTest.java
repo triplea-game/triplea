@@ -1047,8 +1047,8 @@ public class MoveDelegateTest extends DelegateTest {
     retreatingLandUnits.addAll(karelia.getUnits().getMatches(Matches.isUnitAllied(russians, m_data)));
     final Integer retreatingLandSizeInt = retreatingLandUnits.size();
     // Get the defending land units that and their number
-    final List<Unit> defendingLandUnits = new ArrayList<>();
     retreatingLandUnits.addAll(karelia.getUnits().getMatches(Matches.isUnitAllied(british, m_data)));
+    final List<Unit> defendingLandUnits = new ArrayList<>();
     final Integer defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
     final IBattle inBalticSeaZone =

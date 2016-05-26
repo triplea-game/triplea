@@ -1184,7 +1184,6 @@ public class ProPurchaseAI {
       final List<Unit> enemyUnitsInSeaTerritories = new ArrayList<>();
       final List<Unit> enemyUnitsInLandTerritories = new ArrayList<>();
       final List<Unit> myUnitsInSeaTerritories = new ArrayList<>();
-      final List<Unit> alliedUnitsInSeaTerritories = new ArrayList<>();
       for (final Territory nearbyLandTerritory : nearbyLandTerritories) {
         enemyUnitsInLandTerritories.addAll(nearbyLandTerritory.getUnits().getMatches(
             ProMatches.unitIsEnemyAir(player, data)));
@@ -1211,8 +1210,6 @@ public class ProPurchaseAI {
         myUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(
             ProMatches.unitIsOwnedNotLand(player, data)));
         myUnitsInSeaTerritories.addAll(ProPurchaseUtils.getPlaceUnits(nearbySeaTerritory, purchaseTerritories));
-        alliedUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(
-            ProMatches.unitIsAlliedNotOwned(player, data)));
       }
 
       // Check if destroyer is needed
