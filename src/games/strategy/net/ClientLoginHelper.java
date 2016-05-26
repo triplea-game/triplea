@@ -3,8 +3,6 @@ package games.strategy.net;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 class ClientLoginHelper {
   private final IConnectionLogin login;
@@ -25,19 +23,13 @@ class ClientLoginHelper {
       // write the object output streams magic number
       out.flush();
       final ObjectInputStream in = new ObjectInputStream(streams.getBufferedIn());
+      //If casting fails, the Object is no Map<String, String>
       Map<String, String> challenge = (Map<String, String>) in.readObject();
       // the degenerate case
       if (challenge == null) {
         out.writeObject(null);
         out.flush();
         return true;
-      }
-      final Set<Entry<String,String>> entries = challenge.entrySet();//TODO someone needs to rewrite this in order to remove the Supressed Warning
-      for (final Map.Entry<?,?> entry : entries) {
-        // check what we read is a string
-        if (!(entry.getKey() instanceof String) && !(entry.getValue() instanceof String)) {
-          throw new IllegalStateException("Value must be a String");
-        }
       }
       if (login == null) {
         throw new IllegalStateException("Challenged, but no login generator");
