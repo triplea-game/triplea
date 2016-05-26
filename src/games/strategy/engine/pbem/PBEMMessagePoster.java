@@ -227,7 +227,7 @@ public class PBEMMessagePoster implements Serializable {
     final IForumPoster turnSummaryMsgr = posterPBEM.getForumPoster();
     final StringBuilder sb = new StringBuilder();
     if (turnSummaryMsgr != null) {
-      sb.append(message).append("Post " + title + " ");
+      sb.append(message).append("Post ").append(title).append(" ");
       if (includeSaveGame) {
         sb.append("and save game ");
       }
@@ -239,7 +239,8 @@ public class PBEMMessagePoster implements Serializable {
     }
     final IWebPoster webPoster = posterPBEM.getWebPoster();
     if (webPoster != null) {
-      sb.append("Send game state of '" + webPoster.getGameName() + "' to " + webPoster.getHost() + "?\n");
+      sb.append("Send game state of '").append(webPoster.getGameName()).append("' to ").append(webPoster.getHost())
+          .append("?\n");
     }
     message = sb.toString();
     final int choice = JOptionPane.showConfirmDialog(mainGameFrame, message, "Post " + title + "?", 2, -1, null);

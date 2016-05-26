@@ -98,7 +98,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
                 + " lost to blockades)" + "; end with " + total + MyFormatter.pluralize(" PU", total) + " total";
       }
       m_bridge.getHistoryWriter().startEvent(transcriptText);
-      endTurnReport.append(transcriptText + "<br />");
+      endTurnReport.append(transcriptText).append("<br />");
       // do war bonds
       final int bonds = rollWarBonds(m_bridge, m_player, data);
       if (bonds > 0) {
@@ -107,7 +107,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
         final String bondText = m_player.getName() + " collect " + bonds + MyFormatter.pluralize(" PU", bonds)
             + " from War Bonds; end with " + total + MyFormatter.pluralize(" PU", total) + " total";
         m_bridge.getHistoryWriter().startEvent(bondText);
-        endTurnReport.append("<br />" + bondText + "<br />");
+        endTurnReport.append("<br />").append(bondText).append("<br />");
       }
       if (total < 0) {
         toAdd -= total;
@@ -122,8 +122,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
         final CompositeChange ccVP = new CompositeChange(changeVP, changeCapVP);
         m_bridge.addChange(ccVP);
       }
-      endTurnReport.append("<br />" + addOtherResources(m_bridge));
-      endTurnReport.append("<br />" + doNationalObjectivesAndOtherEndTurnEffects(m_bridge));
+      endTurnReport.append("<br />").append(addOtherResources(m_bridge));
+      endTurnReport.append("<br />").append(doNationalObjectivesAndOtherEndTurnEffects(m_bridge));
       // now we do upkeep costs, including upkeep cost as a percentage of our entire income for this turn (including
       // NOs)
       final int currentPUs = m_player.getResources().getQuantity(PUs);
@@ -156,7 +156,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
             + " in order to maintain current relationships with other players, and ends the turn with " + newTotal
             + MyFormatter.pluralize(" PU", newTotal);
         m_bridge.getHistoryWriter().startEvent(transcriptText2);
-        endTurnReport.append("<br />" + transcriptText2 + "<br />");
+        endTurnReport.append("<br />").append(transcriptText2).append("<br />");
         final Change upkeep = ChangeFactory.changeResourcesChange(m_player, PUs, relationshipUpkeepTotalCost);
         m_bridge.addChange(upkeep);
       }
@@ -451,10 +451,10 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     if (rollDiceForBlockadeDamage && (realTotalLoss > 0 || (rolledDice && !transcripts.isEmpty()))) {
       final String mainline = "Total Cost from Convoy Blockades: " + realTotalLoss;
       aBridge.getHistoryWriter().startEvent(mainline);
-      endTurnReport.append(mainline + "<br />");
+      endTurnReport.append(mainline).append("<br />");
       for (final String t : transcripts) {
         aBridge.getHistoryWriter().addChildToEvent(t);
-        endTurnReport.append("* " + t + "<br />");
+        endTurnReport.append("* ").append(t).append("<br />");
       }
       endTurnReport.append("<br />");
     }

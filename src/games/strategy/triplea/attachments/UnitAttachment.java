@@ -2907,7 +2907,7 @@ public class UnitAttachment extends DefaultAttachment {
     final StringBuilder stats = new StringBuilder();
     final UnitType unitType = (UnitType) this.getAttachedTo();
     if (includeAttachedToName && unitType != null) {
-      stats.append(unitType.getName() + ":  ");
+      stats.append(unitType.getName()).append(":  ");
     }
     if (getIsAir()) {
       stats.append("Air unit, ");
@@ -2919,51 +2919,51 @@ public class UnitAttachment extends DefaultAttachment {
     final int attackRolls = getAttackRolls(player);
     final int defenseRolls = getDefenseRolls(player);
     if (getAttack(player) > 0) {
-      stats.append((attackRolls > 1 ? (attackRolls + "x ") : "") + getAttack(player) + " Attack, ");
+      stats.append(attackRolls > 1 ? (attackRolls + "x ") : "").append(getAttack(player)).append(" Attack, ");
     }
     if (getDefense(player) > 0) {
-      stats.append((defenseRolls > 1 ? (defenseRolls + "x ") : "") + getDefense(player) + " Defense, ");
+      stats.append(defenseRolls > 1 ? (defenseRolls + "x ") : "").append(getDefense(player)).append(" Defense, ");
     }
     if (getMovement(player) > 0) {
-      stats.append(getMovement(player) + " Movement, ");
+      stats.append(getMovement(player)).append(" Movement, ");
     }
     if (getHitPoints() > 1) {
-      stats.append(getHitPoints() + " Hitpoints, ");
+      stats.append(getHitPoints()).append(" Hitpoints, ");
     }
     if (getCanProduceUnits() && getCanProduceXUnits() < 0) {
       stats.append("can Produce Units Up To Territory Value, ");
     } else if (getCanProduceUnits() && getCanProduceXUnits() > 0) {
-      stats.append("can Produce " + getCanProduceXUnits() + " Units, ");
+      stats.append("can Produce ").append(getCanProduceXUnits()).append(" Units, ");
     }
     if (getCreatesUnitsList() != null && getCreatesUnitsList().size() > 0) {
       if (getCreatesUnitsList().size() > 4) {
-        stats.append("Produces " + getCreatesUnitsList().totalValues() + " Units Each Turn, ");
+        stats.append("Produces ").append(getCreatesUnitsList().totalValues()).append(" Units Each Turn, ");
       } else {
         stats.append("Produces ");
         for (final Entry<UnitType, Integer> entry : getCreatesUnitsList().entrySet()) {
-          stats.append(entry.getValue() + "x" + entry.getKey().getName() + " ");
+          stats.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
         }
         stats.append("Each Turn, ");
       }
     }
     if (getCreatesResourcesList() != null && getCreatesResourcesList().size() > 0) {
       if (getCreatesResourcesList().size() > 4) {
-        stats.append("Produces " + getCreatesResourcesList().totalValues() + " Resources Each Turn, ");
+        stats.append("Produces ").append(getCreatesResourcesList().totalValues()).append(" Resources Each Turn, ");
       } else {
         stats.append("Produces ");
         for (final Entry<Resource, Integer> entry : getCreatesResourcesList().entrySet()) {
-          stats.append(entry.getValue() + "x" + entry.getKey().getName() + " ");
+          stats.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
         }
         stats.append("Each Turn, ");
       }
     }
     if (getFuelCost() != null && getFuelCost().size() > 0) {
       if (getFuelCost().size() > 4) {
-        stats.append("Uses " + m_fuelCost.totalValues() + " Resources Each movement point, ");
+        stats.append("Uses ").append(m_fuelCost.totalValues()).append(" Resources Each movement point, ");
       } else {
         stats.append("Uses ");
         for (final Entry<Resource, Integer> entry : getFuelCost().entrySet()) {
-          stats.append(entry.getValue() + "x" + entry.getKey().getName() + " ");
+          stats.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
         }
         stats.append("Each movement point, ");
       }
@@ -2971,31 +2971,32 @@ public class UnitAttachment extends DefaultAttachment {
     if ((getIsAAforCombatOnly() || getIsAAforBombingThisUnitOnly() || getIsAAforFlyOverOnly())
         && (getAttackAA(player) > 0 || getOffensiveAttackAA(player) > 0)) {
       if (getOffensiveAttackAA(player) > 0) {
-        stats.append(getOffensiveAttackAA(player) + "/"
-            + (getOffensiveAttackAAmaxDieSides() != -1 ? getOffensiveAttackAAmaxDieSides() : getData().getDiceSides())
-            + " att ");
+        stats.append(getOffensiveAttackAA(player)).append("/").append(
+            getOffensiveAttackAAmaxDieSides() != -1 ? getOffensiveAttackAAmaxDieSides() : getData().getDiceSides())
+            .append(" att ");
       }
       if (getAttackAA(player) > 0) {
-        stats.append(getAttackAA(player) + "/"
-            + (getAttackAAmaxDieSides() != -1 ? getAttackAAmaxDieSides() : getData().getDiceSides()) + " def ");
+        stats.append(getAttackAA(player)).append("/")
+            .append(getAttackAAmaxDieSides() != -1 ? getAttackAAmaxDieSides() : getData().getDiceSides())
+            .append(" def ");
       }
       if (getIsAAforCombatOnly() && getIsAAforBombingThisUnitOnly() && getIsAAforFlyOverOnly()) {
-        stats.append(getTypeAA() + ", ");
+        stats.append(getTypeAA()).append(", ");
       } else if (getIsAAforCombatOnly() && getIsAAforFlyOverOnly()
           && !games.strategy.triplea.Properties.getAATerritoryRestricted(getData())) {
-        stats.append(getTypeAA() + " for Combat & Move Through, ");
+        stats.append(getTypeAA()).append(" for Combat & Move Through, ");
       } else if (getIsAAforBombingThisUnitOnly() && getIsAAforFlyOverOnly()
           && !games.strategy.triplea.Properties.getAATerritoryRestricted(getData())) {
-        stats.append(getTypeAA() + " for Raids & Move Through, ");
+        stats.append(getTypeAA()).append(" for Raids & Move Through, ");
       } else if (getIsAAforCombatOnly()) {
-        stats.append(getTypeAA() + " for Combat, ");
+        stats.append(getTypeAA()).append(" for Combat, ");
       } else if (getIsAAforBombingThisUnitOnly()) {
-        stats.append(getTypeAA() + " for Raids, ");
+        stats.append(getTypeAA()).append(" for Raids, ");
       } else if (getIsAAforFlyOverOnly()) {
-        stats.append(getTypeAA() + " for Move Through, ");
+        stats.append(getTypeAA()).append(" for Move Through, ");
       }
       if (getMaxAAattacks() > -1) {
-        stats.append(getMaxAAattacks() + " " + getTypeAA() + " Attacks, ");
+        stats.append(getMaxAAattacks()).append(" ").append(getTypeAA()).append(" Attacks, ");
       }
     }
     if (getIsRocket() && playerHasRockets(player)) {
@@ -3003,12 +3004,11 @@ public class UnitAttachment extends DefaultAttachment {
       final int bombingBonus = getBombingBonus();
       if ((getBombingMaxDieSides() != -1 || bombingBonus != -1)
           && games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
-        stats.append((bombingBonus != -1 ? bombingBonus + 1 : 1) + "-"
-            + (getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus != -1 ? bombingBonus : 0)
-                : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0))
-            + " Rocket Damage, ");
+        stats.append(bombingBonus != -1 ? bombingBonus + 1 : 1).append("-")
+            .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus != -1 ? bombingBonus : 0)
+                : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0)).append(" Rocket Damage, ");
       } else {
-        stats.append("1-" + getData().getDiceSides() + " Rocket Damage, ");
+        stats.append("1-").append(getData().getDiceSides()).append(" Rocket Damage, ");
       }
     }
     // line break
@@ -3025,12 +3025,13 @@ public class UnitAttachment extends DefaultAttachment {
         && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
       stats.append("can be Damaged By Raids, ");
       if (getMaxOperationalDamage() > -1) {
-        stats.append(getMaxOperationalDamage() + " Max Operational Damage, ");
+        stats.append(getMaxOperationalDamage()).append(" Max Operational Damage, ");
       }
       if ((getCanProduceUnits()) && getCanProduceXUnits() < 0) {
-        stats.append("Total Damage up to " + (getMaxDamage() > -1 ? getMaxDamage() : 2) + "x Territory Value, ");
+        stats.append("Total Damage up to ").append(getMaxDamage() > -1 ? getMaxDamage() : 2)
+            .append("x Territory Value, ");
       } else if (getMaxDamage() > -1) {
-        stats.append(getMaxDamage() + " Max Total Damage, ");
+        stats.append(getMaxDamage()).append(" Max Total Damage, ");
       }
       if (getCanDieFromReachingMaxDamage()) {
         stats.append("will Die If Max Damage Reached, ");
@@ -3042,7 +3043,8 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("can Allow Scrambling, ");
     }
     if (getCanScramble() && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData())) {
-      stats.append("can Scramble " + (getMaxScrambleDistance() > 0 ? getMaxScrambleDistance() : 1) + " Distance, ");
+      stats.append("can Scramble ").append(getMaxScrambleDistance() > 0 ? getMaxScrambleDistance() : 1)
+          .append(" Distance, ");
     }
     if (getArtillery()) {
       stats.append("can Give Attack Bonus To Other Units, ");
@@ -3057,17 +3059,14 @@ public class UnitAttachment extends DefaultAttachment {
             if (support.getUnitType() == null || support.getUnitType().isEmpty()) {
               continue;
             }
-            stats.append("gives " + support.getBonus()
-                + (support.getStrength() && support.getRoll() ? " Power&Rolls"
-                    : (support.getStrength() ? " Power" : " Rolls"))
-                + " to " + support.getNumber()
-                + (support.getAllied() && support.getEnemy() ? " Allied&Enemy "
-                    : (support.getAllied() ? " Allied " : " Enemy "))
-                + (support.getUnitType().size() > 4 ? "Units"
-                    : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false))
-                + " when " + (support.getOffence() && support.getDefence() ? "Att/Def"
-                    : (support.getOffence() ? "Attacking" : "Defending"))
-                + ", ");
+            stats.append("gives ").append(support.getBonus())
+                .append(support.getStrength() && support.getRoll() ? " Power&Rolls"
+                    : (support.getStrength() ? " Power" : " Rolls")).append(" to ").append(support.getNumber())
+                .append(support.getAllied() && support.getEnemy() ? " Allied&Enemy "
+                    : (support.getAllied() ? " Allied " : " Enemy ")).append(support.getUnitType().size() > 4 ? "Units"
+                : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false)).append(" when ")
+                .append(support.getOffence() && support.getDefence() ? "Att/Def"
+                    : (support.getOffence() ? "Attacking" : "Defending")).append(", ");
           }
         }
       }
@@ -3076,7 +3075,7 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("can Receive Attack Bonus From Other Units, ");
     }
     if (getIsMarine() != 0) {
-      stats.append(getIsMarine() + " Amphibious Attack Modifier, ");
+      stats.append(getIsMarine()).append(" Amphibious Attack Modifier, ");
     }
     if (getCanBlitz(player)) {
       stats.append("can Blitz, ");
@@ -3084,7 +3083,8 @@ public class UnitAttachment extends DefaultAttachment {
     if (!getReceivesAbilityWhenWith().isEmpty()) {
       if (getReceivesAbilityWhenWith().size() <= 2) {
         for (final String ability : getReceivesAbilityWhenWith()) {
-          stats.append("receives " + ability.split(":")[0] + " when paired with " + ability.split(":")[1] + ", ");
+          stats.append("receives ").append(ability.split(":")[0]).append(" when paired with ")
+              .append(ability.split(":")[1]).append(", ");
         }
       } else {
         stats.append("receives Abilities When Paired with Other Units, ");
@@ -3095,21 +3095,20 @@ public class UnitAttachment extends DefaultAttachment {
       final int bombingBonus = getBombingBonus();
       if ((getBombingMaxDieSides() != -1 || bombingBonus != -1)
           && games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
-        stats.append((bombingBonus != -1 ? bombingBonus + 1 : 1) + "-"
-            + (getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus != -1 ? bombingBonus : 0)
-                : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0))
-            + " Raid Damage, ");
+        stats.append(bombingBonus != -1 ? bombingBonus + 1 : 1).append("-")
+            .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus != -1 ? bombingBonus : 0)
+                : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0)).append(" Raid Damage, ");
       } else {
-        stats.append("1-" + getData().getDiceSides() + " Raid Damage, ");
+        stats.append("1-").append(getData().getDiceSides()).append(" Raid Damage, ");
       }
     }
     final int airAttack = getAirAttack(player);
     final int airDefense = getAirDefense(player);
     if (airAttack > 0 && (getIsStrategicBomber() || getCanEscort() || getCanAirBattle())) {
-      stats.append((attackRolls > 1 ? (attackRolls + "x ") : "") + airAttack + " Air Attack, ");
+      stats.append(attackRolls > 1 ? (attackRolls + "x ") : "").append(airAttack).append(" Air Attack, ");
     }
     if (airDefense > 0 && (getCanIntercept() || getCanAirBattle())) {
-      stats.append((defenseRolls > 1 ? (defenseRolls + "x ") : "") + airAttack + " Air Defense, ");
+      stats.append(defenseRolls > 1 ? (defenseRolls + "x ") : "").append(airAttack).append(" Air Defense, ");
     }
     if (getIsSub()) {
       stats.append("is Stealth, ");
@@ -3118,10 +3117,10 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("is Anti-Stealth, ");
     }
     if (getCanBombard(player) && getBombard(player) > 0) {
-      stats.append(getBombard(player) + " Bombard, ");
+      stats.append(getBombard(player)).append(" Bombard, ");
     }
     if (getBlockade() > 0) {
-      stats.append(getBlockade() + " Blockade Loss, ");
+      stats.append(getBlockade()).append(" Blockade Loss, ");
     }
     if (getIsSuicide()) {
       stats.append("Suicide/Munition Unit, ");
@@ -3147,20 +3146,20 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("is a Sea Transport, ");
     }
     if (getTransportCost() > -1) {
-      stats.append(getTransportCost() + " Transporting Cost, ");
+      stats.append(getTransportCost()).append(" Transporting Cost, ");
     }
     if (getTransportCapacity() > 0 && getIsSea()) {
-      stats.append(getTransportCapacity() + " Transporting Capacity, ");
+      stats.append(getTransportCapacity()).append(" Transporting Capacity, ");
     } else if (getTransportCapacity() > 0 && getIsAir() && playerHasParatroopers(player)) {
-      stats.append(getTransportCapacity() + " Transporting Capacity, ");
+      stats.append(getTransportCapacity()).append(" Transporting Capacity, ");
     } else if (getTransportCapacity() > 0 && playerHasMechInf(player) && !getIsSea() && !getIsAir()) {
-      stats.append(getTransportCapacity() + " Transporting Capacity, ");
+      stats.append(getTransportCapacity()).append(" Transporting Capacity, ");
     }
     if (getCarrierCost() > -1) {
-      stats.append(getCarrierCost() + " Carrier Cost, ");
+      stats.append(getCarrierCost()).append(" Carrier Cost, ");
     }
     if (getCarrierCapacity() > 0) {
-      stats.append(getCarrierCapacity() + " Carrier Capacity, ");
+      stats.append(getCarrierCapacity()).append(" Carrier Capacity, ");
     }
     if (!getWhenCombatDamaged().isEmpty()) {
       stats.append("when hit this unit loses certain abilities, ");
@@ -3170,15 +3169,15 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("<br /> &nbsp;&nbsp;&nbsp;&nbsp; ");
     }
     if (getMaxBuiltPerPlayer() > -1) {
-      stats.append(getMaxBuiltPerPlayer() + " Max Built Allowed, ");
+      stats.append(getMaxBuiltPerPlayer()).append(" Max Built Allowed, ");
     }
     if (getRepairsUnits() != null && !getRepairsUnits().isEmpty()
         && games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(getData())
         && (games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(getData())
             || games.strategy.triplea.Properties.getBattleshipsRepairAtEndOfRound(getData()))) {
       if (getRepairsUnits().size() <= 4) {
-        stats.append(
-            "can Repair: " + MyFormatter.integerDefaultNamedMapToString(getRepairsUnits(), " ", "=", false) + ", ");
+        stats.append("can Repair: ")
+            .append(MyFormatter.integerDefaultNamedMapToString(getRepairsUnits(), " ", "=", false)).append(", ");
       } else {
         stats.append("can Repair Some Units, ");
       }
@@ -3186,18 +3185,19 @@ public class UnitAttachment extends DefaultAttachment {
     if (getGivesMovement() != null && getGivesMovement().totalValues() > 0
         && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(getData())) {
       if (getGivesMovement().size() <= 4) {
-        stats.append("can Modify Unit Movement: "
-            + MyFormatter.integerDefaultNamedMapToString(getGivesMovement(), " ", "=", false) + ", ");
+        stats.append("can Modify Unit Movement: ")
+            .append(MyFormatter.integerDefaultNamedMapToString(getGivesMovement(), " ", "=", false)).append(", ");
       } else {
         stats.append("can Modify Unit Movement, ");
       }
     }
     if (getConsumesUnits() != null && getConsumesUnits().totalValues() == 1) {
-      stats.append("unit is an Upgrade Of " + getConsumesUnits().keySet().iterator().next().getName() + ", ");
+      stats.append("unit is an Upgrade Of ").append(getConsumesUnits().keySet().iterator().next().getName())
+          .append(", ");
     } else if (getConsumesUnits() != null && getConsumesUnits().totalValues() > 0) {
       if (getConsumesUnits().size() <= 4) {
-        stats.append("unit Consumes On Placement: "
-            + MyFormatter.integerDefaultNamedMapToString(getConsumesUnits(), " ", "x", true) + ", ");
+        stats.append("unit Consumes On Placement: ")
+            .append(MyFormatter.integerDefaultNamedMapToString(getConsumesUnits(), " ", "x", true)).append(", ");
       } else {
         stats.append("unit Consumes Other Units On Placement, ");
       }
@@ -3233,7 +3233,8 @@ public class UnitAttachment extends DefaultAttachment {
     }
     if (getCanOnlyBePlacedInTerritoryValuedAtX() > 0
         && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData())) {
-      stats.append("must be Placed In Territory Valued >=" + getCanOnlyBePlacedInTerritoryValuedAtX() + ", ");
+      stats.append("must be Placed In Territory Valued >=").append(getCanOnlyBePlacedInTerritoryValuedAtX())
+          .append(", ");
     }
     if (getCanNotMoveDuringCombatMove()) {
       stats.append("cannot Combat Move, ");
@@ -3244,10 +3245,10 @@ public class UnitAttachment extends DefaultAttachment {
           && !(games.strategy.triplea.Properties.getWW2V2(getData())
               || games.strategy.triplea.Properties.getWW2V3(getData())
               || games.strategy.triplea.Properties.getMultipleAAPerTerritory(getData()))) {
-        stats.append("max of 1 " + getMovementLimit().getSecond() + " moving per territory, ");
+        stats.append("max of 1 ").append(getMovementLimit().getSecond()).append(" moving per territory, ");
       } else if (getMovementLimit().getFirst() < 10000) {
-        stats.append("max of " + getMovementLimit().getFirst() + " " + getMovementLimit().getSecond()
-            + " moving per territory, ");
+        stats.append("max of ").append(getMovementLimit().getFirst()).append(" ").append(getMovementLimit().getSecond())
+            .append(" moving per territory, ");
       }
     }
     if (getAttackingLimit() != null) {
@@ -3256,10 +3257,10 @@ public class UnitAttachment extends DefaultAttachment {
           && !(games.strategy.triplea.Properties.getWW2V2(getData())
               || games.strategy.triplea.Properties.getWW2V3(getData())
               || games.strategy.triplea.Properties.getMultipleAAPerTerritory(getData()))) {
-        stats.append("max of 1 " + getAttackingLimit().getSecond() + " attacking per territory, ");
+        stats.append("max of 1 ").append(getAttackingLimit().getSecond()).append(" attacking per territory, ");
       } else if (getAttackingLimit().getFirst() < 10000) {
-        stats.append("max of " + getAttackingLimit().getFirst() + " " + getAttackingLimit().getSecond()
-            + " attacking per territory, ");
+        stats.append("max of ").append(getAttackingLimit().getFirst()).append(" ")
+            .append(getAttackingLimit().getSecond()).append(" attacking per territory, ");
       }
     }
     if (getPlacementLimit() != null) {
@@ -3268,10 +3269,10 @@ public class UnitAttachment extends DefaultAttachment {
           && !(games.strategy.triplea.Properties.getWW2V2(getData())
               || games.strategy.triplea.Properties.getWW2V3(getData())
               || games.strategy.triplea.Properties.getMultipleAAPerTerritory(getData()))) {
-        stats.append("max of 1 " + getPlacementLimit().getSecond() + " placed per territory, ");
+        stats.append("max of 1 ").append(getPlacementLimit().getSecond()).append(" placed per territory, ");
       } else if (getPlacementLimit().getFirst() < 10000) {
-        stats.append("max of " + getPlacementLimit().getFirst() + " " + getPlacementLimit().getSecond()
-            + " placed per territory, ");
+        stats.append("max of ").append(getPlacementLimit().getFirst()).append(" ")
+            .append(getPlacementLimit().getSecond()).append(" placed per territory, ");
       }
     }
     if (stats.indexOf(", ") > -1) {

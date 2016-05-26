@@ -1483,11 +1483,11 @@ public class MapXmlHelper {
    */
   public static String getHtmlStringFromCanalDefinitions() {
     final StringBuilder sb = new StringBuilder();
-    sb.append("<html>The following " + getCanalDefinitionsMap().size() + " canals have been build:");
+    sb.append("<html>The following ").append(getCanalDefinitionsMap().size()).append(" canals have been build:");
     for (final Entry<String, CanalTerritoriesTuple> canalDef : getCanalDefinitionsMap()
         .entrySet()) {
-      sb.append(CanalDefinitionsPanel.HTML_CANAL_KEY_PREFIX + canalDef.getKey()
-          + CanalDefinitionsPanel.HTML_CANAL_KEY_POSTFIX);
+      sb.append(CanalDefinitionsPanel.HTML_CANAL_KEY_PREFIX).append(canalDef.getKey())
+          .append(CanalDefinitionsPanel.HTML_CANAL_KEY_POSTFIX);
       sb.append(Joiner.on("-").join(canalDef.getValue().getWaterTerritories().iterator()));
     }
     sb.append("</html>");

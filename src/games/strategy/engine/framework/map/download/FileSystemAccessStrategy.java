@@ -122,7 +122,7 @@ public class FileSystemAccessStrategy {
         sb.append("<li>...</li>");
         break;
       } else {
-        sb.append("<li>" + outputFunction.apply(mapList.get(i)) + "</li>");
+        sb.append("<li>").append(outputFunction.apply(mapList.get(i))).append("</li>");
       }
     }
     return sb.toString();

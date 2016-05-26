@@ -74,7 +74,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       }
       final StringBuilder sb = new StringBuilder();
       for (int i = 0; i < coordinate.length; i++) {
-        sb.append(coordinate[i] + "");
+        sb.append(coordinate[i]);
         if (i + 1 < coordinate.length) {
           sb.append(", ");
         }

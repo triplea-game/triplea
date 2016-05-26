@@ -569,12 +569,12 @@ public class TripleAFrame extends MainGameFrame {
           final int unitProduction = ta.getUnitProduction();
           final ResourceCollection resource = ta.getResources();
           if (unitProduction > 0 && unitProduction != production) {
-            buf.append(", UnitProd: " + unitProduction);
+            buf.append(", UnitProd: ").append(unitProduction);
           }
           if (production > 0 || (resource != null && resource.toString().length() > 0)) {
             buf.append(", Prod: ");
             if (production > 0) {
-              buf.append(production + " PUs");
+              buf.append(production).append(" PUs");
               if (resource != null && resource.toString().length() > 0) {
                 buf.append(", ");
               }
@@ -778,7 +778,7 @@ public class TripleAFrame extends MainGameFrame {
     final StringBuilder sb = new StringBuilder("<html>" + airCantLand.size() + " air unit" + airUnitPlural
         + " cannot land in the following territor" + territoryPlural + ":<ul> ");
     for (final Territory t : airCantLand) {
-      sb.append("<li>" + t.getName() + "</li>");
+      sb.append("<li>").append(t.getName()).append("</li>");
     }
     sb.append("</ul></html>");
     final boolean lhtrProd = AirThatCantLandUtil.isLHTRCarrierProduction(data)
@@ -789,8 +789,8 @@ public class TripleAFrame extends MainGameFrame {
     }
     final boolean canProduceCarriersUnderFighter = lhtrProd && carrierCount != 0;
     if (canProduceCarriersUnderFighter && carrierCount > 0) {
-      sb.append("\nYou have " + carrierCount + " " + MyFormatter.pluralize("carrier", carrierCount)
-          + " on which planes can land");
+      sb.append("\nYou have ").append(carrierCount).append(" ").append(MyFormatter.pluralize("carrier", carrierCount))
+          .append(" on which planes can land");
     }
     final String ok = movePhase ? "End Move Phase" : "Kill Planes";
     final String cancel = movePhase ? "Keep Moving" : "Change Placement";

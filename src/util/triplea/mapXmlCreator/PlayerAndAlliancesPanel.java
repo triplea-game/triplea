@@ -180,7 +180,7 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
         StringBuilder formattedPlayerList = new StringBuilder();
         final boolean plural = playerStillUsing.size() > 1;
         for (final String playerString : playerStillUsing)
-          formattedPlayerList.append("\r - " + playerString);
+          formattedPlayerList.append("\r - ").append(playerString);
         JOptionPane.showMessageDialog(getOwnPanel(), "Cannot remove alliance.\rThe following player"
             + (plural ? "s are" : " is") + " still assigned to alliance '"
             + removeAllianceName + "':"

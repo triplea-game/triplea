@@ -36,7 +36,7 @@ public class PlayerManager {
     while (iter.hasNext()) {
       final String key = iter.next();
       final INode value = m_playerMapping.get(key);
-      sb.append(key + "=" + value.getName());
+      sb.append(key).append("=").append(value.getName());
       if (iter.hasNext()) {
         sb.append(", ");
       }

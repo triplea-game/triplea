@@ -63,7 +63,7 @@ public class ProductionRule extends DefaultNamed implements Serializable {
     if (m_cost.getInt(pus) != 0) {
       sb.append("; ");
       sb.append(m_cost.getInt(pus));
-      sb.append(" " + pus.getName());
+      sb.append(" ").append(pus.getName());
     }
     for (final Entry<Resource, Integer> entry : m_cost.entrySet()) {
       final Resource r = entry.getKey();
@@ -73,7 +73,7 @@ public class ProductionRule extends DefaultNamed implements Serializable {
       final int c = entry.getValue();
       sb.append("; ");
       sb.append(c);
-      sb.append(" " + r.getName());
+      sb.append(" ").append(r.getName());
     }
     return sb.toString().replaceFirst("; ", "");
   }

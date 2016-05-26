@@ -2501,7 +2501,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
               + " met a national objective for an additional " + t.getResourceCount() + " " + t.getResource()
               + "; end with " + total + " " + t.getResource();
           aBridge.getHistoryWriter().startEvent(PUMessage);
-          strbuf.append(PUMessage + " <br />");
+          strbuf.append(PUMessage).append(" <br />");
         }
       }
     }

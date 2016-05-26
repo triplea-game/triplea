@@ -411,13 +411,14 @@ public class HeadlessConsoleController {
   private String getConnections() {
     final StringBuilder sb = new StringBuilder();
     if (server.getServerModel() != null && server.getServerModel().getMessenger() != null) {
-      sb.append("Connected: " + server.getServerModel().getMessenger().isConnected() + "\n" + "Nodes: \n");
+      sb.append("Connected: ").append(server.getServerModel().getMessenger().isConnected()).append("\n")
+          .append("Nodes: \n");
       final Set<INode> nodes = server.getServerModel().getMessenger().getNodes();
       if (nodes == null) {
         sb.append("  null\n");
       } else {
         for (final INode node : nodes) {
-          sb.append("  " + node + "\n");
+          sb.append("  ").append(node).append("\n");
         }
       }
     } else {
