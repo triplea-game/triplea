@@ -95,6 +95,13 @@ public class Unit extends GameDataComponent implements Serializable {
     return this.m_uid.equals(other.m_uid);
   }
 
+  public boolean hasSamePropertiesAndState(final Unit unit) {
+    if (m_type == null || m_owner == null) {
+      return false;
+    }
+    return m_type.equals(unit.getType()) && m_owner.equals(unit.getOwner()) && m_hits == unit.getHits();
+  }
+
   @Override
   public int hashCode() {
     if (m_type == null || m_owner == null || m_uid == null || this.getData() == null) {
