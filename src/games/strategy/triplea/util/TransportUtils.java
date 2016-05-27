@@ -249,7 +249,7 @@ public class TransportUtils {
     final List<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
     final Map<Unit, List<Unit>> result = new LinkedHashMap<>();
     for (final Unit unit : canBeTransported) {
-      final List<Unit> transportOptions = new ArrayList<Unit>();
+      final List<Unit> transportOptions = new ArrayList<>();
       for (final Unit transport : canTransport) {
         if (containsEquivalentUnit(unit, TransportTracker.transporting(transport))) {
           transportOptions.add(transport);
