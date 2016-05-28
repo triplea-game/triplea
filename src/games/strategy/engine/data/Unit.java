@@ -95,7 +95,7 @@ public class Unit extends GameDataComponent implements Serializable {
     return this.m_uid.equals(other.m_uid);
   }
 
-  public boolean hasSamePropertiesAndState(final Unit unit) {
+  public boolean isEquivalent(final Unit unit) {
     if (m_type == null || m_owner == null) {
       return false;
     }
