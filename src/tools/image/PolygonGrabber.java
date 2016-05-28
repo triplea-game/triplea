@@ -49,7 +49,7 @@ import javax.swing.SwingUtilities;
 import games.strategy.common.swing.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.ui.Util;
-import tools.map.making.PointFileReaderWriter;
+import games.strategy.util.PointFileReaderWriter;
 
 /**
  * old comments

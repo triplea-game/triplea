@@ -39,7 +39,7 @@ import javax.swing.SwingUtilities;
 import games.strategy.common.swing.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.ui.Util;
-import tools.map.making.PointFileReaderWriter;
+import games.strategy.util.PointFileReaderWriter;
 
 public class CenterPicker extends JFrame {
   private static final long serialVersionUID = -5633998810385136625L;

@@ -27,7 +27,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.ui.Util;
 import tools.map.making.JTextAreaOptionPane;
-import tools.map.making.PointFileReaderWriter;
+import games.strategy.util.PointFileReaderWriter;
 
 /**
  * For taking a folder of basetiles and putting them back together into an image.
