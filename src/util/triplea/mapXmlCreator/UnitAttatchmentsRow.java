@@ -33,7 +33,7 @@ class UnitAttachmentsRow extends DynamicRow {
 
       @Override
       public void focusLost(FocusEvent e) {
-        String newAttachmentName = (String) textFieldAttachmentName.getText().trim();
+        String newAttachmentName = textFieldAttachmentName.getText().trim();
         if (!currentValue.equals(newAttachmentName)) {
           final String newUnitAttachmentKey = newAttachmentName + "_" + unitName;
           if (MapXmlHelper.getUnitAttachmentsMap().containsKey(newUnitAttachmentKey)) {

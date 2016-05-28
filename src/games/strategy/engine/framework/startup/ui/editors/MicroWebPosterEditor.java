@@ -139,7 +139,7 @@ public class MicroWebPosterEditor extends EditorPanel {
     if (!((String) m_hosts.getSelectedItem()).endsWith("/")) {
       hostUrl = (String) m_hosts.getSelectedItem();
     } else {
-      hostUrl = (String) m_hosts.getSelectedItem() + "/";
+      hostUrl = m_hosts.getSelectedItem() + "/";
     }
     final ArrayList<String> players = new ArrayList<>();
     try {

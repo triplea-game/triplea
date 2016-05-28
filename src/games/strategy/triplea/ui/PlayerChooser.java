@@ -72,7 +72,7 @@ public class PlayerChooser extends JOptionPane {
    */
   public PlayerID getSelected() {
     if (getValue() != null && getValue().equals(JOptionPane.OK_OPTION)) {
-      return (PlayerID) m_list.getSelectedValue();
+      return m_list.getSelectedValue();
     }
     return null;
   }
@@ -91,7 +91,7 @@ class PlayerChooserRenderer extends DefaultListCellRenderer {
   public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
       final boolean isSelected, final boolean cellHasFocus) {
     super.getListCellRendererComponent(list, ((PlayerID) value).getName(), index, isSelected, cellHasFocus);
-    if (m_uiContext == null || (PlayerID) value == PlayerID.NULL_PLAYERID) {
+    if (m_uiContext == null || value == PlayerID.NULL_PLAYERID) {
       setIcon(new ImageIcon(Util.createImage(32, 32, true)));
     } else {
       setIcon(new ImageIcon(m_uiContext.getFlagImageFactory().getFlag((PlayerID) value)));

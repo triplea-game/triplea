@@ -622,7 +622,7 @@ public class HeadlessGameServer {
           // this is causing a deadlock when in a shutdown hook, due to swing/awt
           // ((ServerSetupPanel) setup).shutDown();
         } else if (setup != null && setup instanceof HeadlessServerSetup) {
-          ((HeadlessServerSetup) setup).shutDown();
+          setup.shutDown();
         }
       }
     } catch (final Exception e) {
