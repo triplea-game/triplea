@@ -4,7 +4,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.SocketAddress;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,15 +58,8 @@ class ServerLoginHelper {
       }
       out.writeObject(challenge);
       out.flush();
-      @SuppressWarnings("rawtypes")
-      final Map credentials = (Map) in.readObject();//TODO rewrite in order to remove Suppressed Warning
-      final Set<Map.Entry<?,?>> entries = credentials.entrySet();
-      for (final Map.Entry<?,?> entry : entries) {
-        // check what we read is a string
-        if (!(entry.getKey() instanceof String) && !(entry.getValue() instanceof String)) {
-          throw new IllegalStateException("Value must be a String");
-        }
-      }
+      //If the casting fails, the Object is not a Map<String, String>
+      final Map<String, String> credentials = (Map<String, String>) in.readObject();
       final String mac = MacFinder.GetHashedMacAddress();
       final String error =
           loginValidator.verifyConnection(challenge, credentials, clientName, mac, remoteAddress);

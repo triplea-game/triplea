@@ -18,16 +18,6 @@ import java.util.Set;
  * count the number of matches, see if any elements match etc.
  */
 public abstract class Match<T> {
-  /**
-   * A match that always returns true.
-   */
-  @SuppressWarnings("rawtypes")
-  public static final Match ALWAYS_MATCH = new AlwaysMatch<>();
-  /**
-   * A match that always returns false.
-   */
-  @SuppressWarnings("rawtypes")
-  public static final Match NEVER_MATCH = new NeverMatch<>();
 
   public final static <T> Match<T> getAlwaysMatch() {
     return new AlwaysMatch<>();

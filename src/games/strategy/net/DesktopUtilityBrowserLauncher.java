@@ -36,7 +36,7 @@ public class DesktopUtilityBrowserLauncher {
     try { // attempt to use Desktop library from JDK 1.6+
       final Class<?> d = Class.forName("java.awt.Desktop");
       d.getDeclaredMethod("browse", new Class[] {java.net.URI.class})
-          .invoke(d.getDeclaredMethod("getDesktop").invoke(null), new Object[] {uri});
+          .invoke(d.getDeclaredMethod("getDesktop").invoke(null), uri);
       // above code mimicks: java.awt.Desktop.getDesktop().browse()
     } catch (final Exception ignore) { // library not available or failed
       // we use "toString()" or to "toASCIIString()" because "getPath()" sometimes does not work.
@@ -46,7 +46,7 @@ public class DesktopUtilityBrowserLauncher {
         if (osName != null && osName.startsWith("Mac OS")) {
           try {
             Class.forName("com.apple.eio.FileManager").getDeclaredMethod("open", new Class[] {String.class})
-                .invoke(null, new Object[] {url});
+                .invoke(null, url);
           } catch (final Exception e) {
             Runtime.getRuntime().exec("open " + url);
           }
@@ -82,14 +82,14 @@ public class DesktopUtilityBrowserLauncher {
     try { // attempt to use Desktop library from JDK 1.6+
       final Class<?> d = Class.forName("java.awt.Desktop");
       d.getDeclaredMethod("browse", new Class[] {java.net.URI.class})
-          .invoke(d.getDeclaredMethod("getDesktop").invoke(null), new Object[] {java.net.URI.create(url)});
+          .invoke(d.getDeclaredMethod("getDesktop").invoke(null), URI.create(url));
       // above code mimicks: java.awt.Desktop.getDesktop().browse()
     } catch (final Exception ignore) { // library not available or failed
       final String osName = System.getProperty("os.name");
       try {
         if (osName != null && osName.startsWith("Mac OS")) {
           Class.forName("com.apple.eio.FileManager").getDeclaredMethod("openURL", new Class[] {String.class})
-              .invoke(null, new Object[] {url});
+              .invoke(null, url);
         } else if (osName != null && osName.startsWith("Windows")) {
           Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
         } else { // assume Unix or Linux

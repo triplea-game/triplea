@@ -1968,9 +1968,7 @@ public class ProBidAI {
   }
 
   private static void reorder(final List<?> reorder, final Map<?, ? extends Number> map, final boolean greaterThan) {
-    Collections.sort(reorder, new Comparator<Object>() {
-      @Override
-      public int compare(final Object o1, final Object o2) {
+    Collections.sort(reorder, (Comparator<Object>)(o1, o2) -> {
         double v1 = safeGet(map, o1);
         double v2 = safeGet(map, o2);
         if (greaterThan) {
@@ -1985,15 +1983,14 @@ public class ProBidAI {
         } else {
           return -1;
         }
-      }
-
-      private double safeGet(final Map<?, ? extends Number> map, final Object o1) {
-        if (!map.containsKey(o1)) {
-          return 0;
-        }
-        return map.get(o1).doubleValue();
-      }
     });
+  }
+  
+  private static double safeGet(final Map<?, ? extends Number> map, final Object o1) {
+    if (!map.containsKey(o1)) {
+      return 0;
+    }
+    return map.get(o1).doubleValue();
   }
 
   /**
@@ -2275,7 +2272,6 @@ public class ProBidAI {
    * Removes the inner circle neighbors
    * neutral - whether to include neutral countries
    */
-  @SuppressWarnings("unchecked")
   private static List<Territory> getExactNeighbors(final Territory territory, final int distance,
       final PlayerID player, final GameData data, final boolean neutral) {
     // old functionality retained, i.e. no route condition is imposed.
@@ -2284,7 +2280,7 @@ public class ProBidAI {
     if (!neutral || Properties.getNeutralsImpassable(data)) {
       endCond.add(Matches.TerritoryIsNeutralButNotWater.invert());
     }
-    return findFontier(territory, endCond, Match.ALWAYS_MATCH, distance, data);
+    return findFontier(territory, endCond, Match.getAlwaysMatch(), distance, data);
   }
 
   /**

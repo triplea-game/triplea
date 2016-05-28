@@ -122,7 +122,7 @@ public class TechPanel extends ActionPanel {
       if (choice != JOptionPane.OK_OPTION) {
         return;
       }
-      advance = (TechAdvance) list.getSelectedValue();
+      advance = list.getSelectedValue();
     }
     final int PUs = getCurrentPlayer().getResources().getQuantity(Constants.PUS);
     final String message = "Roll Tech";
@@ -163,14 +163,14 @@ public class TechPanel extends ActionPanel {
       return;
     }
     TechnologyFrontier category = null;
-    final JList<Object> list = new JList<Object>(new Vector<>(techCategories)) {
+    final JList<TechnologyFrontier> list = new JList<TechnologyFrontier>(new Vector<>(techCategories)) {
       private static final long serialVersionUID = 35094445315520702L;
 
       @Override
       public String getToolTipText(final MouseEvent e) {
         final int index = locationToIndex(e.getPoint());
         if (-1 < index) {
-          return getTechListToolTipText((TechnologyFrontier) this.getModel().getElementAt(index));
+          return getTechListToolTipText(getModel().getElementAt(index));
         } else {
           return null;
         }
@@ -219,14 +219,14 @@ public class TechPanel extends ActionPanel {
         return;
       }
       TechnologyFrontier category = null;
-      final JList<Object> list = new JList<Object>(new Vector<>(techCategories)) {
+      final JList<TechnologyFrontier> list = new JList<TechnologyFrontier>(new Vector<>(techCategories)) {
         private static final long serialVersionUID = -8415987764855418565L;
 
         @Override
         public String getToolTipText(final MouseEvent e) {
           final int index = locationToIndex(e.getPoint());
           if (-1 < index) {
-            return getTechListToolTipText((TechnologyFrontier) this.getModel().getElementAt(index));
+            return getTechListToolTipText(getModel().getElementAt(index));
           } else {
             return null;
           }

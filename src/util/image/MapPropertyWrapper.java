@@ -40,7 +40,7 @@ import games.strategy.util.Tuple;
  * @param <T>
  *        parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings("unchecked")
 public class MapPropertyWrapper<T> extends AEditableProperty {
   private static final long serialVersionUID = 6406798101396215624L;
   private IEditableProperty m_property;
@@ -65,9 +65,9 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     } else if (defaultValue instanceof String) {
       m_property = new StringProperty(name, description, ((String) defaultValue));
     } else if (defaultValue instanceof Collection || defaultValue instanceof List || defaultValue instanceof Set) {
-      m_property = new CollectionProperty(name, description, ((Collection) defaultValue));
+      m_property = new CollectionProperty<>(name, description, ((Collection<?>) defaultValue));
     } else if (defaultValue instanceof Map || defaultValue instanceof HashMap) {
-      m_property = new MapProperty(name, description, ((Map) defaultValue));
+      m_property = new MapProperty<>(name, description, ((Map<?, ?>) defaultValue));
     } else if (defaultValue instanceof Integer) {
       m_property =
           new NumberProperty(name, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) defaultValue));
@@ -173,8 +173,8 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     }
   }
 
-  private static List<MapPropertyWrapper> createProperties(final Object object) {
-    final List<MapPropertyWrapper> properties = new ArrayList<>();
+  private static List<MapPropertyWrapper<?>> createProperties(final Object object) {
+    final List<MapPropertyWrapper<?>> properties = new ArrayList<>();
     for (final Method setter : object.getClass().getMethods()) {
       final boolean startsWithSet = setter.getName().startsWith("set");
       if (!startsWithSet) {
@@ -206,7 +206,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
         continue;
       }
       try {
-        final MapPropertyWrapper wrapper = new MapPropertyWrapper(propertyName, null, currentValue, setter, getter);
+        final MapPropertyWrapper<?> wrapper = new MapPropertyWrapper<>(propertyName, null, currentValue, setter, getter);
         properties.add(wrapper);
       } catch (final Exception e) {
         ClientLogger.logQuietly(e);
@@ -216,8 +216,8 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     return properties;
   }
 
-  public static void writePropertiesToObject(final Object object, final List<MapPropertyWrapper> properties) {
-    for (final MapPropertyWrapper p : properties) {
+  public static void writePropertiesToObject(final Object object, final List<MapPropertyWrapper<?>> properties) {
+    for (final MapPropertyWrapper<?> p : properties) {
       p.setToObject(object);
     }
   }
@@ -227,9 +227,9 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     return new PropertiesUI(properties, editable);
   }
 
-  public static Tuple<PropertiesUI, List<MapPropertyWrapper>> createPropertiesUI(final Object object,
+  public static Tuple<PropertiesUI, List<MapPropertyWrapper<?>>> createPropertiesUI(final Object object,
       final boolean editable) {
-    final List<MapPropertyWrapper> properties = createProperties(object);
+    final List<MapPropertyWrapper<?>> properties = createProperties(object);
     final PropertiesUI ui = new PropertiesUI(properties, editable);
     return Tuple.of(ui, properties);
   }
@@ -241,7 +241,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
 
   public static void main(final String[] args) {
     final MapProperties mapProperties = new MapProperties();
-    final List<MapPropertyWrapper> properties = createProperties(mapProperties);
+    final List<MapPropertyWrapper<?>> properties = createProperties(mapProperties);
     final PropertiesUI ui = createPropertiesUI(properties, true);
     final JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

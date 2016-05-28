@@ -212,8 +212,7 @@ public class MapPropertiesMaker extends JFrame {
         GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
     final JButton showMore = new JButton("Show All Options");
     showMore.addActionListener(SwingAction.of("Show All Options", e -> {
-      @SuppressWarnings("rawtypes")
-      final Tuple<PropertiesUI, List<MapPropertyWrapper>> propertyWrapperUI =
+      final Tuple<PropertiesUI, List<MapPropertyWrapper<?>>> propertyWrapperUI =
           MapPropertiesMaker.s_mapProperties.propertyWrapperUI(true);
       JOptionPane.showMessageDialog(MapPropertiesMaker.this, propertyWrapperUI.getFirst());
       s_mapProperties.writePropertiesToObject(propertyWrapperUI.getSecond());

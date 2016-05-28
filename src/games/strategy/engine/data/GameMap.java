@@ -88,7 +88,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       // m_gridDimensions[i];
       listIndex += coordinate[i] * multiplier;
     }
-    return ((ArrayList<Territory>) m_territories).get(listIndex);
+    return m_territories.get(listIndex);
   }
 
   protected void reorderTerritoryList() {
@@ -169,7 +169,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       throw new IllegalArgumentException("Map already contains " + t1.getName());
     }
     m_territories.add(t1);
-    m_connections.put(t1, Collections.<Territory>emptySet());
+    m_connections.put(t1, Collections.emptySet());
     m_territoryLookup.put(t1.getName(), t1);
   }
 

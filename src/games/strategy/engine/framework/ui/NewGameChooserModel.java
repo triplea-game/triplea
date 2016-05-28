@@ -44,7 +44,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
 
   @Override
   public NewGameChooserEntry get(final int i) {
-    return (NewGameChooserEntry) super.get(i);
+    return super.get(i);
   }
 
   public static File getDefaultMapsDir() {

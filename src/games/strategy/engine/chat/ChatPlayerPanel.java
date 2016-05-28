@@ -105,7 +105,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
       m_chat.getStatusManager().addStatusListener(m_statusListener);
     } else {
       // empty our player list
-      updatePlayerList(Collections.<INode>emptyList());
+      updatePlayerList(Collections.emptyList());
     }
     repaint();
   }
@@ -131,13 +131,12 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     m_listModel = new DefaultListModel<>();
     m_players = new JList<>(m_listModel);
     m_players.setFocusable(false);
-    m_players.setCellRenderer(new ListCellRenderer<Object>() {
+    m_players.setCellRenderer(new ListCellRenderer<INode>() {
       @Override
-      public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+      public Component getListCellRendererComponent(JList<? extends INode> list, INode node, int index, boolean isSelected, boolean cellHasFocus) {
         if (m_setCellRenderer == null) {
           return new JLabel();
         }
-        final INode node = (INode) value;
         final DefaultListCellRenderer renderer;
         if (m_setCellRenderer instanceof PlayerChatRenderer) {
           renderer = (DefaultListCellRenderer) m_setCellRenderer.getListCellRendererComponent(list, node, index,
@@ -219,7 +218,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     if (index == -1) {
       return;
     }
-    final INode player = (INode) m_listModel.get(index);
+    final INode player = m_listModel.get(index);
     final JPopupMenu menu = new JPopupMenu();
     boolean hasActions = false;
     for (final IPlayerActionFactory factory : m_actionFactories) {

@@ -295,7 +295,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
       final int option = JOptionPane.showConfirmDialog(null, listScroll, "Choose Game", JOptionPane.OK_CANCEL_OPTION,
           JOptionPane.PLAIN_MESSAGE);
       if (option == JOptionPane.OK_OPTION) {
-        final String gameSelected = (String) list.getSelectedValue();
+        final String gameSelected = list.getSelectedValue();
         m_model.load(m_availableGames.getGameData(gameSelected), m_availableGames.getGameFilePath(gameSelected));
       }
     }

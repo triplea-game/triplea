@@ -86,7 +86,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private final SmallMapImageManager smallMapImageManager;
   // keep a reference to the images from the last paint to
   // prevent them from being gcd
-  private final List<Object> images = new ArrayList<>();
+  private final List<Tile> images = new ArrayList<>();
   private RouteDescription routeDescription;
   private final TileManager tileManager;
   private final BackgroundDrawer backgroundDrawer;
@@ -319,7 +319,7 @@ public class MapPanel extends ImageScrollerLargeView {
       if (unitsChanged(null)) {
         final MouseDetails md = convert(e);
         currentUnits = null;
-        notifyMouseEnterUnit(Collections.<Unit>emptyList(), getTerritory(e.getX(), e.getY()), md);
+        notifyMouseEnterUnit(Collections.emptyList(), getTerritory(e.getX(), e.getY()), md);
       }
     }
 
@@ -338,7 +338,7 @@ public class MapPanel extends ImageScrollerLargeView {
       if (!unitSelectionListeners.isEmpty()) {
         Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, m_data);
         if (tuple == null) {
-          tuple = Tuple.of(getTerritory(x, y), (List<Unit>) new ArrayList<Unit>(0));
+          tuple = Tuple.of(getTerritory(x, y), new ArrayList<Unit>(0));
         }
         notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), md);
       }
@@ -373,7 +373,7 @@ public class MapPanel extends ImageScrollerLargeView {
       if (unitsChanged(tuple)) {
         currentUnits = tuple;
         if (tuple == null) {
-          notifyMouseEnterUnit(Collections.<Unit>emptyList(), getTerritory(x, y), md);
+          notifyMouseEnterUnit(Collections.emptyList(), getTerritory(x, y), md);
         } else {
           notifyMouseEnterUnit(tuple.getSecond(), tuple.getFirst(), md);
         }
@@ -627,7 +627,7 @@ public class MapPanel extends ImageScrollerLargeView {
         if (tile.isDirty()) {
           undrawnTiles.add(tile);
         } else if (forceInMemory) {
-          images.add(tile.getRawImage());
+          images.add(tile);
         }
       }
     }

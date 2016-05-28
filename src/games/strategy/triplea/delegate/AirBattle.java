@@ -474,8 +474,8 @@ public class AirBattle extends AbstractBattle {
   private void showBattle(final IDelegateBridge bridge) {
     final String title = "Air Battle in " + m_battleSite.getName();
     getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_attackingUnits, m_defendingUnits, null, null, null,
-        Collections.<Unit, Collection<Unit>>emptyMap(), m_attacker, m_defender, isAmphibious(), getBattleType(),
-        Collections.<Unit>emptySet());
+        Collections.emptyMap(), m_attacker, m_defender, isAmphibious(), getBattleType(),
+        Collections.emptySet());
     getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
   }
 
@@ -751,7 +751,7 @@ public class AirBattle extends AbstractBattle {
   private void notifyCasualties(final GUID battleID, final IDelegateBridge bridge, final String stepName,
       final DiceRoll dice, final PlayerID hitPlayer, final PlayerID firingPlayer, final CasualtyDetails details) {
     getDisplay(bridge).casualtyNotification(battleID, stepName, dice, hitPlayer, details.getKilled(),
-        details.getDamaged(), Collections.<Unit, Collection<Unit>>emptyMap());
+        details.getDamaged(), Collections.emptyMap());
     final Runnable r = new Runnable() {
       @Override
       public void run() {

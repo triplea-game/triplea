@@ -133,7 +133,7 @@ public class BattleDisplay extends JPanel {
     m_data = data;
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(territory);
     m_defenderModel = new BattleModel(defendingUnits, false, battleType, defender, m_data, m_location, territoryEffects,
-        isAmphibious, Collections.<Unit>emptySet(), m_mapPanel.getUIContext());
+        isAmphibious, Collections.emptySet(), m_mapPanel.getUIContext());
     m_attackerModel = new BattleModel(attackingUnits, true, battleType, attacker, m_data, m_location, territoryEffects,
         isAmphibious, amphibiousLandAttackers, m_mapPanel.getUIContext());
     m_defenderModel.setEnemyBattleModel(m_attackerModel);
@@ -447,7 +447,7 @@ public class BattleDisplay extends JPanel {
       // retreat
       final RetreatComponent comp = new RetreatComponent(possible);
       final int option = JOptionPane.showConfirmDialog(BattleDisplay.this, comp, message,
-          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, (Icon) null);
+          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
       if (option == JOptionPane.OK_OPTION) {
         if (comp.getSelection() != null) {
           retreatTo[0] = comp.getSelection();
@@ -520,7 +520,7 @@ public class BattleDisplay extends JPanel {
     private void updateImage() {
       final int width = 250;
       final int height = 250;
-      final Image img = m_mapPanel.getTerritoryImage((Territory) m_list.getSelectedValue(), m_location);
+      final Image img = m_mapPanel.getTerritoryImage(m_list.getSelectedValue(), m_location);
       final Image finalImage = Util.createImage(width, height, true);
       final Graphics g = finalImage.getGraphics();
       g.drawImage(img, 0, 0, width, height, this);
@@ -529,7 +529,7 @@ public class BattleDisplay extends JPanel {
     }
 
     public Territory getSelection() {
-      return (Territory) m_list.getSelectedValue();
+      return m_list.getSelectedValue();
     }
   }
 
