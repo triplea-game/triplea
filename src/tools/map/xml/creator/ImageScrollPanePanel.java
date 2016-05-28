@@ -33,7 +33,7 @@ import javax.swing.SwingUtilities;
 import com.google.common.collect.Maps;
 
 import games.strategy.debug.ClientLogger;
-import tools.map.making.PointFileReaderWriter;
+import games.strategy.util.PointFileReaderWriter;
 import tools.image.FileOpen;
 
 /**

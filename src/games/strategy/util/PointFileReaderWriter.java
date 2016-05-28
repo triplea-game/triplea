@@ -1,4 +1,4 @@
-package tools.map.making;
+package games.strategy.util;
 
 import java.awt.Point;
 import java.awt.Polygon;
