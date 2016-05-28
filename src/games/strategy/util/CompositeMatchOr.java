@@ -8,11 +8,11 @@ import java.util.List;
  */
 public class CompositeMatchOr<T> extends CompositeMatch<T> {
   /** Creates new CompositeMatchOr */
-  @SuppressWarnings({"rawtypes", "unchecked"})
-  public CompositeMatchOr(final Match... matches) {//TODO rewrite in order to remove Suppressed Warning
+  @SuppressWarnings("unchecked")
+  public CompositeMatchOr(final Match<?>... matches) {//TODO rewrite in order to remove Suppressed Warning
     super();
-    for (final Match<T> m : matches) {
-      add(m);
+    for (final Match<?> m : matches) {
+      add((Match<T>)m);
     }
   }
 

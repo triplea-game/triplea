@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 import games.strategy.engine.ClientContext;
@@ -76,16 +77,14 @@ public class DebugUtils {
     }
     return buf.toString();
   }
-
-  @SuppressWarnings({"unchecked", "rawtypes"})
   public static String getProperties() {
     final StringBuilder buf = new StringBuilder("SYSTEM PROPERTIES\n");
     final Properties props = System.getProperties();
-    final java.util.List keys = new ArrayList(props.keySet());
+    final List<String> keys = new ArrayList<>(props.stringPropertyNames());
     Collections.sort(keys);
-    final Iterator iter = keys.iterator();
+    final Iterator<String> iter = keys.iterator();
     while (iter.hasNext()) {
-      final String property = (String) iter.next();
+      final String property = iter.next();
       final String value = props.getProperty(property);
       buf.append(property).append(" ").append(value).append("\n");
     }

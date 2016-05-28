@@ -894,10 +894,9 @@ public class TripleAFrame extends MainGameFrame {
     messageAndDialogThreadPool.waitForAll();
     final AtomicReference<Unit> selected = new AtomicReference<>();
     final String message = "Select bombing target in " + territory.getName();
-    @SuppressWarnings("rawtypes")
-    final Tuple<JPanel, JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList>>() {
+    final Tuple<JPanel, JList<Unit>> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList<Unit>>>() {
       @Override
-      public Tuple<JPanel, JList> run() {
+      public Tuple<JPanel, JList<Unit>> run() {
         final JList<Unit> list = new JList<>(new Vector<>(potentialTargets));
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
@@ -951,10 +950,9 @@ public class TripleAFrame extends MainGameFrame {
       return candidates.iterator().next();
     }
     messageAndDialogThreadPool.waitForAll();
-    @SuppressWarnings("rawtypes")
-    final Tuple<JPanel, JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList>>() {
+    final Tuple<JPanel, JList<Territory>> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList<Territory>>>() {
       @Override
-      public Tuple<JPanel, JList> run() {
+      public Tuple<JPanel, JList<Territory>> run() {
         mapPanel.centerOn(currentTerritory);
         final JList<Territory> list = new JList<>(new Vector<>(candidates));
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -1789,15 +1787,15 @@ public class TripleAFrame extends MainGameFrame {
               // TODO: this could be solved easily if rounds/steps were changes,
               // but that could greatly increase the file size :(
               // TODO: this also does not undo the runcount of each delegate step
-              @SuppressWarnings("rawtypes")
-              final Enumeration enumeration =
+              @SuppressWarnings("unchecked")
+              final Enumeration<HistoryNode> enumeration =
                   ((DefaultMutableTreeNode) datacopy.getHistory().getRoot()).preorderEnumeration();
               enumeration.nextElement();
               int round = 0;
               String stepDisplayName = datacopy.getSequence().getStep(0).getDisplayName();
               PlayerID currentPlayer = datacopy.getSequence().getStep(0).getPlayerID();
               while (enumeration.hasMoreElements()) {
-                final HistoryNode node = (HistoryNode) enumeration.nextElement();
+                final HistoryNode node = enumeration.nextElement();
                 if (node instanceof Round) {
                   round = Math.max(0, ((Round) node).getRoundNo() - datacopy.getSequence().getRoundOffset());
                   currentPlayer = null;

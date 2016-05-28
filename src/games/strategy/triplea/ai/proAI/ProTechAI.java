@@ -610,7 +610,6 @@ public final class ProTechAI {
    * Removes the inner circle neighbors
    * neutral - whether to include neutral countries
    */
-  @SuppressWarnings("unchecked")
   private static List<Territory> getExactNeighbors(final Territory territory, final int distance,
       final PlayerID player, final GameData data, final boolean neutral) {
     // old functionality retained, i.e. no route condition is imposed.
@@ -619,7 +618,7 @@ public final class ProTechAI {
     if (!neutral || Properties.getNeutralsImpassable(data)) {
       endCond.add(Matches.TerritoryIsNeutralButNotWater.invert());
     }
-    return findFontier(territory, endCond, Match.ALWAYS_MATCH, distance, data);
+    return findFontier(territory, endCond, Match.getAlwaysMatch(), distance, data);
   }
 
   /**

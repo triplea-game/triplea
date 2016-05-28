@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -9,7 +8,6 @@ import java.util.function.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import games.strategy.common.swing.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.util.ThreadUtil;
 
@@ -24,7 +22,6 @@ public class DownloadCoordinator {
   private final List<DownloadFile> downloadList = Lists.newCopyOnWriteArrayList();
   private final Set<DownloadFileDescription> downloadSet = Sets.newHashSet();
 
-  private boolean downloadPromptAlreadyShown = false;
   private volatile boolean cancelled = false;
 
   public DownloadCoordinator() {
@@ -90,7 +87,6 @@ public class DownloadCoordinator {
         return;
       } else {
         downloadSet.add(download);
-        downloadPromptAlreadyShown = false;
       }
     }
     downloadList.add(new DownloadFile(download, progressUpdateListener, completionListener));

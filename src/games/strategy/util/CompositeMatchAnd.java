@@ -7,12 +7,11 @@ import java.util.List;
  * True if all matches return true.
  */
 public class CompositeMatchAnd<T> extends CompositeMatch<T> {
-  @SuppressWarnings({"rawtypes", "unchecked"})//TODO rewrite in order to remove Supressed Warning
-  @SafeVarargs
-  public CompositeMatchAnd(final Match... matches) {
+  @SuppressWarnings("unchecked")//TODO rewrite in order to remove Supressed Warning
+  public CompositeMatchAnd(final Match<?>... matches) {
     super();
-    for (final Match<T> m : matches) {
-      add(m);
+    for (final Match<?> m : matches) {
+      add((Match<T>)m);
     }
   }
 

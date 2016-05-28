@@ -258,9 +258,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
               + MyFormatter.unitsToTextNoOwner(unitsCanBePlacedByThisProducer));
         }
       }
-      @SuppressWarnings("unchecked")
       final Collection<Unit> placedUnits =
-          Match.getNMatches(unitsCanBePlacedByThisProducer, maxPlaceable, Match.ALWAYS_MATCH);
+          Match.getNMatches(unitsCanBePlacedByThisProducer, maxPlaceable, Match.getAlwaysMatch());
       performPlaceFrom(producer, placedUnits, at, player);
       unitsLeftToPlace.removeAll(placedUnits);
     }
@@ -1426,8 +1425,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         continue;
       }
       Collections.sort(canBePlacedHere, getHardestToPlaceWithRequiresUnitsRestrictions(true));
-      @SuppressWarnings("unchecked")
-      final Collection<Unit> placedHere = Match.getNMatches(canBePlacedHere, productionHere, Match.ALWAYS_MATCH);
+      final Collection<Unit> placedHere = Match.getNMatches(canBePlacedHere, productionHere, Match.getAlwaysMatch());
       unitsLeftToPlace.removeAll(placedHere);
     }
     if (unitsLeftToPlace.isEmpty()) {
