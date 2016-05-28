@@ -89,9 +89,9 @@ public class ClientGame extends AbstractGame {
             // started (like with a roundChanged listener).
             if ((currentRound - 1 > round && ourOriginalCurrentRound >= round)
                 || (currentRound > round && ourOriginalCurrentRound < round)) {
-              System.err.println("Can not create more rounds that host currently has. Host Round:" + round
+              System.err.println("Cannot create more rounds that host currently has. Host Round:" + round
                   + " and new Client Round:" + currentRound);
-              throw new IllegalStateException("Can not create more rounds that host currently has. Host Round:" + round
+              throw new IllegalStateException("Cannot create more rounds that host currently has. Host Round:" + round
                   + " and new Client Round:" + currentRound);
             }
           } finally {

@@ -111,7 +111,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setAttackBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("attackBonus can not be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException("attackBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
@@ -149,7 +149,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setDefenseBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("defenseBonus can not be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException("defenseBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
@@ -187,7 +187,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setMovementBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("movementBonus can not be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException("movementBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
@@ -225,7 +225,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setRadarBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("radarBonus can not be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException("radarBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
@@ -263,7 +263,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setAirAttackBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("airAttackBonus can not be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException("airAttackBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
@@ -301,7 +301,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setAirDefenseBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("airDefenseBonus can not be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException("airDefenseBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
@@ -339,7 +339,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setProductionBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("productionBonus can not be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException("productionBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
@@ -616,7 +616,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setAirborneCapacity(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("airborneCapacity can not be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException("airborneCapacity cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
@@ -778,7 +778,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setAttackRollsBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("attackRollsBonus can not be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException("attackRollsBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
@@ -816,7 +816,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setDefenseRollsBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("defenseRollsBonus can not be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException("defenseRollsBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
@@ -854,7 +854,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setBombingBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("bombingBonus can not be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException("bombingBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
@@ -1350,7 +1350,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
         // mechanizedInfantry = because it is already completely atomized and controlled through unit attachments
         // IF one of the above named techs changes what it does in a future version of a&a, and the change is large
         // enough or different
-        // enough that it can not be done easily with a new game option,
+        // enough that it cannot be done easily with a new game option,
         // then it is better to create a new tech rather than change the old one, and give the new one a new name, like
         // paratroopers2 or
         // paratroopersAttack or Airborne_Forces, or some crap.

@@ -305,7 +305,7 @@ public class BattleDisplay extends JPanel {
 
   protected void waitForConfirmation(final String message) {
     if (SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("This can not be in dispatch thread");
+      throw new IllegalStateException("This cannot be in dispatch thread");
     }
 
     final CountDownLatch continueLatch = new CountDownLatch(1);

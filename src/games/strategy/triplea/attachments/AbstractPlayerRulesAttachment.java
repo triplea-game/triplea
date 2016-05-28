@@ -128,11 +128,11 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException(
-          "productionPerXTerritories can not be empty or have more than two fields" + thisErrorMsg());
+          "productionPerXTerritories cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitTypeToProduce;
     if (s.length == 1) {
-      unitTypeToProduce = Constants.INFANTRY_TYPE;
+      unitTypeToProduce = Constants.UNIT_TYPE_INFANTRY;
     } else {
       unitTypeToProduce = s[1];
     }

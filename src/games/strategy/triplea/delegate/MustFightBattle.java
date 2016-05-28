@@ -1218,7 +1218,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       return oneTerritory;
     }
     // its possible that a sub retreated to a territory we came from, if so we can no longer retreat there
-    // or if we are moving out of a territory containing enemy units, we can not retreat back there
+    // or if we are moving out of a territory containing enemy units, we cannot retreat back there
     final CompositeMatchAnd<Unit> enemyUnitsThatPreventRetreat =
         new CompositeMatchAnd<>(Matches.enemyUnit(m_attacker, m_data), Matches.UnitIsNotInfrastructure,
             Matches.unitIsBeingTransported().invert(), Matches.unitIsNotSubmerged(m_data));

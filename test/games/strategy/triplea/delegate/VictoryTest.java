@@ -8,6 +8,7 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
 import junit.framework.TestCase;
@@ -57,7 +58,7 @@ public class VictoryTest extends TestCase {
 
     britishCongo = gameData.getMap().getTerritory("Belgian Congo");
     kenya = gameData.getMap().getTerritory("Kenya");
-    motorized = gameData.getUnitTypeList().getUnitType("motorized");
+    motorized = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MOTORIZED);
     armour = GameDataTestUtil.armour(gameData);
     frenchEastAfrica = gameData.getMap().getTerritory("French Equatorial Africa");
     frenchWestAfrica = gameData.getMap().getTerritory("French West Africa");
@@ -72,7 +73,8 @@ public class VictoryTest extends TestCase {
     testBridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
-    final String error = moveDelegate.move(libya.getUnits().getUnits(), gameData.getMap().getRoute(libya, britishCongo));
+    final String error =
+        moveDelegate.move(libya.getUnits().getUnits(), gameData.getMap().getRoute(libya, britishCongo));
     moveDelegate.end();
     assertTrue(error.equals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ));
   }
@@ -83,7 +85,8 @@ public class VictoryTest extends TestCase {
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
     final String error =
-        moveDelegate.move(frenchWestAfrica.getUnits().getUnits(), gameData.getMap().getRoute(frenchWestAfrica, britishCongo));
+        moveDelegate.move(frenchWestAfrica.getUnits().getUnits(),
+            gameData.getMap().getRoute(frenchWestAfrica, britishCongo));
     moveDelegate.end();
     assertEquals(error, null);
   }
@@ -109,9 +112,11 @@ public class VictoryTest extends TestCase {
     testBridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
-    String error = moveDelegate.move(frenchWestAfrica.getUnits().getUnits(), gameData.getMap().getRoute(frenchWestAfrica, frenchEastAfrica));
+    String error = moveDelegate.move(frenchWestAfrica.getUnits().getUnits(),
+        gameData.getMap().getRoute(frenchWestAfrica, frenchEastAfrica));
     assertEquals(error, null);
-    error = moveDelegate.move(frenchEastAfrica.getUnits().getUnits(), gameData.getMap().getRoute(frenchEastAfrica, britishCongo));
+    error = moveDelegate.move(frenchEastAfrica.getUnits().getUnits(),
+        gameData.getMap().getRoute(frenchEastAfrica, britishCongo));
     moveDelegate.end();
     assertEquals(error, null);
   }
@@ -122,7 +127,8 @@ public class VictoryTest extends TestCase {
     testBridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
-    final String error = moveDelegate.move(libya.getUnits().getUnits(), gameData.getMap().getRoute(libya, britishCongo));
+    final String error =
+        moveDelegate.move(libya.getUnits().getUnits(), gameData.getMap().getRoute(libya, britishCongo));
     moveDelegate.end();
     assertTrue(error.equals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ));
   }
@@ -135,11 +141,13 @@ public class VictoryTest extends TestCase {
     testBridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
-    String error = moveDelegate.move(frenchEastAfrica.getUnits().getUnits(), gameData.getMap().getRoute(frenchEastAfrica, britishCongo));
+    String error = moveDelegate.move(frenchEastAfrica.getUnits().getUnits(),
+        gameData.getMap().getRoute(frenchEastAfrica, britishCongo));
     assertEquals(null, error);
     error = moveDelegate.move(kenya.getUnits().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
     assertEquals(null, error);
-    error = moveDelegate.move(britishCongo.getUnits().getUnits(), gameData.getMap().getRoute(britishCongo, frenchEastAfrica));
+    error = moveDelegate.move(britishCongo.getUnits().getUnits(),
+        gameData.getMap().getRoute(britishCongo, frenchEastAfrica));
     assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
     moveDelegate.end();
   }
@@ -165,7 +173,8 @@ public class VictoryTest extends TestCase {
     assertEquals(fuelAmount - 6, italians.getResources().getQuantity("Fuel"));
     assertEquals(puAmount - 6, italians.getResources().getQuantity("PUs"));
     gameData.performChange(ChangeFactory.addUnits(kenya, motorized.create(50, italians)));
-    final String error = moveDelegate.move(kenya.getUnits().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
+    final String error =
+        moveDelegate.move(kenya.getUnits().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
     assertTrue(error.startsWith("Not enough resources to perform this move"));
     moveDelegate.end();
   }

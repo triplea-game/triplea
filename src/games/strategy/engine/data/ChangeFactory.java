@@ -1160,10 +1160,10 @@ class AddBattleRecordsChange extends Change {
 
   @Override
   public String toString() {
-    // This only occurs when serialization went badly, or something can not be serialized.
+    // This only occurs when serialization went badly, or something cannot be serialized.
     if (m_recordsToAdd == null) {
       throw new IllegalStateException(
-          "Records can not be null (most likely caused by improper or impossible serialization): " + m_recordsToAdd);
+          "Records cannot be null (most likely caused by improper or impossible serialization): " + m_recordsToAdd);
     }
     return "Adding Battle Records: " + m_recordsToAdd;
   }
@@ -1196,10 +1196,10 @@ class RemoveBattleRecordsChange extends Change {
 
   @Override
   public String toString() {
-    // This only occurs when serialization went badly, or something can not be serialized.
+    // This only occurs when serialization went badly, or something cannot be serialized.
     if (m_recordsToRemove == null) {
       throw new IllegalStateException(
-          "Records can not be null (most likely caused by improper or impossible serialization): " + m_recordsToRemove);
+          "Records cannot be null (most likely caused by improper or impossible serialization): " + m_recordsToRemove);
     }
     return "Adding Battle Records: " + m_recordsToRemove;
   }

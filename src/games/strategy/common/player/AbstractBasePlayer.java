@@ -46,7 +46,7 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
 
   /**
    * Get the IPlayerBridge for this game player.
-   * (This is not a delegate bridge, and we can not send changes on this. Changes should only be done within a delegate,
+   * (This is not a delegate bridge, and we cannot send changes on this. Changes should only be done within a delegate,
    * never through a
    * player.)
    */

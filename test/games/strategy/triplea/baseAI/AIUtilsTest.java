@@ -9,6 +9,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.AIUtils;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.LoadGameUtil;
@@ -37,6 +38,6 @@ public class AIUtilsTest extends TestCase {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final List<Unit> sorted = new ArrayList<>(germany.getUnits().getUnits());
     Collections.sort(sorted, AIUtils.getCostComparator());
-    assertEquals(sorted.get(0).getUnitType().getName(), "infantry");
+    assertEquals(sorted.get(0).getUnitType().getName(), Constants.UNIT_TYPE_INFANTRY);
   }
 }

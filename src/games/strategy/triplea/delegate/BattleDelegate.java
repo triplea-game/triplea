@@ -871,7 +871,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         }
         m_bridge.getHistoryWriter()
             .startEvent(defender.getName() + " scrambles to create a battle in territory " + to.getName());
-        // TODO: the attacking sea units do not remember where they came from, so they can not retreat anywhere. Need to
+        // TODO: the attacking sea units do not remember where they came from, so they cannot retreat anywhere. Need to
         // fix.
         m_battleTracker.addBattle(new RouteScripted(to), attackingUnits, false, m_player, m_bridge, null, null);
         battle = m_battleTracker.getPendingBattle(to, false, BattleType.NORMAL);
@@ -893,7 +893,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             final Map<Unit, Collection<Unit>> dependenciesForMFB =
                 TransportTracker.transporting(attackingUnits, attackingUnits);
             for (final Unit transport : Match.getMatches(attackingUnits, Matches.UnitIsTransport)) {
-              // however, the map we add to the newly created battle, can not hold any units that are NOT in this
+              // however, the map we add to the newly created battle, cannot hold any units that are NOT in this
               // territory.
               // BUT it must still hold all transports
               if (!dependenciesForMFB.containsKey(transport)) {

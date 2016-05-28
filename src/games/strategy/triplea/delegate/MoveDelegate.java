@@ -247,7 +247,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
     moveableUnitOwnedByMe.add(new CompositeMatchOr<>(Matches.unitHasMovementLeft,
         new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.unitIsBeingTransported())));
 
-    // if not non combat, can not move aa units
+    // if not non combat, cannot move aa units
     if (GameStepPropertiesHelper.isCombatMove(getData(), false)) {
       moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
     }

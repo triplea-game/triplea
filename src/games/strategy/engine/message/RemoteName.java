@@ -13,7 +13,7 @@ public class RemoteName {
 
   public RemoteName(final String name, final Class<?> class1) {
     if (class1 == null) {
-      throw new IllegalArgumentException("Class can not be null. Remote Name: " + name);
+      throw new IllegalArgumentException("Class cannot be null. Remote Name: " + name);
     }
     if (!class1.isInterface()) {
       throw new IllegalArgumentException("Not an interface. Remote Name: " + name);

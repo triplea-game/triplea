@@ -98,7 +98,7 @@ public class EditValidator {
         if (Match.someMatch(units, Matches.UnitIsAir)) {
           if (Match.someMatch(units,
               new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier.invert()))) {
-            return "Can not add air to water unless it can land on carriers";
+            return "Cannot add air to water unless it can land on carriers";
           }
           // Set up matches
           final Match<Unit> friendlyCarriers =
@@ -211,10 +211,10 @@ public class EditValidator {
         return "Player does not have this tech";
       }
       if (tech.getProperty().equals(TechAdvance.TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY)) {
-        return "Can not remove " + TechAdvance.TECH_NAME_INDUSTRIAL_TECHNOLOGY;
+        return "Cannot remove " + TechAdvance.TECH_NAME_INDUSTRIAL_TECHNOLOGY;
       }
       if (tech.getProperty().equals(TechAdvance.TECH_PROPERTY_IMPROVED_SHIPYARDS)) {
-        return "Can not remove " + TechAdvance.TECH_NAME_IMPROVED_SHIPYARDS;
+        return "Cannot remove " + TechAdvance.TECH_NAME_IMPROVED_SHIPYARDS;
       }
     }
     return result;
@@ -244,7 +244,7 @@ public class EditValidator {
     for (final Unit u : units) {
       final int dmg = unitDamageMap.getInt(u);
       if (dmg < 0 || dmg >= UnitAttachment.get(u.getType()).getHitPoints()) {
-        return "Damage can not be less than zero or equal to or greater than unit hitpoints (if you want to kill the unit, use remove unit)";
+        return "Damage cannot be less than zero or equal to or greater than unit hitpoints (if you want to kill the unit, use remove unit)";
       }
     }
     return result;
@@ -277,7 +277,7 @@ public class EditValidator {
     for (final Unit u : units) {
       final int dmg = unitDamageMap.getInt(u);
       if (dmg < 0 || dmg > ((TripleAUnit) u).getHowMuchDamageCanThisUnitTakeTotal(u, territory)) {
-        return "Damage can not be less than zero or greater than the max damage of the unit";
+        return "Damage cannot be less than zero or greater than the max damage of the unit";
       }
     }
     return result;

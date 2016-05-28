@@ -213,7 +213,7 @@ public class GameStepPropertiesHelper {
   }
 
   /**
-   * Kills all air that can not land. Normally would occur both at the end of noncombat movement and also at end of
+   * Kills all air that cannot land. Normally would occur both at the end of noncombat movement and also at end of
    * placement phase.
    */
   public static boolean isRemoveAirThatCanNotLand(final GameData data) {

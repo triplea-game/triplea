@@ -63,7 +63,7 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
   public Collection<String> getPlayersThatMayBeDisabled() {
     final Collection<String> disableable = new HashSet<>();
     for (final PlayerID p : m_players.values()) {
-      // already disabled players can not be reenabled
+      // already disabled players cannot be reenabled
       if (p.getCanBeDisabled() && !p.getIsDisabled()) {
         disableable.add(p.getName());
       }

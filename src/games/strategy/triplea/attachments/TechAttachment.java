@@ -56,7 +56,7 @@ public class TechAttachment extends DefaultAttachment {
   private boolean m_mechanizedInfantry = false;
   private boolean m_aARadar = false;
   private boolean m_shipyards = false;
-  // do not export at this point. currently map xml can not
+  // do not export at this point. currently map xml cannot
   // define a player having a custom tech at start of game
   @InternalDoNotExport
   private HashMap<String, Boolean> m_GenericTech = new HashMap<>();

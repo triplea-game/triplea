@@ -162,7 +162,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
     final int i = getInt(s[0]);
     if (i < -1) {
       throw new GameParseException(
-          "destroyedTUV count can not be less than -1 [with -1 meaning the condition is not active]" + thisErrorMsg());
+          "destroyedTUV count cannot be less than -1 [with -1 meaning the condition is not active]" + thisErrorMsg());
     }
     if (!(s[1].equals("currentRound") || s[1].equals("allRounds"))) {
       throw new GameParseException("destroyedTUV value must be currentRound or allRounds" + thisErrorMsg());

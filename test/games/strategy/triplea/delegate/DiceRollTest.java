@@ -52,11 +52,11 @@ public class DiceRollTest {
     // infantry defends and hits at 1 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
     final DiceRoll roll = DiceRoll.rollDice(infantry, true, russians, bridge, battle, "", territoryEffects, null);
-    assertThat(roll.getHits(),is(1));
+    assertThat(roll.getHits(), is(1));
     // infantry does not hit at 2 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {2}));
     final DiceRoll roll2 = DiceRoll.rollDice(infantry, true, russians, bridge, battle, "", territoryEffects, null);
-    assertThat(roll2.getHits(),is(0));
+    assertThat(roll2.getHits(), is(0));
     // infantry attacks and hits at 0 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0}));
     final DiceRoll roll3 = DiceRoll.rollDice(infantry, false, russians, bridge, battle, "", territoryEffects, null);
@@ -80,11 +80,11 @@ public class DiceRollTest {
     // infantry defends and hits at 1 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
     final DiceRoll roll = DiceRoll.rollDice(infantry, true, russians, bridge, battle, "", territoryEffects, null);
-    assertThat(roll.getHits(),is(1));
+    assertThat(roll.getHits(), is(1));
     // infantry does not hit at 2 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {2}));
     final DiceRoll roll2 = DiceRoll.rollDice(infantry, true, russians, bridge, battle, "", territoryEffects, null);
-    assertThat(roll2.getHits(),is(0));
+    assertThat(roll2.getHits(), is(0));
     // infantry attacks and hits at 0 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0}));
     final DiceRoll roll3 = DiceRoll.rollDice(infantry, false, russians, bridge, battle, "", territoryEffects, null);
@@ -103,7 +103,7 @@ public class DiceRollTest {
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final List<Unit> units = infantryType.create(1, russians);
-    final UnitType artillery = gameData.getUnitTypeList().getUnitType("artillery");
+    final UnitType artillery = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_ARTILLERY);
     units.addAll(artillery.create(1, russians));
     // artillery supported infantry and art attack at 1 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1, 1}));
@@ -119,7 +119,7 @@ public class DiceRollTest {
     final PlayerID russians = GameDataTestUtil.russians(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
     // Add 1 artillery
-    final UnitType artillery = gameData.getUnitTypeList().getUnitType("artillery");
+    final UnitType artillery = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_ARTILLERY);
     final List<Unit> units = artillery.create(1, russians);
     // Set the supported unit count
     for (final Unit unit : units) {
@@ -171,7 +171,7 @@ public class DiceRollTest {
     gameData = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
     final PlayerID americans = GameDataTestUtil.americans(gameData);
-    final UnitType marine = gameData.getUnitTypeList().getUnitType("marine");
+    final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
     final List<Unit> attackers = marine.create(1, americans);
     final ITestDelegateBridge bridge = getDelegateBridge(americans);
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
@@ -189,7 +189,7 @@ public class DiceRollTest {
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
     final PlayerID americans = GameDataTestUtil.americans(gameData);
-    final UnitType marine = gameData.getUnitTypeList().getUnitType("marine");
+    final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
     final List<Unit> attackers = marine.create(3, americans);
     final ITestDelegateBridge bridge = getDelegateBridge(americans);
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
@@ -206,7 +206,7 @@ public class DiceRollTest {
     gameData = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
     final PlayerID americans = GameDataTestUtil.americans(gameData);
-    final UnitType marine = gameData.getUnitTypeList().getUnitType("marine");
+    final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
     final List<Unit> attackers = marine.create(1, americans);
     final ITestDelegateBridge bridge = getDelegateBridge(americans);
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
@@ -392,7 +392,7 @@ public class DiceRollTest {
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, new MockBattle(germany), "",
         TerritoryEffectHelper.getEffects(germany), null);
-    assertThat(dice.getRolls(1).size(),is(1));
+    assertThat(dice.getRolls(1).size(), is(1));
     assertThat(dice.getRolls(1).get(0).getType(), is(Die.DieType.HIT));
   }
 
@@ -408,7 +408,7 @@ public class DiceRollTest {
     final DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, new MockBattle(germany), "",
         TerritoryEffectHelper.getEffects(germany), null);
 
-    assertThat(dice.getRolls(1).size(),is(1));
+    assertThat(dice.getRolls(1).size(), is(1));
     assertThat(dice.getRolls(1).get(0).getType(), is(Die.DieType.HIT));
   }
 

@@ -812,7 +812,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
     if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit("placementLimit", units, to, player,
         getData())) {
-      return "Units Can Not Go Over Stacking Limit";
+      return "Units Cannot Go Over Stacking Limit";
     }
     // now return null (valid placement) if we have placement restrictions disabled in game options
     if (!isUnitPlacementRestrictions()) {
@@ -1145,11 +1145,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (countSwitchedProductionToNeighbors && unitCountAlreadyProduced > 0) {
       if (notUsableAsOtherProducers == null) {
         throw new IllegalStateException(
-            "notUsableAsOtherProducers can not be null if countSwitchedProductionToNeighbors is true");
+            "notUsableAsOtherProducers cannot be null if countSwitchedProductionToNeighbors is true");
       }
       if (currentAvailablePlacementForOtherProducers == null) {
         throw new IllegalStateException(
-            "currentAvailablePlacementForOtherProducers can not be null if countSwitchedProductionToNeighbors is true");
+            "currentAvailablePlacementForOtherProducers cannot be null if countSwitchedProductionToNeighbors is true");
       }
       int productionCanNotBeMoved = 0;
       int productionThatCanBeTakenOver = 0;
@@ -1289,7 +1289,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       }
       unitMapHeld.add(ua.getConstructionType(), 1);
       unitMapTypePerTurn.put(ua.getConstructionType(), ua.getConstructionsPerTerrPerTypePerTurn());
-      if (ua.getConstructionType().equals("factory")) {
+      if (ua.getConstructionType().equals(Constants.CONSTRUCTION_TYPE_FACTORY)) {
         unitMapMaxType.put(ua.getConstructionType(), maxFactory);
       } else {
         unitMapMaxType.put(ua.getConstructionType(), ua.getMaxConstructionsPerTypePerTerr());
@@ -1317,11 +1317,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       while (mapString.hasNext()) {
         final String constructionType = mapString.next();
         int unitMax = unitMapMaxType.getInt(constructionType);
-        if (wasFactoryThereAtStart && !constructionType.equals("factory") && !constructionType.endsWith("structure")) {
+        if (wasFactoryThereAtStart && !constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY) && !constructionType.endsWith("structure")) {
           unitMax =
               Math.max(Math.max(unitMax, (moreWithFactory ? toProduction : 0)), (unlimitedConstructions ? 10000 : 0));
         }
-        if (!wasFactoryThereAtStart && !constructionType.equals("factory") && !constructionType.endsWith("structure")) {
+        if (!wasFactoryThereAtStart && !constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY) && !constructionType.endsWith("structure")) {
           unitMax = Math.max(Math.max(unitMax, (moreWithoutFactory ? toProduction : 0)),
               (unlimitedConstructions ? 10000 : 0));
         }

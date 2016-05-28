@@ -62,7 +62,7 @@ public class AirMovementValidator {
     }
     final Territory routeEnd = route.getEnd();
     final Territory routeStart = route.getStart();
-    // we can not forget to account for allied air at our location already
+    // we cannot forget to account for allied air at our location already
     final Match<Unit> airAlliedNotOwned = new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player).invert(),
         Matches.isUnitAllied(player, data), Matches.UnitIsAir, Matches.UnitCanLandOnCarrier);
     final HashSet<Unit> airThatMustLandOnCarriersHash = new HashSet<>();
@@ -79,7 +79,7 @@ public class AirMovementValidator {
         airThatMustLandOnCarriersHash.addAll(alliedAirOnCarrier);
       }
     }
-    // now we can add our owned air. we add our owned air last because it can be moved, while allied air can not be. we
+    // now we can add our owned air. we add our owned air last because it can be moved, while allied air cannot be. we
     // want the lowest
     // movement to be validated first.
     airThatMustLandOnCarriersHash.addAll(ownedAirThatMustLandOnCarriers);
@@ -367,7 +367,7 @@ public class AirMovementValidator {
           continue;
         }
         final List<Unit> carrierNotReach = new ArrayList<>(ownedCarriersInCarrierSpot);
-        // we want to see if the air units can be put on the carriers that can not make it
+        // we want to see if the air units can be put on the carriers that cannot make it
         // first, before taking up room on the carriers that can make it
         carrierNotReach.removeAll(carrierCanReach);
         final List<Unit> allCarriers = new ArrayList<>(carrierNotReach);
@@ -434,7 +434,7 @@ public class AirMovementValidator {
         }
       }
     }
-    // anyone left over can not land
+    // anyone left over cannot land
     for (final Unit air : airThatMustLandOnCarriers) {
       result.addDisallowedUnit(NOT_ALL_AIR_UNITS_CAN_LAND, air);
     }

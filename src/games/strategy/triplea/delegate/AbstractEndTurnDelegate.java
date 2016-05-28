@@ -257,7 +257,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       if (pSides <= 0 && pCount <= 0) {
         // if both are zero, then it must mean we did not share our war bonds tech with them, even though we are sharing
         // all tech (because
-        // they can not have this tech)
+        // they cannot have this tech)
         if (canPlayerCollectIncome(p, data)) {
           giveWarBondsTo = p;
           break;

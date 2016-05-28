@@ -28,6 +28,7 @@ import javax.imageio.ImageIO;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.ui.Util;
@@ -84,7 +85,6 @@ public class MapData {
   public static final String COMMENT_MARKERS = "comments.txt";
   public static final String VC_MARKERS = "vc.txt";
   public static final String BLOCKADE_MARKERS = "blockade.txt";
-  public static final String IMPASSIBLE = "Impassible";
   public static final String PU_PLACE_FILE = "pu_place.txt";
   public static final String TERRITORY_NAME_PLACE_FILE = "name_place.txt";
   public static final String KAMIKAZE_FILE = "kamikaze_place.txt";
@@ -455,7 +455,7 @@ public class MapData {
    */
   public Color impassibleColor() {
     // just use getPlayerColor, since it parses the properties
-    return getPlayerColor(IMPASSIBLE);
+    return getPlayerColor(Constants.PLAYER_NAME_IMPASSIBLE);
   }
 
   /**

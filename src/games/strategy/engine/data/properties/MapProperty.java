@@ -53,7 +53,7 @@ public class MapProperty<T, U> extends AEditableProperty {
         properties.add(new DoubleProperty(key, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) value), 5));
       } else {
         throw new IllegalArgumentException(
-            "Can not instantiate MapProperty with: " + value.getClass().getCanonicalName());
+            "Cannot instantiate MapProperty with: " + value.getClass().getCanonicalName());
       }
     }
   }

@@ -310,7 +310,7 @@ public class ClipPlayer {
    * The user may or may not have a sounds.properties file. If they do not, we should have a default folder (ww2) that
    * we use for sounds.
    * Because we do not want a lot of duplicate sound files, we also have a "generic" sound folder.
-   * If a sound can not be found for a soundpath using the sounds.properties or default folder, then we try to find one
+   * If a sound cannot be found for a soundpath using the sounds.properties or default folder, then we try to find one
    * in the generic
    * folder.
    * The sounds.properties file can specify all the sounds to use for a specific sound path (multiple per path).

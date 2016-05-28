@@ -88,7 +88,7 @@ public class GameDataManager {
           // ask user if we really want to do this?
           final String messageString = "<html>This TripleA engine is version " + ClientContext.engineVersion().getVersion()
               + " and you are trying to open a savegame made with version " + readVersion.toString()
-              + "<br>However, this TripleA can not open any savegame made by any engine other than engines with the same first three version numbers as it (x_x_x_x)."
+              + "<br>However, this TripleA cannot open any savegame made by any engine other than engines with the same first three version numbers as it (x_x_x_x)."
               + "<br><br>TripleA now comes with older engines included with it, and has found the engine to run this savegame. This is a new feature and is in 'beta' stage."
               + "<br>It will attempt to run a new instance of TripleA using the older engine jar file, and this instance will only be able to play this savegame."
               + "<br><b>You may choose to either Close or Keep the current instance of TripleA!</b> (If hosting, you must close it). Please report any bugs or issues."

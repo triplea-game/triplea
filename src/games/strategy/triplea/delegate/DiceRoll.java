@@ -207,7 +207,7 @@ public class DiceRoll implements Externalizable {
     // HOWEVER, if the non-infinite attackers are less powerful than the infinite attacker, then the non-infinite will
     // not fire, and the
     // infinite one will do all the attacks for both groups.
-    // the total number of shots from these first 2 groups can not exceed the number of air units being shot at
+    // the total number of shots from these first 2 groups cannot exceed the number of air units being shot at
     // last, any aa that can overstack will fire after, individually
     // (an aa guns that is both infinite, and overstacks, ignores the overstack part because that totally doesn't make
     // any sense)
