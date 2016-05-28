@@ -28,6 +28,7 @@ import javax.swing.JOptionPane;
 import games.strategy.debug.ClientLogger;
 import games.strategy.ui.Util;
 import games.strategy.util.AlphanumComparator;
+import games.strategy.util.PointFileReaderWriter;
 import tools.image.FileOpen;
 import tools.image.FileSave;
 
