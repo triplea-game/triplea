@@ -306,11 +306,11 @@ public class TransportUtils {
   }
 
   private static boolean containsEquivalentUnit(final Unit unit, final Collection<Unit> units) {
-    return units.stream().anyMatch(u -> u.hasSamePropertiesAndState(unit));
+    return units.stream().anyMatch(u -> u.isEquivalent(unit));
   }
 
   private static Unit getEquivalentUnit(final Unit unit, final Collection<Unit> units) {
-    return units.stream().filter(u -> u.hasSamePropertiesAndState(unit)).findFirst().get();
+    return units.stream().filter(u -> u.isEquivalent(unit)).findFirst().get();
   }
 
 }
