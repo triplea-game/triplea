@@ -10,7 +10,6 @@ import java.awt.Point;
 
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import games.strategy.engine.data.Route;
@@ -32,15 +31,15 @@ public class TestRoute {
   }
   
   @Test
-  @Ignore//Not working...
-  public void testCurve(){//TODO multiply the value from coords array with a unknown factor in order to get the original value
+  public void testCurve(){
     final double[] testYValues = new double[]{20, 40, 90};
     final PolynomialSplineFunction testFunction = new SplineInterpolator().interpolate(dummyIndex, testYValues);
     final double[] coords = MapRouteDrawer.getCoords(testFunction, dummyIndex);
     final double stepSize = testFunction.getKnots()[testFunction.getKnots().length - 1] / coords.length;
-    assertEquals(testYValues[0], coords[(int)Math.round(dummyIndex[0]) + 1] * stepSize, 1);
-    assertEquals(testYValues[1], coords[(int)Math.round(dummyIndex[1]) + 1] * stepSize, 1);
-    assertEquals(testYValues[2], coords[(int)Math.round(dummyIndex[2]) + 1] * stepSize, 1);
+    assertEquals(testYValues[0] * stepSize, coords[(int)Math.round(dummyIndex[0])], 1);
+    assertEquals(testYValues[1] * stepSize, coords[(int)Math.round(dummyIndex[1])], 1);
+    assertEquals(testYValues[2] * stepSize, coords[(int)Math.round(dummyIndex[2])], 1);
+    //TODO change the calculation so that delta = 0;
   }
   
   @Test
