@@ -14,15 +14,14 @@ import org.junit.Test;
 
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
-import games.strategy.util.Tuple;
 
 public class TestRoute {
   private Point[] dummyPoints = new Point[]{new Point(0,0), new Point(100,0), new Point(0,100)};
-  private double[] dummyIndex = MapRouteDrawer.getIndex(dummyPoints);
+  private double[] dummyIndex = MapRouteDrawer.createParameterizedIndex(dummyPoints);
   
   @Test
   public void testIndex(){
-    assertArrayEquals(MapRouteDrawer.getIndex(new Point[]{}), new double[]{}, 0);
+    assertArrayEquals(MapRouteDrawer.createParameterizedIndex(new Point[]{}), new double[]{}, 0);
     assertEquals(dummyIndex.length, dummyPoints.length);
     //Not sure whether it makes sense to include a Test for specific values
     //The way the index is being calculated may change to a better System
@@ -46,9 +45,8 @@ public class TestRoute {
   public void testPointSplitting(){
     double[] xCoords = new double[]{0, 100, 0};
     double[] yCoords = new double[]{0, 0, 100};
-    Tuple<double[], double[]> dummyCoords = MapRouteDrawer.pointsToDoubleArrays(dummyPoints);
-    assertArrayEquals(xCoords, dummyCoords.getFirst(), 0);
-    assertArrayEquals(yCoords, dummyCoords.getSecond(), 0);
+    assertArrayEquals(xCoords, MapRouteDrawer.getValues(dummyPoints, point -> point.getX()), 0);
+    assertArrayEquals(yCoords, MapRouteDrawer.getValues(dummyPoints, point -> point.getY()), 0);
   }
   
   @Test
