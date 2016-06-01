@@ -1,7 +1,5 @@
 package tools.map.making;
 
-import tools.image.FileOpen;
-
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -12,11 +10,12 @@ import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
-import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+
+import tools.image.FileOpen;
 
 /**
  * Takes an image and shrinks it. Used for making small images.

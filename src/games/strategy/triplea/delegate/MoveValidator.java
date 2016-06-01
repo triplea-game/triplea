@@ -121,7 +121,7 @@ public class MoveValidator {
         }
       }
       if (!unitsStartedInTerritory) {
-        final boolean unload = MoveValidator.isUnload(route);
+        final boolean unload = route.isUnload();
         final PlayerID endOwner = route.getEnd().getOwner();
         final boolean attack =
             !data.getRelationshipTracker().isAllied(endOwner, player)
@@ -267,7 +267,7 @@ public class MoveValidator {
       }
     }
     // if there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
-    if (MoveValidator.hasNeutralBeforeEnd(route)) {
+    if (route.hasNeutralBeforeEnd()) {
       if (!Match.allMatch(units, Matches.UnitIsAir) && !isNeutralsBlitzable(data)) {
         return result.setErrorReturnResult("Must stop land units when passing through neutral territories");
       }
@@ -350,7 +350,7 @@ public class MoveValidator {
       }
     }
     // See if we are doing invasions in combat phase, with units or transports that can't do invasion.
-    if (MoveValidator.isUnload(route) && Matches.isTerritoryEnemy(player, data).match(route.getEnd())) {
+    if (route.isUnload() && Matches.isTerritoryEnemy(player, data).match(route.getEnd())) {
       for (final Unit unit : Match.getMatches(units, Matches.UnitCanInvade.invert())) {
         result.addDisallowedUnit(unit.getUnitType().getName() + " can't invade from "
             + TripleAUnit.get(unit).getTransportedBy().getUnitType().getName(), unit);
@@ -691,18 +691,6 @@ public class MoveValidator {
   }
 
   /**
-   * Tests the given collection of units to see if they have the movement necessary
-   * to move.
-   *
-   * @deprecated use: Match.allMatch(units, Matches.UnitHasEnoughMovementForRoute(route));
-   * @arg alreadyMoved maps Unit -> movement
-   */
-  @Deprecated
-  public static boolean hasEnoughMovement(final Collection<Unit> units, final Route route) {
-    return Match.allMatch(units, Matches.UnitHasEnoughMovementForRoute(route));
-  }
-
-  /**
    * @param route
    */
   private static int getMechanizedSupportAvail(final Route route, final Collection<Unit> units, final PlayerID player) {
@@ -728,36 +716,6 @@ public class MoveValidator {
       dependents.put(unit, TransportTracker.transporting(unit));
     }
     return dependents;
-  }
-
-  /**
-   * @deprecated use Match.allMatch(units, Matches.UnitHasEnoughMovementForRoute(route));
-   * @param units
-   * @param length
-   */
-  @Deprecated
-  public static boolean hasEnoughMovement(final Collection<Unit> units, final int length) {
-    return Match.allMatch(units, Matches.UnitHasEnoughMovement(length));
-  }
-
-  /**
-   * Tests the given unit to see if it has the movement necessary
-   * to move.
-   *
-   * @deprecated use: Matches.UnitHasEnoughMovementForRoute(Route route).match(unit);
-   * @arg alreadyMoved maps Unit -> movement
-   */
-  @Deprecated
-  public static boolean hasEnoughMovement(final Unit unit, final Route route) {
-    return Matches.UnitHasEnoughMovementForRoute(route).match(unit);
-  }
-
-  /**
-   * @deprecated use: Matches.UnitHasEnoughMovementForRoute(Route route).match(unit);
-   */
-  @Deprecated
-  public static boolean hasEnoughMovement(final Unit unit, final int length) {
-    return Matches.UnitHasEnoughMovement(length).match(unit);
   }
 
   /**
@@ -854,23 +812,6 @@ public class MoveValidator {
     return false;
   }
 
-  /**
-   * @deprecated use: route.isUnload();
-   */
-  @Deprecated
-  public static boolean isUnload(final Route route) {
-    return route.isUnload();
-  }
-
-  /**
-   * @deprecated use: route.isLoad();
-   * @param route
-   */
-  @Deprecated
-  public static boolean isLoad(final Route route) {
-    return route.isLoad();
-  }
-
   // TODO KEV revise these to include paratroop load/unload
   public static boolean isLoad(final Collection<Unit> units, final Map<Unit, Collection<Unit>> newDependents,
       final Route route, final GameData data, final PlayerID player) {
@@ -880,7 +821,7 @@ public class MoveValidator {
       return false;
     }
     // See if we even need to go to the trouble of checking for AirTransported units
-    final boolean checkForAlreadyTransported = !route.getStart().isWater() && hasWater(route);
+    final boolean checkForAlreadyTransported = !route.getStart().isWater() && route.hasWater();
     if (checkForAlreadyTransported) {
       // TODO Leaving UnitIsTransport for potential use with amphib transports (hovercraft, ducks, etc...)
       final List<Unit> transports =
@@ -912,15 +853,6 @@ public class MoveValidator {
     return false;
   }
 
-  /**
-   * @deprecated use route.hasNeutralBeforeEnd()
-   * @param route
-   */
-  @Deprecated
-  public static boolean hasNeutralBeforeEnd(final Route route) {
-    return route.hasNeutralBeforeEnd();
-  }
-
   private static Collection<Unit> getUnitsThatCantGoOnWater(final Collection<Unit> units) {
     final Collection<Unit> retUnits = new ArrayList<>();
     for (final Unit unit : units) {
@@ -934,24 +866,6 @@ public class MoveValidator {
 
   public static boolean hasUnitsThatCantGoOnWater(final Collection<Unit> units) {
     return !getUnitsThatCantGoOnWater(units).isEmpty();
-  }
-
-  /**
-   * @deprecated use route.hasWater();
-   * @param route
-   */
-  @Deprecated
-  public static boolean hasWater(final Route route) {
-    return route.hasWater();
-  }
-
-  /**
-   * @deprecated use route.hasLand();
-   * @param route
-   */
-  @Deprecated
-  public static boolean hasLand(final Route route) {
-    return route.hasLand();
   }
 
   private static Collection<Unit> getNonLand(final Collection<Unit> units) {
@@ -1043,7 +957,7 @@ public class MoveValidator {
     final Territory routeEnd = route.getEnd();
     final Territory routeStart = route.getStart();
     // if unloading make sure length of route is only 1
-    if (!isEditMode && MoveValidator.isUnload(route)) {
+    if (!isEditMode && route.isUnload()) {
       if (route.hasMoreThenOneStep()) {
         return result.setErrorReturnResult("Unloading units must stop where they are unloaded");
       }

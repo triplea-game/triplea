@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,8 +30,7 @@ public class HeadlessLobbyConsole {
   private final LobbyServer server;
   private final PrintStream out;
   private final BufferedReader in;
-  @SuppressWarnings("deprecation")
-  private final String startDate = new Date().toGMTString();
+  private final String startDate = new SimpleDateFormat().format(new Date());
   private final AtomicInteger totalLogins = new AtomicInteger();
   private final AtomicInteger currentConnections = new AtomicInteger();
   private volatile int maxConcurrentLogins = 0;

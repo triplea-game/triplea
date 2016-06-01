@@ -1724,19 +1724,6 @@ public class Matches {
     }
   };
 
-  /**
-   * @deprecated we can't trust on ints to see if we have enough movement, use hasEnnoughMovementforRoute()
-   */
-  @Deprecated
-  public static Match<Unit> UnitHasEnoughMovement(final int minMovement) {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit unit) {
-        return TripleAUnit.get(unit).getMovementLeft() >= minMovement;
-      }
-    };
-  }
-
   public static Match<Unit> UnitHasEnoughMovementForRoutes(final List<Route> route) {
     return UnitHasEnoughMovementForRoute(Route.create(route));
   }

@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -62,8 +63,7 @@ public class HeadlessGameServer {
   private final ScheduledExecutorService m_lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
   private ServerGame m_iGame = null;
   private boolean m_shutDown = false;
-  @SuppressWarnings("deprecation")
-  private final String m_startDate = new Date().toGMTString();
+  private final String m_startDate = new SimpleDateFormat().format(new Date());
   private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM = 21600;
   private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = 2 * LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM;
   private static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";

@@ -1,8 +1,6 @@
 package games.strategy.engine.lobby.server;
 
 import java.util.Date;
-import java.util.Set;
-import java.util.TreeSet;
 
 import games.strategy.engine.lobby.server.userDB.BannedIpController;
 import games.strategy.engine.lobby.server.userDB.BannedMacController;

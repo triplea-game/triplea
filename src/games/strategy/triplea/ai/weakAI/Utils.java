@@ -18,7 +18,6 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
-@SuppressWarnings("deprecation")
 public class Utils {
   /**
    * All the territories that border one of our territories
@@ -69,7 +68,7 @@ public class Utils {
             new CompositeMatchOr<>(routeCondition, Matches.territoryIs(t));
         final Route r = data.getMap().getRoute(start, t, routeOrEnd);
         if (r != null) {
-          if (shortestRoute == null || r.getLength() < shortestRoute.getLength()) {
+          if (shortestRoute == null || r.numberOfSteps() < shortestRoute.numberOfSteps()) {
             shortestRoute = r;
           }
         }

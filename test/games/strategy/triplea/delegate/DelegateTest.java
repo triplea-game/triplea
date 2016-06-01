@@ -83,7 +83,6 @@ public class DelegateTest extends TestCase {
     super(name);
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public void setUp() throws Exception {
     // get the xml file

@@ -205,9 +205,8 @@ public class LoginPanel extends JPanel {
     return m_userName.getText();
   }
 
-  @SuppressWarnings("deprecation")
   public String getPassword() {
-    return m_password.getText();
+    return new String(m_password.getPassword());
   }
 
   public ReturnValue show(final Window parent) {
