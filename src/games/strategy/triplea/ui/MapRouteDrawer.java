@@ -133,8 +133,10 @@ public class MapRouteDrawer {
         new Point2D.Double((line.getP1().getX() - translateX) * scale, (line.getP1().getY() - translateY) * scale);
     final Point2D point2 =
         new Point2D.Double((line.getP2().getX() - translateX) * scale, (line.getP2().getY() - translateY) * scale);
-    graphics.draw(new Line2D.Double(point1, point2));
-    //TODO skip drawing when none of those points is on screen in order to increase performance
+    //Don't draw if won't be visible anyway
+    if(graphics.getClip().contains(point1) || graphics.getClip().contains(point2)){
+      graphics.draw(new Line2D.Double(point1, point2));
+    }
   }
 
   protected static Point[] getRoutePoints(RouteDescription routeDescription, MapData mapData) {
