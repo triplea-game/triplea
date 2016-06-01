@@ -3,13 +3,10 @@ package games.strategy.engine.framework;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
 
 /**
@@ -103,64 +100,11 @@ public class ProcessRunnerUtil {
             ClientLogger.logQuietly(e);
           }
         }
-      }, "Process ouput gobbler");
+      }, "Process output gobbler");
       t.setDaemon(true);
       t.start();
     } catch (final IOException e) {
       ClientLogger.logQuietly(e);
     }
-  }
-
-  public static void main(final String[] args) {
-    final int mb = 1024 * 1024;
-    // Getting the runtime reference from system
-    final Runtime runtime = Runtime.getRuntime();
-    System.out.println("Heap utilization statistics [MB]");
-    System.out.println("Used Memory:" + (runtime.totalMemory() - runtime.freeMemory()) / mb);
-    System.out.println("Free Memory:" + runtime.freeMemory() / mb);
-    System.out.println("Total Memory:" + runtime.totalMemory() / mb);
-    System.out.println("Max Memory:" + runtime.maxMemory() / mb);
-    final List<String> commands = new ArrayList<>();
-    ProcessRunnerUtil.populateBasicJavaArgs(commands);
-    final String javaClass = "util.image.MapCreator";
-    commands.add(javaClass);
-    System.out.println("Testing ProcessRunnerUtil");
-    System.out.println(commands);
-    final CountDownLatch latch = new CountDownLatch(1);
-    final ProcessBuilder builder = new ProcessBuilder(commands);
-    // merge the streams, so we only have to start one reader thread
-    builder.redirectErrorStream(true);
-    Thread t = null;
-    try {
-      final Process p = builder.start();
-      final InputStream s = p.getInputStream();
-      // we need to read the input stream to prevent possible
-      // deadlocks
-      t = new Thread(new Runnable() {
-        @Override
-        public void run() {
-          System.out.println("Gobbling intput/output");
-          try {
-            while (true) {
-              final int read = s.read();
-              System.out.println(read);
-              if (read < 0) {
-                break;
-              }
-            }
-          } catch (final IOException e) {
-            ClientLogger.logQuietly(e);
-          }
-          System.out.println("Finished Gobbling");
-          latch.countDown();
-        }
-      }, "Process ouput gobbler");
-      t.setDaemon(true);
-      t.start();
-    } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
-    }
-    ThreadUtil.sleep(5000);
-    System.out.println("Finished");
   }
 }
