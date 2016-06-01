@@ -1,5 +1,11 @@
 package games.strategy.triplea.delegate;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -11,12 +17,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.TransportUtils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Tracks which transports are carrying which units. Also tracks the capacity
@@ -207,7 +207,7 @@ public class TransportTracker {
     final UnitAttachment ua = UnitAttachment.get(unit.getType());
     // Check if there are transports available, also check for destroyer capacity (Tokyo Express)
     if (ua.getTransportCapacity() == -1 || (unit.getData().getProperties().get(Constants.PACIFIC_THEATER, false)
-        && ua.getIsDestroyer() && !unit.getOwner().getName().equals("Japanese"))) {
+        && ua.getIsDestroyer() && !unit.getOwner().getName().equals(Constants.PLAYER_NAME_JAPANESE))) {
       return 0;
     }
     final int capacity = ua.getTransportCapacity();
@@ -228,7 +228,7 @@ public class TransportTracker {
       // then we must have been transported on our own transport
       final TripleAUnit taUnit = (TripleAUnit) u;
       if (taUnit.getWasLoadedThisTurn() && taUnit.getTransportedBy() != null &&
-          // an allied transport if the owner of the transport is not the owner of the unit
+      // an allied transport if the owner of the transport is not the owner of the unit
           !taUnit.getTransportedBy().getOwner().equals(taUnit.getOwner())) {
         rVal.add(u);
       }

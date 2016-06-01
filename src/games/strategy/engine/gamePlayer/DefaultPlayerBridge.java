@@ -80,7 +80,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
       try {
         final IDelegate delegate = m_game.getData().getDelegateList().getDelegate(m_currentDelegate);
         if (delegate == null) {
-          final String errorMessage = "IDelegate in DefaultPlayerBridge.getRemote() can not be null. CurrentStep: "
+          final String errorMessage = "IDelegate in DefaultPlayerBridge.getRemote() cannot be null. CurrentStep: "
               + m_currentStep + ", and CurrentDelegate: " + m_currentDelegate;
           // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
           // too
@@ -121,7 +121,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
         final IDelegate delegate = m_game.getData().getDelegateList().getDelegate(name);
         if (delegate == null) {
           final String errorMessage =
-              "IDelegate in DefaultPlayerBridge.getRemote() can not be null. Looking for delegate named: " + name;
+              "IDelegate in DefaultPlayerBridge.getRemote() cannot be null. Looking for delegate named: " + name;
           // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
           System.err.println(errorMessage);
           // too

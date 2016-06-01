@@ -1,5 +1,17 @@
 package games.strategy.triplea.delegate;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -13,7 +25,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.sound.SoundPath;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
@@ -32,18 +43,6 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Handles logic for battles in which fighting actually occurs.
@@ -227,7 +226,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     // TODO: this might be legacy code that can be deleted since we now keep paratrooper dependencies til they land (but
     // need to double
     // check)
-    if (isParatroopers(m_attacker)) {
+    if (TechAttachment.isParatroopers(m_attacker)) {
       final Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
       final Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsAirTransportable);
       if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
@@ -386,7 +385,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
           || Match.someMatch(m_defendingUnits, Matches.UnitIsSea)) {
         if (Match.allMatch(m_attackingUnits, Matches.UnitIsSub)
             || (Match.someMatch(m_attackingUnits, Matches.UnitIsSub)
-            && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))) {
+                && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))) {
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_SUBS, m_attacker);
         } else {
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_NORMAL, m_attacker);
@@ -517,7 +516,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
         steps.add(SUICIDE_DEFEND);
         steps.add(m_attacker.getName() + SELECT_CASUALTIES_SUICIDE);
       }
-      if (!m_battleSite.isWater() && isParatroopers(m_attacker)) {
+      if (!m_battleSite.isWater() && TechAttachment.isParatroopers(m_attacker)) {
         final Collection<Unit> bombers =
             Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAirTransport);
         if (!bombers.isEmpty()) {
@@ -888,7 +887,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
           attackerWins(bridge);
         } else if (shouldEndBattleDueToMaxRounds()
             || (Match.allMatch(m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())
-            && Match.allMatch(m_defendingUnits, Matches.unitHasDefendValueOfAtLeast(1).invert()))) {
+                && Match.allMatch(m_defendingUnits, Matches.unitHasDefendValueOfAtLeast(1).invert()))) {
           endBattle(bridge);
           nobodyWins(bridge);
         }
@@ -1218,7 +1217,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       return oneTerritory;
     }
     // its possible that a sub retreated to a territory we came from, if so we can no longer retreat there
-    // or if we are moving out of a territory containing enemy units, we can not retreat back there
+    // or if we are moving out of a territory containing enemy units, we cannot retreat back there
     final CompositeMatchAnd<Unit> enemyUnitsThatPreventRetreat =
         new CompositeMatchAnd<>(Matches.enemyUnit(m_attacker, m_data), Matches.UnitIsNotInfrastructure,
             Matches.unitIsBeingTransported().invert(), Matches.unitIsNotSubmerged(m_data));
@@ -2125,14 +2124,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     return games.strategy.triplea.Properties.getPartialAmphibiousRetreat(m_data);
   }
 
-  private boolean isParatroopers(final PlayerID player) {
-    final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-    if (ta == null) {
-      return false;
-    }
-    return ta.getParatroopers();
-  }
-
   private boolean isAlliedAirIndependent() {
     return games.strategy.triplea.Properties.getAlliedAirIndependent(m_data);
   }
@@ -2395,7 +2386,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
   }
 
   private void landParatroops(final IDelegateBridge bridge) {
-    if (isParatroopers(m_attacker)) {
+    if (TechAttachment.isParatroopers(m_attacker)) {
       final Collection<Unit> airTransports =
           Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAirTransport);
       if (!airTransports.isEmpty()) {

@@ -53,7 +53,7 @@ class UnitInformation {
       while (unitTypeIterator.hasNext()) {
         final UnitType currentType = unitTypeIterator.next();
         final UnitAttachment currentAttachment = this.unitInfoMap.get(currentType);
-        if (currentType.getName().equals(Constants.AAGUN_TYPE)) {
+        if (currentType.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
           unitInformation.write(currentType.getName() + ",");
         } else {
           unitInformation.write(capitalizeFirst(currentType.getName()) + ",");

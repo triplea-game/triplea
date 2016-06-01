@@ -224,7 +224,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         }
         // TODO remove the reference to the constant.japanese- replace with a rule
         if (isPacificTheater() || isSBRVictoryPoints()) {
-          if (m_defender.getName().equals(Constants.JAPANESE)) {
+          if (m_defender.getName().equals(Constants.PLAYER_NAME_JAPANESE)) {
             Change changeVP;
             final PlayerAttachment pa = PlayerAttachment.get(m_defender);
             if (pa != null) {

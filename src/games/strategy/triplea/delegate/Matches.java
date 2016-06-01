@@ -3298,11 +3298,11 @@ public class Matches {
    * @param player
    *        CAN be null
    * @param currentRelation
-   *        can NOT be null
+   *        cannot be null
    * @param newRelation
-   *        can NOT be null
+   *        cannot be null
    * @param data
-   *        can NOT be null
+   *        cannot be null
    */
   public static final Match<PoliticalActionAttachment> politicalActionIsRelationshipChangeOf(final PlayerID player,
       final Match<RelationshipType> currentRelation, final Match<RelationshipType> newRelation, final GameData data) {
@@ -3479,9 +3479,9 @@ public class Matches {
     return new Match<UnitType>() {
       @Override
       public boolean match(final UnitType ut) {
-        // we want to filter out anything like factories, or units that have no combat ability AND can not be taken
+        // we want to filter out anything like factories, or units that have no combat ability AND cannot be taken
         // casualty.
-        // in addition, as of right now AA guns can not fire on the offensive side, so we want to take them out too,
+        // in addition, as of right now AA guns cannot fire on the offensive side, so we want to take them out too,
         // unless they have other
         // combat abilities.
         final Match<UnitType> supporterOrNotInfrastructure =

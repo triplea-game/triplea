@@ -288,7 +288,7 @@ public class ServerGame extends AbstractGame {
   public void stopGame() {
     // we have already shut down
     if (m_isGameOver) {
-      System.out.println("Game previously stopped, can not stop again.");
+      System.out.println("Game previously stopped, cannot stop again.");
       return;
     } else if (HeadlessGameServer.headless()) {
       System.out.println("Attempting to stop game.");
@@ -502,7 +502,7 @@ public class ServerGame extends AbstractGame {
     }
     bridge.setRandomSource(m_delegateRandomSource);
     // do any initialization of game data for all players here (not based on a delegate, and should not be)
-    // we can not do this the very first run through, because there are no history nodes yet. We should do after first node is created.
+    // we cannot do this the very first run through, because there are no history nodes yet. We should do after first node is created.
     if (m_needToInitialize) {
       addPlayerTypesToGameData(m_gamePlayers.values(), m_playerManager, bridge);
     }

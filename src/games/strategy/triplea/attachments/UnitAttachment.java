@@ -137,7 +137,7 @@ public class UnitAttachment extends DefaultAttachment {
   private String m_typeAA = "AA";
   // null means targeting air units only
   private HashSet<UnitType> m_targetsAA = null;
-  // if false, we can not shoot more times than there are number of planes
+  // if false, we cannot shoot more times than there are number of planes
   private boolean m_mayOverStackAA = false;
   // if false, we instantly kill anything our AA shot hits
   private boolean m_damageableAA = false;
@@ -711,7 +711,7 @@ public class UnitAttachment extends DefaultAttachment {
     setCanProduceUnits(s);
     setIsConstruction(s);
     if (s) {
-      setConstructionType("factory");
+      setConstructionType(Constants.CONSTRUCTION_TYPE_FACTORY);
       setMaxConstructionsPerTypePerTerr("1");
       setConstructionsPerTerrPerTypePerTurn("1");
     } else {
@@ -814,7 +814,7 @@ public class UnitAttachment extends DefaultAttachment {
   public void setRepairsUnits(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0) {
-      throw new GameParseException("repairsUnits can not be empty" + thisErrorMsg());
+      throw new GameParseException("repairsUnits cannot be empty" + thisErrorMsg());
     }
     int amount = 1;
     int i = 0;
@@ -1762,7 +1762,7 @@ public class UnitAttachment extends DefaultAttachment {
   public void setGivesMovement(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("givesMovement can not be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException("givesMovement cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitTypeToProduce;
     unitTypeToProduce = s[1];
@@ -1846,7 +1846,7 @@ public class UnitAttachment extends DefaultAttachment {
   public void setCreatesUnitsList(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("createsUnitsList can not be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException("createsUnitsList cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitTypeToProduce;
     unitTypeToProduce = s[1];
@@ -1890,7 +1890,7 @@ public class UnitAttachment extends DefaultAttachment {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException(
-          "createsResourcesList can not be empty or have more than two fields" + thisErrorMsg());
+          "createsResourcesList cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String resourceToProduce;
     resourceToProduce = s[1];
@@ -2627,24 +2627,24 @@ public class UnitAttachment extends DefaultAttachment {
       if (m_isSea /* || m_isFactory */ || m_isSub || m_transportCost != -1 || m_carrierCapacity != -1 || m_canBlitz
           || m_canBombard || m_isMarine != 0 || m_isInfantry || m_isLandTransport || m_isAirTransportable
           || m_isCombatTransport) {
-        throw new GameParseException("air units can not have certain properties, " + thisErrorMsg());
+        throw new GameParseException("air units cannot have certain properties, " + thisErrorMsg());
       }
     } else if (m_isSea) {
       if (m_canBlitz || m_isAir /* || m_isFactory */ || m_isStrategicBomber || m_carrierCost != -1
           || m_transportCost != -1 || m_isMarine != 0 || m_isInfantry || m_isLandTransport || m_isAirTransportable
           || m_isAirTransport || m_isKamikaze) {
-        throw new GameParseException("sea units can not have certain properties, " + thisErrorMsg());
+        throw new GameParseException("sea units cannot have certain properties, " + thisErrorMsg());
       }
     } else
     // if land
     {
       if (m_canBombard || m_isStrategicBomber || m_isSub || m_carrierCapacity != -1 || m_bombard != -1
           || m_transportCapacity != -1 || m_isAirTransport || m_isCombatTransport || m_isKamikaze) {
-        throw new GameParseException("land units can not have certain properties, " + thisErrorMsg());
+        throw new GameParseException("land units cannot have certain properties, " + thisErrorMsg());
       }
     }
     if (m_hitPoints < 1) {
-      throw new GameParseException("hitPoints can not be zero or negative, " + thisErrorMsg());
+      throw new GameParseException("hitPoints cannot be zero or negative, " + thisErrorMsg());
     }
     if (m_attackAA < 0 || m_attackAAmaxDieSides < -1 || m_attackAAmaxDieSides > 200 || m_offensiveAttackAA < 0
         || m_offensiveAttackAAmaxDieSides < -1 || m_offensiveAttackAAmaxDieSides > 200) {
@@ -2653,11 +2653,11 @@ public class UnitAttachment extends DefaultAttachment {
               + thisErrorMsg());
     }
     if (m_carrierCapacity != -1 && m_carrierCost != -1) {
-      throw new GameParseException("carrierCost and carrierCapacity can not be set at same time, " + thisErrorMsg());
+      throw new GameParseException("carrierCost and carrierCapacity cannot be set at same time, " + thisErrorMsg());
     }
     if (m_transportCost != -1 && m_transportCapacity != -1) {
       throw new GameParseException(
-          "transportCost and transportCapacity can not be set at same time, " + thisErrorMsg());
+          "transportCost and transportCapacity cannot be set at same time, " + thisErrorMsg());
     }
     if (((m_bombingBonus >= 0 || m_bombingMaxDieSides >= 0) && !(m_isStrategicBomber || m_isRocket))
         || (m_bombingBonus < -1 || m_bombingMaxDieSides < -1)
@@ -2665,11 +2665,11 @@ public class UnitAttachment extends DefaultAttachment {
       throw new GameParseException("something wrong with bombingBonus or bombingMaxDieSides, " + thisErrorMsg());
     }
     if (m_maxBuiltPerPlayer < -1) {
-      throw new GameParseException("maxBuiltPerPlayer can not be negative, " + thisErrorMsg());
+      throw new GameParseException("maxBuiltPerPlayer cannot be negative, " + thisErrorMsg());
     }
     if (m_isCombatTransport && m_transportCapacity < 1) {
       throw new GameParseException(
-          "can not have isCombatTransport on unit without transportCapacity, " + thisErrorMsg());
+          "cannot have isCombatTransport on unit without transportCapacity, " + thisErrorMsg());
     }
     if (m_isSea && m_transportCapacity != -1 && Properties.getTransportCasualtiesRestricted(data)
         && (m_attack > 0 || m_defense > 0) && !m_isCombatTransport) {
@@ -3006,7 +3006,8 @@ public class UnitAttachment extends DefaultAttachment {
           && games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
         stats.append(bombingBonus != -1 ? bombingBonus + 1 : 1).append("-")
             .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus != -1 ? bombingBonus : 0)
-                : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0)).append(" Rocket Damage, ");
+                : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0))
+            .append(" Rocket Damage, ");
       } else {
         stats.append("1-").append(getData().getDiceSides()).append(" Rocket Damage, ");
       }
@@ -3061,12 +3062,16 @@ public class UnitAttachment extends DefaultAttachment {
             }
             stats.append("gives ").append(support.getBonus())
                 .append(support.getStrength() && support.getRoll() ? " Power&Rolls"
-                    : (support.getStrength() ? " Power" : " Rolls")).append(" to ").append(support.getNumber())
+                    : (support.getStrength() ? " Power" : " Rolls"))
+                .append(" to ").append(support.getNumber())
                 .append(support.getAllied() && support.getEnemy() ? " Allied&Enemy "
-                    : (support.getAllied() ? " Allied " : " Enemy ")).append(support.getUnitType().size() > 4 ? "Units"
-                : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false)).append(" when ")
+                    : (support.getAllied() ? " Allied " : " Enemy "))
+                .append(support.getUnitType().size() > 4 ? "Units"
+                    : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false))
+                .append(" when ")
                 .append(support.getOffence() && support.getDefence() ? "Att/Def"
-                    : (support.getOffence() ? "Attacking" : "Defending")).append(", ");
+                    : (support.getOffence() ? "Attacking" : "Defending"))
+                .append(", ");
           }
         }
       }
@@ -3097,7 +3102,8 @@ public class UnitAttachment extends DefaultAttachment {
           && games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
         stats.append(bombingBonus != -1 ? bombingBonus + 1 : 1).append("-")
             .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus != -1 ? bombingBonus : 0)
-                : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0)).append(" Raid Damage, ");
+                : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0))
+            .append(" Raid Damage, ");
       } else {
         stats.append("1-").append(getData().getDiceSides()).append(" Raid Damage, ");
       }

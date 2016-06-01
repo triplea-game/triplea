@@ -254,7 +254,7 @@ public class InGameLobbyWatcher {
                         + "Only around half of all routers come with UPnP enabled by default.\r\n\r\n"
                         + "If this does not work, try turning on UPnP in your router, then try this all again.\r\n"
                         + "(To change your router's settings, click 'How To Host...' in the help menu, or use google search.)\r\n\r\n"
-                        + "If TripleA previously successfully set your port forwarding, but you still can not host, \r\n"
+                        + "If TripleA previously successfully set your port forwarding, but you still cannot host, \r\n"
                         + "then the problem is most likely your firewall. Try creating an exception for TripleA in the firewall.\r\n"
                         + "Or disable the firewall briefly just to test.\r\n"
                         + "The firewall exception must be updated every time a new version of TripleA comes out.\r\n";

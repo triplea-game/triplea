@@ -29,8 +29,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
   protected String doNationalObjectivesAndOtherEndTurnEffects(final IDelegateBridge bridge) {
     final GameData data = getData();
     final PlayerList playerList = data.getPlayerList();
-    final PlayerID british = playerList.getPlayerID(Constants.BRITISH);
-    final PlayerID japanese = playerList.getPlayerID(Constants.JAPANESE);
+    final PlayerID british = playerList.getPlayerID(Constants.PLAYER_NAME_BRITISH);
+    final PlayerID japanese = playerList.getPlayerID(Constants.PLAYER_NAME_JAPANESE);
     // Quick check to see who still owns their own capital
     final boolean britain =
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(british, data).getOwner().equals(british);

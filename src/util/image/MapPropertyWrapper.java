@@ -76,7 +76,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
           new DoubleProperty(name, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) defaultValue), 5);
     } else {
       throw new IllegalArgumentException(
-          "Can not instantiate PropertyWrapper with: " + defaultValue.getClass().getCanonicalName());
+          "Cannot instantiate PropertyWrapper with: " + defaultValue.getClass().getCanonicalName());
     }
   }
 
@@ -91,7 +91,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
       m_property = new ComboProperty<>(name, description, defaultValue, possibleValues);
     } else {
       throw new IllegalArgumentException(
-          "Can not instantiate PropertyWrapper with: " + defaultValue.getClass().getCanonicalName());
+          "Cannot instantiate PropertyWrapper with: " + defaultValue.getClass().getCanonicalName());
     }
   }
 

@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicReference;
 
+import games.strategy.triplea.Constants;
 import junit.framework.TestCase;
 
 public class SerializationTest extends TestCase {
@@ -53,9 +54,9 @@ public class SerializationTest extends TestCase {
   }
 
   public void testWriteUnitType() throws Exception {
-    final Object orig = m_dataSource.getUnitTypeList().getUnitType("inf");
+    final Object orig = m_dataSource.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
     final Object read = serialize(orig);
-    final Object local = m_dataSink.getUnitTypeList().getUnitType("inf");
+    final Object local = m_dataSink.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
     assertTrue(local != read);
   }
 

@@ -25,7 +25,7 @@ public class PlaceDelegateTest extends DelegateTest {
   }
 
   private Collection<Unit> getInfantry(final int count, final PlayerID player) {
-    return m_data.getUnitTypeList().getUnitType(Constants.INFANTRY_TYPE).create(count, player);
+    return m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INFANTRY).create(count, player);
   }
 
   @Override

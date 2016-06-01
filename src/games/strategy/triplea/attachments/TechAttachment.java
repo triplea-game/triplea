@@ -41,25 +41,25 @@ public class TechAttachment extends DefaultAttachment {
     return attachment;
   }
 
-  private int m_techCost = 5;
-  private boolean m_heavyBomber = false;
-  private boolean m_longRangeAir = false;
-  private boolean m_jetPower = false;
-  private boolean m_rocket = false;
-  private boolean m_industrialTechnology = false;
-  private boolean m_superSub = false;
-  private boolean m_destroyerBombard = false;
-  private boolean m_improvedArtillerySupport = false;
-  private boolean m_paratroopers = false;
-  private boolean m_increasedFactoryProduction = false;
-  private boolean m_warBonds = false;
-  private boolean m_mechanizedInfantry = false;
-  private boolean m_aARadar = false;
-  private boolean m_shipyards = false;
-  // do not export at this point. currently map xml can not
+  private int techCost = 5;
+  private boolean heavyBomber = false;
+  private boolean longRangeAir = false;
+  private boolean jetPower = false;
+  private boolean rocket = false;
+  private boolean industrialTechnology = false;
+  private boolean superSub = false;
+  private boolean destroyerBombard = false;
+  private boolean improvedArtillerySupport = false;
+  private boolean paratroopers = false;
+  private boolean increasedFactoryProduction = false;
+  private boolean warBonds = false;
+  private boolean mechanizedInfantry = false;
+  private boolean aaRadar = false;
+  private boolean shipyards = false;
+  // do not export at this point. currently map xml cannot
   // define a player having a custom tech at start of game
   @InternalDoNotExport
-  private HashMap<String, Boolean> m_GenericTech = new HashMap<>();
+  private HashMap<String, Boolean> genericTech = new HashMap<>();
 
   public TechAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -85,273 +85,273 @@ public class TechAttachment extends DefaultAttachment {
   // setters
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setTechCost(final String s) {
-    m_techCost = getInt(s);
+    techCost = getInt(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setTechCost(final Integer s) {
-    m_techCost = s;
+    techCost = s;
   }
 
   public void resetTechCost() {
-    m_techCost = 5;
+    techCost = 5;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setHeavyBomber(final String s) {
-    m_heavyBomber = getBool(s);
+    heavyBomber = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setHeavyBomber(final Boolean s) {
-    m_heavyBomber = s;
+    heavyBomber = s;
   }
 
   public void resetHeavyBomber() {
-    m_heavyBomber = false;
+    heavyBomber = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setDestroyerBombard(final String s) {
-    m_destroyerBombard = getBool(s);
+    destroyerBombard = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setDestroyerBombard(final Boolean s) {
-    m_destroyerBombard = s;
+    destroyerBombard = s;
   }
 
   public void resetDestroyerBombard() {
-    m_destroyerBombard = false;
+    destroyerBombard = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setLongRangeAir(final String s) {
-    m_longRangeAir = getBool(s);
+    longRangeAir = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setLongRangeAir(final Boolean s) {
-    m_longRangeAir = s;
+    longRangeAir = s;
   }
 
   public void resetLongRangeAir() {
-    m_longRangeAir = false;
+    longRangeAir = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setJetPower(final String s) {
-    m_jetPower = getBool(s);
+    jetPower = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setJetPower(final Boolean s) {
-    m_jetPower = s;
+    jetPower = s;
   }
 
   public void resetJetPower() {
-    m_jetPower = false;
+    jetPower = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setRocket(final String s) {
-    m_rocket = getBool(s);
+    rocket = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setRocket(final Boolean s) {
-    m_rocket = s;
+    rocket = s;
   }
 
   public void resetRocket() {
-    m_rocket = false;
+    rocket = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setIndustrialTechnology(final String s) {
-    m_industrialTechnology = getBool(s);
+    industrialTechnology = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setIndustrialTechnology(final Boolean s) {
-    m_industrialTechnology = s;
+    industrialTechnology = s;
   }
 
   public void resetIndustrialTechnology() {
-    m_industrialTechnology = false;
+    industrialTechnology = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setSuperSub(final String s) {
-    m_superSub = getBool(s);
+    superSub = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setSuperSub(final Boolean s) {
-    m_superSub = s;
+    superSub = s;
   }
 
   public void resetSuperSub() {
-    m_superSub = false;
+    superSub = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setImprovedArtillerySupport(final String s) {
-    m_improvedArtillerySupport = getBool(s);
+    improvedArtillerySupport = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setImprovedArtillerySupport(final Boolean s) {
-    m_improvedArtillerySupport = s;
+    improvedArtillerySupport = s;
   }
 
   public void resetImprovedArtillerySupport() {
-    m_improvedArtillerySupport = false;
+    improvedArtillerySupport = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setParatroopers(final String s) {
-    m_paratroopers = getBool(s);
+    paratroopers = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setParatroopers(final Boolean s) {
-    m_paratroopers = s;
+    paratroopers = s;
   }
 
   public void resetParatroopers() {
-    m_paratroopers = false;
+    paratroopers = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setIncreasedFactoryProduction(final String s) {
-    m_increasedFactoryProduction = getBool(s);
+    increasedFactoryProduction = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setIncreasedFactoryProduction(final Boolean s) {
-    m_increasedFactoryProduction = s;
+    increasedFactoryProduction = s;
   }
 
   public void resetIncreasedFactoryProduction() {
-    m_increasedFactoryProduction = false;
+    increasedFactoryProduction = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setWarBonds(final String s) {
-    m_warBonds = getBool(s);
+    warBonds = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setWarBonds(final Boolean s) {
-    m_warBonds = s;
+    warBonds = s;
   }
 
   public void resetWarBonds() {
-    m_warBonds = false;
+    warBonds = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setMechanizedInfantry(final String s) {
-    m_mechanizedInfantry = getBool(s);
+    mechanizedInfantry = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setMechanizedInfantry(final Boolean s) {
-    m_mechanizedInfantry = s;
+    mechanizedInfantry = s;
   }
 
   public void resetMechanizedInfantry() {
-    m_mechanizedInfantry = false;
+    mechanizedInfantry = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAARadar(final String s) {
-    m_aARadar = getBool(s);
+    aaRadar = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAARadar(final Boolean s) {
-    m_aARadar = s;
+    aaRadar = s;
   }
 
   public void resetAARadar() {
-    m_aARadar = false;
+    aaRadar = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setShipyards(final String s) {
-    m_shipyards = getBool(s);
+    shipyards = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setShipyards(final Boolean s) {
-    m_shipyards = s;
+    shipyards = s;
   }
 
   public void resetShipyards() {
-    m_shipyards = false;
+    shipyards = false;
   }
 
   // getters
   public int getTechCost() {
-    return m_techCost;
+    return techCost;
   }
 
   public boolean getHeavyBomber() {
-    return m_heavyBomber;
+    return heavyBomber;
   }
 
   public boolean getLongRangeAir() {
-    return m_longRangeAir;
+    return longRangeAir;
   }
 
   public boolean getJetPower() {
-    return m_jetPower;
+    return jetPower;
   }
 
   public boolean getRocket() {
-    return m_rocket;
+    return rocket;
   }
 
   public boolean getIndustrialTechnology() {
-    return m_industrialTechnology;
+    return industrialTechnology;
   }
 
   public boolean getSuperSub() {
-    return m_superSub;
+    return superSub;
   }
 
   public boolean getDestroyerBombard() {
-    return m_destroyerBombard;
+    return destroyerBombard;
   }
 
   public boolean getImprovedArtillerySupport() {
-    return m_improvedArtillerySupport;
+    return improvedArtillerySupport;
   }
 
   public boolean getParatroopers() {
-    return m_paratroopers;
+    return paratroopers;
   }
 
   public boolean getIncreasedFactoryProduction() {
-    return m_increasedFactoryProduction;
+    return increasedFactoryProduction;
   }
 
   public boolean getWarBonds() {
-    return m_warBonds;
+    return warBonds;
   }
 
   public boolean getMechanizedInfantry() {
-    return m_mechanizedInfantry;
+    return mechanizedInfantry;
   }
 
   public boolean getAARadar() {
-    return m_aARadar;
+    return aaRadar;
   }
 
   public boolean getShipyards() {
-    return m_shipyards;
+    return shipyards;
   }
 
   // custom techs
@@ -363,14 +363,14 @@ public class TechAttachment extends DefaultAttachment {
     for (final TechAdvance ta : getData().getTechnologyFrontier()) {
       if (ta instanceof GenericTechAdvance) {
         if (((GenericTechAdvance) ta).getAdvance() == null) {
-          m_GenericTech.put(ta.getProperty(), Boolean.FALSE);
+          genericTech.put(ta.getProperty(), Boolean.FALSE);
         }
       }
     }
   }
 
   public Boolean hasGenericTech(final String name) {
-    return m_GenericTech.get(name);
+    return genericTech.get(name);
   }
 
   /**
@@ -382,22 +382,38 @@ public class TechAttachment extends DefaultAttachment {
    */
   @InternalDoNotExport
   public void setGenericTech(final String name, final Boolean value) {
-    m_GenericTech.put(name, value);
+    genericTech.put(name, value);
   }
 
   @InternalDoNotExport
   public void setGenericTech(final HashMap<String, Boolean> value) {
-    m_GenericTech = value;
+    genericTech = value;
   }
 
   public HashMap<String, Boolean> getGenericTech() {
-    return m_GenericTech;
+    return genericTech;
   }
 
   public void clearGenericTech() {
-    m_GenericTech.clear();
+    genericTech.clear();
   }
 
   @Override
   public void validate(final GameData data) throws GameParseException {}
+
+  public static boolean isMechanizedInfantry(final PlayerID player) {
+    final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
+    if (ta == null) {
+      return false;
+    }
+    return ta.getMechanizedInfantry();
+  }
+
+  public static boolean isParatroopers(final PlayerID player) {
+    final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
+    if (ta == null) {
+      return false;
+    }
+    return ta.getParatroopers();
+  }
 }

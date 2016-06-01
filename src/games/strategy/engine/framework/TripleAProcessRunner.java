@@ -97,12 +97,12 @@ public class TripleAProcessRunner {
           JOptionPane.showMessageDialog(parent,
               "<html>Please run the default TripleA and try joining the online lobby for it instead. "
                   + "<br>This TripleA engine is old and kept only for backwards compatibility and can only play with people using the exact same version as this one. "
-                  + "<br><br>Host is using a different engine than you, and can not find correct engine: "
+                  + "<br><br>Host is using a different engine than you, and cannot find correct engine: "
                   + engineVersionOfGameToJoin.toStringFull("_") + "</html>",
               "Correct TripleA Engine Not Found", JOptionPane.WARNING_MESSAGE);
         } else {
           JOptionPane.showMessageDialog(parent,
-              "Host is using a different engine than you, and can not find correct engine: "
+              "Host is using a different engine than you, and cannot find correct engine: "
                   + engineVersionOfGameToJoin.toStringFull("_"),
               "Correct TripleA Engine Not Found", JOptionPane.WARNING_MESSAGE);
         }
@@ -164,7 +164,7 @@ public class TripleAProcessRunner {
             if (binFolder.exists()) {
               final File[] files = binFolder.listFiles();
               if (files == null) {
-                throw new IOException("Can not find 'bin' engine jars folder");
+                throw new IOException("Cannot find 'bin' engine jars folder");
               }
               File ourBinJar = null;
               for (final File f : Arrays.asList(files)) {
@@ -179,16 +179,16 @@ public class TripleAProcessRunner {
               }
               if (ourBinJar == null) {
                 throw new IOException(
-                    "Can not find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
+                    "Cannot find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
               }
               final String newClassPath = ourBinJar.getCanonicalPath();
               if (newClassPath == null || newClassPath.length() <= 0) {
                 throw new IOException(
-                    "Can not find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
+                    "Cannot find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
               }
               return newClassPath;
             } else {
-              System.err.println("Can not find 'bin' or 'Java' folder, where main triplea.jar should be.");
+              System.err.println("Cannot find 'bin' or 'Java' folder, where main triplea.jar should be.");
             }
           }
         }
@@ -203,11 +203,11 @@ public class TripleAProcessRunner {
     final String jarName = "triplea_" + oldVersionNeeded.toStringFull("_", ignoreMicro);
     final File oldJarsFolder = new File(ClientFileSystemHelper.getRootFolder(), "old/");
     if (!oldJarsFolder.exists()) {
-      throw new IOException("Can not find 'old' engine jars folder");
+      throw new IOException("Cannot find 'old' engine jars folder");
     }
     final File[] files = oldJarsFolder.listFiles();
     if (files == null) {
-      throw new IOException("Can not find 'old' engine jars folder");
+      throw new IOException("Cannot find 'old' engine jars folder");
     }
     File ourOldJar = null;
     for (final File f : Arrays.asList(files)) {
@@ -222,11 +222,11 @@ public class TripleAProcessRunner {
       }
     }
     if (ourOldJar == null) {
-      throw new IOException("Can not find 'old' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
+      throw new IOException("Cannot find 'old' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
     }
     final String newClassPath = ourOldJar.getCanonicalPath();
     if (newClassPath == null || newClassPath.length() <= 0) {
-      throw new IOException("Can not find 'old' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
+      throw new IOException("Cannot find 'old' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
     }
     return newClassPath;
   }

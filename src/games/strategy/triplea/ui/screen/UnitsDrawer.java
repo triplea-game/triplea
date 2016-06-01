@@ -17,6 +17,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
@@ -37,9 +38,10 @@ public class UnitsDrawer implements IDrawable {
   private final boolean overflow;
   private final String territoryName;
   private final IUIContext uiContext;
-  private final static List<String> STATIC_UNITS = Arrays.asList("aaGun", "factory");// TODO add every "static"
-                                                                                     // non-movable unit type of every
-                                                                                     // map.
+  private final static List<String> STATIC_UNITS =
+      Arrays.asList(Constants.UNIT_TYPE_AAGUN, Constants.UNIT_TYPE_FACTORY);// TODO add every "static"
+  // non-movable unit type of every
+  // map.
   private static UnitFlagDrawMode drawUnitNationMode = UnitFlagDrawMode.NEXT_TO;
 
   public enum UnitFlagDrawMode {
@@ -226,7 +228,7 @@ public class UnitsDrawer implements IDrawable {
     return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
   }
 
-  public static void setUnitFlagDrawMode(UnitFlagDrawMode unitFlag, Preferences prefs) {
+  public static void setUnitFlagDrawMode(final UnitFlagDrawMode unitFlag, final Preferences prefs) {
     drawUnitNationMode = unitFlag;
     prefs.put("UNIT_FLAG_DRAW_MODE", unitFlag.toString());
   }

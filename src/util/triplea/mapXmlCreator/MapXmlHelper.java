@@ -175,7 +175,7 @@ public class MapXmlHelper {
     return mapXmlData.getPlayerNames();
   }
 
-  public static void setPlayerName(final List<String> playerName) {
+  public static void setPlayerNames(final List<String> playerName) {
     mapXmlData.setPlayerNames(playerName);
   }
 

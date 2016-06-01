@@ -47,7 +47,7 @@ public class UniversalPlugAndPlayHelper {
     } else {
       textResult = "It appears TripleA failed to set your Port Forwarding.\r\n"
           + "Please make sure UPnP is turned on, in your router's settings.\r\n\r\n"
-          + "If you still can not get TripleA to set them correctly, then you must set them yourself!\r\n"
+          + "If you still cannot get TripleA to set them correctly, then you must set them yourself!\r\n"
           + "See 'How To Host...' in the help menu, at the top of the lobby screen in order to manually set them.\r\n\r\n"
           + "\r\nThis program will close now.\r\n";
     }
