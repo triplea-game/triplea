@@ -22,7 +22,7 @@ mainClassName = "games.strategy.engine.framework.GameRunner"
 
 compileJava {
     options.encoding = 'UTF-8'
-    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    options.compilerArgs << "-Xlint:all"
 }
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
