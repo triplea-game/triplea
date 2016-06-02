@@ -32,9 +32,7 @@ public class PoliticsText {
     final ResourceLoader loader = AbstractUIContext.getResourceLoader();
     final URL url = loader.getResource(PROPERTY_FILE);
 
-    if (url == null) {
-      // no propertyfile found
-    } else {
+    if (url != null) {
       Optional<InputStream> inputStream = UrlStreams.openStream(url);
       if(inputStream.isPresent()) {
         try {

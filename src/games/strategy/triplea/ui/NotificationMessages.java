@@ -23,15 +23,14 @@ public class NotificationMessages {
   protected NotificationMessages() {
     final ResourceLoader loader = AbstractUIContext.getResourceLoader();
     final URL url = loader.getResource(PROPERTY_FILE);
-    if (url == null) {
-      return;
-    }
-    Optional<InputStream> inputStream = UrlStreams.openStream(url);
-    if(inputStream.isPresent()) {
-      try {
-        m_properties.load(inputStream.get());
-      } catch (final IOException e) {
-        ClientLogger.logError("Error reading " + PROPERTY_FILE, e);
+    if (url != null) {
+      Optional<InputStream> inputStream = UrlStreams.openStream(url);
+      if (inputStream.isPresent()) {
+        try {
+          m_properties.load(inputStream.get());
+        } catch (final IOException e) {
+          ClientLogger.logError("Error reading " + PROPERTY_FILE, e);
+        }
       }
     }
   }

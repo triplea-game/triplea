@@ -498,17 +498,15 @@ class ObjectiveProperties {
   protected ObjectiveProperties() {
     final ResourceLoader loader = AbstractUIContext.getResourceLoader();
     final URL url = loader.getResource(PROPERTY_FILE);
-    if (url == null) {
-      // no property file found
-    } else {
-      try {
+    if (url != null) {
         Optional<InputStream> inputStream = UrlStreams.openStream(url);
         if(inputStream.isPresent()) {
-          m_properties.load(inputStream.get());
+          try {
+            m_properties.load(inputStream.get());
+          } catch (final IOException e) {
+            System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
+          }
         }
-      } catch (final IOException e) {
-        System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
-      }
     }
   }
 

@@ -50,13 +50,13 @@ public class ProductionTabsProperties {
       propertyFile = PROPERTY_FILE + ".properties";
       url = loader.getResource(propertyFile);
       if (url != null) {
-        try {
-          Optional<InputStream> inputStream = UrlStreams.openStream(url);
-          if(inputStream.isPresent()) {
+        Optional<InputStream> inputStream = UrlStreams.openStream(url);
+        if (inputStream.isPresent()) {
+          try {
             m_properties.load(inputStream.get());
+          } catch (final IOException e) {
+            System.out.println("Error reading " + propertyFile + e);
           }
-        } catch (final IOException e) {
-          System.out.println("Error reading " + propertyFile + e);
         }
       }
     }

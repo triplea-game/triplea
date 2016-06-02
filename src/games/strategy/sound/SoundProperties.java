@@ -27,23 +27,21 @@ public class SoundProperties {
 
   protected SoundProperties(final ResourceLoader loader) {
     final URL url = loader.getResource(PROPERTY_FILE);
-    if (url == null) {
-      // no property file found
-    } else {
-      try {
-        Optional<InputStream> inputStream = UrlStreams.openStream(url);
-        if(inputStream.isPresent()) {
+    if (url != null) {
+      Optional<InputStream> inputStream = UrlStreams.openStream(url);
+      if (inputStream.isPresent()) {
+        try {
           m_properties.load(inputStream.get());
+        } catch (final IOException e) {
+          System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
         }
-      } catch (final IOException e) {
-        System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
       }
     }
   }
 
   public static SoundProperties getInstance(final ResourceLoader loader) {
     if (s_op == null || Calendar.getInstance().getTimeInMillis() > timestamp + 1000) { // cache properties for 1
-                                                                                         // second
+                                                                                       // second
       s_op = new SoundProperties(loader);
       timestamp = Calendar.getInstance().getTimeInMillis();
     }

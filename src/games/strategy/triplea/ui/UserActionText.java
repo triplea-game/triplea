@@ -30,16 +30,14 @@ public class UserActionText {
   protected UserActionText() {
     final ResourceLoader loader = AbstractUIContext.getResourceLoader();
     final URL url = loader.getResource(PROPERTY_FILE);
-    if (url == null) {
-      // no property file found
-    } else {
-      try {
-        Optional<InputStream> inputStream = UrlStreams.openStream(url);
-        if(inputStream.isPresent()) {
+    if (url != null) {
+      Optional<InputStream> inputStream = UrlStreams.openStream(url);
+      if (inputStream.isPresent()) {
+        try {
           m_properties.load(inputStream.get());
+        } catch (final IOException e) {
+          System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
         }
-      } catch (final IOException e) {
-        System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
       }
     }
   }
