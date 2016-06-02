@@ -1,7 +1,6 @@
 package games.strategy.engine.data.export;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -60,20 +59,18 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
       if (valueArray == null || valueArray.length == 0) {
         return "";
       }
-      final Iterator<String> values = Arrays.asList(valueArray).iterator();
-      if (valueArray.length > 1) {
-        // skip the arrayLength entry in the array because for Arrays > 1 the first entry is the count;
-        values.next();
-      }
-      String returnValue = values.next();
-      while (values.hasNext()) {
-        returnValue = returnValue + ":" + values.next();
-      }
-      if (returnValue.length() == 0) {
-        return "";
+      StringBuilder returnValue = new StringBuilder();
+      for(String value : valueArray) {
+        if(valueArray.length > 1){
+          continue;
+        }
+        if(returnValue.length() != 0){
+          returnValue.append(":");
+        }
+        returnValue.append(value);
       }
       final String count = "" + ((RulesAttachment) attachment).getTerritoryCount();
-      return printCountOption(fieldName.substring(2), returnValue, count);
+      return printCountOption(fieldName.substring(2), returnValue.toString(), count);
     } catch (final IllegalArgumentException | SecurityException | IllegalAccessException e) {
       throw new AttachmentExportException("e: " + e + " for territoryCountListHandler on option: " + fieldName
           + " on Attachment: " + attachment.getName());
@@ -92,12 +89,14 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
       final Field atWarPlayerCountField = RulesAttachment.class.getDeclaredField("m_atWarCount"); // TODO: unchecked reflection
       atWarPlayerCountField.setAccessible(true);
       final int count = atWarPlayerCountField.getInt(attachment);
-      final Iterator<PlayerID> iWarPlayer = atWarPlayers.iterator();
-      String value = iWarPlayer.next().getName();
-      while (iWarPlayer.hasNext()) {
-        value = value + ":" + iWarPlayer.next().getName();
+      StringBuilder value = new StringBuilder();
+      for(PlayerID player : atWarPlayers) {
+        if(value.length() != 0){
+          value.append(":");
+        }
+        value.append(player.getName());
       }
-      return printCountOption(option, value, "" + count);
+      return printCountOption(option, value.toString(), "" + count);
     } catch (final IllegalArgumentException | IllegalAccessException | SecurityException | NoSuchFieldException e) {
       throw new AttachmentExportException("e: " + e + " for mAtWarPlayersHandler on field: " + field.getName()
           + " on Attachment: " + attachment.getName());

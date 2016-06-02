@@ -4,7 +4,6 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -47,13 +46,12 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
       final Set<String> players = m_playerMap.get(value.toString());
       if (players != null && !players.isEmpty()) {
         sb.append(" (");
-        final Iterator<String> iter = players.iterator();
-        while (iter.hasNext()) {
-          sb.append(iter.next());
-          if (iter.hasNext()) {
-            sb.append(", ");
-          }
+        for(String player : players) {
+          sb.append(player);
+          sb.append(", ");
         }
+        //Removes the last ", "
+        sb.delete(sb.length() - 2, sb.length() - 1);
         sb.append(")");
       }
       super.getListCellRendererComponent(list, sb.toString(), index, isSelected, cellHasFocus);
