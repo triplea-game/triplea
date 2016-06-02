@@ -20,6 +20,7 @@ import games.strategy.engine.lobby.server.ui.DBExplorerPanel;
 import games.strategy.engine.lobby.server.userDB.Database;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
+import games.strategy.util.TimeManager;
 
 /**
  * Headless admin console for the lobby.
@@ -29,8 +30,7 @@ public class HeadlessLobbyConsole {
   private final LobbyServer server;
   private final PrintStream out;
   private final BufferedReader in;
-  @SuppressWarnings("deprecation")
-  private final String startDate = new Date().toGMTString();
+  private final String startDate = TimeManager.getGMTString(new Date());
   private final AtomicInteger totalLogins = new AtomicInteger();
   private final AtomicInteger currentConnections = new AtomicInteger();
   private volatile int maxConcurrentLogins = 0;

@@ -24,6 +24,7 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
  * @deprecated Use mock objects instead. This TestDelegateBridge object has a substantial amount of implementation and
  *             coupling to the rest of the system, do not build on it.
  */
+@Deprecated
 public class TestDelegateBridge implements ITestDelegateBridge {
   private final GameData m_data;
   private PlayerID m_id;

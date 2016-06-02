@@ -2,7 +2,6 @@ package games.strategy.triplea.delegate;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -21,49 +20,6 @@ public class MoveValidatorTest extends DelegateTest {
     super.setUp();
   }
 
-  /**
-   * @deprecated test Matches / Route class instead
-   */
-  @Deprecated
-  public void testHasEnoughMovement() {
-    final List<Unit> units = bomber.create(3, british);
-    TripleAUnit.get(units.get(0)).setAlreadyMoved(2);
-    TripleAUnit.get(units.get(1)).setAlreadyMoved(1);
-    assertTrue(MoveValidator.hasEnoughMovement(units, 2));
-  }
-
-  /**
-   * @deprecated test Matches / Route class instead
-   */
-  @Deprecated
-  public void testHasWater() {
-    Route route = new Route();
-    route.setStart(eastMediteranean);
-    assertTrue(MoveValidator.hasWater(route));
-    route = new Route();
-    route.setStart(eastAfrica);
-    assertTrue(!MoveValidator.hasWater(route));
-    route.add(kenya);
-    assertTrue(!MoveValidator.hasWater(route));
-    route.add(eastMediteranean);
-    assertTrue(MoveValidator.hasWater(route));
-  }
-
-  /**
-   * @deprecated test Matches / Route class instead
-   */
-  @Deprecated
-  public void testNotEnoughMovement() {
-    final Collection<Unit> units = bomber.create(3, british);
-    final Object[] objs = units.toArray();
-    assertTrue(MoveValidator.hasEnoughMovement(units, 6));
-    assertTrue(!MoveValidator.hasEnoughMovement(units, 7));
-    ((TripleAUnit) objs[1]).setAlreadyMoved(1);
-    assertTrue(!MoveValidator.hasEnoughMovement(units, 6));
-    ((TripleAUnit) objs[1]).setAlreadyMoved(2);
-    assertTrue(!MoveValidator.hasEnoughMovement(units, 5));
-  }
-
   public void testEnemyUnitsInPath() {
     // japanese unit in congo
     final Route bad = new Route();
@@ -80,21 +36,6 @@ public class MoveValidatorTest extends DelegateTest {
     // at end so should still be good
     good.add(congo);
     assertTrue(MoveValidator.noEnemyUnitsOnPathMiddleSteps(good, british, m_data));
-  }
-
-  /**
-   * @deprecated test Matches / Route class instead
-   */
-  @Deprecated
-  public void testHasNeutralBeforEnd() {
-    final Route route = new Route();
-    route.add(egypt);
-    assertTrue(!MoveValidator.hasNeutralBeforeEnd(route));
-    // nuetral
-    route.add(westAfrica);
-    assertTrue(!MoveValidator.hasNeutralBeforeEnd(route));
-    route.add(libya);
-    assertTrue(MoveValidator.hasNeutralBeforeEnd(route));
   }
 
   public void testHasUnitsThatCantGoOnWater() {

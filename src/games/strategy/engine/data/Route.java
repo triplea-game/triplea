@@ -179,16 +179,6 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
   }
 
   /**
-   * @deprecated use: numberOfSteps(), getMovementCost(unit), getMiddleSteps(), getTerritories() or any other method in
-   *             this class
-   * @return the number of steps in this route.
-   */
-  @Deprecated
-  public int getLength() {
-    return m_steps.size();
-  }
-
-  /**
    * @param u
    *        unit that is moving on this route
    * @return the total cost of the route including modifications due to territoryEffects and territoryConnections
@@ -331,15 +321,6 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
       buf.append(t.getName());
     }
     return buf.toString();
-  }
-
-  /**
-   * @deprecated use: getAllTerritories
-   * @return collection of all territories in this route, including the start
-   */
-  @Deprecated
-  public List<Territory> getTerritories() {
-    return getAllTerritories();
   }
 
   public List<Territory> getAllTerritories() {

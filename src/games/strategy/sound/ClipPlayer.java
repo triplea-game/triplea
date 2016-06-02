@@ -24,7 +24,6 @@ import java.util.zip.ZipFile;
 import com.google.common.base.Throwables;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.triplea.ResourceLoader;

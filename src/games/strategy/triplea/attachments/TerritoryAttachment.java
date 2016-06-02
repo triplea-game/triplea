@@ -382,7 +382,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * Use getProduction() instead.
+   * @deprecated Use getProduction() instead.
    * DO NOT DELETE THIS!
    */
   @Deprecated
@@ -849,7 +849,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   public void validate(final GameData data) throws GameParseException {}
 
   /**
-   * Do NOT remove this. Removing it will break a lot of old game xmls.
+   * @deprecated Do NOT remove this. Removing it will break a lot of old game xmls.
    *
    * @param value
    * @throws GameParseException
@@ -861,7 +861,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * Do NOT remove this. Removing it will break a lot of old game xmls.
+   * @deprecated Do NOT remove this. Removing it will break a lot of old game xmls.
    *
    * @param value
    * @throws GameParseException

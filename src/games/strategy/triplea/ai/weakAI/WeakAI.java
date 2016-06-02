@@ -845,8 +845,6 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleAPlayer {
       final IntegerMap<RepairRule> repairMap = new IntegerMap<>();
       final HashMap<Unit, IntegerMap<RepairRule>> repair = new HashMap<>();
       final Map<Unit, Territory> unitsThatCanProduceNeedingRepair = new HashMap<>();
-      final CompositeMatchAnd<Unit> ourDisabled =
-          new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), Matches.UnitIsDisabled);
       final int minimumUnitPrice = 3;
       int diff = 0;
       int capProduction = 0;

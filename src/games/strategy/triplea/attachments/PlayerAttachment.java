@@ -620,7 +620,7 @@ public class PlayerAttachment extends DefaultAttachment {
   public void validate(final GameData data) throws GameParseException {}
 
   /**
-   * setTakeUnitControl (and getTakeUnitControl) DO NOTHING. They are kept for backwards compatibility only, otherwise
+   * @deprecated setTakeUnitControl (and getTakeUnitControl) DO NOTHING. They are kept for backwards compatibility only, otherwise
    * users get Java
    * errors.
    */

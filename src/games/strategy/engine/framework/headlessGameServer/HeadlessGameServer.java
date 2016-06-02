@@ -41,6 +41,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.util.LoggingPrintStream;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.ThreadUtil;
+import games.strategy.util.TimeManager;
 import games.strategy.util.Util;
 
 /**
@@ -62,8 +63,7 @@ public class HeadlessGameServer {
   private final ScheduledExecutorService m_lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
   private ServerGame m_iGame = null;
   private boolean m_shutDown = false;
-  @SuppressWarnings("deprecation")
-  private final String m_startDate = new Date().toGMTString();
+  private final String m_startDate = TimeManager.getGMTString(new Date());
   private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM = 21600;
   private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = 2 * LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM;
   private static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";

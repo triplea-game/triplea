@@ -37,15 +37,6 @@ public class RouteScripted extends Route {
   }
 
   @Override
-  @Deprecated
-  public int getLength() {
-    if (super.getLength() < 1) {
-      return 1;
-    }
-    return super.getLength();
-  }
-
-  @Override
   public int getMovementCost(final Unit u) {
     if (super.getMovementCost(u) <= 0) {
       return 1;

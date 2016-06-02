@@ -306,6 +306,7 @@ public class AirThatCantLandUtilTest extends TestCase {
   }
 
   /** @deprecated Use a mock object instead */
+  @Deprecated
   private static ITripleAPlayer getDummyPlayer() {
     final InvocationHandler handler = new InvocationHandler() {
       @Override

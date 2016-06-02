@@ -67,7 +67,7 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   /**
-   * Since many maps do not include a tech attachment for each player (and no maps include tech attachments for the Null
+   * @deprecated Since many maps do not include a tech attachment for each player (and no maps include tech attachments for the Null
    * Player),
    * we must ensure a default tech attachment is available for all these players. It is preferred to use the full
    * constructor. Do not delete

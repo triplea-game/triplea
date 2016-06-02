@@ -1833,12 +1833,6 @@ public class TripleAFrame extends MainGameFrame {
     validate();
   }
 
-  @Override
-  @SuppressWarnings("deprecation")
-  public void show() {
-    super.show();
-  }
-
   public void showGame() {
     inGame = true;
     uiContext.setShowMapOnly(false);

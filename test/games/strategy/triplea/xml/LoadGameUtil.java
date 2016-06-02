@@ -21,15 +21,6 @@ public class LoadGameUtil {
     return loadGame(game, new String[] {"test_data"});
   }
 
-  /**
-   * @deprecated drop the first parameter and call either loadGame(String game)
-   *             or LoadTestGame(String game) instead
-   */
-  @Deprecated
-  public static GameData loadGame(final String map, final String game) {
-    return loadGame(game, new String[] {"maps", "test_data"});
-  }
-
   private static GameData loadGame(final String game, final String[] possibleFolders) {
 
     try (final InputStream is = openInputStream(game, possibleFolders)) {

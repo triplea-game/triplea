@@ -197,7 +197,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     // are we amphibious
     if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater()
         && Match.someMatch(attackingUnits, Matches.UnitIsLand)) {
-      m_amphibiousAttackFrom.add(getAttackFrom(route));
+      m_amphibiousAttackFrom.add(route.getTerritoryBeforeEnd());
       m_amphibiousLandAttackers.addAll(Match.getMatches(attackingUnits, Matches.UnitIsLand));
       m_isAmphibious = true;
     }
@@ -280,15 +280,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
         m_dependentUnits.put(holder, new LinkedHashSet<>(transporting));
       }
     }
-  }
-
-  /**
-   * @deprecated use: route.getTerritoryBeforeEnd();
-   * @param route
-   */
-  @Deprecated
-  private Territory getAttackFrom(final Route route) {
-    return route.getTerritoryBeforeEnd();
   }
 
   private String getBattleTitle() {

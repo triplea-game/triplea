@@ -8,6 +8,7 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -122,9 +123,8 @@ public class CreateUpdateAccountPanel extends JPanel {
     });
   }
 
-  @SuppressWarnings("deprecation")
   private void okPressed() {
-    if (!m_password.getText().equals(m_password2.getText())) {
+    if (!Arrays.equals(m_password.getPassword(),m_password2.getPassword())) {
       JOptionPane.showMessageDialog(this, "The passwords do not match", "Passwords Do Not Match",
           JOptionPane.ERROR_MESSAGE);
       m_password.setText("");
@@ -166,9 +166,8 @@ public class CreateUpdateAccountPanel extends JPanel {
     return m_returnValue;
   }
 
-  @SuppressWarnings("deprecation")
   public String getPassword() {
-    return m_password.getText();
+    return new String(m_password.getPassword());
   }
 
   public String getEmail() {
