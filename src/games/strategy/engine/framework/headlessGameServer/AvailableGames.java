@@ -21,7 +21,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import com.sun.deploy.util.SessionState;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
