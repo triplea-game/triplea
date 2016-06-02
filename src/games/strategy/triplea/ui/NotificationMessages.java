@@ -1,11 +1,15 @@
 package games.strategy.triplea.ui;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Optional;
 import java.util.Properties;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ResourceLoader;
+import games.strategy.util.UrlStreams;
 
 /** TODO: copy paste overlap with PoliticsText.java */
 public class NotificationMessages {
@@ -20,12 +24,14 @@ public class NotificationMessages {
     final ResourceLoader loader = AbstractUIContext.getResourceLoader();
     final URL url = loader.getResource(PROPERTY_FILE);
     if (url == null) {
-      // no propertyfile found
-    } else {
+      return;
+    }
+    Optional<InputStream> inputStream = UrlStreams.openStream(url);
+    if(inputStream.isPresent()) {
       try {
-        m_properties.load(url.openStream());
+        m_properties.load(inputStream.get());
       } catch (final IOException e) {
-        System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
+        ClientLogger.logError("Error reading " + PROPERTY_FILE, e);
       }
     }
   }

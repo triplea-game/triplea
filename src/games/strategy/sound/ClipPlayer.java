@@ -1,6 +1,7 @@
 package games.strategy.sound;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -28,6 +30,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.triplea.ResourceLoader;
+import games.strategy.util.UrlStreams;
+import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 
@@ -269,10 +273,12 @@ public class ClipPlayer {
     if (clip != null) {
       (new Thread(() -> {
         try {
-          final AdvancedPlayer player = new AdvancedPlayer(
-              new java.net.URL(clip.toURL().toString()).openStream(),
-              FactoryRegistry.systemRegistry().createAudioDevice());
-          player.play();
+          Optional<InputStream> inputStream = UrlStreams.openStream(clip.toURL());
+          if(inputStream.isPresent()) {
+            final AudioDevice audioDevice = FactoryRegistry.systemRegistry().createAudioDevice();
+            final AdvancedPlayer audioPlayer = new AdvancedPlayer(inputStream.get(), audioDevice);
+            audioPlayer.play();
+          }
         } catch (Exception e) {
           ClientLogger.logError("Failed to play: " + clip, e);
         }

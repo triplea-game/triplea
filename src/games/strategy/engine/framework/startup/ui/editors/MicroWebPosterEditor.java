@@ -10,9 +10,12 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.Buffer;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -25,6 +28,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentListener;
 
+import games.strategy.util.UrlStreams;
 import org.apache.commons.httpclient.methods.multipart.Part;
 
 import games.strategy.engine.framework.startup.ui.MainFrame;
@@ -144,12 +148,21 @@ public class MicroWebPosterEditor extends EditorPanel {
     final ArrayList<String> players = new ArrayList<>();
     try {
       final URL url = new URL(hostUrl + "getplayers.php");
-      final BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-      String inputLine;
-      while ((inputLine = in.readLine()) != null) {
-        players.add(inputLine);
+      Optional<InputStream> inputStream = UrlStreams.openStream(url);
+      if (inputStream.isPresent()) {
+        try (InputStream stream = inputStream.get()) {
+          try (InputStreamReader reader = new InputStreamReader(stream)) {
+            try (BufferedReader bufferedReader = new BufferedReader(reader)) {
+              String inputLine;
+              while ((inputLine = bufferedReader.readLine()) != null) {
+                players.add(inputLine);
+              }
+            }
+          }
+
+        }
       }
-      in.close();
+
       for (int i = 0; i < players.size(); i++) {
         players.set(i, players.get(i).substring(0, players.get(i).indexOf("\t")));
       }
@@ -164,7 +177,8 @@ public class MicroWebPosterEditor extends EditorPanel {
     window.getContentPane().add(new JLabel("Select Players For Each Nation:"), new GridBagConstraints(0, 0, 2, 1, 0, 0,
         GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(20, 20, 20, 20), 0, 0));
     @SuppressWarnings("unchecked")
-    final JComboBox<String>[] comboBoxes = new JComboBox[m_parties.length];//TODO change Array into a List in order to remove the supressed warning
+    final JComboBox<String>[] comboBoxes = new JComboBox[m_parties.length];// TODO change Array into a List in order to
+                                                                           // remove the supressed warning
     for (int i = 0; i < m_parties.length; i++) {
       final JLabel label = new JLabel(m_parties[i] + ": ");
       comboBoxes[i] = new JComboBox<>();
