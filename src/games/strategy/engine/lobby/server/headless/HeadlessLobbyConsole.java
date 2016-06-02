@@ -9,7 +9,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,6 +20,7 @@ import games.strategy.engine.lobby.server.ui.DBExplorerPanel;
 import games.strategy.engine.lobby.server.userDB.Database;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
+import games.strategy.util.TimeManager;
 
 /**
  * Headless admin console for the lobby.
@@ -30,7 +30,7 @@ public class HeadlessLobbyConsole {
   private final LobbyServer server;
   private final PrintStream out;
   private final BufferedReader in;
-  private final String startDate = new SimpleDateFormat().format(new Date());
+  private final String startDate = TimeManager.getGMTString(new Date());
   private final AtomicInteger totalLogins = new AtomicInteger();
   private final AtomicInteger currentConnections = new AtomicInteger();
   private volatile int maxConcurrentLogins = 0;
