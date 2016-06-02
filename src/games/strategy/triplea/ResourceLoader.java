@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.StringTokenizer;
 
 import games.strategy.common.swing.SwingComponents;
@@ -18,6 +19,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import games.strategy.util.Match;
+import games.strategy.util.UrlStreams;
 
 /**
  * Utility for managing where images and property files for maps and units should be loaded from.
@@ -113,13 +115,16 @@ public class ResourceLoader {
       if (dependencesURL != null) {
         final java.util.Properties dependenciesFile = new java.util.Properties();
 
-        try (final InputStream stream = dependencesURL.openStream()) {
-          dependenciesFile.load(stream);
-          final String dependencies = dependenciesFile.getProperty("dependencies");
-          final StringTokenizer tokens = new StringTokenizer(dependencies, ",", false);
-          while (tokens.hasMoreTokens()) {
-            // add the dependencies recursivly
-            rVal.addAll(getPaths(tokens.nextToken()));
+        Optional<InputStream> inputStream = UrlStreams.openStream(dependencesURL);
+        if (inputStream.isPresent()) {
+          try (final InputStream stream = inputStream.get()) {
+            dependenciesFile.load(stream);
+            final String dependencies = dependenciesFile.getProperty("dependencies");
+            final StringTokenizer tokens = new StringTokenizer(dependencies, ",", false);
+            while (tokens.hasMoreTokens()) {
+              // add the dependencies recursivly
+              rVal.addAll(getPaths(tokens.nextToken()));
+            }
           }
         }
       }
@@ -173,7 +178,8 @@ public class ResourceLoader {
    */
   public URL getResource(final String path) {
     URL defaultUrl = null;
-    // Return first any match that is not in the assets folder (we expect that to be the users maps folder (loading from map.zip))
+    // Return first any match that is not in the assets folder (we expect that to be the users maps folder (loading from
+    // map.zip))
     // If we don't have any matches, then return any matches we had from the assets folder
     for (URL element : getMatchingResources(path)) {// Collections.list(m_loader.getResources(path))) {
       if (element.toString().contains(RESOURCE_FOLDER)) {
@@ -185,7 +191,7 @@ public class ResourceLoader {
     return defaultUrl;
   }
 
-  private List<URL> getMatchingResources(final String path ) {
+  private List<URL> getMatchingResources(final String path) {
     try {
       return Collections.list(m_loader.getResources(path));
     } catch (IOException e) {
@@ -193,15 +199,23 @@ public class ResourceLoader {
     }
   }
 
+  /**
+   * @deprecated Avoid this method. It returns an InputStream, and you have to close it. It is easy not to do that.
+   * Instead prefer to create an object that wraps the thing you are parsing, and have
+   * your new object return exactly the data you want. In this case that object can handle closing the InputStream
+   */
+  @Deprecated
   public InputStream getResourceAsStream(final String path) {
     URL url = getResource(path);
     if (url == null) {
       return null;
     }
-    try {
-      return url.openStream();
-    } catch (IOException e) {
-      throw new IllegalStateException(e);
+
+    Optional<InputStream> inputStream = UrlStreams.openStream(url);
+    if (inputStream.isPresent()) {
+      return inputStream.get();
+    } else {
+      throw new IllegalStateException("Failed to open an input stream to: " + path);
     }
   }
 }
