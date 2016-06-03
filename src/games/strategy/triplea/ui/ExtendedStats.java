@@ -68,11 +68,9 @@ public class ExtendedStats extends StatPanel {
         m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
       }
       // add number of techs
-      if (true) {
-        final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(m_statsExtended));
-        statsExtended.add(new TechCountStat());
-        m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
-      }
+      final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(m_statsExtended));
+      statsExtended.add(new TechCountStat());
+      m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
       // add individual techs
       for (final TechAdvance ta : TechAdvance.getTechAdvances(m_data)) {
         final GenericTechNameStat techNameStat = new GenericTechNameStat();

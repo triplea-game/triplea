@@ -762,17 +762,15 @@ public class BattleTracker implements java.io.Serializable {
       }
     }
     // destroy any disabled units owned by the enemy that are NOT infrastructure or factories
-    if (true) {
-      final CompositeMatch<Unit> enemyToBeDestroyed = new CompositeMatchAnd<>(Matches.enemyUnit(id, data),
-          Matches.UnitIsDisabled, Matches.UnitIsInfrastructure.invert());
-      final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
-      if (!destroyed.isEmpty()) {
-        final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
-        bridge.getHistoryWriter().addChildToEvent(id.getName() + " destroys some disabled combat units", destroyed);
-        bridge.addChange(destroyUnits);
-        if (changeTracker != null) {
-          changeTracker.addChange(destroyUnits);
-        }
+    final CompositeMatch<Unit> enemyToBeDestroyed = new CompositeMatchAnd<>(Matches.enemyUnit(id, data),
+        Matches.UnitIsDisabled, Matches.UnitIsInfrastructure.invert());
+    final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
+    if (!destroyed.isEmpty()) {
+      final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
+      bridge.getHistoryWriter().addChildToEvent(id.getName() + " destroys some disabled combat units", destroyed);
+      bridge.addChange(destroyUnits);
+      if (changeTracker != null) {
+        changeTracker.addChange(destroyUnits);
       }
     }
     // take over non combatants

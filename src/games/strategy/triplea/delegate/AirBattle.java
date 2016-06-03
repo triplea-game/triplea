@@ -765,9 +765,7 @@ public class AirBattle extends AbstractBattle {
     // execute in a seperate thread to allow either player to click continue first.
     final Thread t = new Thread(r, "Click to continue waiter");
     t.start();
-    if (true) {
-      getRemote(hitPlayer, bridge).confirmOwnCasualties(battleID, "Press space to continue");
-    }
+    getRemote(hitPlayer, bridge).confirmOwnCasualties(battleID, "Press space to continue");
     try {
       bridge.leaveDelegateExecution();
       t.join();
