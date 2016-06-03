@@ -628,11 +628,7 @@ public class GameParser {
       for (int y = 0; y < y_size; y++) {
         for (int x = 0; x < x_size; x++) {
           boolean isWater;
-          if (water.contains(x + "-" + y)) {
-            isWater = true;
-          } else {
-            isWater = false;
-          }
+          isWater = water.contains(x + "-" + y);
           final Territory newTerritory = new Territory(name + "_" + x + "_" + y, isWater, data, x, y);
           if (addingOntoExistingMap && map.getTerritories().contains(newTerritory)) {
             continue;

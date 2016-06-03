@@ -185,11 +185,7 @@ public class ProBattleUtils {
     final double strengthDifference = estimateStrengthDifference(t, enemyUnits, alliedUnits);
     ProLogger.trace(t + ", current enemy land strengthDifference=" + strengthDifference + ", enemySize="
         + enemyUnits.size() + ", alliedSize=" + alliedUnits.size());
-    if (strengthDifference > 50) {
-      return false;
-    } else {
-      return true;
-    }
+    return strengthDifference <= 50;
   }
 
   public static boolean territoryHasLocalNavalSuperiority(final Territory t, final PlayerID player,

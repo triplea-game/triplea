@@ -311,10 +311,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleAPlaye
     if (!myAlliances.isEmpty()) {
       return true;
     }
-    if (Math.random() < .5) {
-      return true;
-    }
-    return false;
+    return Math.random() < .5;
   }
 
   @Override

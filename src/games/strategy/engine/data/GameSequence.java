@@ -116,10 +116,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
    */
   public boolean testWeAreOnLastStep() {
     synchronized (m_currentStepMutex) {
-      if (m_currentIndex + 1 >= m_steps.size()) {
-        return true;
-      }
-      return false;
+      return m_currentIndex + 1 >= m_steps.size();
     }
   }
 
