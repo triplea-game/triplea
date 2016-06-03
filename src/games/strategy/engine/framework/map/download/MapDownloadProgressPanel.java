@@ -101,12 +101,8 @@ public final class MapDownloadProgressPanel extends JPanel {
         continue;
       }
       final JProgressBar progressBar = progressBars.get(download);
-      Consumer<Integer> progressListener = s -> {
-        SwingUtilities.invokeLater(() -> progressBar.setValue(s));
-      };
-      Runnable completionListener = () -> {
-        SwingUtilities.invokeLater(() -> progressBar.setValue(progressBar.getMaximum()));
-      };
+      Consumer<Integer> progressListener = s -> SwingUtilities.invokeLater(() -> progressBar.setValue(s));
+      Runnable completionListener = () -> SwingUtilities.invokeLater(() -> progressBar.setValue(progressBar.getMaximum()));
 
       (new Thread(() -> {
         int length = DownloadUtils.getDownloadLength(download.newURL());

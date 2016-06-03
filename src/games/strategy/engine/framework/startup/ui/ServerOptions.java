@@ -174,9 +174,7 @@ public class ServerOptions extends JDialog {
     m_okPressed = true;
   });
 
-  private final Action m_cancelAction = SwingAction.of("Cancel", e -> {
-    setVisible(false);
-  });
+  private final Action m_cancelAction = SwingAction.of("Cancel", e -> setVisible(false));
 
   public String getComments() {
     return m_comment.getText();
