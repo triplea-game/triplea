@@ -1,5 +1,17 @@
 package games.strategy.triplea.delegate;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import games.strategy.common.delegate.GameDelegateBridge;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
@@ -16,31 +28,18 @@ import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
-import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 /**
  * Responsible for moving units on the board.
  * <p>
  * Responsible for checking the validity of a move, and for moving the units. <br>
  */
-public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate {
+public class MoveDelegate extends AbstractMoveDelegate {
 
   public static String CLEANING_UP_DURING_MOVEMENT_PHASE = "Cleaning up during movement phase";
 

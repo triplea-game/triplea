@@ -1,7 +1,6 @@
 package games.strategy.engine.data;
 
 import java.awt.Image;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -22,7 +21,7 @@ import games.strategy.util.LocalizeHTML;
 /**
  * A prototype for units.
  */
-public class UnitType extends NamedAttachable implements Serializable {
+public class UnitType extends NamedAttachable {
   private static final long serialVersionUID = 4885339076798905247L;
 
   public UnitType(final String name, final GameData data) {

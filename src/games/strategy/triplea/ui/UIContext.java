@@ -11,7 +11,8 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -32,7 +33,7 @@ import games.strategy.triplea.util.Stopwatch;
 /**
  * A place to find images and map data for a ui.
  */
-public class UIContext extends AbstractUIContext implements IUIContext {
+public class UIContext extends AbstractUIContext {
   protected MapData m_mapData;
   protected final TileImageFactory m_tileImageFactory = new TileImageFactory();
   protected final UnitImageFactory m_unitImageFactory = new UnitImageFactory();

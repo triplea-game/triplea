@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -163,18 +164,17 @@ public class MicroWebPosterEditor extends EditorPanel {
     window.setLayout(new GridBagLayout());
     window.getContentPane().add(new JLabel("Select Players For Each Nation:"), new GridBagConstraints(0, 0, 2, 1, 0, 0,
         GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(20, 20, 20, 20), 0, 0));
-    @SuppressWarnings("unchecked")
-    final JComboBox<String>[] comboBoxes = new JComboBox[m_parties.length];//TODO change Array into a List in order to remove the supressed warning
+    final List<JComboBox<String>> comboBoxes = new ArrayList<>(m_parties.length);
     for (int i = 0; i < m_parties.length; i++) {
       final JLabel label = new JLabel(m_parties[i] + ": ");
-      comboBoxes[i] = new JComboBox<>();
+      comboBoxes.add(i, new JComboBox<>());
       for (int p = 0; p < players.size(); p++) {
-        comboBoxes[i].addItem(players.get((p)));
+        comboBoxes.get(i).addItem(players.get((p)));
       }
-      comboBoxes[i].setSelectedIndex(i % players.size());
+      comboBoxes.get(i).setSelectedIndex(i % players.size());
       window.getContentPane().add(label, new GridBagConstraints(0, i + 1, 1, 1, 0, 0, GridBagConstraints.EAST,
           GridBagConstraints.NONE, new Insets(5, 20, 5, 5), 0, 0));
-      window.getContentPane().add(comboBoxes[i], new GridBagConstraints(1, i + 1, 1, 1, 0, 0, GridBagConstraints.WEST,
+      window.getContentPane().add(comboBoxes.get(i), new GridBagConstraints(1, i + 1, 1, 1, 0, 0, GridBagConstraints.WEST,
           GridBagConstraints.NONE, new Insets(5, 5, 5, 20), 0, 0));
     }
     final JButton btnClose = new JButton("Cancel");
@@ -192,10 +192,10 @@ public class MicroWebPosterEditor extends EditorPanel {
         window.setVisible(false);
         window.dispose();
         final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < comboBoxes.length; i++) {
+        for (int i = 0; i < comboBoxes.size(); i++) {
           sb.append(m_parties[i]);
           sb.append(": ");
-          sb.append((String) comboBoxes[i].getSelectedItem());
+          sb.append((String) comboBoxes.get(i).getSelectedItem());
           sb.append("\n");
         }
         final java.util.List<Part> parts = new ArrayList<>();

@@ -1392,7 +1392,7 @@ public class TripleAFrame extends MainGameFrame {
       final int selection = JOptionPane.showOptionDialog(TripleAFrame.this, panel, message,
           JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
       if (selection == 0) {
-        selected.set((Territory) list.getSelectedValue());
+        selected.set(list.getSelectedValue());
       }
     });
     return selected.get();

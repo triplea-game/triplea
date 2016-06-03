@@ -16,7 +16,7 @@ import games.strategy.util.Match;
 /**
  * Abstract class for holding various action/condition things for PoliticalActionAttachment and UserActionAttachment
  */
-public abstract class AbstractUserActionAttachment extends AbstractConditionsAttachment implements ICondition {
+public abstract class AbstractUserActionAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = 3569461523853104614L;
   public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
 

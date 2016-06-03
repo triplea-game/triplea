@@ -87,7 +87,7 @@ public class RemoteMethodCall implements Externalizable {
   }
 
   private static Class<?>[] stringsToClasses(final String[] strings, final Object[] args) {
-    final Class<?>[] rVal = new Class[strings.length];
+    final Class<?>[] rVal = new Class<?>[strings.length];
     for (int i = 0; i < strings.length; i++) {
       try {
         // null if we skipped writing because the arg is the expected

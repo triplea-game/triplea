@@ -27,7 +27,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.history.HistoryPanel;
 
-public class History extends DefaultTreeModel implements java.io.Serializable {
+public class History extends DefaultTreeModel {
   private final HistoryWriter m_writer = new HistoryWriter(this);
   private final List<Change> m_changes = new ArrayList<>();
   private final GameData m_data;

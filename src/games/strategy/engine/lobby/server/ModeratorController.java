@@ -17,7 +17,7 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.util.MD5Crypt;
 
-public class ModeratorController extends AbstractModeratorController implements IModeratorController {
+public class ModeratorController extends AbstractModeratorController {
   public ModeratorController(final IServerMessenger serverMessenger, final Messengers messengers) {
     super(serverMessenger, messengers);
   }

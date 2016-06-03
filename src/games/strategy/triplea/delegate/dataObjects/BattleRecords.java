@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate.dataObjects;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,7 +18,7 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
  * The Purpose of this class is to record various information about combat,
  * in order to use it for conditions and other things later.
  */
-public class BattleRecords extends GameDataComponent implements Serializable {
+public class BattleRecords extends GameDataComponent {
   private static final long serialVersionUID = 1473664374777905497L;
   private final HashMap<PlayerID, HashMap<GUID, BattleRecord>> m_records =
       new HashMap<>();

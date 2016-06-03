@@ -19,7 +19,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -64,7 +63,7 @@ import games.strategy.util.Tuple;
  * through an IDelegate using a change).
  * <p>
  */
-public abstract class AbstractAI extends AbstractBaseAI implements ITripleAPlayer, IGamePlayer {
+public abstract class AbstractAI extends AbstractBaseAI implements ITripleAPlayer {
   private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
 
   /**

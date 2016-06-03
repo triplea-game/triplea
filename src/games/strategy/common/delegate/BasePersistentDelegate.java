@@ -1,6 +1,5 @@
 package games.strategy.common.delegate;
 
-import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IPersistentDelegate;
 
 /**
@@ -11,7 +10,7 @@ import games.strategy.engine.delegate.IPersistentDelegate;
  * etc.
  * Persistent Delegates are active all the time.
  */
-public abstract class BasePersistentDelegate extends AbstractDelegate implements IDelegate, IPersistentDelegate {
+public abstract class BasePersistentDelegate extends AbstractDelegate implements IPersistentDelegate {
   public BasePersistentDelegate() {
     super();
   }

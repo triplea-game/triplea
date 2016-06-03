@@ -1,13 +1,12 @@
 package games.strategy.engine.data;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 
 import games.strategy.debug.ClientLogger;
 
-public class DefaultNamed extends GameDataComponent implements Named, Serializable {
+public class DefaultNamed extends GameDataComponent implements Named {
   private static final long serialVersionUID = -5737716450699952621L;
   private final String m_name;
 

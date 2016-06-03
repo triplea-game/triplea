@@ -20,7 +20,7 @@ import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
-public abstract class AbstractTriggerAttachment extends AbstractConditionsAttachment implements ICondition {
+public abstract class AbstractTriggerAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = 5866039180681962697L;
   public static final String NOTIFICATION = "Notification";
   public static final String AFTER = "after";

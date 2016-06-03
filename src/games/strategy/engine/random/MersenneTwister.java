@@ -1,6 +1,6 @@
 package games.strategy.engine.random;
 
-import java.io.Serializable;
+import java.util.Random;
 
 /**
  * <h3>MersenneTwister and MersenneTwisterFast</h3>
@@ -45,7 +45,7 @@ import java.io.Serializable;
  * and the original code is Copyright (c) 1999 by Michael Lecuyer.
  *
  */
-public class MersenneTwister extends java.util.Random implements Serializable {
+public class MersenneTwister extends Random {
   private static final long serialVersionUID = -6946159560323874784L;
   // Period parameters
   private static final int N = 624;
