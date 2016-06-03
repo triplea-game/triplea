@@ -387,12 +387,12 @@ public class ClipPlayer {
       // final long startTime = System.currentTimeMillis();
       // we are probably using zipped sounds. there might be a better way to do this...
       final String soundFilePath = thisSoundURL.getPath();
-      if (soundFilePath != null && soundFilePath.length() > 5 && soundFilePath.indexOf(".zip!") != -1) {
+      if (soundFilePath != null && soundFilePath.length() > 5 && soundFilePath.contains(".zip!")) {
         // so the URL with a zip or jar in it, will start with "file:", and unfortunately when you make a file and test
         // if it exists, if it
         // starts with that it doesn't exist
         final int index1 = Math.max(0, Math.min(soundFilePath.length(),
-            soundFilePath.indexOf("file:") != -1 ? soundFilePath.indexOf("file:") + 5 : 0));
+            soundFilePath.contains("file:") ? soundFilePath.indexOf("file:") + 5 : 0));
         final String zipFilePath = soundFilePath.substring(index1,
             Math.max(index1, Math.min(soundFilePath.length(), soundFilePath.lastIndexOf("!"))));
         if (zipFilePath.length() > 5 && zipFilePath.endsWith(".zip")) {
@@ -471,7 +471,7 @@ public class ClipPlayer {
   }
 
   private static boolean isZippedMp3(ZipEntry zipElement, String resourceAndPathURL) {
-    return zipElement != null && zipElement.getName() != null && zipElement.getName().indexOf(resourceAndPathURL) != -1
+    return zipElement != null && zipElement.getName() != null && zipElement.getName().contains(resourceAndPathURL)
         && (zipElement.getName().endsWith(MP3_SUFFIX));
   }
 

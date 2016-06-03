@@ -843,7 +843,7 @@ public class HeadlessGameServer {
                 + " must start with \"Bot\" and be at least 7 characters long and be the same.");
         printUsage = true;
       }
-      if (comments.indexOf("automated_host") == -1) {
+      if (!comments.contains("automated_host")) {
         System.out.println(
             "Invalid argument: " + GameRunner2.LOBBY_GAME_COMMENTS + " must contain the string \"automated_host\".");
         printUsage = true;

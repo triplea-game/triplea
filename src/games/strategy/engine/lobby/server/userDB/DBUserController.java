@@ -36,7 +36,7 @@ public class DBUserController {
     if (userName.contains(InGameLobbyWatcher.LOBBY_WATCHER_NAME)) {
       return InGameLobbyWatcher.LOBBY_WATCHER_NAME + " cannot be part of a name";
     }
-    if (userName.toLowerCase().indexOf("admin") >= 0) {
+    if (userName.toLowerCase().contains("admin")) {
       return "Username can't contain the word admin";
     }
     return null;
