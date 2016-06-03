@@ -919,6 +919,7 @@ public class MapXmlCreator extends JFrame {
 
       case MAP_FINISHED:
         layoutNotesPanel();
+        break;
 
       default:
         break;
