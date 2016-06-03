@@ -903,7 +903,7 @@ public class ProMatches {
     };
   }
 
-  public static final Match<Unit> UnitIsOwnedCarrier(final PlayerID player) {
+  public static Match<Unit> UnitIsOwnedCarrier(final PlayerID player) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {

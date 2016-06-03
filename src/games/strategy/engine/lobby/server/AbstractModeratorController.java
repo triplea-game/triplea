@@ -18,7 +18,7 @@ public abstract class AbstractModeratorController implements IModeratorControlle
     m_allMessengers = messengers;
   }
 
-  public static final RemoteName getModeratorControllerName() {
+  public static RemoteName getModeratorControllerName() {
     return new RemoteName(IModeratorController.class, "games.strategy.engine.lobby.server.ModeratorController:Global");
   }
 

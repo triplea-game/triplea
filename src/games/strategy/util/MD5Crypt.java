@@ -63,7 +63,7 @@ public class MD5Crypt {
    * @param password
    *        Password to be encrypted
    */
-  static public final String crypt(final String password) {
+  static public String crypt(final String password) {
     final StringBuffer salt = new StringBuffer();
     final java.util.Random rnd = new java.util.Random();
     // build a random 8 chars salt
@@ -84,7 +84,7 @@ public class MD5Crypt {
    * @param password
    *        Password to be encrypted
    */
-  static public final String crypt(final String password, final String salt) {
+  static public String crypt(final String password, final String salt) {
     return crypt(password, salt, MAGIC);
   }
 
@@ -100,7 +100,7 @@ public class MD5Crypt {
    * @param password
    *        user password
    */
-  static public final String crypt(final String password, String salt, final String magic) {
+  static public String crypt(final String password, String salt, final String magic) {
     if (password == null) {
       throw new IllegalArgumentException("Null password!");
     }
