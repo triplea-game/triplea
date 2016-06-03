@@ -72,15 +72,4 @@ public class GUID implements Externalizable {
     out.writeInt(m_id);
     out.writeObject(m_prefix);
   }
-
-  public static void main(final String[] args) throws IOException {
-    System.out.println(new GUID().toString());
-    final ByteArrayOutputStream sink = new ByteArrayOutputStream();
-    final ObjectOutputStream out = new ObjectOutputStream(sink);
-    for (int i = 0; i < 1000; i++) {
-      out.writeObject(new GUID());
-    }
-    out.close();
-    System.out.println("1000 ids is:" + sink.toByteArray().length + " bytes");
-  }
 }

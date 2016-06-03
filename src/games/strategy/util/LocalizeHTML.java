@@ -142,33 +142,4 @@ public class LocalizeHTML {
 
     return rVal;
   }
-
-  public static void main(final String[] args) {
-    final String htmlText =
-        "<br><img src=\"http://tripleamaps.sourceforge.net/images/tww/TechOverview0.png\" alt=\"blah, blah\"/>"
-            + "\n<br /><img src=\"\" alt=\"<em>formatted, alt text for a no source image</em>\"/>"
-            + "\n<br/><img src=\"http://www.someWebsite.com/some%20Folder/someOtherFolder Which May Contain Spaces/somePicture.gif\"/>"
-            + "\n<br><img src=\"http://www.someWebsite.com/some%20Folder/someOtherFolder Which May Contain Spaces/some Picture%20WithSpaces.JPEG\" alt=\"<em>formatted, alt text</em>\"/>"
-            + "\n<br><img src='http://www.someWebsite.com/some%20Folder/someOtherFolder Which May Contain Spaces/some Picture%20WithSpaces2.JPEG' alt='formatted, alt text for single quote img tag'/>"
-            + "\n<br/><IMG ALT=\"reverse order alt and src tags and capitalized\" SRC=\"http://www.someWebsite.com/some%20Folder/someOtherFolder Which May Contain Spaces/somePicture2.gif\"/>"
-            + "\n<br /><br><img src=\"http://tripleamaps.sourceforge.net/images/tww/TechOverview1.png\" alt=\"technically legal to have separate end tag on img\"></img>"
-            + "\n<br>And here is a normal link in plain text: http://tripleamaps.sourceforge.net/images/tww/TechOverview1.png"
-            + "\n<br />And <SPAN>some regular old html <b>text that</b> might <i>have other</i> formatting in it</SPAN> and stuff."
-            + "\n<br />And now for some normal links as links:"
-            + "\n<br /><a href=\"http://tripleamaps.sourceforge.net/images/tww/TechOverview2.png\">picture</a>"
-            + "\n<br /><a href=\"http://tripleamaps.sourceforge.net/images/tww/TechOverview3.png\"/>"
-            + "\n<br /><A HREF=\"http://tripleamaps.sourceforge.net/images/tww/TechOverview4.png\"><em><SPAN>formatted, alt text, with capitalization</SPAN></em></A>"
-            + "\n<br /><a href=\"\"><em>formatted, alt text for a no href link</em></a>"
-            + "\n<br /><a target='_blank' href='http://www.someWebsite.com/some%20Folder/someOtherFolder Which May Contain Spaces/some Picture%20WithSpaces3.JPEG'><b>reverse order with single quotes and formatted text</b></a>";
-    System.out.println(htmlText);
-    System.out.println("\n\n\n");
-    final List<String> links1 = getAllAhrefLinksFromHTML(htmlText);
-    System.out.println(links1.toString());
-    System.out.println("\n\n\n");
-    final List<String> links2 = getAllImgSrcLinksFromHTML(htmlText);
-    System.out.println(links2.toString());
-    System.out.println("\n\n\n");
-    final String newHTMLstring = localizeImgLinksInHTML(htmlText);
-    System.out.println("\n" + newHTMLstring);
-  }
 }

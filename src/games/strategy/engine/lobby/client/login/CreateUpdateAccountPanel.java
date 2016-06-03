@@ -99,15 +99,6 @@ public class CreateUpdateAccountPanel extends JPanel {
     add(buttons, BorderLayout.SOUTH);
   }
 
-  public static void main(final String[] args) {
-    GameRunner2.setupLookAndFeel();
-    final JDialog d = new JDialog();
-    d.add(new CreateUpdateAccountPanel(false));
-    d.setDefaultCloseOperation(JDialog.EXIT_ON_CLOSE);
-    d.pack();
-    d.setVisible(true);
-  }
-
   private void setupListeners() {
     m_cancelButton.addActionListener(new ActionListener() {
       @Override

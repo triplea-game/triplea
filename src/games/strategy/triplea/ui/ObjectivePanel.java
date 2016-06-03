@@ -443,43 +443,6 @@ public class ObjectivePanel extends AbstractStatPanel {
     m_objectiveModel.setGameData(data);
     m_objectiveModel.gameDataChanged(null);
   }
-
-  public static void main(final String[] args) {
-    final JFrame f = new JFrame();
-    final JPanel panel = new JPanel();
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    final GameSelectorModel model = new GameSelectorModel();
-    model.loadDefaultGame(f);
-    final GameData data = model.getGameData();
-    final IUIContext uiContext = new UIContext();
-    uiContext.setDefaultMapDir(data);
-    uiContext.getMapData().verify(data);
-    // uiContext.setPlayerList(players);
-    final ObjectivePanel panelObj = new ObjectivePanel(data);
-    /*
-     * final String blah = "<html><b>blah</b> blah blah blah blah blah blah blah blah blah blah blah blah " +
-     * "blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah " +
-     * "blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah</html>";
-     * final JEditorPane editor = new JEditorPane();
-     * editor.setContentType("text/html");
-     * editor.setText(blah);
-     * editor.setEditable(false);
-     * panel.add(editor);
-     */
-    panel.add(panelObj);
-    /*
-     * final JTable table = new JTable(1, 1);
-     * final TableColumnModel cmodel = table.getColumnModel();
-     * cmodel.getColumn(0).setCellRenderer(new EditorPaneTableCellRenderer());
-     * cmodel.getColumn(0).setCellEditor(new EditorPaneCellEditor());
-     * table.setValueAt(blah, 0, 0);
-     * panel.add(table);
-     */
-    f.getContentPane().add(panel);
-    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    f.pack();
-    f.setVisible(true);
-  }
 }
 
 /** TODO: copy paste overlap with NotifcationMessages.java */

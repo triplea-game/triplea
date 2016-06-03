@@ -224,25 +224,6 @@ public class MD5Crypt {
     return result.toString();
   }
 
-  /**
-   * Test subroutine
-   *
-   * @param args
-   */
-  static final String USAGE = "MD5Crypt <password> <salt>";
-
-  public static void main(final String[] args) {
-    try {
-      if (args.length != 2) {
-        System.err.println(USAGE);
-      } else {
-        System.out.println(MD5Crypt.crypt(args[0], args[1]));
-      }
-    } catch (final Exception ex) {
-      System.err.println(ex);
-    }
-  }
-
   public static String getSalt(final String magic, final String encrypted) {
     if (!encrypted.startsWith(magic)) {
       throw new IllegalStateException("Magic doesnt mactch encrypted");
