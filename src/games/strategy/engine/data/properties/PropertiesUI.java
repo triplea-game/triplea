@@ -3,12 +3,9 @@ package games.strategy.engine.data.properties;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -17,24 +14,6 @@ public class PropertiesUI extends JPanel {
   private final List<? extends IEditableProperty> m_properties;
   private int m_nextRow;
   private int m_labelColumn;
-
-  public static void main(final String[] args) {
-    final GameProperties properties = new GameProperties(null);
-    properties.addEditableProperty(new BooleanProperty("bool1 default false", null, false));
-    properties.addEditableProperty(new BooleanProperty("bool2 default true", null, true));
-    properties.addEditableProperty(new StringProperty("String", null, "default"));
-    properties.addEditableProperty(new NumberProperty("Number [10,20]", null, 20, 12, 15));
-    final Collection<String> listValues = new ArrayList<>();
-    listValues.add("apples");
-    listValues.add("oranges");
-    listValues.add("bananas");
-    properties.addEditableProperty(new ComboProperty<>("List", null, "apples", listValues));
-    final PropertiesUI ui = new PropertiesUI(properties, true);
-    final JFrame frame = new JFrame();
-    frame.getContentPane().add(ui);
-    frame.pack();
-    frame.setVisible(true);
-  }
 
   public PropertiesUI(final GameProperties gameProperties, final boolean editable) {
     this(gameProperties.getEditableProperties(), editable);

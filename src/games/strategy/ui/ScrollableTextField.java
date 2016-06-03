@@ -10,8 +10,6 @@ import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import games.strategy.engine.framework.GameRunner;
@@ -20,26 +18,6 @@ import games.strategy.util.ListenerList;
 public class ScrollableTextField extends JPanel {
   private static final long serialVersionUID = 6940592988573672224L;
 
-  public static void main(final String[] args) {
-    final JFrame frame = new JFrame();
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.getContentPane().setLayout(new FlowLayout());
-    frame.getContentPane().add(new JLabel("10 - 20"));
-    frame.getContentPane().add(new ScrollableTextField(10, 20));
-    frame.getContentPane().add(new JLabel("-10 - 10"));
-    frame.getContentPane().add(new ScrollableTextField(-10, 10));
-    final ScrollableTextField field = new ScrollableTextField(0, 100);
-    field.addChangeListener(new ScrollableTextFieldListener() {
-      @Override
-      public void changedValue(final ScrollableTextField aField) {
-        System.out.println(aField.getValue());
-      }
-    });
-    frame.getContentPane().add(new JLabel("0-100, listened to"));
-    frame.getContentPane().add(field);
-    frame.setSize(400, 140);
-    frame.setVisible(true);
-  }
 
   private static boolean s_imagesLoaded;
   private static Icon s_up;

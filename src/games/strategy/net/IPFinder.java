@@ -107,21 +107,4 @@ public class IPFinder {
     }
     return false;
   }
-
-  public static void main(final String[] args) throws SocketException, UnknownHostException {
-    final Enumeration<NetworkInterface> enum1 = NetworkInterface.getNetworkInterfaces();
-    while (enum1.hasMoreElements()) {
-      final NetworkInterface netface = enum1.nextElement();
-      System.out.println("interface:" + netface);
-      final Enumeration<InetAddress> enum2 = netface.getInetAddresses();
-      while (enum2.hasMoreElements()) {
-        final InetAddress ip2 = enum2.nextElement();
-        System.out.println(" address:" + ip2 + " is private:" + isPrivateNetworkAddress(ip2) + " is loopback:"
-            + ip2.isLoopbackAddress());
-      }
-      System.out.println("----------------------");
-    }
-    System.out.println();
-    System.out.println("Found:" + findInetAddress());
-  }
 }

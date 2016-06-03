@@ -1,6 +1,11 @@
 package games.strategy.engine.framework.startup.ui;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.FileDialog;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -13,7 +18,16 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingComponents;
 import games.strategy.engine.ClientContext;
@@ -421,15 +435,5 @@ public class GameSelectorPanel extends JPanel implements Observer {
         m_gamePropertiesCache.loadCachedGamePropertiesInto(m_model.getGameData());
       }
     }
-  }
-
-  public static void main(final String[] args) {
-    final JFrame f = new JFrame();
-    final GameSelectorModel model = new GameSelectorModel();
-    model.loadDefaultGame(f);
-    f.getContentPane().add(new GameSelectorPanel(model));
-    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    f.pack();
-    f.setVisible(true);
   }
 }

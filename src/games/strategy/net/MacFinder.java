@@ -14,20 +14,6 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.util.MD5Crypt;
 
 public class MacFinder {
-  // For quick testing
-  public static void main(final String[] args) {
-    System.out.println(GetHashedMacAddress());
-    // should be valid
-    System.out.println(tryToParseMACFromOutput("ether 12:34:56:78:89:01 ", Arrays.asList("-", ":", "."), false));
-    // should be valid
-    System.out.println(tryToParseMACFromOutput("ether 0:00:00:00:01:34 ", Arrays.asList("-", ":", "."), true));
-    // should not be valid
-    System.out.println(isMacValid("00.00.00.00.00.E0") ? "valid" : "not valid");
-    // rest should be valid
-    System.out.println(isMacValid("00.00.00.00.00.D0") ? "valid" : "not valid");
-    System.out.println(isMacValid("00.1b.63.9f.b4.d3") ? "valid" : "not valid");
-    System.out.println(isMacValid("00.60.08.C4.99.AA") ? "valid" : "not valid");
-  }
 
   /**
    * Should result in something like this: $1$MH$345ntXD4G3AKpAeHZdaGe3

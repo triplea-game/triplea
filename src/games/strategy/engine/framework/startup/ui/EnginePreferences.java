@@ -428,8 +428,4 @@ public class EnginePreferences extends JDialog {
     enginePrefs.setLocationRelativeTo(parentFrame);
     enginePrefs.setVisible(true);
   }
-
-  public static void main(final String[] args) {
-    showEnginePreferences(null);
-  }
 }
