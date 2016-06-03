@@ -444,7 +444,6 @@ public class ClipPlayer {
       } else {
         for (final File sound : thisSoundFile.listFiles()) {
           if (!(isSoundFileNamed(sound))) {
-            continue;
           }
         }
       }

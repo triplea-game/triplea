@@ -518,7 +518,6 @@ public class ProCombatMoveAI {
           ProLogger.debug("Removing neutral territory that has attackers that are adjacent to enemies: " + t.getName()
               + ", attackFromTerritory=" + attackFromTerritoryWithEnemyNeighbors);
           it.remove();
-          continue;
         }
       }
     }
