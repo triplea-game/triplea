@@ -1013,7 +1013,7 @@ class CasualtyNotificationPanel extends JPanel {
       final JPanel panel = new JPanel();
       // TODO Kev determine if we need to identify if the unit is hit/disabled
       Optional<ImageIcon> unitImage = m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data,
-          damaged ? category.hasDamageOrBombingUnitDamage() : false, disabled ? category.getDisabled() : false);
+          damaged && category.hasDamageOrBombingUnitDamage(), disabled && category.getDisabled());
       final JLabel unit = unitImage.isPresent() ? new JLabel(unitImage.get()) : new JLabel();
       panel.add(unit);
       for (final UnitOwner owner : category.getDependents()) {
