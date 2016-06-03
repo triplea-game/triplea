@@ -24,7 +24,6 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
-import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
@@ -39,7 +38,7 @@ import games.strategy.util.Match;
  * airbase) to another
  * territory, instead of carrying them.
  */
-public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDelegate {
+public class SpecialMoveDelegate extends AbstractMoveDelegate {
   private boolean m_needToInitialize = true;
 
   // private boolean m_allowAirborne = true;

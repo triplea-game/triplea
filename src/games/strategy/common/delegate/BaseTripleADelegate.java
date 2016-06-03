@@ -5,7 +5,6 @@ import java.util.HashSet;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.TripleA;
 import games.strategy.triplea.ai.weakAI.WeakAI;
@@ -20,7 +19,7 @@ import games.strategy.util.Match;
  * Base class designed to make writing custom TripleA delegates simpler.
  * Code common to all TripleA delegates is implemented here.
  */
-public abstract class BaseTripleADelegate extends AbstractDelegate implements IDelegate {
+public abstract class BaseTripleADelegate extends AbstractDelegate {
   private boolean m_startBaseStepsFinished = false;
   private boolean m_endBaseStepsFinished = false;
 

@@ -1,12 +1,11 @@
 package games.strategy.engine.data;
 
-import java.io.Serializable;
 import java.util.Map.Entry;
 
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
-public class ProductionRule extends DefaultNamed implements Serializable {
+public class ProductionRule extends DefaultNamed {
   private static final long serialVersionUID = -6598296283127741307L;
   private IntegerMap<Resource> m_cost = new IntegerMap<>();
   private IntegerMap<NamedAttachable> m_results = new IntegerMap<>();

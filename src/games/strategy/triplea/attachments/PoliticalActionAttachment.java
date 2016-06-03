@@ -23,7 +23,7 @@ import games.strategy.util.Match;
  * An attachment, attached to a player that will describe which political
  * actions a player may take.
  */
-public class PoliticalActionAttachment extends AbstractUserActionAttachment implements ICondition {
+public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 4392770599777282477L;
 
   public PoliticalActionAttachment(final String name, final Attachable attachable, final GameData gameData) {

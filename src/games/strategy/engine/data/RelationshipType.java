@@ -1,10 +1,8 @@
 package games.strategy.engine.data;
 
-import java.io.Serializable;
-
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 
-public class RelationshipType extends NamedAttachable implements Serializable {
+public class RelationshipType extends NamedAttachable {
   private static final long serialVersionUID = 5348310616624709971L;
 
   /**

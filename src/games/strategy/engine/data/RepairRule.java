@@ -1,10 +1,8 @@
 package games.strategy.engine.data;
 
-import java.io.Serializable;
-
 import games.strategy.util.IntegerMap;
 
-public class RepairRule extends DefaultNamed implements Serializable {
+public class RepairRule extends DefaultNamed {
   private static final long serialVersionUID = -45646671022993959L;
   private final IntegerMap<Resource> m_cost = new IntegerMap<>();
   private final IntegerMap<NamedAttachable> m_results = new IntegerMap<>();

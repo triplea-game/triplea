@@ -3,6 +3,8 @@ package games.strategy.triplea.ui;
 import java.awt.Cursor;
 import java.util.logging.Level;
 
+import javax.swing.JLabel;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
@@ -17,12 +19,10 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.util.Stopwatch;
 
-import javax.swing.*;
-
 /**
  * Headless version, so that we don't get error in linux when the system has no graphics configuration.
  */
-public class HeadlessUIContext extends AbstractUIContext implements IUIContext {
+public class HeadlessUIContext extends AbstractUIContext {
   public HeadlessUIContext() {
     super();
   }

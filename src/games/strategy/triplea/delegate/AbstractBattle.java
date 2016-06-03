@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,7 +25,7 @@ import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.IntegerMap;
 
-abstract public class AbstractBattle implements IBattle, Serializable {
+abstract public class AbstractBattle implements IBattle {
   private static final long serialVersionUID = 871090498661731337L;
   protected final GUID m_battleID = new GUID();
   /**

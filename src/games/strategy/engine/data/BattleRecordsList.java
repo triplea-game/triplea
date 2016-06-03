@@ -1,6 +1,5 @@
 package games.strategy.engine.data;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,7 +11,7 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 /**
  * A holder for BattleRecords
  */
-public class BattleRecordsList extends GameDataComponent implements Serializable {
+public class BattleRecordsList extends GameDataComponent {
   private static final long serialVersionUID = 7515693859612849475L;
   private final Map<Integer, BattleRecords> m_battleRecords = new HashMap<>();
 

@@ -1,6 +1,5 @@
 package games.strategy.engine.data;
 
-import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 import games.strategy.triplea.Constants;
@@ -10,7 +9,7 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CompositeMatchAnd;
 
-public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serializable {
+public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   private static final long serialVersionUID = -2284878450555315947L;
   private final boolean m_optional;
   private final boolean m_canBeDisabled;

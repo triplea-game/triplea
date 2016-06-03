@@ -22,7 +22,6 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.AIUtils;
@@ -38,7 +37,6 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
@@ -50,7 +48,7 @@ import games.strategy.util.Util;
 /*
  * A very weak ai, based on some simple rules.<p>
  */
-public class WeakAI extends AbstractAI implements IGamePlayer, ITripleAPlayer {
+public class WeakAI extends AbstractAI {
   private final static Logger s_logger = Logger.getLogger(WeakAI.class.getName());
 
   /** Creates new TripleAPlayer */
