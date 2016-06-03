@@ -69,7 +69,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
   private Set<Territory> m_attackingFrom = new HashSet<>();
   private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<>();
   private final Collection<Unit> m_defendingWaitingToDie = new ArrayList<>();
-  private Collection<Unit> m_defendingAir = new ArrayList<>();
   // keep track of all the units that die in the battle to show in the history window
   private final Collection<Unit> m_killed = new ArrayList<>();
   /**
@@ -2615,7 +2614,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     // units in m_attackingUnits are allied with the attacker? Does it really matter?
     final CompositeMatch<Unit> alliedDefendingAir =
         new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.UnitWasScrambled.invert());
-    m_defendingAir = Match.getMatches(m_defendingUnits, alliedDefendingAir);
+    Collection<Unit> m_defendingAir = Match.getMatches(m_defendingUnits, alliedDefendingAir);
     // no planes, exit
     if (m_defendingAir.isEmpty()) {
       return;

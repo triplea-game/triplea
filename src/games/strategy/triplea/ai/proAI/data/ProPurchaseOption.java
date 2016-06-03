@@ -43,7 +43,6 @@ public class ProPurchaseOption {
   private final boolean isDestroyer;
   private final boolean isTransport;
   private final boolean isCarrier;
-  private final boolean isInfra;
   private final int transportCapacity;
   private final int carrierCapacity;
   private final double transportEfficiency;
@@ -68,7 +67,7 @@ public class ProPurchaseOption {
     costs = productionRule.getCosts();
     movement = unitAttachment.getMovement(player);
     quantity = productionRule.getResults().totalValues();
-    isInfra = unitAttachment.getIsInfrastructure();
+    boolean isInfra = unitAttachment.getIsInfrastructure();
     hitPoints = unitAttachment.getHitPoints() * quantity;
     if (isInfra) {
       hitPoints = 0;

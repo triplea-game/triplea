@@ -221,6 +221,12 @@ public class TripleAFrame extends MainGameFrame {
     messageAndDialogThreadPool = new ThreadPool(1);
     addZoomKeyboardShortcuts();
     this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    WindowListener WINDOW_LISTENER = new WindowAdapter() {
+      @Override
+      public void windowClosing(final WindowEvent e) {
+        leaveGame();
+      }
+    };
     this.addWindowListener(WINDOW_LISTENER);
     uiContext = new UIContext();
     uiContext.setDefaultMapDir(game.getData());
@@ -231,6 +237,46 @@ public class TripleAFrame extends MainGameFrame {
     editModeButtonModel = new JToggleButton.ToggleButtonModel();
     editModeButtonModel.setEnabled(false);
     showCommentLogButtonModel = new JToggleButton.ToggleButtonModel();
+    AbstractAction m_showCommentLogAction = new AbstractAction() {
+      private static final long serialVersionUID = 3964381772343872268L;
+
+      @Override
+      public void actionPerformed(final ActionEvent ae) {
+        if (showCommentLogButtonModel.isSelected()) {
+          showCommentLog();
+        } else {
+          hideCommentLog();
+        }
+      }
+
+      private void hideCommentLog() {
+        if (chatPanel != null) {
+          commentSplit.setBottomComponent(null);
+          chatSplit.setBottomComponent(chatPanel);
+          chatSplit.validate();
+        } else {
+          mapAndChatPanel.removeAll();
+          chatSplit.setTopComponent(null);
+          chatSplit.setBottomComponent(null);
+          mapAndChatPanel.add(mapPanel, BorderLayout.CENTER);
+          mapAndChatPanel.validate();
+        }
+      }
+
+      private void showCommentLog() {
+        if (chatPanel != null) {
+          commentSplit.setBottomComponent(chatPanel);
+          chatSplit.setBottomComponent(commentSplit);
+          chatSplit.validate();
+        } else {
+          mapAndChatPanel.removeAll();
+          chatSplit.setTopComponent(mapPanel);
+          chatSplit.setBottomComponent(commentPanel);
+          mapAndChatPanel.add(chatSplit, BorderLayout.CENTER);
+          mapAndChatPanel.validate();
+        }
+      }
+    };
     showCommentLogButtonModel.addActionListener(m_showCommentLogAction);
     showCommentLogButtonModel.setSelected(false);
     menu = new TripleAMenu(this);
@@ -244,6 +290,12 @@ public class TripleAFrame extends MainGameFrame {
     smallView = new MapPanelSmallView(small, model);
     mapPanel = new MapPanel(data, smallView, uiContext, model);
     mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
+    MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = new MouseOverUnitListener() {
+      @Override
+      public void mouseEnter(final List<Unit> units, final Territory territory, final MouseDetails me) {
+        unitsBeingMousedOver = units;
+      }
+    };
     mapPanel.addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
     // link the small and large images
     mapPanel.initSmallMap();
@@ -560,18 +612,6 @@ public class TripleAFrame extends MainGameFrame {
     }
   }
 
-  private WindowListener WINDOW_LISTENER = new WindowAdapter() {
-    @Override
-    public void windowClosing(final WindowEvent e) {
-      leaveGame();
-    }
-  };
-  private final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = new MouseOverUnitListener() {
-    @Override
-    public void mouseEnter(final List<Unit> units, final Territory territory, final MouseDetails me) {
-      unitsBeingMousedOver = units;
-    }
-  };
   public MapSelectionListener MAP_SELECTION_LISTENER = new DefaultMapSelectionListener() {
     @Override
     public void mouseEntered(final Territory territory) {
@@ -2232,47 +2272,6 @@ public class TripleAFrame extends MainGameFrame {
     }
     return isEditMode;
   }
-
-  private AbstractAction m_showCommentLogAction = new AbstractAction() {
-    private static final long serialVersionUID = 3964381772343872268L;
-
-    @Override
-    public void actionPerformed(final ActionEvent ae) {
-      if (showCommentLogButtonModel.isSelected()) {
-        showCommentLog();
-      } else {
-        hideCommentLog();
-      }
-    }
-
-    private void hideCommentLog() {
-      if (chatPanel != null) {
-        commentSplit.setBottomComponent(null);
-        chatSplit.setBottomComponent(chatPanel);
-        chatSplit.validate();
-      } else {
-        mapAndChatPanel.removeAll();
-        chatSplit.setTopComponent(null);
-        chatSplit.setBottomComponent(null);
-        mapAndChatPanel.add(mapPanel, BorderLayout.CENTER);
-        mapAndChatPanel.validate();
-      }
-    }
-
-    private void showCommentLog() {
-      if (chatPanel != null) {
-        commentSplit.setBottomComponent(chatPanel);
-        chatSplit.setBottomComponent(commentSplit);
-        chatSplit.validate();
-      } else {
-        mapAndChatPanel.removeAll();
-        chatSplit.setTopComponent(mapPanel);
-        chatSplit.setBottomComponent(commentPanel);
-        mapAndChatPanel.add(chatSplit, BorderLayout.CENTER);
-        mapAndChatPanel.validate();
-      }
-    }
-  };
 
   private AbstractAction m_showHistoryAction = new AbstractAction("Show history") {
     private static final long serialVersionUID = -3960551522512897374L;

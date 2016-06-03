@@ -79,7 +79,6 @@ public class EditPanel extends ActionPanel {
   private Action m_changeTerritoryOwnerAction;
   private Action m_changePoliticalRelationships;
   private Action m_currentAction = null;
-  private JLabel m_actionLabel;
   private boolean m_active = false;
   private Point m_mouseSelectedPoint;
   private Point m_mouseCurrentPoint;
@@ -91,7 +90,7 @@ public class EditPanel extends ActionPanel {
   public EditPanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
     m_frame = frame;
-    m_actionLabel = new JLabel();
+    JLabel m_actionLabel = new JLabel();
     m_performMoveAction = new AbstractAction("Perform Move or Other Actions") {
       private static final long serialVersionUID = 2205085537962024476L;
 

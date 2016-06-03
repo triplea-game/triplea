@@ -114,7 +114,68 @@ public class MapPanel extends ImageScrollerLargeView {
     this.smallMapImageManager =
         new SmallMapImageManager(smallView, this.uiContext.getMapImage().getSmallMapImage(), this.tileManager);
     setGameData(data);
+    MouseListener MOUSE_LISTENER = new MouseAdapter() {
+      /**
+       * Invoked when the mouse exits a component.
+       */
+      @Override
+      public void mouseExited(final MouseEvent e) {
+        if (unitsChanged(null)) {
+          final MouseDetails md = convert(e);
+          currentUnits = null;
+          notifyMouseEnterUnit(Collections.emptyList(), getTerritory(e.getX(), e.getY()), md);
+        }
+      }
+
+      // this can't be mouseClicked, since a lot of people complain that clicking doesn't work well
+      @Override
+      public void mouseReleased(final MouseEvent e) {
+        final MouseDetails md = convert(e);
+        final double scaledMouseX = e.getX() / m_scale;
+        final double scaledMouseY = e.getY() / m_scale;
+        final double x = normalizeX(scaledMouseX + getXOffset());
+        final double y = normalizeY(scaledMouseY + getYOffset());
+        final Territory terr = getTerritory(x, y);
+        if (terr != null) {
+          notifyTerritorySelected(terr, md);
+        }
+        if (!unitSelectionListeners.isEmpty()) {
+          Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, m_data);
+          if (tuple == null) {
+            tuple = Tuple.of(getTerritory(x, y), new ArrayList<Unit>(0));
+          }
+          notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), md);
+        }
+      }
+    };
     this.addMouseListener(MOUSE_LISTENER);
+    MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter() {
+      @Override
+      public void mouseMoved(final MouseEvent e) {
+        final MouseDetails md = convert(e);
+        final double scaledMouseX = e.getX() / m_scale;
+        final double scaledMouseY = e.getY() / m_scale;
+        final double x = normalizeX(scaledMouseX + getXOffset());
+        final double y = normalizeY(scaledMouseY + getYOffset());
+        final Territory terr = getTerritory(x, y);
+        // we can use == here since they will be the same object.
+        // dont use .equals since we have nulls
+        if (terr != currentTerritory) {
+          currentTerritory = terr;
+          notifyMouseEntered(terr);
+        }
+        notifyMouseMoved(terr, md);
+        final Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, m_data);
+        if (unitsChanged(tuple)) {
+          currentUnits = tuple;
+          if (tuple == null) {
+            notifyMouseEnterUnit(Collections.emptyList(), getTerritory(x, y), md);
+          } else {
+            notifyMouseEnterUnit(tuple.getSecond(), tuple.getFirst(), md);
+          }
+        }
+      }
+    };
     this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
     this.addScrollListener(new ScrollListener() {
       @Override
@@ -310,41 +371,6 @@ public class MapPanel extends ImageScrollerLargeView {
     // m_smallMapImageManager.update(m_data, m_uiContext.getMapData());
   }
 
-  private final MouseListener MOUSE_LISTENER = new MouseAdapter() {
-    /**
-     * Invoked when the mouse exits a component.
-     */
-    @Override
-    public void mouseExited(final MouseEvent e) {
-      if (unitsChanged(null)) {
-        final MouseDetails md = convert(e);
-        currentUnits = null;
-        notifyMouseEnterUnit(Collections.emptyList(), getTerritory(e.getX(), e.getY()), md);
-      }
-    }
-
-    // this can't be mouseClicked, since a lot of people complain that clicking doesn't work well
-    @Override
-    public void mouseReleased(final MouseEvent e) {
-      final MouseDetails md = convert(e);
-      final double scaledMouseX = e.getX() / m_scale;
-      final double scaledMouseY = e.getY() / m_scale;
-      final double x = normalizeX(scaledMouseX + getXOffset());
-      final double y = normalizeY(scaledMouseY + getYOffset());
-      final Territory terr = getTerritory(x, y);
-      if (terr != null) {
-        notifyTerritorySelected(terr, md);
-      }
-      if (!unitSelectionListeners.isEmpty()) {
-        Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, m_data);
-        if (tuple == null) {
-          tuple = Tuple.of(getTerritory(x, y), new ArrayList<Unit>(0));
-        }
-        notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), md);
-      }
-    }
-  };
-
   private MouseDetails convert(final MouseEvent me) {
     final double scaledMouseX = me.getX() / m_scale;
     final double scaledMouseY = me.getY() / m_scale;
@@ -352,34 +378,6 @@ public class MapPanel extends ImageScrollerLargeView {
     final double y = normalizeY(scaledMouseY + getYOffset());
     return new MouseDetails(me, x, y);
   }
-
-  private final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter() {
-    @Override
-    public void mouseMoved(final MouseEvent e) {
-      final MouseDetails md = convert(e);
-      final double scaledMouseX = e.getX() / m_scale;
-      final double scaledMouseY = e.getY() / m_scale;
-      final double x = normalizeX(scaledMouseX + getXOffset());
-      final double y = normalizeY(scaledMouseY + getYOffset());
-      final Territory terr = getTerritory(x, y);
-      // we can use == here since they will be the same object.
-      // dont use .equals since we have nulls
-      if (terr != currentTerritory) {
-        currentTerritory = terr;
-        notifyMouseEntered(terr);
-      }
-      notifyMouseMoved(terr, md);
-      final Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, m_data);
-      if (unitsChanged(tuple)) {
-        currentUnits = tuple;
-        if (tuple == null) {
-          notifyMouseEnterUnit(Collections.emptyList(), getTerritory(x, y), md);
-        } else {
-          notifyMouseEnterUnit(tuple.getSecond(), tuple.getFirst(), md);
-        }
-      }
-    }
-  };
 
   private boolean unitsChanged(final Tuple<Territory, List<Unit>> newUnits) {
     // both are null

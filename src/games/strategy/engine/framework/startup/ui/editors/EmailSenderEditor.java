@@ -39,8 +39,6 @@ public class EmailSenderEditor extends EditorPanel {
   private final JCheckBox m_useTLS = new JCheckBox("Use TLS encryption");
   private final JTextField m_password = new JPasswordField();
   private final JLabel m_toLabel = new JLabel("To:");
-  private final JLabel m_loginLabel = new JLabel("Login:");
-  private final JLabel m_passwordLabel = new JLabel("Password:");
   private final JLabel m_hostLabel = new JLabel("Host:");
   private final JLabel m_portLabel = new JLabel("Port:");
   private final JButton m_testEmail = new JButton("Test Email");
@@ -77,11 +75,13 @@ public class EmailSenderEditor extends EditorPanel {
     add(m_toAddress, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST,
         GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
     row++;
+    JLabel m_loginLabel = new JLabel("Login:");
     add(m_loginLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
     add(m_login, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         new Insets(0, 0, bottomSpace, 0), 0, 0));
     row++;
+    JLabel m_passwordLabel = new JLabel("Password:");
     add(m_passwordLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
         GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
     add(m_password, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,

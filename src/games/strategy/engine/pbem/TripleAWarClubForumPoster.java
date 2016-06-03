@@ -28,8 +28,6 @@ import games.strategy.triplea.help.HelpSupport;
  */
 public class TripleAWarClubForumPoster extends AbstractForumPoster {
   private static final long serialVersionUID = -4017550807078258152L;
-  private static String m_host = "www.tripleawarclub.org";
-  private static String s_forumId = "20";
   private static Pattern s_XOOPS_TOKEN_REQUEST =
       Pattern.compile(".*XOOPS_TOKEN_REQUEST[^>]*value=\"([^\"]*)\".*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
   private transient HttpState m_httpState;
@@ -92,6 +90,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
     try {
       login();
       // load the reply page
+      String s_forumId = "20";
       final String url =
           "http://www.tripleawarclub.org/modules/newbb/reply.php?forum=" + s_forumId + "&topic_id=" + m_topicId;
       GetMethod get = new GetMethod(url);
@@ -213,6 +212,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
 
   @Override
   public void viewPosted() {
+    String m_host = "www.tripleawarclub.org";
     final String url = "http://" + m_host + "/modules/newbb/viewtopic.php?topic_id=" + m_topicId;
     DesktopUtilityBrowserLauncher.openURL(url);
   }

@@ -15,19 +15,16 @@ import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 
 public class PlayerOrder {
-  private Iterator<GameStep> m_gameStepIterator;
-  private GameData m_data;
   private final List<PlayerID> m_playerSet = new ArrayList<>();
-  private PrintGenerationData m_printData;
 
   private <E> Set<E> removeDups(final Collection<E> c) {
     return new LinkedHashSet<>(c);
   }
 
   protected void saveToFile(final PrintGenerationData printData) throws IOException {
-    m_data = printData.getData();
-    m_printData = printData;
-    m_gameStepIterator = m_data.getSequence().iterator();
+    GameData m_data = printData.getData();
+    PrintGenerationData m_printData = printData;
+    Iterator<GameStep> m_gameStepIterator = m_data.getSequence().iterator();
     while (m_gameStepIterator.hasNext()) {
       final GameStep currentStep = m_gameStepIterator.next();
       if (currentStep.getDelegate() != null && currentStep.getDelegate().getClass() != null) {

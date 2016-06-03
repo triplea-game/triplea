@@ -47,8 +47,6 @@ public class IndividualUnitPanelGrouped extends JPanel {
   private final Collection<Tuple<String, IndividualUnitPanel>> m_entries =
       new ArrayList<>();
   private final JLabel m_leftToSelect = new JLabel();
-  private JButton m_autoSelectButton;
-  private JButton m_selectNoneButton;
   private final boolean m_showSelectAll;
   private final ScrollableTextFieldListener m_textFieldListener = new ScrollableTextFieldListener() {
     @Override
@@ -125,9 +123,9 @@ public class IndividualUnitPanelGrouped extends JPanel {
     this.setLayout(new GridBagLayout());
     final Insets nullInsets = new Insets(0, 0, 0, 0);
     final Dimension buttonSize = new Dimension(80, 20);
-    m_selectNoneButton = new JButton("None");
+    JButton m_selectNoneButton = new JButton("None");
     m_selectNoneButton.setPreferredSize(buttonSize);
-    m_autoSelectButton = new JButton("Max");
+    JButton m_autoSelectButton = new JButton("Max");
     m_autoSelectButton.setPreferredSize(buttonSize);
     add(m_title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         nullInsets, 0, 0));

@@ -14,7 +14,6 @@ import javax.swing.JPanel;
 
 public class PropertiesUI extends JPanel {
   private static final long serialVersionUID = 3870459799384582310L;
-  private final List<? extends IEditableProperty> m_properties;
   private int m_nextRow;
   private int m_labelColumn;
 
@@ -42,7 +41,7 @@ public class PropertiesUI extends JPanel {
 
   public PropertiesUI(final List<? extends IEditableProperty> properties, final boolean editable) {
     init();
-    m_properties = properties;
+    List<? extends IEditableProperty> m_properties = properties;
     for (final IEditableProperty property : m_properties) {
       // Limit it to 14 rows then start a new column
       // Don't know if this is the most elegant solution, but it works.

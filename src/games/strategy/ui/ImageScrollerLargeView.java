@@ -43,9 +43,6 @@ public class ImageScrollerLargeView extends JComponent {
   // how close to an edge we have to be before we scroll
   private final static int TOLERANCE = 30;
 
-  // if we get even closer to the edge, we scroll a bit faster
-  private final int FASTER_TOLERANCE = 10;
-
   // how much we scroll
   private final static int SCROLL_DISTANCE = 30;
   private final static float FASTER_SCROLL_MULTIPLIER = 1.5f;
@@ -88,11 +85,157 @@ public class ImageScrollerLargeView extends JComponent {
     m_model.setMaxBounds((int) dimension.getWidth(), (int) dimension.getHeight());
     setPreferredSize(getImageDimensions());
     setMaximumSize(getImageDimensions());
+    MouseWheelListener MOUSE_WHEEL_LISTENER = new MouseWheelListener() {
+      @Override
+      public void mouseWheelMoved(final MouseWheelEvent e) {
+        if (!e.isAltDown()) {
+          if (m_edge == NONE) {
+            m_insideCount = 0;
+          }
+          // compute the amount to move
+          int dx = 0;
+          int dy = 0;
+          if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK) {
+            dx = e.getWheelRotation() * WHEEL_SCROLL_AMOUNT;
+          } else {
+            dy = e.getWheelRotation() * WHEEL_SCROLL_AMOUNT;
+          }
+          // move left and right and test for wrap
+          int newX = (m_model.getX() + dx);
+          if (newX > m_model.getMaxWidth() - getWidth()) {
+            newX -= m_model.getMaxWidth();
+          }
+          if (newX < -getWidth()) {
+            newX += m_model.getMaxWidth();
+          }
+          // move up and down and test for edges
+          final int newY = m_model.getY() + dy;
+          // update the map
+          m_model.set(newX, newY);
+        } else {
+          double value = m_scale;
+          int positive = 1;
+          if (e.getUnitsToScroll() > 0) {
+            positive = -1;
+          }
+          if ((positive > 0 && value == 1) || (positive < 0 && value <= .21)) {
+            return;
+          }
+          if (positive > 0) {
+            if (value >= .79) {
+              value = 1.0;
+            } else if (value >= .59) {
+              value = .8;
+            } else if (value >= .39) {
+              value = .6;
+            } else if (value >= .19) {
+              value = .4;
+            } else {
+              value = .2;
+            }
+          } else {
+            if (value <= .41) {
+              value = .2;
+            } else if (value <= .61) {
+              value = .4;
+            } else if (value <= .81) {
+              value = .6;
+            } else if (value <= 1.0) {
+              value = .8;
+            } else {
+              value = 1.0;
+            }
+          }
+          setScale(value);
+        }
+      }
+    };
     addMouseWheelListener(MOUSE_WHEEL_LISTENER);
+    MouseAdapter MOUSE_LISTENER = new MouseAdapter() {
+      @Override
+      public void mouseEntered(final MouseEvent e) {
+        m_timer.start();
+      }
+
+      @Override
+      public void mouseExited(final MouseEvent e) {
+        m_inside = false;
+        m_timer.stop();
+      }
+
+      @Override
+      public void mouseClicked(final MouseEvent e) {
+        requestFocusInWindow();
+      }
+
+      @Override
+      public void mouseReleased(final MouseEvent e) {
+        requestFocusInWindow();
+      }
+    };
     addMouseListener(MOUSE_LISTENER);
+    MouseAdapter MOUSE_LISTENER_DRAG_SCROLLING = new MouseAdapter() {
+      @Override
+      public void mousePressed(final MouseEvent e) {
+        // try to center around the click
+        m_drag_scrolling_lastx = e.getX();
+        m_drag_scrolling_lasty = e.getY();
+      }
+    };
     addMouseListener(MOUSE_LISTENER_DRAG_SCROLLING);
+    MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter() {
+      @Override
+      public void mouseMoved(final MouseEvent e) {
+        m_inside = true;
+        final int x = e.getX();
+        final int y = e.getY();
+        final int height = getHeight();
+        final int width = getWidth();
+        m_edge = getNewEdge(x, y, width, height);
+        if (m_edge == NONE) {
+          m_insideCount = 0;
+        }
+      }
+    };
     addMouseMotionListener(MOUSE_MOTION_LISTENER);
+    /*
+    this is used to detect drag scrolling
+   */
+    MouseMotionListener MOUSE_DRAG_LISTENER = new MouseMotionAdapter() {
+      @Override
+      public void mouseDragged(final MouseEvent e) {
+        requestFocusInWindow();
+        // the right button must be the one down
+        if ((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
+          m_inside = false;
+          // read in location
+          final int x = e.getX();
+          final int y = e.getY();
+          if (m_edge == NONE) {
+            m_insideCount = 0;
+          }
+          // compute the amount to move
+          final int dx = (m_drag_scrolling_lastx - x);
+          final int dy = (m_drag_scrolling_lasty - y);
+          // move left and right and test for wrap
+          final int newX = (m_model.getX() + dx);
+          // move up and down and test for edges
+          final int newY = m_model.getY() + dy;
+          // update the map
+          m_model.set(newX, newY);
+          // store the location of the mouse for the next move
+          m_drag_scrolling_lastx = e.getX();
+          m_drag_scrolling_lasty = e.getY();
+        }
+      }
+    };
     addMouseMotionListener(MOUSE_DRAG_LISTENER);
+    ComponentListener COMPONENT_LISTENER = new ComponentAdapter() {
+      @Override
+      public void componentResized(final ComponentEvent e) {
+        refreshBoxSize();
+      }
+    };
     addComponentListener(COMPONENT_LISTENER);
     m_timer.start();
     m_model.addObserver(new Observer() {
@@ -172,32 +315,10 @@ public class ImageScrollerLargeView extends JComponent {
     return new Dimension(m_model.getMaxWidth(), m_model.getMaxHeight());
   }
 
-  private final MouseAdapter MOUSE_LISTENER = new MouseAdapter() {
-    @Override
-    public void mouseEntered(final MouseEvent e) {
-      m_timer.start();
-    }
-
-    @Override
-    public void mouseExited(final MouseEvent e) {
-      m_inside = false;
-      m_timer.stop();
-    }
-
-    @Override
-    public void mouseClicked(final MouseEvent e) {
-      requestFocusInWindow();
-    }
-
-    @Override
-    public void mouseReleased(final MouseEvent e) {
-      requestFocusInWindow();
-    }
-  };
-
   private int getNewEdge(final int x, final int y, final int width, final int height) {
     int newEdge = NONE;
     this.m_insideFasterPosition = false;
+    int FASTER_TOLERANCE = 10;
     if (x < TOLERANCE) {
       newEdge += LEFT;
       if (x < FASTER_TOLERANCE) {
@@ -223,13 +344,6 @@ public class ImageScrollerLargeView extends JComponent {
     return newEdge;
   }
 
-  private final ComponentListener COMPONENT_LISTENER = new ComponentAdapter() {
-    @Override
-    public void componentResized(final ComponentEvent e) {
-      refreshBoxSize();
-    }
-  };
-
   protected void refreshBoxSize() {
     m_model.setBoxDimensions((int) (getWidth() / m_scale), (int) (getHeight() / m_scale));
   }
@@ -251,125 +365,6 @@ public class ImageScrollerLargeView extends JComponent {
     m_scale = value;
     refreshBoxSize();
   }
-
-  private final MouseWheelListener MOUSE_WHEEL_LISTENER = new MouseWheelListener() {
-    @Override
-    public void mouseWheelMoved(final MouseWheelEvent e) {
-      if (!e.isAltDown()) {
-        if (m_edge == NONE) {
-          m_insideCount = 0;
-        }
-        // compute the amount to move
-        int dx = 0;
-        int dy = 0;
-        if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK) {
-          dx = e.getWheelRotation() * WHEEL_SCROLL_AMOUNT;
-        } else {
-          dy = e.getWheelRotation() * WHEEL_SCROLL_AMOUNT;
-        }
-        // move left and right and test for wrap
-        int newX = (m_model.getX() + dx);
-        if (newX > m_model.getMaxWidth() - getWidth()) {
-          newX -= m_model.getMaxWidth();
-        }
-        if (newX < -getWidth()) {
-          newX += m_model.getMaxWidth();
-        }
-        // move up and down and test for edges
-        final int newY = m_model.getY() + dy;
-        // update the map
-        m_model.set(newX, newY);
-      } else {
-        double value = m_scale;
-        int positive = 1;
-        if (e.getUnitsToScroll() > 0) {
-          positive = -1;
-        }
-        if ((positive > 0 && value == 1) || (positive < 0 && value <= .21)) {
-          return;
-        }
-        if (positive > 0) {
-          if (value >= .79) {
-            value = 1.0;
-          } else if (value >= .59) {
-            value = .8;
-          } else if (value >= .39) {
-            value = .6;
-          } else if (value >= .19) {
-            value = .4;
-          } else {
-            value = .2;
-          }
-        } else {
-          if (value <= .41) {
-            value = .2;
-          } else if (value <= .61) {
-            value = .4;
-          } else if (value <= .81) {
-            value = .6;
-          } else if (value <= 1.0) {
-            value = .8;
-          } else {
-            value = 1.0;
-          }
-        }
-        setScale(value);
-      }
-    }
-  };
-  /**
-   * this is used to detect drag scrolling
-   */
-  private final MouseMotionListener MOUSE_DRAG_LISTENER = new MouseMotionAdapter() {
-    @Override
-    public void mouseDragged(final MouseEvent e) {
-      requestFocusInWindow();
-      // the right button must be the one down
-      if ((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
-        m_inside = false;
-        // read in location
-        final int x = e.getX();
-        final int y = e.getY();
-        if (m_edge == NONE) {
-          m_insideCount = 0;
-        }
-        // compute the amount to move
-        final int dx = (m_drag_scrolling_lastx - x);
-        final int dy = (m_drag_scrolling_lasty - y);
-        // move left and right and test for wrap
-        final int newX = (m_model.getX() + dx);
-        // move up and down and test for edges
-        final int newY = m_model.getY() + dy;
-        // update the map
-        m_model.set(newX, newY);
-        // store the location of the mouse for the next move
-        m_drag_scrolling_lastx = e.getX();
-        m_drag_scrolling_lasty = e.getY();
-      }
-    }
-  };
-  private final MouseAdapter MOUSE_LISTENER_DRAG_SCROLLING = new MouseAdapter() {
-    @Override
-    public void mousePressed(final MouseEvent e) {
-      // try to center around the click
-      m_drag_scrolling_lastx = e.getX();
-      m_drag_scrolling_lasty = e.getY();
-    }
-  };
-  private final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter() {
-    @Override
-    public void mouseMoved(final MouseEvent e) {
-      m_inside = true;
-      final int x = e.getX();
-      final int y = e.getY();
-      final int height = getHeight();
-      final int width = getWidth();
-      m_edge = getNewEdge(x, y, width, height);
-      if (m_edge == NONE) {
-        m_insideCount = 0;
-      }
-    }
-  };
 
   /**
    * Update will not be seen until update is called. Resets the offscreen

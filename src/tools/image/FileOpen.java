@@ -6,7 +6,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 public class FileOpen {
-  private final String ERR_MSG_1 = "Warning! Could not load the file!";
   private File file = null;
 
   /**
@@ -79,6 +78,7 @@ public class FileOpen {
       // get the file
       file = chooser.getSelectedFile();
     } catch (final Exception ex) {
+      String ERR_MSG_1 = "Warning! Could not load the file!";
       JOptionPane.showMessageDialog(null, ERR_MSG_1, "Warning!", JOptionPane.WARNING_MESSAGE);
       file = null;
     }

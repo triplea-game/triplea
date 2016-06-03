@@ -136,13 +136,6 @@ public class OddsCalculatorPanel extends JPanel {
       setWidgetActivation();
     }
   };
-  private final OddsCalculatorListener m_listenerOddsCalculator = new OddsCalculatorListener() {
-    @Override
-    public void dataReady() {
-      m_calculateButton.setText("Calculate Odds");
-      m_calculateButton.setEnabled(true);
-    }
-  };
 
   public OddsCalculatorPanel(final GameData data, final IUIContext context, final Territory location,
       final Window parent) {
@@ -192,6 +185,13 @@ public class OddsCalculatorPanel extends JPanel {
       System.gc();
     }
     m_calculator = new ConcurrentOddsCalculator("BtlCalc Panel");
+    OddsCalculatorListener m_listenerOddsCalculator = new OddsCalculatorListener() {
+      @Override
+      public void dataReady() {
+        m_calculateButton.setText("Calculate Odds");
+        m_calculateButton.setEnabled(true);
+      }
+    };
     m_calculator.addOddsCalculatorListener(m_listenerOddsCalculator);
     m_calculator.setGameData(m_data);
     setWidgetActivation();
@@ -1059,25 +1059,23 @@ class PlayerUnitsPanel extends JPanel {
 
 class UnitPanel extends JPanel {
   private static final long serialVersionUID = 1509643150038705671L;
-  private final IUIContext m_context;
   private final UnitCategory m_category;
   private final ScrollableTextField m_textField;
-  private final GameData m_data;
   private final ListenerList<WidgetChangedListener> m_listeners = new ListenerList<>();
-  private final ScrollableTextFieldListener m_listenerTextField = new ScrollableTextFieldListener() {
-    @Override
-    public void changedValue(final ScrollableTextField field) {
-      notifyListeners();
-    }
-  };
 
   public UnitPanel(final GameData data, final IUIContext context, final UnitCategory category,
       final IntegerMap<UnitType> costs) {
     m_category = category;
-    m_context = context;
-    m_data = data;
+    IUIContext m_context = context;
+    GameData m_data = data;
     m_textField = new ScrollableTextField(0, 512);
     m_textField.setShowMaxAndMin(false);
+    ScrollableTextFieldListener m_listenerTextField = new ScrollableTextFieldListener() {
+      @Override
+      public void changedValue(final ScrollableTextField field) {
+        notifyListeners();
+      }
+    };
     m_textField.addChangeListener(m_listenerTextField);
 
     final String toolTipText = "<html>" + m_category.getType().getName() + ":  " + costs.getInt(m_category.getType())
@@ -1087,7 +1085,8 @@ class UnitPanel extends JPanel {
     setLayout(new GridBagLayout());
 
 
-    final Optional<Image> img = m_context.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
+    final Optional<Image> img = m_context.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(),
+        m_data,
         m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled());
 
     final JLabel label = img.isPresent() ? new JLabel(new ImageIcon(img.get())) : new JLabel();

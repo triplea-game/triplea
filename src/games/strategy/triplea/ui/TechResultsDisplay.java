@@ -33,10 +33,9 @@ import games.strategy.triplea.delegate.dataObjects.TechResults;
  */
 public class TechResultsDisplay extends JPanel {
   private static final long serialVersionUID = -8303376983862918107L;
-  private final IUIContext m_uiContext;
 
   public TechResultsDisplay(final TechResults msg, final IUIContext uiContext, final GameData data) {
-    m_uiContext = uiContext;
+    IUIContext m_uiContext = uiContext;
     setLayout(new GridBagLayout());
     add(new JLabel("You got " + msg.getHits() + " hit" + (msg.getHits() != 1 ? "s" : "") + "."), new GridBagConstraints(
         0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 5, 0), 0, 0));

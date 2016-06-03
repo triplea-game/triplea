@@ -19,18 +19,9 @@ import games.strategy.engine.data.GameData;
 
 public class SetupFrame extends JPanel {
   private static final long serialVersionUID = 7308943603423170303L;
-  private final JLabel m_info1;
-  private final JLabel m_info2;
-  private final JLabel m_info3;
-  private final JPanel m_infoPanel;
-  private final JPanel m_textButtonRadioPanel;
-  private final JButton m_outDirButton;
-  private final JButton m_runButton;
   private final JTextField m_outField;
   private final JFileChooser m_outChooser;
-  private final JRadioButton m_currentState;
   private final JRadioButton m_originalState;
-  private final ButtonGroup m_radioButtonGroup;
   private final GameData m_data;
   private File m_outDir;
 
@@ -39,18 +30,18 @@ public class SetupFrame extends JPanel {
    */
   public SetupFrame(final GameData data) {
     super(new BorderLayout());
-    m_info1 = new JLabel();
-    m_info2 = new JLabel();
-    m_info3 = new JLabel();
+    JLabel m_info1 = new JLabel();
+    JLabel m_info2 = new JLabel();
+    JLabel m_info3 = new JLabel();
     m_data = data;
-    m_outDirButton = new JButton();
-    m_runButton = new JButton();
+    JButton m_outDirButton = new JButton();
+    JButton m_runButton = new JButton();
     m_outField = new JTextField(15);
     m_outChooser = new JFileChooser();
     m_outChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    m_currentState = new JRadioButton();
+    JRadioButton m_currentState = new JRadioButton();
     m_originalState = new JRadioButton();
-    m_radioButtonGroup = new ButtonGroup();
+    ButtonGroup m_radioButtonGroup = new ButtonGroup();
     m_info1.setText("This utility will export the map's either current or ");
     m_info2.setText("beginning state exactly like the boardgame, so you ");
     m_info3.setText("will get Setup Charts, Unit Information, etc.");
@@ -87,8 +78,8 @@ public class SetupFrame extends JPanel {
         }
       }
     });
-    m_infoPanel = SwingComponents.gridPanel(3, 1);
-    m_textButtonRadioPanel = new JPanel(new BorderLayout());
+    JPanel m_infoPanel = SwingComponents.gridPanel(3, 1);
+    JPanel m_textButtonRadioPanel = new JPanel(new BorderLayout());
     m_infoPanel.add(m_info1);
     m_infoPanel.add(m_info2);
     m_infoPanel.add(m_info3);

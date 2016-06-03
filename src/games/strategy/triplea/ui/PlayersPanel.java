@@ -19,12 +19,10 @@ import games.strategy.engine.framework.IGame;
  */
 public class PlayersPanel extends JPanel {
   private static final long serialVersionUID = 9177417134839960231L;
-  private final PlayerManager m_players;
-  private final IUIContext m_uiContext;
 
   public PlayersPanel(final PlayerManager players, final IUIContext uiContext, final GameData data) {
-    m_players = players;
-    m_uiContext = uiContext;
+    PlayerManager m_players = players;
+    IUIContext m_uiContext = uiContext;
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     for (final String player : m_players.getPlayers()) {
       final PlayerID playerID = data.getPlayerList().getPlayerID(player);

@@ -20,18 +20,15 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
 
 class CountryChart {
-  private Collection<Territory> m_terrCollection;
-  private GameData m_data;
-  private Iterator<Territory> m_terrIterator;
   private final Map<Territory, List<Map<UnitType, Integer>>> m_infoMap =
       new HashMap<>();
-  private PrintGenerationData m_printData;
 
   protected void saveToFile(final PlayerID player, final PrintGenerationData printData) {
-    m_data = printData.getData();
-    m_printData = printData;
-    m_terrCollection = Match.getMatches(m_data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
-    m_terrIterator = m_terrCollection.iterator();
+    GameData m_data = printData.getData();
+    PrintGenerationData m_printData = printData;
+    Collection<Territory> m_terrCollection =
+        Match.getMatches(m_data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
+    Iterator<Territory> m_terrIterator = m_terrCollection.iterator();
     Iterator<UnitType> availableUnits = m_data.getUnitTypeList().iterator();
     while (m_terrIterator.hasNext()) {
       final Territory currentTerritory = m_terrIterator.next();

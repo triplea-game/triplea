@@ -24,11 +24,10 @@ public class LobbyGameController implements ILobbyGameController {
   private final Object m_mutex = new Object();
   private final Map<GUID, GameDescription> m_allGames = new HashMap<>();
   private final ILobbyGameBroadcaster m_broadcaster;
-  private final IMessenger m_messenger;
 
   public LobbyGameController(final ILobbyGameBroadcaster broadcaster, final IMessenger messenger) {
     m_broadcaster = broadcaster;
-    m_messenger = messenger;
+    IMessenger m_messenger = messenger;
     ((IServerMessenger) m_messenger).addConnectionChangeListener(new IConnectionChangeListener() {
       @Override
       public void connectionRemoved(final INode to) {

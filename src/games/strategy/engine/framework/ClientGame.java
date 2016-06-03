@@ -110,6 +110,49 @@ public class ClientGame extends AbstractGame {
       }
     };
     m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
+    IGameStepAdvancer m_gameStepAdvancer = new IGameStepAdvancer() {
+      @Override
+      public void startPlayerStep(final String stepName, final PlayerID player) {
+        if (m_isGameOver) {
+          return;
+        }
+        // make sure we are in the correct step
+        // steps are advanced on a different channel, and the
+        // message advancing the step may be being processed in a different thread
+        {
+          int i = 0;
+          boolean shownErrorMessage = false;
+          while (true) {
+            m_data.acquireReadLock();
+            try {
+              if (m_data.getSequence().getStep().getName().equals(stepName) || m_isGameOver) {
+                break;
+              }
+            } finally {
+              m_data.releaseReadLock();
+            }
+            ThreadUtil.sleep(100);
+            i++;
+            if (i > 300 && !shownErrorMessage) {
+              System.err.println("Waited more than 30 seconds for step to update. Something wrong.");
+              shownErrorMessage = true;
+              // TODO: should we throw an illegal state error? or just return? or a game over exception? should we
+              // request the server to
+              // send the step update again or something?
+            }
+          }
+        }
+        if (m_isGameOver) {
+          return;
+        }
+        final IGamePlayer gp = m_gamePlayers.get(player);
+        if (gp == null) {
+          throw new IllegalStateException(
+              "Game player not found. Player:" + player + " on:" + m_channelMessenger.getLocalNode());
+        }
+        gp.start(stepName);
+      }
+    };
     m_remoteMessenger.registerRemote(m_gameStepAdvancer, getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
     for (final PlayerID player : m_gamePlayers.keySet()) {
       final IRemoteRandom remoteRandom = new RemoteRandom(this);
@@ -148,50 +191,6 @@ public class ClientGame extends AbstractGame {
   public void addChange(final Change aChange) {
     throw new UnsupportedOperationException();
   }
-
-  private final IGameStepAdvancer m_gameStepAdvancer = new IGameStepAdvancer() {
-    @Override
-    public void startPlayerStep(final String stepName, final PlayerID player) {
-      if (m_isGameOver) {
-        return;
-      }
-      // make sure we are in the correct step
-      // steps are advanced on a different channel, and the
-      // message advancing the step may be being processed in a different thread
-      {
-        int i = 0;
-        boolean shownErrorMessage = false;
-        while (true) {
-          m_data.acquireReadLock();
-          try {
-            if (m_data.getSequence().getStep().getName().equals(stepName) || m_isGameOver) {
-              break;
-            }
-          } finally {
-            m_data.releaseReadLock();
-          }
-          ThreadUtil.sleep(100);
-          i++;
-          if (i > 300 && !shownErrorMessage) {
-            System.err.println("Waited more than 30 seconds for step to update. Something wrong.");
-            shownErrorMessage = true;
-            // TODO: should we throw an illegal state error? or just return? or a game over exception? should we
-            // request the server to
-            // send the step update again or something?
-          }
-        }
-      }
-      if (m_isGameOver) {
-        return;
-      }
-      final IGamePlayer gp = m_gamePlayers.get(player);
-      if (gp == null) {
-        throw new IllegalStateException(
-            "Game player not found. Player:" + player + " on:" + m_channelMessenger.getLocalNode());
-      }
-      gp.start(stepName);
-    }
-  };
 
   /**
    * Clients cant save because they do not have the delegate data.

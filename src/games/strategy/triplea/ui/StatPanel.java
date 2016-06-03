@@ -49,7 +49,6 @@ public class StatPanel extends AbstractStatPanel {
   final private TechTableModel m_techModel;
   protected IStat[] m_stats;
   private JTable m_statsTable;
-  private JTable m_techTable;
   private Image m_statsImage = null;
   protected final Map<PlayerID, ImageIcon> m_mapPlayerImage = new HashMap<>();
   protected IUIContext m_uiContext;
@@ -88,7 +87,7 @@ public class StatPanel extends AbstractStatPanel {
     if (!hasTech) {
       return;
     }
-    m_techTable = new JTable(m_techModel);
+    JTable m_techTable = new JTable(m_techModel);
     m_techTable.getTableHeader().setReorderingAllowed(false);
     m_techTable.getColumnModel().getColumn(0).setPreferredWidth(500);
     // setupIconHeaders(m_techTable);

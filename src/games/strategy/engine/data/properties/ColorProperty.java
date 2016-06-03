@@ -20,12 +20,12 @@ import javax.swing.SwingUtilities;
 public class ColorProperty extends AEditableProperty {
   // compatible with 0.9.0.2 saved games
   private static final long serialVersionUID = 6826763550643504789L;
-  private final int m_max = 0xFFFFFF;
-  private final int m_min = 0x000000;
   private Color m_color;
 
   public ColorProperty(final String name, final String description, final int def) {
     super(name, description);
+    int m_max = 0xFFFFFF;
+    int m_min = 0x000000;
     if (def > m_max || def < m_min) {
       throw new IllegalArgumentException("Default value out of range");
     }

@@ -21,7 +21,6 @@ import games.strategy.ui.Util;
 
 public class SmallMapImageManager {
   private static final Logger s_logger = Logger.getLogger(SmallMapImageManager.class.getName());
-  private final int UNIT_BOX_SIZE = 4;
   private final ImageScrollerSmallView m_view;
   private Image m_offscreen;
   private final TileManager m_tileManager;
@@ -46,6 +45,7 @@ public class SmallMapImageManager {
       final int x = (int) (drawer.getPlacementPoint().x * m_view.getRatioX());
       final int y = (int) (drawer.getPlacementPoint().y * m_view.getRatioY());
       onScreenGraphics.setColor(mapData.getPlayerColor(drawer.getPlayer()).darker());
+      int UNIT_BOX_SIZE = 4;
       onScreenGraphics.fillRect(x, y, UNIT_BOX_SIZE, UNIT_BOX_SIZE);
     }
     onScreenGraphics.dispose();

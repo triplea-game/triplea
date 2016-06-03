@@ -37,26 +37,26 @@ public class ProLogWindow extends javax.swing.JDialog {
   private void initComponents() {
     final java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
     java.awt.GridBagConstraints gridBagConstraints;
-    jPanel7 = new javax.swing.JPanel();
-    v_restoreDefaultsButton = new javax.swing.JButton();
-    v_settingsDetailsButton = new javax.swing.JButton();
-    jPanel14 = new javax.swing.JPanel();
-    jPanel13 = new javax.swing.JPanel();
-    v_cancelButton = new javax.swing.JButton();
-    v_okButton = new javax.swing.JButton();
+    JPanel jPanel7 = new JPanel();
+    JButton v_restoreDefaultsButton = new JButton();
+    JButton v_settingsDetailsButton = new JButton();
+    JPanel jPanel14 = new JPanel();
+    JPanel jPanel13 = new JPanel();
+    JButton v_cancelButton = new JButton();
+    JButton v_okButton = new JButton();
     v_tabPaneMain = new javax.swing.JTabbedPane();
-    jPanel8 = new javax.swing.JPanel();
+    JPanel jPanel8 = new JPanel();
     v_logHolderTabbedPane = new javax.swing.JTabbedPane();
-    jPanel9 = new javax.swing.JPanel();
-    v_aiOutputLogAreaScrollPane = new javax.swing.JScrollPane();
+    JPanel jPanel9 = new JPanel();
+    JScrollPane v_aiOutputLogAreaScrollPane = new JScrollPane();
     v_aiOutputLogArea = new javax.swing.JTextArea();
     v_enableAILogging = new javax.swing.JCheckBox();
-    jLabel15 = new javax.swing.JLabel();
+    javax.swing.JLabel jLabel15 = new javax.swing.JLabel();
     v_logDepth = new javax.swing.JComboBox<>();
     v_limitLogHistoryToSpinner = new javax.swing.JSpinner();
     v_limitLogHistoryCB = new javax.swing.JCheckBox();
-    jLabel46 = new javax.swing.JLabel();
-    v_pauseAIs = new javax.swing.JPanel();
+    javax.swing.JLabel jLabel46 = new javax.swing.JLabel();
+    JPanel v_pauseAIs = new JPanel();
     setTitle("Hard AI Settings");
     setMinimumSize(new java.awt.Dimension(775, 400));
     addWindowListener(new java.awt.event.WindowAdapter() {
@@ -444,24 +444,11 @@ public class ProLogWindow extends javax.swing.JDialog {
     }
   }
 
-  private javax.swing.JLabel jLabel15;
-  private javax.swing.JLabel jLabel46;
-  private javax.swing.JPanel jPanel13;
-  private javax.swing.JPanel jPanel14;
-  private javax.swing.JPanel jPanel7;
-  private javax.swing.JPanel jPanel8;
-  private javax.swing.JPanel jPanel9;
   private javax.swing.JTextArea v_aiOutputLogArea;
-  private javax.swing.JScrollPane v_aiOutputLogAreaScrollPane;
-  private javax.swing.JButton v_cancelButton;
   private javax.swing.JCheckBox v_enableAILogging;
   private javax.swing.JCheckBox v_limitLogHistoryCB;
   private javax.swing.JSpinner v_limitLogHistoryToSpinner;
   private javax.swing.JComboBox<String> v_logDepth;
   private javax.swing.JTabbedPane v_logHolderTabbedPane;
-  private javax.swing.JButton v_okButton;
-  private javax.swing.JPanel v_pauseAIs;
-  private javax.swing.JButton v_restoreDefaultsButton;
-  private javax.swing.JButton v_settingsDetailsButton;
   private javax.swing.JTabbedPane v_tabPaneMain;
 }

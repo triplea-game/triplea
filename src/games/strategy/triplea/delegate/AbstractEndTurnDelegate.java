@@ -47,7 +47,6 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   public static final String END_TURN_REPORT_STRING = "End of Turn Report for ";
   private boolean m_needToInitialize = true;
   private boolean m_hasPostedTurnSummary = false;
-  private static int CONVOY_BLOCKADE_DICE_SIDES = 6;
 
   private boolean isGiveUnitsByTerritory() {
     return games.strategy.triplea.Properties.getGiveUnitsByTerritory(getData());
@@ -400,6 +399,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
           // getting a ton of random numbers at once instead of one at a time)
           ThreadUtil.sleep(100);
           final String transcript = "Rolling for Convoy Blockade Damage in " + b.getName();
+          int CONVOY_BLOCKADE_DICE_SIDES = 6;
           final int[] dice = aBridge.getRandom(CONVOY_BLOCKADE_DICE_SIDES, numberOfDice,
               enemies.iterator().next().getOwner(), DiceType.BOMBING, transcript);
           transcripts.add(transcript + ". Rolls: " + MyFormatter.asDice(dice));

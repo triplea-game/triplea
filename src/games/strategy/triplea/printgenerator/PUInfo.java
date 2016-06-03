@@ -13,15 +13,12 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 
 public class PUInfo {
-  private GameData m_data;
   private final Map<PlayerID, Map<Resource, Integer>> m_infoMap = new HashMap<>();
-  private Iterator<PlayerID> m_playerIterator;
-  private PrintGenerationData m_printData;
 
   protected void saveToFile(final PrintGenerationData printData) {
-    m_data = printData.getData();
-    m_printData = printData;
-    m_playerIterator = m_data.getPlayerList().iterator();
+    GameData m_data = printData.getData();
+    PrintGenerationData m_printData = printData;
+    Iterator<PlayerID> m_playerIterator = m_data.getPlayerList().iterator();
     while (m_playerIterator.hasNext()) {
       final PlayerID currentPlayer = m_playerIterator.next();
       final Iterator<Resource> resourceIterator = m_data.getResourceList().getResources().iterator();

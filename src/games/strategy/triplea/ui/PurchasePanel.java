@@ -41,7 +41,6 @@ public class PurchasePanel extends ActionPanel {
   // if this is set Purchase will use the tabbedProductionPanel - this is modifyable through the View Menu
   private static boolean m_tabbedProduction = true;
   private final String BUY = "Buy...";
-  private final String CHANGE = "Change...";
 
   /** Creates new PurchasePanel */
   public PurchasePanel(final GameData data, final MapPanel map) {
@@ -127,6 +126,7 @@ public class PurchasePanel extends ActionPanel {
         m_purchasedLabel.setText("");
         m_buyButton.setText(BUY);
       } else {
+        String CHANGE = "Change...";
         m_buyButton.setText(CHANGE);
         m_purchasedLabel.setText(totalUnitNumberPurchased(m_purchase)
             + MyFormatter.pluralize(" unit", totalUnitNumberPurchased(m_purchase)) + " to be produced:");

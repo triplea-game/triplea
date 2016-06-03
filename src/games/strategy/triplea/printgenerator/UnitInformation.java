@@ -19,10 +19,7 @@ import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 
 class UnitInformation {
-  private Map<UnitType, UnitAttachment> unitInfoMap;
-  private Iterator<UnitType> unitTypeIterator;
   private GameData data;
-  private PrintGenerationData printData;
 
   private static String capitalizeFirst(final String s) {
     return (s.length() > 0) ? Character.toUpperCase(s.charAt(0)) + s.substring(1) : s;
@@ -30,12 +27,12 @@ class UnitInformation {
 
   protected void saveToFile(final PrintGenerationData printData, final Map<UnitType, UnitAttachment> unitInfoMap) {
     FileWriter unitInformation = null;
-    this.printData = printData;
-    data = this.printData.getData();
-    this.unitInfoMap = unitInfoMap;
-    unitTypeIterator = this.unitInfoMap.keySet().iterator();
-    this.printData.getOutDir().mkdir();
-    final File outFile = new File(this.printData.getOutDir(), "General Information.csv");
+    PrintGenerationData printData1 = printData;
+    data = printData1.getData();
+    Map<UnitType, UnitAttachment> unitInfoMap1 = unitInfoMap;
+    Iterator<UnitType> unitTypeIterator = unitInfoMap1.keySet().iterator();
+    printData1.getOutDir().mkdir();
+    final File outFile = new File(printData1.getOutDir(), "General Information.csv");
     try {
       unitInformation = new FileWriter(outFile);
       for (int i = 0; i < 8; i++) {
@@ -52,7 +49,7 @@ class UnitInformation {
       unitInformation.write("\r\n");
       while (unitTypeIterator.hasNext()) {
         final UnitType currentType = unitTypeIterator.next();
-        final UnitAttachment currentAttachment = this.unitInfoMap.get(currentType);
+        final UnitAttachment currentAttachment = unitInfoMap1.get(currentType);
         if (currentType.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
           unitInformation.write(currentType.getName() + ",");
         } else {

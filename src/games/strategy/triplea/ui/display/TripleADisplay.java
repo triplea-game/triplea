@@ -18,7 +18,6 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.ui.TripleAFrame;
 
 public class TripleADisplay implements ITripleADisplay {
-  private IDisplayBridge m_displayBridge;
   private final TripleAFrame m_ui;
 
   public TripleADisplay(final TripleAFrame ui) {
@@ -27,7 +26,7 @@ public class TripleADisplay implements ITripleADisplay {
 
   @Override
   public void initialize(final IDisplayBridge bridge) {
-    m_displayBridge = bridge;
+    IDisplayBridge m_displayBridge = bridge;
     m_displayBridge.toString();
   }
 

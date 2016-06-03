@@ -31,7 +31,6 @@ public class RepairPanel extends ActionPanel {
   private final JLabel m_repairdSoFar = new JLabel();
   private final JButton m_buyButton;
   private final String BUY = "Repair...";
-  private final String CHANGE = "Change...";
 
   /** Creates new RepairPanel */
   public RepairPanel(final GameData data, final MapPanel map) {
@@ -106,6 +105,7 @@ public class RepairPanel extends ActionPanel {
         m_repairdSoFar.setText("");
         m_buyButton.setText(BUY);
       } else {
+        String CHANGE = "Change...";
         m_buyButton.setText(CHANGE);
         m_repairdSoFar.setText(totalValues + MyFormatter.pluralize(" unit", totalValues) + " to be repaired:");
       }
