@@ -258,7 +258,6 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
     final Action boot = new BootPlayerAction(this, messenger);
     parentMenu.add(boot);
-    return;
   }
 
   protected void addBanPlayer(final JMenu parentMenu) {
@@ -268,7 +267,6 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
     final Action ban = new BanPlayerAction(this, messenger);
     parentMenu.add(ban);
-    return;
   }
 
   protected void addMutePlayer(final JMenu parentMenu) {
@@ -278,7 +276,6 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
     final Action mute = new MutePlayerAction(this, messenger);
     parentMenu.add(mute);
-    return;
   }
 
   protected void addSetGamePassword(final JMenu parentMenu, final InGameLobbyWatcherWrapper watcher) {

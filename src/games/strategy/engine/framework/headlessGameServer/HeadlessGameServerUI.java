@@ -132,7 +132,6 @@ public class HeadlessGameServerUI extends MainGameFrame {
           @Override
           public void run() {
             if (m_uiContext == null) {
-              return;
               // stuff goes below here:
             }
           }

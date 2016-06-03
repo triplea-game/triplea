@@ -596,7 +596,6 @@ public class BattleDisplay extends JPanel {
             if (!isEditMode && (killed.size() + damaged.size() != count)) {
               JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties selected",
                   hit.getName() + " select casualties", JOptionPane.ERROR_MESSAGE);
-              return;
             } else {
               final CasualtyDetails response = new CasualtyDetails(killed, damaged, false);
               casualtyDetails.set(response);

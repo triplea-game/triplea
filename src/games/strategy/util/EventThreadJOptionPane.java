@@ -75,7 +75,6 @@ public class EventThreadJOptionPane {
     if (latchHandler != null) {
       latchHandler.removeShutdownLatch(latch);
     }
-    return;
   }
 
   public static void showMessageDialog(final Frame parentComponent, final String message,
@@ -109,7 +108,6 @@ public class EventThreadJOptionPane {
     if (latchHandler != null) {
       latchHandler.removeShutdownLatch(latch);
     }
-    return;
   }
 
   public static void showMessageDialog(final Component parentComponent, final Object message,
@@ -143,7 +141,6 @@ public class EventThreadJOptionPane {
     if (latchHandler != null) {
       latchHandler.removeShutdownLatch(latch);
     }
-    return;
   }
 
   public static void showMessageDialog(final Component parentComponent, final Object message, final String title,
