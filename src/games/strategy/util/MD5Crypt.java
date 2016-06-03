@@ -120,7 +120,7 @@ public class MD5Crypt {
       ctx = MessageDigest.getInstance("md5");
       ctx1 = MessageDigest.getInstance("md5");
     } catch (final NoSuchAlgorithmException ex) {
-      System.err.println(ex);
+      ex.printStackTrace();
       return null;
     }
     /* Refine the Salt first */
@@ -239,7 +239,7 @@ public class MD5Crypt {
         System.out.println(MD5Crypt.crypt(args[0], args[1]));
       }
     } catch (final Exception ex) {
-      System.err.println(ex);
+      ex.printStackTrace();
     }
   }
 

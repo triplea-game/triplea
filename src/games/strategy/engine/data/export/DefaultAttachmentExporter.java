@@ -27,7 +27,7 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
       try {
         xmlfile.append(printOption(field, attachment));
       } catch (final AttachmentExportException e) {
-        System.err.println(e);
+        ClientLogger.logQuietly("Could not export field: "+ field.getName(), e);
       }
     }
     return xmlfile.toString();
