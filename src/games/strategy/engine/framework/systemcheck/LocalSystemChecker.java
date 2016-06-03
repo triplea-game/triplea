@@ -21,7 +21,7 @@ public final class LocalSystemChecker {
     this(ImmutableSet.of(defaultNetworkCheck(), defaultFileSystemCheck()));
   }
 
-  private static final SystemCheck defaultNetworkCheck() {
+  private static SystemCheck defaultNetworkCheck() {
     return new SystemCheck("Can connect to github.com (check network connection)", () -> {
       try {
         URL url = new URL("http://www.github.com");
@@ -32,7 +32,7 @@ public final class LocalSystemChecker {
     });
   }
 
-  private static final SystemCheck defaultFileSystemCheck() {
+  private static SystemCheck defaultFileSystemCheck() {
     return new SystemCheck("Can create temporary files (check disk usage, file permissions)", () -> {
       try {
         File.createTempFile("prefix", "suffix");

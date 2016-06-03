@@ -64,7 +64,7 @@ abstract public class AbstractGame implements IGame {
   /**
    * @param localPlayers
    */
-  final private void setupLocalPlayers(final Set<IGamePlayer> localPlayers) {
+  private void setupLocalPlayers(final Set<IGamePlayer> localPlayers) {
     final PlayerList playerList = m_data.getPlayerList();
     for (final IGamePlayer gp : localPlayers) {
       final PlayerID player = playerList.getPlayerID(gp.getName());

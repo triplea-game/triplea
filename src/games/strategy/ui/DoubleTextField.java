@@ -123,7 +123,7 @@ public class DoubleTextField extends JTextField {
     return m_min;
   }
 
-  private final boolean isGood(final double value) {
+  private boolean isGood(final double value) {
     return value <= m_max && value >= m_min;
   }
 

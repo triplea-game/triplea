@@ -142,7 +142,7 @@ public class IntTextField extends JTextField {
     return m_min;
   }
 
-  private final boolean isGood(final int value) {
+  private boolean isGood(final int value) {
     return value <= m_max && value >= m_min;
   }
 

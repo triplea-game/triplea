@@ -29,7 +29,7 @@ public class DownloadCoordinator {
     downloadFileStarter.start();
   }
 
-  private final Thread createDownloadFileStarterThread() {
+  private Thread createDownloadFileStarterThread() {
     return new Thread(() -> {
       while (!cancelled) {
         try {

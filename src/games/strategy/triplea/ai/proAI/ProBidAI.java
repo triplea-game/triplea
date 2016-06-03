@@ -2231,7 +2231,7 @@ public class ProBidAI {
     return sorted;
   }
 
-  private final static Match<Territory> TerritoryIsNotImpassableToAirUnits(final GameData data) {
+  private static Match<Territory> TerritoryIsNotImpassableToAirUnits(final GameData data) {
     return new InverseMatch<>(TerritoryIsImpassableToAirUnits(data));
   }
 
