@@ -134,11 +134,11 @@ public class MapData {
   private BufferedImage m_helpImage = null;
 
   public boolean scrollWrapX() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPX, "true")).booleanValue();
+    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPX, "true"));
   }
 
   public boolean scrollWrapY() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPY, "false")).booleanValue();
+    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPY, "false"));
   }
 
   public MapData(final String mapNameDir) {
@@ -314,7 +314,7 @@ public class MapData {
   }
 
   public boolean getHasRelief() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_HASRELIEF, "true")).booleanValue();
+    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_HASRELIEF, "true"));
   }
 
   public int getMapCursorHotspotX() {
@@ -328,7 +328,7 @@ public class MapData {
   }
 
   public boolean getHasMapBlends() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_MAPBLENDS, "false")).booleanValue();
+    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_MAPBLENDS, "false"));
   }
 
   public String getMapBlendMode() {
@@ -340,35 +340,35 @@ public class MapData {
   }
 
   public boolean drawCapitolMarkers() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWCAPITOLMARKERS, "true")).booleanValue();
+    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWCAPITOLMARKERS, "true"));
   }
 
   public boolean drawTerritoryNames() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWTERRITORYNAMES, "true")).booleanValue();
+    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWTERRITORYNAMES, "true"));
   }
 
   public boolean drawResources() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWRESOURCES, "true")).booleanValue();
+    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWRESOURCES, "true"));
   }
 
   public boolean drawComments() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWCOMMENTS, "true")).booleanValue();
+    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWCOMMENTS, "true"));
   }
 
   public boolean drawSeaZoneNames() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWSEAZONENAMES, "false")).booleanValue();
+    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWSEAZONENAMES, "false"));
   }
 
   public boolean drawNamesFromTopLeft() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_DRAWNAMESFROMTOPLEFT, "false")).booleanValue();
+    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_DRAWNAMESFROMTOPLEFT, "false"));
   }
 
   public boolean useNation_convoyFlags() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_USENATION_CONVOYFLAGS, "false")).booleanValue();
+    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_USENATION_CONVOYFLAGS, "false"));
   }
 
   public boolean useTerritoryEffectMarkers() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_USETERRITORYEFFECTMARKERS, "false")).booleanValue();
+    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_USETERRITORYEFFECTMARKERS, "false"));
   }
 
   private void initializeContains() {
@@ -399,7 +399,7 @@ public class MapData {
   }
 
   public boolean getBooleanProperty(final String propertiesKey) {
-    return Boolean.valueOf(m_mapProperties.getProperty(propertiesKey, "true")).booleanValue();
+    return Boolean.valueOf(m_mapProperties.getProperty(propertiesKey, "true"));
   }
 
   public Color getColorProperty(final String propertiesKey) throws IllegalStateException {
@@ -411,7 +411,7 @@ public class MapData {
       }
       try {
         final Integer colorInt = Integer.decode("0x" + colorString);
-        final Color color = new Color(colorInt.intValue());
+        final Color color = new Color(colorInt);
         return color;
       } catch (final NumberFormatException nfe) {
         throw new IllegalStateException("Player colors must be a 6 digit hex number, eg FF0011");

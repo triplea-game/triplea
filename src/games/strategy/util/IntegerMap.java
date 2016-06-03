@@ -101,7 +101,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
     if (val == null) {
       return 0;
     }
-    return val.intValue();
+    return val;
   }
 
   public void add(final T key, final Integer value) {
@@ -113,7 +113,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
       put(key, value);
     } else {
       final Integer oldVal = mapValues.get(key);
-      final int newVal = oldVal.intValue() + value;
+      final int newVal = oldVal + value;
       put(key, newVal);
     }
   }
@@ -269,7 +269,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
   public int totalValues() {
     int sum = 0;
     for (final Integer value : mapValues.values()) {
-      sum += value.intValue();
+      sum += value;
     }
     return sum;
   }

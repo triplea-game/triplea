@@ -390,16 +390,16 @@ public class ConnectionFinder {
         }
       }
       if (arg.startsWith(LINE_THICKNESS)) {
-        final int lineThickness = new Integer(value).intValue();
+        final int lineThickness = new Integer(value);
         scalePixels = lineThickness * 4;
         minOverlap = scalePixels * 4;
         dimensionsSet = true;
       }
       if (arg.startsWith(MIN_OVERLAP)) {
-        minOverlap = new Integer(value).intValue();
+        minOverlap = new Integer(value);
       }
       if (arg.startsWith(SCALE_PIXELS)) {
-        scalePixels = new Integer(value).intValue();
+        scalePixels = new Integer(value);
       }
     }
     // might be set by -D
@@ -416,18 +416,18 @@ public class ConnectionFinder {
     }
     String value = System.getProperty(LINE_THICKNESS);
     if (value != null && value.length() > 0) {
-      final int lineThickness = new Integer(value).intValue();
+      final int lineThickness = new Integer(value);
       scalePixels = lineThickness * 4;
       minOverlap = scalePixels * 4;
       dimensionsSet = true;
     }
     value = System.getProperty(MIN_OVERLAP);
     if (value != null && value.length() > 0) {
-      minOverlap = new Integer(value).intValue();
+      minOverlap = new Integer(value);
     }
     value = System.getProperty(SCALE_PIXELS);
     if (value != null && value.length() > 0) {
-      scalePixels = new Integer(value).intValue();
+      scalePixels = new Integer(value);
     }
   }
 

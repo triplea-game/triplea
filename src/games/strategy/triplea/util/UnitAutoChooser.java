@@ -643,7 +643,7 @@ class UnitAutoChooser {
     while (true) {
       // System.out.println("curIndex: "+curIndex);
       // handle stopping condition
-      if (curIndex.intValue() == candidateCategoriesWithDependentsList.size()) {
+      if (curIndex == candidateCategoriesWithDependentsList.size()) {
         if (indexStack.empty()) {
           // finished!
           break;
@@ -663,7 +663,7 @@ class UnitAutoChooser {
         int currentUnitCount = 0;
         // Populate all structures from our stack of list indexes
         for (final Integer i : indexStack) {
-          final UnitCategory category = candidateCategoriesWithDependentsList.get(i.intValue());
+          final UnitCategory category = candidateCategoriesWithDependentsList.get(i);
           final UnitCategory chosenCategory = m_candidateToChosenCategories.get(category);
           currentCandidateCategories.add(category);
           currentCandidateCategoryCounts.add(category, 1);
@@ -757,7 +757,7 @@ class UnitAutoChooser {
         }
       }
       // increment index and continue
-      curIndex = Integer.valueOf(curIndex.intValue() + 1);
+      curIndex = Integer.valueOf(curIndex + 1);
     } // while(true)
       // append greedy solutions if we have any
     m_candidateCompositeCategories.addAll(greedyCandidateCompositeCategories);

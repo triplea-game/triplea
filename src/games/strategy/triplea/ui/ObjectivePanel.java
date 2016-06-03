@@ -873,7 +873,7 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
     int maximum_height = 0;
     for (final Iterator<?> it = rowheights.entrySet().iterator(); it.hasNext();) {
       final Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
-      final int cellHeight = ((Integer) entry.getValue()).intValue();
+      final int cellHeight = (Integer) entry.getValue();
       maximum_height = Math.max(maximum_height, cellHeight);
     }
     return maximum_height;

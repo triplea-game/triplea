@@ -46,7 +46,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
     if (!(editMode instanceof Boolean)) {
       return false;
     }
-    return ((Boolean) editMode).booleanValue();
+    return (Boolean) editMode;
   }
 
   protected String checkPlayerID() {

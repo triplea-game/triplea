@@ -234,7 +234,7 @@ public class HistoryLog extends JFrame {
             final Pattern p = Pattern.compile("\\w+ undo move (\\d+).");
             final Matcher m = p.matcher(title);
             if (m.matches()) {
-              moveList.remove(Integer.valueOf(m.group(1)).intValue() - 1);
+              moveList.remove(Integer.valueOf(m.group(1)) - 1);
             } else {
               moveList.add(indent + title);
               moving = true;
