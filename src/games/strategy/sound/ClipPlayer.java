@@ -441,11 +441,6 @@ public class ClipPlayer {
           return availableSounds;
         }
         availableSounds.add(thisSoundURL);
-      } else {
-        for (final File sound : thisSoundFile.listFiles()) {
-          if (!(isSoundFileNamed(sound))) {
-          }
-        }
       }
     }
     if (thisSoundFile.isDirectory()) {
