@@ -250,12 +250,16 @@ public class EndRoundDelegate extends BaseTripleADelegate {
 
   private int getVCAmount(final GameData data, final String alliance, final String type) {
     int defaultVC = 20;
-    if (type.equals(" Total Victory VCs")) {
-      defaultVC = 18;
-    } else if (type.equals(" Honorable Victory VCs")) {
-      defaultVC = 15;
-    } else if (type.equals(" Projection of Power VCs")) {
-      defaultVC = 13;
+    switch (type) {
+      case " Total Victory VCs":
+        defaultVC = 18;
+        break;
+      case " Honorable Victory VCs":
+        defaultVC = 15;
+        break;
+      case " Projection of Power VCs":
+        defaultVC = 13;
+        break;
     }
     return data.getProperties().get((alliance + type), defaultVC);
   }

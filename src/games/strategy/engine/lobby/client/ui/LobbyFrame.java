@@ -184,18 +184,25 @@ public class LobbyFrame extends JFrame {
         return;
       }
       long ticks = 0;
-      if (selectedTimeUnit.equals("Minute")) {
-        ticks = result2 * 1000 * 60;
-      } else if (selectedTimeUnit.equals("Hour")) {
-        ticks = result2 * 1000 * 60 * 60;
-      } else if (selectedTimeUnit.equals("Day")) {
-        ticks = result2 * 1000 * 60 * 60 * 24;
-      } else if (selectedTimeUnit.equals("Week")) {
-        ticks = result2 * 1000 * 60 * 60 * 24 * 7;
-      } else if (selectedTimeUnit.equals("Month")) {
-        ticks = result2 * 1000 * 60 * 60 * 24 * 30;
-      } else if (selectedTimeUnit.equals("Year")) {
-        ticks = result2 * 1000 * 60 * 60 * 24 * 365;
+      switch (selectedTimeUnit) {
+        case "Minute":
+          ticks = result2 * 1000 * 60;
+          break;
+        case "Hour":
+          ticks = result2 * 1000 * 60 * 60;
+          break;
+        case "Day":
+          ticks = result2 * 1000 * 60 * 60 * 24;
+          break;
+        case "Week":
+          ticks = result2 * 1000 * 60 * 60 * 24 * 7;
+          break;
+        case "Month":
+          ticks = result2 * 1000 * 60 * 60 * 24 * 30;
+          break;
+        case "Year":
+          ticks = result2 * 1000 * 60 * 60 * 24 * 365;
+          break;
       }
       final long expire = System.currentTimeMillis() + ticks;
       if (selectedBanType.toLowerCase().contains("name")) {
@@ -273,18 +280,25 @@ public class LobbyFrame extends JFrame {
         return;
       }
       long ticks = 0;
-      if (selectedTimeUnit.equals("Minute")) {
-        ticks = result2 * 1000 * 60;
-      } else if (selectedTimeUnit.equals("Hour")) {
-        ticks = result2 * 1000 * 60 * 60;
-      } else if (selectedTimeUnit.equals("Day")) {
-        ticks = result2 * 1000 * 60 * 60 * 24;
-      } else if (selectedTimeUnit.equals("Week")) {
-        ticks = result2 * 1000 * 60 * 60 * 24 * 7;
-      } else if (selectedTimeUnit.equals("Month")) {
-        ticks = result2 * 1000 * 60 * 60 * 24 * 30;
-      } else if (selectedTimeUnit.equals("Year")) {
-        ticks = result2 * 1000 * 60 * 60 * 24 * 365;
+      switch (selectedTimeUnit) {
+        case "Minute":
+          ticks = result2 * 1000 * 60;
+          break;
+        case "Hour":
+          ticks = result2 * 1000 * 60 * 60;
+          break;
+        case "Day":
+          ticks = result2 * 1000 * 60 * 60 * 24;
+          break;
+        case "Week":
+          ticks = result2 * 1000 * 60 * 60 * 24 * 7;
+          break;
+        case "Month":
+          ticks = result2 * 1000 * 60 * 60 * 24 * 30;
+          break;
+        case "Year":
+          ticks = result2 * 1000 * 60 * 60 * 24 * 365;
+          break;
       }
       final long expire = System.currentTimeMillis() + ticks;
       if (selectedMuteType.toLowerCase().contains("name")) {

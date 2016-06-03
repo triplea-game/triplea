@@ -240,15 +240,19 @@ public class PlayerAttachment extends DefaultAttachment {
       return true;
     }
     final HashSet<Triple<Integer, String, HashSet<UnitType>>> stackingLimits;
-    if (limitType.equals("movementLimit")) {
-      stackingLimits = pa.getMovementLimit();
-    } else if (limitType.equals("attackingLimit")) {
-      stackingLimits = pa.getAttackingLimit();
-    } else if (limitType.equals("placementLimit")) {
-      stackingLimits = pa.getPlacementLimit();
-    } else {
-      throw new IllegalStateException(
-          "getCanTheseUnitsMoveWithoutViolatingStackingLimit does not allow limitType: " + limitType);
+    switch (limitType) {
+      case "movementLimit":
+        stackingLimits = pa.getMovementLimit();
+        break;
+      case "attackingLimit":
+        stackingLimits = pa.getAttackingLimit();
+        break;
+      case "placementLimit":
+        stackingLimits = pa.getPlacementLimit();
+        break;
+      default:
+        throw new IllegalStateException(
+            "getCanTheseUnitsMoveWithoutViolatingStackingLimit does not allow limitType: " + limitType);
     }
     if (stackingLimits.isEmpty()) {
       return true;
