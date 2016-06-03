@@ -42,7 +42,7 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
    * ClientMessenger after it has been constructed.
    */
   public ClientMessenger(final String host, final int port, final String name, final String mac,
-      final IConnectionLogin login) throws IOException, UnknownHostException, CouldNotLogInException {
+      final IConnectionLogin login) throws IOException {
     this(host, port, name, mac, new DefaultObjectStreamFactory(), login);
   }
 
@@ -51,7 +51,7 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
    * ClientMessenger after it has been constructed.
    */
   public ClientMessenger(final String host, final int port, final String name, final String mac)
-      throws IOException, UnknownHostException, CouldNotLogInException {
+      throws IOException {
     this(host, port, name, mac, new DefaultObjectStreamFactory());
   }
 
@@ -60,7 +60,7 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
    * ClientMessenger after it has been constructed.
    */
   public ClientMessenger(final String host, final int port, final String name, final String mac,
-      final IObjectStreamFactory streamFact) throws IOException, UnknownHostException, CouldNotLogInException {
+      final IObjectStreamFactory streamFact) throws IOException {
     this(host, port, name, mac, streamFact, null);
   }
 
@@ -70,7 +70,7 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
    */
   public ClientMessenger(final String host, final int port, final String name, final String mac,
       final IObjectStreamFactory streamFact, final IConnectionLogin login)
-          throws IOException, UnknownHostException, CouldNotLogInException {
+          throws IOException {
     m_socketChannel = SocketChannel.open();
     m_socketChannel.configureBlocking(false);
     final InetSocketAddress remote = new InetSocketAddress(host, port);
