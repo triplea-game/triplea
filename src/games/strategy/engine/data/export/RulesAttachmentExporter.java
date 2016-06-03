@@ -122,7 +122,7 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
       return "";
     }
     for (final Integer curInt : intMap.keySet()) {
-      final int start = curInt.intValue();
+      final int start = curInt;
       final int end = intMap.get(curInt);
       if (intList.length() > 0) {
         intList = intList + ":";

@@ -67,7 +67,7 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter {
         String tList = "";
         while (techAdvances.hasNext()) {
           final TechAdvance techAdvance = techAdvances.next();
-          final String add = availableTechMap.get(techAdvance).booleanValue() ? "" : "-";
+          final String add = availableTechMap.get(techAdvance) ? "" : "-";
           tList = tList + ":" + add + techAdvance.getName();
         }
         returnValue += super.printDefaultOption("availableTech", category + tList);
@@ -142,7 +142,7 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter {
       String returnValue = "";
       while (unitSupportAttachments.hasNext()) {
         final UnitSupportAttachment supportAttachment = unitSupportAttachments.next();
-        final String add = (unitSupportAttachmentMap.get(supportAttachment)).booleanValue() ? "" : "-";
+        final String add = unitSupportAttachmentMap.get(supportAttachment) ? "" : "-";
         if (returnValue.length() > 0) {
           returnValue += ":";
         }
