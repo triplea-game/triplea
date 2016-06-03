@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.base.Joiner;
+
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
@@ -53,24 +55,17 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
 
   private String territoryCountListHandler(final Field field, final IAttachment attachment, final String fieldName)
       throws AttachmentExportException {
-    String[] valueArray;
     try {
-      valueArray = (String[]) field.get(attachment);
+      String[] valueArray = (String[]) field.get(attachment);
       if (valueArray == null || valueArray.length == 0) {
         return "";
       }
-      StringBuilder returnValue = new StringBuilder();
-      for(String value : valueArray) {
-        if(valueArray.length > 1){
-          continue;
-        }
-        if(returnValue.length() != 0){
-          returnValue.append(":");
-        }
-        returnValue.append(value);
+      //skip the arrayLength entry in the array because for Arrays > 1 the first entry is the count
+      if(valueArray.length > 1){
+        valueArray[0] = null;
       }
       final String count = "" + ((RulesAttachment) attachment).getTerritoryCount();
-      return printCountOption(fieldName.substring(2), returnValue.toString(), count);
+      return printCountOption(fieldName.substring(2), Joiner.on(':').skipNulls().join(valueArray), count);
     } catch (final IllegalArgumentException | SecurityException | IllegalAccessException e) {
       throw new AttachmentExportException("e: " + e + " for territoryCountListHandler on option: " + fieldName
           + " on Attachment: " + attachment.getName());

@@ -4,7 +4,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+
+import com.google.common.base.Joiner;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
@@ -183,14 +186,7 @@ public class GameDataExporter {
       try {
         listField = ComboProperty.class.getDeclaredField("m_possibleValues"); // TODO: unchecked reflection
         listField.setAccessible(true);
-        StringBuilder possibleValues = new StringBuilder();
-        for(String possibleValue : (ArrayList<String>) listField.get(prop)) {
-          if(possibleValues.length() != 0){
-            possibleValues.append(",");
-          }
-          possibleValues.append(possibleValue);
-        }
-        typeString = "            <list>" + possibleValues.toString() + "</list>\n";
+        typeString = "            <list>" + Joiner.on(',').join((List<String>) listField.get(prop)) + "</list>\n";
       } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
         ClientLogger.logError("An Error occured whilst trying to print the Property \"" + value + "\"", e);
       }
@@ -673,7 +669,7 @@ public class GameDataExporter {
   private void connections(final GameData data) {
     xmlfile.append("        <!-- Territory Connections -->\n");
     final GameMap map = data.getMap();
-    final ArrayList<Connection> reverseConnectionTracker = new ArrayList<>();
+    final List<Connection> reverseConnectionTracker = new ArrayList<>();
     for(Territory ter : map.getTerritories()) {
       for(Territory nb : map.getNeighbors(ter)){
         if (!reverseConnectionTracker.contains(new Connection(ter, nb))) {

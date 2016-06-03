@@ -13,6 +13,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.SwingConstants;
 
+import com.google.common.base.Joiner;
+
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.framework.IGame;
@@ -46,12 +48,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
       final Set<String> players = m_playerMap.get(value.toString());
       if (players != null && !players.isEmpty()) {
         sb.append(" (");
-        for(String player : players) {
-          sb.append(player);
-          sb.append(", ");
-        }
-        //Removes the last ", "
-        sb.delete(sb.length() - 2, sb.length() - 1);
+        sb.append(Joiner.on(", ").join(players));
         sb.append(")");
       }
       super.getListCellRendererComponent(list, sb.toString(), index, isSelected, cellHasFocus);

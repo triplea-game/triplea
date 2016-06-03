@@ -2,6 +2,9 @@ package games.strategy.engine.data.export;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
+
+import com.google.common.base.Joiner;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.IAttachment;
@@ -134,12 +137,7 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
       if (valueArray == null) {
         return "";
       }
-      StringBuilder valueBuilder = new StringBuilder();
-      for(String val : valueArray) {
-        valueBuilder.append(":").append(val);
-      }
-      valueBuilder.delete(0, 1);
-      return printDefaultOption(option, valueBuilder.toString());
+      return printDefaultOption(option, Joiner.on(':').join(valueArray));
     } catch (final IllegalArgumentException | IllegalAccessException e) {
       throw new AttachmentExportException("e: " + e + " for printStringArrayOption on field: " + field + " option: "
           + option + " on Attachment: " + attachment.getName());
@@ -232,17 +230,14 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
   @SuppressWarnings("unchecked")
   protected String printPlayerList(final Field field, final IAttachment attachment) throws AttachmentExportException {
     try {
-      final ArrayList<PlayerID> playerIds = (ArrayList<PlayerID>) field.get(attachment);
-      StringBuilder returnValue = new StringBuilder();
+      final List<PlayerID> playerIds = (List<PlayerID>) field.get(attachment);
+      final List<String> playerNames = new ArrayList<>();
       for(PlayerID playerID : playerIds) {
-        if(returnValue.toString().length() != 0){
-          returnValue.append(":");
-        }
-        returnValue.append(playerID.getName());
+        playerNames.add(playerID.getName());
       }
       final String optionName = "" + Character.toLowerCase(field.getName().charAt(2)) + field.getName().substring(3);
-      if (returnValue.length() > 0) {
-        return printDefaultOption(optionName, returnValue.toString());
+      if (!playerNames.isEmpty()) {
+        return printDefaultOption(optionName, Joiner.on(':').join(playerNames));
       }
       return "";
     } catch (final IllegalArgumentException | IllegalAccessException e) {
