@@ -4,7 +4,6 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -13,6 +12,8 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.SwingConstants;
+
+import com.google.common.base.Joiner;
 
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.PlayerManager;
@@ -47,13 +48,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
       final Set<String> players = m_playerMap.get(value.toString());
       if (players != null && !players.isEmpty()) {
         sb.append(" (");
-        final Iterator<String> iter = players.iterator();
-        while (iter.hasNext()) {
-          sb.append(iter.next());
-          if (iter.hasNext()) {
-            sb.append(", ");
-          }
-        }
+        sb.append(Joiner.on(", ").join(players));
         sb.append(")");
       }
       super.getListCellRendererComponent(list, sb.toString(), index, isSelected, cellHasFocus);
