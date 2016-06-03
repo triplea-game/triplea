@@ -257,17 +257,17 @@ public class GameParser {
     final DocumentBuilder builder = factory.newDocumentBuilder();
     builder.setErrorHandler(new ErrorHandler() {
       @Override
-      public void fatalError(final SAXParseException exception) throws SAXException {
+      public void fatalError(final SAXParseException exception) {
         errorsSAX.add(exception);
       }
 
       @Override
-      public void error(final SAXParseException exception) throws SAXException {
+      public void error(final SAXParseException exception) {
         errorsSAX.add(exception);
       }
 
       @Override
-      public void warning(final SAXParseException exception) throws SAXException {
+      public void warning(final SAXParseException exception) {
         errorsSAX.add(exception);
       }
     });
@@ -1012,7 +1012,7 @@ public class GameParser {
     data.getProperties().addEditableProperty(editableProperty);
   }
 
-  private void parseOffset(final Node offsetAttributes) throws GameParseException {
+  private void parseOffset(final Node offsetAttributes) {
     if (offsetAttributes == null) {
       return;
     }

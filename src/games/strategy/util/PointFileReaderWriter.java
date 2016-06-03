@@ -153,7 +153,7 @@ public class PointFileReaderWriter {
   /**
    * Returns a map of the form String -> Collection of points.
    */
-  public static Map<String, List<Point>> readOneToMany(final InputStream stream) throws IOException {
+  public static Map<String, List<Point>> readOneToMany(final InputStream stream) {
     if (stream == null) {
       return Collections.emptyMap();
     }
@@ -178,7 +178,7 @@ public class PointFileReaderWriter {
   /**
    * Returns a map of the form String -> Collection of points.
    */
-  public static Map<String, List<Polygon>> readOneToManyPolygons(final InputStream stream) throws IOException {
+  public static Map<String, List<Polygon>> readOneToManyPolygons(final InputStream stream) {
     final HashMap<String, List<Polygon>> mapping = new HashMap<>();
     try (InputStreamReader inputStreamReader = new InputStreamReader(stream);
         LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
