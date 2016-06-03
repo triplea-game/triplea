@@ -52,10 +52,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
         && (m_player.getRepairFrontier() == null || m_player.getRepairFrontier().getRules().isEmpty())) {
       return false;
     }
-    if (!canWePurchaseOrRepair()) {
-      return false;
-    }
-    return true;
+    return canWePurchaseOrRepair();
   }
 
   @Override

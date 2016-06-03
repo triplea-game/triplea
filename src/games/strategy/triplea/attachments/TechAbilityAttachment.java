@@ -1089,10 +1089,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public static boolean getUnitAbilitiesGained(final String filterForAbility, final UnitType ut, final PlayerID player,
       final GameData data) {
     final HashSet<String> abilities = getUnitAbilitiesGained(ut, player, data);
-    if (abilities.contains(filterForAbility)) {
-      return true;
-    }
-    return false;
+    return abilities.contains(filterForAbility);
   }
 
   public static boolean getAllowAirborneForces(final PlayerID player, final GameData data) {

@@ -110,9 +110,6 @@ public class ColorProperty extends AEditableProperty {
     if (value == null) {
       return true;
     }
-    if (value instanceof Color) {
-      return true;
-    }
-    return false;
+    return value instanceof Color;
   }
 }

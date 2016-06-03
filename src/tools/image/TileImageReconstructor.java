@@ -68,10 +68,7 @@ public class TileImageReconstructor {
             if (f.isDirectory()) {
               return false;
             }
-            if (f.getName().endsWith(".png")) {
-              return true;
-            }
-            return false;
+            return f.getName().endsWith(".png");
           }
 
           @Override

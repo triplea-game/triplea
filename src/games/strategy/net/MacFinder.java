@@ -272,10 +272,7 @@ public class MacFinder {
     if (nonZeroNumberCount == 0) {
       return false;
     }
-    if (mac.equals("00.00.00.00.00.E0")) {
-      return false;
-    }
-    return true;
+    return !mac.equals("00.00.00.00.00.E0");
   }
 
   private static String tryToParseMACFromOutput(final String output, final List<String> possibleSeparators,

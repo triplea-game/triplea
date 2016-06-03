@@ -196,10 +196,7 @@ public class ProTransportUtils {
         capacity -= cost;
       }
     }
-    if (capacity < 0) {
-      return false;
-    }
-    return true;
+    return capacity >= 0;
   }
 
   public static int getUnusedLocalCarrierCapacity(final PlayerID player, final Territory t,

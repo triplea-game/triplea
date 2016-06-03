@@ -455,10 +455,7 @@ public class ProAI extends AbstractAI {
     final ProBattleResult result =
         calc.calculateBattleResults(player, unitTerritory, attackers, defenders, new HashSet<>(), true);
     ProLogger.debug(player.getName() + " sub attack TUVSwing=" + result.getTUVSwing());
-    if (result.getTUVSwing() > 0) {
-      return true;
-    }
-    return false;
+    return result.getTUVSwing() > 0;
   }
 
   @Override

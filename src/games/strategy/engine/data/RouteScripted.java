@@ -92,9 +92,6 @@ public class RouteScripted extends Route {
 
   @Override
   public boolean hasExactlyOneStep() {
-    if (numberOfSteps() <= 1) {
-      return true;
-    }
-    return false;
+    return numberOfSteps() <= 1;
   }
 }

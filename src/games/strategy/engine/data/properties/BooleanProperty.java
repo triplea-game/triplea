@@ -48,9 +48,6 @@ public class BooleanProperty extends AEditableProperty {
 
   @Override
   public boolean validate(final Object value) {
-    if (value instanceof Boolean) {
-      return true;
-    }
-    return false;
+    return value instanceof Boolean;
   }
 }

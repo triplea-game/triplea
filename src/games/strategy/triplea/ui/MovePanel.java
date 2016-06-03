@@ -1464,11 +1464,7 @@ public class MovePanel extends AbstractMovePanel {
     if (m_undoableMovesPanel.getCountOfMovesMade() == 0) {
       final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(MovePanel.this),
           "Are you sure you dont want to move?", "End Move", JOptionPane.YES_NO_OPTION);
-      if (rVal != JOptionPane.YES_OPTION) {
-        return false;
-      } else {
-        return true;
-      }
+      return rVal == JOptionPane.YES_OPTION;
     }
     return true;
   }

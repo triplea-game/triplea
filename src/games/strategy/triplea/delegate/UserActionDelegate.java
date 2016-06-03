@@ -56,10 +56,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    if (getValidActions().isEmpty()) {
-      return false;
-    }
-    return true;
+    return !getValidActions().isEmpty();
   }
 
   public HashMap<ICondition, Boolean> getTestedConditions() {

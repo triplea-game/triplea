@@ -355,10 +355,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (airCantLand.isEmpty()) {
       return true;
     } else {
-      if (!ui.getOKToLetAirDie(getPlayerID(), airCantLand, movePhase)) {
-        return false;
-      }
-      return true;
+      return ui.getOKToLetAirDie(getPlayerID(), airCantLand, movePhase);
     }
   }
 
@@ -375,10 +372,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (unitsCantFight.isEmpty()) {
       return false;
     } else {
-      if (ui.getOKToLetUnitsDie(unitsCantFight, true)) {
-        return false;
-      }
-      return true;
+      return !ui.getOKToLetUnitsDie(unitsCantFight, true);
     }
   }
 
