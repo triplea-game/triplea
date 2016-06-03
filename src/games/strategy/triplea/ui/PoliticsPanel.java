@@ -63,25 +63,17 @@ public class PoliticsPanel extends ActionPanel {
   public void display(final PlayerID id) {
     super.display(id);
     m_choice = null;
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        removeAll();
-        m_actionLabel.setText(id.getName() + " Politics");
-        add(m_actionLabel);
-        m_selectPoliticalActionButton = new JButton(SelectPoliticalActionAction);
-        m_selectPoliticalActionButton.setEnabled(false);
-        add(m_selectPoliticalActionButton);
-        m_doneButton = new JButton(DontBotherAction);
-        m_doneButton.setEnabled(false);
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            m_doneButton.requestFocusInWindow();
-          }
-        });
-        add(m_doneButton);
-      }
+    SwingUtilities.invokeLater(() -> {
+      removeAll();
+      m_actionLabel.setText(id.getName() + " Politics");
+      add(m_actionLabel);
+      m_selectPoliticalActionButton = new JButton(SelectPoliticalActionAction);
+      m_selectPoliticalActionButton.setEnabled(false);
+      add(m_selectPoliticalActionButton);
+      m_doneButton = new JButton(DontBotherAction);
+      m_doneButton.setEnabled(false);
+      SwingUtilities.invokeLater(() -> m_doneButton.requestFocusInWindow());
+      add(m_doneButton);
     });
   }
 
@@ -105,14 +97,11 @@ public class PoliticsPanel extends ActionPanel {
       if (m_firstRun) {
         ClipPlayer.play(SoundPath.CLIP_PHASE_POLITICS, getCurrentPlayer());
       }
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          m_selectPoliticalActionButton.setEnabled(true);
-          m_doneButton.setEnabled(true);
-          // press the politics button for us.
-          SelectPoliticalActionAction.actionPerformed(null);
-        }
+      SwingUtilities.invokeLater(() -> {
+        m_selectPoliticalActionButton.setEnabled(true);
+        m_doneButton.setEnabled(true);
+        // press the politics button for us.
+        SelectPoliticalActionAction.actionPerformed(null);
       });
     }
     waitForRelease();
@@ -185,16 +174,13 @@ public class PoliticsPanel extends ActionPanel {
       politicalActionButtonPanel.add(getOtherPlayerFlags(paa), new GridBagConstraints(0, row, 1, 1, 1.0, 1.0,
           GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
       final JButton button = new JButton(getActionButtonText(paa));
-      button.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(final ActionEvent ae) {
-          m_selectPoliticalActionButton.setEnabled(false);
-          m_doneButton.setEnabled(false);
-          m_validPoliticalActions = null;
-          m_choice = paa;
-          parent.setVisible(false);
-          release();
-        }
+      button.addActionListener(ae -> {
+        m_selectPoliticalActionButton.setEnabled(false);
+        m_doneButton.setEnabled(false);
+        m_validPoliticalActions = null;
+        m_choice = paa;
+        parent.setVisible(false);
+        release();
       });
       politicalActionButtonPanel.add(button, new GridBagConstraints(1, row, 1, 1, 1.0, 1.0, GridBagConstraints.WEST,
           GridBagConstraints.HORIZONTAL, insets, 0, 0));

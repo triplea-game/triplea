@@ -175,12 +175,8 @@ public class ServerLauncher extends AbstractLauncher {
           m_gameLoadingWindow.doneWait();
         }
         if (!m_headless) {
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
-            }
-          });
+          SwingUtilities.invokeLater(
+              () -> JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE));
         } else {
           System.out.println(message);
         }
@@ -216,12 +212,8 @@ public class ServerLauncher extends AbstractLauncher {
             } else {
               stopGame();
               if (!m_headless) {
-                SwingUtilities.invokeLater(new Runnable() {
-                  @Override
-                  public void run() {
-                    JOptionPane.showMessageDialog(m_ui, "Problem during startup, game aborted.");
-                  }
-                });
+                SwingUtilities.invokeLater(
+                    () -> JOptionPane.showMessageDialog(m_ui, "Problem during startup, game aborted."));
               } else {
                 System.out.println("Problem during startup, game aborted.");
               }
@@ -291,12 +283,7 @@ public class ServerLauncher extends AbstractLauncher {
             m_gameSelectorModel.loadDefaultGame(parent);
           }
           if (parent != null) {
-            SwingUtilities.invokeLater(new Runnable() {
-              @Override
-              public void run() {
-                JOptionPane.getFrameForComponent(parent).setVisible(true);
-              }
-            });
+            SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
           }
           m_serverModel.setServerLauncher(null);
           m_serverModel.newGame();
@@ -427,13 +414,10 @@ public class ServerLauncher extends AbstractLauncher {
     }
     stopGame();
     if (!m_headless) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          final String message =
-              "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
-          JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_ui), message);
-        }
+      SwingUtilities.invokeLater(() -> {
+        final String message =
+            "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
+        JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_ui), message);
       });
     } else {
       System.out.println("Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName());

@@ -103,13 +103,9 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   }
 
   private void createComponents() {
-    m_localPlayerSelection.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        JOptionPane.showMessageDialog(PBEMSetupPanel.this, m_localPlayerPanel, "Select Local Players and AI's",
-            JOptionPane.PLAIN_MESSAGE);
-      }
-    });
+    m_localPlayerSelection.addActionListener(
+        e -> JOptionPane.showMessageDialog(PBEMSetupPanel.this, m_localPlayerPanel, "Select Local Players and AI's",
+            JOptionPane.PLAIN_MESSAGE));
   }
 
   private void layoutComponents() {
@@ -367,12 +363,9 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   @Override
   public void update(final Observable o, final Object arg) {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          loadAll();
-          layoutComponents();
-        }
+      SwingUtilities.invokeLater(() -> {
+        loadAll();
+        layoutComponents();
       });
       return;
     } else {
@@ -602,11 +595,8 @@ enum LocalBeanCache {
     m_file = new File(ClientFileSystemHelper.getUserRootFolder(), "local.cache");
     m_map = loadMap();
     // add a shutdown, just in case someone forgets to call writeToDisk
-    final Thread shutdown = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        writeToDisk();
-      }
+    final Thread shutdown = new Thread(() -> {
+      writeToDisk();
     });
     Runtime.getRuntime().addShutdownHook(shutdown);
   }

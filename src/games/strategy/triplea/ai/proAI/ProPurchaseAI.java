@@ -420,13 +420,10 @@ public class ProPurchaseAI {
 
     // Sort territories by value
     final List<ProPlaceTerritory> sortedTerritories = new ArrayList<>(needToDefendTerritories);
-    Collections.sort(sortedTerritories, new Comparator<ProPlaceTerritory>() {
-      @Override
-      public int compare(final ProPlaceTerritory t1, final ProPlaceTerritory t2) {
-        final double value1 = t1.getDefenseValue();
-        final double value2 = t2.getDefenseValue();
-        return Double.compare(value2, value1);
-      }
+    Collections.sort(sortedTerritories, (t1, t2) -> {
+      final double value1 = t1.getDefenseValue();
+      final double value2 = t2.getDefenseValue();
+      return Double.compare(value2, value1);
     });
     for (final ProPlaceTerritory placeTerritory : sortedTerritories) {
       ProLogger.debug(placeTerritory.toString() + " defenseValue=" + placeTerritory.getDefenseValue());
@@ -588,13 +585,10 @@ public class ProPurchaseAI {
     }
 
     // Sort territories by value
-    Collections.sort(prioritizedLandTerritories, new Comparator<ProPlaceTerritory>() {
-      @Override
-      public int compare(final ProPlaceTerritory t1, final ProPlaceTerritory t2) {
-        final double value1 = t1.getStrategicValue();
-        final double value2 = t2.getStrategicValue();
-        return Double.compare(value2, value1);
-      }
+    Collections.sort(prioritizedLandTerritories, (t1, t2) -> {
+      final double value1 = t1.getStrategicValue();
+      final double value2 = t2.getStrategicValue();
+      return Double.compare(value2, value1);
     });
     for (final ProPlaceTerritory placeTerritory : prioritizedLandTerritories) {
       ProLogger.debug(placeTerritory.toString() + " strategicValue=" + placeTerritory.getStrategicValue());
@@ -1011,13 +1005,10 @@ public class ProPurchaseAI {
 
     // Sort territories by value
     final List<ProPlaceTerritory> sortedTerritories = new ArrayList<>(seaPlaceTerritories);
-    Collections.sort(sortedTerritories, new Comparator<ProPlaceTerritory>() {
-      @Override
-      public int compare(final ProPlaceTerritory t1, final ProPlaceTerritory t2) {
-        final double value1 = t1.getStrategicValue();
-        final double value2 = t2.getStrategicValue();
-        return Double.compare(value2, value1);
-      }
+    Collections.sort(sortedTerritories, (t1, t2) -> {
+      final double value1 = t1.getStrategicValue();
+      final double value2 = t2.getStrategicValue();
+      return Double.compare(value2, value1);
     });
     ProLogger.debug("Sorted sea territories:");
     for (final ProPlaceTerritory placeTerritory : sortedTerritories) {
@@ -1459,13 +1450,10 @@ public class ProPurchaseAI {
     }
 
     // Sort territories by value
-    Collections.sort(prioritizedLandTerritories, new Comparator<ProPlaceTerritory>() {
-      @Override
-      public int compare(final ProPlaceTerritory t1, final ProPlaceTerritory t2) {
-        final double value1 = t1.getStrategicValue();
-        final double value2 = t2.getStrategicValue();
-        return Double.compare(value2, value1);
-      }
+    Collections.sort(prioritizedLandTerritories, (t1, t2) -> {
+      final double value1 = t1.getStrategicValue();
+      final double value2 = t2.getStrategicValue();
+      return Double.compare(value2, value1);
     });
     ProLogger.debug("Sorted land territories with remaining production: " + prioritizedLandTerritories);
 
@@ -1518,13 +1506,10 @@ public class ProPurchaseAI {
     }
 
     // Sort territories by value
-    Collections.sort(prioritizedCantHoldLandTerritories, new Comparator<ProPlaceTerritory>() {
-      @Override
-      public int compare(final ProPlaceTerritory t1, final ProPlaceTerritory t2) {
-        final double value1 = t1.getDefenseValue();
-        final double value2 = t2.getDefenseValue();
-        return Double.compare(value2, value1);
-      }
+    Collections.sort(prioritizedCantHoldLandTerritories, (t1, t2) -> {
+      final double value1 = t1.getDefenseValue();
+      final double value2 = t2.getDefenseValue();
+      return Double.compare(value2, value1);
     });
     ProLogger.debug("Sorted can't hold land territories with remaining production: "
         + prioritizedCantHoldLandTerritories);
@@ -1595,13 +1580,10 @@ public class ProPurchaseAI {
     }
 
     // Sort territories by ascending value (try upgrading units in far away territories first)
-    Collections.sort(prioritizedLandTerritories, new Comparator<ProPlaceTerritory>() {
-      @Override
-      public int compare(final ProPlaceTerritory t1, final ProPlaceTerritory t2) {
-        final double value1 = t1.getStrategicValue();
-        final double value2 = t2.getStrategicValue();
-        return Double.compare(value1, value2);
-      }
+    Collections.sort(prioritizedLandTerritories, (t1, t2) -> {
+      final double value1 = t1.getStrategicValue();
+      final double value2 = t2.getStrategicValue();
+      return Double.compare(value1, value2);
     });
     ProLogger.debug("Sorted land territories: " + prioritizedLandTerritories);
 

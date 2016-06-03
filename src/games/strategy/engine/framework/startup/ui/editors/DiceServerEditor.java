@@ -70,12 +70,9 @@ public class DiceServerEditor extends EditorPanel {
    * Configures the listeners for the gui components
    */
   private void setupListeners() {
-    m_testDiceyButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final PBEMDiceRoller random = new PBEMDiceRoller(getDiceServer(), null);
-        random.test();
-      }
+    m_testDiceyButton.addActionListener(e -> {
+      final PBEMDiceRoller random = new PBEMDiceRoller(getDiceServer(), null);
+      random.test();
     });
     final DocumentListener docListener = new EditorChangedFiringDocumentListener();
     m_toAddress.getDocument().addDocumentListener(docListener);

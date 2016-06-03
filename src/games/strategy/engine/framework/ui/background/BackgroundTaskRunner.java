@@ -15,21 +15,15 @@ public class BackgroundTaskRunner {
     }
     final WaitDialog window = new WaitDialog(parent, waitMessage);
     final AtomicBoolean doneWait = new AtomicBoolean(false);
-    final Thread t = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          r.run();
-        } finally {
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              doneWait.set(true);
-              window.setVisible(false);
-              window.dispose();
-            }
-          });
-        }
+    final Thread t = new Thread(() -> {
+      try {
+        r.run();
+      } finally {
+        SwingUtilities.invokeLater(() -> {
+          doneWait.set(true);
+          window.setVisible(false);
+          window.dispose();
+        });
       }
     });
     t.start();
@@ -47,12 +41,9 @@ public class BackgroundTaskRunner {
       return;
     }
     final CountDownLatch latch = new CountDownLatch(1);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        runInBackground(parent, waitMessage, r);
-        latch.countDown();
-      }
+    SwingUtilities.invokeLater(() -> {
+      runInBackground(parent, waitMessage, r);
+      latch.countDown();
     });
     if (latchHandler != null) {
       latchHandler.addShutdownLatch(latch);

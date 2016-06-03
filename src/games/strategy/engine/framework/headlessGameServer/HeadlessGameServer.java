@@ -226,13 +226,10 @@ public class HeadlessGameServer {
     final String localPassword = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
     if (encryptedPassword.equals(hashedPassword)) {
-      (new Thread(new Runnable() {
-        @Override
-        public void run() {
-          System.out.println("Remote Shutdown Initiated.");
-          ThreadUtil.sleep(1000);
-          System.exit(0);
-        }
+      (new Thread(() -> {
+        System.out.println("Remote Shutdown Initiated.");
+        ThreadUtil.sleep(1000);
+        System.exit(0);
       })).start();
       return null;
     }
@@ -250,26 +247,23 @@ public class HeadlessGameServer {
     if (encryptedPassword.equals(hashedPassword)) {
       final ServerGame iGame = m_iGame;
       if (iGame != null) {
-        (new Thread(new Runnable() {
-          @Override
-          public void run() {
-            System.out.println("Remote Stop Game Initiated.");
-            SaveGameFileChooser.ensureDefaultDirExists();
-            final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
-            final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
-            final File f;
-            if (f1.lastModified() > f2.lastModified()) {
-              f = f2;
-            } else {
-              f = f1;
-            }
-            try {
-              iGame.saveGame(f);
-            } catch (final Exception e) {
-              ClientLogger.logQuietly(e);
-            }
-            iGame.stopGame();
+        (new Thread(() -> {
+          System.out.println("Remote Stop Game Initiated.");
+          SaveGameFileChooser.ensureDefaultDirExists();
+          final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
+          final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
+          final File f;
+          if (f1.lastModified() > f2.lastModified()) {
+            f = f2;
+          } else {
+            f = f1;
           }
+          try {
+            iGame.saveGame(f);
+          } catch (final Exception e) {
+            ClientLogger.logQuietly(e);
+          }
+          iGame.stopGame();
         })).start();
       }
       return null;
@@ -307,36 +301,33 @@ public class HeadlessGameServer {
     // milliseconds (48 hours max)
     final long expire = System.currentTimeMillis() + (Math.max(0, Math.min(60 * 24 * 2, minutes)) * 1000 * 60);
     if (encryptedPassword.equals(hashedPassword)) {
-      (new Thread(new Runnable() {
-        @Override
-        public void run() {
-          if (getServerModel() == null) {
-            return;
-          }
-          final IServerMessenger messenger = getServerModel().getMessenger();
-          if (messenger == null) {
-            return;
-          }
-          final Set<INode> nodes = messenger.getNodes();
-          if (nodes == null) {
-            return;
-          }
-          try {
-            for (final INode node : nodes) {
-              final String realName = node.getName().split(" ")[0];
-              final String ip = node.getAddress().getHostAddress();
-              final String mac = messenger.GetPlayerMac(node.getName());
-              if (realName.equals(playerName)) {
-                System.out.println("Remote Mute of Player: " + playerName);
-                messenger.NotifyUsernameMutingOfPlayer(realName, new Date(expire));
-                messenger.NotifyIPMutingOfPlayer(ip, new Date(expire));
-                messenger.NotifyMacMutingOfPlayer(mac, new Date(expire));
-                return;
-              }
+      (new Thread(() -> {
+        if (getServerModel() == null) {
+          return;
+        }
+        final IServerMessenger messenger = getServerModel().getMessenger();
+        if (messenger == null) {
+          return;
+        }
+        final Set<INode> nodes = messenger.getNodes();
+        if (nodes == null) {
+          return;
+        }
+        try {
+          for (final INode node : nodes) {
+            final String realName = node.getName().split(" ")[0];
+            final String ip = node.getAddress().getHostAddress();
+            final String mac = messenger.GetPlayerMac(node.getName());
+            if (realName.equals(playerName)) {
+              System.out.println("Remote Mute of Player: " + playerName);
+              messenger.NotifyUsernameMutingOfPlayer(realName, new Date(expire));
+              messenger.NotifyIPMutingOfPlayer(ip, new Date(expire));
+              messenger.NotifyMacMutingOfPlayer(mac, new Date(expire));
+              return;
             }
-          } catch (final Exception e) {
-            ClientLogger.logQuietly(e);
           }
+        } catch (final Exception e) {
+          ClientLogger.logQuietly(e);
         }
       })).start();
       return null;
@@ -353,31 +344,28 @@ public class HeadlessGameServer {
     final String localPassword = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
     if (encryptedPassword.equals(hashedPassword)) {
-      (new Thread(new Runnable() {
-        @Override
-        public void run() {
-          if (getServerModel() == null) {
-            return;
-          }
-          final IServerMessenger messenger = getServerModel().getMessenger();
-          if (messenger == null) {
-            return;
-          }
-          final Set<INode> nodes = messenger.getNodes();
-          if (nodes == null) {
-            return;
-          }
-          try {
-            for (final INode node : nodes) {
-              final String realName = node.getName().split(" ")[0];
-              if (realName.equals(playerName)) {
-                System.out.println("Remote Boot of Player: " + playerName);
-                messenger.removeConnection(node);
-              }
+      (new Thread(() -> {
+        if (getServerModel() == null) {
+          return;
+        }
+        final IServerMessenger messenger = getServerModel().getMessenger();
+        if (messenger == null) {
+          return;
+        }
+        final Set<INode> nodes = messenger.getNodes();
+        if (nodes == null) {
+          return;
+        }
+        try {
+          for (final INode node : nodes) {
+            final String realName = node.getName().split(" ")[0];
+            if (realName.equals(playerName)) {
+              System.out.println("Remote Boot of Player: " + playerName);
+              messenger.removeConnection(node);
             }
-          } catch (final Exception e) {
-            ClientLogger.logQuietly(e);
           }
+        } catch (final Exception e) {
+          ClientLogger.logQuietly(e);
         }
       })).start();
       return null;
@@ -397,48 +385,45 @@ public class HeadlessGameServer {
     // milliseconds (30 days max)
     final long expire = System.currentTimeMillis() + (Math.max(0, Math.min(24 * 30, hours)) * 1000 * 60 * 60);
     if (encryptedPassword.equals(hashedPassword)) {
-      (new Thread(new Runnable() {
-        @Override
-        public void run() {
-          if (getServerModel() == null) {
-            return;
-          }
-          final IServerMessenger messenger = getServerModel().getMessenger();
-          if (messenger == null) {
-            return;
-          }
-          final Set<INode> nodes = messenger.getNodes();
-          if (nodes == null) {
-            return;
-          }
-          try {
-            for (final INode node : nodes) {
-              final String realName = node.getName().split(" ")[0];
-              final String ip = node.getAddress().getHostAddress();
-              final String mac = messenger.GetPlayerMac(node.getName());
-              if (realName.equals(playerName)) {
-                System.out.println("Remote Ban of Player: " + playerName);
-                try {
-                  messenger.NotifyUsernameMiniBanningOfPlayer(realName, new Date(expire));
-                } catch (final Exception e) {
-                  ClientLogger.logQuietly(e);
-                }
-                try {
-                  messenger.NotifyIPMiniBanningOfPlayer(ip, new Date(expire));
-                } catch (final Exception e) {
-                  ClientLogger.logQuietly(e);
-                }
-                try {
-                  messenger.NotifyMacMiniBanningOfPlayer(mac, new Date(expire));
-                } catch (final Exception e) {
-                  ClientLogger.logQuietly(e);
-                }
-                messenger.removeConnection(node);
+      (new Thread(() -> {
+        if (getServerModel() == null) {
+          return;
+        }
+        final IServerMessenger messenger = getServerModel().getMessenger();
+        if (messenger == null) {
+          return;
+        }
+        final Set<INode> nodes = messenger.getNodes();
+        if (nodes == null) {
+          return;
+        }
+        try {
+          for (final INode node : nodes) {
+            final String realName = node.getName().split(" ")[0];
+            final String ip = node.getAddress().getHostAddress();
+            final String mac = messenger.GetPlayerMac(node.getName());
+            if (realName.equals(playerName)) {
+              System.out.println("Remote Ban of Player: " + playerName);
+              try {
+                messenger.NotifyUsernameMiniBanningOfPlayer(realName, new Date(expire));
+              } catch (final Exception e) {
+                ClientLogger.logQuietly(e);
               }
+              try {
+                messenger.NotifyIPMiniBanningOfPlayer(ip, new Date(expire));
+              } catch (final Exception e) {
+                ClientLogger.logQuietly(e);
+              }
+              try {
+                messenger.NotifyMacMiniBanningOfPlayer(mac, new Date(expire));
+              } catch (final Exception e) {
+                ClientLogger.logQuietly(e);
+              }
+              messenger.removeConnection(node);
             }
-          } catch (final Exception e) {
-            ClientLogger.logQuietly(e);
           }
+        } catch (final Exception e) {
+          ClientLogger.logQuietly(e);
         }
       })).start();
       return null;
@@ -461,12 +446,9 @@ public class HeadlessGameServer {
       throw new IllegalStateException("Instance already exists");
     }
     s_instance = this;
-    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-      @Override
-      public void run() {
-        System.out.println("Running ShutdownHook.");
-        shutdown();
-      }
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      System.out.println("Running ShutdownHook.");
+      shutdown();
     }));
     m_useUI = useUI;
     m_availableGames = new AvailableGames();
@@ -481,35 +463,29 @@ public class HeadlessGameServer {
       }
     }
     if (m_useUI) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          System.out.println("Starting UI");
-          final JFrame frame = new JFrame("TripleA Headless Game Server UI Main Frame");
-          frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-          frame.setPreferredSize(new Dimension(700, 630));
-          frame.setSize(new Dimension(700, 630));
-          frame.setLocationRelativeTo(null);
-          m_setupPanelModel = new HeadlessServerSetupPanelModel(m_gameSelectorModel, frame);
-          m_setupPanelModel.showSelectType();
-          m_mainPanel = new HeadlessServerMainPanel(m_setupPanelModel, m_availableGames);
-          frame.getContentPane().add(m_mainPanel);
-          frame.pack();
-          frame.setVisible(true);
-          frame.toFront();
-          System.out.println("Waiting for users to connect.");
-        }
+      SwingUtilities.invokeLater(() -> {
+        System.out.println("Starting UI");
+        final JFrame frame = new JFrame("TripleA Headless Game Server UI Main Frame");
+        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        frame.setPreferredSize(new Dimension(700, 630));
+        frame.setSize(new Dimension(700, 630));
+        frame.setLocationRelativeTo(null);
+        m_setupPanelModel = new HeadlessServerSetupPanelModel(m_gameSelectorModel, frame);
+        m_setupPanelModel.showSelectType();
+        m_mainPanel = new HeadlessServerMainPanel(m_setupPanelModel, m_availableGames);
+        frame.getContentPane().add(m_mainPanel);
+        frame.pack();
+        frame.setVisible(true);
+        frame.toFront();
+        System.out.println("Waiting for users to connect.");
       });
     } else {
-      final Runnable r = new Runnable() {
-        @Override
-        public void run() {
-          System.out.println("Headless Start");
-          m_setupPanelModel = new HeadlessServerSetupPanelModel(m_gameSelectorModel, null);
-          m_setupPanelModel.showSelectType();
-          System.out.println("Waiting for users to connect.");
-          waitForUsersHeadless();
-        }
+      final Runnable r = () -> {
+        System.out.println("Headless Start");
+        m_setupPanelModel = new HeadlessServerSetupPanelModel(m_gameSelectorModel, null);
+        m_setupPanelModel.showSelectType();
+        System.out.println("Waiting for users to connect.");
+        waitForUsersHeadless();
       };
       final Thread t = new Thread(r, "Initialize Headless Server Setup Model");
       t.start();
@@ -522,16 +498,13 @@ public class HeadlessGameServer {
     } catch (final NumberFormatException e) {
       reconnect = LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT;
     }
-    m_lobbyWatcherResetupThread.scheduleAtFixedRate(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          restartLobbyWatcher(m_setupPanelModel, m_iGame);
-        } catch (final Exception e) {
-          ThreadUtil.sleep(10 * 60 * 1000);
-          // try again, but don't catch it this time
-          restartLobbyWatcher(m_setupPanelModel, m_iGame);
-        }
+    m_lobbyWatcherResetupThread.scheduleAtFixedRate(() -> {
+      try {
+        restartLobbyWatcher(m_setupPanelModel, m_iGame);
+      } catch (final Exception e) {
+        ThreadUtil.sleep(10 * 60 * 1000);
+        // try again, but don't catch it this time
+        restartLobbyWatcher(m_setupPanelModel, m_iGame);
       }
     }, reconnect, reconnect, TimeUnit.SECONDS);
     s_logger.info("Game Server initialized");
@@ -645,20 +618,17 @@ public class HeadlessGameServer {
     if (m_useUI) {
       return;
     }
-    final Runnable r = new Runnable() {
-      @Override
-      public void run() {
-        while (!m_shutDown) {
-          ThreadUtil.sleep(8000);
-          if (m_setupPanelModel != null && m_setupPanelModel.getPanel() != null
-              && m_setupPanelModel.getPanel().canGameStart()) {
-            final boolean started = startHeadlessGame(m_setupPanelModel);
-            if (!started) {
-              System.out.println("Error in launcher, going back to waiting.");
-            } else {
-              // TODO: need a latch instead?
-              break;
-            }
+    final Runnable r = () -> {
+      while (!m_shutDown) {
+        ThreadUtil.sleep(8000);
+        if (m_setupPanelModel != null && m_setupPanelModel.getPanel() != null
+            && m_setupPanelModel.getPanel().canGameStart()) {
+          final boolean started = startHeadlessGame(m_setupPanelModel);
+          if (!started) {
+            System.out.println("Error in launcher, going back to waiting.");
+          } else {
+            // TODO: need a latch instead?
+            break;
           }
         }
       }

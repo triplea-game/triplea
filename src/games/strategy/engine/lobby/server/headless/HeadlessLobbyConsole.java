@@ -56,11 +56,8 @@ public class HeadlessLobbyConsole {
   }
 
   public void start() {
-    final Thread t = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        printEvalLoop();
-      }
+    final Thread t = new Thread(() -> {
+      printEvalLoop();
     }, "Headless console eval print loop");
     t.start();
   }

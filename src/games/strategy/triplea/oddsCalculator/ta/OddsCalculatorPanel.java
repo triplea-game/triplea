@@ -130,18 +130,10 @@ public class OddsCalculatorPanel extends JPanel {
   private String m_defenderOrderOfLosses = null;
   private Territory m_location = null;
   private JList<String> m_territoryEffectsJList;
-  private final WidgetChangedListener m_listenerPlayerUnitsPanel = new WidgetChangedListener() {
-    @Override
-    public void widgetChanged() {
-      setWidgetActivation();
-    }
-  };
-  private final OddsCalculatorListener m_listenerOddsCalculator = new OddsCalculatorListener() {
-    @Override
-    public void dataReady() {
-      m_calculateButton.setText("Calculate Odds");
-      m_calculateButton.setEnabled(true);
-    }
+  private final WidgetChangedListener m_listenerPlayerUnitsPanel = () -> setWidgetActivation();
+  private final OddsCalculatorListener m_listenerOddsCalculator = () -> {
+    m_calculateButton.setText("Calculate Odds");
+    m_calculateButton.setEnabled(true);
   };
 
   public OddsCalculatorPanel(final GameData data, final IUIContext context, final Territory location,
@@ -240,51 +232,37 @@ public class OddsCalculatorPanel extends JPanel {
   }
 
   private void setupListeners() {
-    m_defenderCombo.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_data.acquireReadLock();
-        try {
-          if (m_data.getRelationshipTracker().isAllied(getDefender(), getAttacker())) {
-            m_attackerCombo.setSelectedItem(getEnemy(getDefender()));
-          }
-        } finally {
-          m_data.releaseReadLock();
+    m_defenderCombo.addActionListener(e -> {
+      m_data.acquireReadLock();
+      try {
+        if (m_data.getRelationshipTracker().isAllied(getDefender(), getAttacker())) {
+          m_attackerCombo.setSelectedItem(getEnemy(getDefender()));
         }
-        updateDefender(null);
-        setWidgetActivation();
+      } finally {
+        m_data.releaseReadLock();
       }
+      updateDefender(null);
+      setWidgetActivation();
     });
-    m_attackerCombo.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_data.acquireReadLock();
-        try {
-          if (m_data.getRelationshipTracker().isAllied(getDefender(), getAttacker())) {
-            m_defenderCombo.setSelectedItem(getEnemy(getAttacker()));
-          }
-        } finally {
-          m_data.releaseReadLock();
+    m_attackerCombo.addActionListener(e -> {
+      m_data.acquireReadLock();
+      try {
+        if (m_data.getRelationshipTracker().isAllied(getDefender(), getAttacker())) {
+          m_defenderCombo.setSelectedItem(getEnemy(getAttacker()));
         }
-        updateAttacker(null);
-        setWidgetActivation();
+      } finally {
+        m_data.releaseReadLock();
       }
+      updateAttacker(null);
+      setWidgetActivation();
     });
-    m_amphibiousCheckBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        setWidgetActivation();
-      }
-    });
-    m_landBattleCheckBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_attackerOrderOfLosses = null;
-        m_defenderOrderOfLosses = null;
-        updateDefender(null);
-        updateAttacker(null);
-        setWidgetActivation();
-      }
+    m_amphibiousCheckBox.addActionListener(e -> setWidgetActivation());
+    m_landBattleCheckBox.addActionListener(e -> {
+      m_attackerOrderOfLosses = null;
+      m_defenderOrderOfLosses = null;
+      updateDefender(null);
+      updateAttacker(null);
+      setWidgetActivation();
     });
     m_calculateButton.addMouseMotionListener(new MouseMotionListener() {
       @Override
@@ -305,71 +283,49 @@ public class OddsCalculatorPanel extends JPanel {
         }
       }
     });
-    m_calculateButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        updateStats();
-      }
+    m_calculateButton.addActionListener(e -> updateStats());
+    m_closeButton.addActionListener(e -> {
+      m_attackerOrderOfLosses = null;
+      m_defenderOrderOfLosses = null;
+      m_parent.setVisible(false);
+      shutdown();
+      m_parent.dispatchEvent(new WindowEvent(m_parent, WindowEvent.WINDOW_CLOSING));
     });
-    m_closeButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_attackerOrderOfLosses = null;
-        m_defenderOrderOfLosses = null;
-        m_parent.setVisible(false);
-        shutdown();
-        m_parent.dispatchEvent(new WindowEvent(m_parent, WindowEvent.WINDOW_CLOSING));
-      }
+    m_clearButton.addActionListener(e -> {
+      m_defendingUnitsPanel.clear();
+      m_attackingUnitsPanel.clear();
+      setWidgetActivation();
     });
-    m_clearButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_defendingUnitsPanel.clear();
-        m_attackingUnitsPanel.clear();
-        setWidgetActivation();
-      }
+    m_SwapSidesButton.addActionListener(e -> {
+      m_attackerOrderOfLosses = null;
+      m_defenderOrderOfLosses = null;
+      List<Unit> getdefenders = new ArrayList<>();
+      List<Unit> getattackers = new ArrayList<>();
+      getdefenders = m_defendingUnitsPanel.getUnits();
+      getattackers = m_attackingUnitsPanel.getUnits();
+      m_SwapSidesCombo.setSelectedItem(getAttacker());
+      m_attackerCombo.setSelectedItem(getDefender());
+      m_defenderCombo.setSelectedItem(getSwapSides());
+      m_attackingUnitsPanel.init(getAttacker(), getdefenders, isLand());
+      m_defendingUnitsPanel.init(getDefender(), getattackers, isLand());
+      setWidgetActivation();
     });
-    m_SwapSidesButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_attackerOrderOfLosses = null;
-        m_defenderOrderOfLosses = null;
-        List<Unit> getdefenders = new ArrayList<>();
-        List<Unit> getattackers = new ArrayList<>();
-        getdefenders = m_defendingUnitsPanel.getUnits();
-        getattackers = m_attackingUnitsPanel.getUnits();
-        m_SwapSidesCombo.setSelectedItem(getAttacker());
-        m_attackerCombo.setSelectedItem(getDefender());
-        m_defenderCombo.setSelectedItem(getSwapSides());
-        m_attackingUnitsPanel.init(getAttacker(), getdefenders, isLand());
-        m_defendingUnitsPanel.init(getDefender(), getattackers, isLand());
-        setWidgetActivation();
-      }
-    });
-    m_orderOfLossesButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final OrderOfLossesInputPanel oolPanel = new OrderOfLossesInputPanel(m_attackerOrderOfLosses,
-            m_defenderOrderOfLosses, m_attackingUnitsPanel.getCategories(), m_defendingUnitsPanel.getCategories(),
-            m_landBattleCheckBox.isSelected(), m_context, m_data);
-        if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(OddsCalculatorPanel.this, oolPanel,
-            "Create Order Of Losses for each side", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE)) {
-          if (OddsCalculator.isValidOrderOfLoss(oolPanel.getAttackerOrder(), m_data)) {
-            m_attackerOrderOfLosses = oolPanel.getAttackerOrder();
-          }
-          if (OddsCalculator.isValidOrderOfLoss(oolPanel.getDefenderOrder(), m_data)) {
-            m_defenderOrderOfLosses = oolPanel.getDefenderOrder();
-          }
+    m_orderOfLossesButton.addActionListener(e -> {
+      final OrderOfLossesInputPanel oolPanel = new OrderOfLossesInputPanel(m_attackerOrderOfLosses,
+          m_defenderOrderOfLosses, m_attackingUnitsPanel.getCategories(), m_defendingUnitsPanel.getCategories(),
+          m_landBattleCheckBox.isSelected(), m_context, m_data);
+      if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(OddsCalculatorPanel.this, oolPanel,
+          "Create Order Of Losses for each side", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE)) {
+        if (OddsCalculator.isValidOrderOfLoss(oolPanel.getAttackerOrder(), m_data)) {
+          m_attackerOrderOfLosses = oolPanel.getAttackerOrder();
+        }
+        if (OddsCalculator.isValidOrderOfLoss(oolPanel.getDefenderOrder(), m_data)) {
+          m_defenderOrderOfLosses = oolPanel.getDefenderOrder();
         }
       }
     });
     if (m_territoryEffectsJList != null) {
-      m_territoryEffectsJList.addListSelectionListener(new ListSelectionListener() {
-        @Override
-        public void valueChanged(final ListSelectionEvent e) {
-          setWidgetActivation();
-        }
-      });
+      m_territoryEffectsJList.addListSelectionListener(e -> setWidgetActivation());
     }
     m_attackingUnitsPanel.addChangeListener(m_listenerPlayerUnitsPanel);
     m_defendingUnitsPanel.addChangeListener(m_listenerPlayerUnitsPanel);
@@ -418,70 +374,64 @@ public class OddsCalculatorPanel extends JPanel {
     final AtomicReference<Collection<Unit>> attackers = new AtomicReference<>();
     dialog.pack();
     dialog.setLocationRelativeTo(this);
-    final Thread calcThread = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          // find a territory to fight in
-          Territory location = null;
-          if (m_location == null || m_location.isWater() == isLand()) {
-            for (final Territory t : m_data.getMap()) {
-              if (t.isWater() == !isLand()) {
-                location = t;
-                break;
-              }
+    final Thread calcThread = new Thread(() -> {
+      try {
+        // find a territory to fight in
+        Territory location = null;
+        if (m_location == null || m_location.isWater() == isLand()) {
+          for (final Territory t : m_data.getMap()) {
+            if (t.isWater() == !isLand()) {
+              location = t;
+              break;
             }
-          } else {
-            location = m_location;
           }
-          if (location == null) {
-            throw new IllegalStateException("No territory found that is land:" + isLand());
-          }
-          final List<Unit> defending = m_defendingUnitsPanel.getUnits();
-          final List<Unit> attacking = m_attackingUnitsPanel.getUnits();
-          List<Unit> bombarding = new ArrayList<>();
-          if (isLand()) {
-            bombarding = Match.getMatches(attacking, Matches.unitCanBombard(getAttacker()));
-            attacking.removeAll(bombarding);
-          }
-          m_calculator.setRetreatAfterRound(m_retreatAfterXRounds.getValue());
-          m_calculator.setRetreatAfterXUnitsLeft(m_retreatAfterXUnitsLeft.getValue());
-          if (m_retreatWhenOnlyAirLeftCheckBox.isSelected()) {
-            m_calculator.setRetreatWhenOnlyAirLeft(true);
-          } else {
-            m_calculator.setRetreatWhenOnlyAirLeft(false);
-          }
-          if (m_landBattleCheckBox.isSelected() && m_keepOneAttackingLandUnitCheckBox.isSelected()) {
-            m_calculator.setKeepOneAttackingLandUnit(true);
-          } else {
-            m_calculator.setKeepOneAttackingLandUnit(false);
-          }
-          if (isAmphibiousBattle()) {
-            m_calculator.setAmphibious(true);
-          } else {
-            m_calculator.setAmphibious(false);
-          }
-          if (m_retreatWhenMetaPowerIsLower.isSelected()) {
-            m_calculator.setRetreatWhenMetaPowerIsLower(true);
-          } else {
-            m_calculator.setRetreatWhenMetaPowerIsLower(false);
-          }
-          m_calculator.setAttackerOrderOfLosses(m_attackerOrderOfLosses);
-          m_calculator.setDefenderOrderOfLosses(m_defenderOrderOfLosses);
-          final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
-          defenders.set(defending);
-          attackers.set(attacking);
-          results.set(m_calculator.setCalculateDataAndCalculate(getAttacker(), getDefender(), location, attacking,
-              defending, bombarding, territoryEffects, m_numRuns.getValue()));
-        } finally {
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              dialog.setVisible(false);
-              dialog.dispose();
-            }
-          });
+        } else {
+          location = m_location;
         }
+        if (location == null) {
+          throw new IllegalStateException("No territory found that is land:" + isLand());
+        }
+        final List<Unit> defending = m_defendingUnitsPanel.getUnits();
+        final List<Unit> attacking = m_attackingUnitsPanel.getUnits();
+        List<Unit> bombarding = new ArrayList<>();
+        if (isLand()) {
+          bombarding = Match.getMatches(attacking, Matches.unitCanBombard(getAttacker()));
+          attacking.removeAll(bombarding);
+        }
+        m_calculator.setRetreatAfterRound(m_retreatAfterXRounds.getValue());
+        m_calculator.setRetreatAfterXUnitsLeft(m_retreatAfterXUnitsLeft.getValue());
+        if (m_retreatWhenOnlyAirLeftCheckBox.isSelected()) {
+          m_calculator.setRetreatWhenOnlyAirLeft(true);
+        } else {
+          m_calculator.setRetreatWhenOnlyAirLeft(false);
+        }
+        if (m_landBattleCheckBox.isSelected() && m_keepOneAttackingLandUnitCheckBox.isSelected()) {
+          m_calculator.setKeepOneAttackingLandUnit(true);
+        } else {
+          m_calculator.setKeepOneAttackingLandUnit(false);
+        }
+        if (isAmphibiousBattle()) {
+          m_calculator.setAmphibious(true);
+        } else {
+          m_calculator.setAmphibious(false);
+        }
+        if (m_retreatWhenMetaPowerIsLower.isSelected()) {
+          m_calculator.setRetreatWhenMetaPowerIsLower(true);
+        } else {
+          m_calculator.setRetreatWhenMetaPowerIsLower(false);
+        }
+        m_calculator.setAttackerOrderOfLosses(m_attackerOrderOfLosses);
+        m_calculator.setDefenderOrderOfLosses(m_defenderOrderOfLosses);
+        final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
+        defenders.set(defending);
+        attackers.set(attacking);
+        results.set(m_calculator.setCalculateDataAndCalculate(getAttacker(), getDefender(), location, attacking,
+            defending, bombarding, territoryEffects, m_numRuns.getValue()));
+      } finally {
+        SwingUtilities.invokeLater(() -> {
+          dialog.setVisible(false);
+          dialog.dispose();
+        });
       }
     }, "Odds calc thread");
     // Actually start thread.
@@ -903,12 +853,7 @@ class PlayerUnitsPanel extends JPanel {
   private boolean m_isLand = true;
   private List<UnitCategory> m_categories = null;
   private final ListenerList<WidgetChangedListener> m_listeners = new ListenerList<>();
-  private final WidgetChangedListener m_listenerUnitPanel = new WidgetChangedListener() {
-    @Override
-    public void widgetChanged() {
-      notifyListeners();
-    }
-  };
+  private final WidgetChangedListener m_listenerUnitPanel = () -> notifyListeners();
 
   PlayerUnitsPanel(final GameData data, final IUIContext context, final boolean defender) {
     m_data = data;
@@ -940,31 +885,28 @@ class PlayerUnitsPanel extends JPanel {
   public void init(final PlayerID id, final List<Unit> units, final boolean land) {
     m_isLand = land;
     m_categories = new ArrayList<>(categorize(id, units));
-    Collections.sort(m_categories, new Comparator<UnitCategory>() {
-      @Override
-      public int compare(final UnitCategory o1, final UnitCategory o2) {
-        final UnitType ut1 = o1.getType();
-        final UnitType ut2 = o2.getType();
-        final UnitAttachment u1 = UnitAttachment.get(ut1);
-        final UnitAttachment u2 = UnitAttachment.get(ut2);
-        // for land, we want land, air, aa gun, then bombarding
-        if (land) {
-          if (u1.getIsSea() != u2.getIsSea()) {
-            return u1.getIsSea() ? 1 : -1;
-          }
-          if (Matches.UnitTypeIsAAforAnything.match(ut1) != Matches.UnitTypeIsAAforAnything.match(ut2)) {
-            return Matches.UnitTypeIsAAforAnything.match(ut1) ? 1 : -1;
-          }
-          if (u1.getIsAir() != u2.getIsAir()) {
-            return u1.getIsAir() ? 1 : -1;
-          }
-        } else {
-          if (u1.getIsSea() != u2.getIsSea()) {
-            return u1.getIsSea() ? -1 : 1;
-          }
+    Collections.sort(m_categories, (o1, o2) -> {
+      final UnitType ut1 = o1.getType();
+      final UnitType ut2 = o2.getType();
+      final UnitAttachment u1 = UnitAttachment.get(ut1);
+      final UnitAttachment u2 = UnitAttachment.get(ut2);
+      // for land, we want land, air, aa gun, then bombarding
+      if (land) {
+        if (u1.getIsSea() != u2.getIsSea()) {
+          return u1.getIsSea() ? 1 : -1;
         }
-        return u1.getName().compareTo(u2.getName());
+        if (Matches.UnitTypeIsAAforAnything.match(ut1) != Matches.UnitTypeIsAAforAnything.match(ut2)) {
+          return Matches.UnitTypeIsAAforAnything.match(ut1) ? 1 : -1;
+        }
+        if (u1.getIsAir() != u2.getIsAir()) {
+          return u1.getIsAir() ? 1 : -1;
+        }
+      } else {
+        if (u1.getIsSea() != u2.getIsSea()) {
+          return u1.getIsSea() ? -1 : 1;
+        }
       }
+      return u1.getName().compareTo(u2.getName());
     });
     removeAll();
     Match<UnitType> predicate;
@@ -1064,12 +1006,7 @@ class UnitPanel extends JPanel {
   private final ScrollableTextField m_textField;
   private final GameData m_data;
   private final ListenerList<WidgetChangedListener> m_listeners = new ListenerList<>();
-  private final ScrollableTextFieldListener m_listenerTextField = new ScrollableTextFieldListener() {
-    @Override
-    public void changedValue(final ScrollableTextField field) {
-      notifyListeners();
-    }
-  };
+  private final ScrollableTextFieldListener m_listenerTextField = field -> notifyListeners();
 
   public UnitPanel(final GameData data, final IUIContext context, final UnitCategory category,
       final IntegerMap<UnitType> costs) {
@@ -1229,12 +1166,9 @@ class OrderOfLossesInputPanel extends JPanel {
       }
     });
     m_clear = new JButton("Clear");
-    m_clear.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_attackerTextField.setText("");
-        m_defenderTextField.setText("");
-      }
+    m_clear.addActionListener(e -> {
+      m_attackerTextField.setText("");
+      m_defenderTextField.setText("");
     });
     layoutComponents();
   }

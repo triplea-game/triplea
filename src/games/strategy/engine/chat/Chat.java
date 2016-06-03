@@ -313,12 +313,7 @@ public class Chat {
           if (m_queuedInitMessages == null) {
             speakerAdded(node, tag, version);
           } else {
-            m_queuedInitMessages.add(new Runnable() {
-              @Override
-              public void run() {
-                speakerAdded(node, tag, version);
-              }
-            });
+            m_queuedInitMessages.add(() -> speakerAdded(node, tag, version));
           }
         }
         return;
@@ -346,12 +341,7 @@ public class Chat {
           if (m_queuedInitMessages == null) {
             speakerRemoved(node, version);
           } else {
-            m_queuedInitMessages.add(new Runnable() {
-              @Override
-              public void run() {
-                speakerRemoved(node, version);
-              }
-            });
+            m_queuedInitMessages.add(() -> speakerRemoved(node, version));
           }
         }
         return;

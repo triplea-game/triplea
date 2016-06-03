@@ -57,12 +57,7 @@ public class LobbyFrame extends JFrame {
     chatPlayers.addHiddenPlayerName(LobbyServer.ADMIN_USERNAME);
     chatPlayers.setChat(chat);
     chatPlayers.setPreferredSize(new Dimension(200, 600));
-    chatPlayers.addActionFactory(new IPlayerActionFactory() {
-      @Override
-      public List<Action> mouseOnPlayer(final INode clickedOn) {
-        return createAdminActions(clickedOn);
-      }
-    });
+    chatPlayers.addActionFactory(clickedOn -> createAdminActions(clickedOn));
     final LobbyGamePanel gamePanel = new LobbyGamePanel(m_client.getMessengers());
     final JSplitPane leftSplit = new JSplitPane();
     leftSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
@@ -79,12 +74,7 @@ public class LobbyFrame extends JFrame {
     pack();
     m_chatMessagePanel.requestFocusInWindow();
     setLocationRelativeTo(null);
-    m_client.getMessenger().addErrorListener(new IMessengerErrorListener() {
-      @Override
-      public void messengerInvalid(final IMessenger messenger, final Exception reason) {
-        connectionToServerLost();
-      }
-    });
+    m_client.getMessenger().addErrorListener((messenger, reason) -> connectionToServerLost());
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {

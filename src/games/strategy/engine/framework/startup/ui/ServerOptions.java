@@ -58,12 +58,7 @@ public class ServerOptions extends JDialog {
   }
 
   private void setupActions() {
-    m_requirePasswordCheckBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        setWidgetActivation();
-      }
-    });
+    m_requirePasswordCheckBox.addActionListener(e -> setWidgetActivation());
   }
 
   @Override

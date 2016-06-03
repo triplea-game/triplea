@@ -43,11 +43,8 @@ public class NIOWriter {
       s_logger.log(Level.SEVERE, "Could not create Selector", e);
       throw new IllegalStateException(e);
     }
-    final Thread t = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        loop();
-      }
+    final Thread t = new Thread(() -> {
+      loop();
     }, "NIO Writer - " + threadSuffix);
     t.start();
   }

@@ -44,12 +44,9 @@ class TechnologyDefinitionsRow extends DynamicRow {
             "Technology '" + inputText + "' already exists for player '" + curr_playerName + "'.", "Input error",
             JOptionPane.ERROR_MESSAGE);
         parentRowPanel.setDataIsConsistent(false);
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            textFieldTechnologyName.requestFocus();
-            textFieldTechnologyName.selectAll();
-          }
+        SwingUtilities.invokeLater(() -> {
+          textFieldTechnologyName.requestFocus();
+          textFieldTechnologyName.selectAll();
         });
         return;
       }
@@ -83,12 +80,9 @@ class TechnologyDefinitionsRow extends DynamicRow {
           JOptionPane.showMessageDialog(stepActionPanel,
               "Technology '" + techInputText + "' already exists for player '" + curr_playerName + "'.", "Input error",
               JOptionPane.ERROR_MESSAGE);
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              comboBoxPlayerName.setSelectedIndex(prevSelectedIndex);
-              comboBoxPlayerName.requestFocus();
-            }
+          SwingUtilities.invokeLater(() -> {
+            comboBoxPlayerName.setSelectedIndex(prevSelectedIndex);
+            comboBoxPlayerName.requestFocus();
           });
           return;
         }

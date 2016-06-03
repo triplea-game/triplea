@@ -30,19 +30,13 @@ public class HeadlessGameServerConsole {
   }
 
   public void start() {
-    final Thread t = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        printEvalLoop();
-      }
+    final Thread t = new Thread(() -> {
+      printEvalLoop();
     }, "Headless console eval print loop");
     t.setDaemon(true);
     t.start();
-    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-      @Override
-      public void run() {
-        out.println("Shutting Down.   See log file.");
-      }
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      out.println("Shutting Down.   See log file.");
     }));
   }
 

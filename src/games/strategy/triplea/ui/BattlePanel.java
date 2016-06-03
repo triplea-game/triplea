@@ -84,12 +84,9 @@ public class BattlePanel extends ActionPanel {
     m_battleFrame.addWindowListener(new WindowListener() {
       @Override
       public void windowActivated(final WindowEvent e) {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            if (m_battleDisplay != null) {
-              m_battleDisplay.takeFocus();
-            }
+        SwingUtilities.invokeLater(() -> {
+          if (m_battleDisplay != null) {
+            m_battleDisplay.takeFocus();
           }
         });
       }
@@ -151,34 +148,25 @@ public class BattlePanel extends ActionPanel {
 
   public void notifyRetreat(final String messageShort, final String messageLong, final String step,
       final PlayerID retreatingPlayer) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (m_battleDisplay != null) {
-          m_battleDisplay.battleInfo(messageLong, step);
-        }
+    SwingUtilities.invokeLater(() -> {
+      if (m_battleDisplay != null) {
+        m_battleDisplay.battleInfo(messageLong, step);
       }
     });
   }
 
   public void showDice(final DiceRoll dice, final String step) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (m_battleDisplay != null) {
-          m_battleDisplay.battleInfo(dice, step);
-        }
+    SwingUtilities.invokeLater(() -> {
+      if (m_battleDisplay != null) {
+        m_battleDisplay.battleInfo(dice, step);
       }
     });
   }
 
   public void battleEndMessage(final String message) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (m_battleDisplay != null) {
-          m_battleDisplay.endBattle(message, m_battleFrame);
-        }
+    SwingUtilities.invokeLater(() -> {
+      if (m_battleDisplay != null) {
+        m_battleDisplay.endBattle(message, m_battleFrame);
       }
     });
   }
@@ -220,12 +208,9 @@ public class BattlePanel extends ActionPanel {
 
   public void listBattle(final GUID battleID, final List<String> steps) {
     if (!SwingUtilities.isEventDispatchThread()) {
-      final Runnable r = new Runnable() {
-        @Override
-        public void run() {
-          // recursive call
-          listBattle(battleID, steps);
-        }
+      final Runnable r = () -> {
+        // recursive call
+        listBattle(battleID, steps);
       };
       try {
         SwingUtilities.invokeLater(r);
@@ -279,12 +264,7 @@ public class BattlePanel extends ActionPanel {
         }
         m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         m_currentBattleDisplayed = battleID;
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            m_battleFrame.toFront();
-          }
-        });
+        SwingUtilities.invokeLater(() -> m_battleFrame.toFront());
       }
     });
   }
@@ -302,12 +282,8 @@ public class BattlePanel extends ActionPanel {
    */
   public Territory getBombardment(final Unit unit, final Territory unitTerritory,
       final Collection<Territory> territories, final boolean noneAvailable) {
-    final BombardComponent comp = Util.runInSwingEventThread(new Util.Task<BombardComponent>() {
-      @Override
-      public BombardComponent run() {
-        return new BombardComponent(unit, unitTerritory, territories, noneAvailable);
-      }
-    });
+    final BombardComponent comp = Util.runInSwingEventThread(
+        () -> new BombardComponent(unit, unitTerritory, territories, noneAvailable));
     int option = JOptionPane.NO_OPTION;
     while (option != JOptionPane.OK_OPTION) {
       option = EventThreadJOptionPane.showConfirmDialog(this, comp, "Bombardment Territory Selection",
@@ -342,36 +318,27 @@ public class BattlePanel extends ActionPanel {
 
   public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player,
       final Collection<Unit> killed, final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (m_battleDisplay != null) {
-          m_battleDisplay.casualtyNotification(step, dice, player, killed, damaged, dependents);
-        }
+    SwingUtilities.invokeLater(() -> {
+      if (m_battleDisplay != null) {
+        m_battleDisplay.casualtyNotification(step, dice, player, killed, damaged, dependents);
       }
     });
   }
 
   public void deadUnitNotification(final PlayerID player, final Collection<Unit> killed,
       final Map<Unit, Collection<Unit>> dependents) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (m_battleDisplay != null) {
-          m_battleDisplay.deadUnitNotification(player, killed, dependents);
-        }
+    SwingUtilities.invokeLater(() -> {
+      if (m_battleDisplay != null) {
+        m_battleDisplay.deadUnitNotification(player, killed, dependents);
       }
     });
   }
 
   public void changedUnitsNotification(final PlayerID player, final Collection<Unit> removedUnits,
       final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (m_battleDisplay != null) {
-          m_battleDisplay.changedUnitsNotification(player, removedUnits, addedUnits, dependents);
-        }
+    SwingUtilities.invokeLater(() -> {
+      if (m_battleDisplay != null) {
+        m_battleDisplay.changedUnitsNotification(player, removedUnits, addedUnits, dependents);
       }
     });
   }
@@ -405,37 +372,34 @@ public class BattlePanel extends ActionPanel {
   private CasualtyDetails getCasualtiesAA(final Collection<Unit> selectFrom,
       final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
       final PlayerID hit, final CasualtyList defaultCasualties, final boolean allowMultipleHitsPerUnit) {
-    final Task<CasualtyDetails> task = new Task<CasualtyDetails>() {
-      @Override
-      public CasualtyDetails run() {
-        final boolean isEditMode = (dice == null);
-        final UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, getData(),
-            allowMultipleHitsPerUnit, getMap().getUIContext());
-        chooser.setTitle(message);
-        if (isEditMode) {
-          chooser.setMax(selectFrom.size());
-        } else {
-          chooser.setMax(count);
-        }
-        final DicePanel dicePanel = new DicePanel(getMap().getUIContext(), getData());
-        if (!isEditMode) {
-          dicePanel.setDiceRoll(dice);
-        }
-        final JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.add(chooser, BorderLayout.CENTER);
-        dicePanel.setMaximumSize(new Dimension(450, 600));
-        dicePanel.setPreferredSize(new Dimension(300, (int) dicePanel.getPreferredSize().getHeight()));
-        panel.add(dicePanel, BorderLayout.SOUTH);
-        final String[] options = {"OK"};
-        EventThreadJOptionPane.showOptionDialog(getRootPane(), panel, hit.getName() + " select casualties",
-            JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null,
-            getMap().getUIContext().getCountDownLatchHandler());
-        final List<Unit> killed = chooser.getSelected(false);
-        final CasualtyDetails response =
-            new CasualtyDetails(killed, chooser.getSelectedDamagedMultipleHitPointUnits(), false);
-        return response;
+    final Task<CasualtyDetails> task = () -> {
+      final boolean isEditMode = (dice == null);
+      final UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, getData(),
+          allowMultipleHitsPerUnit, getMap().getUIContext());
+      chooser.setTitle(message);
+      if (isEditMode) {
+        chooser.setMax(selectFrom.size());
+      } else {
+        chooser.setMax(count);
       }
+      final DicePanel dicePanel = new DicePanel(getMap().getUIContext(), getData());
+      if (!isEditMode) {
+        dicePanel.setDiceRoll(dice);
+      }
+      final JPanel panel = new JPanel();
+      panel.setLayout(new BorderLayout());
+      panel.add(chooser, BorderLayout.CENTER);
+      dicePanel.setMaximumSize(new Dimension(450, 600));
+      dicePanel.setPreferredSize(new Dimension(300, (int) dicePanel.getPreferredSize().getHeight()));
+      panel.add(dicePanel, BorderLayout.SOUTH);
+      final String[] options = {"OK"};
+      EventThreadJOptionPane.showOptionDialog(getRootPane(), panel, hit.getName() + " select casualties",
+          JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null,
+          getMap().getUIContext().getCountDownLatchHandler());
+      final List<Unit> killed = chooser.getSelected(false);
+      final CasualtyDetails response =
+          new CasualtyDetails(killed, chooser.getSelectedDamagedMultipleHitPointUnits(), false);
+      return response;
     };
     return Util.runInSwingEventThread(task);
   }
@@ -450,34 +414,25 @@ public class BattlePanel extends ActionPanel {
   }
 
   public void gotoStep(final GUID battleID, final String step) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (m_battleDisplay != null) {
-          m_battleDisplay.setStep(step);
-        }
+    SwingUtilities.invokeLater(() -> {
+      if (m_battleDisplay != null) {
+        m_battleDisplay.setStep(step);
       }
     });
   }
 
   public void notifyRetreat(final Collection<Unit> retreating) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (m_battleDisplay != null) {
-          m_battleDisplay.notifyRetreat(retreating);
-        }
+    SwingUtilities.invokeLater(() -> {
+      if (m_battleDisplay != null) {
+        m_battleDisplay.notifyRetreat(retreating);
       }
     });
   }
 
   public void bombingResults(final GUID battleID, final List<Die> dice, final int cost) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (m_battleDisplay != null) {
-          m_battleDisplay.bombingResults(dice, cost);
-        }
+    SwingUtilities.invokeLater(() -> {
+      if (m_battleDisplay != null) {
+        m_battleDisplay.bombingResults(dice, cost);
       }
     });
   }

@@ -116,21 +116,13 @@ public class MapPanel extends ImageScrollerLargeView {
     setGameData(data);
     this.addMouseListener(MOUSE_LISTENER);
     this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
-    this.addScrollListener(new ScrollListener() {
-      @Override
-      public void scrolled(final int x, final int y) {
-        SwingUtilities.invokeLater(() -> repaint());
-      }
-    });
+    this.addScrollListener((x, y) -> SwingUtilities.invokeLater(() -> repaint()));
     recreateTiles(data, this.uiContext);
-    this.uiContext.addActive(new Active() {
-      @Override
-      public void deactivate() {
-        // super.deactivate
-        MapPanel.this.deactivate();
-        clearUndrawn();
-        backgroundDrawer.stop();
-      }
+    this.uiContext.addActive(() -> {
+      // super.deactivate
+      MapPanel.this.deactivate();
+      clearUndrawn();
+      backgroundDrawer.stop();
     });
   }
   LinkedBlockingQueue<Tile> getUndrawnTiles() {

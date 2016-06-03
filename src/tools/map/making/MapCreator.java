@@ -148,12 +148,7 @@ public class MapCreator extends JFrame {
 
   private void setWidgetActivation() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          setWidgetActivation();
-        }
-      });
+      SwingUtilities.invokeLater(() -> setWidgetActivation());
       return;
     }
     m_mainPanel.validate();
@@ -188,19 +183,16 @@ public class MapCreator extends JFrame {
     m_panel1.add(Box.createVerticalStrut(30));
     m_panel1.add(new JLabel("Click button open up the readme file on how to make maps:"));
     final JButton helpButton = new JButton("Start Tutorial  /  Show Help Document");
-    helpButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          DesktopUtilityBrowserLauncher.openFile(
-              new File(ClientFileSystemHelper.getRootFolder(),
-                  "doc" + File.separator + "map_and_map_skin_making_overview.html"));
-          // DesktopUtilityBrowserLauncher.openURL(GameRunner.getRootFolder().getAbsoluteFile() + File.separator + "doc"
-          // + File.separator +
-          // "map_and_map_skin_making_overview.html");
-        } catch (final Exception e1) {
-          e1.printStackTrace();
-        }
+    helpButton.addActionListener(e -> {
+      try {
+        DesktopUtilityBrowserLauncher.openFile(
+            new File(ClientFileSystemHelper.getRootFolder(),
+                "doc" + File.separator + "map_and_map_skin_making_overview.html"));
+        // DesktopUtilityBrowserLauncher.openURL(GameRunner.getRootFolder().getAbsoluteFile() + File.separator + "doc"
+        // + File.separator +
+        // "map_and_map_skin_making_overview.html");
+      } catch (final Exception e1) {
+        e1.printStackTrace();
       }
     });
     m_panel1.add(helpButton);

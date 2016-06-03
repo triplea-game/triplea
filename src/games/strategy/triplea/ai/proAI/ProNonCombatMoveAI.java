@@ -486,13 +486,10 @@ public class ProNonCombatMoveAI {
 
     // Sort attack territories by value
     final List<ProTerritory> prioritizedTerritories = new ArrayList<>(moveMap.values());
-    Collections.sort(prioritizedTerritories, new Comparator<ProTerritory>() {
-      @Override
-      public int compare(final ProTerritory t1, final ProTerritory t2) {
-        final double value1 = t1.getValue();
-        final double value2 = t2.getValue();
-        return Double.compare(value2, value1);
-      }
+    Collections.sort(prioritizedTerritories, (t1, t2) -> {
+      final double value1 = t1.getValue();
+      final double value2 = t2.getValue();
+      return Double.compare(value2, value1);
     });
 
     // Remove territories that I'm not going to try to defend
@@ -1236,13 +1233,10 @@ public class ProNonCombatMoveAI {
         }
 
         // Sort prioritized territories
-        Collections.sort(priorizitedLoadTerritories, new Comparator<ProTerritory>() {
-          @Override
-          public int compare(final ProTerritory t1, final ProTerritory t2) {
-            final double value1 = t1.getLoadValue();
-            final double value2 = t2.getLoadValue();
-            return Double.compare(value1, value2);
-          }
+        Collections.sort(priorizitedLoadTerritories, (t1, t2) -> {
+          final double value1 = t1.getLoadValue();
+          final double value2 = t2.getLoadValue();
+          return Double.compare(value1, value2);
         });
 
         // Move towards best loading territory if route is safe

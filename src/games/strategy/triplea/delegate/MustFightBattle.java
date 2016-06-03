@@ -2284,19 +2284,16 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
           new ArrayList<>(m_casualties.getDamaged()), m_dependentUnits);
       getRemote((m_defending ? m_attacker : m_defender), bridge).confirmOwnCasualties(m_battleID,
           "Press space to continue");
-      final Runnable r = new Runnable() {
-        @Override
-        public void run() {
-          try {
-            getRemote((m_defending ? m_defender : m_attacker), bridge).confirmEnemyCasualties(m_battleID,
-                "Press space to continue", (m_defending ? m_attacker : m_defender));
-          } catch (final ConnectionLostException cle) {
-            // somone else will deal with this
-            // System.out.println(cle.getMessage());
-            // cle.printStackTrace(System.out);
-          } catch (final Exception e) {
-            // ignore
-          }
+      final Runnable r = () -> {
+        try {
+          getRemote((m_defending ? m_defender : m_attacker), bridge).confirmEnemyCasualties(m_battleID,
+              "Press space to continue", (m_defending ? m_attacker : m_defender));
+        } catch (final ConnectionLostException cle) {
+          // somone else will deal with this
+          // System.out.println(cle.getMessage());
+          // cle.printStackTrace(System.out);
+        } catch (final Exception e) {
+          // ignore
         }
       };
       final Thread t = new Thread(r, "click to continue waiter");
@@ -2716,23 +2713,20 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
   // This will allow the marines with higher scores to get killed last
   public void sortAmphib(final List<Unit> units, final GameData data) {
     final Comparator<Unit> decreasingMovement = UnitComparator.getLowestToHighestMovementComparator();
-    final Comparator<Unit> comparator = new Comparator<Unit>() {
-      @Override
-      public int compare(final Unit u1, final Unit u2) {
-        int amphibComp = 0;
-        if (u1.getUnitType().equals(u2.getUnitType())) {
-          final UnitAttachment ua = UnitAttachment.get(u1.getType());
-          final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
-          if (ua.getIsMarine() != 0 && ua2.getIsMarine() != 0) {
-            amphibComp = compareAccordingToAmphibious(u1, u2);
-          }
-          if (amphibComp == 0) {
-            return decreasingMovement.compare(u1, u2);
-          }
-          return amphibComp;
+    final Comparator<Unit> comparator = (u1, u2) -> {
+      int amphibComp = 0;
+      if (u1.getUnitType().equals(u2.getUnitType())) {
+        final UnitAttachment ua = UnitAttachment.get(u1.getType());
+        final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
+        if (ua.getIsMarine() != 0 && ua2.getIsMarine() != 0) {
+          amphibComp = compareAccordingToAmphibious(u1, u2);
         }
-        return u1.getUnitType().getName().compareTo(u2.getUnitType().getName());
+        if (amphibComp == 0) {
+          return decreasingMovement.compare(u1, u2);
+        }
+        return amphibComp;
       }
+      return u1.getUnitType().getName().compareTo(u2.getUnitType().getName());
     };
     Collections.sort(units, comparator);
   }

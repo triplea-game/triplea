@@ -111,12 +111,9 @@ public class EngineVersionProperties {
 
       private void spawnRequest(final URL engineversionPropsURL, final AtomicReference<EngineVersionProperties> ref,
           final CountDownLatch latch) {
-        final Thread t1 = new Thread(new Runnable() {
-          @Override
-          public void run() {
-            ref.set(new EngineVersionProperties(engineversionPropsURL));
-            latch.countDown();
-          }
+        final Thread t1 = new Thread(() -> {
+          ref.set(new EngineVersionProperties(engineversionPropsURL));
+          latch.countDown();
         });
         t1.start();
       }
@@ -219,12 +216,9 @@ public class EngineVersionProperties {
     intro.setEditable(false);
     intro.setOpaque(false);
     intro.setBorder(BorderFactory.createEmptyBorder());
-    final HyperlinkListener hyperlinkListener = new HyperlinkListener() {
-      @Override
-      public void hyperlinkUpdate(final HyperlinkEvent e) {
-        if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
-          DesktopUtilityBrowserLauncher.openURL(e.getDescription());
-        }
+    final HyperlinkListener hyperlinkListener = e -> {
+      if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
+        DesktopUtilityBrowserLauncher.openURL(e.getDescription());
       }
     };
     intro.addHyperlinkListener(hyperlinkListener);
@@ -264,12 +258,9 @@ public class EngineVersionProperties {
     intro.setEditable(false);
     intro.setOpaque(false);
     intro.setBorder(BorderFactory.createEmptyBorder());
-    final HyperlinkListener hyperlinkListener = new HyperlinkListener() {
-      @Override
-      public void hyperlinkUpdate(final HyperlinkEvent e) {
-        if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
-          DesktopUtilityBrowserLauncher.openURL(e.getDescription());
-        }
+    final HyperlinkListener hyperlinkListener = e -> {
+      if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
+        DesktopUtilityBrowserLauncher.openURL(e.getDescription());
       }
     };
     intro.addHyperlinkListener(hyperlinkListener);

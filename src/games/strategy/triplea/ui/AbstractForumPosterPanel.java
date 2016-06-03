@@ -55,12 +55,9 @@ public abstract class AbstractForumPosterPanel extends ActionPanel {
   @Override
   public void display(final PlayerID id) {
     super.display(id);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionLabel.setText(id.getName() + " " + getTitle());
-        // defer componenet layout until waitForEndTurn()
-      }
+    SwingUtilities.invokeLater(() -> {
+      m_actionLabel.setText(id.getName() + " " + getTitle());
+      // defer componenet layout until waitForEndTurn()
     });
   }
 
@@ -101,16 +98,13 @@ public abstract class AbstractForumPosterPanel extends ActionPanel {
       return;
     }
     final boolean hasPosted = getHasPostedTurnSummary();
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        removeAll();
-        add(m_actionLabel);
-        add(m_forumPosterComponent.layoutComponents(m_poster, getForumPosterDelegate(), m_bridge, m_frame, hasPosted,
-            allowIncludeTerritorySummary(), allowIncludeTerritoryAllPlayersSummary(), allowIncludeProductionSummary(),
-            allowDiceBattleDetails(), allowDiceStatistics()));
-        validate();
-      }
+    SwingUtilities.invokeLater(() -> {
+      removeAll();
+      add(m_actionLabel);
+      add(m_forumPosterComponent.layoutComponents(m_poster, getForumPosterDelegate(), m_bridge, m_frame, hasPosted,
+          allowIncludeTerritorySummary(), allowIncludeTerritoryAllPlayersSummary(), allowIncludeProductionSummary(),
+          allowDiceBattleDetails(), allowDiceStatistics()));
+      validate();
     });
     waitForRelease();
   }

@@ -121,37 +121,34 @@ public class CommentPanel extends JPanel {
 
   private void readHistoryTreeEvent(final TreeModelEvent e) {
     final TreeModelEvent tme = e;
-    final Runnable runner = new Runnable() {
-      @Override
-      public void run() {
-        m_data.acquireReadLock();
-        try {
-          final Document doc = m_text.getDocument();
-          final HistoryNode node = (HistoryNode) (tme.getTreePath().getLastPathComponent());
-          final TreeNode child = node == null ? null : (node.getChildCount() > 0 ? node.getLastChild() : null);
-          final String title =
-              child != null ? (child instanceof Event ? ((Event) child).getDescription() : child.toString())
-                  : (node != null ? node.getTitle() : "");
-          final Pattern p = Pattern.compile("^COMMENT: (.*)");
-          final Matcher m = p.matcher(title);
-          if (m.matches()) {
-            final PlayerID playerId = m_data.getSequence().getStep().getPlayerID();
-            final int round = m_data.getSequence().getRound();
-            final String player = playerId.getName();
-            final Icon icon = m_iconMap.get(playerId);
-            try {
-              // insert into ui document
-              final String prefix = " " + player + "(" + round + ") : ";
-              m_text.insertIcon(icon);
-              doc.insertString(doc.getLength(), prefix, bold);
-              doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
-            } catch (final BadLocationException e) {
-              ClientLogger.logQuietly(e);
-            }
+    final Runnable runner = () -> {
+      m_data.acquireReadLock();
+      try {
+        final Document doc = m_text.getDocument();
+        final HistoryNode node = (HistoryNode) (tme.getTreePath().getLastPathComponent());
+        final TreeNode child = node == null ? null : (node.getChildCount() > 0 ? node.getLastChild() : null);
+        final String title =
+            child != null ? (child instanceof Event ? ((Event) child).getDescription() : child.toString())
+                : (node != null ? node.getTitle() : "");
+        final Pattern p = Pattern.compile("^COMMENT: (.*)");
+        final Matcher m = p.matcher(title);
+        if (m.matches()) {
+          final PlayerID playerId = m_data.getSequence().getStep().getPlayerID();
+          final int round = m_data.getSequence().getRound();
+          final String player = playerId.getName();
+          final Icon icon = m_iconMap.get(playerId);
+          try {
+            // insert into ui document
+            final String prefix = " " + player + "(" + round + ") : ";
+            m_text.insertIcon(icon);
+            doc.insertString(doc.getLength(), prefix, bold);
+            doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
+          } catch (final BadLocationException e1) {
+            ClientLogger.logQuietly(e1);
           }
-        } finally {
-          m_data.releaseReadLock();
         }
+      } finally {
+        m_data.releaseReadLock();
       }
     };
     // invoke in the swing event thread
@@ -213,28 +210,25 @@ public class CommentPanel extends JPanel {
 
   /** thread safe */
   public void addMessage(final String message) {
-    final Runnable runner = new Runnable() {
-      @Override
-      public void run() {
-        try {
-          final Document doc = m_text.getDocument();
-          // save history entry
-          final IEditDelegate delegate = m_frame.getEditDelegate();
-          String error;
-          if (delegate == null) {
-            error = "You can only add comments during your turn";
-          } else {
-            error = delegate.addComment(message);
-          }
-          if (error != null) {
-            doc.insertString(doc.getLength(), error + "\n", italic);
-          }
-        } catch (final BadLocationException e) {
-          ClientLogger.logQuietly(e);
+    final Runnable runner = () -> {
+      try {
+        final Document doc = m_text.getDocument();
+        // save history entry
+        final IEditDelegate delegate = m_frame.getEditDelegate();
+        String error;
+        if (delegate == null) {
+          error = "You can only add comments during your turn";
+        } else {
+          error = delegate.addComment(message);
         }
-        final BoundedRangeModel scrollModel = m_scrollPane.getVerticalScrollBar().getModel();
-        scrollModel.setValue(scrollModel.getMaximum());
+        if (error != null) {
+          doc.insertString(doc.getLength(), error + "\n", italic);
+        }
+      } catch (final BadLocationException e) {
+        ClientLogger.logQuietly(e);
       }
+      final BoundedRangeModel scrollModel = m_scrollPane.getVerticalScrollBar().getModel();
+      scrollModel.setValue(scrollModel.getMaximum());
     };
     // invoke in the swing event thread
     if (SwingUtilities.isEventDispatchThread()) {

@@ -67,15 +67,12 @@ public class ChatController implements IChatController {
     m_chatChannel = getChatChannelName(name);
     m_remoteMessenger.registerRemote(this, getChatControlerRemoteName(name));
     ((IServerMessenger) m_messenger).addConnectionChangeListener(m_connectionChangeListener);
-    m_pingThread.scheduleAtFixedRate(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          // System.out.println("Pinging");
-          getChatBroadcaster().ping();
-        } catch (final Exception e) {
-          s_logger.log(Level.SEVERE, "Error pinging", e);
-        }
+    m_pingThread.scheduleAtFixedRate(() -> {
+      try {
+        // System.out.println("Pinging");
+        getChatBroadcaster().ping();
+      } catch (final Exception e) {
+        s_logger.log(Level.SEVERE, "Error pinging", e);
       }
     }, 180, 60, TimeUnit.SECONDS);
   }

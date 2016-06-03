@@ -95,12 +95,9 @@ public class ImageScrollerLargeView extends JComponent {
     addMouseMotionListener(MOUSE_DRAG_LISTENER);
     addComponentListener(COMPONENT_LISTENER);
     m_timer.start();
-    m_model.addObserver(new Observer() {
-      @Override
-      public void update(final Observable o, final Object arg) {
-        repaint();
-        notifyScollListeners();
-      }
+    m_model.addObserver((o, arg) -> {
+      repaint();
+      notifyScollListeners();
     });
   }
 

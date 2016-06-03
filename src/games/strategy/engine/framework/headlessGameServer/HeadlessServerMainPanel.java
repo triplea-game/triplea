@@ -169,41 +169,25 @@ public class HeadlessServerMainPanel extends JPanel implements Observer {
     }
     // if we need this for something other than network, add a way to set it
     final JButton button = new JButton("Network...");
-    button.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final JPopupMenu menu = new JPopupMenu();
-        final List<Action> actions = m_gameSetupPanel.getUserActions();
-        for (final Action a : actions) {
-          menu.add(a);
-        }
-        menu.show(button, 0, button.getHeight());
+    button.addActionListener(e -> {
+      final JPopupMenu menu = new JPopupMenu();
+      final List<Action> actions = m_gameSetupPanel.getUserActions();
+      for (final Action a : actions) {
+        menu.add(a);
       }
+      menu.show(button, 0, button.getHeight());
     });
     cancelPanel.add(button);
   }
 
   private void setupListeners() {
-    m_gameTypePanelModel.addObserver(new Observer() {
-      @Override
-      public void update(final Observable o, final Object arg) {
-        setGameSetupPanel(m_gameTypePanelModel.getPanel());
-      }
-    });
-    m_playButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        play();
-      }
-    });
-    m_quitButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          m_gameSetupPanel.shutDown();
-        } finally {
-          System.exit(0);
-        }
+    m_gameTypePanelModel.addObserver((o, arg) -> setGameSetupPanel(m_gameTypePanelModel.getPanel()));
+    m_playButton.addActionListener(e -> play());
+    m_quitButton.addActionListener(e -> {
+      try {
+        m_gameSetupPanel.shutDown();
+      } finally {
+        System.exit(0);
       }
     });
     m_gameSelectorModel.addObserver(this);
@@ -222,12 +206,7 @@ public class HeadlessServerMainPanel extends JPanel implements Observer {
 
   private void setWidgetActivation() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          setWidgetActivation();
-        }
-      });
+      SwingUtilities.invokeLater(() -> setWidgetActivation());
       return;
     }
     m_gameTypePanelModel.setWidgetActivation();

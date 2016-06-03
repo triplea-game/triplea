@@ -50,12 +50,7 @@ public class NumberProperty extends AEditableProperty {
   public JComponent getEditorComponent() {
     final IntTextField field = new IntTextField(m_min, m_max);
     field.setValue(m_value);
-    field.addChangeListener(new IntTextFieldChangeListener() {
-      @Override
-      public void changedValue(final IntTextField aField) {
-        m_value = aField.getValue();
-      }
-    });
+    field.addChangeListener(aField -> m_value = aField.getValue());
     return field;
   }
 

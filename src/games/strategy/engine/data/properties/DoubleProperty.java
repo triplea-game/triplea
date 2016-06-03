@@ -59,12 +59,7 @@ public class DoubleProperty extends AEditableProperty {
   public JComponent getEditorComponent() {
     final DoubleTextField field = new DoubleTextField(m_min, m_max);
     field.setValue(m_value);
-    field.addChangeListener(new DoubleTextFieldChangeListener() {
-      @Override
-      public void changedValue(final DoubleTextField aField) {
-        m_value = aField.getValue();
-      }
-    });
+    field.addChangeListener(aField -> m_value = aField.getValue());
     return field;
   }
 

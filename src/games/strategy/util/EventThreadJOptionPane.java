@@ -50,13 +50,10 @@ public class EventThreadJOptionPane {
       return;
     }
     final CountDownLatch latch = new CountDownLatch(1);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        JOptionPane.showMessageDialog(parentComponent, useJLabel ? createJLabelInScrollPane((String) message) : message,
-            title, messageType);
-        latch.countDown();
-      }
+    SwingUtilities.invokeLater(() -> {
+      JOptionPane.showMessageDialog(parentComponent, useJLabel ? createJLabelInScrollPane((String) message) : message,
+          title, messageType);
+      latch.countDown();
     });
     if (latchHandler != null) {
       latchHandler.addShutdownLatch(latch);
@@ -85,12 +82,9 @@ public class EventThreadJOptionPane {
       return;
     }
     final CountDownLatch latch = new CountDownLatch(1);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        JOptionPane.showMessageDialog(parentComponent, message);
-        latch.countDown();
-      }
+    SwingUtilities.invokeLater(() -> {
+      JOptionPane.showMessageDialog(parentComponent, message);
+      latch.countDown();
     });
     if (latchHandler != null) {
       latchHandler.addShutdownLatch(latch);
@@ -119,12 +113,9 @@ public class EventThreadJOptionPane {
       return;
     }
     final CountDownLatch latch = new CountDownLatch(1);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        JOptionPane.showMessageDialog(parentComponent, message);
-        latch.countDown();
-      }
+    SwingUtilities.invokeLater(() -> {
+      JOptionPane.showMessageDialog(parentComponent, message);
+      latch.countDown();
     });
     if (latchHandler != null) {
       latchHandler.addShutdownLatch(latch);
@@ -161,13 +152,10 @@ public class EventThreadJOptionPane {
     }
     final CountDownLatch latch = new CountDownLatch(1);
     final AtomicInteger rVal = new AtomicInteger();
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        rVal.set(JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options,
-            initialValue));
-        latch.countDown();
-      }
+    SwingUtilities.invokeLater(() -> {
+      rVal.set(JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options,
+          initialValue));
+      latch.countDown();
     });
     if (latchHandler != null) {
       latchHandler.addShutdownLatch(latch);
@@ -196,12 +184,9 @@ public class EventThreadJOptionPane {
     }
     final CountDownLatch latch = new CountDownLatch(1);
     final AtomicInteger rVal = new AtomicInteger();
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        rVal.set(JOptionPane.showConfirmDialog(parentComponent, message, title, optionType));
-        latch.countDown();
-      }
+    SwingUtilities.invokeLater(() -> {
+      rVal.set(JOptionPane.showConfirmDialog(parentComponent, message, title, optionType));
+      latch.countDown();
     });
     if (latchHandler != null) {
       latchHandler.addShutdownLatch(latch);

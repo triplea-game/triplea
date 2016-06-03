@@ -53,19 +53,16 @@ public class TechPanel extends ActionPanel {
   @Override
   public void display(final PlayerID id) {
     super.display(id);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        removeAll();
-        m_actionLabel.setText(id.getName() + " Tech Roll");
-        add(m_actionLabel);
-        if (isWW2V3TechModel()) {
-          add(new JButton(GetTechTokenAction));
-          add(new JButton(JustRollTech));
-        } else {
-          add(new JButton(GetTechRollsAction));
-          add(new JButton(DontBother));
-        }
+    SwingUtilities.invokeLater(() -> {
+      removeAll();
+      m_actionLabel.setText(id.getName() + " Tech Roll");
+      add(m_actionLabel);
+      if (isWW2V3TechModel()) {
+        add(new JButton(GetTechTokenAction));
+        add(new JButton(JustRollTech));
+      } else {
+        add(new JButton(GetTechRollsAction));
+        add(new JButton(DontBother));
       }
     });
   }
@@ -461,12 +458,7 @@ class TechTokenPanel extends JPanel {
   };
 
   private final ScrollableTextFieldListener setWidgetAction() {
-    return new ScrollableTextFieldListener() {
-      @Override
-      public void changedValue(final ScrollableTextField stf) {
-        setWidgetActivation();
-      }
-    };
+    return stf -> setWidgetActivation();
   }
 
   public int getValue() {

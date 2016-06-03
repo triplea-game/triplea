@@ -14,14 +14,11 @@ public class MacLobbyWrapper {
   // i think the java validator triggers this
   public static void registerMacShutdownHandler(final LobbyFrame frame) {
     // new Application();
-    Application.getApplication().setQuitHandler(new QuitHandler(){
-      @Override
-      public void handleQuitRequestWith(QuitEvent quitEvent, QuitResponse quitResponse) {
-        if (frame != null) {
-          frame.shutdown();
-        } else {
-          System.exit(0);
-        }
+    Application.getApplication().setQuitHandler((quitEvent, quitResponse) -> {
+      if (frame != null) {
+        frame.shutdown();
+      } else {
+        System.exit(0);
       }
     });
   }

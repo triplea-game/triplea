@@ -29,12 +29,7 @@ public class ScrollableTextField extends JPanel {
     frame.getContentPane().add(new JLabel("-10 - 10"));
     frame.getContentPane().add(new ScrollableTextField(-10, 10));
     final ScrollableTextField field = new ScrollableTextField(0, 100);
-    field.addChangeListener(new ScrollableTextFieldListener() {
-      @Override
-      public void changedValue(final ScrollableTextField aField) {
-        System.out.println(aField.getValue());
-      }
-    });
+    field.addChangeListener(aField -> System.out.println(aField.getValue()));
     frame.getContentPane().add(new JLabel("0-100, listened to"));
     frame.getContentPane().add(field);
     frame.setSize(400, 140);
@@ -217,12 +212,7 @@ public class ScrollableTextField extends JPanel {
     }
   }
 
-  private final IntTextFieldChangeListener m_textListener = new IntTextFieldChangeListener() {
-    @Override
-    public void changedValue(final IntTextField field) {
-      notifyListeners();
-    }
-  };
+  private final IntTextFieldChangeListener m_textListener = field -> notifyListeners();
 
   @Override
   public void setEnabled(final boolean enabled) {

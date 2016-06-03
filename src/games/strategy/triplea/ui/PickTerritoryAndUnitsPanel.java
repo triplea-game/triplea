@@ -59,25 +59,17 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
     m_pickedUnits = new HashSet<>();
     m_currentAction = null;
     m_currentHighlightedTerritory = null;
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        removeAll();
-        m_actionLabel.setText(id.getName() + " Pick Territory and Units");
-        add(m_actionLabel);
-        m_selectTerritoryButton = new JButton(SelectTerritoryAction);
-        add(m_selectTerritoryButton);
-        m_selectUnitsButton = new JButton(SelectUnitsAction);
-        add(m_selectUnitsButton);
-        m_doneButton = new JButton(DoneAction);
-        add(m_doneButton);
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            m_selectTerritoryButton.requestFocusInWindow();
-          }
-        });
-      }
+    SwingUtilities.invokeLater(() -> {
+      removeAll();
+      m_actionLabel.setText(id.getName() + " Pick Territory and Units");
+      add(m_actionLabel);
+      m_selectTerritoryButton = new JButton(SelectTerritoryAction);
+      add(m_selectTerritoryButton);
+      m_selectUnitsButton = new JButton(SelectUnitsAction);
+      add(m_selectUnitsButton);
+      m_doneButton = new JButton(DoneAction);
+      add(m_doneButton);
+      SwingUtilities.invokeLater(() -> m_selectTerritoryButton.requestFocusInWindow());
     });
   }
 
@@ -95,14 +87,11 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
       m_currentHighlightedTerritory = m_pickedTerritory;
       getMap().setTerritoryOverlay(m_currentHighlightedTerritory, Color.WHITE, 200);
     }
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (territoryChoices.size() > 1) {
-          SelectTerritoryAction.actionPerformed(null);
-        } else if (unitChoices.size() > 1) {
-          SelectUnitsAction.actionPerformed(null);
-        }
+    SwingUtilities.invokeLater(() -> {
+      if (territoryChoices.size() > 1) {
+        SelectTerritoryAction.actionPerformed(null);
+      } else if (unitChoices.size() > 1) {
+        SelectUnitsAction.actionPerformed(null);
       }
     });
     waitForRelease();
@@ -110,19 +99,16 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
   }
 
   private void setWidgetActivation() {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (!getActive()) {
-          // current turn belongs to remote player or AI player
-          DoneAction.setEnabled(false);
-          SelectUnitsAction.setEnabled(false);
-          SelectTerritoryAction.setEnabled(false);
-        } else {
-          DoneAction.setEnabled(m_currentAction == null);
-          SelectUnitsAction.setEnabled(m_currentAction == null);
-          SelectTerritoryAction.setEnabled(m_currentAction == null);
-        }
+    SwingUtilities.invokeLater(() -> {
+      if (!getActive()) {
+        // current turn belongs to remote player or AI player
+        DoneAction.setEnabled(false);
+        SelectUnitsAction.setEnabled(false);
+        SelectTerritoryAction.setEnabled(false);
+      } else {
+        DoneAction.setEnabled(m_currentAction == null);
+        SelectUnitsAction.setEnabled(m_currentAction == null);
+        SelectTerritoryAction.setEnabled(m_currentAction == null);
       }
     });
   }
@@ -230,13 +216,10 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
           return;
         }
         m_pickedTerritory = territory;
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            getMap().removeMapSelectionListener(MAP_SELECTION_LISTENER);
-            m_currentAction = null;
-            setWidgetActivation();
-          }
+        SwingUtilities.invokeLater(() -> {
+          getMap().removeMapSelectionListener(MAP_SELECTION_LISTENER);
+          m_currentAction = null;
+          setWidgetActivation();
         });
       } else {
         System.err.println("Should not be able to select a territory outside of the SelectTerritoryAction.");
