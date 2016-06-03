@@ -16,12 +16,13 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 
 public class TestRoute {
+  private MapRouteDrawer unmockedRouteDrawer = new MapRouteDrawer();
   private Point[] dummyPoints = new Point[]{new Point(0,0), new Point(100,0), new Point(0,100)};
-  private double[] dummyIndex = MapRouteDrawer.createParameterizedIndex(dummyPoints);
+  private double[] dummyIndex = unmockedRouteDrawer.createParameterizedIndex(dummyPoints);
   
   @Test
   public void testIndex(){
-    assertArrayEquals(MapRouteDrawer.createParameterizedIndex(new Point[]{}), new double[]{}, 0);
+    assertArrayEquals(unmockedRouteDrawer.createParameterizedIndex(new Point[]{}), new double[]{}, 0);
     assertEquals(dummyIndex.length, dummyPoints.length);
     //Not sure whether it makes sense to include a Test for specific values
     //The way the index is being calculated may change to a better System
@@ -33,7 +34,7 @@ public class TestRoute {
   public void testCurve(){
     final double[] testYValues = new double[]{20, 40, 90};
     final PolynomialSplineFunction testFunction = new SplineInterpolator().interpolate(dummyIndex, testYValues);
-    final double[] coords = MapRouteDrawer.getCoords(testFunction, dummyIndex);
+    final double[] coords = unmockedRouteDrawer.getCoords(testFunction, dummyIndex);
     final double stepSize = testFunction.getKnots()[testFunction.getKnots().length - 1] / coords.length;
     assertEquals(testYValues[0] * stepSize, coords[(int)Math.round(dummyIndex[0])], 1);
     assertEquals(testYValues[1] * stepSize, coords[(int)Math.round(dummyIndex[1])], 1);
@@ -45,8 +46,8 @@ public class TestRoute {
   public void testPointSplitting(){
     double[] xCoords = new double[]{0, 100, 0};
     double[] yCoords = new double[]{0, 0, 100};
-    assertArrayEquals(xCoords, MapRouteDrawer.getValues(dummyPoints, point -> point.getX()), 0);
-    assertArrayEquals(yCoords, MapRouteDrawer.getValues(dummyPoints, point -> point.getY()), 0);
+    assertArrayEquals(xCoords, unmockedRouteDrawer.getValues(dummyPoints, point -> point.getX()), 0);
+    assertArrayEquals(yCoords, unmockedRouteDrawer.getValues(dummyPoints, point -> point.getY()), 0);
   }
   
   @Test
@@ -54,9 +55,9 @@ public class TestRoute {
     Route dummyRoute = new Route();
     MapData dummyMapData = mock(MapData.class);
     when(dummyMapData.getCenter(any(Territory.class))).thenReturn(dummyPoints[1]);
-    dummyRoute.add(mock(Territory.class));//This will e overridden with the startPoint, since it's the origin territory
+    dummyRoute.add(mock(Territory.class));//This will be overridden with the startPoint, since it's the origin territory
     dummyRoute.add(mock(Territory.class));
     RouteDescription dummyRouteDescription = new RouteDescription(dummyRoute, dummyPoints[0], dummyPoints[2], null);
-    assertArrayEquals(dummyPoints, MapRouteDrawer.getRoutePoints(dummyRouteDescription, dummyMapData));
+    assertArrayEquals(dummyPoints, unmockedRouteDrawer.getRoutePoints(dummyRouteDescription, dummyMapData));
   }
 }
