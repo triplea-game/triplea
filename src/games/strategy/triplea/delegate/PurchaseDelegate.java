@@ -166,9 +166,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
       return NOT_ENOUGH_RESOURCES;
     }
     // check to see if player has too many of any building with a building limit
-    final Iterator<NamedAttachable> iter2 = results.keySet().iterator();
-    while (iter2.hasNext()) {
-      final Object next = iter2.next();
+    for (NamedAttachable next : results.keySet()) {
       if (!(next instanceof Resource)) {
         final UnitType type = (UnitType) next;
         final int quantity = results.getInt(type);
@@ -327,9 +325,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 
   private IntegerMap<Resource> getCosts(final IntegerMap<ProductionRule> productionRules, final PlayerID player) {
     final IntegerMap<Resource> costs = new IntegerMap<>();
-    final Iterator<ProductionRule> rules = productionRules.keySet().iterator();
-    while (rules.hasNext()) {
-      final ProductionRule rule = rules.next();
+    for (ProductionRule rule : productionRules.keySet()) {
       costs.addMultiple(rule.getCosts(), productionRules.getInt(rule));
     }
     return costs;
@@ -342,9 +338,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     final IntegerMap<Resource> costs = new IntegerMap<>();
     while (iter.hasNext()) {
       final Unit u = iter.next();
-      final Iterator<RepairRule> rules = repairRules.get(u).keySet().iterator();
-      while (rules.hasNext()) {
-        final RepairRule rule = rules.next();
+      for (RepairRule rule : repairRules.get(u).keySet()) {
         costs.addMultiple(rule.getCosts(), repairRules.get(u).getInt(rule));
       }
     }
@@ -357,9 +351,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 
   private IntegerMap<NamedAttachable> getResults(final IntegerMap<ProductionRule> productionRules) {
     final IntegerMap<NamedAttachable> costs = new IntegerMap<>();
-    final Iterator<ProductionRule> rules = productionRules.keySet().iterator();
-    while (rules.hasNext()) {
-      final ProductionRule rule = rules.next();
+    for (ProductionRule rule : productionRules.keySet()) {
       costs.addMultiple(rule.getResults(), productionRules.getInt(rule));
     }
     return costs;

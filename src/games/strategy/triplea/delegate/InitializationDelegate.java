@@ -115,9 +115,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     final GameData data = aBridge.getData();
     // check every territory
     boolean historyItemCreated = false;
-    final Iterator<Territory> allTerritories = data.getMap().getTerritories().iterator();
-    while (allTerritories.hasNext()) {
-      final Territory current = allTerritories.next();
+    for (Territory current : data.getMap().getTerritories()) {
       // only care about water
       if (!current.isWater()) {
         continue;
@@ -219,9 +217,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
 
   private void initTech(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    final Iterator<PlayerID> players = data.getPlayerList().getPlayers().iterator();
-    while (players.hasNext()) {
-      final PlayerID player = players.next();
+    for (PlayerID player : data.getPlayerList().getPlayers()) {
       final Iterator<TechAdvance> advances = TechTracker.getCurrentTechAdvances(player, data).iterator();
       if (advances.hasNext()) {
         bridge.getHistoryWriter().startEvent("Initializing " + player.getName() + " with tech advances");

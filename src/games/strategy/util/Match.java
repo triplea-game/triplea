@@ -119,9 +119,7 @@ public abstract class Match<T> {
    */
   public static <K, V> Set<K> getKeysWhereValueMatch(final Map<K, V> aMap, final Match<V> valueMatch) {
     final Set<K> rVal = new HashSet<>();
-    final Iterator<K> keys = aMap.keySet().iterator();
-    while (keys.hasNext()) {
-      final K key = keys.next();
+    for (K key : aMap.keySet()) {
       final V value = aMap.get(key);
       if (valueMatch.match(value)) {
         rVal.add(key);

@@ -122,9 +122,7 @@ public class FinishedBattle extends AbstractBattle {
         m_isAmphibious = !m_amphibiousAttackFrom.isEmpty();
       }
     }
-    final Iterator<Unit> dependents = m_dependentUnits.keySet().iterator();
-    while (dependents.hasNext()) {
-      final Unit dependence = dependents.next();
+    for (Unit dependence : m_dependentUnits.keySet()) {
       final Collection<Unit> dependent = m_dependentUnits.get(dependence);
       dependent.removeAll(units);
     }

@@ -76,12 +76,8 @@ class CountryChart {
         final Territory currentTerritory = m_terrIterator.next();
         countryFileWriter.write(currentTerritory.getName());
         final List<Map<UnitType, Integer>> currentList = m_infoMap.get(currentTerritory);
-        final Iterator<Map<UnitType, Integer>> mapIterator = currentList.iterator();
-        while (mapIterator.hasNext()) {
-          final Map<UnitType, Integer> currentMap = mapIterator.next();
-          final Iterator<UnitType> uIter = currentMap.keySet().iterator();
-          while (uIter.hasNext()) {
-            final UnitType uHere = uIter.next();
+        for (Map<UnitType, Integer> currentMap : currentList) {
+          for (UnitType uHere : currentMap.keySet()) {
             final Integer here = currentMap.get(uHere);
             countryFileWriter.write("," + here);
           }

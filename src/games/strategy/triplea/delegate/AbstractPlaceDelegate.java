@@ -1589,10 +1589,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (factoryUnits.size() == 0) {
       throw new IllegalStateException("No factory in territory:" + territory);
     }
-    final Iterator<Unit> iter = factoryUnits.iterator();
     // final GameData data = getData();
-    while (iter.hasNext()) {
-      final Unit factory2 = iter.next();
+    for (Unit factory2 : factoryUnits) {
       if (m_player.equals(OriginalOwnerTracker.getOriginalOwner(factory2))) {
         return OriginalOwnerTracker.getOriginalOwner(factory2);
       }

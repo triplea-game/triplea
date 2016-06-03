@@ -61,9 +61,7 @@ public class PUInfo {
         final PlayerID currentPlayer = m_playerIterator.next();
         resourceWriter.write(currentPlayer.getName());
         final Map<Resource, Integer> resourceMap = m_infoMap.get(currentPlayer);
-        final Iterator<Resource> resIterator = resourceMap.keySet().iterator();
-        while (resIterator.hasNext()) {
-          final Resource currentResource = resIterator.next();
+        for (Resource currentResource : resourceMap.keySet()) {
           final Integer amountResource = resourceMap.get(currentResource);
           resourceWriter.write("," + amountResource);
         }

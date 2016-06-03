@@ -97,9 +97,7 @@ public class UndoableMove extends AbstractUndoableMove {
     final BattleTracker battleTracker = DelegateFinder.battleDelegate(data).getBattleTracker();
     battleTracker.undoBattle(m_route, m_units, bridge.getPlayerID(), bridge);
     // clean up dependencies
-    final Iterator<UndoableMove> iter1 = m_iDependOn.iterator();
-    while (iter1.hasNext()) {
-      final UndoableMove other = iter1.next();
+    for (UndoableMove other : m_iDependOn) {
       other.m_dependOnMe.remove(this);
     }
     // if we are moving out of a battle zone, mark it

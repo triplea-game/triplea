@@ -711,9 +711,7 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   public void initSmallMap() {
-    final Iterator<Territory> territories = m_data.getMap().getTerritories().iterator();
-    while (territories.hasNext()) {
-      final Territory territory = territories.next();
+    for (Territory territory : m_data.getMap().getTerritories()) {
       smallMapImageManager.updateTerritoryOwner(territory, m_data, uiContext.getMapData());
     }
     smallMapImageManager.update(m_data, uiContext.getMapData());

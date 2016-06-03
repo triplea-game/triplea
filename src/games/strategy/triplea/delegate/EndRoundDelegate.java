@@ -352,9 +352,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
 
   public int getProduction(final PlayerID id) {
     int sum = 0;
-    final Iterator<Territory> territories = getData().getMap().iterator();
-    while (territories.hasNext()) {
-      final Territory current = territories.next();
+    for (Territory current : getData().getMap()) {
       if (current.getOwner().equals(id)) {
         sum += TerritoryAttachment.getProduction(current);
       }

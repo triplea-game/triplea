@@ -33,9 +33,8 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment impl
   public static Collection<PoliticalActionAttachment> getPoliticalActionAttachments(final PlayerID player) {
     final ArrayList<PoliticalActionAttachment> returnList = new ArrayList<>();
     final Map<String, IAttachment> map = player.getAttachments();
-    final Iterator<String> iter = map.keySet().iterator();
-    while (iter.hasNext()) {
-      final IAttachment a = map.get(iter.next());
+    for (String s : map.keySet()) {
+      final IAttachment a = map.get(s);
       if (a.getName().startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX)
           && a instanceof PoliticalActionAttachment) {
         returnList.add((PoliticalActionAttachment) a);

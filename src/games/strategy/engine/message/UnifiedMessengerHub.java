@@ -186,9 +186,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
         nodes.remove(to);
       }
     }
-    final Iterator<InvocationInProgress> waitingIterator = m_invocations.values().iterator();
-    while (waitingIterator.hasNext()) {
-      final InvocationInProgress invocation = waitingIterator.next();
+    for (InvocationInProgress invocation : m_invocations.values()) {
       if (invocation.isWaitingOn(to)) {
         final RemoteMethodCallResults results =
             new RemoteMethodCallResults(new ConnectionLostException("Connection to " + to.getName() + " lost"));

@@ -197,9 +197,7 @@ public class AutoPlacementFinder {
     textOptionPane.show();
     textOptionPane.appendNewLine("Place Dimensions in pixels, being used: " + PLACEWIDTH + "x" + PLACEHEIGHT + "\r\n");
     textOptionPane.appendNewLine("Calculating, this may take a while...\r\n");
-    final Iterator<String> terrIter = s_mapData.getTerritories().iterator();
-    while (terrIter.hasNext()) {
-      final String name = terrIter.next();
+    for (String name : s_mapData.getTerritories()) {
       List<Point> points;
       if (s_mapData.hasContainedTerritory(name)) {
         final Set<Polygon> containedPolygons = new HashSet<>();

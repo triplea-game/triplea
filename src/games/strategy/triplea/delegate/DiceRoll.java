@@ -852,9 +852,8 @@ public class DiceRoll implements Externalizable {
         return unitPower2.compareTo(unitPower1);
       }
     };
-    final Iterator<List<UnitSupportAttachment>> iter = support.iterator();
-    while (iter.hasNext()) {
-      Collections.sort(iter.next(), compList);
+    for (List<UnitSupportAttachment> aSupport : support) {
+      Collections.sort(aSupport, compList);
     }
   }
 
@@ -1070,9 +1069,8 @@ public class DiceRoll implements Externalizable {
   }
 
   public static boolean isAmphibious(final Collection<Unit> m_units) {
-    final Iterator<Unit> unitIter = m_units.iterator();
-    while (unitIter.hasNext()) {
-      final TripleAUnit checkedUnit = (TripleAUnit) unitIter.next();
+    for (Unit m_unit : m_units) {
+      final TripleAUnit checkedUnit = (TripleAUnit) m_unit;
       if (checkedUnit.getWasAmphibious()) {
         return true;
       }
