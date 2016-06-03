@@ -1012,9 +1012,7 @@ public class BattleTracker implements java.io.Serializable {
 
   public void removeBattle(final IBattle battle) {
     if (battle != null) {
-      final Iterator<IBattle> blocked = getBlocked(battle).iterator();
-      while (blocked.hasNext()) {
-        final IBattle current = blocked.next();
+      for (IBattle current : getBlocked(battle)) {
         removeDependency(current, battle);
       }
       m_pendingBattles.remove(battle);

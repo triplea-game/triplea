@@ -426,9 +426,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       if (current.equals(m_attacker)) {
         final CompositeChange change = new CompositeChange();
         final Collection<Unit> transports = Match.getMatches(attackingUnits, Matches.UnitCanTransport);
-        final Iterator<Unit> attackTranIter = transports.iterator();
-        while (attackTranIter.hasNext()) {
-          change.add(ChangeFactory.unitPropertyChange(attackTranIter.next(), true, TripleAUnit.WAS_IN_COMBAT));
+        for (Unit transport : transports) {
+          change.add(ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.WAS_IN_COMBAT));
         }
         bridge.addChange(change);
       }

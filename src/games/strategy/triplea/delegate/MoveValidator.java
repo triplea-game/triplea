@@ -710,9 +710,7 @@ public class MoveValidator {
   public static Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> units, final GameData data) {
     // just worry about transports
     final Map<Unit, Collection<Unit>> dependents = new HashMap<>();
-    final Iterator<Unit> iter = units.iterator();
-    while (iter.hasNext()) {
-      final Unit unit = iter.next();
+    for (Unit unit : units) {
       dependents.put(unit, TransportTracker.transporting(unit));
     }
     return dependents;
@@ -884,9 +882,7 @@ public class MoveValidator {
       throw new IllegalArgumentException("no units");
     }
     int max = 0;
-    final Iterator<Unit> iter = units.iterator();
-    while (iter.hasNext()) {
-      final Unit unit = iter.next();
+    for (Unit unit : units) {
       final int left = TripleAUnit.get(unit).getMovementLeft();
       max = Math.max(left, max);
     }
@@ -898,9 +894,7 @@ public class MoveValidator {
       throw new IllegalArgumentException("no units");
     }
     int least = Integer.MAX_VALUE;
-    final Iterator<Unit> iter = units.iterator();
-    while (iter.hasNext()) {
-      final Unit unit = iter.next();
+    for (Unit unit : units) {
       final int left = TripleAUnit.get(unit).getMovementLeft();
       least = Math.min(left, least);
     }
@@ -1059,9 +1053,7 @@ public class MoveValidator {
     }
     if (route.getEnd().isWater() && route.getStart().isWater()) {
       // make sure units and transports stick together
-      final Iterator<Unit> iter = units.iterator();
-      while (iter.hasNext()) {
-        final Unit unit = iter.next();
+      for (Unit unit : units) {
         final UnitAttachment ua = UnitAttachment.get(unit.getType());
         // make sure transports dont leave their units behind
         if (ua.getTransportCapacity() != -1) {
@@ -1111,9 +1103,8 @@ public class MoveValidator {
           result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE, unit);
         } else if (TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, route.getEnd())) {
           Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
-          final Iterator<Unit> trnIter = transportsToLoad.iterator();
-          while (trnIter.hasNext()) {
-            final TripleAUnit trn = (TripleAUnit) trnIter.next();
+          for (Unit aTransportsToLoad : transportsToLoad) {
+            final TripleAUnit trn = (TripleAUnit) aTransportsToLoad;
             if (!TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(trn, route.getEnd())) {
               final UnitAttachment ua = UnitAttachment.get(unit.getType());
               // UnitAttachment trna = UnitAttachment.get(trn.getType());
@@ -1422,9 +1413,7 @@ public class MoveValidator {
     final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<>();
     // map transports
     final Collection<Unit> transports = Match.getMatches(units, Matches.UnitIsTransport);
-    final Iterator<Unit> iter = transports.iterator();
-    while (iter.hasNext()) {
-      final Unit transport = iter.next();
+    for (Unit transport : transports) {
       final Collection<Unit> transporting = TransportTracker.transporting(transport);
       mustMoveWith.put(transport, transporting);
     }
@@ -1473,9 +1462,7 @@ public class MoveValidator {
     friendlyNotOwnedCarrier.add(Matches.alliedUnit(player, data));
     friendlyNotOwnedCarrier.addInverse(Matches.unitIsOwnedBy(player));
     final Collection<Unit> alliedCarrier = Match.getMatches(startUnits, friendlyNotOwnedCarrier);
-    final Iterator<Unit> alliedCarrierIter = alliedCarrier.iterator();
-    while (alliedCarrierIter.hasNext()) {
-      final Unit carrier = alliedCarrierIter.next();
+    for (Unit carrier : alliedCarrier) {
       final Collection<Unit> carrying = getCanCarry(carrier, alliedAir, player, data);
       alliedAir.removeAll(carrying);
     }
@@ -1486,9 +1473,7 @@ public class MoveValidator {
     // get air that must be carried by our carriers
     final Collection<Unit> ownedCarrier =
         Match.getMatches(units, new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player)));
-    final Iterator<Unit> ownedCarrierIter = ownedCarrier.iterator();
-    while (ownedCarrierIter.hasNext()) {
-      final Unit carrier = ownedCarrierIter.next();
+    for (Unit carrier : ownedCarrier) {
       final Collection<Unit> carrying = getCanCarry(carrier, alliedAir, player, data);
       alliedAir.removeAll(carrying);
       mapping.put(carrier, carrying);

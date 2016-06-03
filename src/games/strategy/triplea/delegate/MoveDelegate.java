@@ -10,6 +10,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.ICondition;
@@ -407,11 +408,9 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
         new CompositeMatchAnd<>(Matches.UnitHasMoreThanOneHitPointTotal, Matches.UnitHasTakenSomeDamage);
     final Match<Unit> damagedUnitsOwned = new CompositeMatchAnd<>(damagedUnits, Matches.unitIsOwnedBy(player));
     final Map<Territory, Set<Unit>> damagedMap = new HashMap<>();
-    final Iterator<Territory> iterTerritories = data.getMap().getTerritories().iterator();
-    while (iterTerritories.hasNext()) {
-      final Territory current = iterTerritories.next();
+    for (Territory current : data.getMap().getTerritories()) {
       final Set<Unit> damaged;
-      if (!games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(data)) {
+      if (!Properties.getTwoHitPointUnitsRequireRepairFacilities(data)) {
         if (repairOnlyOwn) {
           // we only repair ours
           damaged = new HashSet<>(current.getUnits().getMatches(damagedUnitsOwned));

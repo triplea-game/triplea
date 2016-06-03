@@ -327,14 +327,10 @@ public class ServerGame extends AbstractGame {
       m_channelMessenger.unregisterChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
       m_remoteMessenger.unregisterRemote(SERVER_REMOTE);
       m_vault.shutDown();
-      final Iterator<IGamePlayer> localPlayersIter = m_gamePlayers.values().iterator();
-      while (localPlayersIter.hasNext()) {
-        final IGamePlayer gp = localPlayersIter.next();
+      for (IGamePlayer gp : m_gamePlayers.values()) {
         m_remoteMessenger.unregisterRemote(getRemoteName(gp.getPlayerID(), m_data));
       }
-      final Iterator<IDelegate> delegateIter = m_data.getDelegateList().iterator();
-      while (delegateIter.hasNext()) {
-        final IDelegate delegate = delegateIter.next();
+      for (IDelegate delegate : m_data.getDelegateList()) {
         final Class<? extends IRemote> remoteType = delegate.getRemoteType();
         // if its null then it shouldnt be added as an IRemote
         if (remoteType == null) {
@@ -462,9 +458,7 @@ public class ServerGame extends AbstractGame {
   }
 
   private void startPersistentDelegates() {
-    final Iterator<IDelegate> delegateIter = m_data.getDelegateList().iterator();
-    while (delegateIter.hasNext()) {
-      final IDelegate delegate = delegateIter.next();
+    for (IDelegate delegate : m_data.getDelegateList()) {
       if (!(delegate instanceof IPersistentDelegate)) {
         continue;
       }

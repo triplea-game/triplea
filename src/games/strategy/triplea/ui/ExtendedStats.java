@@ -83,9 +83,7 @@ public class ExtendedStats extends StatPanel {
       }
     }
     // now add actual number of each unit type (holy gumdrops batman, this is going to be long!)
-    final Iterator<UnitType> allUnitTypes = data.getUnitTypeList().iterator();
-    while (allUnitTypes.hasNext()) {
-      final UnitType ut = allUnitTypes.next();
+    for (UnitType ut : data.getUnitTypeList()) {
       final GenericUnitNameStat unitNameStat = new GenericUnitNameStat();
       unitNameStat.init(ut);
       final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(m_statsExtended));

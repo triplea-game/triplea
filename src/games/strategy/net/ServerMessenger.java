@@ -540,9 +540,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   }
 
   private void notifyListeners(final MessageHeader msg) {
-    final Iterator<IMessageListener> iter = listeners.iterator();
-    while (iter.hasNext()) {
-      final IMessageListener listener = iter.next();
+    for (IMessageListener listener : listeners) {
       listener.messageReceived(msg.getMessage(), msg.getFrom());
     }
   }

@@ -58,9 +58,8 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
 
   public int getUnitCount(final UnitType type) {
     int count = 0;
-    final Iterator<Unit> iterator = m_units.iterator();
-    while (iterator.hasNext()) {
-      if (iterator.next().getType().equals(type)) {
+    for (Unit m_unit : m_units) {
+      if (m_unit.getType().equals(type)) {
         count++;
       }
     }
@@ -69,9 +68,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
 
   public int getUnitCount(final UnitType type, final PlayerID owner) {
     int count = 0;
-    final Iterator<Unit> iterator = m_units.iterator();
-    while (iterator.hasNext()) {
-      final Unit current = iterator.next();
+    for (Unit current : m_units) {
       if (current.getType().equals(type) && current.getOwner().equals(owner)) {
         count++;
       }
@@ -81,9 +78,8 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
 
   public int getUnitCount(final PlayerID owner) {
     int count = 0;
-    final Iterator<Unit> iterator = m_units.iterator();
-    while (iterator.hasNext()) {
-      if (iterator.next().getOwner().equals(owner)) {
+    for (Unit m_unit : m_units) {
+      if (m_unit.getOwner().equals(owner)) {
         count++;
       }
     }

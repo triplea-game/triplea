@@ -155,18 +155,14 @@ public class TileManager {
     try {
       Tile.S_TILE_LOCKUTIL.acquireLock(m_lock);
       try {
-        final Iterator<Tile> allTiles = m_tiles.iterator();
-        while (allTiles.hasNext()) {
-          final Tile tile = allTiles.next();
+        for (Tile tile : m_tiles) {
           tile.clear();
           final int x = tile.getBounds().x / TILE_SIZE;
           final int y = tile.getBounds().y / TILE_SIZE;
           tile.addDrawable(new BaseMapDrawable(x, y, m_uiContext));
           tile.addDrawable(new ReliefMapDrawable(x, y, m_uiContext));
         }
-        final Iterator<Territory> territories = data.getMap().getTerritories().iterator();
-        while (territories.hasNext()) {
-          final Territory territory = territories.next();
+        for (Territory territory : data.getMap().getTerritories()) {
           clearTerritory(territory);
           drawTerritory(territory, data, mapData);
         }
@@ -197,9 +193,7 @@ public class TileManager {
         if (territories == null) {
           return;
         }
-        final Iterator<Territory> iter = territories.iterator();
-        while (iter.hasNext()) {
-          final Territory territory = iter.next();
+        for (Territory territory : territories) {
           updateTerritory(territory, data, mapData);
         }
       } finally {
@@ -234,9 +228,7 @@ public class TileManager {
     if (drawables == null || drawables.isEmpty()) {
       return;
     }
-    final Iterator<Tile> tiles = m_territoryTiles.get(territory.getName()).iterator();
-    while (tiles.hasNext()) {
-      final Tile tile = tiles.next();
+    for (Tile tile : m_territoryTiles.get(territory.getName())) {
       tile.removeDrawables(drawables);
     }
     m_allUnitDrawables.removeAll(drawables);
@@ -292,9 +284,7 @@ public class TileManager {
       drawing.add(new VCDrawable(territory));
     }
     // add to the relevant tiles
-    final Iterator<Tile> tiles = getTiles(mapData.getBoundingRect(territory.getName())).iterator();
-    while (tiles.hasNext()) {
-      final Tile tile = tiles.next();
+    for (Tile tile : getTiles(mapData.getBoundingRect(territory.getName()))) {
       drawnOn.add(tile);
       tile.addDrawables(drawing);
     }
@@ -319,10 +309,7 @@ public class TileManager {
       throw new IllegalStateException("No where to place units:" + territory.getName());
     }
     Point lastPlace = null;
-    final Iterator<UnitCategory> unitCategoryIter =
-        UnitSeperator.categorize(territory.getUnits().getUnits()).iterator();
-    while (unitCategoryIter.hasNext()) {
-      final UnitCategory category = unitCategoryIter.next();
+    for (UnitCategory category : UnitSeperator.categorize(territory.getUnits().getUnits())) {
       boolean overflow;
       if (placementPoints.hasNext()) {
         lastPlace = new Point(placementPoints.next());
@@ -337,11 +324,9 @@ public class TileManager {
           category.getDisabled(), overflow, territory.getName(), m_uiContext);
       drawing.add(drawable);
       m_allUnitDrawables.add(drawable);
-      final Iterator<Tile> tiles =
-          getTiles(new Rectangle(lastPlace.x, lastPlace.y, m_uiContext.getUnitImageFactory().getUnitImageWidth(),
-              m_uiContext.getUnitImageFactory().getUnitImageHeight())).iterator();
-      while (tiles.hasNext()) {
-        final Tile tile = tiles.next();
+      for (Tile tile : getTiles(
+          new Rectangle(lastPlace.x, lastPlace.y, m_uiContext.getUnitImageFactory().getUnitImageWidth(),
+              m_uiContext.getUnitImageFactory().getUnitImageHeight()))) {
         tile.addDrawable(drawable);
         drawnOn.add(tile);
       }

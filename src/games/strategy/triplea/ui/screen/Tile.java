@@ -116,9 +116,7 @@ public class Tile {
     g.setColor(Color.BLACK);
     g.fill(new Rectangle(0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE));
     Collections.sort(m_contents, new DrawableComparator());
-    final Iterator<IDrawable> iter = m_contents.iterator();
-    while (iter.hasNext()) {
-      final IDrawable drawable = iter.next();
+    for (IDrawable drawable : m_contents) {
       drawable.draw(m_bounds, data, g, mapData, unscaled, scaled);
     }
     m_isDirty = false;

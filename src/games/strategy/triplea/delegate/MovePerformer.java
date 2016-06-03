@@ -388,9 +388,7 @@ public class MovePerformer implements Serializable {
     // load the transports
     if (route.isLoad() || paratroopsLanding) {
       // mark transports as having transported
-      final Iterator<Unit> units = transporting.keySet().iterator();
-      while (units.hasNext()) {
-        final Unit load = units.next();
+      for (Unit load : transporting.keySet()) {
         final Unit transport = transporting.get(load);
         if (!TransportTracker.transporting(transport).contains(load)) {
           final Change change = TransportTracker.loadTransportChange((TripleAUnit) transport, load);
@@ -424,9 +422,7 @@ public class MovePerformer implements Serializable {
       // any pending battles in the unloading zone?
       final BattleTracker tracker = getBattleTracker();
       final boolean pendingBattles = tracker.getPendingBattle(route.getStart(), false, BattleType.NORMAL) != null;
-      final Iterator<Unit> iter = units.iterator();
-      while (iter.hasNext()) {
-        final Unit unit = iter.next();
+      for (Unit unit : units) {
         if (Matches.UnitIsAir.match(unit)) {
           continue;
         }

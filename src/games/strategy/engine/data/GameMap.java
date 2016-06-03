@@ -569,13 +569,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     searched.addAll(frontier);
     // find the new frontier
     final Set<Territory> newFrontier = new HashSet<>();
-    final Iterator<Territory> frontierIterator = frontier.iterator();
-    while (frontierIterator.hasNext()) {
-      final Territory onFrontier = frontierIterator.next();
+    for (Territory onFrontier : frontier) {
       final Set<Territory> connections = m_connections.get(onFrontier);
-      final Iterator<Territory> connectionIterator = connections.iterator();
-      while (connectionIterator.hasNext()) {
-        final Territory nextFrontier = connectionIterator.next();
+      for (Territory nextFrontier : connections) {
         if (cond == null || cond.match(nextFrontier)) {
           newFrontier.add(nextFrontier);
         }

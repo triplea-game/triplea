@@ -55,9 +55,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
   public static Set<UnitSupportAttachment> get(final UnitType u) {
     final Set<UnitSupportAttachment> supports = new HashSet<>();
     final Map<String, IAttachment> map = u.getAttachments();
-    final Iterator<String> objsIter = map.keySet().iterator();
-    while (objsIter.hasNext()) {
-      final IAttachment attachment = map.get(objsIter.next());
+    for (String s : map.keySet()) {
+      final IAttachment attachment = map.get(s);
       final String name = attachment.getName();
       if (name.startsWith(Constants.SUPPORT_ATTACHMENT_PREFIX)) {
         supports.add((UnitSupportAttachment) attachment);
@@ -78,9 +77,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
     final Set<UnitSupportAttachment> supports = new HashSet<>();
     data.acquireReadLock();
     try {
-      final Iterator<UnitType> i = data.getUnitTypeList().iterator();
-      while (i.hasNext()) {
-        supports.addAll(get(i.next()));
+      for (UnitType unitType : data.getUnitTypeList()) {
+        supports.addAll(get(unitType));
       }
     } finally {
       data.releaseReadLock();

@@ -84,9 +84,7 @@ class AAInMoveUtil implements Serializable {
     // select units with lowest movement first
     Collections.sort(targets, decreasingMovement);
     final List<IExecutable> executables = new ArrayList<>();
-    final Iterator<Territory> iter = getTerritoriesWhereAAWillFire(route, units).iterator();
-    while (iter.hasNext()) {
-      final Territory location = iter.next();
+    for (Territory location : getTerritoriesWhereAAWillFire(route, units)) {
       executables.add(new IExecutable() {
         private static final long serialVersionUID = -1545771595683434276L;
 

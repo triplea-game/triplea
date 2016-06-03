@@ -20,9 +20,7 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
   @Override
   public String getAttachmentOptions(final IAttachment attachment) {
     final StringBuffer xmlfile = new StringBuffer();
-    final Iterator<Field> fields = Arrays.asList(attachment.getClass().getDeclaredFields()).iterator();
-    while (fields.hasNext()) {
-      final Field field = fields.next();
+    for (Field field : Arrays.asList(attachment.getClass().getDeclaredFields())) {
       field.setAccessible(true);
       try {
         xmlfile.append(printOption(field, attachment));
@@ -266,9 +264,7 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
       if (map == null) {
         return "";
       }
-      final Iterator<UnitType> types = map.keySet().iterator();
-      while (types.hasNext()) {
-        final UnitType type = types.next();
+      for (UnitType type : map.keySet()) {
         final int number = map.getInt(type);
         if (type == null) {
           returnValue += printCountOption(optionName, "ANY", "" + number);
