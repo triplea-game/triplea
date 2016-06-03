@@ -51,13 +51,7 @@ class PlayerAndAlliancesRow extends DynamicRow {
         JOptionPane.showMessageDialog(stepActionPanel, "Player '" + inputText + "' already exists.", "Input error",
             JOptionPane.ERROR_MESSAGE);
         parentRowPanel.setDataIsConsistent(false);
-        SwingUtilities.invokeLater(new Runnable() {
-
-          @Override
-          public void run() {
-            textFieldPlayerName.requestFocus();
-          }
-        });
+        SwingUtilities.invokeLater(() -> textFieldPlayerName.requestFocus());
         return;
       }
       // everything is okay with the new player namer, lets rename everything
@@ -139,13 +133,10 @@ class PlayerAndAlliancesRow extends DynamicRow {
               JOptionPane.ERROR_MESSAGE);
           parentRowPanel.setDataIsConsistent(false);
           parentRowPanel.setDataIsConsistent(false);
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              textFieldInitialResource.updateUI();
-              textFieldInitialResource.requestFocus();
-              textFieldInitialResource.selectAll();
-            }
+          SwingUtilities.invokeLater(() -> {
+            textFieldInitialResource.updateUI();
+            textFieldInitialResource.requestFocus();
+            textFieldInitialResource.selectAll();
           });
           return;
         }

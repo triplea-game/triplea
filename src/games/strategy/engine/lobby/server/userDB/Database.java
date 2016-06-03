@@ -183,23 +183,17 @@ public class Database {
         throw new Error("Could not load db driver");
       }
       // shut the database down on finish
-      Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-        @Override
-        public void run() {
-          shutDownDB();
-        }
+      Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+        shutDownDB();
       }));
       s_isDbSetup = true;
     }
     // we want to backup the database on occassion
-    final Thread backupThread = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        while (true) {
-          // wait 7 days
-          ThreadUtil.sleep(7 * 24 * 60 * 60 * 1000);
-          backup();
-        }
+    final Thread backupThread = new Thread(() -> {
+      while (true) {
+        // wait 7 days
+        ThreadUtil.sleep(7 * 24 * 60 * 60 * 1000);
+        backup();
       }
     }, "TripleA Database Backup Thread");
     backupThread.setDaemon(true);

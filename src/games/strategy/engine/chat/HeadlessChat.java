@@ -34,10 +34,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   public Set<String> m_hiddenPlayers = new HashSet<>();
   private final Set<INode> m_players = new HashSet<>();
   private PrintStream m_out = null;
-  private final IStatusListener m_statusListener = new IStatusListener() {
-    @Override
-    public void statusChanged(final INode node, final String newStatus) { // nothing for now
-    }
+  private final IStatusListener m_statusListener = (node, newStatus) -> { // nothing for now
   };
 
   public HeadlessChat(final IMessenger messenger, final IChannelMessenger channelMessenger,
@@ -164,28 +161,25 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
       final String sound) {
     // TODO: I don't really think we need a new thread for this...
-    final Thread t = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        if (from.equals(m_chat.getServerNode().getName())) {
-          if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
-            addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
-                "ADMIN_CHAT_CONTROL", false);
-            return;
-          } else if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_GAME)) {
-            addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
-            return;
-          }
-        }
-        if (!floodControl.allow(from, System.currentTimeMillis())) {
-          if (from.equals(m_chat.getLocalNode().getName())) {
-            addChatMessage("MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL", false);
-          }
+    final Thread t = new Thread(() -> {
+      if (from.equals(m_chat.getServerNode().getName())) {
+        if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
+          addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
+              "ADMIN_CHAT_CONTROL", false);
+          return;
+        } else if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_GAME)) {
+          addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
           return;
         }
-        addChatMessage(message, from, thirdperson);
-        ClipPlayer.play(sound);
       }
+      if (!floodControl.allow(from, System.currentTimeMillis())) {
+        if (from.equals(m_chat.getLocalNode().getName())) {
+          addChatMessage("MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL", false);
+        }
+        return;
+      }
+      addChatMessage(message, from, thirdperson);
+      ClipPlayer.play(sound);
     });
     t.start();
   }

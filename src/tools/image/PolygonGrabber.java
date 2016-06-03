@@ -270,12 +270,9 @@ public class PolygonGrabber extends JFrame {
     final JMenuItem exitItem = new JMenuItem(exitAction);
     s_islandMode = false;
     modeItem = new JCheckBoxMenuItem("Island Mode", false);
-    modeItem.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        s_islandMode = modeItem.getState();
-        repaint();
-      }
+    modeItem.addActionListener(event -> {
+      s_islandMode = modeItem.getState();
+      repaint();
     });
     // set up the menu bar
     final JMenuBar menuBar = new JMenuBar();

@@ -64,19 +64,16 @@ public class MainFrame extends JFrame {
    * Only call once!
    */
   private void start() {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
-        if (fileName.length() > 0) {
-          loadGameFile(fileName);
-        }
-        setVisible(true);
-        if (System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equals("true")) {
-          m_setupPanelModel.showServer(MainFrame.this);
-        } else if (System.getProperty(GameRunner2.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")) {
-          m_setupPanelModel.showClient(MainFrame.this);
-        }
+    SwingUtilities.invokeLater(() -> {
+      final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
+      if (fileName.length() > 0) {
+        loadGameFile(fileName);
+      }
+      setVisible(true);
+      if (System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equals("true")) {
+        m_setupPanelModel.showServer(MainFrame.this);
+      } else if (System.getProperty(GameRunner2.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")) {
+        m_setupPanelModel.showClient(MainFrame.this);
       }
     });
   }

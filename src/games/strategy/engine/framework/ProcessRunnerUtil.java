@@ -89,16 +89,13 @@ public class ProcessRunnerUtil {
       final InputStream s = p.getInputStream();
       // we need to read the input stream to prevent possible
       // deadlocks
-      final Thread t = new Thread(new Runnable() {
-        @Override
-        public void run() {
-          try {
-            while (s.read() >= 0) {
-              // just read
-            }
-          } catch (final IOException e) {
-            ClientLogger.logQuietly(e);
+      final Thread t = new Thread(() -> {
+        try {
+          while (s.read() >= 0) {
+            // just read
           }
+        } catch (final IOException e) {
+          ClientLogger.logQuietly(e);
         }
       }, "Process output gobbler");
       t.setDaemon(true);

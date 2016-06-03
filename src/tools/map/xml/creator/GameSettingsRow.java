@@ -95,15 +95,12 @@ class GameSettingsRow extends DynamicRow {
           newValues.set(3, "0");
           textFieldMaxNumber.setText("0");
           isBoolean = newIsBoolean;
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              textFieldValue.updateUI();
-              textFieldMinNumber.updateUI();
-              textFieldMaxNumber.updateUI();
-              textFieldValue.requestFocus();
-              textFieldValue.selectAll();
-            }
+          SwingUtilities.invokeLater(() -> {
+            textFieldValue.updateUI();
+            textFieldMinNumber.updateUI();
+            textFieldMaxNumber.updateUI();
+            textFieldValue.requestFocus();
+            textFieldValue.selectAll();
           });
         }
         MapXmlHelper.getGameSettingsMap().put(curr_settingName, newValues);
@@ -146,22 +143,14 @@ class GameSettingsRow extends DynamicRow {
         if (!isInputOkay) {
           textFieldValue.setText(prevValue);
           parentRowPanel.setDataIsConsistent(false);
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              textFieldValue.updateUI();
-              textFieldValue.requestFocus();
-              textFieldValue.selectAll();
-            }
+          SwingUtilities.invokeLater(() -> {
+            textFieldValue.updateUI();
+            textFieldValue.requestFocus();
+            textFieldValue.selectAll();
           });
           return;
         } else {
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              textFieldValue.updateUI();
-            }
-          });
+          SwingUtilities.invokeLater(() -> textFieldValue.updateUI());
         }
         prevValue = inputText;
 
@@ -204,13 +193,10 @@ class GameSettingsRow extends DynamicRow {
         JOptionPane.showMessageDialog(stepActionPanel, "'" + inputText + "' is no integer value.", "Input error",
             JOptionPane.ERROR_MESSAGE);
         parentRowPanel.setDataIsConsistent(false);
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            textFieldMinNumber.updateUI();
-            textFieldMinNumber.requestFocus();
-            textFieldMinNumber.selectAll();
-          }
+        SwingUtilities.invokeLater(() -> {
+          textFieldMinNumber.updateUI();
+          textFieldMinNumber.requestFocus();
+          textFieldMinNumber.selectAll();
         });
         return;
       }
@@ -236,13 +222,10 @@ class GameSettingsRow extends DynamicRow {
         JOptionPane.showMessageDialog(stepActionPanel, "'" + inputText + "' is no integer value.", "Input error",
             JOptionPane.ERROR_MESSAGE);
         parentRowPanel.setDataIsConsistent(false);
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            textFieldMaxNumber.updateUI();
-            textFieldMaxNumber.requestFocus();
-            textFieldMaxNumber.selectAll();
-          }
+        SwingUtilities.invokeLater(() -> {
+          textFieldMaxNumber.updateUI();
+          textFieldMaxNumber.requestFocus();
+          textFieldMaxNumber.selectAll();
         });
         return;
       }

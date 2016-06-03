@@ -65,14 +65,11 @@ public class LoginPanel extends JPanel {
     final boolean anonymous = prefs.getBoolean(ANONYMOUS_LOGIN_PREF, true);
     m_anonymous.setSelected(anonymous);
     m_userName.setText(name);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (!m_anonymous.isSelected()) {
-          m_password.requestFocusInWindow();
-        } else {
-          m_userName.requestFocusInWindow();
-        }
+    SwingUtilities.invokeLater(() -> {
+      if (!m_anonymous.isSelected()) {
+        m_password.requestFocusInWindow();
+      } else {
+        m_userName.requestFocusInWindow();
       }
     });
   }
@@ -113,31 +110,13 @@ public class LoginPanel extends JPanel {
   }
 
   private void setupListeners() {
-    m_logon.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        logonPressed();
-      }
+    m_logon.addActionListener(e -> logonPressed());
+    m_createAccount.addActionListener(e -> {
+      m_returnValue = ReturnValue.CREATE_ACCOUNT;
+      m_dialog.setVisible(false);
     });
-    m_createAccount.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_returnValue = ReturnValue.CREATE_ACCOUNT;
-        m_dialog.setVisible(false);
-      }
-    });
-    m_cancel.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_dialog.setVisible(false);
-      }
-    });
-    m_anonymous.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        setWidgetActivation();
-      }
-    });
+    m_cancel.addActionListener(e -> m_dialog.setVisible(false));
+    m_anonymous.addActionListener(e -> setWidgetActivation());
     // close when hitting the escape key
     final Action enterAction = SwingAction.of(e-> logonPressed());
     final String key = "logon.through.enter.key";

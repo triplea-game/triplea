@@ -45,34 +45,27 @@ public class RepairPanel extends ActionPanel {
   public void display(final PlayerID id) {
     super.display(id);
     m_repair = new HashMap<>();
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        removeAll();
-        actionLabel.setText(id.getName() + " repair");
-        m_buyButton.setText(BUY);
-        add(actionLabel);
-        add(m_buyButton);
-        add(new JButton(DoneAction));
-        m_repairdSoFar.setText("");
-        add(Box.createVerticalStrut(9));
-        add(m_repairdSoFar);
-        add(Box.createVerticalStrut(4));
-        m_unitsPanel.setUnitsFromRepairRuleMap(new HashMap<>(), id, getData());
-        add(m_unitsPanel);
-        add(Box.createVerticalGlue());
-        SwingUtilities.invokeLater(REFRESH);
-      }
+    SwingUtilities.invokeLater(() -> {
+      removeAll();
+      actionLabel.setText(id.getName() + " repair");
+      m_buyButton.setText(BUY);
+      add(actionLabel);
+      add(m_buyButton);
+      add(new JButton(DoneAction));
+      m_repairdSoFar.setText("");
+      add(Box.createVerticalStrut(9));
+      add(m_repairdSoFar);
+      add(Box.createVerticalStrut(4));
+      m_unitsPanel.setUnitsFromRepairRuleMap(new HashMap<>(), id, getData());
+      add(m_unitsPanel);
+      add(Box.createVerticalGlue());
+      SwingUtilities.invokeLater(REFRESH);
     });
   }
 
   private void refreshActionLabelText() {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        actionLabel.setText(getCurrentPlayer().getName() + " repair " + (m_bid ? " for bid" : ""));
-      }
-    });
+    SwingUtilities.invokeLater(
+        () -> actionLabel.setText(getCurrentPlayer().getName() + " repair " + (m_bid ? " for bid" : "")));
   }
 
   public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
@@ -81,12 +74,7 @@ public class RepairPanel extends ActionPanel {
     m_allowedPlayersToRepair = allowedPlayersToRepair;
     refreshActionLabelText();
     // automatically "click" the buy button for us!
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        PURCHASE_ACTION.actionPerformed(null);
-      }
-    });
+    SwingUtilities.invokeLater(() -> PURCHASE_ACTION.actionPerformed(null));
     waitForRelease();
     return m_repair;
   }

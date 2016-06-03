@@ -191,19 +191,16 @@ public class Fire implements IExecutable {
     }
     AbstractBattle.getDisplay(bridge).casualtyNotification(m_battleID, m_stepName, m_dice, m_hitPlayer,
         new ArrayList<>(m_killed), new ArrayList<>(m_damaged), m_dependentUnits);
-    final Runnable r = new Runnable() {
-      @Override
-      public void run() {
-        try {
-          AbstractBattle.getRemote(m_firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Press space to continue",
-              m_hitPlayer);
-        } catch (final ConnectionLostException cle) {
-          // somone else will deal with this
-          // System.out.println(cle.getMessage());
-          // cle.printStackTrace(System.out);
-        } catch (final Exception e) {
-          // ignore
-        }
+    final Runnable r = () -> {
+      try {
+        AbstractBattle.getRemote(m_firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Press space to continue",
+            m_hitPlayer);
+      } catch (final ConnectionLostException cle) {
+        // somone else will deal with this
+        // System.out.println(cle.getMessage());
+        // cle.printStackTrace(System.out);
+      } catch (final Exception e) {
+        // ignore
       }
     };
     // execute in a seperate thread to allow either player to click continue first.

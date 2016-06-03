@@ -93,12 +93,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   // while our server launcher is not null, delegate new/lost connections to it
   private volatile ServerLauncher m_serverLauncher;
   private CountDownLatch m_removeConnectionsLatch = null;
-  private final Observer m_gameSelectorObserver = new Observer() {
-    @Override
-    public void update(final Observable o, final Object arg) {
-      gameDataChanged();
-    }
-  };
+  private final Observer m_gameSelectorObserver = (o, arg) -> gameDataChanged();
 
   public ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
     this(gameSelectorModel, typePanelModel, false);

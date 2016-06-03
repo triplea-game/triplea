@@ -95,12 +95,9 @@ public class UIContext extends AbstractUIContext implements IUIContext {
     m_drawTerritoryEffects = m_mapData.useTerritoryEffectMarkers();
     // load the sounds in a background thread,
     // avoids the pause where sounds dont load right away
-    final Runnable loadSounds = new Runnable() {
-      @Override
-      public void run() {
-        // change the resource loader (this allows us to play sounds the map folder, rather than just default sounds)
-        ClipPlayer.getInstance(m_resourceLoader);
-      }
+    final Runnable loadSounds = () -> {
+      // change the resource loader (this allows us to play sounds the map folder, rather than just default sounds)
+      ClipPlayer.getInstance(m_resourceLoader);
     };
     (new Thread(loadSounds, "Triplea sound loader")).start();
     // load a new cursor

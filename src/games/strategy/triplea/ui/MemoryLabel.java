@@ -86,15 +86,12 @@ class Updater implements Runnable {
   }
 
   private void update() {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        final MemoryLabel label = m_label.get();
-        if (label == null || !label.isVisible()) {
-          return;
-        }
-        label.update();
+    SwingUtilities.invokeLater(() -> {
+      final MemoryLabel label = m_label.get();
+      if (label == null || !label.isVisible()) {
+        return;
       }
+      label.update();
     });
   }
 

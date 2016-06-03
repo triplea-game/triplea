@@ -148,14 +148,11 @@ public class GameRunner2 {
   }
 
   private static void showMainFrame() {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        final MainFrame frame = new MainFrame();
-        frame.requestFocus();
-        frame.toFront();
-        frame.setVisible(true);
-      }
+    SwingUtilities.invokeLater(() -> {
+      final MainFrame frame = new MainFrame();
+      frame.requestFocus();
+      frame.toFront();
+      frame.setVisible(true);
     });
   }
 
@@ -664,34 +661,31 @@ public class GameRunner2 {
   }
 
   private static void checkForUpdates() {
-    final Thread t = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        // do not check if we are the old extra jar. (a jar kept for backwards compatibility only)
-        if (ClientFileSystemHelper.areWeOldExtraJar()) {
-          return;
-        }
-        if (System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true")) {
-          return;
-        }
-        if (System.getProperty(GameRunner2.TRIPLEA_CLIENT_PROPERTY, "false").equalsIgnoreCase("true")) {
-          return;
-        }
-        if (System.getProperty(GameRunner2.TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true")) {
-          return;
-        }
+    final Thread t = new Thread(() -> {
+      // do not check if we are the old extra jar. (a jar kept for backwards compatibility only)
+      if (ClientFileSystemHelper.areWeOldExtraJar()) {
+        return;
+      }
+      if (System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true")) {
+        return;
+      }
+      if (System.getProperty(GameRunner2.TRIPLEA_CLIENT_PROPERTY, "false").equalsIgnoreCase("true")) {
+        return;
+      }
+      if (System.getProperty(GameRunner2.TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true")) {
+        return;
+      }
 
-        // if we are joining a game online, or hosting, or loading straight into a savegame, do not check
-        final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
-        if (fileName.trim().length() > 0) {
-          return;
-        }
+      // if we are joining a game online, or hosting, or loading straight into a savegame, do not check
+      final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
+      if (fileName.trim().length() > 0) {
+        return;
+      }
 
-        boolean busy = false;
-        busy = checkForLatestEngineVersionOut();
-        if (!busy) {
-          busy = checkForUpdatedMaps();
-        }
+      boolean busy = false;
+      busy = checkForLatestEngineVersionOut();
+      if (!busy) {
+        busy = checkForUpdatedMaps();
       }
     }, "Checking Latest TripleA Engine Version");
     t.start();
@@ -726,25 +720,15 @@ public class GameRunner2 {
         return false;
       }
       if (ClientContext.engineVersion().getVersion().isLessThan(latestEngineOut.getLatestVersionOut())) {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(false),
-                "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, false, new CountDownLatchHandler(true));
-          }
-        });
+        SwingUtilities.invokeLater(() -> EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(false),
+            "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, false, new CountDownLatchHandler(true)));
         return true;
       } else {
         // if this is the first time we are running THIS version of TripleA, then show what is new.
         if (firstTimeThisVersion
             && latestEngineOut.getReleaseNotes().containsKey(ClientContext.engineVersion().getVersion())) {
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getCurrentFeaturesComponent(),
-                  "What is New?", JOptionPane.INFORMATION_MESSAGE, false, new CountDownLatchHandler(true));
-            }
-          });
+          SwingUtilities.invokeLater(() -> EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getCurrentFeaturesComponent(),
+              "What is New?", JOptionPane.INFORMATION_MESSAGE, false, new CountDownLatchHandler(true)));
           pref.putBoolean(TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, false);
           try {
             pref.flush();

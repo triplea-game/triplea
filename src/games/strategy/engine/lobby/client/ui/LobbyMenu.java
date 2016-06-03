@@ -92,90 +92,78 @@ public class LobbyMenu extends JMenuBar {
   private void addDisplayPlayersInformationMenu(final JMenu parentMenu) {
     final JMenuItem revive = new JMenuItem("Display Players Information");
     revive.setEnabled(true);
-    revive.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        final Runnable runner = new Runnable() {
-          @Override
-          public void run() {
-            final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
-                .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-            final StringBuilder builder = new StringBuilder();
-            builder.append("Online Players:\r\n\r\n");
-            for (final INode player : m_frame.GetChatMessagePanel().getChat().GetOnlinePlayers()) {
-              builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
-            }
-            builder.append("Players That Have Left (Last 10):\r\n\r\n");
-            for (final INode player : m_frame.GetChatMessagePanel().getChat().GetPlayersThatLeft_Last10()) {
-              builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
-            }
-            final Runnable componentCreation = new Runnable() {
-              @Override
-              public void run() {
-                final JDialog dialog = new JDialog(m_frame, "Players Information");
-                final JTextArea label = new JTextArea(builder.toString());
-                label.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-                label.setEditable(false);
-                label.setAutoscrolls(true);
-                label.setLineWrap(false);
-                label.setFocusable(true);
-                label.setWrapStyleWord(true);
-                label.setLocation(0, 0);
-                dialog.setBackground(label.getBackground());
-                dialog.setLayout(new BorderLayout());
-                final JScrollPane pane = new JScrollPane();
-                pane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-                pane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-                pane.setViewportView(label);
-                dialog.add(pane, BorderLayout.CENTER);
-                final JButton button = new JButton(SwingAction.of(e -> dialog.dispose()));
-                button.setText("Close");
-                button.setMinimumSize(new Dimension(100, 30));
-                dialog.add(button, BorderLayout.SOUTH);
-                dialog.setMinimumSize(new Dimension(500, 300));
-                dialog.setSize(new Dimension(800, 600));
-                dialog.setResizable(true);
-                dialog.setLocationRelativeTo(m_frame);
-                dialog.setDefaultCloseOperation(2);
-                dialog.setVisible(true);
-              }
-            };
-            SwingUtilities.invokeLater(componentCreation);
-          }
+    revive.addActionListener(event -> {
+      final Runnable runner = () -> {
+        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+        final StringBuilder builder = new StringBuilder();
+        builder.append("Online Players:\r\n\r\n");
+        for (final INode player : m_frame.GetChatMessagePanel().getChat().GetOnlinePlayers()) {
+          builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
+        }
+        builder.append("Players That Have Left (Last 10):\r\n\r\n");
+        for (final INode player : m_frame.GetChatMessagePanel().getChat().GetPlayersThatLeft_Last10()) {
+          builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
+        }
+        final Runnable componentCreation = () -> {
+          final JDialog dialog = new JDialog(m_frame, "Players Information");
+          final JTextArea label = new JTextArea(builder.toString());
+          label.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+          label.setEditable(false);
+          label.setAutoscrolls(true);
+          label.setLineWrap(false);
+          label.setFocusable(true);
+          label.setWrapStyleWord(true);
+          label.setLocation(0, 0);
+          dialog.setBackground(label.getBackground());
+          dialog.setLayout(new BorderLayout());
+          final JScrollPane pane = new JScrollPane();
+          pane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+          pane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+          pane.setViewportView(label);
+          dialog.add(pane, BorderLayout.CENTER);
+          final JButton button = new JButton(SwingAction.of(e -> dialog.dispose()));
+          button.setText("Close");
+          button.setMinimumSize(new Dimension(100, 30));
+          dialog.add(button, BorderLayout.SOUTH);
+          dialog.setMinimumSize(new Dimension(500, 300));
+          dialog.setSize(new Dimension(800, 600));
+          dialog.setResizable(true);
+          dialog.setLocationRelativeTo(m_frame);
+          dialog.setDefaultCloseOperation(2);
+          dialog.setVisible(true);
         };
-        final Thread thread = new Thread(runner);
-        thread.start();
-      }
+        SwingUtilities.invokeLater(componentCreation);
+      };
+      final Thread thread = new Thread(runner);
+      thread.start();
     });
     parentMenu.add(revive);
   }
 
   private void addBanUsernameMenu(final JMenu parentMenu) {
     final JMenuItem item = new JMenuItem("Ban Username");
-    item.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final String name = JOptionPane.showInputDialog(null,
-            "Enter the username that you want to ban from the lobby.\r\n\r\nNote that this ban is effective on any username, registered or anonymous, online or offline.",
-            "");
-        if (name == null || name.length() < 1) {
+    item.addActionListener(e -> {
+      final String name1 = JOptionPane.showInputDialog(null,
+          "Enter the username that you want to ban from the lobby.\r\n\r\nNote that this ban is effective on any username, registered or anonymous, online or offline.",
+          "");
+      if (name1 == null || name1.length() < 1) {
+        return;
+      }
+      if (DBUserController.validateUserName(name1) != null) {
+        if (JOptionPane.showConfirmDialog(m_frame,
+            "The username you entered is invalid. Do you want to ban it anyhow?", "Invalid Username",
+            JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
           return;
         }
-        if (DBUserController.validateUserName(name) != null) {
-          if (JOptionPane.showConfirmDialog(m_frame,
-              "The username you entered is invalid. Do you want to ban it anyhow?", "Invalid Username",
-              JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
-            return;
-          }
-        }
-        final long ticks = requestTimespanSupplication();
-        final long expire = System.currentTimeMillis() + ticks;
-        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
-            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-        try {
-          controller.banUsername(new Node(name, InetAddress.getByName("0.0.0.0"), 0), new Date(expire));
-        } catch (final UnknownHostException ex) {
-        }
+      }
+      final long ticks = requestTimespanSupplication();
+      final long expire = System.currentTimeMillis() + ticks;
+      final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+          .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+      try {
+        controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), new Date(expire));
+      } catch (final UnknownHostException ex) {
       }
     });
     item.setEnabled(true);
@@ -184,24 +172,21 @@ public class LobbyMenu extends JMenuBar {
 
   private void addBanIPAddressMenu(final JMenu parentMenu) {
     final JMenuItem item = new JMenuItem("Ban IP Address");
-    item.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final String ip = JOptionPane.showInputDialog(null,
-            "Enter the IP Address that you want to ban from the lobby.\r\n\r\nIP Addresses should be entered in this format: 192.168.1.0",
-            "");
-        if (ip == null || ip.length() < 1) {
-          return;
-        }
-        final long ticks = requestTimespanSupplication();
-        final long expire = System.currentTimeMillis() + ticks;
-        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
-            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-        try {
-          controller.banIp(new Node("None (Admin menu originated ban)", InetAddress.getByName(ip), 0),
-              new Date(expire));
-        } catch (final UnknownHostException ex) {
-        }
+    item.addActionListener(e -> {
+      final String ip = JOptionPane.showInputDialog(null,
+          "Enter the IP Address that you want to ban from the lobby.\r\n\r\nIP Addresses should be entered in this format: 192.168.1.0",
+          "");
+      if (ip == null || ip.length() < 1) {
+        return;
+      }
+      final long ticks = requestTimespanSupplication();
+      final long expire = System.currentTimeMillis() + ticks;
+      final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+          .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+      try {
+        controller.banIp(new Node("None (Admin menu originated ban)", InetAddress.getByName(ip), 0),
+            new Date(expire));
+      } catch (final UnknownHostException ex) {
       }
     });
     item.setEnabled(true);
@@ -210,42 +195,39 @@ public class LobbyMenu extends JMenuBar {
 
   private void addBanMacAddressMenu(final JMenu parentMenu) {
     final JMenuItem item = new JMenuItem("Ban Hashed Mac Address");
-    item.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final String mac = JOptionPane.showInputDialog(null,
-            "Enter the hashed Mac Address that you want to ban from the lobby.\r\n\r\nHashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3",
-            "");
-        if (mac == null || mac.length() < 1) {
+    item.addActionListener(e -> {
+      final String mac = JOptionPane.showInputDialog(null,
+          "Enter the hashed Mac Address that you want to ban from the lobby.\r\n\r\nHashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3",
+          "");
+      if (mac == null || mac.length() < 1) {
+        return;
+      }
+      final String prefix = MD5Crypt.MAGIC + "MH$";
+      final String error;
+      if (mac.length() != 28) {
+        error = "Must be 28 characters long";
+      } else if (!mac.startsWith(prefix)) {
+        error = "Must start with: " + prefix;
+      } else if (!mac.matches("[0-9a-zA-Z$./]+")) {
+        error = "Must use only these characters: 0-9a-zA-Z$./";
+      } else {
+        error = null;
+      }
+      if (error != null) {
+        if (JOptionPane.showConfirmDialog(m_frame,
+            "The hashed Mac Address you entered is invalid (" + error + "). Do you want to ban it anyhow?",
+            "Invalid Hashed Mac", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
           return;
         }
-        final String prefix = MD5Crypt.MAGIC + "MH$";
-        final String error;
-        if (mac.length() != 28) {
-          error = "Must be 28 characters long";
-        } else if (!mac.startsWith(prefix)) {
-          error = "Must start with: " + prefix;
-        } else if (!mac.matches("[0-9a-zA-Z$./]+")) {
-          error = "Must use only these characters: 0-9a-zA-Z$./";
-        } else {
-          error = null;
-        }
-        if (error != null) {
-          if (JOptionPane.showConfirmDialog(m_frame,
-              "The hashed Mac Address you entered is invalid (" + error + "). Do you want to ban it anyhow?",
-              "Invalid Hashed Mac", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
-            return;
-          }
-        }
-        final long ticks = requestTimespanSupplication();
-        final long expire = System.currentTimeMillis() + ticks;
-        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
-            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-        try {
-          controller.banMac(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac,
-              new Date(expire));
-        } catch (final UnknownHostException ex) {
-        }
+      }
+      final long ticks = requestTimespanSupplication();
+      final long expire = System.currentTimeMillis() + ticks;
+      final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+          .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+      try {
+        controller.banMac(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac,
+            new Date(expire));
+      } catch (final UnknownHostException ex) {
       }
     });
     item.setEnabled(true);
@@ -254,27 +236,24 @@ public class LobbyMenu extends JMenuBar {
 
   private void addUnbanUsernameMenu(final JMenu parentMenu) {
     final JMenuItem item = new JMenuItem("Unban Username");
-    item.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final String name =
-            JOptionPane.showInputDialog(null, "Enter the username that you want to unban from the lobby.", "");
-        if (name == null || name.length() < 1) {
+    item.addActionListener(e -> {
+      final String name1 =
+          JOptionPane.showInputDialog(null, "Enter the username that you want to unban from the lobby.", "");
+      if (name1 == null || name1.length() < 1) {
+        return;
+      }
+      if (DBUserController.validateUserName(name1) != null) {
+        if (JOptionPane.showConfirmDialog(m_frame,
+            "The username you entered is invalid. Do you want to ban it anyhow?", "Invalid Username",
+            JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
           return;
         }
-        if (DBUserController.validateUserName(name) != null) {
-          if (JOptionPane.showConfirmDialog(m_frame,
-              "The username you entered is invalid. Do you want to ban it anyhow?", "Invalid Username",
-              JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
-            return;
-          }
-        }
-        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
-            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-        try {
-          controller.banUsername(new Node(name, InetAddress.getByName("0.0.0.0"), 0), new Date(0));
-        } catch (final UnknownHostException ex) {
-        }
+      }
+      final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+          .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+      try {
+        controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), new Date(0));
+      } catch (final UnknownHostException ex) {
       }
     });
     item.setEnabled(true);
@@ -283,21 +262,18 @@ public class LobbyMenu extends JMenuBar {
 
   private void addUnbanIPAddressMenu(final JMenu parentMenu) {
     final JMenuItem item = new JMenuItem("Unban IP Address");
-    item.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final String ip = JOptionPane.showInputDialog(null,
-            "Enter the IP Address that you want to unban from the lobby.\r\n\r\nIP Addresses should be entered in this format: 192.168.1.0",
-            "");
-        if (ip == null || ip.length() < 1) {
-          return;
-        }
-        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
-            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-        try {
-          controller.banIp(new Node("None (Admin menu originated unban)", InetAddress.getByName(ip), 0), new Date(0));
-        } catch (final UnknownHostException ex) {
-        }
+    item.addActionListener(e -> {
+      final String ip = JOptionPane.showInputDialog(null,
+          "Enter the IP Address that you want to unban from the lobby.\r\n\r\nIP Addresses should be entered in this format: 192.168.1.0",
+          "");
+      if (ip == null || ip.length() < 1) {
+        return;
+      }
+      final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+          .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+      try {
+        controller.banIp(new Node("None (Admin menu originated unban)", InetAddress.getByName(ip), 0), new Date(0));
+      } catch (final UnknownHostException ex) {
       }
     });
     item.setEnabled(true);
@@ -306,40 +282,37 @@ public class LobbyMenu extends JMenuBar {
 
   private void addUnbanMacAddressMenu(final JMenu parentMenu) {
     final JMenuItem item = new JMenuItem("Unban Hashed Mac Address");
-    item.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final String mac = JOptionPane.showInputDialog(null,
-            "Enter the hashed Mac Address that you want to unban from the lobby.\r\n\r\nHashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3",
-            "");
-        if (mac == null || mac.length() < 1) {
+    item.addActionListener(e -> {
+      final String mac = JOptionPane.showInputDialog(null,
+          "Enter the hashed Mac Address that you want to unban from the lobby.\r\n\r\nHashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3",
+          "");
+      if (mac == null || mac.length() < 1) {
+        return;
+      }
+      final String prefix = MD5Crypt.MAGIC + "MH$";
+      final String error;
+      if (mac.length() != 28) {
+        error = "Must be 28 characters long";
+      } else if (!mac.startsWith(prefix)) {
+        error = "Must start with: " + prefix;
+      } else if (!mac.matches("[0-9a-zA-Z$./]+")) {
+        error = "Must use only these characters: 0-9a-zA-Z$./";
+      } else {
+        error = null;
+      }
+      if (error != null) {
+        if (JOptionPane.showConfirmDialog(m_frame,
+            "The hashed Mac Address you entered is invalid (" + error + "). Do you want to ban it anyhow?",
+            "Invalid Hashed Mac", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
           return;
         }
-        final String prefix = MD5Crypt.MAGIC + "MH$";
-        final String error;
-        if (mac.length() != 28) {
-          error = "Must be 28 characters long";
-        } else if (!mac.startsWith(prefix)) {
-          error = "Must start with: " + prefix;
-        } else if (!mac.matches("[0-9a-zA-Z$./]+")) {
-          error = "Must use only these characters: 0-9a-zA-Z$./";
-        } else {
-          error = null;
-        }
-        if (error != null) {
-          if (JOptionPane.showConfirmDialog(m_frame,
-              "The hashed Mac Address you entered is invalid (" + error + "). Do you want to ban it anyhow?",
-              "Invalid Hashed Mac", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
-            return;
-          }
-        }
-        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
-            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-        try {
-          controller.banMac(new Node("None (Admin menu originated unban)", InetAddress.getByName("0.0.0.0"), 0), mac,
-              new Date(0));
-        } catch (final UnknownHostException ex) {
-        }
+      }
+      final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+          .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+      try {
+        controller.banMac(new Node("None (Admin menu originated unban)", InetAddress.getByName("0.0.0.0"), 0), mac,
+            new Date(0));
+      } catch (final UnknownHostException ex) {
       }
     });
     item.setEnabled(true);
@@ -437,12 +410,7 @@ public class LobbyMenu extends JMenuBar {
 
   private void addChatTimeMenu(final JMenu parentMenu) {
     final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");
-    chatTimeBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_frame.setShowChatTime(chatTimeBox.isSelected());
-      }
-    });
+    chatTimeBox.addActionListener(e -> m_frame.setShowChatTime(chatTimeBox.isSelected()));
     chatTimeBox.setSelected(true);
     parentMenu.add(chatTimeBox);
   }
@@ -451,12 +419,7 @@ public class LobbyMenu extends JMenuBar {
     final JMenuItem update = new JMenuItem("Update Account...");
     // only if we are not anonymous login
     update.setEnabled(!m_frame.getLobbyClient().isAnonymousLogin());
-    update.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        updateAccountDetails();
-      }
-    });
+    update.addActionListener(e -> updateAccountDetails());
     account.add(update);
   }
 

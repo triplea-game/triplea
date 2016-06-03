@@ -78,12 +78,7 @@ public class ProLogWindow extends javax.swing.JDialog {
     v_restoreDefaultsButton.setMinimumSize(new java.awt.Dimension(118, 23));
     v_restoreDefaultsButton.setName("v_restoreDefaultsButton");
     v_restoreDefaultsButton.setPreferredSize(new java.awt.Dimension(118, 23));
-    v_restoreDefaultsButton.addActionListener(new java.awt.event.ActionListener() {
-      @Override
-      public void actionPerformed(final java.awt.event.ActionEvent evt) {
-        v_restoreDefaultsButtonActionPerformed(evt);
-      }
-    });
+    v_restoreDefaultsButton.addActionListener(evt -> v_restoreDefaultsButtonActionPerformed(evt));
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
@@ -94,12 +89,7 @@ public class ProLogWindow extends javax.swing.JDialog {
     v_settingsDetailsButton.setMinimumSize(new java.awt.Dimension(115, 23));
     v_settingsDetailsButton.setName("v_settingsDetailsButton");
     v_settingsDetailsButton.setPreferredSize(new java.awt.Dimension(115, 23));
-    v_settingsDetailsButton.addActionListener(new java.awt.event.ActionListener() {
-      @Override
-      public void actionPerformed(final java.awt.event.ActionEvent evt) {
-        v_settingsDetailsButtonActionPerformed(evt);
-      }
-    });
+    v_settingsDetailsButton.addActionListener(evt -> v_settingsDetailsButtonActionPerformed(evt));
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 2;
     gridBagConstraints.gridy = 0;
@@ -112,12 +102,7 @@ public class ProLogWindow extends javax.swing.JDialog {
     jPanel13.setLayout(new java.awt.GridBagLayout());
     v_cancelButton.setText("Cancel");
     v_cancelButton.setName("v_cancelButton");
-    v_cancelButton.addActionListener(new java.awt.event.ActionListener() {
-      @Override
-      public void actionPerformed(final java.awt.event.ActionEvent evt) {
-        v_cancelButtonActionPerformed(evt);
-      }
-    });
+    v_cancelButton.addActionListener(evt -> v_cancelButtonActionPerformed(evt));
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 0;
@@ -125,12 +110,7 @@ public class ProLogWindow extends javax.swing.JDialog {
     jPanel13.add(v_cancelButton, gridBagConstraints);
     v_okButton.setText("OK");
     v_okButton.setName("v_okButton");
-    v_okButton.addActionListener(new java.awt.event.ActionListener() {
-      @Override
-      public void actionPerformed(final java.awt.event.ActionEvent evt) {
-        v_okButtonActionPerformed(evt);
-      }
-    });
+    v_okButton.addActionListener(evt -> v_okButtonActionPerformed(evt));
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
@@ -186,12 +166,7 @@ public class ProLogWindow extends javax.swing.JDialog {
     v_enableAILogging.setSelected(true);
     v_enableAILogging.setText("Enable AI Logging");
     v_enableAILogging.setName("v_enableAILogging");
-    v_enableAILogging.addChangeListener(new javax.swing.event.ChangeListener() {
-      @Override
-      public void stateChanged(final javax.swing.event.ChangeEvent evt) {
-        v_enableAILoggingStateChanged(evt);
-      }
-    });
+    v_enableAILogging.addChangeListener(evt -> v_enableAILoggingStateChanged(evt));
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
@@ -225,12 +200,7 @@ public class ProLogWindow extends javax.swing.JDialog {
     v_limitLogHistoryCB.setSelected(true);
     v_limitLogHistoryCB.setText("Limit Log History To:");
     v_limitLogHistoryCB.setName("v_limitLogHistoryCB");
-    v_limitLogHistoryCB.addChangeListener(new javax.swing.event.ChangeListener() {
-      @Override
-      public void stateChanged(final javax.swing.event.ChangeEvent evt) {
-        v_limitLogHistoryCBStateChanged(evt);
-      }
-    });
+    v_limitLogHistoryCB.addChangeListener(evt -> v_limitLogHistoryCBStateChanged(evt));
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 4;
     gridBagConstraints.gridy = 0;

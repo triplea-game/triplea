@@ -333,37 +333,28 @@ public class PlacementPicker extends JFrame {
     s_showIncompleteMode = false;
     s_incompleteNum = 1;
     showAllModeItem = new JCheckBoxMenuItem("Show All Placements Mode", false);
-    showAllModeItem.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        s_showAllMode = showAllModeItem.getState();
-        repaint();
-      }
+    showAllModeItem.addActionListener(event -> {
+      s_showAllMode = showAllModeItem.getState();
+      repaint();
     });
     showOverflowModeItem = new JCheckBoxMenuItem("Show Overflow Mode", false);
-    showOverflowModeItem.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        s_showOverflowMode = showOverflowModeItem.getState();
-        repaint();
-      }
+    showOverflowModeItem.addActionListener(event -> {
+      s_showOverflowMode = showOverflowModeItem.getState();
+      repaint();
     });
     showIncompleteModeItem = new JCheckBoxMenuItem("Show Incomplete Placements Mode", false);
-    showIncompleteModeItem.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        if (showIncompleteModeItem.getState()) {
-          final String num = JOptionPane.showInputDialog(null,
-              "Enter the minimum number of placements each territory must have.\r\n(examples: 1, 4, etc.)");
-          try {
-            s_incompleteNum = Math.max(1, Math.min(50, Integer.parseInt(num)));
-          } catch (final Exception ex) {
-            s_incompleteNum = 1;
-          }
+    showIncompleteModeItem.addActionListener(event -> {
+      if (showIncompleteModeItem.getState()) {
+        final String num = JOptionPane.showInputDialog(null,
+            "Enter the minimum number of placements each territory must have.\r\n(examples: 1, 4, etc.)");
+        try {
+          s_incompleteNum = Math.max(1, Math.min(50, Integer.parseInt(num)));
+        } catch (final Exception ex) {
+          s_incompleteNum = 1;
         }
-        s_showIncompleteMode = showIncompleteModeItem.getState();
-        repaint();
       }
+      s_showIncompleteMode = showIncompleteModeItem.getState();
+      repaint();
     });
     final JMenu editMenu = new JMenu("Edit");
     editMenu.setMnemonic('E');

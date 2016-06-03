@@ -752,14 +752,11 @@ public class AirBattle extends AbstractBattle {
       final DiceRoll dice, final PlayerID hitPlayer, final PlayerID firingPlayer, final CasualtyDetails details) {
     getDisplay(bridge).casualtyNotification(battleID, stepName, dice, hitPlayer, details.getKilled(),
         details.getDamaged(), Collections.emptyMap());
-    final Runnable r = new Runnable() {
-      @Override
-      public void run() {
-        try {
-          getRemote(firingPlayer, bridge).confirmEnemyCasualties(battleID, "Press space to continue", hitPlayer);
-        } catch (final Exception e) {
-          ClientLogger.logQuietly(e);
-        }
+    final Runnable r = () -> {
+      try {
+        getRemote(firingPlayer, bridge).confirmEnemyCasualties(battleID, "Press space to continue", hitPlayer);
+      } catch (final Exception e) {
+        ClientLogger.logQuietly(e);
       }
     };
     // execute in a seperate thread to allow either player to click continue first.

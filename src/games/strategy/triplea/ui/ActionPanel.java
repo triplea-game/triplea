@@ -140,11 +140,8 @@ public abstract class ActionPanel extends JPanel {
   /**
    * Refreshes the action panel. Should be run within the swing event queue.
    */
-  protected final Runnable REFRESH = new Runnable() {
-    @Override
-    public void run() {
-      revalidate();
-      repaint();
-    }
+  protected final Runnable REFRESH = () -> {
+    revalidate();
+    repaint();
   };
 }

@@ -366,33 +366,22 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
       final JButton reset = new JButton("Reset");
       buttons.add(reset);
       panel.add(buttons, BorderLayout.SOUTH);
-      fitWidth.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          final double screenWidth = frame.getMapPanel().getWidth();
-          final double mapWidth = frame.getMapPanel().getImageWidth();
-          double ratio = screenWidth / mapWidth;
-          ratio = Math.max(0.15, ratio);
-          ratio = Math.min(1, ratio);
-          model.setValue((int) (ratio * 100));
-        }
+      fitWidth.addActionListener(e1 -> {
+        final double screenWidth = frame.getMapPanel().getWidth();
+        final double mapWidth = frame.getMapPanel().getImageWidth();
+        double ratio = screenWidth / mapWidth;
+        ratio = Math.max(0.15, ratio);
+        ratio = Math.min(1, ratio);
+        model.setValue((int) (ratio * 100));
       });
-      fitHeight.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          final double screenHeight = frame.getMapPanel().getHeight();
-          final double mapHeight = frame.getMapPanel().getImageHeight();
-          double ratio = screenHeight / mapHeight;
-          ratio = Math.max(0.15, ratio);
-          model.setValue((int) (ratio * 100));
-        }
+      fitHeight.addActionListener(e1 -> {
+        final double screenHeight = frame.getMapPanel().getHeight();
+        final double mapHeight = frame.getMapPanel().getImageHeight();
+        double ratio = screenHeight / mapHeight;
+        ratio = Math.max(0.15, ratio);
+        model.setValue((int) (ratio * 100));
       });
-      reset.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          model.setValue(100);
-        }
-      });
+      reset.addActionListener(e1 -> model.setValue(100));
       final int result = JOptionPane.showOptionDialog(frame, panel, "Choose Map Scale",
           JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK", "Cancel"}, 0);
       if (result != 0) {
@@ -513,13 +502,10 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
     final JCheckBoxMenuItem showUnitsBox = new JCheckBoxMenuItem("Show Units");
     showUnitsBox.setMnemonic(KeyEvent.VK_U);
     showUnitsBox.setSelected(true);
-    showUnitsBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final boolean tfselected = showUnitsBox.isSelected();
-        getUIContext().setShowUnits(tfselected);
-        frame.getMapPanel().resetMap();
-      }
+    showUnitsBox.addActionListener(e -> {
+      final boolean tfselected = showUnitsBox.isSelected();
+      getUIContext().setShowUnits(tfselected);
+      frame.getMapPanel().resetMap();
     });
     parentMenu.add(showUnitsBox);
   }
@@ -557,32 +543,23 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
       @Override
       public void menuCanceled(final MenuEvent e) {}
     });
-    noneButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (noneButton.isSelected() && getUIContext().getDrawTerritoryBordersAgain() != OptionalExtraBorderLevel.LOW) {
-          getUIContext().setDrawTerritoryBordersAgain(OptionalExtraBorderLevel.LOW);
-          frame.getMapPanel().resetMap();
-        }
+    noneButton.addActionListener(e -> {
+      if (noneButton.isSelected() && getUIContext().getDrawTerritoryBordersAgain() != OptionalExtraBorderLevel.LOW) {
+        getUIContext().setDrawTerritoryBordersAgain(OptionalExtraBorderLevel.LOW);
+        frame.getMapPanel().resetMap();
       }
     });
-    mediumButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (mediumButton.isSelected()
-            && getUIContext().getDrawTerritoryBordersAgain() != OptionalExtraBorderLevel.MEDIUM) {
-          getUIContext().setDrawTerritoryBordersAgain(OptionalExtraBorderLevel.MEDIUM);
-          frame.getMapPanel().resetMap();
-        }
+    mediumButton.addActionListener(e -> {
+      if (mediumButton.isSelected()
+          && getUIContext().getDrawTerritoryBordersAgain() != OptionalExtraBorderLevel.MEDIUM) {
+        getUIContext().setDrawTerritoryBordersAgain(OptionalExtraBorderLevel.MEDIUM);
+        frame.getMapPanel().resetMap();
       }
     });
-    highButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (highButton.isSelected() && getUIContext().getDrawTerritoryBordersAgain() != OptionalExtraBorderLevel.HIGH) {
-          getUIContext().setDrawTerritoryBordersAgain(OptionalExtraBorderLevel.HIGH);
-          frame.getMapPanel().resetMap();
-        }
+    highButton.addActionListener(e -> {
+      if (highButton.isSelected() && getUIContext().getDrawTerritoryBordersAgain() != OptionalExtraBorderLevel.HIGH) {
+        getUIContext().setDrawTerritoryBordersAgain(OptionalExtraBorderLevel.HIGH);
+        frame.getMapPanel().resetMap();
       }
     });
     drawBordersMenu.add(noneButton);
@@ -648,13 +625,10 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
   private void addShowTerritoryEffects(final JMenu parentMenu) {
     final JCheckBoxMenuItem territoryEffectsBox = new JCheckBoxMenuItem("Show TerritoryEffects");
     territoryEffectsBox.setMnemonic(KeyEvent.VK_T);
-    territoryEffectsBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final boolean tfselected = territoryEffectsBox.isSelected();
-        getUIContext().setShowTerritoryEffects(tfselected);
-        frame.getMapPanel().resetMap();
-      }
+    territoryEffectsBox.addActionListener(e -> {
+      final boolean tfselected = territoryEffectsBox.isSelected();
+      getUIContext().setShowTerritoryEffects(tfselected);
+      frame.getMapPanel().resetMap();
     });
     parentMenu.add(territoryEffectsBox);
     territoryEffectsBox.setSelected(true);
@@ -664,12 +638,7 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
     final JCheckBoxMenuItem lockMapBox = new JCheckBoxMenuItem("Lock Map");
     lockMapBox.setMnemonic(KeyEvent.VK_M);
     lockMapBox.setSelected(getUIContext().getLockMap());
-    lockMapBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        getUIContext().setLockMap(lockMapBox.isSelected());
-      }
-    });
+    lockMapBox.addActionListener(e -> getUIContext().setLockMap(lockMapBox.isSelected()));
     parentMenu.add(lockMapBox);
   }
 
@@ -702,30 +671,13 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
       @Override
       public void menuCanceled(final MenuEvent e) {}
     });
-    showEndOfTurnReport.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        getUIContext().setShowEndOfTurnReport(showEndOfTurnReport.isSelected());
-      }
-    });
-    showTriggeredNotifications.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        getUIContext().setShowTriggeredNotifications(showTriggeredNotifications.isSelected());
-      }
-    });
-    showTriggerChanceSuccessful.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        getUIContext().setShowTriggerChanceSuccessful(showTriggerChanceSuccessful.isSelected());
-      }
-    });
-    showTriggerChanceFailure.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        getUIContext().setShowTriggerChanceFailure(showTriggerChanceFailure.isSelected());
-      }
-    });
+    showEndOfTurnReport.addActionListener(e -> getUIContext().setShowEndOfTurnReport(showEndOfTurnReport.isSelected()));
+    showTriggeredNotifications.addActionListener(
+        e -> getUIContext().setShowTriggeredNotifications(showTriggeredNotifications.isSelected()));
+    showTriggerChanceSuccessful.addActionListener(
+        e -> getUIContext().setShowTriggerChanceSuccessful(showTriggerChanceSuccessful.isSelected()));
+    showTriggerChanceFailure.addActionListener(
+        e -> getUIContext().setShowTriggerChanceFailure(showTriggerChanceFailure.isSelected()));
     notificationMenu.add(showEndOfTurnReport);
     notificationMenu.add(showTriggeredNotifications);
     notificationMenu.add(showTriggerChanceSuccessful);
@@ -737,12 +689,7 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
     final JCheckBoxMenuItem showAIBattlesBox = new JCheckBoxMenuItem("Show Battles Between AIs");
     showAIBattlesBox.setMnemonic(KeyEvent.VK_A);
     showAIBattlesBox.setSelected(getUIContext().getShowBattlesBetweenAIs());
-    showAIBattlesBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        getUIContext().setShowBattlesBetweenAIs(showAIBattlesBox.isSelected());
-      }
-    });
+    showAIBattlesBox.addActionListener(e -> getUIContext().setShowBattlesBetweenAIs(showAIBattlesBox.isSelected()));
     parentMenu.add(showAIBattlesBox);
   }
 
@@ -760,47 +707,44 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
   private void addRollDice(final JMenu parentMenu) {
     final JMenuItem RollDiceBox = new JMenuItem("Roll Dice...");
     RollDiceBox.setMnemonic(KeyEvent.VK_R);
-    RollDiceBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final IntTextField numberOfText = new IntTextField(0, 100);
-        final IntTextField diceSidesText = new IntTextField(1, 200);
-        numberOfText.setText(String.valueOf(0));
-        diceSidesText.setText(String.valueOf(getGame().getData().getDiceSides()));
-        final JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        panel.add(new JLabel("Number of Dice to Roll: "), new GridBagConstraints(0, 0, 1, 1, 0, 0,
-            GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
-        panel.add(new JLabel("Sides on the Dice: "), new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
-            GridBagConstraints.BOTH, new Insets(0, 20, 0, 10), 0, 0));
-        panel.add(numberOfText, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
-            GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
-        panel.add(diceSidesText, new GridBagConstraints(2, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
-            GridBagConstraints.BOTH, new Insets(0, 20, 0, 10), 0, 0));
-        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(TripleAMenu.this), panel, "Roll Dice",
-            JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
-        try {
-          final int numberOfDice = Integer.parseInt(numberOfText.getText());
-          if (numberOfDice > 0) {
-            final int diceSides = Integer.parseInt(diceSidesText.getText());
-            final int[] dice =
-                getGame().getRandomSource().getRandom(diceSides, numberOfDice, "Rolling Dice, no effect on game.");
-            final JPanel panelDice = new JPanel();
-            final BoxLayout layout = new BoxLayout(panelDice, BoxLayout.Y_AXIS);
-            panelDice.setLayout(layout);
-            final JLabel label = new JLabel("Rolls (no effect on game): ");
-            panelDice.add(label);
-            String diceString = "";
-            for (int i = 0; i < dice.length; i++) {
-              diceString += String.valueOf(dice[i] + 1) + ((i == dice.length - 1) ? "" : ", ");
-            }
-            final JTextField diceList = new JTextField(diceString);
-            diceList.setEditable(false);
-            panelDice.add(diceList);
-            JOptionPane.showMessageDialog(frame, panelDice, "Dice Rolled", JOptionPane.INFORMATION_MESSAGE);
+    RollDiceBox.addActionListener(e -> {
+      final IntTextField numberOfText = new IntTextField(0, 100);
+      final IntTextField diceSidesText = new IntTextField(1, 200);
+      numberOfText.setText(String.valueOf(0));
+      diceSidesText.setText(String.valueOf(getGame().getData().getDiceSides()));
+      final JPanel panel = new JPanel();
+      panel.setLayout(new GridBagLayout());
+      panel.add(new JLabel("Number of Dice to Roll: "), new GridBagConstraints(0, 0, 1, 1, 0, 0,
+          GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
+      panel.add(new JLabel("Sides on the Dice: "), new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+          GridBagConstraints.BOTH, new Insets(0, 20, 0, 10), 0, 0));
+      panel.add(numberOfText, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
+          GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
+      panel.add(diceSidesText, new GridBagConstraints(2, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
+          GridBagConstraints.BOTH, new Insets(0, 20, 0, 10), 0, 0));
+      JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(TripleAMenu.this), panel, "Roll Dice",
+          JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
+      try {
+        final int numberOfDice = Integer.parseInt(numberOfText.getText());
+        if (numberOfDice > 0) {
+          final int diceSides = Integer.parseInt(diceSidesText.getText());
+          final int[] dice =
+              getGame().getRandomSource().getRandom(diceSides, numberOfDice, "Rolling Dice, no effect on game.");
+          final JPanel panelDice = new JPanel();
+          final BoxLayout layout = new BoxLayout(panelDice, BoxLayout.Y_AXIS);
+          panelDice.setLayout(layout);
+          final JLabel label = new JLabel("Rolls (no effect on game): ");
+          panelDice.add(label);
+          String diceString = "";
+          for (int i = 0; i < dice.length; i++) {
+            diceString += String.valueOf(dice[i] + 1) + ((i == dice.length - 1) ? "" : ", ");
           }
-        } catch (final Exception ex) {
+          final JTextField diceList = new JTextField(diceString);
+          diceList.setEditable(false);
+          panelDice.add(diceList);
+          JOptionPane.showMessageDialog(frame, panelDice, "Dice Rolled", JOptionPane.INFORMATION_MESSAGE);
         }
+      } catch (final Exception ex) {
       }
     });
     parentMenu.add(RollDiceBox);
@@ -1107,22 +1051,19 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
     showMapDetails = new JCheckBoxMenuItem("Show Map Details");
     showMapDetails.setMnemonic(KeyEvent.VK_D);
     showMapDetails.setSelected(TileImageFactory.getShowReliefImages());
-    showMapDetails.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (TileImageFactory.getShowReliefImages() == showMapDetails.isSelected()) {
-          return;
-        }
-        TileImageFactory.setShowReliefImages(showMapDetails.isSelected());
-        final Thread t = new Thread("Triplea : Show map details thread") {
-          @Override
-          public void run() {
-            yield();
-            frame.getMapPanel().updateCountries(getData().getMap().getTerritories());
-          }
-        };
-        t.start();
+    showMapDetails.addActionListener(e -> {
+      if (TileImageFactory.getShowReliefImages() == showMapDetails.isSelected()) {
+        return;
       }
+      TileImageFactory.setShowReliefImages(showMapDetails.isSelected());
+      final Thread t = new Thread("Triplea : Show map details thread") {
+        @Override
+        public void run() {
+          yield();
+          frame.getMapPanel().updateCountries(getData().getMap().getTerritories());
+        }
+      };
+      t.start();
     });
     menuGame.add(showMapDetails);
   }
@@ -1137,25 +1078,22 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
       showMapBlends.setSelected(false);
       showMapBlends.setEnabled(false);
     }
-    showMapBlends.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (TileImageFactory.getShowMapBlends() == showMapBlends.isSelected()) {
-          return;
-        }
-        TileImageFactory.setShowMapBlends(showMapBlends.isSelected());
-        TileImageFactory.setShowMapBlendMode(frame.getUIContext().getMapData().getMapBlendMode());
-        TileImageFactory.setShowMapBlendAlpha(frame.getUIContext().getMapData().getMapBlendAlpha());
-        final Thread t = new Thread("Triplea : Show map Blends thread") {
-          @Override
-          public void run() {
-            frame.setScale(frame.getUIContext().getScale() * 100);
-            yield();
-            frame.getMapPanel().updateCountries(getData().getMap().getTerritories());
-          }
-        };
-        t.start();
+    showMapBlends.addActionListener(e -> {
+      if (TileImageFactory.getShowMapBlends() == showMapBlends.isSelected()) {
+        return;
       }
+      TileImageFactory.setShowMapBlends(showMapBlends.isSelected());
+      TileImageFactory.setShowMapBlendMode(frame.getUIContext().getMapData().getMapBlendMode());
+      TileImageFactory.setShowMapBlendAlpha(frame.getUIContext().getMapData().getMapBlendAlpha());
+      final Thread t = new Thread("Triplea : Show map Blends thread") {
+        @Override
+        public void run() {
+          frame.setScale(frame.getUIContext().getScale() * 100);
+          yield();
+          frame.getMapPanel().updateCountries(getData().getMap().getTerritories());
+        }
+      };
+      t.start();
     });
     menuGame.add(showMapBlends);
   }
@@ -1179,19 +1117,16 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
       if (skins.get(key).equals(AbstractUIContext.getMapDir())) {
         mapMenuItem.setSelected(true);
       }
-      mapMenuItem.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          try {
-            frame.updateMap(skins.get(key));
-            if (frame.getUIContext().getMapData().getHasRelief()) {
-              showMapDetails.setSelected(true);
-            }
-            setWidgetActivation();
-          } catch (final Exception exception) {
-            ClientLogger.logError("Error Changing Map Skin2",  exception);
+      mapMenuItem.addActionListener(e -> {
+        try {
+          frame.updateMap(skins.get(key));
+          if (frame.getUIContext().getMapData().getHasRelief()) {
+            showMapDetails.setSelected(true);
           }
-        }// else
+          setWidgetActivation();
+        } catch (final Exception exception) {
+          ClientLogger.logError("Error Changing Map Skin2",  exception);
+        }
       }// actionPerformed
       );
     }

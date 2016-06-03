@@ -376,13 +376,9 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     } else
     // On Mac OS X, put the About menu where Mac users expect it to be
     {
-      Application.getApplication().setAboutHandler(new AboutHandler(){
-        @Override
-        public void handleAbout(AboutEvent paramAboutEvent) {
-          JOptionPane.showMessageDialog(frame, editorPane, "About " + frame.getGame().getData().getGameName(),
-              JOptionPane.PLAIN_MESSAGE);
-        }
-      });
+      Application.getApplication().setAboutHandler(
+          paramAboutEvent -> JOptionPane.showMessageDialog(frame, editorPane, "About " + frame.getGame().getData().getGameName(),
+              JOptionPane.PLAIN_MESSAGE));
     }
   }
 
@@ -405,12 +401,9 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
       fileDialog.setMode(FileDialog.SAVE);
       SaveGameFileChooser.ensureDefaultDirExists();
       fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
-      fileDialog.setFilenameFilter(new FilenameFilter() {
-        @Override
-        public boolean accept(final File dir, final String name) { // the extension should be .tsvg, but find svg
-                                                                   // extensions as well
-          return name.endsWith(".tsvg") || name.endsWith(".svg");
-        }
+      fileDialog.setFilenameFilter((dir, name) -> { // the extension should be .tsvg, but find svg
+                                                                 // extensions as well
+        return name.endsWith(".tsvg") || name.endsWith(".svg");
       });
       fileDialog.setVisible(true);
       String fileName = fileDialog.getFile();
@@ -654,12 +647,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
   protected void addChatTimeMenu(final JMenu parentMenu) {
     final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");
     chatTimeBox.setMnemonic(KeyEvent.VK_T);
-    chatTimeBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        frame.setShowChatTime(chatTimeBox.isSelected());
-      }
-    });
+    chatTimeBox.addActionListener(e -> frame.setShowChatTime(chatTimeBox.isSelected()));
     chatTimeBox.setSelected(false);
     parentMenu.add(chatTimeBox);
     chatTimeBox.setEnabled(MainFrame.getInstance() != null && MainFrame.getInstance().getChat() != null);
@@ -668,24 +656,21 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
   protected void addAISleepDuration(final JMenu parentMenu) {
     final JMenuItem AISleepDurationBox = new JMenuItem("AI Pause Duration...");
     AISleepDurationBox.setMnemonic(KeyEvent.VK_A);
-    AISleepDurationBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final IntTextField text = new IntTextField(50, 10000);
-        text.setText(String.valueOf(AbstractUIContext.getAIPauseDuration()));
-        final JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        panel.add(new JLabel("AI Pause Duration (ms):"), new GridBagConstraints(0, 0, 1, 1, 0, 0,
-            GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 0), 0, 0));
-        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(BasicGameMenuBar.this), panel,
-            "Set AI Pause Duration", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"},
-            "OK");
-        try {
-          AbstractUIContext.setAIPauseDuration(Integer.parseInt(text.getText()));
-        } catch (final Exception ex) {
-        }
+    AISleepDurationBox.addActionListener(e -> {
+      final IntTextField text = new IntTextField(50, 10000);
+      text.setText(String.valueOf(AbstractUIContext.getAIPauseDuration()));
+      final JPanel panel = new JPanel();
+      panel.setLayout(new GridBagLayout());
+      panel.add(new JLabel("AI Pause Duration (ms):"), new GridBagConstraints(0, 0, 1, 1, 0, 0,
+          GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+      panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+          new Insets(0, 0, 0, 0), 0, 0));
+      JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(BasicGameMenuBar.this), panel,
+          "Set AI Pause Duration", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"},
+          "OK");
+      try {
+        AbstractUIContext.setAIPauseDuration(Integer.parseInt(text.getText()));
+      } catch (final Exception ex) {
       }
     });
     parentMenu.add(AISleepDurationBox);

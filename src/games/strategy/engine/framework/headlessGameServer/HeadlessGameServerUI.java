@@ -117,24 +117,15 @@ public class HeadlessGameServerUI extends MainGameFrame {
       leaveGame();
     }
   };
-  GameStepListener m_stepListener = new GameStepListener() {
-    @Override
-    public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player,
-        final int round, final String stepDisplayName) {
-      updateStep();
-    }
-  };
+  GameStepListener m_stepListener = (stepName, delegateName, player, round, stepDisplayName) -> updateStep();
   GameDataChangeListener m_dataChangeListener = new GameDataChangeListener() {
     @Override
     public void gameDataChanged(final Change change) {
       try {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            if (m_uiContext == null) {
-              return;
-              // stuff goes below here:
-            }
+        SwingUtilities.invokeLater(() -> {
+          if (m_uiContext == null) {
+            return;
+            // stuff goes below here:
           }
         });
       } catch (final Exception e) {

@@ -134,30 +134,10 @@ public class LobbyGamePanel extends JPanel {
   }
 
   private void setupListeners() {
-    m_hostGame.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        hostGame();
-      }
-    });
-    m_joinGame.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        joinGame();
-      }
-    });
-    m_bootGame.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        bootGame();
-      }
-    });
-    m_gameTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-      @Override
-      public void valueChanged(final ListSelectionEvent e) {
-        setWidgetActivation();
-      }
-    });
+    m_hostGame.addActionListener(e -> hostGame());
+    m_joinGame.addActionListener(e -> joinGame());
+    m_bootGame.addActionListener(e -> bootGame());
+    m_gameTable.getSelectionModel().addListSelectionListener(e -> setWidgetActivation());
     m_gameTable.addMouseListener(new MouseListener() {
       @Override
       public void mouseClicked(final MouseEvent e) {

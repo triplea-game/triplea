@@ -52,29 +52,23 @@ public class LobbyAdminStatPanel extends JPanel {
     ((IServerMessenger) m_messenger).addConnectionChangeListener(new IConnectionChangeListener() {
       @Override
       public void connectionRemoved(final INode to) {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            m_currentLogins--;
-            m_currentLoginsLabel.setText("Current Players: " + m_currentLogins);
-          }
+        SwingUtilities.invokeLater(() -> {
+          m_currentLogins--;
+          m_currentLoginsLabel.setText("Current Players: " + m_currentLogins);
         });
       }
 
       @Override
       public void connectionAdded(final INode to) {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            m_currentLogins++;
-            m_currentLoginsLabel.setText("Current Players: " + m_currentLogins);
-            if (m_currentLogins > m_maxPlayers) {
-              m_maxPlayers = m_currentLogins;
-              m_maxPlayersLabel.setText("Max Concurrent Players : " + m_maxPlayers);
-            }
-            m_totalLogins++;
-            m_totalLoginsLabel.setText("Total Logins : " + m_totalLogins);
+        SwingUtilities.invokeLater(() -> {
+          m_currentLogins++;
+          m_currentLoginsLabel.setText("Current Players: " + m_currentLogins);
+          if (m_currentLogins > m_maxPlayers) {
+            m_maxPlayers = m_currentLogins;
+            m_maxPlayersLabel.setText("Max Concurrent Players : " + m_maxPlayers);
           }
+          m_totalLogins++;
+          m_totalLoginsLabel.setText("Total Logins : " + m_totalLogins);
         });
       }
     });

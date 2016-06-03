@@ -272,39 +272,30 @@ public class ClientModel implements IMessengerErrorListener {
 
     @Override
     public void cannotJoinGame(final String reason) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          m_typePanelModel.showSelectType();
-          EventThreadJOptionPane.showMessageDialog(m_ui, "Could not join game: " + reason,
-              new CountDownLatchHandler(true));
-        }
+      SwingUtilities.invokeLater(() -> {
+        m_typePanelModel.showSelectType();
+        EventThreadJOptionPane.showMessageDialog(m_ui, "Could not join game: " + reason,
+            new CountDownLatchHandler(true));
       });
     }
   };
 
   private void startGame(final byte[] gameData, final Map<String, INode> players, final CountDownLatch onDone,
       final boolean gameRunning) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_gameLoadingWindow.setVisible(true);
-        m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(m_ui));
-        m_gameLoadingWindow.showWait();
-      }
+    SwingUtilities.invokeLater(() -> {
+      m_gameLoadingWindow.setVisible(true);
+      m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(m_ui));
+      m_gameLoadingWindow.showWait();
     });
-    final Runnable r = new Runnable() {
-      @Override
-      public void run() {
-        try {
-          startGameInNewThread(gameData, players, gameRunning);
-        } catch (final RuntimeException e) {
-          m_gameLoadingWindow.doneWait();
-          throw e;
-        } finally {
-          if (onDone != null) {
-            onDone.countDown();
-          }
+    final Runnable r = () -> {
+      try {
+        startGameInNewThread(gameData, players, gameRunning);
+      } catch (final RuntimeException e) {
+        m_gameLoadingWindow.doneWait();
+        throw e;
+      } finally {
+        if (onDone != null) {
+          onDone.countDown();
         }
       }
     };
@@ -337,12 +328,7 @@ public class ClientModel implements IMessengerErrorListener {
     final Thread t = new Thread("Client Game Launcher") {
       @Override
       public void run() {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            JOptionPane.getFrameForComponent(m_ui).setVisible(false);
-          }
-        });
+        SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(m_ui).setVisible(false));
         try {
           // game will be null if we loose the connection
           if (m_game != null) {
@@ -386,25 +372,15 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   private void internalPlayerListingChanged(final PlayerListing listing) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_gameSelectorModel.clearDataButKeepGameInfo(listing.getGameName(), listing.getGameRound(),
-            listing.getGameVersion().toString());
-      }
-    });
+    SwingUtilities.invokeLater(() -> m_gameSelectorModel.clearDataButKeepGameInfo(listing.getGameName(), listing.getGameRound(),
+        listing.getGameVersion().toString()));
     synchronized (this) {
       m_playersToNodes = listing.getPlayerToNodeListing();
       m_playersEnabledListing = listing.getPlayersEnabledListing();
       m_playersAllowedToBeDisabled = listing.getPlayersAllowedToBeDisabled();
       m_playerNamesAndAlliancesInTurnOrder = listing.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
     }
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_listener.playerListChanged();
-      }
-    });
+    SwingUtilities.invokeLater(() -> m_listener.playerListChanged());
   }
 
   public Map<String, String> getPlayerToNodesMapping() {

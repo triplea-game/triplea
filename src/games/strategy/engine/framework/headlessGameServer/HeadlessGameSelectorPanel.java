@@ -69,12 +69,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
 
   private void updateGameData() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          updateGameData();
-        }
-      });
+      SwingUtilities.invokeLater(() -> updateGameData());
       return;
     }
     m_nameText.setText(m_model.getGameName());
@@ -150,24 +145,9 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
   }
 
   private void setupListeners() {
-    m_loadNewGame.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        selectGameFile(false);
-      }
-    });
-    m_loadSavedGame.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        selectGameFile(true);
-      }
-    });
-    m_gameOptions.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        selectGameOptions();
-      }
-    });
+    m_loadNewGame.addActionListener(e -> selectGameFile(false));
+    m_loadSavedGame.addActionListener(e -> selectGameFile(true));
+    m_gameOptions.addActionListener(e -> selectGameOptions());
   }
 
   private void selectGameOptions() {
@@ -215,12 +195,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
 
   private void setWidgetActivation() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          setWidgetActivation();
-        }
-      });
+      SwingUtilities.invokeLater(() -> setWidgetActivation());
       return;
     }
     final boolean canSelectGameData = m_model != null && m_model.canSelect();
@@ -257,13 +232,10 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
         fileDialog.setMode(FileDialog.LOAD);
         SaveGameFileChooser.ensureDefaultDirExists();
         fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
-        fileDialog.setFilenameFilter(new FilenameFilter() {
-          @Override
-          public boolean accept(final File dir, final String name) {
-            // the extension should be .tsvg, but find svg extensions as well
-            // also, macs download the file as tsvg.gz, so accept that as well
-            return name.endsWith(".tsvg") || name.endsWith(".svg") || name.endsWith("tsvg.gz");
-          }
+        fileDialog.setFilenameFilter((dir, name) -> {
+          // the extension should be .tsvg, but find svg extensions as well
+          // also, macs download the file as tsvg.gz, so accept that as well
+          return name.endsWith(".tsvg") || name.endsWith(".svg") || name.endsWith("tsvg.gz");
         });
         fileDialog.setVisible(true);
         final String fileName = fileDialog.getFile();

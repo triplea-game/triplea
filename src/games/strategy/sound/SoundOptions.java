@@ -30,23 +30,13 @@ public final class SoundOptions {
   public static void addToMenu(final JMenu parentMenu, final SoundType soundType) {
     final JMenuItem soundOptions = new JMenuItem("Sound Options...");
     soundOptions.setMnemonic(KeyEvent.VK_S);
-    soundOptions.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        new SoundOptions(parentMenu, soundType);
-      }
-    });
+    soundOptions.addActionListener(e -> new SoundOptions(parentMenu, soundType));
     parentMenu.add(soundOptions);
   }
 
   public static void addToPanel(final JPanel parentPanel, final SoundType soundType) {
     final JButton soundOptions = new JButton("Sound Options...");
-    soundOptions.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        new SoundOptions(parentPanel, soundType);
-      }
-    });
+    soundOptions.addActionListener(e -> new SoundOptions(parentPanel, soundType));
     parentPanel.add(soundOptions);
   }
 
@@ -85,24 +75,14 @@ public final class SoundOptions {
     final JCheckBoxMenuItem soundCheckBox = new JCheckBoxMenuItem("Enable Sound");
     soundCheckBox.setMnemonic(KeyEvent.VK_N);
     soundCheckBox.setSelected(!ClipPlayer.getBeSilent());
-    soundCheckBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        ClipPlayer.setBeSilent(!soundCheckBox.isSelected());
-      }
-    });
+    soundCheckBox.addActionListener(e -> ClipPlayer.setBeSilent(!soundCheckBox.isSelected()));
     parentMenu.add(soundCheckBox);
   }
 
   public static void addGlobalSoundSwitchCheckbox(final JPanel parentPanel) {
     final JCheckBox soundCheckBox = new JCheckBox("Enable Sound");
     soundCheckBox.setSelected(!ClipPlayer.getBeSilent());
-    soundCheckBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        ClipPlayer.setBeSilent(!soundCheckBox.isSelected());
-      }
-    });
+    soundCheckBox.addActionListener(e -> ClipPlayer.setBeSilent(!soundCheckBox.isSelected()));
     parentPanel.add(soundCheckBox);
   }
 }

@@ -109,18 +109,8 @@ public class CreateUpdateAccountPanel extends JPanel {
   }
 
   private void setupListeners() {
-    m_cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_dialog.setVisible(false);
-      }
-    });
-    m_okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        okPressed();
-      }
-    });
+    m_cancelButton.addActionListener(e -> m_dialog.setVisible(false));
+    m_okButton.addActionListener(e -> okPressed());
   }
 
   private void okPressed() {

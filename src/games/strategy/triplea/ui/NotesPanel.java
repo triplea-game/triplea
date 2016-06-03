@@ -36,12 +36,7 @@ public class NotesPanel extends JPanel {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     m_refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
     m_refresh.addActionListener(SwingAction.of("Refresh Notes", e -> {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          layoutNotes();
-        }
-      });
+      SwingUtilities.invokeLater(() -> layoutNotes());
     }));
     // layoutNotes();
     removeNotes();

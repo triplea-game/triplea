@@ -24,12 +24,7 @@ public class StringProperty extends AEditableProperty {
   @Override
   public JComponent getEditorComponent() {
     final JTextField text = new JTextField(m_value);
-    text.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_value = text.getText();
-      }
-    });
+    text.addActionListener(e -> m_value = text.getText());
     text.addFocusListener(new FocusListener() {
       @Override
       public void focusGained(final FocusEvent e) {}

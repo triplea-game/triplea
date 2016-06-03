@@ -17,18 +17,15 @@ public class StatusManager {
 
   public StatusManager(final Messengers messengers) {
     m_messengers = messengers;
-    m_statusChannelSubscribor = new IStatusChannel() {
-      @Override
-      public void statusChanged(final INode node, final String status) {
-        synchronized (m_mutex) {
-          if (status == null) {
-            m_status.remove(node);
-          } else {
-            m_status.put(node, status);
-          }
+    m_statusChannelSubscribor = (node, status) -> {
+      synchronized (m_mutex) {
+        if (status == null) {
+          m_status.remove(node);
+        } else {
+          m_status.put(node, status);
         }
-        notifyStatusChanged(node, status);
       }
+      notifyStatusChanged(node, status);
     };
     if (messengers.getMessenger().isServer()
         && !messengers.getRemoteMessenger().hasLocalImplementor(IStatusController.STATUS_CONTROLLER)) {
