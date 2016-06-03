@@ -71,11 +71,8 @@ public class GameStepPropertiesHelper {
       final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_airborneMove);
       if (prop != null) {
         isAirborneMove = Boolean.parseBoolean(prop);
-      } else if (isAirborneDelegate(data)) {
-        isAirborneMove = true;
-      } else {
-        isAirborneMove = false;
-      }
+      } else
+        isAirborneMove = isAirborneDelegate(data);
     } finally {
       data.releaseReadLock();
     }
@@ -144,16 +141,9 @@ public class GameStepPropertiesHelper {
       if (prop != null) {
         isFireRockets = Boolean.parseBoolean(prop);
       } else if (games.strategy.triplea.Properties.getWW2V2(data) || games.strategy.triplea.Properties.getWW2V3(data)) {
-        if (isCombatDelegate(data)) {
-          isFireRockets = true;
-        } else {
-          isFireRockets = false;
-        }
-      } else if (isNonCombatDelegate(data)) {
-        isFireRockets = true;
-      } else {
-        isFireRockets = false;
-      }
+        isFireRockets = isCombatDelegate(data);
+      } else
+        isFireRockets = isNonCombatDelegate(data);
     } finally {
       data.releaseReadLock();
     }
@@ -179,11 +169,8 @@ public class GameStepPropertiesHelper {
           isRepairUnits = Boolean.parseBoolean(prop);
         } else if (isCombatDelegate(data) && repairAtStartAndOnlyOwn) {
           isRepairUnits = true;
-        } else if (data.getSequence().getStep().getName().endsWith("EndTurn") && repairAtEndAndAll) {
-          isRepairUnits = true;
-        } else {
-          isRepairUnits = false;
-        }
+        } else
+          isRepairUnits = data.getSequence().getStep().getName().endsWith("EndTurn") && repairAtEndAndAll;
       }
     } finally {
       data.releaseReadLock();
@@ -201,11 +188,8 @@ public class GameStepPropertiesHelper {
       final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_giveBonusMovement);
       if (prop != null) {
         isBonus = Boolean.parseBoolean(prop);
-      } else if (isCombatDelegate(data)) {
-        isBonus = true;
-      } else {
-        isBonus = false;
-      }
+      } else
+        isBonus = isCombatDelegate(data);
     } finally {
       data.releaseReadLock();
     }
@@ -229,11 +213,8 @@ public class GameStepPropertiesHelper {
         isRemoveAir = false;
       } else if (isNonCombatDelegate(data)) {
         isRemoveAir = true;
-      } else if (data.getSequence().getStep().getName().endsWith("Place")) {
-        isRemoveAir = true;
-      } else {
-        isRemoveAir = false;
-      }
+      } else
+        isRemoveAir = data.getSequence().getStep().getName().endsWith("Place");
     } finally {
       data.releaseReadLock();
     }
@@ -307,11 +288,8 @@ public class GameStepPropertiesHelper {
           data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_resetUnitStateAtEnd);
       if (prop != null) {
         isReset = Boolean.parseBoolean(prop);
-      } else if (isNonCombatDelegate(data)) {
-        isReset = true;
-      } else {
-        isReset = false;
-      }
+      } else
+        isReset = isNonCombatDelegate(data);
     } finally {
       data.releaseReadLock();
     }
@@ -327,11 +305,8 @@ public class GameStepPropertiesHelper {
         isBid = Boolean.parseBoolean(prop);
       } else if (isBidPurchaseDelegate(data)) {
         isBid = true;
-      } else if (isBidPlaceDelegate(data)) {
-        isBid = true;
-      } else {
-        isBid = false;
-      }
+      } else
+        isBid = isBidPlaceDelegate(data);
     } finally {
       data.releaseReadLock();
     }
@@ -371,10 +346,7 @@ public class GameStepPropertiesHelper {
 
   // private static members for testing default situation based on name of delegate
   private static boolean isNonCombatDelegate(final GameData data) {
-    if (data.getSequence().getStep().getName().endsWith("NonCombatMove")) {
-      return true;
-    }
-    return false;
+    return data.getSequence().getStep().getName().endsWith("NonCombatMove");
   }
 
   private static boolean isCombatDelegate(final GameData data) {
@@ -387,23 +359,14 @@ public class GameStepPropertiesHelper {
   }
 
   private static boolean isAirborneDelegate(final GameData data) {
-    if (data.getSequence().getStep().getName().endsWith("AirborneCombatMove")) {
-      return true;
-    }
-    return false;
+    return data.getSequence().getStep().getName().endsWith("AirborneCombatMove");
   }
 
   private static boolean isBidPurchaseDelegate(final GameData data) {
-    if (data.getSequence().getStep().getName().endsWith("Bid")) {
-      return true;
-    }
-    return false;
+    return data.getSequence().getStep().getName().endsWith("Bid");
   }
 
   private static boolean isBidPlaceDelegate(final GameData data) {
-    if (data.getSequence().getStep().getName().endsWith("BidPlace")) {
-      return true;
-    }
-    return false;
+    return data.getSequence().getStep().getName().endsWith("BidPlace");
   }
 }

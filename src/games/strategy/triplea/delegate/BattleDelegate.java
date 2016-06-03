@@ -170,10 +170,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final BattleListing battles = getBattles();
     if (battles.isEmpty()) {
       final IBattle battle = getCurrentBattle();
-      if (battle != null) {
-        return true;
-      }
-      return false;
+      return battle != null;
     }
     return true;
   }

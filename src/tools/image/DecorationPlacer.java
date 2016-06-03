@@ -490,7 +490,7 @@ public class DecorationPlacer extends JFrame {
   private void topLeftOrBottomLeft() {
     final Object[] showFromTopLeft = {"Point is Top Left", "Point is Bottom Left"};
     System.out.println("Select Show images from top left or bottom left point?");
-    if (JOptionPane.showOptionDialog(this,
+    s_showFromTopLeft = JOptionPane.showOptionDialog(this,
         "Are the images shown from the top left, or from the bottom left point? \r\n"
             + "All images are shown from the top left, except for 'name_place.txt', 'pu_place.txt', and 'comments.txt'. \r\n"
             + "For these 3 files, whether they are top left or bottom left is determined by the \r\n"
@@ -498,11 +498,7 @@ public class DecorationPlacer extends JFrame {
             + "Do NOT change this from whatever the default has choosen, unless you know exactly what you are doing!",
         "Show images from top left or bottom left point?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
         null, showFromTopLeft,
-        showFromTopLeft[(s_imagePointType.isCanUseBottomLeftPoint() ? 1 : 0)]) == JOptionPane.NO_OPTION) {
-      s_showFromTopLeft = false;
-    } else {
-      s_showFromTopLeft = true;
-    }
+        showFromTopLeft[(s_imagePointType.isCanUseBottomLeftPoint() ? 1 : 0)]) != JOptionPane.NO_OPTION;
   }
 
   private void loadImagesAndPoints() {

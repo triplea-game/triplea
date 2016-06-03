@@ -52,11 +52,8 @@ public class RandomStartDelegate extends BaseTripleADelegate {
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    if (Match.noneMatch(getData().getMap().getTerritories(), getTerritoryPickableMatch())
-        && Match.noneMatch(getData().getPlayerList().getPlayers(), getPlayerCanPickMatch())) {
-      return false;
-    }
-    return true;
+    return !(Match.noneMatch(getData().getMap().getTerritories(), getTerritoryPickableMatch())
+        && Match.noneMatch(getData().getPlayerList().getPlayers(), getPlayerCanPickMatch()));
   }
 
   @Override
@@ -234,10 +231,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         if (player.getUnits().isEmpty()) {
           return false;
         }
-        if (player.getIsDisabled()) {
-          return false;
-        }
-        return true;
+        return !player.getIsDisabled();
       }
     };
   }
