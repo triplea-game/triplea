@@ -74,7 +74,7 @@ public class MapRouteDrawer {
   /**
    * Draws Points on the Map
    * 
-   * @param graphics The Graphics2D being drawn on
+   * @param graphics The Graphics2D Object being drawn on
    * @param points The Point array aka the "Joints" to be drawn
    * @param xOffset The horizontal pixel-difference between the frame and the Map
    * @param yOffset The vertical pixel-difference between the frame and the Map
