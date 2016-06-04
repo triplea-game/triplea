@@ -12,9 +12,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import games.strategy.engine.framework.map.download.DownloadFile;
-import games.strategy.engine.framework.map.download.DownloadFileDescription;
-import games.strategy.engine.framework.map.download.MapDownloadStrategy;
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 
 
@@ -23,8 +20,6 @@ public class FileDownloadTest {
 
   private final Consumer<Integer> fakeListener = e -> {
   };
-  @Mock
-  private MapDownloadStrategy downloadStrategy;
 
   @Mock
   private DownloadFileDescription mockDownload;
