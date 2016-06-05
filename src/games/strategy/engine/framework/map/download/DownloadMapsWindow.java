@@ -3,7 +3,9 @@ package games.strategy.engine.framework.map.download;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -16,7 +18,6 @@ import java.util.stream.Collectors;
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -37,7 +38,7 @@ import games.strategy.util.Version;
 
 
 /** Window that allows for map downloads and removal */
-public class DownloadMapsWindow extends JDialog {
+public class DownloadMapsWindow extends JFrame {
   private static final long serialVersionUID = -1542210716764178580L;
 
   private static enum MapAction {
@@ -62,7 +63,7 @@ public class DownloadMapsWindow extends JDialog {
     showDownloadMapsWindow(null, Optional.of(mapName));
   }
 
-  public static void showDownloadMapsWindow(final JFrame parent) {
+  public static void showDownloadMapsWindow(final Component parent) {
     showDownloadMapsWindow(parent, Optional.empty());
   }
 
@@ -71,22 +72,23 @@ public class DownloadMapsWindow extends JDialog {
   }
 
 
-  private static void showDownloadMapsWindow(final JFrame parent, Optional<String> mapName) {
+  private static void showDownloadMapsWindow(final Component parent, Optional<String> mapName) {
     final DownloadRunnable download = new DownloadRunnable(ClientContext.mapListingSource().getMapListDownloadSite());
     final String popupWindowTitle = "Downloading list of availabe maps....";
     BackgroundTaskRunner.runInBackground(null, popupWindowTitle, download);
     final List<DownloadFileDescription> games = download.getDownloads();
     checkNotNull(games);
 
-    final DownloadMapsWindow dia = new DownloadMapsWindow(mapName, games, parent);
+    final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
+    final DownloadMapsWindow dia = new DownloadMapsWindow(mapName, games);
     dia.setSize(800, WINDOW_HEIGHT);
-    dia.setLocationRelativeTo(parent);
+    dia.setLocationRelativeTo(parentFrame);
     dia.setMinimumSize(new Dimension(200, 200));
     dia.setVisible(true);
   }
-  
-  private DownloadMapsWindow(final Optional<String> mapName, final List<DownloadFileDescription> games, JFrame parent) {
-    super(parent, "Download Maps");
+
+  private DownloadMapsWindow(final Optional<String> mapName, final List<DownloadFileDescription> games) {
+    super("Download Maps");
 
     progressPanel = new MapDownloadProgressPanel(this);
     if (mapName.isPresent()) {
