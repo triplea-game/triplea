@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
+import java.awt.Frame;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -9,8 +10,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
+import javax.swing.JOptionPane;
 
 import games.strategy.common.swing.SwingComponents;
 import games.strategy.debug.ClientLogger;
@@ -45,7 +45,7 @@ public class MapDownloadController {
 
   /** Opens a new window dialog where a user can select maps to download or update */
   public void openDownloadMapScreen(JComponent parentComponent) {
-    final JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(parentComponent);
+    final Frame parentFrame = JOptionPane.getFrameForComponent(parentComponent);
     DownloadMapsWindow.showDownloadMapsWindow(parentFrame);
   }
 
