@@ -154,6 +154,7 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.ui.history.HistoryDetailsPanel;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.triplea.ui.history.HistoryPanel;
+import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.Util;
@@ -328,7 +329,7 @@ public class TripleAFrame extends MainGameFrame {
     MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
 
-    List<KeyListener> keyListeners = ImmutableList.of(this.getArrowKeyListener(), movePanel.getUndoMoveKeyListener());
+    List<KeyListener> keyListeners = ImmutableList.of(this.getArrowKeyListener(), movePanel.getUndoMoveKeyListener(), UnitsDrawer.getFlagToggleKeyListener(this));
     for (KeyListener keyListener : keyListeners) {
       mapPanel.addKeyListener(keyListener);
       // TODO: figure out if it is really needed to double add the key listener to both the frame and also the map panel
@@ -2347,7 +2348,7 @@ public class TripleAFrame extends MainGameFrame {
     return uiContext;
   }
 
-  MapPanel getMapPanel() {
+  public MapPanel getMapPanel() {
     return mapPanel;
   }
 
