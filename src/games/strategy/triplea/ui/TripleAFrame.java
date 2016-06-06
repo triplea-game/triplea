@@ -348,7 +348,7 @@ public class TripleAFrame extends MainGameFrame {
     } else {
       tabsPanel.addTab(objectivePanel.getName(), objectivePanel);
     }
-    notesPanel = new NotesPanel(data, menu.getGameNotesJEditorPane());
+    notesPanel = new NotesPanel(menu.getGameNotesJEditorPane());
     tabsPanel.addTab("Notes", notesPanel);
     details = new TerritoryDetailPanel(mapPanel, data, uiContext, this);
     tabsPanel.addTab("Territory", null, details, TerritoryDetailPanel.getHoverText());

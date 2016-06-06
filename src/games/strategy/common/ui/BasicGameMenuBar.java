@@ -169,6 +169,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     if (notesProperty != null && notesProperty.trim().length() != 0) {
       final String notes = LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim());
       gameNotesPane = new JEditorPane();
+      gameNotesPane.setContentType("text/html");
       gameNotesPane.setText(notes);
       parentMenu.add(SwingAction.of("Game Notes...", e ->
           SwingUtilities.invokeLater(() -> {

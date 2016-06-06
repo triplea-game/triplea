@@ -11,13 +11,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import games.strategy.common.swing.SwingAction;
-import games.strategy.engine.data.GameData;
-
 public class NotesPanel extends JPanel {
   private static final long serialVersionUID = 2746643868463714526L;
   protected final JEditorPane m_gameNotesPane;
-  protected final GameData m_data;
   final JButton m_refresh = new JButton("Refresh Notes");
 
   // we now require passing a JEditorPane containing the notes in it, because we do not want to have multiple copies of
@@ -26,8 +22,7 @@ public class NotesPanel extends JPanel {
   // so instead we keep the main copy in the BasicGameMenuBar, and then give it to the notes tab. this prevents out of
   // memory errors for
   // maps with large images in their games notes.
-  public NotesPanel(final GameData data, final JEditorPane gameNotesPane) {
-    m_data = data;
+  public NotesPanel(final JEditorPane gameNotesPane) {
     m_gameNotesPane = gameNotesPane;
     initLayout();
   }
@@ -35,38 +30,26 @@ public class NotesPanel extends JPanel {
   protected void initLayout() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     m_refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
-    m_refresh.addActionListener(SwingAction.of("Refresh Notes", e -> {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          layoutNotes();
-        }
-      });
-    }));
-    // layoutNotes();
+    m_refresh.addActionListener(e -> SwingUtilities.invokeLater(() -> layoutNotes()));
     removeNotes();
   }
 
   void removeNotes() {
-    NotesPanel.this.removeAll();
-    NotesPanel.this.add(new JLabel(" "));
-    NotesPanel.this.add(m_refresh);
-    NotesPanel.this.add(new JLabel(" "));
-    // NotesPanel.this.invalidate();
+    removeAll();
+    add(m_refresh);
   }
 
   void layoutNotes() {
     if (m_gameNotesPane == null) {
       return;
     }
-    NotesPanel.this.removeAll();
-    NotesPanel.this.add(new JLabel(" "));
-    NotesPanel.this.add(m_refresh);
-    NotesPanel.this.add(new JLabel(" "));
+    removeAll();
+    add(new JLabel(" "));
+    add(m_refresh);
+    add(new JLabel(" "));
     final JScrollPane scroll = new JScrollPane(m_gameNotesPane);
     scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-    NotesPanel.this.add(scroll);
-    // NotesPanel.this.invalidate();
+    add(scroll);
   }
 
   public boolean isEmpty() {
