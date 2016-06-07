@@ -277,9 +277,9 @@ public class MovePanel extends AbstractMovePanel {
     if (option != JOptionPane.OK_OPTION) {
       return Collections.emptyList();
     }
-    final Collection<Unit> choosenTransports = Match.getMatches(chooser.getSelected(), Matches.UnitIsTransport);
+    final Collection<Unit> chosenTransports = Match.getMatches(chooser.getSelected(), Matches.UnitIsTransport);
     final List<Unit> allUnitsInSelectedTransports = new ArrayList<>();
-    for (final Unit transport : choosenTransports) {
+    for (final Unit transport : chosenTransports) {
       final Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
       if (transporting != null) {
         allUnitsInSelectedTransports.addAll(transporting);
@@ -288,7 +288,7 @@ public class MovePanel extends AbstractMovePanel {
     allUnitsInSelectedTransports.retainAll(candidateUnits);
     sortUnitsToMove(allUnitsInSelectedTransports, route);
     final List<Unit> rVal = new ArrayList<>();
-    final List<Unit> sortedTransports = new ArrayList<>(choosenTransports);
+    final List<Unit> sortedTransports = new ArrayList<>(chosenTransports);
     Collections.sort(sortedTransports, UnitComparator.getIncreasingCapacityComparator(sortedTransports));
     final Collection<Unit> selectedUnits = new ArrayList<>(unitsToUnload);
 
