@@ -329,7 +329,7 @@ public class TripleAFrame extends MainGameFrame {
     MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
 
-    List<KeyListener> keyListeners = ImmutableList.of(this.getArrowKeyListener(), movePanel.getUndoMoveKeyListener(), UnitsDrawer.getFlagToggleKeyListener(this));
+    List<KeyListener> keyListeners = ImmutableList.of(this.getArrowKeyListener(), movePanel.getUndoMoveKeyListener(), getFlagToggleKeyListener(this));
     for (KeyListener keyListener : keyListeners) {
       mapPanel.addKeyListener(keyListener);
       // TODO: figure out if it is really needed to double add the key listener to both the frame and also the map panel
@@ -414,6 +414,37 @@ public class TripleAFrame extends MainGameFrame {
     game.addGameStepListener(m_stepListener);
     updateStep();
     uiContext.addShutdownWindow(this);
+  }
+  
+private static boolean blockInputs = false;
+  
+  public static KeyListener getFlagToggleKeyListener(TripleAFrame frame) {
+    return new KeyListener() {
+      @Override
+      public void keyTyped(final KeyEvent e) {/*Do nothing*/}
+
+      @Override
+      public void keyPressed(final KeyEvent e) {
+        if(!blockInputs){
+          toggleFlags(e.getKeyCode());
+          blockInputs = true;
+        }
+      }
+
+      @Override
+      public void keyReleased(final KeyEvent e) {
+        toggleFlags(e.getKeyCode());
+        blockInputs = false;
+      }
+      
+      private void toggleFlags(int keyCode){
+        if (keyCode == KeyEvent.VK_L){
+          UnitsDrawer.enabledFlags = !UnitsDrawer.enabledFlags;
+          frame.getMapPanel().resetMap();
+        }
+      }
+    };
+
   }
 
   private void addZoomKeyboardShortcuts() {
@@ -2348,7 +2379,7 @@ public class TripleAFrame extends MainGameFrame {
     return uiContext;
   }
 
-  public MapPanel getMapPanel() {
+  MapPanel getMapPanel() {
     return mapPanel;
   }
 

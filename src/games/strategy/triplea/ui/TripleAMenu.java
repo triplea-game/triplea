@@ -412,15 +412,15 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
 
     Preferences prefs = Preferences.userNodeForPackage(getClass());
     UnitsDrawer.UnitFlagDrawMode setting = Enum.valueOf(UnitsDrawer.UnitFlagDrawMode.class,
-        prefs.get(UnitsDrawer.UNIT_FLAG_DRAW_MODE, UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString()));
+        prefs.get(UnitsDrawer.PreferenceKeys.DRAW_MODE.name(), UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString()));
     UnitsDrawer.setUnitFlagDrawMode(setting, prefs);
-    UnitsDrawer.enabledFlags = prefs.getBoolean(UnitsDrawer.UNIT_FLAG_DRAW_ENABLED, UnitsDrawer.enabledFlags);
+    UnitsDrawer.enabledFlags = prefs.getBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), UnitsDrawer.enabledFlags);
     
     JCheckBoxMenuItem toggleFlags = new JCheckBoxMenuItem("Show by default");
     toggleFlags.setSelected(UnitsDrawer.enabledFlags);
     toggleFlags.addActionListener(e -> {
       UnitsDrawer.enabledFlags = toggleFlags.isSelected();
-      prefs.putBoolean(UnitsDrawer.UNIT_FLAG_DRAW_ENABLED, toggleFlags.isSelected());
+      prefs.putBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), toggleFlags.isSelected());
       frame.getMapPanel().resetMap();
     });
     unitSizeMenu.add(toggleFlags);

@@ -6,8 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +22,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.MapData;
-import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Tuple;
@@ -42,8 +39,9 @@ public class UnitsDrawer implements IDrawable {
   private final IUIContext uiContext;
   private static UnitFlagDrawMode drawUnitNationMode = UnitFlagDrawMode.NEXT_TO;
   
-  public static final String UNIT_FLAG_DRAW_MODE = "UNIT_FLAG_DRAW_MODE";
-  public static final String UNIT_FLAG_DRAW_ENABLED = "UNIT_FLAG_DRAW_ENABLED";
+  public enum PreferenceKeys{
+    DRAW_MODE, DRAWING_ENABLED
+  }
   public static boolean enabledFlags = false;
 
   public enum UnitFlagDrawMode {
@@ -105,12 +103,10 @@ public class UnitsDrawer implements IDrawable {
             graphics.drawImage(flag, (placementPoint.x - bounds.x) + xoffset, (placementPoint.y - bounds.y) + yoffset,
                 null);
           }
-          // This Method draws the unit Image
-          graphics.drawImage(img.get(), placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
+          drawUnit(graphics, img.get(), placementPoint, bounds);
           break;
         case NEXT_TO:
-          // This Method draws the unit Image
-          graphics.drawImage(img.get(), placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
+          drawUnit(graphics, img.get(), placementPoint, bounds);
           // If unit is not in the "excluded list" it will get drawn
           if (maxRange != 0){
             final Image flag = uiContext.getFlagImageFactory().getSmallFlag(owner);
@@ -127,10 +123,8 @@ public class UnitsDrawer implements IDrawable {
           }
           break;
       }
-    }
-    else{
-      // This Method draws the unit Image
-      graphics.drawImage(img.get(), placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
+    } else{
+      drawUnit(graphics, img.get(), placementPoint, bounds);
     }
     // more then 1 unit of this category
     if (count != 1) {
@@ -181,6 +175,13 @@ public class UnitsDrawer implements IDrawable {
           placementPoint.x - bounds.x + (uiContext.getUnitImageFactory().getUnitImageWidth() / 4),
           placementPoint.y - bounds.y + uiContext.getUnitImageFactory().getUnitImageHeight() / 4);
     }
+  }
+  
+  /**
+   * This draws the given image onto the given graphics object
+   */
+  private void drawUnit(Graphics2D graphics, Image image, Point placementPoint2, Rectangle bounds){
+    graphics.drawImage(image, placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
   }
 
   private void displayHitDamage(final Rectangle bounds, final Graphics2D graphics) {
@@ -233,37 +234,6 @@ public class UnitsDrawer implements IDrawable {
 
   public static void setUnitFlagDrawMode(final UnitFlagDrawMode unitFlag, final Preferences prefs) {
     drawUnitNationMode = unitFlag;
-    prefs.put(UNIT_FLAG_DRAW_MODE, unitFlag.toString());
-  }
-  
-  private static boolean blockInputs = false;
-  
-  public static KeyListener getFlagToggleKeyListener(TripleAFrame frame) {
-    return new KeyListener() {
-      @Override
-      public void keyTyped(final KeyEvent e) {}
-
-      @Override
-      public void keyPressed(final KeyEvent e) {
-        if(!blockInputs){
-          toggleFlags(e.getKeyCode());
-          blockInputs = true;
-        }
-      }
-
-      @Override
-      public void keyReleased(final KeyEvent e) {
-        toggleFlags(e.getKeyCode());
-        blockInputs = false;
-      }
-      
-      private void toggleFlags(int keyCode){
-        if (keyCode == KeyEvent.VK_F){
-          enabledFlags = !enabledFlags;
-          frame.getMapPanel().resetMap();
-        }
-      }
-    };
-
+    prefs.put(PreferenceKeys.DRAW_MODE.name(), unitFlag.toString());
   }
 }
