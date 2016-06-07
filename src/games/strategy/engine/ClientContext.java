@@ -3,7 +3,6 @@ package games.strategy.engine;
 import games.strategy.engine.config.GameEnginePropertyFileReader;
 import games.strategy.engine.config.PropertyReader;
 import games.strategy.engine.framework.map.download.MapDownloadController;
-import games.strategy.engine.framework.map.download.MapDownloadStrategy;
 import games.strategy.engine.framework.map.download.MapListingSource;
 
 /**
@@ -38,7 +37,6 @@ public final class ClientContext {
 
   private final MapDownloadController mapDownloadController;
   private final EngineVersion engineVersion;
-  private final MapDownloadStrategy downloadStrategy;
   private final PropertyReader propertyReader;
   private final MapListingSource mapListingSource;
 
@@ -47,7 +45,6 @@ public final class ClientContext {
     mapListingSource = new MapListingSource(propertyReader);
     mapDownloadController = new MapDownloadController(mapListingSource);
     engineVersion = new EngineVersion(propertyReader);
-    downloadStrategy = new MapDownloadStrategy();
   }
 
   public static PropertyReader propertyReader() {
@@ -65,12 +62,5 @@ public final class ClientContext {
 
   public static EngineVersion engineVersion() {
     return instance.engineVersion;
-  }
-
-  private MapDownloadStrategy downloadStrategy() {
-      return downloadStrategy;
-  }
-  public static MapDownloadStrategy mapDownloadStrategy() {
-    return instance.downloadStrategy();
   }
 }
