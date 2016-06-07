@@ -4,13 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.util.UnitCategory;
 
 public class MoveValidationResult implements Serializable, Comparable<MoveValidationResult> {
   private static final long serialVersionUID = 6648363112533514955L;
@@ -51,22 +49,6 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
     }
     final Collection<Unit> disallowedUnits = m_disallowedUnitsList.get(index);
     disallowedUnits.add(unit);
-  }
-
-  public boolean removeDisallowedUnit(final String warning, final Unit unit) {
-    final int index = m_disallowedUnitWarnings.indexOf(warning);
-    if (index == -1) {
-      return false;
-    }
-    final Collection<Unit> disallowedUnits = m_disallowedUnitsList.get(index);
-    if (!disallowedUnits.remove(unit)) {
-      return false;
-    }
-    if (disallowedUnits.isEmpty()) {
-      m_disallowedUnitsList.remove(disallowedUnits);
-      m_disallowedUnitWarnings.remove(warning);
-    }
-    return true;
   }
 
   public void addUnresolvedUnit(final String warning, final Unit unit) {
@@ -127,14 +109,6 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
       }
     }
     return allUnresolvedUnits;
-  }
-
-  public Collection<UnitCategory> getUnresolvedUnitCategories() {
-    final Set<UnitCategory> unresolvedUnitCategories = new HashSet<>();
-    for (final Unit unit : getUnresolvedUnits()) {
-      unresolvedUnitCategories.add(new UnitCategory(unit));
-    }
-    return unresolvedUnitCategories;
   }
 
   public Collection<Unit> getDisallowedUnits(final String warning) {
@@ -201,20 +175,6 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
 
   public int getTotalWarningCount() {
     return m_unresolvedUnitWarnings.size() + m_disallowedUnitWarnings.size();
-  }
-
-  public void removeAnyUnresolvedUnitsThatAreDisallowed() {
-    final MoveValidationResult oldResult = new MoveValidationResult(this);
-    final Collection<Unit> disallowedUnits = oldResult.getDisallowedUnits();
-    final Collection<Unit> unresolvedAndDisallowed = new ArrayList<>(disallowedUnits);
-    unresolvedAndDisallowed.retainAll(oldResult.getUnresolvedUnits());
-    for (final String warning : oldResult.getUnresolvedUnitWarnings()) {
-      for (final Unit unit : oldResult.getUnresolvedUnits(warning)) {
-        if (disallowedUnits.contains(unit)) {
-          removeUnresolvedUnit(warning, unit);
-        }
-      }
-    }
   }
 
   @Override
