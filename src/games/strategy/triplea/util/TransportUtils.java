@@ -5,10 +5,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
@@ -122,6 +125,23 @@ public class TransportUtils {
     return mapping;
   }
 
+  /**
+   * Returns list of transports. Transports must contain all units. Can swap units with equivalent state in order to
+   * minimize transports used to unload.
+   */
+  public static Set<Unit> findMinTransportsToUnload(final Collection<Unit> units, final Collection<Unit> transports) {
+    final Set<Unit> result = new HashSet<>();
+    Map<Unit, List<Unit>> unitToPotentialTransports = findTransportsThatUnitsCouldUnloadFrom(units, transports);
+    while (!unitToPotentialTransports.isEmpty()) {
+      unitToPotentialTransports = sortByTransportOptionsAscending(unitToPotentialTransports);
+      final Unit currentUnit = unitToPotentialTransports.keySet().iterator().next();
+      final Unit selectedTransport = findOptimalTransportToUnloadFrom(currentUnit, unitToPotentialTransports);
+      unitToPotentialTransports = removeTransportAndLoadedUnits(selectedTransport, unitToPotentialTransports);
+      result.add(selectedTransport);
+    }
+    return result;
+  }
+
   public static List<Unit> findUnitsToLoadOnAirTransports(final Collection<Unit> units,
       final Collection<Unit> transports) {
 
@@ -221,6 +241,77 @@ public class TransportUtils {
         it.remove();
       }
     }
+  }
+
+  private static Map<Unit, List<Unit>> findTransportsThatUnitsCouldUnloadFrom(final Collection<Unit> units,
+      final Collection<Unit> transports) {
+    final List<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
+    final List<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
+    final Map<Unit, List<Unit>> result = new LinkedHashMap<>();
+    for (final Unit unit : canBeTransported) {
+      final List<Unit> transportOptions = new ArrayList<>();
+      for (final Unit transport : canTransport) {
+        if (containsEquivalentUnit(unit, TransportTracker.transporting(transport))) {
+          transportOptions.add(transport);
+        }
+      }
+      result.put(unit, transportOptions);
+    }
+    return result;
+  }
+
+  private static Map<Unit, List<Unit>> sortByTransportOptionsAscending(
+      final Map<Unit, List<Unit>> unitToPotentialTransports) {
+    final Map<Unit, List<Unit>> result = new LinkedHashMap<>();
+    unitToPotentialTransports.entrySet().stream()
+        .sorted((o1, o2) -> o1.getValue().size() - o2.getValue().size())
+        .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+    return result;
+  }
+
+  private static Unit findOptimalTransportToUnloadFrom(final Unit unit,
+      final Map<Unit, List<Unit>> unitToPotentialTransports) {
+    double minAverageTransportOptions = Integer.MAX_VALUE;
+    Unit selectedTransport = unitToPotentialTransports.get(unit).get(0);
+    for (final Unit transport : unitToPotentialTransports.get(unit)) {
+      int transportOptions = 0;
+      for (final Unit loadedUnit : TransportTracker.transporting(transport)) {
+        if (containsEquivalentUnit(loadedUnit, unitToPotentialTransports.keySet())) {
+          final Unit equivalentUnit = getEquivalentUnit(loadedUnit, unitToPotentialTransports.keySet());
+          transportOptions += unitToPotentialTransports.get(equivalentUnit).size();
+        } else {
+          transportOptions = Integer.MAX_VALUE;
+          break;
+        }
+      }
+      final double averageTransportOptions =
+          (double) transportOptions / TransportTracker.transporting(transport).size();
+      if (averageTransportOptions < minAverageTransportOptions) {
+        minAverageTransportOptions = averageTransportOptions;
+        selectedTransport = transport;
+      }
+    }
+    return selectedTransport;
+  }
+
+  private static Map<Unit, List<Unit>> removeTransportAndLoadedUnits(final Unit transport,
+      final Map<Unit, List<Unit>> unitToPotentialTransports) {
+    for (final Unit loadedUnit : TransportTracker.transporting(transport)) {
+      if (containsEquivalentUnit(loadedUnit, unitToPotentialTransports.keySet())) {
+        final Unit unit = getEquivalentUnit(loadedUnit, unitToPotentialTransports.keySet());
+        unitToPotentialTransports.remove(unit);
+      }
+    }
+    unitToPotentialTransports.values().stream().forEach(t -> t.remove(transport));
+    return unitToPotentialTransports;
+  }
+
+  private static boolean containsEquivalentUnit(final Unit unit, final Collection<Unit> units) {
+    return units.stream().anyMatch(u -> u.isEquivalent(unit));
+  }
+
+  private static Unit getEquivalentUnit(final Unit unit, final Collection<Unit> units) {
+    return units.stream().filter(u -> u.isEquivalent(unit)).findFirst().get();
   }
 
 }
