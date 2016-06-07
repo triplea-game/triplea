@@ -416,10 +416,10 @@ public class TripleAFrame extends MainGameFrame {
     uiContext.addShutdownWindow(this);
   }
   
-private static boolean blockInputs = false;
   
   public static KeyListener getFlagToggleKeyListener(TripleAFrame frame) {
     return new KeyListener() {
+      private boolean blockInputs = false;
       @Override
       public void keyTyped(final KeyEvent e) {/*Do nothing*/}
 
