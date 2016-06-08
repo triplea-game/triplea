@@ -411,20 +411,21 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
     unitSizeMenu.setText("Flag Display Mode");
 
     Preferences prefs = Preferences.userNodeForPackage(getClass());
-    String setting = prefs.get("UNIT_FLAG_DRAW_MODE", UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString());
-
-    if(UnitsDrawer.UnitFlagDrawMode.NONE.toString().equals(setting)){
-      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.NONE, prefs);
-    }
-    if(UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString().equals(setting)){
-      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.NEXT_TO, prefs);
-    }
-    if(UnitsDrawer.UnitFlagDrawMode.BELOW.toString().equals(setting)){
-      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.BELOW, prefs);
-    }
+    UnitsDrawer.UnitFlagDrawMode setting = Enum.valueOf(UnitsDrawer.UnitFlagDrawMode.class,
+        prefs.get(UnitsDrawer.PreferenceKeys.DRAW_MODE.name(), UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString()));
+    UnitsDrawer.setUnitFlagDrawMode(setting, prefs);
+    UnitsDrawer.enabledFlags = prefs.getBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), UnitsDrawer.enabledFlags);
+    
+    JCheckBoxMenuItem toggleFlags = new JCheckBoxMenuItem("Show by default");
+    toggleFlags.setSelected(UnitsDrawer.enabledFlags);
+    toggleFlags.addActionListener(e -> {
+      UnitsDrawer.enabledFlags = toggleFlags.isSelected();
+      prefs.putBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), toggleFlags.isSelected());
+      frame.getMapPanel().resetMap();
+    });
+    unitSizeMenu.add(toggleFlags);
 
     final ButtonGroup unitFlagSettingGroup = new ButtonGroup();
-    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("None", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.NONE, setting, prefs));
     unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Small", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.NEXT_TO, setting, prefs));
     unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Large", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.BELOW, setting, prefs));
     parentMenu.add(unitSizeMenu);
@@ -1301,10 +1302,10 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
     return buttonItem;
   }
 
-  private JRadioButtonMenuItem createFlagDrawModeRadionButtonItem(String text, ButtonGroup group, UnitsDrawer.UnitFlagDrawMode drawMode, String setting, Preferences prefs){
+  private JRadioButtonMenuItem createFlagDrawModeRadionButtonItem(String text, ButtonGroup group, UnitsDrawer.UnitFlagDrawMode drawMode, UnitsDrawer.UnitFlagDrawMode setting, Preferences prefs){
     return createRadioButtonItem(text, group, SwingAction.of(e -> {
       UnitsDrawer.setUnitFlagDrawMode(drawMode, prefs);
       frame.getMapPanel().resetMap();
-      }), setting.equals(drawMode.toString()));
+      }), setting.equals(drawMode));
   }
 }
