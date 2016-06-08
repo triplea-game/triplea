@@ -843,7 +843,7 @@ class BattleModel extends DefaultTableModel {
     // Soft code the # of columns
 
     final List<List<TableData>> columns = new ArrayList<>(m_data.getDiceSides() + 1);
-    for (int i = 0; i < m_data.getDiceSides() + 1; i++) {
+    for (int i = 0; i <= m_data.getDiceSides(); i++) {
         columns.add(i, new ArrayList<>());
     }
     final List<Unit> units = new ArrayList<>(m_units);
