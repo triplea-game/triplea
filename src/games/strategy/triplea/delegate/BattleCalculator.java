@@ -635,7 +635,6 @@ public class BattleCalculator {
           killed.remove(unit);
           killed.add(amphibUnit);
           allAmphibUnits.remove(amphibUnit);
-          continue;
         } else
         // If there are no more units of that type, remove the type from the collection
         {
