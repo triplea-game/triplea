@@ -552,7 +552,7 @@ public class Matches {
    * @param player
    * @param data
    */
-  private static final Match<UnitType> UnitTypeIsSupporterOrHasCombatAbility(final boolean attack,
+  private static Match<UnitType> UnitTypeIsSupporterOrHasCombatAbility(final boolean attack,
       final PlayerID player,
       final GameData data) {
     return new Match<UnitType>() {
@@ -934,7 +934,7 @@ public class Matches {
     }
   };
 
-  private static final Match<Unit> UnitIsAAthatWillNotFireIfPresentEnemyUnits(final Collection<Unit> enemyUnitsPresent) {
+  private static Match<Unit> UnitIsAAthatWillNotFireIfPresentEnemyUnits(final Collection<Unit> enemyUnitsPresent) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit obj) {
@@ -949,7 +949,7 @@ public class Matches {
     };
   }
 
-  private static final Match<UnitType> UnitTypeIsAAthatCanFireOnRound(final int battleRoundNumber) {
+  private static Match<UnitType> UnitTypeIsAAthatCanFireOnRound(final int battleRoundNumber) {
     return new Match<UnitType>() {
       @Override
       public boolean match(final UnitType obj) {
@@ -959,7 +959,7 @@ public class Matches {
     };
   }
 
-  private static final Match<Unit> UnitIsAAthatCanFireOnRound(final int battleRoundNumber) {
+  private static Match<Unit> UnitIsAAthatCanFireOnRound(final int battleRoundNumber) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit obj) {
@@ -1803,7 +1803,7 @@ public class Matches {
     }
   };
 
-  private static final Match<UnitType> UnitTypeCanMove(final PlayerID player) {
+  private static Match<UnitType> UnitTypeCanMove(final PlayerID player) {
     return new Match<UnitType>() {
       @Override
       public boolean match(final UnitType obj) {

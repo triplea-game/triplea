@@ -33,7 +33,7 @@ public class MD5Crypt {
    * @param v
    *        value to be converted
    */
-  static private final String to64(long v, int size) {
+  static private String to64(long v, int size) {
     final StringBuffer result = new StringBuffer();
     while (--size >= 0) {
       result.append(itoa64.charAt((int) (v & 0x3f)));
@@ -42,7 +42,7 @@ public class MD5Crypt {
     return result.toString();
   }
 
-  static private final void clearbits(final byte bits[]) {
+  static private void clearbits(final byte bits[]) {
     for (int i = 0; i < bits.length; i++) {
       bits[i] = 0;
     }
@@ -52,7 +52,7 @@ public class MD5Crypt {
    * convert an encoded unsigned byte value
    * into a int with the unsigned value.
    */
-  static private final int bytes2u(final byte inp) {
+  static private int bytes2u(final byte inp) {
     return inp & 0xff;
   }
 

@@ -460,7 +460,7 @@ class TechTokenPanel extends JPanel {
     }
   };
 
-  private final ScrollableTextFieldListener setWidgetAction() {
+  private ScrollableTextFieldListener setWidgetAction() {
     return new ScrollableTextFieldListener() {
       @Override
       public void changedValue(final ScrollableTextField stf) {
