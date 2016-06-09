@@ -48,28 +48,6 @@ public class UnitChooser extends JPanel {
   private final Match<Collection<Unit>> m_match;
 
   /** Creates new UnitChooser */
-  public UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
-      final boolean categorizeMovement, final boolean categorizeTransportCost, final GameData data,
-      final IUIContext context) {
-    m_dependents = dependent;
-    m_data = data;
-    m_uiContext = context;
-    m_match = null;
-    createEntries(units, dependent, categorizeMovement, categorizeTransportCost, Collections.emptyList());
-    layoutEntries();
-  }
-
-  public UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
-      final boolean categorizeMovement, final boolean categorizeTransportCost, final GameData data,
-      final IUIContext context, final Match<Collection<Unit>> match) {
-    m_match = match;
-    m_dependents = dependent;
-    m_data = data;
-    m_uiContext = context;
-    createEntries(units, dependent, categorizeMovement, categorizeTransportCost, Collections.emptyList());
-    layoutEntries();
-  }
-
   public UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final GameData data,
       final boolean allowTwoHit, final IUIContext uiContext) {
     this(units, Collections.emptyList(), dependent, data, allowTwoHit, uiContext);
@@ -119,20 +97,6 @@ public class UnitChooser extends JPanel {
     m_uiContext = uiContext;
     m_match = match;
     createEntries(units, dependent, categorizeMovement, categorizeTransportCost, defaultSelections);
-    layoutEntries();
-  }
-
-  public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
-      final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
-      final boolean categorizeTransportCost, final boolean categorizeTerritories, final GameData data,
-      final boolean allowMultipleHits, final IUIContext uiContext, final Match<Collection<Unit>> match) {
-    m_dependents = dependent;
-    m_data = data;
-    m_allowMultipleHits = allowMultipleHits;
-    m_uiContext = uiContext;
-    m_match = match;
-    createEntries(units, dependent, categorizeMovement, categorizeTransportCost, categorizeTerritories,
-        defaultSelections);
     layoutEntries();
   }
 
@@ -221,19 +185,6 @@ public class UnitChooser extends JPanel {
     }
   }
 
-  private void createEntries(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
-      final boolean categorizeMovement, final boolean categorizeTransportCost, final boolean categorizeTerritories,
-      final Collection<Unit> defaultSelections) {
-    final Collection<UnitCategory> categories =
-        UnitSeperator.categorize(dependent, units, categorizeMovement, categorizeTransportCost, categorizeTerritories);
-    final Collection<UnitCategory> defaultSelectionsCategorized =
-        UnitSeperator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
-    final IntegerMap<UnitCategory> defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);
-    for (final UnitCategory category : categories) {
-      addCategory(category, defaultValues.getInt(category));
-    }
-  }
-
   private IntegerMap<UnitCategory> createDefaultSelectionsMap(final Collection<UnitCategory> categories) {
     final IntegerMap<UnitCategory> defaultValues = new IntegerMap<>();
     for (final UnitCategory category : categories) {
@@ -254,7 +205,6 @@ public class UnitChooser extends JPanel {
     m_title = new JTextArea("Choose units");
     m_title.setBackground(this.getBackground());
     m_title.setEditable(false);
-    // m_title.setColumns(15);
     m_title.setWrapStyleWord(true);
     final Insets nullInsets = new Insets(0, 0, 0, 0);
     final Dimension buttonSize = new Dimension(80, 20);
