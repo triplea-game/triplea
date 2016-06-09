@@ -248,14 +248,19 @@ public class DownloadMapsWindow extends JFrame {
       JList<String> gamesList, List<DownloadFileDescription> maps, MapAction action, JLabel mapSizeLabelToUpdate) {
     return e -> {
       final int index = gamesList.getSelectedIndex();
-      if( index > 0 ) {
-        DownloadFileDescription map = maps.get(index);
 
-        String text = createEditorPaneText(map);
-        descriptionPanel.setText(text);
-        descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+      boolean somethingIsSelected = index > 0;
+      if (somethingIsSelected) {
+        String mapName = gamesList.getModel().getElementAt(index);
 
-        updateMapUrlAndSizeLabel(map, action, mapSizeLabelToUpdate);
+        // find the map description by map name and update the map download detail panel
+        Optional<DownloadFileDescription> map = maps.stream().filter(mapDescription -> mapDescription.getMapName().equals(mapName)).findFirst();
+        if(map.isPresent()) {
+          String text = createEditorPaneText(map.get());
+          descriptionPanel.setText(text);
+          descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+          updateMapUrlAndSizeLabel(map.get(), action, mapSizeLabelToUpdate);
+        }
       }
     };
   }
