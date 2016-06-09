@@ -841,9 +841,9 @@ class BattleModel extends DefaultTableModel {
     // TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)
     // Soft code the # of columns
 
-    final List<TableData>[] columns = new List[m_data.getDiceSides() + 1];
-    for (int i = 0; i < columns.length; i++) {
-        columns[i] = new ArrayList<>();
+    final List<List<TableData>> columns = new ArrayList<>(m_data.getDiceSides() + 1);
+    for (int i = 0; i <= m_data.getDiceSides(); i++) {
+        columns.add(i, new ArrayList<>());
     }
     final List<Unit> units = new ArrayList<>(m_units);
     DiceRoll.sortByStrength(units, !m_attack);
@@ -882,7 +882,7 @@ class BattleModel extends DefaultTableModel {
       }
       for (int i = 0; i <= m_data.getDiceSides(); i++) {
         if (shift[i] > 0) {
-          columns[i].add(new TableData(category.getOwner(), shift[i], category.getType(), m_data,
+          columns.get(i).add(new TableData(category.getOwner(), shift[i], category.getType(), m_data,
               category.hasDamageOrBombingUnitDamage(), category.getDisabled(), m_uiContext));
         }
       }
@@ -896,10 +896,10 @@ class BattleModel extends DefaultTableModel {
     }
     setNumRows(rowCount);
     for (int row = 0; row < rowCount; row++) {
-      for (int column = 0; column < columns.length; column++) {
+      for (int column = 0; column < columns.size(); column++) {
         // if the column has that many items, add to the table, else add null
-        if (columns[column].size() > row) {
-          setValueAt(columns[column].get(row), row, column);
+        if (columns.get(column).size() > row) {
+          setValueAt(columns.get(column).get(row), row, column);
         } else {
           setValueAt(TableData.NULL, row, column);
         }
