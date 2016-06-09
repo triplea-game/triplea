@@ -271,12 +271,14 @@ public class MovePanel extends AbstractMovePanel {
         mustMoveWithDetails.getMustMoveWith(), /* categorizeMovement */true, /* categorizeTransportCost */false,
         getGameData(), /* allowTwoHit */false, getMap().getUIContext(), transportsToUnloadMatch);
     chooser.setTitle("What transports do you want to unload");
+
     final int option =
         JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, "What transports do you want to unload",
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
     if (option != JOptionPane.OK_OPTION) {
       return Collections.emptyList();
     }
+
     final String title = "unload";
     final String action = "unload";
     final Collection<Unit> chosenUnits =
@@ -1369,7 +1371,7 @@ public class MovePanel extends AbstractMovePanel {
     return games.strategy.triplea.Properties.getParatroopersCanMoveDuringNonCombat(data);
   }
 
-  public final List<Unit> UserChooseUnits(final Set<Unit> defaultSelections,
+  private final List<Unit> UserChooseUnits(final Set<Unit> defaultSelections,
       final Match<Collection<Unit>> unitsToLoadMatch, final List<Unit> unitsToLoad, final String title,
       final String action) {
     // Allow player to select which to load.
