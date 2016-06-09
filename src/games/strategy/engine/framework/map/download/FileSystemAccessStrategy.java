@@ -80,7 +80,7 @@ public class FileSystemAccessStrategy {
       }
 
       if (!fails.isEmpty()) {
-        showRemoveFailDialog("Unable to delete some of the maps files.<br />Please restart TripleA and try again.<br />"
+        showRemoveFailDialog("Unable to delete some of the maps files.<br />"
             + "Manual removal of the files may be necessary:", fails);
         fails.forEach(m -> m.getInstallLocation().deleteOnExit());
       }
@@ -89,21 +89,17 @@ public class FileSystemAccessStrategy {
 
   private static void showRemoveFailDialog(String failMessage, List<DownloadFileDescription> mapList) {
     String message = createDialogMessage(failMessage, mapList);
-    showDialog(message, Optional.empty(), mapList, (map) -> map.getInstallLocation().getAbsolutePath());
+    showDialog(message, mapList, (map) -> map.getInstallLocation().getAbsolutePath());
   }
 
   private static void showRemoveSuccessDialog(String successMessage, List<DownloadFileDescription> mapList) {
     String message = createDialogMessage(successMessage, mapList);
-    String footerText = "<br />Please restart TripleA before re-installing these maps";
-    showDialog(message, Optional.of(footerText), mapList, (map) -> map.getMapName());
+    showDialog(message, mapList, (map) -> map.getMapName());
   }
 
-  private static void showDialog(String message, Optional<String> footerText, List<DownloadFileDescription> mapList,
+  private static void showDialog(String message, List<DownloadFileDescription> mapList,
       Function<DownloadFileDescription, String> outputFunction) {
     StringBuilder sb = new StringBuilder("<html>" + message + "<br /> " + formatMapList(mapList, outputFunction));
-    if (footerText.isPresent()) {
-      sb.append(footerText.get());
-    }
     sb.append("</html>");
 
     SwingComponents.newMessageDialog(sb.toString());
