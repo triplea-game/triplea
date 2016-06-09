@@ -678,7 +678,7 @@ class SeaZoneOutlineDrawable implements IDrawable {
 
 
 abstract class TerritoryDrawable {
-  protected static final void draw(final Rectangle bounds, final Graphics2D graphics, final MapData mapData,
+  protected static void draw(final Rectangle bounds, final Graphics2D graphics, final MapData mapData,
       final AffineTransform scaled, final Territory territory,
       final Paint territoryPaint) {
     final List<Polygon> polys = mapData.getPolygons(territory);

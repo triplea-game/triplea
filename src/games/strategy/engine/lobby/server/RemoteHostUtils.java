@@ -12,7 +12,7 @@ public class RemoteHostUtils implements IRemoteHostUtils {
   private final INode m_serverNode;
   private final IServerMessenger m_serverMessenger;
 
-  public static final RemoteName getRemoteHostUtilsName(final INode node) {
+  public static RemoteName getRemoteHostUtilsName(final INode node) {
     return new RemoteName(IRemoteHostUtils.class,
         "games.strategy.engine.lobby.server.RemoteHostUtils:" + node.toString());
   }

@@ -8,7 +8,7 @@ import games.strategy.net.INode;
 public class HeartBeat implements IHeartBeat {
   private final INode m_serverNode;
 
-  public static final RemoteName getHeartBeatName(final INode node) {
+  public static RemoteName getHeartBeatName(final INode node) {
     return new RemoteName(IHeartBeat.class, "games.strategy.debug.HearBeat:" + node.toString());
   }
 

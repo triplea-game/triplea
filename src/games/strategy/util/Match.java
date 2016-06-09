@@ -19,18 +19,18 @@ import java.util.Set;
  */
 public abstract class Match<T> {
 
-  public final static <T> Match<T> getAlwaysMatch() {
+  public static <T> Match<T> getAlwaysMatch() {
     return new AlwaysMatch<>();
   }
 
-  public final static <T> Match<T> getNeverMatch() {
+  public static <T> Match<T> getNeverMatch() {
     return new NeverMatch<>();
   }
 
   /**
    * Returns the elements of the collection that match.
    */
-  public final static <T> List<T> getMatches(final Collection<T> collection, final Match<T> aMatch) {
+  public static <T> List<T> getMatches(final Collection<T> collection, final Match<T> aMatch) {
     final List<T> matches = new ArrayList<>();
     for (final T current : collection) {
       if (aMatch.match(current)) {
@@ -45,7 +45,7 @@ public abstract class Match<T> {
    * If n matches cannot be found will return all matches that
    * can be found.
    */
-  public static final <T> List<T> getNMatches(final Collection<T> collection, final int max, final Match<T> aMatch) {
+  public static <T> List<T> getNMatches(final Collection<T> collection, final int max, final Match<T> aMatch) {
     if (max == 0 || collection.isEmpty()) {
       return Collections.emptyList();
     }
@@ -67,7 +67,7 @@ public abstract class Match<T> {
   /**
    * returns true if all elements in the collection match.
    */
-  public final static <T> boolean allMatch(final Collection<T> collection, final Match<T> aMatch) {
+  public static <T> boolean allMatch(final Collection<T> collection, final Match<T> aMatch) {
     if (collection.isEmpty()) {
       return false;
     }
@@ -82,7 +82,7 @@ public abstract class Match<T> {
   /**
    * Returns true if any matches could be found.
    */
-  public static final <T> boolean someMatch(final Collection<T> collection, final Match<T> aMatch) {
+  public static <T> boolean someMatch(final Collection<T> collection, final Match<T> aMatch) {
     if (collection.isEmpty()) {
       return false;
     }
@@ -97,14 +97,14 @@ public abstract class Match<T> {
   /**
    * Returns true if no matches could be found.
    */
-  public static final <T> boolean noneMatch(final Collection<T> collection, final Match<T> aMatch) {
+  public static <T> boolean noneMatch(final Collection<T> collection, final Match<T> aMatch) {
     return !someMatch(collection, aMatch);
   }
 
   /**
    * Returns the number of matches found.
    */
-  public static final <T> int countMatches(final Collection<T> collection, final Match<T> aMatch) {
+  public static <T> int countMatches(final Collection<T> collection, final Match<T> aMatch) {
     int count = 0;
     for (final T current : collection) {
       if (aMatch.match(current)) {
