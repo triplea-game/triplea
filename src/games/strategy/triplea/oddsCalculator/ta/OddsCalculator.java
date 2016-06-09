@@ -288,7 +288,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     }
     try {
       final String[] sections;
-      if (orderOfLoss.indexOf(OOL_SEPARATOR) != -1) {
+      if (orderOfLoss.contains(OOL_SEPARATOR)) {
         sections = orderOfLoss.trim().split(OOL_SEPARATOR_REGEX);
       } else {
         sections = new String[1];
@@ -333,7 +333,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     }
     final List<Tuple<Integer, UnitType>> map = new ArrayList<>();
     final String[] sections;
-    if (ool.indexOf(OOL_SEPARATOR) != -1) {
+    if (ool.contains(OOL_SEPARATOR)) {
       sections = ool.trim().split(OOL_SEPARATOR_REGEX);
     } else {
       sections = new String[1];
