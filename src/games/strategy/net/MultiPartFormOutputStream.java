@@ -149,7 +149,7 @@ public class MultiPartFormOutputStream {
    *         on input/output errors
    */
   public void writeField(final String name, final char value) throws java.io.IOException {
-    writeField(name, new Character(value).toString());
+    writeField(name, Character.toString(value));
   }
 
   /**
