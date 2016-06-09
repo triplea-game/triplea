@@ -231,9 +231,9 @@ public class ProPurchaseUtils {
     }
     final Collection<Unit> factoryUnits = territory.getUnits().getMatches(factoryMatch);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-    final boolean originalFactory = (ta == null ? false : ta.getOriginalFactory());
+    final boolean originalFactory = (ta != null && ta.getOriginalFactory());
     final boolean playerIsOriginalOwner =
-        factoryUnits.size() > 0 ? player.equals(getOriginalFactoryOwner(territory, player)) : false;
+        factoryUnits.size() > 0 && player.equals(getOriginalFactoryOwner(territory, player));
     final RulesAttachment ra = player.getRulesAttachment();
     if (originalFactory && playerIsOriginalOwner) {
       if (ra != null && ra.getMaxPlacePerTerritory() != -1) {
