@@ -304,7 +304,6 @@ public class GameSelectorPanel extends JPanel implements Observer {
           property.setValue(m_originalPropertiesMap.get(property.getName()));
         }
         selectGameOptions();
-        return;
       }
     } else if (buttonPressed.equals(makeDefault)) {
       m_gamePropertiesCache.cacheGameProperties(m_model.getGameData());

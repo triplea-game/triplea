@@ -1130,7 +1130,6 @@ public class TripleAFrame extends MainGameFrame {
               dialog.removeAll();
               dialog.dispose();
               continueLatch.countDown();
-              return;
             } else if (option.equals(optionAttack)) {
               if (unitPanels.size() != 1) {
                 throw new IllegalStateException("unitPanels should only contain 1 entry");
@@ -1242,7 +1241,6 @@ public class TripleAFrame extends MainGameFrame {
               dialog.removeAll();
               dialog.dispose();
               continueLatch.countDown();
-              return;
             } else if (option.equals(optionScramble)) {
               for (final Tuple<Territory, UnitChooser> terrChooser : choosers) {
                 selection.put(terrChooser.getFirst(), terrChooser.getSecond().getSelected());
@@ -1338,7 +1336,6 @@ public class TripleAFrame extends MainGameFrame {
               dialog.removeAll();
               dialog.dispose();
               continueLatch.countDown();
-              return;
             } else if (option.equals(optionSelect)) {
               selection.addAll(chooser.getSelected());
               dialog.setVisible(false);

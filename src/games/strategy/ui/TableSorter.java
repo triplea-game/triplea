@@ -365,7 +365,6 @@ public class TableSorter extends AbstractTableModel {
       // Something has happened to the data that may have invalidated the row order.
       clearSortingState();
       fireTableDataChanged();
-      return;
     }
   }
   private class MouseHandler extends MouseAdapter {

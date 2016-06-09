@@ -190,17 +190,14 @@ public class ServerGame extends AbstractGame {
       try {
         if (!waitOnObserver.await(GameRunner2.getServerObserverJoinWaitTime(), TimeUnit.SECONDS)) {
           nonBlockingObserver.cannotJoinGame("Taking too long to join.");
-          return;
         }
       } catch (final InterruptedException e) {
         ClientLogger.logQuietly(e);
         nonBlockingObserver.cannotJoinGame(e.getMessage());
-        return;
       }
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
       nonBlockingObserver.cannotJoinGame(e.getMessage());
-      return;
     } finally {
       m_delegateExecutionManager.resumeDelegateExecution();
     }
@@ -281,7 +278,6 @@ public class ServerGame extends AbstractGame {
       if (!m_isGameOver) {
         ClientLogger.logQuietly(e);
       }
-      return;
     }
   }
 

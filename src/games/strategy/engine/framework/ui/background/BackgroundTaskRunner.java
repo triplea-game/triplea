@@ -71,6 +71,5 @@ public class BackgroundTaskRunner {
     if (latchHandler != null) {
       latchHandler.removeShutdownLatch(latch);
     }
-    return;
   }
 }

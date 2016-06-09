@@ -1456,7 +1456,6 @@ public class MapXmlHelper {
         putCanalDefinitions("Canal" + getCanalDefinitionsMap().size(), terrTuple);
       }
     }
-    return;
   }
 
   public static void validateAndAddCanalDefinitions(final Map<String, Set<String>> landWaterTerritoyConnections) {
