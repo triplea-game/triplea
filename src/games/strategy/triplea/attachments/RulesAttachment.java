@@ -687,49 +687,49 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (objectiveMet && getDirectPresenceTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getDirectPresenceTerritories();
-      objectiveMet = checkUnitPresence(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data),
+      objectiveMet = checkUnitPresence(getTerritoryListBasedOnInputFromXML(terrs, players, data),
           "direct", getTerritoryCount(), players, data);
     }
     // Check for unit presence (Veqryn)
     if (objectiveMet && getAlliedPresenceTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getAlliedPresenceTerritories();
-      objectiveMet = checkUnitPresence(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data),
+      objectiveMet = checkUnitPresence(getTerritoryListBasedOnInputFromXML(terrs, players, data),
           "allied", getTerritoryCount(), players, data);
     }
     // Check for unit presence (Veqryn)
     if (objectiveMet && getEnemyPresenceTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getEnemyPresenceTerritories();
-      objectiveMet = checkUnitPresence(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "enemy",
+      objectiveMet = checkUnitPresence(getTerritoryListBasedOnInputFromXML(terrs, players, data), "enemy",
           getTerritoryCount(), players, data);
     }
     // Check for direct unit exclusions (veqryn)
     if (objectiveMet && getDirectExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getDirectExclusionTerritories();
-      objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data),
+      objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXML(terrs, players, data),
           "direct", getTerritoryCount(), players, data);
     }
     // Check for allied unit exclusions
     if (objectiveMet && getAlliedExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getAlliedExclusionTerritories();
-      objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data),
+      objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXML(terrs, players, data),
           "allied", getTerritoryCount(), players, data);
     }
     // Check for enemy unit exclusions (ANY UNITS)
     if (objectiveMet && getEnemyExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getEnemyExclusionTerritories();
-      objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data),
+      objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXML(terrs, players, data),
           "enemy", getTerritoryCount(), players, data);
     }
     // Check for enemy unit exclusions (SURFACE UNITS with ATTACK POWER)
     if (objectiveMet && getEnemySurfaceExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getEnemySurfaceExclusionTerritories();
-      objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data),
+      objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXML(terrs, players, data),
           "enemy_surface", getTerritoryCount(), players, data);
     }
     // Check for Territory Ownership rules
@@ -764,7 +764,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       } else {
         listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
       }
-      objectiveMet = checkAlliedOwnership(objectiveMet, listedTerritories, getTerritoryCount(), players, data);
+      objectiveMet = checkAlliedOwnership(listedTerritories, getTerritoryCount(), players, data);
     }
     // Check for Direct Territory Ownership rules
     if (objectiveMet && getDirectOwnershipTerritories() != null) {
@@ -794,7 +794,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       } else {
         listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
       }
-      objectiveMet = checkDirectOwnership(objectiveMet, listedTerritories, getTerritoryCount(), players);
+      objectiveMet = checkDirectOwnership(listedTerritories, getTerritoryCount(), players);
     }
     // get attached to player
     final PlayerID playerAttachedTo = (PlayerID) getAttachedTo();
@@ -927,10 +927,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   /**
    * Checks for the collection of territories to see if they have units owned by the exclType alliance.
    */
-  private boolean checkUnitPresence(boolean satisfied, final Collection<Territory> Territories, final String exclType,
+  private boolean checkUnitPresence(final Collection<Territory> Territories, final String exclType,
       final int numberNeeded, final List<PlayerID> players, final GameData data) {
     int numberMet = 0;
-    satisfied = false;
+    boolean satisfied = false;
     boolean useSpecific = false;
     if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
       useSpecific = true;
@@ -1002,10 +1002,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    * Checks for the collection of territories to see if they have units owned by the exclType alliance.
    * It doesn't yet threshold the data
    */
-  private boolean checkUnitExclusions(boolean satisfied, final Collection<Territory> Territories, final String exclType,
+  private boolean checkUnitExclusions(final Collection<Territory> Territories, final String exclType,
       final int numberNeeded, final List<PlayerID> players, final GameData data) {
     int numberMet = 0;
-    satisfied = false;
+    boolean satisfied = false;
     boolean useSpecific = false;
     if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
       useSpecific = true;
@@ -1085,10 +1085,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    * satisfied flag is set
    * to true and returned
    */
-  private boolean checkAlliedOwnership(boolean satisfied, final Collection<Territory> listedTerrs,
+  private boolean checkAlliedOwnership(final Collection<Territory> listedTerrs,
       final int numberNeeded, final Collection<PlayerID> players, final GameData data) {
     int numberMet = 0;
-    satisfied = false;
+    boolean satisfied = false;
     final Collection<PlayerID> allies =
         Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAlliedWithAnyOfThesePlayers(players, data));
     for (final Territory listedTerr : listedTerrs) {
@@ -1113,10 +1113,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    * Checks for direct ownership of the collection of territories. Once the needed number threshold is reached, return
    * true.
    */
-  private boolean checkDirectOwnership(boolean satisfied, final Collection<Territory> listedTerrs,
+  private boolean checkDirectOwnership(final Collection<Territory> listedTerrs,
       final int numberNeeded, final Collection<PlayerID> players) {
     int numberMet = 0;
-    satisfied = false;
+    boolean satisfied = false;
     for (final Territory listedTerr : listedTerrs) {
       if (Matches.isTerritoryOwnedBy(players).match(listedTerr)) {
         numberMet += 1;
