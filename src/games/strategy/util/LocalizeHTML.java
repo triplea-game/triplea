@@ -1,8 +1,6 @@
 package games.strategy.util;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,36 +51,6 @@ public class LocalizeHTML {
   public static final String PATTERN_HTML_IMG_TAG = "(?i)<img([^>]+)/>";
   /* Match the src attribute */
   public static final String PATTERN_HTML_IMG_SRC_TAG = "\\s*(?i)src\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
-
-  private static List<String> getAllAhrefLinksFromHTML(final String htmlText) {
-    return getAllLinksFromHTML(htmlText, PATTERN_HTML_A_TAG, PATTERN_HTML_A_HREF_TAG);
-  }
-
-  private static List<String> getAllImgSrcLinksFromHTML(final String htmlText) {
-    return getAllLinksFromHTML(htmlText, PATTERN_HTML_IMG_TAG, PATTERN_HTML_IMG_SRC_TAG);
-  }
-
-  private static List<String> getAllLinksFromHTML(final String htmlText, final String patternTagPattern,
-      final String patternLinkPattern) {
-    final List<String> result = new ArrayList<>();
-    final Pattern patternTag = Pattern.compile(patternTagPattern);
-    final Pattern patternLink = Pattern.compile(patternLinkPattern);
-
-    final Matcher matcherTag = patternTag.matcher(htmlText);
-    Matcher matcherLink;
-    while (matcherTag.find()) {
-      // img tag
-      final String href = matcherTag.group(1);
-      matcherLink = patternLink.matcher(href);
-      while (matcherLink.find()) {
-        // src link
-        final String link = matcherLink.group(1);
-        result.add(link);
-      }
-    }
-    return result;
-  }
-
 
   /**
    * This is only useful once we are IN a game. Before we go into the game, resource loader will either be null, or be
