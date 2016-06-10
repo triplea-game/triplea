@@ -257,17 +257,6 @@ public class MainPanel extends JPanel implements Observer {
     }
   }
 
-  public static void main(final String[] args) {
-    final JFrame f = new JFrame();
-    final GameSelectorModel gameSelectorModel = new GameSelectorModel();
-    final SetupPanelModel model = new SetupPanelModel(gameSelectorModel);
-    model.showSelectType();
-    f.getContentPane().add(new MainPanel(model));
-    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    f.pack();
-    f.setVisible(true);
-  }
-
   @Override
   public void update(final Observable o, final Object arg) {
     setWidgetActivation();

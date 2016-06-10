@@ -151,26 +151,4 @@ public class DiceImageFactory {
     return new ImageIcon(getDieImage(i, type));
   }
 
-  public static void main(final String[] args) {
-    final DiceImageFactory instance = new DiceImageFactory(null, 6);
-    final JFrame frame = new JFrame();
-    for (int i = 1; i <= 6; i++) {
-      frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-      frame.getContentPane().add(new JLabel(instance.getDieIcon(i, Die.DieType.HIT)));
-      frame.getContentPane().add(Box.createVerticalStrut(4));
-    }
-    for (int i = 1; i <= 6; i++) {
-      frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-      frame.getContentPane().add(new JLabel(instance.getDieIcon(i, Die.DieType.MISS)));
-      frame.getContentPane().add(Box.createVerticalStrut(4));
-    }
-    for (int i = 1; i <= 6; i++) {
-      frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-      frame.getContentPane().add(new JLabel(instance.getDieIcon(i, Die.DieType.IGNORED)));
-      frame.getContentPane().add(Box.createVerticalStrut(4));
-    }
-    frame.pack();
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setVisible(true);
-  }
 }

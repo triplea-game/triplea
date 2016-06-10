@@ -408,6 +408,7 @@ public class ValidateAttachmentsTest extends TestCase {
     return first + aString.substring(1);
   }
 
+  // TODO: convert to an automated test.
   public static void main(final String[] args) {
     System.out.println("All attachment property options which 'add' when set:\n\n");
     for (final Class<? extends IAttachment> clazz : getKnownAttachmentClasses()) {

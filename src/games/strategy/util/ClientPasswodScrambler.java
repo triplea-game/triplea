@@ -12,7 +12,4 @@ public class ClientPasswodScrambler {
     return MD5Crypt.crypt(password, "testring", "by");
   }
 
-  public static void main(final String[] args) {
-    System.out.println((scramble("testing")));
-  }
 }

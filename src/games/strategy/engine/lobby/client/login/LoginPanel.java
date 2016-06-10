@@ -188,15 +188,6 @@ public class LoginPanel extends JPanel {
     }
   }
 
-  public static void main(final String[] args) {
-    GameRunner2.setupLookAndFeel();
-    final JDialog d = new JDialog();
-    d.add(new LoginPanel());
-    d.setDefaultCloseOperation(JDialog.EXIT_ON_CLOSE);
-    d.pack();
-    d.setVisible(true);
-  }
-
   public boolean isAnonymous() {
     return m_anonymous.isSelected();
   }
