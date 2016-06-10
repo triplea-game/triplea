@@ -327,8 +327,10 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     devForum.setMnemonic(KeyEvent.VK_E);
     final JMenuItem donateLink = new JMenuItem("Donate...");
     donateLink.setMnemonic(KeyEvent.VK_O);
-    final JMenuItem guidesLink = new JMenuItem("Guides...");
-    guidesLink.setMnemonic(KeyEvent.VK_G);
+    final JMenuItem helpLink = new JMenuItem("Help...");
+    helpLink.setMnemonic(KeyEvent.VK_G);
+    final JMenuItem ruleBookLink = new JMenuItem("Rule Book...");
+    ruleBookLink.setMnemonic(KeyEvent.VK_K);
 
     hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_HOSTING_MAPS));
     mapLink.addActionListener(e  -> SwingComponents.newOpenUrlConfirmationDialog( UrlConstants.SF_HOSTING_MAPS));
@@ -337,7 +339,8 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB));
     devForum.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_FORUM));
     donateLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
-    guidesLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_WIKI_GUIDES));
+    helpLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.WEBSITE_HELP));
+    ruleBookLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK));
 
     parentMenu.add(hostingLink);
     parentMenu.add(mapLink);
@@ -346,7 +349,8 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     parentMenu.add(warClub);
     parentMenu.add(devForum);
     parentMenu.add(donateLink);
-    parentMenu.add(guidesLink);
+    parentMenu.add(helpLink);
+    parentMenu.add(ruleBookLink);
   }
 
   protected abstract void addGameSpecificHelpMenus(final JMenu helpMenu);
