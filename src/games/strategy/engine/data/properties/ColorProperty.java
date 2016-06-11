@@ -18,40 +18,40 @@ import javax.swing.SwingUtilities;
  * change the color.
  */
 public class ColorProperty extends AEditableProperty {
-  // compatible with 0.9.0.2 saved games
   private static final long serialVersionUID = 6826763550643504789L;
-  private Color m_color;
+  private static final int MAX_COLOR = 0xFFFFFF;
+  private static final int MIN_COLOR = 0x000000;
+
+  private Color color;
 
   public ColorProperty(final String name, final String description, final int def) {
     super(name, description);
-    int m_max = 0xFFFFFF;
-    int m_min = 0x000000;
-    if (def > m_max || def < m_min) {
+    if (def > MAX_COLOR || def < MIN_COLOR) {
       throw new IllegalArgumentException("Default value out of range");
     }
-    m_color = new Color(def);
+    color = new Color(def);
   }
 
   public ColorProperty(final String name, final String description, final Color def) {
     super(name, description);
     if (def == null) {
-      m_color = Color.black;
+      color = Color.black;
     } else {
-      m_color = def;
+      color = def;
     }
   }
 
   @Override
   public Object getValue() {
-    return m_color;
+    return color;
   }
 
   @Override
   public void setValue(final Object value) throws ClassCastException {
     if (value == null) {
-      m_color = Color.black;
+      color = Color.black;
     } else {
-      m_color = (Color) value;
+      color = (Color) value;
     }
   }
 
@@ -63,20 +63,21 @@ public class ColorProperty extends AEditableProperty {
       @Override
       public void paintComponent(final Graphics g) {
         final Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(m_color);
+        g2.setColor(color);
         g2.fill(g2.getClip());
       }
     };
     label.addMouseListener(new MouseListener() {
       @Override
       public void mouseClicked(final MouseEvent e) {
-        System.out.println("Old color: " + m_color);
+        System.out.println("Old color: " + color);
         try {
           final Color color =
-              JColorChooser.showDialog(label, "Choose color", (m_color == null ? Color.black : m_color));
+              JColorChooser.showDialog(label, "Choose color", (ColorProperty.this.color == null ? Color.black :
+                  ColorProperty.this.color));
           if (color != null) {
-            m_color = color;
-            System.out.println("New color: " + m_color);
+            ColorProperty.this.color = color;
+            System.out.println("New color: " + ColorProperty.this.color);
             // Ask Swing to repaint this label when it's convenient
             SwingUtilities.invokeLater(new Runnable() {
               @Override

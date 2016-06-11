@@ -41,8 +41,7 @@ public class PropertiesUI extends JPanel {
 
   public PropertiesUI(final List<? extends IEditableProperty> properties, final boolean editable) {
     init();
-    List<? extends IEditableProperty> m_properties = properties;
-    for (final IEditableProperty property : m_properties) {
+    for (final IEditableProperty property : properties) {
       // Limit it to 14 rows then start a new column
       // Don't know if this is the most elegant solution, but it works.
       if (m_nextRow >= 15) {
@@ -77,7 +76,6 @@ public class PropertiesUI extends JPanel {
     // Create the label and its constraints
     final JLabel label = new JLabel(labelText);
     final GridBagConstraints labelConstraints = new GridBagConstraints();
-    // labelConstraints.gridx = 0;
     labelConstraints.gridx = m_labelColumn;
     labelConstraints.gridy = m_nextRow;
     labelConstraints.gridheight = rowsNeeded;
@@ -87,14 +85,12 @@ public class PropertiesUI extends JPanel {
     add(label, labelConstraints);
     // Add the component with its constraints
     final GridBagConstraints itemConstraints = new GridBagConstraints();
-    // itemConstraints.gridx = 1;
     itemConstraints.gridx = m_labelColumn + 1;
     itemConstraints.gridy = m_nextRow;
     itemConstraints.gridheight = rowsNeeded;
     itemConstraints.insets = new Insets(10, 10, 0, 10);
     itemConstraints.weightx = 1.0;
     itemConstraints.anchor = GridBagConstraints.WEST;
-    // itemConstraints.fill = GridBagConstraints.HORIZONTAL;
     itemConstraints.fill = GridBagConstraints.NONE;
     add(item, itemConstraints);
     if (tooltip != null && tooltip.length() > 0) {
