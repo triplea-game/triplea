@@ -59,16 +59,23 @@ public class PurchasePanel extends ActionPanel {
     SwingUtilities.invokeLater(() -> {
       removeAll();
       actionLabel.setText(id.getName() + " production");
-      m_buyButton.setText(BUY);
       add(actionLabel);
+
+      m_buyButton.setText(BUY);
       add(m_buyButton);
+
       add(new JButton(DoneAction));
-      m_purchasedLabel.setText("");
+
       add(Box.createVerticalStrut(9));
+
+      m_purchasedLabel.setText("");
       add(m_purchasedLabel);
+
       add(Box.createVerticalStrut(4));
+
       m_purhcasedUnits.setUnitsFromProductionRuleMap(new IntegerMap<>(), id, getData());
       add(m_purhcasedUnits);
+
       getData().acquireReadLock();
       try {
         m_purchasedPreviousRoundsUnits.setUnitsFromCategories(UnitSeperator.categorize(id.getUnits().getUnits()),
