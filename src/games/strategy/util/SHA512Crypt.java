@@ -5,6 +5,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import games.strategy.debug.ClientLogger;
+
 /**
  * Replacement for MD5Crypt
  * using SHA512 instead
@@ -27,6 +29,7 @@ public class SHA512Crypt {
       return String.format("%064x", new BigInteger(1, digest));
     } catch (NoSuchAlgorithmException e) {
       // This Code shouldn't be executed under any circumstances
+      ClientLogger.logError(e);
       throw new IllegalStateException("The SHA512Crypt class uses an invalid algorithm");
     }
   }
