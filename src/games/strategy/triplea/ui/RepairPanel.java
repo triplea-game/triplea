@@ -23,6 +23,8 @@ import games.strategy.util.IntegerMap;
 
 public class RepairPanel extends ActionPanel {
   private static final long serialVersionUID = 3045997038627313714L;
+  private static final String CHANGE = "Change...";
+  private static final String BUY = "Repair...";
   private final JLabel actionLabel = new JLabel();
   private HashMap<Unit, IntegerMap<RepairRule>> m_repair;
   private boolean m_bid;
@@ -30,7 +32,6 @@ public class RepairPanel extends ActionPanel {
   private final SimpleUnitPanel m_unitsPanel;
   private final JLabel m_repairdSoFar = new JLabel();
   private final JButton m_buyButton;
-  private final String BUY = "Repair...";
 
   /** Creates new RepairPanel */
   public RepairPanel(final GameData data, final MapPanel map) {
@@ -105,7 +106,6 @@ public class RepairPanel extends ActionPanel {
         m_repairdSoFar.setText("");
         m_buyButton.setText(BUY);
       } else {
-        String CHANGE = "Change...";
         m_buyButton.setText(CHANGE);
         m_repairdSoFar.setText(totalValues + MyFormatter.pluralize(" unit", totalValues) + " to be repaired:");
       }

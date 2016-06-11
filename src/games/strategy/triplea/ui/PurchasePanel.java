@@ -40,7 +40,7 @@ public class PurchasePanel extends ActionPanel {
   private final JButton m_buyButton;
   // if this is set Purchase will use the tabbedProductionPanel - this is modifyable through the View Menu
   private static boolean m_tabbedProduction = true;
-  private final String BUY = "Buy...";
+  private static final String BUY = "Buy...";
   private static final String CHANGE = "Change...";
 
   /** Creates new PurchasePanel */

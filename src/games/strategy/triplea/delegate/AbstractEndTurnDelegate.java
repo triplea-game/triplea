@@ -45,6 +45,7 @@ import games.strategy.util.Tuple;
  */
 public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implements IAbstractForumPosterDelegate {
   public static final String END_TURN_REPORT_STRING = "End of Turn Report for ";
+  private static final int CONVOY_BLOCKADE_DICE_SIDES = 6;
   private boolean m_needToInitialize = true;
   private boolean m_hasPostedTurnSummary = false;
 
@@ -399,7 +400,6 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
           // getting a ton of random numbers at once instead of one at a time)
           ThreadUtil.sleep(100);
           final String transcript = "Rolling for Convoy Blockade Damage in " + b.getName();
-          int CONVOY_BLOCKADE_DICE_SIDES = 6;
           final int[] dice = aBridge.getRandom(CONVOY_BLOCKADE_DICE_SIDES, numberOfDice,
               enemies.iterator().next().getOwner(), DiceType.BOMBING, transcript);
           transcripts.add(transcript + ". Rolls: " + MyFormatter.asDice(dice));
