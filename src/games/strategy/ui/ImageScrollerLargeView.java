@@ -29,7 +29,6 @@ import javax.swing.SwingUtilities;
  * our location and size. Subclasses must take care of rendering
  */
 public class ImageScrollerLargeView extends JComponent {
-
   private static final long serialVersionUID = -7212817233833868483L;
 
   // bit flags for determining which way we are scrolling
@@ -42,6 +41,8 @@ public class ImageScrollerLargeView extends JComponent {
 
   // how close to an edge we have to be before we scroll
   private final static int TOLERANCE = 30;
+  // how close to an edge we have to be before we scroll faster
+  private final static int FASTER_TOLERANCE =  10;
 
   // how much we scroll
   private final static int SCROLL_DISTANCE = 30;
@@ -318,7 +319,7 @@ public class ImageScrollerLargeView extends JComponent {
   private int getNewEdge(final int x, final int y, final int width, final int height) {
     int newEdge = NONE;
     this.m_insideFasterPosition = false;
-    int FASTER_TOLERANCE = 10;
+
     if (x < TOLERANCE) {
       newEdge += LEFT;
       if (x < FASTER_TOLERANCE) {
