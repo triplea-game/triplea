@@ -81,16 +81,16 @@ class PUChart {
   protected void saveToFile() throws IOException {
     initializeMap();
     initializeAvoidMap();
-    int y_DIMENSION = 6;
-    int x_DIMENSION = 7;
-    final int numChartsNeeded = (int) Math.ceil(((double) m_moneyMap.totalValues()) / (x_DIMENSION * y_DIMENSION));
+    int yDimension = 6;
+    int xDimension = 7;
+    final int numChartsNeeded = (int) Math.ceil(((double) m_moneyMap.totalValues()) / (xDimension * yDimension));
     for (int i = 0; i < numChartsNeeded; i++) {
       m_g2d.setColor(Color.black);
       // Draw Country Names
       for (int z = 0; z < m_playerArray.length; z++) {
         final int valMod42 = m_moneyArray[z] % 42;
-        final int valModXDim = valMod42 % x_DIMENSION;
-        final int valFloorXDim = valMod42 / x_DIMENSION;
+        final int valModXDim = valMod42 % xDimension;
+        final int valFloorXDim = valMod42 / xDimension;
         if (m_avoidMap.containsKey(z) && m_moneyArray[z] / 42 == i) {
           final FontMetrics metrics = m_g2d.getFontMetrics();
           final int width = metrics.stringWidth(m_playerArray[z].getName()) / 2;
@@ -106,16 +106,16 @@ class PUChart {
         }
       }
       // Draw Ellipses and Numbers
-      for (int j = 0; j < y_DIMENSION; j++) {
-        for (int k = 0; k < x_DIMENSION; k++) {
-          final int numberincircle = x_DIMENSION * y_DIMENSION * i + x_DIMENSION * j + k;
+      for (int j = 0; j < yDimension; j++) {
+        for (int k = 0; k < xDimension; k++) {
+          final int numberincircle = xDimension * yDimension * i + xDimension * j + k;
           final String string = "" + numberincircle;
           drawEllipseAndString(k, j, string);
         }
       }
       // Write to file
-      final int firstnum = x_DIMENSION * y_DIMENSION * i;
-      final int secondnum = x_DIMENSION * y_DIMENSION * (i + 1) - 1;
+      final int firstnum = xDimension * yDimension * i;
+      final int secondnum = xDimension * yDimension * (i + 1) - 1;
       final File outputfile = new File(m_outDir, "PUchart" + firstnum + "-" + secondnum + ".png");
       ImageIO.write(m_PUImage, "png", outputfile);
       final Color transparent = new Color(0, 0, 0, 0);
