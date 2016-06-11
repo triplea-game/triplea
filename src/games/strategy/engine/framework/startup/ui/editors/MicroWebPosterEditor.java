@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.Buffer;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.imageio.ImageIO;
@@ -207,7 +208,7 @@ public class MicroWebPosterEditor extends EditorPanel {
         for (int i = 0; i < comboBoxes.size(); i++) {
           sb.append(m_parties[i]);
           sb.append(": ");
-          sb.append((String) comboBoxes.get(i).getSelectedItem());
+          sb.append(comboBoxes.get(i).getSelectedItem());
           sb.append("\n");
         }
         final java.util.List<Part> parts = new ArrayList<>();
