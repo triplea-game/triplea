@@ -5,7 +5,6 @@ import java.awt.event.MouseEvent;
 import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;

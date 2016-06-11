@@ -28,7 +28,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingAction;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.ui.Util;
 

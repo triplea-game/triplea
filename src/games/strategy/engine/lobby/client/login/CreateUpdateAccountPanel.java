@@ -19,7 +19,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.ui.Util;

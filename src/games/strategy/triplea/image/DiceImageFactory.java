@@ -9,12 +9,8 @@ import java.awt.RenderingHints;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.delegate.Die;

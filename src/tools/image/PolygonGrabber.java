@@ -400,7 +400,7 @@ public class PolygonGrabber extends JFrame {
       repaint();
     } catch (final FileNotFoundException ex) {
       ClientLogger.logQuietly("file name = " + polyName, ex);
-    } catch (IOException | HeadlessException ex) {
+    } catch (HeadlessException ex) {
       // TODO: remove HeadlessException (fix anti-pattern control flow via exception handling with proper control flow)
       ClientLogger.logQuietly(ex);
     }
