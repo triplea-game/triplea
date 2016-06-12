@@ -40,10 +40,10 @@ public class TripleAMenuBar extends JMenuBar {
 
   public TripleAMenuBar(final TripleAFrame frame) {
     this.frame = frame;
-    new FileMenu(this, frame, getData());
-    new ViewMenu(this, frame, getData());
-    new GameMenu(this, frame, getData());
-    new ExportMenu(this, frame, getData());
+    new FileMenu(this, frame);
+    new ViewMenu(this, frame);
+    new GameMenu(this, frame);
+    new ExportMenu(this, frame);
 
     final ServerGame serverGame = (ServerGame) frame.getGame();
     final InGameLobbyWatcherWrapper watcher = serverGame.getInGameLobbyWatcher();
@@ -53,7 +53,7 @@ public class TripleAMenuBar extends JMenuBar {
     new WebHelpMenu(this);
 
     new DebugMenu(this, frame);
-    new HelpMenu(this, frame.getUIContext(), getData(), getBackground());
+    new HelpMenu(this, frame.getUIContext(), frame.getGame().getData(), getBackground());
   }
 
   private InGameLobbyWatcherWrapper createLobbyMenu(final JMenuBar menuBar, InGameLobbyWatcherWrapper watcher ) {
@@ -204,17 +204,5 @@ public class TripleAMenuBar extends JMenuBar {
     }
     list.setSelectedValue(currentKey, false);
     return Triple.of(list, lookAndFeels, currentKey);
-  }
-
-
-
-
-
-  public IGame getGame() {
-    return frame.getGame();
-  }
-
-  public GameData getData() {
-    return frame.getGame().getData();
   }
 }

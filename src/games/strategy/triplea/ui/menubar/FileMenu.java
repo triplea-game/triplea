@@ -26,10 +26,10 @@ public class FileMenu {
   private final TripleAFrame frame;
   private final IGame game;
 
-  public FileMenu(TripleAMenuBar menuBar, TripleAFrame frame, GameData gameData) {
-    this.gameData = gameData;
+  public FileMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
     this.frame = frame;
     game = frame.getGame();
+    gameData = frame.getGame().getData();
 
     final JMenu fileMenu = new JMenu("File");
     fileMenu.setMnemonic(KeyEvent.VK_F);
