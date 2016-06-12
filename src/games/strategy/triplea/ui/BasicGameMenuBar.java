@@ -55,7 +55,6 @@ import com.apple.eawt.AboutHandler;
 import com.apple.eawt.AppEvent.AboutEvent;
 import com.apple.eawt.Application;
 
-import games.strategy.common.ui.*;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.swing.SwingAction;
 import games.strategy.swing.SwingComponents;

@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import games.strategy.swing.SwingAction;
-import games.strategy.common.ui.MainGameFrame;
+import games.strategy.triplea.ui.MainGameFrame;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
