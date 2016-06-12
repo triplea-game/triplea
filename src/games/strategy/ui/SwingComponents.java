@@ -20,6 +20,22 @@ import java.util.stream.Collectors;
 
 public class SwingComponents {
 
+  public enum KeyboardCode {
+    G(KeyEvent.VK_G);
+
+
+    private final int keyEventCode;
+
+    KeyboardCode(int keyEventCode) {
+      this.keyEventCode = keyEventCode;
+    }
+
+    int getSwingKeyEventCode() {
+      return keyEventCode;
+    }
+
+  }
+
   private static final Set<String> visiblePrompts = new HashSet<>();
 
   /** Creates a JPanel with BorderLayout and adds a west component and an east component */
@@ -176,5 +192,13 @@ public class SwingComponents {
     dialog.getRootPane().getActionMap().put(key, closeAction);
     dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
     return dialog;
+  }
+
+
+
+  public static JMenu newJMenu(String menuTitle, KeyboardCode keyboardCode) {
+    JMenu menu = new JMenu(menuTitle);
+    menu.setMnemonic(keyboardCode.getSwingKeyEventCode());
+    return menu;
   }
 }

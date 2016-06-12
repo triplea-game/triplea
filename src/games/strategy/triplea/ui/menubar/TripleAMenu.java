@@ -105,6 +105,7 @@ import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.ui.IntTextField;
+import games.strategy.ui.SwingComponents;
 import games.strategy.util.IllegalCharacterRemover;
 import games.strategy.util.LocalizeHTML;
 
@@ -277,17 +278,12 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
   @Override
   protected void createGameSpecificMenus(final JMenuBar menuBar) {
     createViewMenu(menuBar);
-    createGameMenu(menuBar);
+    menuBar.add(createGameMenu());
     createExportMenu(menuBar);
   }
 
-  /**
-   * @param menuBar
-   */
-  private void createGameMenu(final JMenuBar menuBar) {
-    final JMenu menuGame = new JMenu("Game");
-    menuGame.setMnemonic(KeyEvent.VK_G);
-    menuBar.add(menuGame);
+  private JMenu createGameMenu() {
+    final JMenu menuGame = SwingComponents.newJMenu("Game", SwingComponents.KeyboardCode.G);
     addEditMode(menuGame);
     menuGame.add(frame.getShowGameAction()).setMnemonic(KeyEvent.VK_G);
     menuGame.add(frame.getShowHistoryAction()).setMnemonic(KeyEvent.VK_H);
@@ -307,6 +303,7 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
     addShowDiceStats(menuGame);
     addRollDice(menuGame);
     addBattleCalculatorMenu(menuGame);
+    return menuGame;
   }
 
 
