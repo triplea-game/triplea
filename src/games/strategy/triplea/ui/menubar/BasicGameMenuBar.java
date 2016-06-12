@@ -79,7 +79,7 @@ import games.strategy.ui.IntTextField;
 import games.strategy.util.IllegalCharacterRemover;
 import games.strategy.util.Triple;
 
-public abstract class BasicGameMenuBar extends JMenuBar {
+public class BasicGameMenuBar extends JMenuBar {
   private static final long serialVersionUID = -1447295944297939539L;
   protected final TripleAFrame frame;
   protected JEditorPane gameNotesPane;
@@ -87,7 +87,10 @@ public abstract class BasicGameMenuBar extends JMenuBar {
   public BasicGameMenuBar(final TripleAFrame frame) {
     this.frame = frame;
     add(createFileMenu());
-    createGameSpecificMenus(this);
+    new ViewMenu(this, frame, getData());
+    new GameMenu(this, frame, getData());
+    new ExportMenu(this, frame, getData());
+
     final InGameLobbyWatcherWrapper watcher = createLobbyMenu(this);
     createNetworkMenu(this, watcher);
     createWebHelpMenu(this);
@@ -127,8 +130,6 @@ public abstract class BasicGameMenuBar extends JMenuBar {
       parentMenu.add(SwingAction.of("Show Hard AI Logs", e -> ProAI.showSettingsWindow())).setMnemonic(KeyEvent.VK_X);
     }
   }
-
-  protected abstract void createGameSpecificMenus(final JMenuBar menuBar);
 
   public JEditorPane getGameNotesJEditorPane() {
     return gameNotesPane;
