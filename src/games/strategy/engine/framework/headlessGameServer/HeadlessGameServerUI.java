@@ -20,7 +20,7 @@ import javax.swing.WindowConstants;
 import games.strategy.debug.ClientLogger;
 import games.strategy.swing.SwingAction;
 import games.strategy.triplea.ui.MacQuitMenuWrapper;
-import games.strategy.common.ui.MainGameFrame;
+import games.strategy.triplea.ui.MainGameFrame;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;
 import games.strategy.engine.data.Change;

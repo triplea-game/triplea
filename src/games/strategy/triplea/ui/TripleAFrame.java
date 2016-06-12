@@ -86,7 +86,6 @@ import com.google.common.collect.ImmutableList;
 
 import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.swing.SwingAction;
-import games.strategy.common.ui.MainGameFrame;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;

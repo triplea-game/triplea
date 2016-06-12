@@ -4,7 +4,6 @@ import com.apple.eawt.AppEvent.QuitEvent;
 import com.apple.eawt.Application;
 import com.apple.eawt.QuitHandler;
 import com.apple.eawt.QuitResponse;
-import games.strategy.common.ui.MainGameFrame;
 
 /**
  * Utility class to wrap Mac OS X-specific shutdown handler.
