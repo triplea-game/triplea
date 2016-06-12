@@ -1,4 +1,4 @@
-package games.strategy.common.ui;
+package games.strategy.triplea.ui;
 
 import java.awt.Component;
 
