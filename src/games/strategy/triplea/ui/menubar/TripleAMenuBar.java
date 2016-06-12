@@ -79,12 +79,12 @@ import games.strategy.ui.IntTextField;
 import games.strategy.util.IllegalCharacterRemover;
 import games.strategy.util.Triple;
 
-public class BasicGameMenuBar extends JMenuBar {
+public class TripleAMenuBar extends JMenuBar {
   private static final long serialVersionUID = -1447295944297939539L;
   protected final TripleAFrame frame;
   protected JEditorPane gameNotesPane;
 
-  public BasicGameMenuBar(final TripleAFrame frame) {
+  public TripleAMenuBar(final TripleAFrame frame) {
     this.frame = frame;
     add(createFileMenu());
     new ViewMenu(this, frame, getData());

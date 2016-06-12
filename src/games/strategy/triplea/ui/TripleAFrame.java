@@ -85,7 +85,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import com.google.common.collect.ImmutableList;
 
 import games.strategy.triplea.delegate.BaseEditDelegate;
-import games.strategy.triplea.ui.menubar.BasicGameMenuBar;
+import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.ChatPanel;
@@ -209,7 +209,7 @@ public class TripleAFrame extends MainGameFrame {
   private PlayerID currentStepPlayer;
   private Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<>();
   private ThreadPool messageAndDialogThreadPool;
-  private BasicGameMenuBar menu;
+  private TripleAMenuBar menu;
 
   /** Creates new TripleAFrame */
   public TripleAFrame(final IGame game, final LocalPlayers players) {
@@ -277,7 +277,7 @@ public class TripleAFrame extends MainGameFrame {
     };
     showCommentLogButtonModel.addActionListener(m_showCommentLogAction);
     showCommentLogButtonModel.setSelected(false);
-    menu = new BasicGameMenuBar(this);
+    menu = new TripleAMenuBar(this);
     this.setJMenuBar(menu);
     final ImageScrollModel model = new ImageScrollModel();
     model.setScrollX(uiContext.getMapData().scrollWrapX());
@@ -1838,7 +1838,7 @@ public class TripleAFrame extends MainGameFrame {
         data.acquireReadLock();
         // m_data.acquireWriteLock();
         try {
-          final File f = BasicGameMenuBar.getSaveGameLocationDialog(TripleAFrame.this);
+          final File f = TripleAMenuBar.getSaveGameLocationDialog(TripleAFrame.this);
           if (f != null) {
             try (FileOutputStream fout = new FileOutputStream(f)) {
               final GameData datacopy = GameDataUtils.cloneGameData(data, true);
