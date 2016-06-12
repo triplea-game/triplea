@@ -85,7 +85,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import com.google.common.collect.ImmutableList;
 
 import games.strategy.common.delegate.BaseEditDelegate;
-import games.strategy.common.swing.SwingAction;
+import games.strategy.swing.SwingAction;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.common.ui.MacWrapper;
 import games.strategy.common.ui.MainGameFrame;

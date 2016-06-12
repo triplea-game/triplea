@@ -26,7 +26,7 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
-import games.strategy.common.swing.SwingAction;
+import games.strategy.swing.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.net.INode;
 import games.strategy.net.ServerMessenger;

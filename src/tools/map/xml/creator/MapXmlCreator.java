@@ -62,7 +62,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.xml.sax.SAXException;
 
-import games.strategy.common.swing.SwingAction;
+import games.strategy.swing.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameRunner2;

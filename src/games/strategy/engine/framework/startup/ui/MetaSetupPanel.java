@@ -21,7 +21,7 @@ import javax.swing.JPanel;
 
 import org.yaml.snakeyaml.Yaml;
 
-import games.strategy.common.swing.SwingComponents;
+import games.strategy.swing.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;

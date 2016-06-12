@@ -42,7 +42,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
-import games.strategy.common.swing.SwingAction;
+import games.strategy.swing.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.ui.DoubleTextField;

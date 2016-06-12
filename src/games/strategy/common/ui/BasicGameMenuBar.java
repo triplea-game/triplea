@@ -55,8 +55,8 @@ import com.apple.eawt.AboutHandler;
 import com.apple.eawt.AppEvent.AboutEvent;
 import com.apple.eawt.Application;
 
-import games.strategy.common.swing.SwingAction;
-import games.strategy.common.swing.SwingComponents;
+import games.strategy.swing.SwingAction;
+import games.strategy.swing.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.DebugUtils;
 import games.strategy.debug.ErrorConsole;

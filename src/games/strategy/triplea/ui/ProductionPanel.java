@@ -16,8 +16,8 @@ import java.util.Set;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 
-import games.strategy.common.swing.SwingAction;
-import games.strategy.common.swing.SwingComponents;
+import games.strategy.swing.SwingAction;
+import games.strategy.swing.SwingComponents;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;

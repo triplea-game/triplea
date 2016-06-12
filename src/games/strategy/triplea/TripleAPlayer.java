@@ -14,7 +14,7 @@ import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
 
 import games.strategy.common.player.AbstractHumanPlayer;
-import games.strategy.common.swing.SwingAction;
+import games.strategy.swing.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;

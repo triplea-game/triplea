@@ -31,7 +31,7 @@ import javax.swing.event.ListSelectionListener;
 
 import com.google.common.collect.Lists;
 
-import games.strategy.common.swing.SwingComponents;
+import games.strategy.swing.SwingComponents;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
