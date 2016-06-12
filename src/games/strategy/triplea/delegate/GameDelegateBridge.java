@@ -1,4 +1,4 @@
-package games.strategy.common.delegate;
+package games.strategy.triplea.delegate;
 
 import java.util.Properties;
 

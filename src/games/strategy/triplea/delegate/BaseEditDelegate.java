@@ -1,4 +1,4 @@
-package games.strategy.common.delegate;
+package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
