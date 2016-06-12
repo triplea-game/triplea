@@ -1,4 +1,4 @@
-package games.strategy.common.ui;
+package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
