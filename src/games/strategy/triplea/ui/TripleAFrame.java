@@ -86,7 +86,6 @@ import com.google.common.collect.ImmutableList;
 
 import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.swing.SwingAction;
-import games.strategy.common.ui.MacWrapper;
 import games.strategy.common.ui.MainGameFrame;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.ChatPanel;
@@ -511,7 +510,7 @@ public class TripleAFrame extends MainGameFrame {
     TripleAFrame.this.dispose();
     if (GameRunner.isMac()) {
       // this frame should not handle shutdowns anymore
-      MacWrapper.unregisterShutdownHandler();
+      MacQuitMenuWrapper.unregisterShutdownHandler();
     }
     messageAndDialogThreadPool.shutDown();
     uiContext.shutDown();

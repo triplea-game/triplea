@@ -19,7 +19,7 @@ import javax.swing.WindowConstants;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.swing.SwingAction;
-import games.strategy.common.ui.MacWrapper;
+import games.strategy.triplea.ui.MacQuitMenuWrapper;
 import games.strategy.common.ui.MainGameFrame;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;
@@ -217,7 +217,7 @@ public class HeadlessGameServerUI extends MainGameFrame {
     this.dispose();
     if (GameRunner.isMac()) {
       // this frame should not handle shutdowns anymore
-      MacWrapper.unregisterShutdownHandler();
+      MacQuitMenuWrapper.unregisterShutdownHandler();
     }
     if (m_uiContext != null) {
       m_uiContext.shutDown();
