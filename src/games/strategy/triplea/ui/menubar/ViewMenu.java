@@ -66,10 +66,11 @@ public class ViewMenu {
   private final TripleAFrame frame;
   private final IUIContext uiContext;
 
-  public ViewMenu(JMenuBar menuBar, TripleAFrame frame, GameData gameData) {
+  public ViewMenu(final JMenuBar menuBar, final TripleAFrame frame) {
     this.frame = frame;
     this.uiContext = frame.getUIContext();
-    this.gameData = gameData;
+    gameData = frame.getGame().getData();
+
 
     final JMenu menuView = new JMenu("View");
     menuView.setMnemonic(KeyEvent.VK_V);

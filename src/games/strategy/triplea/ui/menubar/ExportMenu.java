@@ -72,15 +72,11 @@ public class ExportMenu {
   private final GameData gameData;
   private final IUIContext iuiContext;
 
-  public ExportMenu(JMenuBar menuBar, TripleAFrame frame, GameData gameData) {
+  public ExportMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
     this.frame = frame;
-    this.gameData = gameData;
+    gameData = frame.getGame().getData();
     iuiContext = frame.getUIContext();
 
-    createExportMenu(menuBar);
-  }
-
-  private void createExportMenu(final JMenuBar menuBar) {
     final JMenu menuGame = new JMenu("Export");
     menuGame.setMnemonic(KeyEvent.VK_E);
     menuBar.add(menuGame);
@@ -91,6 +87,7 @@ public class ExportMenu {
     addExportUnitStats(menuGame);
     addSaveScreenshot(menuGame);
   }
+
   // TODO: create a second menu option for parsing current attachments
   private void addExportXML(final JMenu parentMenu) {
     final Action exportXML = SwingAction.of("Export game.xml file (Beta)...", e -> exportXMLFile());
