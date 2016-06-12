@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;

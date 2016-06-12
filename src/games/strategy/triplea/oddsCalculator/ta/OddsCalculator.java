@@ -11,7 +11,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import games.strategy.common.delegate.GameDelegateBridge;
+import games.strategy.triplea.delegate.GameDelegateBridge;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
