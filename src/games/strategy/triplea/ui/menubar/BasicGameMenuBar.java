@@ -495,41 +495,7 @@ public abstract class BasicGameMenuBar extends JMenuBar {
   }
 
 
-  protected void addAISleepDuration(final JMenu parentMenu) {
-    final JMenuItem AISleepDurationBox = new JMenuItem("AI Pause Duration...");
-    AISleepDurationBox.setMnemonic(KeyEvent.VK_A);
-    AISleepDurationBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final IntTextField text = new IntTextField(50, 10000);
-        text.setText(String.valueOf(AbstractUIContext.getAIPauseDuration()));
-        final JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        panel.add(new JLabel("AI Pause Duration (ms):"), new GridBagConstraints(0, 0, 1, 1, 0, 0,
-            GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 0), 0, 0));
-        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(BasicGameMenuBar.this), panel,
-            "Set AI Pause Duration", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"},
-            "OK");
-        try {
-          AbstractUIContext.setAIPauseDuration(Integer.parseInt(text.getText()));
-        } catch (final Exception ex) {
-        }
-      }
-    });
-    parentMenu.add(AISleepDurationBox);
-  }
 
-  protected void addGameOptionsMenu(final JMenu menuGame) {
-    if (!getGame().getData().getProperties().getEditableProperties().isEmpty()) {
-      final AbstractAction optionsAction = SwingAction.of("View Game Options...", e -> {
-        final PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties().getEditableProperties(), false);
-        JOptionPane.showMessageDialog(frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
-      });
-      menuGame.add(optionsAction).setMnemonic(KeyEvent.VK_O);
-    }
-  }
 
   // TODO: create a second menu option for parsing current attachments
   protected void addExportXML(final JMenu parentMenu) {
