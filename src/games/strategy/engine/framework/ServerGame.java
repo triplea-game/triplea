@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import games.strategy.common.ui.InGameLobbyWatcherWrapper;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.GameOverException;

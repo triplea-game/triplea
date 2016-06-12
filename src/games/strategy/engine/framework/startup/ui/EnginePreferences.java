@@ -28,7 +28,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import games.strategy.swing.SwingAction;
-import games.strategy.common.ui.BasicGameMenuBar;
+import games.strategy.triplea.ui.BasicGameMenuBar;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.properties.IEditableProperty;

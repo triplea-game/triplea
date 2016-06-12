@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import games.strategy.common.ui.InGameLobbyWatcherWrapper;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 
 public class EditGameCommentAction extends AbstractAction {
   private static final long serialVersionUID = 1723950003185387843L;

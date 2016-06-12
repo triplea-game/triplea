@@ -1,4 +1,4 @@
-package games.strategy.common.ui;
+package games.strategy.triplea.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog.ModalityType;
@@ -55,6 +55,8 @@ import com.apple.eawt.AboutHandler;
 import com.apple.eawt.AppEvent.AboutEvent;
 import com.apple.eawt.Application;
 
+import games.strategy.common.ui.*;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.swing.SwingAction;
 import games.strategy.swing.SwingComponents;
 import games.strategy.debug.ClientLogger;
@@ -87,8 +89,6 @@ import games.strategy.performance.EnablePerformanceLoggingCheckBox;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
-import games.strategy.triplea.ui.AbstractUIContext;
-import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.ui.IntTextField;
 import games.strategy.util.CountDownLatchHandler;
@@ -290,7 +290,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
   protected void addShowPlayers(final JMenu menuGame) {
     if (!getGame().getData().getProperties().getEditableProperties().isEmpty()) {
       final AbstractAction optionsAction =
-          SwingAction.of("Show Who is Who...", e -> PlayersPanel.showPlayers(getGame(), frame));
+          SwingAction.of("Show Who is Who...", e -> games.strategy.common.ui.PlayersPanel.showPlayers(getGame(), frame));
       menuGame.add(optionsAction);
     }
   }
