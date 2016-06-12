@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import games.strategy.swing.SwingComponents;
+import games.strategy.ui.SwingComponents;
 import games.strategy.engine.data.GameData;
 
 public class SetupFrame extends JPanel {

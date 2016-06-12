@@ -1,4 +1,4 @@
-package games.strategy.swing;
+package games.strategy.ui;
 
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.UrlConstants;

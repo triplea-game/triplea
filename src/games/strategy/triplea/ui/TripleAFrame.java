@@ -85,7 +85,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import com.google.common.collect.ImmutableList;
 
 import games.strategy.triplea.delegate.BaseEditDelegate;
-import games.strategy.swing.SwingAction;
+import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;

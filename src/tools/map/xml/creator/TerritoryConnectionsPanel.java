@@ -26,7 +26,7 @@ import javax.swing.SwingUtilities;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import games.strategy.swing.SwingAction;
+import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.AlphanumComparator;
 import tools.map.making.ConnectionFinder;

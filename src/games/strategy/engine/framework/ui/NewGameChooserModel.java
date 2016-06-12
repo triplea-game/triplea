@@ -2,7 +2,7 @@ package games.strategy.engine.framework.ui;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import games.strategy.swing.SwingAction;
+import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
