@@ -1,9 +1,6 @@
 package games.strategy.triplea.ui.menubar;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -11,15 +8,10 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,23 +20,14 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
-import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -53,24 +36,18 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.WindowConstants;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import games.strategy.triplea.ui.AbstractUIContext;
 import games.strategy.triplea.ui.BattleDisplay;
 import games.strategy.triplea.ui.ExtendedStats;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.PoliticalStateOverview;
-import games.strategy.triplea.ui.PurchasePanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.VerifiedRandomNumbersDialog;
 import games.strategy.triplea.ui.menubar.menu.view.ViewMenu;
@@ -80,12 +57,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.properties.ColorProperty;
-import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.data.properties.NumberProperty;
-import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.history.HistoryNode;
@@ -97,15 +69,9 @@ import games.strategy.engine.stats.IStat;
 import games.strategy.sound.SoundOptions;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.EndRoundDelegate;
-import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.image.TileImageFactory;
-import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.printgenerator.SetupFrame;
-import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
-import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.SwingComponents;
@@ -126,158 +92,6 @@ public class TripleAMenu extends BasicGameMenuBar {
     return frame.getUIContext();
   }
 
-  @Override
-  protected void addGameSpecificHelpMenus(final JMenu helpMenu) {
-    addMoveHelpMenu(helpMenu);
-    addUnitHelpMenu(helpMenu);
-  }
-
-  private void addMoveHelpMenu(final JMenu parentMenu) {
-    parentMenu.add(SwingAction.of("Movement/Selection help...", e -> {
-      // html formatted string
-      final String hints = "<b> Selecting Units</b><br>" + "Left click on a unit stack to select 1 unit.<br>"
-          + "ALT-Left click on a unit stack to select 10 units of that type in the stack.<br>"
-          + "CTRL-Left click on a unit stack to select all units of that type in the stack.<br>"
-          + "Shift-Left click on a unit to select all units in the territory.<br>"
-          + "Left click on a territory but not on a unit to bring up a selection window for inputing the desired selection.<br>"
-          + "<br><b> Deselecting Units</b><br>"
-          + "Right click somewhere not on a unit stack to unselect the last selected unit.<br>"
-          + "Right click on a unit stack to unselect one unit in the stack.<br>"
-          + "ALT-Right click on a unit stack to unselect 10 units of that type in the stack.<br>"
-          + "CTRL-Right click on a unit stack to unselect all units of that type in the stack.<br>"
-          + "CTRL-Right click somewhere not on a unit stack to unselect all units selected.<br>"
-          + "<br><b> Moving Units</b><br>"
-          + "After selecting units Left click on a territory to move units there (do not Left click and Drag, instead select units, then move the mouse, then select the territory).<br>"
-          + "CTRL-Left click on a territory to select the territory as a way point (this will force the units to move through this territory on their way to the destination).<br>"
-          + "<br><b> Moving the Map Screen</b><br>"
-          + "Right click and Drag the mouse to move your screen over the map.<br>"
-          + "Left click the map (anywhere), use the arrow keys (or WASD keys) to move your map around. Holding down control will move the map faster.<br />"
-          + "Left click in the Minimap at the top right of the screen, and Drag the mouse.<br>"
-          + "Move the mouse to the edge of the map to scroll in that direction. Moving the mouse even closer to the edge will scroll faster.<br>"
-          + "Scrolling the mouse wheel will move the map up and down.<br>" + "<br><b> Zooming Out</b><br>"
-          + "Holding ALT while Scrolling the Mouse Wheel will zoom the map in and out.<br>"
-          + "Select 'Zoom' from the 'View' menu, and change to the desired level.<br>"
-          + "<br><b> Turn off Map Artwork</b><br>"
-          + "Deselect 'Map Details' in the 'View' menu, to show a map without the artwork.<br>"
-          + "Select a new 'Map Skin' from the 'View' menu to show a different kind of artwork (not all maps have skins).<br>"
-          + "<br><b> Other Things</b><br>"
-          + "Press 'n' to cycle through units with movement left (move phases only).<br>"
-          + "Press 'f' to highlight all units you own that have movement left (move phases only).<br>"
-          + "Press 'i' or 'v' to popup info on whatever territory and unit your mouse is currently over.<br>"
-          + "Press 'u' while mousing over a unit to undo all moves that unit has made (beta).<br>"
-          + "To list specific units from a territory in the Territory panel, drag and drop from the territory on the map to the territory panel.<br>";      final JEditorPane editorPane = new JEditorPane();
-      editorPane.setEditable(false);
-      editorPane.setContentType("text/html");
-      editorPane.setText(hints);
-      final JScrollPane scroll = new JScrollPane(editorPane);
-      JOptionPane.showMessageDialog(frame, scroll, "Movement Help", JOptionPane.PLAIN_MESSAGE);
-    })).setMnemonic(KeyEvent.VK_M);
-  }
-
-  private String getUnitImageURL(final UnitType unitType, final PlayerID player) {
-    final UnitImageFactory unitImageFactory = getUIContext().getUnitImageFactory();
-    if (player == null || unitImageFactory == null) {
-      return "no image";
-    }
-
-
-    Optional<URL> imageUrl = unitImageFactory.getBaseImageURL(unitType.getName(), player);
-    String imageLocation = imageUrl.isPresent() ? imageUrl.get().toString() : "";
-
-    return "<img src=\"" + imageLocation + "\" border=\"0\"/>";
-  }
-
-  public String getUnitStatsTable() {
-    // html formatted string
-    int i = 0;
-    final String color1 = "ABABAB";
-    final String color2 = "BDBDBD";
-    final String color3 = "FEECE2";
-    final StringBuilder hints = new StringBuilder();
-    hints.append("<html>");
-    final GameData data = getData();
-    try {
-      data.acquireReadLock();
-      final Map<PlayerID, Map<UnitType, ResourceCollection>> costs =
-          BattleCalculator.getResourceCostsForTUV(data, true);
-      final Map<PlayerID, List<UnitType>> playerUnitTypes =
-          UnitType.getAllPlayerUnitsWithImages(data, getUIContext(), true);
-      for (final Entry<PlayerID, List<UnitType>> entry : playerUnitTypes.entrySet()) {
-        final PlayerID player = entry.getKey();
-        hints.append("<p><table border=\"1\" bgcolor=\"" + color1 + "\">");
-        hints.append("<tr><th style=\"font-size:120%;000000\" bgcolor=\"" + color3 + "\" colspan=\"4\">")
-            .append(player == null ? "NULL" : player.getName()).append(" Units</th></tr>");
-        hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
-            .append("><td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr>");
-        for (final UnitType ut : entry.getValue()) {
-          i++;
-          hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
-              .append(">").append("<td>").append(getUnitImageURL(ut, player)).append("</td>").append("<td>")
-              .append(ut.getName()).append("</td>").append("<td>").append(costs.get(player).get(ut).toStringForHTML())
-              .append("</td>").append("<td>").append(ut.getTooltip(player)).append("</td></tr>");
-        }
-        i++;
-        hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
-            .append(">").append("<td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr></table></p><br />");
-      }
-    } finally {
-      data.releaseReadLock();
-    }
-    hints.append("</html>");
-    return hints.toString();
-  }
-
-  private void addUnitHelpMenu(final JMenu parentMenu) {
-    parentMenu.add(SwingAction.of("Unit help...", e -> {
-      final JEditorPane editorPane = new JEditorPane();
-      editorPane.setEditable(false);
-      editorPane.setContentType("text/html");
-      editorPane.setText(getUnitStatsTable());
-      editorPane.setCaretPosition(0);
-      final JScrollPane scroll = new JScrollPane(editorPane);
-      scroll.setBorder(BorderFactory.createEmptyBorder());
-      final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-      // not only do we have a start bar, but we also have the message dialog to account for just the scroll bars plus
-      // the window sides
-      final int availHeight = screenResolution.height - 120;
-      final int availWidth = screenResolution.width - 40;
-      scroll.setPreferredSize(new Dimension(
-          (scroll.getPreferredSize().width > availWidth ? availWidth
-              : (scroll.getPreferredSize().height > availHeight
-                  ? Math.min(availWidth, scroll.getPreferredSize().width + 22) : scroll.getPreferredSize().width)),
-          (scroll.getPreferredSize().height > availHeight ? availHeight
-              : (scroll.getPreferredSize().width > availWidth
-                  ? Math.min(availHeight, scroll.getPreferredSize().height + 22)
-                  : scroll.getPreferredSize().height))));
-      final JDialog dialog = new JDialog(frame);
-      dialog.setModal(false);
-      // needs java 1.6 at least...
-      // dialog.setModalityType(ModalityType.MODELESS);
-      dialog.setAlwaysOnTop(true);
-      dialog.add(scroll, BorderLayout.CENTER);
-      final JPanel buttons = new JPanel();
-      final JButton button = new JButton(SwingAction.of("OK", event -> {
-        dialog.setVisible(false);
-        dialog.removeAll();
-        dialog.dispose();
-      }));
-      buttons.add(button);
-      dialog.getRootPane().setDefaultButton(button);
-      dialog.add(buttons, BorderLayout.SOUTH);
-      dialog.pack();
-      dialog.setLocationRelativeTo(frame);
-      dialog.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowOpened(final WindowEvent e) {
-          scroll.getVerticalScrollBar().getModel().setValue(0);
-          scroll.getHorizontalScrollBar().getModel().setValue(0);
-          button.requestFocus();
-        }
-      });
-      dialog.setVisible(true);
-      // dialog.dispose();
-    })).setMnemonic(KeyEvent.VK_U);
-  }
 
   @Override
   protected void createGameSpecificMenus(final JMenuBar menuBar) {
@@ -812,7 +626,7 @@ public class TripleAMenu extends BasicGameMenuBar {
         return;
       }
       try (final FileWriter writer = new FileWriter(chooser.getSelectedFile())) {
-        writer.write(getUnitStatsTable().replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
+        writer.write(HelpMenu.getUnitStatsTable(getData(), frame.getUIContext()).replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
             .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHTML.PATTERN_HTML_IMG_TAG, ""));
       } catch (final IOException e1) {
         ClientLogger.logQuietly(e1);

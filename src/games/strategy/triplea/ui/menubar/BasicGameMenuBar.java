@@ -1,18 +1,13 @@
 package games.strategy.triplea.ui.menubar;
 
-import java.awt.BorderLayout;
-import java.awt.Dialog.ModalityType;
 import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
@@ -30,9 +25,6 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -42,23 +34,15 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.LookAndFeel;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
-import com.apple.eawt.AboutHandler;
-import com.apple.eawt.AppEvent.AboutEvent;
-import com.apple.eawt.Application;
-
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.triplea.ui.AbstractUIContext;
 import games.strategy.triplea.ui.MacQuitMenuWrapper;
-import games.strategy.triplea.ui.MainGameFrame;
 import games.strategy.triplea.ui.PlayersPanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
@@ -66,14 +50,12 @@ import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.DebugUtils;
 import games.strategy.debug.ErrorConsole;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.export.GameDataExporter;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.networkMaintenance.BanPlayerAction;
@@ -81,7 +63,6 @@ import games.strategy.engine.framework.networkMaintenance.BootPlayerAction;
 import games.strategy.engine.framework.networkMaintenance.MutePlayerAction;
 import games.strategy.engine.framework.networkMaintenance.SetPasswordAction;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
-import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
@@ -95,10 +76,7 @@ import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.ui.IntTextField;
-import games.strategy.util.CountDownLatchHandler;
-import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IllegalCharacterRemover;
-import games.strategy.util.LocalizeHTML;
 import games.strategy.util.Triple;
 
 public abstract class BasicGameMenuBar extends JMenuBar {
@@ -128,11 +106,6 @@ public abstract class BasicGameMenuBar extends JMenuBar {
     addConsoleMenu(debugMenu);
   }
 
-  protected void addReportBugsMenu(final JMenu parentMenu) {
-    parentMenu.add(SwingAction.of( "Send Bug Report", e -> {
-      SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES);
-    } )).setMnemonic(KeyEvent.VK_B);
-  }
 
   protected void addConsoleMenu(final JMenu parentMenu) {
     parentMenu.add(SwingAction.of("Show Console...", e ->  {
@@ -157,69 +130,8 @@ public abstract class BasicGameMenuBar extends JMenuBar {
 
   protected abstract void createGameSpecificMenus(final JMenuBar menuBar);
 
-  public void dispose() {
-    if (gameNotesPane != null) {
-      gameNotesPane.setVisible(false);
-    }
-  }
-
   public JEditorPane getGameNotesJEditorPane() {
     return gameNotesPane;
-  }
-
-  protected void addGameNotesMenu(final JMenu parentMenu) {
-    // allow the game developer to write notes that appear in the game
-    // displays whatever is in the notes field in html
-    final String notesProperty = getData().getProperties().get("notes", "");
-    if (notesProperty != null && notesProperty.trim().length() != 0) {
-      final String notes = LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim());
-      gameNotesPane = new JEditorPane();
-      gameNotesPane.setEditable(false);
-      gameNotesPane.setContentType("text/html");
-      gameNotesPane.setText(notes);
-      parentMenu.add(SwingAction.of("Game Notes...", e ->
-          SwingUtilities.invokeLater(() -> {
-            final JEditorPane pane = gameNotesPane;
-            final JScrollPane scroll = new JScrollPane(pane);
-            scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-            final JDialog dialog = new JDialog(frame);
-            dialog.setModalityType(ModalityType.MODELESS);
-            dialog.setAlwaysOnTop(true);
-            dialog.add(scroll, BorderLayout.CENTER);
-            final JPanel buttons = new JPanel();
-            final JButton button = new JButton(SwingAction.of("OK", event -> {
-              dialog.setVisible(false);
-              dialog.removeAll();
-              dialog.dispose();
-            }));
-            buttons.add(button);
-            dialog.getRootPane().setDefaultButton(button);
-            dialog.add(buttons, BorderLayout.SOUTH);
-            dialog.pack();
-            if (dialog.getWidth() < 400) {
-              dialog.setSize(400, dialog.getHeight());
-            }
-            if (dialog.getHeight() < 300) {
-              dialog.setSize(dialog.getWidth(), 300);
-            }
-            if (dialog.getWidth() > 800) {
-              dialog.setSize(800, dialog.getHeight());
-            }
-            if (dialog.getHeight() > 600) {
-              dialog.setSize(dialog.getWidth(), 600);
-            }
-            dialog.setLocationRelativeTo(frame);
-            dialog.addWindowListener(new WindowAdapter() {
-              @Override
-              public void windowOpened(final WindowEvent e) {
-                scroll.getVerticalScrollBar().getModel().setValue(0);
-                scroll.getHorizontalScrollBar().getModel().setValue(0);
-                button.requestFocus();
-              }
-            });
-            dialog.setVisible(true);
-          }))).setMnemonic(KeyEvent.VK_N);
-    }
   }
 
   protected InGameLobbyWatcherWrapper createLobbyMenu(final JMenuBar menuBar) {
@@ -300,13 +212,7 @@ public abstract class BasicGameMenuBar extends JMenuBar {
   }
 
   protected void createHelpMenu(final JMenuBar menuBar) {
-    final JMenu helpMenu = new JMenu("Help");
-    helpMenu.setMnemonic(KeyEvent.VK_H);
-    menuBar.add(helpMenu);
-    addGameSpecificHelpMenus(helpMenu);
-    addGameNotesMenu(helpMenu);
-    addAboutMenu(helpMenu);
-    addReportBugsMenu(helpMenu);
+    new HelpMenu(menuBar, frame.getUIContext(), getData(), getBackground());
   }
 
   private static void createWebHelpMenu(final JMenuBar menuBar) {
@@ -357,40 +263,7 @@ public abstract class BasicGameMenuBar extends JMenuBar {
     parentMenu.add(ruleBookLink);
   }
 
-  protected abstract void addGameSpecificHelpMenus(final JMenu helpMenu);
 
-  protected void addAboutMenu(final JMenu parentMenu) {
-    final String text = "<h2>" + getData().getGameName() + "</h2>" + "<p><b>Engine Version:</b> "
-        + ClientContext.engineVersion() + "<br><b>Game:</b> " + getData().getGameName()
-        + "<br><b>Game Version:</b>" + getData().getGameVersion() + "</p>"
-        + "<p>For more information please visit,<br><br>"
-        + "<b><a hlink='" + UrlConstants.SOURCE_FORGE + "'>" + UrlConstants.SOURCE_FORGE + "</a></b><br><br>";
-    final JEditorPane editorPane = new JEditorPane();
-    editorPane.setBorder(null);
-    editorPane.setBackground(getBackground());
-    editorPane.setEditable(false);
-    editorPane.setContentType("text/html");
-    editorPane.setText(text);
-    final JScrollPane scroll = new JScrollPane(editorPane);
-    scroll.setBorder(null);
-    if (System.getProperty("mrj.version") == null) {
-      parentMenu.addSeparator();
-      parentMenu.add(SwingAction.of("About...", e -> {
-        JOptionPane.showMessageDialog(frame, editorPane, "About " + frame.getGame().getData().getGameName(),
-            JOptionPane.PLAIN_MESSAGE);
-      })).setMnemonic(KeyEvent.VK_A);
-    } else
-    // On Mac OS X, put the About menu where Mac users expect it to be
-    {
-      Application.getApplication().setAboutHandler(new AboutHandler(){
-        @Override
-        public void handleAbout(AboutEvent paramAboutEvent) {
-          JOptionPane.showMessageDialog(frame, editorPane, "About " + frame.getGame().getData().getGameName(),
-              JOptionPane.PLAIN_MESSAGE);
-        }
-      });
-    }
-  }
 
   protected JMenu createFileMenu() {
     final JMenu fileMenu = new JMenu("File");
