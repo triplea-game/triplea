@@ -13,7 +13,6 @@ import javax.swing.table.TableModel;
 
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.GUID;
-import games.strategy.ui.TableSorter;
 
 public class LobbyGameTable extends JTable {
   private static final long serialVersionUID = 8632519876114231003L;

@@ -40,7 +40,6 @@ import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.Node;
-import games.strategy.ui.TableSorter;
 import games.strategy.util.MD5Crypt;
 
 public class LobbyGamePanel extends JPanel {
