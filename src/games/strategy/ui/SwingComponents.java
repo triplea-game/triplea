@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 public class SwingComponents {
 
   public enum KeyboardCode {
+    D(KeyEvent.VK_D),
     G(KeyEvent.VK_G);
 
 
