@@ -108,7 +108,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
 
   public BasicGameMenuBar(final CustomGameFrame frame) {
     this.frame = frame;
-    createFileMenu(this);
+    add(createFileMenu());
     createGameSpecificMenus(this);
     final InGameLobbyWatcherWrapper watcher = createLobbyMenu(this);
     createNetworkMenu(this, watcher);
@@ -392,14 +392,18 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     }
   }
 
-  protected void createFileMenu(final JMenuBar menuBar) {
+  protected JMenu createFileMenu() {
     final JMenu fileMenu = new JMenu("File");
     fileMenu.setMnemonic(KeyEvent.VK_F);
-    menuBar.add(fileMenu);
-    addSaveMenu(fileMenu);
-    addPostPBEM(fileMenu);
+    fileMenu.add(createSaveMenu());
+
+    if (PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(getGame().getData())) {
+      fileMenu.add(addPostPBEM());
+    }
+
     fileMenu.addSeparator();
     addExitMenu(fileMenu);
+    return fileMenu;
   }
 
   public static File getSaveGameLocationDialog(final Frame frame) {
@@ -467,7 +471,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     }
   }
 
-  protected void addSaveMenu(final JMenu parent) {
+  private JMenuItem createSaveMenu() {
     final JMenuItem menuFileSave = new JMenuItem(SwingAction.of("Save...", e -> {
       final File f = getSaveGameLocationDialog(frame);
       if (f != null) {
@@ -478,13 +482,10 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     menuFileSave.setMnemonic(KeyEvent.VK_S);
     menuFileSave.setAccelerator(
         KeyStroke.getKeyStroke(KeyEvent.VK_S, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-    parent.add(menuFileSave);
+    return menuFileSave;
   }
 
-  protected void addPostPBEM(final JMenu parent) {
-    if (!PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(getGame().getData())) {
-      return;
-    }
+  protected JMenuItem addPostPBEM() {
     final JMenuItem menuPBEM = new JMenuItem(SwingAction.of("Post PBEM/PBF Gamesave...", e -> {
       final GameData data = getGame().getData();
       if (data == null || !PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(data)) {
@@ -508,7 +509,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     menuPBEM.setMnemonic(KeyEvent.VK_P);
     menuPBEM.setAccelerator(
         KeyStroke.getKeyStroke(KeyEvent.VK_P, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-    parent.add(menuPBEM);
+    return menuPBEM;
   }
 
   protected void addExitMenu(final JMenu parentMenu) {
