@@ -94,42 +94,12 @@ public class TripleAMenuBar extends JMenuBar {
     final InGameLobbyWatcherWrapper watcher = createLobbyMenu(this);
     createNetworkMenu(this, watcher);
     createWebHelpMenu(this);
-    createDebugMenu(this);
+    new DebugMenu(this, frame);
     createHelpMenu(this);
   }
 
-  private void createDebugMenu(final JMenuBar menuBar) {
-    final JMenu debugMenu = new JMenu("Debug");
-    menuBar.add(debugMenu);
-    debugMenu.addSeparator();
-    addChangeProAISettings(debugMenu);
-    debugMenu.addSeparator();
-    debugMenu.add(new EnablePerformanceLoggingCheckBox());
-    debugMenu.setMnemonic(KeyEvent.VK_D);
-    addConsoleMenu(debugMenu);
-  }
 
 
-  protected void addConsoleMenu(final JMenu parentMenu) {
-    parentMenu.add(SwingAction.of("Show Console...", e ->  {
-        ErrorConsole.getConsole().setVisible(true);
-        ErrorConsole.getConsole().append(DebugUtils.getMemory());
-    })).setMnemonic(KeyEvent.VK_C);
-  }
-
-  private void addChangeProAISettings(final JMenu parentMenu) {
-    boolean areThereProAIs = false;
-    final Set<IGamePlayer> players = (frame).getLocalPlayers().getLocalPlayers();
-    for (final IGamePlayer player : players) {
-      if (player instanceof ProAI) {
-        areThereProAIs = true;
-      }
-    }
-    if (areThereProAIs) {
-      ProAI.initialize((TripleAFrame) frame);
-      parentMenu.add(SwingAction.of("Show Hard AI Logs", e -> ProAI.showSettingsWindow())).setMnemonic(KeyEvent.VK_X);
-    }
-  }
 
   public JEditorPane getGameNotesJEditorPane() {
     return gameNotesPane;
