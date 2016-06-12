@@ -505,8 +505,6 @@ public class TripleAFrame extends MainGameFrame {
     if (uiContext == null) {
       return;
     }
-    menu.dispose();
-    menu = null;
     this.setVisible(false);
     TripleAFrame.this.dispose();
     if (GameRunner.isMac()) {
@@ -523,8 +521,6 @@ public class TripleAFrame extends MainGameFrame {
       historySyncher.deactivate();
       historySyncher = null;
     }
-    // clear out dynamix's properties
-    // Dynamix_AI.clearCachedGameDataAll(); TODO: errors cus dynamix sucks
     ProAI.gameOverClearCache();
   }
 
