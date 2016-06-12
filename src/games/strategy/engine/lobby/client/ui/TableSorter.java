@@ -1,4 +1,4 @@
-package games.strategy.ui;
+package games.strategy.engine.lobby.client.ui;
 
 import java.awt.Color;
 import java.awt.Component;
