@@ -85,6 +85,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import com.google.common.collect.ImmutableList;
 
 import games.strategy.triplea.delegate.BaseEditDelegate;
+import games.strategy.triplea.ui.menubar.BasicGameMenuBar;
+import games.strategy.triplea.ui.menubar.TripleAMenu;
 import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.ChatPanel;
@@ -486,7 +488,7 @@ public class TripleAFrame extends MainGameFrame {
    * @param value
    *        - a number between 15 and 100
    */
-  void setScale(final double value) {
+  public void setScale(final double value) {
     getMapPanel().setScale(value / 100);
   }
 
@@ -2349,23 +2351,22 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public BattlePanel getBattlePanel() {
-    // m_messageAndDialogThreadPool.waitForAll();
     return actionButtons.getBattlePanel();
   }
 
-  Action getShowGameAction() {
+  public Action getShowGameAction() {
     return m_showGameAction;
   }
 
-  Action getShowHistoryAction() {
+  public Action getShowHistoryAction() {
     return m_showHistoryAction;
   }
 
-  Action getShowMapOnlyAction() {
+  public Action getShowMapOnlyAction() {
     return m_showMapOnlyAction;
   }
 
-  Action getSaveScreenshotAction() {
+  public Action getSaveScreenshotAction() {
     return m_saveScreenshotAction;
   }
 
@@ -2373,7 +2374,7 @@ public class TripleAFrame extends MainGameFrame {
     return uiContext;
   }
 
-  MapPanel getMapPanel() {
+  public MapPanel getMapPanel() {
     return mapPanel;
   }
 
@@ -2383,7 +2384,7 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   // Beagle Code Called to Change Mapskin
-  void updateMap(final String mapdir) throws IOException {
+  public void updateMap(final String mapdir) throws IOException {
     uiContext.setMapDir(data, mapdir);
     // when changing skins, always show relief images
     if (uiContext.getMapData().getHasRelief()) {
