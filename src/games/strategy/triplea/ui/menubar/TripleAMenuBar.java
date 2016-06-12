@@ -2,81 +2,46 @@ package games.strategy.triplea.ui.menubar;
 
 import java.awt.FileDialog;
 import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.FilenameFilter;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
-import games.strategy.triplea.ui.AbstractUIContext;
-import games.strategy.triplea.ui.MacQuitMenuWrapper;
-import games.strategy.triplea.ui.PlayersPanel;
-import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
-import games.strategy.debug.DebugUtils;
-import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.export.GameDataExporter;
-import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.networkMaintenance.BanPlayerAction;
-import games.strategy.engine.framework.networkMaintenance.BootPlayerAction;
-import games.strategy.engine.framework.networkMaintenance.MutePlayerAction;
-import games.strategy.engine.framework.networkMaintenance.SetPasswordAction;
-import games.strategy.engine.framework.startup.login.ClientLoginValidator;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
-import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
-import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.pbem.PBEMMessagePoster;
-import games.strategy.net.IServerMessenger;
-import games.strategy.performance.EnablePerformanceLoggingCheckBox;
-import games.strategy.triplea.UrlConstants;
-import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
+import games.strategy.triplea.ui.MacQuitMenuWrapper;
+import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
-import games.strategy.ui.IntTextField;
-import games.strategy.util.IllegalCharacterRemover;
+import games.strategy.ui.SwingAction;
 import games.strategy.util.Triple;
 
 public class TripleAMenuBar extends JMenuBar {
@@ -92,7 +57,7 @@ public class TripleAMenuBar extends JMenuBar {
     new ExportMenu(this, frame, getData());
     final InGameLobbyWatcherWrapper watcher = createLobbyMenu(this);
     new NetworkMenu(this, watcher, frame);
-    createWebHelpMenu(this);
+    new WebHelpMenu(this);
 
     new DebugMenu(this, frame);
     new HelpMenu(this, frame.getUIContext(), getData(), getBackground());
@@ -122,54 +87,6 @@ public class TripleAMenuBar extends JMenuBar {
     return watcher;
   }
 
-
-  private static void createWebHelpMenu(final JMenuBar menuBar) {
-    final JMenu web = new JMenu("Web");
-    web.setMnemonic(KeyEvent.VK_W);
-    menuBar.add(web);
-    addWebMenu(web);
-  }
-
-  private static void addWebMenu(final JMenu parentMenu) {
-    final JMenuItem hostingLink = new JMenuItem("How to Host...");
-    hostingLink.setMnemonic(KeyEvent.VK_H);
-    final JMenuItem mapLink = new JMenuItem("Install Maps...");
-    mapLink.setMnemonic(KeyEvent.VK_I);
-    final JMenuItem bugReport = new JMenuItem("Bug Report...");
-    bugReport.setMnemonic(KeyEvent.VK_B);
-    final JMenuItem lobbyRules = new JMenuItem("Lobby Rules...");
-    lobbyRules.setMnemonic(KeyEvent.VK_L);
-    final JMenuItem warClub = new JMenuItem("War Club & Ladder...");
-    warClub.setMnemonic(KeyEvent.VK_W);
-    final JMenuItem devForum = new JMenuItem("Developer Forum...");
-    devForum.setMnemonic(KeyEvent.VK_E);
-    final JMenuItem donateLink = new JMenuItem("Donate...");
-    donateLink.setMnemonic(KeyEvent.VK_O);
-    final JMenuItem helpLink = new JMenuItem("Help...");
-    helpLink.setMnemonic(KeyEvent.VK_G);
-    final JMenuItem ruleBookLink = new JMenuItem("Rule Book...");
-    ruleBookLink.setMnemonic(KeyEvent.VK_K);
-
-    hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_HOSTING_MAPS));
-    mapLink.addActionListener(e  -> SwingComponents.newOpenUrlConfirmationDialog( UrlConstants.SF_HOSTING_MAPS));
-    bugReport.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_TICKET_LIST));
-    lobbyRules.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB_LOBBY_RULES ));
-    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB));
-    devForum.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_FORUM));
-    donateLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
-    helpLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.WEBSITE_HELP));
-    ruleBookLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK));
-
-    parentMenu.add(hostingLink);
-    parentMenu.add(mapLink);
-    parentMenu.add(bugReport);
-    parentMenu.add(lobbyRules);
-    parentMenu.add(warClub);
-    parentMenu.add(devForum);
-    parentMenu.add(donateLink);
-    parentMenu.add(helpLink);
-    parentMenu.add(ruleBookLink);
-  }
 
 
 
