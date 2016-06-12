@@ -289,7 +289,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
   protected void addShowPlayers(final JMenu menuGame) {
     if (!getGame().getData().getProperties().getEditableProperties().isEmpty()) {
       final AbstractAction optionsAction =
-          SwingAction.of("Show Who is Who...", e -> games.strategy.common.ui.PlayersPanel.showPlayers(getGame(), frame));
+          SwingAction.of("Show Who is Who...", e -> PlayersPanel.showPlayers(getGame(), frame));
       menuGame.add(optionsAction);
     }
   }
