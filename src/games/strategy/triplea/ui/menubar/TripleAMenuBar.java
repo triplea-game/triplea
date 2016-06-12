@@ -90,10 +90,10 @@ public class TripleAMenuBar extends JMenuBar {
     new ViewMenu(this, frame, getData());
     new GameMenu(this, frame, getData());
     new ExportMenu(this, frame, getData());
-
     final InGameLobbyWatcherWrapper watcher = createLobbyMenu(this);
-    createNetworkMenu(this, watcher);
+    new NetworkMenu(this, watcher, frame);
     createWebHelpMenu(this);
+
     new DebugMenu(this, frame);
     new HelpMenu(this, frame.getUIContext(), getData(), getBackground());
   }
@@ -120,66 +120,6 @@ public class TripleAMenuBar extends JMenuBar {
     lobby.add(new EditGameCommentAction(watcher, frame));
     lobby.add(new RemoveGameFromLobbyAction(watcher));
     return watcher;
-  }
-
-  protected void createNetworkMenu(final JMenuBar menuBar, final InGameLobbyWatcherWrapper watcher) {
-    // revisit
-    // if we are not a client or server game
-    // then this will not create the network menu
-    if (getGame().getMessenger() instanceof DummyMessenger) {
-      return;
-    }
-    final JMenu menuNetwork = new JMenu("Network");
-    menuNetwork.setMnemonic(KeyEvent.VK_N);
-    addBootPlayer(menuNetwork);
-    addBanPlayer(menuNetwork);
-    addMutePlayer(menuNetwork);
-    addSetGamePassword(menuNetwork, watcher);
-    addShowPlayers(menuNetwork);
-    menuBar.add(menuNetwork);
-  }
-
-  protected void addBootPlayer(final JMenu parentMenu) {
-    if (!getGame().getMessenger().isServer()) {
-      return;
-    }
-    final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
-    final Action boot = new BootPlayerAction(this, messenger);
-    parentMenu.add(boot);
-  }
-
-  protected void addBanPlayer(final JMenu parentMenu) {
-    if (!getGame().getMessenger().isServer()) {
-      return;
-    }
-    final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
-    final Action ban = new BanPlayerAction(this, messenger);
-    parentMenu.add(ban);
-  }
-
-  protected void addMutePlayer(final JMenu parentMenu) {
-    if (!getGame().getMessenger().isServer()) {
-      return;
-    }
-    final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
-    final Action mute = new MutePlayerAction(this, messenger);
-    parentMenu.add(mute);
-  }
-
-  protected void addSetGamePassword(final JMenu parentMenu, final InGameLobbyWatcherWrapper watcher) {
-    if (!getGame().getMessenger().isServer()) {
-      return;
-    }
-    final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
-    parentMenu.add(new SetPasswordAction(this, watcher, (ClientLoginValidator) messenger.getLoginValidator()));
-  }
-
-  protected void addShowPlayers(final JMenu menuGame) {
-    if (!getGame().getData().getProperties().getEditableProperties().isEmpty()) {
-      final AbstractAction optionsAction =
-          SwingAction.of("Show Who is Who...", e -> PlayersPanel.showPlayers(getGame(), frame));
-      menuGame.add(optionsAction);
-    }
   }
 
 
