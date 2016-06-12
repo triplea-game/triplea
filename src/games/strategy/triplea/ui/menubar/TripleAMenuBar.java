@@ -47,7 +47,6 @@ import games.strategy.util.Triple;
 public class TripleAMenuBar extends JMenuBar {
   private static final long serialVersionUID = -1447295944297939539L;
   protected final TripleAFrame frame;
-  protected JEditorPane gameNotesPane;
 
   public TripleAMenuBar(final TripleAFrame frame) {
     this.frame = frame;
@@ -67,11 +66,6 @@ public class TripleAMenuBar extends JMenuBar {
     new HelpMenu(this, frame.getUIContext(), getData(), getBackground());
   }
 
-
-
-  public JEditorPane getGameNotesJEditorPane() {
-    return gameNotesPane;
-  }
 
   protected InGameLobbyWatcherWrapper createLobbyMenu(final JMenuBar menuBar, InGameLobbyWatcherWrapper watcher ) {
 
