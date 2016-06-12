@@ -23,9 +23,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
@@ -33,6 +31,34 @@ import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.Triple;
+import org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceCeruleanLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceChallengerDeepLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceEmeraldDuskLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceMistAquaLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceMistSilverLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel;
 
 public class TripleAMenuBar extends JMenuBar {
   private static final long serialVersionUID = -1447295944297939539L;
@@ -141,35 +167,37 @@ public class TripleAMenuBar extends JMenuBar {
     for (final LookAndFeelInfo look : UIManager.getInstalledLookAndFeels()) {
       substanceLooks.add(look.getClassName());
     }
-    substanceLooks.addAll(new ArrayList<>(
-        Arrays.asList(new String[] {"org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceCeruleanLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceChallengerDeepLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceEmeraldDuskLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceMistAquaLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceMistSilverLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel",
-            "org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel"})));
+    substanceLooks.addAll(
+        Arrays.asList(
+            SubstanceAutumnLookAndFeel.class.getName(),
+            SubstanceBusinessBlackSteelLookAndFeel.class.getName(),
+            SubstanceBusinessBlueSteelLookAndFeel.class.getName(),
+            SubstanceBusinessLookAndFeel.class.getName(),
+            SubstanceCeruleanLookAndFeel.class.getName(),
+            SubstanceChallengerDeepLookAndFeel.class.getName(),
+            SubstanceCremeCoffeeLookAndFeel.class.getName(),
+            SubstanceCremeLookAndFeel.class.getName(),
+            SubstanceDustCoffeeLookAndFeel.class.getName(),
+            SubstanceDustLookAndFeel.class.getName(),
+            SubstanceEmeraldDuskLookAndFeel.class.getName(),
+            SubstanceGeminiLookAndFeel.class.getName(),
+            SubstanceGraphiteAquaLookAndFeel.class.getName(),
+            SubstanceGraphiteGlassLookAndFeel.class.getName(),
+            SubstanceGraphiteLookAndFeel.class.getName(),
+            SubstanceMagellanLookAndFeel.class.getName(),
+            SubstanceMarinerLookAndFeel.class.getName(),
+            SubstanceMistAquaLookAndFeel.class.getName(),
+            SubstanceMistSilverLookAndFeel.class.getName(),
+            SubstanceModerateLookAndFeel.class.getName(),
+            SubstanceNebulaBrickWallLookAndFeel.class.getName(),
+            SubstanceNebulaLookAndFeel.class.getName(),
+            SubstanceOfficeBlack2007LookAndFeel.class.getName(),
+            SubstanceOfficeBlue2007LookAndFeel.class.getName(),
+            SubstanceOfficeSilver2007LookAndFeel.class.getName(),
+            SubstanceRavenLookAndFeel.class.getName(),
+            SubstanceSaharaLookAndFeel.class.getName(),
+            SubstanceTwilightLookAndFeel.class.getName()
+        ));
     return substanceLooks;
   }
 
