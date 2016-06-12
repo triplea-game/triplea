@@ -12,14 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -27,8 +24,6 @@ import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameStep;
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
@@ -36,12 +31,7 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
-import games.strategy.engine.pbem.PBEMMessagePoster;
-import games.strategy.triplea.delegate.GameStepPropertiesHelper;
-import games.strategy.triplea.ui.MacQuitMenuWrapper;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.history.HistoryLog;
-import games.strategy.ui.SwingAction;
 import games.strategy.util.Triple;
 
 public class TripleAMenuBar extends JMenuBar {
@@ -66,9 +56,7 @@ public class TripleAMenuBar extends JMenuBar {
     new HelpMenu(this, frame.getUIContext(), getData(), getBackground());
   }
 
-
-  protected InGameLobbyWatcherWrapper createLobbyMenu(final JMenuBar menuBar, InGameLobbyWatcherWrapper watcher ) {
-
+  private InGameLobbyWatcherWrapper createLobbyMenu(final JMenuBar menuBar, InGameLobbyWatcherWrapper watcher ) {
     if (!(frame.getGame() instanceof ServerGame)) {
       return null;
     }
@@ -81,9 +69,6 @@ public class TripleAMenuBar extends JMenuBar {
     }
     return watcher;
   }
-
-
-
 
 
   public static File getSaveGameLocationDialog(final Frame frame) {

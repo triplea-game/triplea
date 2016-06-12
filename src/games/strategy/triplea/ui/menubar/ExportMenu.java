@@ -71,15 +71,11 @@ public class ExportMenu {
   private final TripleAFrame frame;
   private final GameData gameData;
   private final IUIContext iuiContext;
-  private final StatPanel statsPanel;
-  private final MapPanel mapPanel;
-  
+
   public ExportMenu(JMenuBar menuBar, TripleAFrame frame, GameData gameData) {
     this.frame = frame;
     this.gameData = gameData;
     iuiContext = frame.getUIContext();
-    statsPanel = frame.getStatPanel();
-    mapPanel = frame.getMapPanel();
 
     createExportMenu(menuBar);
   }
@@ -96,7 +92,7 @@ public class ExportMenu {
     addSaveScreenshot(menuGame);
   }
   // TODO: create a second menu option for parsing current attachments
-  protected void addExportXML(final JMenu parentMenu) {
+  private void addExportXML(final JMenu parentMenu) {
     final Action exportXML = SwingAction.of("Export game.xml file (Beta)...", e -> exportXMLFile());
     parentMenu.add(exportXML).setMnemonic(KeyEvent.VK_X);
   }
@@ -373,8 +369,6 @@ public class ExportMenu {
     }
     return retval;
   }
-
-
 
   private void addExportStatsFull(final JMenu parentMenu) {
     final Action showDiceStats = SwingAction.of("Export Full Game Stats...", e -> createAndSaveStats(true));
