@@ -52,11 +52,11 @@ public class GameMenu {
   private final GameData gameData;
   private final IGame game;
 
-  public GameMenu(JMenuBar menuBar, TripleAFrame frame, GameData gameData) {
+  public GameMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
     this.frame = frame;
-    this.gameData = gameData;
-    this.iuiContext = frame.getUIContext();
     game = frame.getGame();
+    gameData = frame.getGame().getData();
+    iuiContext = frame.getUIContext();
 
     menuBar.add(createGameMenu());
   }
