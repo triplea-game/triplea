@@ -3,7 +3,7 @@ package games.strategy.engine.framework;
 import java.util.Collections;
 import java.util.Set;
 
-import games.strategy.common.player.AbstractHumanPlayer;
+import games.strategy.triplea.player.AbstractHumanPlayer;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 

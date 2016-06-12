@@ -1,4 +1,4 @@
-package games.strategy.common.player;
+package games.strategy.triplea.player;
 
 import games.strategy.triplea.ui.AbstractUIContext;
 import games.strategy.util.ThreadUtil;
