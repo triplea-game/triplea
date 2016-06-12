@@ -14,7 +14,6 @@ import games.strategy.triplea.ui.AbstractUIContext;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.PurchasePanel;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.menubar.BasicGameMenuBar;
 import games.strategy.triplea.ui.screen.IDrawable;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.ui.SwingAction;
@@ -131,7 +130,7 @@ public class ViewMenu {
 
   protected void addSetLookAndFeel(final JMenu menuView) {
     menuView.add(SwingAction.of("Set Look and Feel...", e -> {
-      final Triple<JList<String>, Map<String, String>, String> lookAndFeel = BasicGameMenuBar.getLookAndFeelList();
+      final Triple<JList<String>, Map<String, String>, String> lookAndFeel = TripleAMenuBar.getLookAndFeelList();
       final JList<String> list = lookAndFeel.getFirst();
       final String currentKey = lookAndFeel.getThird();
       final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
