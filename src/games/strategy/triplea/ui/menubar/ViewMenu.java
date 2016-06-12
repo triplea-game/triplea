@@ -1,25 +1,20 @@
 package games.strategy.triplea.ui.menubar;
 
-import games.strategy.debug.ClientLogger;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.properties.ColorProperty;
-import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.data.properties.NumberProperty;
-import games.strategy.engine.data.properties.PropertiesUI;
-import games.strategy.engine.framework.GameRunner2;
-import games.strategy.engine.framework.startup.ui.MainFrame;
-import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.image.TileImageFactory;
-import games.strategy.triplea.ui.AbstractUIContext;
-import games.strategy.triplea.ui.IUIContext;
-import games.strategy.triplea.ui.PurchasePanel;
-import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.screen.IDrawable;
-import games.strategy.triplea.ui.screen.UnitsDrawer;
-import games.strategy.ui.SwingAction;
-import games.strategy.util.CountDownLatchHandler;
-import games.strategy.util.EventThreadJOptionPane;
-import games.strategy.util.Triple;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -41,22 +36,27 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.prefs.Preferences;
+
+import games.strategy.debug.ClientLogger;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.properties.ColorProperty;
+import games.strategy.engine.data.properties.IEditableProperty;
+import games.strategy.engine.data.properties.NumberProperty;
+import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.triplea.image.MapImage;
+import games.strategy.triplea.image.TileImageFactory;
+import games.strategy.triplea.ui.AbstractUIContext;
+import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.PurchasePanel;
+import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.screen.IDrawable;
+import games.strategy.triplea.ui.screen.UnitsDrawer;
+import games.strategy.ui.SwingAction;
+import games.strategy.util.CountDownLatchHandler;
+import games.strategy.util.EventThreadJOptionPane;
+import games.strategy.util.Triple;
 
 public class ViewMenu {
   private JCheckBoxMenuItem showMapDetails;
@@ -97,6 +97,7 @@ public class ViewMenu {
     showMapDetails.setEnabled(uiContext.getMapData().getHasRelief());
 
   }
+
   private void addShowCommentLog(final JMenu parentMenu) {
     final JCheckBoxMenuItem showCommentLog = new JCheckBoxMenuItem("Show Comment Log");
     showCommentLog.setModel(frame.getShowCommentLogButtonModel());
@@ -112,7 +113,7 @@ public class ViewMenu {
     parentMenu.add(tabbedProduction);
   }
 
-  protected void addShowGameUuid(final JMenu menuView) {
+  private void addShowGameUuid(final JMenu menuView) {
     menuView.add(SwingAction.of("Game UUID...", e -> {
       final String id = (String) gameData.getProperties().get(GameData.GAME_UUID);
       final JTextField text = new JTextField();
@@ -128,7 +129,7 @@ public class ViewMenu {
     })).setMnemonic(KeyEvent.VK_U);
   }
 
-  protected void addSetLookAndFeel(final JMenu menuView) {
+  private void addSetLookAndFeel(final JMenu menuView) {
     menuView.add(SwingAction.of("Set Look and Feel...", e -> {
       final Triple<JList<String>, Map<String, String>, String> lookAndFeel = TripleAMenuBar.getLookAndFeelList();
       final JList<String> list = lookAndFeel.getFirst();
@@ -171,33 +172,22 @@ public class ViewMenu {
       final JButton reset = new JButton("Reset");
       buttons.add(reset);
       panel.add(buttons, BorderLayout.SOUTH);
-      fitWidth.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          final double screenWidth = frame.getMapPanel().getWidth();
-          final double mapWidth = frame.getMapPanel().getImageWidth();
-          double ratio = screenWidth / mapWidth;
-          ratio = Math.max(0.15, ratio);
-          ratio = Math.min(1, ratio);
-          model.setValue((int) (ratio * 100));
-        }
+      fitWidth.addActionListener(event -> {
+        final double screenWidth = frame.getMapPanel().getWidth();
+        final double mapWidth = frame.getMapPanel().getImageWidth();
+        double ratio = screenWidth / mapWidth;
+        ratio = Math.max(0.15, ratio);
+        ratio = Math.min(1, ratio);
+        model.setValue((int) (ratio * 100));
       });
-      fitHeight.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          final double screenHeight = frame.getMapPanel().getHeight();
-          final double mapHeight = frame.getMapPanel().getImageHeight();
-          double ratio = screenHeight / mapHeight;
-          ratio = Math.max(0.15, ratio);
-          model.setValue((int) (ratio * 100));
-        }
+      fitHeight.addActionListener(event -> {
+        final double screenHeight = frame.getMapPanel().getHeight();
+        final double mapHeight = frame.getMapPanel().getImageHeight();
+        double ratio = screenHeight / mapHeight;
+        ratio = Math.max(0.15, ratio);
+        model.setValue((int) (ratio * 100));
       });
-      reset.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          model.setValue(100);
-        }
-      });
+      reset.addActionListener(event -> model.setValue(100));
       final int result = JOptionPane.showOptionDialog(frame, panel, "Choose Map Scale",
           JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK", "Cancel"}, 0);
       if (result != 0) {
@@ -299,21 +289,17 @@ public class ViewMenu {
       if (skins.get(key).equals(AbstractUIContext.getMapDir())) {
         mapMenuItem.setSelected(true);
       }
-      mapMenuItem.addActionListener(new ActionListener() {
-                                      @Override
-                                      public void actionPerformed(final ActionEvent e) {
-                                        try {
-                                          frame.updateMap(skins.get(key));
-                                          if (uiContext.getMapData().getHasRelief()) {
-                                            showMapDetails.setSelected(true);
-                                          }
-                                          showMapDetails.setEnabled(uiContext.getMapData().getHasRelief());
-                                        } catch (final Exception exception) {
-                                          ClientLogger.logError("Error Changing Map Skin2",  exception);
-                                        }
-                                      }// else
-                                    }// actionPerformed
-      );
+      mapMenuItem.addActionListener(e -> {
+        try {
+          frame.updateMap(skins.get(key));
+          if (uiContext.getMapData().getHasRelief()) {
+            showMapDetails.setSelected(true);
+          }
+          showMapDetails.setEnabled(uiContext.getMapData().getHasRelief());
+        } catch (final Exception exception) {
+          ClientLogger.logError("Error Changing Map Skin2", exception);
+        }
+      });
     }
   }
 
@@ -321,22 +307,19 @@ public class ViewMenu {
     showMapDetails = new JCheckBoxMenuItem("Show Map Details");
     showMapDetails.setMnemonic(KeyEvent.VK_D);
     showMapDetails.setSelected(TileImageFactory.getShowReliefImages());
-    showMapDetails.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (TileImageFactory.getShowReliefImages() == showMapDetails.isSelected()) {
-          return;
-        }
-        TileImageFactory.setShowReliefImages(showMapDetails.isSelected());
-        final Thread t = new Thread("Triplea : Show map details thread") {
-          @Override
-          public void run() {
-            yield();
-            frame.getMapPanel().updateCountries(gameData.getMap().getTerritories());
-          }
-        };
-        t.start();
+    showMapDetails.addActionListener(e -> {
+      if (TileImageFactory.getShowReliefImages() == showMapDetails.isSelected()) {
+        return;
       }
+      TileImageFactory.setShowReliefImages(showMapDetails.isSelected());
+      final Thread t = new Thread("Triplea : Show map details thread") {
+        @Override
+        public void run() {
+          yield();
+          frame.getMapPanel().updateCountries(gameData.getMap().getTerritories());
+        }
+      };
+      t.start();
     });
     menuGame.add(showMapDetails);
   }
@@ -351,25 +334,22 @@ public class ViewMenu {
       showMapBlends.setSelected(false);
       showMapBlends.setEnabled(false);
     }
-    showMapBlends.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (TileImageFactory.getShowMapBlends() == showMapBlends.isSelected()) {
-          return;
-        }
-        TileImageFactory.setShowMapBlends(showMapBlends.isSelected());
-        TileImageFactory.setShowMapBlendMode(uiContext.getMapData().getMapBlendMode());
-        TileImageFactory.setShowMapBlendAlpha(uiContext.getMapData().getMapBlendAlpha());
-        final Thread t = new Thread("Triplea : Show map Blends thread") {
-          @Override
-          public void run() {
-            frame.setScale(uiContext.getScale() * 100);
-            yield();
-            frame.getMapPanel().updateCountries(gameData.getMap().getTerritories());
-          }
-        };
-        t.start();
+    showMapBlends.addActionListener(e -> {
+      if (TileImageFactory.getShowMapBlends() == showMapBlends.isSelected()) {
+        return;
       }
+      TileImageFactory.setShowMapBlends(showMapBlends.isSelected());
+      TileImageFactory.setShowMapBlendMode(uiContext.getMapData().getMapBlendMode());
+      TileImageFactory.setShowMapBlendAlpha(uiContext.getMapData().getMapBlendAlpha());
+      final Thread t = new Thread("Triplea : Show map Blends thread") {
+        @Override
+        public void run() {
+          frame.setScale(uiContext.getScale() * 100);
+          yield();
+          frame.getMapPanel().updateCountries(gameData.getMap().getTerritories());
+        }
+      };
+      t.start();
     });
     menuGame.add(showMapBlends);
   }
@@ -378,13 +358,10 @@ public class ViewMenu {
     final JCheckBoxMenuItem showUnitsBox = new JCheckBoxMenuItem("Show Units");
     showUnitsBox.setMnemonic(KeyEvent.VK_U);
     showUnitsBox.setSelected(true);
-    showUnitsBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final boolean tfselected = showUnitsBox.isSelected();
-        uiContext.setShowUnits(tfselected);
-        frame.getMapPanel().resetMap();
-      }
+    showUnitsBox.addActionListener(e -> {
+      final boolean tfselected = showUnitsBox.isSelected();
+      uiContext.setShowUnits(tfselected);
+      frame.getMapPanel().resetMap();
     });
     parentMenu.add(showUnitsBox);
   }
@@ -417,37 +394,32 @@ public class ViewMenu {
       }
 
       @Override
-      public void menuDeselected(final MenuEvent e) {}
+      public void menuDeselected(final MenuEvent e) {
+      }
 
       @Override
-      public void menuCanceled(final MenuEvent e) {}
-    });
-    noneButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (noneButton.isSelected() && uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.LOW) {
-          uiContext.setDrawTerritoryBordersAgain(IDrawable.OptionalExtraBorderLevel.LOW);
-          frame.getMapPanel().resetMap();
-        }
+      public void menuCanceled(final MenuEvent e) {
       }
     });
-    mediumButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (mediumButton.isSelected()
-            && uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.MEDIUM) {
-          uiContext.setDrawTerritoryBordersAgain(IDrawable.OptionalExtraBorderLevel.MEDIUM);
-          frame.getMapPanel().resetMap();
-        }
+    noneButton.addActionListener(e -> {
+      if (noneButton.isSelected()
+          && uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.LOW) {
+        uiContext.setDrawTerritoryBordersAgain(IDrawable.OptionalExtraBorderLevel.LOW);
+        frame.getMapPanel().resetMap();
       }
     });
-    highButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (highButton.isSelected() && uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.HIGH) {
-          uiContext.setDrawTerritoryBordersAgain(IDrawable.OptionalExtraBorderLevel.HIGH);
-          frame.getMapPanel().resetMap();
-        }
+    mediumButton.addActionListener(e -> {
+      if (mediumButton.isSelected()
+          && uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.MEDIUM) {
+        uiContext.setDrawTerritoryBordersAgain(IDrawable.OptionalExtraBorderLevel.MEDIUM);
+        frame.getMapPanel().resetMap();
+      }
+    });
+    highButton.addActionListener(e -> {
+      if (highButton.isSelected()
+          && uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.HIGH) {
+        uiContext.setDrawTerritoryBordersAgain(IDrawable.OptionalExtraBorderLevel.HIGH);
+        frame.getMapPanel().resetMap();
       }
     });
     drawBordersMenu.add(noneButton);
@@ -512,13 +484,10 @@ public class ViewMenu {
   private void addShowTerritoryEffects(final JMenu parentMenu) {
     final JCheckBoxMenuItem territoryEffectsBox = new JCheckBoxMenuItem("Show TerritoryEffects");
     territoryEffectsBox.setMnemonic(KeyEvent.VK_T);
-    territoryEffectsBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final boolean tfselected = territoryEffectsBox.isSelected();
-        uiContext.setShowTerritoryEffects(tfselected);
-        frame.getMapPanel().resetMap();
-      }
+    territoryEffectsBox.addActionListener(e -> {
+      final boolean tfselected = territoryEffectsBox.isSelected();
+      uiContext.setShowTerritoryEffects(tfselected);
+      frame.getMapPanel().resetMap();
     });
     parentMenu.add(territoryEffectsBox);
     territoryEffectsBox.setSelected(true);
@@ -528,16 +497,11 @@ public class ViewMenu {
     final JCheckBoxMenuItem lockMapBox = new JCheckBoxMenuItem("Lock Map");
     lockMapBox.setMnemonic(KeyEvent.VK_M);
     lockMapBox.setSelected(uiContext.getLockMap());
-    lockMapBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        uiContext.setLockMap(lockMapBox.isSelected());
-      }
-    });
+    lockMapBox.addActionListener(e -> uiContext.setLockMap(lockMapBox.isSelected()));
     parentMenu.add(lockMapBox);
   }
 
-  private void addUnitNationDrawMenu(final JMenu parentMenu){
+  private void addUnitNationDrawMenu(final JMenu parentMenu) {
     final JMenu unitSizeMenu = new JMenu();
     unitSizeMenu.setMnemonic(KeyEvent.VK_N);
     unitSizeMenu.setText("Flag Display Mode");
@@ -546,7 +510,8 @@ public class ViewMenu {
     UnitsDrawer.UnitFlagDrawMode setting = Enum.valueOf(UnitsDrawer.UnitFlagDrawMode.class,
         prefs.get(UnitsDrawer.PreferenceKeys.DRAW_MODE.name(), UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString()));
     UnitsDrawer.setUnitFlagDrawMode(setting, prefs);
-    UnitsDrawer.enabledFlags = prefs.getBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), UnitsDrawer.enabledFlags);
+    UnitsDrawer.enabledFlags =
+        prefs.getBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), UnitsDrawer.enabledFlags);
 
     JCheckBoxMenuItem toggleFlags = new JCheckBoxMenuItem("Show by default");
     toggleFlags.setSelected(UnitsDrawer.enabledFlags);
@@ -558,19 +523,22 @@ public class ViewMenu {
     unitSizeMenu.add(toggleFlags);
 
     final ButtonGroup unitFlagSettingGroup = new ButtonGroup();
-    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Small", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.NEXT_TO, setting, prefs));
-    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Large", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.BELOW, setting, prefs));
+    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Small", unitFlagSettingGroup,
+        UnitsDrawer.UnitFlagDrawMode.NEXT_TO, setting, prefs));
+    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Large", unitFlagSettingGroup,
+        UnitsDrawer.UnitFlagDrawMode.BELOW, setting, prefs));
     parentMenu.add(unitSizeMenu);
   }
 
-  private JRadioButtonMenuItem createFlagDrawModeRadionButtonItem(String text, ButtonGroup group, UnitsDrawer.UnitFlagDrawMode drawMode, UnitsDrawer.UnitFlagDrawMode setting, Preferences prefs){
+  private JRadioButtonMenuItem createFlagDrawModeRadionButtonItem(String text, ButtonGroup group,
+      UnitsDrawer.UnitFlagDrawMode drawMode, UnitsDrawer.UnitFlagDrawMode setting, Preferences prefs) {
     return createRadioButtonItem(text, group, SwingAction.of(e -> {
       UnitsDrawer.setUnitFlagDrawMode(drawMode, prefs);
       frame.getMapPanel().resetMap();
     }), setting.equals(drawMode));
   }
 
-  private JRadioButtonMenuItem createRadioButtonItem(String text, ButtonGroup group, Action action, boolean selected){
+  private JRadioButtonMenuItem createRadioButtonItem(String text, ButtonGroup group, Action action, boolean selected) {
     final JRadioButtonMenuItem buttonItem = new JRadioButtonMenuItem(text);
     buttonItem.addActionListener(action);
     buttonItem.setSelected(selected);
@@ -578,19 +546,12 @@ public class ViewMenu {
     return buttonItem;
   }
 
-  protected void addChatTimeMenu(final JMenu parentMenu) {
+  private void addChatTimeMenu(final JMenu parentMenu) {
     final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");
     chatTimeBox.setMnemonic(KeyEvent.VK_T);
-    chatTimeBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        frame.setShowChatTime(chatTimeBox.isSelected());
-      }
-    });
+    chatTimeBox.addActionListener(e -> frame.setShowChatTime(chatTimeBox.isSelected()));
     chatTimeBox.setSelected(false);
     parentMenu.add(chatTimeBox);
     chatTimeBox.setEnabled(MainFrame.getInstance() != null && MainFrame.getInstance().getChat() != null);
   }
-
-
 }
