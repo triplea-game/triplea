@@ -64,7 +64,6 @@ import javax.swing.event.MenuListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import games.strategy.swing.SwingAction;
-import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
