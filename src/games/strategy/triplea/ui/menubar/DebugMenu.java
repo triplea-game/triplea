@@ -19,9 +19,7 @@ public class DebugMenu {
   public DebugMenu(final JMenuBar menuBar, final TripleAFrame frame) {
     final JMenu debugMenu = new JMenu("Debug");
     menuBar.add(debugMenu);
-    debugMenu.addSeparator();
     addChangeProAISettings(debugMenu, frame);
-    debugMenu.addSeparator();
     debugMenu.add(new EnablePerformanceLoggingCheckBox());
     debugMenu.setMnemonic(KeyEvent.VK_D);
     addConsoleMenu(debugMenu);
