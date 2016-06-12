@@ -18,7 +18,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.swing.SwingAction;
+import games.strategy.ui.SwingAction;
 import games.strategy.triplea.ui.MacQuitMenuWrapper;
 import games.strategy.triplea.ui.MainGameFrame;
 import games.strategy.engine.chat.ChatPanel;
