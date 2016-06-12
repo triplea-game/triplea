@@ -16,29 +16,18 @@ import games.strategy.ui.SwingAction;
 
 public class DebugMenu {
 
-  private final TripleAFrame frame;
-
-  public DebugMenu(final JMenuBar menuBar, TripleAFrame frame) {
-    this.frame = frame;
-
+  public DebugMenu(final JMenuBar menuBar, final TripleAFrame frame) {
     final JMenu debugMenu = new JMenu("Debug");
     menuBar.add(debugMenu);
     debugMenu.addSeparator();
-    addChangeProAISettings(debugMenu);
+    addChangeProAISettings(debugMenu, frame);
     debugMenu.addSeparator();
     debugMenu.add(new EnablePerformanceLoggingCheckBox());
     debugMenu.setMnemonic(KeyEvent.VK_D);
     addConsoleMenu(debugMenu);
   }
 
-  private void addConsoleMenu(final JMenu parentMenu) {
-    parentMenu.add(SwingAction.of("Show Console...", e ->  {
-      ErrorConsole.getConsole().setVisible(true);
-      ErrorConsole.getConsole().append(DebugUtils.getMemory());
-    })).setMnemonic(KeyEvent.VK_C);
-  }
-
-  private void addChangeProAISettings(final JMenu parentMenu) {
+  private void addChangeProAISettings(final JMenu parentMenu, final TripleAFrame frame) {
     boolean areThereProAIs = false;
     final Set<IGamePlayer> players = frame.getLocalPlayers().getLocalPlayers();
     for (final IGamePlayer player : players) {
@@ -50,6 +39,13 @@ public class DebugMenu {
       ProAI.initialize(frame);
       parentMenu.add(SwingAction.of("Show Hard AI Logs", e -> ProAI.showSettingsWindow())).setMnemonic(KeyEvent.VK_X);
     }
+  }
+
+  private void addConsoleMenu(final JMenu parentMenu) {
+    parentMenu.add(SwingAction.of("Show Console...", e -> {
+      ErrorConsole.getConsole().setVisible(true);
+      ErrorConsole.getConsole().append(DebugUtils.getMemory());
+    })).setMnemonic(KeyEvent.VK_C);
   }
 
 }
