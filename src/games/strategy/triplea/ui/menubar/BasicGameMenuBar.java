@@ -621,56 +621,6 @@ public abstract class BasicGameMenuBar extends JMenuBar {
     return Triple.of(list, lookAndFeels, currentKey);
   }
 
-  protected void addSetLookAndFeel(final JMenu menuView) {
-    menuView.add(SwingAction.of("Set Look and Feel...", e -> {
-      final Triple<JList<String>, Map<String, String>, String> lookAndFeel = getLookAndFeelList();
-      final JList<String> list = lookAndFeel.getFirst();
-      final String currentKey = lookAndFeel.getThird();
-      final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
-      if (JOptionPane.showConfirmDialog(frame, list) == JOptionPane.OK_OPTION) {
-        final String selectedValue = list.getSelectedValue();
-        if (selectedValue == null) {
-          return;
-        }
-        if (selectedValue.equals(currentKey)) {
-          return;
-        }
-        GameRunner2.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
-        EventThreadJOptionPane.showMessageDialog(frame, "The look and feel will update when you restart TripleA",
-            new CountDownLatchHandler(true));
-      }
-    })).setMnemonic(KeyEvent.VK_F);
-  }
-
-  protected void addShowGameUuid(final JMenu menuView) {
-    menuView.add(SwingAction.of("Game UUID...", e -> {
-      final String id = (String) getData().getProperties().get(GameData.GAME_UUID);
-      final JTextField text = new JTextField();
-      text.setText(id);
-      final JPanel panel = new JPanel();
-      panel.setLayout(new GridBagLayout());
-      panel.add(new JLabel("Game UUID:"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-      panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-          new Insets(0, 0, 0, 0), 0, 0));
-      JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(BasicGameMenuBar.this), panel, "Game UUID",
-          JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
-    })).setMnemonic(KeyEvent.VK_U);
-  }
-
-  protected void addChatTimeMenu(final JMenu parentMenu) {
-    final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");
-    chatTimeBox.setMnemonic(KeyEvent.VK_T);
-    chatTimeBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        frame.setShowChatTime(chatTimeBox.isSelected());
-      }
-    });
-    chatTimeBox.setSelected(false);
-    parentMenu.add(chatTimeBox);
-    chatTimeBox.setEnabled(MainFrame.getInstance() != null && MainFrame.getInstance().getChat() != null);
-  }
 
   protected void addAISleepDuration(final JMenu parentMenu) {
     final JMenuItem AISleepDurationBox = new JMenuItem("AI Pause Duration...");
