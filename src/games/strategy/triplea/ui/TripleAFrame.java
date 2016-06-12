@@ -86,7 +86,6 @@ import com.google.common.collect.ImmutableList;
 
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.ui.menubar.BasicGameMenuBar;
-import games.strategy.triplea.ui.menubar.TripleAMenu;
 import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.ChatPanel;
@@ -210,7 +209,7 @@ public class TripleAFrame extends MainGameFrame {
   private PlayerID currentStepPlayer;
   private Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<>();
   private ThreadPool messageAndDialogThreadPool;
-  private TripleAMenu menu;
+  private BasicGameMenuBar menu;
 
   /** Creates new TripleAFrame */
   public TripleAFrame(final IGame game, final LocalPlayers players) {
@@ -232,7 +231,7 @@ public class TripleAFrame extends MainGameFrame {
     showCommentLogButtonModel = new JToggleButton.ToggleButtonModel();
     showCommentLogButtonModel.addActionListener(m_showCommentLogAction);
     showCommentLogButtonModel.setSelected(false);
-    menu = new TripleAMenu(this);
+    menu = new BasicGameMenuBar(this);
     this.setJMenuBar(menu);
     final ImageScrollModel model = new ImageScrollModel();
     model.setScrollX(uiContext.getMapData().scrollWrapX());
