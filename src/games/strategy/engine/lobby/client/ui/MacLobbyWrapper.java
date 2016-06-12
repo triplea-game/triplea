@@ -6,7 +6,7 @@ import com.apple.eawt.QuitHandler;
 import com.apple.eawt.QuitResponse;
 
 /**
- * TODO This class should be merged with games.strategy.common.ui.MacWrapper.
+ * TODO This class should be merged with games.strategy.triplea.ui.MacQuitMenuWrapper.
  */
 public class MacLobbyWrapper {
   // keep this in its own class, otherwise we get a no class def error when
