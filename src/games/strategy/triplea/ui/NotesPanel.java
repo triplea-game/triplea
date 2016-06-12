@@ -1,20 +1,15 @@
 package games.strategy.triplea.ui;
 
-import java.awt.Component;
 import java.awt.Rectangle;
 
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JEditorPane;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 
 public class NotesPanel extends JPanel {
   private static final long serialVersionUID = 2746643868463714526L;
   protected final JEditorPane m_gameNotesPane;
-  final JButton m_refresh = new JButton("Refresh Notes");
 
   // we now require passing a JEditorPane containing the notes in it, because we do not want to have multiple copies of
   // it in memory for all
@@ -29,14 +24,11 @@ public class NotesPanel extends JPanel {
 
   protected void initLayout() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    m_refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
-    m_refresh.addActionListener(e -> SwingUtilities.invokeLater(() -> layoutNotes()));
     removeNotes();
   }
 
   void removeNotes() {
     removeAll();
-    add(m_refresh);
   }
 
   void layoutNotes() {
@@ -44,9 +36,6 @@ public class NotesPanel extends JPanel {
       return;
     }
     removeAll();
-    add(new JLabel(" "));
-    add(m_refresh);
-    add(new JLabel(" "));
     final JScrollPane scroll = new JScrollPane(m_gameNotesPane);
     scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
     add(scroll);

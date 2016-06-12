@@ -1,6 +1,7 @@
 package games.strategy.common.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Dialog.ModalityType;
 import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -169,6 +170,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     if (notesProperty != null && notesProperty.trim().length() != 0) {
       final String notes = LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim());
       gameNotesPane = new JEditorPane();
+      gameNotesPane.setEditable(false);
       gameNotesPane.setContentType("text/html");
       gameNotesPane.setText(notes);
       parentMenu.add(SwingAction.of("Game Notes...", e ->
@@ -177,9 +179,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
             final JScrollPane scroll = new JScrollPane(pane);
             scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
             final JDialog dialog = new JDialog(frame);
-            dialog.setModal(false);
-            // needs java 1.6 at least...
-            // dialog.setModalityType(ModalityType.MODELESS);
+            dialog.setModalityType(ModalityType.MODELESS);
             dialog.setAlwaysOnTop(true);
             dialog.add(scroll, BorderLayout.CENTER);
             final JPanel buttons = new JPanel();
