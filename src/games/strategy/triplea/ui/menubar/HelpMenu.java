@@ -43,7 +43,8 @@ public class HelpMenu {
   private final IUIContext iuiContext;
   private final GameData gameData;
 
-  public HelpMenu(JMenuBar menuBar, IUIContext iuiContext, GameData gameData, Color backgroundColor) {
+  public HelpMenu(final JMenuBar menuBar, final IUIContext iuiContext, final GameData gameData,
+      final Color backgroundColor) {
     this.iuiContext = iuiContext;
     this.gameData = gameData;
 
@@ -105,7 +106,7 @@ public class HelpMenu {
     })).setMnemonic(KeyEvent.VK_M);
   }
 
-  protected static String getUnitStatsTable(GameData gameData, IUIContext iuiContext) {
+  protected static String getUnitStatsTable(final GameData gameData, final IUIContext iuiContext) {
     // html formatted string
     int i = 0;
     final String color1 = "ABABAB";
