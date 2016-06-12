@@ -8,6 +8,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.export.GameDataExporter;
 import games.strategy.engine.framework.GameDataUtils;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
@@ -17,12 +18,19 @@ import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.printgenerator.SetupFrame;
 import games.strategy.triplea.ui.ExtendedStats;
 import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.MapData;
+import games.strategy.triplea.ui.MapPanel;
+import games.strategy.triplea.ui.StatPanel;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.ui.SwingAction;
+import games.strategy.ui.Util;
 import games.strategy.util.IllegalCharacterRemover;
 import games.strategy.util.LocalizeHTML;
 
+import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -31,9 +39,19 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.WindowConstants;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -53,11 +71,16 @@ public class ExportMenu {
   private final TripleAFrame frame;
   private final GameData gameData;
   private final IUIContext iuiContext;
-
+  private final StatPanel statsPanel;
+  private final MapPanel mapPanel;
+  
   public ExportMenu(JMenuBar menuBar, TripleAFrame frame, GameData gameData) {
     this.frame = frame;
     this.gameData = gameData;
-    this.iuiContext = frame.getUIContext();
+    iuiContext = frame.getUIContext();
+    statsPanel = frame.getStatPanel();
+    mapPanel = frame.getMapPanel();
+
     createExportMenu(menuBar);
   }
 
@@ -117,8 +140,241 @@ public class ExportMenu {
 
 
   private void addSaveScreenshot(final JMenu parentMenu) {
-    parentMenu.add(frame.getSaveScreenshotAction()).setMnemonic(KeyEvent.VK_E);
+    AbstractAction abstractAction = SwingAction.of("Export Screenshot...", e-> {
+
+      HistoryPanel historyPanel = frame.getHistoryPanel();
+      final HistoryNode curNode;
+      if (historyPanel == null) {
+        curNode = gameData.getHistory().getLastNode();
+      } else {
+        curNode = historyPanel.getCurrentNode();
+      }
+      saveScreenshot(curNode, frame, gameData);
+    });
+    parentMenu.add(abstractAction).setMnemonic(KeyEvent.VK_E);
   }
+
+  public static void saveScreenshot(final HistoryNode node, TripleAFrame frame, GameData gameData) {
+    final FileFilter pngFilter = new FileFilter() {
+      @Override
+      public boolean accept(final File f) {
+        if (f.isDirectory()) {
+          return true;
+        } else {
+          return f.getName().endsWith(".png");
+        }
+      }
+
+      @Override
+      public String getDescription() {
+        return "Saved Screenshots, *.png";
+      }
+    };
+    final JFileChooser fileChooser = new SaveGameFileChooser();
+    fileChooser.setFileFilter(pngFilter);
+    final int rVal = fileChooser.showSaveDialog(null);
+    if (rVal == JFileChooser.APPROVE_OPTION) {
+      File f = fileChooser.getSelectedFile();
+      if (!f.getName().toLowerCase().endsWith(".png")) {
+        f = new File(f.getParent(), f.getName() + ".png");
+      }
+      // A small warning so users will not over-write a file,
+      if (f.exists()) {
+        final int choice =
+            JOptionPane.showConfirmDialog(null, "A file by that name already exists. Do you wish to over write it?",
+                "Over-write?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (choice != JOptionPane.OK_OPTION) {
+          return;
+        }
+      }
+      final File file = f;
+      final Runnable t = new Runnable() {
+        @Override
+        public void run() {
+          if (saveScreenshot(node, file, frame, gameData)) {
+            JOptionPane.showMessageDialog(null, "Screenshot Saved", "Screenshot Saved",
+                JOptionPane.INFORMATION_MESSAGE);
+          }
+        }
+      };
+      SwingAction.invokeAndWait(t);
+    }
+  }
+
+  private static boolean saveScreenshot(final HistoryNode node, final File file, TripleAFrame frame, GameData gameData) {
+    // get current history node. if we are in history view, get the selected node.
+    boolean retval = true;
+    // get round/step/player from history tree
+    int round = 0;
+    final Object[] pathFromRoot = node.getPath();
+    for (final Object pathNode : pathFromRoot) {
+      final HistoryNode curNode = (HistoryNode) pathNode;
+      if (curNode instanceof Round) {
+        round = ((Round) curNode).getRoundNo();
+      }
+    }
+    IUIContext iuiContext = frame.getUIContext();
+    final double scale = iuiContext.getScale();
+    // print map panel to image
+
+    MapPanel mapPanel = frame.getMapPanel();
+    final BufferedImage mapImage =
+        Util.createImage((int) (scale * mapPanel.getImageWidth()), (int) (scale * mapPanel.getImageHeight()), false);
+    final Graphics2D mapGraphics = mapImage.createGraphics();
+    try {
+      // workaround to get the whole map
+      // (otherwise the map is cut if current window is not on top of map)
+      final int xOffset = mapPanel.getXOffset();
+      final int yOffset = mapPanel.getYOffset();
+      mapPanel.setTopLeft(0, 0);
+      mapPanel.print(mapGraphics);
+      mapPanel.setTopLeft(xOffset, yOffset);
+      // overlay title
+      Color title_color = iuiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_TITLE_COLOR);
+      if (title_color == null) {
+        title_color = Color.BLACK;
+      }
+      final String s_title_x = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_X);
+      final String s_title_y = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_Y);
+      final String s_title_size = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_FONT_SIZE);
+      int title_x;
+      int title_y;
+      int title_size;
+      try {
+        title_x = (int) (Integer.parseInt(s_title_x) * scale);
+        title_y = (int) (Integer.parseInt(s_title_y) * scale);
+        title_size = Integer.parseInt(s_title_size);
+      } catch (final NumberFormatException nfe) {
+        // choose safe defaults
+        title_x = (int) (15 * scale);
+        title_y = (int) (15 * scale);
+        title_size = 15;
+      }
+      // everything else should be scaled down onto map image
+      final AffineTransform transform = new AffineTransform();
+      transform.scale(scale, scale);
+      mapGraphics.setTransform(transform);
+      mapGraphics.setFont(new Font("Ariel", Font.BOLD, title_size));
+      mapGraphics.setColor(title_color);
+      if (iuiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_TITLE_ENABLED)) {
+        mapGraphics.drawString(gameData.getGameName() + " Round " + round, title_x, title_y);
+      }
+      // overlay stats, if enabled
+      final boolean stats_enabled =
+          iuiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_STATS_ENABLED);
+      if (stats_enabled) {
+        // get screenshot properties from map data
+        Color stats_text_color =
+            iuiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_STATS_TEXT_COLOR);
+        if (stats_text_color == null) {
+          stats_text_color = Color.BLACK;
+        }
+        Color stats_border_color =
+            iuiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_STATS_BORDER_COLOR);
+        if (stats_border_color == null) {
+          stats_border_color = Color.WHITE;
+        }
+        final String s_stats_x = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_STATS_X);
+        final String s_stats_y = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_STATS_Y);
+        int stats_x;
+        int stats_y;
+        try {
+          stats_x = (int) (Integer.parseInt(s_stats_x) * scale);
+          stats_y = (int) (Integer.parseInt(s_stats_y) * scale);
+        } catch (final NumberFormatException nfe) {
+          // choose reasonable defaults
+          stats_x = (int) (120 * scale);
+          stats_y = (int) (70 * scale);
+        }
+        // Fetch stats table and save current properties before modifying them
+        // NOTE: This is a bit of a hack, but creating a fresh JTable and
+        // populating it with statsPanel data seemed hard. This was easier.
+        StatPanel statsPanel = frame.getStatPanel();
+        final JTable table = statsPanel.getStatsTable();
+        final javax.swing.table.TableCellRenderer oldRenderer = table.getDefaultRenderer(Object.class);
+        final Font oldTableFont = table.getFont();
+        final Font oldTableHeaderFont = table.getTableHeader().getFont();
+        final Dimension oldTableSize = table.getSize();
+        final Color oldTableFgColor = table.getForeground();
+        final Color oldTableSelFgColor = table.getSelectionForeground();
+        final int oldCol0Width = table.getColumnModel().getColumn(0).getPreferredWidth();
+        final int oldCol2Width = table.getColumnModel().getColumn(2).getPreferredWidth();
+        // override some stats table properties for screenshot
+        table.setOpaque(false);
+        table.setFont(new Font("Ariel", Font.BOLD, 15));
+        table.setForeground(stats_text_color);
+        table.setSelectionForeground(table.getForeground());
+        table.setGridColor(stats_border_color);
+        table.getTableHeader().setFont(new Font("Ariel", Font.BOLD, 15));
+        table.getColumnModel().getColumn(0).setPreferredWidth(80);
+        table.getColumnModel().getColumn(2).setPreferredWidth(90);
+        table.setSize(table.getPreferredSize());
+        table.doLayout();
+        // initialize table/header dimensions
+        final int tableWidth = table.getSize().width;
+        final int tableHeight = table.getSize().height;
+        // use tableWidth not hdrWidth!
+        final int hdrWidth = tableWidth;
+        final int hdrHeight = table.getTableHeader().getSize().height;
+        // create image for capturing table header
+        final BufferedImage tblHdrImage = Util.createImage(hdrWidth, hdrHeight, false);
+        final Graphics2D tblHdrGraphics = tblHdrImage.createGraphics();
+        // create image for capturing table (support transparencies)
+        final BufferedImage tblImage = Util.createImage(tableWidth, tableHeight, true);
+        final Graphics2D tblGraphics = tblImage.createGraphics();
+        // create a custom renderer that paints selected cells transparently
+        final DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
+          private static final long serialVersionUID = 1978774284876746635L;
+
+          {
+            setOpaque(false);
+          }
+        };
+        // set our custom renderer on the JTable
+        table.setDefaultRenderer(Object.class, renderer);
+        // print table and header to images and draw them on map
+        table.getTableHeader().print(tblHdrGraphics);
+        table.print(tblGraphics);
+        mapGraphics.drawImage(tblHdrImage, stats_x, stats_y, null);
+        mapGraphics.drawImage(tblImage, stats_x, stats_y + (int) (hdrHeight * scale), null);
+        // Clean up objects. There might be some overkill here,
+        // but there were memory leaks that are fixed by some/all of these.
+        tblHdrGraphics.dispose();
+        tblGraphics.dispose();
+        statsPanel.setStatsBgImage(null);
+        tblHdrImage.flush();
+        tblImage.flush();
+        // restore table properties
+        table.setDefaultRenderer(Object.class, oldRenderer);
+        table.setOpaque(true);
+        table.setForeground(oldTableFgColor);
+        table.setSelectionForeground(oldTableSelFgColor);
+        table.setFont(oldTableFont);
+        table.getTableHeader().setFont(oldTableHeaderFont);
+        table.setSize(oldTableSize);
+        table.getColumnModel().getColumn(0).setPreferredWidth(oldCol0Width);
+        table.getColumnModel().getColumn(2).setPreferredWidth(oldCol2Width);
+        table.doLayout();
+      }
+      // save Image as .png
+      try {
+        ImageIO.write(mapImage, "png", file);
+      } catch (final Exception e2) {
+        e2.printStackTrace();
+        JOptionPane.showMessageDialog(frame, e2.getMessage(), "Error saving Screenshot",
+            JOptionPane.OK_OPTION);
+        retval = false;
+      }
+      // Clean up objects. There might be some overkill here,
+      // but there were memory leaks that are fixed by some/all of these.
+    } finally {
+      mapImage.flush();
+      mapGraphics.dispose();
+    }
+    return retval;
+  }
+
+
 
   private void addExportStatsFull(final JMenu parentMenu) {
     final Action showDiceStats = SwingAction.of("Export Full Game Stats...", e -> createAndSaveStats(true));
