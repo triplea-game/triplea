@@ -120,7 +120,9 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
   private void createDebugMenu(final JMenuBar menuBar) {
     final JMenu debugMenu = new JMenu("Debug");
     menuBar.add(debugMenu);
+    debugMenu.addSeparator();
     addChangeProAISettings(debugMenu);
+    debugMenu.addSeparator();
     debugMenu.add(new EnablePerformanceLoggingCheckBox());
     debugMenu.setMnemonic(KeyEvent.VK_D);
     addConsoleMenu(debugMenu);
@@ -149,9 +151,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     }
     if (areThereProAIs) {
       ProAI.initialize((TripleAFrame) frame);
-      parentMenu.addSeparator();
       parentMenu.add(SwingAction.of("Show Hard AI Logs", e -> ProAI.showSettingsWindow())).setMnemonic(KeyEvent.VK_X);
-      parentMenu.addSeparator();
     }
   }
 
