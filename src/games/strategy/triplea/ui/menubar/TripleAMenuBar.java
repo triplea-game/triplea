@@ -95,7 +95,7 @@ public class TripleAMenuBar extends JMenuBar {
     createNetworkMenu(this, watcher);
     createWebHelpMenu(this);
     new DebugMenu(this, frame);
-    createHelpMenu(this);
+    new HelpMenu(this, frame.getUIContext(), getData(), getBackground());
   }
 
 
@@ -182,9 +182,6 @@ public class TripleAMenuBar extends JMenuBar {
     }
   }
 
-  protected void createHelpMenu(final JMenuBar menuBar) {
-    new HelpMenu(menuBar, frame.getUIContext(), getData(), getBackground());
-  }
 
   private static void createWebHelpMenu(final JMenuBar menuBar) {
     final JMenu web = new JMenu("Web");
