@@ -1,9 +1,10 @@
-package games.strategy.common.ui;
+package games.strategy.triplea.ui;
 
 import com.apple.eawt.AppEvent.QuitEvent;
 import com.apple.eawt.Application;
 import com.apple.eawt.QuitHandler;
 import com.apple.eawt.QuitResponse;
+import games.strategy.common.ui.MainGameFrame;
 
 /**
  * Utility class to wrap Mac OS X-specific shutdown handler.
@@ -12,7 +13,7 @@ import com.apple.eawt.QuitResponse;
  * <p>
  * Needs AppleJavaExtensions.jar to compile on non-Mac platform.
  */
-public class MacWrapper {
+public class MacQuitMenuWrapper {
   private static MainGameFrame shutdownFrame;
 
   static {

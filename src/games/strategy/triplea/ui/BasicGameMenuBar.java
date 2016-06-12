@@ -523,7 +523,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     // Mac OS X automatically creates a Quit menu item under the TripleA menu,
     // so all we need to do is register that menu item with triplea's shutdown mechanism
     if (isMac) {
-      MacWrapper.registerMacShutdownHandler(frame);
+      MacQuitMenuWrapper.registerMacShutdownHandler(frame);
     } else { // On non-Mac operating systems, we need to manually create an Exit menu item
       final JMenuItem menuFileExit = new JMenuItem(SwingAction.of("Exit", e -> frame.shutdown()));
       menuFileExit.setMnemonic(KeyEvent.VK_E);
