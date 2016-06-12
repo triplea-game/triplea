@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 
-import games.strategy.common.swing.SwingAction;
+import games.strategy.swing.SwingAction;
 
 public class TestUtil {
 

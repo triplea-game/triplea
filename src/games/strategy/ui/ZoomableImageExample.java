@@ -14,7 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
-import games.strategy.common.swing.SwingAction;
+import games.strategy.swing.SwingAction;
 
 /**
  * Start with one arg that is the filename

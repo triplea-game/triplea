@@ -34,7 +34,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import games.strategy.common.swing.SwingAction;
+import games.strategy.swing.SwingAction;
 import games.strategy.net.INode;
 
 public class ChatPlayerPanel extends JPanel implements IChatListener {

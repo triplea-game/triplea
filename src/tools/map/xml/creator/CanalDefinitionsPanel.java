@@ -23,7 +23,7 @@ import javax.swing.SwingUtilities;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import games.strategy.common.swing.SwingAction;
+import games.strategy.swing.SwingAction;
 import games.strategy.ui.Util;
 import tools.map.xml.creator.TerritoryDefinitionDialog.DEFINITION;
 

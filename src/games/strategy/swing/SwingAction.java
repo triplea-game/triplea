@@ -1,4 +1,4 @@
-package games.strategy.common.swing;
+package games.strategy.swing;
 
 import java.awt.event.ActionEvent;
 import java.lang.reflect.InvocationTargetException;

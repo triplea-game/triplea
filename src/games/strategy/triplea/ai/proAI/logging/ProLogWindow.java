@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import games.strategy.common.swing.SwingAction;
+import games.strategy.swing.SwingAction;
 import games.strategy.triplea.ui.TripleAFrame;
 
 /**
