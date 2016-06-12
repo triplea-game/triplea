@@ -10,7 +10,7 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import games.strategy.triplea.ui.menubar.BasicGameMenuBar;
+import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 
 public class GetGameSaveClientAction extends AbstractAction {
@@ -27,7 +27,7 @@ public class GetGameSaveClientAction extends AbstractAction {
   @Override
   public void actionPerformed(final ActionEvent e) {
     final Frame frame = JOptionPane.getFrameForComponent(m_parent);
-    final File f = BasicGameMenuBar.getSaveGameLocationDialog(frame);
+    final File f = TripleAMenuBar.getSaveGameLocationDialog(frame);
     if (f != null) {
       final byte[] bytes = m_serverRemote.getSaveGame();
       try (FileOutputStream fout = new FileOutputStream(f)) {
