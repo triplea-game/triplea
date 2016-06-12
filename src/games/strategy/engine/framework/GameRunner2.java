@@ -24,10 +24,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import games.strategy.debug.ErrorConsole;
+import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import org.apache.commons.httpclient.HostConfiguration;
 
 import games.strategy.ui.SwingAction;
-import games.strategy.triplea.ui.menubar.BasicGameMenuBar;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
@@ -276,7 +276,7 @@ public class GameRunner2 {
       defaultLookAndFeel = UIManager.getSystemLookAndFeelClassName();
     }
     final String userDefault = pref.get(LOOK_AND_FEEL_PREF, defaultLookAndFeel);
-    final List<String> availableSkins = BasicGameMenuBar.getLookAndFeelAvailableList();
+    final List<String> availableSkins = TripleAMenuBar.getLookAndFeelAvailableList();
     if (!availableSkins.contains(userDefault)) {
       if (!availableSkins.contains(defaultLookAndFeel)) {
         return UIManager.getSystemLookAndFeelClassName();
