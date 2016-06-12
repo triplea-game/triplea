@@ -101,12 +101,12 @@ import games.strategy.util.IllegalCharacterRemover;
 import games.strategy.util.LocalizeHTML;
 import games.strategy.util.Triple;
 
-public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMenuBar {
+public abstract class BasicGameMenuBar extends JMenuBar {
   private static final long serialVersionUID = -1447295944297939539L;
-  protected final CustomGameFrame frame;
+  protected final TripleAFrame frame;
   protected JEditorPane gameNotesPane;
 
-  public BasicGameMenuBar(final CustomGameFrame frame) {
+  public BasicGameMenuBar(final TripleAFrame frame) {
     this.frame = frame;
     add(createFileMenu());
     createGameSpecificMenus(this);
