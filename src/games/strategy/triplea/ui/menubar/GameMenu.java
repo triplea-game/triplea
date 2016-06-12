@@ -1,24 +1,13 @@
 package games.strategy.triplea.ui.menubar;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.properties.PropertiesUI;
-import games.strategy.engine.framework.ClientGame;
-import games.strategy.engine.framework.IGame;
-import games.strategy.engine.random.IRandomStats;
-import games.strategy.engine.random.RandomStatsDetails;
-import games.strategy.sound.SoundOptions;
-import games.strategy.sound.SoundPath;
-import games.strategy.triplea.TripleA;
-import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
-import games.strategy.triplea.ui.AbstractUIContext;
-import games.strategy.triplea.ui.BattleDisplay;
-import games.strategy.triplea.ui.IUIContext;
-import games.strategy.triplea.ui.PoliticalStateOverview;
-import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.VerifiedRandomNumbersDialog;
-import games.strategy.ui.IntTextField;
-import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -36,14 +25,25 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.engine.framework.ClientGame;
+import games.strategy.engine.framework.IGame;
+import games.strategy.engine.random.IRandomStats;
+import games.strategy.engine.random.RandomStatsDetails;
+import games.strategy.sound.SoundOptions;
+import games.strategy.sound.SoundPath;
+import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
+import games.strategy.triplea.ui.AbstractUIContext;
+import games.strategy.triplea.ui.BattleDisplay;
+import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.PoliticalStateOverview;
+import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.VerifiedRandomNumbersDialog;
+import games.strategy.ui.IntTextField;
+import games.strategy.ui.SwingAction;
+import games.strategy.ui.SwingComponents;
 
 public class GameMenu {
 
@@ -305,7 +305,7 @@ public class GameMenu {
         KeyStroke.getKeyStroke(KeyEvent.VK_B, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
   }
 
-  protected void addAISleepDuration(final JMenu parentMenu) {
+  private void addAISleepDuration(final JMenu parentMenu) {
     final JMenuItem AISleepDurationBox = new JMenuItem("AI Pause Duration...");
     AISleepDurationBox.setMnemonic(KeyEvent.VK_A);
     AISleepDurationBox.addActionListener(new ActionListener() {

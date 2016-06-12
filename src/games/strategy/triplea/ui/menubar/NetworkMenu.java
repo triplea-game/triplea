@@ -45,7 +45,7 @@ public class NetworkMenu {
     menuBar.add(menuNetwork);
   }
 
-  protected void addBootPlayer(final JMenu parentMenu) {
+  private void addBootPlayer(final JMenu parentMenu) {
     if (!game.getMessenger().isServer()) {
       return;
     }
@@ -54,7 +54,7 @@ public class NetworkMenu {
     parentMenu.add(boot);
   }
 
-  protected void addBanPlayer(final JMenu parentMenu) {
+  private void addBanPlayer(final JMenu parentMenu) {
     if (!game.getMessenger().isServer()) {
       return;
     }
@@ -63,7 +63,7 @@ public class NetworkMenu {
     parentMenu.add(ban);
   }
 
-  protected void addMutePlayer(final JMenu parentMenu) {
+  private void addMutePlayer(final JMenu parentMenu) {
     if (!game.getMessenger().isServer()) {
       return;
     }
@@ -72,7 +72,7 @@ public class NetworkMenu {
     parentMenu.add(mute);
   }
 
-  protected void addSetGamePassword(final JMenu parentMenu, final InGameLobbyWatcherWrapper watcher) {
+  private void addSetGamePassword(final JMenu parentMenu, final InGameLobbyWatcherWrapper watcher) {
     if (!game.getMessenger().isServer()) {
       return;
     }
@@ -80,7 +80,7 @@ public class NetworkMenu {
     parentMenu.add(new SetPasswordAction(parentMenu, watcher, (ClientLoginValidator) messenger.getLoginValidator()));
   }
 
-  protected void addShowPlayers(final JMenu menuGame) {
+  private void addShowPlayers(final JMenu menuGame) {
     if (!game.getData().getProperties().getEditableProperties().isEmpty()) {
       final AbstractAction optionsAction =
           SwingAction.of("Show Who is Who...", e -> PlayersPanel.showPlayers(game, frame));

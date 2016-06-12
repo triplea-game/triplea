@@ -105,8 +105,7 @@ public class HelpMenu {
     })).setMnemonic(KeyEvent.VK_M);
   }
 
-
-  public static String getUnitStatsTable(GameData gameData, IUIContext iuiContext) {
+  protected static String getUnitStatsTable(GameData gameData, IUIContext iuiContext) {
     // html formatted string
     int i = 0;
     final String color1 = "ABABAB";
@@ -265,7 +264,7 @@ public class HelpMenu {
     }
   }
 
-  protected void addAboutMenu(final JMenu parentMenu, Color backgroundColor) {
+  private void addAboutMenu(final JMenu parentMenu, Color backgroundColor) {
     final String text = "<h2>" + gameData.getGameName() + "</h2>" + "<p><b>Engine Version:</b> "
         + ClientContext.engineVersion() + "<br><b>Game:</b> " + gameData.getGameName()
         + "<br><b>Game Version:</b>" + gameData.getGameVersion() + "</p>"
@@ -298,7 +297,7 @@ public class HelpMenu {
     }
   }
 
-  protected void addReportBugsMenu(final JMenu parentMenu) {
+  private void addReportBugsMenu(final JMenu parentMenu) {
     parentMenu.add(SwingAction.of( "Send Bug Report", e -> {
       SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES);
     } )).setMnemonic(KeyEvent.VK_B);
