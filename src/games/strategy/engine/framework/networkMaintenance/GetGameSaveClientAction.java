@@ -10,7 +10,7 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import games.strategy.triplea.ui.BasicGameMenuBar;
+import games.strategy.triplea.ui.menubar.BasicGameMenuBar;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 
 public class GetGameSaveClientAction extends AbstractAction {
