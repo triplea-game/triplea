@@ -21,7 +21,7 @@ import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import games.strategy.common.swing.SwingAction;
+import games.strategy.swing.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatPanel;

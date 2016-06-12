@@ -4,7 +4,7 @@ import javax.swing.Action;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
-import games.strategy.common.swing.SwingAction;
+import games.strategy.swing.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
