@@ -112,7 +112,7 @@ import games.strategy.util.LocalizeHTML;
 /**
  * Main menu for the triplea frame.
  */
-public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
+public class TripleAMenu extends BasicGameMenuBar {
   private static final long serialVersionUID = 987243661147503593L;
   private JCheckBoxMenuItem showMapDetails;
   private JCheckBoxMenuItem showMapBlends;
