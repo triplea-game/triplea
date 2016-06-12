@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui;
+package games.strategy.triplea.ui.menubar;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog.ModalityType;
@@ -56,6 +56,11 @@ import com.apple.eawt.AppEvent.AboutEvent;
 import com.apple.eawt.Application;
 
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
+import games.strategy.triplea.ui.AbstractUIContext;
+import games.strategy.triplea.ui.MacQuitMenuWrapper;
+import games.strategy.triplea.ui.MainGameFrame;
+import games.strategy.triplea.ui.PlayersPanel;
+import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;

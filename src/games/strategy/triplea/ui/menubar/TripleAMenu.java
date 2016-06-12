@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui;
+package games.strategy.triplea.ui.menubar;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -65,6 +65,14 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import games.strategy.triplea.ui.AbstractUIContext;
+import games.strategy.triplea.ui.BattleDisplay;
+import games.strategy.triplea.ui.ExtendedStats;
+import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.PoliticalStateOverview;
+import games.strategy.triplea.ui.PurchasePanel;
+import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.VerifiedRandomNumbersDialog;
 import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -110,7 +118,7 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
   private JCheckBoxMenuItem showMapDetails;
   private JCheckBoxMenuItem showMapBlends;
 
-  TripleAMenu(final TripleAFrame frame) {
+  public TripleAMenu(final TripleAFrame frame) {
     super(frame);
     setWidgetActivation();
   }
