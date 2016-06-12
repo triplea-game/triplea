@@ -14,7 +14,7 @@ import javax.swing.SwingUtilities;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import games.strategy.swing.SwingComponents;
+import games.strategy.ui.SwingComponents;
 
 
 /** A small non-modal window that holds the progress bars for the current and pending map downloads */

@@ -11,7 +11,7 @@ import javax.swing.DefaultListModel;
 
 import com.google.common.collect.Lists;
 
-import games.strategy.swing.SwingComponents;
+import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.util.Version;
 

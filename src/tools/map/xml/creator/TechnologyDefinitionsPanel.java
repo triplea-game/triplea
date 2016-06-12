@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import games.strategy.swing.SwingAction;
+import games.strategy.ui.SwingAction;
 
 
 public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
