@@ -51,11 +51,15 @@ public class TripleAMenuBar extends JMenuBar {
 
   public TripleAMenuBar(final TripleAFrame frame) {
     this.frame = frame;
-    add(createFileMenu());
+    new FileMenu(this, frame, getData());
     new ViewMenu(this, frame, getData());
     new GameMenu(this, frame, getData());
     new ExportMenu(this, frame, getData());
-    final InGameLobbyWatcherWrapper watcher = createLobbyMenu(this);
+
+    final ServerGame serverGame = (ServerGame) frame.getGame();
+    final InGameLobbyWatcherWrapper watcher = serverGame.getInGameLobbyWatcher();
+
+    createLobbyMenu(this, watcher);
     new NetworkMenu(this, watcher, frame);
     new WebHelpMenu(this);
 
@@ -65,44 +69,28 @@ public class TripleAMenuBar extends JMenuBar {
 
 
 
-
   public JEditorPane getGameNotesJEditorPane() {
     return gameNotesPane;
   }
 
-  protected InGameLobbyWatcherWrapper createLobbyMenu(final JMenuBar menuBar) {
+  protected InGameLobbyWatcherWrapper createLobbyMenu(final JMenuBar menuBar, InGameLobbyWatcherWrapper watcher ) {
+
     if (!(frame.getGame() instanceof ServerGame)) {
       return null;
-    }
-    final ServerGame serverGame = (ServerGame) frame.getGame();
-    final InGameLobbyWatcherWrapper watcher = serverGame.getInGameLobbyWatcher();
-    if (watcher == null || !watcher.isActive()) {
-      return watcher;
     }
     final JMenu lobby = new JMenu("Lobby");
     lobby.setMnemonic(KeyEvent.VK_L);
     menuBar.add(lobby);
-    lobby.add(new EditGameCommentAction(watcher, frame));
-    lobby.add(new RemoveGameFromLobbyAction(watcher));
+    if( watcher != null && watcher.isActive()) {
+      lobby.add(new EditGameCommentAction(watcher, frame));
+      lobby.add(new RemoveGameFromLobbyAction(watcher));
+    }
     return watcher;
   }
 
 
 
 
-  protected JMenu createFileMenu() {
-    final JMenu fileMenu = new JMenu("File");
-    fileMenu.setMnemonic(KeyEvent.VK_F);
-    fileMenu.add(createSaveMenu());
-
-    if (PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(getGame().getData())) {
-      fileMenu.add(addPostPBEM());
-    }
-
-    fileMenu.addSeparator();
-    addExitMenu(fileMenu);
-    return fileMenu;
-  }
 
   public static File getSaveGameLocationDialog(final Frame frame) {
     // For some strange reason,
@@ -169,70 +157,6 @@ public class TripleAMenuBar extends JMenuBar {
     }
   }
 
-  private JMenuItem createSaveMenu() {
-    final JMenuItem menuFileSave = new JMenuItem(SwingAction.of("Save...", e -> {
-      final File f = getSaveGameLocationDialog(frame);
-      if (f != null) {
-        getGame().saveGame(f);
-        JOptionPane.showMessageDialog(frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
-      }
-    }));
-    menuFileSave.setMnemonic(KeyEvent.VK_S);
-    menuFileSave.setAccelerator(
-        KeyStroke.getKeyStroke(KeyEvent.VK_S, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-    return menuFileSave;
-  }
-
-  protected JMenuItem addPostPBEM() {
-    final JMenuItem menuPBEM = new JMenuItem(SwingAction.of("Post PBEM/PBF Gamesave...", e -> {
-      final GameData data = getGame().getData();
-      if (data == null || !PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(data)) {
-        return;
-      }
-      final String title = "Manual Gamesave Post";
-      try {
-        data.acquireReadLock();
-        final GameStep step = data.getSequence().getStep();
-        final PlayerID currentPlayer = (step == null ? PlayerID.NULL_PLAYERID
-            : (step.getPlayerID() == null ? PlayerID.NULL_PLAYERID : step.getPlayerID()));
-        final int round = data.getSequence().getRound();
-        final HistoryLog historyLog = new HistoryLog();
-        historyLog.printFullTurn(data, false, GameStepPropertiesHelper.getTurnSummaryPlayers(data));
-        final PBEMMessagePoster poster = new PBEMMessagePoster(getData(), currentPlayer, round, title);
-        PBEMMessagePoster.postTurn(title, historyLog, true, poster, null, frame, null);
-      } finally {
-        data.releaseReadLock();
-      }
-    }));
-    menuPBEM.setMnemonic(KeyEvent.VK_P);
-    menuPBEM.setAccelerator(
-        KeyStroke.getKeyStroke(KeyEvent.VK_P, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-    return menuPBEM;
-  }
-
-  protected void addExitMenu(final JMenu parentMenu) {
-    final boolean isMac = GameRunner.isMac();
-    final JMenuItem leaveGameMenuExit = new JMenuItem(SwingAction.of("Leave Game", e -> frame.leaveGame()));
-    leaveGameMenuExit.setMnemonic(KeyEvent.VK_L);
-    if (isMac) { // On Mac OS X, the command-Q is reserved for the Quit action,
-                 // so set the command-L key combo for the Leave Game action
-      leaveGameMenuExit.setAccelerator(
-          KeyStroke.getKeyStroke(KeyEvent.VK_L, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-    } else { // On non-Mac operating systems, set the Ctrl-Q key combo for the Leave Game action
-      leaveGameMenuExit.setAccelerator(
-          KeyStroke.getKeyStroke(KeyEvent.VK_Q, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-    }
-    parentMenu.add(leaveGameMenuExit);
-    // Mac OS X automatically creates a Quit menu item under the TripleA menu,
-    // so all we need to do is register that menu item with triplea's shutdown mechanism
-    if (isMac) {
-      MacQuitMenuWrapper.registerMacShutdownHandler(frame);
-    } else { // On non-Mac operating systems, we need to manually create an Exit menu item
-      final JMenuItem menuFileExit = new JMenuItem(SwingAction.of("Exit", e -> frame.shutdown()));
-      menuFileExit.setMnemonic(KeyEvent.VK_E);
-      parentMenu.add(menuFileExit);
-    }
-  }
 
   protected static boolean isJavaGreatThan5() {
     final String version = System.getProperties().getProperty("java.version");
