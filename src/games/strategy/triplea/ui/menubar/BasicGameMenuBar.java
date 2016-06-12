@@ -497,49 +497,6 @@ public abstract class BasicGameMenuBar extends JMenuBar {
 
 
 
-  // TODO: create a second menu option for parsing current attachments
-  protected void addExportXML(final JMenu parentMenu) {
-    final Action exportXML = SwingAction.of("Export game.xml file (Beta)...", e -> exportXMLFile());
-    parentMenu.add(exportXML).setMnemonic(KeyEvent.VK_X);
-  }
-
-  private void exportXMLFile() {
-    final JFileChooser chooser = new JFileChooser();
-    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    final File rootDir = new File(System.getProperties().getProperty("user.dir"));
-    final DateFormat formatDate = new SimpleDateFormat("yyyy_MM_dd");
-    int round = 0;
-    try {
-      getData().acquireReadLock();
-      round = getData().getSequence().getRound();
-    } finally {
-      getData().releaseReadLock();
-    }
-    String defaultFileName =
-        "xml_" + formatDate.format(new Date()) + "_" + getData().getGameName() + "_round_" + round;
-    defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
-    defaultFileName = defaultFileName + ".xml";
-    chooser.setSelectedFile(new File(rootDir, defaultFileName));
-    if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
-      return;
-    }
-    final GameData data = getData();
-    final String xmlFile;
-    try {
-      data.acquireReadLock();
-      final GameDataExporter exporter = new games.strategy.engine.data.export.GameDataExporter(data, false);
-      xmlFile = exporter.getXML();
-    } finally {
-      data.releaseReadLock();
-    }
-    try {
-      try (final FileWriter writer = new FileWriter(chooser.getSelectedFile());) {
-        writer.write(xmlFile);
-      }
-    } catch (final IOException e1) {
-      ClientLogger.logQuietly(e1);
-    }
-  }
 
   public IGame getGame() {
     return frame.getGame();
