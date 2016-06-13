@@ -1,7 +1,5 @@
 package games.strategy.triplea.settings;
 
-import games.strategy.triplea.settings.scrolling.ScrollSettings;
-
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -21,8 +19,6 @@ public class SystemPreferences {
     prefs.put(key.name(), value);
   }
 
-
-
   public static void flush(Class className) {
     Preferences prefs = Preferences.userNodeForPackage(className);
     try {
@@ -32,12 +28,12 @@ public class SystemPreferences {
     }
   }
 
-  public static int get(Class<? extends ScrollSettings> className, PreferenceKey key, int defaultValue) {
+  public static int get(Class className, PreferenceKey key, int defaultValue) {
     Preferences prefs = Preferences.userNodeForPackage(className);
     return prefs.getInt(key.name(), defaultValue);
   }
 
-  public static String get(Class<? extends ScrollSettings> className, PreferenceKey key, String defaultValue) {
+  public static String get(Class className, PreferenceKey key, String defaultValue) {
     Preferences prefs = Preferences.userNodeForPackage(className);
     return prefs.get(key.name(), defaultValue);
   }
