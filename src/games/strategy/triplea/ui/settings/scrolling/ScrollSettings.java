@@ -2,41 +2,45 @@ package games.strategy.triplea.ui.settings.scrolling;
 
 public class ScrollSettings {
 
-  private int mapFasterScrollZoneSizeInPixels = 30;
-  private int mapScrollZoneSizeInPixels = 15;
+  private int mapEdgeFasterScrollZoneSize = 10;
+  private int mapEdgeScrollZoneSize = 30;
 
-  private int fasterSpeedMultipler = 3;
+  private int mapEdgeFasterScrollMultiplier = 3;
 
   private int arrowKeyScrollSpeed = 70;
   private int fasterArrowKeyScrollMultipler = 4;
+
+
+  private int mapEdgeScrollSpeed = 30;
+  private int wheelScrollAmount = 60;
+
   public ScrollSettings() {
 
   }
 
-  public int getMapFasterScrollZoneSizeInPixels() {
-    return mapFasterScrollZoneSizeInPixels;
+  public int getMapEdgeFasterScrollZoneSize() {
+    return mapEdgeFasterScrollZoneSize;
   }
 
-  public void setFasterScrollMultipler(String fasterScrollMultipler) {
-    this.fasterSpeedMultipler = Integer.parseInt(fasterScrollMultipler);
+  public void setMapEdgeFasterScrollMultiplier(String fasterScrollMultipler) {
+    this.mapEdgeFasterScrollMultiplier = Integer.parseInt(fasterScrollMultipler);
   }
 
-  public int getFasterSpeedMultipler() {
-    return fasterSpeedMultipler;
+  public int getMapEdgeFasterScrollMultiplier() {
+    return mapEdgeFasterScrollMultiplier;
   }
 
-  public void setFasterScrollZoneSizeInPixels(String fasterScrollZoneSizeInPixels) {
-    this.mapFasterScrollZoneSizeInPixels = Integer.parseInt(fasterScrollZoneSizeInPixels);
+  public void setMapEdgeFasterScrollZoneSize(String fasterScrollZoneSizeInPixels) {
+    this.mapEdgeFasterScrollZoneSize = Integer.parseInt(fasterScrollZoneSizeInPixels);
   }
 
 
-  public int getMapScrollZoneSizeInPixels() {
-    return mapScrollZoneSizeInPixels;
+  public int getMapEdgeScrollZoneSize() {
+    return mapEdgeScrollZoneSize;
   }
 
-  public void setScrollZoneSizeInPixels(String value) {
-
-    this.mapScrollZoneSizeInPixels = Integer.parseInt(value);
+  public void setMapEdgeScrollZoneSize(String value) {
+    this.mapEdgeScrollZoneSize = Integer.parseInt(value);
   }
 
   public int getArrowKeyScrollSpeed() {
@@ -56,5 +60,21 @@ public class ScrollSettings {
 
   public void setFasterArrowKeyScrollMultipler(String fasterArrowKeyScrollMultipler) {
     this.fasterArrowKeyScrollMultipler = Integer.valueOf(fasterArrowKeyScrollMultipler);
+  }
+
+  public int getMapEdgeScrollSpeed() {
+    return mapEdgeScrollSpeed;
+  }
+
+  public void setMapEdgeScrollSpeed(String mapEdgeScrollSpeed) {
+    this.mapEdgeScrollSpeed = Integer.valueOf(mapEdgeScrollSpeed);
+  }
+
+  public int getWheelScrollAmount() {
+    return wheelScrollAmount;
+  }
+
+  public void setWheelScrollAmount(String wheelScrollAmount) {
+    this.wheelScrollAmount = Integer.valueOf(wheelScrollAmount);
   }
 }
