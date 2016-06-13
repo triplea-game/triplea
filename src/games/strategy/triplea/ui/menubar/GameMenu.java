@@ -66,7 +66,6 @@ public class GameMenu {
     addEditMode(menuGame);
 
     menuGame.addSeparator();
-    addGameOptionsMenu(menuGame);
     menuGame.add(SwingAction.of("Engine Settings", e -> SettingsWindow.showWindow()));
     SoundOptions.addGlobalSoundSwitchMenu(menuGame);
     SoundOptions.addToMenu(menuGame, SoundPath.SoundType.TRIPLEA);
@@ -76,6 +75,7 @@ public class GameMenu {
     menuGame.add(frame.getShowMapOnlyAction()).setMnemonic(KeyEvent.VK_M);
 
     menuGame.addSeparator();
+    addGameOptionsMenu(menuGame);
     addShowVerifiedDice(menuGame);
     addPoliticsMenu(menuGame);
     addNotificationSettings(menuGame);
