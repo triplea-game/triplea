@@ -8,6 +8,8 @@ import games.strategy.engine.ClientContext;
 import games.strategy.triplea.ui.settings.SettingInputComponent;
 import games.strategy.triplea.ui.settings.SettingsTab;
 
+import javax.swing.JTextField;
+
 public class FoldersTab implements SettingsTab<FolderSettings> {
   private final FolderSettings settings;
 
@@ -23,12 +25,18 @@ public class FoldersTab implements SettingsTab<FolderSettings> {
   @Override
   public List<SettingInputComponent<FolderSettings>> getInputs() {
     BiConsumer<FolderSettings, String> saveGameUpdater = (((folderSettings, s) -> folderSettings.setSaveGamePath(s)));
-    BiConsumer<FolderSettings, String> downloadPathUpdater = (((folderSettings, s) -> folderSettings.setDownloadedMapPath(s)));
+    BiConsumer<FolderSettings, String> downloadPathUpdater =
+        (((folderSettings, s) -> folderSettings.setDownloadedMapPath(s)));
 
     return Arrays.asList(
-        SettingInputComponent.build("Save game path", "Location where games are saved by default", settings.getSaveGamePath(), saveGameUpdater),
-        SettingInputComponent.build("Map Download Path", "Location where map downloads are found", settings.getDownloadedMapPath(), downloadPathUpdater)
-    );
+        SettingInputComponent.build("Save game path", "Location where games are saved by default",
+            new JTextField(settings.getSaveGamePath()), saveGameUpdater),
+        SettingInputComponent.build("Map Download Path", "Location where map downloads are found",
+            new JTextField(settings.getDownloadedMapPath()), downloadPathUpdater));
+  }
+
+  @Override public void setToDefault() {
+
   }
 
   @Override
