@@ -26,6 +26,7 @@ import java.util.prefs.Preferences;
 import javax.swing.JOptionPane;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.ChatPanel;
@@ -389,13 +390,13 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       }
       final File save;
       if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE.equals(typeOfAutosave)) {
-        save = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
+        save = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
       } else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2.equals(typeOfAutosave)) {
-        save = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
+        save = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
       } else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD.equals(typeOfAutosave)) {
-        save = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveOddFileName());
+        save = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveOddFileName());
       } else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN.equals(typeOfAutosave)) {
-        save = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveEvenFileName());
+        save = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveEvenFileName());
       } else {
         return;
       }

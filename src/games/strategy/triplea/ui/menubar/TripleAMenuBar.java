@@ -23,6 +23,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
@@ -98,14 +99,16 @@ public class TripleAMenuBar extends JMenuBar {
 
 
   public static File getSaveGameLocationDialog(final Frame frame) {
+
     // For some strange reason,
     // the only way to get a Mac OS X native-style file dialog
     // is to use an AWT FileDialog instead of a Swing JDialog
     if (GameRunner.isMac()) {
       final FileDialog fileDialog = new FileDialog(frame);
       fileDialog.setMode(FileDialog.SAVE);
-      SaveGameFileChooser.ensureDefaultDirExists();
-      fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
+
+
+      fileDialog.setDirectory(ClientContext.folderSettings().getSaveGamePath());
       fileDialog.setFilenameFilter(new FilenameFilter() {
         @Override
         public boolean accept(final File dir, final String name) { // the extension should be .tsvg, but find svg
