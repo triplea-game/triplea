@@ -6,29 +6,8 @@ import games.strategy.triplea.settings.SystemPreferences;
 
 public class ScrollSettings implements HasDefaults {
 
-  private int mapEdgeFasterScrollZoneSize;
-  private int mapEdgeScrollZoneSize;
-
-  private int mapEdgeFasterScrollMultiplier;
-
-  private int arrowKeyScrollSpeed;
-  private int fasterArrowKeyScrollMultiplier;
-
-
-  private int mapEdgeScrollSpeed;
-  private int wheelScrollAmount;
-
   public ScrollSettings() {
-    mapEdgeFasterScrollZoneSize = getProp(PreferenceKey.MAP_EDGE_FASTER_SCROLL_ZONE_SIZE, 10);
-    mapEdgeScrollZoneSize = getProp(PreferenceKey.MAP_EDGE_SCROLL_ZONE_SIZE, 30);
 
-    mapEdgeFasterScrollMultiplier = getProp(PreferenceKey.MAP_EDGE_FASTER_SCROLL_MULTIPLER, 2);
-
-    arrowKeyScrollSpeed = getProp(PreferenceKey.ARROW_KEY_SCROLL_SPEED, 70);
-    fasterArrowKeyScrollMultiplier = getProp(PreferenceKey.FASTER_ARROW_KEY_SCROLL_MULTIPLIER, 3);
-
-    mapEdgeScrollSpeed = getProp(PreferenceKey.MAP_EDGE_SCROLL_SPEED, 30);
-    wheelScrollAmount = getProp(PreferenceKey.WHEEL_SCROLL_AMOUNT, 60);
   }
 
   @Override
@@ -47,67 +26,59 @@ public class ScrollSettings implements HasDefaults {
   }
 
   public int getMapEdgeFasterScrollZoneSize() {
-    return mapEdgeFasterScrollZoneSize;
+    return getProp(PreferenceKey.MAP_EDGE_FASTER_SCROLL_ZONE_SIZE, 10);
   }
 
   public void setMapEdgeFasterScrollMultiplier(String value) {
-    this.mapEdgeFasterScrollMultiplier = Integer.parseInt(value);
     SystemPreferences.put(PreferenceKey.MAP_EDGE_FASTER_SCROLL_MULTIPLER, value);
   }
 
   public int getMapEdgeFasterScrollMultiplier() {
-    return mapEdgeFasterScrollMultiplier;
+    return getProp(PreferenceKey.MAP_EDGE_FASTER_SCROLL_MULTIPLER, 2);
   }
 
   public void setMapEdgeFasterScrollZoneSize(String value) {
-    this.mapEdgeFasterScrollZoneSize = Integer.parseInt(value);
     SystemPreferences.put(PreferenceKey.MAP_EDGE_FASTER_SCROLL_ZONE_SIZE, value);
   }
 
 
   public int getMapEdgeScrollZoneSize() {
-    return mapEdgeScrollZoneSize;
+    return getProp(PreferenceKey.MAP_EDGE_SCROLL_ZONE_SIZE, 30);
   }
 
   public void setMapEdgeScrollZoneSize(String value) {
-    this.mapEdgeScrollZoneSize = Integer.parseInt(value);
     SystemPreferences.put(PreferenceKey.MAP_EDGE_SCROLL_ZONE_SIZE, value);
   }
 
   public int getArrowKeyScrollSpeed() {
-    return arrowKeyScrollSpeed;
+    return getProp(PreferenceKey.ARROW_KEY_SCROLL_SPEED, 70);
   }
 
   public void setArrowKeyScrollSpeed(String value) {
-    arrowKeyScrollSpeed = Integer.parseInt(value);
     SystemPreferences.put(PreferenceKey.ARROW_KEY_SCROLL_SPEED, value);
   }
 
-
   public int getFasterArrowKeyScrollMultiplier() {
-    return fasterArrowKeyScrollMultiplier;
+    return getProp(PreferenceKey.FASTER_ARROW_KEY_SCROLL_MULTIPLIER, 3);
   }
 
   public void setFasterArrowKeyScrollMultiplier(String value) {
-    this.fasterArrowKeyScrollMultiplier = Integer.valueOf(value);
     SystemPreferences.put(PreferenceKey.FASTER_ARROW_KEY_SCROLL_MULTIPLIER, value);
   }
 
   public int getMapEdgeScrollSpeed() {
-    return mapEdgeScrollSpeed;
+    return getProp(PreferenceKey.MAP_EDGE_SCROLL_SPEED, 30);
   }
 
   public void setMapEdgeScrollSpeed(String value) {
-    this.mapEdgeScrollSpeed = Integer.valueOf(value);
     SystemPreferences.put(PreferenceKey.MAP_EDGE_SCROLL_SPEED, value);
   }
 
   public int getWheelScrollAmount() {
-    return wheelScrollAmount;
+    return getProp(PreferenceKey.WHEEL_SCROLL_AMOUNT, 60);
   }
 
   public void setWheelScrollAmount(String value) {
-    this.wheelScrollAmount = Integer.valueOf(value);
     SystemPreferences.put(PreferenceKey.WHEEL_SCROLL_AMOUNT, value);
   }
 
