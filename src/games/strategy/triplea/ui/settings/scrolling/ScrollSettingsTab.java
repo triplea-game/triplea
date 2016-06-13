@@ -8,6 +8,8 @@ import games.strategy.engine.ClientContext;
 import games.strategy.triplea.ui.settings.SettingInputComponent;
 import games.strategy.triplea.ui.settings.SettingsTab;
 
+import javax.swing.JTextField;
+
 public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
 
   private final ScrollSettings settings;
@@ -16,10 +18,12 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
     this.settings = settings;
   }
 
+
   @Override
   public String getTabTitle() {
     return "Scrolling";
   }
+
 
   @Override
   public List<SettingInputComponent<ScrollSettings>> getInputs() {
@@ -29,33 +33,60 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
         ((scrollSettings, s) -> scrollSettings.setFasterArrowKeyScrollMultipler(s));
 
 
+    BiConsumer<ScrollSettings, String> mapEdgeScrollSpeedUpdater =
+        ((scrollSettings, s) -> scrollSettings.setMapEdgeScrollSpeed(s));
+
+
     BiConsumer<ScrollSettings, String> scrollZoneUpdater =
-        ((scrollSettings, s) -> scrollSettings.setScrollZoneSizeInPixels(s));
+        ((scrollSettings, s) -> scrollSettings.setMapEdgeScrollZoneSize(s));
     BiConsumer<ScrollSettings, String> fasterScrollZoneUpdater =
-        ((scrollSettings, s) -> scrollSettings.setFasterScrollZoneSizeInPixels(s));
+        ((scrollSettings, s) -> scrollSettings.setMapEdgeFasterScrollZoneSize(s));
     BiConsumer<ScrollSettings, String> scrollZoneMultiplierUpdater =
-        ((scrollSettings, s) -> scrollSettings.setFasterScrollMultipler(s));
+        ((scrollSettings, s) -> scrollSettings.setMapEdgeFasterScrollMultiplier(s));
+
+    BiConsumer<ScrollSettings, String> wheelScrollAmountUpdater =
+        ((scrollSettings, s) -> scrollSettings.setWheelScrollAmount(s));
 
     return Arrays.asList(
         SettingInputComponent.build(
-            "Arrow scroll speed", "Arrow key scrolling speed", settings.getArrowKeyScrollSpeed(),
+            "Arrow scroll speed", "Arrow key scrolling speed",
+            new JTextField(String.valueOf(settings.getArrowKeyScrollSpeed()),5),
             arrowKeyUpdater),
         SettingInputComponent.build(
             "Arrow scroll speed multiplier",
-            "Arrow key scroll speed increase when control is held down", settings.getFasterArrowKeyScrollMultipler(),
+            "Arrow key scroll speed increase when control is held down",
+            new JTextField(String.valueOf(settings.getFasterArrowKeyScrollMultipler()), 5),
             arrowKeyMultiplierUpdater),
         SettingInputComponent.build(
-            "Scroll Zone Size",
-            "", settings.getMapScrollZoneSizeInPixels(),
+            "Map Edge Scroll Speed",
+            "",
+            new JTextField(String.valueOf(settings.getMapEdgeScrollSpeed()), 5),
+            mapEdgeScrollSpeedUpdater),
+        SettingInputComponent.build(
+            "Map Edge Scroll Zone Size",
+            "",
+            new JTextField(String.valueOf(settings.getMapEdgeScrollZoneSize()), 5),
             scrollZoneUpdater),
         SettingInputComponent.build(
-            "Faster Scroll Zone Size",
-            "", settings.getMapFasterScrollZoneSizeInPixels(),
+            "Map Edge Faster Scroll Zone Size",
+            "",
+            new JTextField(String.valueOf(settings.getMapEdgeFasterScrollZoneSize()), 5),
             fasterScrollZoneUpdater),
         SettingInputComponent.build(
             "Scroll Zone Multiplier",
-            "", settings.getFasterSpeedMultipler(),
-            scrollZoneMultiplierUpdater));
+            "",
+            new JTextField(String.valueOf(settings.getMapEdgeFasterScrollMultiplier()), 5),
+            scrollZoneMultiplierUpdater),
+        SettingInputComponent.build(
+            "Mouse Wheel Scroll Amount",
+            "",
+            new JTextField(String.valueOf(settings.getWheelScrollAmount()), 5),
+            wheelScrollAmountUpdater)
+    );
+  }
+
+  @Override public void setToDefault() {
+
   }
 
   @Override
