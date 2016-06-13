@@ -7,15 +7,21 @@ import java.util.prefs.Preferences;
 
 public class SystemPreferences {
 
+  /**
+   * Note, this method does a flush after being called, which is slow.
+   * If there is a need to do many of these one after another, then call 'putNoFlush'
+   */
   public static void put(Class className, PreferenceKey key, String value) {
+    putNoFlush(className, key, value);
+    flush(className);
+  }
+
+  public static void putNoFlush(Class className, PreferenceKey key, String value) {
     Preferences prefs = Preferences.userNodeForPackage(className);
     prefs.put(key.name(), value);
   }
 
-  public static void putAndFlush(Class className, PreferenceKey key, String value) {
-    put(className, key, value);
-    flush(className);
-  }
+
 
   public static void flush(Class className) {
     Preferences prefs = Preferences.userNodeForPackage(className);
