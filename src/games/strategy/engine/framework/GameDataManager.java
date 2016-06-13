@@ -209,14 +209,6 @@ public class GameDataManager {
     }
   }
 
-  public void saveGame(final File destination, final GameData data) throws IOException {
-    try (final OutputStream fileStream = new FileOutputStream(destination);
-        BufferedOutputStream out = new BufferedOutputStream(fileStream);) {
-
-      saveGame(fileStream, data);
-    }
-  }
-
   public void saveGame(final OutputStream sink, final GameData data) throws IOException {
     saveGame(sink, data, true);
   }
