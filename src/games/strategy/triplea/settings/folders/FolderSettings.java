@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui.settings.folders;
+package games.strategy.triplea.settings.folders;
 
 public class FolderSettings {
 

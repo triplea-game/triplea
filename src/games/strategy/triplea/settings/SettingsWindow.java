@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui.settings;
+package games.strategy.triplea.settings;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -18,8 +18,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.triplea.ui.settings.folders.FoldersTab;
-import games.strategy.triplea.ui.settings.scrolling.ScrollSettingsTab;
+import games.strategy.triplea.settings.folders.FoldersTab;
+import games.strategy.triplea.settings.scrolling.ScrollSettingsTab;
 import games.strategy.ui.SwingComponents;
 
 public class SettingsWindow extends JFrame {

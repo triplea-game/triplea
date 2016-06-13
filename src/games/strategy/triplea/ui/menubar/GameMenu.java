@@ -40,7 +40,7 @@ import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.PoliticalStateOverview;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.VerifiedRandomNumbersDialog;
-import games.strategy.triplea.ui.settings.SettingsWindow;
+import games.strategy.triplea.settings.SettingsWindow;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
