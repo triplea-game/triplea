@@ -52,6 +52,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -62,6 +63,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.ui.background.WaitDialog;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
@@ -767,7 +769,11 @@ public class OddsCalculatorPanel extends JPanel {
     m_numRuns.setColumns(4);
     m_numRuns.setMin(1);
     m_numRuns.setMax(20000);
-    m_numRuns.setValue((games.strategy.triplea.Properties.getLow_Luck(m_data) ? 500 : 2000));
+
+    int simulationCount =
+        Properties.getLow_Luck(m_data) ? ClientContext.battleCalcSettings().getSimulationCountLowLuck()
+            : ClientContext.battleCalcSettings().getSimulationCountDice();
+    m_numRuns.setValue(simulationCount);
     m_retreatAfterXRounds.setColumns(4);
     m_retreatAfterXRounds.setMin(-1);
     m_retreatAfterXRounds.setMax(1000);
@@ -1087,8 +1093,9 @@ class UnitPanel extends JPanel {
     setLayout(new GridBagLayout());
 
 
-    final Optional<Image> img = m_context.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
-        m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled());
+    final Optional<Image> img =
+        m_context.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
+            m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled());
 
     final JLabel label = img.isPresent() ? new JLabel(new ImageIcon(img.get())) : new JLabel();
     label.setToolTipText(toolTipText);
@@ -1299,9 +1306,10 @@ class OrderOfLossesInputPanel extends JPanel {
             OddsCalculator.OOL_ALL + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + category.getType().getName();
         final String toolTipText = "<html>" + category.getType().getName() + ":  "
             + category.getType().getTooltip(category.getOwner()) + "</html>";
-        final Optional<Image> img = m_context.getUnitImageFactory().getImage(category.getType(), category.getOwner(), m_data,
-            category.hasDamageOrBombingUnitDamage(), category.getDisabled());
-        if(img.isPresent()) {
+        final Optional<Image> img =
+            m_context.getUnitImageFactory().getImage(category.getType(), category.getOwner(), m_data,
+                category.hasDamageOrBombingUnitDamage(), category.getDisabled());
+        if (img.isPresent()) {
           final JButton button = new JButton(new ImageIcon(img.get()));
           button.setToolTipText(toolTipText);
           button.addActionListener(e -> textField
