@@ -23,16 +23,17 @@ import java.util.prefs.Preferences;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import games.strategy.util.UrlStreams;
+import javazoom.jl.player.AudioDevice;
+import javazoom.jl.player.FactoryRegistry;
+import javazoom.jl.player.advanced.AdvancedPlayer;
+
 import com.google.common.base.Throwables;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.util.UrlStreams;
-import javazoom.jl.player.AudioDevice;
-import javazoom.jl.player.FactoryRegistry;
-import javazoom.jl.player.advanced.AdvancedPlayer;
 
 /**
  * Utility for loading and playing sound clips.
@@ -328,7 +329,6 @@ public class ClipPlayer {
    * phase_purchase_Germans=phase_purchase_Germans/game_start_Germans_01_anthem.mp3
    *
    * @param pathName
-   * @param subFolder
    */
   private List<URL> parseClipPaths(final String pathName) {
     // Check if there is a sound.properties path override for this resource

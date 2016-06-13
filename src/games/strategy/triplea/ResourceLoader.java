@@ -200,11 +200,8 @@ public class ResourceLoader {
   }
 
   /**
-   * @deprecated Avoid this method. It returns an InputStream, and you have to close it. It is easy not to do that.
-   * Instead prefer to create an object that wraps the thing you are parsing, and have
-   * your new object return exactly the data you want. In this case that object can handle closing the InputStream
+   * Ensure that you close the InputStream returned by this method when you are done using it.
    */
-  @Deprecated
   public InputStream getResourceAsStream(final String path) {
     URL url = getResource(path);
     if (url == null) {

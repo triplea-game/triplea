@@ -151,7 +151,7 @@ public class MapData {
    * Constructor TerritoryData(java.lang.String)
    * Sets the map directory for this instance of TerritoryData
    *
-   * @param java
+   * @param loader
    *        .lang.String
    *        mapNameDir the given map directory
    */
@@ -159,7 +159,6 @@ public class MapData {
     m_resourceLoader = loader;
     try {
       final String prefix = "";
-      // TODO: each call to loader.getResourceAsStream opens an input stream, but we never close it, this is a resource leak.
       m_place = PointFileReaderWriter.readOneToMany(loader.getResourceAsStream(prefix + PLACEMENT_FILE));
       m_territoryEffects =
           PointFileReaderWriter.readOneToMany(loader.getResourceAsStream(prefix + TERRITORY_EFFECT_FILE));
