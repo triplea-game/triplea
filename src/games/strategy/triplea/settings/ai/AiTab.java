@@ -3,7 +3,7 @@ package games.strategy.triplea.settings.ai;
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.settings.SettingInputComponent;
 import games.strategy.triplea.settings.SettingsTab;
-import games.strategy.triplea.settings.validators.InputValidator;
+import games.strategy.triplea.settings.InputValidator;
 
 import javax.swing.JTextField;
 import java.util.Arrays;
