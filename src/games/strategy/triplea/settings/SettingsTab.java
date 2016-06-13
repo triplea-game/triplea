@@ -6,7 +6,7 @@ import java.util.List;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.Tuple;
 
-public interface SettingsTab<T> {
+public interface SettingsTab<T extends HasDefaults> {
   String getTabTitle();
 
   List<SettingInputComponent<T>> getInputs();
@@ -31,8 +31,6 @@ public interface SettingsTab<T> {
     SwingComponents.showDialog(msg.toString());
 
   }
-
-  void setToDefault();
 
   T getSettingsObject();
 }

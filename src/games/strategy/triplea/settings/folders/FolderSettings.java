@@ -1,11 +1,18 @@
 package games.strategy.triplea.settings.folders;
 
-public class FolderSettings {
+import games.strategy.triplea.settings.HasDefaults;
+
+public class FolderSettings implements HasDefaults {
 
   private String downloadedMapPath;
   private String saveGamePath;
 
   public FolderSettings() {
+
+  }
+
+  @Override
+  public void setToDefault() {
 
   }
 
@@ -24,4 +31,5 @@ public class FolderSettings {
   public void setSaveGamePath(String saveGamePath) {
     this.saveGamePath = saveGamePath;
   }
+
 }
