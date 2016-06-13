@@ -1,9 +1,10 @@
 package games.strategy.triplea.settings.scrolling;
 
+import games.strategy.triplea.settings.HasDefaults;
 import games.strategy.triplea.settings.PreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
 
-public class ScrollSettings {
+public class ScrollSettings implements HasDefaults {
 
   private int mapEdgeFasterScrollZoneSize;
   private int mapEdgeScrollZoneSize;
@@ -11,7 +12,7 @@ public class ScrollSettings {
   private int mapEdgeFasterScrollMultiplier;
 
   private int arrowKeyScrollSpeed;
-  private int fasterArrowKeyScrollMultipler;
+  private int fasterArrowKeyScrollMultiplier;
 
 
   private int mapEdgeScrollSpeed;
@@ -24,11 +25,22 @@ public class ScrollSettings {
     mapEdgeFasterScrollMultiplier = getProp(PreferenceKey.MAP_EDGE_FASTER_SCROLL_MULTIPLER, 2);
 
     arrowKeyScrollSpeed = getProp(PreferenceKey.ARROW_KEY_SCROLL_SPEED, 70);
-    fasterArrowKeyScrollMultipler = getProp(PreferenceKey.FASTER_ARROW_KEY_SCROLL_MULTIPLIER, 3);
+    fasterArrowKeyScrollMultiplier = getProp(PreferenceKey.FASTER_ARROW_KEY_SCROLL_MULTIPLIER, 3);
 
     mapEdgeScrollSpeed = getProp(PreferenceKey.MAP_EDGE_SCROLL_SPEED, 30);
     wheelScrollAmount = getProp(PreferenceKey.WHEEL_SCROLL_AMOUNT, 60);
   }
+
+  @Override
+  public void setToDefault() {
+    setMapEdgeFasterScrollZoneSize("10");
+    setMapEdgeScrollZoneSize("30");
+    setMapEdgeFasterScrollMultiplier("2");
+    setArrowKeyScrollSpeed("70");
+    setFasterArrowKeyScrollMultiplier("3");
+    setWheelScrollAmount("60");
+  }
+
 
   private int getProp(PreferenceKey key, int defaultValue) {
     return SystemPreferences.get(this.getClass(), key, defaultValue);
@@ -72,12 +84,12 @@ public class ScrollSettings {
   }
 
 
-  public int getFasterArrowKeyScrollMultipler() {
-    return fasterArrowKeyScrollMultipler;
+  public int getFasterArrowKeyScrollMultiplier() {
+    return fasterArrowKeyScrollMultiplier;
   }
 
-  public void setFasterArrowKeyScrollMultipler(String value) {
-    this.fasterArrowKeyScrollMultipler = Integer.valueOf(value);
+  public void setFasterArrowKeyScrollMultiplier(String value) {
+    this.fasterArrowKeyScrollMultiplier = Integer.valueOf(value);
     SystemPreferences.put(this.getClass(), PreferenceKey.FASTER_ARROW_KEY_SCROLL_MULTIPLIER, value);
   }
 
@@ -98,4 +110,5 @@ public class ScrollSettings {
     this.wheelScrollAmount = Integer.valueOf(value);
     SystemPreferences.put(this.getClass(), PreferenceKey.WHEEL_SCROLL_AMOUNT, value);
   }
+
 }

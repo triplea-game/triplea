@@ -3,6 +3,7 @@ package games.strategy.triplea.settings;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import javax.swing.text.JTextComponent;
 
@@ -37,6 +38,7 @@ public interface SettingInputComponent<T> {
       public JTextComponent getInputElement() {
         return component;
       }
+
 
       @Override
       public boolean updateSettings(Z toUpdate, JTextComponent inputComponent) {
