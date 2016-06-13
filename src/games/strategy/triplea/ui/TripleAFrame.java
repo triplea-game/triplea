@@ -1651,7 +1651,7 @@ public class TripleAFrame extends MainGameFrame {
     int multiplier = 1;
 
     if (e.isControlDown()) {
-      multiplier = scrollSettings.getFasterArrowKeyScrollMultipler();
+      multiplier = scrollSettings.getFasterArrowKeyScrollMultiplier();
     }
 
 

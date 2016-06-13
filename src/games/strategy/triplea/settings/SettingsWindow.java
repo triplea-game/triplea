@@ -2,6 +2,7 @@ package games.strategy.triplea.settings;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.GridLayout;
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +35,9 @@ public class SettingsWindow extends JFrame {
   }
 
   private SettingsWindow(List<SettingsTab> tabs) {
+    super("Settings");
+    super.setAlwaysOnTop(true);
+    super.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
 
     JTabbedPane pane = new JTabbedPane();
     add(pane, BorderLayout.CENTER);
@@ -86,7 +90,10 @@ public class SettingsWindow extends JFrame {
 
     JButton useDefaults = SwingComponents.newJButton("To Default",
         e -> SwingComponents.promptUser("Revert to default?",
-            "Are you sure you would like to go back to default settings?", () -> settingTab.setToDefault()));
+            "Are you sure you would like to go back to default settings?", () -> {
+              settingTab.getSettingsObject().setToDefault();
+              SystemPreferences.flush(settingTab.getSettingsObject().getClass());
+            }));
     buttonsPanel.add(useDefaults);
 
     buttonsPanel.add(Box.createVerticalStrut(100));
