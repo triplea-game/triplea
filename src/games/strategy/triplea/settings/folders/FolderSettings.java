@@ -1,41 +1,44 @@
 package games.strategy.triplea.settings.folders;
 
+import java.io.File;
+
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.settings.HasDefaults;
 import games.strategy.triplea.settings.PreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
 
-import java.io.File;
-
 public class FolderSettings implements HasDefaults {
 
-  private String downloadedMapPath;
-  private String saveGamePath;
 
-  public FolderSettings() {
-    final File defaultPath = new File(ClientFileSystemHelper.getUserRootFolder(), "downloadedMaps");
-    downloadedMapPath = SystemPreferences.get(ClientFileSystemHelper.class, PreferenceKey.USER_MAPS_FOLDER_PATH, defaultPath.toString());
-  }
+  private final File DEFAULT_DOWNLOADED_MAPS_PATH =
+      new File(ClientFileSystemHelper.getUserRootFolder(), "downloadedMaps");
+  private final static File DEFAULT_SAVE_PATH = new File(ClientFileSystemHelper.getUserRootFolder(), "savedGames");
+
+  public FolderSettings() {}
+
 
   @Override
   public void setToDefault() {
+    setSaveGamePath(DEFAULT_SAVE_PATH.toString());
+    setDownloadedMapPath(DEFAULT_DOWNLOADED_MAPS_PATH.toString());
   }
 
   public String getDownloadedMapPath() {
-    return downloadedMapPath;
+    return SystemPreferences.get(ClientFileSystemHelper.class, PreferenceKey.USER_MAPS_FOLDER_PATH,
+        DEFAULT_DOWNLOADED_MAPS_PATH.toString());
   }
 
   public void setDownloadedMapPath(String downloadedMapPath) {
-    this.downloadedMapPath = downloadedMapPath;
     SystemPreferences.put(ClientFileSystemHelper.class, PreferenceKey.USER_MAPS_FOLDER_PATH, downloadedMapPath);
   }
 
   public String getSaveGamePath() {
-    return saveGamePath;
+    return SystemPreferences.get(ClientFileSystemHelper.class, PreferenceKey.SAVE_GAMES_FOLDER_PATH,
+        DEFAULT_SAVE_PATH.toString());
   }
 
   public void setSaveGamePath(String saveGamePath) {
-    this.saveGamePath = saveGamePath;
+    SystemPreferences.put(ClientFileSystemHelper.class, PreferenceKey.SAVE_GAMES_FOLDER_PATH, saveGamePath);
   }
 
 }

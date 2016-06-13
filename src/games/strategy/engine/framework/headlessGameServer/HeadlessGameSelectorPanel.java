@@ -28,6 +28,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
@@ -254,8 +255,8 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
       if (GameRunner.isMac()) {
         final FileDialog fileDialog = new FileDialog(MainFrame.getInstance());
         fileDialog.setMode(FileDialog.LOAD);
-        SaveGameFileChooser.ensureDefaultDirExists();
-        fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
+        SaveGameFileChooser.ensureMapsFolderExists();
+        fileDialog.setDirectory(new File(ClientContext.folderSettings().getSaveGamePath()).getPath());
         fileDialog.setFilenameFilter(new FilenameFilter() {
           @Override
           public boolean accept(final File dir, final String name) {
