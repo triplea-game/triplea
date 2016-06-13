@@ -93,6 +93,7 @@ public class SettingsWindow extends JFrame {
 
     JButton saveButton = SwingComponents.newJButton("Save", e -> {
       settingTab.updateSettings(inputs);
+      SystemPreferences.flush(settingTab.getSettingsObject().getClass());
     });
     buttonsPanel.add(saveButton);
 
