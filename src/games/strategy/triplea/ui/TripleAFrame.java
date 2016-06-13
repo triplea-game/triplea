@@ -84,10 +84,12 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.google.common.collect.ImmutableList;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.ui.menubar.ExportMenu;
 import games.strategy.triplea.ui.menubar.HelpMenu;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
+import games.strategy.triplea.ui.settings.scrolling.ScrollSettings;
 import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.ChatPanel;
@@ -212,10 +214,12 @@ public class TripleAFrame extends MainGameFrame {
   private Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<>();
   private ThreadPool messageAndDialogThreadPool;
   private TripleAMenuBar menu;
+  private final ScrollSettings scrollSettings;
 
   /** Creates new TripleAFrame */
   public TripleAFrame(final IGame game, final LocalPlayers players) {
     super("TripleA - " + game.getData().getGameName(), players);
+    scrollSettings = ClientContext.scrollSettings();
     this.game = game;
     data = game.getData();
     messageAndDialogThreadPool = new ThreadPool(1);
@@ -1652,14 +1656,15 @@ public class TripleAFrame extends MainGameFrame {
     };
   }
 
-  private static int computeScrollSpeed(final KeyEvent e) {
+  private int computeScrollSpeed(final KeyEvent e) {
     int multiplier = 1;
 
     if (e.isControlDown()) {
-      multiplier = 4;
+      multiplier = scrollSettings.getFasterArrowKeyScrollMultipler();
     }
 
-    final int starterDiffPixel = 70;
+
+    final int starterDiffPixel = scrollSettings.getArrowKeyScrollSpeed();
     return (starterDiffPixel * multiplier);
   }
 
