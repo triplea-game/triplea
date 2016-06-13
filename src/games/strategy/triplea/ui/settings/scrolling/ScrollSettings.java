@@ -6,7 +6,6 @@ public class ScrollSettings {
   private int mapScrollZoneSizeInPixels = 15;
 
   private int fasterSpeedMultipler = 3;
-  private int scrollSpeed = 50;
 
   private int arrowKeyScrollSpeed = 70;
   private int fasterArrowKeyScrollMultipler = 4;
@@ -16,15 +15,6 @@ public class ScrollSettings {
 
   public int getMapFasterScrollZoneSizeInPixels() {
     return mapFasterScrollZoneSizeInPixels;
-  }
-
-  public void setScrollSpeed(String scrollSpeed) {
-    this.scrollSpeed = Integer.parseInt(scrollSpeed);
-  }
-
-
-  public int getScrollSpeed() {
-    return scrollSpeed;
   }
 
   public void setFasterScrollMultipler(String fasterScrollMultipler) {

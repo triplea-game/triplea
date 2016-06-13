@@ -4,9 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import javax.swing.JTextField;
-import javax.swing.text.JTextComponent;
-
+import games.strategy.engine.ClientContext;
 import games.strategy.triplea.ui.settings.SettingInputComponent;
 import games.strategy.triplea.ui.settings.SettingsTab;
 
@@ -16,9 +14,6 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
 
   public ScrollSettingsTab(ScrollSettings settings) {
     this.settings = settings;
-
-    arrowScrollSpeed = new JTextField(String.valueOf(settings.getArrowKeyScrollSpeed()), 5 );
-    arrowScrollSpeedMultiplier = new JTextField(String.valueOf(settings.getFasterArrowKeyScrollMultipler()), 5);
   }
 
   @Override
@@ -26,50 +21,46 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
     return "Scrolling";
   }
 
-  private final JTextField arrowScrollSpeed;
-  private final JTextField arrowScrollSpeedMultiplier;
-
-
   @Override
-  public List<SettingInputComponent> getInputs() {
-    BiConsumer<ScrollSettings, String> arrowKeyUpdater = ((scrollSettings, s) -> scrollSettings.setArrowKeyScrollSpeed(s));
-    BiConsumer<ScrollSettings, String> arrowKeyMultiplierUpdater = ((scrollSettings, s) -> scrollSettings.setFasterArrowKeyScrollMultipler(s));
+  public List<SettingInputComponent<ScrollSettings>> getInputs() {
+    BiConsumer<ScrollSettings, String> arrowKeyUpdater =
+        ((scrollSettings, s) -> scrollSettings.setArrowKeyScrollSpeed(s));
+    BiConsumer<ScrollSettings, String> arrowKeyMultiplierUpdater =
+        ((scrollSettings, s) -> scrollSettings.setFasterArrowKeyScrollMultipler(s));
+
+
+    BiConsumer<ScrollSettings, String> scrollZoneUpdater =
+        ((scrollSettings, s) -> scrollSettings.setScrollZoneSizeInPixels(s));
+    BiConsumer<ScrollSettings, String> fasterScrollZoneUpdater =
+        ((scrollSettings, s) -> scrollSettings.setFasterScrollZoneSizeInPixels(s));
+    BiConsumer<ScrollSettings, String> scrollZoneMultiplierUpdater =
+        ((scrollSettings, s) -> scrollSettings.setFasterScrollMultipler(s));
+
     return Arrays.asList(
-        buildSettingsComponents("Arrow scroll speed", "Arrow key scrolling speed", arrowScrollSpeed, arrowKeyUpdater),
-        buildSettingsComponents("Arrow scroll speed multiplier", "Arrow key scroll speed increase when control is held down", arrowScrollSpeedMultiplier, arrowKeyMultiplierUpdater)
-    );
+        SettingInputComponent.build(
+            "Arrow scroll speed", "Arrow key scrolling speed", settings.getArrowKeyScrollSpeed(),
+            arrowKeyUpdater),
+        SettingInputComponent.build(
+            "Arrow scroll speed multiplier",
+            "Arrow key scroll speed increase when control is held down", settings.getFasterArrowKeyScrollMultipler(),
+            arrowKeyMultiplierUpdater),
+        SettingInputComponent.build(
+            "Scroll Zone Size",
+            "", settings.getMapScrollZoneSizeInPixels(),
+            scrollZoneUpdater),
+        SettingInputComponent.build(
+            "Faster Scroll Zone Size",
+            "", settings.getMapFasterScrollZoneSizeInPixels(),
+            fasterScrollZoneUpdater),
+        SettingInputComponent.build(
+            "Scroll Zone Multiplier",
+            "", settings.getFasterSpeedMultipler(),
+            scrollZoneMultiplierUpdater));
   }
 
   @Override
-  public void updateSettings(List<SettingInputComponent> inputs) {
-    inputs.forEach(input -> input.updateSettings(settings, input.getInputElement()));
+  public ScrollSettings getSettingsObject() {
+    return ClientContext.scrollSettings();
   }
 
-
-  private static SettingInputComponent<ScrollSettings> buildSettingsComponents(final String label,
-      final String description, JTextComponent inputComponent, BiConsumer<ScrollSettings, String> updater) {
-    return new SettingInputComponent<ScrollSettings>() {
-      @Override
-      public String getLabel() {
-        return label;
-      }
-
-      @Override
-      public String getDescription() {
-        return description;
-      }
-
-      @Override
-      public JTextComponent getInputElement() {
-        return inputComponent;
-      }
-
-
-      @Override
-      public void updateSettings(ScrollSettings toUpdate, JTextComponent inputComponent) {
-        updater.accept(toUpdate, inputComponent.getText());
-      }
-
-    };
-  }
 }
