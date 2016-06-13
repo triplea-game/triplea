@@ -64,16 +64,19 @@ public class GameMenu {
   private JMenu createGameMenu() {
     final JMenu menuGame = SwingComponents.newJMenu("Game", SwingComponents.KeyboardCode.G);
     addEditMode(menuGame);
-    menuGame.add(frame.getShowGameAction()).setMnemonic(KeyEvent.VK_G);
-    menuGame.add(frame.getShowHistoryAction()).setMnemonic(KeyEvent.VK_H);
-    menuGame.add(frame.getShowMapOnlyAction()).setMnemonic(KeyEvent.VK_M);
-    addShowVerifiedDice(menuGame);
 
-    menuGame.add(SwingAction.of("Settings", e -> SettingsWindow.showWindow()));
+    menuGame.addSeparator();
+    addGameOptionsMenu(menuGame);
+    menuGame.add(SwingAction.of("Engine Settings", e -> SettingsWindow.showWindow()));
     SoundOptions.addGlobalSoundSwitchMenu(menuGame);
     SoundOptions.addToMenu(menuGame, SoundPath.SoundType.TRIPLEA);
     menuGame.addSeparator();
-    addGameOptionsMenu(menuGame);
+    menuGame.add(frame.getShowGameAction()).setMnemonic(KeyEvent.VK_G);
+    menuGame.add(frame.getShowHistoryAction()).setMnemonic(KeyEvent.VK_H);
+    menuGame.add(frame.getShowMapOnlyAction()).setMnemonic(KeyEvent.VK_M);
+
+    menuGame.addSeparator();
+    addShowVerifiedDice(menuGame);
     addPoliticsMenu(menuGame);
     addNotificationSettings(menuGame);
     addFocusOnCasualties(menuGame);
