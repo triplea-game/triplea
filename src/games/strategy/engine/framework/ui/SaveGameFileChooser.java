@@ -5,7 +5,7 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
-import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 
@@ -15,7 +15,6 @@ public class SaveGameFileChooser extends JFileChooser {
   private static final String AUTOSAVE_2_FILE_NAME = "autosave2.tsvg";
   private static final String AUTOSAVE_ODD_ROUND_FILE_NAME = "autosave_round_odd.tsvg";
   private static final String AUTOSAVE_EVEN_ROUND_FILE_NAME = "autosave_round_even.tsvg";
-  public static final File DEFAULT_DIRECTORY = new File(ClientFileSystemHelper.getUserRootFolder(), "savedGames");
   private static SaveGameFileChooser s_instance;
 
   public enum AUTOSAVE_TYPE {
@@ -76,12 +75,12 @@ public class SaveGameFileChooser extends JFileChooser {
   public SaveGameFileChooser() {
     super();
     setFileFilter(m_gameDataFileFilter);
-    ensureDefaultDirExists();
-    setCurrentDirectory(DEFAULT_DIRECTORY);
+    ensureMapsFolderExists();
+    setCurrentDirectory(new File(ClientContext.folderSettings().getSaveGamePath()));
   }
 
-  public static void ensureDefaultDirExists() {
-    ensureDirectoryExists(DEFAULT_DIRECTORY);
+  public static void ensureMapsFolderExists() {
+    ensureDirectoryExists(new File(ClientContext.folderSettings().getSaveGamePath()));
   }
 
   private static void ensureDirectoryExists(final File f) {

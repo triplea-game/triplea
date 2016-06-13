@@ -372,8 +372,8 @@ public class GameSelectorPanel extends JPanel implements Observer {
     if (GameRunner.isMac()) {
       final FileDialog fileDialog = new FileDialog(JOptionPane.getFrameForComponent(parent));
       fileDialog.setMode(FileDialog.LOAD);
-      SaveGameFileChooser.ensureDefaultDirExists();
-      fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
+      SaveGameFileChooser.ensureMapsFolderExists();
+      fileDialog.setDirectory(new File(ClientContext.folderSettings().getSaveGamePath()).getPath());
       fileDialog.setFilenameFilter(new FilenameFilter() {
         @Override
         public boolean accept(final File dir, final String name) {
