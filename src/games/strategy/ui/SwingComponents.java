@@ -48,9 +48,12 @@ public class SwingComponents {
 
   }
 
+
   private static final Set<String> visiblePrompts = new HashSet<>();
 
-  /** Creates a JPanel with BorderLayout and adds a west component and an east component */
+  /**
+   * Creates a JPanel with BorderLayout and adds a west component and an east component
+   */
   public static JPanel horizontalJPanel(Component westComponent, Component eastComponent) {
     return horizontalJPanel(westComponent, Optional.empty(), eastComponent);
   }
@@ -194,6 +197,11 @@ public class SwingComponents {
     final String msg = "Okay to open URL in a web browser?\n" + url;
     SwingComponents.promptUser("Open external URL?", msg, () -> DesktopUtilityBrowserLauncher.openURL(url));
   }
+
+  public static void showDialog(String message) {
+    JOptionPane.showMessageDialog(null,message);
+  }
+
 
   public static JDialog newJDialogModal(JFrame parent, String title, JPanel contents) {
     final JDialog dialog = new JDialog(parent, title, true);
