@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -91,6 +92,8 @@ public class SettingsWindow extends JDialog {
             "Are you sure you would like to go back to default settings?", () -> {
               settingTab.getSettingsObject().setToDefault();
               SystemPreferences.flush(settingTab.getSettingsObject().getClass());
+              dispose();
+              SwingComponents.showDialog("Reverted the '" + settingTab.getTabTitle() + "' settings back to defaults");
             }));
     buttonsPanel.add(useDefaults);
 
