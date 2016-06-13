@@ -37,8 +37,6 @@ import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
-import com.sun.deploy.util.SessionState;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeAttachmentChange;
 import games.strategy.engine.data.CompositeChange;
@@ -57,7 +55,6 @@ import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
-import games.strategy.triplea.ui.settings.scrolling.ScrollSettings;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;

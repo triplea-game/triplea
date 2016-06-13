@@ -1,12 +1,13 @@
-package games.strategy.triplea.ui.settings.folders;
+package games.strategy.triplea.settings.folders;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.triplea.ui.settings.SettingInputComponent;
-import games.strategy.triplea.ui.settings.SettingsTab;
+import games.strategy.triplea.settings.SettingInputComponent;
+import games.strategy.triplea.settings.SettingsTab;
+import games.strategy.triplea.settings.validators.InputValidator;
 
 import javax.swing.JTextField;
 
@@ -30,12 +31,17 @@ public class FoldersTab implements SettingsTab<FolderSettings> {
 
     return Arrays.asList(
         SettingInputComponent.build("Save game path", "Location where games are saved by default",
-            new JTextField(settings.getSaveGamePath()), saveGameUpdater),
+            new JTextField(settings.getSaveGamePath()), saveGameUpdater
+//            InputValidator.IS_DIRECTORY
+            ),
         SettingInputComponent.build("Map Download Path", "Location where map downloads are found",
-            new JTextField(settings.getDownloadedMapPath()), downloadPathUpdater));
+            new JTextField(settings.getDownloadedMapPath()), downloadPathUpdater)
+//            InputValidator.IS_DIRECTORY
+        );
   }
 
-  @Override public void setToDefault() {
+  @Override
+  public void setToDefault() {
 
   }
 
