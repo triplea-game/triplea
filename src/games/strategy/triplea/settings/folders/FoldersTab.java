@@ -10,7 +10,7 @@ import javax.swing.JTextField;
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.settings.SettingInputComponent;
 import games.strategy.triplea.settings.SettingsTab;
-import games.strategy.triplea.settings.validators.InputValidator;
+import games.strategy.triplea.settings.InputValidator;
 
 public class FoldersTab implements SettingsTab<FolderSettings> {
   private final FolderSettings settings;

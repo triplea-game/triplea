@@ -7,8 +7,6 @@ import java.util.function.Function;
 
 import javax.swing.text.JTextComponent;
 
-import games.strategy.triplea.settings.validators.InputValidator;
-
 public interface SettingInputComponent<T> {
   String getLabel();
 
