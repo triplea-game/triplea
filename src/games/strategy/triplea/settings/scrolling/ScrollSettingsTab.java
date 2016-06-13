@@ -4,12 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import javax.swing.JTextField;
+
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.settings.SettingInputComponent;
 import games.strategy.triplea.settings.SettingsTab;
 import games.strategy.triplea.settings.validators.InputValidator;
-
-import javax.swing.JTextField;
 
 public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
 
@@ -18,7 +18,6 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
   public ScrollSettingsTab(ScrollSettings settings) {
     this.settings = settings;
   }
-
 
   @Override
   public String getTabTitle() {
@@ -30,18 +29,20 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
   public List<SettingInputComponent<ScrollSettings>> getInputs() {
     BiConsumer<ScrollSettings, String> arrowKeyUpdater =
         ((scrollSettings, s) -> scrollSettings.setArrowKeyScrollSpeed(s));
+
     BiConsumer<ScrollSettings, String> arrowKeyMultiplierUpdater =
-        ((scrollSettings, s) -> scrollSettings.setFasterArrowKeyScrollMultipler(s));
+        ((scrollSettings, s) -> scrollSettings.setFasterArrowKeyScrollMultiplier(s));
 
 
     BiConsumer<ScrollSettings, String> mapEdgeScrollSpeedUpdater =
         ((scrollSettings, s) -> scrollSettings.setMapEdgeScrollSpeed(s));
 
-
     BiConsumer<ScrollSettings, String> scrollZoneUpdater =
         ((scrollSettings, s) -> scrollSettings.setMapEdgeScrollZoneSize(s));
+
     BiConsumer<ScrollSettings, String> fasterScrollZoneUpdater =
         ((scrollSettings, s) -> scrollSettings.setMapEdgeFasterScrollZoneSize(s));
+
     BiConsumer<ScrollSettings, String> scrollZoneMultiplierUpdater =
         ((scrollSettings, s) -> scrollSettings.setMapEdgeFasterScrollMultiplier(s));
 
@@ -57,7 +58,7 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
         SettingInputComponent.build(
             "Arrow scroll speed multiplier",
             "(1-100) Arrow key scroll speed increase when control is held down",
-            new JTextField(String.valueOf(settings.getFasterArrowKeyScrollMultipler()), 5),
+            new JTextField(String.valueOf(settings.getFasterArrowKeyScrollMultiplier()), 5),
             arrowKeyMultiplierUpdater,
             InputValidator.inRange(1, 100)),
         SettingInputComponent.build(
@@ -93,13 +94,9 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
   }
 
   @Override
-  public void setToDefault() {
-
-  }
-
-  @Override
   public ScrollSettings getSettingsObject() {
     return ClientContext.scrollSettings();
   }
+
 
 }
