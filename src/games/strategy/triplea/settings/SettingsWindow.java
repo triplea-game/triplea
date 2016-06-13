@@ -20,6 +20,7 @@ import javax.swing.JTextArea;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.settings.ai.AiTab;
+import games.strategy.triplea.settings.battle.calc.BattleCalcTab;
 import games.strategy.triplea.settings.folders.FoldersTab;
 import games.strategy.triplea.settings.scrolling.ScrollSettingsTab;
 import games.strategy.ui.SwingComponents;
@@ -30,7 +31,8 @@ public class SettingsWindow extends JDialog {
     List<SettingsTab> tabs = Arrays.asList(
         new ScrollSettingsTab(ClientContext.scrollSettings()),
         new FoldersTab(ClientContext.folderSettings()),
-        new AiTab(ClientContext.aiSettings())
+        new AiTab(ClientContext.aiSettings()),
+        new BattleCalcTab(ClientContext.battleCalcSettings())
     );
     SwingComponents.showJFrame(new SettingsWindow(tabs));
   }
