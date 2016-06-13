@@ -27,6 +27,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import games.strategy.triplea.settings.SettingsWindow;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.ui.SwingAction;
 import games.strategy.debug.ErrorConsole;
@@ -42,6 +43,7 @@ import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.sound.SoundOptions;
 import games.strategy.sound.SoundPath;
 import games.strategy.ui.IntTextField;
+import games.strategy.ui.SwingComponents;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Triple;
@@ -105,10 +107,14 @@ public class EnginePreferences extends JDialog {
     add(buttonsPanel, BorderLayout.CENTER);
     buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
     buttonsPanel.add(Box.createGlue());
+
     buttonsPanel.add(new JLabel("Change Engine Properties: "));
     buttonsPanel.add(new JLabel(" "));
+
     // add buttons here:
     SoundOptions.addGlobalSoundSwitchCheckbox(buttonsPanel);
+    buttonsPanel.add(new JLabel(" "));
+    buttonsPanel.add(SwingComponents.newJButton("Engine Settings", e -> SettingsWindow.showWindow()));
     buttonsPanel.add(new JLabel(" "));
     SoundOptions.addToPanel(buttonsPanel, SoundPath.SoundType.TRIPLEA);
     buttonsPanel.add(new JLabel(" "));
@@ -124,8 +130,7 @@ public class EnginePreferences extends JDialog {
     buttonsPanel.add(new JLabel(" "));
     buttonsPanel.add(m_setMaxMemory);
     buttonsPanel.add(new JLabel(" "));
-    // buttonsPanel.add(m_runAutoHost);
-    // buttonsPanel.add(new JLabel(" "));
+
     buttonsPanel.add(m_mapCreator);
     buttonsPanel.add(new JLabel(" "));
     buttonsPanel.add(m_console);
