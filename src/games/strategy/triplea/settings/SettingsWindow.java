@@ -87,9 +87,9 @@ public class SettingsWindow extends JDialog {
 
     JButton useDefaults = SwingComponents.newJButton("To Default",
         e -> SwingComponents.promptUser("Revert to default?",
-            "Are you sure you would like to go back to default settings?", () -> {
+            "Are you sure you would like revert '" + settingTab.getTabTitle() + "' back to default settings?", () -> {
               settingTab.getSettingsObject().setToDefault();
-              SystemPreferences.flush(settingTab.getSettingsObject().getClass());
+              SystemPreferences.flush();
               dispose();
               SwingComponents.showDialog("Reverted the '" + settingTab.getTabTitle() + "' settings back to defaults");
             }));
@@ -99,7 +99,7 @@ public class SettingsWindow extends JDialog {
 
     JButton saveButton = SwingComponents.newJButton("Save", e -> {
       settingTab.updateSettings(inputs);
-      SystemPreferences.flush(settingTab.getSettingsObject().getClass());
+      SystemPreferences.flush();
     });
     buttonsPanel.add(saveButton);
 
