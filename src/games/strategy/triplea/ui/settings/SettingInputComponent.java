@@ -2,6 +2,10 @@ package games.strategy.triplea.ui.settings;
 
 import java.util.function.BiConsumer;
 
+<<<<<<< b2b6f2450cb2676210949dc6969dceefa6595563
+=======
+import javax.swing.JTextField;
+>>>>>>> Wire in scroll settings, allow setting values to take effect after 'save', but are not yet persisted between restarts.
 import javax.swing.text.JTextComponent;
 
 public interface SettingInputComponent<T> {

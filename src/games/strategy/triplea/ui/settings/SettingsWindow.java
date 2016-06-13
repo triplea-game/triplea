@@ -24,17 +24,17 @@ import games.strategy.ui.SwingComponents;
 
 public class SettingsWindow extends JFrame {
 
-  private static final long serialVersionUID = 9009611358606567865L;
-
   public static void showWindow() {
-    List<SettingsTab<?>> tabs = Arrays.asList(
+    List<SettingsTab> tabs = Arrays.asList(
         new ScrollSettingsTab(ClientContext.scrollSettings()),
         new FoldersTab(ClientContext.folderSettings())
+
     );
     SwingComponents.showJFrame(new SettingsWindow(tabs));
   }
 
-  private SettingsWindow(List<SettingsTab<?>> tabs) {
+  private SettingsWindow(List<SettingsTab> tabs) {
+
     JTabbedPane pane = new JTabbedPane();
     add(pane, BorderLayout.CENTER);
     tabs.forEach(tab -> pane.addTab(tab.getTabTitle(), createTabWindow(tab)));
@@ -43,12 +43,14 @@ public class SettingsWindow extends JFrame {
   }
 
 
-  private <T> Component createTabWindow(SettingsTab<T> settingTab) {
-    List<SettingInputComponent<T>> inputs = settingTab.getInputs();
+  private Component createTabWindow(SettingsTab settingTab) {
+    List<SettingInputComponent> inputs = settingTab.getInputs();
+
 
     final JPanel windowContents = new JPanel();
     windowContents.setLayout(new GridLayout(inputs.size(), 1));
     windowContents.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+
 
     inputs.forEach(input -> {
       final JPanel rowContents = new JPanel();
@@ -77,6 +79,8 @@ public class SettingsWindow extends JFrame {
     JPanel panel = new JPanel();
     panel.add(windowContents, BorderLayout.CENTER);
 
+
+
     JPanel buttonsPanel = new JPanel();
     buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
 
@@ -101,4 +105,6 @@ public class SettingsWindow extends JFrame {
   public static void main(String[] args) {
     SettingsWindow.showWindow();
   }
+
+
 }

@@ -1,5 +1,8 @@
 package games.strategy.ui;
 
+import games.strategy.engine.ClientContext;
+import games.strategy.triplea.ui.settings.scrolling.ScrollSettings;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,6 +32,7 @@ import javax.swing.SwingUtilities;
  * our location and size. Subclasses must take care of rendering
  */
 public class ImageScrollerLargeView extends JComponent {
+
   private static final long serialVersionUID = -7212817233833868483L;
 
   // bit flags for determining which way we are scrolling
@@ -37,24 +41,14 @@ public class ImageScrollerLargeView extends JComponent {
   final static int RIGHT = 2;
   final static int TOP = 4;
   final static int BOTTOM = 8;
-  final static int WHEEL_SCROLL_AMOUNT = 60;
 
-  // how close to an edge we have to be before we scroll
-  private final static int TOLERANCE = 30;
-  // how close to an edge we have to be before we scroll faster
-  private final static int FASTER_TOLERANCE =  10;
-
-  // how much we scroll
-  private final static int SCROLL_DISTANCE = 30;
-  private final static float FASTER_SCROLL_MULTIPLIER = 1.5f;
+  private final ScrollSettings scrollSettings;
 
   protected final ImageScrollModel m_model;
   protected double m_scale = 1;
 
   private int m_drag_scrolling_lastx;
   private int m_drag_scrolling_lasty;
-
-
 
   private final ActionListener m_timerAction = new ActionListener() {
     @Override
@@ -82,6 +76,7 @@ public class ImageScrollerLargeView extends JComponent {
 
   public ImageScrollerLargeView(final Dimension dimension, final ImageScrollModel model) {
     super();
+    scrollSettings = ClientContext.scrollSettings();
     m_model = model;
     m_model.setMaxBounds((int) dimension.getWidth(), (int) dimension.getHeight());
     setPreferredSize(getImageDimensions());
@@ -290,19 +285,19 @@ public class ImageScrollerLargeView extends JComponent {
   private void scroll() {
     int dy = 0;
     if ((m_edge & TOP) != 0) {
-      dy = -SCROLL_DISTANCE;
+      dy = -scrollSettings.getMapEdgeScrollSpeed();
     } else if ((m_edge & BOTTOM) != 0) {
-      dy = SCROLL_DISTANCE;
+      dy = scrollSettings.getMapEdgeScrollSpeed();
     }
     int dx = 0;
     if ((m_edge & LEFT) != 0) {
-      dx = -SCROLL_DISTANCE;
+      dx = -scrollSettings.getMapEdgeScrollSpeed();
     } else if ((m_edge & RIGHT) != 0) {
-      dx = SCROLL_DISTANCE;
+      dx = scrollSettings.getMapEdgeScrollSpeed();
     }
     if (this.m_insideFasterPosition) {
-      dx *= FASTER_SCROLL_MULTIPLIER;
-      dy *= FASTER_SCROLL_MULTIPLIER;
+      dx *= scrollSettings.getMapEdgeFasterScrollMultiplier();
+      dy *= scrollSettings.getMapEdgeFasterScrollMultiplier();
     }
 
     dx = (int) (dx / m_scale);
@@ -319,26 +314,25 @@ public class ImageScrollerLargeView extends JComponent {
   private int getNewEdge(final int x, final int y, final int width, final int height) {
     int newEdge = NONE;
     this.m_insideFasterPosition = false;
-
-    if (x < TOLERANCE) {
+    if (x < scrollSettings.getMapEdgeScrollZoneSize()) {
       newEdge += LEFT;
-      if (x < FASTER_TOLERANCE) {
+      if (x < scrollSettings.getMapEdgeFasterScrollZoneSize()) {
         this.m_insideFasterPosition = true;
       }
-    } else if (width - x < TOLERANCE) {
+    } else if (width - x < scrollSettings.getMapEdgeScrollZoneSize()) {
       newEdge += RIGHT;
-      if ((width - x) < FASTER_TOLERANCE) {
+      if ((width - x) < scrollSettings.getMapEdgeFasterScrollZoneSize()) {
         this.m_insideFasterPosition = true;
       }
     }
-    if (y < TOLERANCE) {
+    if (y < scrollSettings.getMapEdgeScrollZoneSize()) {
       newEdge += TOP;
-      if (y < FASTER_TOLERANCE) {
+      if (y < scrollSettings.getMapEdgeFasterScrollZoneSize()) {
         this.m_insideFasterPosition = true;
       }
-    } else if (height - y < TOLERANCE) {
+    } else if (height - y < scrollSettings.getMapEdgeScrollZoneSize()) {
       newEdge += BOTTOM;
-      if ((height - y) < FASTER_TOLERANCE) {
+      if ((height - y) < scrollSettings.getMapEdgeFasterScrollZoneSize()) {
         this.m_insideFasterPosition = true;
       }
     }
