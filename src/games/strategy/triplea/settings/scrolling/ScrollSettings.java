@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui.settings.scrolling;
+package games.strategy.triplea.settings.scrolling;
 
 public class ScrollSettings {
 

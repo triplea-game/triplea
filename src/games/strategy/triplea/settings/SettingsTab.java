@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui.settings;
+package games.strategy.triplea.settings;
 
 import java.util.ArrayList;
 import java.util.List;

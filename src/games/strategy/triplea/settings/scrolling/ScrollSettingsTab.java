@@ -1,12 +1,12 @@
-package games.strategy.triplea.ui.settings.scrolling;
+package games.strategy.triplea.settings.scrolling;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.triplea.ui.settings.SettingInputComponent;
-import games.strategy.triplea.ui.settings.SettingsTab;
+import games.strategy.triplea.settings.SettingInputComponent;
+import games.strategy.triplea.settings.SettingsTab;
 
 import javax.swing.JTextField;
 
@@ -51,7 +51,10 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
         SettingInputComponent.build(
             "Arrow scroll speed", "Arrow key scrolling speed",
             new JTextField(String.valueOf(settings.getArrowKeyScrollSpeed()),5),
-            arrowKeyUpdater),
+            arrowKeyUpdater
+
+
+        ),
         SettingInputComponent.build(
             "Arrow scroll speed multiplier",
             "Arrow key scroll speed increase when control is held down",
@@ -85,7 +88,8 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
     );
   }
 
-  @Override public void setToDefault() {
+  @Override
+  public void setToDefault() {
 
   }
 
