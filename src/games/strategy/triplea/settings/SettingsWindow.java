@@ -84,8 +84,6 @@ public class SettingsWindow extends JDialog {
     JPanel panel = new JPanel();
     panel.add(windowContents, BorderLayout.CENTER);
 
-
-
     JPanel buttonsPanel = new JPanel();
     buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
 

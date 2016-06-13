@@ -1,4 +1,4 @@
-package games.strategy.triplea.settings.validators;
+package games.strategy.triplea.settings;
 
 import java.io.File;
 import java.util.function.Function;
