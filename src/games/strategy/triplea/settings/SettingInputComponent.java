@@ -45,7 +45,6 @@ public interface SettingInputComponent<T> {
 
       @Override
       public boolean updateSettings(Z toUpdate, JTextComponent inputComponent) {
-        System.out.println("Updating with: " + inputComponent.getText());
         String input = inputComponent.getText();
 
         for(InputValidator validator : getValidators()) {
