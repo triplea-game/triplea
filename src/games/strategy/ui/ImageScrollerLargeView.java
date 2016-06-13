@@ -1,7 +1,7 @@
 package games.strategy.ui;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.triplea.ui.settings.scrolling.ScrollSettings;
+import games.strategy.triplea.settings.scrolling.ScrollSettings;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;

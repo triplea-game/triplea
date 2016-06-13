@@ -2,7 +2,7 @@ package games.strategy.ui;
 
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.UrlConstants;
-import games.strategy.triplea.ui.settings.SettingsWindow;
+import games.strategy.triplea.settings.SettingsWindow;
 
 import javax.swing.*;
 import javax.swing.border.Border;
