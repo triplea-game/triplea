@@ -2,6 +2,7 @@ package games.strategy.ui;
 
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.triplea.ui.settings.SettingsWindow;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -19,6 +20,16 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SwingComponents {
+
+  public static void showJFrame(SettingsWindow settingsWindow) {
+    settingsWindow.pack();
+    settingsWindow.setVisible(true);
+  }
+
+  public static JComponent newJTextField(int initialValue, int fieldSize) {
+    JTextField textField = new JTextField(String.valueOf(initialValue), fieldSize);
+    return textField;
+  }
 
   public enum KeyboardCode {
     D(KeyEvent.VK_D),

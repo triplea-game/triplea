@@ -41,6 +41,7 @@ import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.PoliticalStateOverview;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.VerifiedRandomNumbersDialog;
+import games.strategy.triplea.ui.settings.SettingsWindow;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
@@ -68,6 +69,8 @@ public class GameMenu {
     menuGame.add(frame.getShowHistoryAction()).setMnemonic(KeyEvent.VK_H);
     menuGame.add(frame.getShowMapOnlyAction()).setMnemonic(KeyEvent.VK_M);
     addShowVerifiedDice(menuGame);
+
+    menuGame.add(SwingAction.of("Settings", e -> SettingsWindow.showWindow()));
     SoundOptions.addGlobalSoundSwitchMenu(menuGame);
     SoundOptions.addToMenu(menuGame, SoundPath.SoundType.TRIPLEA);
     menuGame.addSeparator();
