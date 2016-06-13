@@ -20,8 +20,11 @@ public interface SettingInputComponent<T> {
 
   List<InputValidator> getValidators();
 
+  String getValue(T settingsType);
+
   static <Z> SettingInputComponent<Z> build(final String label,
       final String description, JTextComponent component, BiConsumer<Z, String> updater,
+      Function<Z, String> extractor,
       InputValidator ... validators) {
     return new SettingInputComponent<Z>() {
       @Override
@@ -59,6 +62,11 @@ public interface SettingInputComponent<T> {
       @Override
       public List<InputValidator> getValidators() {
         return Arrays.asList(validators);
+      }
+
+      @Override
+      public String getValue(Z settingsType) {
+        return extractor.apply(settingsType);
       }
     };
   }
