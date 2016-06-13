@@ -31,13 +31,14 @@ public class FoldersTab implements SettingsTab<FolderSettings> {
 
     return Arrays.asList(
         SettingInputComponent.build("Save game path", "Location where games are saved by default",
-            new JTextField(settings.getSaveGamePath()), saveGameUpdater
-//            InputValidator.IS_DIRECTORY
+            new JTextField(settings.getSaveGamePath()), saveGameUpdater,
+            InputValidator.IS_DIRECTORY
             ),
         SettingInputComponent.build("Map Download Path", "Location where map downloads are found",
-            new JTextField(settings.getDownloadedMapPath()), downloadPathUpdater)
-//            InputValidator.IS_DIRECTORY
-        );
+            new JTextField(settings.getDownloadedMapPath()), downloadPathUpdater,
+            InputValidator.IS_DIRECTORY
+        )
+    );
   }
 
   @Override
