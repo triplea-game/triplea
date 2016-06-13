@@ -29,7 +29,6 @@ public class SettingsWindow extends JDialog {
     List<SettingsTab> tabs = Arrays.asList(
         new ScrollSettingsTab(ClientContext.scrollSettings()),
         new FoldersTab(ClientContext.folderSettings())
-
     );
     SwingComponents.showJFrame(new SettingsWindow(tabs));
   }
