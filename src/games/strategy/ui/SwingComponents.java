@@ -23,6 +23,8 @@ public class SwingComponents {
 
   public static void showJFrame(SettingsWindow settingsWindow) {
     settingsWindow.pack();
+    settingsWindow.setLocationByPlatform(true);
+//    settingsWindow.setLocation(500, 500);
     settingsWindow.setVisible(true);
   }
 
