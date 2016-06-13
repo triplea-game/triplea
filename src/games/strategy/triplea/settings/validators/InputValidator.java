@@ -5,8 +5,6 @@ import java.util.function.Function;
 
 public interface InputValidator extends Function<String, Boolean> {
 
-  InputValidator NOT_EMPTY = ((string) -> !string.isEmpty());
-  InputValidator PATH_EXISTS = ((string) -> (new File(string)).exists());
   InputValidator IS_DIRECTORY = ((string) -> (new File(string)).isDirectory());
   InputValidator IS_INTEGER = ((string) -> {
     try {
@@ -23,7 +21,7 @@ public interface InputValidator extends Function<String, Boolean> {
         return false;
       }
       int intValue = Integer.parseInt(value);
-      return intValue  >= min && intValue <= intValue ;
+      return intValue  >= min && intValue <= max ;
     };
   }
 
