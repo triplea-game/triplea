@@ -1,10 +1,8 @@
 package games.strategy.triplea.settings;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import games.strategy.ui.SwingComponents;
-import games.strategy.util.Tuple;
 
 public interface SettingsTab<T extends HasDefaults> {
   String getTabTitle();
@@ -12,24 +10,26 @@ public interface SettingsTab<T extends HasDefaults> {
   List<SettingInputComponent<T>> getInputs();
 
   default void updateSettings(List<SettingInputComponent<T>> inputs) {
-    List<Tuple<SettingInputComponent, String>> valuesUpdated = new ArrayList<>();
-
+    final StringBuilder msg = new StringBuilder();
     inputs.forEach(input -> {
-      System.out.println("Text value = " + input.getInputElement().getText());
-      if (input.updateSettings(getSettingsObject(), input.getInputElement())) {
-        valuesUpdated.add(Tuple.of(input, input.getInputElement().getText()));
+      T settingsObject = getSettingsObject();
+
+      String oldValue = input.getValue(settingsObject);
+      if (input.updateSettings(settingsObject, input.getInputElement())) {
+        String newValue = input.getValue(settingsObject);
+        if(!newValue.equals(oldValue)) {
+          msg.append("\n").append(input.getLabel()).append(": ").append(oldValue).append(" -> ").append(newValue);
+        }
       }
     });
 
-    StringBuilder msg = new StringBuilder("No values updated");
-    if (!valuesUpdated.isEmpty()) {
-      msg = new StringBuilder("Updated values: ");
-      for (Tuple<SettingInputComponent, String> value : valuesUpdated) {
-        msg.append("\n").append(value.getFirst().getLabel()).append(" -> ").append(value.getSecond());
-      }
+    String message = msg.toString();
+    if(message.isEmpty()) {
+      message = "No values updated";
+    } else {
+      message = "Updated values:" + msg.toString();
     }
-    SwingComponents.showDialog(msg.toString());
-
+    SwingComponents.showDialog(message);
   }
 
   T getSettingsObject();
