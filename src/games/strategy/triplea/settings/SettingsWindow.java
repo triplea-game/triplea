@@ -2,7 +2,7 @@ package games.strategy.triplea.settings;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dialog;
+import java.awt.Frame;
 import java.awt.GridLayout;
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +11,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -23,7 +23,7 @@ import games.strategy.triplea.settings.folders.FoldersTab;
 import games.strategy.triplea.settings.scrolling.ScrollSettingsTab;
 import games.strategy.ui.SwingComponents;
 
-public class SettingsWindow extends JFrame {
+public class SettingsWindow extends JDialog {
 
   public static void showWindow() {
     List<SettingsTab> tabs = Arrays.asList(
@@ -35,9 +35,7 @@ public class SettingsWindow extends JFrame {
   }
 
   private SettingsWindow(List<SettingsTab> tabs) {
-    super("Settings");
-    super.setAlwaysOnTop(true);
-    super.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
+    super((Frame) null, true);
 
     JTabbedPane pane = new JTabbedPane();
     add(pane, BorderLayout.CENTER);
