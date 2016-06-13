@@ -275,8 +275,7 @@ public class ClipPlayer {
           Optional<InputStream> inputStream = UrlStreams.openStream(clip.toURL());
           if(inputStream.isPresent()) {
             final AudioDevice audioDevice = FactoryRegistry.systemRegistry().createAudioDevice();
-            final AdvancedPlayer audioPlayer = new AdvancedPlayer(inputStream.get(), audioDevice);
-            audioPlayer.play();
+            new AdvancedPlayer(inputStream.get(), audioDevice).play();
           }
         } catch (Exception e) {
           ClientLogger.logError("Failed to play: " + clip, e);
