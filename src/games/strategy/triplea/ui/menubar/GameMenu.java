@@ -83,7 +83,6 @@ public class GameMenu {
     addConfirmBattlePhases(menuGame);
     addShowEnemyCasualties(menuGame);
     addShowAIBattles(menuGame);
-    addAISleepDuration(menuGame);
     addShowDiceStats(menuGame);
     addRollDice(menuGame);
     addBattleCalculatorMenu(menuGame);
@@ -309,31 +308,4 @@ public class GameMenu {
     showBattleMenuItem.setAccelerator(
         KeyStroke.getKeyStroke(KeyEvent.VK_B, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
   }
-
-  private void addAISleepDuration(final JMenu parentMenu) {
-    final JMenuItem AISleepDurationBox = new JMenuItem("AI Pause Duration...");
-    AISleepDurationBox.setMnemonic(KeyEvent.VK_A);
-    AISleepDurationBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final IntTextField text = new IntTextField(50, 10000);
-        text.setText(String.valueOf(AbstractUIContext.getAIPauseDuration()));
-        final JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        panel.add(new JLabel("AI Pause Duration (ms):"), new GridBagConstraints(0, 0, 1, 1, 0, 0,
-            GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 0), 0, 0));
-        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(parentMenu), panel,
-            "Set AI Pause Duration", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"},
-            "OK");
-        try {
-          AbstractUIContext.setAIPauseDuration(Integer.parseInt(text.getText()));
-        } catch (final Exception ex) {
-        }
-      }
-    });
-    parentMenu.add(AISleepDurationBox);
-  }
-
 }
