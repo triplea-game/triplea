@@ -3,14 +3,12 @@ package games.strategy.triplea.settings;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Frame;
-import java.awt.GridLayout;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -25,34 +23,49 @@ import games.strategy.triplea.settings.folders.FoldersTab;
 import games.strategy.triplea.settings.scrolling.ScrollSettingsTab;
 import games.strategy.ui.SwingComponents;
 
+/**
+ * Window that contains a tabbed panel with preference categories, each tab contains fields that allow users to update
+ * game settings.
+ *
+ * Overall layout:
+ * - Primary element is a JTabbed pain, the contents are organized into rows, one row per option presented to the user.
+ * Each row consists of: label, swing input, detailed description
+ * - Then we have some buttons:
+ * - revert settings
+ * - save settings
+ * - close window
+ */
 public class SettingsWindow extends JDialog {
 
   public static void showWindow() {
-    List<SettingsTab> tabs = Arrays.asList(
+    SwingComponents.showJFrame(new SettingsWindow(
         new ScrollSettingsTab(ClientContext.scrollSettings()),
         new FoldersTab(ClientContext.folderSettings()),
         new AiTab(ClientContext.aiSettings()),
-        new BattleCalcTab(ClientContext.battleCalcSettings())
-    );
-    SwingComponents.showJFrame(new SettingsWindow(tabs));
+        new BattleCalcTab(ClientContext.battleCalcSettings())));
   }
 
-  private SettingsWindow(List<SettingsTab> tabs) {
+  private SettingsWindow(SettingsTab ... tabs) {
     super((Frame) null, true);
 
-    JTabbedPane pane = new JTabbedPane();
-    add(pane, BorderLayout.CENTER);
-    tabs.forEach(tab -> pane.addTab(tab.getTabTitle(), createTabWindow(tab)));
+    add(buildTabbedPane(tabs), BorderLayout.CENTER);
 
     add(SwingComponents.newJButton("Close", e -> dispose()), BorderLayout.SOUTH);
+  }
+
+  private JTabbedPane buildTabbedPane(SettingsTab ... tabs) {
+    JTabbedPane pane = new JTabbedPane();
+    Arrays.asList(tabs).forEach(tab -> pane.addTab(tab.getTabTitle(), createTabWindow(tab)));
+    return pane;
   }
 
 
   private Component createTabWindow(SettingsTab settingTab) {
     List<SettingInputComponent> inputs = settingTab.getInputs();
 
-    // use a grid instead of a box layout, in the variations done, grid looks to be best about using 100% width available
-    // If another layout can be found that uses 100% width by default and left aligns, it would likely be a better option.
+    // use a grid instead of a box layout, in the variations done, grid looks to be best about using 100% width
+    // available If another layout can be found that uses 100% width by default and left aligns, it would likely be
+    // a better option.
     JPanel settingsPanel = SwingComponents.newJPanelWithGridLayout(inputs.size(), 1);
     inputs.forEach(input -> settingsPanel.add(createInputElementRow(input)));
 
@@ -61,6 +74,33 @@ public class SettingsWindow extends JDialog {
     panel.add(createButtonsPanel(settingTab));
 
     return new JScrollPane(panel);
+  }
+
+  private static JPanel createInputElementRow(SettingInputComponent input) {
+    final JPanel rowContents = SwingComponents.newJPanelWithGridLayout(1, 2);
+    rowContents.add(createTextAndInputPanel(input));
+    rowContents.add(createInputDescription(input));
+    return rowContents;
+  }
+
+  private static JPanel createTextAndInputPanel(SettingInputComponent input) {
+    JPanel labelInputPanel = SwingComponents.newJPanelWithGridLayout(1, 2);
+    JLabel label = new JLabel(input.getLabel());
+    labelInputPanel.add(label);
+
+    JPanel inputPanel = new JPanel();
+    inputPanel.add(input.getInputElement());
+    inputPanel.add(Box.createHorizontalGlue());
+
+    labelInputPanel.add(inputPanel);
+    return labelInputPanel;
+
+  }
+
+  private static JTextArea createInputDescription(SettingInputComponent input) {
+    JTextArea description = new JTextArea(input.getDescription(), 2, 20);
+    description.setEditable(false);
+    return description;
   }
 
   private JPanel createButtonsPanel(SettingsTab settingTab) {
@@ -85,32 +125,6 @@ public class SettingsWindow extends JDialog {
     });
     buttonsPanel.add(saveButton);
     return buttonsPanel;
-  }
-
-  private static JPanel createInputElementRow(SettingInputComponent input) {
-    final JPanel rowContents = SwingComponents.newJPanelWithGridLayout(1, 2);
-    rowContents.add(createTextAndInputPanel(input));
-    rowContents.add(createInputDescription(input));
-    return rowContents;
-  }
-
-  private static JPanel createTextAndInputPanel(SettingInputComponent input) {
-    JPanel labelInputPanel = SwingComponents.newJPanelWithGridLayout(1, 2);
-    JLabel label = new JLabel(input.getLabel());
-        labelInputPanel.add(label);
-
-    JPanel inputPanel = new JPanel();
-    inputPanel.add(input.getInputElement());
-    inputPanel.add(Box.createHorizontalGlue());
-
-    labelInputPanel.add(inputPanel);
-    return labelInputPanel;
-
-  }
-  private static JTextArea createInputDescription(SettingInputComponent input) {
-    JTextArea description = new JTextArea(input.getDescription(), 2, 20);
-    description.setEditable(false);
-    return description;
   }
 
 }
