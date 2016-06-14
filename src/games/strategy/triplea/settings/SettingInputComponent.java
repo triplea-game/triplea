@@ -1,12 +1,15 @@
 package games.strategy.triplea.settings;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import javax.swing.text.JTextComponent;
 
+/**
+ * Wrapper API around a 'settings' object, allows for a GUI interface that allows a user to read descriptions about
+ * each setting in the object, and to update the value.
+ */
 public interface SettingInputComponent<T> {
   String getLabel();
 
@@ -16,14 +19,12 @@ public interface SettingInputComponent<T> {
 
   boolean updateSettings(T toUpdate, JTextComponent inputComponent);
 
-  List<InputValidator> getValidators();
-
   String getValue(T settingsType);
 
-  static <Z> SettingInputComponent<Z> build(final String label,
-      final String description, JTextComponent component, BiConsumer<Z, String> updater,
-      Function<Z, String> extractor,
-      InputValidator ... validators) {
+  // TODO: updater should take the input component, so it can read it.
+  static <Z> SettingInputComponent<Z> build(final String label, final String description, JTextComponent component,
+      BiConsumer<Z, String> updater, Function<Z, String> extractor, InputValidator... validators) {
+
     return new SettingInputComponent<Z>() {
       @Override
       public String getLabel() {
@@ -45,20 +46,15 @@ public interface SettingInputComponent<T> {
       public boolean updateSettings(Z toUpdate, JTextComponent inputComponent) {
         String input = inputComponent.getText();
 
-        for(InputValidator validator : getValidators()) {
+        for (InputValidator validator : Arrays.asList(validators)) {
           boolean isValid = validator.apply(input);
 
-          if(!isValid) {
+          if (!isValid) {
             return false;
           }
         }
         updater.accept(toUpdate, input);
         return true;
-      }
-
-      @Override
-      public List<InputValidator> getValidators() {
-        return Arrays.asList(validators);
       }
 
       @Override
