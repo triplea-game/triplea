@@ -31,7 +31,7 @@ public class AiTab implements SettingsTab<AiSettings> {
     Function<AiSettings,String> aiPauseDuractionExtractor = aiSettings -> String.valueOf(aiSettings.getAiPauseDuration());
 
     return Arrays.asList(
-        SettingInputComponent.build("AI Pause Duration", "Time delay between AI moves, allows for the AI moves to be watched and not happen instantly",
+        SettingInputComponent.build("(0-10000) AI Pause Duration", "Time delay between AI moves, allows for AI moves to be watched",
         new JTextField(String.valueOf(aiSettings.getAiPauseDuration()), 5 ), aiPauseDuractionUpdater, aiPauseDuractionExtractor,
             InputValidator.inRange(0, 10000)
         )
