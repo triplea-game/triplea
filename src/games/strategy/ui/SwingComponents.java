@@ -21,11 +21,17 @@ import java.util.stream.Collectors;
 
 public class SwingComponents {
 
-  public static void showJFrame(SettingsWindow settingsWindow) {
-    settingsWindow.pack();
-    settingsWindow.setLocationByPlatform(true);
-//    settingsWindow.setLocation(500, 500);
-    settingsWindow.setVisible(true);
+  public static class ModalJDialog extends JDialog {
+    public ModalJDialog() {
+      super((Frame) null, true);
+      setLocationByPlatform(true);
+    }
+  }
+
+  public static void showWindow(Window window) {
+    window.pack();
+    window.setLocationByPlatform(true);
+    window.setVisible(true);
   }
 
   public static JComponent newJTextField(int initialValue, int fieldSize) {
