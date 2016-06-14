@@ -51,39 +51,19 @@ public class SettingsWindow extends JDialog {
   private Component createTabWindow(SettingsTab settingTab) {
     List<SettingInputComponent> inputs = settingTab.getInputs();
 
-
-    final JPanel windowContents = new JPanel();
-    windowContents.setLayout(new GridLayout(inputs.size(), 1));
-    windowContents.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-
-
-    inputs.forEach(input -> {
-      final JPanel rowContents = new JPanel();
-      rowContents.setLayout(new GridLayout(1, 2));
-
-      final JPanel labelInputPanel = new JPanel();
-      labelInputPanel.setLayout(new GridLayout(1, 2));
-      rowContents.add(labelInputPanel);
-
-      JLabel label = new JLabel(input.getLabel());
-      labelInputPanel.add(label);
-
-      JPanel inputPanel = new JPanel();
-      inputPanel.add(input.getInputElement());
-      inputPanel.add(Box.createHorizontalGlue());
-
-      labelInputPanel.add(inputPanel);
-
-      JTextArea description = new JTextArea(input.getDescription(), 2, 20);
-      description.setEditable(false);
-      rowContents.add(description);
-
-      windowContents.add(rowContents);
-    });
+    // use a grid instead of a box layout, in the variations done, grid looks to be best about using 100% width available
+    // If another layout can be found that uses 100% width by default and left aligns, it would likely be a better option.
+    JPanel settingsPanel = SwingComponents.newJPanelWithGridLayout(inputs.size(), 1);
+    inputs.forEach(input -> settingsPanel.add(createInputElementRow(input)));
 
     JPanel panel = new JPanel();
-    panel.add(windowContents, BorderLayout.CENTER);
+    panel.add(settingsPanel, BorderLayout.CENTER);
+    panel.add(createButtonsPanel(settingTab));
 
+    return new JScrollPane(panel);
+  }
+
+  private JPanel createButtonsPanel(SettingsTab settingTab) {
     JPanel buttonsPanel = new JPanel();
     buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
 
@@ -100,20 +80,37 @@ public class SettingsWindow extends JDialog {
     buttonsPanel.add(Box.createVerticalStrut(100));
 
     JButton saveButton = SwingComponents.newJButton("Save", e -> {
-      settingTab.updateSettings(inputs);
+      settingTab.updateSettings(settingTab.getInputs());
       SystemPreferences.flush();
     });
     buttonsPanel.add(saveButton);
-
-
-    panel.add(buttonsPanel);
-
-    return new JScrollPane(panel);
+    return buttonsPanel;
   }
 
-  public static void main(String[] args) {
-    SettingsWindow.showWindow();
+  private static JPanel createInputElementRow(SettingInputComponent input) {
+    final JPanel rowContents = SwingComponents.newJPanelWithGridLayout(1, 2);
+    rowContents.add(createTextAndInputPanel(input));
+    rowContents.add(createInputDescription(input));
+    return rowContents;
   }
 
+  private static JPanel createTextAndInputPanel(SettingInputComponent input) {
+    JPanel labelInputPanel = SwingComponents.newJPanelWithGridLayout(1, 2);
+    JLabel label = new JLabel(input.getLabel());
+        labelInputPanel.add(label);
+
+    JPanel inputPanel = new JPanel();
+    inputPanel.add(input.getInputElement());
+    inputPanel.add(Box.createHorizontalGlue());
+
+    labelInputPanel.add(inputPanel);
+    return labelInputPanel;
+
+  }
+  private static JTextArea createInputDescription(SettingInputComponent input) {
+    JTextArea description = new JTextArea(input.getDescription(), 2, 20);
+    description.setEditable(false);
+    return description;
+  }
 
 }
