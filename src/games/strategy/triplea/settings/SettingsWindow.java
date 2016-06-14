@@ -22,8 +22,11 @@ import games.strategy.triplea.settings.scrolling.ScrollSettingsTab;
 import games.strategy.ui.SwingComponents;
 
 /**
+ *
+ *
  * Window that contains a tabbed panel with preference categories, each tab contains fields that allow users to update
- * game settings.
+ * game settings. The window handles generic logic around preferences, each tab will specify configuration values for
+ * the settings.
  *
  * Overall layout:
  * - Primary element is a JTabbed pain, the contents are organized into rows, one row per option presented to the user.
