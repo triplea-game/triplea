@@ -6,18 +6,25 @@ import games.strategy.triplea.settings.SystemPreferences;
 
 public class ScrollSettings implements HasDefaults {
 
-  public ScrollSettings() {
+  private static final int DEFAULT_MAP_EDGE_SCROLL_SPEED = 30;
+  private static final int DEFAULT_MAP_EDGE_SCROLL_ZONE_SIZE = 30;
+  private static final int DEFAULT_MAP_EDGE_FASTER_SCROLL_MULTIPLIER = 2;
+  private static final int DEFAULT_MAP_EDGE_FASTER_SCROLL_ZONE_SIZE = 10;
 
-  }
+  private static final int DEFAULT_ARROW_KEY_SCROLL_SPEED = 70;
+  private static final int DEFAULT_FASTER_ARROW_KEY_SCROLL_MULTIPLIER = 3;
+  private static final int DEFAULT_WHEEL_SCROLL_AMOUNT = 60;
 
   @Override
   public void setToDefault() {
-    setMapEdgeFasterScrollZoneSize("10");
-    setMapEdgeScrollZoneSize("30");
-    setMapEdgeFasterScrollMultiplier("2");
-    setArrowKeyScrollSpeed("70");
-    setFasterArrowKeyScrollMultiplier("3");
-    setWheelScrollAmount("60");
+    setMapEdgeScrollSpeed(String.valueOf(DEFAULT_MAP_EDGE_SCROLL_SPEED));
+    setMapEdgeScrollZoneSize(String.valueOf(DEFAULT_MAP_EDGE_SCROLL_ZONE_SIZE));
+    setMapEdgeFasterScrollMultiplier(String.valueOf(DEFAULT_MAP_EDGE_FASTER_SCROLL_MULTIPLIER));
+    setMapEdgeFasterScrollZoneSize(String.valueOf(DEFAULT_MAP_EDGE_FASTER_SCROLL_ZONE_SIZE));
+
+    setArrowKeyScrollSpeed(String.valueOf(DEFAULT_ARROW_KEY_SCROLL_SPEED));
+    setFasterArrowKeyScrollMultiplier(String.valueOf(DEFAULT_FASTER_ARROW_KEY_SCROLL_MULTIPLIER));
+    setWheelScrollAmount(String.valueOf(DEFAULT_WHEEL_SCROLL_AMOUNT));
   }
 
 
@@ -26,7 +33,7 @@ public class ScrollSettings implements HasDefaults {
   }
 
   public int getMapEdgeFasterScrollZoneSize() {
-    return getProp(PreferenceKey.MAP_EDGE_FASTER_SCROLL_ZONE_SIZE, 10);
+    return getProp(PreferenceKey.MAP_EDGE_FASTER_SCROLL_ZONE_SIZE, DEFAULT_MAP_EDGE_FASTER_SCROLL_ZONE_SIZE);
   }
 
   public void setMapEdgeFasterScrollMultiplier(String value) {
@@ -34,7 +41,7 @@ public class ScrollSettings implements HasDefaults {
   }
 
   public int getMapEdgeFasterScrollMultiplier() {
-    return getProp(PreferenceKey.MAP_EDGE_FASTER_SCROLL_MULTIPLER, 2);
+    return getProp(PreferenceKey.MAP_EDGE_FASTER_SCROLL_MULTIPLER, DEFAULT_MAP_EDGE_FASTER_SCROLL_MULTIPLIER);
   }
 
   public void setMapEdgeFasterScrollZoneSize(String value) {
@@ -43,7 +50,7 @@ public class ScrollSettings implements HasDefaults {
 
 
   public int getMapEdgeScrollZoneSize() {
-    return getProp(PreferenceKey.MAP_EDGE_SCROLL_ZONE_SIZE, 30);
+    return getProp(PreferenceKey.MAP_EDGE_SCROLL_ZONE_SIZE, DEFAULT_MAP_EDGE_SCROLL_ZONE_SIZE);
   }
 
   public void setMapEdgeScrollZoneSize(String value) {
@@ -51,7 +58,7 @@ public class ScrollSettings implements HasDefaults {
   }
 
   public int getArrowKeyScrollSpeed() {
-    return getProp(PreferenceKey.ARROW_KEY_SCROLL_SPEED, 70);
+    return getProp(PreferenceKey.ARROW_KEY_SCROLL_SPEED, DEFAULT_ARROW_KEY_SCROLL_SPEED);
   }
 
   public void setArrowKeyScrollSpeed(String value) {
@@ -59,7 +66,7 @@ public class ScrollSettings implements HasDefaults {
   }
 
   public int getFasterArrowKeyScrollMultiplier() {
-    return getProp(PreferenceKey.FASTER_ARROW_KEY_SCROLL_MULTIPLIER, 3);
+    return getProp(PreferenceKey.FASTER_ARROW_KEY_SCROLL_MULTIPLIER, DEFAULT_FASTER_ARROW_KEY_SCROLL_MULTIPLIER);
   }
 
   public void setFasterArrowKeyScrollMultiplier(String value) {
@@ -67,7 +74,7 @@ public class ScrollSettings implements HasDefaults {
   }
 
   public int getMapEdgeScrollSpeed() {
-    return getProp(PreferenceKey.MAP_EDGE_SCROLL_SPEED, 30);
+    return getProp(PreferenceKey.MAP_EDGE_SCROLL_SPEED, DEFAULT_MAP_EDGE_SCROLL_SPEED);
   }
 
   public void setMapEdgeScrollSpeed(String value) {
@@ -75,7 +82,7 @@ public class ScrollSettings implements HasDefaults {
   }
 
   public int getWheelScrollAmount() {
-    return getProp(PreferenceKey.WHEEL_SCROLL_AMOUNT, 60);
+    return getProp(PreferenceKey.WHEEL_SCROLL_AMOUNT, DEFAULT_WHEEL_SCROLL_AMOUNT);
   }
 
   public void setWheelScrollAmount(String value) {
