@@ -9,7 +9,6 @@ import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -35,10 +34,10 @@ import games.strategy.ui.SwingComponents;
  * - save settings
  * - close window
  */
-public class SettingsWindow extends JDialog {
+public class SettingsWindow extends SwingComponents.ModalJDialog {
 
   public static void showWindow() {
-    SwingComponents.showJFrame(new SettingsWindow(
+    SwingComponents.showWindow(new SettingsWindow(
         new ScrollSettingsTab(ClientContext.scrollSettings()),
         new FoldersTab(ClientContext.folderSettings()),
         new AiTab(ClientContext.aiSettings()),
@@ -46,10 +45,7 @@ public class SettingsWindow extends JDialog {
   }
 
   private SettingsWindow(SettingsTab ... tabs) {
-    super((Frame) null, true);
-
     add(buildTabbedPane(tabs), BorderLayout.CENTER);
-
     add(SwingComponents.newJButton("Close", e -> dispose()), BorderLayout.SOUTH);
   }
 
@@ -59,13 +55,9 @@ public class SettingsWindow extends JDialog {
     return pane;
   }
 
-
   private Component createTabWindow(SettingsTab settingTab) {
     List<SettingInputComponent> inputs = settingTab.getInputs();
 
-    // use a grid instead of a box layout, in the variations done, grid looks to be best about using 100% width
-    // available If another layout can be found that uses 100% width by default and left aligns, it would likely be
-    // a better option.
     JPanel settingsPanel = SwingComponents.newJPanelWithGridLayout(inputs.size(), 1);
     inputs.forEach(input -> settingsPanel.add(createInputElementRow(input)));
 
