@@ -9,6 +9,8 @@ public interface SettingsTab<T extends HasDefaults> {
 
   List<SettingInputComponent<T>> getInputs();
 
+  T getSettingsObject();
+
   default void updateSettings(List<SettingInputComponent<T>> inputs) {
     final StringBuilder msg = new StringBuilder();
     inputs.forEach(input -> {
@@ -32,5 +34,4 @@ public interface SettingsTab<T extends HasDefaults> {
     SwingComponents.showDialog(message);
   }
 
-  T getSettingsObject();
 }
