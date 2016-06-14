@@ -3,39 +3,68 @@ package games.strategy.triplea.settings;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+
+/**
+ * Class for accessing and storing user preferences.
+ * Preferences are stored with the 'system', and should persist between installations of the application
+ *
+ * Note: Game engine properties are similar, but different. Game engine properties come from a config
+ * file, while System preferences are initialized by code, so a default value for System preferences will typically
+ * be hardcoded.
+ */
 public class SystemPreferences {
 
   /**
-   * Note, this method does a flush after being called, which is slow.
-   * If there is a need to do many of these one after another, then call 'putNoFlush'
+   * Puts a value into system preferences, and flushes when done (which is slow).
+   *
+   * Note: If there is a need to do many of these one after another,
+   * then call 'putNoFlush' instead followed by one 'flush'
    */
   public static void put(PreferenceKey key, String value) {
     putNoFlush(key, value);
     flush();
   }
 
+  /**
+   * Puts a value into system preferences (note: not actually persisted until flush is called)
+   */
   public static void putNoFlush(PreferenceKey key, String value) {
-    Preferences prefs = Preferences.userNodeForPackage(SystemPreferences.class);
-    prefs.put(key.name(), value);
+    getPrefs().put(key.name(), value);
   }
 
+  private static Preferences getPrefs() {
+    return Preferences.userNodeForPackage(SystemPreferences.class);
+  }
+
+  /**
+   * Persists preferences, calls to 'get' return the last flushed value, not the last 'put' value.
+   */
   public static void flush() {
-    Preferences prefs = Preferences.userNodeForPackage(SystemPreferences.class);
     try {
-      prefs.flush();
+      getPrefs().flush();
     } catch (BackingStoreException e) {
       throw new IllegalStateException("Failed to persist", e);
     }
   }
 
+  /**
+   * Looks up a preference value by key (note: returns the last flushed value)
+   *
+   * @param key The preference key to look up
+   * @param defaultValue A default value to use when the look up finds nothing
+   */
   public static int get(PreferenceKey key, int defaultValue) {
-    Preferences prefs = Preferences.userNodeForPackage(SystemPreferences.class);
-    return prefs.getInt(key.name(), defaultValue);
+    return getPrefs().getInt(key.name(), defaultValue);
   }
 
+  /**
+   * Looks up a preference value by key (note: returns the last flushed value)
+   *
+   * @param key The preference key to look up
+   * @param defaultValue A default value to use when the look up finds nothing
+   */
   public static String get(PreferenceKey key, String defaultValue) {
-    Preferences prefs = Preferences.userNodeForPackage(SystemPreferences.class);
-    return prefs.get(key.name(), defaultValue);
+    return getPrefs().get(key.name(), defaultValue);
   }
 
 }
