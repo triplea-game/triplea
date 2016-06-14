@@ -33,6 +33,12 @@ public class SwingComponents {
     return textField;
   }
 
+  public static JPanel newJPanelWithGridLayout(int rows, int columns) {
+    JPanel panel = new JPanel();
+    panel.setLayout(new GridLayout(rows,columns));
+    return panel;
+  }
+
   public enum KeyboardCode {
     D(KeyEvent.VK_D),
     G(KeyEvent.VK_G);
