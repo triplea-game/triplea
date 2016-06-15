@@ -4,7 +4,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.PrintStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -25,7 +24,6 @@ import games.strategy.net.IMessageListener;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
-import games.strategy.util.ThreadUtil;
 
 /**
  * A messenger general enough that both Channel and Remote messenger can be
@@ -229,29 +227,6 @@ public class UnifiedMessenger {
     return m_messenger.isServer();
   }
 
-  /**
-   * Wait for the messenger to know about the given endpoint.
-   *
-   * @param endPointName
-   * @param timeout
-   */
-  public void waitForLocalImplement(final String endPointName, long timeoutMS) {
-    // dont use Long.MAX_VALUE since that will overflow
-    if (timeoutMS <= 0) {
-      timeoutMS = Integer.MAX_VALUE;
-    }
-    final long endTime = timeoutMS + System.currentTimeMillis();
-    while (System.currentTimeMillis() < endTime && !hasLocalEndPoint(endPointName)) {
-      ThreadUtil.sleep(50);
-    }
-  }
-
-  private boolean hasLocalEndPoint(final String endPointName) {
-    synchronized (m_endPointMutex) {
-      return m_localEndPoints.containsKey(endPointName);
-    }
-  }
-
   int getLocalEndPointCount(final RemoteName descriptor) {
     synchronized (m_endPointMutex) {
       if (!m_localEndPoints.containsKey(descriptor.getName())) {
@@ -343,16 +318,6 @@ public class UnifiedMessenger {
     }
   }
 
-  public void dumpState(final PrintStream stream) {
-    synchronized (m_endPointMutex) {
-      stream.println("Local Endpoints:" + m_localEndPoints);
-    }
-    synchronized (m_endPointMutex) {
-      stream.println("Remote nodes with implementors:" + m_results);
-      stream.println("Remote nodes with implementors:" + m_pendingInvocations);
-    }
-  }
-
   @Override
   public String toString() {
     return "Server:" + m_messenger.isServer() + " EndPoints:" + m_localEndPoints;
@@ -434,11 +399,7 @@ class EndPoint {
     return m_singleThreaded;
   }
 
-  public boolean hasImplementors() {
-    synchronized (m_implementorsMutext) {
-      return !m_implementors.isEmpty();
-    }
-  }
+  
 
   public int getLocalImplementorCount() {
     synchronized (m_implementorsMutext) {
@@ -532,18 +493,7 @@ class EndPoint {
     }
   }
 
-  public boolean equivalent(final EndPoint other) {
-    if (other.m_singleThreaded != this.m_singleThreaded) {
-      return false;
-    }
-    if (!other.m_name.equals(this.m_name)) {
-      return false;
-    }
-    if (!(other.m_remoteClass.equals(m_remoteClass))) {
-      return false;
-    }
-    return true;
-  }
+  
 
   @Override
   public String toString() {
@@ -552,35 +502,10 @@ class EndPoint {
 }
 
 
-// an end point has been created, we should follow
-class EndPointCreated implements Serializable {
-  private static final long serialVersionUID = -5780669206340723091L;
-  public final String[] classes;
-  public final String name;
-  public final boolean singleThreaded;
-
-  public EndPointCreated(final String[] classes, final String name, final boolean singleThreaded) {
-    this.classes = classes;
-    this.name = name;
-    this.singleThreaded = singleThreaded;
-  }
-}
 
 
-// and end point has been destroyed, we too should jump off that bridge
-class EndPointDestroyed implements Serializable {
-  private static final long serialVersionUID = 8932889316564814214L;
-  public final String name;
 
-  public EndPointDestroyed(final String name) {
-    this.name = name;
-  }
 
-  @Override
-  public String toString() {
-    return "EndPointDestroyed:" + name;
-  }
-}
 
 
 // someone now has an implementor for an endpoint
