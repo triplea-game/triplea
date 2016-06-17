@@ -1,17 +1,15 @@
 package games.strategy.thread;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class ThreadPoolTest extends TestCase {
-  /** Creates a new instance of ThreadPoolTest */
-  public ThreadPoolTest(final String s) {
-    super(s);
-  }
+public class ThreadPoolTest {
 
+  @Test
   public void testRunOneTask() {
     final ThreadPool pool = new ThreadPool(50);
     final Task task = new Task();
@@ -20,22 +18,23 @@ public class ThreadPoolTest extends TestCase {
     assertTrue(task.isDone());
   }
 
+  @Test
   public void testSingleThread() {
     final ThreadPool pool = new ThreadPool(1);
-    final Collection<Runnable> tasks = new ArrayList<>();
+    final Collection<Task> tasks = new ArrayList<>();
     for (int i = 0; i < 30; i++) {
-      final Runnable task = new Task();
+      final Task task = new Task();
       tasks.add(task);
       pool.runTask(task);
     }
     pool.waitForAll();
-    final Iterator<Runnable> iter = tasks.iterator();
-    while (iter.hasNext()) {
-      assertTrue(((Task) iter.next()).isDone());
+    for (Task runnable : tasks) {
+      assertTrue(runnable.isDone());
     }
     pool.shutDown();
   }
 
+  @Test
   public void testSimple() {
     final ThreadPool pool = new ThreadPool(5);
     final Collection<Task> tasks = new ArrayList<>();
@@ -46,13 +45,13 @@ public class ThreadPoolTest extends TestCase {
     }
 
     pool.waitForAll();
-    final Iterator<Task> iter = tasks.iterator();
-    while (iter.hasNext()) {
-      assertTrue(iter.next().isDone());
+    for(Task task1 : tasks){
+      assertTrue(task1.isDone());
     }
     pool.shutDown();
   }
 
+  @Test
   public void testBlocked() {
     final Collection<Thread> threads = new ArrayList<>();
     for (int j = 0; j < 50; j++) {
@@ -66,11 +65,10 @@ public class ThreadPoolTest extends TestCase {
       threads.add(t);
       t.start();
     }
-    final Iterator<Thread> iter = threads.iterator();
-    while (iter.hasNext()) {
+    for(Thread thread : threads){
       try {
-        iter.next().join();
-      } catch (final InterruptedException ex) {
+        thread.join();
+      } catch (InterruptedException e) {
         // ignore interrupted exception
       }
     }

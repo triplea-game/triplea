@@ -1,8 +1,13 @@
 package games.strategy.triplea.delegate;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.junit.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
@@ -13,9 +18,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
-import junit.framework.TestCase;
 
-public class DelegateTest extends TestCase {
+public class DelegateTest {
   protected GameData m_data;
   protected PlayerID british;
   protected PlayerID japanese;
@@ -78,12 +82,7 @@ public class DelegateTest extends TestCase {
   protected UnitType carrier;
   protected Resource PUs;
 
-  /** Creates new PlaceDelegateTest */
-  public DelegateTest(final String name) {
-    super(name);
-  }
-
-  @Override
+  @Test
   public void setUp() throws Exception {
     // get the xml file
     final URL url = this.getClass().getResource("DelegateTest.xml");
@@ -167,6 +166,7 @@ public class DelegateTest extends TestCase {
     return GameDataTestUtil.getDelegateBridge(player, m_data);
   }
 
+  @Test
   public void testTest() {
     assertValid(null);
     assertError("Cannot do this");

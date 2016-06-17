@@ -1,8 +1,17 @@
 package games.strategy.triplea.delegate;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
@@ -14,28 +23,20 @@ import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
-import junit.framework.TestCase;
 
-@SuppressWarnings("unused")
-public class Pact_of_Steel_2_Test extends TestCase {
+public class Pact_of_Steel_2_Test {
   private GameData m_data;
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
+  @Before
+  public void setUp() throws Exception {
     m_data = LoadGameUtil.loadTestGame("pact_of_steel_2_test.xml");
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    m_data = null;
-    super.tearDown();
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
     return GameDataTestUtil.getDelegateBridge(player, m_data);
   }
 
+  @Test
   public void testDirectOwnershipTerritories() {
     final Territory Norway = m_data.getMap().getTerritory("Norway");
     final Territory Eastern_Europe = m_data.getMap().getTerritory("Eastern Europe");
@@ -186,6 +187,7 @@ public class Pact_of_Steel_2_Test extends TestCase {
   /*
    * Add Utilities here
    */
+  @SuppressWarnings("unused")
   private Collection<Unit> getUnits(final IntegerMap<UnitType> units, final PlayerID from) {
     final Iterator<UnitType> iter = units.keySet().iterator();
     final Collection<Unit> rVal = new ArrayList<>(units.totalValues());

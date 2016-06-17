@@ -1,10 +1,10 @@
 package games.strategy.engine.framework.map.download;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,11 +14,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.google.common.collect.Lists;
-
-import games.strategy.engine.framework.map.download.DownloadFileDescription;
-import games.strategy.engine.framework.map.download.FileSystemAccessStrategy;
-import games.strategy.engine.framework.map.download.MapDownloadList;
 import games.strategy.util.Version;
 
 
@@ -40,7 +35,7 @@ public class MapDownloadListTest {
 
   @Before
   public void setUp() throws Exception {
-    descriptions = Lists.newArrayList();
+    descriptions = new ArrayList<>();
     descriptions.add(TEST_MAP);
 
   }
@@ -52,13 +47,13 @@ public class MapDownloadListTest {
     MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
 
     List<DownloadFileDescription> available = testObj.getAvailable();
-    assertThat(available.size(), is(1));
+    assertEquals(1, available.size());
 
     List<DownloadFileDescription> installed = testObj.getInstalled();
-    assertThat(installed.size(), is(0));
+    assertEquals(0, installed.size());
 
     List<DownloadFileDescription> outOfDate = testObj.getOutOfDate();
-    assertThat(outOfDate.size(), is(0));
+    assertEquals(0, outOfDate.size());
   }
 
   @Test
@@ -67,13 +62,13 @@ public class MapDownloadListTest {
     MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
 
     List<DownloadFileDescription> available = testObj.getAvailable();
-    assertThat(available.size(), is(0));
+    assertEquals(0, available.size());
 
     List<DownloadFileDescription> installed = testObj.getInstalled();
-    assertThat(installed.size(), is(1));
+    assertEquals(1, installed.size());
 
     List<DownloadFileDescription> outOfDate = testObj.getOutOfDate();
-    assertThat(outOfDate.size(), is(0));
+    assertEquals(0, outOfDate.size());
   }
 
   @Test
@@ -82,14 +77,12 @@ public class MapDownloadListTest {
     MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
 
     List<DownloadFileDescription> available = testObj.getAvailable();
-    assertThat(available.size(), is(0));
+    assertEquals(0, available.size());
 
     List<DownloadFileDescription> installed = testObj.getInstalled();
-    assertThat(installed.size(), is(1));
+    assertEquals(1, installed.size());
 
     List<DownloadFileDescription> outOfDate = testObj.getOutOfDate();
-    assertThat(outOfDate.size(), is(1));
+    assertEquals(1, outOfDate.size());
   }
-
-
 }

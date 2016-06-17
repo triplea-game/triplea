@@ -37,6 +37,12 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.techDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -50,6 +56,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Change;
@@ -84,19 +93,13 @@ import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
-import junit.framework.TestCase;
 
-public class WW2V3_41_Test extends TestCase {
+public class WW2V3_41_Test {
   private GameData m_data;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     m_data = LoadGameUtil.loadTestGame("ww2v3_1941_test.xml");
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    m_data = null;
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
@@ -113,6 +116,7 @@ public class WW2V3_41_Test extends TestCase {
         "Could not find battle in: " + territory.getName());
   }
 
+  @Test
   public void testAACasualtiesLowLuckMixedRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
     final PlayerID british = GameDataTestUtil.british(m_data);
@@ -142,6 +146,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 1);
   }
 
+  @Test
   public void testAACasualtiesLowLuckMixedWithRollingRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
     final PlayerID british = GameDataTestUtil.british(m_data);
@@ -175,6 +180,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 1);
   }
 
+  @Test
   public void testAACasualtiesLowLuckMixedWithRollingMissRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
     final PlayerID british = GameDataTestUtil.british(m_data);
@@ -211,6 +217,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 1);
   }
 
+  @Test
   public void testDefendingTrasnportsAutoKilled() {
     final Territory sz13 = m_data.getMap().getTerritory("13 Sea Zone");
     final Territory sz12 = m_data.getMap().getTerritory("12 Sea Zone");
@@ -233,6 +240,7 @@ public class WW2V3_41_Test extends TestCase {
     assertFalse(bd.getBattleTracker().getPendingBattleSites(false).isEmpty());
   }
 
+  @Test
   public void testUnplacedDie() {
     final PlaceDelegate del = placeDelegate(m_data);
     del.setDelegateBridgeAndPlayer(getDelegateBridge(british(m_data)));
@@ -243,6 +251,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(1, british(m_data).getUnits().size());
   }
 
+  @Test
   public void testPlaceEmpty() {
     final PlaceDelegate del = placeDelegate(m_data);
     del.setDelegateBridgeAndPlayer(getDelegateBridge(british(m_data)));
@@ -252,6 +261,7 @@ public class WW2V3_41_Test extends TestCase {
     assertNull(error);
   }
 
+  @Test
   public void testTechTokens() {
     // Set up the test
     final PlayerID germans = GameDataTestUtil.germans(m_data);
@@ -284,6 +294,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(0, finalTokens);
   }
 
+  @Test
   public void testInfantryLoadOnlyTransports() {
     final Territory gibraltar = territory("Gibraltar", m_data);
     // add a tank to gibralter
@@ -310,6 +321,7 @@ public class WW2V3_41_Test extends TestCase {
     assertTrue(battleDelegate.getBattles().isEmpty());
   }
 
+  @Test
   public void testLoadedTransportAttackKillsLoadedUnits() {
     final PlayerID british = british(m_data);
     final MoveDelegate moveDelegate = moveDelegate(m_data);
@@ -346,6 +358,7 @@ public class WW2V3_41_Test extends TestCase {
     assertTrue(sz7.getUnits().toString(), sz7.getUnits().getMatches(Matches.unitOwnedBy(british)).isEmpty());
   }
 
+  @Test
   public void testCanRetreatIntoEmptyEnemyTerritory() {
     final Territory eastPoland = territory("East Poland", m_data);
     final Territory ukraine = territory("Ukraine", m_data);
@@ -369,6 +382,7 @@ public class WW2V3_41_Test extends TestCase {
     assertFalse(battle.getAttackerRetreatTerritories().contains(eastPoland));
   }
 
+  @Test
   public void testCanRetreatIntoBlitzedTerritory() {
     final Territory eastPoland = territory("East Poland", m_data);
     final Territory ukraine = territory("Ukraine", m_data);
@@ -392,6 +406,7 @@ public class WW2V3_41_Test extends TestCase {
     assertTrue(battle.getAttackerRetreatTerritories().contains(eastPoland));
   }
 
+  @Test
   public void testCantBlitzFactoryOrAA() {
     // Set up territories
     final Territory poland = territory("Poland", m_data);
@@ -428,6 +443,7 @@ public class WW2V3_41_Test extends TestCase {
     assertError(errorResults);
   }
 
+  @Test
   public void testMultipleAAInTerritory() {
     // Set up territories
     final Territory poland = territory("Poland", m_data);
@@ -485,6 +501,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(germany.getUnits().getUnitCount(), preCount + 3);
   }
 
+  @Test
   public void testMechanizedInfantry() {
     // Set up tech
     final PlayerID germans = GameDataTestUtil.germans(m_data);
@@ -528,6 +545,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(preCountIntBelorussia, postCountIntBelorussia);
   }
 
+  @Test
   public void testJetPower() {
     // Set up tech
     final PlayerID germans = GameDataTestUtil.germans(m_data);
@@ -557,6 +575,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(0, roll2.getHits());
   }
 
+  @Test
   public void testBidPlace() {
     final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
     bridge.setStepName("BidPlace");
@@ -573,6 +592,7 @@ public class WW2V3_41_Test extends TestCase {
     assertNull(error);
   }
 
+  @Test
   public void testFactoryPlace() {
     // Set up game
     final PlayerID british = GameDataTestUtil.british(m_data);
@@ -600,6 +620,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(ta.getUnitProduction(), ta.getProduction());
   }
 
+  @Test
   public void testChinesePlacement() {
     /*
      * This tests that Chinese can place units in any territory, that they can
@@ -671,6 +692,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(midCount, postCount);
   }
 
+  @Test
   public void testPlaceInOccupiedSZ() {
     // Set up game
     final PlayerID germans = GameDataTestUtil.germans(m_data);
@@ -696,6 +718,7 @@ public class WW2V3_41_Test extends TestCase {
     assertValid(response);
   }
 
+  @Test
   public void testMoveUnitsThroughSubs() {
     final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
     bridge.setStepName("britishNonCombatMove");
@@ -707,6 +730,7 @@ public class WW2V3_41_Test extends TestCase {
     assertNull(error, error);
   }
 
+  @Test
   public void testMoveUnitsThroughTransports() {
     final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
     bridge.setStepName("britishCombatMove");
@@ -718,6 +742,7 @@ public class WW2V3_41_Test extends TestCase {
     assertNull(error, error);
   }
 
+  @Test
   public void testMoveUnitsThroughTransports2() {
     final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
     bridge.setStepName("britishNonCombatMove");
@@ -731,6 +756,7 @@ public class WW2V3_41_Test extends TestCase {
     assertNull(error, error);
   }
 
+  @Test
   public void testLoadThroughSubs() {
     final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
     bridge.setStepName("britishNonCombatMove");
@@ -752,6 +778,7 @@ public class WW2V3_41_Test extends TestCase {
         moveDelegate.move(sz7.getUnits().getMatches(Matches.unitOwnedBy(british(m_data))), new Route(sz7, sz6)));
   }
 
+  @Test
   public void testAttackUndoAndAttackAgain() {
     final MoveDelegate move = moveDelegate(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
@@ -777,6 +804,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(3, mfb.getAttackingUnits().size());
   }
 
+  @Test
   public void testAttackSubsOnSubs() {
     final String defender = "Germans";
     final String attacker = "British";
@@ -809,6 +837,7 @@ public class WW2V3_41_Test extends TestCase {
     assertTrue(attacked.getUnits().isEmpty());
   }
 
+  @Test
   public void testAttackSubsOnDestroyer() {
     final String defender = "Germans";
     final String attacker = "British";
@@ -844,6 +873,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(2, attacked.getUnits().size());
   }
 
+  @Test
   public void testAttackDestroyerAndSubsAgainstSub() {
     final String defender = "Germans";
     final String attacker = "British";
@@ -879,6 +909,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(2, attacked.getUnits().size());
   }
 
+  @Test
   public void testAttackDestroyerAndSubsAgainstSubAndDestroyer() {
     final String defender = "Germans";
     final String attacker = "British";
@@ -924,6 +955,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(0, attacked.getUnits().size());
   }
 
+  @Test
   public void testLimitBombardtoNumberOfUnloaded() {
     final MoveDelegate move = moveDelegate(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
@@ -975,6 +1007,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(2, eg.getUnits().size());
   }
 
+  @Test
   public void testBombardStrengthVariable() {
     final MoveDelegate move = moveDelegate(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
@@ -1038,6 +1071,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(1, eg.getUnits().size());
   }
 
+  @Test
   public void testAmphAttackUndoAndAttackAgainBombard() {
     final MoveDelegate move = moveDelegate(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
@@ -1078,6 +1112,7 @@ public class WW2V3_41_Test extends TestCase {
   }
 
   // TODO this test needs work kev
+  @Test
   public void testAAFireWithRadar() {
     final PlayerID russians = russians(m_data);
     final PlayerID germans = germans(m_data);
@@ -1120,6 +1155,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(PUsBeforeRaid, PUsAfterRaid);
   }
 
+  @Test
   public void testCarrierWithAlliedPlanes() {
     final Territory sz8 = territory("8 Sea Zone", m_data);
     final Territory sz1 = territory("1 Sea Zone", m_data);
@@ -1136,6 +1172,7 @@ public class WW2V3_41_Test extends TestCase {
     assertFalse(sz1.getUnits().getMatches(Matches.UnitIsAir).isEmpty());
   }
 
+  @Test
   public void testAirCanLandWithAlliedFighters() {
     // germany owns madagascar, with 2 fighters in it
     // also 1 carrier, and 1 allied fighter in sz 40
@@ -1165,6 +1202,7 @@ public class WW2V3_41_Test extends TestCase {
     assertError(error);
   }
 
+  @Test
   public void testMechInfSimple() {
     final PlayerID germans = germans(m_data);
     final Territory france = territory("France", m_data);
@@ -1183,6 +1221,7 @@ public class WW2V3_41_Test extends TestCase {
     move(toMove, r);
   }
 
+  @Test
   public void testMechInfUnitAlreadyMovedSimple() {
     final PlayerID germans = germans(m_data);
     final Territory france = territory("France", m_data);
@@ -1202,6 +1241,7 @@ public class WW2V3_41_Test extends TestCase {
     assertFalse(error == null);
   }
 
+  @Test
   public void testParatroopsWalkOnWater() {
     final PlayerID germans = germans(m_data);
     final Territory france = territory("France", m_data);
@@ -1214,6 +1254,7 @@ public class WW2V3_41_Test extends TestCase {
     assertFalse(results.isMoveValid());
   }
 
+  @Test
   public void testBomberWithTankOverWaterParatroopers() {
     final PlayerID germans = germans(m_data);
     TechAttachment.get(germans).setParatroopers("true");
@@ -1230,6 +1271,7 @@ public class WW2V3_41_Test extends TestCase {
     assertFalse(results.isMoveValid());
   }
 
+  @Test
   public void testBomberTankOverWater() {
     // can't transport a tank over water using a bomber
     final PlayerID germans = germans(m_data);
@@ -1246,6 +1288,7 @@ public class WW2V3_41_Test extends TestCase {
     assertFalse(results.isMoveValid());
   }
 
+  @Test
   public void testMoveParatroopersAsNonPartroops() {
     // move a bomber and a paratrooper
     // one step, but as a normal movement
@@ -1265,6 +1308,7 @@ public class WW2V3_41_Test extends TestCase {
     move(bomberAndParatroop, new Route(germany, nwe));
   }
 
+  @Test
   public void testCantMoveParatroopersThatMovedPreviously() {
     // make sure infantry can't be moved as paratroopers after moving
     final PlayerID germans = germans(m_data);
@@ -1286,6 +1330,7 @@ public class WW2V3_41_Test extends TestCase {
     assertError(error);
   }
 
+  @Test
   public void testCantTransportParatroopersWithBombersThatMovedPreviously() {
     // make sure bombers can't move then pick up paratroopers
     final PlayerID germans = germans(m_data);
@@ -1309,6 +1354,7 @@ public class WW2V3_41_Test extends TestCase {
     assertError(error);
   }
 
+  @Test
   public void testMoveOneParatrooperPerBomber() {
     // make sure only 1 paratroop per bomber can be moved
     final PlayerID germans = germans(m_data);
@@ -1330,6 +1376,7 @@ public class WW2V3_41_Test extends TestCase {
     assertError(error);
   }
 
+  @Test
   public void testParatroopersMoveTwice() {
     // After a battle move to put a bomber + infantry (paratroop) in a first enemy
     // territory, you can make a new move (in the same battle move round) to put
@@ -1365,6 +1412,7 @@ public class WW2V3_41_Test extends TestCase {
     assertError(error);
   }
 
+  @Test
   public void testParatroopersFlyOverBlitzedTerritory() {
     // We should be able to blitz a territory, then fly over it with paratroops to battle.
     final PlayerID germans = germans(m_data);
@@ -1399,6 +1447,7 @@ public class WW2V3_41_Test extends TestCase {
     assertValid(error);
   }
 
+  @Test
   public void testAmphibAttackWithPlanesOnlyAskRetreatOnce() {
     final PlayerID germans = germans(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
@@ -1446,6 +1495,7 @@ public class WW2V3_41_Test extends TestCase {
     fight(battleDelegate(m_data), egypt);
   }
 
+  @Test
   public void testDefencelessTransportsDie() {
     final PlayerID british = british(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(british);
@@ -1478,6 +1528,7 @@ public class WW2V3_41_Test extends TestCase {
     assertTrue(sz5.getUnits().getMatches(Matches.unitIsOwnedBy(germans(m_data))).isEmpty());
   }
 
+  @Test
   public void testFighterLandsWhereCarrierCanBePlaced() {
     final PlayerID germans = germans(m_data);
     // germans have 1 carrier to place
@@ -1502,6 +1553,7 @@ public class WW2V3_41_Test extends TestCase {
     move(neEurope.getUnits().getMatches(Matches.UnitIsAir), route);
   }
 
+  @Test
   public void testFighterCantHoverWithNoCarrierToPlace() {
     // start the move phase
     final ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
@@ -1524,6 +1576,7 @@ public class WW2V3_41_Test extends TestCase {
     assertNotNull(error);
   }
 
+  @Test
   public void testRepair() {
     final Territory germany = territory("Germany", m_data);
     final Unit factory = germany.getUnits().getMatches(Matches.UnitCanBeDamaged).get(0);
@@ -1572,6 +1625,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(midPUs, finalPUs + 1);
   }
 
+  @Test
   public void testRepairMoreThanDamaged() {
     final Territory germany = territory("Germany", m_data);
     final Unit factory = germany.getUnits().getMatches(Matches.UnitCanBeDamaged).get(0);
@@ -1594,6 +1648,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(((TripleAUnit) factory).getUnitDamage(), 0);
   }
 
+  @Test
   public void testOccupiedTerrOfAttachment() {
     // Set up test
     final PlayerID british = GameDataTestUtil.british(m_data);
@@ -1626,6 +1681,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(postOwner, Constants.PLAYER_NAME_CHINESE);
   }
 
+  @Test
   public void testOccupiedTerrOfAttachmentWithCapital() {
     // Set up test
     final PlayerID british = GameDataTestUtil.british(m_data);
@@ -1670,6 +1726,7 @@ public class WW2V3_41_Test extends TestCase {
     assertEquals(postOwner, Constants.PLAYER_NAME_CHINESE);
   }
 
+  @Test
   public void testTwoStepBlitz() {
     final ITestDelegateBridge delegateBridge = getDelegateBridge(british(m_data));
     // Set up the territories

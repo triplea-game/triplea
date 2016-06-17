@@ -1,5 +1,9 @@
 package games.strategy.engine.data;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -11,18 +15,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
 
-import games.strategy.triplea.Constants;
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
-public class ChangeTest extends TestCase {
+import games.strategy.triplea.Constants;
+
+public class ChangeTest {
   private GameData m_data;
 
-  /** Creates new ChangeTest */
-  public ChangeTest(final String name) {
-    super(name);
-  }
-
-  @Override
+  @Before
   public void setUp() throws Exception {
     // get the xml file
     final URL url = this.getClass().getResource("Test.xml");
@@ -46,71 +47,76 @@ public class ChangeTest extends TestCase {
     return newChange;
   }
 
+  @Test
   public void testUnitsAddTerritory() {
     // make sure we know where we are starting
     final Territory can = m_data.getMap().getTerritory("canada");
-    assertEquals(can.getUnits().getUnitCount(), 5);
+    assertEquals(5, can.getUnits().getUnitCount());
     // add some units
     final Change change =
         ChangeFactory.addUnits(can, m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF).create(10, null));
     m_data.performChange(change);
-    assertEquals(can.getUnits().getUnitCount(), 15);
+    assertEquals(15, can.getUnits().getUnitCount());
     // invert the change
     m_data.performChange(change.invert());
-    assertEquals(can.getUnits().getUnitCount(), 5);
+    assertEquals(5, can.getUnits().getUnitCount());
   }
 
+  @Test
   public void testUnitsRemoveTerritory() {
     // make sure we now where we are starting
     final Territory can = m_data.getMap().getTerritory("canada");
-    assertEquals(can.getUnits().getUnitCount(), 5);
+    assertEquals(5, can.getUnits().getUnitCount());
     // remove some units
     final Collection<Unit> units =
         can.getUnits().getUnits(m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     final Change change = ChangeFactory.removeUnits(can, units);
     m_data.performChange(change);
 
-    assertEquals(can.getUnits().getUnitCount(), 2);
+    assertEquals(2, can.getUnits().getUnitCount());
     m_data.performChange(change.invert());
-    assertEquals("last change inverted, should have gained units.",
-        can.getUnits().getUnitCount(), 5);
+    assertEquals("last change inverted, should have gained units.", 5,
+        can.getUnits().getUnitCount());
   }
 
+  @Test
   public void testSerializeUnitsRemoteTerritory() throws Exception {
     // make sure we now where we are starting
     final Territory can = m_data.getMap().getTerritory("canada");
-    assertEquals(can.getUnits().getUnitCount(), 5);
+    assertEquals(5, can.getUnits().getUnitCount());
     // remove some units
     final Collection<Unit> units =
         can.getUnits().getUnits(m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     Change change = ChangeFactory.removeUnits(can, units);
     change = serialize(change);
     m_data.performChange(change);
-    assertEquals(can.getUnits().getUnitCount(), 2);
+    assertEquals(2, can.getUnits().getUnitCount());
     // invert the change
     m_data.performChange(change.invert());
-    assertEquals(can.getUnits().getUnitCount(), 5);
+    assertEquals(5, can.getUnits().getUnitCount());
   }
 
+  @Test
   public void testUnitsAddPlayer() {
     // make sure we know where we are starting
     final PlayerID chretian = m_data.getPlayerList().getPlayerID("chretian");
-    assertEquals(chretian.getUnits().getUnitCount(), 10);
+    assertEquals(10, chretian.getUnits().getUnitCount());
     // add some units
     final Change change =
         ChangeFactory.addUnits(chretian,
             m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF).create(10, null));
     m_data.performChange(change);
-    assertEquals(chretian.getUnits().getUnitCount(), 20);
+    assertEquals(20, chretian.getUnits().getUnitCount());
     // invert the change
     m_data.performChange(change.invert());
-    assertEquals(chretian.getUnits().getUnitCount(), 10);
+    assertEquals(10, chretian.getUnits().getUnitCount());
   }
 
+  @Test
   public void testUnitsRemovePlayer() {
     // make sure we know where we are starting
     final PlayerID chretian = m_data.getPlayerList().getPlayerID("chretian");
-    assertEquals(chretian.getUnits().getUnitCount(), 10);
+    assertEquals(10, chretian.getUnits().getUnitCount());
     // remove some units
     final Collection<Unit> units =
         chretian.getUnits().getUnits(m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
@@ -122,6 +128,7 @@ public class ChangeTest extends TestCase {
     assertEquals(chretian.getUnits().getUnitCount(), 10);
   }
 
+  @Test
   public void testUnitsMove() {
     final Territory canada = m_data.getMap().getTerritory("canada");
     final Territory greenland = m_data.getMap().getTerritory("greenland");
@@ -138,6 +145,7 @@ public class ChangeTest extends TestCase {
     assertEquals(greenland.getUnits().getUnitCount(), 0);
   }
 
+  @Test
   public void testUnitsMoveSerialization() throws Exception {
     final Territory canada = m_data.getMap().getTerritory("canada");
     final Territory greenland = m_data.getMap().getTerritory("greenland");
@@ -155,6 +163,7 @@ public class ChangeTest extends TestCase {
     assertEquals(greenland.getUnits().getUnitCount(), 0);
   }
 
+  @Test
   public void testProductionFrontierChange() {
     final PlayerID can = m_data.getPlayerList().getPlayerID("chretian");
     final ProductionFrontier uspf = m_data.getProductionFrontierList().getProductionFrontier("usProd");
@@ -167,6 +176,7 @@ public class ChangeTest extends TestCase {
     assertEquals(can.getProductionFrontier(), canpf);
   }
 
+  @Test
   public void testChangeResourcesChange() {
     final PlayerID can = m_data.getPlayerList().getPlayerID("chretian");
     final Resource gold = m_data.getResourceList().getResource("gold");
@@ -178,6 +188,7 @@ public class ChangeTest extends TestCase {
     assertEquals(can.getResources().getQuantity(gold), 100);
   }
 
+  @Test
   public void testSerializeResourceChange() throws Exception {
     final PlayerID can = m_data.getPlayerList().getPlayerID("chretian");
     final Resource gold = m_data.getResourceList().getResource("gold");
@@ -188,6 +199,7 @@ public class ChangeTest extends TestCase {
     assertEquals(can.getResources().getQuantity(gold), 150);
   }
 
+  @Test
   public void testChangeOwner() {
     final PlayerID can = m_data.getPlayerList().getPlayerID("chretian");
     final PlayerID us = m_data.getPlayerList().getPlayerID("bush");
@@ -200,6 +212,7 @@ public class ChangeTest extends TestCase {
     assertEquals(greenland.getOwner(), can);
   }
 
+  @Test
   public void testChangeOwnerSerialize() throws Exception {
     final PlayerID can = m_data.getPlayerList().getPlayerID("chretian");
     final PlayerID us = m_data.getPlayerList().getPlayerID("bush");
@@ -215,6 +228,7 @@ public class ChangeTest extends TestCase {
     assertEquals(greenland.getOwner(), can);
   }
 
+  @Test
   public void testPlayerOwnerChange() throws Exception {
     final PlayerID can = m_data.getPlayerList().getPlayerID("chretian");
     final PlayerID us = m_data.getPlayerList().getPlayerID("bush");
@@ -236,6 +250,7 @@ public class ChangeTest extends TestCase {
     assertEquals(us, inf2.getOwner());
   }
 
+  @Test
   public void testPlayerOwnerChangeSerialize() throws Exception {
     final PlayerID can = m_data.getPlayerList().getPlayerID("chretian");
     final PlayerID us = m_data.getPlayerList().getPlayerID("bush");
@@ -259,6 +274,7 @@ public class ChangeTest extends TestCase {
     assertEquals(us, inf2.getOwner());
   }
 
+  @Test
   public void testChangeProductionFrontier() throws Exception {
     final ProductionFrontier usProd = m_data.getProductionFrontierList().getProductionFrontier("usProd");
     final ProductionFrontier canProd = m_data.getProductionFrontierList().getProductionFrontier("canProd");
@@ -279,6 +295,7 @@ public class ChangeTest extends TestCase {
     assertEquals(can.getProductionFrontier(), canProd);
   }
 
+  @Test
   public void testBlank() {
     final CompositeChange compositeChange = new CompositeChange();
     assertTrue(compositeChange.isEmpty());

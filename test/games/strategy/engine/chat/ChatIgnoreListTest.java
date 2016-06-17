@@ -1,18 +1,23 @@
 package games.strategy.engine.chat;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class ChatIgnoreListTest extends TestCase {
-  @Override
+public class ChatIgnoreListTest {
+  @Before
   public void setUp() throws BackingStoreException {
     // clear this
     clearStore();
   }
 
-  @Override
+  @After
   public void tearDown() throws BackingStoreException {
     clearStore();
   }
@@ -23,6 +28,7 @@ public class ChatIgnoreListTest extends TestCase {
     prefs.flush();
   }
 
+  @Test
   public void testLoadStore() {
     ChatIgnoreList list = new ChatIgnoreList();
     assertFalse(list.shouldIgnore("test"));

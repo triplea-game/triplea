@@ -1,6 +1,14 @@
 package games.strategy.engine.vault;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.message.ChannelMessenger;
@@ -12,7 +20,6 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.ServerMessenger;
 import games.strategy.test.TestUtil;
-import junit.framework.TestCase;
 
 /**
  * Comment(KG): This test is broken, If you run each test individually they all work, but when running all test in the
@@ -20,14 +27,14 @@ import junit.framework.TestCase;
  * This is because the lifecycle of the UnifiedMessenger (and internal classes such as NIOReader/Writer) are broken.
  * The UnifiedMessenger will create a new ThreadPool with each instantiation, and this pool is never shutdown.
  */
-public class VaultTest extends TestCase {
+public class VaultTest {
   private static int SERVER_PORT = -1;
   private IServerMessenger m_server;
   private IMessenger m_client1;
   private Vault m_clientVault;
   private Vault m_serverVault;
 
-  @Override
+  @Before
   public void setUp() throws IOException {
     SERVER_PORT = TestUtil.getUniquePort();
     m_server = new ServerMessenger("Server", SERVER_PORT);
@@ -41,7 +48,7 @@ public class VaultTest extends TestCase {
     Thread.yield();
   }
 
-  @Override
+  @After
   public void tearDown() {
     try {
       if (m_server != null) {
@@ -59,17 +66,7 @@ public class VaultTest extends TestCase {
     }
   }
 
-  public VaultTest(final String arg0) {
-    super(arg0);
-  }
-
-  public void assertEquals(final byte[] b1, final byte[] b2) {
-    assertEquals(b1.length, b2.length);
-    for (int i = 0; i < b1.length; i++) {
-      assertEquals(b1[i], b2[i]);
-    }
-  }
-
+  @Test
   public void testLocal() throws NotUnlockedException {
     final DummyMessenger messenger = new DummyMessenger();
     final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
@@ -79,7 +76,7 @@ public class VaultTest extends TestCase {
     final byte[] data = new byte[] {0, 1, 2, 3, 4, 5};
     final VaultID id = vault.lock(data);
     vault.unlock(id);
-    assertEquals(data, vault.get(id));
+    assertArrayEquals(data, vault.get(id));
     vault.release(id);
   }
 
@@ -102,6 +99,7 @@ public class VaultTest extends TestCase {
     m_clientVault.release(id);
   }
 
+  @Test
   public void testClientLock() throws NotUnlockedException {
     final byte[] data = new byte[] {0, 1, 2, 3, 4, 5};
     final VaultID id = m_clientVault.lock(data);
@@ -110,8 +108,8 @@ public class VaultTest extends TestCase {
     m_clientVault.unlock(id);
     m_serverVault.waitForIdToUnlock(id, 1000);
     assertTrue(m_serverVault.isUnlocked(id));
-    assertEquals(data, m_serverVault.get(id));
-    assertEquals(m_clientVault.get(id), m_serverVault.get(id));
+    assertArrayEquals(data, m_serverVault.get(id));
+    assertArrayEquals(m_clientVault.get(id), m_serverVault.get(id));
     m_clientVault.release(id);
   }
 
@@ -142,9 +140,10 @@ public class VaultTest extends TestCase {
     m_clientVault.release(id2);
   }
 
+  @Test
   public void testJoin() {
     final byte[] data = new byte[] {0, 1, 2, 3, 4, 5};
     final byte[] joined = Vault.joinDataAndKnown(data);
-    assertEquals(new byte[] {0xC, 0xA, 0xF, 0xE, 0xB, 0xA, 0xB, 0xE, 0, 1, 2, 3, 4, 5}, joined);
+    assertArrayEquals(new byte[] {0xC, 0xA, 0xF, 0xE, 0xB, 0xA, 0xB, 0xE, 0, 1, 2, 3, 4, 5}, joined);
   }
 }

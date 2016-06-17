@@ -8,11 +8,15 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.getDelegateBridge
 import static games.strategy.triplea.delegate.GameDataTestUtil.makeGameLowLuck;
 import static games.strategy.triplea.delegate.GameDataTestUtil.setSelectAACasualties;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
@@ -28,17 +32,17 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.Match;
-import junit.framework.TestCase;
 
-public class BattleCalculatorTest extends TestCase {
+public class BattleCalculatorTest {
   private ITestDelegateBridge m_bridge;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     final GameData data = LoadGameUtil.loadTestGame("revised_test.xml");
     m_bridge = getDelegateBridge(british(data), data);
   }
 
+  @Test
   public void testAACasualtiesLowLuck() {
     final GameData data = m_bridge.getData();
     makeGameLowLuck(data);
@@ -54,6 +58,7 @@ public class BattleCalculatorTest extends TestCase {
     assertEquals(1, randomSource.getTotalRolled());
   }
 
+  @Test
   public void testAACasualtiesLowLuckDifferentMovementLetf() {
     final GameData data = m_bridge.getData();
     makeGameLowLuck(data);
@@ -69,6 +74,7 @@ public class BattleCalculatorTest extends TestCase {
     assertEquals(casualties.size(), 1);
   }
 
+  @Test
   public void testAACasualtiesLowLuckMixed() {
     final GameData data = m_bridge.getData();
     makeGameLowLuck(data);
@@ -94,6 +100,7 @@ public class BattleCalculatorTest extends TestCase {
     assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 1);
   }
 
+  @Test
   public void testAACasualtiesLowLuckMixedMultipleDiceRolled() {
     final GameData data = m_bridge.getData();
     makeGameLowLuck(data);
@@ -123,6 +130,7 @@ public class BattleCalculatorTest extends TestCase {
     assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 2);
   }
 
+  @Test
   public void testAACasualtiesLowLuckMixedWithChooseAACasualties() {
     final GameData data = m_bridge.getData();
     makeGameLowLuck(data);
@@ -161,6 +169,7 @@ public class BattleCalculatorTest extends TestCase {
     assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 0);
   }
 
+  @Test
   public void testAACasualtiesLowLuckMixedWithChooseAACasualtiesRoll() {
     final GameData data = m_bridge.getData();
     makeGameLowLuck(data);
@@ -199,6 +208,7 @@ public class BattleCalculatorTest extends TestCase {
     assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 0);
   }
 
+  @Test
   public void testAACasualtiesLowLuckMixedWithRolling() {
     final GameData data = m_bridge.getData();
     makeGameLowLuck(data);
@@ -230,6 +240,7 @@ public class BattleCalculatorTest extends TestCase {
     assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 2);
   }
 
+  @Test
   public void testAACasualtiesLowLuckMixedWithRollingMiss() {
     final GameData data = m_bridge.getData();
     makeGameLowLuck(data);
@@ -261,6 +272,7 @@ public class BattleCalculatorTest extends TestCase {
     assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 1);
   }
 
+  @Test
   public void testAACasualtiesLowLuckMixedWithRollingForBombers() {
     final GameData data = m_bridge.getData();
     makeGameLowLuck(data);

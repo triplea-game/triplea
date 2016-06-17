@@ -1,10 +1,10 @@
 package tools.map.xml.creator;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.awt.GridBagConstraints;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 
 public class DynamicRowTest {
@@ -17,5 +17,4 @@ public class DynamicRowTest {
     assertEquals(gbcTemplate.gridx, gridx);
     assertEquals(gbcTemplate.gridy, gridy);
   }
-
 }

@@ -1,26 +1,17 @@
 package games.strategy.engine.config;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import games.strategy.engine.config.GameEngineProperty;
-import games.strategy.engine.config.GameEnginePropertyFileReader;
-import games.strategy.engine.config.PropertyNotFoundException;
-import games.strategy.engine.config.PropertyReader;
 import games.strategy.test.TestUtil;
 
 public class GameEnginePropertyFileReaderTest {
 
-
   private final GameEngineProperty propKey = GameEngineProperty.MAP_LISTING_SOURCE_FILE;
-
-  @Before
-  public void setUp() throws Exception {}
 
   @Test
   public void testPropertiesAreParsed() {
@@ -33,7 +24,7 @@ public class GameEnginePropertyFileReaderTest {
         testObj.readProperty(propKey), is("1"));
   }
 
-  @Test(expected=PropertyNotFoundException.class)
+  @Test(expected = PropertyNotFoundException.class)
   public void testEmptyCase() {
     String input = "";
 

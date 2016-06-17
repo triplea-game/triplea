@@ -1,8 +1,14 @@
 package games.strategy.net;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.startup.login.ClientLogin;
@@ -10,16 +16,16 @@ import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.message.DummyMessenger;
 import games.strategy.test.TestUtil;
 import games.strategy.util.MD5Crypt;
-import junit.framework.TestCase;
 
-public class MessengerLoginTest extends TestCase {
+public class MessengerLoginTest {
   private int SERVER_PORT = -1;
 
-  @Override
+  @Before
   public void setUp() {
     SERVER_PORT = TestUtil.getUniquePort();
   }
 
+  @Test
   public void testSimple() throws Exception {
     final ILoginValidator validator = new ILoginValidator() {
       @Override
@@ -58,6 +64,7 @@ public class MessengerLoginTest extends TestCase {
     }
   }
 
+  @Test
   public void testRefused() throws Exception {
     final ILoginValidator validator = new ILoginValidator() {
       @Override
@@ -97,6 +104,7 @@ public class MessengerLoginTest extends TestCase {
     }
   }
 
+  @Test
   public void testGetMagic() {
     final String salt = "falafel";
     final String password = "king";
@@ -104,6 +112,7 @@ public class MessengerLoginTest extends TestCase {
     assertEquals(salt, MD5Crypt.getSalt(MD5Crypt.MAGIC, encrypted));
   }
 
+  @Test
   public void testPassword() throws Exception {
     final ClientLoginValidator validator = new ClientLoginValidator(new DummyMessenger());
     validator.setGamePassword("foo");

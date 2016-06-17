@@ -1,11 +1,17 @@
 package games.strategy.engine.lobby.server.userDB;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Date;
 
-import games.strategy.util.Util;
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class BannedIpControllerTest extends TestCase {
+import games.strategy.util.Util;
+
+public class BannedIpControllerTest {
+
+  @Test
   public void testCRUD() {
     final BannedIpController controller = new BannedIpController();
     final String ip = Util.createUniqueTimeStamp();
@@ -15,11 +21,13 @@ public class BannedIpControllerTest extends TestCase {
     assertFalse(controller.isIpBanned(ip).getFirst());
   }
 
+  @Test
   public void testNonBannedIp() {
     final BannedIpController controller = new BannedIpController();
     assertFalse(controller.isIpBanned(Util.createUniqueTimeStamp()).getFirst());
   }
 
+  @Test
   public void testBanExpires() {
     final BannedIpController controller = new BannedIpController();
     final String ip = Util.createUniqueTimeStamp();
@@ -28,6 +36,7 @@ public class BannedIpControllerTest extends TestCase {
     assertFalse(controller.isIpBanned(ip).getFirst());
   }
 
+  @Test
   public void testUpdate() {
     final BannedIpController controller = new BannedIpController();
     final String ip = Util.createUniqueTimeStamp();

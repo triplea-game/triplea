@@ -19,7 +19,10 @@ import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
-
+/**
+ * @deprecated Use a Mock TripleAPlayer Instead
+ */
+@Deprecated
 public class DummyTripleAPlayer implements ITripleAPlayer {
   @Override
   public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer) {}

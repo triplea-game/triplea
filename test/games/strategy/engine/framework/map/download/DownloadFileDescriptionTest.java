@@ -5,18 +5,12 @@ import static org.junit.Assert.assertThat;
 
 import java.io.File;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.map.download.DownloadFileDescription;
 import games.strategy.util.Version;
 
 public class DownloadFileDescriptionTest {
-
-  @Before
-  public void setUp() throws Exception {}
-
 
   @Test
   public void testIsMap() {

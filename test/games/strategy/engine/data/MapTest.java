@@ -1,11 +1,18 @@
 package games.strategy.engine.data;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Set;
 
-import games.strategy.util.Match;
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
-public class MapTest extends TestCase {
+import games.strategy.util.Match;
+
+public class MapTest {
   Territory aa;
   Territory ab;
   Territory ac;
@@ -25,11 +32,7 @@ public class MapTest extends TestCase {
   Territory nowhere;
   GameMap map;
 
-  public MapTest(final String name) {
-    super(name);
-  }
-
-  @Override
+  @Before
   public void setUp() {
     // map, l is land, w is water
     // each territory is connected to
@@ -98,22 +101,27 @@ public class MapTest extends TestCase {
     nowhere = new Territory("nowhere", false, null);
   }
 
+  @Test
   public void testNowhere() {
     assertTrue(-1 == map.getDistance(aa, nowhere));
   }
 
+  @Test
   public void testCantFindByName() {
     assertNull(map.getTerritory("nowhere"));
   }
 
+  @Test
   public void testCanFindByName() {
     assertNotNull(map.getTerritory("aa"));
   }
 
+  @Test
   public void testSame() {
     assertTrue(0 == map.getDistance(aa, aa));
   }
 
+  @Test
   public void testImpossibleConditionRoute() {
     final Match<Territory> test = new Match<Territory>() {
       @Override
@@ -124,33 +132,40 @@ public class MapTest extends TestCase {
     assertNull(map.getRoute(aa, ba, test));
   }
 
+  @Test
   public void testOne() {
     final int distance = map.getDistance(aa, ab);
     assertTrue("" + distance, 1 == distance);
   }
 
+  @Test
   public void testTwo() {
     final int distance = map.getDistance(aa, ac);
     assertTrue("" + distance, 2 == distance);
   }
 
+  @Test
   public void testOverWater() {
     assertTrue(map.getDistance(ca, cd) == 3);
   }
 
+  @Test
   public void testOverWaterCantReach() {
     assertTrue(map.getLandDistance(ca, cd) == -1);
   }
 
+  @Test
   public void testLong() {
     assertTrue(map.getLandDistance(ad, da) == 6);
   }
 
+  @Test
   public void testLongRoute() {
     final Route route = map.getLandRoute(ad, da);
     assertEquals(route.numberOfSteps(), 6);
   }
 
+  @Test
   public void testNeighborLandNoSeaConnect() {
     assertTrue(-1 == map.getWaterDistance(aa, ab));
   }
@@ -159,31 +174,37 @@ public class MapTest extends TestCase {
     assertTrue(-1 == map.getLandDistance(bc, bd));
   }
 
+  @Test
   public void testRouteToSelf() {
     final Route rt = map.getRoute(aa, aa);
     assertTrue(rt.numberOfSteps() == 0);
   }
 
+  @Test
   public void testRouteSizeOne() {
     final Route rt = map.getRoute(aa, ab);
     assertTrue(rt.numberOfSteps() == 1);
   }
 
+  @Test
   public void testImpossibleRoute() {
     final Route rt = map.getRoute(aa, nowhere);
     assertNull(rt);
   }
 
+  @Test
   public void testImpossibleLandRoute() {
     final Route rt = map.getLandRoute(aa, cd);
     assertTrue(rt == null);
   }
 
+  @Test
   public void testImpossibleLandDistance() {
     final int distance = map.getLandDistance(aa, cd);
     assertTrue("wrongDistance exp -1, got:" + distance, distance == -1);
   }
 
+  @Test
   public void testWaterRout() {
     final Route rt = map.getWaterRoute(bd, dd);
     assertTrue("bc:" + rt, rt.getTerritoryAtStep(0).equals(bc));
@@ -192,6 +213,7 @@ public class MapTest extends TestCase {
     assertTrue("dd", rt.getTerritoryAtStep(3).equals(dd));
   }
 
+  @Test
   public void testMultiplePossible() {
     final Route rt = map.getRoute(aa, dd);
     assertEquals(rt.getStart(), aa);
@@ -199,6 +221,7 @@ public class MapTest extends TestCase {
     assertEquals(rt.numberOfSteps(), 6);
   }
 
+  @Test
   public void testNeighbors() {
     final Set<Territory> neighbors = map.getNeighbors(aa);
     assertTrue(neighbors.size() == 2);
@@ -206,6 +229,7 @@ public class MapTest extends TestCase {
     assertTrue(neighbors.contains(ba));
   }
 
+  @Test
   public void testNeighborsWithDistance() {
     Set<Territory> neighbors = map.getNeighbors(aa, 0);
     assertTrue(neighbors.size() == 0);

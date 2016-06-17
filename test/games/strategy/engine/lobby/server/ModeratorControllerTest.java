@@ -1,9 +1,16 @@
 package games.strategy.engine.lobby.server;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.engine.lobby.server.userDB.BannedIpController;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
@@ -14,15 +21,14 @@ import games.strategy.net.INode;
 import games.strategy.net.Node;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
-import junit.framework.TestCase;
 
-public class ModeratorControllerTest extends TestCase {
+public class ModeratorControllerTest {
   private DummyMessenger m_messenger;
   private ModeratorController m_controller;
   private ConnectionChangeListener m_listener;
   private INode m_adminNode;
 
-  @Override
+  @Before
   public void setUp() throws UnknownHostException {
     m_messenger = new DummyMessenger();
     m_controller = new ModeratorController(m_messenger, null);
@@ -33,6 +39,7 @@ public class ModeratorControllerTest extends TestCase {
     m_adminNode = new Node(adminName, InetAddress.getLocalHost(), 0);
   }
 
+  @Test
   public void testBoot() throws UnknownHostException {
     MessageContext.setSenderNodeForThread(m_adminNode);
     final INode booted = new Node("foo", InetAddress.getByAddress(new byte[] {1, 2, 3, 4}), 0);
@@ -40,6 +47,7 @@ public class ModeratorControllerTest extends TestCase {
     assertTrue(m_listener.getRemoved().contains(booted));
   }
 
+  @Test
   public void testBan() throws UnknownHostException {
     final InetAddress bannedAddress = InetAddress.getByAddress(new byte[] {(byte) 10, (byte) 10, (byte) 10, (byte) 10});
     new BannedIpController().removeBannedIp(bannedAddress.getHostAddress());
@@ -51,6 +59,7 @@ public class ModeratorControllerTest extends TestCase {
     assertTrue(new BannedIpController().isIpBanned(bannedAddress.getHostAddress()).getFirst());
   }
 
+  @Test
   public void testResetUserPassword() throws UnknownHostException {
     MessageContext.setSenderNodeForThread(m_adminNode);
     final String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());
@@ -61,6 +70,7 @@ public class ModeratorControllerTest extends TestCase {
     assertTrue(new DBUserController().login(node.getName(), newPassword));
   }
 
+  @Test
   public void testCantResetAdminPassword() throws UnknownHostException {
     MessageContext.setSenderNodeForThread(m_adminNode);
     final String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());

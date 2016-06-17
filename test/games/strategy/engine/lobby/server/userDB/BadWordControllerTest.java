@@ -1,9 +1,15 @@
 package games.strategy.engine.lobby.server.userDB;
 
-import games.strategy.util.Util;
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-public class BadWordControllerTest extends TestCase {
+import org.junit.Test;
+
+import games.strategy.util.Util;
+
+public class BadWordControllerTest {
+
+  @Test
   public void testCRUD() {
     final BadWordController controller = new BadWordController();
     final String word = Util.createUniqueTimeStamp();

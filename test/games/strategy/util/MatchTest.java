@@ -1,12 +1,16 @@
 package games.strategy.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
-public class MatchTest extends TestCase {
+public class MatchTest {
   Collection<Integer> m_ints = new ArrayList<>();
   Match<Integer> m_pos = new Match<Integer>() {
     @Override
@@ -27,7 +31,7 @@ public class MatchTest extends TestCase {
     }
   };
 
-  @Override
+  @Before
   public void setUp() {
     m_ints.add(new Integer(-1));
     m_ints.add(new Integer(-2));
@@ -38,17 +42,14 @@ public class MatchTest extends TestCase {
     m_ints.add(new Integer(3));
   }
 
-  /** Creates new IntegerMapTest */
-  public MatchTest(final String name) {
-    super(name);
-  }
-
+  @Test
   public void testNever() {
     assertTrue(!Match.someMatch(m_ints, Match.getNeverMatch()));
     assertTrue(!Match.allMatch(m_ints, Match.getNeverMatch()));
     assertEquals(0, Match.getMatches(m_ints, Match.getNeverMatch()).size());
   }
 
+  @Test
   public void testMatches() {
     assertTrue(m_pos.match(1));
     assertTrue(!m_pos.match(-1));
@@ -58,12 +59,14 @@ public class MatchTest extends TestCase {
     assertTrue(!m_zero.match(1));
   }
 
+  @Test
   public void testAlways() {
     assertTrue(Match.someMatch(m_ints, Match.getAlwaysMatch()));
     assertTrue(Match.allMatch(m_ints, Match.getAlwaysMatch()));
     assertEquals(7, Match.getMatches(m_ints, Match.getAlwaysMatch()).size());
   }
 
+  @Test
   public void testAnd() {
     CompositeMatch<Integer> and = new CompositeMatchAnd<>(m_pos, m_neg);
     assertTrue(!and.match(1));
@@ -81,6 +84,7 @@ public class MatchTest extends TestCase {
     assertEquals(3, Match.getMatches(m_ints, and).size());
   }
 
+  @Test
   public void testOr() {
     final CompositeMatch<Integer> or = new CompositeMatchOr<>(m_pos, m_neg);
     assertTrue(or.match(1));
@@ -93,6 +97,7 @@ public class MatchTest extends TestCase {
     assertEquals(7, Match.getMatches(m_ints, or).size());
   }
 
+  @Test
   public void testMap() {
     final HashMap<String, String> map = new HashMap<>();
     map.put("a", "b");

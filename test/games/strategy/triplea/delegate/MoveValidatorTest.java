@@ -1,7 +1,14 @@
 package games.strategy.triplea.delegate;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Collection;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -10,16 +17,13 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.util.Match;
 
 public class MoveValidatorTest extends DelegateTest {
-  /** Creates new PlaceDelegateTest */
-  public MoveValidatorTest(final String name) {
-    super(name);
-  }
 
-  @Override
+  @Before
   public void setUp() throws Exception {
     super.setUp();
   }
 
+  @Test
   public void testEnemyUnitsInPath() {
     // japanese unit in congo
     final Route bad = new Route();
@@ -38,6 +42,7 @@ public class MoveValidatorTest extends DelegateTest {
     assertTrue(MoveValidator.noEnemyUnitsOnPathMiddleSteps(good, british, m_data));
   }
 
+  @Test
   public void testHasUnitsThatCantGoOnWater() {
     final Collection<Unit> units = new ArrayList<>();
     units.addAll(infantry.create(1, british));
@@ -48,16 +53,19 @@ public class MoveValidatorTest extends DelegateTest {
     assertTrue(MoveValidator.hasUnitsThatCantGoOnWater(factory.create(1, british)));
   }
 
+  @Test
   public void testCarrierCapacity() {
     final Collection<Unit> units = carrier.create(5, british);
     assertEquals(10, AirMovementValidator.carrierCapacity(units, new Territory("TestTerritory", true, m_data)));
   }
 
+  @Test
   public void testCarrierCost() {
     final Collection<Unit> units = fighter.create(5, british);
     assertEquals(5, AirMovementValidator.carrierCost(units));
   }
 
+  @Test
   public void testGetLeastMovement() {
     final Collection<Unit> collection = bomber.create(1, british);
     assertEquals(MoveValidator.getLeastMovement(collection), 6);
@@ -68,6 +76,7 @@ public class MoveValidatorTest extends DelegateTest {
     assertEquals(MoveValidator.getLeastMovement(collection), 0);
   }
 
+  @Test
   public void testCanLand() {
     final Collection<Unit> units = fighter.create(4, british);
     // 2 carriers in red sea
@@ -83,6 +92,7 @@ public class MoveValidatorTest extends DelegateTest {
     assertTrue(!AirMovementValidator.canLand(units, westAfrica, british, m_data));
   }
 
+  @Test
   public void testCanLandInfantry() {
     try {
       final Collection<Unit> units = infantry.create(1, british);
@@ -93,11 +103,13 @@ public class MoveValidatorTest extends DelegateTest {
     fail("No exception thrown");
   }
 
+  @Test
   public void testCanLandBomber() {
     final Collection<Unit> units = bomber.create(1, british);
     assertTrue(!AirMovementValidator.canLand(units, redSea, british, m_data));
   }
 
+  @Test
   public void testHasSomeLand() {
     final Collection<Unit> units = transport.create(3, british);
     assertTrue(!Match.someMatch(units, Matches.UnitIsLand));

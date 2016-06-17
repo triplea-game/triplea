@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.util.Optional;
@@ -11,8 +10,6 @@ import org.junit.Test;
 
 import com.google.common.io.Files;
 
-import games.strategy.engine.framework.map.download.DownloadFileProperties;
-import games.strategy.engine.framework.map.download.FileSystemAccessStrategy;
 import games.strategy.test.TestUtil;
 import games.strategy.util.Version;
 
@@ -23,16 +20,12 @@ import games.strategy.util.Version;
  */
 public class FileSystemStrategyTest {
 
-
-
   private FileSystemAccessStrategy testObj;
 
   private File mapFile;
-//  private File propFile;
 
   @Before
   public void setUp() throws Exception {
-
     testObj = new FileSystemAccessStrategy();
     String text = DownloadFileProperties.VERSION_PROPERTY + " = 1.2";
     mapFile = TestUtil.createTempFile("");
@@ -42,12 +35,12 @@ public class FileSystemStrategyTest {
 
   @Test
   public void testMapPropertyFileNotFound() {
-    assertThat(testObj.getMapVersion("does_not_exist"), is(Optional.empty()));
+    assertEquals(Optional.empty(), testObj.getMapVersion("does_not_exist"));
   }
 
   @Test
   public void testMapFileFound()  {
-    assertThat(testObj.getMapVersion(mapFile.getAbsolutePath()) , is(Optional.of(new Version(1,2))));
+    assertEquals(Optional.of(new Version(1,2)), testObj.getMapVersion(mapFile.getAbsolutePath()));
   }
 
 }

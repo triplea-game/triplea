@@ -1,12 +1,16 @@
 package tools.map.xml.creator;
 
+import static org.junit.Assert.assertTrue;
+
 import javax.swing.JPanel;
 
 import org.junit.Ignore;
+import org.junit.Test;
 
 @Ignore
 public class GameSequencePanelTest extends MapXmlCreatorTestBase {
 
+  @Test
   public void testLayout() {
     // //TODO: find a way to allow Travis CI build without failing with
     // // "java.awt.HeadlessException:

@@ -1,6 +1,8 @@
 package games.strategy.engine.framework.startup.mc;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -210,11 +212,11 @@ public class GameSelectorModelTest {
 
   @Test
   public void testSetAndGetIsHostHeadlessBot() {
-    assertThat(testObj.isHostHeadlessBot(), Matchers.is(false));
+    assertFalse(testObj.isHostHeadlessBot());
     testObj.setIsHostHeadlessBot(true);
-    assertThat(testObj.isHostHeadlessBot(), Matchers.is(true));
+    assertTrue(testObj.isHostHeadlessBot());
     testObj.setIsHostHeadlessBot(false);
-    assertThat(testObj.isHostHeadlessBot(), Matchers.is(false));
+    assertFalse(testObj.isHostHeadlessBot());
   }
 
 

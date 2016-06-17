@@ -4,7 +4,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -16,9 +15,6 @@ import games.strategy.util.Version;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EngineVersionTest {
-
-  @Before
-  public void setUp() throws Exception {}
 
   @Test
   public void testVersionParsingStopsAtFourNumbers() {

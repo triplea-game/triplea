@@ -1,5 +1,12 @@
 package games.strategy.triplea.delegate;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
@@ -11,14 +18,13 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
-import junit.framework.TestCase;
 
 /**
  * "Victory" map is just a branch/mod of Pact of Steel 2.
  * POS2 is an actual game with good gameplay that we don't want to mess with, so
  * "Victory" is more of an xml purely for testing purposes, and probably should never be played.
  */
-public class VictoryTest extends TestCase {
+public class VictoryTest {
   private GameData gameData;
   private PlayerID italians;
   private ITestDelegateBridge testBridge;
@@ -35,13 +41,8 @@ public class VictoryTest extends TestCase {
   private Territory libya;
   private MoveDelegate moveDelegate;
 
-  public VictoryTest(final String name) {
-    super(name);
-  }
-
-  @Override
+  @Before
   public void setUp() throws Exception {
-    super.setUp();
     gameData = LoadGameUtil.loadTestGame("victory_test.xml");
     italians = GameDataTestUtil.italians(gameData);
     testBridge = GameDataTestUtil.getDelegateBridge(italians, gameData);
@@ -67,7 +68,7 @@ public class VictoryTest extends TestCase {
 
   }
 
-
+  @Test
   public void testNoBlitzThroughMountain() {
     gameData.performChange(ChangeFactory.addUnits(libya, armour.create(1, italians)));
     testBridge.setStepName("CombatMove");
@@ -79,6 +80,7 @@ public class VictoryTest extends TestCase {
     assertTrue(error.equals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ));
   }
 
+  @Test
   public void testBlitzNormal() {
     gameData.performChange(ChangeFactory.addUnits(frenchWestAfrica, armour.create(1, italians)));
     testBridge.setStepName("CombatMove");
@@ -91,8 +93,7 @@ public class VictoryTest extends TestCase {
     assertEquals(error, null);
   }
 
-
-
+  @Test
   public void testNoBlitzWithStopThroughMountain() {
     gameData.performChange(ChangeFactory.addUnits(libya, armour.create(1, italians)));
     testBridge.setStepName("CombatMove");
@@ -107,6 +108,7 @@ public class VictoryTest extends TestCase {
     assertTrue(error.equals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ));
   }
 
+  @Test
   public void testBlitzWithStop() {
     gameData.performChange(ChangeFactory.addUnits(frenchWestAfrica, armour.create(1, italians)));
     testBridge.setStepName("CombatMove");
@@ -122,6 +124,7 @@ public class VictoryTest extends TestCase {
   }
 
 
+  @Test
   public void testMotorizedThroughMountain() {
     gameData.performChange(ChangeFactory.addUnits(libya, motorized.create(1, italians)));
     testBridge.setStepName("CombatMove");
@@ -133,6 +136,7 @@ public class VictoryTest extends TestCase {
     assertTrue(error.equals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ));
   }
 
+  @Test
   public void testMotorizedNoBlitzBlitzedTerritory() {
     gameData.performChange(ChangeFactory.changeOwner(frenchEastAfrica, italians));
     gameData.performChange(ChangeFactory.addUnits(frenchEastAfrica, armour.create(1, italians)));
@@ -152,7 +156,7 @@ public class VictoryTest extends TestCase {
     moveDelegate.end();
   }
 
-
+  @Test
   public void testFuelUseMotorized() {
     gameData.performChange(ChangeFactory.changeOwner(kenya, italians));
     gameData.performChange(ChangeFactory.addUnits(kenya, motorized.create(1, italians)));
@@ -179,6 +183,7 @@ public class VictoryTest extends TestCase {
     moveDelegate.end();
   }
 
+  @Test
   public void testMultipleResourcesToPurchase() {
     testBridge.setStepName("italianPurchase");
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
@@ -193,6 +198,7 @@ public class VictoryTest extends TestCase {
     assertEquals(italianResources, italians.getResources().getResourcesCopy());
   }
 
+  @Test
   public void testNotEnoughMultipleResourcesToPurchase() {
     testBridge.setStepName("italianPurchase");
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
@@ -206,8 +212,7 @@ public class VictoryTest extends TestCase {
     assertEquals(PurchaseDelegate.NOT_ENOUGH_RESOURCES, error);
   }
 
-
-
+  @Test
   public void testPUOnlyResourcesToPurchase() {
     testBridge.setStepName("italianPurchase");
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
@@ -222,6 +227,7 @@ public class VictoryTest extends TestCase {
     assertEquals(italianResources, italians.getResources().getResourcesCopy());
   }
 
+  @Test
   public void testNoPUResourcesToPurchase() {
     testBridge.setStepName("italianPurchase");
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
@@ -235,5 +241,4 @@ public class VictoryTest extends TestCase {
     assertEquals(null, error);
     assertEquals(italianResources, italians.getResources().getResourcesCopy());
   }
-
 }

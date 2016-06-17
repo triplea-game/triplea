@@ -2,6 +2,7 @@ package games.strategy.engine.lobby.client.ui;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
@@ -82,15 +83,15 @@ public class LobbyGameTableModelTest {
 
     testObj.getLobbyGameBroadcaster().gameUpdated(fakeGame.getFirst(), newDescription);
     TestUtil.waitForSwingThreads();
-    assertThat(testObj.getRowCount(), is(1));
-    assertThat((String) testObj.getValueAt(0, commentColumnIndex), is(newComment));
+    assertEquals(1, testObj.getRowCount());
+    assertEquals(newComment, testObj.getValueAt(0, commentColumnIndex));
   }
 
   @Test
   public void updateGameAddsIfDoesNotExist() {
     testObj.getLobbyGameBroadcaster().gameUpdated(new GUID(), new GameDescription());
     TestUtil.waitForSwingThreads();
-    assertThat(testObj.getRowCount(), is(2));
+    assertEquals(2, testObj.getRowCount());
   }
 
   @Test
@@ -105,13 +106,13 @@ public class LobbyGameTableModelTest {
   public void removeGame() {
     testObj.getLobbyGameBroadcaster().gameRemoved(fakeGame.getFirst());
     TestUtil.waitForSwingThreads();
-    assertThat(testObj.getRowCount(), is(0));
+    assertEquals(0, testObj.getRowCount());
   }
 
   @Test
   public void removeGameThatDoesNotExistIsIgnored() {
     testObj.getLobbyGameBroadcaster().gameRemoved(new GUID());
     TestUtil.waitForSwingThreads();
-    assertThat(testObj.getRowCount(), is(1));
+    assertEquals(1, testObj.getRowCount());
   }
 }

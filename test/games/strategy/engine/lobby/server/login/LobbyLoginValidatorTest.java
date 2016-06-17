@@ -1,11 +1,18 @@
 package games.strategy.engine.lobby.server.login;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.Test;
 
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.userDB.BadWordController;
@@ -14,9 +21,10 @@ import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.net.MacFinder;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
-import junit.framework.TestCase;
 
-public class LobbyLoginValidatorTest extends TestCase {
+public class LobbyLoginValidatorTest {
+
+  @Test
   public void testCreateNewUser() {
     final LobbyLoginValidator validator = new LobbyLoginValidator();
     final SocketAddress address = new InetSocketAddress(5000);
@@ -34,6 +42,7 @@ public class LobbyLoginValidatorTest extends TestCase {
         properties, name, mac, address));
   }
 
+  @Test
   public void testWrongVersion() {
     final LobbyLoginValidator validator = new LobbyLoginValidator();
     final SocketAddress address = new InetSocketAddress(5000);
@@ -46,6 +55,7 @@ public class LobbyLoginValidatorTest extends TestCase {
         properties, name, mac, address));
   }
 
+  @Test
   public void testAnonymousLogin() {
     final LobbyLoginValidator validator = new LobbyLoginValidator();
     final SocketAddress address = new InetSocketAddress(5000);
@@ -63,6 +73,7 @@ public class LobbyLoginValidatorTest extends TestCase {
         properties, name, mac, address));
   }
 
+  @Test
   public void testAnonymousLoginBadName() {
     final LobbyLoginValidator validator = new LobbyLoginValidator();
     final SocketAddress address = new InetSocketAddress(5000);
@@ -76,6 +87,7 @@ public class LobbyLoginValidatorTest extends TestCase {
         .verifyConnection(validator.getChallengeProperties(name, address), properties, name, mac, address));
   }
 
+  @Test
   public void testLogin() {
     final LobbyLoginValidator validator = new LobbyLoginValidator();
     final SocketAddress address = new InetSocketAddress(5000);
@@ -100,6 +112,7 @@ public class LobbyLoginValidatorTest extends TestCase {
         Util.createUniqueTimeStamp(), mac, address));
   }
 
+  @Test
   public void testAnonymousLoginBadIp() throws UnknownHostException {
     final LobbyLoginValidator validator = new LobbyLoginValidator();
     new BannedIpController().addBannedIp("1.1.1.1");

@@ -1,5 +1,9 @@
 package games.strategy.triplea.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,6 +13,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
@@ -23,7 +30,6 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.PropertyUtil;
-import junit.framework.TestCase;
 
 class TestUnit {
   static final Map<TripleAUnit, TestUnit> m_map = new HashMap<>();
@@ -98,7 +104,7 @@ class TestUnit {
 }
 
 
-public class UnitAutoChooserTest extends TestCase {
+public class UnitAutoChooserTest {
   private GameData m_data;
   private PlayerID british;
   private UnitType infantry;
@@ -106,7 +112,7 @@ public class UnitAutoChooserTest extends TestCase {
   private UnitType transport;
   private UnitType battleship;
 
-  @Override
+  @Before
   public void setUp() throws Exception {
     m_data = LoadGameUtil.loadTestGame("revised_test.xml");
     british = m_data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_BRITISH);
@@ -114,11 +120,6 @@ public class UnitAutoChooserTest extends TestCase {
     infantry = m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INFANTRY);
     transport = m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_TRANSPORT);
     battleship = m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_BATTLESHIP);
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    m_data = null;
   }
 
   protected ITestDelegateBridge getDelegateBridge(final PlayerID player) {
@@ -159,6 +160,7 @@ public class UnitAutoChooserTest extends TestCase {
 
   // The MovePanel and EditPanel use the UnitAutoChooser in this mode
   // when finding initial solutions
+  @Test
   public void testUnitAutoChooserWithImplicitDependentsNoMovementCategorized() {
     final List<Unit> allUnits = new ArrayList<>();
     final List<Unit> chosenUnits = new ArrayList<>();
@@ -744,6 +746,7 @@ public class UnitAutoChooserTest extends TestCase {
   }
 
   // This mode is currently unused.
+  @Test
   public void testUnitAutoChooserNoImplicitDependentsNoMovementCategorized() {
     final List<Unit> allUnits = new ArrayList<>();
     final List<Unit> chosenUnits = new ArrayList<>();
@@ -998,6 +1001,7 @@ public class UnitAutoChooserTest extends TestCase {
 
   // The MovePanel and EditPanel use the UnitAutoChooser in this mode
   // when running the UnitChooser
+  @Test
   public void testUnitAutoChooserWithImplicitDependentsWithMovementCategorized() {
     final List<Unit> allUnits = new ArrayList<>();
     final List<Unit> chosenUnits = new ArrayList<>();

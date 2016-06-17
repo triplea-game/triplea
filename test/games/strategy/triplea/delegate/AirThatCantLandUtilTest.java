@@ -1,10 +1,16 @@
 package games.strategy.triplea.delegate;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
 import java.util.Map.Entry;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
@@ -17,15 +23,14 @@ import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
-import junit.framework.TestCase;
 
-public class AirThatCantLandUtilTest extends TestCase {
+public class AirThatCantLandUtilTest {
   private GameData m_data;
   private PlayerID m_americans;
   private UnitType m_fighter;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     m_data = LoadGameUtil.loadTestGame("revised_test.xml");
     m_americans = GameDataTestUtil.americans(m_data);
     m_fighter = GameDataTestUtil.fighter(m_data);
@@ -47,6 +52,7 @@ public class AirThatCantLandUtilTest extends TestCase {
         "Could not find " + (bombing ? "bombing" : "normal") + " battle in: " + territory.getName());
   }
 
+  @Test
   public void testSimple() {
     final PlayerID player = m_americans;
     // everything can land
@@ -55,6 +61,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     assertTrue(util.getTerritoriesWhereAirCantLand(player).isEmpty());
   }
 
+  @Test
   public void testCantLandEnemyTerritory() {
     final PlayerID player = m_americans;
     final ITestDelegateBridge bridge = getDelegateBridge(player);
@@ -70,6 +77,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     assertEquals(1, balkans.getUnits().getMatches(Matches.UnitIsAir).size());
   }
 
+  @Test
   public void testCantLandWater() {
     final PlayerID player = m_americans;
     final ITestDelegateBridge bridge = getDelegateBridge(player);
@@ -84,6 +92,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     assertEquals(0, sz_55.getUnits().getMatches(Matches.UnitIsAir).size());
   }
 
+  @Test
   public void testSpareNextToFactory() {
     final PlayerID player = m_americans;
     final ITestDelegateBridge bridge = getDelegateBridge(player);
@@ -95,6 +104,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     assertEquals(2, sz_55.getUnits().getMatches(Matches.UnitIsAir).size());
   }
 
+  @Test
   public void testCantLandCarrier() {
     // 1 carrier in the region, but three fighters, make sure we cant land
     final PlayerID player = m_americans;
@@ -111,6 +121,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     assertEquals(2, sz_52.getUnits().getMatches(Matches.UnitIsAir).size());
   }
 
+  @Test
   public void testCanLandNeighborCarrier() {
     final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     final PlayerID americans = GameDataTestUtil.americans(m_data);
@@ -157,6 +168,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     assertEquals(expectedCountSz_52, postCountInt);
   }
 
+  @Test
   public void testCanLandMultiNeighborCarriers() {
     final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     final PlayerID americans = GameDataTestUtil.americans(m_data);
@@ -208,6 +220,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     assertEquals(expectedCountSz_43, postCountSz_43);
   }
 
+  @Test
   public void testCanLandNeighborLandV2() {
     final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     final PlayerID americans = GameDataTestUtil.americans(m_data);
@@ -254,6 +267,7 @@ public class AirThatCantLandUtilTest extends TestCase {
     assertEquals(expectedCountCanada, postCountInt);
   }
 
+  @Test
   public void testCanLandNeighborLandWithRetreatedBattleV2() {
     final PlayerID japanese = GameDataTestUtil.japanese(m_data);
     final PlayerID americans = GameDataTestUtil.americans(m_data);

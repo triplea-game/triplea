@@ -1,7 +1,17 @@
 package games.strategy.engine.message;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
@@ -10,28 +20,28 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.ServerMessenger;
 import games.strategy.test.TestUtil;
 import games.strategy.util.ThreadUtil;
-import junit.framework.TestCase;
 
-public class RemoteMessengerTest extends TestCase {
+public class RemoteMessengerTest {
   private int SERVER_PORT = -1;
   private IMessenger m_messenger;
   private RemoteMessenger m_remoteMessenger;
   private UnifiedMessengerHub m_hub;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     // simple set up for non networked testing
     m_messenger = new DummyMessenger();
     m_remoteMessenger = new RemoteMessenger(new UnifiedMessenger(m_messenger));
     SERVER_PORT = TestUtil.getUniquePort();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     m_messenger = null;
     m_remoteMessenger = null;
   }
 
+  @Test
   public void testRegisterUnregister() {
     final TestRemote testRemote = new TestRemote();
     final RemoteName test = new RemoteName(ITestRemote.class, "test");
@@ -41,6 +51,7 @@ public class RemoteMessengerTest extends TestCase {
     assertFalse(m_remoteMessenger.hasLocalImplementor(test));
   }
 
+  @Test
   public void testMethodCall() {
     final TestRemote testRemote = new TestRemote();
     final RemoteName test = new RemoteName(ITestRemote.class, "test");
@@ -50,6 +61,7 @@ public class RemoteMessengerTest extends TestCase {
     assertEquals(testRemote.getLastSenderNode(), m_messenger.getLocalNode());
   }
 
+  @Test
   public void testExceptionThrownWhenUnregisteredRemote() {
     final TestRemote testRemote = new TestRemote();
     final RemoteName test = new RemoteName(ITestRemote.class, "test");
@@ -64,6 +76,7 @@ public class RemoteMessengerTest extends TestCase {
     }
   }
 
+  @Test
   public void testNoRemote() {
     final RemoteName test = new RemoteName(ITestRemote.class, "test");
     try {
@@ -76,6 +89,7 @@ public class RemoteMessengerTest extends TestCase {
     }
   }
 
+  @Test
   public void testVoidMethodCall() {
     final TestRemote testRemote = new TestRemote();
     final RemoteName test = new RemoteName(ITestRemote.class, "test");
@@ -84,6 +98,7 @@ public class RemoteMessengerTest extends TestCase {
     remote.testVoid();
   }
 
+  @Test
   public void testException() throws Exception {
     final TestRemote testRemote = new TestRemote();
     final RemoteName test = new RemoteName(ITestRemote.class, "test");
@@ -101,6 +116,7 @@ public class RemoteMessengerTest extends TestCase {
     fail("No exception thrown");
   }
 
+  @Test
   public void testRemoteCall() throws Exception {
     final RemoteName test = new RemoteName(ITestRemote.class, "test");
     ServerMessenger server = null;
@@ -143,6 +159,7 @@ public class RemoteMessengerTest extends TestCase {
     }
   }
 
+  @Test
   public void testRemoteCall2() throws Exception {
     final RemoteName test = new RemoteName(ITestRemote.class, "test");
     ServerMessenger server = null;
@@ -167,6 +184,7 @@ public class RemoteMessengerTest extends TestCase {
     }
   }
 
+  @Test
   public void testShutDownClient() throws Exception {
     // when the client shutdown, remotes created
     // on the client should not be visible on server
@@ -191,6 +209,7 @@ public class RemoteMessengerTest extends TestCase {
     }
   }
 
+  @Test
   public void testMethodReturnsOnWait() throws Exception {
     // when the client shutdown, remotes created
     // on the client should not be visible on server

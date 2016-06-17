@@ -1,12 +1,19 @@
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
@@ -24,25 +31,20 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
-import junit.framework.TestCase;
 
-public class LHTRTest extends TestCase {
+public class LHTRTest {
   private GameData m_data;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     m_data = LoadGameUtil.loadTestGame("lhtr_test.xml");
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    m_data = null;
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
     return GameDataTestUtil.getDelegateBridge(player, m_data);
   }
 
+  @Test
   public void testFightersCanLandOnNewPlacedCarrier() {
     final MoveDelegate delegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
@@ -70,6 +72,7 @@ public class LHTRTest extends TestCase {
     assertTrue(baltic.getUnits().someMatch(Matches.unitIsOfType(fighterType)));
   }
 
+  @Test
   public void testFightersDestroyedWhenNoPendingCarriers() {
     final MoveDelegate delegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
@@ -93,6 +96,7 @@ public class LHTRTest extends TestCase {
     assertFalse(baltic.getUnits().someMatch(Matches.unitIsOfType(fighterType)));
   }
 
+  @Test
   public void testAAGunsDontFireNonCombat() {
     final MoveDelegate delegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
@@ -123,6 +127,7 @@ public class LHTRTest extends TestCase {
     delegate.move(fighter, route);
   }
 
+  @Test
   public void testSubDefenseBonus() {
     final UnitType sub = GameDataTestUtil.submarine(m_data);
     final UnitAttachment attachment = UnitAttachment.get(sub);
@@ -142,6 +147,7 @@ public class LHTRTest extends TestCase {
     assertEquals(2, attachment.getAttack(americans));
   }
 
+  @Test
   public void testLHTRBombingRaid() {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");
@@ -177,6 +183,7 @@ public class LHTRTest extends TestCase {
     assertEquals(PUsBeforeRaid - 5, PUsAfterRaid);
   }
 
+  @Test
   public void testLHTRBombingRaid2Bombers() {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");

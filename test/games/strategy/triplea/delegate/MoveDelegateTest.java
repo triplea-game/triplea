@@ -1,11 +1,18 @@
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
@@ -25,12 +32,7 @@ public class MoveDelegateTest extends DelegateTest {
   MoveDelegate m_delegate;
   ITestDelegateBridge m_bridge;
 
-  /** Creates new PlaceDelegateTest */
-  public MoveDelegateTest(final String name) {
-    super(name);
-  }
-
-  @Override
+  @Before
   public void setUp() throws Exception {
     super.setUp();
     m_bridge = super.getDelegateBridge(british);
@@ -56,6 +58,7 @@ public class MoveDelegateTest extends DelegateTest {
     return rVal;
   }
 
+  @Test
   public void testNotUnique() {
     final Route route = new Route();
     route.setStart(egypt);
@@ -66,6 +69,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertError(results);
   }
 
+  @Test
   public void testNotEnoughUnits() {
     final Route route = new Route();
     route.setStart(egypt);
@@ -78,6 +82,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(2, eastAfrica.getUnits().size());
   }
 
+  @Test
   public void testCantMoveEnemy() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 1);
@@ -92,6 +97,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(0, libya.getUnits().size());
   }
 
+  @Test
   public void testSimpleMove() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
@@ -106,6 +112,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(4, eastAfrica.getUnits().size());
   }
 
+  @Test
   public void testSimpleMoveLength2() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
@@ -121,6 +128,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(2, kenya.getUnits().size());
   }
 
+  @Test
   public void testCanReturnToCarrier() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 3);
@@ -132,6 +140,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testLandOnCarrier() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 2);
@@ -150,6 +159,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(6, redSea.getUnits().size());
   }
 
+  @Test
   public void testCantLandWithNoCarrier() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 2);
@@ -169,6 +179,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(4, redSea.getUnits().size());
   }
 
+  @Test
   public void testNotEnoughCarrierCapacity() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 5);
@@ -187,6 +198,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(4, redSea.getUnits().size());
   }
 
+  @Test
   public void testLandMoveToWaterWithNoTransports() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
@@ -202,6 +214,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(0, eastMediteranean.getUnits().size());
   }
 
+  @Test
   public void testSeaMove() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(carrier, 2);
@@ -217,6 +230,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(2, mozambiqueSeaZone.getUnits().size());
   }
 
+  @Test
   public void testSeaCantMoveToLand() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(carrier, 2);
@@ -232,6 +246,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(18, egypt.getUnits().size());
   }
 
+  @Test
   public void testLandMoveToWaterWithTransportsFull() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 1);
@@ -248,6 +263,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(11, congoSeaZone.getUnits().size());
   }
 
+  @Test
   public void testAirCanFlyOverWater() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(bomber, 2);
@@ -260,6 +276,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testLandMoveToWaterWithTransportsEmpty() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
@@ -276,6 +293,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(6, redSea.getUnits().size());
   }
 
+  @Test
   public void testBlitzWithArmour() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
@@ -293,6 +311,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(libya.getOwner(), british);
   }
 
+  @Test
   public void testCant2StepBlitzWithNonBlitzingUnits() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 1);
@@ -315,6 +334,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertError(results);
   }
 
+  @Test
   public void testCantBlitzNuetral() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
@@ -330,6 +350,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(1, algeria.getUnits().size());
   }
 
+  @Test
   public void testOverrunNeutral() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
@@ -348,6 +369,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(32, british.getResources().getQuantity(PUs));
   }
 
+  @Test
   public void testAirCanOverFlyEnemy() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(bomber, 2);
@@ -360,6 +382,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testOverrunNeutralMustStop() {
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
@@ -377,6 +400,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertError(results);
   }
 
+  @Test
   public void testmultipleMovesExceedingMovementLimit() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 2);
@@ -400,6 +424,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(18, egypt.getUnits().size());
   }
 
+  @Test
   public void testMovingUnitsWithMostMovement() {
     // move 2 tanks to equatorial africa
     final IntegerMap<UnitType> map = new IntegerMap<>();
@@ -428,6 +453,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(4, eastAfrica.getUnits().size());
   }
 
+  @Test
   public void testTransportsMustStayWithUnits() {
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
@@ -445,6 +471,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertError(results);
   }
 
+  @Test
   public void testUnitsStayWithTransports() {
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
@@ -462,6 +489,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertError(results);
   }
 
+  @Test
   public void testUnload() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 2);
@@ -472,6 +500,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testTransportCantLoadUnloadAfterBattle() {
     m_bridge = super.getDelegateBridge(russians);
     m_bridge.setStepName("russianCombatMove");
@@ -496,6 +525,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertError(results);
   }
 
+  @Test
   public void testLoadUnloadLoadMoveTransports() {
     m_bridge = super.getDelegateBridge(japanese);
     m_bridge.setStepName("japaneseCombatMove");
@@ -539,6 +569,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertNull(results);
   }
 
+  @Test
   public void testUnloadedCantMove() {
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 2);
@@ -559,6 +590,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertError(results);
   }
 
+  @Test
   public void testUnloadingTransportsCantMove() {
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 4);
@@ -577,6 +609,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertError(results);
   }
 
+  @Test
   public void testTransportsCanSplit() {
     // move 1 armour to red sea
     Route route = new Route();
@@ -614,6 +647,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testUseTransportsWithLowestMovement() {
     // move transport south
     Route route = new Route();
@@ -646,6 +680,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testCanOverrunNeutralWithoutFunds() {
     assertEquals(35, british.getResources().getQuantity(PUs));
     final Change makePoor = ChangeFactory.changeResourcesChange(british, PUs, -35);
@@ -662,6 +697,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertError(results);
   }
 
+  @Test
   public void testAirViolateNeutrality() {
     final Route route = new Route();
     route.setStart(egypt);
@@ -673,6 +709,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testNeutralConquered() {
     // take over neutral
     final Route route = new Route();
@@ -704,6 +741,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testCantMoveThroughConqueredNeutral() {
     // take over neutral
     Route route = new Route();
@@ -742,6 +780,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testCanBlitzThroughConqueredEnemy() {
     // take over empty enemy
     Route route = new Route();
@@ -762,6 +801,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testAirCantLandInConquered() {
     // take over empty neutral
     Route route = new Route();
@@ -805,6 +845,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertError(results);
   }
 
+  @Test
   public void testMoveAndTransportUnload() {
     // this was causing an exception
     Route route = new Route();
@@ -824,6 +865,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testTakeOverAfterOverFlight() {
     // this was causing an exception
     Route route = new Route();
@@ -843,6 +885,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testBattleAdded() {
     // TODO if air make sure otnot alwasys battle
     // this was causing an exception
@@ -855,6 +898,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testLargeMove() {
     // was causing an error
     final Route route = new Route();
@@ -869,6 +913,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testAmphibiousAssaultAfterNavalBattle() {
     // move to take on brazil navy
     Route route = new Route();
@@ -897,6 +942,7 @@ public class MoveDelegateTest extends DelegateTest {
         inBrazilSea);
   }
 
+  @Test
   public void testReloadTransportAfterRetreatAmphibious() {
     m_bridge = super.getDelegateBridge(british);
     m_bridge.setStepName("britishCombatMove");
@@ -958,6 +1004,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(defendingLandSizeInt, postCountInt);
   }
 
+  @Test
   public void testReloadTransportAfterDyingAmphibious() {
     m_bridge = super.getDelegateBridge(british);
     m_bridge.setStepName("britishCombatMove");
@@ -1019,6 +1066,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(defendingLandSizeInt, postCountInt);
   }
 
+  @Test
   public void testReloadTransportAfterRetreatAllied() {
     m_bridge = super.getDelegateBridge(british);
     m_bridge.setStepName("britishCombatMove");
@@ -1074,6 +1122,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(defendingLandSizeInt, postCountInt);
   }
 
+  @Test
   public void testReloadTransportAfterDyingAllied() {
     m_bridge = super.getDelegateBridge(british);
     m_bridge.setStepName("britishCombatMove");
@@ -1129,6 +1178,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(defendingLandSizeInt, postCountInt);
   }
 
+  @Test
   public void testAirToWater() {
     final Route route = new Route();
     route.setStart(egypt);
@@ -1140,6 +1190,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testNonCombatAttack() {
     m_bridge.setStepName("britishNonCombatMove");
     m_delegate.setDelegateBridgeAndPlayer(m_bridge);
@@ -1153,6 +1204,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertError(results);
   }
 
+  @Test
   public void testNonCombatAttackNeutral() {
     m_bridge.setStepName("britishNonCombatMove");
     m_delegate.setDelegateBridgeAndPlayer(m_bridge);
@@ -1166,6 +1218,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertError(results);
   }
 
+  @Test
   public void testNonCombatMoveToConquered() {
     // take over libya
     Route route = new Route();
@@ -1189,6 +1242,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testAACantMoveToConquered() {
     m_bridge.setStepName("japaneseCombatMove");
     m_bridge.setPlayerID(japanese);
@@ -1210,6 +1264,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertError(results);
   }
 
+  @Test
   public void testBlitzConqueredNeutralInTwoSteps() {
     Route route = new Route();
     route.setStart(equatorialAfrica);
@@ -1232,6 +1287,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertError(results);
   }
 
+  @Test
   public void testBlitzFactory() {
     // create a factory to be taken
     final Collection<Unit> factCollection = factory.create(1, japanese);
@@ -1251,6 +1307,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertEquals(aFactory.getOwner(), british);
   }
 
+  @Test
   public void testAirCanLandOnLand() {
     final Route route = new Route();
     route.setStart(egypt);
@@ -1262,6 +1319,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testAirDifferingRouts() {
     // move one air unit 3 spaces, and a second 2,
     // this was causing an exception when the validator tried to find if they
@@ -1287,6 +1345,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testRoute() {
     final Route route = m_data.getMap().getRoute(angola, russia);
     assertNotNull(route);

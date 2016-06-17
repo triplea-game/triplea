@@ -1,5 +1,8 @@
 package games.strategy.net;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.UnknownHostException;
@@ -8,14 +11,16 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import games.strategy.debug.ClientLogger;
 import games.strategy.test.TestUtil;
 import games.strategy.util.ThreadUtil;
 import junit.framework.TestCase;
 
-import static org.junit.Assert.fail;
-
-public class MessengerTest extends TestCase {
+public class MessengerTest {
   private static int SERVER_PORT = -1;
   private IServerMessenger m_server;
   private IMessenger m_client1;
@@ -24,12 +29,7 @@ public class MessengerTest extends TestCase {
   private final MessageListener m_client1Listener = new MessageListener();
   private final MessageListener m_client2Listener = new MessageListener();
 
-  /** Creates a new instance of MangerTest */
-  public MessengerTest(final String name) {
-    super(name);
-  }
-
-  @Override
+  @Before
   public void setUp() throws IOException {
     SERVER_PORT = TestUtil.getUniquePort();
     m_server = new ServerMessenger("Server", SERVER_PORT);
@@ -53,7 +53,7 @@ public class MessengerTest extends TestCase {
     assertEquals(m_server.getNodes().size(), 3);
   }
 
-  @Override
+  @After
   public void tearDown() {
     try {
       if (m_server != null) {
@@ -78,6 +78,7 @@ public class MessengerTest extends TestCase {
     }
   }
 
+  @Test
   public void testServerSend() {
     final String message = "Hello";
     m_server.send(message, m_client1.getLocalNode());
@@ -86,6 +87,7 @@ public class MessengerTest extends TestCase {
     assertEquals(m_client2Listener.getMessageCount(), 0);
   }
 
+  @Test
   public void testServerSendToClient2() throws Exception {
     final String message = "Hello";
     m_server.send(message, m_client2.getLocalNode());
@@ -94,6 +96,7 @@ public class MessengerTest extends TestCase {
     assertEquals(m_client1Listener.getMessageCount(), 0);
   }
 
+  @Test
   public void testClientSendToServer() {
     final String message = "Hello";
     m_client1.send(message, m_server.getLocalNode());
@@ -103,6 +106,7 @@ public class MessengerTest extends TestCase {
     assertEquals(m_client2Listener.getMessageCount(), 0);
   }
 
+  @Test
   public void testClientSendToClient() throws InterruptedException {
     final String message = "Hello";
     m_client1.send(message, m_client2.getLocalNode());
@@ -112,6 +116,7 @@ public class MessengerTest extends TestCase {
     assertEquals(m_serverListener.getMessageCount(), 0);
   }
 
+  @Test
   public void testClientSendToClientLargeMessage() throws InterruptedException {
     final int count = 1 * 1000 * 1000;
     final StringBuilder builder = new StringBuilder(count);
@@ -126,6 +131,7 @@ public class MessengerTest extends TestCase {
     assertEquals(m_serverListener.getMessageCount(), 0);
   }
 
+  @Test
   public void testServerBroadcast() {
     final String message = "Hello";
     m_server.broadcast(message);
@@ -136,6 +142,7 @@ public class MessengerTest extends TestCase {
     assertEquals(m_serverListener.getMessageCount(), 0);
   }
 
+  @Test
   public void testClientBroadcast() {
     final String message = "Hello";
     m_client1.broadcast(message);
@@ -146,6 +153,7 @@ public class MessengerTest extends TestCase {
     assertEquals(m_client1Listener.getMessageCount(), 0);
   }
 
+  @Test
   public void testMultipleServer() {
     for (int i = 0; i < 100; i++) {
       m_server.send(i, m_client1.getLocalNode());
@@ -155,6 +163,7 @@ public class MessengerTest extends TestCase {
     }
   }
 
+  @Test
   public void testMultipleClientToClient() {
     for (int i = 0; i < 100; i++) {
       m_client1.send(i, m_client2.getLocalNode());
@@ -164,6 +173,7 @@ public class MessengerTest extends TestCase {
     }
   }
 
+  @Test
   public void testMultipleMessages() throws Exception {
     final Thread t1 = new Thread(new MultipleMessageSender(m_server));
     final Thread t2 = new Thread(new MultipleMessageSender(m_client1));
@@ -185,6 +195,7 @@ public class MessengerTest extends TestCase {
     }
   }
 
+  @Test
   public void testCorrectNodeCountInRemove() throws InterruptedException {
     // when we receive the notification that a
     // connection has been lost, the node list
@@ -218,6 +229,7 @@ public class MessengerTest extends TestCase {
     assertEquals(2, m_serverCount.get());
   }
 
+  @Test
   public void testDisconnect() throws InterruptedException {
     for (int i = 0; i < 100; i++) {
       if (m_server.getNodes().size() == 3) {
@@ -238,6 +250,7 @@ public class MessengerTest extends TestCase {
     assertEquals(m_server.getNodes().size(), 1);
   }
 
+  @Test
   public void testClose() throws InterruptedException {
     final AtomicBoolean closed = new AtomicBoolean(false);
     m_client1.addErrorListener(new IMessengerErrorListener() {
@@ -255,6 +268,7 @@ public class MessengerTest extends TestCase {
     assert (closed.get());
   }
 
+  @Test
   public void testManyClients() throws UnknownHostException, CouldNotLogInException, IOException, InterruptedException {
     final int count = 5;
     final List<ClientMessenger> clients = new ArrayList<>();

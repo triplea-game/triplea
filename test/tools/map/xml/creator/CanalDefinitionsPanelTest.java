@@ -1,11 +1,16 @@
 package tools.map.xml.creator;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
 import org.junit.Ignore;
+import org.junit.Test;
 
 @Ignore
 public class CanalDefinitionsPanelTest extends MapXmlCreatorTestBase {
 
 
+  @Test
   public void testLayout() {
     // //TODO: find a way to allow Travis CI build without failing with
     // // "java.awt.HeadlessException:

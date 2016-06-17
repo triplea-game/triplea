@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -7,19 +9,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.LoadGameUtil;
-import junit.framework.TestCase;
 
-public class ChangeTripleATest extends TestCase {
+public class ChangeTripleATest {
   private GameData m_data;
   private Territory can;
 
-  public ChangeTripleATest(final String name) {
-    super(name);
-  }
-
-  @Override
+  @Before
   public void setUp() throws Exception {
     m_data = LoadGameUtil.loadTestGame("big_world_1942_test.xml");
     can = m_data.getMap().getTerritory("Western Canada");
@@ -41,6 +41,7 @@ public class ChangeTripleATest extends TestCase {
     return newChange;
   }
 
+  @Test
   public void testUnitsAddTerritory() {
     // add some units
     final Change change =
@@ -52,6 +53,7 @@ public class ChangeTripleATest extends TestCase {
     assertEquals(can.getUnits().getUnitCount(), 2);
   }
 
+  @Test
   public void testUnitsRemoveTerritory() {
     // remove some units
     final Collection<Unit> units = can.getUnits().getUnits(GameDataTestUtil.infantry(m_data), 1);
@@ -63,6 +65,7 @@ public class ChangeTripleATest extends TestCase {
     assertEquals(can.getUnits().getUnitCount(), 2);
   }
 
+  @Test
   public void testSerializeUnitsRemoteTerritory() throws Exception {
     // remove some units
     final Collection<Unit> units = can.getUnits().getUnits(GameDataTestUtil.infantry(m_data), 1);

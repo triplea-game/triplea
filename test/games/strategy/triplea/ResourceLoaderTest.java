@@ -1,20 +1,15 @@
 package games.strategy.triplea;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
 
 public class ResourceLoaderTest {
-
-  @Before
-  public void setUp() throws Exception {}
 
   @Test
   public void testMapNameNormalization() {
@@ -26,8 +21,7 @@ public class ResourceLoaderTest {
     testPairs.put("LOWER.zip",  "lower.zip");
 
     for(Entry<String,String> testPair : testPairs.entrySet()) {
-      assertThat( ResourceLoader.normalizeMapZipName( testPair.getKey()), is(testPair.getValue()));
+      assertEquals(ResourceLoader.normalizeMapZipName(testPair.getKey()), testPair.getValue());
     }
   }
-
 }

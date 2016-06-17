@@ -1,14 +1,21 @@
 package games.strategy.engine.lobby.server.userDB;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
+
+import org.junit.Test;
 
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Util;
-import junit.framework.TestCase;
 
-public class DBUserControllerTest extends TestCase {
+public class DBUserControllerTest {
+
+  @Test
   public void testCreate() throws Exception {
     final String name = Util.createUniqueTimeStamp();
     final String email = name + "@none.none";
@@ -26,6 +33,7 @@ public class DBUserControllerTest extends TestCase {
     }
   }
 
+  @Test
   public void testGet() throws Exception {
     final String name = Util.createUniqueTimeStamp();
     final String email = name + "@none.none";
@@ -39,6 +47,7 @@ public class DBUserControllerTest extends TestCase {
     assertEquals(user.isAdmin(), false);
   }
 
+  @Test
   public void testCreateDupe() throws Exception {
     final String name = Util.createUniqueTimeStamp();
     final String email = name + "@none.none";
@@ -53,6 +62,7 @@ public class DBUserControllerTest extends TestCase {
     }
   }
 
+  @Test
   public void testLogin() throws Exception {
     final String name = Util.createUniqueTimeStamp();
     final String email = name + "@none.none";
@@ -76,6 +86,7 @@ public class DBUserControllerTest extends TestCase {
     // make sure last login time was updated
   }
 
+  @Test
   public void testUpdate() throws Exception {
     final String name = Util.createUniqueTimeStamp();
     final String email = name + "@none.none";

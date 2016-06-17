@@ -1,9 +1,15 @@
 package games.strategy.engine.chat;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.lobby.server.NullModeratorController;
@@ -19,10 +25,8 @@ import games.strategy.net.ServerMessenger;
 import games.strategy.sound.SoundPath;
 import games.strategy.test.TestUtil;
 import games.strategy.util.ThreadUtil;
-import junit.framework.AssertionFailedError;
-import junit.framework.TestCase;
 
-public class ChatTest extends TestCase {
+public class ChatTest {
   private static int SERVER_PORT = -1;
   private IServerMessenger m_server;
   private IMessenger m_client1;
@@ -41,7 +45,7 @@ public class ChatTest extends TestCase {
   TestChatListener m_client2ChatListener;
   NullModeratorController m_smc;
 
-  @Override
+  @Before
   public void setUp() throws IOException {
     SERVER_PORT = TestUtil.getUniquePort();
     m_server = new ServerMessenger("Server", SERVER_PORT);
@@ -65,7 +69,7 @@ public class ChatTest extends TestCase {
     m_client2ChatListener = new TestChatListener();
   }
 
-  @Override
+  @After
   public void tearDown() {
     try {
       if (m_server != null) {
@@ -90,6 +94,7 @@ public class ChatTest extends TestCase {
     }
   }
 
+  @Test
   public void testAll() throws Exception {
     // this is a rather big and ugly unit test
     // its just that the chat is so hard to set up
@@ -109,7 +114,7 @@ public class ChatTest extends TestCase {
         assertEquals(m_client2ChatListener.m_players.size(), 3);
         assertEquals(m_serverChatListener.m_players.size(), 3);
         break;
-      } catch (final AssertionFailedError afe) {
+      } catch (final AssertionError e) {
         ThreadUtil.sleep(25);
       }
     }
@@ -150,7 +155,7 @@ public class ChatTest extends TestCase {
         assertEquals(m_client2ChatListener.m_messages.size(), 3 * messageCount);
         assertEquals(m_serverChatListener.m_messages.size(), 3 * messageCount);
         break;
-      } catch (final AssertionFailedError afe) {
+      } catch (final AssertionError afe) {
         ThreadUtil.sleep(25);
       }
     }
@@ -164,7 +169,7 @@ public class ChatTest extends TestCase {
       try {
         assertEquals(m_serverChatListener.m_players.size(), 1);
         break;
-      } catch (final AssertionFailedError afe) {
+      } catch (final AssertionError e) {
         ThreadUtil.sleep(25);
       }
     }
@@ -174,7 +179,7 @@ public class ChatTest extends TestCase {
       try {
         assertEquals(m_serverChatListener.m_players.size(), 0);
         break;
-      } catch (final AssertionFailedError afe) {
+      } catch (final AssertionError afe) {
         ThreadUtil.sleep(25);
       }
     }
