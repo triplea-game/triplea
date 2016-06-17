@@ -23,6 +23,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
@@ -40,6 +41,7 @@ import games.strategy.util.Tuple;
  * and if the set method adds to a list or map, then you also need a "clearFooBar".
  * Do not change the name fooBar to make it plural or any other crap.
  */
+@MapSupport
 public class UnitAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -2946748686268541820L;
 

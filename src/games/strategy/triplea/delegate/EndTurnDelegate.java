@@ -23,6 +23,7 @@ import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
@@ -41,6 +42,7 @@ import games.strategy.util.ThreadUtil;
 /**
  * At the end of the turn collect income.
  */
+@MapSupport
 @AutoSave(afterStepEnd = true)
 public class EndTurnDelegate extends AbstractEndTurnDelegate {
   @Override

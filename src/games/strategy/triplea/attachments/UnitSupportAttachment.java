@@ -17,7 +17,9 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.MapSupport;
 
+@MapSupport
 public class UnitSupportAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -3015679930172496082L;
   private HashSet<UnitType> m_unitType = null;

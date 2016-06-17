@@ -9,6 +9,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.CompositeMatch;
@@ -16,6 +17,7 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
+@MapSupport
 public class BidPlaceDelegate extends AbstractPlaceDelegate {
   public BidPlaceDelegate() {}
 

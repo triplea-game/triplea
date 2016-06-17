@@ -16,6 +16,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatchAnd;
@@ -26,6 +27,7 @@ import games.strategy.util.Tuple;
  * A class of attachments that can be "activated" during a user action delegate.
  * For now they will just be conditions that can then fire triggers.
  */
+@MapSupport
 public class UserActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 5268397563276055355L;
 

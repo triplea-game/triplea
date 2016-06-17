@@ -38,6 +38,7 @@ import games.strategy.triplea.ui.display.DummyTripleADisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.ui.display.TripleADisplay;
 
+@MapSupport
 public class TripleA extends AbstractGameLoader {
   private static final long serialVersionUID = -8374315848374732436L;
   public static final String HUMAN_PLAYER_TYPE = "Human";

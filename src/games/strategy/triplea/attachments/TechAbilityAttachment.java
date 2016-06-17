@@ -17,6 +17,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.Matches;
@@ -30,6 +31,7 @@ import games.strategy.util.Match;
  * Attaches to technologies.
  * Also contains static methods of interpreting data from all technology attachments that a player has.
  */
+@MapSupport
 public class TechAbilityAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 1866305599625384294L;
 
