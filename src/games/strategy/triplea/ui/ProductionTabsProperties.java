@@ -1,16 +1,19 @@
 package games.strategy.triplea.ui;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.ProductionPanel.Rule;
 import games.strategy.util.Tuple;
+import games.strategy.util.UrlStreams;
 
 public class ProductionTabsProperties {
   // Filename
@@ -46,12 +49,14 @@ public class ProductionTabsProperties {
       // no production_tabs.france.properties check for production_tabs.properties
       propertyFile = PROPERTY_FILE + ".properties";
       url = loader.getResource(propertyFile);
-      if (url == null) {
-      } else {
-        try {
-          m_properties.load(url.openStream());
-        } catch (final IOException e) {
-          System.out.println("Error reading " + propertyFile + e);
+      if (url != null) {
+        Optional<InputStream> inputStream = UrlStreams.openStream(url);
+        if (inputStream.isPresent()) {
+          try {
+            m_properties.load(inputStream.get());
+          } catch (final IOException e) {
+            System.out.println("Error reading " + propertyFile + e);
+          }
         }
       }
     }

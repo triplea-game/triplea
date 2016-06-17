@@ -3,6 +3,7 @@ package games.strategy.triplea.ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 
@@ -75,6 +77,7 @@ import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.ui.display.DummyTripleADisplay;
 import games.strategy.util.IllegalCharacterRemover;
 import games.strategy.util.Tuple;
+import games.strategy.util.UrlStreams;
 
 /**
  * A panel that will show all objectives for all players, including if the objective is filled or not.
@@ -455,14 +458,15 @@ class ObjectiveProperties {
   protected ObjectiveProperties() {
     final ResourceLoader loader = AbstractUIContext.getResourceLoader();
     final URL url = loader.getResource(PROPERTY_FILE);
-    if (url == null) {
-      // no property file found
-    } else {
-      try {
-        m_properties.load(url.openStream());
-      } catch (final IOException e) {
-        System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
-      }
+    if (url != null) {
+        Optional<InputStream> inputStream = UrlStreams.openStream(url);
+        if(inputStream.isPresent()) {
+          try {
+            m_properties.load(inputStream.get());
+          } catch (final IOException e) {
+            System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
+          }
+        }
     }
   }
 

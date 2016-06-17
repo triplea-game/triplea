@@ -1,13 +1,16 @@
 package games.strategy.triplea.ui;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Optional;
 import java.util.Properties;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ResourceLoader;
+import games.strategy.util.UrlStreams;
 
 public class TooltipProperties {
   // Filename
@@ -22,13 +25,14 @@ public class TooltipProperties {
   protected TooltipProperties() {
     final ResourceLoader loader = AbstractUIContext.getResourceLoader();
     final URL url = loader.getResource(PROPERTY_FILE);
-    if (url == null) {
-      // no propertyfile found
-    } else {
-      try {
-        m_properties.load(url.openStream());
-      } catch (final IOException e) {
-        System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
+    if (url != null) {
+      Optional<InputStream> inputStream = UrlStreams.openStream(url);
+      if (inputStream.isPresent()) {
+        try {
+          m_properties.load(inputStream.get());
+        } catch (final IOException e) {
+          System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
+        }
       }
     }
   }

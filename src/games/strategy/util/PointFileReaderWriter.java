@@ -45,6 +45,8 @@ public class PointFileReaderWriter {
         }
         current = reader.readLine();
       }
+    } finally {
+      stream.close();
     }
     return mapping;
   }
@@ -64,6 +66,8 @@ public class PointFileReaderWriter {
         }
         current = reader.readLine();
       }
+    } finally {
+      stream.close();
     }
     return mapping;
   }
@@ -171,6 +175,12 @@ public class PointFileReaderWriter {
     } catch (final IOException ioe) {
       ClientLogger.logError(ioe);
       System.exit(0);
+    } finally {
+      try {
+        stream.close();
+      } catch (IOException e) {
+        ClientLogger.logError(e);
+      }
     }
     return mapping;
   }
@@ -192,6 +202,12 @@ public class PointFileReaderWriter {
     } catch (final IOException e) {
       ClientLogger.logQuietly(e);
       System.exit(0);
+    } finally {
+      try {
+        stream.close();
+      } catch (IOException e) {
+        ClientLogger.logError(e);
+      }
     }
     return mapping;
   }

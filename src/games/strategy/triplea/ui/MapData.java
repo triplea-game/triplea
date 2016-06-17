@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 
@@ -33,6 +34,7 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
+import games.strategy.util.UrlStreams;
 
 /**
  * contains data about the territories useful for drawing
@@ -149,7 +151,7 @@ public class MapData {
    * Constructor TerritoryData(java.lang.String)
    * Sets the map directory for this instance of TerritoryData
    *
-   * @param java
+   * @param loader
    *        .lang.String
    *        mapNameDir the given map directory
    */
@@ -178,7 +180,10 @@ public class MapData {
         if (url == null) {
           throw new IllegalStateException("No map.properties file defined");
         }
-        m_mapProperties.load(url.openStream());
+        Optional<InputStream> inputStream = UrlStreams.openStream(url);
+        if(inputStream.isPresent()) {
+          m_mapProperties.load(inputStream.get());
+        }
       } catch (final Exception e) {
         System.out.println("Error reading map.properties:" + e);
       }
@@ -216,8 +221,10 @@ public class MapData {
       return;
     }
     m_decorations = new HashMap<>();
-    try (InputStream stream = decorations.openStream()) {
-      final Map<String, List<Point>> points = PointFileReaderWriter.readOneToMany(stream);
+
+    Optional<InputStream> inputStream = UrlStreams.openStream(decorations);
+    if(inputStream.isPresent()) {
+      final Map<String, List<Point>> points = PointFileReaderWriter.readOneToMany(inputStream.get());
       for (final String name : points.keySet()) {
         final Image img = loadImage("misc/" + name);
         m_decorations.put(img, points.get(name));

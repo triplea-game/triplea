@@ -1,6 +1,7 @@
 package games.strategy.sound;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -15,11 +16,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import games.strategy.util.UrlStreams;
+import javazoom.jl.player.AudioDevice;
+import javazoom.jl.player.FactoryRegistry;
+import javazoom.jl.player.advanced.AdvancedPlayer;
 
 import com.google.common.base.Throwables;
 
@@ -27,8 +34,6 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.triplea.ResourceLoader;
-import javazoom.jl.player.FactoryRegistry;
-import javazoom.jl.player.advanced.AdvancedPlayer;
 
 /**
  * Utility for loading and playing sound clips.
@@ -268,10 +273,11 @@ public class ClipPlayer {
     if (clip != null) {
       (new Thread(() -> {
         try {
-          final AdvancedPlayer player = new AdvancedPlayer(
-              new java.net.URL(clip.toURL().toString()).openStream(),
-              FactoryRegistry.systemRegistry().createAudioDevice());
-          player.play();
+          Optional<InputStream> inputStream = UrlStreams.openStream(clip.toURL());
+          if(inputStream.isPresent()) {
+            final AudioDevice audioDevice = FactoryRegistry.systemRegistry().createAudioDevice();
+            new AdvancedPlayer(inputStream.get(), audioDevice).play();
+          }
         } catch (Exception e) {
           ClientLogger.logError("Failed to play: " + clip, e);
         }
@@ -323,7 +329,6 @@ public class ClipPlayer {
    * phase_purchase_Germans=phase_purchase_Germans/game_start_Germans_01_anthem.mp3
    *
    * @param pathName
-   * @param subFolder
    */
   private List<URL> parseClipPaths(final String pathName) {
     // Check if there is a sound.properties path override for this resource

@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -26,6 +27,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.ui.NewGameChooserModel;
 import games.strategy.triplea.Constants;
+import games.strategy.util.UrlStreams;
 
 /**
  * A list of all available games. We make sure we can parse them all, but we don't keep them in memory.
@@ -140,7 +142,7 @@ public class AvailableGames {
         entry = zis.getNextEntry();
       }
     } catch (final IOException e) {
-      ClientLogger.logQuietly("Map: "+ map, e);
+      ClientLogger.logQuietly("Map: " + map, e);
     }
   }
 
@@ -149,11 +151,11 @@ public class AvailableGames {
     if (uri == null) {
       return false;
     }
-    InputStream input = null;
     final AtomicReference<String> gameName = new AtomicReference<>();
-    try {
-      input = uri.toURL().openStream();
-      try {
+
+    Optional<InputStream> inputStream = UrlStreams.openStream(uri);
+    if (inputStream.isPresent()) {
+      try (InputStream input = inputStream.get()) {
         final GameData data = new GameParser().parse(input, gameName, s_delayedParsing);
         final String name = data.getGameName();
         final String mapName = data.getProperties().get(Constants.MAP_NAME, "");
@@ -164,18 +166,9 @@ public class AvailableGames {
           }
           return true;
         }
-      } catch (final Exception e2) {// ignore
-        System.err.println("Exception while parsing: " + uri.toString() + " : "
-            + (gameName.get() != null ? gameName.get() + " : " : "") + e2.getMessage());
-      }
-    } catch (final Exception e1) {// ignore
-      System.err.println("Exception while opening: " + uri.toString() + " : " + e1.getMessage());
-    } finally {
-      try {
-        if (input != null) {
-          input.close();
-        }
-      } catch (final IOException e3) {// ignore
+      } catch (final Exception e) {
+        ClientLogger.logError("Exception while parsing: " + uri.toString() + " : "
+            + (gameName.get() != null ? gameName.get() + " : " : ""), e);
       }
     }
     return false;
@@ -201,32 +194,16 @@ public class AvailableGames {
       return null;
     }
     final AtomicReference<String> gameName = new AtomicReference<>();
-    GameData data = null;
-    InputStream input = null;
-    boolean error = false;
-    try {
-      input = uri.toURL().openStream();
-      try {
-        data = new GameParser().parse(input, gameName, false);
-      } catch (final Exception e2) {
-        error = true;
-        System.err.println("Exception while parsing: " + uri.toString() + " : "
-            + (gameName.get() != null ? gameName.get() + " : " : "") + e2.getMessage());
-      }
-    } catch (final Exception e1) {
-      error = true;
-      System.err.println("Exception while opening: " + uri.toString() + " : " + e1.getMessage());
-    } finally {
-      try {
-        if (input != null) {
-          input.close();
-        }
-      } catch (final IOException e2) {// ignore
+
+    Optional<InputStream> inputStream = UrlStreams.openStream(uri);
+    if (inputStream.isPresent()) {
+      try (InputStream input = inputStream.get()) {
+        return new GameParser().parse(input, gameName, false);
+      } catch (final Exception e) {
+        ClientLogger.logError("Exception while parsing: " + uri.toString() + " : "
+            + (gameName.get() != null ? gameName.get() + " : " : ""), e);
       }
     }
-    if (error) {
-      return null;
-    }
-    return data;
+    return null;
   }
 }

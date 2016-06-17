@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
+import games.strategy.util.UrlStreams;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -42,7 +44,13 @@ public class NewGameChooserEntry {
       throws IOException, GameParseException, SAXException, EngineVersionException {
     m_url = uri;
     final AtomicReference<String> gameName = new AtomicReference<>();
-    try (InputStream input = uri.toURL().openStream()) {
+
+    Optional<InputStream> inputStream = UrlStreams.openStream(uri);
+    if(!inputStream.isPresent()) {
+      throw new IOException("Failed to open an input stream to: " + uri);
+    }
+
+    try (InputStream input = inputStream.get()) {
       final boolean delayParsing = GameRunner2.getDelayedParsing();
       m_data = new GameParser().parse(input, gameName, delayParsing);
       m_gameDataFullyLoaded = !delayParsing;
@@ -51,31 +59,32 @@ public class NewGameChooserEntry {
   }
 
   public void fullyParseGameData() throws GameParseException {
+    // TODO: We should be setting this in the the constructor. At this point, you have to call methods in the
+    // correct order for things to work, and that is bads.
     m_data = null;
 
-    String error = null;
     final AtomicReference<String> gameName = new AtomicReference<>();
 
-    try (InputStream input = m_url.toURL().openStream()) {
+    Optional<InputStream> inputStream = UrlStreams.openStream(m_url);
+    if(!inputStream.isPresent()) {
+      return;
+    }
+
+    try (InputStream input = inputStream.get()) {
       m_data = new GameParser().parse(input, gameName, false);
       m_gameDataFullyLoaded = true;
 
     } catch (final EngineVersionException e) {
       ClientLogger.logQuietly(e);
-      error = e.getMessage();
+      throw new GameParseException(e.getMessage());
     } catch (final SAXParseException e) {
       String msg = "Could not parse:" + m_url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber();
-      ClientLogger.logError(msg);
-      ClientLogger.logQuietly(e);
-      error = e.getMessage();
+      ClientLogger.logError(msg, e);
+      throw new GameParseException(e.getMessage());
     } catch (final Exception e) {
       String msg = "Could not parse:" + m_url;
-      ClientLogger.logError(msg);
-      ClientLogger.logQuietly(e);
-      error = e.getMessage();
-    }
-    if (error != null) {
-      throw new GameParseException(error);
+      ClientLogger.logError(msg, e);
+      throw new GameParseException(e.getMessage());
     }
   }
 
@@ -87,7 +96,11 @@ public class NewGameChooserEntry {
     m_data = null;
 
     final AtomicReference<String> gameName = new AtomicReference<>();
-    try (InputStream input = m_url.toURL().openStream()) {
+    Optional<InputStream> inputStream = UrlStreams.openStream(m_url);
+    if(!inputStream.isPresent()) {
+      return;
+    }
+    try (InputStream input = inputStream.get()) {
       m_data = new GameParser().parse(input, gameName, true);
       m_gameDataFullyLoaded = false;
     } catch (final EngineVersionException e) {
