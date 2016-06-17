@@ -16,6 +16,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -29,6 +30,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.prefs.Preferences;
 
@@ -171,8 +173,12 @@ public class TripleAMenu extends BasicGameMenuBar<TripleAFrame> {
     if (player == null || unitImageFactory == null) {
       return "no image";
     }
-    return "<img src=\"" + unitImageFactory.getBaseImageURL(unitType.getName(), player).toString()
-        + "\" border=\"0\"/>";
+
+
+    Optional<URL> imageUrl = unitImageFactory.getBaseImageURL(unitType.getName(), player);
+    String imageLocation = imageUrl.isPresent() ? imageUrl.get().toString() : "";
+
+    return "<img src=\"" + imageLocation + "\" border=\"0\"/>";
   }
 
   public String getUnitStatsTable() {
