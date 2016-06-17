@@ -73,7 +73,7 @@ public class LobbyLogin {
 
   private LobbyClient login(final LoginPanel panel) {
     try {
-      final String mac = MacFinder.GetHashedMacAddress();
+      final String mac = MacFinder.getHashedMacAddress();
       final ClientMessenger messenger = new ClientMessenger(m_serverProperties.host, m_serverProperties.port,
           panel.getUserName(), mac, new IConnectionLogin() {
             private final AtomicReference<String> m_internalError = new AtomicReference<>();
@@ -132,7 +132,7 @@ public class LobbyLogin {
 
   private LobbyClient createAccount(final CreateUpdateAccountPanel createAccount) {
     try {
-      final String mac = MacFinder.GetHashedMacAddress();
+      final String mac = MacFinder.getHashedMacAddress();
       final ClientMessenger messenger = new ClientMessenger(m_serverProperties.host, m_serverProperties.port,
           createAccount.getUserName(), mac, new IConnectionLogin() {
             @Override

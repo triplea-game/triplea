@@ -16,7 +16,10 @@ import java.security.NoSuchAlgorithmException;
  * - Removed dependencies on a MD5 private implementation
  * - Added built-in java.security.MessageDigest (MD5) support
  * - Code cleanup
+ * 
+ * @deprecated Use SHA512(fast) or BCrypt(secure) instead
  */
+@Deprecated
 public class MD5Crypt {
   public static final String MAGIC = "$1$";
   // Character set allowed for the salt string

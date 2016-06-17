@@ -153,7 +153,7 @@ public class ClientModel implements IMessengerErrorListener {
     }
     final String address = props.getHost();
     try {
-      final String mac = MacFinder.GetHashedMacAddress();
+      final String mac = MacFinder.getHashedMacAddress();
       m_messenger = new ClientMessenger(address, port, name, mac, m_objectStreamFactory, new ClientLogin(m_ui));
     } catch (final CouldNotLogInException ioe) {
       // an error message should have already been reported
