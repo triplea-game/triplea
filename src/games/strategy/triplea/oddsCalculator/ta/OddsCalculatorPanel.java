@@ -1086,8 +1086,7 @@ class UnitPanel extends JPanel {
 
 
     final Optional<Image> img = m_context.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(),
-        m_data,
-        m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled());
+        m_data, m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled());
 
     final JLabel label = img.isPresent() ? new JLabel(new ImageIcon(img.get())) : new JLabel();
     label.setToolTipText(toolTipText);
@@ -1298,9 +1297,10 @@ class OrderOfLossesInputPanel extends JPanel {
             OddsCalculator.OOL_ALL + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + category.getType().getName();
         final String toolTipText = "<html>" + category.getType().getName() + ":  "
             + category.getType().getTooltip(category.getOwner()) + "</html>";
-        final Optional<Image> img = m_context.getUnitImageFactory().getImage(category.getType(), category.getOwner(), m_data,
-            category.hasDamageOrBombingUnitDamage(), category.getDisabled());
-        if(img.isPresent()) {
+        final Optional<Image> img =
+            m_context.getUnitImageFactory().getImage(category.getType(), category.getOwner(), m_data,
+                category.hasDamageOrBombingUnitDamage(), category.getDisabled());
+        if (img.isPresent()) {
           final JButton button = new JButton(new ImageIcon(img.get()));
           button.setToolTipText(toolTipText);
           button.addActionListener(e -> textField
