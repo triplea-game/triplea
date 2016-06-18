@@ -77,7 +77,6 @@ public class ColorProperty extends AEditableProperty {
                   ColorProperty.this.color));
           if (color != null) {
             ColorProperty.this.color = color;
-            System.out.println("New color: " + ColorProperty.this.color);
             // Ask Swing to repaint this label when it's convenient
             SwingUtilities.invokeLater(new Runnable() {
               @Override
@@ -108,12 +107,6 @@ public class ColorProperty extends AEditableProperty {
 
   @Override
   public boolean validate(final Object value) {
-    if (value == null) {
-      return true;
-    }
-    if (value instanceof Color) {
-      return true;
-    }
-    return false;
+    return (value == null) || (value instanceof Color);
   }
 }
