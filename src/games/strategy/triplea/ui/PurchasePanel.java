@@ -40,8 +40,8 @@ public class PurchasePanel extends ActionPanel {
   private final JButton m_buyButton;
   // if this is set Purchase will use the tabbedProductionPanel - this is modifyable through the View Menu
   private static boolean m_tabbedProduction = true;
-  private final String BUY = "Buy...";
-  private final String CHANGE = "Change...";
+  private static final String BUY = "Buy...";
+  private static final String CHANGE = "Change...";
 
   /** Creates new PurchasePanel */
   public PurchasePanel(final GameData data, final MapPanel map) {
@@ -57,46 +57,46 @@ public class PurchasePanel extends ActionPanel {
   public void display(final PlayerID id) {
     super.display(id);
     m_purchase = new IntegerMap<>();
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        removeAll();
-        actionLabel.setText(id.getName() + " production");
-        m_buyButton.setText(BUY);
-        add(actionLabel);
-        add(m_buyButton);
-        add(new JButton(DoneAction));
-        m_purchasedLabel.setText("");
-        add(Box.createVerticalStrut(9));
-        add(m_purchasedLabel);
+    SwingUtilities.invokeLater(() -> {
+      removeAll();
+      actionLabel.setText(id.getName() + " production");
+      add(actionLabel);
+
+      m_buyButton.setText(BUY);
+      add(m_buyButton);
+
+      add(new JButton(DoneAction));
+
+      add(Box.createVerticalStrut(9));
+
+      m_purchasedLabel.setText("");
+      add(m_purchasedLabel);
+
+      add(Box.createVerticalStrut(4));
+
+      m_purhcasedUnits.setUnitsFromProductionRuleMap(new IntegerMap<>(), id, getData());
+      add(m_purhcasedUnits);
+
+      getData().acquireReadLock();
+      try {
+        m_purchasedPreviousRoundsUnits.setUnitsFromCategories(UnitSeperator.categorize(id.getUnits().getUnits()),
+            getData());
         add(Box.createVerticalStrut(4));
-        m_purhcasedUnits.setUnitsFromProductionRuleMap(new IntegerMap<>(), id, getData());
-        add(m_purhcasedUnits);
-        getData().acquireReadLock();
-        try {
-          m_purchasedPreviousRoundsUnits.setUnitsFromCategories(UnitSeperator.categorize(id.getUnits().getUnits()),
-              getData());
-          add(Box.createVerticalStrut(4));
-          if (!id.getUnits().isEmpty()) {
-            add(m_purchasedPreviousRoundsLabel);
-          }
-          add(m_purchasedPreviousRoundsUnits);
-        } finally {
-          getData().releaseReadLock();
+        if (!id.getUnits().isEmpty()) {
+          add(m_purchasedPreviousRoundsLabel);
         }
-        add(Box.createVerticalGlue());
-        SwingUtilities.invokeLater(REFRESH);
+        add(m_purchasedPreviousRoundsUnits);
+      } finally {
+        getData().releaseReadLock();
       }
+      add(Box.createVerticalGlue());
+      SwingUtilities.invokeLater(REFRESH);
     });
   }
 
   private void refreshActionLabelText() {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        actionLabel.setText(getCurrentPlayer().getName() + " production " + (m_bid ? " for bid" : ""));
-      }
-    });
+    SwingUtilities.invokeLater(
+        () -> actionLabel.setText(getCurrentPlayer().getName() + " production " + (m_bid ? " for bid" : "")));
   }
 
   public IntegerMap<ProductionRule> waitForPurchase(final boolean bid) {

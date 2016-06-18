@@ -41,8 +41,6 @@ public class IndividualUnitPanel extends JPanel {
   private int m_max = -1;
   private final JLabel m_leftToSelect = new JLabel();
   private final GameData m_data;
-  private JButton m_autoSelectButton;
-  private JButton m_selectNoneButton;
   private final IUIContext m_uiContext;
   private ScrollableTextField m_textFieldPurelyForListening;
   private final ScrollableTextFieldListener m_countOptionalTextFieldListener;
@@ -189,9 +187,9 @@ public class IndividualUnitPanel extends JPanel {
     this.setLayout(new GridBagLayout());
     final Insets nullInsets = new Insets(0, 0, 0, 0);
     final Dimension buttonSize = new Dimension(80, 20);
-    m_selectNoneButton = new JButton("None");
+    JButton m_selectNoneButton = new JButton("None");
     m_selectNoneButton.setPreferredSize(buttonSize);
-    m_autoSelectButton = new JButton("Max");
+    JButton m_autoSelectButton = new JButton("Max");
     m_autoSelectButton.setPreferredSize(buttonSize);
     add(m_title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         nullInsets, 0, 0));
@@ -262,9 +260,7 @@ public class IndividualUnitPanel extends JPanel {
 class SingleUnitPanel extends JPanel {
   private static final long serialVersionUID = 5034287842323633030L;
   private final Unit m_unit;
-  private final IUIContext m_context;
   private final ScrollableTextField m_textField;
-  private final GameData m_data;
   private static Insets nullInsets = new Insets(0, 0, 0, 0);
   private final ScrollableTextFieldListener m_countTextFieldListener;
 
@@ -277,8 +273,8 @@ class SingleUnitPanel extends JPanel {
       final ScrollableTextFieldListener textFieldListener, final int max, final int min, final int currentValue,
       final boolean showMaxAndMin) {
     m_unit = unit;
-    m_data = data;
-    m_context = context;
+    GameData m_data = data;
+    IUIContext m_context = context;
     m_countTextFieldListener = textFieldListener;
     m_textField = new ScrollableTextField(0, 512);
     if (max >= 0) {

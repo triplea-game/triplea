@@ -73,19 +73,6 @@ public class ServerGame extends AbstractGame {
    * Has the delegate signaled that delegate execution should stop.
    */
   private volatile boolean m_delegateExecutionStopped = false;
-  private final IServerRemote m_serverRemote = new IServerRemote() {
-    @Override
-    public byte[] getSavedGame() {
-      final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000);
-      try {
-        saveGame(sink);
-      } catch (final IOException e) {
-        ClientLogger.logQuietly(e);
-        throw new IllegalStateException(e);
-      }
-      return sink.toByteArray();
-    }
-  };
 
   /**
    * @param data
@@ -156,6 +143,19 @@ public class ServerGame extends AbstractGame {
     m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
     setupDelegateMessaging(data);
     m_randomStats = new RandomStats(m_remoteMessenger);
+    IServerRemote m_serverRemote = new IServerRemote() {
+      @Override
+      public byte[] getSavedGame() {
+        final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000);
+        try {
+          saveGame(sink);
+        } catch (final IOException e) {
+          ClientLogger.logQuietly(e);
+          throw new IllegalStateException(e);
+        }
+        return sink.toByteArray();
+      }
+    };
     m_remoteMessenger.registerRemote(m_serverRemote, SERVER_REMOTE);
   }
 

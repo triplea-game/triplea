@@ -45,9 +45,9 @@ import games.strategy.util.Tuple;
  */
 public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implements IAbstractForumPosterDelegate {
   public static final String END_TURN_REPORT_STRING = "End of Turn Report for ";
+  private static final int CONVOY_BLOCKADE_DICE_SIDES = 6;
   private boolean m_needToInitialize = true;
   private boolean m_hasPostedTurnSummary = false;
-  private static int CONVOY_BLOCKADE_DICE_SIDES = 6;
 
   private boolean isGiveUnitsByTerritory() {
     return games.strategy.triplea.Properties.getGiveUnitsByTerritory(getData());

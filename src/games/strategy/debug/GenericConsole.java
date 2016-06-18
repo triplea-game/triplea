@@ -24,7 +24,6 @@ public abstract class GenericConsole extends JFrame {
   private static final long serialVersionUID = 5754914217052820386L;
 
   private final JTextArea m_text = new JTextArea(20, 50);
-  private final JToolBar m_actions = new JToolBar(SwingConstants.HORIZONTAL);
 
   public GenericConsole(String title) {
     super(title);
@@ -34,12 +33,21 @@ public abstract class GenericConsole extends JFrame {
     m_text.setWrapStyleWord(true);
     final JScrollPane scroll = new JScrollPane(m_text);
     getContentPane().add(scroll, BorderLayout.CENTER);
+    JToolBar m_actions = new JToolBar(SwingConstants.HORIZONTAL);
     getContentPane().add(m_actions, BorderLayout.SOUTH);
     m_actions.setFloatable(false);
     m_actions.add(m_threadDiagnoseAction);
+    AbstractAction m_memoryAction = SwingAction.of("Memory", e -> append(DebugUtils.getMemory()));
     m_actions.add(m_memoryAction);
+    AbstractAction m_propertiesAction = SwingAction.of("Properties", e -> append(DebugUtils.getProperties()));
     m_actions.add(m_propertiesAction);
+    Action m_copyAction = SwingAction.of("Copy to clipboard", e -> {
+      final String text = m_text.getText();
+      final StringSelection select = new StringSelection(text);
+      Toolkit.getDefaultToolkit().getSystemClipboard().setContents(select, select);
+    });
     m_actions.add(m_copyAction);
+    AbstractAction m_clearAction = SwingAction.of("Clear", e -> clear());
     m_actions.add(m_clearAction);
     SwingUtilities.invokeLater(() -> pack());
   }
@@ -85,18 +93,8 @@ public abstract class GenericConsole extends JFrame {
     System.setOut(print);
   }
 
-  private final Action m_copyAction = SwingAction.of("Copy to clipboard", e -> {
-    final String text = m_text.getText();
-    final StringSelection select = new StringSelection(text);
-    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(select, select);
-  });
-
   private final AbstractAction m_threadDiagnoseAction =
       SwingAction.of("Enumerate Threads", e -> System.out.println(DebugUtils.getThreadDumps()));
-  private final AbstractAction m_memoryAction = SwingAction.of("Memory", e -> append(DebugUtils.getMemory()));
-  private final AbstractAction m_propertiesAction =
-      SwingAction.of("Properties", e -> append(DebugUtils.getProperties()));
-  private final AbstractAction m_clearAction = SwingAction.of("Clear", e -> clear());
 }
 
 

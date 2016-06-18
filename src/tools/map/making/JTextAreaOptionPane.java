@@ -23,7 +23,6 @@ public class JTextAreaOptionPane {
   private final JTextArea m_editor = new JTextArea();
   private final JFrame m_windowFrame = new JFrame();
   private final JButton m_okButton = new JButton();
-  private final JLabel m_label = new JLabel();
   private final boolean m_logToSystemOut;
   private final WeakReference<Window> m_parentComponentReference;
   private int m_counter;
@@ -47,6 +46,7 @@ public class JTextAreaOptionPane {
     layout.setVgap(30);
     m_windowFrame.setLayout(layout);
     m_windowFrame.setTitle(title);
+    JLabel m_label = new JLabel();
     m_label.setText(labelText);
     m_okButton.setText("OK");
     m_okButton.setEnabled(false);

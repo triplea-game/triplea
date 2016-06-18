@@ -21,8 +21,8 @@ import games.strategy.ui.Util;
 
 public class SmallMapImageManager {
   private static final Logger s_logger = Logger.getLogger(SmallMapImageManager.class.getName());
-  private final int UNIT_BOX_SIZE = 4;
   private final ImageScrollerSmallView m_view;
+  private static final int UNIT_BOX_SIZE = 4;
   private Image m_offscreen;
   private final TileManager m_tileManager;
 

@@ -22,22 +22,19 @@ import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
 class PUChart {
-  private final GameData m_data;
   private final Iterator<PlayerID> m_playerIterator;
   private final IntegerMap<PlayerID> m_moneyMap;
   private final int m_numPlayers;
   private final PlayerID[] m_playerArray;
   private final Integer[] m_moneyArray;
   private final Map<Integer, Integer> m_avoidMap;
-  private final int X_DIMENSION = 7;
-  private final int Y_DIMENSION = 6;
   private final Font CHART_FONT = new Font("Serif", Font.PLAIN, 12);
   private final BufferedImage m_PUImage;
   private final Graphics2D m_g2d;
   private final File m_outDir;
 
   PUChart(final PrintGenerationData printData) {
-    m_data = printData.getData();
+    GameData m_data = printData.getData();
     m_playerIterator = m_data.getPlayerList().iterator();
     m_moneyMap = new IntegerMap<>();
     m_numPlayers = m_data.getPlayerList().size();
@@ -84,14 +81,16 @@ class PUChart {
   protected void saveToFile() throws IOException {
     initializeMap();
     initializeAvoidMap();
-    final int numChartsNeeded = (int) Math.ceil(((double) m_moneyMap.totalValues()) / (X_DIMENSION * Y_DIMENSION));
+    int yDimension = 6;
+    int xDimension = 7;
+    final int numChartsNeeded = (int) Math.ceil(((double) m_moneyMap.totalValues()) / (xDimension * yDimension));
     for (int i = 0; i < numChartsNeeded; i++) {
       m_g2d.setColor(Color.black);
       // Draw Country Names
       for (int z = 0; z < m_playerArray.length; z++) {
         final int valMod42 = m_moneyArray[z] % 42;
-        final int valModXDim = valMod42 % X_DIMENSION;
-        final int valFloorXDim = valMod42 / X_DIMENSION;
+        final int valModXDim = valMod42 % xDimension;
+        final int valFloorXDim = valMod42 / xDimension;
         if (m_avoidMap.containsKey(z) && m_moneyArray[z] / 42 == i) {
           final FontMetrics metrics = m_g2d.getFontMetrics();
           final int width = metrics.stringWidth(m_playerArray[z].getName()) / 2;
@@ -107,16 +106,16 @@ class PUChart {
         }
       }
       // Draw Ellipses and Numbers
-      for (int j = 0; j < Y_DIMENSION; j++) {
-        for (int k = 0; k < X_DIMENSION; k++) {
-          final int numberincircle = X_DIMENSION * Y_DIMENSION * i + X_DIMENSION * j + k;
+      for (int j = 0; j < yDimension; j++) {
+        for (int k = 0; k < xDimension; k++) {
+          final int numberincircle = xDimension * yDimension * i + xDimension * j + k;
           final String string = "" + numberincircle;
           drawEllipseAndString(k, j, string);
         }
       }
       // Write to file
-      final int firstnum = X_DIMENSION * Y_DIMENSION * i;
-      final int secondnum = X_DIMENSION * Y_DIMENSION * (i + 1) - 1;
+      final int firstnum = xDimension * yDimension * i;
+      final int secondnum = xDimension * yDimension * (i + 1) - 1;
       final File outputfile = new File(m_outDir, "PUchart" + firstnum + "-" + secondnum + ".png");
       ImageIO.write(m_PUImage, "png", outputfile);
       final Color transparent = new Color(0, 0, 0, 0);

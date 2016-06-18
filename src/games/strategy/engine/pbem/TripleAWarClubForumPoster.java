@@ -28,8 +28,7 @@ import games.strategy.triplea.help.HelpSupport;
  */
 public class TripleAWarClubForumPoster extends AbstractForumPoster {
   private static final long serialVersionUID = -4017550807078258152L;
-  private static String m_host = "www.tripleawarclub.org";
-  private static String s_forumId = "20";
+  private static final String WAR_CLUB_FORUM_URL = "http://www.tripleawarclub.org/modules/newbb";
   private static Pattern s_XOOPS_TOKEN_REQUEST =
       Pattern.compile(".*XOOPS_TOKEN_REQUEST[^>]*value=\"([^\"]*)\".*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
   private transient HttpState m_httpState;
@@ -92,8 +91,9 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
     try {
       login();
       // load the reply page
+      String s_forumId = "20";
       final String url =
-          "http://www.tripleawarclub.org/modules/newbb/reply.php?forum=" + s_forumId + "&topic_id=" + m_topicId;
+          WAR_CLUB_FORUM_URL + "/reply.php?forum=" + s_forumId + "&topic_id=" + m_topicId;
       GetMethod get = new GetMethod(url);
       String XOOPS_TOKEN_REQUEST;
       try {
@@ -132,7 +132,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
       }
       final MultipartRequestEntity entity =
           new MultipartRequestEntity(parts.toArray(new Part[parts.size()]), new HttpMethodParams());
-      final PostMethod post = new PostMethod("http://www.tripleawarclub.org/modules/newbb/post.php");
+      final PostMethod post = new PostMethod(WAR_CLUB_FORUM_URL + "/post.php");
       post.setRequestEntity(entity);
       try {
         final int status = m_client.executeMethod(m_hostConfiguration, post, m_httpState);
@@ -213,7 +213,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
 
   @Override
   public void viewPosted() {
-    final String url = "http://" + m_host + "/modules/newbb/viewtopic.php?topic_id=" + m_topicId;
+    final String url = WAR_CLUB_FORUM_URL + "/viewtopic.php?topic_id=" + m_topicId;
     DesktopUtilityBrowserLauncher.openURL(url);
   }
 }

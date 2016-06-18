@@ -179,7 +179,6 @@ class LocalPlayerComboBoxSelector {
   private final JCheckBox m_enabledCheckBox;
   private final String m_playerName;
   private final JComboBox<String> m_playerTypes;
-  private final String m_playerAlliances;
   private boolean m_enabled = true;
   private final JLabel m_name;
   private final JLabel m_alliances;
@@ -193,6 +192,21 @@ class LocalPlayerComboBoxSelector {
     m_playerName = playerName;
     m_name = new JLabel(m_playerName + ":");
     m_enabledCheckBox = new JCheckBox();
+    ActionListener m_disablePlayerActionListener = new ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        if (m_enabledCheckBox.isSelected()) {
+          m_enabled = true;
+          // the 1st in the list should be human
+          m_playerTypes.setSelectedItem(m_types[0]);
+        } else {
+          m_enabled = false;
+          // the 2nd in the list should be Weak AI
+          m_playerTypes.setSelectedItem(m_types[Math.max(0, Math.min(m_types.length - 1, 1))]);
+        }
+        setWidgetActivation();
+      }
+    };
     m_enabledCheckBox.addActionListener(m_disablePlayerActionListener);
     m_enabledCheckBox.setSelected(playersEnablementListing.get(playerName));
     m_enabledCheckBox.setEnabled(disableable.contains(playerName));
@@ -211,6 +225,7 @@ class LocalPlayerComboBoxSelector {
       m_playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]);
     }
     // we do not set the default for the combobox because the default is the top item, which in this case is human
+    String m_playerAlliances;
     if (playerAlliances.contains(playerName)) {
       m_playerAlliances = "";
     } else {
@@ -253,19 +268,4 @@ class LocalPlayerComboBoxSelector {
     m_parent.notifyObservers();
   }
 
-  private final ActionListener m_disablePlayerActionListener = new ActionListener() {
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      if (m_enabledCheckBox.isSelected()) {
-        m_enabled = true;
-        // the 1st in the list should be human
-        m_playerTypes.setSelectedItem(m_types[0]);
-      } else {
-        m_enabled = false;
-        // the 2nd in the list should be Weak AI
-        m_playerTypes.setSelectedItem(m_types[Math.max(0, Math.min(m_types.length - 1, 1))]);
-      }
-      setWidgetActivation();
-    }
-  };
 }

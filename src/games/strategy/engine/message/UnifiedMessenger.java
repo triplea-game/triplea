@@ -54,19 +54,25 @@ public class UnifiedMessenger {
   private final Map<GUID, RemoteMethodCallResults> m_results = new HashMap<>();
   // only non null for the server
   private UnifiedMessengerHub m_hub;
-  private final IMessengerErrorListener m_messengerErrorListener = new IMessengerErrorListener() {
-    @Override
-    public void messengerInvalid(final IMessenger messenger, final Exception reason) {
-      UnifiedMessenger.this.messengerInvalid();
-    }
-  };
 
   /**
    * @param messenger
    */
   public UnifiedMessenger(final IMessenger messenger) {
     m_messenger = messenger;
+    IMessageListener m_messageListener = new IMessageListener() {
+      @Override
+      public void messageReceived(final Serializable msg, final INode from) {
+        UnifiedMessenger.this.messageReceived(msg, from);
+      }
+    };
     m_messenger.addMessageListener(m_messageListener);
+    IMessengerErrorListener m_messengerErrorListener = new IMessengerErrorListener() {
+      @Override
+      public void messengerInvalid(final IMessenger messenger, final Exception reason) {
+        UnifiedMessenger.this.messengerInvalid();
+      }
+    };
     m_messenger.addErrorListener(m_messengerErrorListener);
     if (m_messenger.isServer()) {
       m_hub = new UnifiedMessengerHub(m_messenger, this);
@@ -260,13 +266,6 @@ public class UnifiedMessenger {
       return m_localEndPoints.get(descriptor.getName()).getLocalImplementorCount();
     }
   }
-
-  private final IMessageListener m_messageListener = new IMessageListener() {
-    @Override
-    public void messageReceived(final Serializable msg, final INode from) {
-      UnifiedMessenger.this.messageReceived(msg, from);
-    }
-  };
 
   private void assertIsServer(final INode from) {
     if (!from.equals(m_messenger.getServerNode())) {

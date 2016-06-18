@@ -25,7 +25,6 @@ public class DiceServerEditor extends EditorPanel {
   private final JTextField m_gameId = new JTextField();
   private final JLabel m_toLabel = new JLabel("To:");
   private final JLabel m_ccLabel = new JLabel("Cc:");
-  private final JLabel m_gameIdLabel = new JLabel("Game ID:");
   private final IRemoteDiceServer m_bean;
 
   /**
@@ -54,6 +53,7 @@ public class DiceServerEditor extends EditorPanel {
       row++;
     }
     if (m_bean.supportsGameId()) {
+      JLabel m_gameIdLabel = new JLabel("Game ID:");
       add(m_gameIdLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
           new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
       add(m_gameId, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,

@@ -38,7 +38,38 @@ public class ImageScrollerSmallView extends JComponent {
     setPreferredSize(prefSize);
     setMinimumSize(prefSize);
     setMaximumSize(prefSize);
+    MouseAdapter MOUSE_LISTENER = new MouseAdapter() {
+      @Override
+      public void mouseClicked(final MouseEvent e) {
+        // try to center around the click
+        final int x = (int) (e.getX() / getRatioX()) - (m_model.getBoxWidth() / 2);
+        final int y = (int) (e.getY() / getRatioY()) - (m_model.getBoxHeight() / 2);
+        m_model.set(x, y);
+      }
+    };
     this.addMouseListener(MOUSE_LISTENER);
+    MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter() {
+      @Override
+      public void mouseDragged(final MouseEvent e) {
+        final long now = System.currentTimeMillis();
+        long MIN_UPDATE_DELAY = 30;
+        if (now < mLastUpdate + MIN_UPDATE_DELAY) {
+          return;
+        }
+        mLastUpdate = now;
+        final Rectangle bounds = (Rectangle) getBounds().clone();
+        // if the mouse is a little off the screen, allow it to still scroll
+        // the screen
+        bounds.grow(30, 0);
+        if (!bounds.contains(e.getPoint())) {
+          return;
+        }
+        // try to center around the click
+        final int x = (int) (e.getX() / getRatioX()) - (m_model.getBoxWidth() / 2);
+        final int y = (int) (e.getY() / getRatioY()) - (m_model.getBoxHeight() / 2);
+        setSelection(x, y);
+      }
+    };
     this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
     model.addObserver(new Observer() {
       @Override
@@ -116,37 +147,6 @@ public class ImageScrollerSmallView extends JComponent {
   }
 
   private long mLastUpdate = 0;
-  private final long MIN_UPDATE_DELAY = 30;
-  private final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter() {
-    @Override
-    public void mouseDragged(final MouseEvent e) {
-      final long now = System.currentTimeMillis();
-      if (now < mLastUpdate + MIN_UPDATE_DELAY) {
-        return;
-      }
-      mLastUpdate = now;
-      final Rectangle bounds = (Rectangle) getBounds().clone();
-      // if the mouse is a little off the screen, allow it to still scroll
-      // the screen
-      bounds.grow(30, 0);
-      if (!bounds.contains(e.getPoint())) {
-        return;
-      }
-      // try to center around the click
-      final int x = (int) (e.getX() / getRatioX()) - (m_model.getBoxWidth() / 2);
-      final int y = (int) (e.getY() / getRatioY()) - (m_model.getBoxHeight() / 2);
-      setSelection(x, y);
-    }
-  };
-  private final MouseAdapter MOUSE_LISTENER = new MouseAdapter() {
-    @Override
-    public void mouseClicked(final MouseEvent e) {
-      // try to center around the click
-      final int x = (int) (e.getX() / getRatioX()) - (m_model.getBoxWidth() / 2);
-      final int y = (int) (e.getY() / getRatioY()) - (m_model.getBoxHeight() / 2);
-      m_model.set(x, y);
-    }
-  };
 
   public double getRatioY() {
     return m_image.getHeight(null) / (double) m_model.getMaxHeight();

@@ -44,6 +44,12 @@ public class ServerPlayerSelector extends JFrame {
       m_playerChoices.add(current);
       getContentPane().add(current);
     }
+    WindowListener m_doneOnClose = new WindowAdapter() {
+      @Override
+      public void windowClosing(final WindowEvent e) {
+        m_done.actionPerformed(null);
+      }
+    };
     this.addWindowListener(m_doneOnClose);
     getContentPane().add(new JButton(m_done));
     this.pack();
@@ -95,12 +101,6 @@ public class ServerPlayerSelector extends JFrame {
       }
       setVisible(false);
       dispose();
-    }
-  };
-  private final WindowListener m_doneOnClose = new WindowAdapter() {
-    @Override
-    public void windowClosing(final WindowEvent e) {
-      m_done.actionPerformed(null);
     }
   };
 }

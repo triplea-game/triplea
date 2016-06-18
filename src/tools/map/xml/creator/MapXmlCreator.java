@@ -103,11 +103,8 @@ public class MapXmlCreator extends JFrame {
   private JPanel stepListPanel;
   private final ArrayList<GameStepLabel> stepList = new ArrayList<>();
   private final JPanel southPanel = new JPanel();
-  private JPanel southLeftPanel;
-  private JPanel southRightPanel;
   private JPanel southCenterPanel;
   private JButton buttonHelp;
-  private JButton buttonAvailableChoices;
   private JButton buttonBack;
   private JButton autoFillButton;
   private JButton nextButton;
@@ -442,7 +439,7 @@ public class MapXmlCreator extends JFrame {
     mainPanel.add(southPanel, BorderLayout.SOUTH);
     southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.X_AXIS));
 
-    southLeftPanel = new JPanel();
+    JPanel southLeftPanel = new JPanel();
     southLeftPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
     final FlowLayout southLeftPanelFlowLayout = (FlowLayout) southLeftPanel.getLayout();
     southLeftPanelFlowLayout.setAlignment(FlowLayout.LEFT);
@@ -461,12 +458,12 @@ public class MapXmlCreator extends JFrame {
 
     addSouthCenterPanelButtons();
 
-    southRightPanel = new JPanel();
+    JPanel southRightPanel = new JPanel();
     final FlowLayout southRightPanelFlowLayout = (FlowLayout) southRightPanel.getLayout();
     southRightPanelFlowLayout.setAlignment(FlowLayout.RIGHT);
     southPanel.add(southRightPanel);
 
-    buttonAvailableChoices = MapXmlUIHelper.createButton("Available Choices", KeyEvent.VK_C);
+    JButton buttonAvailableChoices = MapXmlUIHelper.createButton("Available Choices", KeyEvent.VK_C);
     buttonAvailableChoices.addActionListener(e -> {
       switch (currentStep) {
 
