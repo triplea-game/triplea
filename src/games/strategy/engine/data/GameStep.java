@@ -20,6 +20,7 @@ public class GameStep extends GameDataComponent {
   private int m_runCount = 0;
   private int m_maxRunCount = -1;
   private final Properties m_properties;
+  // TODO: convert these to an enum, we want these strongly typed, not just strings.
   public static final String PROPERTY_skipPosting = "skipPosting";
   public static final String PROPERTY_turnSummaryPlayers = "turnSummaryPlayers";
   public static final String PROPERTY_airborneMove = "airborneMove";
