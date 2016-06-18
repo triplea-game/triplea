@@ -271,21 +271,15 @@ public class MovePanel extends AbstractMovePanel {
         mustMoveWithDetails.getMustMoveWith(), /* categorizeMovement */true, /* categorizeTransportCost */false,
         getGameData(), /* allowTwoHit */false, getMap().getUIContext(), transportsToUnloadMatch);
     chooser.setTitle("What transports do you want to unload");
-
     final int option =
         JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, "What transports do you want to unload",
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
     if (option != JOptionPane.OK_OPTION) {
       return Collections.emptyList();
     }
-
-    final String title = "unload";
-    final String action = "unload";
-    final Collection<Unit> chosenUnits =
-        UserChooseUnits(defaultSelections, transportsToUnloadMatch, candidateTransports, title, action);
-    final Collection<Unit> choosenTransports = Match.getMatches(chosenUnits, Matches.UnitIsTransport);
+    final Collection<Unit> chosenTransports = Match.getMatches(chooser.getSelected(), Matches.UnitIsTransport);
     final List<Unit> allUnitsInSelectedTransports = new ArrayList<>();
-    for (final Unit transport : choosenTransports) {
+    for (final Unit transport : chosenTransports) {
       final Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
       if (transporting != null) {
         allUnitsInSelectedTransports.addAll(transporting);
@@ -294,7 +288,7 @@ public class MovePanel extends AbstractMovePanel {
     allUnitsInSelectedTransports.retainAll(candidateUnits);
     sortUnitsToMove(allUnitsInSelectedTransports, route);
     final List<Unit> rVal = new ArrayList<>();
-    final List<Unit> sortedTransports = new ArrayList<>(choosenTransports);
+    final List<Unit> sortedTransports = new ArrayList<>(chosenTransports);
     Collections.sort(sortedTransports, UnitComparator.getIncreasingCapacityComparator(sortedTransports));
     final Collection<Unit> selectedUnits = new ArrayList<>(unitsToUnload);
 
