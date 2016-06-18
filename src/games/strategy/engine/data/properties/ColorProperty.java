@@ -70,13 +70,12 @@ public class ColorProperty extends AEditableProperty {
     label.addMouseListener(new MouseListener() {
       @Override
       public void mouseClicked(final MouseEvent e) {
-        System.out.println("Old color: " + color);
         try {
-          final Color color =
+          final Color colorSelected =
               JColorChooser.showDialog(label, "Choose color", (ColorProperty.this.color == null ? Color.black :
                   ColorProperty.this.color));
-          if (color != null) {
-            ColorProperty.this.color = color;
+          if (colorSelected != null) {
+            color = colorSelected;
             // Ask Swing to repaint this label when it's convenient
             SwingUtilities.invokeLater(new Runnable() {
               @Override
