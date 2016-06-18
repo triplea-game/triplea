@@ -314,7 +314,6 @@ public class HeadlessConsoleController {
     final ServerGame game = server.getIGame();
     if (game == null) {
       out.println("No Game Currently Running");
-      return;
     } else {
       try {
         String saveName;

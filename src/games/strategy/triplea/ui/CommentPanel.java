@@ -182,14 +182,12 @@ public class CommentPanel extends JPanel {
       final HistoryNode node = nodeEnum.nextElement();
       if (node instanceof Round) {
         round++;
-        continue;
       } else if (node instanceof Step) {
         final PlayerID playerId = ((Step) node).getPlayerID();
         if (playerId != null) {
           player = playerId.getName();
           icon = m_iconMap.get(playerId);
         }
-        continue;
       } else {
         final String title = node.getTitle();
         final Matcher m = p.matcher(title);

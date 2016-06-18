@@ -6,8 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 
 import javax.swing.ImageIcon;
@@ -19,7 +17,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.ui.Util;
@@ -97,15 +94,6 @@ public class CreateUpdateAccountPanel extends JPanel {
     buttons.add(m_okButton);
     buttons.add(m_cancelButton);
     add(buttons, BorderLayout.SOUTH);
-  }
-
-  public static void main(final String[] args) {
-    GameRunner2.setupLookAndFeel();
-    final JDialog d = new JDialog();
-    d.add(new CreateUpdateAccountPanel(false));
-    d.setDefaultCloseOperation(JDialog.EXIT_ON_CLOSE);
-    d.pack();
-    d.setVisible(true);
   }
 
   private void setupListeners() {

@@ -310,9 +310,9 @@ public class HistoryLog extends JFrame {
             if (title.equals("Adding original owners")) {
             } else if (title.equals(MoveDelegate.CLEANING_UP_DURING_MOVEMENT_PHASE)) {
             } else if (title.equals("Game Loaded")) {
-            } else if (title.indexOf("now being played by") != -1) {
-            } else if (title.indexOf("Turn Summary") != -1 || title.indexOf("Move Summary") != -1) {
-            } else if (title.indexOf("Setting uses for triggers used") != -1) {
+            } else if (title.contains("now being played by")) {
+            } else if (title.contains("Turn Summary") || title.contains("Move Summary")) {
+            } else if (title.contains("Setting uses for triggers used")) {
             } else if (title.equals("Resetting and Giving Bonus Movement to Units")) {
             } else if (title.equals("Recording Battle Statistics")) {
             } else if (title.equals("Preparing Airbases for Possible Scrambling")) {

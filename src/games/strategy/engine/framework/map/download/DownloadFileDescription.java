@@ -114,4 +114,9 @@ public class DownloadFileDescription {
     return Objects.equal(this.url, other.url);
   }
 
+  @Override
+  public int hashCode() {
+    return url.hashCode();
+  }
+
 }

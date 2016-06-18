@@ -281,12 +281,4 @@ public class EngineVersionProperties {
     panel.setPreferredSize(maxDimension);
     return panel;
   }
-
-  public static void main(final String[] args) throws Exception {
-    final URL url = new URL(s_linkToTripleA);
-    final EngineVersionProperties props = new EngineVersionProperties(url);
-    System.out.println(props.getLatestVersionOut());
-    System.out.println(props.getLinkToDownloadLatestVersion());
-    System.out.println(props.getReleaseNotes());
-  }
 }

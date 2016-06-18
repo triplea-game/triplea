@@ -60,7 +60,7 @@ class ServerLoginHelper {
       out.flush();
       //If the casting fails, the Object is not a Map<String, String>
       final Map<String, String> credentials = (Map<String, String>) in.readObject();
-      final String mac = MacFinder.GetHashedMacAddress();
+      final String mac = MacFinder.getHashedMacAddress();
       final String error =
           loginValidator.verifyConnection(challenge, credentials, clientName, mac, remoteAddress);
       if (error == null) {

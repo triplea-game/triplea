@@ -1,6 +1,5 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
-import java.io.Serializable;
 import java.util.List;
 
 import games.strategy.engine.data.GameData;
@@ -11,7 +10,7 @@ import games.strategy.triplea.delegate.IBattle.WhoWon;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
 
-public class BattleResults extends GameDataComponent implements Serializable {
+public class BattleResults extends GameDataComponent {
   private static final long serialVersionUID = 1381361441940258702L;
 
   private final int m_battleRoundsFought;

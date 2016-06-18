@@ -172,7 +172,7 @@ public class TripleAProcessRunner {
                   continue;
                 }
                 final String jarPath = f.getCanonicalPath();
-                if (jarPath.indexOf(jarName) != -1) {
+                if (jarPath.contains(jarName)) {
                   ourBinJar = f;
                   break;
                 }
@@ -216,7 +216,7 @@ public class TripleAProcessRunner {
       }
       // final String jarPath = f.getCanonicalPath();
       final String name = f.getName();
-      if (name.indexOf(jarName) != -1 && name.indexOf(".jar") != -1) {
+      if (name.contains(jarName) && name.contains(".jar")) {
         ourOldJar = f;
         break;
       }

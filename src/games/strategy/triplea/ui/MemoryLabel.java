@@ -5,7 +5,6 @@ import java.awt.event.MouseEvent;
 import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
@@ -55,14 +54,6 @@ public class MemoryLabel extends JLabel {
     final long used = total - free;
     final DecimalFormat format = new DecimalFormat("###.##");
     setText(format.format(used / 1000000.0) + "/" + format.format(total / 1000000.0) + " MB");
-  }
-
-  public static void main(final String[] args) {
-    final JFrame f = new JFrame();
-    f.add(new MemoryLabel());
-    f.pack();
-    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    f.setVisible(true);
   }
 }
 

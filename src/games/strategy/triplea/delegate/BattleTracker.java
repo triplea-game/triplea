@@ -996,9 +996,7 @@ public class BattleTracker implements java.io.Serializable {
   }
 
   public void addDependency(final IBattle blocked, final IBattle blocking) {
-    if (m_dependencies.get(blocked) == null) {
-      m_dependencies.put(blocked, new HashSet<>());
-    }
+    m_dependencies.putIfAbsent(blocked, new HashSet<>());
     m_dependencies.get(blocked).add(blocking);
   }
 

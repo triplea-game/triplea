@@ -1,11 +1,9 @@
 package games.strategy.net;
 
-import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -113,16 +111,6 @@ public class Node implements INode, Externalizable {
       return -1;
     }
     return this.name.compareToIgnoreCase(o.getName());
-  }
-
-  public static void main(final String[] args) throws IOException {
-    final ByteArrayOutputStream sink = new ByteArrayOutputStream();
-    final ObjectOutputStream out = new ObjectOutputStream(sink);
-    for (int i = 0; i < 1000; i++) {
-      out.writeObject(new Node("" + i, InetAddress.getLocalHost(), i));
-    }
-    out.close();
-    System.out.println("1000 nodes is:" + sink.toByteArray().length);
   }
 
   @Override

@@ -48,7 +48,6 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
       window.setVisible(true);
       final Object buttonPressed = pane.getValue();
       if (buttonPressed == null || buttonPressed.equals(cancel)) {
-        return;
       } else {
         // ok was clicked. changing them in the ui changes the underlying properties,
         // but it doesn't change the hosts, so we need to send it back to the host.
@@ -65,7 +64,6 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
       }
     } catch (final ClassNotFoundException | IOException | ClassCastException ex) {
       ClientLogger.logQuietly(ex);
-      return;
     }
   }
 }

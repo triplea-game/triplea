@@ -4,10 +4,7 @@ import java.awt.FileDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
@@ -186,7 +183,6 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
           property.setValue(m_originalPropertiesMap.get(property.getName()));
         }
         selectGameOptions();
-        return;
       }
     } else {
       // ok was clicked, and we have modified the properties already
@@ -241,7 +237,6 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
         final String fileName = fileDialog.getFile();
         final String dirName = fileDialog.getDirectory();
         if (fileName == null) {
-          return;
         } else {
           final File f = new File(dirName, fileName);
           m_model.load(f, this);

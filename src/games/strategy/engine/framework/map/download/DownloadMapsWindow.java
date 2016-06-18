@@ -3,7 +3,9 @@ package games.strategy.engine.framework.map.download;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -16,7 +18,6 @@ import java.util.stream.Collectors;
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -32,12 +33,13 @@ import com.google.common.collect.Lists;
 
 import games.strategy.common.swing.SwingComponents;
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.util.Version;
 
 
 /** Window that allows for map downloads and removal */
-public class DownloadMapsWindow extends JDialog {
+public class DownloadMapsWindow extends JFrame {
   private static final long serialVersionUID = -1542210716764178580L;
 
   private static enum MapAction {
@@ -62,7 +64,7 @@ public class DownloadMapsWindow extends JDialog {
     showDownloadMapsWindow(null, Optional.of(mapName));
   }
 
-  public static void showDownloadMapsWindow(final JFrame parent) {
+  public static void showDownloadMapsWindow(final Component parent) {
     showDownloadMapsWindow(parent, Optional.empty());
   }
 
@@ -71,23 +73,24 @@ public class DownloadMapsWindow extends JDialog {
   }
 
 
-  private static void showDownloadMapsWindow(final JFrame parent, Optional<String> mapName) {
+  private static void showDownloadMapsWindow(final Component parent, Optional<String> mapName) {
     final DownloadRunnable download = new DownloadRunnable(ClientContext.mapListingSource().getMapListDownloadSite());
     final String popupWindowTitle = "Downloading list of availabe maps....";
     BackgroundTaskRunner.runInBackground(null, popupWindowTitle, download);
     final List<DownloadFileDescription> games = download.getDownloads();
     checkNotNull(games);
 
-    final DownloadMapsWindow dia = new DownloadMapsWindow(mapName, games, parent);
+    final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
+    final DownloadMapsWindow dia = new DownloadMapsWindow(mapName, games);
     dia.setSize(800, WINDOW_HEIGHT);
-    dia.setLocationRelativeTo(parent);
+    dia.setLocationRelativeTo(parentFrame);
     dia.setMinimumSize(new Dimension(200, 200));
     dia.setVisible(true);
   }
-  
-  private DownloadMapsWindow(final Optional<String> mapName, final List<DownloadFileDescription> games, JFrame parent) {
-    super(parent, "Download Maps");
 
+  private DownloadMapsWindow(final Optional<String> mapName, final List<DownloadFileDescription> games) {
+    super("Download Maps");
+    setIconImage(GameRunner2.getGameIcon(this));
     progressPanel = new MapDownloadProgressPanel(this);
     if (mapName.isPresent()) {
       Optional<DownloadFileDescription> mapDownload = findMap(mapName.get(), games);
@@ -245,14 +248,19 @@ public class DownloadMapsWindow extends JDialog {
       JList<String> gamesList, List<DownloadFileDescription> maps, MapAction action, JLabel mapSizeLabelToUpdate) {
     return e -> {
       final int index = gamesList.getSelectedIndex();
-      if( index > 0 ) {
-        DownloadFileDescription map = maps.get(index);
 
-        String text = createEditorPaneText(map);
-        descriptionPanel.setText(text);
-        descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+      boolean somethingIsSelected = index > 0;
+      if (somethingIsSelected) {
+        String mapName = gamesList.getModel().getElementAt(index);
 
-        updateMapUrlAndSizeLabel(map, action, mapSizeLabelToUpdate);
+        // find the map description by map name and update the map download detail panel
+        Optional<DownloadFileDescription> map = maps.stream().filter(mapDescription -> mapDescription.getMapName().equals(mapName)).findFirst();
+        if(map.isPresent()) {
+          String text = createEditorPaneText(map.get());
+          descriptionPanel.setText(text);
+          descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+          updateMapUrlAndSizeLabel(map.get(), action, mapSizeLabelToUpdate);
+        }
       }
     };
   }

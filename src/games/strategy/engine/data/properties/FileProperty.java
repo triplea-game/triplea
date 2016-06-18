@@ -4,7 +4,6 @@ import java.awt.FileDialog;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.Arrays;
 
 import javax.swing.JComponent;

@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
 public class MovePerformer implements Serializable {
@@ -44,6 +45,7 @@ public class MovePerformer implements Serializable {
   private final ExecutionStack m_executionStack = new ExecutionStack();
   private UndoableMove m_currentMove;
   private Map<Unit, Collection<Unit>> m_newDependents;
+  private Optional<Collection<Unit>> arrivingUnits;
 
   MovePerformer() {}
 
@@ -103,9 +105,7 @@ public class MovePerformer implements Serializable {
         }
       }
     };
-    // hack to allow the execuables to share state
-    @SuppressWarnings("unchecked")
-    final Collection<Unit>[] arrivingUnits = new Collection[1];
+    // hack to allow the executables to share state
     final IExecutable fireAA = new IExecutable() {
       private static final long serialVersionUID = -3780228078499895244L;
 
@@ -129,7 +129,7 @@ public class MovePerformer implements Serializable {
             }
           }
         }
-        arrivingUnits[0] = Util.difference(units, aaCasualtiesWithDependents);
+        arrivingUnits = Optional.of(Util.difference(units, aaCasualtiesWithDependents));
       }
     };
     final IExecutable postAAFire = new IExecutable() {
@@ -143,7 +143,9 @@ public class MovePerformer implements Serializable {
         // not owned)
         final GameData data = bridge.getData();
         final CompositeMatch<Territory> mustFightThrough = getMustFightThroughMatch(id, data);
-        final Collection<Unit> arrived = Collections.unmodifiableList(Util.intersection(units, arrivingUnits[0]));
+        final Collection<Unit> arrived = Collections.unmodifiableList(Util.intersection(units, arrivingUnits.get()));
+        //Reset Optional
+        arrivingUnits = Optional.empty();
         final Collection<Unit> arrivedCopyForBattles = new ArrayList<>(arrived);
         final Map<Unit, Unit> transporting = TransportUtils.mapTransports(route, arrived, transportsToLoad);
         // If we have paratrooper land units being carried by air units, they should be dropped off in the last

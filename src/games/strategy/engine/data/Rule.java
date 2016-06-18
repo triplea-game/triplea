@@ -1,8 +1,6 @@
 package games.strategy.engine.data;
 
-import java.io.Serializable;
-
-public class Rule extends NamedAttachable implements NamedUnitHolder, Serializable, Comparable<Rule> {
+public class Rule extends NamedAttachable implements NamedUnitHolder, Comparable<Rule> {
   private static final long serialVersionUID = -6390555051736721082L;
   private final boolean m_water;
   private final PlayerID m_owner = PlayerID.NULL_PLAYERID;

@@ -33,7 +33,6 @@ import games.strategy.util.Match;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -515,7 +514,6 @@ public class ProCombatMoveAI {
           ProLogger.debug("Removing neutral territory that has attackers that are adjacent to enemies: " + t.getName()
               + ", attackFromTerritory=" + attackFromTerritoryWithEnemyNeighbors);
           it.remove();
-          continue;
         }
       }
     }

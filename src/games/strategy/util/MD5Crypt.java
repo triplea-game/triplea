@@ -16,7 +16,10 @@ import java.security.NoSuchAlgorithmException;
  * - Removed dependencies on a MD5 private implementation
  * - Added built-in java.security.MessageDigest (MD5) support
  * - Code cleanup
+ * 
+ * @deprecated Use SHA512(fast) or BCrypt(secure) instead
  */
+@Deprecated
 public class MD5Crypt {
   public static final String MAGIC = "$1$";
   // Character set allowed for the salt string
@@ -33,7 +36,7 @@ public class MD5Crypt {
    * @param v
    *        value to be converted
    */
-  static private final String to64(long v, int size) {
+  static private String to64(long v, int size) {
     final StringBuffer result = new StringBuffer();
     while (--size >= 0) {
       result.append(itoa64.charAt((int) (v & 0x3f)));
@@ -42,7 +45,7 @@ public class MD5Crypt {
     return result.toString();
   }
 
-  static private final void clearbits(final byte bits[]) {
+  static private void clearbits(final byte bits[]) {
     for (int i = 0; i < bits.length; i++) {
       bits[i] = 0;
     }
@@ -52,7 +55,7 @@ public class MD5Crypt {
    * convert an encoded unsigned byte value
    * into a int with the unsigned value.
    */
-  static private final int bytes2u(final byte inp) {
+  static private int bytes2u(final byte inp) {
     return inp & 0xff;
   }
 
@@ -63,7 +66,7 @@ public class MD5Crypt {
    * @param password
    *        Password to be encrypted
    */
-  static public final String crypt(final String password) {
+  static public String crypt(final String password) {
     final StringBuffer salt = new StringBuffer();
     final java.util.Random rnd = new java.util.Random();
     // build a random 8 chars salt
@@ -84,7 +87,7 @@ public class MD5Crypt {
    * @param password
    *        Password to be encrypted
    */
-  static public final String crypt(final String password, final String salt) {
+  static public String crypt(final String password, final String salt) {
     return crypt(password, salt, MAGIC);
   }
 
@@ -100,7 +103,7 @@ public class MD5Crypt {
    * @param password
    *        user password
    */
-  static public final String crypt(final String password, String salt, final String magic) {
+  static public String crypt(final String password, String salt, final String magic) {
     if (password == null) {
       throw new IllegalArgumentException("Null password!");
     }
@@ -120,7 +123,7 @@ public class MD5Crypt {
       ctx = MessageDigest.getInstance("md5");
       ctx1 = MessageDigest.getInstance("md5");
     } catch (final NoSuchAlgorithmException ex) {
-      System.err.println(ex);
+      ex.printStackTrace();
       return null;
     }
     /* Refine the Salt first */
@@ -222,25 +225,6 @@ public class MD5Crypt {
     /* Don't leave anything around in vm they could use. */
     clearbits(finalState);
     return result.toString();
-  }
-
-  /**
-   * Test subroutine
-   *
-   * @param args
-   */
-  static final String USAGE = "MD5Crypt <password> <salt>";
-
-  public static void main(final String[] args) {
-    try {
-      if (args.length != 2) {
-        System.err.println(USAGE);
-      } else {
-        System.out.println(MD5Crypt.crypt(args[0], args[1]));
-      }
-    } catch (final Exception ex) {
-      System.err.println(ex);
-    }
   }
 
   public static String getSalt(final String magic, final String encrypted) {

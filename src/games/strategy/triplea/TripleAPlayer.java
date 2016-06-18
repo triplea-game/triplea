@@ -23,7 +23,6 @@ import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
@@ -66,7 +65,7 @@ import games.strategy.util.Tuple;
  * It should be using a Change done in a delegate, and done through an IDelegate, which we get through
  * getPlayerBridge().getRemote()
  */
-public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements IGamePlayer, ITripleAPlayer {
+public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements ITripleAPlayer {
   private boolean m_soundPlayedAlreadyCombatMove = false;
   private boolean m_soundPlayedAlreadyNonCombatMove = false;
   private boolean m_soundPlayedAlreadyPurchase = false;

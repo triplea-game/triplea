@@ -1,8 +1,6 @@
 package games.strategy.engine.lobby.server.ui;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Date;
 import java.util.TreeSet;
 import java.util.logging.Logger;

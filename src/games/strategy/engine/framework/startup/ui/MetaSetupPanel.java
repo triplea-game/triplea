@@ -6,8 +6,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -47,6 +45,7 @@ public class MetaSetupPanel extends SetupPanel {
   private JButton m_enginePreferences;
   private JButton m_ruleBook;
   private JButton m_donate;
+  private JButton m_helpButton;
 
   private final SetupPanelModel m_model;
 
@@ -81,6 +80,7 @@ public class MetaSetupPanel extends SetupPanel {
     m_enginePreferences = new JButton("Engine Preferences");
     m_enginePreferences.setToolTipText("<html>Configure certain options related to the engine.");
     m_ruleBook = new JButton("Rule Book");
+    m_helpButton  = new JButton("Help");
     m_ruleBook.setToolTipText(
         "<html>Download a manual of how to play <br>(it is also included in the directory TripleA was installed to).</html>");
     m_donate = new JButton("Donate");
@@ -106,7 +106,9 @@ public class MetaSetupPanel extends SetupPanel {
         GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
     add(m_ruleBook, new GridBagConstraints(0, 8, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
-    add(m_donate, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+    add(m_helpButton, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+        new Insets(10, 0, 0, 0), 0, 0));
+    add(m_donate, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
     // top space
     add(new JPanel(), new GridBagConstraints(0, 100, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -121,16 +123,19 @@ public class MetaSetupPanel extends SetupPanel {
     m_connectToLobby.addActionListener(e -> connectToLobby());
     m_enginePreferences.addActionListener(e -> enginePreferences());
     m_ruleBook.addActionListener(e -> ruleBook());
+    m_helpButton.addActionListener(e -> helpPage());
     m_donate.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
   }
 
   private static void ruleBook() {
-    // We open both the actual rule book, and the web page for all guides.
-    // This way we can add other guides and rulebooks and tutorials later, as well as being able to update them after
-    // the stable is out.
-    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_RULE_BOOK_PDF);
-    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_WIKI_GUIDES);
+    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK);
   }
+
+  private static void helpPage() {
+    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.WEBSITE_HELP);
+  }
+
+
 
   private void enginePreferences() {
     EnginePreferences.showEnginePreferences(this);

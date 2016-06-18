@@ -1,11 +1,8 @@
 package games.strategy.ui;
 
-import java.awt.FlowLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -24,20 +21,6 @@ public class IntTextField extends JTextField {
   private int m_min = Integer.MIN_VALUE;
   private String m_terr = null;
   private final ListenerList<IntTextFieldChangeListener> m_listeners = new ListenerList<>();
-
-  public static void main(final String[] args) {
-    final JFrame frame = new JFrame();
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.getContentPane().setLayout(new FlowLayout());
-    frame.getContentPane().add(new JLabel("no range"));
-    frame.getContentPane().add(new IntTextField());
-    frame.getContentPane().add(new JLabel("positive"));
-    frame.getContentPane().add(new IntTextField(0));
-    frame.getContentPane().add(new JLabel("0 to 5"));
-    frame.getContentPane().add(new IntTextField(0, 5));
-    frame.setSize(400, 60);
-    frame.setVisible(true);
-  }
 
   /** Creates new IntTextBox */
   public IntTextField() {
@@ -142,7 +125,7 @@ public class IntTextField extends JTextField {
     return m_min;
   }
 
-  private final boolean isGood(final int value) {
+  private boolean isGood(final int value) {
     return value <= m_max && value >= m_min;
   }
 

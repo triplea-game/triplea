@@ -9,7 +9,7 @@ import games.strategy.net.Messengers;
 /**
  * For Server Games, not the Lobby.
  */
-public class NullModeratorController extends AbstractModeratorController implements IModeratorController {
+public class NullModeratorController extends AbstractModeratorController {
   public NullModeratorController(final IServerMessenger messenger, final Messengers messengers) {
     super(messenger, messengers);
   }

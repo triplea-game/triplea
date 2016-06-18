@@ -184,17 +184,14 @@ public class ServerGame extends AbstractGame {
       try {
         if (!waitOnObserver.await(GameRunner2.getServerObserverJoinWaitTime(), TimeUnit.SECONDS)) {
           nonBlockingObserver.cannotJoinGame("Taking too long to join.");
-          return;
         }
       } catch (final InterruptedException e) {
         ClientLogger.logQuietly(e);
         nonBlockingObserver.cannotJoinGame(e.getMessage());
-        return;
       }
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
       nonBlockingObserver.cannotJoinGame(e.getMessage());
-      return;
     } finally {
       m_delegateExecutionManager.resumeDelegateExecution();
     }
@@ -213,7 +210,7 @@ public class ServerGame extends AbstractGame {
       return;
     }
     final Object wrappedDelegate =
-        m_delegateExecutionManager.createInboundImplementation(delegate, new Class[] {delegate.getRemoteType()});
+        m_delegateExecutionManager.createInboundImplementation(delegate, new Class<?>[]{delegate.getRemoteType()});
     final RemoteName descriptor = getRemoteName(delegate);
     m_remoteMessenger.registerRemote(wrappedDelegate, descriptor);
   }
@@ -275,7 +272,6 @@ public class ServerGame extends AbstractGame {
       if (!m_isGameOver) {
         ClientLogger.logQuietly(e);
       }
-      return;
     }
   }
 
@@ -466,7 +462,7 @@ public class ServerGame extends AbstractGame {
           new DelegateHistoryWriter(m_channelMessenger), m_randomStats, m_delegateExecutionManager);
       if (m_delegateRandomSource == null) {
         m_delegateRandomSource = (IRandomSource) m_delegateExecutionManager.createOutboundImplementation(m_randomSource,
-            new Class[] {IRandomSource.class});
+            new Class<?>[]{IRandomSource.class});
       }
       bridge.setRandomSource(m_delegateRandomSource);
       m_delegateExecutionManager.enterDelegateExecution();
@@ -492,7 +488,7 @@ public class ServerGame extends AbstractGame {
         new DelegateHistoryWriter(m_channelMessenger), m_randomStats, m_delegateExecutionManager);
     if (m_delegateRandomSource == null) {
       m_delegateRandomSource = (IRandomSource) m_delegateExecutionManager.createOutboundImplementation(m_randomSource,
-          new Class[] {IRandomSource.class});
+          new Class<?>[]{IRandomSource.class});
     }
     bridge.setRandomSource(m_delegateRandomSource);
     // do any initialization of game data for all players here (not based on a delegate, and should not be)

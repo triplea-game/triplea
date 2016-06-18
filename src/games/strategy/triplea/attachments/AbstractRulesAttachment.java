@@ -23,7 +23,7 @@ import games.strategy.util.Match;
 /**
  * The Purpose of this class is to hold shared and simple methods used by RulesAttachment
  */
-public abstract class AbstractRulesAttachment extends AbstractConditionsAttachment implements ICondition {
+public abstract class AbstractRulesAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = -6977650137928964759L;
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment). Determines if we will be counting each for the

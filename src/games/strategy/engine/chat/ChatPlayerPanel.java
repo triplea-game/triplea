@@ -1,7 +1,6 @@
 package games.strategy.engine.chat;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Image;

@@ -259,7 +259,6 @@ public class Fire implements IExecutable {
     stack.push(notifyCasualties);
     stack.push(selectCasualties);
     stack.push(rollDice);
-    return;
   }
 
   private boolean isTransportCasualtiesRestricted(final GameData data) {

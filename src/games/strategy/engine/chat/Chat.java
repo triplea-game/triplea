@@ -125,50 +125,40 @@ public class Chat {
   }
 
   private void init() {
-    (new Runnable() {
-      @Override
-      public void run() {
-        // the order of events is significant.
-        // 1 register our channel listener
-        // once the channel is registered, we are guaranteed that
-        // when we receive the response from our init(...) message, our channel
-        // subscriber has been added, and will see any messages broadcasted by the server
-        // 2 call the init message on the server remote. Any add or join messages sent from the server
-        // will queue until we receive the init return value (they queue since they see the init version is -1)
-        // 3 when we receive the init message response, acquire the lock, and initialize our state
-        // and run any queued messages. Queued messages may be ignored if the
-        // server version is incorrect.
-        // this all seems a lot more involved than it needs to be.
-        final IChatController controller = (IChatController) m_messengers.getRemoteMessenger()
-            .getRemote(ChatController.getChatControlerRemoteName(m_chatName));
-        m_messengers.getChannelMessenger().registerChannelSubscriber(m_chatChannelSubscribor,
-            new RemoteName(m_chatChannelName, IChatChannel.class));
-        final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
-        final Map<INode, Tag> chatters = init.getFirst();
-        synchronized (m_mutexNodes) {
-          m_nodes = new ArrayList<>(chatters.keySet());
+    // the order of events is significant.
+    // 1 register our channel listener
+    // once the channel is registered, we are guaranteed that
+    // when we receive the response from our init(...) message, our channel
+    // subscriber has been added, and will see any messages broadcasted by the server
+    // 2 call the init message on the server remote. Any add or join messages sent from the server
+    // will queue until we receive the init return value (they queue since they see the init version is -1)
+    // 3 when we receive the init message response, acquire the lock, and initialize our state
+    // and run any queued messages. Queued messages may be ignored if the
+    // server version is incorrect.
+    // this all seems a lot more involved than it needs to be.
+    final IChatController controller = (IChatController) m_messengers.getRemoteMessenger()
+        .getRemote(ChatController.getChatControlerRemoteName(m_chatName));
+    m_messengers.getChannelMessenger().registerChannelSubscriber(m_chatChannelSubscribor,
+        new RemoteName(m_chatChannelName, IChatChannel.class));
+    final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
+    final Map<INode, Tag> chatters = init.getFirst();
+    synchronized (m_mutexNodes) {
+      m_nodes = new ArrayList<>(chatters.keySet());
+    }
+    m_chatInitVersion = init.getSecond().longValue();
+    synchronized (m_mutexQueue) {
+      m_queuedInitMessages.add(0, new Runnable() {
+        @Override
+        public void run() {
+          assignNodeTags(chatters);
         }
-        m_chatInitVersion = init.getSecond().longValue();
-        (new Runnable() {
-          @Override
-          public void run() {
-            synchronized (m_mutexQueue) {
-              m_queuedInitMessages.add(0, new Runnable() {
-                @Override
-                public void run() {
-                  assignNodeTags(chatters);
-                }
-              });
-              for (final Runnable job : m_queuedInitMessages) {
-                job.run();
-              }
-              m_queuedInitMessages = null;
-            }
-            updateConnections();
-          }
-        }).run();
+      });
+      for (final Runnable job : m_queuedInitMessages) {
+        job.run();
       }
-    }).run();
+      m_queuedInitMessages = null;
+    }
+    updateConnections();
   }
 
   /**

@@ -919,6 +919,7 @@ public class MapXmlCreator extends JFrame {
 
       case MAP_FINISHED:
         layoutNotesPanel();
+        break;
 
       default:
         break;
@@ -1112,7 +1113,7 @@ public class MapXmlCreator extends JFrame {
    * @throws ParserConfigurationException
    */
   public static GAME_STEP loadXmlFromFilePath(final String gameXMLPath)
-      throws FileNotFoundException, SAXException, IOException, ParserConfigurationException {
+      throws SAXException, IOException, ParserConfigurationException {
     final FileInputStream in = new FileInputStream(gameXMLPath);
 
     // parse using builder to get DOM representation of the XML file

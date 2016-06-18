@@ -1084,9 +1084,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final Collection<Unit> factoryUnits = producer.getUnits().getMatches(factoryMatch);
     // boolean placementRestrictedByFactory = isPlacementRestrictedByFactory();
     final boolean unitPlacementPerTerritoryRestricted = isUnitPlacementPerTerritoryRestricted();
-    final boolean originalFactory = (ta == null ? false : ta.getOriginalFactory());
+    final boolean originalFactory = (ta != null && ta.getOriginalFactory());
     final boolean playerIsOriginalOwner =
-        factoryUnits.size() > 0 ? m_player.equals(getOriginalFactoryOwner(producer)) : false;
+        factoryUnits.size() > 0 && m_player.equals(getOriginalFactoryOwner(producer));
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     final Collection<Unit> alreadProducedUnits = getAlreadyProduced(producer);
     final int unitCountAlreadyProduced = alreadProducedUnits.size();

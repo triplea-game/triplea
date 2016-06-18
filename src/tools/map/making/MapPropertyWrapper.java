@@ -210,7 +210,6 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
         properties.add(wrapper);
       } catch (final Exception e) {
         ClientLogger.logQuietly(e);
-        continue;
       }
     }
     return properties;

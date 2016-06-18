@@ -7,8 +7,6 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -16,7 +14,6 @@ import java.util.Observer;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -229,17 +226,6 @@ public class MainPanel extends JPanel implements Observer {
     } else {
       m_playButton.setEnabled(false);
     }
-  }
-
-  public static void main(final String[] args) {
-    final JFrame f = new JFrame();
-    final GameSelectorModel gameSelectorModel = new GameSelectorModel();
-    final SetupPanelModel model = new SetupPanelModel(gameSelectorModel);
-    model.showSelectType();
-    f.getContentPane().add(new MainPanel(model));
-    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    f.pack();
-    f.setVisible(true);
   }
 
   @Override

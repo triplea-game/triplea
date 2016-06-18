@@ -1,7 +1,5 @@
 package games.strategy.engine.data.properties;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -66,6 +64,7 @@ public class ComboProperty<T> extends AEditableProperty {
     m_value = value;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public JComponent getEditorComponent() {
     final JComboBox<T> box = new JComboBox<>(new Vector<>(m_possibleValues));

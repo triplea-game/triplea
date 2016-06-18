@@ -200,12 +200,11 @@ public class TableSorter extends AbstractTableModel {
     }
   }
 
-  @SuppressWarnings("unchecked")
   protected Comparator<Object> getComparator(final int column) {
     final Class<?> columnType = tableModel.getColumnClass(column);
-    final Comparator<?> comparator = columnComparators.get(columnType);
+    final Comparator<Object> comparator = columnComparators.get(columnType);
     if (comparator != null) {
-      return (Comparator<Object>) comparator;//TODO this warning is not resolvable... This Method needs to be rewritten in order to remove the suppress Warnings annotations
+      return comparator;
     }
     if (Comparable.class.isAssignableFrom(columnType)) {
       return COMPARABLE_COMAPRATOR;
@@ -366,7 +365,6 @@ public class TableSorter extends AbstractTableModel {
       // Something has happened to the data that may have invalidated the row order.
       clearSortingState();
       fireTableDataChanged();
-      return;
     }
   }
   private class MouseHandler extends MouseAdapter {

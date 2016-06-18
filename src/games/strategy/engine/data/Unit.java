@@ -1,13 +1,11 @@
 package games.strategy.engine.data;
 
-import java.io.Serializable;
-
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.net.GUID;
 
-public class Unit extends GameDataComponent implements Serializable {
+public class Unit extends GameDataComponent {
   private static final long serialVersionUID = -7906193079642776282L;
   private PlayerID m_owner;
   private final GUID m_uid;
@@ -93,6 +91,13 @@ public class Unit extends GameDataComponent implements Serializable {
     }
     final Unit other = (Unit) o;
     return this.m_uid.equals(other.m_uid);
+  }
+
+  public boolean isEquivalent(final Unit unit) {
+    if (m_type == null || m_owner == null) {
+      return false;
+    }
+    return m_type.equals(unit.getType()) && m_owner.equals(unit.getOwner()) && m_hits == unit.getHits();
   }
 
   @Override

@@ -40,7 +40,7 @@ class LoggingOutputStream extends ByteArrayOutputStream {
 
   private void dump() {
     final String content = toString();
-    if (content.indexOf("\n") != -1) {
+    if (content.contains("\n")) {
       reset();
       m_logger.log(m_level, content);
     }

@@ -23,6 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import games.strategy.debug.ErrorConsole;
 import org.apache.commons.httpclient.HostConfiguration;
 
 import games.strategy.common.swing.SwingAction;
@@ -134,6 +135,8 @@ public class GameRunner2 {
   }
 
   public static void main(final String[] args) {
+    ErrorConsole.getConsole();
+
     try (PerfTimer timer = Perf.startTimer("Show main window")) {
       // do after we handle command line args
       checkForMemoryXMX();
@@ -214,7 +217,6 @@ public class GameRunner2 {
       } catch (final Exception e) {
         System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());
         System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion());
-        return;
       }
     } else {
       System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());

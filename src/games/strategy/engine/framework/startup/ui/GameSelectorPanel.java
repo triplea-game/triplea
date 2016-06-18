@@ -1,10 +1,12 @@
 package games.strategy.engine.framework.startup.ui;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Component;
+import java.awt.FileDialog;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Point;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
@@ -13,7 +15,15 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingComponents;
 import games.strategy.engine.ClientContext;
@@ -167,7 +177,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
     JButton downloadMapButton =
         SwingComponents.newJButton("Download Maps", "Click this button to install additional maps",
-            () -> DownloadMapsWindow.showDownloadMapsWindow((JFrame) SwingUtilities.getWindowAncestor(this)));
+            () -> DownloadMapsWindow.showDownloadMapsWindow());
     add(downloadMapButton, buildGridRow(0, 8, new Insets(0, 10, 10, 10)));
 
     add(m_gameOptions, buildGridRow(0, 9, new Insets(25, 10, 10, 10)));
@@ -290,7 +300,6 @@ public class GameSelectorPanel extends JPanel implements Observer {
           property.setValue(m_originalPropertiesMap.get(property.getName()));
         }
         selectGameOptions();
-        return;
       }
     } else if (buttonPressed.equals(makeDefault)) {
       m_gamePropertiesCache.cacheGameProperties(m_model.getGameData());
@@ -382,7 +391,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
       setOriginalPropertiesMap(m_model.getGameData());
     } else {
       final NewGameChooserEntry entry =
-          NewGameChooser.chooseGame((JFrame) SwingUtilities.getWindowAncestor(this), m_model.getGameName());
+          NewGameChooser.chooseGame(JOptionPane.getFrameForComponent(this), m_model.getGameName());
       if (entry != null) {
         if (!entry.isGameDataLoaded()) {
           try {
@@ -400,15 +409,5 @@ public class GameSelectorPanel extends JPanel implements Observer {
         m_gamePropertiesCache.loadCachedGamePropertiesInto(m_model.getGameData());
       }
     }
-  }
-
-  public static void main(final String[] args) {
-    final JFrame f = new JFrame();
-    final GameSelectorModel model = new GameSelectorModel();
-    model.loadDefaultGame(f);
-    f.getContentPane().add(new GameSelectorPanel(model));
-    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    f.pack();
-    f.setVisible(true);
   }
 }

@@ -36,12 +36,12 @@ public interface IBattle extends java.io.Serializable {
 
     // if it has the word "Raid" in it, then it is a bombing battle
     public boolean isBombingRun() {
-      return m_type.indexOf("Raid") != -1;
+      return m_type.contains("Raid");
     }
 
     // if it has the word "Air" in it, then it is an air battle
     public boolean isAirPreBattleOrPreRaid() {
-      return m_type.indexOf("Air") != -1;
+      return m_type.contains("Air");
     }
   }
 

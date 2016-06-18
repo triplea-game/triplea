@@ -3,8 +3,6 @@ package games.strategy.engine.lobby.client.ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -388,7 +386,8 @@ public class LobbyMenu extends JMenuBar {
     final JMenuItem warClub = new JMenuItem("War Club & Ladder...");
     final JMenuItem devForum = new JMenuItem("Developer Forum...");
     final JMenuItem donateLink = new JMenuItem("Donate...");
-    final JMenuItem guidesLink = new JMenuItem("Guides...");
+    final JMenuItem helpLink = new JMenuItem("Help...");
+    final JMenuItem ruleBookLink = new JMenuItem("Rule Book...");
 
     hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_HOSTING_MAPS));
     mapLink.addActionListener(e  -> SwingComponents.newOpenUrlConfirmationDialog( UrlConstants.SF_HOSTING_MAPS));
@@ -397,7 +396,8 @@ public class LobbyMenu extends JMenuBar {
     warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB));
     devForum.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_FORUM));
     donateLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
-    guidesLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_WIKI_GUIDES));
+    helpLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.WEBSITE_HELP));
+    ruleBookLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK));
     parentMenu.add(hostingLink);
     parentMenu.add(mapLink);
     parentMenu.add(bugReport);
@@ -405,7 +405,8 @@ public class LobbyMenu extends JMenuBar {
     parentMenu.add(warClub);
     parentMenu.add(devForum);
     parentMenu.add(donateLink);
-    parentMenu.add(guidesLink);
+    parentMenu.add(helpLink);
+    parentMenu.add(ruleBookLink);
   }
 
   private void addChatTimeMenu(final JMenu parentMenu) {

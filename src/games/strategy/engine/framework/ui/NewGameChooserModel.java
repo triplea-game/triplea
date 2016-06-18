@@ -93,7 +93,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   }
 
 
-  private static final List<NewGameChooserEntry> populateFromZip(final File map) {
+  private static List<NewGameChooserEntry> populateFromZip(final File map) {
     boolean badMapZip = false;
     final List<NewGameChooserEntry> entries = Lists.newArrayList();
 

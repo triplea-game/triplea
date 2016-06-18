@@ -27,9 +27,6 @@
 	<path id="build.lib">
 		<fileset dir="lib">
 			<include name="*.jar" />
-			<exclude name="junit*" />
-			<exclude name="derby*" />
-			<exclude name="mockito*" />
 		</fileset>
 	</path>
 

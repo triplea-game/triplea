@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +22,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.util.Tuple;
 
-public abstract class TechAdvance extends NamedAttachable implements Serializable {
+public abstract class TechAdvance extends NamedAttachable {
   private static final long serialVersionUID = -1076712297024403156L;
   private static final Class<?>[] preDefinedTechConstructorParameter = new Class<?>[] {GameData.class};
   public static final String TECH_NAME_SUPER_SUBS = "Super subs";
@@ -62,7 +61,7 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
   private static final Map<String, Class<? extends TechAdvance>> s_allPreDefinedTechnologies =
       createPreDefinedTechnologyMap();
 
-  private static final Map<String, Class<? extends TechAdvance>> createPreDefinedTechnologyMap() {
+  private static Map<String, Class<? extends TechAdvance>> createPreDefinedTechnologyMap() {
     final HashMap<String, Class<? extends TechAdvance>> preDefinedTechMap =
         new HashMap<>();
     preDefinedTechMap.put(TECH_PROPERTY_SUPER_SUBS, SuperSubsAdvance.class);

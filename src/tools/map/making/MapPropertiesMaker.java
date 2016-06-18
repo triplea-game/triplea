@@ -324,13 +324,8 @@ public class MapPropertiesMaker extends JFrame {
       if (!startsWithSet) {
         continue;
       }
-      final String propertyName =
-          setter.getName().substring(Math.min(3, setter.getName().length()), setter.getName().length());
-      final String value = properties.getProperty(propertyName);
-      if (value == null) {
-        continue;
-        // TODO: finish this
-      }
+
+      // TODO: finish this
     }
     validate();
     repaint();

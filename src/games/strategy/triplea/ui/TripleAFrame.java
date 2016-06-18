@@ -24,8 +24,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -76,8 +74,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -348,7 +344,7 @@ public class TripleAFrame extends MainGameFrame {
     } else {
       tabsPanel.addTab(objectivePanel.getName(), objectivePanel);
     }
-    notesPanel = new NotesPanel(data, menu.getGameNotesJEditorPane());
+    notesPanel = new NotesPanel(menu.getGameNotesJEditorPane());
     tabsPanel.addTab("Notes", notesPanel);
     details = new TerritoryDetailPanel(mapPanel, data, uiContext, this);
     tabsPanel.addTab("Territory", null, details, TerritoryDetailPanel.getHoverText());
@@ -1352,7 +1348,7 @@ public class TripleAFrame extends MainGameFrame {
       final int selection = JOptionPane.showOptionDialog(TripleAFrame.this, panel, message,
           JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
       if (selection == 0) {
-        selected.set((Territory) list.getSelectedValue());
+        selected.set(list.getSelectedValue());
       }
     });
     return selected.get();

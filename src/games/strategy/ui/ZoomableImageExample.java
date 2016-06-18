@@ -24,14 +24,6 @@ public class ZoomableImageExample extends JFrame {
   private static final long serialVersionUID = -2966214293779872824L;
   ZoomableImage panel;
 
-  public static void main(final String[] args) {
-    if (args.length == 0) {
-      System.out.println("Expecting first and only arg to be the name of the image file");
-    }
-    final JFrame frame = new ZoomableImageExample(args[0]);
-    frame.setVisible(true);
-  }
-
   /** Creates new ZoomableImageExample */
   public ZoomableImageExample(final String imageName) {
     final Image image = Toolkit.getDefaultToolkit().getImage(imageName);

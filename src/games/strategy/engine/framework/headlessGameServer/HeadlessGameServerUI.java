@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.headlessGameServer;
 
 import java.awt.BorderLayout;
-
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -17,10 +16,10 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.common.swing.SwingAction;
 import games.strategy.common.ui.MacWrapper;
 import games.strategy.common.ui.MainGameFrame;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;
 import games.strategy.engine.data.Change;
@@ -69,9 +68,9 @@ public class HeadlessGameServerUI extends MainGameFrame {
     m_step = new JLabel("Step: -");
     m_player = new JLabel("Player: -");
     m_leaveGame = new JButton("Leave Game");
-    m_leaveGame.addActionListener(SwingAction.of(e-> leaveGame()));
+    m_leaveGame.addActionListener(SwingAction.of(e -> leaveGame()));
     m_quit = new JButton("Quit Program");
-    m_quit.addActionListener(SwingAction.of(e->shutdown()));
+    m_quit.addActionListener(SwingAction.of(e -> shutdown()));
     m_mapAndChatPanel = new JPanel();
     m_mapAndChatPanel.setLayout(new BorderLayout());
     m_mainPanel = new JPanel();

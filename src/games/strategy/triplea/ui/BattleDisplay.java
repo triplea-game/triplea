@@ -14,7 +14,6 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,8 +49,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -313,7 +310,7 @@ public class BattleDisplay extends JPanel {
     m_mapPanel.getUIContext().addShutdownLatch(continueLatch);
 
     // Set a auto-wait expiration if the option is set.
-    if(!getConfirmDefensiveRolls()) {
+    if (!getConfirmDefensiveRolls()) {
       final int maxWaitTime = 1500;
       Timer t = new Timer();
       t.schedule(new TimerTask() {
@@ -515,61 +512,54 @@ public class BattleDisplay extends JPanel {
       final String countStr = isEditMode ? "" : "" + count;
       final String btnText =
           hit.getName() + ", press space to select " + countStr + (plural ? " casualties" : " casualty");
-      m_actionButton.setAction(new AbstractAction(btnText) {
-        private static final long serialVersionUID = -2156028313292233568L;
-        private UnitChooser chooser;
-        private JScrollPane chooserScrollPane;
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          final String messageText = message + " " + btnText + ".";
-          if (chooser == null || chooserScrollPane == null) {
-            chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, allowMultipleHitsPerUnit,
-                m_mapPanel.getUIContext());
-            chooser.setTitle(messageText);
-            if (isEditMode) {
-              chooser.setMax(selectFrom.size());
-            } else {
-              chooser.setMax(count);
-            }
-            chooserScrollPane = new JScrollPane(chooser);
-            final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-            int availHeight = screenResolution.height - 80;
-            final int availWidth = screenResolution.width - 30;
-            availHeight -= 50;
-            chooserScrollPane.setPreferredSize(new Dimension(
-                (chooserScrollPane.getPreferredSize().width > availWidth ? availWidth
-                    : (chooserScrollPane.getPreferredSize().height > availHeight
-                        ? chooserScrollPane.getPreferredSize().width + 22
-                        : chooserScrollPane.getPreferredSize().width)),
-                (chooserScrollPane.getPreferredSize().height > availHeight ? availHeight
-                    : chooserScrollPane.getPreferredSize().height)));
-            chooserScrollPane.setBorder(new LineBorder(chooserScrollPane.getBackground()));
-          }
-          final String[] options = {"Ok", "Cancel"};
-          final String focus = BattleDisplay.getFocusOnOwnCasualtiesNotification() ? options[0] : null;
-          final int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooserScrollPane,
-              hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
-              focus);
-          if (option != 0) {
-            return;
-          }
-          final List<Unit> killed = chooser.getSelected(false);
-          final List<Unit> damaged = chooser.getSelectedDamagedMultipleHitPointUnits();
-          if (!isEditMode && (killed.size() + damaged.size() != count)) {
-            JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties selected",
-                hit.getName() + " select casualties", JOptionPane.ERROR_MESSAGE);
-            return;
-          } else {
-            final CasualtyDetails response = new CasualtyDetails(killed, damaged, false);
-            casualtyDetails.set(response);
-            m_dicePanel.clear();
-            m_actionButton.setEnabled(false);
-            m_actionButton.setAction(m_nullAction);
-            continueLatch.countDown();
-          }
+      m_actionButton.setAction(SwingAction.of(btnText, e -> {
+        UnitChooser chooser;
+        JScrollPane chooserScrollPane;
+        final String messageText = message + " " + btnText + ".";
+        chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, allowMultipleHitsPerUnit,
+            m_mapPanel.getUIContext());
+        chooser.setTitle(messageText);
+        if (isEditMode) {
+          chooser.setMax(selectFrom.size());
+        } else {
+          chooser.setMax(count);
         }
-      });
+        chooserScrollPane = new JScrollPane(chooser);
+        final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+        int availHeight = screenResolution.height - 80;
+        final int availWidth = screenResolution.width - 30;
+        availHeight -= 50;
+        chooserScrollPane.setPreferredSize(new Dimension(
+            (chooserScrollPane.getPreferredSize().width > availWidth ? availWidth
+                : (chooserScrollPane.getPreferredSize().height > availHeight
+                    ? chooserScrollPane.getPreferredSize().width + 22
+                    : chooserScrollPane.getPreferredSize().width)),
+            (chooserScrollPane.getPreferredSize().height > availHeight ? availHeight
+                : chooserScrollPane.getPreferredSize().height)));
+        chooserScrollPane.setBorder(new LineBorder(chooserScrollPane.getBackground()));
+        final String[] options = {"Ok", "Cancel"};
+        final String focus = BattleDisplay.getFocusOnOwnCasualtiesNotification() ? options[0] : null;
+        final int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooserScrollPane,
+            hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
+            focus);
+        if (option != 0) {
+          return;
+        }
+        final List<Unit> killed = chooser.getSelected(false);
+        final List<Unit> damaged = chooser.getSelectedDamagedMultipleHitPointUnits();
+        if (!isEditMode && (killed.size() + damaged.size() != count)) {
+          JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties selected",
+              hit.getName() + " select casualties", JOptionPane.ERROR_MESSAGE);
+          return;
+        } else {
+          final CasualtyDetails response = new CasualtyDetails(killed, damaged, false);
+          casualtyDetails.set(response);
+          m_dicePanel.clear();
+          m_actionButton.setEnabled(false);
+          m_actionButton.setAction(m_nullAction);
+          continueLatch.countDown();
+        }
+      }));
     });
     m_mapPanel.getUIContext().addShutdownLatch(continueLatch);
     try {
@@ -908,7 +898,7 @@ class TableData {
       stamp.setIcon(null);
     } else {
       stamp.setText("x" + m_count);
-      if(m_icon.isPresent()) {
+      if (m_icon.isPresent()) {
         stamp.setIcon(m_icon.get());
       }
     }
@@ -974,8 +964,9 @@ class CasualtyNotificationPanel extends JPanel {
       final UnitCategory category = categoryIter.next();
       final JPanel panel = new JPanel();
       // TODO Kev determine if we need to identify if the unit is hit/disabled
-      Optional<ImageIcon> unitImage = m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data,
-          damaged ? category.hasDamageOrBombingUnitDamage() : false, disabled ? category.getDisabled() : false);
+      Optional<ImageIcon> unitImage =
+          m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data,
+              damaged ? category.hasDamageOrBombingUnitDamage() : false, disabled ? category.getDisabled() : false);
       final JLabel unit = unitImage.isPresent() ? new JLabel(unitImage.get()) : new JLabel();
       panel.add(unit);
       for (final UnitOwner owner : category.getDependents()) {

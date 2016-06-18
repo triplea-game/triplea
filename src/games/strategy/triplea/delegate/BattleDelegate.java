@@ -552,7 +552,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               battle.cancelBattle(aBridge);
               battleTracker.removeBattle(battle);
             }
-            continue;
           }
         }
       }
@@ -1160,7 +1159,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           // only one neighbor, its an island.
           if (data.getMap().getNeighbors(currentTerritory).size() == 1) {
             moveAirAndLand(m_bridge, defendingAir, defendingAir, currentTerritory, battleSite);
-            continue;
           }
         }
       }

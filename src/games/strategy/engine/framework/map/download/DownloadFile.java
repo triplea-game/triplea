@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.map.download;
 
 import java.io.File;
+import java.net.URL;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -8,7 +9,6 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.performance.Perf;
 import games.strategy.performance.PerfTimer;
@@ -26,7 +26,6 @@ public class DownloadFile {
     NOT_STARTED, DOWNLOADING, CANCELLED, DONE
   }
 
-  private final MapDownloadStrategy strategy;
   private final List<Runnable> downloadCompletedListeners;
   private final Consumer<Integer> progressUpdateListener;
   private final DownloadFileDescription downloadDescription;
@@ -42,14 +41,12 @@ public class DownloadFile {
    */
   public DownloadFile(DownloadFileDescription download, Consumer<Integer> progressUpdateListener,
       Runnable completionListener) {
-    this(download, progressUpdateListener, ClientContext.mapDownloadStrategy());
+    this(download, progressUpdateListener);
     this.addDownloadCompletedListener(completionListener);
   }
 
-  protected DownloadFile(DownloadFileDescription download, Consumer<Integer> progressUpdateListener,
-      MapDownloadStrategy downloadStrategy) {
+  protected DownloadFile(DownloadFileDescription download, Consumer<Integer> progressUpdateListener) {
     this.downloadDescription = download;
-    this.strategy = downloadStrategy;
     this.progressUpdateListener = progressUpdateListener;
     this.downloadCompletedListeners = Lists.newArrayList();
   }
@@ -72,7 +69,12 @@ public class DownloadFile {
     return new Thread(() -> {
       if (state != DownloadState.CANCELLED) {
         try (PerfTimer timer = Perf.startTimer("Download map: " + downloadDescription.getUrl())) {
-          strategy.download(downloadDescription.newURL(), fileToDownloadTo);
+          URL url = downloadDescription.newURL();
+          try {
+            DownloadUtils.downloadFile(url, fileToDownloadTo);
+          } catch (Exception e) {
+            ClientLogger.logError("Failed to download: " + url, e);
+          }
         }
         if (state == DownloadState.CANCELLED) {
           return;

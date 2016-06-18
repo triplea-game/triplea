@@ -1,20 +1,18 @@
 package games.strategy.common.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Dialog.ModalityType;
 import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -50,8 +48,6 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
-import com.apple.eawt.AboutHandler;
-import com.apple.eawt.AppEvent.AboutEvent;
 import com.apple.eawt.Application;
 
 import games.strategy.common.swing.SwingAction;
@@ -169,6 +165,8 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     if (notesProperty != null && notesProperty.trim().length() != 0) {
       final String notes = LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim());
       gameNotesPane = new JEditorPane();
+      gameNotesPane.setEditable(false);
+      gameNotesPane.setContentType("text/html");
       gameNotesPane.setText(notes);
       parentMenu.add(SwingAction.of("Game Notes...", e ->
           SwingUtilities.invokeLater(() -> {
@@ -176,9 +174,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
             final JScrollPane scroll = new JScrollPane(pane);
             scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
             final JDialog dialog = new JDialog(frame);
-            dialog.setModal(false);
-            // needs java 1.6 at least...
-            // dialog.setModalityType(ModalityType.MODELESS);
+            dialog.setModalityType(ModalityType.MODELESS);
             dialog.setAlwaysOnTop(true);
             dialog.add(scroll, BorderLayout.CENTER);
             final JPanel buttons = new JPanel();
@@ -258,7 +254,6 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
     final Action boot = new BootPlayerAction(this, messenger);
     parentMenu.add(boot);
-    return;
   }
 
   protected void addBanPlayer(final JMenu parentMenu) {
@@ -268,7 +263,6 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
     final Action ban = new BanPlayerAction(this, messenger);
     parentMenu.add(ban);
-    return;
   }
 
   protected void addMutePlayer(final JMenu parentMenu) {
@@ -278,7 +272,6 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
     final Action mute = new MutePlayerAction(this, messenger);
     parentMenu.add(mute);
-    return;
   }
 
   protected void addSetGamePassword(final JMenu parentMenu, final InGameLobbyWatcherWrapper watcher) {
@@ -329,8 +322,10 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     devForum.setMnemonic(KeyEvent.VK_E);
     final JMenuItem donateLink = new JMenuItem("Donate...");
     donateLink.setMnemonic(KeyEvent.VK_O);
-    final JMenuItem guidesLink = new JMenuItem("Guides...");
-    guidesLink.setMnemonic(KeyEvent.VK_G);
+    final JMenuItem helpLink = new JMenuItem("Help...");
+    helpLink.setMnemonic(KeyEvent.VK_G);
+    final JMenuItem ruleBookLink = new JMenuItem("Rule Book...");
+    ruleBookLink.setMnemonic(KeyEvent.VK_K);
 
     hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_HOSTING_MAPS));
     mapLink.addActionListener(e  -> SwingComponents.newOpenUrlConfirmationDialog( UrlConstants.SF_HOSTING_MAPS));
@@ -339,7 +334,8 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB));
     devForum.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_FORUM));
     donateLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
-    guidesLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_WIKI_GUIDES));
+    helpLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.WEBSITE_HELP));
+    ruleBookLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK));
 
     parentMenu.add(hostingLink);
     parentMenu.add(mapLink);
@@ -348,7 +344,8 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     parentMenu.add(warClub);
     parentMenu.add(devForum);
     parentMenu.add(donateLink);
-    parentMenu.add(guidesLink);
+    parentMenu.add(helpLink);
+    parentMenu.add(ruleBookLink);
   }
 
   protected abstract void addGameSpecificHelpMenus(final JMenu helpMenu);

@@ -35,7 +35,7 @@ public class MessengerTest extends TestCase {
     m_server = new ServerMessenger("Server", SERVER_PORT);
     m_server.setAcceptNewConnections(true);
     m_server.addMessageListener(m_serverListener);
-    final String mac = MacFinder.GetHashedMacAddress();
+    final String mac = MacFinder.getHashedMacAddress();
     m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1", mac);
     m_client1.addMessageListener(m_client1Listener);
     m_client2 = new ClientMessenger("localhost", SERVER_PORT, "client2", mac);
@@ -261,7 +261,7 @@ public class MessengerTest extends TestCase {
     final List<MessageListener> listeners = new ArrayList<>();
     for (int i = 0; i < count; i++) {
       final String name = "newClient" + i;
-      final String mac = MacFinder.GetHashedMacAddress();
+      final String mac = MacFinder.getHashedMacAddress();
       final ClientMessenger messenger = new ClientMessenger("localhost", SERVER_PORT, name, mac);
       final MessageListener listener = new MessageListener();
       messenger.addMessageListener(listener);

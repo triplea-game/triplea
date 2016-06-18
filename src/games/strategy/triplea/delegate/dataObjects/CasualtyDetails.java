@@ -1,11 +1,10 @@
 package games.strategy.triplea.delegate.dataObjects;
 
-import java.io.Serializable;
 import java.util.List;
 
 import games.strategy.engine.data.Unit;
 
-public class CasualtyDetails extends CasualtyList implements Serializable {
+public class CasualtyDetails extends CasualtyList {
   private static final long serialVersionUID = 2261683015991514918L;
   private final boolean m_autoCalculated;
 

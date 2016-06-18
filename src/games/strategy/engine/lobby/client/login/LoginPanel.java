@@ -6,8 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
@@ -28,7 +26,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import games.strategy.common.swing.SwingAction;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.ui.Util;
 
@@ -165,15 +162,6 @@ public class LoginPanel extends JPanel {
       m_password.setEnabled(false);
       m_password.setBackground(this.getBackground());
     }
-  }
-
-  public static void main(final String[] args) {
-    GameRunner2.setupLookAndFeel();
-    final JDialog d = new JDialog();
-    d.add(new LoginPanel());
-    d.setDefaultCloseOperation(JDialog.EXIT_ON_CLOSE);
-    d.pack();
-    d.setVisible(true);
   }
 
   public boolean isAnonymous() {

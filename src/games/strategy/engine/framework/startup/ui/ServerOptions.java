@@ -7,9 +7,6 @@ import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -169,9 +166,7 @@ public class ServerOptions extends JDialog {
     m_okPressed = true;
   });
 
-  private final Action m_cancelAction = SwingAction.of("Cancel", e -> {
-    setVisible(false);
-  });
+  private final Action m_cancelAction = SwingAction.of("Cancel", e -> setVisible(false));
 
   public String getComments() {
     return m_comment.getText();

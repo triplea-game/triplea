@@ -180,7 +180,7 @@ public class TechPanel extends ActionPanel {
     list.setSelectedIndex(0);
     JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart",
         JOptionPane.PLAIN_MESSAGE);
-    category = (TechnologyFrontier) list.getSelectedValue();
+    category = list.getSelectedValue();
 
     final int PUs = currentPlayer.getResources().getQuantity(Constants.PUS);
     final String message = "Purchase Tech Tokens";
@@ -236,7 +236,7 @@ public class TechPanel extends ActionPanel {
       list.setSelectedIndex(0);
       JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart",
           JOptionPane.PLAIN_MESSAGE);
-      category = (TechnologyFrontier) list.getSelectedValue();
+      category = list.getSelectedValue();
       m_techRoll = new TechRoll(category, m_currTokens);
     } else {
       m_techRoll = null;
@@ -456,7 +456,6 @@ class TechTokenPanel extends JPanel {
       setWidgetActivation();
     }
   };
-
   private final ScrollableTextFieldListener setWidgetAction() {
     return stf -> setWidgetActivation();
   }

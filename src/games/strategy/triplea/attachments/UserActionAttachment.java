@@ -26,7 +26,7 @@ import games.strategy.util.Tuple;
  * A class of attachments that can be "activated" during a user action delegate.
  * For now they will just be conditions that can then fire triggers.
  */
-public class UserActionAttachment extends AbstractUserActionAttachment implements ICondition {
+public class UserActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 5268397563276055355L;
 
   public UserActionAttachment(final String name, final Attachable attachable, final GameData gameData) {

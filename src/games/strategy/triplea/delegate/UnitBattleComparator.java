@@ -59,9 +59,9 @@ public class UnitBattleComparator implements Comparator<Unit> {
       return 0;
     }
     final boolean airOrCarrierOrTransport1 = Matches.UnitIsAir.match(u1) || Matches.UnitIsCarrier.match(u1)
-        || (transporting1 ? false : Matches.UnitIsTransport.match(u1));
+        || (!transporting1 && Matches.UnitIsTransport.match(u1));
     final boolean airOrCarrierOrTransport2 = Matches.UnitIsAir.match(u2) || Matches.UnitIsCarrier.match(u2)
-        || (transporting2 ? false : Matches.UnitIsTransport.match(u2));
+        || (!transporting2 && Matches.UnitIsTransport.match(u2));
     final boolean subDestroyer1 = Matches.UnitIsSub.match(u1) || Matches.UnitIsDestroyer.match(u1);
     final boolean subDestroyer2 = Matches.UnitIsSub.match(u2) || Matches.UnitIsDestroyer.match(u2);
     final boolean multiHpCanRepair1 = m_multiHitpointCanRepair.contains(u1.getType());

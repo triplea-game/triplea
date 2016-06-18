@@ -7,7 +7,6 @@ import java.lang.management.ThreadMXBean;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -82,9 +81,7 @@ public class DebugUtils {
     final Properties props = System.getProperties();
     final List<String> keys = new ArrayList<>(props.stringPropertyNames());
     Collections.sort(keys);
-    final Iterator<String> iter = keys.iterator();
-    while (iter.hasNext()) {
-      final String property = iter.next();
+    for(String property : keys) {
       final String value = props.getProperty(property);
       buf.append(property).append(" ").append(value).append("\n");
     }

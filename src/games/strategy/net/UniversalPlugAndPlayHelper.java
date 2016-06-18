@@ -24,10 +24,6 @@ public class UniversalPlugAndPlayHelper {
   private InetAddress local = null;
   private InternetGatewayDevice m_device = null;
 
-  public static void main(final String[] args) {
-    UniversalPlugAndPlayHelper.attemptAddingPortForwarding(null, 3300);
-  }
-
   public UniversalPlugAndPlayHelper(final int port) {
     this.port = port;
   }

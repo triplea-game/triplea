@@ -2,8 +2,9 @@ package games.strategy.engine.data.export;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.List;
+
+import com.google.common.base.Joiner;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.IAttachment;
@@ -20,14 +21,12 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
   @Override
   public String getAttachmentOptions(final IAttachment attachment) {
     final StringBuffer xmlfile = new StringBuffer();
-    final Iterator<Field> fields = Arrays.asList(attachment.getClass().getDeclaredFields()).iterator();
-    while (fields.hasNext()) {
-      final Field field = fields.next();
+    for(Field field : attachment.getClass().getDeclaredFields()) {
       field.setAccessible(true);
       try {
         xmlfile.append(printOption(field, attachment));
       } catch (final AttachmentExportException e) {
-        System.err.println(e);
+        ClientLogger.logQuietly("Could not export field: "+ field.getName(), e);
       }
     }
     return xmlfile.toString();
@@ -138,12 +137,7 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
       if (valueArray == null) {
         return "";
       }
-      final Iterator<String> values = Arrays.asList(valueArray).iterator();
-      String value = values.next();
-      while (values.hasNext()) {
-        value = value + ":" + values.next();
-      }
-      return printDefaultOption(option, value);
+      return printDefaultOption(option, Joiner.on(':').join(valueArray));
     } catch (final IllegalArgumentException | IllegalAccessException e) {
       throw new AttachmentExportException("e: " + e + " for printStringArrayOption on field: " + field + " option: "
           + option + " on Attachment: " + attachment.getName());
@@ -236,18 +230,14 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
   @SuppressWarnings("unchecked")
   protected String printPlayerList(final Field field, final IAttachment attachment) throws AttachmentExportException {
     try {
-      final ArrayList<PlayerID> playerIds = (ArrayList<PlayerID>) field.get(attachment);
-      final Iterator<PlayerID> iplayerIds = playerIds.iterator();
-      String returnValue = "";
-      if (iplayerIds.hasNext()) {
-        returnValue = iplayerIds.next().getName();
-      }
-      while (iplayerIds.hasNext()) {
-        returnValue += ":" + iplayerIds.next().getName();
+      final List<PlayerID> playerIds = (List<PlayerID>) field.get(attachment);
+      final List<String> playerNames = new ArrayList<>();
+      for(PlayerID playerID : playerIds) {
+        playerNames.add(playerID.getName());
       }
       final String optionName = "" + Character.toLowerCase(field.getName().charAt(2)) + field.getName().substring(3);
-      if (returnValue.length() > 0) {
-        return printDefaultOption(optionName, returnValue);
+      if (!playerNames.isEmpty()) {
+        return printDefaultOption(optionName, Joiner.on(':').join(playerNames));
       }
       return "";
     } catch (final IllegalArgumentException | IllegalAccessException e) {
@@ -262,21 +252,19 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
     try {
       final String optionName = "" + Character.toLowerCase(field.getName().charAt(2)) + field.getName().substring(3);
       final IntegerMap<UnitType> map = (IntegerMap<UnitType>) field.get(attachment);
-      String returnValue = "";
+      StringBuilder returnValue = new StringBuilder();
       if (map == null) {
         return "";
       }
-      final Iterator<UnitType> types = map.keySet().iterator();
-      while (types.hasNext()) {
-        final UnitType type = types.next();
+      for(UnitType type : map.keySet()) {
         final int number = map.getInt(type);
         if (type == null) {
-          returnValue += printCountOption(optionName, "ANY", "" + number);
+          returnValue.append(printCountOption(optionName, "ANY", "" + number));
         } else {
-          returnValue += printCountOption(optionName, type.getName(), "" + number);
+          returnValue.append(printCountOption(optionName, type.getName(), "" + number));
         }
       }
-      return returnValue;
+      return returnValue.toString();
     } catch (final IllegalArgumentException | ArrayIndexOutOfBoundsException | IllegalAccessException e) {
       throw new AttachmentExportException("e: " + e + " for mUnitPresenceHandler on field: " + field.getName()
           + " on Attachment: " + attachment.getName());

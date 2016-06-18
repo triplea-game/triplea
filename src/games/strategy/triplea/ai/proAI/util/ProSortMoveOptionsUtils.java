@@ -14,7 +14,6 @@ import games.strategy.triplea.delegate.UnitBattleComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;

@@ -26,9 +26,7 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -51,7 +49,6 @@ import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.IGameModifiedChannel;
-import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
@@ -218,12 +215,12 @@ public class ObjectivePanel extends AbstractStatPanel {
         }
         IAttachment attachment = null;
         try {
-          if (key[1].indexOf(Constants.RULES_OBJECTIVE_PREFIX) != -1
-              || key[1].indexOf(Constants.RULES_CONDITION_PREFIX) != -1) {
+          if (key[1].contains(Constants.RULES_OBJECTIVE_PREFIX)
+              || key[1].contains(Constants.RULES_CONDITION_PREFIX)) {
             attachment = RulesAttachment.get(player, key[1], allPlayers, true);
-          } else if (key[1].indexOf(Constants.TRIGGER_ATTACHMENT_PREFIX) != -1) {
+          } else if (key[1].contains(Constants.TRIGGER_ATTACHMENT_PREFIX)) {
             attachment = TriggerAttachment.get(player, key[1], allPlayers);
-          } else if (key[1].indexOf(Constants.POLITICALACTION_ATTACHMENT_PREFIX) != -1) {
+          } else if (key[1].contains(Constants.POLITICALACTION_ATTACHMENT_PREFIX)) {
             attachment = PoliticalActionAttachment.get(player, key[1], allPlayers);
           } else {
             System.err.println("objective.properties objective must begin with: " + Constants.RULES_OBJECTIVE_PREFIX
@@ -432,43 +429,6 @@ public class ObjectivePanel extends AbstractStatPanel {
     m_data = data;
     m_objectiveModel.setGameData(data);
     m_objectiveModel.gameDataChanged(null);
-  }
-
-  public static void main(final String[] args) {
-    final JFrame f = new JFrame();
-    final JPanel panel = new JPanel();
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    final GameSelectorModel model = new GameSelectorModel();
-    model.loadDefaultGame(f);
-    final GameData data = model.getGameData();
-    final IUIContext uiContext = new UIContext();
-    uiContext.setDefaultMapDir(data);
-    uiContext.getMapData().verify(data);
-    // uiContext.setPlayerList(players);
-    final ObjectivePanel panelObj = new ObjectivePanel(data);
-    /*
-     * final String blah = "<html><b>blah</b> blah blah blah blah blah blah blah blah blah blah blah blah " +
-     * "blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah " +
-     * "blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah</html>";
-     * final JEditorPane editor = new JEditorPane();
-     * editor.setContentType("text/html");
-     * editor.setText(blah);
-     * editor.setEditable(false);
-     * panel.add(editor);
-     */
-    panel.add(panelObj);
-    /*
-     * final JTable table = new JTable(1, 1);
-     * final TableColumnModel cmodel = table.getColumnModel();
-     * cmodel.getColumn(0).setCellRenderer(new EditorPaneTableCellRenderer());
-     * cmodel.getColumn(0).setCellEditor(new EditorPaneCellEditor());
-     * table.setValueAt(blah, 0, 0);
-     * panel.add(table);
-     */
-    f.getContentPane().add(panel);
-    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    f.pack();
-    f.setVisible(true);
   }
 }
 
@@ -738,11 +698,11 @@ class ColorTableCellRenderer extends DefaultTableCellRenderer {
     renderer.setHorizontalAlignment(SwingConstants.CENTER);
     if (value == null) {
       renderer.setBorder(BorderFactory.createEmptyBorder());
-    } else if (value.toString().indexOf("T") != -1) {
+    } else if (value.toString().contains("T")) {
       renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
-    } else if (value.toString().indexOf("U") != -1) {
+    } else if (value.toString().contains("U")) {
       renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.blue));
-    } else if (value.toString().indexOf("u") != -1) {
+    } else if (value.toString().contains("u")) {
       renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.cyan));
     } else {
       renderer.setBorder(BorderFactory.createEmptyBorder());

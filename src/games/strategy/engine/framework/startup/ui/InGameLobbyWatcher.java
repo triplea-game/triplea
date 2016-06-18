@@ -4,7 +4,6 @@ import java.awt.Frame;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JComponent;
@@ -14,7 +13,6 @@ import javax.swing.SwingUtilities;
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.HeartBeat;
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.IGame;
@@ -108,7 +106,7 @@ public class InGameLobbyWatcher {
     };
     try {
       System.out.println("host:" + host + " port:" + port);
-      final String mac = MacFinder.GetHashedMacAddress();
+      final String mac = MacFinder.getHashedMacAddress();
       final ClientMessenger messenger = new ClientMessenger(host, Integer.parseInt(port),
           getRealName(hostedBy) + "_" + LOBBY_WATCHER_NAME, mac, login);
       final UnifiedMessenger um = new UnifiedMessenger(messenger);

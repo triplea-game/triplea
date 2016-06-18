@@ -273,7 +273,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   abstract protected boolean setCancelButton();
 
-  protected static final JComponent leftBox(final JComponent c) {
+  protected static JComponent leftBox(final JComponent c) {
     final Box b = new Box(BoxLayout.X_AXIS);
     b.add(c);
     b.add(Box.createHorizontalGlue());

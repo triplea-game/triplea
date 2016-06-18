@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -37,7 +37,7 @@ public final class MapDownloadProgressPanel extends JPanel {
 
 
 
-  public MapDownloadProgressPanel(final JDialog parent) {
+  public MapDownloadProgressPanel(final JFrame parent) {
     downloadCoordinator = new DownloadCoordinator();
   }
 
@@ -101,12 +101,8 @@ public final class MapDownloadProgressPanel extends JPanel {
         continue;
       }
       final JProgressBar progressBar = progressBars.get(download);
-      Consumer<Integer> progressListener = s -> {
-        SwingUtilities.invokeLater(() -> progressBar.setValue(s));
-      };
-      Runnable completionListener = () -> {
-        SwingUtilities.invokeLater(() -> progressBar.setValue(progressBar.getMaximum()));
-      };
+      Consumer<Integer> progressListener = s -> SwingUtilities.invokeLater(() -> progressBar.setValue(s));
+      Runnable completionListener = () -> SwingUtilities.invokeLater(() -> progressBar.setValue(progressBar.getMaximum()));
 
       (new Thread(() -> {
         int length = DownloadUtils.getDownloadLength(download.newURL());

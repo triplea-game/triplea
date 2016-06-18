@@ -10,8 +10,6 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -397,7 +395,7 @@ public class PolygonGrabber extends JFrame {
       repaint();
     } catch (final FileNotFoundException ex) {
       ClientLogger.logQuietly("file name = " + polyName, ex);
-    } catch (IOException | HeadlessException ex) {
+    } catch (HeadlessException ex) {
       // TODO: remove HeadlessException (fix anti-pattern control flow via exception handling with proper control flow)
       ClientLogger.logQuietly(ex);
     }
@@ -523,7 +521,7 @@ public class PolygonGrabber extends JFrame {
    *        .awt.Point p the point to check
    * @return java.lang.boolean
    */
-  private final boolean isBlack(final Point p) {
+  private boolean isBlack(final Point p) {
     return isBlack(p.x, p.y);
   }
 
@@ -538,7 +536,7 @@ public class PolygonGrabber extends JFrame {
    *        .lang.int y the y coordinate
    * @return java.lang.boolean
    */
-  private final boolean isBlack(final int x, final int y) {
+  private boolean isBlack(final int x, final int y) {
     if (!inBounds(x, y)) {
       // not inbounds, can't be black
       return false;
@@ -550,7 +548,7 @@ public class PolygonGrabber extends JFrame {
     return (m_bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0;
   }
 
-  private static final boolean isBlack(final int x, final int y, final BufferedImage bufferedImage) {
+  private static boolean isBlack(final int x, final int y, final BufferedImage bufferedImage) {
     if (!inBounds(x, y, bufferedImage)) {
       // not inbounds, can't be black
       return false;
@@ -572,11 +570,11 @@ public class PolygonGrabber extends JFrame {
    *        .lang.int y the y coordinate
    * @return java.lang.boolean
    */
-  private final boolean inBounds(final int x, final int y) {
+  private boolean inBounds(final int x, final int y) {
     return x >= 0 && x < m_bufferedImage.getWidth(null) && y >= 0 && y < m_bufferedImage.getHeight(null);
   }
 
-  private static final boolean inBounds(final int x, final int y, final Image image) {
+  private static boolean inBounds(final int x, final int y, final Image image) {
     return x >= 0 && x < image.getWidth(null) && y >= 0 && y < image.getHeight(null);
   }
 
@@ -598,7 +596,7 @@ public class PolygonGrabber extends JFrame {
    * @param java
    *        .lang.int direction the specified direction to move
    */
-  private final void move(final Point p, final int direction) {
+  private void move(final Point p, final int direction) {
     if (direction < 0 || direction > 7) {
       throw new IllegalArgumentException("Not a direction :" + direction);
     }
@@ -635,7 +633,7 @@ public class PolygonGrabber extends JFrame {
         || m_testPoint.x == m_bufferedImage.getWidth(this) || isBlack(m_testPoint);
   }
 
-  private final boolean doesPolygonContainAnyBlackInside(final Polygon poly, final BufferedImage imageCopy,
+  private boolean doesPolygonContainAnyBlackInside(final Polygon poly, final BufferedImage imageCopy,
       final Graphics imageCopyGraphics) {
     // we would like to just test if each point is both black and contained within the polygon, but contains counts the
     // borders,
@@ -675,7 +673,7 @@ public class PolygonGrabber extends JFrame {
    *        .lang.int y the y coordinate
    * @return java.awt.Polygon
    */
-  private final Polygon findPolygon(final int x, final int y) {
+  private Polygon findPolygon(final int x, final int y) {
     // walk up, find the first black point
     final Point startPoint = new Point(x, y);
     while (inBounds(startPoint.x, startPoint.y - 1) && !isBlack(startPoint.x, startPoint.y)) {

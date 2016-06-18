@@ -1,11 +1,8 @@
 package games.strategy.ui;
 
-import java.awt.FlowLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -20,20 +17,6 @@ public class DoubleTextField extends JTextField {
   private String m_terr = null;
   private final ListenerList<DoubleTextFieldChangeListener> m_listeners =
       new ListenerList<>();
-
-  public static void main(final String[] args) {
-    final JFrame frame = new JFrame();
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.getContentPane().setLayout(new FlowLayout());
-    frame.getContentPane().add(new JLabel("no range"));
-    frame.getContentPane().add(new DoubleTextField());
-    frame.getContentPane().add(new JLabel("positive"));
-    frame.getContentPane().add(new DoubleTextField(0));
-    frame.getContentPane().add(new JLabel("0 to 5"));
-    frame.getContentPane().add(new DoubleTextField(0.0, 5.1));
-    frame.setSize(400, 60);
-    frame.setVisible(true);
-  }
 
   /** Creates new IntTextBox */
   public DoubleTextField() {
@@ -123,7 +106,7 @@ public class DoubleTextField extends JTextField {
     return m_min;
   }
 
-  private final boolean isGood(final double value) {
+  private boolean isGood(final double value) {
     return value <= m_max && value >= m_min;
   }
 
