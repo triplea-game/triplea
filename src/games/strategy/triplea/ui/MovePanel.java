@@ -1282,9 +1282,7 @@ public class MovePanel extends AbstractMovePanel {
       final PlayerID owner = getUnitOwner(selectedUnits);
       final CompositeMatchAnd<Unit> match =
           new CompositeMatchAnd<>(Matches.unitIsOwnedBy(owner)/* , Matches.UnitIsNotFactory */);
-      if (true) {
-        match.add(Matches.UnitCanMove);
-      }
+      match.add(Matches.UnitCanMove);
       final boolean someOwned = Match.someMatch(units, match);
       final boolean isCorrectTerritory = firstSelectedTerritory == null || firstSelectedTerritory == territory;
       if (someOwned && isCorrectTerritory) {
