@@ -31,7 +31,7 @@ public class ChannelMessengerTest {
     SERVER_PORT = TestUtil.getUniquePort();
     m_server = new ServerMessenger("Server", SERVER_PORT);
     m_server.setAcceptNewConnections(true);
-    final String mac = MacFinder.getHashedMacAddress();
+    final String mac = MacFinder.GetHashedMacAddress();
     m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1", mac);
     final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(m_server);
     m_hub = unifiedMessenger.getHub();
@@ -94,7 +94,7 @@ public class ChannelMessengerTest {
     assertHasChannel(test, m_hub);
     assertEquals(1, m_clientMessenger.getUnifiedMessenger().getLocalEndPointCount(test));
     // add a new client
-    final String mac = MacFinder.getHashedMacAddress();
+    final String mac = MacFinder.GetHashedMacAddress();
     final ClientMessenger clientMessenger2 = new ClientMessenger("localhost", SERVER_PORT, "client2", mac);
     final ChannelMessenger client2 = new ChannelMessenger(new UnifiedMessenger(clientMessenger2));
     ((IChannelBase) client2.getChannelBroadcastor(test)).testString("a");

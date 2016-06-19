@@ -55,7 +55,7 @@ public class MessengerLoginTest {
     try {
       server.setLoginValidator(validator);
       server.setAcceptNewConnections(true);
-      final String mac = MacFinder.getHashedMacAddress();
+      final String mac = MacFinder.GetHashedMacAddress();
       final ClientMessenger client =
           new ClientMessenger("localhost", SERVER_PORT, "fee", mac, new DefaultObjectStreamFactory(), login);
       client.shutDown();
@@ -93,7 +93,7 @@ public class MessengerLoginTest {
       server.setLoginValidator(validator);
       server.setAcceptNewConnections(true);
       try {
-        final String mac = MacFinder.getHashedMacAddress();
+        final String mac = MacFinder.GetHashedMacAddress();
         new ClientMessenger("localhost", SERVER_PORT, "fee", mac, new DefaultObjectStreamFactory(), login);
         fail("we should not have logged in");
       } catch (final CouldNotLogInException expected) {
@@ -135,7 +135,7 @@ public class MessengerLoginTest {
     try {
       server.setLoginValidator(validator);
       server.setAcceptNewConnections(true);
-      final String mac = MacFinder.getHashedMacAddress();
+      final String mac = MacFinder.GetHashedMacAddress();
       final ClientMessenger client =
           new ClientMessenger("localhost", SERVER_PORT, "fee", mac, new DefaultObjectStreamFactory(), login);
       client.shutDown();

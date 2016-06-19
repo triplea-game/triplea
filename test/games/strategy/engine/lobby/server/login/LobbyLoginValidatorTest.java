@@ -29,7 +29,7 @@ public class LobbyLoginValidatorTest {
     final LobbyLoginValidator validator = new LobbyLoginValidator();
     final SocketAddress address = new InetSocketAddress(5000);
     final String name = Util.createUniqueTimeStamp();
-    final String mac = MacFinder.getHashedMacAddress();
+    final String mac = MacFinder.GetHashedMacAddress();
     final Map<String, String> properties = new HashMap<>();
     properties.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
     properties.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt("123", "foo"));
@@ -47,7 +47,7 @@ public class LobbyLoginValidatorTest {
     final LobbyLoginValidator validator = new LobbyLoginValidator();
     final SocketAddress address = new InetSocketAddress(5000);
     final String name = Util.createUniqueTimeStamp();
-    final String mac = MacFinder.getHashedMacAddress();
+    final String mac = MacFinder.GetHashedMacAddress();
     final Map<String, String> properties = new HashMap<>();
     properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
     properties.put(LobbyLoginValidator.LOBBY_VERSION, "0.1");
@@ -60,7 +60,7 @@ public class LobbyLoginValidatorTest {
     final LobbyLoginValidator validator = new LobbyLoginValidator();
     final SocketAddress address = new InetSocketAddress(5000);
     final String name = Util.createUniqueTimeStamp();
-    final String mac = MacFinder.getHashedMacAddress();
+    final String mac = MacFinder.GetHashedMacAddress();
     final Map<String, String> properties = new HashMap<>();
     properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
     properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
@@ -78,7 +78,7 @@ public class LobbyLoginValidatorTest {
     final LobbyLoginValidator validator = new LobbyLoginValidator();
     final SocketAddress address = new InetSocketAddress(5000);
     final String name = "bitCh" + Util.createUniqueTimeStamp();
-    final String mac = MacFinder.getHashedMacAddress();
+    final String mac = MacFinder.GetHashedMacAddress();
     new BadWordController().addBadWord("bitCh");
     final Map<String, String> properties = new HashMap<>();
     properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
@@ -92,7 +92,7 @@ public class LobbyLoginValidatorTest {
     final LobbyLoginValidator validator = new LobbyLoginValidator();
     final SocketAddress address = new InetSocketAddress(5000);
     final String name = Util.createUniqueTimeStamp();
-    final String mac = MacFinder.getHashedMacAddress();
+    final String mac = MacFinder.GetHashedMacAddress();
     final String email = "none@none.none";
     final String password = "foo";
     final String hashedPassword = MD5Crypt.crypt(password);
@@ -118,7 +118,7 @@ public class LobbyLoginValidatorTest {
     new BannedIpController().addBannedIp("1.1.1.1");
     final SocketAddress address = new InetSocketAddress(InetAddress.getByAddress(new byte[] {1, 1, 1, 1}), 5000);
     final String name = "name" + Util.createUniqueTimeStamp();
-    final String mac = MacFinder.getHashedMacAddress();
+    final String mac = MacFinder.GetHashedMacAddress();
     final Map<String, String> properties = new HashMap<>();
     properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
     properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
