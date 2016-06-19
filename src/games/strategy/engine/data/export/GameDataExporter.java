@@ -212,7 +212,6 @@ public class GameDataExporter {
 
   private void printConstantProperties(final Map<String, Object> conProperties) {
     for(String propName : conProperties.keySet()) {
-      final String propName = propertyNames.next();
       switch (propName) {
         case "notes":  // TODO: unchecked reflection
           // Special handling of notes property
