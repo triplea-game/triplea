@@ -46,7 +46,7 @@ public class DownloadMapsWindow extends JFrame {
 
   private static final long serialVersionUID = -1542210716764178580L;
   private static final int WINDOW_WIDTH = 1200;
-  private static final int WINDOW_HEIGHT = 950;
+  private static final int WINDOW_HEIGHT = 700;
   private static final int DIVIDER_POSITION = WINDOW_HEIGHT - 150;
 
   private final MapDownloadProgressPanel progressPanel;
