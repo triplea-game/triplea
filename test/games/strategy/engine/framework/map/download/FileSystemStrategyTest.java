@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.map.download;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.util.Optional;
@@ -35,12 +36,12 @@ public class FileSystemStrategyTest {
 
   @Test
   public void testMapPropertyFileNotFound() {
-    assertEquals(Optional.empty(), testObj.getMapVersion("does_not_exist"));
+    assertThat(testObj.getMapVersion("does_not_exist"), is(Optional.empty()));
   }
 
   @Test
   public void testMapFileFound()  {
-    assertEquals(Optional.of(new Version(1,2)), testObj.getMapVersion(mapFile.getAbsolutePath()));
+    assertThat(testObj.getMapVersion(mapFile.getAbsolutePath()) , is(Optional.of(new Version(1,2))));
   }
 
 }

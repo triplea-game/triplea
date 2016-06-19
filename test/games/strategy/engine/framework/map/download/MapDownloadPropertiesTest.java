@@ -1,7 +1,8 @@
 package games.strategy.engine.framework.map.download;
 
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
@@ -29,6 +30,6 @@ public class MapDownloadPropertiesTest {
   public void mapListDownloadSitePropertyIsReadFromPropertyFile() {
     when(mockReader.readProperty(GameEngineProperty.MAP_LISTING_SOURCE_FILE)).thenReturn(SAMPLE_VALUE);
     MapListingSource testObj = new MapListingSource(mockReader);
-    assertEquals(SAMPLE_VALUE, testObj.getMapListDownloadSite());
+    assertThat(testObj.getMapListDownloadSite(), is(SAMPLE_VALUE));
   }
 }

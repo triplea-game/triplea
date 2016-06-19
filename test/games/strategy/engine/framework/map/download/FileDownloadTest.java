@@ -1,7 +1,8 @@
 package games.strategy.engine.framework.map.download;
 
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,12 +21,12 @@ public class FileDownloadTest {
   @Test
   public void testBasicStartCancel() {
     DownloadFile testObj = new DownloadFile(mockDownload, e -> {}, () -> {});
-    assertEquals(DownloadState.NOT_STARTED, testObj.getDownloadState());
+    assertThat(testObj.getDownloadState(), is(DownloadState.NOT_STARTED));
 
     testObj.startAsyncDownload();
-    assertEquals(DownloadState.DOWNLOADING, testObj.getDownloadState());
+    assertThat(testObj.getDownloadState(), is(DownloadState.DOWNLOADING));
 
     testObj.cancelDownload();
-    assertEquals(DownloadState.CANCELLED, testObj.getDownloadState());
+    assertThat(testObj.getDownloadState(), is(DownloadState.CANCELLED));
   }
 }

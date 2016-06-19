@@ -2,9 +2,7 @@ package games.strategy.engine.framework.systemcheck;
 
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -16,27 +14,24 @@ public class SystemCheckTest {
 
   @Test
   public void testPassingSystemCheck() {
-    Runnable noOp = () -> {};
-    SystemCheck check = new SystemCheck("msg", noOp);
+    SystemCheck check = new SystemCheck("msg", () -> {});
 
     assertThat(check.wasSuccess(), is(true));
     assertThat(check.getResultMessage(), is("msg: true"));
     assertThat(check.getException().isPresent(), is(false));
   }
 
-
   @Test
   public void testFailingSystemCheck() {
     SystemCheck check = new SystemCheck("msg", () -> Throwables.propagate(testException));
 
-    assertFalse(check.wasSuccess());
+    assertThat(check.wasSuccess(), is(false));
     assertThat(check.getResultMessage(), is("msg: false"));
   }
-
 
   @Test
   public void remembersAndReturnsExceptions() {
     SystemCheck check = new SystemCheck("msg", () -> Throwables.propagate(testException));
-    assertTrue(check.getException().isPresent());
+    assertThat(check.getException().isPresent(), is(true));
   }
 }

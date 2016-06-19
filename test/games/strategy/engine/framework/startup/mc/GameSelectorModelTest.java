@@ -1,8 +1,9 @@
 package games.strategy.engine.framework.startup.mc;
 
-import static org.junit.Assert.assertFalse;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -14,7 +15,6 @@ import java.net.URISyntaxException;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -34,28 +34,26 @@ import games.strategy.util.Version;
 public class GameSelectorModelTest {
 
   private static void assertHasEmptyData(final GameSelectorModel objectToCheck) {
-    assertThat(objectToCheck.getGameData(), Matchers.nullValue());
+    assertThat(objectToCheck.getGameData(), nullValue());
     assertHasEmptyDisplayData(objectToCheck);
   }
 
   private static void assertHasEmptyDisplayData(final GameSelectorModel objectToCheck) {
-    assertThat(objectToCheck.getFileName(), Matchers.is("-"));
-    assertThat(objectToCheck.getGameName(), Matchers.is("-"));
-    assertThat(objectToCheck.getGameRound(), Matchers.is("-"));
+    assertThat(objectToCheck.getFileName(), is("-"));
+    assertThat(objectToCheck.getGameName(), is("-"));
+    assertThat(objectToCheck.getGameRound(), is("-"));
   }
 
   private static void assertHasFakeTestData(final GameSelectorModel objectToCheck) {
-    assertThat(objectToCheck.getGameName(), Matchers.is(fakeGameName));
-    assertThat(objectToCheck.getGameRound(), Matchers.is(fakeGameRound));
-    assertThat(objectToCheck.getGameVersion(), Matchers.is(fakeGameVersion));
+    assertThat(objectToCheck.getGameName(), is(fakeGameName));
+    assertThat(objectToCheck.getGameRound(), is(fakeGameRound));
+    assertThat(objectToCheck.getGameVersion(), is(fakeGameVersion));
   }
 
   private static final String fakeGameVersion = "fakeGameVersion";
   private static final String fakeGameRound = "3";
   private static final String fakeGameName = "_fakeGameName_";
   private static final String fakeFileName = "/hack/and/slash";
-
-
 
   private GameSelectorModel testObj;
 
@@ -99,11 +97,10 @@ public class GameSelectorModelTest {
     this.testObjectSetMockGameData();
   }
 
-
   private final void testObjectSetMockGameData() {
     prepareMockGameDataExpectations();
     testObj.setGameData(mockGameData);
-    assertThat(testObj.getGameData(), Matchers.sameInstance(mockGameData));
+    assertThat(testObj.getGameData(), sameInstance(mockGameData));
     assertHasFakeTestData(testObj);
     this.verifyTestObjectObserverUpdateSent();
   }
@@ -130,29 +127,27 @@ public class GameSelectorModelTest {
     assertHasEmptyData(testObj);
   }
 
-
   @Test
   public void testIsSaveGame() {
     testObj.load((GameData) null, "");
-    assertThat(testObj.isSavedGame(), Matchers.is(true));
+    assertThat(testObj.isSavedGame(), is(true));
 
     testObj.load((GameData) null, ".xml");
-    assertThat(testObj.isSavedGame(), Matchers.is(false));
+    assertThat(testObj.isSavedGame(), is(false));
 
     testObj.load((GameData) null, "file.tsvg");
-    assertThat(testObj.isSavedGame(), Matchers.is(true));
+    assertThat(testObj.isSavedGame(), is(true));
   }
 
 
   @Test
   public void testCanSelect() {
-    assertThat(testObj.canSelect(), Matchers.is(true));
+    assertThat(testObj.canSelect(), is(true));
     testObj.setCanSelect(false);
-    assertThat(testObj.canSelect(), Matchers.is(false));
+    assertThat(testObj.canSelect(), is(false));
     testObj.setCanSelect(true);
-    assertThat(testObj.canSelect(), Matchers.is(true));
+    assertThat(testObj.canSelect(), is(true));
   }
-
 
   @Test
   public void testClearDataButKeepGameInfo() {
@@ -164,11 +159,10 @@ public class GameSelectorModelTest {
 
     testObj.clearDataButKeepGameInfo(newGameName, newGameRound, newGameVersion);
     verifyTestObjectObserverUpdateSent();
-    assertThat(testObj.getGameData(), Matchers.nullValue());
-    assertThat(testObj.getGameName(), Matchers.is(newGameName));
-    assertThat(testObj.getGameRound(), Matchers.is(newGameRound));
-    assertThat(testObj.getGameVersion(), Matchers.is(newGameVersion));
-
+    assertThat(testObj.getGameData(), nullValue());
+    assertThat(testObj.getGameName(), is(newGameName));
+    assertThat(testObj.getGameRound(), is(newGameRound));
+    assertThat(testObj.getGameVersion(), is(newGameVersion));
   }
 
   @Test
@@ -184,9 +178,9 @@ public class GameSelectorModelTest {
       throw new RuntimeException(e);
     }
     testObj.load(mockEntry);
-    assertThat(testObj.getFileName(), Matchers.is(fileName));
+    assertThat(testObj.getFileName(), is(fileName));
 
-    assertThat(testObj.getGameData(), Matchers.sameInstance(mockGameData));
+    assertThat(testObj.getGameData(), sameInstance(mockGameData));
     assertHasFakeTestData(testObj);
   }
 
@@ -197,64 +191,64 @@ public class GameSelectorModelTest {
 
     prepareMockGameDataExpectations();
     testObj.load(mockGameData, fakeFileName);
-    assertThat(testObj.getGameData(), Matchers.sameInstance(mockGameData));
-    assertThat(testObj.getFileName(), Matchers.is(fakeFileName));
+    assertThat(testObj.getGameData(), sameInstance(mockGameData));
+    assertThat(testObj.getFileName(), is(fakeFileName));
   }
 
 
   @Test
   public void testGetGameData() {
-    assertThat(testObj.getGameData(), Matchers.nullValue());
+    assertThat(testObj.getGameData(), nullValue());
     prepareMockGameDataExpectations();
     testObj.setGameData(mockGameData);
-    assertThat(testObj.getGameData(), Matchers.sameInstance(mockGameData));
+    assertThat(testObj.getGameData(), sameInstance(mockGameData));
   }
 
   @Test
   public void testSetAndGetIsHostHeadlessBot() {
-    assertFalse(testObj.isHostHeadlessBot());
+    assertThat(testObj.isHostHeadlessBot(), is(false));
     testObj.setIsHostHeadlessBot(true);
-    assertTrue(testObj.isHostHeadlessBot());
+    assertThat(testObj.isHostHeadlessBot(), is(true));
     testObj.setIsHostHeadlessBot(false);
-    assertFalse(testObj.isHostHeadlessBot());
+    assertThat(testObj.isHostHeadlessBot(), is(false));
   }
 
 
   @Test
   public void testSetAndGetClientModelForHostBots() {
-    assertThat(testObj.getClientModelForHostBots(), Matchers.nullValue());
+    assertThat(testObj.getClientModelForHostBots(), nullValue());
     testObj.setClientModelForHostBots(mockClientModel);
-    assertThat(testObj.getClientModelForHostBots(), Matchers.sameInstance(mockClientModel));
+    assertThat(testObj.getClientModelForHostBots(), sameInstance(mockClientModel));
     testObj.setClientModelForHostBots(null);
-    assertThat(testObj.getClientModelForHostBots(), Matchers.nullValue());
+    assertThat(testObj.getClientModelForHostBots(), nullValue());
   }
 
   @Test
   public void testGetFileName() {
-    assertThat(testObj.getFileName(), Matchers.is("-"));
+    assertThat(testObj.getFileName(), is("-"));
     prepareMockGameDataExpectations();
     testObj.load(mockGameData, fakeFileName);
-    assertThat(testObj.getFileName(), Matchers.is(fakeFileName));
+    assertThat(testObj.getFileName(), is(fakeFileName));
     testObj.resetGameDataToNull();
-    assertThat(testObj.getFileName(), Matchers.is("-"));
+    assertThat(testObj.getFileName(), is("-"));
   }
 
   @Test
   public void testGetGameName() {
     this.testObjectSetMockGameData();
-    assertThat(testObj.getGameName(), Matchers.is(fakeGameName));
+    assertThat(testObj.getGameName(), is(fakeGameName));
   }
 
   @Test
   public void testGetGameRound() {
     this.testObjectSetMockGameData();
-    assertThat(testObj.getGameRound(), Matchers.is(fakeGameRound));
+    assertThat(testObj.getGameRound(), is(fakeGameRound));
   }
 
   @Test
   public void testGetGameVersion() {
     this.testObjectSetMockGameData();
-    assertThat(testObj.getGameVersion(), Matchers.is(fakeGameVersion));
+    assertThat(testObj.getGameVersion(), is(fakeGameVersion));
   }
 
   @Ignore
@@ -278,5 +272,4 @@ public class GameSelectorModelTest {
     // testObj.loadDefaultGame(Component);
     // TODO
   }
-
 }
