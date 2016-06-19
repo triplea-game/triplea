@@ -1,11 +1,15 @@
 package tools.map.xml.creator;
 
-import org.junit.Ignore;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
-@Ignore
+import org.junit.Ignore;
+import org.junit.Test;
+
 public class CanalDefinitionsPanelTest extends MapXmlCreatorTestBase {
 
-
+  @Ignore
+  @Test
   public void testLayout() {
     // //TODO: find a way to allow Travis CI build without failing with
     // // "java.awt.HeadlessException:
@@ -15,7 +19,6 @@ public class CanalDefinitionsPanelTest extends MapXmlCreatorTestBase {
     assertSame(getMapXmlCreator(), ImageScrollPanePanel.getMapXmlCreator());
     assertEquals(false, ImageScrollPanePanel.polygons.isEmpty());
     assertEquals(false, ImageScrollPanePanel.polygonsInvalid);
-
   }
 
   // TODO: Move to MapXmlHelperTest
@@ -48,6 +51,5 @@ public class CanalDefinitionsPanelTest extends MapXmlCreatorTestBase {
   // }
   // }
   // }
-
 }
 

@@ -1,10 +1,16 @@
 package games.strategy.triplea.delegate;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
@@ -19,16 +25,11 @@ public class PlaceDelegateTest extends DelegateTest {
   protected PlaceDelegate m_delegate;
   protected ITestDelegateBridge m_bridge;
 
-  /** Creates new PlaceDelegateTest */
-  public PlaceDelegateTest(final String name) {
-    super(name);
-  }
-
   private Collection<Unit> getInfantry(final int count, final PlayerID player) {
     return m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INFANTRY).create(count, player);
   }
 
-  @Override
+  @Before
   public void setUp() throws Exception {
     super.setUp();
     m_bridge = super.getDelegateBridge(british);
@@ -48,6 +49,7 @@ public class PlaceDelegateTest extends DelegateTest {
     return rVal;
   }
 
+  @Test
   public void testValid() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(infantry, 2);
@@ -55,11 +57,13 @@ public class PlaceDelegateTest extends DelegateTest {
     assertValid(response);
   }
 
+  @Test
   public void testNotCorrectUnitsValid() {
     final String response = m_delegate.placeUnits(infantry.create(3, british), uk);
     assertError(response);
   }
 
+  @Test
   public void testOnlySeaInSeaZone() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(infantry, 2);
@@ -67,6 +71,7 @@ public class PlaceDelegateTest extends DelegateTest {
     assertError(response);
   }
 
+  @Test
   public void testSeaCanGoInSeaZone() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(transport, 2);
@@ -74,6 +79,7 @@ public class PlaceDelegateTest extends DelegateTest {
     assertValid(response);
   }
 
+  @Test
   public void testLandCanGoInLandZone() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(infantry, 2);
@@ -81,6 +87,7 @@ public class PlaceDelegateTest extends DelegateTest {
     assertValid(response);
   }
 
+  @Test
   public void testSeaCantGoInSeaInLandZone() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(transport, 2);
@@ -88,6 +95,7 @@ public class PlaceDelegateTest extends DelegateTest {
     assertError(response);
   }
 
+  @Test
   public void testNoGoIfOpposingTroopsSea() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(transport, 2);
@@ -95,6 +103,7 @@ public class PlaceDelegateTest extends DelegateTest {
     assertError(response);
   }
 
+  @Test
   public void testNoGoIfOpposingTroopsLand() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(infantry, 2);
@@ -102,6 +111,7 @@ public class PlaceDelegateTest extends DelegateTest {
     assertError(response);
   }
 
+  @Test
   public void testOnlyOneFactoryPlaced() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(factory, 1);
@@ -109,6 +119,7 @@ public class PlaceDelegateTest extends DelegateTest {
     assertError(response);
   }
 
+  @Test
   public void testCantPlaceAAWhenOneAlreadyThere() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(aaGun, 1);
@@ -116,6 +127,7 @@ public class PlaceDelegateTest extends DelegateTest {
     assertError(response);
   }
 
+  @Test
   public void testCantPlaceTwoAA() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(aaGun, 2);
@@ -123,6 +135,7 @@ public class PlaceDelegateTest extends DelegateTest {
     assertError(response);
   }
 
+  @Test
   public void testProduceFactory() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(factory, 1);
@@ -130,6 +143,7 @@ public class PlaceDelegateTest extends DelegateTest {
     assertValid(response);
   }
 
+  @Test
   public void testMustOwnToPlace() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(infantry, 2);
@@ -137,6 +151,7 @@ public class PlaceDelegateTest extends DelegateTest {
     assertError(response);
   }
 
+  @Test
   public void testCanProduce() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(infantry, 2);
@@ -144,6 +159,7 @@ public class PlaceDelegateTest extends DelegateTest {
     assertFalse(response.isError());
   }
 
+  @Test
   public void testCanProduceInSea() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(transport, 2);
@@ -151,6 +167,7 @@ public class PlaceDelegateTest extends DelegateTest {
     assertFalse(response.isError());
   }
 
+  @Test
   public void testCanNotProduceThatManyUnits() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(infantry, 3);
@@ -158,6 +175,7 @@ public class PlaceDelegateTest extends DelegateTest {
     assertTrue(response.getMaxUnits() == 2);
   }
 
+  @Test
   public void testAlreadyProducedUnits() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     final Map<Territory, Collection<Unit>> alreadyProduced = new HashMap<>();
@@ -168,6 +186,7 @@ public class PlaceDelegateTest extends DelegateTest {
     assertTrue(response.getMaxUnits() == 0);
   }
 
+  @Test
   public void testMultipleFactories() {
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(factory, 1);

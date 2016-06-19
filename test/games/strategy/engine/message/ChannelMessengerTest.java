@@ -1,6 +1,13 @@
 package games.strategy.engine.message;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.net.ClientMessenger;
@@ -10,9 +17,8 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.ServerMessenger;
 import games.strategy.test.TestUtil;
 import games.strategy.util.ThreadUtil;
-import junit.framework.TestCase;
 
-public class ChannelMessengerTest extends TestCase {
+public class ChannelMessengerTest {
   private IServerMessenger m_server;
   private IMessenger m_client1;
   private static int SERVER_PORT = -1;
@@ -20,11 +26,7 @@ public class ChannelMessengerTest extends TestCase {
   private ChannelMessenger m_clientMessenger;
   private UnifiedMessengerHub m_hub;
 
-  public ChannelMessengerTest(final String name) {
-    super(name);
-  }
-
-  @Override
+  @Before
   public void setUp() throws IOException {
     SERVER_PORT = TestUtil.getUniquePort();
     m_server = new ServerMessenger("Server", SERVER_PORT);
@@ -37,7 +39,7 @@ public class ChannelMessengerTest extends TestCase {
     m_clientMessenger = new ChannelMessenger(new UnifiedMessenger(m_client1));
   }
 
-  @Override
+  @After
   public void tearDown() {
     try {
       if (m_server != null) {
@@ -55,8 +57,7 @@ public class ChannelMessengerTest extends TestCase {
     }
   }
 
-  public void testDummy() {}
-
+  @Test
   public void testLocalCall() {
     final RemoteName descriptor = new RemoteName(IChannelBase.class, "testLocalCall");
     m_serverMessenger.registerChannelSubscriber(new ChannelSubscribor(), descriptor);
@@ -66,6 +67,7 @@ public class ChannelMessengerTest extends TestCase {
     subscribor.testString("a");
   }
 
+  @Test
   public void testRemoteCall() {
     final RemoteName testRemote = new RemoteName(IChannelBase.class, "testRemote");
     final ChannelSubscribor subscribor1 = new ChannelSubscribor();
@@ -82,6 +84,7 @@ public class ChannelMessengerTest extends TestCase {
     assertCallCountIs(subscribor1, 4);
   }
 
+  @Test
   public void testMultipleClients() throws Exception {
     // set up the client and server
     // so that the client has 1 subscribor, and the server knows about it
@@ -98,6 +101,7 @@ public class ChannelMessengerTest extends TestCase {
     assertCallCountIs(client1Subscribor, 1);
   }
 
+  @Test
   public void testMultipleChannels() {
     final RemoteName testRemote2 = new RemoteName(IChannelBase.class, "testRemote2");
     final RemoteName testRemote3 = new RemoteName(IChannelBase.class, "testRemote3");

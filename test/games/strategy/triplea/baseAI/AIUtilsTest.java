@@ -1,8 +1,13 @@
 package games.strategy.triplea.baseAI;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -13,27 +18,23 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.AIUtils;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.LoadGameUtil;
-import junit.framework.TestCase;
 
-public class AIUtilsTest extends TestCase {
+public class AIUtilsTest {
   private GameData m_data;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     m_data = LoadGameUtil.loadTestGame("revised_test.xml");
   }
 
-  @Override
-  protected void tearDown() throws Exception {
-    m_data = null;
-  }
-
+  @Test
   public void testCost() {
     final UnitType infantry = GameDataTestUtil.infantry(m_data);
     final PlayerID british = GameDataTestUtil.british(m_data);
     assertEquals(3, AIUtils.getCost(infantry, british, m_data));
   }
 
+  @Test
   public void testSortByCost() {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final List<Unit> sorted = new ArrayList<>(germany.getUnits().getUnits());

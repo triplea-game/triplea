@@ -1,11 +1,15 @@
 package games.strategy.engine.message;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Collection;
 import java.util.Comparator;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class RemoteInterfaceHelperTest extends TestCase {
+public class RemoteInterfaceHelperTest {
+
+  @Test
   public void testSimple() {
     assertEquals("compare", RemoteInterfaceHelper.getMethodInfo(0, Comparator.class).getFirst());
     assertEquals("add", RemoteInterfaceHelper.getMethodInfo(0, Collection.class).getFirst());

@@ -1,10 +1,19 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
-import static games.strategy.triplea.delegate.GameDataTestUtil.*;
+import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
+import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
+import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
+import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -13,21 +22,16 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.xml.LoadGameUtil;
-import junit.framework.TestCase;
 
-public class OddsCalculatorTest extends TestCase {
+public class OddsCalculatorTest {
   private GameData m_data;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     m_data = LoadGameUtil.loadTestGame("revised_test.xml");
   }
 
-  @Override
-  protected void tearDown() throws Exception {
-    m_data = null;
-  }
-
+  @Test
   public void testUnbalancedFight() {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final List<Unit> defendingUnits = new ArrayList<>(germany.getUnits().getUnits());
@@ -44,6 +48,7 @@ public class OddsCalculatorTest extends TestCase {
     assertTrue(results.getDrawPercent() < 0.1);
   }
 
+  @Test
   public void testKeepOneAttackingLand() {
     // 1 bomber and 1 infantry attacking
     // 1 fighter
@@ -65,6 +70,7 @@ public class OddsCalculatorTest extends TestCase {
     assertEquals(0.16, results.getDefenderWinPercent(), 0.10);
   }
 
+  @Test
   public void testAttackingTransports() {
     final Territory sz1 = territory("1 Sea Zone", m_data);
     final List<Unit> attacking = transport(m_data).create(2, americans(m_data));
@@ -74,12 +80,13 @@ public class OddsCalculatorTest extends TestCase {
     final AggregateResults results = calculator.setCalculateDataAndCalculate(americans(m_data), germans(m_data), sz1,
         attacking, defending, Collections.<Unit>emptyList(), TerritoryEffectHelper.getEffects(sz1), 1);
     calculator.shutdown();
-    assertEquals(results.getAttackerWinPercent(), 0.0);
-    assertEquals(results.getDefenderWinPercent(), 1.0);
+    assertEquals(results.getAttackerWinPercent(), 0.0, 0.0);
+    assertEquals(results.getDefenderWinPercent(), 1.0, 0.0);
   }
 
+  @Test
   public void testDefendingTransports() {
-      // use v3 rule set
+    // use v3 rule set
     m_data = LoadGameUtil.loadTestGame("ww2v3_1942_test.xml");
     final Territory sz1 = territory("1 Sea Zone", m_data);
     final List<Unit> attacking = submarine(m_data).create(2, americans(m_data));
@@ -89,7 +96,7 @@ public class OddsCalculatorTest extends TestCase {
     final AggregateResults results = calculator.setCalculateDataAndCalculate(americans(m_data), germans(m_data), sz1,
         attacking, defending, Collections.<Unit>emptyList(), TerritoryEffectHelper.getEffects(sz1), 1);
     calculator.shutdown();
-    assertEquals(results.getAttackerWinPercent(), 1.0);
-    assertEquals(results.getDefenderWinPercent(), 0.0);
+    assertEquals(results.getAttackerWinPercent(), 1.0, 0.0);
+    assertEquals(results.getDefenderWinPercent(), 0.0, 0.0);
   }
 }

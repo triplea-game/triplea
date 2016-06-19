@@ -11,8 +11,6 @@ import org.junit.Test;
 
 import com.google.common.io.Files;
 
-import games.strategy.engine.framework.map.download.DownloadFileProperties;
-import games.strategy.engine.framework.map.download.FileSystemAccessStrategy;
 import games.strategy.test.TestUtil;
 import games.strategy.util.Version;
 
@@ -23,16 +21,12 @@ import games.strategy.util.Version;
  */
 public class FileSystemStrategyTest {
 
-
-
   private FileSystemAccessStrategy testObj;
 
   private File mapFile;
-//  private File propFile;
 
   @Before
   public void setUp() throws Exception {
-
     testObj = new FileSystemAccessStrategy();
     String text = DownloadFileProperties.VERSION_PROPERTY + " = 1.2";
     mapFile = TestUtil.createTempFile("");

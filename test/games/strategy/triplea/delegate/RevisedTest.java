@@ -35,6 +35,11 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.techDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -46,6 +51,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
@@ -74,13 +82,12 @@ import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
-import junit.framework.TestCase;
 
-public class RevisedTest extends TestCase {
+public class RevisedTest {
   private GameData m_data;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     m_data = LoadGameUtil.loadTestGame("revised_test.xml");
   }
 
@@ -100,6 +107,7 @@ public class RevisedTest extends TestCase {
         "Could not find " + (bombing ? "bombing" : "normal") + " battle in: " + territory.getName());
   }
 
+  @Test
   public void testMoveBadRoute() {
     final PlayerID british = GameDataTestUtil.british(m_data);
     final Territory sz1 = m_data.getMap().getTerritory("1 Sea Zone");
@@ -113,6 +121,7 @@ public class RevisedTest extends TestCase {
     assertTrue(error != null);
   }
 
+  @Test
   public void testAlliedNeighbors() {
     final PlayerID americans = americans(m_data);
     final Territory centralUs = territory("Central United States", m_data);
@@ -121,6 +130,7 @@ public class RevisedTest extends TestCase {
     assertTrue(enemyNeighbors.isEmpty());
   }
 
+  @Test
   public void testSubAdvance() {
     final UnitType sub = GameDataTestUtil.submarine(m_data);
     final UnitAttachment attachment = UnitAttachment.get(sub);
@@ -136,6 +146,7 @@ public class RevisedTest extends TestCase {
     assertEquals(3, attachment.getAttack(japanese));
   }
 
+  @Test
   public void testMoveThroughSubmergedSubs() {
     final PlayerID british = GameDataTestUtil.british(m_data);
     final Territory sz1 = m_data.getMap().getTerritory("1 Sea Zone");
@@ -159,6 +170,7 @@ public class RevisedTest extends TestCase {
     assertNull(error, error);
   }
 
+  @Test
   public void testRetreatBug() {
     final PlayerID russians = GameDataTestUtil.russians(m_data);
     final PlayerID americans = GameDataTestUtil.americans(m_data);
@@ -212,6 +224,7 @@ public class RevisedTest extends TestCase {
     assertEquals(1, moveDelegate.getTerritoriesWhereAirCantLand().size());
   }
 
+  @Test
   public void testContinuedBattles() {
     final PlayerID russians = GameDataTestUtil.russians(m_data);
     final PlayerID germans = GameDataTestUtil.germans(m_data);
@@ -255,6 +268,7 @@ public class RevisedTest extends TestCase {
     battle.end();
   }
 
+  @Test
   public void testLoadAlliedTransports() {
     final PlayerID british = british(m_data);
     final PlayerID americans = americans(m_data);
@@ -273,6 +287,7 @@ public class RevisedTest extends TestCase {
     assertFalse(error == null);
   }
 
+  @Test
   public void testBidPlace() {
     final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
     bridge.setStepName("BidPlace");
@@ -289,6 +304,7 @@ public class RevisedTest extends TestCase {
     assertNull(error);
   }
 
+  @Test
   public void testBombingRaid() {
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
@@ -321,6 +337,7 @@ public class RevisedTest extends TestCase {
     assertFalse(tracker.hasPendingBattle(germany, false));
   }
 
+  @Test
   public void testOverFlyBombersDies() {
     final PlayerID british = british(m_data);
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
@@ -346,6 +363,7 @@ public class RevisedTest extends TestCase {
     assertTrue(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
   }
 
+  @Test
   public void testMultipleOverFlyBombersDies() {
     final PlayerID british = british(m_data);
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
@@ -375,6 +393,7 @@ public class RevisedTest extends TestCase {
     assertTrue(balk.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
   }
 
+  @Test
   public void testOverFlyBombersJoiningBattleDie() {
     // a bomber flies over aa to join a battle, gets hit,
     // it should not appear in the battle
@@ -411,6 +430,7 @@ public class RevisedTest extends TestCase {
     assertTrue(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
   }
 
+  @Test
   public void testTransportAttack() {
     final Territory sz14 = m_data.getMap().getTerritory("14 Sea Zone");
     final Territory sz13 = m_data.getMap().getTerritory("13 Sea Zone");
@@ -429,6 +449,7 @@ public class RevisedTest extends TestCase {
     assertNull(error, error);
   }
 
+  @Test
   public void testLoadUndo() {
     final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
     final Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
@@ -460,6 +481,7 @@ public class RevisedTest extends TestCase {
     assertFalse(((TripleAUnit) infantry.get(0)).getWasLoadedThisTurn());
   }
 
+  @Test
   public void testLoadDependencies() {
     final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
     final Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
@@ -506,6 +528,7 @@ public class RevisedTest extends TestCase {
     assertTrue(move1.getcanUndo());
   }
 
+  @Test
   public void testLoadUndoInWrongOrder() {
     final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
     final Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
@@ -540,6 +563,7 @@ public class RevisedTest extends TestCase {
     assertFalse(((TripleAUnit) infantry.get(0)).getWasLoadedThisTurn());
   }
 
+  @Test
   public void testLoadUnloadAlliedTransport() {
     // you cant load and unload an allied transport the same turn
     final UnitType infantryType = GameDataTestUtil.infantry(m_data);
@@ -572,6 +596,7 @@ public class RevisedTest extends TestCase {
     assertEquals(MoveValidator.CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND, error);
   }
 
+  @Test
   public void testUnloadMultipleTerritories() {
     // in revised a transport may only unload to 1 territory.
     final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
@@ -624,6 +649,7 @@ public class RevisedTest extends TestCase {
     assertNull(error);
   }
 
+  @Test
   public void testUnloadInPreviousPhase() {
     // a transport may not unload in both combat and non combat
     final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
@@ -667,6 +693,7 @@ public class RevisedTest extends TestCase {
     assertTrue(error.startsWith(MoveValidator.TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE));
   }
 
+  @Test
   public void testSubAttackTransportNonCombat() {
     final Territory sz1 = territory("1 Sea Zone", m_data);
     final Territory sz8 = territory("8 Sea Zone", m_data);
@@ -682,6 +709,7 @@ public class RevisedTest extends TestCase {
     assertError(error);
   }
 
+  @Test
   public void testSubAttackNonCombat() {
     final Territory sz2 = territory("2 Sea Zone", m_data);
     final Territory sz8 = territory("8 Sea Zone", m_data);
@@ -697,6 +725,7 @@ public class RevisedTest extends TestCase {
     assertError(error);
   }
 
+  @Test
   public void testTransportAttackSubNonCombat() {
     final Territory sz1 = territory("1 Sea Zone", m_data);
     final Territory sz8 = territory("8 Sea Zone", m_data);
@@ -712,6 +741,7 @@ public class RevisedTest extends TestCase {
     assertError(error);
   }
 
+  @Test
   public void testMoveSubAwayFromSubmergedSubsInBattleZone() {
     final Territory sz45 = m_data.getMap().getTerritory("45 Sea Zone");
     final Territory sz50 = m_data.getMap().getTerritory("50 Sea Zone");
@@ -754,6 +784,7 @@ public class RevisedTest extends TestCase {
     assertEquals(0, AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattleSites(false).size());
   }
 
+  @Test
   public void testAAOwnership() {
     // Set up players
     // PlayerID british = GameDataTestUtil.british(m_data);
@@ -849,6 +880,7 @@ public class RevisedTest extends TestCase {
     assertEquals(endOwner, Constants.PLAYER_NAME_AMERICANS);
   }
 
+  @Test
   public void testStratBombCasualties() {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");
@@ -873,6 +905,7 @@ public class RevisedTest extends TestCase {
     assertEquals(0, germany.getUnits().getMatches(Matches.unitIsOwnedBy(british)).size());
   }
 
+  @Test
   public void testStratBombCasualtiesLowLuck() {
     makeGameLowLuck(m_data);
     final Territory germany = m_data.getMap().getTerritory("Germany");
@@ -901,6 +934,7 @@ public class RevisedTest extends TestCase {
     assertEquals(1, germany.getUnits().getMatches(Matches.unitIsOwnedBy(british)).size());
   }
 
+  @Test
   public void testStratBombCasualtiesLowLuckManyBombers() {
     makeGameLowLuck(m_data);
     final Territory germany = m_data.getMap().getTerritory("Germany");
@@ -926,6 +960,7 @@ public class RevisedTest extends TestCase {
     assertEquals(5, germany.getUnits().getMatches(Matches.unitIsOwnedBy(british)).size());
   }
 
+  @Test
   public void testStratBombRaidWithHeavyBombers() {
     final Territory germany = m_data.getMap().getTerritory("Germany");
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");
@@ -961,6 +996,7 @@ public class RevisedTest extends TestCase {
     assertEquals(pusBeforeRaid - 6, pusAfterRaid);
   }
 
+  @Test
   public void testLandBattleNoSneakAttack() {
     final String defender = "Germans";
     final String attacker = "British";
@@ -979,6 +1015,7 @@ public class RevisedTest extends TestCase {
         attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(), steps.toString());
   }
 
+  @Test
   public void testSeaBattleNoSneakAttack() {
     final String defender = "Germans";
     final String attacker = "British";
@@ -1000,6 +1037,7 @@ public class RevisedTest extends TestCase {
         attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(), steps.toString());
   }
 
+  @Test
   public void testAttackSubsOnSubs() {
     final String defender = "Germans";
     final String attacker = "British";
@@ -1036,6 +1074,7 @@ public class RevisedTest extends TestCase {
     assertTrue(attacked.getUnits().isEmpty());
   }
 
+  @Test
   public void testAttackSubsOnDestroyer() {
     final String defender = "Germans";
     final String attacker = "British";
@@ -1091,6 +1130,7 @@ public class RevisedTest extends TestCase {
     assertEquals(1, attacked.getUnits().size());
   }
 
+  @Test
   public void testAttackSubsAndBBOnDestroyerAndSubs() {
     final String defender = "Germans";
     final String attacker = "British";
@@ -1150,6 +1190,7 @@ public class RevisedTest extends TestCase {
     assertEquals(3, attacked.getUnits().size());
   }
 
+  @Test
   public void testAttackDestroyerAndSubsAgainstSub() {
     final String defender = "Germans";
     final String attacker = "British";
@@ -1188,6 +1229,7 @@ public class RevisedTest extends TestCase {
     assertEquals(1, attacked.getUnits().size());
   }
 
+  @Test
   public void testAttackSubsAndDestroyerOnBBAndSubs() {
     final String defender = "Germans";
     final String attacker = "British";
@@ -1247,6 +1289,7 @@ public class RevisedTest extends TestCase {
     assertEquals(3, attacked.getUnits().size());
   }
 
+  @Test
   public void testAttackDestroyerAndSubsAgainstSubAndDestroyer() {
     final String defender = "Germans";
     final String attacker = "British";
@@ -1294,6 +1337,7 @@ public class RevisedTest extends TestCase {
     assertEquals(0, attacked.getUnits().size());
   }
 
+  @Test
   public void testUnplacedDie() {
     final PlaceDelegate del = placeDelegate(m_data);
     del.setDelegateBridgeAndPlayer(getDelegateBridge(british(m_data)));
@@ -1304,6 +1348,7 @@ public class RevisedTest extends TestCase {
     assertTrue(british(m_data).getUnits().isEmpty());
   }
 
+  @Test
   public void testRocketsDontFireInConquered() {
     final MoveDelegate move = moveDelegate(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
@@ -1322,6 +1367,7 @@ public class RevisedTest extends TestCase {
     assertEquals(fire.size(), 3);
   }
 
+  @Test
   public void testTechRolls() {
     // Set up the test
     final PlayerID germans = GameDataTestUtil.germans(m_data);
@@ -1363,6 +1409,7 @@ public class RevisedTest extends TestCase {
     assertEquals(finalPUs - 6, VariablePUs);
   }
 
+  @Test
   public void testTransportsUnloadingToMultipleTerritoriesDie() {
     // two transports enter a battle, but drop off
     // their units to two allied territories before
@@ -1410,6 +1457,7 @@ public class RevisedTest extends TestCase {
     assertEquals(0, uk.getUnits().countMatches(Matches.unitIsOwnedBy(germans)));
   }
 
+  @Test
   public void testCanalMovePass() {
     final Territory sz15 = territory("15 Sea Zone", m_data);
     final Territory sz34 = territory("34 Sea Zone", m_data);
@@ -1422,6 +1470,7 @@ public class RevisedTest extends TestCase {
     assertValid(error);
   }
 
+  @Test
   public void testCanalMovementFail() {
     final Territory sz14 = territory("14 Sea Zone", m_data);
     final Territory sz15 = territory("15 Sea Zone", m_data);

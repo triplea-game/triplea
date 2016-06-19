@@ -1,26 +1,33 @@
 package games.strategy.thread;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import games.strategy.thread.LockUtil.ErrorReporter;
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
-public class LockUtilTest extends TestCase {
+import games.strategy.thread.LockUtil.ErrorReporter;
+
+public class LockUtilTest {
   private static final LockUtil S_LOCKUTIL = new LockUtil();
   private final TestErrorReporter m_reporter = new TestErrorReporter();
 
-  @Override
+  @Before
   public void setUp() {
     S_LOCKUTIL.setErrorReporter(m_reporter);
   }
 
+  @Test
   public void testEmpty() {
     assertFalse(S_LOCKUTIL.isLockHeld(new ReentrantLock()));
   }
 
+  @Test
   public void testMultipleLocks() {
     final List<Lock> locks = new ArrayList<>();
     for (int i = 0; i < 10; i++) {
@@ -42,6 +49,7 @@ public class LockUtilTest extends TestCase {
     assertFalse(m_reporter.errorOccured());
   }
 
+  @Test
   public void testFail() {
     final Lock l1 = new ReentrantLock();
     final Lock l2 = new ReentrantLock();
@@ -58,6 +66,7 @@ public class LockUtilTest extends TestCase {
     assertTrue(m_reporter.errorOccured());
   }
 
+  @Test
   public void testAcquireTwice() {
     final ReentrantLock l1 = new ReentrantLock();
     S_LOCKUTIL.acquireLock(l1);

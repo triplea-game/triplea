@@ -1,10 +1,7 @@
 package games.strategy.test;
 
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-
-import javax.swing.JFrame;
 
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;
@@ -59,10 +56,5 @@ public class TestUtil {
     // add a no-op action to the end of the swing event queue, and then wait for it
     SwingAction.invokeAndWait(() -> {
     });
-  }
-
-  @SuppressWarnings("unused")
-private static void closeFrame(JFrame frame) {
-    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
   }
 }

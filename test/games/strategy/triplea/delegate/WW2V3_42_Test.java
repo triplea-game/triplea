@@ -12,8 +12,13 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
@@ -23,25 +28,20 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
-import junit.framework.TestCase;
 
-public class WW2V3_42_Test extends TestCase {
+public class WW2V3_42_Test {
   private GameData m_data;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     m_data = LoadGameUtil.loadTestGame("ww2v3_1942_test.xml");
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    m_data = null;
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
     return GameDataTestUtil.getDelegateBridge(player, m_data);
   }
 
+  @Test
   public void testTransportAttack() {
     final Territory sz13 = m_data.getMap().getTerritory("13 Sea Zone");
     final Territory sz12 = m_data.getMap().getTerritory("12 Sea Zone");
@@ -60,6 +60,7 @@ public class WW2V3_42_Test extends TestCase {
     assertEquals(error, null);
   }
 
+  @Test
   public void testBombAndAttackEmptyTerritory() {
     final Territory karrelia = territory("Karelia S.S.R.", m_data);
     final Territory baltic = territory("Baltic States", m_data);
@@ -91,6 +92,7 @@ public class WW2V3_42_Test extends TestCase {
     assertEquals(karrelia.getOwner(), russians(m_data));
   }
 
+  @Test
   public void testLingeringSeaUnitsJoinBattle() throws Exception {
     final Territory sz5 = territory("5 Sea Zone", m_data);
     final Territory sz6 = territory("6 Sea Zone", m_data);
@@ -113,6 +115,7 @@ public class WW2V3_42_Test extends TestCase {
     assertEquals(5, mfb.getAttackingUnits().size());
   }
 
+  @Test
   public void testLingeringFightersAndALliedUnitsJoinBattle() throws Exception {
     final Territory sz5 = territory("5 Sea Zone", m_data);
     final Territory sz6 = territory("6 Sea Zone", m_data);
@@ -139,6 +142,7 @@ public class WW2V3_42_Test extends TestCase {
     assertEquals(6, mfb.getAttackingUnits().size());
   }
 
+  @Test
   public void testLingeringSeaUnitsCanMoveAwayFromBattle() throws Exception {
     final Territory sz5 = territory("5 Sea Zone", m_data);
     final Territory sz6 = territory("6 Sea Zone", m_data);

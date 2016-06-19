@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -8,14 +10,17 @@ import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicReference;
 
-import games.strategy.triplea.Constants;
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
-public class SerializationTest extends TestCase {
+import games.strategy.engine.framework.GameObjectStreamFactory;
+import games.strategy.triplea.Constants;
+
+public class SerializationTest {
   private GameData m_dataSource;
   private GameData m_dataSink;
 
-  @Override
+  @Before
   public void setUp() throws Exception {
     // get the xml file
     final URL url = this.getClass().getResource("Test.xml");
@@ -34,18 +39,14 @@ public class SerializationTest extends TestCase {
     output.flush();
     final InputStream source = new ByteArrayInputStream(sink.toByteArray());
     final ObjectInputStream input =
-        new GameObjectInputStream(new games.strategy.engine.framework.GameObjectStreamFactory(m_dataSource), source);
+        new GameObjectInputStream(new GameObjectStreamFactory(m_dataSource), source);
     final Object obj = input.readObject();
     input.close();
     output.close();
     return obj;
   }
 
-  /** Creates a new instance of SerializationTest */
-  public SerializationTest(final String s) {
-    super(s);
-  }
-
+  @Test
   public void testWritePlayerID() throws Exception {
     final PlayerID id = m_dataSource.getPlayerList().getPlayerID("chretian");
     final PlayerID readID = (PlayerID) serialize(id);
@@ -53,6 +54,7 @@ public class SerializationTest extends TestCase {
     assertTrue(localID != readID);
   }
 
+  @Test
   public void testWriteUnitType() throws Exception {
     final Object orig = m_dataSource.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
     final Object read = serialize(orig);
@@ -60,6 +62,7 @@ public class SerializationTest extends TestCase {
     assertTrue(local != read);
   }
 
+  @Test
   public void testWriteTerritory() throws Exception {
     final Object orig = m_dataSource.getMap().getTerritory("canada");
     final Object read = serialize(orig);
@@ -67,6 +70,7 @@ public class SerializationTest extends TestCase {
     assertTrue(local != read);
   }
 
+  @Test
   public void testWriteProductionRulte() throws Exception {
     final Object orig = m_dataSource.getProductionRuleList().getProductionRule("infForSilver");
     final Object read = serialize(orig);

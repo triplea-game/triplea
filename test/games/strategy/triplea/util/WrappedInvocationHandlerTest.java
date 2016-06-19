@@ -1,10 +1,14 @@
 package games.strategy.triplea.util;
 
+import static org.junit.Assert.assertEquals;
+
 import java.lang.reflect.Proxy;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class WrappedInvocationHandlerTest extends TestCase {
+public class WrappedInvocationHandlerTest {
+
+  @Test
   public void testEquals() {
     final String s1 = "test";
     final WrappedInvocationHandler handler = new WrappedInvocationHandler(s1);

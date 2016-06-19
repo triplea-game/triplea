@@ -1,9 +1,14 @@
 package games.strategy.triplea.delegate;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
@@ -19,32 +24,17 @@ import games.strategy.util.IntegerMap;
 
 // public class PacificTest extends TestCase
 public class PacificTest extends DelegateTest {
-  /** Creates new PacificTest */
-  public PacificTest(final String name) {
-    super(name);
-  }
-
-  // GameData m_data;
-  // Define units
-  // UnitType infantry;
   UnitType armor;
   UnitType artillery;
   UnitType marine;
-  // UnitType fighter;
-  // UnitType bomber;
   UnitType sub;
   UnitType destroyer;
-  // UnitType carrier;
   UnitType battleship;
-  // UnitType transport;
   // Define players
   PlayerID americans;
   PlayerID chinese;
-  // PlayerID british;
-  // PlayerID japanese;
   // Define territories
   Territory queensland;
-  // Territory japan;
   Territory US;
   Territory NewBrit;
   Territory Midway;
@@ -64,7 +54,7 @@ public class PacificTest extends DelegateTest {
   ITestDelegateBridge bridge;
   MoveDelegate m_delegate;
 
-  @Override
+  @Before
   public void setUp() throws Exception {
     super.setUp();
     m_data = LoadGameUtil.loadTestGame("pacific_incomplete_test.xml");
@@ -123,15 +113,11 @@ public class PacificTest extends DelegateTest {
   }
 
   @Override
-  protected void tearDown() throws Exception {
-    m_data = null;
-  }
-
-  @Override
   protected ITestDelegateBridge getDelegateBridge(final PlayerID player) {
     return GameDataTestUtil.getDelegateBridge(player, m_data);
   }
 
+  @Test
   public void testNonJapanAttack() {
     // this will get us to round 2
     bridge.setStepName("japaneseEndTurn");
@@ -157,6 +143,7 @@ public class PacificTest extends DelegateTest {
     assertEquals(1, roll.getHits());
   }
 
+  @Test
   public void testJapanAttackFirstRound() {
     bridge.setStepName("japaneseBattle");
     while (!m_data.getSequence().getStep().getName().equals("japaneseBattle")) {
@@ -199,6 +186,7 @@ public class PacificTest extends DelegateTest {
     assertEquals(1, roll.getHits());
   }
 
+  @Test
   public void testCanLand2Airfields() {
     bridge.setStepName("americanCombatMove");
     final Route route = new Route();
@@ -215,6 +203,7 @@ public class PacificTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testCanLand1AirfieldStart() {
     bridge.setStepName("americanCombatMove");
     final Route route = new Route();
@@ -231,6 +220,7 @@ public class PacificTest extends DelegateTest {
     // assertError( results);
   }
 
+  @Test
   public void testCanLand1AirfieldEnd() {
     bridge.setStepName("americanCombatMove");
     final Route route = new Route();
@@ -246,6 +236,7 @@ public class PacificTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testCanMoveNavalBase() {
     bridge.setStepName("americanNonCombatMove");
     final Route route = new Route();
@@ -259,6 +250,7 @@ public class PacificTest extends DelegateTest {
     assertValid(results);
   }
 
+  @Test
   public void testJapaneseDestroyerTransport() {
     bridge = getDelegateBridge(japanese);
     m_delegate = new MoveDelegate();
@@ -283,5 +275,4 @@ public class PacificTest extends DelegateTest {
     assertEquals(1, Bonin.getUnits().size());
     assertEquals(2, SZ24.getUnits().size());
   }
-  // assertError( results);
 }

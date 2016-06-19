@@ -1,17 +1,16 @@
 package games.strategy.util;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-public class IntegerMapTest extends TestCase {
+import org.junit.Test;
+
+public class IntegerMapTest {
   private final Object v1 = new Object();
   private final Object v2 = new Object();
   private final Object v3 = new Object();
 
-  /** Creates new IntegerMapTest */
-  public IntegerMapTest(final String name) {
-    super(name);
-  }
-
+  @Test
   public void testAdd() {
     final IntegerMap<Object> map = new IntegerMap<>();
     map.add(v1, 5);
@@ -24,6 +23,7 @@ public class IntegerMapTest extends TestCase {
     assertEquals(map.getInt(v1), 0);
   }
 
+  @Test
   public void testPositive() {
     IntegerMap<Object> map = new IntegerMap<>();
     map.add(v1, 5);
@@ -37,6 +37,7 @@ public class IntegerMapTest extends TestCase {
     assertTrue(!map.isPositive());
   }
 
+  @Test
   public void testAddMap() {
     final IntegerMap<Object> map1 = new IntegerMap<>();
     map1.add(v1, 5);
@@ -51,6 +52,7 @@ public class IntegerMapTest extends TestCase {
     assertEquals(1, map1.getInt(v3));
   }
 
+  @Test
   public void testGreaterThan() {
     final IntegerMap<Object> map1 = new IntegerMap<>();
     map1.add(v1, 5);

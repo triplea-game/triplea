@@ -12,11 +12,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import games.strategy.engine.config.GameEngineProperty;
 import games.strategy.engine.config.PropertyReader;
-import games.strategy.engine.framework.map.download.MapListingSource;
 
 
 /**
- * Basic test of  map listing source, make sure that the test object requests a specific property key,
+ * Basic test of map listing source, make sure that the test object requests a specific property key,
  * we fake a return value, then verify that we get the same faked value back when calling 'getMapListDownloadSite()'
  */
 @RunWith(MockitoJUnitRunner.class)

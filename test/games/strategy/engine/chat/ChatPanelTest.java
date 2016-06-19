@@ -1,11 +1,15 @@
 package games.strategy.engine.chat;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.StyledDocument;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class ChatPanelTest extends TestCase {
+public class ChatPanelTest {
+
+  @Test
   public void testTrim() throws Exception {
     final StyledDocument doc = new DefaultStyledDocument();
     final StringBuffer buffer = new StringBuffer();

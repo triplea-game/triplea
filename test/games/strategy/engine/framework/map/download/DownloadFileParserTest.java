@@ -10,9 +10,6 @@ import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import games.strategy.engine.framework.map.download.DownloadFileDescription;
-import games.strategy.engine.framework.map.download.DownloadFileParser;
-
 public class DownloadFileParserTest {
 
   private static final String GAME_NAME = "myGame";
@@ -116,8 +113,6 @@ public class DownloadFileParserTest {
     assertThat(download.isMapMod(), is(false));
   }
 
-
-
   private static byte[] createSimpleGameXmlWithNoTypeTag( ) {
     String xml = "";
     xml += "- url: http://example.com/games/mod.zip\n";
@@ -126,5 +121,4 @@ public class DownloadFileParserTest {
     xml += "      description\n";
     return xml.getBytes();
   }
-
 }

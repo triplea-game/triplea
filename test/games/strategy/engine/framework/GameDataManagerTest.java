@@ -1,5 +1,7 @@
 package games.strategy.engine.framework;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -7,31 +9,16 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.SerializationTest;
-import junit.framework.TestCase;
 
-/**
- * <p>
- * Title:
- * </p>
- * <p>
- * Description:
- * </p>
- * <p>
- * Copyright: Copyright (c) 2002
- * </p>
- * <p>
- * Company:
- * </p>
- */
-public class GameDataManagerTest extends TestCase {
-  public GameDataManagerTest(final String name) {
-    super(name);
-  }
+public class GameDataManagerTest {
 
-  @Override
+  @Before
   public void setUp() throws Exception {
     // get the xml file
     final URL url = SerializationTest.class.getResource("Test.xml");
@@ -40,6 +27,7 @@ public class GameDataManagerTest extends TestCase {
     (new GameParser()).parse(input, new AtomicReference<>(), false);
   }
 
+  @Test
   public void testLoadStoreKeepsGamUUID() throws IOException {
     final GameData data = new GameData();
     final GameDataManager m = new GameDataManager();

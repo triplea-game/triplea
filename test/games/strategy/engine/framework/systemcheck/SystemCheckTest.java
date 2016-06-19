@@ -14,15 +14,12 @@ public class SystemCheckTest {
 
   @Test
   public void testPassingSystemCheck() {
-    Runnable noOp = () -> {
-    };
-    SystemCheck check = new SystemCheck("msg", noOp);
+    SystemCheck check = new SystemCheck("msg", () -> {});
 
     assertThat(check.wasSuccess(), is(true));
     assertThat(check.getResultMessage(), is("msg: true"));
     assertThat(check.getException().isPresent(), is(false));
   }
-
 
   @Test
   public void testFailingSystemCheck() {
@@ -31,7 +28,6 @@ public class SystemCheckTest {
     assertThat(check.wasSuccess(), is(false));
     assertThat(check.getResultMessage(), is("msg: false"));
   }
-
 
   @Test
   public void remembersAndReturnsExceptions() {

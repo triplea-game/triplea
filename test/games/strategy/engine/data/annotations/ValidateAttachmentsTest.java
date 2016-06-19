@@ -1,5 +1,9 @@
 package games.strategy.engine.data.annotations;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.lang.reflect.Constructor;
@@ -9,32 +13,49 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Test;
+
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.IAttachment;
+import games.strategy.triplea.attachments.CanalAttachment;
+import games.strategy.triplea.attachments.PlayerAttachment;
+import games.strategy.triplea.attachments.PoliticalActionAttachment;
+import games.strategy.triplea.attachments.RelationshipTypeAttachment;
+import games.strategy.triplea.attachments.RulesAttachment;
+import games.strategy.triplea.attachments.TechAbilityAttachment;
+import games.strategy.triplea.attachments.TechAttachment;
+import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.attachments.TerritoryEffectAttachment;
+import games.strategy.triplea.attachments.TriggerAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PropertyUtil;
-import junit.framework.TestCase;
 
 /**
  * A test that validates that all attachment classes have properties with valid setters and getters
  */
-public class ValidateAttachmentsTest extends TestCase {
+public class ValidateAttachmentsTest {
   /**
    * Test that the Example Attachment is valid
    */
+  @Test
   public void testExample() {
     final String errors = validateAttachment(ExampleAttachment.class);
-    assertTrue(errors.length() == 0);
+    assertEquals(0, errors.length());
   }
 
   /**
    * Tests that the algorithm finds invalidly named field
    */
+  @Test
   public void testInvalidField() {
     final String errors = validateAttachment(InvalidFieldNameExample.class);
     assertTrue(errors.length() > 0);
@@ -44,6 +65,7 @@ public class ValidateAttachmentsTest extends TestCase {
   /**
    * tests that the algorithm will find invalid annotation on a getters
    */
+  @Test
   public void testAnnotationOnGetter() {
     final String errors = validateAttachment(InvalidGetterExample.class);
     assertTrue(errors.length() > 0);
@@ -53,6 +75,7 @@ public class ValidateAttachmentsTest extends TestCase {
   /**
    * Tests that the algorithm will find invalid return types
    */
+  @Test
   public void testInvalidReturnType() {
     final String errors = validateAttachment(InvalidReturnTypeExample.class);
     assertTrue(errors.length() > 0);
@@ -62,6 +85,7 @@ public class ValidateAttachmentsTest extends TestCase {
   /**
    * Tests that the algorithm will find invalid clear method
    */
+  @Test
   public void testInvalidClearMethod() {
     final String errors = validateAttachment(InvalidClearExample.class);
     assertTrue(errors.length() > 0);
@@ -71,6 +95,7 @@ public class ValidateAttachmentsTest extends TestCase {
   /**
    * Tests that the algorithm will find invalid clear method
    */
+  @Test
   public void testInvalidResetMethod() {
     final String errors = validateAttachment(InvalidResetExample.class);
     assertTrue(errors.length() > 0);
@@ -80,42 +105,45 @@ public class ValidateAttachmentsTest extends TestCase {
   /**
    * Tests that the algorithm will find adders that doesn't have type IntegerMap
    */
+  @Test
   public void testInvalidFieldType() {
     final String errors = validateAttachment(InvalidFieldTypeExample.class);
     assertTrue(errors.length() > 0);
     assertTrue(errors.contains("is not a Collection or Map or IntegerMap"));
   }
 
-  @SuppressWarnings("unchecked")
-  private static Class<? extends IAttachment>[] getKnownAttachmentClasses() {
-    return new Class[] {games.strategy.engine.data.DefaultAttachment.class,
-        games.strategy.triplea.attachments.CanalAttachment.class,
-        games.strategy.triplea.attachments.PlayerAttachment.class,
-        games.strategy.triplea.attachments.PoliticalActionAttachment.class,
-        games.strategy.triplea.attachments.RelationshipTypeAttachment.class,
-        games.strategy.triplea.attachments.RulesAttachment.class,
-        games.strategy.triplea.attachments.TechAttachment.class,
-        games.strategy.triplea.attachments.TerritoryAttachment.class,
-        games.strategy.triplea.attachments.TerritoryEffectAttachment.class,
-        games.strategy.triplea.attachments.TriggerAttachment.class,
-        games.strategy.triplea.attachments.UnitAttachment.class,
-        games.strategy.triplea.attachments.UnitSupportAttachment.class,
-        games.strategy.triplea.attachments.TechAbilityAttachment.class};
-    // games.strategy.triplea.attachments.AbstractConditionsAttachment.class
-    // games.strategy.triplea.attachments.AbstractPlayerRulesAttachment.class
-    // games.strategy.triplea.attachments.AbstractRulesAttachment.class
-    // games.strategy.triplea.attachments.AbstractTriggerAttachment.class
+  private static List<Class<? extends IAttachment>> getKnownAttachmentClasses() {
+    List<Class<? extends IAttachment>> result = new ArrayList<>();
+    result.add(DefaultAttachment.class);
+    result.add(CanalAttachment.class);
+    result.add(PlayerAttachment.class);
+    result.add(PoliticalActionAttachment.class);
+    result.add(RelationshipTypeAttachment.class);
+    result.add(RulesAttachment.class);
+    result.add(TechAttachment.class);
+    result.add(TerritoryAttachment.class);
+    result.add(TerritoryEffectAttachment.class);
+    result.add(TriggerAttachment.class);
+    result.add(UnitAttachment.class);
+    result.add(UnitSupportAttachment.class);
+    result.add(TechAbilityAttachment.class);
+    // result.add(AbstractConditionsAttachment.class);
+    // result.add(AbstractPlayerRulesAttachment.class);
+    // result.add(AbstractRulesAttachment.class);
+    // result.add(AbstractTriggerAttachment.class);
+    return result;
   }
 
   /**
    * When testAllAttachments doesn't work, we can test specific attachments here.
    */
+  @Test
   public void testSpecificAttachments() {
-    final StringBuilder sb = new StringBuilder("");
+    final StringBuilder sb = new StringBuilder();
     for (final Class<? extends IAttachment> clazz : getKnownAttachmentClasses()) {
       sb.append(validateAttachment(clazz));
     }
-    if (sb.toString().length() > 0) {
+    if (sb.length() > 0) {
       System.out.println(sb.toString());
       // fail(sb.toString());
     }
@@ -125,6 +153,7 @@ public class ValidateAttachmentsTest extends TestCase {
    * Scans the compiled /classes folder and finds all classes that implement IAttachment to verify that
    * all @GameProperty have valid setters and getters
    */
+  @Test
   public void testAllAttachments() {
     // find the classes folder
     final URL url = getClass().getResource("/");
@@ -230,7 +259,7 @@ public class ValidateAttachmentsTest extends TestCase {
   }
 
   private static String validateAttachment(final Class<? extends IAttachment> clazz) {
-    final StringBuilder sb = new StringBuilder("");
+    final StringBuilder sb = new StringBuilder();
     for (final Method setter : clazz.getMethods()) {
       final boolean internalDoNotExportAnnotation = setter.isAnnotationPresent(InternalDoNotExport.class);
       final boolean startsWithSet = setter.getName().startsWith("set");
@@ -406,41 +435,5 @@ public class ValidateAttachmentsTest extends TestCase {
     char first = aString.charAt(0);
     first = Character.toUpperCase(first);
     return first + aString.substring(1);
-  }
-
-  // TODO: convert to an automated test.
-  public static void main(final String[] args) {
-    System.out.println("All attachment property options which 'add' when set:\n\n");
-    for (final Class<? extends IAttachment> clazz : getKnownAttachmentClasses()) {
-      for (final Method setter : clazz.getMethods()) {
-        final boolean internalDoNotExportAnnotation = setter.isAnnotationPresent(InternalDoNotExport.class);
-        final boolean startsWithSet = setter.getName().startsWith("set");
-        final boolean gamePropertyAnnotation = setter.isAnnotationPresent(GameProperty.class);
-        if (internalDoNotExportAnnotation && gamePropertyAnnotation) {
-          continue;
-        } else if (startsWithSet && !(internalDoNotExportAnnotation || gamePropertyAnnotation)) {
-          continue;
-        } else if (!startsWithSet && gamePropertyAnnotation) {
-          continue;
-        } else if (!startsWithSet || internalDoNotExportAnnotation) {
-          continue;
-        } else if (!startsWithSet && !gamePropertyAnnotation) {
-          continue;
-        }
-        final GameProperty annotation = setter.getAnnotation(GameProperty.class);
-        final String propertyName = getPropertyName(setter);
-        if (annotation == null) {
-          continue;
-        }
-        // if this is a deprecated setter, we skip it now
-        if (setter.getAnnotation(Deprecated.class) != null) {
-          continue;
-        }
-        if (annotation.adds()) {
-          System.out.println("Class " + clazz.getCanonicalName() + ", setter: " + propertyName);
-        }
-      }
-      System.out.println("");
-    }
   }
 }

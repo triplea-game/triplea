@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,11 +15,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.google.common.collect.Lists;
-
-import games.strategy.engine.framework.map.download.DownloadFileDescription;
-import games.strategy.engine.framework.map.download.FileSystemAccessStrategy;
-import games.strategy.engine.framework.map.download.MapDownloadList;
 import games.strategy.util.Version;
 
 
@@ -36,15 +32,12 @@ public class MapDownloadListTest {
   @Mock
   private FileSystemAccessStrategy strategy;
 
-  private List<DownloadFileDescription> descriptions;
+  private List<DownloadFileDescription> descriptions = new ArrayList<>();
 
   @Before
   public void setUp() throws Exception {
-    descriptions = Lists.newArrayList();
     descriptions.add(TEST_MAP);
-
   }
-
 
   @Test
   public void testAvailable() {
@@ -90,6 +83,4 @@ public class MapDownloadListTest {
     List<DownloadFileDescription> outOfDate = testObj.getOutOfDate();
     assertThat(outOfDate.size(), is(1));
   }
-
-
 }
