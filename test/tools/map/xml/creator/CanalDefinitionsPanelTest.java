@@ -6,10 +6,9 @@ import static org.junit.Assert.assertSame;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
 public class CanalDefinitionsPanelTest extends MapXmlCreatorTestBase {
 
-
+  @Ignore
   @Test
   public void testLayout() {
     // //TODO: find a way to allow Travis CI build without failing with
@@ -20,7 +19,6 @@ public class CanalDefinitionsPanelTest extends MapXmlCreatorTestBase {
     assertSame(getMapXmlCreator(), ImageScrollPanePanel.getMapXmlCreator());
     assertEquals(false, ImageScrollPanePanel.polygons.isEmpty());
     assertEquals(false, ImageScrollPanePanel.polygonsInvalid);
-
   }
 
   // TODO: Move to MapXmlHelperTest
@@ -53,6 +51,5 @@ public class CanalDefinitionsPanelTest extends MapXmlCreatorTestBase {
   // }
   // }
   // }
-
 }
 

@@ -7,9 +7,9 @@ import javax.swing.JPanel;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
 public class GameSequencePanelTest extends MapXmlCreatorTestBase {
 
+  @Ignore
   @Test
   public void testLayout() {
     // //TODO: find a way to allow Travis CI build without failing with
@@ -33,5 +33,4 @@ public class GameSequencePanelTest extends MapXmlCreatorTestBase {
         countExpectedRows * countComponentsPerRow + countHeaderLabels + countBottomButtons;
     assertTrue((countExpectedComponents == countOwnPanelComponents));
   }
-
 }

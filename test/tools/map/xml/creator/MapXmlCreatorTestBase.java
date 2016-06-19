@@ -1,15 +1,15 @@
 package tools.map.xml.creator;
 
-
-
 import org.junit.Before;
+import org.junit.Ignore;
 
 public abstract class MapXmlCreatorTestBase {
 
   private MapXmlCreator mapXmlCreator;
 
+  @Ignore
   @Before
-  protected void setUp() {
+  public void setUp() {
     setMapXmlCreator();
   }
 
@@ -20,5 +20,4 @@ public abstract class MapXmlCreatorTestBase {
   protected MapXmlCreator getMapXmlCreator() {
     return mapXmlCreator;
   }
-
 }

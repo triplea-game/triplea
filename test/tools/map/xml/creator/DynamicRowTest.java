@@ -6,7 +6,6 @@ import java.awt.GridBagConstraints;
 
 import org.junit.Test;
 
-
 public class DynamicRowTest {
 
   @Test
