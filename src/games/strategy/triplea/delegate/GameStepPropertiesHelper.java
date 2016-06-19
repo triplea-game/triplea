@@ -71,8 +71,9 @@ public class GameStepPropertiesHelper {
       final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_airborneMove);
       if (prop != null) {
         isAirborneMove = Boolean.parseBoolean(prop);
-      } else
+      } else {
         isAirborneMove = isAirborneDelegate(data);
+      }
     } finally {
       data.releaseReadLock();
     }
@@ -142,8 +143,9 @@ public class GameStepPropertiesHelper {
         isFireRockets = Boolean.parseBoolean(prop);
       } else if (games.strategy.triplea.Properties.getWW2V2(data) || games.strategy.triplea.Properties.getWW2V3(data)) {
         isFireRockets = isCombatDelegate(data);
-      } else
+      } else {
         isFireRockets = isNonCombatDelegate(data);
+      }
     } finally {
       data.releaseReadLock();
     }
@@ -169,8 +171,9 @@ public class GameStepPropertiesHelper {
           isRepairUnits = Boolean.parseBoolean(prop);
         } else if (isCombatDelegate(data) && repairAtStartAndOnlyOwn) {
           isRepairUnits = true;
-        } else
+        } else {
           isRepairUnits = data.getSequence().getStep().getName().endsWith("EndTurn") && repairAtEndAndAll;
+        }
       }
     } finally {
       data.releaseReadLock();
@@ -188,8 +191,9 @@ public class GameStepPropertiesHelper {
       final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_giveBonusMovement);
       if (prop != null) {
         isBonus = Boolean.parseBoolean(prop);
-      } else
+      } else {
         isBonus = isCombatDelegate(data);
+      }
     } finally {
       data.releaseReadLock();
     }
@@ -213,8 +217,9 @@ public class GameStepPropertiesHelper {
         isRemoveAir = false;
       } else if (isNonCombatDelegate(data)) {
         isRemoveAir = true;
-      } else
+      } else {
         isRemoveAir = data.getSequence().getStep().getName().endsWith("Place");
+      }
     } finally {
       data.releaseReadLock();
     }
@@ -288,8 +293,9 @@ public class GameStepPropertiesHelper {
           data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_resetUnitStateAtEnd);
       if (prop != null) {
         isReset = Boolean.parseBoolean(prop);
-      } else
+      } else {
         isReset = isNonCombatDelegate(data);
+      }
     } finally {
       data.releaseReadLock();
     }
@@ -305,8 +311,9 @@ public class GameStepPropertiesHelper {
         isBid = Boolean.parseBoolean(prop);
       } else if (isBidPurchaseDelegate(data)) {
         isBid = true;
-      } else
+      } else {
         isBid = isBidPlaceDelegate(data);
+      }
     } finally {
       data.releaseReadLock();
     }
