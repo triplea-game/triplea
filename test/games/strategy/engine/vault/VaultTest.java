@@ -32,7 +32,7 @@ public class VaultTest extends TestCase {
     SERVER_PORT = TestUtil.getUniquePort();
     m_server = new ServerMessenger("Server", SERVER_PORT);
     m_server.setAcceptNewConnections(true);
-    final String mac = MacFinder.getHashedMacAddress();
+    final String mac = MacFinder.GetHashedMacAddress();
     m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1", mac);
     final UnifiedMessenger serverUM = new UnifiedMessenger(m_server);
     final UnifiedMessenger clientUM = new UnifiedMessenger(m_client1);

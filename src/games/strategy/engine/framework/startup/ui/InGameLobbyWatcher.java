@@ -118,7 +118,7 @@ public class InGameLobbyWatcher {
     };
     try {
       System.out.println("host:" + host + " port:" + port);
-      final String mac = MacFinder.getHashedMacAddress();
+      final String mac = MacFinder.GetHashedMacAddress();
       final ClientMessenger messenger = new ClientMessenger(host, Integer.parseInt(port),
           getRealName(hostedBy) + "_" + LOBBY_WATCHER_NAME, mac, login);
       final UnifiedMessenger um = new UnifiedMessenger(messenger);
