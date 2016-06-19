@@ -1,4 +1,4 @@
-package games.strategy.common.delegate;
+package games.strategy.triplea.delegate;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -9,7 +9,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.TripleA;
 import games.strategy.triplea.ai.weakAI.WeakAI;
 import games.strategy.triplea.attachments.TriggerAttachment;
-import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.CompositeMatchAnd;

@@ -10,7 +10,6 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
-import games.strategy.common.delegate.BaseTripleADelegate;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;

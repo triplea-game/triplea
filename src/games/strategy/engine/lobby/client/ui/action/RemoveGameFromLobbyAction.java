@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
-import games.strategy.common.ui.InGameLobbyWatcherWrapper;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 
 public class RemoveGameFromLobbyAction extends AbstractAction {
   private static final long serialVersionUID = 8802420945692279375L;

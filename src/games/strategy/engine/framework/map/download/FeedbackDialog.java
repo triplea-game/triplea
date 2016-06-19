@@ -3,7 +3,7 @@ package games.strategy.engine.framework.map.download;
 import java.util.List;
 import java.util.Optional;
 
-import games.strategy.common.swing.SwingComponents;
+import games.strategy.ui.SwingComponents;
 
 /**
  * Simple static utility class to show a confirmation dialog to the user, if they hit accept a new browser

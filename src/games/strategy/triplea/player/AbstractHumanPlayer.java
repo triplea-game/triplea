@@ -1,6 +1,6 @@
-package games.strategy.common.player;
+package games.strategy.triplea.player;
 
-import games.strategy.common.ui.MainGameFrame;
+import games.strategy.triplea.ui.MainGameFrame;
 
 /**
  * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate

@@ -20,7 +20,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
 import javax.swing.SpinnerNumberModel;
 
-import games.strategy.common.swing.SwingAction;
+import games.strategy.ui.SwingAction;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatPlayerPanel;

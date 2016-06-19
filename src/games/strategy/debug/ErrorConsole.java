@@ -1,6 +1,6 @@
 package games.strategy.debug;
 
-import games.strategy.common.swing.SwingAction;
+import games.strategy.ui.SwingAction;
 import games.strategy.triplea.ui.ErrorHandler;
 
 public class ErrorConsole extends GenericConsole {

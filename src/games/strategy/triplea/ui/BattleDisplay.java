@@ -57,7 +57,7 @@ import javax.swing.table.TableCellRenderer;
 
 import com.google.common.collect.Lists;
 
-import games.strategy.common.swing.SwingAction;
+import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;

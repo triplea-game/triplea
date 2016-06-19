@@ -1,4 +1,4 @@
-package games.strategy.common.ui;
+package games.strategy.triplea.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog.ModalityType;
@@ -55,8 +55,9 @@ import com.apple.eawt.AboutHandler;
 import com.apple.eawt.AppEvent.AboutEvent;
 import com.apple.eawt.Application;
 
-import games.strategy.common.swing.SwingAction;
-import games.strategy.common.swing.SwingComponents;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
+import games.strategy.ui.SwingAction;
+import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.DebugUtils;
 import games.strategy.debug.ErrorConsole;
@@ -87,8 +88,6 @@ import games.strategy.performance.EnablePerformanceLoggingCheckBox;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
-import games.strategy.triplea.ui.AbstractUIContext;
-import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.ui.IntTextField;
 import games.strategy.util.CountDownLatchHandler;
@@ -523,7 +522,7 @@ public abstract class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> ex
     // Mac OS X automatically creates a Quit menu item under the TripleA menu,
     // so all we need to do is register that menu item with triplea's shutdown mechanism
     if (isMac) {
-      MacWrapper.registerMacShutdownHandler(frame);
+      MacQuitMenuWrapper.registerMacShutdownHandler(frame);
     } else { // On non-Mac operating systems, we need to manually create an Exit menu item
       final JMenuItem menuFileExit = new JMenuItem(SwingAction.of("Exit", e -> frame.shutdown()));
       menuFileExit.setMnemonic(KeyEvent.VK_E);

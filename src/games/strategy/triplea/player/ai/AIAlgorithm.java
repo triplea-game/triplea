@@ -1,4 +1,4 @@
-package games.strategy.common.player.ai;
+package games.strategy.triplea.player.ai;
 
 /**
  * Utility class implementing AI game algorithms.

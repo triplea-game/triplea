@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import games.strategy.common.delegate.BaseEditDelegate;
-import games.strategy.common.delegate.BaseTripleADelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;

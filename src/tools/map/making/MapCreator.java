@@ -27,8 +27,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import games.strategy.common.swing.SwingAction;
-import games.strategy.common.swing.SwingComponents;
+import games.strategy.ui.SwingAction;
+import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner2;

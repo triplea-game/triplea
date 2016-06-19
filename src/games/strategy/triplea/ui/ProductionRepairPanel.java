@@ -13,7 +13,7 @@ import java.util.Optional;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 
-import games.strategy.common.swing.SwingAction;
+import games.strategy.ui.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RepairRule;

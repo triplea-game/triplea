@@ -22,8 +22,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
-import games.strategy.common.swing.SwingAction;
-import games.strategy.common.swing.SwingComponents;
+import games.strategy.ui.SwingAction;
+import games.strategy.ui.SwingComponents;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
 import games.strategy.engine.lobby.server.IModeratorController;

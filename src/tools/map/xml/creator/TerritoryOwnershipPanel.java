@@ -11,7 +11,7 @@ import java.util.Optional;
 
 import javax.swing.JOptionPane;
 
-import games.strategy.common.swing.SwingAction;
+import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 
 

@@ -26,8 +26,8 @@ import javax.swing.UIManager;
 import games.strategy.debug.ErrorConsole;
 import org.apache.commons.httpclient.HostConfiguration;
 
-import games.strategy.common.swing.SwingAction;
-import games.strategy.common.ui.BasicGameMenuBar;
+import games.strategy.ui.SwingAction;
+import games.strategy.triplea.ui.BasicGameMenuBar;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;

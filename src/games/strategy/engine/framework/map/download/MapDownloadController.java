@@ -12,7 +12,7 @@ import java.util.prefs.Preferences;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
-import games.strategy.common.swing.SwingComponents;
+import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner2;

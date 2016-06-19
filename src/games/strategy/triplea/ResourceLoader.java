@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.StringTokenizer;
 
-import games.strategy.common.swing.SwingComponents;
+import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
