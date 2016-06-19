@@ -126,7 +126,7 @@ public class GameStepPropertiesHelper {
     try {
       final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_fireRockets);
       if (prop != null) {
-        Boolean.parseBoolean(prop);
+        isFireRockets = Boolean.parseBoolean(prop);
       } else if (games.strategy.triplea.Properties.getWW2V2(data) || games.strategy.triplea.Properties.getWW2V3(data)) {
         isFireRockets = isCombatDelegate(data);
       } else {
