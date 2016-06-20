@@ -1,5 +1,14 @@
 package games.strategy.triplea.ai.proAI.simulate;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
@@ -24,15 +33,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.Match;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * Pro AI simulate turn utilities.
@@ -139,6 +139,11 @@ public class ProSimulateTurnUtils {
           patd.addUnit(toUnit);
           ProLogger.trace("---Transferring unit " + u + " to " + toUnit);
         }
+      }
+      for (final Unit u : moveMap.get(fromTerritory).getBombers()) {
+        final Unit toUnit = transferUnit(u, unitTerritoryMap, usedUnits, toData, player);
+        patd.getBombers().add(toUnit);
+        ProLogger.trace("---Transferring bomber " + u + " to " + toUnit);
       }
       for (final Unit u : bombardMap.keySet()) {
         final Unit toUnit = transferUnit(u, unitTerritoryMap, usedUnits, toData, player);
