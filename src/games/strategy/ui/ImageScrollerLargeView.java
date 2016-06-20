@@ -92,9 +92,9 @@ public class ImageScrollerLargeView extends JComponent {
           int dx = 0;
           int dy = 0;
           if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK) {
-            dx = e.getWheelRotation() * WHEEL_SCROLL_AMOUNT;
+            dx = e.getWheelRotation() * scrollSettings.getWheelScrollAmount();
           } else {
-            dy = e.getWheelRotation() * WHEEL_SCROLL_AMOUNT;
+            dy = e.getWheelRotation() * scrollSettings.getWheelScrollAmount();
           }
           // move left and right and test for wrap
           int newX = (m_model.getX() + dx);
