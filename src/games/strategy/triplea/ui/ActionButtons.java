@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui;
 
 import java.awt.CardLayout;
-import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -113,10 +112,6 @@ public class ActionButtons extends JPanel {
         m_pickTerritoryAndUnitsPanel = null;
       }
     });
-  }
-
-  public void keyPressed(final KeyEvent e) {
-    m_current.keyPressed(e);
   }
 
   public void changeToMove(final PlayerID id, final boolean nonCombat, final String stepName) {

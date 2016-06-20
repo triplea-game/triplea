@@ -1431,14 +1431,21 @@ public class MovePanel extends AbstractMovePanel {
     getMap().addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
   }
 
-  public KeyListener getUndoMoveKeyListener() {
+  public KeyListener getCustomKeyListeners() {
     return new KeyListener() {
       @Override
       public void keyTyped(final KeyEvent e) {}
 
       @Override
       public void keyPressed(final KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_U &&
+        final int keyCode = e.getKeyCode();
+        if (keyCode == KeyEvent.VK_N) {
+          centerOnNextMoveableUnit();
+        }
+        if (keyCode == KeyEvent.VK_F) {
+          highlightMoveableUnits();
+        }
+        if (keyCode == KeyEvent.VK_U &&
             getMap().getHighlightedUnits() != null && !getMap().getHighlightedUnits().isEmpty()) {
           m_undoableMovesPanel.undoMoves(getMap().getHighlightedUnits());
         }
@@ -1468,18 +1475,6 @@ public class MovePanel extends AbstractMovePanel {
   @Override
   protected boolean setCancelButton() {
     return true;
-  }
-
-  @Override
-  public void keyPressed(final KeyEvent e) {
-    super.keyPressed(e);
-    final int keyCode = e.getKeyCode();
-    if (keyCode == KeyEvent.VK_N) {
-      centerOnNextMoveableUnit();
-    }
-    if (keyCode == KeyEvent.VK_F) {
-      highlightMoveableUnits();
-    }
   }
 
   private void centerOnNextMoveableUnit() {

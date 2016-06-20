@@ -82,10 +82,10 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 
-import games.strategy.triplea.delegate.BaseEditDelegate;
-import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;
@@ -132,6 +132,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
+import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
@@ -154,6 +155,7 @@ import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ScrollableTextField;
+import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IntegerMap;
@@ -378,11 +380,10 @@ public class TripleAFrame extends MainGameFrame {
     MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
 
-    List<KeyListener> keyListeners = ImmutableList.of(this.getArrowKeyListener(), movePanel.getUndoMoveKeyListener(), getFlagToggleKeyListener(this));
+    List<KeyListener> keyListeners =
+        ImmutableList.of(getArrowKeyListener(), movePanel.getCustomKeyListeners(), getFlagToggleKeyListener(this));
     for (KeyListener keyListener : keyListeners) {
       mapPanel.addKeyListener(keyListener);
-      // TODO: figure out if it is really needed to double add the key listener to both the frame and also the map panel
-      this.addKeyListener(keyListener);
     }
 
     tabsPanel.addTab("Actions", actionButtons);
@@ -464,17 +465,36 @@ public class TripleAFrame extends MainGameFrame {
     updateStep();
     uiContext.addShutdownWindow(this);
   }
-  
-  
+
+
   public static KeyListener getFlagToggleKeyListener(TripleAFrame frame) {
     return new KeyListener() {
       private boolean blockInputs = false;
+      private long timeSinceLastPressEvent = 0;
+      private boolean running = true;
       @Override
-      public void keyTyped(final KeyEvent e) {/*Do nothing*/}
+      public void keyTyped(final KeyEvent e) {/* Do nothing */}
 
       @Override
       public void keyPressed(final KeyEvent e) {
-        if(!blockInputs){
+        timeSinceLastPressEvent = 0;
+        if (!blockInputs) {
+          new Thread(() -> {
+            running = true;
+            while (running) {
+              timeSinceLastPressEvent++;
+              if (timeSinceLastPressEvent > 5) {
+                running = false;
+                toggleFlags(e.getKeyCode());
+                blockInputs = false;
+              }
+              try {
+                Thread.sleep(100);
+              } catch (InterruptedException e2) {
+                e2.printStackTrace();
+              }
+            }
+          }).start();
           toggleFlags(e.getKeyCode());
           blockInputs = true;
         }
@@ -484,10 +504,11 @@ public class TripleAFrame extends MainGameFrame {
       public void keyReleased(final KeyEvent e) {
         toggleFlags(e.getKeyCode());
         blockInputs = false;
+        running = false;
       }
-      
-      private void toggleFlags(int keyCode){
-        if (keyCode == KeyEvent.VK_L){
+
+      private void toggleFlags(int keyCode) {
+        if (keyCode == KeyEvent.VK_L) {
           UnitsDrawer.enabledFlags = !UnitsDrawer.enabledFlags;
           frame.getMapPanel().resetMap();
         }
@@ -617,7 +638,7 @@ public class TripleAFrame extends MainGameFrame {
     }
 
     void refresh() {
-      final StringBuilder buf = new StringBuilder(" ");
+      final StringBuilder buf = new StringBuilder();
       buf.append(territoryLastEntered == null ? "none" : territoryLastEntered.getName());
       if (territoryLastEntered != null) {
         final TerritoryAttachment ta = TerritoryAttachment.get(territoryLastEntered);
@@ -864,7 +885,7 @@ public class TripleAFrame extends MainGameFrame {
     final String ok = movePhase ? "End Move Phase" : "Kill Planes";
     final String cancel = movePhase ? "Keep Moving" : "Change Placement";
     final String[] options = {cancel, ok};
-    this.mapPanel.centerOn(airCantLand.iterator().next());
+    mapPanel.centerOn(airCantLand.iterator().next());
     final int choice =
         EventThreadJOptionPane.showOptionDialog(this, sb.toString(), "Air cannot land", JOptionPane.YES_NO_OPTION,
             JOptionPane.WARNING_MESSAGE, null, options, cancel, getUIContext().getCountDownLatchHandler());
@@ -877,11 +898,7 @@ public class TripleAFrame extends MainGameFrame {
     }
     messageAndDialogThreadPool.waitForAll();
     final StringBuilder buf = new StringBuilder("Units in the following territories will die: ");
-    final Iterator<Territory> iter = unitsCantFight.iterator();
-    while (iter.hasNext()) {
-      buf.append((iter.next()).getName());
-      buf.append(" ");
-    }
+    Joiner.on(' ').appendTo(buf, FluentIterable.from(unitsCantFight).transform(unit -> unit.getName()));
     final String ok = movePhase ? "Done Moving" : "Kill Units";
     final String cancel = movePhase ? "Keep Moving" : "Change Placement";
     final String[] options = {cancel, ok};
@@ -1019,25 +1036,26 @@ public class TripleAFrame extends MainGameFrame {
       return candidates.iterator().next();
     }
     messageAndDialogThreadPool.waitForAll();
-    final Tuple<JPanel, JList<Territory>> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList<Territory>>>() {
-      @Override
-      public Tuple<JPanel, JList<Territory>> run() {
-        mapPanel.centerOn(currentTerritory);
-        final JList<Territory> list = new JList<>(new Vector<>(candidates));
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.setSelectedIndex(0);
-        final JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        final JScrollPane scroll = new JScrollPane(list);
-        final JTextArea text = new JTextArea(unitMessage, 8, 30);
-        text.setLineWrap(true);
-        text.setEditable(false);
-        text.setWrapStyleWord(true);
-        panel.add(text, BorderLayout.NORTH);
-        panel.add(scroll, BorderLayout.CENTER);
-        return Tuple.of(panel, list);
-      }
-    });
+    final Tuple<JPanel, JList<Territory>> comps =
+        Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList<Territory>>>() {
+          @Override
+          public Tuple<JPanel, JList<Territory>> run() {
+            mapPanel.centerOn(currentTerritory);
+            final JList<Territory> list = new JList<>(new Vector<>(candidates));
+            list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            list.setSelectedIndex(0);
+            final JPanel panel = new JPanel();
+            panel.setLayout(new BorderLayout());
+            final JScrollPane scroll = new JScrollPane(list);
+            final JTextArea text = new JTextArea(unitMessage, 8, 30);
+            text.setLineWrap(true);
+            text.setEditable(false);
+            text.setWrapStyleWord(true);
+            panel.add(text, BorderLayout.NORTH);
+            panel.add(scroll, BorderLayout.CENTER);
+            return Tuple.of(panel, list);
+          }
+        });
     final JPanel panel = comps.getFirst();
     final JList<?> list = comps.getSecond();
     final String[] options = {"OK"};
@@ -1681,8 +1699,6 @@ public class TripleAFrame extends MainGameFrame {
             new Thread(disposePopup, "popup waiter").start();
           }
         }
-        // and then we do stuff for any custom current action tab
-        actionButtons.keyPressed(e);
       }
 
       @Override
