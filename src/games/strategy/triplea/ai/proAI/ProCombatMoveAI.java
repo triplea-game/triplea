@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -696,7 +697,6 @@ public class ProCombatMoveAI {
       Map<Unit, Set<Territory>> sortedUnitAttackOptions =
           tryToAttackTerritories(prioritizedTerritories, alreadyMovedUnits);
 
-
       // Get all units that have already moved
       final Set<Unit> alreadyAttackedWithUnits = new HashSet<>();
       for (final Territory t : attackMap.keySet()) {
@@ -704,16 +704,37 @@ public class ProCombatMoveAI {
         alreadyAttackedWithUnits.addAll(attackMap.get(t).getAmphibAttackMap().keySet());
       }
 
-      // Check to see if any infrastructure can be bombed
-      for (final Unit unit : unitAttackMap.keySet()) {
-        if (!Matches.UnitIsStrategicBomber.match(unit) || alreadyAttackedWithUnits.contains(unit)) {
+      // Check to see if any territories can be bombed
+      final Map<Unit, Set<Territory>> bomberMoveMap = territoryManager.getAttackOptions().getBomberMoveMap();
+      for (final Unit unit : bomberMoveMap.keySet()) {
+        if (alreadyAttackedWithUnits.contains(unit)) {
           continue;
         }
-        for (final Territory t : unitAttackMap.get(unit)) {
+        Optional<Territory> maxBombingTerritory = Optional.empty();
+        int maxBombingScore = 3;
+        for (final Territory t : bomberMoveMap.get(unit)) {
           final boolean territoryCanBeBombed = t.getUnits().someMatch(Matches.UnitCanProduceUnitsAndCanBeDamaged);
           if (territoryCanBeBombed && canAirSafelyLandAfterAttack(unit, t)) {
-            System.out.println(unit + " can bomb: " + t);
+            final int noAABombingDefense = t.getUnits().someMatch(Matches.UnitIsAAforBombingThisUnitOnly) ? 0 : 1;
+            int maxDamage = 0;
+            final TerritoryAttachment ta = TerritoryAttachment.get(t);
+            if (ta != null) {
+              maxDamage = ta.getProduction();
+            }
+            final int numExistingBombers = attackMap.get(t).getBombers().size();
+            final int remainingDamagePotential = maxDamage - 3 * numExistingBombers;
+            final int bombingScore = (1 + 9 * noAABombingDefense) * remainingDamagePotential;
+            if (bombingScore > maxBombingScore) {
+              maxBombingScore = bombingScore;
+              maxBombingTerritory = Optional.of(t);
+            }
           }
+        }
+        if (maxBombingTerritory.isPresent()) {
+          final Territory t = maxBombingTerritory.get();
+          attackMap.get(t).getBombers().add(unit);
+          sortedUnitAttackOptions.remove(unit);
+          ProLogger.debug("Add bomber (" + unit.getType() + ") to " + t);
         }
       }
 
