@@ -29,7 +29,7 @@ public class MapRouteDrawer {
   /**
    * This value influences the "resolution" of the Path.
    * Too low values make the Path look edgy, too high values will cause lag and rendering errors
-   * because the distance between the drawing segments is shorter than 2 pixels 
+   * because the distance between the drawing segments is shorter than 2 pixels
    */
   public static final double DETAIL_LEVEL = 1.0;
 
@@ -49,7 +49,7 @@ public class MapRouteDrawer {
     graphics.setStroke(new BasicStroke(3.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
     graphics.setPaint(Color.red);
     graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    
+
     final int numTerritories = route.getAllTerritories().size();
     final Point[] points = getRoutePoints(routeDescription, mapData);
     final boolean tooFewTerritories = numTerritories <= 1;
@@ -59,8 +59,13 @@ public class MapRouteDrawer {
     final double scale = view.getScale();
     final int jointsize = 10;
     if (tooFewTerritories || tooFewPoints) {
-      drawDirectPath(graphics, routeDescription, xOffset, yOffset, jointsize, scale);
-      if(tooFewPoints && !tooFewTerritories){
+      if (routeDescription.getEnd() != null) {
+        drawDirectPath(graphics, routeDescription.getStart(), routeDescription.getEnd(), xOffset, yOffset, jointsize,
+            scale);
+      } else {
+        drawDirectPath(graphics, points[0], points[points.length - 1], xOffset, yOffset, jointsize, scale);
+      }
+      if (tooFewPoints && !tooFewTerritories) {
         drawMoveLength(graphics, points, xOffset, yOffset, scale, numTerritories, maxMovement);
       }
     } else {
@@ -70,7 +75,7 @@ public class MapRouteDrawer {
     drawJoints(graphics, points, xOffset, yOffset, jointsize, scale);
     drawCustomCursor(graphics, routeDescription, xOffset, yOffset, scale);
   }
-  
+
   /**
    * Draws Points on the Map
    * 
@@ -89,7 +94,7 @@ public class MapRouteDrawer {
     }
 
   }
-  
+
   /**
    * Draws a specified CursorImage if available
    * 
@@ -99,46 +104,51 @@ public class MapRouteDrawer {
    * @param yOffset The vertical pixel-difference between the frame and the Map
    * @param scale The scale-factor of the Map
    */
-  private void drawCustomCursor(Graphics2D graphics, RouteDescription routeDescription, int xOffset, int yOffset, double scale){
+  private void drawCustomCursor(Graphics2D graphics, RouteDescription routeDescription, int xOffset, int yOffset,
+      double scale) {
     final Image cursorImage = routeDescription.getCursorImage();
     if (cursorImage != null) {
       graphics.drawImage(cursorImage,
           (int) (((routeDescription.getEnd().x - xOffset) - (cursorImage.getWidth(null) / 2)) * scale),
           (int) (((routeDescription.getEnd().y - yOffset) - (cursorImage.getHeight(null) / 2)) * scale), null);
     }
-    
+
   }
-  
+
   /**
-   * Draws a straight Line from the start to the stop of the specified <code>RouteDescription</code>
+   * Draws a straight Line from the start to the stop of the specified {@linkplain RouteDescription}
    * Also draws a small little point at the end of the Line.
    * 
    * @param graphics The graphics2D Object being drawn on
-   * @param routeDescription The RouteDescription object containing the CursorImage
+   * @param start The start Point of the Path
+   * @param end The start Point of the Path
    * @param xOffset The horizontal pixel-difference between the frame and the Map
    * @param yOffset The vertical pixel-difference between the frame and the Map
    * @param jointsize The diameter of the Points being drawn
    * @param scale The scale-factor of the Map
    */
-  private void drawDirectPath(Graphics2D graphics, RouteDescription routeDescription, int xOffset, int yOffset, int jointsize, double scale){
-    drawLineWithTranslate(graphics, new Line2D.Float(routeDescription.getStart(), routeDescription.getEnd()), xOffset,
+  private void drawDirectPath(Graphics2D graphics, Point start, Point end, int xOffset, int yOffset, int jointsize,
+      double scale) {
+    drawLineWithTranslate(graphics, new Line2D.Float(start, end), xOffset,
         yOffset, scale);
     graphics.fillOval(
-        (int) (((routeDescription.getEnd().x - xOffset) - jointsize / 2) * scale),
-        (int) (((routeDescription.getEnd().y - yOffset) - jointsize / 2) * scale),
+        (int) (((end.x - xOffset) - jointsize / 2) * scale),
+        (int) (((end.y - yOffset) - jointsize / 2) * scale),
         jointsize, jointsize);
   }
+
   /**
-   * Centripetal parameterization
+   * Centripetal parameterization<br>
    * 
-   * Check http://stackoverflow.com/a/37370620/5769952 for more information
+   * Check <a href="http://stackoverflow.com/a/37370620/5769952">http://stackoverflow.com/a/37370620/5769952</a> for
+   * more information
    * 
    * @param points - The Points which should be parameterized
    * @return A Parameter-Array called the "Index"
    */
   protected double[] createParameterizedIndex(Point[] points) {
     final double[] index = new double[points.length];
-    if(index.length > 0){
+    if (index.length > 0) {
       index[0] = 0;
     }
     for (int i = 1; i < points.length; i++) {
@@ -146,7 +156,7 @@ public class MapRouteDrawer {
     }
     return index;
   }
-  
+
   /**
    * Draws a line to the Screen regarding the Map-Offset and scale
    * 
@@ -162,18 +172,18 @@ public class MapRouteDrawer {
         new Point2D.Double((line.getP1().getX() - xOffset) * scale, (line.getP1().getY() - yOffset) * scale);
     final Point2D point2 =
         new Point2D.Double((line.getP2().getX() - xOffset) * scale, (line.getP2().getY() - yOffset) * scale);
-    //Don't draw if won't be visible anyway
-    if(graphics.getClip().contains(point1) || graphics.getClip().contains(point2)){
+    // Don't draw if won't be visible anyway
+    if (graphics.getClip().contains(point1) || graphics.getClip().contains(point2)) {
       graphics.draw(new Line2D.Double(point1, point2));
     }
   }
-  
+
   /**
-   * Creates a Point Array out of a <code>RouteDescription</code> and a <code>MapData</code> object
+   * Creates a Point Array out of a {@linkplain RouteDescription} and a {@linkplain MapData} object
    * 
-   * @param routeDescription <code>RouteDescription</code> containing the Route information
-   * @param mapData <code>MapData</code> Object containing Information about the Map Coordinates
-   * @return The Point array specified by the <code>RouteDescription</code> and <code>MapData</code> objects
+   * @param routeDescription {@linkplain RouteDescription} containing the Route information
+   * @param mapData {@linkplain MapData} Object containing Information about the Map Coordinates
+   * @return The Point array specified by the {@linkplain RouteDescription} and {@linkplain MapData} objects
    */
   protected Point[] getRoutePoints(RouteDescription routeDescription, MapData mapData) {
     final List<Territory> territories = routeDescription.getRoute().getAllTerritories();
@@ -190,7 +200,7 @@ public class MapRouteDrawer {
     }
     return points;
   }
-  
+
   /**
    * Creates double arrays of y or x coordinates of the given Point Array
    * 
@@ -198,28 +208,29 @@ public class MapRouteDrawer {
    * @param extractor A function specifying which value to return
    * @return A double array with values specified by the given function
    */
-  protected double[] getValues(Point[] points, Function<Point, Double> extractor){
+  protected double[] getValues(Point[] points, Function<Point, Double> extractor) {
     double[] result = new double[points.length];
     for (int i = 0; i < points.length; i++) {
       result[i] = extractor.apply(points[i]);
     }
     return result;
-    
+
   }
 
   /**
-   * Creates a double array containing y coordinates of a <code>PolynomialSplineFunction</code> with the above specified <code>DETAIL_LEVEL</code>
+   * Creates a double array containing y coordinates of a {@linkplain PolynomialSplineFunction} with the above specified
+   * {@code DETAIL_LEVEL}
    * 
-   * @param fuction The <code>PolynomialSplineFunction</code> with the values
-   * @param index the parameterized array to indicate the maximum Values 
-   * @return
+   * @param fuction The {@linkplain PolynomialSplineFunction} with the values
+   * @param index the parameterized array to indicate the maximum Values
+   * @return an array of double-precision y values of the specified function
    */
   protected double[] getCoords(PolynomialSplineFunction fuction, double[] index) {
     final double defaultCoordSize = index[index.length - 1];
-    final double[] coords = new double[(int)Math.round(DETAIL_LEVEL * defaultCoordSize) + 1];
+    final double[] coords = new double[(int) Math.round(DETAIL_LEVEL * defaultCoordSize) + 1];
     final double stepSize = fuction.getKnots()[fuction.getKnots().length - 1] / coords.length;
     double curValue = 0;
-    for (int i = 0; i < coords.length; i ++) {
+    for (int i = 0; i < coords.length; i++) {
       coords[i] = fuction.value(curValue);
       curValue += stepSize;
     }
@@ -246,7 +257,7 @@ public class MapRouteDrawer {
             : "    /" + maxMovement;
     final BufferedImage movementImage = new BufferedImage(50, 20, BufferedImage.TYPE_INT_ARGB);
     createMovementLeftImage(movementImage, String.valueOf(numTerritories - 1), unitMovementLeft);
-    
+
     final int textXOffset = -movementImage.getWidth() / 2;
     final int yDir = cursorPos.y - points[numTerritories - 2].y;
     final int textYOffset = yDir > 0 ? movementImage.getHeight() : movementImage.getHeight() * -2;
@@ -254,12 +265,12 @@ public class MapRouteDrawer {
         (int) ((cursorPos.x + textXOffset - xOffset) * scale),
         (int) ((cursorPos.y + textYOffset - yOffset) * scale), null);
   }
-  
+
   /**
    * Draws a smooth curve through the given array of points
    * This algorithm is called Spline-Interpolation
    * because the Apache-commons-math library we are using here does not accept
-   * values but <code>f(x)=y</code> with x having to increase all the time
+   * values but {@code f(x)=y} with x having to increase all the time
    * the idea behind this is to use a parameter array - the so called index
    * as x array and splitting the points into a x and y coordinates array.
    * 
@@ -273,9 +284,11 @@ public class MapRouteDrawer {
    */
   private void drawCurvedPath(Graphics2D graphics, Point[] points, int xOffset, int yOffset, double scale) {
     final double[] index = createParameterizedIndex(points);
-    final PolynomialSplineFunction xcurve = splineInterpolator.interpolate(index, getValues(points, point -> point.getX()));
+    final PolynomialSplineFunction xcurve =
+        splineInterpolator.interpolate(index, getValues(points, point -> point.getX()));
     final double[] xcoords = getCoords(xcurve, index);
-    final PolynomialSplineFunction ycurve = splineInterpolator.interpolate(index, getValues(points, point -> point.getY()));
+    final PolynomialSplineFunction ycurve =
+        splineInterpolator.interpolate(index, getValues(points, point -> point.getY()));
     final double[] ycoords = getCoords(ycurve, index);
 
     for (int i = 1; i < xcoords.length; i++) {
@@ -290,7 +303,7 @@ public class MapRouteDrawer {
   }
 
   /**
-   * This draws how many moves are left on the given <code>BufferedImage</code>
+   * This draws how many moves are left on the given {@linkplain BufferedImage}
    * 
    * @param image The Image to be drawn on
    * @param curMovement How many territories the unit traveled so far
@@ -302,11 +315,11 @@ public class MapRouteDrawer {
     textG2D.setFont(new Font("Dialog", Font.BOLD, 20));
     final int textThicknessOffset = textG2D.getFontMetrics().stringWidth(curMovement) / 2;
     final boolean distanceTooBig = maxMovement.equals("");
-    textG2D.drawString(curMovement, distanceTooBig ? image.getWidth() / 2 - textThicknessOffset : 0, image.getHeight());
-    if(!distanceTooBig){
+    textG2D.drawString(curMovement, distanceTooBig ? image.getWidth() / 2 - textThicknessOffset : 10, image.getHeight());
+    if (!distanceTooBig) {
       textG2D.setColor(new Color(33, 0, 127));
       textG2D.setFont(new Font("Dialog", Font.BOLD, 16));
-      textG2D.drawString(maxMovement, 0, image.getHeight());
+      textG2D.drawString(maxMovement, 10, image.getHeight());
     }
   }
 }
