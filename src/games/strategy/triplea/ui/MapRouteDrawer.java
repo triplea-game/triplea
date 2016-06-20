@@ -315,11 +315,11 @@ public class MapRouteDrawer {
     textG2D.setFont(new Font("Dialog", Font.BOLD, 20));
     final int textThicknessOffset = textG2D.getFontMetrics().stringWidth(curMovement) / 2;
     final boolean distanceTooBig = maxMovement.equals("");
-    textG2D.drawString(curMovement, distanceTooBig ? image.getWidth() / 2 - textThicknessOffset : 0, image.getHeight());
+    textG2D.drawString(curMovement, distanceTooBig ? image.getWidth() / 2 - textThicknessOffset : 10, image.getHeight());
     if (!distanceTooBig) {
       textG2D.setColor(new Color(33, 0, 127));
       textG2D.setFont(new Font("Dialog", Font.BOLD, 16));
-      textG2D.drawString(maxMovement, 0, image.getHeight());
+      textG2D.drawString(maxMovement, 10, image.getHeight());
     }
   }
 }
