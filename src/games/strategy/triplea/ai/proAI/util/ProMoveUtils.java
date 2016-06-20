@@ -1,5 +1,13 @@
 package games.strategy.triplea.ai.proAI.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -14,14 +22,6 @@ import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.util.Match;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Pro AI move utilities.
@@ -194,7 +194,8 @@ public class ProMoveUtils {
                   && maxUnitDistance <= minUnitDistance
                   && distanceFromUnloadTerritory < movesLeft
                   && (maxUnitDistance < minUnitDistance
-                      || (maxUnitDistance > 1 && neighborDistanceFromEnd > maxDistanceFromEnd) || (maxUnitDistance <= 1 && neighborDistanceFromEnd < maxDistanceFromEnd))) {
+                      || (maxUnitDistance > 1 && neighborDistanceFromEnd > maxDistanceFromEnd)
+                      || (maxUnitDistance <= 1 && neighborDistanceFromEnd < maxDistanceFromEnd))) {
                 territoryToMoveTo = neighbor;
                 minUnitDistance = maxUnitDistance;
                 if (neighborDistanceFromEnd > maxDistanceFromEnd) {
@@ -265,6 +266,39 @@ public class ProMoveUtils {
           route =
               data.getMap().getRoute_IgnoreEnd(startTerritory, bombardFromTerritory,
                   ProMatches.territoryCanMoveSeaUnitsThrough(player, data, true));
+        }
+        moveRoutes.add(route);
+      }
+    }
+  }
+
+  public static void calculateBombingRoutes(final PlayerID player, final List<Collection<Unit>> moveUnits,
+      final List<Route> moveRoutes, final Map<Territory, ProTerritory> attackMap) {
+
+    final GameData data = ProData.getData();
+
+    // Loop through all territories to attack
+    for (final Territory t : attackMap.keySet()) {
+
+      // Loop through each unit that is attacking the current territory
+      for (final Unit u : attackMap.get(t).getBombers()) {
+
+        // Skip if unit is already in move to territory
+        final Territory startTerritory = ProData.unitTerritoryMap.get(u);
+        if (startTerritory == null || startTerritory.equals(t)) {
+          continue;
+        }
+
+        // Add unit to move list
+        final List<Unit> unitList = new ArrayList<>();
+        unitList.add(u);
+        moveUnits.add(unitList);
+
+        // Determine route and add to move list
+        Route route = null;
+        if (Match.allMatch(unitList, Matches.UnitIsAir)) {
+          route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,
+              ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, true));
         }
         moveRoutes.add(route);
       }
