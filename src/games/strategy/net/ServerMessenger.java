@@ -183,7 +183,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private final HashMap<String, String> m_cachedMacAddresses = new HashMap<>();
 
   @Override
-  public String GetPlayerMac(final String name) {
+  public String getPlayerMac(final String name) {
     synchronized (m_cachedListLock) {
       String mac = m_cachedMacAddresses.get(name);
       if (mac == null) {
@@ -258,17 +258,17 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
 
   private void ScheduleUsernameUnmuteAt(final String username, final long checkTime) {
     final Timer unmuteUsernameTimer = new Timer("Username unmute timer");
-    unmuteUsernameTimer.schedule(GetUsernameUnmuteTask(username), new Date(checkTime));
+    unmuteUsernameTimer.schedule(getUsernameUnmuteTask(username), new Date(checkTime));
   }
 
   private void ScheduleIpUnmuteAt(final String ip, final long checkTime) {
     final Timer unmuteIpTimer = new Timer("IP unmute timer");
-    unmuteIpTimer.schedule(GetIpUnmuteTask(ip), new Date(checkTime));
+    unmuteIpTimer.schedule(getIpUnmuteTask(ip), new Date(checkTime));
   }
 
   private void ScheduleMacUnmuteAt(final String mac, final long checkTime) {
     final Timer unmuteMacTimer = new Timer("Mac unmute timer");
-    unmuteMacTimer.schedule(GetMacUnmuteTask(mac), new Date(checkTime));
+    unmuteMacTimer.schedule(getMacUnmuteTask(mac), new Date(checkTime));
   }
 
   public void NotifyPlayerLogin(final String uniquePlayerName, final String ip, final String mac) {
@@ -306,7 +306,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
 
   private final HashMap<String, String> m_playersThatLeftMacs_Last10 = new HashMap<>();
 
-  public HashMap<String, String> GetPlayersThatLeftMacs_Last10() {
+  public HashMap<String, String> getPlayersThatLeftMacs_Last10() {
     return m_playersThatLeftMacs_Last10;
   }
 
@@ -343,7 +343,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
         } else if (IsIpMuted(msg.getFrom().getAddress().getHostAddress())) {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_LOBBY, msg.getFrom());
           return;
-        } else if (IsMacMuted(GetPlayerMac(msg.getFrom().getName()))) {
+        } else if (IsMacMuted(getPlayerMac(msg.getFrom().getName()))) {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_LOBBY, msg.getFrom());
           return;
         }
@@ -357,7 +357,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_GAME, msg.getFrom());
           return;
         }
-        if (IsMacMuted(GetPlayerMac(msg.getFrom().getName()))) {
+        if (IsMacMuted(getPlayerMac(msg.getFrom().getName()))) {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_GAME, msg.getFrom());
           return;
         }
@@ -662,7 +662,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     }
   }
 
-  private TimerTask GetUsernameUnmuteTask(final String username) {
+  private TimerTask getUsernameUnmuteTask(final String username) {
     return createUnmuteTimerTask(
         () -> (isLobby() && new MutedUsernameController().getUsernameUnmuteTime(username) == -1) || (isGame()),
         () -> m_liveMutedUsernames.remove(username)
@@ -682,14 +682,14 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     };
   }
 
-  private TimerTask GetIpUnmuteTask(final String ip) {
+  private TimerTask getIpUnmuteTask(final String ip) {
     return createUnmuteTimerTask(
         () -> (isLobby() && new MutedIpController().getIpUnmuteTime(ip) == -1) || (isGame()),
         () -> m_liveMutedIpAddresses.remove(ip)
     );
   }
 
-  private TimerTask GetMacUnmuteTask(final String mac) {
+  private TimerTask getMacUnmuteTask(final String mac) {
     return createUnmuteTimerTask(
         () -> (isLobby() && new MutedMacController().getMacUnmuteTime(mac) == -1) || (isGame()),
         () -> m_liveMutedMacAddresses.remove(mac)
