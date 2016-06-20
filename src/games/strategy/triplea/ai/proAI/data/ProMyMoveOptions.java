@@ -1,13 +1,13 @@
 package games.strategy.triplea.ai.proAI.data;
 
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 
 public class ProMyMoveOptions {
 
@@ -16,6 +16,7 @@ public class ProMyMoveOptions {
   private final Map<Unit, Set<Territory>> transportMoveMap;
   private final Map<Unit, Set<Territory>> bombardMap;
   private final List<ProTransport> transportList;
+  private final Map<Unit, Set<Territory>> bomberMoveMap;
 
   public ProMyMoveOptions() {
     territoryMap = new HashMap<>();
@@ -23,6 +24,7 @@ public class ProMyMoveOptions {
     transportMoveMap = new HashMap<>();
     bombardMap = new HashMap<>();
     transportList = new ArrayList<>();
+    bomberMoveMap = new HashMap<>();
   }
 
   public ProMyMoveOptions(final ProMyMoveOptions myMoveOptions) {
@@ -34,6 +36,7 @@ public class ProMyMoveOptions {
     transportMoveMap.putAll(myMoveOptions.transportMoveMap);
     bombardMap.putAll(myMoveOptions.bombardMap);
     transportList.addAll(myMoveOptions.transportList);
+    bomberMoveMap.putAll(myMoveOptions.bomberMoveMap);
   }
 
   public Map<Territory, ProTerritory> getTerritoryMap() {
@@ -54,6 +57,10 @@ public class ProMyMoveOptions {
 
   public List<ProTransport> getTransportList() {
     return transportList;
+  }
+
+  public Map<Unit, Set<Territory>> getBomberMoveMap() {
+    return bomberMoveMap;
   }
 
 }
