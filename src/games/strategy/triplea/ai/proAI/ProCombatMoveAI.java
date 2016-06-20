@@ -54,6 +54,7 @@ public class ProCombatMoveAI {
   private PlayerID player;
   private ProTerritoryManager territoryManager;
   private boolean isDefensive;
+  private boolean isBombing;
 
   public ProCombatMoveAI(final ProAI ai) {
     this.ai = ai;
@@ -71,6 +72,7 @@ public class ProCombatMoveAI {
     // Determine whether capital is threatened and I should be in a defensive stance
     isDefensive =
         !ProBattleUtils.territoryHasLocalLandSuperiority(ProData.myCapital, ProBattleUtils.MEDIUM_RANGE, player);
+    isBombing = false;
     ProLogger.debug("Currently in defensive stance: " + isDefensive);
 
     // Find the maximum number of units that can attack each territory and max enemy defenders
@@ -158,11 +160,23 @@ public class ProCombatMoveAI {
     ProMoveUtils.calculateAmphibRoutes(player, moveUnits, moveRoutes, transportsToLoad, attackMap, true);
     ProMoveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
 
-    // Calculate attack routes and perform moves
+    // Calculate bombard routes and perform moves
     moveUnits.clear();
     moveRoutes.clear();
     ProMoveUtils.calculateBombardMoveRoutes(player, moveUnits, moveRoutes, attackMap);
     ProMoveUtils.doMove(moveUnits, moveRoutes, null, moveDel);
+
+    // Calculate bombing routes and perform moves
+    moveUnits.clear();
+    moveRoutes.clear();
+    isBombing = true;
+    ProMoveUtils.calculateBombingRoutes(player, moveUnits, moveRoutes, attackMap);
+    ProMoveUtils.doMove(moveUnits, moveRoutes, null, moveDel);
+    isBombing = false;
+  }
+
+  public boolean isBombing() {
+    return isBombing;
   }
 
   private List<ProTerritory> prioritizeAttackOptions(final PlayerID player, final List<ProTerritory> attackOptions) {
@@ -697,6 +711,11 @@ public class ProCombatMoveAI {
       Map<Unit, Set<Territory>> sortedUnitAttackOptions =
           tryToAttackTerritories(prioritizedTerritories, alreadyMovedUnits);
 
+      // Clear bombers
+      for (final Territory t : attackMap.keySet()) {
+        attackMap.get(t).getBombers().clear();
+      }
+
       // Get all units that have already moved
       final Set<Unit> alreadyAttackedWithUnits = new HashSet<>();
       for (final Territory t : attackMap.keySet()) {
@@ -734,7 +753,7 @@ public class ProCombatMoveAI {
           final Territory t = maxBombingTerritory.get();
           attackMap.get(t).getBombers().add(unit);
           sortedUnitAttackOptions.remove(unit);
-          ProLogger.debug("Add bomber (" + unit.getType() + ") to " + t);
+          ProLogger.debug("Add bomber (" + unit + ") to " + t);
         }
       }
 
