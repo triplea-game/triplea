@@ -4,14 +4,15 @@ import java.util.Collection;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
 
 /**
  * Logic for placing units.
- * <p>
  */
+@MapSupport
 public class PlaceDelegate extends AbstractPlaceDelegate {
   /**
    * @return gets the production of the territory, ignores whether the territory was an original factory

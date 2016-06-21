@@ -20,6 +20,7 @@ import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.message.IRemote;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -36,6 +37,7 @@ import games.strategy.util.Match;
 /**
  * A delegate used to check for end of game conditions.
  */
+@MapSupport
 public class EndRoundDelegate extends BaseTripleADelegate {
   private boolean m_gameOver = false;
   private Collection<PlayerID> m_winners = new ArrayList<>();

@@ -7,7 +7,9 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.MapSupport;
 
+@MapSupport
 public class RelationshipTypeAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -4367286684249791984L;
   public static final String ARCHETYPE_NEUTRAL = Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL;

@@ -10,6 +10,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.util.IntegerMap;
@@ -17,6 +18,7 @@ import games.strategy.util.IntegerMap;
 /**
  * At the end of the turn collect units, not income!
  */
+@MapSupport
 public class NoPUPurchaseDelegate extends PurchaseDelegate {
   private boolean isPacific;
 

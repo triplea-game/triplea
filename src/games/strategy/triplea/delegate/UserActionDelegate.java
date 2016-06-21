@@ -14,6 +14,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.UserActionAttachment;
@@ -21,6 +22,7 @@ import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.UserActionText;
 
+@MapSupport
 public class UserActionDelegate extends BaseTripleADelegate implements IUserActionDelegate {
   public UserActionDelegate() {}
 
