@@ -2590,15 +2590,19 @@ public class UnitAttachment extends DefaultAttachment {
       final Territory t, final PlayerID owner, final GameData data) {
     final UnitAttachment ua = UnitAttachment.get(ut);
     final Tuple<Integer, String> stackingLimit;
-    if (limitType.equals("movementLimit")) {
-      stackingLimit = ua.getMovementLimit();
-    } else if (limitType.equals("attackingLimit")) {
-      stackingLimit = ua.getAttackingLimit();
-    } else if (limitType.equals("placementLimit")) {
-      stackingLimit = ua.getPlacementLimit();
-    } else {
-      throw new IllegalStateException(
-          "getMaximumNumberOfThisUnitTypeToReachStackingLimit does not allow limitType: " + limitType);
+    switch (limitType) {
+      case "movementLimit":
+        stackingLimit = ua.getMovementLimit();
+        break;
+      case "attackingLimit":
+        stackingLimit = ua.getAttackingLimit();
+        break;
+      case "placementLimit":
+        stackingLimit = ua.getPlacementLimit();
+        break;
+      default:
+        throw new IllegalStateException(
+            "getMaximumNumberOfThisUnitTypeToReachStackingLimit does not allow limitType: " + limitType);
     }
     if (stackingLimit == null) {
       return Integer.MAX_VALUE;

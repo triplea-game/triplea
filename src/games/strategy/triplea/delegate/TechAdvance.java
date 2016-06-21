@@ -209,20 +209,26 @@ public abstract class TechAdvance extends NamedAttachable {
     final List<TechAdvance> landAndProduction = new ArrayList<>();
     for (final TechAdvance ta : allAdvances) {
       final String propertyString = ta.getProperty();
-      if (propertyString.equals(TECH_PROPERTY_SUPER_SUBS) || propertyString.equals(TECH_PROPERTY_JET_POWER)
-          || propertyString.equals(TECH_PROPERTY_IMPROVED_SHIPYARDS) || propertyString.equals(TECH_PROPERTY_AA_RADAR)
-          || propertyString.equals(TECH_PROPERTY_LONG_RANGE_AIRCRAFT)
-          || propertyString.equals(TECH_PROPERTY_HEAVY_BOMBER)) {
-        airAndNaval.add(ta);
-      } else if (propertyString.equals(TECH_PROPERTY_IMPROVED_ARTILLERY_SUPPORT)
-          || propertyString.equals(TECH_PROPERTY_ROCKETS) || propertyString.equals(TECH_PROPERTY_PARATROOPERS)
-          || propertyString.equals(TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION)
-          || propertyString.equals(TECH_PROPERTY_WAR_BONDS)
-          || propertyString.equals(TECH_PROPERTY_MECHANIZED_INFANTRY)) {
-        landAndProduction.add(ta);
-      } else {
-        throw new IllegalStateException(
-            "We should not be using ww2v3 categories if we have custom techs: " + propertyString);
+      switch (propertyString) {
+        case TECH_PROPERTY_SUPER_SUBS:
+        case TECH_PROPERTY_JET_POWER:
+        case TECH_PROPERTY_IMPROVED_SHIPYARDS:
+        case TECH_PROPERTY_AA_RADAR:
+        case TECH_PROPERTY_LONG_RANGE_AIRCRAFT:
+        case TECH_PROPERTY_HEAVY_BOMBER:
+          airAndNaval.add(ta);
+          break;
+        case TECH_PROPERTY_IMPROVED_ARTILLERY_SUPPORT:
+        case TECH_PROPERTY_ROCKETS:
+        case TECH_PROPERTY_PARATROOPERS:
+        case TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION:
+        case TECH_PROPERTY_WAR_BONDS:
+        case TECH_PROPERTY_MECHANIZED_INFANTRY:
+          landAndProduction.add(ta);
+          break;
+        default:
+          throw new IllegalStateException(
+              "We should not be using ww2v3 categories if we have custom techs: " + propertyString);
       }
     }
     return Tuple.of(airAndNaval, landAndProduction);

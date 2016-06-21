@@ -199,14 +199,17 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
       }
       final int cost = getInt(s[0]);
       if (s.length == 2) {
-        if (s[1].equals(UPKEEP_FLAT)) {
-        } else if (s[1].equals(UPKEEP_PERCENTAGE)) {
-          if (cost > 100) {
-            throw new GameParseException("upkeepCost may not have a percentage greater than 100" + thisErrorMsg());
-          }
-        } else {
-          throw new GameParseException(
-              "upkeepCost must have either: " + UPKEEP_FLAT + " or " + UPKEEP_PERCENTAGE + thisErrorMsg());
+        switch (s[1]) {
+          case UPKEEP_FLAT:
+            break;
+          case UPKEEP_PERCENTAGE:
+            if (cost > 100) {
+              throw new GameParseException("upkeepCost may not have a percentage greater than 100" + thisErrorMsg());
+            }
+            break;
+          default:
+            throw new GameParseException(
+                "upkeepCost must have either: " + UPKEEP_FLAT + " or " + UPKEEP_PERCENTAGE + thisErrorMsg());
         }
       }
       m_upkeepCost = integerCost;

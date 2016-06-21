@@ -282,60 +282,68 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   protected Set<Territory> getTerritoriesBasedOnStringName(final String name, final Collection<PlayerID> players,
       final GameData data) {
     final GameMap gameMap = data.getMap();
-    if (name.equals("original") || name.equals("enemy")) // get all originally owned territories
-    {
-      final Set<Territory> originalTerrs = new HashSet<>();
-      for (final PlayerID player : players) {
-        originalTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
+    switch (name) {
+      case "original":
+      case "enemy":
+        // get all originally owned territories
+      {
+        final Set<Territory> originalTerrs = new HashSet<>();
+        for (final PlayerID player : players) {
+          originalTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
+        }
+        setTerritoryCount(String.valueOf(originalTerrs.size()));
+        return originalTerrs;
       }
-      setTerritoryCount(String.valueOf(originalTerrs.size()));
-      return originalTerrs;
-    } else if (name.equals("originalNoWater")) // get all originally owned territories, but no water or impassibles
-    {
-      final Set<Territory> originalTerrs = new HashSet<>();
-      for (final PlayerID player : players) {
-        originalTerrs.addAll(Match.getMatches(OriginalOwnerTracker.getOriginallyOwned(data, player),
-            // TODO: does this account for occupiedTerrOf???
-            Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
+      case "originalNoWater":
+        // get all originally owned territories, but no water or impassibles
+      {
+        final Set<Territory> originalTerrs = new HashSet<>();
+        for (final PlayerID player : players) {
+          originalTerrs.addAll(Match.getMatches(OriginalOwnerTracker.getOriginallyOwned(data, player),
+              // TODO: does this account for occupiedTerrOf???
+              Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
+        }
+        setTerritoryCount(String.valueOf(originalTerrs.size()));
+        return originalTerrs;
       }
-      setTerritoryCount(String.valueOf(originalTerrs.size()));
-      return originalTerrs;
-    } else if (name.equals("controlled")) {
-      final Set<Territory> ownedTerrs = new HashSet<>();
-      for (final PlayerID player : players) {
-        ownedTerrs.addAll(gameMap.getTerritoriesOwnedBy(player));
+      case "controlled":
+        final Set<Territory> ownedTerrs = new HashSet<>();
+        for (final PlayerID player : players) {
+          ownedTerrs.addAll(gameMap.getTerritoriesOwnedBy(player));
+        }
+        setTerritoryCount(String.valueOf(ownedTerrs.size()));
+        return ownedTerrs;
+      case "controlledNoWater":
+        final Set<Territory> ownedTerrsNoWater = new HashSet<>();
+        for (final PlayerID player : players) {
+          ownedTerrsNoWater.addAll(Match.getMatches(gameMap.getTerritoriesOwnedBy(player),
+              Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
+        }
+        setTerritoryCount(String.valueOf(ownedTerrsNoWater.size()));
+        return ownedTerrsNoWater;
+      case "all": {
+        final Set<Territory> allTerrs = new HashSet<>();
+        for (final PlayerID player : players) {
+          allTerrs.addAll(gameMap.getTerritoriesOwnedBy(player));
+          allTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
+        }
+        setTerritoryCount(String.valueOf(allTerrs.size()));
+        return allTerrs;
       }
-      setTerritoryCount(String.valueOf(ownedTerrs.size()));
-      return ownedTerrs;
-    } else if (name.equals("controlledNoWater")) {
-      final Set<Territory> ownedTerrsNoWater = new HashSet<>();
-      for (final PlayerID player : players) {
-        ownedTerrsNoWater.addAll(Match.getMatches(gameMap.getTerritoriesOwnedBy(player),
-            Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
+      case "map": {
+        final Set<Territory> allTerrs = new HashSet<>(gameMap.getTerritories());
+        setTerritoryCount(String.valueOf(allTerrs.size()));
+        return allTerrs;
       }
-      setTerritoryCount(String.valueOf(ownedTerrsNoWater.size()));
-      return ownedTerrsNoWater;
-    } else if (name.equals("all")) {
-      final Set<Territory> allTerrs = new HashSet<>();
-      for (final PlayerID player : players) {
-        allTerrs.addAll(gameMap.getTerritoriesOwnedBy(player));
-        allTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
-      }
-      setTerritoryCount(String.valueOf(allTerrs.size()));
-      return allTerrs;
-    } else if (name.equals("map")) {
-      final Set<Territory> allTerrs = new HashSet<>(gameMap.getTerritories());
-      setTerritoryCount(String.valueOf(allTerrs.size()));
-      return allTerrs;
-    } else { // The list just contained 1 territory
-      final Set<Territory> terr = new HashSet<>();
-      final Territory t = data.getMap().getTerritory(name);
-      if (t == null) {
-        throw new IllegalStateException("No territory called:" + name + thisErrorMsg());
-      }
-      terr.add(t);
-      setTerritoryCount(String.valueOf(1));
-      return terr;
+      default:  // The list just contained 1 territory
+        final Set<Territory> terr = new HashSet<>();
+        final Territory t = data.getMap().getTerritory(name);
+        if (t == null) {
+          throw new IllegalStateException("No territory called:" + name + thisErrorMsg());
+        }
+        terr.add(t);
+        setTerritoryCount(String.valueOf(1));
+        return terr;
     }
   }
 

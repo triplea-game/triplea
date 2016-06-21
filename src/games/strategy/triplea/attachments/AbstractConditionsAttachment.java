@@ -250,58 +250,63 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   public static boolean areConditionsMet(final List<ICondition> rulesToTest,
       final HashMap<ICondition, Boolean> testedConditions, final String conditionType) {
     boolean met = false;
-    if (conditionType.equals("AND")) {
-      for (final ICondition c : rulesToTest) {
-        met = testedConditions.get(c);
-        if (!met) {
-          break;
+    switch (conditionType) {
+      case "AND":
+        for (final ICondition c : rulesToTest) {
+          met = testedConditions.get(c);
+          if (!met) {
+            break;
+          }
         }
-      }
-    } else if (conditionType.equals("OR")) {
-      for (final ICondition c : rulesToTest) {
-        met = testedConditions.get(c);
-        if (met) {
-          break;
-        }
-      }
-    } else if (conditionType.equals("XOR")) {
-      // XOR is confusing with more than 2 conditions, so we will just say that one has to be true, while all others
-      // must be false
-      boolean isOneTrue = false;
-      for (final ICondition c : rulesToTest) {
-        met = testedConditions.get(c);
-        if (isOneTrue && met) {
-          isOneTrue = false;
-          break;
-        } else if (met) {
-          isOneTrue = true;
-        }
-      }
-      met = isOneTrue;
-    } else {
-      final String[] nums = conditionType.split("-");
-      if (nums.length == 1) {
-        final int start = Integer.parseInt(nums[0]);
-        int count = 0;
+        break;
+      case "OR":
         for (final ICondition c : rulesToTest) {
           met = testedConditions.get(c);
           if (met) {
-            count++;
+            break;
           }
         }
-        met = (count == start);
-      } else if (nums.length == 2) {
-        final int start = Integer.parseInt(nums[0]);
-        final int end = Integer.parseInt(nums[1]);
-        int count = 0;
+        break;
+      case "XOR":
+        // XOR is confusing with more than 2 conditions, so we will just say that one has to be true, while all others
+        // must be false
+        boolean isOneTrue = false;
         for (final ICondition c : rulesToTest) {
           met = testedConditions.get(c);
-          if (met) {
-            count++;
+          if (isOneTrue && met) {
+            isOneTrue = false;
+            break;
+          } else if (met) {
+            isOneTrue = true;
           }
         }
-        met = (count >= start && count <= end);
-      }
+        met = isOneTrue;
+        break;
+      default:
+        final String[] nums = conditionType.split("-");
+        if (nums.length == 1) {
+          final int start = Integer.parseInt(nums[0]);
+          int count = 0;
+          for (final ICondition c : rulesToTest) {
+            met = testedConditions.get(c);
+            if (met) {
+              count++;
+            }
+          }
+          met = (count == start);
+        } else if (nums.length == 2) {
+          final int start = Integer.parseInt(nums[0]);
+          final int end = Integer.parseInt(nums[1]);
+          int count = 0;
+          for (final ICondition c : rulesToTest) {
+            met = testedConditions.get(c);
+            if (met) {
+              count++;
+            }
+          }
+          met = (count >= start && count <= end);
+        }
+        break;
     }
     return met;
   }

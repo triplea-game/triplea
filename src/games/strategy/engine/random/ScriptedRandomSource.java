@@ -40,12 +40,16 @@ public class ScriptedRandomSource implements IRandomSource {
     m_numbers = new int[length];
     for (int i = 0; i < m_numbers.length; i++) {
       final String token = tokenizer.nextToken();
-      if (token.equals("e")) {
-        m_numbers[i] = ERROR;
-      } else if (token.equals("p")) {
-        m_numbers[i] = PAUSE;
-      } else {
-        m_numbers[i] = Integer.parseInt(token) - 1;
+      switch (token) {
+        case "e":
+          m_numbers[i] = ERROR;
+          break;
+        case "p":
+          m_numbers[i] = PAUSE;
+          break;
+        default:
+          m_numbers[i] = Integer.parseInt(token) - 1;
+          break;
       }
     }
   }

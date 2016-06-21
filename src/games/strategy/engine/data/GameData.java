@@ -240,12 +240,13 @@ public class GameData implements java.io.Serializable {
 
   public UnitHolder getUnitHolder(final String name, final String type) {
     ensureLockHeld();
-    if (type.equals(UnitHolder.PLAYER)) {
-      return playerList.getPlayerID(name);
-    } else if (type.equals(UnitHolder.TERRITORY)) {
-      return map.getTerritory(name);
-    } else {
-      throw new IllegalStateException("Invalid type:" + type);
+    switch (type) {
+      case UnitHolder.PLAYER:
+        return playerList.getPlayerID(name);
+      case UnitHolder.TERRITORY:
+        return map.getTerritory(name);
+      default:
+        throw new IllegalStateException("Invalid type:" + type);
     }
   }
 

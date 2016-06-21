@@ -85,23 +85,32 @@ public class HeadlessLobbyConsole {
       return;
     }
     final String noun = command.split("\\s")[0];
-    if (noun.equals("help")) {
-      showHelp();
-    } else if (noun.equals("status")) {
-      showStatus();
-    } else if (noun.equals("sql")) {
-      executeSql(command.substring("sql".length(), command.length()).trim());
-    } else if (noun.equals("quit")) {
-      quit();
-    } else if (noun.equals("backup")) {
-      backup();
-    } else if (noun.equals("memory")) {
-      memory();
-    } else if (noun.equals("threads")) {
-      threads();
-    } else {
-      out.println("unrecognized command:" + command);
-      showHelp();
+    switch (noun) {
+      case "help":
+        showHelp();
+        break;
+      case "status":
+        showStatus();
+        break;
+      case "sql":
+        executeSql(command.substring("sql".length(), command.length()).trim());
+        break;
+      case "quit":
+        quit();
+        break;
+      case "backup":
+        backup();
+        break;
+      case "memory":
+        memory();
+        break;
+      case "threads":
+        threads();
+        break;
+      default:
+        out.println("unrecognized command:" + command);
+        showHelp();
+        break;
     }
   }
 

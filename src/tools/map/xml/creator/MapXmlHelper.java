@@ -472,70 +472,80 @@ public class MapXmlHelper {
     for (int i = 0; i < children.getLength(); ++i) {
       final Node childNode = children.item(i);
       final String childNodeName = childNode.getNodeName();
-      if (childNodeName.equals(XML_NODE_NAME_INFO)) {
-        final HashMap<String, String> infoAttr = getAttributesMap(childNode.getAttributes());
-        for (final Entry<String, String> infoAttrEntry : infoAttr.entrySet()) {
-          getXmlStringsMap().put("info_@" + infoAttrEntry.getKey(), infoAttrEntry.getValue());
-        }
-      } else if (childNodeName.equals(XML_NODE_NAME_RESOURCE_LIST)) {
-        final NodeList resourceNodes = childNode.getChildNodes();
+      switch (childNodeName) {
+        case XML_NODE_NAME_INFO:
+          final HashMap<String, String> infoAttr = getAttributesMap(childNode.getAttributes());
+          for (final Entry<String, String> infoAttrEntry : infoAttr.entrySet()) {
+            getXmlStringsMap().put("info_@" + infoAttrEntry.getKey(), infoAttrEntry.getValue());
+          }
+          break;
+        case XML_NODE_NAME_RESOURCE_LIST:
+          final NodeList resourceNodes = childNode.getChildNodes();
 
-        for (int resource_i = 0; resource_i < resourceNodes.getLength(); ++resource_i) {
-          final Node resourceNode = resourceNodes.item(resource_i);
-          if (resourceNode.getNodeName().equals(XML_NODE_NAME_RESOURCE)) {
-            getResourceList().add(resourceNode.getAttributes().item(0).getNodeValue());
+          for (int resource_i = 0; resource_i < resourceNodes.getLength(); ++resource_i) {
+            final Node resourceNode = resourceNodes.item(resource_i);
+            if (resourceNode.getNodeName().equals(XML_NODE_NAME_RESOURCE)) {
+              getResourceList().add(resourceNode.getAttributes().item(0).getNodeValue());
+            }
           }
-        }
-      } else if (childNodeName.equals(XML_NODE_NAME_MAP)) {
-        parseMapNode(childNode.getChildNodes());
-        stepToGo = MapXmlCreator.getMaxGameStep(stepToGo, (getTerritoryConnectionsMap().isEmpty()
-            ? GAME_STEP.TERRITORY_DEFINITIONS : GAME_STEP.TERRITORY_CONNECTIONS));
-      } else if (childNodeName.equals(XML_NODE_NAME_PLAYER_LIST)) {
-        parsePlayerListNode(childNode.getChildNodes());
-        stepToGo = MapXmlCreator.getMaxGameStep(stepToGo,
-            GAME_STEP.PLAYERS_AND_ALLIANCES);
-      } else if (childNodeName.equals(XML_NODE_NAME_PRODUCTION)) {
-        putNodesToProductionFrontiers(childNode.getChildNodes());
-        stepToGo = MapXmlCreator.getMaxGameStep(stepToGo,
-            (getProductionFrontiersMap().isEmpty() ? GAME_STEP.UNIT_DEFINITIONS : GAME_STEP.PRODUCTION_FRONTIERS));
-      } else if (childNodeName.equals(XML_NODE_NAME_GAME_PLAY)) {
-        putNodesToPlayerSequence(childNode.getChildNodes());
-        stepToGo = MapXmlCreator.getMaxGameStep(stepToGo,
-            (getPlayerSequenceMap().isEmpty() ? GAME_STEP.UNIT_ATTACHMENTS : GAME_STEP.TERRITORY_PRODUCTION));
-      } else if (childNodeName.equals(XML_NODE_NAME_ATTACHMENT_LIST)) {
-        final NodeList attachmentListChildNodes = childNode.getChildNodes();
-        for (int p_i = 0; p_i < attachmentListChildNodes.getLength(); ++p_i) {
-          final Node attachment = attachmentListChildNodes.item(p_i);
-          if (attachment.getNodeName().equals(XML_NODE_NAME_ATTACHMENT)) {
-            parseAttachmentNode(attachment);
+          break;
+        case XML_NODE_NAME_MAP:
+          parseMapNode(childNode.getChildNodes());
+          stepToGo = MapXmlCreator.getMaxGameStep(stepToGo, (getTerritoryConnectionsMap().isEmpty()
+              ? GAME_STEP.TERRITORY_DEFINITIONS : GAME_STEP.TERRITORY_CONNECTIONS));
+          break;
+        case XML_NODE_NAME_PLAYER_LIST:
+          parsePlayerListNode(childNode.getChildNodes());
+          stepToGo = MapXmlCreator.getMaxGameStep(stepToGo,
+              GAME_STEP.PLAYERS_AND_ALLIANCES);
+          break;
+        case XML_NODE_NAME_PRODUCTION:
+          putNodesToProductionFrontiers(childNode.getChildNodes());
+          stepToGo = MapXmlCreator.getMaxGameStep(stepToGo,
+              (getProductionFrontiersMap().isEmpty() ? GAME_STEP.UNIT_DEFINITIONS : GAME_STEP.PRODUCTION_FRONTIERS));
+          break;
+        case XML_NODE_NAME_GAME_PLAY:
+          putNodesToPlayerSequence(childNode.getChildNodes());
+          stepToGo = MapXmlCreator.getMaxGameStep(stepToGo,
+              (getPlayerSequenceMap().isEmpty() ? GAME_STEP.UNIT_ATTACHMENTS : GAME_STEP.TERRITORY_PRODUCTION));
+          break;
+        case XML_NODE_NAME_ATTACHMENT_LIST:
+          final NodeList attachmentListChildNodes = childNode.getChildNodes();
+          for (int p_i = 0; p_i < attachmentListChildNodes.getLength(); ++p_i) {
+            final Node attachment = attachmentListChildNodes.item(p_i);
+            if (attachment.getNodeName().equals(XML_NODE_NAME_ATTACHMENT)) {
+              parseAttachmentNode(attachment);
+            }
           }
-        }
-        stepToGo = MapXmlCreator.getMaxGameStep(MapXmlCreator.getMaxGameStep(stepToGo,
-            getUnitAttachmentsMap().isEmpty() ? GAME_STEP.PRODUCTION_FRONTIERS : GAME_STEP.UNIT_ATTACHMENTS),
-            getTerritoyProductionsMap().isEmpty() ? GAME_STEP.UNIT_ATTACHMENTS : GAME_STEP.TERRITORY_PRODUCTION);
-      } else if (childNodeName.equals(XML_NODE_NAME_INITIALIZE)) {
-        final NodeList initializeChildNodes = childNode.getChildNodes();
-        for (int init_i = 0; init_i < initializeChildNodes.getLength(); ++init_i) {
-          final Node ownerInitialize = initializeChildNodes.item(init_i);
-          if (ownerInitialize.getNodeName().equals(XML_NODE_NAME_OWNER_INITIALIZE)) {
-            putNodesToTerritoryOwnerships(ownerInitialize.getChildNodes());
-          } else if (ownerInitialize.getNodeName().equals(XML_NODE_NAME_UNIT_INITIALIZE)) {
-            putNodesToUnitPlacements(ownerInitialize.getChildNodes());
+          stepToGo = MapXmlCreator.getMaxGameStep(MapXmlCreator.getMaxGameStep(stepToGo,
+              getUnitAttachmentsMap().isEmpty() ? GAME_STEP.PRODUCTION_FRONTIERS : GAME_STEP.UNIT_ATTACHMENTS),
+              getTerritoyProductionsMap().isEmpty() ? GAME_STEP.UNIT_ATTACHMENTS : GAME_STEP.TERRITORY_PRODUCTION);
+          break;
+        case XML_NODE_NAME_INITIALIZE:
+          final NodeList initializeChildNodes = childNode.getChildNodes();
+          for (int init_i = 0; init_i < initializeChildNodes.getLength(); ++init_i) {
+            final Node ownerInitialize = initializeChildNodes.item(init_i);
+            if (ownerInitialize.getNodeName().equals(XML_NODE_NAME_OWNER_INITIALIZE)) {
+              putNodesToTerritoryOwnerships(ownerInitialize.getChildNodes());
+            } else if (ownerInitialize.getNodeName().equals(XML_NODE_NAME_UNIT_INITIALIZE)) {
+              putNodesToUnitPlacements(ownerInitialize.getChildNodes());
+            }
           }
-        }
-        stepToGo = MapXmlCreator.getMaxGameStep(stepToGo,
-            (getUnitPlacementsMap().isEmpty() ? GAME_STEP.TERRITORY_OWNERSHIP : GAME_STEP.UNIT_PLACEMENTS));
-      } else if (childNodeName.equals(XML_NODE_NAME_PROPERTY_LIST)) {
-        final NodeList propertyListChildNodes = childNode.getChildNodes();
-        for (int prop_i = 0; prop_i < propertyListChildNodes.getLength(); ++prop_i) {
-          final Node property = propertyListChildNodes.item(prop_i);
-          if (property.getNodeName().equals(XML_NODE_NAME_PROPERTY)) {
-            parsePropertyNode(property);
+          stepToGo = MapXmlCreator.getMaxGameStep(stepToGo,
+              (getUnitPlacementsMap().isEmpty() ? GAME_STEP.TERRITORY_OWNERSHIP : GAME_STEP.UNIT_PLACEMENTS));
+          break;
+        case XML_NODE_NAME_PROPERTY_LIST:
+          final NodeList propertyListChildNodes = childNode.getChildNodes();
+          for (int prop_i = 0; prop_i < propertyListChildNodes.getLength(); ++prop_i) {
+            final Node property = propertyListChildNodes.item(prop_i);
+            if (property.getNodeName().equals(XML_NODE_NAME_PROPERTY)) {
+              parsePropertyNode(property);
+            }
           }
-        }
-        if (!getGameSettingsMap().isEmpty()) {
-          stepToGo = (getNotes().length() > 0 ? GAME_STEP.MAP_FINISHED : GAME_STEP.GAME_SETTINGS);
-        }
+          if (!getGameSettingsMap().isEmpty()) {
+            stepToGo = (getNotes().length() > 0 ? GAME_STEP.MAP_FINISHED : GAME_STEP.GAME_SETTINGS);
+          }
+          break;
       }
     }
     return stepToGo;

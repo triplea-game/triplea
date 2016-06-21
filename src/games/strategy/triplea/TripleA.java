@@ -57,19 +57,26 @@ public class TripleA extends AbstractGameLoader {
     final Set<IGamePlayer> players = new HashSet<>();
     for (final String name : playerNames.keySet()) {
       final String type = playerNames.get(name);
-      if (type.equals(WEAK_COMPUTER_PLAYER_TYPE)) {
-        players.add(new WeakAI(name, type));
-      } else if (type.equals(FAST_COMPUTER_PLAYER_TYPE)) {
-        players.add(new FastAI(name, type));
-      } else if (type.equals(PRO_COMPUTER_PLAYER_TYPE)) {
-        players.add(new ProAI(name, type));
-      } else if (type.equals(DOESNOTHINGAI_COMPUTER_PLAYER_TYPE)) {
-        players.add(new DoesNothingAI(name, type));
-      } else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE)) {
-        final TripleAPlayer player = new TripleAPlayer(name, type);
-        players.add(player);
-      } else {
-        throw new IllegalStateException("Player type not recognized:" + type);
+      switch (type) {
+        case WEAK_COMPUTER_PLAYER_TYPE:
+          players.add(new WeakAI(name, type));
+          break;
+        case FAST_COMPUTER_PLAYER_TYPE:
+          players.add(new FastAI(name, type));
+          break;
+        case PRO_COMPUTER_PLAYER_TYPE:
+          players.add(new ProAI(name, type));
+          break;
+        case DOESNOTHINGAI_COMPUTER_PLAYER_TYPE:
+          players.add(new DoesNothingAI(name, type));
+          break;
+        case HUMAN_PLAYER_TYPE:
+        case CLIENT_PLAYER_TYPE:
+          final TripleAPlayer player = new TripleAPlayer(name, type);
+          players.add(player);
+          break;
+        default:
+          throw new IllegalStateException("Player type not recognized:" + type);
       }
     }
     return players;

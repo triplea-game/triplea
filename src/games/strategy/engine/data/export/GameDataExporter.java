@@ -212,14 +212,19 @@ public class GameDataExporter {
 
   private void printConstantProperties(final Map<String, Object> conProperties) {
     for(String propName : conProperties.keySet()) {
-      if (propName.equals("notes")) { // TODO: unchecked reflection
-        // Special handling of notes property
-        printNotes((String) conProperties.get(propName));
-      } else if (propName.equals("EditMode") || propName.equals("GAME_UUID")
-          || propName.equals("games.strategy.engine.framework.ServerGame.GameHasBeenSaved")) {
-        // Don't print these options
-      } else {
-        printConstantProperty(propName, conProperties.get(propName));
+      switch (propName) {
+        case "notes":  // TODO: unchecked reflection
+          // Special handling of notes property
+          printNotes((String) conProperties.get(propName));
+          break;
+        case "EditMode":
+        case "GAME_UUID":
+        case "games.strategy.engine.framework.ServerGame.GameHasBeenSaved":
+          // Don't print these options
+          break;
+        default:
+          printConstantProperty(propName, conProperties.get(propName));
+          break;
       }
     }
   }
