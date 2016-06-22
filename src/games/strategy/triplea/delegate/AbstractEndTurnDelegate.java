@@ -53,10 +53,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   }
 
   public boolean canPlayerCollectIncome(final PlayerID player, final GameData data) {
-    if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(m_player, getData())) {
-      return false;
-    }
-    return true;
+    return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(m_player, getData());
   }
 
   /**

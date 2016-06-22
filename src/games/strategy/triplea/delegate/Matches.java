@@ -135,10 +135,8 @@ public class Matches {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       if (ua.getTransportCapacity() == -1) {
         return true;
-      } else if (ua.getIsCombatTransport() && ua.getIsSea()) {
-        return true;
       } else {
-        return false;
+        return ua.getIsCombatTransport() && ua.getIsSea();
       }
     }
   };
@@ -462,10 +460,7 @@ public class Matches {
       public boolean match(final Unit unit) {
         final UnitAttachment ua = UnitAttachment.get(bomberOrRocket.getType());
         final HashSet<UnitType> allowedTargets = ua.getBombingTargets(bomberOrRocket.getData());
-        if (allowedTargets == null || allowedTargets.contains(unit.getType())) {
-          return true;
-        }
-        return false;
+        return allowedTargets == null || allowedTargets.contains(unit.getType());
       }
     };
   }
@@ -567,10 +562,7 @@ public class Matches {
           return true;
         }
         // if unit can support other units, return true
-        if (!UnitSupportAttachment.get(ut).isEmpty()) {
-          return true;
-        }
-        return false;
+        return !UnitSupportAttachment.get(ut).isEmpty();
       }
     };
   }
@@ -579,10 +571,7 @@ public class Matches {
     return new Match<UnitSupportAttachment>() {
       @Override
       public boolean match(final UnitSupportAttachment usa) {
-        if (usa.getPlayers().contains(player)) {
-          return true;
-        }
-        return false;
+        return usa.getPlayers().contains(player);
       }
     };
   }
@@ -612,10 +601,7 @@ public class Matches {
     @Override
     public boolean match(final Territory t) {
       final Collection<Territory> neighbors = t.getData().getMap().getNeighbors(t);
-      if (neighbors.size() == 1 && TerritoryIsWater.match(neighbors.iterator().next())) {
-        return true;
-      }
-      return false;
+      return neighbors.size() == 1 && TerritoryIsWater.match(neighbors.iterator().next());
     }
   };
 
@@ -909,11 +895,8 @@ public class Matches {
             return true;
           }
         }
-        if (Match.someMatch(targets, new CompositeMatchAnd<>(Matches.UnitIsAirborne,
-            Matches.unitIsOfTypes(airborneTechTargetsAllowed.get(ua.getTypeAA()))))) {
-          return true;
-        }
-        return false;
+        return Match.someMatch(targets, new CompositeMatchAnd<>(Matches.UnitIsAirborne,
+            Matches.unitIsOfTypes(airborneTechTargetsAllowed.get(ua.getTypeAA()))));
       }
     };
   }
@@ -1168,10 +1151,7 @@ public class Matches {
       if (ta == null) {
         return false;
       }
-      if (ta.getVictoryCity() != 0) {
-        return true;
-      }
-      return false;
+      return ta.getVictoryCity() != 0;
     }
   };
   public static final Match<Territory> TerritoryIsLand = new InverseMatch<>(TerritoryIsWater);
@@ -1219,10 +1199,7 @@ public class Matches {
             return false;
           }
         }
-        if (contestedDoNotProduce && !Matches.territoryHasNoEnemyUnits(player, data).match(t)) {
-          return false;
-        }
-        return true;
+        return !(contestedDoNotProduce && !Matches.territoryHasNoEnemyUnits(player, data).match(t));
       }
     };
   }
@@ -1231,10 +1208,7 @@ public class Matches {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
-        if (data.getMap().getNeighbors(t, match).size() > 0) {
-          return true;
-        }
-        return false;
+        return data.getMap().getNeighbors(t, match).size() > 0;
       }
     };
   }
@@ -1252,10 +1226,7 @@ public class Matches {
         // player));
         final CompositeMatch<Territory> condition = new CompositeMatchAnd<>(Matches.TerritoryIsLand,
             Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
-        if (data.getMap().getNeighbors(t, condition).size() > 0) {
-          return true;
-        }
-        return false;
+        return data.getMap().getNeighbors(t, condition).size() > 0;
       }
     };
   }
@@ -1265,11 +1236,8 @@ public class Matches {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
-        if (data.getMap().getNeighbors(t, Matches.territoryIsAlliedAndHasAlliedUnitMatching(data, player, unitMatch))
-            .size() > 0) {
-          return true;
-        }
-        return false;
+        return data.getMap().getNeighbors(t, Matches.territoryIsAlliedAndHasAlliedUnitMatching(data, player, unitMatch))
+            .size() > 0;
       }
     };
   }
@@ -1280,10 +1248,7 @@ public class Matches {
       public boolean match(final Territory t) {
         final CompositeMatch<Territory> validLandRoute =
             new CompositeMatchAnd<>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable);
-        if (data.getMap().getRoute(t, goTerr, validLandRoute) != null) {
-          return true;
-        }
-        return false;
+        return data.getMap().getRoute(t, goTerr, validLandRoute) != null;
       }
     };
   }
@@ -1367,12 +1332,9 @@ public class Matches {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
-        if (data.getMap()
+        return data.getMap()
             .getNeighbors(t, Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, unitMatch))
-            .size() > 0) {
-          return true;
-        }
-        return false;
+            .size() > 0;
       }
     };
   }
@@ -1382,11 +1344,8 @@ public class Matches {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
-        if (data.getMap().getNeighbors(t, Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, unitMatch))
-            .size() > 0) {
-          return true;
-        }
-        return false;
+        return data.getMap().getNeighbors(t, Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, unitMatch))
+            .size() > 0;
       }
     };
   }
@@ -1396,12 +1355,9 @@ public class Matches {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
-        if (data.getMap()
+        return data.getMap()
             .getNeighbors(t, Matches.territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnits(data, player))
-            .size() > 0) {
-          return true;
-        }
-        return false;
+            .size() > 0;
       }
     };
   }
@@ -1410,10 +1366,7 @@ public class Matches {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
-        if (data.getMap().getNeighbors(t, Matches.TerritoryIsWater).size() > 0) {
-          return true;
-        }
-        return false;
+        return data.getMap().getNeighbors(t, Matches.TerritoryIsWater).size() > 0;
       }
     };
   }
@@ -1426,10 +1379,7 @@ public class Matches {
         if (!data.getRelationshipTracker().isAllied(t.getOwner(), player)) {
           return false;
         }
-        if (!t.getUnits().someMatch(new CompositeMatchAnd<>(Matches.alliedUnit(player, data), unitMatch))) {
-          return false;
-        }
-        return true;
+        return t.getUnits().someMatch(new CompositeMatchAnd<>(Matches.alliedUnit(player, data), unitMatch));
       }
     };
   }
@@ -1442,10 +1392,7 @@ public class Matches {
         if (!t.getOwner().equals(player)) {
           return false;
         }
-        if (!t.getUnits().someMatch(new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), unitMatch))) {
-          return false;
-        }
-        return true;
+        return t.getUnits().someMatch(new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), unitMatch));
       }
     };
   }
@@ -1458,10 +1405,7 @@ public class Matches {
         if (!t.getOwner().equals(player)) {
           return false;
         }
-        if (!t.getUnits().someMatch(Matches.UnitCanProduceUnits)) {
-          return false;
-        }
-        return true;
+        return t.getUnits().someMatch(Matches.UnitCanProduceUnits);
       }
     };
   }
@@ -1478,10 +1422,7 @@ public class Matches {
           return false;
         }
         final BattleTracker bt = AbstractMoveDelegate.getBattleTracker(data);
-        if (bt == null || bt.wasConquered(t)) {
-          return false;
-        }
-        return true;
+        return !(bt == null || bt.wasConquered(t));
       }
     };
   }
@@ -1494,10 +1435,7 @@ public class Matches {
         if (!isTerritoryAllied(player, data).match(t)) {
           return false;
         }
-        if (!t.getUnits().someMatch(Matches.UnitCanProduceUnits)) {
-          return false;
-        }
-        return true;
+        return t.getUnits().someMatch(Matches.UnitCanProduceUnits);
       }
     };
   }
@@ -1513,10 +1451,7 @@ public class Matches {
         if (t.getOwner().isNull()) {
           return false;
         }
-        if (!t.getUnits().someMatch(new CompositeMatchAnd<>(Matches.enemyUnit(player, data), unitMatch))) {
-          return false;
-        }
-        return true;
+        return t.getUnits().someMatch(new CompositeMatchAnd<>(Matches.enemyUnit(player, data), unitMatch));
       }
     };
   }
@@ -1566,10 +1501,7 @@ public class Matches {
         if (!TerritoryIsWater.match(t)) {
           return false;
         }
-        if (!TerritoryIsPassableAndNotRestricted(player, data).match(t)) {
-          return false;
-        }
-        return true;
+        return TerritoryIsPassableAndNotRestricted(player, data).match(t);
       }
     };
   }
@@ -1585,11 +1517,8 @@ public class Matches {
         if (!TerritoryIsPassableAndNotRestricted(player, data).match(t)) {
           return false;
         }
-        if (TerritoryIsLand.match(t)
-            && !data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(player, t.getOwner())) {
-          return false;
-        }
-        return true;
+        return !(TerritoryIsLand.match(t)
+            && !data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(player, t.getOwner()));
       }
     };
   }
@@ -1702,11 +1631,8 @@ public class Matches {
             .canLandAirUnitsOnOwnedLand(playerWhoOwnsAllTheUnitsMoving, t.getOwner())) {
           return false;
         }
-        if (isCombatMovePhase && !data.getRelationshipTracker()
-            .canMoveIntoDuringCombatMove(playerWhoOwnsAllTheUnitsMoving, t.getOwner())) {
-          return false;
-        }
-        return true;
+        return !(isCombatMovePhase && !data.getRelationshipTracker()
+            .canMoveIntoDuringCombatMove(playerWhoOwnsAllTheUnitsMoving, t.getOwner()));
       }
     };
   }
@@ -1779,10 +1705,7 @@ public class Matches {
             }
           }
         }
-        if (left < 0 || left < movementcost) {
-          return false;
-        }
-        return true;
+        return !(left < 0 || left < movementcost);
       }
     };
   }
@@ -1866,10 +1789,7 @@ public class Matches {
       @Override
       public boolean match(final Unit unit) {
         final Collection<Unit> transporting = TripleAUnit.get(unit).getTransporting();
-        if (transporting == null || transporting.isEmpty()) {
-          return false;
-        }
-        return true;
+        return !(transporting == null || transporting.isEmpty());
       }
     };
   }
@@ -2050,10 +1970,7 @@ public class Matches {
             && !games.strategy.triplea.Properties.getBlitzThroughFactoriesAndAARestricted(data)) {
           blitzableUnits.add(Matches.UnitIsInfrastructure);
         }
-        if (t.getUnits().allMatch(blitzableUnits)) {
-          return true;
-        }
-        return false;
+        return t.getUnits().allMatch(blitzableUnits);
       }
     };
   }
@@ -2090,10 +2007,7 @@ public class Matches {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit unit) {
-        if (data.getRelationshipTracker().isAtWarWithAnyOfThesePlayers(unit.getOwner(), players)) {
-          return true;
-        }
-        return false;
+        return data.getRelationshipTracker().isAtWarWithAnyOfThesePlayers(unit.getOwner(), players);
       }
     };
   }
@@ -2141,10 +2055,7 @@ public class Matches {
         if (Matches.unitIsOwnedByOfAnyOfThesePlayers(players).match(unit)) {
           return true;
         }
-        if (data.getRelationshipTracker().isAlliedWithAnyOfThesePlayers(unit.getOwner(), players)) {
-          return true;
-        }
-        return false;
+        return data.getRelationshipTracker().isAlliedWithAnyOfThesePlayers(unit.getOwner(), players);
       }
     };
   }
@@ -2328,10 +2239,7 @@ public class Matches {
         if (TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, territory)) {
           return true;
         }
-        if (TransportTracker.isTransportUnloadRestrictedInNonCombat(transport)) {
-          return true;
-        }
-        return false;
+        return TransportTracker.isTransportUnloadRestrictedInNonCombat(transport);
       }
     };
   }
@@ -2340,10 +2248,7 @@ public class Matches {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit transport) {
-        if (TransportTracker.isTransporting(transport)) {
-          return false;
-        }
-        return true;
+        return !TransportTracker.isTransporting(transport);
       }
     };
   }
@@ -2352,10 +2257,7 @@ public class Matches {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit transport) {
-        if (TransportTracker.isTransporting(transport)) {
-          return true;
-        }
-        return false;
+        return TransportTracker.isTransporting(transport);
       }
     };
   }
@@ -2629,11 +2531,8 @@ public class Matches {
         final UnitType type = unitCanGiveBonusMovement.getUnitType();
         final UnitAttachment ua = UnitAttachment.get(type);
         // TODO: make sure the unit is operational
-        if (UnitCanGiveBonusMovement.match(unitCanGiveBonusMovement)
-            && ua.getGivesMovement().getInt(unitWhichWillGetBonus.getType()) != 0) {
-          return true;
-        }
-        return false;
+        return UnitCanGiveBonusMovement.match(unitCanGiveBonusMovement)
+            && ua.getGivesMovement().getInt(unitWhichWillGetBonus.getType()) != 0;
       }
     };
   }
@@ -3176,10 +3075,7 @@ public class Matches {
         if (ta == null) {
           return false;
         }
-        if (!ta.getWhenCapturedByGoesTo().isEmpty()) {
-          return true;
-        }
-        return false;
+        return !ta.getWhenCapturedByGoesTo().isEmpty();
       }
     };
   }
@@ -3188,10 +3084,7 @@ public class Matches {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
-        if (UnitAttachment.get(u.getType()).getWhenCapturedChangesInto().isEmpty()) {
-          return false;
-        }
-        return true;
+        return !UnitAttachment.get(u.getType()).getWhenCapturedChangesInto().isEmpty();
       }
     };
   }
@@ -3356,10 +3249,7 @@ public class Matches {
           return false;
         }
         final RelationshipTracker rt = data.getRelationshipTracker();
-        if (!rt.canMoveAirUnitsOverOwnedLand(player, owner) || !rt.canLandAirUnitsOnOwnedLand(player, owner)) {
-          return false;
-        }
-        return true;
+        return !(!rt.canMoveAirUnitsOverOwnedLand(player, owner) || !rt.canLandAirUnitsOnOwnedLand(player, owner));
       }
     };
   }
@@ -3376,10 +3266,7 @@ public class Matches {
           return true;
         }
         final RelationshipTracker rt = data.getRelationshipTracker();
-        if (rt.rocketsCanFlyOver(player, owner)) {
-          return true;
-        }
-        return false;
+        return rt.rocketsCanFlyOver(player, owner);
       }
     };
   }

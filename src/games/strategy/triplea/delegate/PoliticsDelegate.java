@@ -103,10 +103,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     if (!games.strategy.triplea.Properties.getUsePolitics(getData())) {
       return false;
     }
-    if (getValidActions().isEmpty()) {
-      return false;
-    }
-    return true;
+    return !getValidActions().isEmpty();
   }
 
   public HashMap<ICondition, Boolean> getTestedConditions() {

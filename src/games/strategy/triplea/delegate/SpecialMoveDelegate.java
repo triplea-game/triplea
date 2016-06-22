@@ -92,10 +92,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    if (!allowAirborne(m_player, getData())) {
-      return false;
-    }
-    return true;
+    return allowAirborne(m_player, getData());
   }
 
   @Override
@@ -339,10 +336,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     final Collection<Territory> territoriesWeCanLaunchFrom = Match.getMatches(map.getTerritories(),
         Matches.territoryHasUnitsThatMatch(getAirborneMatch(player, airborneBases, alliesForBases)));
 
-    if (territoriesWeCanLaunchFrom.isEmpty()) {
-      return false;
-    }
-    return true;
+    return !territoriesWeCanLaunchFrom.isEmpty();
   }
 
   private static boolean getEditMode(final GameData data) {

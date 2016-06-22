@@ -125,10 +125,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
       return false;
     }
     // if my capital is captured, I can't produce, but I may have PUs if I captured someone else's capital
-    if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(m_player, getData())) {
-      return false;
-    }
-    return true;
+    return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(m_player, getData());
   }
 
   protected boolean canWePurchaseOrRepair() {
