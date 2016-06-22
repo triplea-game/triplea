@@ -82,8 +82,8 @@ public class MapRouteDrawer {
   /**
    * Draws Points on the Map
    * 
-   * @param graphics The Graphics2D Object being drawn on
-   * @param points The Point array aka the "Joints" to be drawn
+   * @param graphics The {@linkplain Graphics2D} Object being drawn on
+   * @param points The {@linkplain Point} array aka the "Joints" to be drawn
    * @param xOffset The horizontal pixel-difference between the frame and the Map
    * @param yOffset The vertical pixel-difference between the frame and the Map
    * @param jointsize The diameter of the Points being drawn
@@ -101,7 +101,7 @@ public class MapRouteDrawer {
   /**
    * Draws a specified CursorImage if available
    * 
-   * @param graphics The graphics2D Object being drawn on
+   * @param graphics The {@linkplain Graphics2D} Object being drawn on
    * @param routeDescription The RouteDescription object containing the CursorImage
    * @param xOffset The horizontal pixel-difference between the frame and the Map
    * @param yOffset The vertical pixel-difference between the frame and the Map
@@ -122,9 +122,9 @@ public class MapRouteDrawer {
    * Draws a straight Line from the start to the stop of the specified {@linkplain RouteDescription}
    * Also draws a small little point at the end of the Line.
    * 
-   * @param graphics The graphics2D Object being drawn on
-   * @param start The start Point of the Path
-   * @param end The start Point of the Path
+   * @param graphics The {@linkplain Graphics2D} Object being drawn on
+   * @param start The start {@linkplain Point} of the Path
+   * @param end The start {@linkplain Point} of the Path
    * @param xOffset The horizontal pixel-difference between the frame and the Map
    * @param yOffset The vertical pixel-difference between the frame and the Map
    * @param jointsize The diameter of the Points being drawn
@@ -134,9 +134,7 @@ public class MapRouteDrawer {
     drawLineWithTranslate(graphics, new Line2D.Float(start, end), xOffset,
         yOffset, scale);
     if (start.distance(end) > 4) {
-      final Point2D scaledStart = new Point2D.Double((start.x - xOffset) * scale, (start.y - yOffset) * scale);
-      final Point2D scaledEnd = new Point2D.Double((end.x - xOffset) * scale, (end.y - yOffset) * scale);
-      graphics.fill(createArrowTipShape(scaledStart, scaledEnd));
+      drawArrow(graphics, start, end, xOffset, yOffset, scale);
     }
   }
 
@@ -163,7 +161,7 @@ public class MapRouteDrawer {
   /**
    * Draws a line to the Screen regarding the Map-Offset and scale
    * 
-   * @param graphics The Graphics2D Object to be drawn on
+   * @param graphics The {@linkplain Graphics2D} Object to be drawn on
    * @param line The Line to be drawn
    * @param xOffset The horizontal pixel-difference between the frame and the Map
    * @param yOffset The vertical pixel-difference between the frame and the Map
@@ -182,11 +180,11 @@ public class MapRouteDrawer {
   }
 
   /**
-   * Creates a Point Array out of a {@linkplain RouteDescription} and a {@linkplain MapData} object
+   * Creates a {@linkplain Point} Array out of a {@linkplain RouteDescription} and a {@linkplain MapData} object
    * 
    * @param routeDescription {@linkplain RouteDescription} containing the Route information
    * @param mapData {@linkplain MapData} Object containing Information about the Map Coordinates
-   * @return The Point array specified by the {@linkplain RouteDescription} and {@linkplain MapData} objects
+   * @return The {@linkplain Point} array specified by the {@linkplain RouteDescription} and {@linkplain MapData} objects
    */
   protected Point[] getRoutePoints(RouteDescription routeDescription, MapData mapData) {
     final List<Territory> territories = routeDescription.getRoute().getAllTerritories();
@@ -205,9 +203,9 @@ public class MapRouteDrawer {
   }
 
   /**
-   * Creates double arrays of y or x coordinates of the given Point Array
+   * Creates double arrays of y or x coordinates of the given {@linkplain Point} Array
    * 
-   * @param points The Point Array containing the Coordinates
+   * @param points The {@linkplain Point} Array containing the Coordinates
    * @param extractor A function specifying which value to return
    * @return A double array with values specified by the given function
    */
@@ -243,8 +241,8 @@ public class MapRouteDrawer {
   /**
    * Draws how many moves are left
    * 
-   * @param graphics The Graphics2D Object to be drawn on
-   * @param points The Point array of the unit's tour
+   * @param graphics The {@linkplain Graphics2D} Object to be drawn on
+   * @param points The {@linkplain Point} array of the unit's tour
    * @param xOffset The horizontal pixel-difference between the frame and the Map
    * @param yOffset The vertical pixel-difference between the frame and the Map
    * @param scale The scale-factor of the Map
@@ -277,9 +275,9 @@ public class MapRouteDrawer {
    * the idea behind this is to use a parameter array - the so called index
    * as x array and splitting the points into a x and y coordinates array.
    * 
-   * Finally those 2 interpolated arrays get unified into a single point array and drawn to the Map
+   * Finally those 2 interpolated arrays get unified into a single {@linkplain Point} array and drawn to the Map
    * 
-   * @param graphics The Graphics2D Object to be drawn on
+   * @param graphics The {@linkplain Graphics2D} Object to be drawn on
    * @param points The Knot Points for the Spline-Interpolator aka the joints
    * @param xOffset The horizontal pixel-difference between the frame and the Map
    * @param yOffset The vertical pixel-difference between the frame and the Map
@@ -304,11 +302,8 @@ public class MapRouteDrawer {
             points[points.length - 1]),
         xOffset, yOffset, scale);
     if (points[points.length - 2].distance(points[points.length - 1]) > 4) {
-      final Point2D scaledStart = new Point2D.Double((xcoords[xcoords.length - 1] - xOffset) * scale,
-          (ycoords[ycoords.length - 1] - yOffset) * scale);
-      final Point2D scaledEnd = new Point2D.Double((points[points.length - 1].x - xOffset) * scale,
-          (points[points.length - 1].y - yOffset) * scale);
-      graphics.fill(createArrowTipShape(scaledStart, scaledEnd));
+      drawArrow(graphics, new Point2D.Double(xcoords[xcoords.length - 1], ycoords[ycoords.length - 1]),
+          points[points.length - 1], xOffset, yOffset, scale);
     }
   }
 
@@ -337,11 +332,11 @@ public class MapRouteDrawer {
   /**
    * Creates an Arrow-Shape
    * 
-   * @param from The Point specifying the direction of the Arrow
-   * @param to The Point where the arrow is placed
+   * @param from The {@linkplain Point2D} specifying the direction of the Arrow
+   * @param to The {@linkplain Point2D} where the arrow is placed
    * @return A transformed Arrow-Shape
    */
-  private static Shape createArrowTipShape(Point2D from, Point2D to) {
+  private Shape createArrowTipShape(Point2D from, Point2D to) {
     final Polygon arrowPolygon = new Polygon();
     arrowPolygon.addPoint(-3, 2);
     arrowPolygon.addPoint(1, 0);
@@ -356,5 +351,23 @@ public class MapRouteDrawer {
     transform.rotate(rotate);
 
     return transform.createTransformedShape(arrowPolygon);
+  }
+
+  /**
+   * Draws an Arrow on the {@linkplain Graphics2D} Object
+   * 
+   * @param graphics The {@linkplain Graphics2D} object to draw on
+   * @param from The destination {@linkplain Point2D} form the Arrow
+   * @param to The placement {@linkplain Point2D} for the Arrow
+   * @param xOffset The horizontal pixel-difference between the frame and the Map
+   * @param yOffset The vertical pixel-difference between the frame and the Map
+   * @param scale The scale-factor of the Map
+   */
+  private void drawArrow(Graphics2D graphics, Point2D from, Point2D to, int xOffset, int yOffset, double scale) {
+    final Point2D scaledStart = new Point2D.Double((from.getX() - xOffset) * scale,
+        (from.getY() - yOffset) * scale);
+    final Point2D scaledEnd = new Point2D.Double((to.getX() - xOffset) * scale,
+        (to.getY() - yOffset) * scale);
+    graphics.fill(createArrowTipShape(scaledStart, scaledEnd));
   }
 }
