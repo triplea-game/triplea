@@ -135,8 +135,9 @@ public class Matches {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       if (ua.getTransportCapacity() == -1) {
         return true;
-      } else
+      } else {
         return ua.getIsCombatTransport() && ua.getIsSea();
+      }
     }
   };
   public static final Match<Unit> UnitIsDestroyer = new Match<Unit>() {
