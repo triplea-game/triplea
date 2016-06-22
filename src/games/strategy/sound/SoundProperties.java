@@ -3,7 +3,6 @@ package games.strategy.sound;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLStreamHandler;
 import java.util.Calendar;
 import java.util.Optional;
 import java.util.Properties;

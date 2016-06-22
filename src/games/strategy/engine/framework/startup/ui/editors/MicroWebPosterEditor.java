@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +28,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentListener;
 
-import games.strategy.util.UrlStreams;
 import org.apache.commons.httpclient.methods.multipart.Part;
 
 import games.strategy.engine.framework.startup.ui.MainFrame;
@@ -37,6 +35,7 @@ import games.strategy.engine.framework.startup.ui.editors.validators.IValidator;
 import games.strategy.engine.pbem.IWebPoster;
 import games.strategy.engine.pbem.TripleAWebPoster;
 import games.strategy.ui.ProgressWindow;
+import games.strategy.util.UrlStreams;
 
 /**
  * A class for displaying settings for the micro web site poster

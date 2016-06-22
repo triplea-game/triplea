@@ -60,10 +60,10 @@ public class TechPanel extends ActionPanel {
         m_actionLabel.setText(id.getName() + " Tech Roll");
         add(m_actionLabel);
         if (isWW2V3TechModel()) {
-          add(new JButton(GetTechTokenAction));
+          add(new JButton(getTechTokenAction));
           add(new JButton(JustRollTech));
         } else {
-          add(new JButton(GetTechRollsAction));
+          add(new JButton(getTechRollsAction));
           add(new JButton(DontBother));
         }
       }
@@ -103,7 +103,7 @@ public class TechPanel extends ActionPanel {
     return Util.difference(allAdvances, currentAdvances);
   }
 
-  private final Action GetTechRollsAction = SwingAction.of("Roll Tech...", e -> {
+  private final Action getTechRollsAction = SwingAction.of("Roll Tech...", e -> {
     TechAdvance advance = null;
     if (isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel())) {
       final List<TechAdvance> available = getAvailableTechs();
@@ -151,7 +151,7 @@ public class TechPanel extends ActionPanel {
     m_techRoll = null;
     release();
   });
-  private final Action GetTechTokenAction = SwingAction.of("Buy Tech Tokens...", e -> {
+  private final Action getTechTokenAction = SwingAction.of("Buy Tech Tokens...", e -> {
     final PlayerID currentPlayer = getCurrentPlayer();
     m_currTokens = currentPlayer.getResources().getQuantity(Constants.TECH_TOKENS);
     // Notify user if there are no more techs to acheive

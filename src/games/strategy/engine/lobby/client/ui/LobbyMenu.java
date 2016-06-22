@@ -102,11 +102,11 @@ public class LobbyMenu extends JMenuBar {
                 .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
             final StringBuilder builder = new StringBuilder();
             builder.append("Online Players:\r\n\r\n");
-            for (final INode player : m_frame.GetChatMessagePanel().getChat().GetOnlinePlayers()) {
+            for (final INode player : m_frame.getChatMessagePanel().getChat().getOnlinePlayers()) {
               builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
             }
             builder.append("Players That Have Left (Last 10):\r\n\r\n");
-            for (final INode player : m_frame.GetChatMessagePanel().getChat().GetPlayersThatLeft_Last10()) {
+            for (final INode player : m_frame.getChatMessagePanel().getChat().getPlayersThatLeft_Last10()) {
               builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
             }
             final Runnable componentCreation = new Runnable() {

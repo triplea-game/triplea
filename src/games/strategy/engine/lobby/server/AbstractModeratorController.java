@@ -27,7 +27,7 @@ public abstract class AbstractModeratorController implements IModeratorControlle
   }
 
   protected String getNodeMacAddress(final INode node) {
-    return m_serverMessenger.GetPlayerMac(node.getName());
+    return m_serverMessenger.getPlayerMac(node.getName());
   }
 
   protected String getRealName(final INode node) {

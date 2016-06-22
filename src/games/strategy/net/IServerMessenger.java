@@ -41,7 +41,7 @@ public interface IServerMessenger extends IMessenger {
 
   void NotifyUsernameMiniBanningOfPlayer(String username, Date expires);
 
-  String GetPlayerMac(String name);
+  String getPlayerMac(String name);
 
   void NotifyUsernameMutingOfPlayer(String username, Date muteExpires);
 

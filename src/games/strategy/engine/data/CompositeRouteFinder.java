@@ -112,7 +112,7 @@ public class CompositeRouteFinder {
   private HashMap<Territory, Integer> CreateScoreMap(final Collection<Territory> ters, final Territory startTer) {
     final HashMap<Territory, Integer> result = new HashMap<>();
     for (final Territory ter : m_map.getTerritories()) {
-      result.put(ter, GetTerScore(ter));
+      result.put(ter, getTerScore(ter));
     }
     return result;
   }
@@ -120,7 +120,7 @@ public class CompositeRouteFinder {
   /*
    * Returns the score of the best match that matches this territory
    */
-  private Integer GetTerScore(final Territory ter) {
+  private Integer getTerScore(final Territory ter) {
     int bestMatchingScore = Integer.MAX_VALUE;
     for (final Match<Territory> match : m_matches.keySet()) {
       final int score = m_matches.get(match);
