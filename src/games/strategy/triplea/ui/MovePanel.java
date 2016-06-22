@@ -1438,16 +1438,18 @@ public class MovePanel extends AbstractMovePanel {
 
       @Override
       public void keyPressed(final KeyEvent e) {
-        final int keyCode = e.getKeyCode();
-        if (keyCode == KeyEvent.VK_N) {
-          centerOnNextMoveableUnit();
-        }
-        if (keyCode == KeyEvent.VK_F) {
-          highlightMoveableUnits();
-        }
-        if (keyCode == KeyEvent.VK_U &&
-            getMap().getHighlightedUnits() != null && !getMap().getHighlightedUnits().isEmpty()) {
-          m_undoableMovesPanel.undoMoves(getMap().getHighlightedUnits());
+        switch (e.getKeyCode()) {
+          case KeyEvent.VK_N:
+            centerOnNextMoveableUnit();
+            break;
+          case KeyEvent.VK_F:
+            highlightMoveableUnits();
+            break;
+          case KeyEvent.VK_U:
+            if (getMap().getHighlightedUnits() != null && !getMap().getHighlightedUnits().isEmpty()) {
+              m_undoableMovesPanel.undoMoves(getMap().getHighlightedUnits());
+            }
+            break;
         }
       }
 

@@ -472,6 +472,7 @@ public class TripleAFrame extends MainGameFrame {
       private boolean blockInputs = false;
       private long timeSinceLastPressEvent = 0;
       private boolean running = true;
+
       @Override
       public void keyTyped(final KeyEvent e) {/* Do nothing */}
 
@@ -479,25 +480,25 @@ public class TripleAFrame extends MainGameFrame {
       public void keyPressed(final KeyEvent e) {
         timeSinceLastPressEvent = 0;
         if (!blockInputs) {
-          new Thread(() -> {
-            running = true;
-            while (running) {
-              timeSinceLastPressEvent++;
-              if (timeSinceLastPressEvent > 5) {
-                running = false;
-                toggleFlags(e.getKeyCode());
-                blockInputs = false;
-              }
-              try {
-                Thread.sleep(100);
-              } catch (InterruptedException e2) {
-                e2.printStackTrace();
-              }
-            }
-          }).start();
+          resetFlagsOnTimeOut(e.getKeyCode());
           toggleFlags(e.getKeyCode());
           blockInputs = true;
         }
+      }
+
+      private void resetFlagsOnTimeOut(int keyCode) {
+        new Thread(() -> {
+          running = true;
+          while (running) {
+            timeSinceLastPressEvent++;
+            if (timeSinceLastPressEvent > 5) {
+              running = false;
+              toggleFlags(keyCode);
+              blockInputs = false;
+            }
+            ThreadUtil.sleep(100);
+          }
+        }).start();
       }
 
       @Override
