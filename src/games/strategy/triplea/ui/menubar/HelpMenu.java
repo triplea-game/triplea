@@ -35,8 +35,10 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class HelpMenu {
 
@@ -150,8 +152,10 @@ public class HelpMenu {
     if (player == null || unitImageFactory == null) {
       return "no image";
     }
-    return "<img src=\"" + unitImageFactory.getBaseImageURL(unitType.getName(), player).toString()
-        + "\" border=\"0\"/>";
+    Optional<URL> imageUrl = unitImageFactory.getBaseImageURL(unitType.getName(), player);
+    String imageLocation = imageUrl.isPresent() ? imageUrl.get().toString() : "";
+
+    return "<img src=\"" + imageLocation + "\" border=\"0\"/>";
   }
 
 
