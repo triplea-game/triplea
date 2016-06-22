@@ -12,7 +12,6 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
   private int m_currentIndex;
   private int m_round = 1;
   private int m_roundOffset = 0;
-  private transient Object m_currentStepMutex = new Object();
 
   public GameSequence(final GameData data) {
     super(data);
@@ -22,13 +21,8 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
    * Only used when we are trying to export the data to a savegame,
    * and we need to change the round and step to something other than the current round and step
    * (because we are creating a savegame at a certain point in history, for example).
-   *
-   * @param currentRound
-   * @param stepDisplayName
-   * @param player
    */
-  public synchronized void setRoundAndStep(final int currentRound, final String stepDisplayName,
-      final PlayerID player) {
+  public void setRoundAndStep(final int currentRound, final String stepDisplayName, final PlayerID player) {
     m_round = currentRound;
     boolean found = false;
     for (int i = 0; i < m_steps.size(); i++) {
@@ -62,10 +56,6 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
     m_steps.remove(step);
   }
 
-  protected void removeStep(final int index) {
-    m_steps.remove(index);
-  }
-
   protected void removeAllSteps() {
     m_steps.clear();
     m_round = 1;
@@ -95,10 +85,9 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
   }
 
   /**
-   * @return boolean wether the round has changed
+   * @return True if the round has changed
    */
   public boolean next() {
-    synchronized (m_currentStepMutex) {
       m_currentIndex++;
       if (m_currentIndex >= m_steps.size()) {
         m_currentIndex = 0;
@@ -106,7 +95,6 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
         return true;
       }
       return false;
-    }
   }
 
   /**
@@ -115,16 +103,13 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
    * Does not change any data or fields.
    */
   public boolean testWeAreOnLastStep() {
-    synchronized (m_currentStepMutex) {
       if (m_currentIndex + 1 >= m_steps.size()) {
         return true;
       }
       return false;
-    }
   }
 
   public GameStep getStep() {
-    synchronized (m_currentStepMutex) {
       // since we can now delete game steps mid game, it is a good idea to test if our index is out of range
       if (m_currentIndex < 0) {
         m_currentIndex = 0;
@@ -133,7 +118,6 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
         next();
       }
       return getStep(m_currentIndex);
-    }
   }
 
   public GameStep getStep(final int index) {
@@ -152,11 +136,4 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
     return m_steps.size();
   }
 
-  /** make sure transient lock object is initialized on deserialization. */
-  private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
-    in.defaultReadObject();
-    if (m_currentStepMutex == null) {
-      m_currentStepMutex = new Object();
-    }
-  }
 }
