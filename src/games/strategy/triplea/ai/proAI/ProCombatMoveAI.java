@@ -48,6 +48,8 @@ import games.strategy.util.Match;
  */
 public class ProCombatMoveAI {
 
+  private static final int MIN_BOMBING_SCORE = 4; // Avoid bombing low production factories with AA
+
   private final ProAI ai;
   private final ProOddsCalculator calc;
   private GameData data;
@@ -726,7 +728,7 @@ public class ProCombatMoveAI {
           continue;
         }
         Optional<Territory> maxBombingTerritory = Optional.empty();
-        int maxBombingScore = 3;
+        int maxBombingScore = MIN_BOMBING_SCORE;
         for (final Territory t : bomberMoveMap.get(unit)) {
           final boolean territoryCanBeBombed = t.getUnits().someMatch(Matches.UnitCanProduceUnitsAndCanBeDamaged);
           if (territoryCanBeBombed && canAirSafelyLandAfterAttack(unit, t)) {
@@ -739,7 +741,7 @@ public class ProCombatMoveAI {
             final int numExistingBombers = attackMap.get(t).getBombers().size();
             final int remainingDamagePotential = maxDamage - 3 * numExistingBombers;
             final int bombingScore = (1 + 9 * noAABombingDefense) * remainingDamagePotential;
-            if (bombingScore > maxBombingScore) {
+            if (bombingScore >= maxBombingScore) {
               maxBombingScore = bombingScore;
               maxBombingTerritory = Optional.of(t);
             }
