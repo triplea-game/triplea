@@ -6,10 +6,14 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -60,10 +64,9 @@ public class MapRouteDrawer {
     final int jointsize = 10;
     if (tooFewTerritories || tooFewPoints) {
       if (routeDescription.getEnd() != null) {
-        drawDirectPath(graphics, routeDescription.getStart(), routeDescription.getEnd(), xOffset, yOffset, jointsize,
-            scale);
+        drawDirectPath(graphics, routeDescription.getStart(), routeDescription.getEnd(), xOffset, yOffset, scale);
       } else {
-        drawDirectPath(graphics, points[0], points[points.length - 1], xOffset, yOffset, jointsize, scale);
+        drawDirectPath(graphics, points[0], points[points.length - 1], xOffset, yOffset, scale);
       }
       if (tooFewPoints && !tooFewTerritories) {
         drawMoveLength(graphics, points, xOffset, yOffset, scale, numTerritories, maxMovement);
@@ -88,11 +91,11 @@ public class MapRouteDrawer {
    */
   private void drawJoints(Graphics2D graphics, Point[] points, int xOffset, int yOffset, int jointsize,
       double scale) {
-    for (Point p : points) {
-      graphics.fillOval((int) (((p.x - xOffset) - jointsize / 2) * scale),
-          (int) (((p.y - yOffset) - jointsize / 2) * scale), jointsize, jointsize);
+    Point[] newPoints = points.length > 1 ? Arrays.copyOf(points, points.length - 1) : points;
+    for (Point p : newPoints) {
+      graphics.fillOval((int) (((p.x - xOffset) - (jointsize / 2) / scale) * scale),
+          (int) (((p.y - yOffset) - (jointsize / 2) / scale) * scale), jointsize, jointsize);
     }
-
   }
 
   /**
@@ -127,14 +130,14 @@ public class MapRouteDrawer {
    * @param jointsize The diameter of the Points being drawn
    * @param scale The scale-factor of the Map
    */
-  private void drawDirectPath(Graphics2D graphics, Point start, Point end, int xOffset, int yOffset, int jointsize,
-      double scale) {
+  private void drawDirectPath(Graphics2D graphics, Point start, Point end, int xOffset, int yOffset, double scale) {
     drawLineWithTranslate(graphics, new Line2D.Float(start, end), xOffset,
         yOffset, scale);
-    graphics.fillOval(
-        (int) (((end.x - xOffset) - jointsize / 2) * scale),
-        (int) (((end.y - yOffset) - jointsize / 2) * scale),
-        jointsize, jointsize);
+    if (start.distance(end) > 4) {
+      final Point2D scaledStart = new Point2D.Double((start.x - xOffset) * scale, (start.y - yOffset) * scale);
+      final Point2D scaledEnd = new Point2D.Double((end.x - xOffset) * scale, (end.y - yOffset) * scale);
+      graphics.fill(createArrowTipShape(scaledStart, scaledEnd));
+    }
   }
 
   /**
@@ -300,6 +303,13 @@ public class MapRouteDrawer {
         new Line2D.Double(new Point2D.Double(xcoords[xcoords.length - 1], ycoords[ycoords.length - 1]),
             points[points.length - 1]),
         xOffset, yOffset, scale);
+    if (points[points.length - 2].distance(points[points.length - 1]) > 4) {
+      final Point2D scaledStart = new Point2D.Double((xcoords[xcoords.length - 1] - xOffset) * scale,
+          (ycoords[ycoords.length - 1] - yOffset) * scale);
+      final Point2D scaledEnd = new Point2D.Double((points[points.length - 1].x - xOffset) * scale,
+          (points[points.length - 1].y - yOffset) * scale);
+      graphics.fill(createArrowTipShape(scaledStart, scaledEnd));
+    }
   }
 
   /**
@@ -315,11 +325,36 @@ public class MapRouteDrawer {
     textG2D.setFont(new Font("Dialog", Font.BOLD, 20));
     final int textThicknessOffset = textG2D.getFontMetrics().stringWidth(curMovement) / 2;
     final boolean distanceTooBig = maxMovement.equals("");
-    textG2D.drawString(curMovement, distanceTooBig ? image.getWidth() / 2 - textThicknessOffset : 10, image.getHeight());
+    textG2D.drawString(curMovement, distanceTooBig ? image.getWidth() / 2 - textThicknessOffset : 10,
+        image.getHeight());
     if (!distanceTooBig) {
       textG2D.setColor(new Color(33, 0, 127));
       textG2D.setFont(new Font("Dialog", Font.BOLD, 16));
       textG2D.drawString(maxMovement, 10, image.getHeight());
     }
+  }
+
+  /**
+   * Creates an Arrow-Shape
+   * 
+   * @param from The Point specifying the direction of the Arrow
+   * @param to The Point where the arrow is placed
+   * @return A transformed Arrow-Shape
+   */
+  private static Shape createArrowTipShape(Point2D from, Point2D to) {
+    final Polygon arrowPolygon = new Polygon();
+    arrowPolygon.addPoint(-3, 2);
+    arrowPolygon.addPoint(1, 0);
+    arrowPolygon.addPoint(-3, -2);
+
+
+    final AffineTransform transform = new AffineTransform();
+    transform.translate(to.getX(), to.getY());
+    final double scale = 4;
+    transform.scale(scale, scale);
+    final double rotate = Math.atan2(to.getY() - from.getY(), to.getX() - from.getX());
+    transform.rotate(rotate);
+
+    return transform.createTransformedShape(arrowPolygon);
   }
 }
