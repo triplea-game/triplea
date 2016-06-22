@@ -147,26 +147,22 @@ public class ProCombatMoveAI {
     this.data = data;
     this.player = player;
 
-    // Calculate attack routes and perform moves
     final List<Collection<Unit>> moveUnits = new ArrayList<>();
     final List<Route> moveRoutes = new ArrayList<>();
     ProMoveUtils.calculateMoveRoutes(player, moveUnits, moveRoutes, attackMap, true);
     ProMoveUtils.doMove(moveUnits, moveRoutes, null, moveDel);
 
-    // Calculate amphib attack routes and perform moves
     moveUnits.clear();
     moveRoutes.clear();
     final List<Collection<Unit>> transportsToLoad = new ArrayList<>();
     ProMoveUtils.calculateAmphibRoutes(player, moveUnits, moveRoutes, transportsToLoad, attackMap, true);
     ProMoveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
 
-    // Calculate bombard routes and perform moves
     moveUnits.clear();
     moveRoutes.clear();
     ProMoveUtils.calculateBombardMoveRoutes(player, moveUnits, moveRoutes, attackMap);
     ProMoveUtils.doMove(moveUnits, moveRoutes, null, moveDel);
 
-    // Calculate bombing routes and perform moves
     moveUnits.clear();
     moveRoutes.clear();
     isBombing = true;
