@@ -306,6 +306,11 @@ public class ProMoveUtils {
   }
 
   public static void doMove(final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
+      final IMoveDelegate moveDel) {
+    doMove(moveUnits, moveRoutes, null, moveDel);
+  }
+
+  public static void doMove(final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
       final List<Collection<Unit>> transportsToLoad, final IMoveDelegate moveDel) {
 
     final GameData data = ProData.getData();

@@ -150,7 +150,7 @@ public class ProCombatMoveAI {
     final List<Collection<Unit>> moveUnits = new ArrayList<>();
     final List<Route> moveRoutes = new ArrayList<>();
     ProMoveUtils.calculateMoveRoutes(player, moveUnits, moveRoutes, attackMap, true);
-    ProMoveUtils.doMove(moveUnits, moveRoutes, null, moveDel);
+    ProMoveUtils.doMove(moveUnits, moveRoutes, moveDel);
 
     moveUnits.clear();
     moveRoutes.clear();
@@ -161,13 +161,13 @@ public class ProCombatMoveAI {
     moveUnits.clear();
     moveRoutes.clear();
     ProMoveUtils.calculateBombardMoveRoutes(player, moveUnits, moveRoutes, attackMap);
-    ProMoveUtils.doMove(moveUnits, moveRoutes, null, moveDel);
+    ProMoveUtils.doMove(moveUnits, moveRoutes, moveDel);
 
     moveUnits.clear();
     moveRoutes.clear();
     isBombing = true;
     ProMoveUtils.calculateBombingRoutes(player, moveUnits, moveRoutes, attackMap);
-    ProMoveUtils.doMove(moveUnits, moveRoutes, null, moveDel);
+    ProMoveUtils.doMove(moveUnits, moveRoutes, moveDel);
     isBombing = false;
   }
 
