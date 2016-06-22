@@ -86,10 +86,10 @@ public class TripleAMenuBar extends JMenuBar {
     if (!(frame.getGame() instanceof ServerGame)) {
       return null;
     }
-    final JMenu lobby = new JMenu("Lobby");
-    lobby.setMnemonic(KeyEvent.VK_L);
-    menuBar.add(lobby);
     if( watcher != null && watcher.isActive()) {
+      final JMenu lobby = new JMenu("Lobby");
+      lobby.setMnemonic(KeyEvent.VK_L);
+      menuBar.add(lobby);
       lobby.add(new EditGameCommentAction(watcher, frame));
       lobby.add(new RemoveGameFromLobbyAction(watcher));
     }
