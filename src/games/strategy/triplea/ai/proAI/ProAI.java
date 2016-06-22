@@ -139,7 +139,8 @@ public class ProAI extends AbstractAI {
   }
 
   @Override
-  protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player) {
+  protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
+      final PlayerID player) {
     final long start = System.currentTimeMillis();
     BattleCalculator.clearOOLCache();
     ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
@@ -311,7 +312,7 @@ public class ProAI extends AbstractAI {
 
   @Override
   public boolean shouldBomberBomb(final Territory territory) {
-    return false;
+    return combatMoveAI.isBombing();
   }
 
   @Override
