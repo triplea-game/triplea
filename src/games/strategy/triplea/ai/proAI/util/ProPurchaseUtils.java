@@ -69,10 +69,7 @@ public class ProPurchaseUtils {
     final IDelegateBridge bridge = new ProDummyDelegateBridge(ProData.getProAI(), player, data);
     placeDelegate.setDelegateBridgeAndPlayer(bridge);
     final String s = placeDelegate.canUnitsBePlaced(t, units, player);
-    if (s == null) {
-      return true;
-    }
-    return false;
+    return s == null;
   }
 
   public static List<ProPurchaseOption> removeInvalidPurchaseOptions(final PlayerID player, final GameData data,

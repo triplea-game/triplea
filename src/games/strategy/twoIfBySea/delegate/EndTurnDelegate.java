@@ -5,21 +5,11 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 
-/**
- * <p>
- * Title: TripleA
- * </p>
- * <p>
- * </p>
- * <p>
- * Copyright (c) 2002
- * </p>
- * <p>
- * </p>
- */
+@MapSupport
 public class EndTurnDelegate extends AbstractEndTurnDelegate {
   protected boolean m_gameOver = false;
 

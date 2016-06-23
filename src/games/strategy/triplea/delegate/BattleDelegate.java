@@ -27,6 +27,7 @@ import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomStats.DiceType;
+import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -46,6 +47,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
+@MapSupport
 @AutoSave(beforeStepStart = true, afterStepEnd = true)
 public class BattleDelegate extends BaseTripleADelegate implements IBattleDelegate {
   private BattleTracker m_battleTracker = new BattleTracker();
@@ -170,10 +172,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final BattleListing battles = getBattles();
     if (battles.isEmpty()) {
       final IBattle battle = getCurrentBattle();
-      if (battle != null) {
-        return true;
-      }
-      return false;
+      return battle != null;
     }
     return true;
   }

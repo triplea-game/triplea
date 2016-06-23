@@ -2,6 +2,7 @@ package games.strategy.ui;
 
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.triplea.ui.settings.SettingsWindow;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -20,9 +21,39 @@ import java.util.stream.Collectors;
 
 public class SwingComponents {
 
+  public static void showJFrame(SettingsWindow settingsWindow) {
+    settingsWindow.pack();
+    settingsWindow.setVisible(true);
+  }
+
+  public static JComponent newJTextField(int initialValue, int fieldSize) {
+    JTextField textField = new JTextField(String.valueOf(initialValue), fieldSize);
+    return textField;
+  }
+
+  public enum KeyboardCode {
+    D(KeyEvent.VK_D),
+    G(KeyEvent.VK_G);
+
+
+    private final int keyEventCode;
+
+    KeyboardCode(int keyEventCode) {
+      this.keyEventCode = keyEventCode;
+    }
+
+    int getSwingKeyEventCode() {
+      return keyEventCode;
+    }
+
+  }
+
+
   private static final Set<String> visiblePrompts = new HashSet<>();
 
-  /** Creates a JPanel with BorderLayout and adds a west component and an east component */
+  /**
+   * Creates a JPanel with BorderLayout and adds a west component and an east component
+   */
   public static JPanel horizontalJPanel(Component westComponent, Component eastComponent) {
     return horizontalJPanel(westComponent, Optional.empty(), eastComponent);
   }
@@ -167,6 +198,11 @@ public class SwingComponents {
     SwingComponents.promptUser("Open external URL?", msg, () -> DesktopUtilityBrowserLauncher.openURL(url));
   }
 
+  public static void showDialog(String message) {
+    JOptionPane.showMessageDialog(null,message);
+  }
+
+
   public static JDialog newJDialogModal(JFrame parent, String title, JPanel contents) {
     final JDialog dialog = new JDialog(parent, title, true);
     dialog.getContentPane().add(contents);
@@ -176,5 +212,13 @@ public class SwingComponents {
     dialog.getRootPane().getActionMap().put(key, closeAction);
     dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
     return dialog;
+  }
+
+
+
+  public static JMenu newJMenu(String menuTitle, KeyboardCode keyboardCode) {
+    JMenu menu = new JMenu(menuTitle);
+    menu.setMnemonic(keyboardCode.getSwingKeyEventCode());
+    return menu;
   }
 }

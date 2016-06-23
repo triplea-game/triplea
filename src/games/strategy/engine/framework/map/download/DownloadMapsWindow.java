@@ -40,16 +40,17 @@ import games.strategy.util.Version;
 
 /** Window that allows for map downloads and removal */
 public class DownloadMapsWindow extends JFrame {
-  private static final long serialVersionUID = -1542210716764178580L;
-
-  private static enum MapAction {
+  private enum MapAction {
     INSTALL, UPDATE, REMOVE
   }
 
-  private static final int WINDOW_HEIGHT = 670;
-  private static final int DIVIDER_POSITION = WINDOW_HEIGHT - 100;
+  private static final long serialVersionUID = -1542210716764178580L;
+  private static final int WINDOW_WIDTH = 1200;
+  private static final int WINDOW_HEIGHT = 700;
+  private static final int DIVIDER_POSITION = WINDOW_HEIGHT - 150;
 
   private final MapDownloadProgressPanel progressPanel;
+
 
   public static Version getVersion(final File zipFile) {
     final DownloadFileProperties props = DownloadFileProperties.loadForZip(zipFile);
@@ -82,7 +83,7 @@ public class DownloadMapsWindow extends JFrame {
 
     final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
     final DownloadMapsWindow dia = new DownloadMapsWindow(mapName, games);
-    dia.setSize(800, WINDOW_HEIGHT);
+    dia.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     dia.setLocationRelativeTo(parentFrame);
     dia.setMinimumSize(new Dimension(200, 200));
     dia.setVisible(true);

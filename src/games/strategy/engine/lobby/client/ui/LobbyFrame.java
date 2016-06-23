@@ -93,7 +93,7 @@ public class LobbyFrame extends JFrame {
     });
   }
 
-  public ChatMessagePanel GetChatMessagePanel() {
+  public ChatMessagePanel getChatMessagePanel() {
     return m_chatMessagePanel;
   }
 

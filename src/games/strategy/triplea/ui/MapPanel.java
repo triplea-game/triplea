@@ -97,6 +97,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private Map<Territory, List<Unit>> highlightedUnits;
   private Cursor hiddenCursor = null;
 
+
   /** Creates new MapPanel */
   public MapPanel(final GameData data, final MapPanelSmallView smallView, final IUIContext uiContext,
       final ImageScrollModel model)  {

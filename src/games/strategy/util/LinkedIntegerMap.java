@@ -106,7 +106,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
     if (val == null) {
       return 0;
     }
-    return val.intValue();
+    return val;
   }
 
   public void add(final T key, final Integer value) {
@@ -118,7 +118,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
       put(key, value);
     } else {
       final Integer oldVal = m_values.get(key);
-      final int newVal = oldVal.intValue() + value;
+      final int newVal = oldVal + value;
       put(key, newVal);
     }
   }
@@ -274,7 +274,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
   public int totalValues() {
     int sum = 0;
     for (final Integer value : m_values.values()) {
-      sum += value.intValue();
+      sum += value;
     }
     return sum;
   }

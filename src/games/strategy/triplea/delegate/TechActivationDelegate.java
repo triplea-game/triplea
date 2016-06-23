@@ -12,6 +12,7 @@ import java.util.Set;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.message.IRemote;
+import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
@@ -24,6 +25,7 @@ import games.strategy.util.Util;
  * Logic for activating tech rolls. This delegate requires the
  * TechnologyDelegate to run correctly.
  */
+@MapSupport
 public class TechActivationDelegate extends BaseTripleADelegate {
   private boolean m_needToInitialize = true;
 

@@ -15,6 +15,7 @@ import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
@@ -23,6 +24,7 @@ import games.strategy.util.Match;
  * An attachment, attached to a player that will describe which political
  * actions a player may take.
  */
+@MapSupport
 public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 4392770599777282477L;
 

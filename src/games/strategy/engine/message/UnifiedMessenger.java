@@ -538,10 +538,7 @@ class EndPoint {
     if (!other.m_name.equals(this.m_name)) {
       return false;
     }
-    if (!(other.m_remoteClass.equals(m_remoteClass))) {
-      return false;
-    }
-    return true;
+    return other.m_remoteClass.equals(m_remoteClass);
   }
 
   @Override

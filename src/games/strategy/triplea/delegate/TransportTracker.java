@@ -304,10 +304,7 @@ public class TransportTracker {
   // If a transport has been in combat, it cannot load AND unload in non-combat
   public static boolean isTransportUnloadRestrictedInNonCombat(final Unit transport) {
     final TripleAUnit taUnit = (TripleAUnit) transport;
-    if (GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true) && taUnit.getWasInCombat()
-        && taUnit.getWasLoadedAfterCombat()) {
-      return true;
-    }
-    return false;
+    return GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true) && taUnit.getWasInCombat()
+        && taUnit.getWasLoadedAfterCombat();
   }
 }

@@ -195,7 +195,7 @@ public class HeadlessConsoleController {
       for (final INode node : nodes) {
         final String realName = node.getName().split(" ")[0];
         final String ip = node.getAddress().getHostAddress();
-        final String mac = messenger.GetPlayerMac(node.getName());
+        final String mac = messenger.getPlayerMac(node.getName());
         if (realName.equals(name)) {
           messenger.NotifyUsernameMutingOfPlayer(realName, new Date(expire));
           messenger.NotifyIPMutingOfPlayer(ip, new Date(expire));
@@ -285,7 +285,7 @@ public class HeadlessConsoleController {
       for (final INode node : nodes) {
         final String realName = node.getName().split(" ")[0];
         final String ip = node.getAddress().getHostAddress();
-        final String mac = messenger.GetPlayerMac(node.getName());
+        final String mac = messenger.getPlayerMac(node.getName());
         if (realName.equals(name)) {
           try {
             messenger.NotifyUsernameMiniBanningOfPlayer(realName, new Date(expire));

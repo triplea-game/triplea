@@ -1,9 +1,15 @@
 package games.strategy.engine;
 
+import com.google.common.collect.ImmutableList;
 import games.strategy.engine.config.GameEnginePropertyFileReader;
 import games.strategy.engine.config.PropertyReader;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.map.download.MapListingSource;
+import games.strategy.triplea.ui.settings.SettingsTab;
+import games.strategy.triplea.ui.settings.folders.FolderSettings;
+import games.strategy.triplea.ui.settings.scrolling.ScrollSettings;
+
+import java.util.List;
 
 /**
  * IOC container for storing objects needed by the TripleA Swing client
@@ -39,12 +45,16 @@ public final class ClientContext {
   private final EngineVersion engineVersion;
   private final PropertyReader propertyReader;
   private final MapListingSource mapListingSource;
+  private final ScrollSettings scrollSettings;
+  private final FolderSettings folderSettings;
 
   private ClientContext() {
     propertyReader = new GameEnginePropertyFileReader();
     mapListingSource = new MapListingSource(propertyReader);
     mapDownloadController = new MapDownloadController(mapListingSource);
     engineVersion = new EngineVersion(propertyReader);
+    scrollSettings = new ScrollSettings();
+    folderSettings = new FolderSettings();
   }
 
   public static PropertyReader propertyReader() {
@@ -62,5 +72,13 @@ public final class ClientContext {
 
   public static EngineVersion engineVersion() {
     return instance.engineVersion;
+  }
+
+  public static ScrollSettings scrollSettings() {
+    return instance.scrollSettings;
+  }
+
+  public static FolderSettings folderSettings() {
+    return instance.folderSettings;
   }
 }

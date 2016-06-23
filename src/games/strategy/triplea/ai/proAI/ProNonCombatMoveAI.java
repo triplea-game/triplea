@@ -1,5 +1,18 @@
 package games.strategy.triplea.ai.proAI;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -36,19 +49,6 @@ import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
 /**
  * Pro non-combat move AI.
@@ -181,7 +181,7 @@ public class ProNonCombatMoveAI {
     final List<Collection<Unit>> moveUnits = new ArrayList<>();
     final List<Route> moveRoutes = new ArrayList<>();
     ProMoveUtils.calculateMoveRoutes(player, moveUnits, moveRoutes, moveMap, false);
-    ProMoveUtils.doMove(moveUnits, moveRoutes, null, moveDel);
+    ProMoveUtils.doMove(moveUnits, moveRoutes, moveDel);
 
     // Calculate amphib move routes and perform moves
     moveUnits.clear();
@@ -671,7 +671,7 @@ public class ProNonCombatMoveAI {
           if (result.getWinPercentage() > maxWinPercentage
               && ((t.equals(ProData.myCapital) && result.getWinPercentage() > (100 - ProData.winPercentage))
                   || (hasFactory && result.getWinPercentage() > (100 - ProData.minWinPercentage)) || result
-                  .getTUVSwing() >= 0)) {
+                      .getTUVSwing() >= 0)) {
             maxWinTerritory = t;
             maxWinPercentage = result.getWinPercentage();
           }
@@ -725,7 +725,7 @@ public class ProNonCombatMoveAI {
           if (result.getWinPercentage() > maxWinPercentage
               && ((t.equals(ProData.myCapital) && result.getWinPercentage() > (100 - ProData.winPercentage))
                   || (hasFactory && result.getWinPercentage() > (100 - ProData.minWinPercentage)) || result
-                  .getTUVSwing() >= 0)) {
+                      .getTUVSwing() >= 0)) {
             maxWinTerritory = t;
             maxWinPercentage = result.getWinPercentage();
           }
@@ -851,7 +851,8 @@ public class ProNonCombatMoveAI {
                 for (final Territory territoryToMoveTransport : territoriesToMoveTransport) {
                   if (proTransportData.getSeaTransportMap().containsKey(territoryToMoveTransport)
                       && proTransportData.getSeaTransportMap().get(territoryToMoveTransport)
-                          .containsAll(loadFromTerritories) && moveMap.get(territoryToMoveTransport) != null
+                          .containsAll(loadFromTerritories)
+                      && moveMap.get(territoryToMoveTransport) != null
                       && (moveMap.get(territoryToMoveTransport).isCanHold() || hasFactory)) {
                     final List<Unit> attackers = moveMap.get(territoryToMoveTransport).getMaxEnemyUnits();
                     final List<Unit> defenders = moveMap.get(territoryToMoveTransport).getAllDefenders();
@@ -1108,7 +1109,8 @@ public class ProNonCombatMoveAI {
                   && amphibData.getSeaTransportMap().get(territoryToMoveTransport).containsAll(loadFromTerritories)
                   && moveMap.get(territoryToMoveTransport) != null
                   && moveMap.get(territoryToMoveTransport).isCanHold()
-                  && (moveMap.get(t).getValue() > maxValue || moveMap.get(territoryToMoveTransport).getValue() > maxSeaValue)) {
+                  && (moveMap.get(t).getValue() > maxValue
+                      || moveMap.get(territoryToMoveTransport).getValue() > maxSeaValue)) {
                 maxValueTerritory = t;
                 maxAmphibUnitsToAdd = amphibUnitsToAdd;
                 maxValue = moveMap.get(t).getValue();
@@ -1836,7 +1838,8 @@ public class ProNonCombatMoveAI {
         final int hasOwnedCarrier =
             Match.someMatch(moveMap.get(t).getAllDefenders(), ProMatches.UnitIsOwnedCarrier(player)) ? 1 : 0;
         final double airValue =
-            (200.0 * numSeaAttackTerritories + 100 * numLandAttackTerritories + 10 * numEnemyAttackTerritories + numNearbyEnemyTerritories)
+            (200.0 * numSeaAttackTerritories + 100 * numLandAttackTerritories + 10 * numEnemyAttackTerritories
+                + numNearbyEnemyTerritories)
                 / (1 + cantHoldWithoutAllies) / (1 + cantHoldWithoutAllies * isntFactory) * (1 + hasOwnedCarrier);
         if (airValue > maxAirValue) {
           maxAirValue = airValue;

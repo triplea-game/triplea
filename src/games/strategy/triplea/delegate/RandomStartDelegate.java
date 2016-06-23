@@ -18,6 +18,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomStats.DiceType;
+import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
@@ -31,6 +32,7 @@ import games.strategy.util.Tuple;
  * After that, any remaining units get placed one by one.
  * (Note that m_player may not be used here, because this delegate is not run by any player [it is null])
  */
+@MapSupport
 public class RandomStartDelegate extends BaseTripleADelegate {
   private static final int UNITS_PER_PICK = 1;
   protected PlayerID m_currentPickingPlayer = null;
@@ -52,11 +54,8 @@ public class RandomStartDelegate extends BaseTripleADelegate {
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    if (Match.noneMatch(getData().getMap().getTerritories(), getTerritoryPickableMatch())
-        && Match.noneMatch(getData().getPlayerList().getPlayers(), getPlayerCanPickMatch())) {
-      return false;
-    }
-    return true;
+    return !(Match.noneMatch(getData().getMap().getTerritories(), getTerritoryPickableMatch())
+        && Match.noneMatch(getData().getPlayerList().getPlayers(), getPlayerCanPickMatch()));
   }
 
   @Override
@@ -234,10 +233,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         if (player.getUnits().isEmpty()) {
           return false;
         }
-        if (player.getIsDisabled()) {
-          return false;
-        }
-        return true;
+        return !player.getIsDisabled();
       }
     };
   }

@@ -18,6 +18,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
@@ -36,6 +37,7 @@ import games.strategy.util.Match;
  * airbase) to another
  * territory, instead of carrying them.
  */
+@MapSupport
 public class SpecialMoveDelegate extends AbstractMoveDelegate {
   private boolean m_needToInitialize = true;
 
@@ -90,10 +92,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    if (!allowAirborne(m_player, getData())) {
-      return false;
-    }
-    return true;
+    return allowAirborne(m_player, getData());
   }
 
   @Override
@@ -337,10 +336,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     final Collection<Territory> territoriesWeCanLaunchFrom = Match.getMatches(map.getTerritories(),
         Matches.territoryHasUnitsThatMatch(getAirborneMatch(player, airborneBases, alliesForBases)));
 
-    if (territoriesWeCanLaunchFrom.isEmpty()) {
-      return false;
-    }
-    return true;
+    return !territoriesWeCanLaunchFrom.isEmpty();
   }
 
   private static boolean getEditMode(final GameData data) {

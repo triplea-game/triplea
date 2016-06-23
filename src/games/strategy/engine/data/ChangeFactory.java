@@ -1029,9 +1029,9 @@ class ObjectPropertyChange extends Change {
    */
   private Object resolve(final Object value) {
     if (value instanceof Boolean) {
-      return ((Boolean) value).booleanValue();
+      return (Boolean) value;
     } else if (value instanceof Integer) {
-      return ((Integer) value).intValue();
+      return (Integer) value;
     }
     return value;
   }

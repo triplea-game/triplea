@@ -1259,10 +1259,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       return false;
     }
     final Collection<Territory> options = getAttackerRetreatTerritories();
-    if (options.size() == 0) {
-      return false;
-    }
-    return true;
+    return options.size() != 0;
   }
 
   private boolean onlyDefenselessDefendingTransportsLeft() {
@@ -1365,10 +1362,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
         final Route r = new Route();
         r.setStart(m_battleSite);
         r.add(t);
-        if (MoveValidator.validateCanal(r, unitsToRetreat, m_defender, m_data) != null) {
-          return false;
-        }
-        return true;
+        return MoveValidator.validateCanal(r, unitsToRetreat, m_defender, m_data) == null;
       }
     };
     match.add(canalMatch);
@@ -1891,11 +1885,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
   }
 
   private boolean canAirAttackSubs(final Collection<Unit> firedAt, final Collection<Unit> firing) {
-    if (m_battleSite.isWater() && Match.someMatch(firedAt, Matches.UnitIsSub)
-        && Match.noneMatch(firing, Matches.UnitIsDestroyer)) {
-      return false;
-    }
-    return true;
+    return !(m_battleSite.isWater() && Match.someMatch(firedAt, Matches.UnitIsSub)
+        && Match.noneMatch(firing, Matches.UnitIsDestroyer));
   }
 
   private void defendAirOnNonSubs(final IDelegateBridge bridge) {

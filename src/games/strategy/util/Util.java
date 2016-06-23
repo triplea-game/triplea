@@ -91,10 +91,7 @@ public class Util {
     if (!c1.containsAll(c2)) {
       return false;
     }
-    if (!c2.containsAll(c1)) {
-      return false;
-    }
-    return true;
+    return c2.containsAll(c1);
   }
 
   /**

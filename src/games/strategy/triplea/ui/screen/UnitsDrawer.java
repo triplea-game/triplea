@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.prefs.Preferences;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -90,6 +91,11 @@ public class UnitsDrawer implements IDrawable {
     final Optional<Image> img =
         uiContext.getUnitImageFactory().getImage(type, owner, data, damaged > 0 || bombingUnitDamage > 0, disabled);
 
+    if (!img.isPresent()) {
+      ClientLogger
+          .logError("MISSING IMAGE (this unit or image will be invisible): " + type);
+    }
+
     if (img.isPresent() && enabledFlags) {
       int maxRange = new TripleAUnit(type, owner, data).getMaxMovementAllowed();
       switch (drawUnitNationMode) {
@@ -124,7 +130,9 @@ public class UnitsDrawer implements IDrawable {
           break;
       }
     } else{
-      drawUnit(graphics, img.get(), placementPoint, bounds);
+      if(img.isPresent()) {
+        drawUnit(graphics, img.get(), placementPoint, bounds);
+      }
     }
     // more then 1 unit of this category
     if (count != 1) {

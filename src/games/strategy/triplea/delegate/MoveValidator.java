@@ -1180,10 +1180,7 @@ public class MoveValidator {
       return false;
     }
     final Map<Unit, Unit> transportLoadMap = TransportUtils.mapTransportsToLoad(units, airTransports);
-    if (!transportLoadMap.keySet().containsAll(paratroopsRequiringTransport)) {
-      return false;
-    }
-    return true;
+    return transportLoadMap.keySet().containsAll(paratroopsRequiringTransport);
   }
 
   // checks if there are non-paratroopers present that cause move validations to fail
@@ -1200,10 +1197,7 @@ public class MoveValidator {
         return true;
       }
     }
-    if (!allLandUnitsAreBeingParatroopered(units, route, player)) {
-      return true;
-    }
-    return false;
+    return !allLandUnitsAreBeingParatroopered(units, route, player);
   }
 
   private static List<Unit> getParatroopsRequiringTransport(final Collection<Unit> units, final Route route) {

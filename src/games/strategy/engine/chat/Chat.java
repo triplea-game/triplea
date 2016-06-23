@@ -240,11 +240,11 @@ public class Chat {
 
   private final List<INode> m_playersThatLeft_Last10 = new ArrayList<>();
 
-  public List<INode> GetPlayersThatLeft_Last10() {
+  public List<INode> getPlayersThatLeft_Last10() {
     return new ArrayList<>(m_playersThatLeft_Last10);
   }
 
-  public List<INode> GetOnlinePlayers() {
+  public List<INode> getOnlinePlayers() {
     return new ArrayList<>(m_nodes);
   }
 

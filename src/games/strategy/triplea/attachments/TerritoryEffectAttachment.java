@@ -13,8 +13,10 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.MapSupport;
 import games.strategy.util.IntegerMap;
 
+@MapSupport
 public class TerritoryEffectAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 6379810228136325991L;
   private IntegerMap<UnitType> m_combatDefenseEffect = new IntegerMap<>();

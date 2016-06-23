@@ -97,10 +97,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
     // nothing to place
-    if (m_player == null || (m_player.getUnits().size() == 0 && getPlacementsMade() == 0)) {
-      return false;
-    }
-    return true;
+    return !(m_player == null || (m_player.getUnits().size() == 0 && getPlacementsMade() == 0));
   }
 
   protected void removeAirThatCantLand() {
@@ -1427,10 +1424,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       final Collection<Unit> placedHere = Match.getNMatches(canBePlacedHere, productionHere, Match.getAlwaysMatch());
       unitsLeftToPlace.removeAll(placedHere);
     }
-    if (unitsLeftToPlace.isEmpty()) {
-      return true;
-    }
-    return false;
+    return unitsLeftToPlace.isEmpty();
   }
 
   protected Comparator<Territory> getBestProducerComparator(final Territory to, final Collection<Unit> units,
@@ -1689,18 +1683,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
   protected boolean isPlacementAllowedInCapturedTerritory(final PlayerID player) {
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-    if (ra != null && ra.getPlacementCapturedTerritory()) {
-      return true;
-    }
-    return false;
+    return ra != null && ra.getPlacementCapturedTerritory();
   }
 
   protected boolean isPlacementInCapitalRestricted(final PlayerID player) {
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-    if (ra != null && ra.getPlacementInCapitalRestricted()) {
-      return true;
-    }
-    return false;
+    return ra != null && ra.getPlacementInCapitalRestricted();
   }
 
   protected Collection<Territory> getListedTerritories(final String[] list) {

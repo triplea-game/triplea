@@ -27,6 +27,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.ICondition;
@@ -49,6 +50,7 @@ import games.strategy.util.Match;
  * Subclasses can over ride addToPlayer(...) and removeFromPlayer(...) to change how
  * the adding or removing of resources is done.
  */
+@MapSupport
 public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDelegate {
   private boolean m_needToInitialize = true;
   public final static String NOT_ENOUGH_RESOURCES = "Not enough resources";
@@ -123,10 +125,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
       return false;
     }
     // if my capital is captured, I can't produce, but I may have PUs if I captured someone else's capital
-    if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(m_player, getData())) {
-      return false;
-    }
-    return true;
+    return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(m_player, getData());
   }
 
   protected boolean canWePurchaseOrRepair() {

@@ -80,9 +80,6 @@ public class CollectionProperty<T> extends AEditableProperty {
     if (value == null) {
       return false;
     }
-    if (List.class.isAssignableFrom(value.getClass())) {
-      return true;
-    }
-    return false;
+    return List.class.isAssignableFrom(value.getClass());
   }
 }

@@ -31,12 +31,12 @@ public class AggregateEstimate extends AggregateResults {
   }
 
   @Override
-  public List<Unit> GetAverageAttackingUnitsRemaining() {
+  public List<Unit> getAverageAttackingUnitsRemaining() {
     return remainingAttackingUnits;
   }
 
   @Override
-  public List<Unit> GetAverageDefendingUnitsRemaining() {
+  public List<Unit> getAverageDefendingUnitsRemaining() {
     return remainingDefendingUnits;
   }
 

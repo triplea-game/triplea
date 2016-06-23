@@ -114,7 +114,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
    * set minimum size based on players (number and max name length) and distribution to playerIDs
    */
   private void setDynamicPreferredSize() {
-    final List<INode> onlinePlayers = m_chat.GetOnlinePlayers();
+    final List<INode> onlinePlayers = m_chat.getOnlinePlayers();
     int maxNameLength = 0;
     final FontMetrics fontMetrics = this.getFontMetrics(UIManager.getFont("TextField.font"));
     for (final INode iNode : onlinePlayers) {

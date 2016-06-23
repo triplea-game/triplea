@@ -12,22 +12,10 @@ import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.MapSupport;
 import games.strategy.util.IntegerMap;
 
-/**
- * <p>
- * Title:
- * </p>
- * <p>
- * Description:
- * </p>
- * <p>
- * Copyright: Copyright (c) 2002
- * </p>
- * <p>
- * Company:
- * </p>
- */
+@MapSupport
 public class BidPurchaseDelegate extends PurchaseDelegate {
   private int m_bid;
   private int m_spent;
@@ -52,10 +40,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
         && (m_player.getRepairFrontier() == null || m_player.getRepairFrontier().getRules().isEmpty())) {
       return false;
     }
-    if (!canWePurchaseOrRepair()) {
-      return false;
-    }
-    return true;
+    return canWePurchaseOrRepair();
   }
 
   @Override

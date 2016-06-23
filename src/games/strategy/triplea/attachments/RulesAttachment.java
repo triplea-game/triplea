@@ -30,6 +30,7 @@ import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
@@ -41,6 +42,7 @@ import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
+@MapSupport
 public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private static final long serialVersionUID = 7301965634079412516L;
   // condition for having techs
@@ -918,10 +920,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private boolean relationShipExistsLongEnnough(final Relationship r, final int relationshipsExistance) {
     int roundCurrentRelationshipWasCreated = r.getRoundCreated();
     roundCurrentRelationshipWasCreated += games.strategy.triplea.Properties.getRelationshipsLastExtraRounds(getData());
-    if (getData().getSequence().getRound() - roundCurrentRelationshipWasCreated < relationshipsExistance) {
-      return false;
-    }
-    return true;
+    return getData().getSequence().getRound() - roundCurrentRelationshipWasCreated >= relationshipsExistance;
   }
 
   /**
@@ -963,18 +962,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           for (final String uc : unitCombos) {
             final int unitsNeeded = unitComboMap.getInt(uc);
             if (uc == null || uc.equals("ANY") || uc.equals("any")) {
-              if (allUnits.size() >= unitsNeeded) {
-                hasEnough = true;
-              } else {
-                hasEnough = false;
-              }
+              hasEnough = allUnits.size() >= unitsNeeded;
             } else {
               final Set<UnitType> typesAllowed = data.getUnitTypeList().getUnitTypes(uc.split(":"));
-              if (Match.getMatches(allUnits, Matches.unitIsOfTypes(typesAllowed)).size() >= unitsNeeded) {
-                hasEnough = true;
-              } else {
-                hasEnough = false;
-              }
+              hasEnough = Match.getMatches(allUnits, Matches.unitIsOfTypes(typesAllowed)).size() >= unitsNeeded;
             }
             if (!hasEnough) {
               break;
@@ -1046,18 +1037,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         for (final String uc : unitCombos) {
           final int unitsMax = unitComboMap.getInt(uc);
           if (uc == null || uc.equals("ANY") || uc.equals("any")) {
-            if (allUnits.size() <= unitsMax) {
-              hasLess = true;
-            } else {
-              hasLess = false;
-            }
+            hasLess = allUnits.size() <= unitsMax;
           } else {
             final Set<UnitType> typesAllowed = data.getUnitTypeList().getUnitTypes(uc.split(":"));
-            if (Match.getMatches(allUnits, Matches.unitIsOfTypes(typesAllowed)).size() <= unitsMax) {
-              hasLess = true;
-            } else {
-              hasLess = false;
-            }
+            hasLess = Match.getMatches(allUnits, Matches.unitIsOfTypes(typesAllowed)).size() <= unitsMax;
           }
           if (!hasLess) {
             break;

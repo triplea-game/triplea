@@ -3,12 +3,17 @@ package games.strategy.net;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Arrays;
-import java.util.Enumeration;
+import java.util.Collections;
 import java.util.List;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.FluentIterable;
+import com.google.common.primitives.Bytes;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.util.MD5Crypt;
@@ -19,15 +24,15 @@ public class MacFinder {
    * Should result in something like this: $1$MH$345ntXD4G3AKpAeHZdaGe3
    */
   public static String getHashedMacAddress() {
-    final String mac = GetMacAddress();
+    final String mac = getMacAddress();
     if (mac == null) {
       throw new IllegalArgumentException(
-          "You have an invalid MAC address! (Or your Java is out of date, or TripleA simply can't find your mac address)");
+          "You have an invalid MAC address or TripleA can't find your mac address");
     }
     return MD5Crypt.crypt(mac, "MH");
   }
 
-  private static String GetMacAddress() {
+  private static String getMacAddress() {
     // We must try different methods of obtaining the mac address because not all the methods work on each system, and
     // if we can't obtain
     // the mac, we can't login to the lobby
@@ -36,41 +41,26 @@ public class MacFinder {
       final InetAddress address = InetAddress.getLocalHost();
       final NetworkInterface localHostNI = NetworkInterface.getByInetAddress(address);
       if (localHostNI != null) {
-        // final byte[] rawMac = localHostNI.getHardwareAddress();
-        final Method m = NetworkInterface.class.getMethod("getHardwareAddress");
-        final byte[] rawMac = (byte[]) m.invoke(localHostNI);
+        final byte[] rawMac = localHostNI.getHardwareAddress();
         final String mac = convertMacBytesToString(rawMac);
         if (isMacValid(mac)) {
           return mac;
         }
       }
-    } catch (final Throwable ex) // Older java's don't have the getHardwareAddress method, so we catch not only
-                                 // Throwable->Exception's but
-                                 // all Throwable's, including Throwable->Error. (NoSuchMethodError is otherwise thrown)
-    {
-      System.out.println(
-          "Attempting to join the lobby. Lobby detects that your Java is out of date (older than Java 6)! Ignore this message if you join the lobby successfully.");
+    } catch (final SocketException | UnknownHostException e) {
+      ClientLogger.logError("Error while trying to get a valid MAC adress", e);
     }
     // Next, try to get the mac address of the first network interfaces that has an accessible mac address
     try {
-      final Enumeration<NetworkInterface> niIter = NetworkInterface.getNetworkInterfaces();
-      while (niIter.hasMoreElements()) {
-        final NetworkInterface ni = niIter.nextElement();
-        // final byte[] rawMac = ni.getHardwareAddress();
-        final Method m = NetworkInterface.class.getMethod("getHardwareAddress");
-        final byte[] rawMac = (byte[]) m.invoke(ni);
+      for (NetworkInterface ni : Collections.list(NetworkInterface.getNetworkInterfaces())) {
+        final byte[] rawMac = ni.getHardwareAddress();
         final String mac = convertMacBytesToString(rawMac);
         if (isMacValid(mac)) {
           return mac;
         }
       }
-    } catch (final Throwable ex) // Older java's don't have the getHardwareAddress method, so we catch not only
-                                 // Throwable->Exception's but
-                                 // all Throwable's, including Throwable->Error. (NoSuchMethodError is otherwise thrown)
-    {
-      // System.out.println("Attempting to join the lobby. Lobby detects that your Java is out of date (older than Java
-      // 6)! Ignore this
-      // message if you join the lobby successfully.");
+    } catch (final SocketException e) {
+      ClientLogger.logError("Error while trying to get a valid MAC adress", e);
     }
     // Next, try to get the mac address by calling the 'getmac' app that exists in Windows, Mac, and possibly others.
     /*
@@ -84,8 +74,8 @@ public class MacFinder {
       if (isMacValid(mac)) {
         return mac;
       }
-    } catch (final Throwable ex) {
-      ClientLogger.logQuietly("Error while trying to get mac address", ex);
+    } catch (final Exception e) {
+      ClientLogger.logQuietly("Error while trying to get mac address", e);
     }
     // Next, try to get the mac address by calling the 'ipconfig -all' app that exists in Windows and possibly others.
     /*
@@ -99,9 +89,8 @@ public class MacFinder {
       if (isMacValid(mac)) {
         return mac;
       }
-    } catch (final Throwable ex) {
-      ClientLogger.logQuietly("Error while trying to get mac address", ex);
-      ex.printStackTrace();
+    } catch (final Exception e) {
+      ClientLogger.logQuietly("Error while trying to get mac address", e);
     }
     try {
       // ipconfig -all does not work on my computer, while ipconfig /all does not work on others computers
@@ -110,8 +99,8 @@ public class MacFinder {
       if (isMacValid(mac)) {
         return mac;
       }
-    } catch (final Throwable ex) {
-      ClientLogger.logQuietly("Error while trying to get mac address", ex);
+    } catch (final Exception e) {
+      ClientLogger.logQuietly("Error while trying to get mac address", e);
     }
     // Next, try to get the mac address by calling the 'ifconfig -a' app that exists in Linux and possibly others. May
     // have 1 or 2 spaces
@@ -129,8 +118,8 @@ public class MacFinder {
       if (isMacValid(mac)) {
         return mac;
       }
-    } catch (final Throwable ex) {
-      ClientLogger.logQuietly("Error while trying to get mac address", ex);
+    } catch (final Exception e) {
+      ClientLogger.logQuietly("Error while trying to get mac address", e);
     }
     // Next, try to get the mac address by calling the '/sbin/ifconfig -a' app that exists in Linux and possibly others.
     // May have 1 or 2
@@ -148,9 +137,8 @@ public class MacFinder {
       if (isMacValid(mac)) {
         return mac;
       }
-    } catch (final Throwable ex) {
-      ClientLogger.logQuietly("Error while trying to get mac address", ex);
-      ex.printStackTrace();
+    } catch (final Exception e) {
+      ClientLogger.logQuietly("Error while trying to get mac address", e);
     }
     // Next, try to get the mac address by calling the 'dmesg' app that exists in FreeBSD and possibly others.
     /*
@@ -165,8 +153,8 @@ public class MacFinder {
       if (isMacValid(mac)) {
         return mac;
       }
-    } catch (final Throwable ex) {
-      ClientLogger.logQuietly("Error while trying to get mac address", ex);
+    } catch (final Exception e) {
+      ClientLogger.logQuietly("Error while trying to get mac address", e);
     }
     return null;
   }
@@ -175,11 +163,11 @@ public class MacFinder {
     Process p = null;
     try {
       p = new ProcessBuilder(command).start();
-    } catch (final Exception ex) {
+    } catch (final Exception e) {
       try {
         p = Runtime.getRuntime().exec(command);
-      } catch (final IOException ex2) {
-        ClientLogger.logQuietly("Ignoring error while executing command: " + command, ex);
+      } catch (final IOException e2) {
+        ClientLogger.logQuietly("Ignoring error while executing command: " + command, e);
       }
     }
     if (p == null) {
@@ -195,14 +183,14 @@ public class MacFinder {
             break;
           }
           builder.append(line).append("\r\n");
-        } catch (final IOException ex) {
+        } catch (final IOException e) {
           break;
         }
       }
       in.close();
       return builder.toString();
-    } catch (final IOException ex) {
-      ClientLogger.logQuietly("IOException while executing command: " + command, ex);
+    } catch (final IOException e) {
+      ClientLogger.logQuietly("IOException while executing command: " + command, e);
       return null;
     }
   }
@@ -211,29 +199,12 @@ public class MacFinder {
     if (mac == null) {
       return null;
     }
-    final StringBuilder macStringBuilder = new StringBuilder();
-    // Extract each array of mac address and convert it to the following format 00.1E.F3.C8.FC.E6
-    for (int i = 0; i < mac.length; i++) {
-      if (i != 0) {
-        macStringBuilder.append(".");
-      }
-      final String hex = String.format("%02X", mac[i]);
-      macStringBuilder.append(hex);
-    }
-    return macStringBuilder.toString();
+    return Joiner.on('.')
+        .join(FluentIterable.from(Bytes.asList(mac)).transform(macbyte -> String.format("%02X", macbyte)));
   }
 
   private static boolean isMacValid(final String mac) {
-    if (mac == null) {
-      return false;
-    }
-    if (mac.length() != 17) {
-      return false;
-    }
-    if (!mac.contains(".")) {
-      return false;
-    }
-    if (!mac.matches("[0-9A-Fa-f.]+")) {
+    if (mac == null || mac.length() != 17 || !mac.contains(".") || !mac.matches("[0-9A-Fa-f.]+")) {
       return false;
     }
     final char[] chars = mac.toCharArray();
@@ -252,13 +223,7 @@ public class MacFinder {
       }
       i++;
     }
-    if (periodCount != 5) {
-      return false;
-    }
-    if (nonZeroNumberCount == 0) {
-      return false;
-    }
-    if (mac.equals("00.00.00.00.00.E0")) {
+    if (periodCount != 5 || mac.equals("00.00.00.00.00.E0") || nonZeroNumberCount == 0) {
       return false;
     }
     return true;

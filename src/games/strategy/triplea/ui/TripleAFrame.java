@@ -7,7 +7,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -22,8 +21,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -45,7 +42,6 @@ import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -54,7 +50,6 @@ import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -63,7 +58,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.JToolTip;
@@ -78,8 +72,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.google.common.base.Joiner;
@@ -87,6 +79,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;
 import games.strategy.engine.data.Change;
@@ -112,7 +105,6 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.MainFrame;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.history.HistoryNode;
@@ -152,7 +144,11 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.ui.history.HistoryDetailsPanel;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.triplea.ui.history.HistoryPanel;
+import games.strategy.triplea.ui.menubar.ExportMenu;
+import games.strategy.triplea.ui.menubar.HelpMenu;
+import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
+import games.strategy.triplea.ui.settings.scrolling.ScrollSettings;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.SwingAction;
@@ -210,11 +206,13 @@ public class TripleAFrame extends MainGameFrame {
   private PlayerID currentStepPlayer;
   private Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<>();
   private ThreadPool messageAndDialogThreadPool;
-  private TripleAMenu menu;
+  private TripleAMenuBar menu;
+  private final ScrollSettings scrollSettings;
 
   /** Creates new TripleAFrame */
   public TripleAFrame(final IGame game, final LocalPlayers players) {
     super("TripleA - " + game.getData().getGameName(), players);
+    scrollSettings = ClientContext.scrollSettings();
     this.game = game;
     data = game.getData();
     messageAndDialogThreadPool = new ThreadPool(1);
@@ -278,7 +276,7 @@ public class TripleAFrame extends MainGameFrame {
     };
     showCommentLogButtonModel.addActionListener(m_showCommentLogAction);
     showCommentLogButtonModel.setSelected(false);
-    menu = new TripleAMenu(this);
+    menu = new TripleAMenuBar(this);
     this.setJMenuBar(menu);
     final ImageScrollModel model = new ImageScrollModel();
     model.setScrollX(uiContext.getMapData().scrollWrapX());
@@ -399,7 +397,7 @@ public class TripleAFrame extends MainGameFrame {
     } else {
       tabsPanel.addTab(objectivePanel.getName(), objectivePanel);
     }
-    notesPanel = new NotesPanel(menu.getGameNotesJEditorPane());
+    notesPanel = new NotesPanel(HelpMenu.gameNotesPane);
     tabsPanel.addTab("Notes", notesPanel);
     details = new TerritoryDetailPanel(mapPanel, data, uiContext, this);
     tabsPanel.addTab("Territory", null, details, TerritoryDetailPanel.getHoverText());
@@ -560,7 +558,7 @@ public class TripleAFrame extends MainGameFrame {
    * @param value
    *        - a number between 15 and 100
    */
-  void setScale(final double value) {
+  public void setScale(final double value) {
     getMapPanel().setScale(value / 100);
   }
 
@@ -577,8 +575,6 @@ public class TripleAFrame extends MainGameFrame {
     if (uiContext == null) {
       return;
     }
-    menu.dispose();
-    menu = null;
     this.setVisible(false);
     TripleAFrame.this.dispose();
     if (GameRunner.isMac()) {
@@ -595,8 +591,6 @@ public class TripleAFrame extends MainGameFrame {
       historySyncher.deactivate();
       historySyncher = null;
     }
-    // clear out dynamix's properties
-    // Dynamix_AI.clearCachedGameDataAll(); TODO: errors cus dynamix sucks
     ProAI.gameOverClearCache();
   }
 
@@ -1710,14 +1704,15 @@ public class TripleAFrame extends MainGameFrame {
     };
   }
 
-  private static int computeScrollSpeed(final KeyEvent e) {
+  private int computeScrollSpeed(final KeyEvent e) {
     int multiplier = 1;
 
     if (e.isControlDown()) {
-      multiplier = 4;
+      multiplier = scrollSettings.getFasterArrowKeyScrollMultipler();
     }
 
-    final int starterDiffPixel = 70;
+
+    final int starterDiffPixel = scrollSettings.getArrowKeyScrollSpeed();
     return (starterDiffPixel * multiplier);
   }
 
@@ -1837,7 +1832,7 @@ public class TripleAFrame extends MainGameFrame {
 
       @Override
       public void actionPerformed(final ActionEvent ae) {
-        saveScreenshot(historyPanel.getCurrentPopupNode());
+        ExportMenu.saveScreenshot(historyPanel.getCurrentPopupNode(), TripleAFrame.this, data);
         historyPanel.clearCurrentPopupNode();
       }
     });
@@ -1858,7 +1853,7 @@ public class TripleAFrame extends MainGameFrame {
         data.acquireReadLock();
         // m_data.acquireWriteLock();
         try {
-          final File f = BasicGameMenuBar.getSaveGameLocationDialog(TripleAFrame.this);
+          final File f = TripleAMenuBar.getSaveGameLocationDialog(TripleAFrame.this);
           if (f != null) {
             try (FileOutputStream fout = new FileOutputStream(f)) {
               final GameData datacopy = GameDataUtils.cloneGameData(data, true);
@@ -1993,228 +1988,7 @@ public class TripleAFrame extends MainGameFrame {
     validate();
   }
 
-  public boolean saveScreenshot(final HistoryNode node, final File file) {
-    // get current history node. if we are in history view, get the selected node.
-    final MapPanel mapPanel = getMapPanel();
-    boolean retval = true;
-    // get round/step/player from history tree
-    int round = 0;
-    final Object[] pathFromRoot = node.getPath();
-    for (final Object pathNode : pathFromRoot) {
-      final HistoryNode curNode = (HistoryNode) pathNode;
-      if (curNode instanceof Round) {
-        round = ((Round) curNode).getRoundNo();
-      }
-    }
-    final double scale = uiContext.getScale();
-    // print map panel to image
-    final BufferedImage mapImage =
-        Util.createImage((int) (scale * mapPanel.getImageWidth()), (int) (scale * mapPanel.getImageHeight()), false);
-    final Graphics2D mapGraphics = mapImage.createGraphics();
-    try {
-      final GameData data = mapPanel.getData();
-      data.acquireReadLock();
-      try {
-        // workaround to get the whole map
-        // (otherwise the map is cut if current window is not on top of map)
-        final int xOffset = mapPanel.getXOffset();
-        final int yOffset = mapPanel.getYOffset();
-        mapPanel.setTopLeft(0, 0);
-        mapPanel.print(mapGraphics);
-        mapPanel.setTopLeft(xOffset, yOffset);
-      } finally {
-        data.releaseReadLock();
-      }
-      // overlay title
-      Color title_color = uiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_TITLE_COLOR);
-      if (title_color == null) {
-        title_color = Color.BLACK;
-      }
-      final String s_title_x = uiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_X);
-      final String s_title_y = uiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_Y);
-      final String s_title_size = uiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_FONT_SIZE);
-      int title_x;
-      int title_y;
-      int title_size;
-      try {
-        title_x = (int) (Integer.parseInt(s_title_x) * scale);
-        title_y = (int) (Integer.parseInt(s_title_y) * scale);
-        title_size = Integer.parseInt(s_title_size);
-      } catch (final NumberFormatException nfe) {
-        // choose safe defaults
-        title_x = (int) (15 * scale);
-        title_y = (int) (15 * scale);
-        title_size = 15;
-      }
-      // everything else should be scaled down onto map image
-      final AffineTransform transform = new AffineTransform();
-      transform.scale(scale, scale);
-      mapGraphics.setTransform(transform);
-      mapGraphics.setFont(new Font("Ariel", Font.BOLD, title_size));
-      mapGraphics.setColor(title_color);
-      if (uiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_TITLE_ENABLED)) {
-        mapGraphics.drawString(data.getGameName() + " Round " + round, title_x, title_y);
-      }
-      // overlay stats, if enabled
-      final boolean stats_enabled =
-          uiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_STATS_ENABLED);
-      if (stats_enabled) {
-        // get screenshot properties from map data
-        Color stats_text_color =
-            uiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_STATS_TEXT_COLOR);
-        if (stats_text_color == null) {
-          stats_text_color = Color.BLACK;
-        }
-        Color stats_border_color =
-            uiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_STATS_BORDER_COLOR);
-        if (stats_border_color == null) {
-          stats_border_color = Color.WHITE;
-        }
-        final String s_stats_x = uiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_STATS_X);
-        final String s_stats_y = uiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_STATS_Y);
-        int stats_x;
-        int stats_y;
-        try {
-          stats_x = (int) (Integer.parseInt(s_stats_x) * scale);
-          stats_y = (int) (Integer.parseInt(s_stats_y) * scale);
-        } catch (final NumberFormatException nfe) {
-          // choose reasonable defaults
-          stats_x = (int) (120 * scale);
-          stats_y = (int) (70 * scale);
-        }
-        // Fetch stats table and save current properties before modifying them
-        // NOTE: This is a bit of a hack, but creating a fresh JTable and
-        // populating it with statsPanel data seemed hard. This was easier.
-        final JTable table = statsPanel.getStatsTable();
-        final javax.swing.table.TableCellRenderer oldRenderer = table.getDefaultRenderer(Object.class);
-        final Font oldTableFont = table.getFont();
-        final Font oldTableHeaderFont = table.getTableHeader().getFont();
-        final Dimension oldTableSize = table.getSize();
-        final Color oldTableFgColor = table.getForeground();
-        final Color oldTableSelFgColor = table.getSelectionForeground();
-        final int oldCol0Width = table.getColumnModel().getColumn(0).getPreferredWidth();
-        final int oldCol2Width = table.getColumnModel().getColumn(2).getPreferredWidth();
-        // override some stats table properties for screenshot
-        table.setOpaque(false);
-        table.setFont(new Font("Ariel", Font.BOLD, 15));
-        table.setForeground(stats_text_color);
-        table.setSelectionForeground(table.getForeground());
-        table.setGridColor(stats_border_color);
-        table.getTableHeader().setFont(new Font("Ariel", Font.BOLD, 15));
-        table.getColumnModel().getColumn(0).setPreferredWidth(80);
-        table.getColumnModel().getColumn(2).setPreferredWidth(90);
-        table.setSize(table.getPreferredSize());
-        table.doLayout();
-        // initialize table/header dimensions
-        final int tableWidth = table.getSize().width;
-        final int tableHeight = table.getSize().height;
-        // use tableWidth not hdrWidth!
-        final int hdrWidth = tableWidth;
-        final int hdrHeight = table.getTableHeader().getSize().height;
-        // create image for capturing table header
-        final BufferedImage tblHdrImage = Util.createImage(hdrWidth, hdrHeight, false);
-        final Graphics2D tblHdrGraphics = tblHdrImage.createGraphics();
-        // create image for capturing table (support transparencies)
-        final BufferedImage tblImage = Util.createImage(tableWidth, tableHeight, true);
-        final Graphics2D tblGraphics = tblImage.createGraphics();
-        // create a custom renderer that paints selected cells transparently
-        final DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
-          private static final long serialVersionUID = 1978774284876746635L;
 
-          {
-            setOpaque(false);
-          }
-        };
-        // set our custom renderer on the JTable
-        table.setDefaultRenderer(Object.class, renderer);
-        // print table and header to images and draw them on map
-        table.getTableHeader().print(tblHdrGraphics);
-        table.print(tblGraphics);
-        mapGraphics.drawImage(tblHdrImage, stats_x, stats_y, null);
-        mapGraphics.drawImage(tblImage, stats_x, stats_y + (int) (hdrHeight * scale), null);
-        // Clean up objects. There might be some overkill here,
-        // but there were memory leaks that are fixed by some/all of these.
-        tblHdrGraphics.dispose();
-        tblGraphics.dispose();
-        statsPanel.setStatsBgImage(null);
-        tblHdrImage.flush();
-        tblImage.flush();
-        // restore table properties
-        table.setDefaultRenderer(Object.class, oldRenderer);
-        table.setOpaque(true);
-        table.setForeground(oldTableFgColor);
-        table.setSelectionForeground(oldTableSelFgColor);
-        table.setFont(oldTableFont);
-        table.getTableHeader().setFont(oldTableHeaderFont);
-        table.setSize(oldTableSize);
-        table.getColumnModel().getColumn(0).setPreferredWidth(oldCol0Width);
-        table.getColumnModel().getColumn(2).setPreferredWidth(oldCol2Width);
-        table.doLayout();
-      }
-      // save Image as .png
-      try {
-        ImageIO.write(mapImage, "png", file);
-      } catch (final Exception e2) {
-        e2.printStackTrace();
-        JOptionPane.showMessageDialog(TripleAFrame.this, e2.getMessage(), "Error saving Screenshot",
-            JOptionPane.OK_OPTION);
-        retval = false;
-      }
-      // Clean up objects. There might be some overkill here,
-      // but there were memory leaks that are fixed by some/all of these.
-    } finally {
-      mapImage.flush();
-      mapGraphics.dispose();
-    }
-    return retval;
-  }
-
-  public void saveScreenshot(final HistoryNode node) {
-    final FileFilter pngFilter = new FileFilter() {
-      @Override
-      public boolean accept(final File f) {
-        if (f.isDirectory()) {
-          return true;
-        } else {
-          return f.getName().endsWith(".png");
-        }
-      }
-
-      @Override
-      public String getDescription() {
-        return "Saved Screenshots, *.png";
-      }
-    };
-    final JFileChooser fileChooser = new SaveGameFileChooser();
-    fileChooser.setFileFilter(pngFilter);
-    final int rVal = fileChooser.showSaveDialog(this);
-    if (rVal == JFileChooser.APPROVE_OPTION) {
-      File f = fileChooser.getSelectedFile();
-      if (!f.getName().toLowerCase().endsWith(".png")) {
-        f = new File(f.getParent(), f.getName() + ".png");
-      }
-      // A small warning so users will not over-write a file,
-      if (f.exists()) {
-        final int choice =
-            JOptionPane.showConfirmDialog(this, "A file by that name already exists. Do you wish to over write it?",
-                "Over-write?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-        if (choice != JOptionPane.OK_OPTION) {
-          return;
-        }
-      }
-      final File file = f;
-      final Runnable t = new Runnable() {
-        @Override
-        public void run() {
-          if (saveScreenshot(node, file)) {
-            JOptionPane.showMessageDialog(TripleAFrame.this, "Screenshot Saved", "Screenshot Saved",
-                JOptionPane.INFORMATION_MESSAGE);
-          }
-        }
-      };
-      SwingAction.invokeAndWait(t);
-    }
-  }
 
   private void setWidgetActivation() {
     if (!SwingUtilities.isEventDispatchThread()) {
@@ -2318,20 +2092,6 @@ public class TripleAFrame extends MainGameFrame {
       m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     }
   };
-  private final AbstractAction m_saveScreenshotAction = new AbstractAction("Export Screenshot...") {
-    private static final long serialVersionUID = -5908032486008953815L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      HistoryNode curNode = null;
-      if (historyPanel == null) {
-        curNode = data.getHistory().getLastNode();
-      } else {
-        curNode = historyPanel.getCurrentNode();
-      }
-      saveScreenshot(curNode);
-    }
-  };
 
   public Collection<Unit> moveFightersToCarrier(final Collection<Unit> fighters, final Territory where) {
     if (messageAndDialogThreadPool == null) {
@@ -2365,31 +2125,26 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public BattlePanel getBattlePanel() {
-    // m_messageAndDialogThreadPool.waitForAll();
     return actionButtons.getBattlePanel();
   }
 
-  Action getShowGameAction() {
+  public Action getShowGameAction() {
     return m_showGameAction;
   }
 
-  Action getShowHistoryAction() {
+  public Action getShowHistoryAction() {
     return m_showHistoryAction;
   }
 
-  Action getShowMapOnlyAction() {
+  public Action getShowMapOnlyAction() {
     return m_showMapOnlyAction;
-  }
-
-  Action getSaveScreenshotAction() {
-    return m_saveScreenshotAction;
   }
 
   public IUIContext getUIContext() {
     return uiContext;
   }
 
-  MapPanel getMapPanel() {
+  public MapPanel getMapPanel() {
     return mapPanel;
   }
 
@@ -2399,7 +2154,7 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   // Beagle Code Called to Change Mapskin
-  void updateMap(final String mapdir) throws IOException {
+  public void updateMap(final String mapdir) throws IOException {
     uiContext.setMapDir(data, mapdir);
     // when changing skins, always show relief images
     if (uiContext.getMapData().getHasRelief()) {

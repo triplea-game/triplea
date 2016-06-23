@@ -60,9 +60,6 @@ public class StringProperty extends AEditableProperty {
     if (value == null) {
       return true;
     }
-    if (value instanceof String) {
-      return true;
-    }
-    return false;
+    return value instanceof String;
   }
 }

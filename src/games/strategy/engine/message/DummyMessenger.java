@@ -175,7 +175,7 @@ public class DummyMessenger implements IServerMessenger {
   public void NotifyUsernameMiniBanningOfPlayer(final String username, final Date expires) {}
 
   @Override
-  public String GetPlayerMac(final String name) {
+  public String getPlayerMac(final String name) {
     return "DummyMacAddress";
   }
 

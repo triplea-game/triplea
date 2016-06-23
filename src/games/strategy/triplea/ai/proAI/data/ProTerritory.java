@@ -1,5 +1,12 @@
 package games.strategy.triplea.ai.proAI.data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -11,18 +18,12 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.Match;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public class ProTerritory {
 
   private Territory territory;
   private List<Unit> maxUnits;
   private List<Unit> units;
+  private List<Unit> bombers;
   private ProBattleResult maxBattleResult;
   private double value;
   private double seaValue;
@@ -61,6 +62,7 @@ public class ProTerritory {
     this.territory = territory;
     maxUnits = new ArrayList<>();
     units = new ArrayList<>();
+    bombers = new ArrayList<>();
     cantMoveUnits = new ArrayList<>();
     maxEnemyUnits = new ArrayList<>();
     maxEnemyBombardUnits = new HashSet<>();
@@ -92,6 +94,7 @@ public class ProTerritory {
     this.territory = patd.getTerritory();
     maxUnits = new ArrayList<>(patd.getMaxUnits());
     units = new ArrayList<>(patd.getUnits());
+    bombers = new ArrayList<>(patd.getBombers());
     cantMoveUnits = new ArrayList<>(patd.getCantMoveUnits());
     maxEnemyUnits = new ArrayList<>(patd.getMaxEnemyUnits());
     maxEnemyBombardUnits = new HashSet<>(patd.getMaxEnemyBombardUnits());
@@ -431,5 +434,13 @@ public class ProTerritory {
 
   public List<Unit> getMaxScrambleUnits() {
     return maxScrambleUnits;
+  }
+
+  public List<Unit> getBombers() {
+    return bombers;
+  }
+
+  public void setBombers(final List<Unit> bombers) {
+    this.bombers = bombers;
   }
 }

@@ -139,7 +139,8 @@ public class ProAI extends AbstractAI {
   }
 
   @Override
-  protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player) {
+  protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
+      final PlayerID player) {
     final long start = System.currentTimeMillis();
     BattleCalculator.clearOOLCache();
     ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
@@ -311,7 +312,7 @@ public class ProAI extends AbstractAI {
 
   @Override
   public boolean shouldBomberBomb(final Territory territory) {
-    return false;
+    return combatMoveAI.isBombing();
   }
 
   @Override
@@ -455,10 +456,7 @@ public class ProAI extends AbstractAI {
     final ProBattleResult result =
         calc.calculateBattleResults(player, unitTerritory, attackers, defenders, new HashSet<>(), true);
     ProLogger.debug(player.getName() + " sub attack TUVSwing=" + result.getTUVSwing());
-    if (result.getTUVSwing() > 0) {
-      return true;
-    }
-    return false;
+    return result.getTUVSwing() > 0;
   }
 
   @Override

@@ -146,9 +146,6 @@ public class UnitImageFactory {
     // URL uses '/' not '\'
     final String fileName = FILE_NAME_BASE + id.getName() + "/" + baseImageName + ".png";
     final URL url = resourceLoader.getResource(fileName);
-    if (url == null) {
-      ClientLogger.logError("MISSING IMAGE (this unit or image will be invisible): " + baseImageName + "  looking in: " + fileName);
-    }
     return Optional.ofNullable(url);
   }
 
