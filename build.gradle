@@ -51,7 +51,6 @@ repositories {
 dependencies {
 	compile 'com.github.insubstantial:substance:7.3'
 	compile 'com.google.guava:guava:19.0'
-	compile 'com.googlecode.soundlibs:jlayer:1.0.1-2'
 	compile 'com.sun.mail:mailapi:1.5.5'
 	compile 'com.sun.mail:smtp:1.5.5'
 	compile 'commons-httpclient:commons-httpclient:3.1'
