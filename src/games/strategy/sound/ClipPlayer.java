@@ -258,6 +258,7 @@ public class ClipPlayer {
     getInstance().playClip(clipPath, playerId);
   }
 
+  private MediaPlayer mediaPlayer;//prevents the garbage collector from removing this object
   private void playClip(final String clipName, final PlayerID playerId) {
     if (beSilent || isMuted(clipName)) {
       return;
@@ -274,7 +275,7 @@ public class ClipPlayer {
         new JFXPanel();// This loads the JavaFX Toolkit
         Platform.runLater(() -> {
           Media media = new Media(clip.toString());
-          MediaPlayer mediaPlayer = new MediaPlayer(media);
+          mediaPlayer = new MediaPlayer(media);
           mediaPlayer.play();
         });
       });
