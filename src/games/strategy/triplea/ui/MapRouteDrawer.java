@@ -36,6 +36,7 @@ public class MapRouteDrawer {
    * because the distance between the drawing segments is shorter than 2 pixels
    */
   public static final double DETAIL_LEVEL = 1.0;
+  private static final int arrowLength = 4;
 
   /**
    * Draws the route to the screen.
@@ -61,7 +62,6 @@ public class MapRouteDrawer {
     final int xOffset = view.getXOffset();
     final int yOffset = view.getYOffset();
     final double scale = view.getScale();
-    final int jointsize = 10;
     if (tooFewTerritories || tooFewPoints) {
       if (routeDescription.getEnd() != null) {
         drawDirectPath(graphics, routeDescription.getStart(), routeDescription.getEnd(), xOffset, yOffset, scale);
@@ -75,7 +75,7 @@ public class MapRouteDrawer {
       drawCurvedPath(graphics, points, xOffset, yOffset, scale);
       drawMoveLength(graphics, points, xOffset, yOffset, scale, numTerritories, maxMovement);
     }
-    drawJoints(graphics, points, xOffset, yOffset, jointsize, scale);
+    drawJoints(graphics, points, xOffset, yOffset, scale);
     drawCustomCursor(graphics, routeDescription, xOffset, yOffset, scale);
   }
 
@@ -89,8 +89,9 @@ public class MapRouteDrawer {
    * @param jointsize The diameter of the Points being drawn
    * @param scale The scale-factor of the Map
    */
-  private void drawJoints(Graphics2D graphics, Point[] points, int xOffset, int yOffset, int jointsize,
-      double scale) {
+  private void drawJoints(Graphics2D graphics, Point[] points, int xOffset, int yOffset, double scale) {
+    final int jointsize = 10;
+    // If the points array is bigger than 1 the last joint should not be drawn (draw an arrow instead)
     Point[] newPoints = points.length > 1 ? Arrays.copyOf(points, points.length - 1) : points;
     for (Point p : newPoints) {
       graphics.fillOval((int) (((p.x - xOffset) - (jointsize / 2) / scale) * scale),
@@ -124,7 +125,7 @@ public class MapRouteDrawer {
    * 
    * @param graphics The {@linkplain Graphics2D} Object being drawn on
    * @param start The start {@linkplain Point} of the Path
-   * @param end The start {@linkplain Point} of the Path
+   * @param end The end {@linkplain Point} of the Path
    * @param xOffset The horizontal pixel-difference between the frame and the Map
    * @param yOffset The vertical pixel-difference between the frame and the Map
    * @param jointsize The diameter of the Points being drawn
@@ -133,7 +134,7 @@ public class MapRouteDrawer {
   private void drawDirectPath(Graphics2D graphics, Point start, Point end, int xOffset, int yOffset, double scale) {
     drawLineWithTranslate(graphics, new Line2D.Float(start, end), xOffset,
         yOffset, scale);
-    if (start.distance(end) > 4) {
+    if (start.distance(end) > arrowLength) {
       drawArrow(graphics, start, end, xOffset, yOffset, scale);
     }
   }
@@ -184,7 +185,8 @@ public class MapRouteDrawer {
    * 
    * @param routeDescription {@linkplain RouteDescription} containing the Route information
    * @param mapData {@linkplain MapData} Object containing Information about the Map Coordinates
-   * @return The {@linkplain Point} array specified by the {@linkplain RouteDescription} and {@linkplain MapData} objects
+   * @return The {@linkplain Point} array specified by the {@linkplain RouteDescription} and {@linkplain MapData}
+   *         objects
    */
   protected Point[] getRoutePoints(RouteDescription routeDescription, MapData mapData) {
     final List<Territory> territories = routeDescription.getRoute().getAllTerritories();
@@ -301,7 +303,7 @@ public class MapRouteDrawer {
         new Line2D.Double(new Point2D.Double(xcoords[xcoords.length - 1], ycoords[ycoords.length - 1]),
             points[points.length - 1]),
         xOffset, yOffset, scale);
-    if (points[points.length - 2].distance(points[points.length - 1]) > 4) {
+    if (points[points.length - 2].distance(points[points.length - 1]) > arrowLength) {
       drawArrow(graphics, new Point2D.Double(xcoords[xcoords.length - 1], ycoords[ycoords.length - 1]),
           points[points.length - 1], xOffset, yOffset, scale);
     }
@@ -336,8 +338,9 @@ public class MapRouteDrawer {
    * @param to The {@linkplain Point2D} where the arrow is placed
    * @return A transformed Arrow-Shape
    */
-  private Shape createArrowTipShape(Point2D from, Point2D to) {
+  private static Shape createArrowTipShape(Point2D from, Point2D to) {
     final Polygon arrowPolygon = new Polygon();
+    // 1- (-3) = arrowLength
     arrowPolygon.addPoint(-3, 2);
     arrowPolygon.addPoint(1, 0);
     arrowPolygon.addPoint(-3, -2);
@@ -345,8 +348,7 @@ public class MapRouteDrawer {
 
     final AffineTransform transform = new AffineTransform();
     transform.translate(to.getX(), to.getY());
-    final double scale = 4;
-    transform.scale(scale, scale);
+    transform.scale(arrowLength, arrowLength);
     final double rotate = Math.atan2(to.getY() - from.getY(), to.getX() - from.getX());
     transform.rotate(rotate);
 
@@ -363,7 +365,7 @@ public class MapRouteDrawer {
    * @param yOffset The vertical pixel-difference between the frame and the Map
    * @param scale The scale-factor of the Map
    */
-  private void drawArrow(Graphics2D graphics, Point2D from, Point2D to, int xOffset, int yOffset, double scale) {
+  private static void drawArrow(Graphics2D graphics, Point2D from, Point2D to, int xOffset, int yOffset, double scale) {
     final Point2D scaledStart = new Point2D.Double((from.getX() - xOffset) * scale,
         (from.getY() - yOffset) * scale);
     final Point2D scaledEnd = new Point2D.Double((to.getX() - xOffset) * scale,

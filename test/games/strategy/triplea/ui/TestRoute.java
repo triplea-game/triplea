@@ -93,6 +93,6 @@ public class TestRoute {
     verify(mockedMapPanel).getScale();
     
     verify(dummyRouteDescription, times(2)).getRoute();
-    verify(dummyRouteDescription.getRoute(), atLeastOnce()).getAllTerritories();mockGraphics.drawLine(0, 0, 1, 1);
+    verify(dummyRouteDescription.getRoute(), atLeastOnce()).getAllTerritories();
   }
 }
