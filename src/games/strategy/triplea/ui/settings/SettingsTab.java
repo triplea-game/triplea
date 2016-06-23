@@ -12,7 +12,7 @@ public interface SettingsTab<T> {
   List<SettingInputComponent<T>> getInputs();
 
   default void updateSettings(List<SettingInputComponent<T>> inputs) {
-    List<Tuple<SettingInputComponent, String>> valuesUpdated = new ArrayList<>();
+    List<Tuple<SettingInputComponent<?>, String>> valuesUpdated = new ArrayList<>();
 
     inputs.forEach(input -> {
       System.out.println("Text value = " + input.getInputElement().getText());
@@ -24,7 +24,7 @@ public interface SettingsTab<T> {
     StringBuilder msg = new StringBuilder("No values updated");
     if (!valuesUpdated.isEmpty()) {
       msg = new StringBuilder("Updated values: ");
-      for (Tuple<SettingInputComponent, String> value : valuesUpdated) {
+      for (Tuple<SettingInputComponent<?>, String> value : valuesUpdated) {
         msg.append("\n").append(value.getFirst().getLabel()).append(" -> ").append(value.getSecond());
       }
     }

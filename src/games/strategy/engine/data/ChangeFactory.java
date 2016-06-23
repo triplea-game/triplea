@@ -1024,18 +1024,6 @@ class ObjectPropertyChange extends Change {
     m_oldValue = PropertyUtil.getPropertyFieldObject(property, object);
   }
 
-  /**
-   * Use canonical objects to reduce memory use after serialization.
-   */
-  private Object resolve(final Object value) {
-    if (value instanceof Boolean) {
-      return (Boolean) value;
-    } else if (value instanceof Integer) {
-      return (Integer) value;
-    }
-    return value;
-  }
-
   public ObjectPropertyChange(final Object object, final String property, final Object newValue,
       final Object oldValue) {
     m_object = object;
@@ -1048,8 +1036,6 @@ class ObjectPropertyChange extends Change {
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
     m_property = m_property.intern();
-    m_newValue = resolve(m_newValue);
-    m_oldValue = resolve(m_oldValue);
   }
 
   @Override

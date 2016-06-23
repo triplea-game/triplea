@@ -1,13 +1,12 @@
 package games.strategy.triplea.ui.menubar;
 
-import games.strategy.triplea.UrlConstants;
-import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.ui.SwingComponents;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import java.awt.event.KeyEvent;
+
+import games.strategy.triplea.UrlConstants;
+import games.strategy.ui.SwingComponents;
 
 public class WebHelpMenu {
   public WebHelpMenu(TripleAMenuBar menuBar) {

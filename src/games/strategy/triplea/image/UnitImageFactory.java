@@ -13,7 +13,6 @@ import java.util.Optional;
 
 import javax.swing.ImageIcon;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;

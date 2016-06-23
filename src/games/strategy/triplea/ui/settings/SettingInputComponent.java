@@ -2,7 +2,6 @@ package games.strategy.triplea.ui.settings;
 
 import java.util.function.BiConsumer;
 
-import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
 public interface SettingInputComponent<T> {
