@@ -46,6 +46,7 @@ import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Triple;
 import tools.map.making.MapCreator;
+import tools.map.xml.creator.MapXmlCreator;
 
 /**
  * Class for holding various engine related options and preferences.
@@ -63,6 +64,7 @@ public class EnginePreferences extends JDialog {
   private JButton m_console;
   // private JButton m_runAutoHost;
   private JButton m_mapCreator;
+  private JButton m_mapXmlCreator;
   private JButton m_userFolder;
   private JButton m_programFolder;
   private JButton m_readme;
@@ -93,6 +95,7 @@ public class EnginePreferences extends JDialog {
     m_setMaxMemory = new JButton("Set Max Memory Usage");
     // m_runAutoHost = new JButton("Run an Automated Game Host Bot");
     m_mapCreator = new JButton("Run the Map Creator");
+    m_mapXmlCreator = new JButton("[Beta] Run the Map Creator");
     m_console = new JButton("Show Console");
     m_userFolder = new JButton("Open User Maps and Savegames Folder");
     m_programFolder = new JButton("Open Installed Program Folder");
@@ -127,6 +130,8 @@ public class EnginePreferences extends JDialog {
     // buttonsPanel.add(m_runAutoHost);
     // buttonsPanel.add(new JLabel(" "));
     buttonsPanel.add(m_mapCreator);
+    buttonsPanel.add(new JLabel(" "));
+    buttonsPanel.add(m_mapXmlCreator);
     buttonsPanel.add(new JLabel(" "));
     buttonsPanel.add(m_console);
     buttonsPanel.add(new JLabel(" "));
@@ -372,6 +377,14 @@ public class EnginePreferences extends JDialog {
         ProcessRunnerUtil.exec(commands);
 
     }));
+    m_mapXmlCreator.addActionListener(SwingAction.of("[Beta] Run the Map Creator", e -> {
+      final List<String> commands = new ArrayList<>();
+      ProcessRunnerUtil.populateBasicJavaArgs(commands);
+      final String javaClass = MapXmlCreator.class.getName();
+      commands.add(javaClass);
+      ProcessRunnerUtil.exec(commands);
+
+  }));
     m_console.addActionListener(SwingAction.of("Show Console", e -> {
          ErrorConsole.getConsole().setVisible(true);
         reportMemoryUsageToConsole();
