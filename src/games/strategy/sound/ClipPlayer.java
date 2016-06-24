@@ -258,7 +258,9 @@ public class ClipPlayer {
     getInstance().playClip(clipPath, playerId);
   }
 
-  private MediaPlayer mediaPlayer;//prevents the garbage collector from removing this object
+  private MediaPlayer mediaPlayer;// prevents the garbage collector from removing this object
+  private boolean executedOnce = false;
+
   private void playClip(final String clipName, final PlayerID playerId) {
     if (beSilent || isMuted(clipName)) {
       return;
@@ -272,7 +274,10 @@ public class ClipPlayer {
     final URI clip = loadClip(folder);
     if (clip != null) {
       SwingUtilities.invokeLater(() -> {
-        new JFXPanel();// This loads the JavaFX Toolkit
+        if (!executedOnce) {
+          new JFXPanel();// This loads the JavaFX Toolkit
+          executedOnce = true;
+        }
         Platform.runLater(() -> {
           Media media = new Media(clip.toString());
           mediaPlayer = new MediaPlayer(media);
