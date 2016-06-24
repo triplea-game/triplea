@@ -339,11 +339,12 @@ public class MapRouteDrawer {
    * @return A transformed Arrow-Shape
    */
   private static Shape createArrowTipShape(Point2D from, Point2D to) {
+    final int arrowOffset = 1;
     final Polygon arrowPolygon = new Polygon();
     // 1- (-3) = arrowLength
-    arrowPolygon.addPoint(-3, 2);
-    arrowPolygon.addPoint(1, 0);
-    arrowPolygon.addPoint(-3, -2);
+    arrowPolygon.addPoint(arrowOffset - arrowLength, arrowLength / 2);
+    arrowPolygon.addPoint(arrowOffset, 0);
+    arrowPolygon.addPoint(arrowOffset - arrowLength, arrowLength / -2);
 
 
     final AffineTransform transform = new AffineTransform();
