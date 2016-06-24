@@ -75,10 +75,6 @@ public class MapCreator extends JFrame {
     return new String[] {TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT};
   }
 
-  public static String getRunnableClassName() {
-    return MapCreator.class.getName();
-  }
-
   public static void main(final String[] args) {
     GameRunner2.setupLookAndFeel();
     final MapCreator creator = new MapCreator();
