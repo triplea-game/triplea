@@ -1,15 +1,11 @@
 package games.strategy.engine;
 
-import com.google.common.collect.ImmutableList;
 import games.strategy.engine.config.GameEnginePropertyFileReader;
 import games.strategy.engine.config.PropertyReader;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.map.download.MapListingSource;
-import games.strategy.triplea.ui.settings.SettingsTab;
 import games.strategy.triplea.ui.settings.folders.FolderSettings;
 import games.strategy.triplea.ui.settings.scrolling.ScrollSettings;
-
-import java.util.List;
 
 /**
  * IOC container for storing objects needed by the TripleA Swing client
