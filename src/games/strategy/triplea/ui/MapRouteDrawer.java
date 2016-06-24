@@ -341,7 +341,6 @@ public class MapRouteDrawer {
   private static Shape createArrowTipShape(Point2D from, Point2D to) {
     final int arrowOffset = 1;
     final Polygon arrowPolygon = new Polygon();
-    // 1- (-3) = arrowLength
     arrowPolygon.addPoint(arrowOffset - arrowLength, arrowLength / 2);
     arrowPolygon.addPoint(arrowOffset, 0);
     arrowPolygon.addPoint(arrowOffset - arrowLength, arrowLength / -2);
