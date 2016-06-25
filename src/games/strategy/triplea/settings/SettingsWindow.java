@@ -2,6 +2,7 @@ package games.strategy.triplea.settings;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.GridLayout;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,6 +40,10 @@ import games.strategy.ui.SwingComponents;
  */
 public class SettingsWindow extends SwingComponents.ModalJDialog {
 
+  public static void main(String[] args) {
+    showWindow();
+  }
+
   public static void showWindow() {
     SwingComponents.showWindow(new SettingsWindow(
         new ScrollSettingsTab(ClientContext.scrollSettings()),
@@ -51,7 +56,6 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
 
   private SettingsWindow(SettingsTab ... tabs) {
     add(buildTabbedPane(tabs), BorderLayout.CENTER);
-    add(SwingComponents.newJButton("Close", e -> dispose()), BorderLayout.SOUTH);
   }
 
   private JTabbedPane buildTabbedPane(SettingsTab ... tabs) {
@@ -67,10 +71,10 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
     inputs.forEach(input -> settingsPanel.add(createInputElementRow(input)));
 
     JPanel panel = new JPanel();
-    panel.add(settingsPanel, BorderLayout.CENTER);
+    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    panel.add(new JScrollPane(settingsPanel));
     panel.add(createButtonsPanel(settingTab));
-
-    return new JScrollPane(panel);
+    return panel;
   }
 
   private static JPanel createInputElementRow(SettingInputComponent input) {
@@ -102,10 +106,15 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
 
   private JPanel createButtonsPanel(SettingsTab settingTab) {
     JPanel buttonsPanel = new JPanel();
-    buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
+    buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
 
-    JButton useDefaults = SwingComponents.newJButton("To Default",
-        e -> SwingComponents.promptUser("Revert to default?",
+
+    buttonsPanel.add(Box.createVerticalStrut(50));
+
+//    buttonsPanel.add(Box.createHorizontalGlue());
+
+    JButton useDefaults = SwingComponents.newJButton("Use Defaults",
+        e -> SwingComponents.promptUser("Revert to default settings?",
             "Are you sure you would like revert '" + settingTab.getTabTitle() + "' back to default settings?", () -> {
               settingTab.getSettingsObject().setToDefault();
               SystemPreferences.flush();
@@ -113,14 +122,19 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
               SwingComponents.showDialog("Reverted the '" + settingTab.getTabTitle() + "' settings back to defaults");
             }));
     buttonsPanel.add(useDefaults);
+    buttonsPanel.add(Box.createHorizontalGlue());
 
-    buttonsPanel.add(Box.createVerticalStrut(100));
+    buttonsPanel.add(SwingComponents.newJButton("Close", e -> dispose()));
+
+    buttonsPanel.add(Box.createHorizontalGlue());
 
     JButton saveButton = SwingComponents.newJButton("Save", e -> {
       settingTab.updateSettings(settingTab.getInputs());
       SystemPreferences.flush();
     });
     buttonsPanel.add(saveButton);
+    buttonsPanel.add(Box.createHorizontalGlue());
+
     return buttonsPanel;
   }
 
