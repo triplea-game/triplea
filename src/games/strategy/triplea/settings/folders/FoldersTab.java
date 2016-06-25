@@ -4,17 +4,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
-import javax.swing.ButtonGroup;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import games.strategy.engine.ClientContext;
+import games.strategy.triplea.settings.InputValidator;
 import games.strategy.triplea.settings.SettingInputComponent;
 import games.strategy.triplea.settings.SettingsTab;
-import games.strategy.triplea.settings.InputValidator;
 
 public class FoldersTab implements SettingsTab<FolderSettings> {
   private final FolderSettings settings;
