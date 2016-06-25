@@ -6,6 +6,7 @@ import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.map.download.MapListingSource;
 import games.strategy.triplea.settings.ai.AiSettings;
 import games.strategy.triplea.settings.battle.calc.BattleCalcSettings;
+import games.strategy.triplea.settings.battle.options.BattleOptionsSettings;
 import games.strategy.triplea.settings.folders.FolderSettings;
 import games.strategy.triplea.settings.scrolling.ScrollSettings;
 
@@ -47,6 +48,7 @@ public final class ClientContext {
   private final FolderSettings folderSettings;
   private final AiSettings aiSettings;
   private final BattleCalcSettings battleCalcSettings;
+  private final BattleOptionsSettings battleOptionsSettings;
 
   private ClientContext() {
     propertyReader = new GameEnginePropertyFileReader();
@@ -57,6 +59,7 @@ public final class ClientContext {
     folderSettings = new FolderSettings();
     aiSettings = new AiSettings();
     battleCalcSettings = new BattleCalcSettings();
+    battleOptionsSettings = new BattleOptionsSettings();
   }
 
   public static PropertyReader propertyReader() {
@@ -90,5 +93,9 @@ public final class ClientContext {
 
   public static BattleCalcSettings battleCalcSettings() {
     return instance.battleCalcSettings;
+  }
+
+  public static BattleOptionsSettings battleOptionsSettings() {
+    return instance.battleOptionsSettings;
   }
 }

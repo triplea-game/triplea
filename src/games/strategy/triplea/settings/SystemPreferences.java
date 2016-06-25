@@ -26,6 +26,13 @@ public class SystemPreferences {
   }
 
   /**
+   * @see SystemPreferences.put(PreferenceKey, String)
+   */
+  public static void put(PreferenceKey key, boolean value) {
+    put(key, String.valueOf(value));
+  }
+
+  /**
    * Puts a value into system preferences (note: not actually persisted until flush is called)
    */
   public static void putNoFlush(PreferenceKey key, String value) {
@@ -53,18 +60,22 @@ public class SystemPreferences {
    * @param key The preference key to look up
    * @param defaultValue A default value to use when the look up finds nothing
    */
-  public static int get(PreferenceKey key, int defaultValue) {
-    return getPrefs().getInt(key.name(), defaultValue);
-  }
-
-  /**
-   * Looks up a preference value by key (note: returns the last flushed value)
-   *
-   * @param key The preference key to look up
-   * @param defaultValue A default value to use when the look up finds nothing
-   */
   public static String get(PreferenceKey key, String defaultValue) {
     return getPrefs().get(key.name(), defaultValue);
   }
 
+
+  /**
+   * @see SystemPreferences.get(PreferenceKey, String)
+   */
+  public static boolean get(PreferenceKey key, boolean defaultValue) {
+    return Boolean.parseBoolean(getPrefs().get(key.name(), String.valueOf(defaultValue)));
+  }
+
+  /**
+   * @see SystemPreferences.get(PreferenceKey, String)
+   */
+  public static int get(PreferenceKey key, int defaultValue) {
+    return getPrefs().getInt(key.name(), defaultValue);
+  }
 }

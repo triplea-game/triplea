@@ -23,8 +23,6 @@ public class BattleCalcTab implements SettingsTab<BattleCalcSettings> {
     return "Battle Calculator";
   }
 
-
-
   @Override
   public List<SettingInputComponent<BattleCalcSettings>> getInputs() {
 

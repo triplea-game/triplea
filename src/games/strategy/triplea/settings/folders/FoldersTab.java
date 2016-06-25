@@ -4,7 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
+import javax.swing.ButtonGroup;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import games.strategy.engine.ClientContext;
@@ -40,9 +44,25 @@ public class FoldersTab implements SettingsTab<FolderSettings> {
             InputValidator.IS_DIRECTORY),
         SettingInputComponent.build("Map Download Path", "Location where map downloads are found",
             new JTextField(settings.getDownloadedMapPath()), downloadPathUpdater, downloadPathExtractor,
-            InputValidator.IS_DIRECTORY));
+            InputValidator.IS_DIRECTORY),
+        SettingInputComponent.build("Binary", "Binary choices need less description and validation",
+            buildPanel(), buildPanelReader(), downloadPathUpdater, downloadPathExtractor)
+
+    );
   }
 
+  private ButtonGroup buttonGroup = new ButtonGroup();
+  private JRadioButton radioButton = new JRadioButton("hi");
+
+  private JPanel buildPanel() {
+    JPanel panel = new JPanel();
+    panel.add(radioButton);
+    return panel;
+  }
+
+  private Supplier<String> buildPanelReader() {
+    return () -> buttonGroup.getSelection().getSelectedObjects()[0].toString();
+  }
 
   @Override
   public FolderSettings getSettingsObject() {
