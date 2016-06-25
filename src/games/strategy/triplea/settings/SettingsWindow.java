@@ -9,6 +9,7 @@ import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -25,8 +26,6 @@ import games.strategy.triplea.settings.scrolling.ScrollSettingsTab;
 import games.strategy.ui.SwingComponents;
 
 /**
- *
- *
  * Window that contains a tabbed panel with preference categories, each tab contains fields that allow users to update
  * game settings. The window handles generic logic around preferences, each tab will specify configuration values for
  * the settings.
@@ -41,6 +40,10 @@ import games.strategy.ui.SwingComponents;
  */
 public class SettingsWindow extends SwingComponents.ModalJDialog {
 
+  private static final int MAX_WIDTH = 1100;
+  private static final int TEXT_LABEL_WIDTH = MAX_WIDTH / 4;
+  private static final int ROW_HEIGHT = 30;
+
   public static void main(String[] args) {
     showWindow();
   }
@@ -51,15 +54,14 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
         new FoldersTab(ClientContext.folderSettings()),
         new AiTab(ClientContext.aiSettings()),
         new BattleCalcTab(ClientContext.battleCalcSettings()),
-        new BattleOptionsTab(ClientContext.battleOptionsSettings())
-        ));
+        new BattleOptionsTab(ClientContext.battleOptionsSettings())));
   }
 
-  private SettingsWindow(SettingsTab ... tabs) {
+  private SettingsWindow(SettingsTab... tabs) {
     add(buildTabbedPane(tabs), BorderLayout.CENTER);
   }
 
-  private JTabbedPane buildTabbedPane(SettingsTab ... tabs) {
+  private JTabbedPane buildTabbedPane(SettingsTab... tabs) {
     JTabbedPane pane = new JTabbedPane();
     Arrays.asList(tabs).forEach(tab -> pane.addTab(tab.getTabTitle(), createTabWindow(tab)));
     return pane;
@@ -68,62 +70,50 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
   private Component createTabWindow(SettingsTab settingTab) {
     List<SettingInputComponent> inputs = settingTab.getInputs();
 
-
-
-    JPanel settingsPanel = new JPanel();
-    settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.Y_AXIS));
-    settingsPanel.add(Box.createVerticalStrut(20));
+    JPanel settingsPanel = SwingComponents.newJPanelWithVerticalBoxLayout();
+    int topOfWindowPadding = 20;
+    settingsPanel.add(Box.createVerticalStrut(topOfWindowPadding));
 
     inputs.forEach(input -> {
       settingsPanel.add(createInputElementRow(input));
-      settingsPanel.add(Box.createVerticalStrut(15));
+
+      int paddingBetweenRows = 15;
+      settingsPanel.add(Box.createVerticalStrut(paddingBetweenRows));
     });
 
-    JPanel panel = new JPanel();
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    JPanel panel = SwingComponents.newJPanelWithVerticalBoxLayout();
     panel.add(new JScrollPane(settingsPanel));
     panel.add(createButtonsPanel(settingTab));
     return panel;
   }
 
   private static JPanel createInputElementRow(SettingInputComponent input) {
-    JPanel rowContents = new JPanel();
-
-
-    JPanel contentRow = new JPanel();
-
-    contentRow.setMaximumSize(new Dimension(MAX_WIDTH, ROW_HEIGHT));
-    contentRow.setLayout(new BoxLayout(contentRow, BoxLayout.X_AXIS));
-
-    // some padding on left hand side
-    contentRow.add(Box.createHorizontalStrut(20));
-    contentRow.add(createTextAndInputPanel(input));
-    contentRow.add(Box.createVerticalStrut(ROW_HEIGHT));
-
-    contentRow.add(createInputDescription(input));
-    contentRow.setBorder(new BevelBorder(BevelBorder.LOWERED));
-
-    rowContents.setLayout(new BoxLayout(rowContents, BoxLayout.Y_AXIS));
-    rowContents.add(Box.createVerticalStrut(3));
-    rowContents.add(contentRow);
-    rowContents.add(Box.createVerticalStrut(5));
-
-
-    return rowContents;
+    JPanel contentRow = createContentRow(createTextAndInputPanel(input), createInputDescription(input));
+    return SwingComponents.createRowWithTopAndBottomPadding(contentRow, 3, 5);
   }
 
-  private static final int MAX_WIDTH = 1100;
-  private static final int TEXT_LABEL_WIDTH = MAX_WIDTH / 4;
 
-  private static final int ROW_HEIGHT = 30;
+  private static JPanel createContentRow(JComponent textAndInputComponent, JComponent descriptionComponent) {
+    JPanel contentRow = SwingComponents.newJPanelWithHorizontalBoxLayout();
+    contentRow.setMaximumSize(new Dimension(MAX_WIDTH, ROW_HEIGHT));
+
+    int leftHandPadding = 20;
+    contentRow.add(Box.createHorizontalStrut(leftHandPadding));
+    contentRow.add(textAndInputComponent);
+
+    // the vertical struct gives the row height
+    contentRow.add(Box.createVerticalStrut(ROW_HEIGHT));
+
+    contentRow.add(descriptionComponent);
+    contentRow.setBorder(new BevelBorder(BevelBorder.LOWERED));
+    return contentRow;
+  }
 
 
   private static JPanel createTextAndInputPanel(SettingInputComponent input) {
     JPanel labelInputPanel = SwingComponents.newJPanelWithGridLayout(1, 2);
     JLabel label = new JLabel(input.getLabel());
     labelInputPanel.add(label);
-
-
 
     JPanel inputPanel = new JPanel();
     inputPanel.add(input.getInputElement().getSwingComponent());
@@ -152,30 +142,30 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
    * Each element is arranged in a row, with glue in between every element
    */
   private JPanel createButtonsPanel(SettingsTab settingTab) {
-    JPanel buttonsPanel = new JPanel();
-    buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
+    JPanel buttonsPanel = SwingComponents.newJPanelWithHorizontalBoxLayout();
 
     // instead of glue, use one vertical strut to give the buttons panel a minimum height
     int buttonPanelHeight = 50;
     buttonsPanel.add(Box.createVerticalStrut(buttonPanelHeight));
 
-    JButton useDefaults = SwingComponents.newJButton("Use Defaults",
+    buttonsPanel.add(SwingComponents.newJButton("Use Defaults",
         e -> SwingComponents.promptUser("Revert to default settings?",
             "Are you sure you would like revert '" + settingTab.getTabTitle() + "' back to default settings?", () -> {
               settingTab.getSettingsObject().setToDefault();
               SystemPreferences.flush();
               dispose();
               SwingComponents.showDialog("Reverted the '" + settingTab.getTabTitle() + "' settings back to defaults");
-            }));
-    buttonsPanel.add(useDefaults);
+            })));
+
     buttonsPanel.add(Box.createHorizontalGlue());
     buttonsPanel.add(SwingComponents.newJButton("Close", e -> dispose()));
+
     buttonsPanel.add(Box.createHorizontalGlue());
-    JButton saveButton = SwingComponents.newJButton("Save", e -> {
+    buttonsPanel.add(SwingComponents.newJButton("Save", e -> {
       settingTab.updateSettings(settingTab.getInputs());
       SystemPreferences.flush();
-    });
-    buttonsPanel.add(saveButton);
+    }));
+
     buttonsPanel.add(Box.createHorizontalGlue());
     return buttonsPanel;
   }

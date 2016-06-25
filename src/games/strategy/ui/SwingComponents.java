@@ -21,6 +21,33 @@ import java.util.stream.Collectors;
 
 public class SwingComponents {
 
+  public static JPanel newJPanelWithVerticalBoxLayout() {
+    return newJPanelWithBoxLayout(BoxLayout.Y_AXIS);
+  }
+
+  private static JPanel newJPanelWithBoxLayout(int layout) {
+    JPanel panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, layout));
+    return panel;
+  }
+
+  public static JPanel newJPanelWithHorizontalBoxLayout() {
+    return newJPanelWithBoxLayout(BoxLayout.X_AXIS);
+  }
+
+  /**
+   * Returns a row that has some padding at the top of it, and bottom.
+   */
+  public static JPanel createRowWithTopAndBottomPadding(JPanel contentRow, int topPadding, int bottomPadding) {
+    JPanel rowContents = new JPanel();
+    rowContents.setLayout(new BoxLayout(rowContents, BoxLayout.Y_AXIS));
+    rowContents.add(Box.createVerticalStrut(topPadding));
+    rowContents.add(contentRow);
+    rowContents.add(Box.createVerticalStrut(bottomPadding));
+    return rowContents;
+  }
+
+
   public static class ModalJDialog extends JDialog {
     public ModalJDialog() {
       super((Frame) null, true);
