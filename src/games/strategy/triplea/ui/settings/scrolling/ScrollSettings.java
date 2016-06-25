@@ -44,13 +44,11 @@ public class ScrollSettings {
   }
 
   public int getArrowKeyScrollSpeed() {
-    System.out.println("ARROW SCROLL => " + arrowKeyScrollSpeed);
     return arrowKeyScrollSpeed;
   }
 
   public void setArrowKeyScrollSpeed(String value) {
     arrowKeyScrollSpeed = Integer.parseInt(value);
-    System.out.println("SET ARROW SCROLL <= " + arrowKeyScrollSpeed);
   }
 
 
