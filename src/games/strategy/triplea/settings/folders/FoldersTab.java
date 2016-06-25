@@ -44,24 +44,8 @@ public class FoldersTab implements SettingsTab<FolderSettings> {
             InputValidator.IS_DIRECTORY),
         SettingInputComponent.build("Map Download Path", "Location where map downloads are found",
             new JTextField(settings.getDownloadedMapPath()), downloadPathUpdater, downloadPathExtractor,
-            InputValidator.IS_DIRECTORY),
-        SettingInputComponent.build("Binary", "Binary choices need less description and validation",
-            buildPanel(), buildPanelReader(), downloadPathUpdater, downloadPathExtractor)
-
+            InputValidator.IS_DIRECTORY)
     );
-  }
-
-  private ButtonGroup buttonGroup = new ButtonGroup();
-  private JRadioButton radioButton = new JRadioButton("hi");
-
-  private JPanel buildPanel() {
-    JPanel panel = new JPanel();
-    panel.add(radioButton);
-    return panel;
-  }
-
-  private Supplier<String> buildPanelReader() {
-    return () -> buttonGroup.getSelection().getSelectedObjects()[0].toString();
   }
 
   @Override
