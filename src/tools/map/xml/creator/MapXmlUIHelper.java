@@ -162,18 +162,16 @@ public class MapXmlUIHelper {
   }
 
   public static FileOpen selectFile(final String filename, final File currentDirectory, final String... extensions) {
-    do {
-      final FileOpen gameXmlFileOpen =
-          new FileOpen("Load " + filename, currentDirectory, MapXmlCreator.FILE_NAME_ENDING_XML);
-      if (gameXmlFileOpen.getPathString() == null) {
-        JOptionPane.showMessageDialog(null,
-            "No valid selection for " + filename + "!",
-            "Error while selecting " + filename, JOptionPane.ERROR_MESSAGE);
-      } else {
-        return gameXmlFileOpen;
-      }
-    } while (1 > 0);
-
+    final FileOpen gameXmlFileOpen =
+        new FileOpen("Load " + filename, currentDirectory, MapXmlCreator.FILE_NAME_ENDING_XML);
+    if (gameXmlFileOpen.getPathString() != null) {
+      return gameXmlFileOpen;
+    }
+    JOptionPane.showMessageDialog(null,
+        "No valid selection for " + filename + "!",
+        "Error while selecting " + filename, JOptionPane.ERROR_MESSAGE);
+    System.exit(1);//TODO make sure this is being removed, once this method is used other than on startup
+    return null;//This is never going to be returned
   }
 
   /**

@@ -3,6 +3,7 @@ package games.strategy.engine.framework;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import games.strategy.debug.ClientLogger;
@@ -13,6 +14,14 @@ import games.strategy.util.Version;
  * To hold various static utility methods for running a java program.
  */
 public class ProcessRunnerUtil {
+
+  public static void runClass(Class<?> mainClass) {
+    final List<String> commands = new ArrayList<>();
+    populateBasicJavaArgs(commands);
+    commands.add(mainClass.getName());
+    exec(commands);
+  }
+
   public static void populateBasicJavaArgs(final List<String> commands) {
     populateBasicJavaArgs(commands, System.getProperty("java.class.path"));
   }
