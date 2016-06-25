@@ -14,8 +14,14 @@ import javax.swing.JTextField;
 public class BattleCalcTab implements SettingsTab<BattleCalcSettings> {
   private final BattleCalcSettings battleCalcSettings;
 
+  private final JTextField runCountField;
+  private final JTextField lowLuckRunCountField;
+
+
   public BattleCalcTab(final BattleCalcSettings battleCalcSettings) {
     this.battleCalcSettings = battleCalcSettings;
+    runCountField = new JTextField(String.valueOf(battleCalcSettings.getSimulationCountDice()), 5);
+    lowLuckRunCountField = new JTextField(String.valueOf(battleCalcSettings.getSimulationCountLowLuck()), 5);
   }
 
   @Override
@@ -34,13 +40,13 @@ public class BattleCalcTab implements SettingsTab<BattleCalcSettings> {
 
     return Arrays.asList(
         SettingInputComponent.build("Default Dice Run Count", "The default number of times the battle calculator will run in a dice game",
-            new JTextField(String.valueOf(battleCalcSettings.getSimulationCountDice()), 5),
+            runCountField,
             diceRunCountUpdater, diceRunCountExtractor,
             InputValidator.inRange(1, 10000)
         ),
 
         SettingInputComponent.build("Default Low Luck Run Count", "The default number of times the battle calculator will run in a low luck game",
-            new JTextField(String.valueOf(battleCalcSettings.getSimulationCountLowLuck()), 5),
+            lowLuckRunCountField,
             lowLuckRunCountUpdater, lowLuckRunCountExtractor,
             InputValidator.inRange(1, 10000)
         )

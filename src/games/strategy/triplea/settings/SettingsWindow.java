@@ -2,7 +2,7 @@ package games.strategy.triplea.settings;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.GridLayout;
+import java.awt.Dimension;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.border.BevelBorder;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.settings.ai.AiTab;
@@ -67,8 +68,16 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
   private Component createTabWindow(SettingsTab settingTab) {
     List<SettingInputComponent> inputs = settingTab.getInputs();
 
-    JPanel settingsPanel = SwingComponents.newJPanelWithGridLayout(inputs.size(), 1);
-    inputs.forEach(input -> settingsPanel.add(createInputElementRow(input)));
+
+
+    JPanel settingsPanel = new JPanel();
+    settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.Y_AXIS));
+    settingsPanel.add(Box.createVerticalStrut(20));
+
+    inputs.forEach(input -> {
+      settingsPanel.add(createInputElementRow(input));
+      settingsPanel.add(Box.createVerticalStrut(15));
+    });
 
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -78,20 +87,52 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
   }
 
   private static JPanel createInputElementRow(SettingInputComponent input) {
-    final JPanel rowContents = SwingComponents.newJPanelWithGridLayout(1, 2);
-    rowContents.add(createTextAndInputPanel(input));
-    rowContents.add(createInputDescription(input));
+    JPanel rowContents = new JPanel();
+
+
+    JPanel contentRow = new JPanel();
+
+    contentRow.setMaximumSize(new Dimension(MAX_WIDTH, ROW_HEIGHT));
+    contentRow.setLayout(new BoxLayout(contentRow, BoxLayout.X_AXIS));
+
+    // some padding on left hand side
+    contentRow.add(Box.createHorizontalStrut(20));
+    contentRow.add(createTextAndInputPanel(input));
+    contentRow.add(Box.createVerticalStrut(ROW_HEIGHT));
+
+    contentRow.add(createInputDescription(input));
+    contentRow.setBorder(new BevelBorder(BevelBorder.LOWERED));
+
+    rowContents.setLayout(new BoxLayout(rowContents, BoxLayout.Y_AXIS));
+    rowContents.add(Box.createVerticalStrut(3));
+    rowContents.add(contentRow);
+    rowContents.add(Box.createVerticalStrut(5));
+
+
     return rowContents;
   }
+
+  private static final int MAX_WIDTH = 1100;
+  private static final int TEXT_LABEL_WIDTH = MAX_WIDTH / 4;
+
+  private static final int ROW_HEIGHT = 30;
+
 
   private static JPanel createTextAndInputPanel(SettingInputComponent input) {
     JPanel labelInputPanel = SwingComponents.newJPanelWithGridLayout(1, 2);
     JLabel label = new JLabel(input.getLabel());
     labelInputPanel.add(label);
 
+
+
     JPanel inputPanel = new JPanel();
     inputPanel.add(input.getInputElement().getSwingComponent());
     inputPanel.add(Box.createHorizontalGlue());
+
+    inputPanel.setMinimumSize(new Dimension(TEXT_LABEL_WIDTH, ROW_HEIGHT));
+    inputPanel.setPreferredSize(new Dimension(TEXT_LABEL_WIDTH, ROW_HEIGHT));
+    inputPanel.setMaximumSize(new Dimension(TEXT_LABEL_WIDTH, ROW_HEIGHT));
+
 
     labelInputPanel.add(inputPanel);
     return labelInputPanel;
@@ -99,7 +140,10 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
   }
 
   private static JTextArea createInputDescription(SettingInputComponent input) {
-    JTextArea description = new JTextArea(input.getDescription(), 2, 20);
+    JTextArea description = new JTextArea(input.getDescription(), 2, 50);
+
+    // TODO: JTextArea.setLineWrap(boolean) does not wrap on word boundaries, instead it'll split words up across lines
+    description.setLineWrap(true);
     description.setEditable(false);
     return description;
   }
@@ -111,12 +155,9 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
     JPanel buttonsPanel = new JPanel();
     buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
 
-
     // instead of glue, use one vertical strut to give the buttons panel a minimum height
     int buttonPanelHeight = 50;
     buttonsPanel.add(Box.createVerticalStrut(buttonPanelHeight));
-
-//    buttonsPanel.add(Box.createHorizontalGlue());
 
     JButton useDefaults = SwingComponents.newJButton("Use Defaults",
         e -> SwingComponents.promptUser("Revert to default settings?",
@@ -128,18 +169,14 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
             }));
     buttonsPanel.add(useDefaults);
     buttonsPanel.add(Box.createHorizontalGlue());
-
     buttonsPanel.add(SwingComponents.newJButton("Close", e -> dispose()));
-
     buttonsPanel.add(Box.createHorizontalGlue());
-
     JButton saveButton = SwingComponents.newJButton("Save", e -> {
       settingTab.updateSettings(settingTab.getInputs());
       SystemPreferences.flush();
     });
     buttonsPanel.add(saveButton);
     buttonsPanel.add(Box.createHorizontalGlue());
-
     return buttonsPanel;
   }
 

@@ -1,21 +1,17 @@
 package games.strategy.triplea.settings.battle.options;
 
-import games.strategy.triplea.settings.InputValidator;
-import games.strategy.triplea.settings.SettingInputComponent;
-import games.strategy.triplea.settings.SettingsInput;
-import games.strategy.triplea.settings.SettingsTab;
-import games.strategy.triplea.settings.SystemPreferences;
-
-import javax.swing.ButtonGroup;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+
+import games.strategy.triplea.settings.SettingInputComponent;
+import games.strategy.triplea.settings.SettingsTab;
 
 public class BattleOptionsTab implements SettingsTab<BattleOptionsSettings> {
   private final BattleOptionsSettings battleCalcSettings;
@@ -51,17 +47,13 @@ public class BattleOptionsTab implements SettingsTab<BattleOptionsSettings> {
     BiConsumer<BattleOptionsSettings, String> diceRunCountUpdater = ((settings, s) -> settings.setConfirmEnemyCasualties(Boolean.valueOf(s)));
     Function<BattleOptionsSettings, String> diceRunCountExtractor = settings -> String.valueOf(settings.confirmEnemyCasualties());
 
-
     return Arrays.asList(
         SettingInputComponent.build("Confirm Enemy Casualties", "When set to yes, will require confirmaton of enemy casualty selections",
             panel, buildReader(),
-            diceRunCountUpdater, diceRunCountExtractor,
-            InputValidator.inRange(1, 10000)
+            diceRunCountUpdater, diceRunCountExtractor
         )
     );
   }
-
-
 
 
   private Supplier<String> buildReader() {
