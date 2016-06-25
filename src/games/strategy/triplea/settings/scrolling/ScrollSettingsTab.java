@@ -15,9 +15,12 @@ import games.strategy.triplea.settings.InputValidator;
 public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
 
   private final ScrollSettings settings;
+  private final JTextField arrowScrollSpeedField;
 
   public ScrollSettingsTab(ScrollSettings settings) {
     this.settings = settings;
+    arrowScrollSpeedField = new JTextField(String.valueOf(settings.getArrowKeyScrollSpeed()), 5);
+
   }
 
   @Override
@@ -67,7 +70,7 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
     return Arrays.asList(
         SettingInputComponent.build(
             "Arrow scroll speed", "(10-500) Arrow key scrolling speed",
-            new JTextField(String.valueOf(settings.getArrowKeyScrollSpeed()), 5),
+            arrowScrollSpeedField,
             arrowKeyUpdater, arrowKeyExtractor,
             InputValidator.inRange(10, 500)),
         SettingInputComponent.build(

@@ -104,12 +104,17 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
     return description;
   }
 
+  /**
+   * Each element is arranged in a row, with glue in between every element
+   */
   private JPanel createButtonsPanel(SettingsTab settingTab) {
     JPanel buttonsPanel = new JPanel();
     buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
 
 
-    buttonsPanel.add(Box.createVerticalStrut(50));
+    // instead of glue, use one vertical strut to give the buttons panel a minimum height
+    int buttonPanelHeight = 50;
+    buttonsPanel.add(Box.createVerticalStrut(buttonPanelHeight));
 
 //    buttonsPanel.add(Box.createHorizontalGlue());
 

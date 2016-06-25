@@ -4,6 +4,7 @@ import games.strategy.triplea.settings.InputValidator;
 import games.strategy.triplea.settings.SettingInputComponent;
 import games.strategy.triplea.settings.SettingsInput;
 import games.strategy.triplea.settings.SettingsTab;
+import games.strategy.triplea.settings.SystemPreferences;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
@@ -18,39 +19,12 @@ import java.util.function.Supplier;
 
 public class BattleOptionsTab implements SettingsTab<BattleOptionsSettings> {
   private final BattleOptionsSettings battleCalcSettings;
+  private JPanel panel = new JPanel();
 
   public BattleOptionsTab(final BattleOptionsSettings battleCalcSettings) {
     this.battleCalcSettings = battleCalcSettings;
-  }
-
-  @Override
-  public String getTabTitle() {
-    return "Battle Calculator";
-  }
-
-  @Override
-  public List<SettingInputComponent<BattleOptionsSettings>> getInputs() {
-    BiConsumer<BattleOptionsSettings, String> diceRunCountUpdater = ((settings, s) -> settings.setConfirmEnemyCasualties(Boolean.valueOf(s)));
-    Function<BattleOptionsSettings, String> diceRunCountExtractor = settings -> String.valueOf(settings.confirmEnemyCasualties());
-
-
-    return Arrays.asList(
-        SettingInputComponent.build("Confirm Enemy Casualties", "When set to yes, will require confirmaton of enemy casualty selections",
-            buildPanel(), buildReader(),
-            diceRunCountUpdater, diceRunCountExtractor,
-            InputValidator.inRange(1, 10000)
-        )
-    );
-  }
-  JRadioButton radioButtonYes = new JRadioButton("Yes");
-  JRadioButton radioButtonNo = new JRadioButton("No");
-
-
-  private JPanel buildPanel() {
-    JPanel panel = new JPanel();
 
     battleCalcSettings.confirmEnemyCasualties();
-    ButtonGroup group = new ButtonGroup();
 
     group.add(radioButtonNo);
     group.add(radioButtonYes);
@@ -62,8 +36,32 @@ public class BattleOptionsTab implements SettingsTab<BattleOptionsSettings> {
     panel.add(radioButtonYes);
     panel.add(radioButtonNo);
 
-    return panel;
   }
+
+  @Override
+  public String getTabTitle() {
+    return "Combat Options";
+  }
+  private JRadioButton radioButtonYes = new JRadioButton("Yes");
+  private JRadioButton radioButtonNo = new JRadioButton("No");
+  private ButtonGroup group = new ButtonGroup();
+
+  @Override
+  public List<SettingInputComponent<BattleOptionsSettings>> getInputs() {
+    BiConsumer<BattleOptionsSettings, String> diceRunCountUpdater = ((settings, s) -> settings.setConfirmEnemyCasualties(Boolean.valueOf(s)));
+    Function<BattleOptionsSettings, String> diceRunCountExtractor = settings -> String.valueOf(settings.confirmEnemyCasualties());
+
+
+    return Arrays.asList(
+        SettingInputComponent.build("Confirm Enemy Casualties", "When set to yes, will require confirmaton of enemy casualty selections",
+            panel, buildReader(),
+            diceRunCountUpdater, diceRunCountExtractor,
+            InputValidator.inRange(1, 10000)
+        )
+    );
+  }
+
+
 
 
   private Supplier<String> buildReader() {
