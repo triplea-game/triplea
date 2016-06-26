@@ -1,17 +1,15 @@
 package games.strategy.ui;
 
-import games.strategy.net.DesktopUtilityBrowserLauncher;
-import games.strategy.triplea.UrlConstants;
-import games.strategy.triplea.ui.settings.SettingsWindow;
-
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Frame;
+import java.awt.GridLayout;
+import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -19,16 +17,96 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.swing.Action;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JEditorPane;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+
+import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.triplea.UrlConstants;
+
 public class SwingComponents {
 
-  public static void showJFrame(SettingsWindow settingsWindow) {
-    settingsWindow.pack();
-    settingsWindow.setVisible(true);
+  public static JTabbedPane newJTabbedPane() {
+    return new JTabbedPaneWithFixedWidthTabs();
+  }
+
+  public static JPanel newJPanelWithVerticalBoxLayout() {
+    return newJPanelWithBoxLayout(BoxLayout.Y_AXIS);
+  }
+
+  private static JPanel newJPanelWithBoxLayout(int layout) {
+    JPanel panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, layout));
+    return panel;
+  }
+
+  public static JPanel newJPanelWithHorizontalBoxLayout() {
+    return newJPanelWithBoxLayout(BoxLayout.X_AXIS);
+  }
+
+  /**
+   * Returns a row that has some padding at the top of it, and bottom.
+   */
+  public static JPanel createRowWithTopAndBottomPadding(JPanel contentRow, int topPadding, int bottomPadding) {
+    JPanel rowContents = new JPanel();
+    rowContents.setLayout(new BoxLayout(rowContents, BoxLayout.Y_AXIS));
+    rowContents.add(Box.createVerticalStrut(topPadding));
+    rowContents.add(contentRow);
+    rowContents.add(Box.createVerticalStrut(bottomPadding));
+    return rowContents;
+  }
+
+  public static ButtonGroup createButtonGroup(JRadioButton ... radioButtons) {
+    ButtonGroup group = new ButtonGroup();
+    for(JRadioButton radioButton : Arrays.asList(radioButtons)) {
+      group.add(radioButton);
+    }
+    return group;
+  }
+
+
+  public static class ModalJDialog extends JDialog {
+    public ModalJDialog() {
+      super((Frame) null, true);
+      setLocationByPlatform(true);
+    }
+  }
+
+  public static void showWindow(Window window) {
+    window.pack();
+    window.setLocationByPlatform(true);
+    window.setVisible(true);
   }
 
   public static JComponent newJTextField(int initialValue, int fieldSize) {
     JTextField textField = new JTextField(String.valueOf(initialValue), fieldSize);
     return textField;
+  }
+
+  public static JPanel newJPanelWithGridLayout(int rows, int columns) {
+    JPanel panel = new JPanel();
+    panel.setLayout(new GridLayout(rows,columns));
+    return panel;
   }
 
   public enum KeyboardCode {
