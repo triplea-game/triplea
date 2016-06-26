@@ -43,13 +43,8 @@ public class BattleOptionsTab implements SettingsTab<BattleOptionsSettings> {
   }
 
   private Supplier<String> buildConfirmEnemyCasualtiesRadioButtonReader() {
-    if (radioButtonYes.isSelected()) {
-      return () -> String.valueOf(true);
-    } else {
-      return () -> String.valueOf(false);
-    }
+    return () -> radioButtonYes.isSelected() ? Boolean.TRUE.toString() : Boolean.FALSE.toString();
   }
-
 
   @Override
   public String getTabTitle() {
