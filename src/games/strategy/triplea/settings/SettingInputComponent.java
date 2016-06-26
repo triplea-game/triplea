@@ -35,13 +35,14 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
   /**
    * Return true if a valid setting can be read from  the input component and applied to the 'settings' data object.
    *
-   * @param toUpdate The 'Settings' data object to be updated.
+   * @param toUpdate       The 'Settings' data object to be updated.
    * @param inputComponent User input source
    */
   boolean updateSettings(SettingsObjectType toUpdate, SettingsInput inputComponent);
 
   /**
    * Method to read the settings value from the SettingsObject that has the value saved.
+   *
    * @param settingsType Settings object which has the current stored user setting value
    * @return An extracted value corresponding to the current setting from the 'settings' object.
    */
@@ -51,7 +52,8 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
   /**
    * Factory method to create instances of this interface, backed by TextField component types
    */
-  static <Z extends HasDefaults> SettingInputComponent<Z> build(final String label, final String description, JTextComponent component,
+  static <Z extends HasDefaults> SettingInputComponent<Z> build(final String label, final String description,
+      JTextComponent component,
       BiConsumer<Z, String> updater, Function<Z, String> extractor, InputValidator... validators) {
     SettingsInput inputComponent = new SettingsInput() {
       @Override
@@ -63,6 +65,11 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
       public String getText() {
         return component.getText();
       }
+
+      @Override
+      public void setText(String valueToSet) {
+        component.setText(valueToSet);
+      }
     };
     return build(label, description, inputComponent, updater, extractor, validators);
   }
@@ -72,7 +79,8 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
    */
   static <Z extends HasDefaults> SettingInputComponent<Z> build(final String label, final String description,
       JPanel componentPanel, Supplier<String> componentReader,
-      BiConsumer<Z, String> settingsObjectUpdater, Function<Z, String> settingsObjectExtractor, InputValidator... validators) {
+      BiConsumer<Z, String> settingsObjectUpdater, Function<Z, String> settingsObjectExtractor,
+      InputValidator... validators) {
 
     SettingsInput inputComponent = new SettingsInput() {
       @Override
@@ -85,6 +93,15 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
         System.out.println("GET TEXT -> " + componentReader.get());
         return componentReader.get();
       }
+
+      /**
+       * We expect this to only be called in the case when input validation fails. Since user input is constrained
+       * valid values only, we never expect this to be the case
+       */
+      @Override
+      public void setText(String valueToSet) {
+        throw new RuntimeException("Unsupported operation");
+      }
     };
     return build(label, description, inputComponent, settingsObjectUpdater, settingsObjectExtractor, validators);
   }
@@ -94,7 +111,8 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
   /**
    * Generic factory method to create instances of this interface
    */
-  static <Z extends HasDefaults> SettingInputComponent<Z> build(final String label, final String description, SettingsInput component,
+  static <Z extends HasDefaults> SettingInputComponent<Z> build(final String label, final String description,
+      SettingsInput component,
       BiConsumer<Z, String> updater, Function<Z, String> extractor, InputValidator... validators) {
 
 
@@ -134,6 +152,16 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
       public String getValue(Z settingsType) {
         return extractor.apply(settingsType);
       }
+
+      @Override
+      public void setValue(String valueToSet) {
+        getInputElement().setText(valueToSet);
+      }
     };
   }
+
+  /**
+   * In cases where we try to update to an invalid value, set Value is called to restore the default/previous valid value
+   */
+  void setValue(String valueToSet);
 }

@@ -22,4 +22,6 @@ public interface SettingsInput {
    * by the user.
    */
   String getText();
+
+  void setText(String valueToSet);
 }

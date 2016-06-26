@@ -26,6 +26,7 @@ public interface SettingsTab<T extends HasDefaults> {
         }
       } else {
         invalidValues.add(input.getInputElement().getText());
+        input.setValue(oldValue);
       }
     });
 
