@@ -40,7 +40,7 @@ import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.PoliticalStateOverview;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.VerifiedRandomNumbersDialog;
-import games.strategy.triplea.ui.settings.SettingsWindow;
+import games.strategy.triplea.settings.SettingsWindow;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
@@ -64,23 +64,25 @@ public class GameMenu {
   private JMenu createGameMenu() {
     final JMenu menuGame = SwingComponents.newJMenu("Game", SwingComponents.KeyboardCode.G);
     addEditMode(menuGame);
-    menuGame.add(frame.getShowGameAction()).setMnemonic(KeyEvent.VK_G);
-    menuGame.add(frame.getShowHistoryAction()).setMnemonic(KeyEvent.VK_H);
-    menuGame.add(frame.getShowMapOnlyAction()).setMnemonic(KeyEvent.VK_M);
-    addShowVerifiedDice(menuGame);
 
-    menuGame.add(SwingAction.of("Settings", e -> SettingsWindow.showWindow()));
+    menuGame.addSeparator();
+    menuGame.add(SwingAction.of("Engine Settings", e -> SettingsWindow.showWindow()));
     SoundOptions.addGlobalSoundSwitchMenu(menuGame);
     SoundOptions.addToMenu(menuGame, SoundPath.SoundType.TRIPLEA);
     menuGame.addSeparator();
+    menuGame.add(frame.getShowGameAction()).setMnemonic(KeyEvent.VK_G);
+    menuGame.add(frame.getShowHistoryAction()).setMnemonic(KeyEvent.VK_H);
+    menuGame.add(frame.getShowMapOnlyAction()).setMnemonic(KeyEvent.VK_M);
+
+    menuGame.addSeparator();
     addGameOptionsMenu(menuGame);
+    addShowVerifiedDice(menuGame);
     addPoliticsMenu(menuGame);
     addNotificationSettings(menuGame);
     addFocusOnCasualties(menuGame);
     addConfirmBattlePhases(menuGame);
     addShowEnemyCasualties(menuGame);
     addShowAIBattles(menuGame);
-    addAISleepDuration(menuGame);
     addShowDiceStats(menuGame);
     addRollDice(menuGame);
     addBattleCalculatorMenu(menuGame);
@@ -105,7 +107,7 @@ public class GameMenu {
 
   protected void addGameOptionsMenu(final JMenu menuGame) {
     if (!gameData.getProperties().getEditableProperties().isEmpty()) {
-      final AbstractAction optionsAction = SwingAction.of("View Game Options...", e -> {
+      final AbstractAction optionsAction = SwingAction.of("Game Options...", e -> {
         final PropertiesUI ui = new PropertiesUI(gameData.getProperties().getEditableProperties(), false);
         JOptionPane.showMessageDialog(frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
       });
@@ -306,31 +308,4 @@ public class GameMenu {
     showBattleMenuItem.setAccelerator(
         KeyStroke.getKeyStroke(KeyEvent.VK_B, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
   }
-
-  private void addAISleepDuration(final JMenu parentMenu) {
-    final JMenuItem AISleepDurationBox = new JMenuItem("AI Pause Duration...");
-    AISleepDurationBox.setMnemonic(KeyEvent.VK_A);
-    AISleepDurationBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final IntTextField text = new IntTextField(50, 10000);
-        text.setText(String.valueOf(AbstractUIContext.getAIPauseDuration()));
-        final JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        panel.add(new JLabel("AI Pause Duration (ms):"), new GridBagConstraints(0, 0, 1, 1, 0, 0,
-            GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 0), 0, 0));
-        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(parentMenu), panel,
-            "Set AI Pause Duration", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"},
-            "OK");
-        try {
-          AbstractUIContext.setAIPauseDuration(Integer.parseInt(text.getText()));
-        } catch (final Exception ex) {
-        }
-      }
-    });
-    parentMenu.add(AISleepDurationBox);
-  }
-
 }
