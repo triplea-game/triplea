@@ -141,6 +141,7 @@ import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.TileImageFactory;
+import games.strategy.triplea.settings.scrolling.ScrollSettings;
 import games.strategy.triplea.ui.history.HistoryDetailsPanel;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.triplea.ui.history.HistoryPanel;
@@ -148,7 +149,6 @@ import games.strategy.triplea.ui.menubar.ExportMenu;
 import games.strategy.triplea.ui.menubar.HelpMenu;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
-import games.strategy.triplea.ui.settings.scrolling.ScrollSettings;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.SwingAction;
@@ -1708,7 +1708,7 @@ public class TripleAFrame extends MainGameFrame {
     int multiplier = 1;
 
     if (e.isControlDown()) {
-      multiplier = scrollSettings.getFasterArrowKeyScrollMultipler();
+      multiplier = scrollSettings.getFasterArrowKeyScrollMultiplier();
     }
 
 
