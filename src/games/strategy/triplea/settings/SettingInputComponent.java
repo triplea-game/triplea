@@ -72,7 +72,7 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
    */
   static <Z extends HasDefaults> SettingInputComponent<Z> build(final String label, final String description,
       JPanel componentPanel, Supplier<String> componentReader,
-      BiConsumer<Z, String> updater, Function<Z, String> extractor, InputValidator... validators) {
+      BiConsumer<Z, String> settingsObjectUpdater, Function<Z, String> settingsObjectExtractor, InputValidator... validators) {
 
     SettingsInput inputComponent = new SettingsInput() {
       @Override
@@ -82,10 +82,11 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
 
       @Override
       public String getText() {
+        System.out.println("GET TEXT -> " + componentReader.get());
         return componentReader.get();
       }
     };
-    return build(label, description, inputComponent, updater, extractor, validators);
+    return build(label, description, inputComponent, settingsObjectUpdater, settingsObjectExtractor, validators);
   }
 
 
