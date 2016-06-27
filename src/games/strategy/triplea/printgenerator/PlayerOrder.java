@@ -13,6 +13,10 @@ import java.util.Set;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.triplea.delegate.BidPlaceDelegate;
+import games.strategy.triplea.delegate.BidPurchaseDelegate;
+import games.strategy.triplea.delegate.EndRoundDelegate;
+import games.strategy.triplea.delegate.InitializationDelegate;
 
 public class PlayerOrder {
   private final List<PlayerID> m_playerSet = new ArrayList<>();
@@ -29,10 +33,10 @@ public class PlayerOrder {
       final GameStep currentStep = m_gameStepIterator.next();
       if (currentStep.getDelegate() != null && currentStep.getDelegate().getClass() != null) {
         final String delegateClassName = currentStep.getDelegate().getClass().getName();
-        if (delegateClassName.equals("games.strategy.triplea.delegate.InitializationDelegate")
-            || delegateClassName.equals("games.strategy.triplea.delegate.BidPurchaseDelegate")
-            || delegateClassName.equals("games.strategy.triplea.delegate.BidPlaceDelegate")
-            || delegateClassName.equals("games.strategy.triplea.delegate.EndRoundDelegate")) {
+        if (delegateClassName.equals(InitializationDelegate.class.getName())
+            || delegateClassName.equals(BidPurchaseDelegate.class.getName())
+            || delegateClassName.equals(BidPlaceDelegate.class.getName())
+            || delegateClassName.equals(EndRoundDelegate.class.getName())) {
           continue;
         }
       } else if (currentStep.getName() != null
