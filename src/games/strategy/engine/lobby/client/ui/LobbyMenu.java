@@ -409,32 +409,39 @@ public class LobbyMenu extends JMenuBar {
    */
   private static void addHelpMenu(final JMenu parentMenu) {
     final JMenuItem hostingLink = new JMenuItem("How to Host...");
-    final JMenuItem mapLink = new JMenuItem("Install Maps...");
-    final JMenuItem bugReport = new JMenuItem("Bug Report...");
-    final JMenuItem lobbyRules = new JMenuItem("Lobby Rules...");
-    final JMenuItem warClub = new JMenuItem("War Club & Ladder...");
-    final JMenuItem devForum = new JMenuItem("Developer Forum...");
-    final JMenuItem donateLink = new JMenuItem("Donate...");
-    final JMenuItem helpLink = new JMenuItem("Help...");
-    final JMenuItem ruleBookLink = new JMenuItem("Rule Book...");
-
     hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_HOSTING_MAPS));
-    mapLink.addActionListener(e  -> SwingComponents.newOpenUrlConfirmationDialog( UrlConstants.SF_HOSTING_MAPS));
-    bugReport.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_TICKET_LIST));
-    lobbyRules.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB_LOBBY_RULES ));
-    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB));
-    devForum.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_FORUM));
-    donateLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
-    helpLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.WEBSITE_HELP));
-    ruleBookLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK));
     parentMenu.add(hostingLink);
+
+    final JMenuItem mapLink = new JMenuItem("Install Maps...");
+    mapLink.addActionListener(e  -> SwingComponents.newOpenUrlConfirmationDialog( UrlConstants.SF_HOSTING_MAPS));
     parentMenu.add(mapLink);
+
+    final JMenuItem bugReport = new JMenuItem("Bug Report...");
+    bugReport.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_TICKET_LIST));
     parentMenu.add(bugReport);
+
+    final JMenuItem lobbyRules = new JMenuItem("Lobby Rules...");
+    lobbyRules.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB_LOBBY_RULES ));
     parentMenu.add(lobbyRules);
+
+    final JMenuItem warClub = new JMenuItem("War Club & Ladder...");
+    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB));
     parentMenu.add(warClub);
+
+    final JMenuItem devForum = new JMenuItem("Developer Forum...");
+    devForum.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_FORUM));
     parentMenu.add(devForum);
+
+    final JMenuItem donateLink = new JMenuItem("Donate...");
+    donateLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
     parentMenu.add(donateLink);
+
+    final JMenuItem helpLink = new JMenuItem("Help...");
+    helpLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.WEBSITE_HELP));
     parentMenu.add(helpLink);
+
+    final JMenuItem ruleBookLink = new JMenuItem("Rule Book...");
+    ruleBookLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK));
     parentMenu.add(ruleBookLink);
   }
 
