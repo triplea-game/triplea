@@ -35,12 +35,7 @@ public class WebHelpMenu {
     warClub.setMnemonic(KeyEvent.VK_W);
     warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB));
     parentMenu.add(warClub);
-
-    final JMenuItem devForum = new JMenuItem("Developer Forum...");
-    devForum.setMnemonic(KeyEvent.VK_E);
-    devForum.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_FORUM));
-    parentMenu.add(devForum);
-
+    
     final JMenuItem donateLink = new JMenuItem("Donate...");
     donateLink.setMnemonic(KeyEvent.VK_O);
     donateLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
