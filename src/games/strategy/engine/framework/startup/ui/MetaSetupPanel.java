@@ -285,6 +285,11 @@ public class MetaSetupPanel extends SetupPanel {
   public void shutDown() {}
 
   @Override
+  public boolean isMetaSetupPanelInstance() {
+    return true;
+  }
+
+  @Override
   public void cancel() {
     // nothing to do
   }

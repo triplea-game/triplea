@@ -311,4 +311,10 @@ public class ClientSetupPanel extends SetupPanel {
     rVal.add(m_model.getHostBotGetGameSaveClientAction(this));
     return rVal;
   }
+
+  @Override
+  public boolean isMetaSetupPanelInstance() {
+    return false;
+  }
+
 }

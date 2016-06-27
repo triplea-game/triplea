@@ -494,4 +494,10 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     }
     return rVal;
   }
+
+  @Override
+  public boolean isMetaSetupPanelInstance() {
+    return false;
+  }
+
 }

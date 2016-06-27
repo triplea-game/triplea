@@ -102,6 +102,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     setWidgetActivation();
   }
 
+
   private void createComponents() {
     m_localPlayerSelection.addActionListener(new ActionListener() {
       @Override
@@ -138,6 +139,12 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     layoutPlayerPanel(this);
     setWidgetActivation();
   }
+
+  @Override
+  public boolean isMetaSetupPanelInstance() {
+    return false;
+  }
+
 
   @Override
   public void setWidgetActivation() {}
@@ -677,5 +684,7 @@ enum LocalBeanCache {
   public IBean getSerializable(final String key) {
     return m_map.get(key);
   }
+
+
 }
 
