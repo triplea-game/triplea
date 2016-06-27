@@ -412,10 +412,6 @@ public class LobbyMenu extends JMenuBar {
     hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_HOSTING_MAPS));
     parentMenu.add(hostingLink);
 
-    final JMenuItem mapLink = new JMenuItem("Install Maps...");
-    mapLink.addActionListener(e  -> SwingComponents.newOpenUrlConfirmationDialog( UrlConstants.SF_HOSTING_MAPS));
-    parentMenu.add(mapLink);
-
     final JMenuItem bugReport = new JMenuItem("Bug Report...");
     bugReport.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_TICKET_LIST));
     parentMenu.add(bugReport);
