@@ -124,7 +124,6 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
 
       @Override
       public String getText() {
-        System.out.println("GET TEXT -> " + componentReader.get());
         return componentReader.get();
       }
 
