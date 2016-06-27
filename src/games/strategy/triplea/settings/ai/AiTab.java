@@ -15,14 +15,18 @@ public class AiTab implements SettingsTab<AiSettings> {
   private final List<SettingInputComponent<AiSettings>> inputs;
 
   public AiTab(AiSettings aiSettings) {
-
     inputs = Arrays.asList(
         SettingInputComponent.build("(0-10000) AI Pause Duration",
             "Time delay (in milliseconds) between AI moves, allows for the AI moves to be watched",
             new JTextField(String.valueOf(aiSettings.getAiPauseDuration()), 5),
             ((settings, s) -> settings.setAiPauseDuration(s)),
             (settings -> String.valueOf(aiSettings.getAiPauseDuration())),
-            InputValidator.inRange(0, 10000)));
+            InputValidator.inRange(0, 10000)),
+        SettingInputComponent.buildYesOrNoRadioButtons("Show Battles Between AIs",
+            "When set to yes, combats between two AI players will be shown in a battle window.",
+            aiSettings.showBattlesBetweenAi(),
+            ((settings, s) -> settings.setShowBattlesBetweenAi(Boolean.valueOf(s))),
+            (settings -> String.valueOf(settings.showBattlesBetweenAi()))));
   }
 
   @Override

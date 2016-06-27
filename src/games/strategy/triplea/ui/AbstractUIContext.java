@@ -413,19 +413,12 @@ public abstract class AbstractUIContext implements IUIContext {
 
   @Override
   public boolean getShowBattlesBetweenAIs() {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
-    return prefs.getBoolean(SHOW_BATTLES_BETWEEN_AIS, true);
+    return ClientContext.aiSettings().showBattlesBetweenAi();
   }
 
   @Override
   public void setShowBattlesBetweenAIs(final boolean aBool) {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
-    prefs.putBoolean(SHOW_BATTLES_BETWEEN_AIS, aBool);
-    try {
-      prefs.flush();
-    } catch (final BackingStoreException ex) {
-      ClientLogger.logQuietly(ex);
-    }
+    ClientContext.aiSettings().setShowBattlesBetweenAi(aBool);
   }
 
   @Override

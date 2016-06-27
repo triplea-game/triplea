@@ -79,7 +79,6 @@ public class GameMenu {
     addShowVerifiedDice(menuGame);
     addPoliticsMenu(menuGame);
     addNotificationSettings(menuGame);
-    addShowAIBattles(menuGame);
     addShowDiceStats(menuGame);
     addRollDice(menuGame);
     addBattleCalculatorMenu(menuGame);
@@ -197,19 +196,6 @@ public class GameMenu {
     notificationMenu.add(showTriggerChanceSuccessful);
     notificationMenu.add(showTriggerChanceFailure);
     parentMenu.add(notificationMenu);
-  }
-
-  private void addShowAIBattles(final JMenu parentMenu) {
-    final JCheckBoxMenuItem showAIBattlesBox = new JCheckBoxMenuItem("Show Battles Between AIs");
-    showAIBattlesBox.setMnemonic(KeyEvent.VK_A);
-    showAIBattlesBox.setSelected(iuiContext.getShowBattlesBetweenAIs());
-    showAIBattlesBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        iuiContext.setShowBattlesBetweenAIs(showAIBattlesBox.isSelected());
-      }
-    });
-    parentMenu.add(showAIBattlesBox);
   }
 
   private void addShowDiceStats(final JMenu parentMenu) {

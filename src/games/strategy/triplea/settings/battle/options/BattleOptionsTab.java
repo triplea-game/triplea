@@ -3,15 +3,11 @@ package games.strategy.triplea.settings.battle.options;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
 import javax.swing.JRadioButton;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.settings.SettingInputComponent;
 import games.strategy.triplea.settings.SettingsTab;
-import games.strategy.triplea.ui.BattleDisplay;
-import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 
 public class BattleOptionsTab implements SettingsTab<BattleOptionsSettings> {
@@ -46,7 +42,6 @@ public class BattleOptionsTab implements SettingsTab<BattleOptionsSettings> {
         ((settings, s) -> settings.setFocusOnOwnCasualties(Boolean.valueOf(s))),
         (settings -> String.valueOf(settings.focusOnOwnCasualties()))));
   }
-
 
   @Override
   public String getTabTitle() {

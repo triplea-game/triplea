@@ -8,6 +8,7 @@ public class AiSettings implements HasDefaults {
 
 
   private static final int DEFAULT_AI_PAUSE_DURACTION = 400;
+  private static final boolean DEFAULT_SHOW_BATTLE_BETWEEN_AI = true;
 
   @Override
   public void setToDefault() {
@@ -19,5 +20,13 @@ public class AiSettings implements HasDefaults {
   }
   public void setAiPauseDuration(String value) {
     SystemPreferences.put(SystemPreferenceKey.AI_PAUSE_DURACTION, value);
+  }
+
+  public boolean showBattlesBetweenAi() {
+    return SystemPreferences.get(SystemPreferenceKey.SHOW_BATTLES_BETWEEN_AI, DEFAULT_SHOW_BATTLE_BETWEEN_AI);
+  }
+
+  public void setShowBattlesBetweenAi(boolean value) {
+    SystemPreferences.put(SystemPreferenceKey.SHOW_BATTLES_BETWEEN_AI, value);
   }
 }
