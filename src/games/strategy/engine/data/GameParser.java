@@ -947,24 +947,22 @@ public class GameParser {
         }
       }
     }
-    if (data.getGameLoader() instanceof games.strategy.triplea.TripleA) {
-      // add properties for all triplea related maps here:
-      if (!runningList.contains(Constants.AI_BONUS_INCOME_FLAT_RATE)) {
-        data.getProperties()
-            .addEditableProperty(new NumberProperty(Constants.AI_BONUS_INCOME_FLAT_RATE, null, 40, -20, 0));
-      }
-      if (!runningList.contains(Constants.AI_BONUS_INCOME_PERCENTAGE)) {
-        data.getProperties()
-            .addEditableProperty(new NumberProperty(Constants.AI_BONUS_INCOME_PERCENTAGE, null, 200, -100, 0));
-      }
-      if (!runningList.contains(Constants.AI_BONUS_ATTACK)) {
-        data.getProperties()
-            .addEditableProperty(new NumberProperty(Constants.AI_BONUS_ATTACK, null, data.getDiceSides(), 0, 0));
-      }
-      if (!runningList.contains(Constants.AI_BONUS_DEFENSE)) {
-        data.getProperties()
-            .addEditableProperty(new NumberProperty(Constants.AI_BONUS_DEFENSE, null, data.getDiceSides(), 0, 0));
-      }
+    // add properties for all triplea related maps here:
+    if (!runningList.contains(Constants.AI_BONUS_INCOME_FLAT_RATE)) {
+      data.getProperties()
+          .addEditableProperty(new NumberProperty(Constants.AI_BONUS_INCOME_FLAT_RATE, null, 40, -20, 0));
+    }
+    if (!runningList.contains(Constants.AI_BONUS_INCOME_PERCENTAGE)) {
+      data.getProperties()
+          .addEditableProperty(new NumberProperty(Constants.AI_BONUS_INCOME_PERCENTAGE, null, 200, -100, 0));
+    }
+    if (!runningList.contains(Constants.AI_BONUS_ATTACK)) {
+      data.getProperties()
+          .addEditableProperty(new NumberProperty(Constants.AI_BONUS_ATTACK, null, data.getDiceSides(), 0, 0));
+    }
+    if (!runningList.contains(Constants.AI_BONUS_DEFENSE)) {
+      data.getProperties()
+          .addEditableProperty(new NumberProperty(Constants.AI_BONUS_DEFENSE, null, data.getDiceSides(), 0, 0));
     }
   }
 
