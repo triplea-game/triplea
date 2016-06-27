@@ -415,7 +415,7 @@ public class LobbyMenu extends JMenuBar {
     parentMenu.add(hostingLink);
 
     final JMenuItem bugReport = new JMenuItem("Bug Report...");
-    bugReport.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_TICKET_LIST));
+    bugReport.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES));
     parentMenu.add(bugReport);
 
     final JMenuItem lobbyRules = new JMenuItem("Lobby Rules...");
@@ -425,10 +425,6 @@ public class LobbyMenu extends JMenuBar {
     final JMenuItem warClub = new JMenuItem("War Club & Ladder...");
     warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB));
     parentMenu.add(warClub);
-
-    final JMenuItem devForum = new JMenuItem("Developer Forum...");
-    devForum.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_FORUM));
-    parentMenu.add(devForum);
 
     final JMenuItem donateLink = new JMenuItem("Donate...");
     donateLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
