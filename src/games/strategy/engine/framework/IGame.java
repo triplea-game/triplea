@@ -22,7 +22,7 @@ import games.strategy.sound.ISound;
  */
 public interface IGame {
   RemoteName GAME_MODIFICATION_CHANNEL =
-      new RemoteName("games.strategy.engine.framework.IGame.GAME_MODIFICATION_CHANNEL", IGameModifiedChannel.class);
+      new RemoteName(IGame.class.getName() + ".GAME_MODIFICATION_CHANNEL", IGameModifiedChannel.class);
 
   GameData getData();
 

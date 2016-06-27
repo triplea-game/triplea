@@ -22,7 +22,7 @@ import games.strategy.util.ThreadUtil;
 
 public class ClientGame extends AbstractGame {
   public static RemoteName getRemoteStepAdvancerName(final INode node) {
-    return new RemoteName("games.strategy.engine.framework.ClientGame.REMOTE_STEP_ADVANCER:" + node.getName(),
+    return new RemoteName(ClientGame.class.getName() + ".REMOTE_STEP_ADVANCER:" + node.getName(),
         IGameStepAdvancer.class);
   }
 
