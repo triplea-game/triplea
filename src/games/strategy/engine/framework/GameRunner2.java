@@ -38,6 +38,7 @@ import games.strategy.performance.PerfTimer;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Version;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
 
 public class GameRunner2 {
 
@@ -268,7 +269,7 @@ public class GameRunner2 {
   private static String getDefaultLookAndFeel() {
     final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
     // substance 7.x
-    String defaultLookAndFeel = "org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel";
+    String defaultLookAndFeel = SubstanceGraphiteLookAndFeel.class.getName();
     // substance 5.x
     // String defaultLookAndFeel = "org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel";
     // macs are already beautiful
