@@ -1,5 +1,7 @@
 package games.strategy.triplea.settings;
 
+import games.strategy.ui.SwingComponents;
+
 import java.util.Arrays;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -7,6 +9,7 @@ import java.util.function.Supplier;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.text.JTextComponent;
 
 /**
@@ -74,9 +77,40 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
     return build(label, description, inputComponent, updater, extractor, validators);
   }
 
+  static <Z extends HasDefaults> SettingInputComponent<Z> buildYesOrNoRadioButtons(final String label, final String description,
+      boolean initialValue, BiConsumer<Z, String> settingsObjectUpdater, Function<Z, String> settingsObjectExtractor) {
+
+    JRadioButton radioButtonYes = new JRadioButton("Yes");
+    JRadioButton radioButtonNo = new JRadioButton("No");
+    SwingComponents.createButtonGroup(radioButtonYes, radioButtonNo);
+
+
+    return SettingInputComponent.build(
+        label,
+        description,
+        createRadioButtonPanel(radioButtonYes, radioButtonNo, initialValue),
+        (() -> radioButtonYes.isSelected() ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),
+        settingsObjectUpdater,
+        settingsObjectExtractor);
+
+  }
+
+  static JPanel createRadioButtonPanel(JRadioButton buttonYes, JRadioButton buttonNo, boolean yesOptionIsSelected) {
+    if (yesOptionIsSelected) {
+      buttonYes.setSelected(true);
+    } else {
+      buttonNo.setSelected(true);
+    }
+    JPanel panel = new JPanel();
+    panel.add(buttonYes);
+    panel.add(buttonNo);
+    return panel;
+  }
+
+
   /**
-   * Factory method to create instances of this interface backed by TextField component types
-   */
+     * Factory method to create instances of this interface backed by TextField component types
+     */
   static <Z extends HasDefaults> SettingInputComponent<Z> build(final String label, final String description,
       JPanel componentPanel, Supplier<String> componentReader,
       BiConsumer<Z, String> settingsObjectUpdater, Function<Z, String> settingsObjectExtractor,

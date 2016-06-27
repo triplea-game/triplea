@@ -80,7 +80,6 @@ public class GameMenu {
     addPoliticsMenu(menuGame);
     addNotificationSettings(menuGame);
     addFocusOnCasualties(menuGame);
-    addConfirmBattlePhases(menuGame);
     addShowEnemyCasualties(menuGame);
     addShowAIBattles(menuGame);
     addShowDiceStats(menuGame);
@@ -132,13 +131,6 @@ public class GameMenu {
     parentMenu.add(focusOnCasualties);
   }
 
-  private static void addConfirmBattlePhases(final JMenu parentMenu) {
-    final JCheckBoxMenuItem confirmPhases = new JCheckBoxMenuItem("Confirm Defensive Rolls");
-    confirmPhases.setSelected(BattleDisplay.getConfirmDefensiveRolls());
-    confirmPhases.addActionListener(
-        SwingAction.of(e -> BattleDisplay.setConfirmDefensiveRolls(confirmPhases.isSelected())));
-    parentMenu.add(confirmPhases);
-  }
 
 
   /**

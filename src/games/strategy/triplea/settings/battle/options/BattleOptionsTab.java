@@ -2,49 +2,56 @@ package games.strategy.triplea.settings.battle.options;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Supplier;
 
-import javax.swing.JPanel;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenu;
 import javax.swing.JRadioButton;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.settings.SettingInputComponent;
 import games.strategy.triplea.settings.SettingsTab;
+import games.strategy.triplea.ui.BattleDisplay;
+import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 
 public class BattleOptionsTab implements SettingsTab<BattleOptionsSettings> {
   private List<SettingInputComponent<BattleOptionsSettings>> inputs;
 
-  private JRadioButton radioButtonYes = new JRadioButton("Yes");
-  private JRadioButton radioButtonNo = new JRadioButton("No");
+
 
   public BattleOptionsTab(final BattleOptionsSettings battleOptionSettings) {
+    JRadioButton radioButtonYes = new JRadioButton("Yes");
+    JRadioButton radioButtonNo = new JRadioButton("No");
     SwingComponents.createButtonGroup(radioButtonYes, radioButtonNo);
 
+    JRadioButton confirmDefensiveRollsYes = new JRadioButton("Yes");
+    JRadioButton confirmDefensiveRollsNo = new JRadioButton("No");
+    SwingComponents.createButtonGroup(confirmDefensiveRollsYes, confirmDefensiveRollsNo);
+
+
     inputs = Arrays.asList(
-        SettingInputComponent.build("Confirm Enemy Casualties",
+        SettingInputComponent.buildYesOrNoRadioButtons("Confirm Enemy Casualties",
             "When set to yes, battles will require confirmaton of enemy casualty selections",
-            createConfirmEnemyCasualtiesButtonPanel(battleOptionSettings),
-            buildConfirmEnemyCasualtiesRadioButtonReader(),
+            battleOptionSettings.confirmEnemyCasualties(),
             ((settings, s) -> settings.setConfirmEnemyCasualties(Boolean.valueOf(s))),
-            (settings -> String.valueOf(settings.confirmEnemyCasualties()))));
+            (settings -> String.valueOf(settings.confirmEnemyCasualties()))),
+        SettingInputComponent.buildYesOrNoRadioButtons("Confirm Defensive Rolls",
+            "When set to yes, results of defensive rolls will need confirmation",
+            battleOptionSettings.confirmDefensiveRolls(),
+            ((settings, s) -> settings.setConfirmDefensiveRolls(Boolean.valueOf(s))),
+            (settings -> String.valueOf(settings.confirmDefensiveRolls()))));
   }
 
-  private JPanel createConfirmEnemyCasualtiesButtonPanel(final BattleOptionsSettings battleCalcSettings) {
-    if (battleCalcSettings.confirmEnemyCasualties()) {
-      radioButtonYes.setSelected(true);
-    } else {
-      radioButtonNo.setSelected(true);
-    }
-    JPanel panel = new JPanel();
-    panel.add(radioButtonYes);
-    panel.add(radioButtonNo);
-    return panel;
+
+  private static void addConfirmBattlePhases(final JMenu parentMenu) {
+    final JCheckBoxMenuItem confirmPhases = new JCheckBoxMenuItem("Confirm Defensive Rolls");
+    confirmPhases.setSelected(BattleDisplay.getConfirmDefensiveRolls());
+    confirmPhases.addActionListener(
+        SwingAction.of(e -> BattleDisplay.setConfirmDefensiveRolls(confirmPhases.isSelected())));
+    parentMenu.add(confirmPhases);
   }
 
-  private Supplier<String> buildConfirmEnemyCasualtiesRadioButtonReader() {
-    return () -> radioButtonYes.isSelected() ? Boolean.TRUE.toString() : Boolean.FALSE.toString();
-  }
+
 
   @Override
   public String getTabTitle() {
