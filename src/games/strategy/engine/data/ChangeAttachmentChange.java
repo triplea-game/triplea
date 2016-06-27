@@ -19,6 +19,11 @@ public class ChangeAttachmentChange extends Change {
     return m_attachmentName;
   }
 
+  /**
+   * @param attachment An attachment object which we will update via reflexion
+   * @param newValue The new value for the property
+   * @param property The property by String name.
+   */
   ChangeAttachmentChange(final IAttachment attachment, final Object newValue, final String property) {
     if (attachment == null) {
       throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
