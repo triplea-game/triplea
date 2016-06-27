@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.client.ui;
+package games.strategy.triplea.ui.menubar;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -22,6 +22,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
+import games.strategy.engine.lobby.client.ui.LobbyFrame;
+import games.strategy.engine.lobby.client.ui.MacLobbyWrapper;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.engine.framework.GameRunner;

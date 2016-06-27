@@ -20,6 +20,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
 import javax.swing.SpinnerNumberModel;
 
+import games.strategy.triplea.ui.menubar.LobbyMenu;
 import games.strategy.ui.SwingAction;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
@@ -352,13 +353,13 @@ public class LobbyFrame extends JFrame {
     return m_client;
   }
 
-  void setShowChatTime(final boolean showTime) {
+  public void setShowChatTime(final boolean showTime) {
     if (m_chatMessagePanel != null) {
       m_chatMessagePanel.setShowTime(showTime);
     }
   }
 
-  void shutdown() {
+  public void shutdown() {
     System.exit(0);
   }
 
