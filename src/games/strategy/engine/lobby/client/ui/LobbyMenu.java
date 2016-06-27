@@ -440,12 +440,7 @@ public class LobbyMenu extends JMenuBar {
 
   private void addChatTimeMenu(final JMenu parentMenu) {
     final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");
-    chatTimeBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_frame.setShowChatTime(chatTimeBox.isSelected());
-      }
-    });
+    chatTimeBox.addActionListener(e -> m_frame.setShowChatTime(chatTimeBox.isSelected()));
     chatTimeBox.setSelected(true);
     parentMenu.add(chatTimeBox);
   }
@@ -454,12 +449,7 @@ public class LobbyMenu extends JMenuBar {
     final JMenuItem update = new JMenuItem("Update Account...");
     // only if we are not anonymous login
     update.setEnabled(!m_frame.getLobbyClient().isAnonymousLogin());
-    update.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        updateAccountDetails();
-      }
-    });
+    update.addActionListener(e -> updateAccountDetails());
     account.add(update);
   }
 
