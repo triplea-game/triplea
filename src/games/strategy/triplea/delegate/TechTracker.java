@@ -94,7 +94,6 @@ public class TechTracker implements java.io.Serializable {
           ChangeFactory.attachmentPropertyChange(TechAttachment.get(player), "false", advance.getProperty());
     }
     bridge.addChange(attachmentChange);
-    // advance.perform(player, bridge);
   }
 
   public static int getTechCost(final PlayerID id) {
