@@ -174,14 +174,6 @@ public class Database {
       }
       // setup the derby location
       System.getProperties().setProperty("derby.system.home", getCurrentDataBaseDir().getAbsolutePath());
-      // load the driver
-      try {
-        final String driver = "org.apache.derby.jdbc.EmbeddedDriver";
-        Class.forName(driver).newInstance();
-      } catch (final Exception e) {
-        s_logger.log(Level.SEVERE, e.getMessage(), e);
-        throw new Error("Could not load db driver");
-      }
       // shut the database down on finish
       Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
         @Override
