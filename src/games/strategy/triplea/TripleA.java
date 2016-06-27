@@ -5,13 +5,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import games.strategy.engine.framework.IGameLoader;
 import games.strategy.ui.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.framework.AbstractGameLoader;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
@@ -39,7 +39,7 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.ui.display.TripleADisplay;
 
 @MapSupport
-public class TripleA extends AbstractGameLoader {
+public class TripleA implements IGameLoader {
   private static final long serialVersionUID = -8374315848374732436L;
   public static final String HUMAN_PLAYER_TYPE = "Human";
   public static final String WEAK_COMPUTER_PLAYER_TYPE = "Easy (AI)";
@@ -47,6 +47,10 @@ public class TripleA extends AbstractGameLoader {
   public static final String PRO_COMPUTER_PLAYER_TYPE = "Hard (AI)";
   public static final String DOESNOTHINGAI_COMPUTER_PLAYER_TYPE = "Does Nothing (AI)";
   protected transient ITripleADisplay display;
+
+  protected transient ISound soundChannel;
+  protected transient IGame game;
+
 
   public TripleA() {
 
@@ -77,7 +81,13 @@ public class TripleA extends AbstractGameLoader {
 
   @Override
   public void shutDown() {
-    super.shutDown();
+    if (game != null && soundChannel != null) {
+      game.removeSoundChannel(soundChannel);
+      // set sound channel to null to handle the case of shutdown being called multiple times.
+      // If/when shutdown is called exactly once, then the null assignment should be unnecessary.
+      soundChannel = null;
+    }
+
     if (display != null) {
       game.removeDisplay(display);
       display.shutDown();
@@ -88,12 +98,12 @@ public class TripleA extends AbstractGameLoader {
 
   @Override
   public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) {
-    super.game = game;
+    this.game = game;
     if (game.getData().getDelegateList().getDelegate("edit") == null) {
       // An evil hack: instead of modifying the XML, force an EditDelegate by adding one here
       final EditDelegate delegate = new EditDelegate();
       delegate.initialize("edit", "edit");
-      super.game.getData().getDelegateList().addDelegate(delegate);
+      game.getData().getDelegateList().addDelegate(delegate);
       if (game instanceof ServerGame) {
         ((ServerGame) game).addDelegateMessenger(delegate);
       }
