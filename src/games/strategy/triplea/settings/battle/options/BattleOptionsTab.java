@@ -39,18 +39,13 @@ public class BattleOptionsTab implements SettingsTab<BattleOptionsSettings> {
             "When set to yes, results of defensive rolls will need confirmation",
             battleOptionSettings.confirmDefensiveRolls(),
             ((settings, s) -> settings.setConfirmDefensiveRolls(Boolean.valueOf(s))),
-            (settings -> String.valueOf(settings.confirmDefensiveRolls()))));
+            (settings -> String.valueOf(settings.confirmDefensiveRolls()))),
+      SettingInputComponent.buildYesOrNoRadioButtons("Focus on own casualties", // TODO: rename to confirm enemy casualties
+        "Reduces battle confirmations",
+        battleOptionSettings.focusOnOwnCasualties(),
+        ((settings, s) -> settings.setFocusOnOwnCasualties(Boolean.valueOf(s))),
+        (settings -> String.valueOf(settings.focusOnOwnCasualties()))));
   }
-
-
-  private static void addConfirmBattlePhases(final JMenu parentMenu) {
-    final JCheckBoxMenuItem confirmPhases = new JCheckBoxMenuItem("Confirm Defensive Rolls");
-    confirmPhases.setSelected(BattleDisplay.getConfirmDefensiveRolls());
-    confirmPhases.addActionListener(
-        SwingAction.of(e -> BattleDisplay.setConfirmDefensiveRolls(confirmPhases.isSelected())));
-    parentMenu.add(confirmPhases);
-  }
-
 
 
   @Override

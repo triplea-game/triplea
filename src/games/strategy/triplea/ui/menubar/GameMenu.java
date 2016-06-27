@@ -79,8 +79,6 @@ public class GameMenu {
     addShowVerifiedDice(menuGame);
     addPoliticsMenu(menuGame);
     addNotificationSettings(menuGame);
-    addFocusOnCasualties(menuGame);
-    addShowEnemyCasualties(menuGame);
     addShowAIBattles(menuGame);
     addShowDiceStats(menuGame);
     addRollDice(menuGame);
@@ -113,25 +111,6 @@ public class GameMenu {
       menuGame.add(optionsAction).setMnemonic(KeyEvent.VK_O);
     }
   }
-
-  private static void addShowEnemyCasualties(final JMenu parentMenu) {
-    final JCheckBoxMenuItem showEnemyCasualties = new JCheckBoxMenuItem("Confirm Enemy Casualties");
-    showEnemyCasualties.setMnemonic(KeyEvent.VK_E);
-    showEnemyCasualties.setSelected(BattleDisplay.getShowEnemyCasualtyNotification());
-    showEnemyCasualties.addActionListener(
-        SwingAction.of(e -> BattleDisplay.setShowEnemyCasualtyNotification(showEnemyCasualties.isSelected())));
-    parentMenu.add(showEnemyCasualties);
-  }
-
-  private static void addFocusOnCasualties(final JMenu parentMenu) {
-    final JCheckBoxMenuItem focusOnCasualties = new JCheckBoxMenuItem("Focus On Own Casualties");
-    focusOnCasualties.setSelected(BattleDisplay.getFocusOnOwnCasualtiesNotification());
-    focusOnCasualties.addActionListener(
-        SwingAction.of(e -> BattleDisplay.setFocusOnOwnCasualtiesNotification(focusOnCasualties.isSelected())));
-    parentMenu.add(focusOnCasualties);
-  }
-
-
 
   /**
    * Add a Politics Panel button to the game menu, this panel will show the
