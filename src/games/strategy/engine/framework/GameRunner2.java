@@ -24,6 +24,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import games.strategy.debug.ErrorConsole;
+import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import org.apache.commons.httpclient.HostConfiguration;
 
@@ -60,8 +61,6 @@ public class GameRunner2 {
   public static final String TRIPLEA_NAME_PROPERTY = "triplea.name";
   public static final String TRIPLEA_SERVER_PASSWORD_PROPERTY = "triplea.server.password";
   public static final String TRIPLEA_STARTED = "triplea.started";
-  // these properties are for games that should connect to the Lobby Server
-  public static final String LOBBY_PORT = "triplea.lobby.port";
   public static final String LOBBY_HOST = "triplea.lobby.host";
   public static final String LOBBY_GAME_COMMENTS = "triplea.lobby.game.comments";
   public static final String LOBBY_GAME_HOSTED_BY = "triplea.lobby.game.hostedBy";
@@ -110,7 +109,7 @@ public class GameRunner2 {
 
   public static String[] getProperties() {
     return new String[] {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
-        TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED, LOBBY_PORT,
+        TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED, LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
         LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, PROXY_HOST, PROXY_PORT,
         TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, TRIPLEA_MEMORY_SET};
   }
@@ -119,7 +118,7 @@ public class GameRunner2 {
     System.out.println("Arguments\n" + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n" + "   "
         + TRIPLEA_SERVER_PROPERTY + "=true\n" + "   " + TRIPLEA_CLIENT_PROPERTY + "=true\n" + "   "
         + TRIPLEA_HOST_PROPERTY + "=<HOST_IP>\n" + "   " + TRIPLEA_PORT_PROPERTY + "=<PORT>\n" + "   "
-        + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n" + "   " + LOBBY_PORT + "=<LOBBY_PORT>\n" + "   " + LOBBY_HOST
+        + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n" + "   " + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n" + "   " + LOBBY_HOST
         + "=<LOBBY_HOST>\n" + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n" + "   " + LOBBY_GAME_HOSTED_BY
         + "=<LOBBY_GAME_HOSTED_BY>\n" + "   " + PROXY_HOST + "=<Proxy_Host>\n" + "   " + PROXY_PORT + "=<Proxy_Port>\n"
         + "   " + TRIPLEA_MEMORY_SET + "=true/false <did you set the xmx manually?>\n" + "\n"
