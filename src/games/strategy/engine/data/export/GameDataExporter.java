@@ -39,6 +39,7 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.framework.ServerGame;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.util.IntegerMap;
@@ -216,7 +217,7 @@ public class GameDataExporter {
         // Special handling of notes property
         printNotes((String) conProperties.get(propName));
       } else if (propName.equals("EditMode") || propName.equals("GAME_UUID")
-          || propName.equals("games.strategy.engine.framework.ServerGame.GameHasBeenSaved")) {
+          || propName.equals(ServerGame.GAME_HAS_BEEN_SAVED_PROPERTY)) {
         // Don't print these options
       } else {
         printConstantProperty(propName, conProperties.get(propName));

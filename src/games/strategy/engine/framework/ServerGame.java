@@ -57,6 +57,10 @@ import games.strategy.triplea.TripleAPlayer;
 public class ServerGame extends AbstractGame {
   public static final RemoteName SERVER_REMOTE =
       new RemoteName("games.strategy.engine.framework.ServerGame.SERVER_REMOTE", IServerRemote.class);
+
+  public final static String GAME_HAS_BEEN_SAVED_PROPERTY =
+      "games.strategy.engine.framework.ServerGame.GameHasBeenSaved";
+
   // maps PlayerID->GamePlayer
   private final RandomStats m_randomStats;
   private IRandomSource m_randomSource = new PlainRandomSource();
@@ -241,8 +245,6 @@ public class ServerGame extends AbstractGame {
     // m_data.getSequence().getStep(m_currentStepIndex);
   }
 
-  private final static String GAME_HAS_BEEN_SAVED_PROPERTY =
-      "games.strategy.engine.framework.ServerGame.GameHasBeenSaved";
 
   /**
    * And here we go.
