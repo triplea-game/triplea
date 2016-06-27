@@ -23,7 +23,7 @@ public class BattleOptionsTab implements SettingsTab<BattleOptionsSettings> {
 
     inputs = Arrays.asList(
         SettingInputComponent.build("Confirm Enemy Casualties",
-            "When set to yes, will require confirmaton of enemy casualty selections",
+            "When set to yes, battles will require confirmaton of enemy casualty selections",
             createConfirmEnemyCasualtiesButtonPanel(battleOptionSettings),
             buildConfirmEnemyCasualtiesRadioButtonReader(),
             ((settings, s) -> settings.setConfirmEnemyCasualties(Boolean.valueOf(s))),

@@ -16,13 +16,13 @@ public class FoldersTab implements SettingsTab<FolderSettings> {
   public FoldersTab(FolderSettings settings) {
     inputs = Arrays.asList(
         SettingInputComponent.build("Save game path",
-            "Location where games are saved by default",
+            "Default save game folder",
             new JTextField(settings.getSaveGamePath()),
             (((folderSettings, s) -> folderSettings.setSaveGamePath(s))),
             (folderSettings -> folderSettings.getSaveGamePath()),
             InputValidator.IS_DIRECTORY),
         SettingInputComponent.build("Map Download Path",
-            "Location where map downloads are found",
+            "Location where maps are downloaded and found",
             new JTextField(settings.getDownloadedMapPath()),
             (((folderSettings, s) -> folderSettings.setDownloadedMapPath(s))),
             (folderSettings -> folderSettings.getDownloadedMapPath()),

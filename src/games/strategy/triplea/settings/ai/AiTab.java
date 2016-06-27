@@ -18,7 +18,7 @@ public class AiTab implements SettingsTab<AiSettings> {
 
     inputs = Arrays.asList(
         SettingInputComponent.build("(0-10000) AI Pause Duration",
-            "Time delay between AI moves, allows for AI moves to be watched",
+            "Time delay (in milliseconds) between AI moves, allows for the AI moves to be watched",
             new JTextField(String.valueOf(aiSettings.getAiPauseDuration()), 5),
             ((settings, s) -> settings.setAiPauseDuration(s)),
             (settings -> String.valueOf(aiSettings.getAiPauseDuration())),
