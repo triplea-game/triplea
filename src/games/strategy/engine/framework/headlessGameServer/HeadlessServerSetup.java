@@ -183,4 +183,10 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
     final GameData data = m_gameSelectorModel.getGameData();
     data.getProperties().set(PBEMMessagePoster.PBEM_GAME_PROP_NAME, false);
   }
+
+  @Override
+  public boolean isMetaSetupPanelInstance() {
+    return false;
+  }
+
 }

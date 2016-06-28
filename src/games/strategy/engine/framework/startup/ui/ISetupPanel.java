@@ -13,6 +13,8 @@ import games.strategy.engine.framework.startup.launcher.ILauncher;
  * entire setup model).
  */
 public interface ISetupPanel extends java.io.Serializable {
+  boolean isMetaSetupPanelInstance();
+
   void addObserver(final Observer observer);
 
   void removeObserver(final Observer observer);
