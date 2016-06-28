@@ -31,12 +31,15 @@ public class TestRoute {
   private Route dummyRoute = spy(new Route());
   private MapData dummyMapData = mock(MapData.class);
   private RouteDescription dummyRouteDescription = spy(new RouteDescription(dummyRoute, dummyPoints[0], dummyPoints[2], null));
+  private MapPanel dummyMapPanel = mock(MapPanel.class);
   
   @Before
   public void setUp(){
     dummyRoute.add(mock(Territory.class));//This will be overridden with the startPoint, since it's the origin territory
     dummyRoute.add(mock(Territory.class));
     when(dummyMapData.getCenter(any(Territory.class))).thenReturn(dummyPoints[1]);
+    when(dummyMapPanel.getXOffset()).thenReturn(0);
+    when(dummyMapPanel.getYOffset()).thenReturn(0);
   }
   
   @Test
@@ -71,7 +74,7 @@ public class TestRoute {
   
   @Test
   public void testPointAcquisition(){
-    assertArrayEquals(dummyPoints, spyRouteDrawer.getRoutePoints(dummyRouteDescription, dummyMapData));
+    assertArrayEquals(dummyPoints, spyRouteDrawer.getRoutePoints(dummyRouteDescription, dummyMapData, 0, 0, 0, 0));
   }
   
   @Test

@@ -41,7 +41,7 @@ public class MapRouteDrawer {
   /**
    * Draws the route to the screen.
    */
-  public void drawRoute(final Graphics2D graphics, final RouteDescription routeDescription, final MapPanel view,
+  public void drawRoute(final Graphics2D graphics, final RouteDescription routeDescription, final MapPanel mapPanel,
       final MapData mapData, final String maxMovement) {
     if (routeDescription == null) {
       return;
@@ -56,17 +56,22 @@ public class MapRouteDrawer {
     graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
     final int numTerritories = route.getAllTerritories().size();
-    final Point[] points = getRoutePoints(routeDescription, mapData);
+    final int xOffset = mapPanel.getXOffset();
+    final int yOffset = mapPanel.getYOffset();
+    final int imageWidth = mapPanel.getImageWidth();
+    final int imageHeight = mapPanel.getImageHeight();
+    final Point[] points =
+        getRoutePoints(routeDescription, mapData, xOffset, yOffset, imageWidth, imageHeight);
     final boolean tooFewTerritories = numTerritories <= 1;
     final boolean tooFewPoints = points.length <= 2;
-    final int xOffset = view.getXOffset();
-    final int yOffset = view.getYOffset();
-    final double scale = view.getScale();
+    final double scale = mapPanel.getScale();
     if (tooFewTerritories || tooFewPoints) {
       if (routeDescription.getEnd() != null) {
-        drawDirectPath(graphics, routeDescription.getStart(), routeDescription.getEnd(), xOffset, yOffset, scale);
+        drawDirectPath(graphics, routeDescription.getStart(), routeDescription.getEnd(), xOffset, yOffset, scale,
+            imageWidth, imageHeight);
       } else {
-        drawDirectPath(graphics, points[0], points[points.length - 1], xOffset, yOffset, scale);
+        drawDirectPath(graphics, points[0], points[points.length - 1], xOffset, yOffset, scale, imageWidth,
+            imageHeight);
       }
       if (tooFewPoints && !tooFewTerritories) {
         drawMoveLength(graphics, points, xOffset, yOffset, scale, numTerritories, maxMovement);
@@ -129,9 +134,14 @@ public class MapRouteDrawer {
    * @param xOffset The horizontal pixel-difference between the frame and the Map
    * @param yOffset The vertical pixel-difference between the frame and the Map
    * @param jointsize The diameter of the Points being drawn
+   * @param width The width of the Map
+   * @param height The height of the Map
    * @param scale The scale-factor of the Map
    */
-  private void drawDirectPath(Graphics2D graphics, Point start, Point end, int xOffset, int yOffset, double scale) {
+  private void drawDirectPath(Graphics2D graphics, Point start, Point end, int xOffset, int yOffset, double scale,
+      int width, int height) {
+    start = getPointOnMap(start, xOffset, yOffset, width, height);
+    end = getPointOnMap(end, xOffset, yOffset, width, height);
     drawLineWithTranslate(graphics, new Line2D.Float(start, end), xOffset,
         yOffset, scale);
     if (start.distance(end) > arrowLength) {
@@ -185,23 +195,53 @@ public class MapRouteDrawer {
    * 
    * @param routeDescription {@linkplain RouteDescription} containing the Route information
    * @param mapData {@linkplain MapData} Object containing Information about the Map Coordinates
+   * @param width The width of the Map
+   * @param height The height of the Map
    * @return The {@linkplain Point} array specified by the {@linkplain RouteDescription} and {@linkplain MapData}
    *         objects
    */
-  protected Point[] getRoutePoints(RouteDescription routeDescription, MapData mapData) {
+  protected Point[] getRoutePoints(RouteDescription routeDescription, MapData mapData, int xOffset, int yOffset,
+      int width, int height) {
     final List<Territory> territories = routeDescription.getRoute().getAllTerritories();
     final int numTerritories = territories.size();
     final Point[] points = new Point[numTerritories];
     for (int i = 0; i < numTerritories; i++) {
-      points[i] = mapData.getCenter(territories.get(i));
+      points[i] = getPointOnMap(mapData.getCenter(territories.get(i)), xOffset, yOffset, width, height);
     }
     if (routeDescription.getStart() != null) {
-      points[0] = routeDescription.getStart();
+      points[0] = getPointOnMap(routeDescription.getStart(), xOffset, yOffset, width, height);
     }
     if (routeDescription.getEnd() != null && numTerritories > 1) {
-      points[numTerritories - 1] = new Point(routeDescription.getEnd());
+      points[numTerritories - 1] =
+          getPointOnMap(routeDescription.getEnd(), xOffset, yOffset, width, height);
     }
     return points;
+  }
+
+  /**
+   * This method ensures that Points are drawn correctly, even on an infinite-scroll Map
+   * 
+   * @param point The reference {@linkplain Point}
+   * @param xOffset The horizontal pixel-difference between the frame and the Map
+   * @param yOffset The vertical pixel-difference between the frame and the Map
+   * @param width The width of the Map
+   * @param height The height of the Map
+   * @return The "real" Point
+   */
+  private static Point getPointOnMap(Point point, int xOffset, int yOffset, int width, int height) {
+    double x = point.getX();
+    double y = point.getY();
+    if (x - width > xOffset) {
+      point.setLocation(x - width, y);
+    } else if (x - width > 0) {
+      point.setLocation(x + width, y);
+    }
+    if (y - height > yOffset) {
+      point.setLocation(x, y - height);
+    } else if (y - height > 0) {
+      point.setLocation(x, y + height);
+    }
+    return point;
   }
 
   /**
