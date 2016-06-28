@@ -23,6 +23,7 @@ public class WebHelpMenu {
     parentMenu.add(hostingLink);
 
     final JMenuItem bugReport = new JMenuItem("Bug Report...");
+    bugReport.setMnemonic(KeyEvent.VK_B);
     bugReport.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES));
     parentMenu.add(bugReport);
 
