@@ -194,10 +194,11 @@ public class MapData implements Closeable {
   }
 
   private Map<String, Image> territoryNameImages() {
-    Map<String, Image> territoryImageNames = new HashMap<>();
     if (!m_resourceLoader.hasPath("territoryNames/")) {
-      return territoryImageNames;
+      return Collections.EMPTY_MAP;
     }
+
+    Map<String, Image> territoryNameImages = new HashMap<>();
     for (final String name : m_centers.keySet()) {
       try {
         String normalizedName = name.replace(' ', '_');
@@ -210,7 +211,7 @@ public class MapData implements Closeable {
         }
 
         if (img != null) {
-          territoryImageNames.put(name, img);
+          territoryNameImages.put(name, img);
         } else {
           ClientLogger.logQuietly("Failed to find image: " + path);
         }
@@ -220,7 +221,7 @@ public class MapData implements Closeable {
         // skip that territory then
       }
     }
-    return territoryImageNames;
+    return territoryNameImages;
   }
 
   private Map<Image, List<Point>> loadDecorations() {
@@ -568,8 +569,7 @@ public class MapData implements Closeable {
   }
 
   public Optional<Point> getCommentMarkerLocation(final Territory terr) {
-    return m_commentPlace.containsKey(terr.getName()) ?
-        Optional.of(m_commentPlace.get(terr.getName())) : Optional.empty();
+    return Optional.ofNullable(m_commentPlace.get(terr.getName()));
   }
 
   public Point getKamikazeMarkerLocation(final Territory terr) {
@@ -594,13 +594,11 @@ public class MapData implements Closeable {
   }
 
   public Optional<Point> getPUPlacementPoint(final Territory terr) {
-    return m_PUPlace.containsKey(terr.getName()) ?
-        Optional.of(m_PUPlace.get(terr.getName())) : Optional.empty();
+    return Optional.ofNullable(m_PUPlace.get(terr.getName()));
   }
 
   public Optional<Point> getNamePlacementPoint(final Territory terr) {
-    return m_namePlace.containsKey(terr.getName()) ?
-        Optional.of(m_namePlace.get(terr.getName())) : Optional.empty();
+    return Optional.ofNullable(m_namePlace.get(terr.getName()));
   }
 
   /**
