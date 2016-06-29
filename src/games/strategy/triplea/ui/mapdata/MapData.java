@@ -225,7 +225,7 @@ public class MapData {
     }
   }
 
-  private void loadDecorations() throws IOException {
+  private void loadDecorations() {
     final URL decorations = m_resourceLoader.getResource(DECORATIONS_FILE);
     if (decorations == null) {
       m_decorations = Collections.emptyMap();
