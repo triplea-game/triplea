@@ -9,7 +9,7 @@ import java.util.TreeMap;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.ui.MapData;
+import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.util.Tuple;
 
 /**

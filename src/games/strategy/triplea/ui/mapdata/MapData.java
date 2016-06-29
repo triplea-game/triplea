@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui;
+package games.strategy.triplea.ui.mapdata;
 
 import java.awt.Color;
 import java.awt.Dimension;

@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+import games.strategy.triplea.ui.mapdata.MapData;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 

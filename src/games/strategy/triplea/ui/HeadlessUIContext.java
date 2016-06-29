@@ -16,6 +16,7 @@ import games.strategy.triplea.image.PUImageFactory;
 import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.util.Stopwatch;
 

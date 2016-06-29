@@ -47,7 +47,7 @@ import javax.swing.SwingUtilities;
 import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.ui.MapData;
+import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 import tools.image.FileOpen;

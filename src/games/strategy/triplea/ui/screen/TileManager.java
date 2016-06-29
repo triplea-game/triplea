@@ -32,7 +32,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.ui.IUIContext;
-import games.strategy.triplea.ui.MapData;
+import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.ui.screen.TerritoryOverLayDrawable.OP;
 import games.strategy.triplea.util.UnitCategory;

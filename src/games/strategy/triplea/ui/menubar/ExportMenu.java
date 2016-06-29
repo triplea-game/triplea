@@ -54,7 +54,7 @@ import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.printgenerator.SetupFrame;
 import games.strategy.triplea.ui.ExtendedStats;
 import games.strategy.triplea.ui.IUIContext;
-import games.strategy.triplea.ui.MapData;
+import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.MapPanel;
 import games.strategy.triplea.ui.StatPanel;
 import games.strategy.triplea.ui.TripleAFrame;

@@ -11,7 +11,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.ui.IUIContext;
-import games.strategy.triplea.ui.MapData;
+import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.util.Stopwatch;
 
 import java.awt.Color;

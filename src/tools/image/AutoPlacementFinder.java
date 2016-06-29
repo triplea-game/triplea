@@ -25,7 +25,7 @@ import javax.swing.JPanel;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.ui.MapData;
+import games.strategy.triplea.ui.mapdata.MapData;
 import tools.map.making.JTextAreaOptionPane;
 import games.strategy.util.PointFileReaderWriter;
 
