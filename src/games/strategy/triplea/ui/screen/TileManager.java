@@ -350,44 +350,6 @@ public class TileManager {
 
   public Image createTerritoryImage(final Territory t, final GameData data, final MapData mapData) {
     return createTerritoryImage(t, t, data, mapData, true);
-    // synchronized(m_mutex)
-    // {
-    // Rectangle bounds = mapData.getBoundingRect(t);
-    // Image rVal = Util.createImage( bounds.width, bounds.height, false);
-    // Graphics2D graphics = (Graphics2D) rVal.getGraphics();
-    // //start as a set to prevent duplicates
-    // Set<IDrawable> drawablesSet = new HashSet<IDrawable>();
-    // Iterator<Tile> tiles = getTiles(bounds).iterator();
-    // while(tiles.hasNext())
-    // {
-    // Tile tile = tiles.next();
-    // drawablesSet.addAll(tile.getDrawables());
-    // }
-    // List<IDrawable> orderedDrawables = new ArrayList<IDrawable>(drawablesSet);
-    // Collections.sort(orderedDrawables, new DrawableComparator());
-    // Iterator<IDrawable> drawers = orderedDrawables.iterator();
-    // while (drawers.hasNext())
-    // {
-    // IDrawable drawer = drawers.next();
-    // if(drawer.getLevel() >= IDrawable.UNITS_LEVEL)
-    // break;
-    // if(drawer.getLevel() == IDrawable.TERRITORY_TEXT_LEVEL)
-    // continue;
-    // drawer.draw(bounds, data, graphics, mapData);
-    // }
-    // Iterator iter = mapData.getPolygons(t).iterator();
-    // graphics.setStroke(new BasicStroke(5));
-    // graphics.setColor(Color.RED);
-    // while (iter.hasNext())
-    // {
-    // Polygon poly = (Polygon) iter.next();
-    // poly = new Polygon(poly.xpoints, poly.ypoints, poly.npoints);
-    // poly.translate(-bounds.x, -bounds.y);
-    // graphics.drawPolygon(poly);
-    // }
-    // graphics.dispose();
-    // return rVal;
-    // }
   }
 
   public Image createTerritoryImage(final Territory selected, final Territory focusOn, final GameData data,
