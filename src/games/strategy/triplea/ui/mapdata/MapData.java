@@ -7,6 +7,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -38,7 +39,7 @@ import games.strategy.util.UrlStreams;
 /**
  * contains data about the territories useful for drawing
  */
-public class MapData {
+public class MapData implements Closeable {
   public static final String PROPERTY_UNITS_SCALE = "units.scale";
   public static final String PROPERTY_UNITS_WIDTH = "units.width";
   public static final String PROPERTY_UNITS_HEIGHT = "units.height";
@@ -187,6 +188,7 @@ public class MapData {
     }
   }
 
+  @Override
   public void close() {
     m_resourceLoader.close();
   }
