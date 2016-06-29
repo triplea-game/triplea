@@ -39,10 +39,21 @@ import games.strategy.util.UrlStreams;
  * contains data about the territories useful for drawing
  */
 public class MapData {
-  private static final String PROPERTY_COLOR_PREFIX = "color.";
   public static final String PROPERTY_UNITS_SCALE = "units.scale";
   public static final String PROPERTY_UNITS_WIDTH = "units.width";
   public static final String PROPERTY_UNITS_HEIGHT = "units.height";
+  public static final String PROPERTY_SCREENSHOT_TITLE_ENABLED = "screenshot.title.enabled";
+  public static final String PROPERTY_SCREENSHOT_TITLE_X = "screenshot.title.x";
+  public static final String PROPERTY_SCREENSHOT_TITLE_Y = "screenshot.title.y";
+  public static final String PROPERTY_SCREENSHOT_TITLE_COLOR = "screenshot.title.color";
+  public static final String PROPERTY_SCREENSHOT_TITLE_FONT_SIZE = "screenshot.title.font.size";
+  public static final String PROPERTY_SCREENSHOT_STATS_ENABLED = "screenshot.stats.enabled";
+  public static final String PROPERTY_SCREENSHOT_STATS_X = "screenshot.stats.x";
+  public static final String PROPERTY_SCREENSHOT_STATS_Y = "screenshot.stats.y";
+  public static final String PROPERTY_SCREENSHOT_STATS_TEXT_COLOR = "screenshot.stats.text.color";
+  public static final String PROPERTY_SCREENSHOT_STATS_BORDER_COLOR = "screenshot.stats.border.color";
+
+  private static final String PROPERTY_COLOR_PREFIX = "color.";
   private static final String PROPERTY_UNITS_COUNTER_OFFSET_WIDTH = "units.counter.offset.width";
   private static final String PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT = "units.counter.offset.height";
   private static final String PROPERTY_UNITS_STACK_SIZE = "units.stack.size";
@@ -65,16 +76,7 @@ public class MapData {
   private static final String PROPERTY_MAP_MAPBLENDS = "map.mapBlends";
   private static final String PROPERTY_MAP_MAPBLENDMODE = "map.mapBlendMode";
   private static final String PROPERTY_MAP_MAPBLENDALPHA = "map.mapBlendAlpha";
-  public static final String PROPERTY_SCREENSHOT_TITLE_ENABLED = "screenshot.title.enabled";
-  public static final String PROPERTY_SCREENSHOT_TITLE_X = "screenshot.title.x";
-  public static final String PROPERTY_SCREENSHOT_TITLE_Y = "screenshot.title.y";
-  public static final String PROPERTY_SCREENSHOT_TITLE_COLOR = "screenshot.title.color";
-  public static final String PROPERTY_SCREENSHOT_TITLE_FONT_SIZE = "screenshot.title.font.size";
-  public static final String PROPERTY_SCREENSHOT_STATS_ENABLED = "screenshot.stats.enabled";
-  public static final String PROPERTY_SCREENSHOT_STATS_X = "screenshot.stats.x";
-  public static final String PROPERTY_SCREENSHOT_STATS_Y = "screenshot.stats.y";
-  public static final String PROPERTY_SCREENSHOT_STATS_TEXT_COLOR = "screenshot.stats.text.color";
-  public static final String PROPERTY_SCREENSHOT_STATS_BORDER_COLOR = "screenshot.stats.border.color";
+
   private static final String CENTERS_FILE = "centers.txt";
   private static final String POLYGON_FILE = "polygons.txt";
   private static final String PLACEMENT_FILE = "place.txt";
