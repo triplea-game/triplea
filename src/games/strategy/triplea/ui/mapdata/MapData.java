@@ -29,6 +29,8 @@ import javax.imageio.ImageIO;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
+import games.strategy.performance.Perf;
+import games.strategy.performance.PerfTimer;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -127,12 +129,6 @@ public class MapData {
   private Map<String, Image> m_territoryNameImages;
   private final Map<String, Image> m_effectImages = new HashMap<>();
   private final ResourceLoader m_resourceLoader;
-  private BufferedImage m_vcImage;
-  private BufferedImage m_blockadeImage;
-  private BufferedImage m_errorImage = null;
-  private BufferedImage m_warningImage = null;
-  private BufferedImage m_infoImage = null;
-  private BufferedImage m_helpImage = null;
 
   public boolean scrollWrapX() {
     return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPX, "true"));
@@ -720,53 +716,28 @@ public class MapData {
     return boundingRect;
   }
 
-
   public Image getVCImage() {
-    if (m_vcImage != null) {
-      return m_vcImage;
-    }
-    m_vcImage = loadImage("misc/vc.png");
-    return m_vcImage;
+    return loadImage("misc/vc.png");
   }
 
   public Image getBlockadeImage() {
-    if (m_blockadeImage != null) {
-      return m_blockadeImage;
-    }
-    m_blockadeImage = loadImage("misc/blockade.png");
-    return m_blockadeImage;
+    return loadImage("misc/blockade.png");
   }
 
   public Image getErrorImage() {
-    if (m_errorImage != null) {
-      return m_errorImage;
-    }
-    m_errorImage = loadImage("misc/error.gif");
-    return m_errorImage;
+    return loadImage("misc/error.gif");
   }
 
   public Image getWarningImage() {
-    if (m_warningImage != null) {
-      return m_warningImage;
-    }
-    m_warningImage = loadImage("misc/warning.gif");
-    return m_warningImage;
+    return loadImage("misc/warning.gif");
   }
 
   public Image getInfoImage() {
-    if (m_infoImage != null) {
-      return m_infoImage;
-    }
-    m_infoImage = loadImage("misc/information.gif");
-    return m_infoImage;
+    return loadImage("misc/information.gif");
   }
 
   public Image getHelpImage() {
-    if (m_helpImage != null) {
-      return m_helpImage;
-    }
-    m_helpImage = loadImage("misc/help.gif");
-    return m_helpImage;
+    return loadImage("misc/help.gif");
   }
 
   private BufferedImage loadImage(final String imageName) {
