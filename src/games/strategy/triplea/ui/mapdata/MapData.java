@@ -77,20 +77,20 @@ public class MapData {
   public static final String PROPERTY_SCREENSHOT_STATS_Y = "screenshot.stats.y";
   public static final String PROPERTY_SCREENSHOT_STATS_TEXT_COLOR = "screenshot.stats.text.color";
   public static final String PROPERTY_SCREENSHOT_STATS_BORDER_COLOR = "screenshot.stats.border.color";
-  public static final String CENTERS_FILE = "centers.txt";
-  public static final String POLYGON_FILE = "polygons.txt";
-  public static final String PLACEMENT_FILE = "place.txt";
-  public static final String TERRITORY_EFFECT_FILE = "territory_effects.txt";
+  private static final String CENTERS_FILE = "centers.txt";
+  private static final String POLYGON_FILE = "polygons.txt";
+  private static final String PLACEMENT_FILE = "place.txt";
+  private static final String TERRITORY_EFFECT_FILE = "territory_effects.txt";
   public static final String MAP_PROPERTIES = "map.properties";
-  public static final String CAPITAL_MARKERS = "capitols.txt";
-  public static final String CONVOY_MARKERS = "convoy.txt";
-  public static final String COMMENT_MARKERS = "comments.txt";
-  public static final String VC_MARKERS = "vc.txt";
-  public static final String BLOCKADE_MARKERS = "blockade.txt";
-  public static final String PU_PLACE_FILE = "pu_place.txt";
-  public static final String TERRITORY_NAME_PLACE_FILE = "name_place.txt";
-  public static final String KAMIKAZE_FILE = "kamikaze_place.txt";
-  public static final String DECORATIONS_FILE = "decorations.txt";
+  private static final String CAPITAL_MARKERS = "capitols.txt";
+  private static final String CONVOY_MARKERS = "convoy.txt";
+  private static final String COMMENT_MARKERS = "comments.txt";
+  private static final String VC_MARKERS = "vc.txt";
+  private static final String BLOCKADE_MARKERS = "blockade.txt";
+  private static final String PU_PLACE_FILE = "pu_place.txt";
+  private static final String TERRITORY_NAME_PLACE_FILE = "name_place.txt";
+  private static final String KAMIKAZE_FILE = "kamikaze_place.txt";
+  private static final String DECORATIONS_FILE = "decorations.txt";
   // default colour if none is defined.
   private final List<Color> m_defaultColours = new ArrayList<>(Arrays.asList(new Color[] {Color.RED,
       Color.MAGENTA, Color.YELLOW, Color.ORANGE, Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY}));
