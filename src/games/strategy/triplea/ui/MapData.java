@@ -204,11 +204,23 @@ public class MapData {
     }
     for (final String name : m_centers.keySet()) {
       try {
-        final Image img = loadImage("territoryNames/" + name + ".png");
+        String normalizedName = name.replace(' ', '_');
+        String path = "territoryNames/" + normalizedName + ".png";
+        Image img = loadImage(path);
+
+        if(img == null ) {
+          path = "territoryNames/" + normalizedName + ".png";
+          img = loadImage(path);
+        }
+
         if (img != null) {
           m_territoryNameImages.put(name, img);
+        } else {
+          ClientLogger.logQuietly("Failed to find image: " + path);
         }
+
       } catch (final Exception e) {
+        ClientLogger.logQuietly("Territory image name loading failed: "+  name , e);
         // skip that territory then
       }
     }
