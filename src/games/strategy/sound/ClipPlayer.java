@@ -1,7 +1,6 @@
 package games.strategy.sound;
 
 import java.io.File;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -16,17 +15,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import games.strategy.util.UrlStreams;
-import javazoom.jl.player.AudioDevice;
-import javazoom.jl.player.FactoryRegistry;
-import javazoom.jl.player.advanced.AdvancedPlayer;
+import javax.swing.SwingUtilities;
 
 import com.google.common.base.Throwables;
 
@@ -34,6 +29,10 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.triplea.ResourceLoader;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 /**
  * Utility for loading and playing sound clips.
@@ -259,6 +258,9 @@ public class ClipPlayer {
     getInstance().playClip(clipPath, playerId);
   }
 
+  private MediaPlayer mediaPlayer;// prevents the garbage collector from removing this object
+  private boolean executedOnce = false;
+
   private void playClip(final String clipName, final PlayerID playerId) {
     if (beSilent || isMuted(clipName)) {
       return;
@@ -271,17 +273,17 @@ public class ClipPlayer {
 
     final URI clip = loadClip(folder);
     if (clip != null) {
-      (new Thread(() -> {
-        try {
-          Optional<InputStream> inputStream = UrlStreams.openStream(clip.toURL());
-          if(inputStream.isPresent()) {
-            final AudioDevice audioDevice = FactoryRegistry.systemRegistry().createAudioDevice();
-            new AdvancedPlayer(inputStream.get(), audioDevice).play();
-          }
-        } catch (Exception e) {
-          ClientLogger.logError("Failed to play: " + clip, e);
+      SwingUtilities.invokeLater(() -> {
+        if (!executedOnce) {
+          new JFXPanel();// This loads the JavaFX Toolkit
+          executedOnce = true;
         }
-      })).start();
+        Platform.runLater(() -> {
+          Media media = new Media(clip.toString());
+          mediaPlayer = new MediaPlayer(media);
+          mediaPlayer.play();
+        });
+      });
     }
   }
 
