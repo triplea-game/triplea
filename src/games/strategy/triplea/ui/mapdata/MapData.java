@@ -25,7 +25,6 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
-import com.google.common.collect.ImmutableList;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
@@ -168,7 +167,7 @@ public class MapData {
       m_namePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + TERRITORY_NAME_PLACE_FILE));
       m_kamikazePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + KAMIKAZE_FILE));
       m_mapProperties = new Properties();
-      loadDecorations();
+      m_decorations = loadDecorations();
       m_territoryNameImages = territoryNameImages();
       try {
         final URL url = loader.getResource(prefix + MAP_PROPERTIES);
@@ -176,7 +175,7 @@ public class MapData {
           throw new IllegalStateException("No map.properties file defined");
         }
         Optional<InputStream> inputStream = UrlStreams.openStream(url);
-        if(inputStream.isPresent()) {
+        if (inputStream.isPresent()) {
           m_mapProperties.load(inputStream.get());
         }
       } catch (final Exception e) {
@@ -203,7 +202,7 @@ public class MapData {
         String path = "territoryNames/" + normalizedName + ".png";
         Image img = loadImage(path);
 
-        if(img == null ) {
+        if (img == null) {
           path = "territoryNames/" + normalizedName + ".png";
           img = loadImage(path);
         }
@@ -215,29 +214,28 @@ public class MapData {
         }
 
       } catch (final Exception e) {
-        ClientLogger.logQuietly("Territory image name loading failed: "+  name , e);
+        ClientLogger.logQuietly("Territory image name loading failed: " + name, e);
         // skip that territory then
       }
     }
     return territoryImageNames;
   }
 
-  private void loadDecorations() {
-    final URL decorations = m_resourceLoader.getResource(DECORATIONS_FILE);
-    if (decorations == null) {
-      m_decorations = Collections.emptyMap();
-      return;
+  private Map<Image, List<Point>> loadDecorations() {
+    final URL decorationsFileUrl = m_resourceLoader.getResource(DECORATIONS_FILE);
+    if (decorationsFileUrl == null) {
+      return Collections.emptyMap();
     }
-    m_decorations = new HashMap<>();
-
-    Optional<InputStream> inputStream = UrlStreams.openStream(decorations);
-    if(inputStream.isPresent()) {
+    Map<Image, List<Point>> decorations = new HashMap<>();
+    Optional<InputStream> inputStream = UrlStreams.openStream(decorationsFileUrl);
+    if (inputStream.isPresent()) {
       final Map<String, List<Point>> points = PointFileReaderWriter.readOneToMany(inputStream.get());
       for (final String name : points.keySet()) {
         final Image img = loadImage("misc/" + name);
-        m_decorations.put(img, points.get(name));
+        decorations.put(img, points.get(name));
       }
     }
+    return decorations;
   }
 
   public double getDefaultUnitScale() {
