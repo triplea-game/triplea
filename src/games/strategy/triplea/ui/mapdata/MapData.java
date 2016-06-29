@@ -59,7 +59,6 @@ public class MapData {
   public static final String PROPERTY_MAP_SHOWTERRITORYNAMES = "map.showTerritoryNames";
   public static final String PROPERTY_MAP_SHOWRESOURCES = "map.showResources";
   public static final String PROPERTY_MAP_SHOWCOMMENTS = "map.showComments";
-  public static final String PROPERTY_MAP_SHOWCONVOYNAMES = "map.showConvoyNames";
   public static final String PROPERTY_MAP_SHOWSEAZONENAMES = "map.showSeaZoneNames";
   public static final String PROPERTY_MAP_DRAWNAMESFROMTOPLEFT = "map.drawNamesFromTopLeft";
   public static final String PROPERTY_MAP_USENATION_CONVOYFLAGS = "map.useNation_convoyFlags";
@@ -721,35 +720,6 @@ public class MapData {
     return boundingRect;
   }
 
-  /**
-   * Get the territories that intersect or are bound by this shapes bounding
-   * rect.
-   *
-   * @return List of territory names as Strings
-   */
-  public List<String> territoriesThatOverlap(final Rectangle2D bounds) {
-    List<String> rVal = null;
-    final Iterator<String> terrIter = getTerritories().iterator();
-    while (terrIter.hasNext()) {
-      final String terr = terrIter.next();
-      final List<Polygon> polygons = getPolygons(terr);
-      for (int i = 0; i < polygons.size(); i++) {
-        final Polygon item = polygons.get(i);
-        if (item.intersects(bounds) || item.contains(bounds) || bounds.contains(item.getBounds2D())) {
-          if (rVal == null) {
-            rVal = new ArrayList<>(4);
-          }
-          rVal.add(terr);
-          // only add it once
-          break;
-        }
-      }
-    }
-    if (rVal == null) {
-      return Collections.emptyList();
-    }
-    return rVal;
-  }
 
   public Image getVCImage() {
     if (m_vcImage != null) {
