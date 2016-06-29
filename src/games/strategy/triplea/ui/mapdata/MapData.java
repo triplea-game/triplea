@@ -25,6 +25,7 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
+import com.google.common.collect.ImmutableList;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
@@ -92,8 +93,8 @@ public class MapData {
   private static final String KAMIKAZE_FILE = "kamikaze_place.txt";
   private static final String DECORATIONS_FILE = "decorations.txt";
   // default colour if none is defined.
-  private final List<Color> m_defaultColours = new ArrayList<>(Arrays.asList(new Color[] {Color.RED,
-      Color.MAGENTA, Color.YELLOW, Color.ORANGE, Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY}));
+  private final List<Color> m_defaultColours = Arrays.asList(Color.RED, Color.MAGENTA, Color.YELLOW, Color.ORANGE,
+      Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY);
   // maps PlayerName as String to Color
   private final Map<String, Color> m_playerColors = new HashMap<>();
   // maps String -> List of points
