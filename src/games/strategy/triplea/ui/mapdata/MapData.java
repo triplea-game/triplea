@@ -567,11 +567,9 @@ public class MapData implements Closeable {
     return getCenter(terr);
   }
 
-  public Point getCommentMarkerLocation(final Territory terr) {
-    if (m_commentPlace.containsKey(terr.getName())) {
-      return m_commentPlace.get(terr.getName());
-    }
-    return null;
+  public Optional<Point> getCommentMarkerLocation(final Territory terr) {
+    return m_commentPlace.containsKey(terr.getName()) ?
+        Optional.of(m_commentPlace.get(terr.getName())) : Optional.empty();
   }
 
   public Point getKamikazeMarkerLocation(final Territory terr) {
@@ -595,18 +593,14 @@ public class MapData implements Closeable {
     return getCenter(terr);
   }
 
-  public Point getPUPlacementPoint(final Territory terr) {
-    if (m_PUPlace.containsKey(terr.getName())) {
-      return m_PUPlace.get(terr.getName());
-    }
-    return null;
+  public Optional<Point> getPUPlacementPoint(final Territory terr) {
+    return m_PUPlace.containsKey(terr.getName()) ?
+        Optional.of(m_PUPlace.get(terr.getName())) : Optional.empty();
   }
 
-  public Point getNamePlacementPoint(final Territory terr) {
-    if (m_namePlace.containsKey(terr.getName())) {
-      return m_namePlace.get(terr.getName());
-    }
-    return null;
+  public Optional<Point> getNamePlacementPoint(final Territory terr) {
+    return m_namePlace.containsKey(terr.getName()) ?
+        Optional.of(m_namePlace.get(terr.getName())) : Optional.empty();
   }
 
   /**

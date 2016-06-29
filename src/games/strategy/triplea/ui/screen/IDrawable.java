@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -136,21 +137,21 @@ class TerritoryNameDrawable implements IDrawable {
     // if we specify a placement point, use it otherwise try to center it
     int x;
     int y;
-    final Point namePlace = mapData.getNamePlacementPoint(territory);
-    if (namePlace == null) {
+    final Optional<Point> namePlace = mapData.getNamePlacementPoint(territory);
+    if (namePlace.isPresent()) {
+      x = namePlace.get().x;
+      y = namePlace.get().y;
+    } else {
       final Rectangle territoryBounds = getBestTerritoryNameRect(mapData, territory, fm);
       x = territoryBounds.x + (int) territoryBounds.getWidth() / 2 - fm.stringWidth(territory.getName()) / 2;
       y = territoryBounds.y + (int) territoryBounds.getHeight() / 2 + fm.getAscent() / 2;
-    } else {
-      x = namePlace.x;
-      y = namePlace.y;
     }
 
     // draw comments above names
     if (showComments && drawComments && commentText != null) {
-      final Point place = mapData.getCommentMarkerLocation(territory);
-      if (place != null) {
-        draw(bounds, graphics, place.x, place.y, null, commentText, drawFromTopLeft);
+      final Optional<Point> place = mapData.getCommentMarkerLocation(territory);
+      if (place.isPresent()) {
+        draw(bounds, graphics, place.get().x, place.get().y, null, commentText, drawFromTopLeft);
       } else {
         draw(bounds, graphics, x, y - fm.getHeight(), null, commentText, drawFromTopLeft);
       }
@@ -166,10 +167,10 @@ class TerritoryNameDrawable implements IDrawable {
     if (ta != null && ta.getProduction() > 0 && mapData.drawResources()) {
       final Image img = m_uiContext.getPUImageFactory().getPUImage(ta.getProduction());
       final String prod = Integer.valueOf(ta.getProduction()).toString();
-      final Point place = mapData.getPUPlacementPoint(territory);
+      final Optional<Point> place = mapData.getPUPlacementPoint(territory);
       // if pu_place.txt is specified draw there
-      if (place != null) {
-        draw(bounds, graphics, place.x, place.y, img, prod, drawFromTopLeft);
+      if (place.isPresent()) {
+        draw(bounds, graphics, place.get().x, place.get().y, img, prod, drawFromTopLeft);
       } else {
         // otherwise, draw under the territory name
         draw(bounds, graphics, x + ((fm.stringWidth(m_territoryName)) >> 1) - ((fm.stringWidth(prod)) >> 1),
