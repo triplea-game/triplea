@@ -200,29 +200,37 @@ public class MapData implements Closeable {
 
     Map<String, Image> territoryNameImages = new HashMap<>();
     for (final String name : m_centers.keySet()) {
-      try {
-        String normalizedName = name.replace(' ', '_');
-        String path = "territoryNames/" + normalizedName + ".png";
-        Image img = loadImage(path);
+        Optional<Image> territoryNameImage = loadTerritoryNameImage(name);
 
-        if (img == null) {
-          path = "territoryNames/" + normalizedName + ".png";
-          img = loadImage(path);
+        if (territoryNameImage.isPresent()) {
+          territoryNameImages.put(name, territoryNameImage.get());
         }
-
-        if (img != null) {
-          territoryNameImages.put(name, img);
-        } else {
-          ClientLogger.logQuietly("Failed to find image: " + path);
-        }
-
-      } catch (final Exception e) {
-        ClientLogger.logQuietly("Territory image name loading failed: " + name, e);
-        // skip that territory then
-      }
     }
     return territoryNameImages;
   }
+
+  private Optional<Image> loadTerritoryNameImage(String imageName) {
+    Image img = null;
+    try {
+      // try first file names that have underscores instead of spaces
+      final String normalizedName = imageName.replace(' ', '_');
+      img = loadImage(constructTerritoryNameImagePath(normalizedName));
+      if (img == null) {
+        img = loadImage(constructTerritoryNameImagePath(imageName));
+      }
+    } catch(Exception e ) {
+      // TODO: this is checking for IllegalStateException - we should bubble up the Optional image load and just
+      // check instead if the optional is empty.
+      ClientLogger.logQuietly("Image loading failed: " + imageName, e);
+    }
+    return Optional.ofNullable(img);
+  }
+
+
+  private String constructTerritoryNameImagePath(String baseName) {
+    return "territoryNames/" + baseName+ ".png";
+  }
+
 
   private Map<Image, List<Point>> loadDecorations() {
     final URL decorationsFileUrl = m_resourceLoader.getResource(DECORATIONS_FILE);
