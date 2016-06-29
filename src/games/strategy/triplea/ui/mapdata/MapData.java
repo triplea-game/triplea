@@ -6,7 +6,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,8 +28,6 @@ import javax.imageio.ImageIO;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
-import games.strategy.performance.Perf;
-import games.strategy.performance.PerfTimer;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -169,7 +166,7 @@ public class MapData {
       m_kamikazePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + KAMIKAZE_FILE));
       m_mapProperties = new Properties();
       loadDecorations();
-      loadTerritoryNames();
+      m_territoryNameImages = territoryNameImages();
       try {
         final URL url = loader.getResource(prefix + MAP_PROPERTIES);
         if (url == null) {
@@ -192,10 +189,10 @@ public class MapData {
     m_resourceLoader.close();
   }
 
-  private void loadTerritoryNames() {
-    m_territoryNameImages = new HashMap<>();
+  private Map<String, Image> territoryNameImages() {
+    Map<String, Image> territoryImageNames = new HashMap<>();
     if (!m_resourceLoader.hasPath("territoryNames/")) {
-      return;
+      return territoryImageNames;
     }
     for (final String name : m_centers.keySet()) {
       try {
@@ -209,7 +206,7 @@ public class MapData {
         }
 
         if (img != null) {
-          m_territoryNameImages.put(name, img);
+          territoryImageNames.put(name, img);
         } else {
           ClientLogger.logQuietly("Failed to find image: " + path);
         }
@@ -219,6 +216,7 @@ public class MapData {
         // skip that territory then
       }
     }
+    return territoryImageNames;
   }
 
   private void loadDecorations() {
