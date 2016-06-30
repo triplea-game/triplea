@@ -83,6 +83,7 @@ public class ResourceLoader {
     final String zipName = dirName + ".zip";
     final List<File> candidates = new ArrayList<>();
     // prioritize user maps folder over root folder
+    candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), dirName + File.separator + "map"));
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), dirName));
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), zipName));
     candidates.add(new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps", dirName));
@@ -98,14 +99,16 @@ public class ResourceLoader {
         return f.exists();
       }
     });
-    if (existing.size() > 1) {
-      System.out.println("INFO: Found too many files for: " + mapName + "  found: " + existing);
-    }
+
+
     // At least one must exist
     if (existing.isEmpty()) {
       return Collections.emptyList();
     }
     final File match = existing.iterator().next();
+    if (existing.size() > 1) {
+      ClientLogger.logQuietly("INFO: Found multiple files for: " + mapName + " using: "+ match + ", candidates found: " + existing);
+    }
 
     final List<String> rVal = new ArrayList<>();
     rVal.add(match.getAbsolutePath());
@@ -181,7 +184,7 @@ public class ResourceLoader {
     // Return first any match that is not in the assets folder (we expect that to be the users maps folder (loading from
     // map.zip))
     // If we don't have any matches, then return any matches we had from the assets folder
-    for (URL element : getMatchingResources(path)) {// Collections.list(m_loader.getResources(path))) {
+    for (URL element : getMatchingResources(path)) {
       if (element.toString().contains(RESOURCE_FOLDER)) {
         defaultUrl = element;
       } else {

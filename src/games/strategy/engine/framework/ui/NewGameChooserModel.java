@@ -204,7 +204,12 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   private static List<NewGameChooserEntry> populateFromDirectory(final File mapDir) {
     final List<NewGameChooserEntry> entries = Lists.newArrayList();
 
-    final File games = new File(mapDir, "games");
+    // use contents under a "mapDir/map" folder if present, otherwise use the "mapDir/" contents directly
+    final File mapFolder = new File(mapDir, "map");
+
+    final File parentFolder = mapFolder.exists() ? mapFolder : mapDir;
+    final File games = new File(parentFolder, "games");
+
     if (!games.exists()) {
       // no games in this map dir
       return entries;
