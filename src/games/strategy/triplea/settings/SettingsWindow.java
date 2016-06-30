@@ -44,10 +44,6 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
   private static final int TEXT_LABEL_WIDTH = MAX_WIDTH / 4;
   private static final int ROW_HEIGHT = 60;
 
-  public static void main(String[] args) {
-    showWindow();
-  }
-
   /**
    * Shows the settings window. The window is modal (a user therefore cannot open multiple at a time)
    */
