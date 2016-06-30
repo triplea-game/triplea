@@ -229,17 +229,18 @@ public class MapRouteDrawer {
    * @return The "real" Point
    */
   private static Point getPointOnMap(Point point, int xOffset, int yOffset, int width, int height) {
-    double x = point.getX();
-    double y = point.getY();
+    int x = (int) point.getX();
+    int y = (int) point.getY();
     if (x - width > xOffset) {
-      point.setLocation(x - width, y);
+      point = new Point(x - width, y);
     } else if (x - width > 0) {
-      point.setLocation(x + width, y);
+      point = new Point(x + width, y);
     }
+    x = (int) point.getX();// If the value changed
     if (y - height > yOffset) {
-      point.setLocation(x, y - height);
+      point = new Point(x, y - height);
     } else if (y - height > 0) {
-      point.setLocation(x, y + height);
+      point = new Point(x, y + height);
     }
     return point;
   }
