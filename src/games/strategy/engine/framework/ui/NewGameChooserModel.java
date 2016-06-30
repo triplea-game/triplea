@@ -39,7 +39,14 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
 
 
   public NewGameChooserModel() {
-    populate();
+    final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
+
+    final List<NewGameChooserEntry> entries = Lists.newArrayList(parsedMapSet);
+    Collections.sort(entries, NewGameChooserEntry.getComparator());
+
+    for (final NewGameChooserEntry entry : entries) {
+      addElement(entry);
+    }
   }
 
   @Override
@@ -49,18 +56,6 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
 
   public static File getDefaultMapsDir() {
     return new File(ClientFileSystemHelper.getRootFolder(), "maps");
-  }
-
-
-  private void populate() {
-    final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
-
-    final List<NewGameChooserEntry> entries = Lists.newArrayList(parsedMapSet);
-    Collections.sort(entries, NewGameChooserEntry.getComparator());
-
-    for (final NewGameChooserEntry entry : entries) {
-      addElement(entry);
-    }
   }
 
   private static List<File> allMapFiles() {
