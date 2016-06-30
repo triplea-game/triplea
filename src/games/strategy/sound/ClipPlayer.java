@@ -252,7 +252,8 @@ public class ClipPlayer {
   }
 
   /**
-   * @param clipName - the file name of the clip
+   * @param clipPath - the folder containing sound clips to be played. One of the sound clip files will be chosen at
+   *        random.
    * @param playerId - the name of the player, or null
    */
   public static void play(String clipPath, PlayerID playerId) {
@@ -269,12 +270,15 @@ public class ClipPlayer {
       folder += "_" + playerId.getName();
     }
 
-    final URI clip = loadClip(folder);
+    final URI clip = loadClip(folder).orElse(loadClip(clipName).orElse(null));
+    // clip may still be null, we try to load all phases/all sound, for example: clipName = "phase_technology", folder =
+    // "phase_technology_Japanese"
+
     if (clip != null) {
       (new Thread(() -> {
         try {
           Optional<InputStream> inputStream = UrlStreams.openStream(clip.toURL());
-          if(inputStream.isPresent()) {
+          if (inputStream.isPresent()) {
             final AudioDevice audioDevice = FactoryRegistry.systemRegistry().createAudioDevice();
             new AdvancedPlayer(inputStream.get(), audioDevice).play();
           }
@@ -285,11 +289,11 @@ public class ClipPlayer {
     }
   }
 
-  private synchronized URI loadClip(final String clipName) {
+  private Optional<URI> loadClip(final String clipName) {
     if (beSilent || isMuted(clipName)) {
       return null;
     }
-    return loadClipPath(clipName);
+    return Optional.ofNullable(loadClipPath(clipName));
   }
 
   private URI loadClipPath(final String pathName) {
