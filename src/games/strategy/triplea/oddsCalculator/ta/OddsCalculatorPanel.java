@@ -1063,12 +1063,7 @@ class UnitPanel extends JPanel {
   private final ScrollableTextField m_textField;
   private final GameData m_data;
   private final ListenerList<WidgetChangedListener> m_listeners = new ListenerList<>();
-  private final ScrollableTextFieldListener m_listenerTextField = new ScrollableTextFieldListener() {
-    @Override
-    public void changedValue(final ScrollableTextField field) {
-      notifyListeners();
-    }
-  };
+  private final ScrollableTextFieldListener m_listenerTextField = field -> notifyListeners();
 
   public UnitPanel(final GameData data, final IUIContext context, final UnitCategory category,
       final IntegerMap<UnitType> costs) {
