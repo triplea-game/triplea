@@ -67,11 +67,13 @@ public class MapRouteDrawer {
     final double scale = mapPanel.getScale();
     if (tooFewTerritories || tooFewPoints) {
       if (routeDescription.getEnd() != null) {
-        drawDirectPath(graphics, routeDescription.getStart(), routeDescription.getEnd(), xOffset, yOffset, scale,
-            imageWidth, imageHeight);
+        drawDirectPath(graphics, getPointOnMap(routeDescription.getStart(), xOffset, yOffset, imageWidth, imageHeight),
+            getPointOnMap(routeDescription.getEnd(), xOffset, yOffset, imageWidth, imageHeight), xOffset, yOffset,
+            scale);
       } else {
-        drawDirectPath(graphics, points[0], points[points.length - 1], xOffset, yOffset, scale, imageWidth,
-            imageHeight);
+        drawDirectPath(graphics, getPointOnMap(points[0], xOffset, yOffset, imageWidth, imageHeight),
+            getPointOnMap(points[points.length - 1], xOffset, yOffset, imageWidth, imageHeight), xOffset, yOffset,
+            scale);
       }
       if (tooFewPoints && !tooFewTerritories) {
         drawMoveLength(graphics, points, xOffset, yOffset, scale, numTerritories, maxMovement);
@@ -134,14 +136,9 @@ public class MapRouteDrawer {
    * @param xOffset The horizontal pixel-difference between the frame and the Map
    * @param yOffset The vertical pixel-difference between the frame and the Map
    * @param jointsize The diameter of the Points being drawn
-   * @param width The width of the Map
-   * @param height The height of the Map
    * @param scale The scale-factor of the Map
    */
-  private void drawDirectPath(Graphics2D graphics, Point start, Point end, int xOffset, int yOffset, double scale,
-      int width, int height) {
-    start = getPointOnMap(start, xOffset, yOffset, width, height);
-    end = getPointOnMap(end, xOffset, yOffset, width, height);
+  private void drawDirectPath(Graphics2D graphics, Point start, Point end, int xOffset, int yOffset, double scale) {
     drawLineWithTranslate(graphics, new Line2D.Float(start, end), xOffset,
         yOffset, scale);
     if (start.distance(end) > arrowLength) {
