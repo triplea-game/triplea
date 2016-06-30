@@ -161,13 +161,13 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
             })));
 
     buttonsPanel.add(Box.createHorizontalGlue());
-    buttonsPanel.add(SwingComponents.newJButton("Close", e -> dispose()));
-
-    buttonsPanel.add(Box.createHorizontalGlue());
     buttonsPanel.add(SwingComponents.newJButton("Save", e -> {
       settingTab.updateSettings(settingTab.getInputs());
       SystemPreferences.flush();
     }));
+
+    buttonsPanel.add(Box.createHorizontalGlue());
+    buttonsPanel.add(SwingComponents.newJButton("Close", e -> dispose()));
 
     buttonsPanel.add(Box.createHorizontalGlue());
     return buttonsPanel;
