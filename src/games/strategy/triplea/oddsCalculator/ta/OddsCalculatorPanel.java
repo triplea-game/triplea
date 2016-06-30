@@ -132,12 +132,7 @@ public class OddsCalculatorPanel extends JPanel {
   private String m_defenderOrderOfLosses = null;
   private Territory m_location = null;
   private JList<String> m_territoryEffectsJList;
-  private final WidgetChangedListener m_listenerPlayerUnitsPanel = new WidgetChangedListener() {
-    @Override
-    public void widgetChanged() {
-      setWidgetActivation();
-    }
-  };
+  private final WidgetChangedListener m_listenerPlayerUnitsPanel = () -> setWidgetActivation();
 
   public OddsCalculatorPanel(final GameData data, final IUIContext context, final Territory location,
       final Window parent) {
