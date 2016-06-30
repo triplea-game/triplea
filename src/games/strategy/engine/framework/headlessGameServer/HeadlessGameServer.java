@@ -34,6 +34,7 @@ import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
@@ -71,7 +72,7 @@ public class HeadlessGameServer {
   public static String[] getProperties() {
     return new String[] {GameRunner2.TRIPLEA_GAME_PROPERTY, TRIPLEA_GAME_HOST_CONSOLE_PROPERTY,
         TRIPLEA_GAME_HOST_UI_PROPERTY, GameRunner2.TRIPLEA_SERVER_PROPERTY, GameRunner2.TRIPLEA_PORT_PROPERTY,
-        GameRunner2.TRIPLEA_NAME_PROPERTY, GameRunner2.LOBBY_HOST, GameRunner2.LOBBY_PORT,
+        GameRunner2.TRIPLEA_NAME_PROPERTY, GameRunner2.LOBBY_HOST, LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
         GameRunner2.LOBBY_GAME_COMMENTS, GameRunner2.LOBBY_GAME_HOSTED_BY, GameRunner2.LOBBY_GAME_SUPPORT_EMAIL,
         GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, GameRunner2.LOBBY_GAME_RECONNECTION,
         GameRunner2.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, GameRunner2.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME};
@@ -82,7 +83,7 @@ public class HeadlessGameServer {
         + "   " + TRIPLEA_GAME_HOST_CONSOLE_PROPERTY + "=<true/false>\n" + "   " + TRIPLEA_GAME_HOST_UI_PROPERTY
         + "=<true/false>\n" + "   " + GameRunner2.TRIPLEA_SERVER_PROPERTY + "=true\n" + "   "
         + GameRunner2.TRIPLEA_PORT_PROPERTY + "=<PORT>\n" + "   " + GameRunner2.TRIPLEA_NAME_PROPERTY
-        + "=<PLAYER_NAME>\n" + "   " + GameRunner2.LOBBY_HOST + "=<LOBBY_HOST>\n" + "   " + GameRunner2.LOBBY_PORT
+        + "=<PLAYER_NAME>\n" + "   " + GameRunner2.LOBBY_HOST + "=<LOBBY_HOST>\n" + "   " + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY
         + "=<LOBBY_PORT>\n" + "   " + GameRunner2.LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n" + "   "
         + GameRunner2.LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n" + "   " + GameRunner2.LOBBY_GAME_SUPPORT_EMAIL
         + "=<youremail@emailprovider.com>\n" + "   " + GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD
@@ -561,7 +562,7 @@ public class HeadlessGameServer {
 
   public static void resetLobbyHostOldExtensionProperties() {
     for (final String property : getProperties()) {
-      if (GameRunner2.LOBBY_HOST.equals(property) || GameRunner2.LOBBY_PORT.equals(property)
+      if (GameRunner2.LOBBY_HOST.equals(property) || LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY.equals(property)
           || GameRunner2.LOBBY_GAME_HOSTED_BY.equals(property)) {
         // for these 3 properties, we clear them after hosting, but back them up.
         final String oldValue = System.getProperty(property + GameRunner2.OLD_EXTENSION);
