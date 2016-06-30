@@ -53,11 +53,11 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
    */
   public static void showWindow() {
     SwingComponents.showWindow(new SettingsWindow(
-        new ScrollSettingsTab(ClientContext.scrollSettings()),
-        new FoldersTab(ClientContext.folderSettings()),
-        new AiTab(ClientContext.aiSettings()),
+        new BattleOptionsTab(ClientContext.battleOptionsSettings()),
         new BattleCalcTab(ClientContext.battleCalcSettings()),
-        new BattleOptionsTab(ClientContext.battleOptionsSettings())));
+        new AiTab(ClientContext.aiSettings()),
+        new ScrollSettingsTab(ClientContext.scrollSettings()),
+        new FoldersTab(ClientContext.folderSettings())));
   }
 
   private SettingsWindow(SettingsTab... tabs) {
