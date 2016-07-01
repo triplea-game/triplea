@@ -66,7 +66,7 @@ public class MapRouteDrawer {
     final boolean tooFewPoints = points.length <= 2;
     final double scale = mapPanel.getScale();
     if (tooFewTerritories || tooFewPoints) {
-      if (routeDescription.getEnd() != null) {
+      if (routeDescription.getEnd() != null) {//AI has no End Point
         drawDirectPath(graphics, getPointOnMap(routeDescription.getStart(), xOffset, yOffset, imageWidth, imageHeight),
             getPointOnMap(routeDescription.getEnd(), xOffset, yOffset, imageWidth, imageHeight), xOffset, yOffset,
             scale);
@@ -226,20 +226,21 @@ public class MapRouteDrawer {
    * @return The "real" Point
    */
   private static Point getPointOnMap(Point point, int xOffset, int yOffset, int width, int height) {
-    int x = (int) point.getX();
-    int y = (int) point.getY();
+    Point newPoint = point;
+    int x = (int) newPoint.getX();
+    int y = (int) newPoint.getY();
     if (x - width > xOffset) {
-      point = new Point(x - width, y);
+      newPoint = new Point(x - width, y);
     } else if (x - width > 0) {
-      point = new Point(x + width, y);
+      newPoint = new Point(x + width, y);
     }
-    x = (int) point.getX();// If the value changed
+    x = (int) newPoint.getX();// If the value changed
     if (y - height > yOffset) {
-      point = new Point(x, y - height);
+      newPoint = new Point(x, y - height);
     } else if (y - height > 0) {
-      point = new Point(x, y + height);
+      newPoint = new Point(x, y + height);
     }
-    return point;
+    return newPoint;
   }
 
   /**
