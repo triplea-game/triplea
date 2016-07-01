@@ -7,19 +7,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringTokenizer;
 
-import com.sun.deploy.util.SessionState;
-import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
-import games.strategy.util.Match;
+import games.strategy.ui.SwingComponents;
 import games.strategy.util.UrlStreams;
 
 /**
