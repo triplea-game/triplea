@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.StringTokenizer;
 
+import com.sun.deploy.util.SessionState;
 import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
@@ -92,28 +93,16 @@ public class ResourceLoader {
     String normalizedZipName = normalizeMapZipName(zipName);
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), normalizedZipName));
 
-
-    final Collection<File> existing = Match.getMatches(candidates, new Match<File>() {
-      @Override
-      public boolean match(final File f) {
-        return f.exists();
-      }
-    });
-
-
-    // At least one must exist
-    if (existing.isEmpty()) {
-      return Collections.emptyList();
+    Optional<File> match = candidates.stream().filter(file -> file.exists()).findFirst();
+    if(!match.isPresent()) {
+      ClientLogger.logError("Could not find map: " +mapName + " in any of the following locations: " + candidates);
     }
-    final File match = existing.iterator().next();
-    if (existing.size() > 1) {
-      ClientLogger.logQuietly("INFO: Found multiple files for: " + mapName + " using: "+ match + ", candidates found: " + existing);
-    }
+    ClientLogger.logQuietly("Loading map: " + mapName + ", from: " + match.get().getAbsolutePath());
 
     final List<String> rVal = new ArrayList<>();
-    rVal.add(match.getAbsolutePath());
+    rVal.add(match.get().getAbsolutePath());
     // find dependencies
-    try (final URLClassLoader url = new URLClassLoader(new URL[] {match.toURI().toURL()})) {
+    try (final URLClassLoader url = new URLClassLoader(new URL[] {match.get().toURI().toURL()})) {
       final URL dependencesURL = url.getResource("dependencies.txt");
       if (dependencesURL != null) {
         final java.util.Properties dependenciesFile = new java.util.Properties();
