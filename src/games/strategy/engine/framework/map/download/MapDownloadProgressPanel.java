@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.map.download;
 
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -11,7 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import games.strategy.ui.SwingComponents;

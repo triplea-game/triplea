@@ -1,9 +1,8 @@
 package games.strategy.engine.framework.map.download;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import com.google.common.collect.Lists;
 
 import games.strategy.util.Version;
 

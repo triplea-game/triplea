@@ -3,16 +3,15 @@ package games.strategy.engine.framework.map.download;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
 import javax.swing.DefaultListModel;
 
-import com.google.common.collect.Lists;
-
-import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
+import games.strategy.ui.SwingComponents;
 import games.strategy.util.Version;
 
 public class FileSystemAccessStrategy {
