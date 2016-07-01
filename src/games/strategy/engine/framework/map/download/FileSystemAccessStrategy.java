@@ -43,8 +43,8 @@ public class FileSystemAccessStrategy {
 
   private static Runnable createRemoveMapAction(List<DownloadFileDescription> maps, DefaultListModel<String> listModel) {
     return () -> {
-      List<DownloadFileDescription> fails = Lists.newArrayList();
-      List<DownloadFileDescription> deletes = Lists.newArrayList();
+      List<DownloadFileDescription> fails = new ArrayList<>();
+      List<DownloadFileDescription> deletes = new ArrayList<>();
 
       // delete the map files
       for (DownloadFileDescription map : maps) {

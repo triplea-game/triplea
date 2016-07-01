@@ -29,7 +29,7 @@ public class MapDownloadListSortTest {
 
   @Test
   public void testSortingSortedList() {
-    List<DownloadFileDescription> downloads = Lists.newArrayList(MAP_A, MAP_B, MAP_C);
+    List<DownloadFileDescription> downloads = new ArrayList<>(MAP_A, MAP_B, MAP_C);
 
     List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
     assertSorted(sorted);
@@ -43,7 +43,7 @@ public class MapDownloadListSortTest {
 
   @Test
   public void testSortingUnSortedList() {
-    List<DownloadFileDescription> downloads = Lists.newArrayList(MAP_B, MAP_C, MAP_A);
+    List<DownloadFileDescription> downloads = new ArrayList<>(MAP_B, MAP_C, MAP_A);
     List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
     assertSorted(sorted);
   }
@@ -51,7 +51,7 @@ public class MapDownloadListSortTest {
   @Test
   public void testInsertEmptyRowAboveHeaders() {
     List<DownloadFileDescription> downloads =
-        Lists.newArrayList(HEADER, HEADER);
+        new ArrayList<>(HEADER, HEADER);
     List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
     assertThat(sorted.size(), is(downloads.size() + 1));
     assertThat(sorted.get(0).isDummyUrl(), is(true));
@@ -62,7 +62,7 @@ public class MapDownloadListSortTest {
   @Test
   public void testSortingUnSortedListWithHeaders() {
     List<DownloadFileDescription> downloads =
-        Lists.newArrayList(HEADER, MAP_B, MAP_A, HEADER, MAP_D, MAP_C, HEADER, HEADER);
+        new ArrayList<>(HEADER, MAP_B, MAP_A, HEADER, MAP_D, MAP_C, HEADER, HEADER);
     List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
     assertThat(sorted.get(0).isDummyUrl(), is(true));
     assertThat(sorted.get(1).getMapName(), is(MAP_A.getMapName()));

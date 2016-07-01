@@ -48,7 +48,7 @@ public class DownloadFile {
   protected DownloadFile(DownloadFileDescription download, Consumer<Integer> progressUpdateListener) {
     this.downloadDescription = download;
     this.progressUpdateListener = progressUpdateListener;
-    this.downloadCompletedListeners = Lists.newArrayList();
+    this.downloadCompletedListeners = new ArrayList<>();
   }
 
   public void startAsyncDownload() {

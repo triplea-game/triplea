@@ -294,11 +294,11 @@ public class ClientSetupPanel extends SetupPanel {
   @Override
   public List<Action> getUserActions() {
     if (m_model == null) {
-      return Lists.newArrayList();
+      return new ArrayList<>();
     }
     final boolean isServerHeadless = m_model.getIsServerHeadlessCached();
     if (!isServerHeadless) {
-      return Lists.newArrayList();
+      return new ArrayList<>();
     }
     final List<Action> rVal = new ArrayList<>();
     rVal.add(m_model.getHostBotSetMapClientAction(this));

@@ -69,6 +69,6 @@ public abstract class SetupPanel extends JPanel implements ISetupPanel {
 
   @Override
   public List<Action> getUserActions() {
-    return Lists.newArrayList();
+    return new ArrayList<>();
   }
 }

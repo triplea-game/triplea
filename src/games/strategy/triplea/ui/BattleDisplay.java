@@ -854,7 +854,7 @@ class BattleModel extends DefaultTableModel {
         unitPowerAndRollsMap = null;
       } else {
         unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units,
-            Lists.newArrayList(m_enemyBattleModel.getUnits()), !m_attack, false, m_data, m_location,
+            new ArrayList<>(m_enemyBattleModel.getUnits()), !m_attack, false, m_data, m_location,
             m_territoryEffects, m_isAmphibious, m_amphibiousLandAttackers);
       }
     } finally {

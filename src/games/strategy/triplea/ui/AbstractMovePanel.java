@@ -193,7 +193,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   }
 
   private static List<Integer> getSortedMoveIndexes(Set<UndoableMove> moves) {
-    List<Integer> moveIndexes = Lists.newArrayList();
+    List<Integer> moveIndexes = new ArrayList<>();
     for (UndoableMove move : moves) {
       moveIndexes.add(move.getIndex());
     }

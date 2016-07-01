@@ -41,7 +41,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   public NewGameChooserModel() {
     final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
 
-    final List<NewGameChooserEntry> entries = Lists.newArrayList(parsedMapSet);
+    final List<NewGameChooserEntry> entries = new ArrayList<>(parsedMapSet);
     Collections.sort(entries, NewGameChooserEntry.getComparator());
 
     for (final NewGameChooserEntry entry : entries) {
@@ -90,7 +90,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
 
   private static List<NewGameChooserEntry> populateFromZip(final File map) {
     boolean badMapZip = false;
-    final List<NewGameChooserEntry> entries = Lists.newArrayList();
+    final List<NewGameChooserEntry> entries = new ArrayList<>();
 
     try (ZipFile zipFile = new ZipFile(map);
         final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
@@ -202,7 +202,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   }
 
   private static List<NewGameChooserEntry> populateFromDirectory(final File mapDir) {
-    final List<NewGameChooserEntry> entries = Lists.newArrayList();
+    final List<NewGameChooserEntry> entries = new ArrayList<>();
 
     // use contents under a "mapDir/map" folder if present, otherwise use the "mapDir/" contents directly
     final File mapFolder = new File(mapDir, "map");

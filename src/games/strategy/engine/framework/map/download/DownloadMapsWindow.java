@@ -389,7 +389,7 @@ public class DownloadMapsWindow extends JFrame {
       DefaultListModel<String> listModel) {
     return (e) -> {
       List<String> selectedValues = gamesList.getSelectedValuesList();
-      List<DownloadFileDescription> downloadList = Lists.newArrayList();
+      List<DownloadFileDescription> downloadList = new ArrayList<>();
       for (DownloadFileDescription map : maps) {
         if (selectedValues.contains(map.getMapName())) {
           downloadList.add(map);

@@ -390,7 +390,7 @@ public class DiceRoll implements Externalizable {
   public static DiceRoll rollNDice(final IDelegateBridge bridge, final int rollCount, final int sides,
       final PlayerID playerRolling, final DiceType diceType, final String annotation) {
     if (rollCount == 0) {
-      return new DiceRoll(Lists.newArrayList(), 0);
+      return new DiceRoll(new ArrayList<>(), 0);
     }
     int[] random = bridge.getRandom(sides, rollCount, playerRolling, diceType, annotation);
     final List<Die> dice = new ArrayList<>();
