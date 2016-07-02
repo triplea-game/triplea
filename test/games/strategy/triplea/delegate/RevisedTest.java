@@ -41,6 +41,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.InvocationHandler;
@@ -95,7 +96,6 @@ public class RevisedTest {
   @Before
   public void setUp() throws Exception {
     m_data = LoadGameUtil.loadTestGame("revised_test.xml");
-
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
@@ -341,7 +341,6 @@ public class RevisedTest {
     assertFalse(tracker.hasPendingBattle(germany, false));
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void testOverFlyBombersDies() {
     final PlayerID british = british(m_data);
@@ -351,7 +350,7 @@ public class RevisedTest {
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     TripleAPlayer player = MockObjects.getDummyPlayer();
-    when(player.confirmMoveInFaceOfAA(any(Collection.class))).thenReturn(true);
+    when(player.confirmMoveInFaceOfAA(anyCollectionOf(Territory.class))).thenReturn(true);
     bridge.setRemote(player);
     bridge.setRandomSource(new ScriptedRandomSource(0));
     final Territory uk = territory("United Kingdom", m_data);
@@ -365,7 +364,6 @@ public class RevisedTest {
     assertTrue(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void testMultipleOverFlyBombersDies() {
     final PlayerID british = british(m_data);
@@ -375,7 +373,7 @@ public class RevisedTest {
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     TripleAPlayer player = MockObjects.getDummyPlayer();
-    when(player.confirmMoveInFaceOfAA(any(Collection.class))).thenReturn(true);
+    when(player.confirmMoveInFaceOfAA(anyCollectionOf(Territory.class))).thenReturn(true);
     bridge.setRemote(player);
     bridge.setRandomSource(new ScriptedRandomSource(0, 4));
     final Territory uk = territory("United Kingdom", m_data);
@@ -393,7 +391,6 @@ public class RevisedTest {
     assertTrue(balk.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void testOverFlyBombersJoiningBattleDie() {
     // a bomber flies over aa to join a battle, gets hit,
@@ -405,7 +402,7 @@ public class RevisedTest {
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     TripleAPlayer player = MockObjects.getDummyPlayer();
-    when(player.confirmMoveInFaceOfAA(any(Collection.class))).thenReturn(true);
+    when(player.confirmMoveInFaceOfAA(anyCollectionOf(Territory.class))).thenReturn(true);
     bridge.setRemote(player);
     bridge.setRandomSource(new ScriptedRandomSource(0));
     final Territory uk = territory("United Kingdom", m_data);
