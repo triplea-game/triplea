@@ -29,7 +29,7 @@ import games.strategy.util.Version;
 public class LobbyServer {
   // System properties for the lobby
   // what port should the lobby use
-  private static final String TRIPLEA_LOBBY_PORT_PROPERTY = "triplea.lobby.port";
+  public static final String TRIPLEA_LOBBY_PORT_PROPERTY = "triplea.lobby.port";
   // should the lobby start a ui, set to true to enable
   private static final String TRIPLEA_LOBBY_UI_PROPERTY = "triplea.lobby.ui";
   // should the lobby take commands from stdin,

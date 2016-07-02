@@ -13,6 +13,7 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.GameDescription.GameStatus;
+import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.net.Messengers;
 import games.strategy.util.Version;
 
@@ -41,7 +42,7 @@ public class TripleAProcessRunner {
       final String value = System.getProperty(property);
       if (value != null) {
         commands.add("-D" + property + "=" + value);
-      } else if (GameRunner2.LOBBY_HOST.equals(property) || GameRunner2.LOBBY_PORT.equals(property)
+      } else if (GameRunner2.LOBBY_HOST.equals(property) || LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY.equals(property)
           || GameRunner2.LOBBY_GAME_HOSTED_BY.equals(property)) {
         // for these 3 properties, we clear them after hosting, but back them up.
         final String oldValue = System.getProperty(property + GameRunner2.OLD_EXTENSION);
@@ -67,7 +68,7 @@ public class TripleAProcessRunner {
     commands.add("-D" + GameRunner2.LOBBY_HOST + "="
         + messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
     commands
-        .add("-D" + GameRunner2.LOBBY_PORT + "=" + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
+        .add("-D" + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=" + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
     commands.add("-D" + GameRunner2.LOBBY_GAME_COMMENTS + "=" + comments);
     commands.add("-D" + GameRunner2.LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
     if (password != null && password.length() > 0) {
