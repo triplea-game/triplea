@@ -57,6 +57,7 @@ dependencies {
 	compile 'commons-httpclient:commons-httpclient:3.1'
 	compile 'org.apache.commons:commons-math3:3.6.1'
 	compile 'org.mindrot:jbcrypt:0.3m'
+	compile 'org.mockito:mockito-all:2.0.2-beta'
 	compile 'org.yaml:snakeyaml:1.17'
 
 	compile files('lib/AppleJavaExtensions-1.6.jar')
