@@ -5,15 +5,16 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
-import games.strategy.engine.message.DummyMessenger;
+import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
+import games.strategy.triplea.delegate.MockObjects;
 import games.strategy.util.ThreadUtil;
 
 public class StatusTest {
 
   @Test
   public void testStatus() throws Exception {
-    final DummyMessenger messenger = new DummyMessenger();
+    final IServerMessenger messenger = MockObjects.getDummyMessenger();
     final Messengers messengers = new Messengers(messenger);
     final StatusManager manager = new StatusManager(messengers);
     assertNull(manager.getStatus(messenger.getLocalNode()));

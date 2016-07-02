@@ -43,6 +43,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyCollectionOf;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -59,6 +65,8 @@ import java.util.Map.Entry;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Change;
@@ -77,6 +85,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -88,14 +97,14 @@ import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.ui.display.DummyTripleADisplay;
-import games.strategy.triplea.util.DummyTripleAPlayer;
+import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 public class WW2V3_41_Test {
   private GameData m_data;
+  private TripleAPlayer dummyPlayer = MockObjects.getDummyPlayer();
 
   @Before
   public void setUp() throws Exception {
@@ -305,7 +314,7 @@ public class WW2V3_41_Test {
     bridge.setStepName("britishCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    bridge.setRemote(new DummyTripleAPlayer());
+    bridge.setRemote(dummyPlayer);
     final Territory sz9 = territory("9 Sea Zone", m_data);
     final Territory sz13 = territory("13 Sea Zone", m_data);
     final Route sz9ToSz13 = new Route(sz9, territory("12 Sea Zone", m_data), sz13);
@@ -327,12 +336,10 @@ public class WW2V3_41_Test {
     final MoveDelegate moveDelegate = moveDelegate(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setStepName("britishCombatMove");
-    bridge.setRemote(new DummyTripleAPlayer() {
-      @Override
-      public boolean selectAttackSubs(final Territory unitTerritory) {
-        return true;
-      }
-    });
+
+    TripleAPlayer player = MockObjects.getDummyPlayer();
+    when(player.selectAttackSubs(any(Territory.class))).thenReturn(true);
+    bridge.setRemote(player);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     final Territory sz9 = territory("9 Sea Zone", m_data);
@@ -827,7 +834,7 @@ public class WW2V3_41_Test {
             defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES,
             REMOVE_SNEAK_ATTACK_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(),
         steps.toString());
-    bridge.setRemote(new DummyTripleAPlayer());
+    bridge.setRemote(dummyPlayer);
     // fight, each sub should fire
     // and hit
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 0, ScriptedRandomSource.ERROR);
@@ -862,7 +869,7 @@ public class WW2V3_41_Test {
             REMOVE_SNEAK_ATTACK_CASUALTIES, attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + FIRE,
             attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(),
         steps.toString());
-    bridge.setRemote(new DummyTripleAPlayer());
+    bridge.setRemote(dummyPlayer);
     // defending subs sneak attack and hit
     // no chance to return fire
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, ScriptedRandomSource.ERROR);
@@ -898,7 +905,7 @@ public class WW2V3_41_Test {
             REMOVE_SNEAK_ATTACK_CASUALTIES, attacker + FIRE, defender + SELECT_CASUALTIES, defender + SUBS_FIRE,
             attacker + SELECT_SUB_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(),
         steps.toString());
-    bridge.setRemote(new DummyTripleAPlayer());
+    bridge.setRemote(dummyPlayer);
     // attacking subs sneak attack and hit
     // no chance to return fire
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, ScriptedRandomSource.ERROR);
@@ -909,6 +916,7 @@ public class WW2V3_41_Test {
     assertEquals(2, attacked.getUnits().size());
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void testAttackDestroyerAndSubsAgainstSubAndDestroyer() {
     final String defender = "Germans";
@@ -935,17 +943,24 @@ public class WW2V3_41_Test {
             defender + SELECT_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, defender + FIRE,
             attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(),
         steps.toString());
-    bridge.setRemote(new DummyTripleAPlayer() {
-      @Override
-      public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
-          final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-          final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
-          final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
-          final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
-          final boolean allowMultipleHitsPerUnit) {
-        return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), Collections.<Unit>emptyList(), false);
-      }
-    });
+
+    TripleAPlayer player = MockObjects.getDummyPlayer();
+    when(player.selectCasualties(anyCollectionOf(Unit.class), any(Map.class), any(int.class), any(String.class),
+        any(DiceRoll.class), any(PlayerID.class), anyCollectionOf(Unit.class), any(PlayerID.class),
+        anyCollectionOf(Unit.class),
+        any(boolean.class), anyCollectionOf(Unit.class),
+        any(CasualtyList.class), any(GUID.class), any(Territory.class), any(boolean.class)))
+            .thenAnswer(new Answer<CasualtyDetails>() {
+
+              @Override
+              public CasualtyDetails answer(InvocationOnMock invocation) throws Throwable {
+                Collection<Unit> selectFrom = (Collection<Unit>) invocation.getArguments()[0];
+                return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), new ArrayList<>(),
+                    false);
+              }
+
+            });
+    bridge.setRemote(player);
     // attacking subs sneak attack and hit
     // no chance to return fire
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 0, 0, 0, ScriptedRandomSource.ERROR);
@@ -959,12 +974,10 @@ public class WW2V3_41_Test {
   public void testLimitBombardtoNumberOfUnloaded() {
     final MoveDelegate move = moveDelegate(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
-    bridge.setRemote(new DummyTripleAPlayer() {
-      @Override
-      public boolean selectShoreBombard(final Territory unitTerritory) {
-        return true;
-      }
-    });
+
+    TripleAPlayer player = MockObjects.getDummyPlayer();
+    when(player.selectShoreBombard(any(Territory.class))).thenReturn(true);
+    bridge.setRemote(player);
     bridge.setStepName("CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
@@ -1011,12 +1024,9 @@ public class WW2V3_41_Test {
   public void testBombardStrengthVariable() {
     final MoveDelegate move = moveDelegate(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
-    bridge.setRemote(new DummyTripleAPlayer() {
-      @Override
-      public boolean selectShoreBombard(final Territory unitTerritory) {
-        return true;
-      }
-    });
+    TripleAPlayer player = MockObjects.getDummyPlayer();
+    when(player.selectShoreBombard(any(Territory.class))).thenReturn(true);
+    bridge.setRemote(player);
     bridge.setStepName("CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
@@ -1075,12 +1085,9 @@ public class WW2V3_41_Test {
   public void testAmphAttackUndoAndAttackAgainBombard() {
     final MoveDelegate move = moveDelegate(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
-    bridge.setRemote(new DummyTripleAPlayer() {
-      @Override
-      public boolean selectShoreBombard(final Territory unitTerritory) {
-        return true;
-      }
-    });
+    TripleAPlayer player = MockObjects.getDummyPlayer();
+    when(player.selectShoreBombard(any(Territory.class))).thenReturn(true);
+    bridge.setRemote(player);
     bridge.setStepName("CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
@@ -1192,12 +1199,7 @@ public class WW2V3_41_Test {
     moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(m_data).start();
     // don't allow kamikaze
-    bridge.setRemote(new DummyTripleAPlayer() {
-      @Override
-      public boolean confirmMoveKamikaze() {
-        return false;
-      }
-    });
+    bridge.setRemote(dummyPlayer);
     final String error = moveDelegate(m_data).move(madagascar.getUnits().getUnits(), route);
     assertError(error);
   }
@@ -1462,22 +1464,33 @@ public class WW2V3_41_Test {
     final Territory sz13 = territory("13 Sea Zone", m_data);
     final Territory sz14 = territory("14 Sea Zone", m_data);
     final Territory sz15 = territory("15 Sea Zone", m_data);
-    bridge.setRemote(new DummyTripleAPlayer() {
+
+    TripleAPlayer player = MockObjects.getDummyPlayer();
+    when(player.retreatQuery(any(GUID.class), any(boolean.class), any(Territory.class),
+        anyCollectionOf(Territory.class), any(String.class))).thenAnswer(new Answer<Territory>() {
+
+          @Override
+          public Territory answer(InvocationOnMock invocation) throws Throwable {
+            assertFalse(invocation.getArgumentAt(4, String.class).contains(BattleStepStrings.RETREAT_PLANES));
+            return null;
+          }
+        });
+    bridge.setRemote(player);
+    ITripleADisplay dummyDisplay = mock(ITripleADisplay.class);
+    doAnswer(new Answer<Void>(){
+
+      @SuppressWarnings("unchecked")
       @Override
-      public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleSite,
-          final Collection<Territory> possibleTerritories, final String message) {
-        assertFalse(message.contains(BattleStepStrings.RETREAT_PLANES));
-        return null;
-      }
-    });
-    bridge.setDisplay(new DummyTripleADisplay() {
-      @Override
-      public void listBattleSteps(final GUID battleID, final List<String> steps) {
+      public Void answer(InvocationOnMock invocation) throws Throwable {
+        List<String> steps = (List<String>) invocation.getArguments()[1];
         for (final String s : steps) {
           assertFalse(s.contains(BattleStepStrings.PLANES_WITHDRAW));
         }
+        return null;
       }
-    });
+      
+    }).when(dummyDisplay).listBattleSteps(any(GUID.class), anyListOf(String.class));
+    bridge.setDisplay(dummyDisplay);
     // move units for amphib assault
     load(france.getUnits().getMatches(Matches.UnitIsInfantry), new Route(france, sz13));
     move(sz13.getUnits().getUnits(), new Route(sz13, sz14, sz15));
@@ -1506,14 +1519,19 @@ public class WW2V3_41_Test {
     final Territory sz5 = territory("5 Sea Zone", m_data);
     // remove the sub
     removeFrom(sz5, sz5.getUnits().getMatches(Matches.UnitIsSub));
-    bridge.setRemote(new DummyTripleAPlayer() {
-      @Override
-      public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleSite,
-          final Collection<Territory> possibleTerritories, final String message) {
-        // we should not be asked to retreat
-        throw new IllegalStateException("Should not be asked to retreat:" + message);
-      }
-    });
+
+    TripleAPlayer player = MockObjects.getDummyPlayer();
+    when(player.retreatQuery(any(GUID.class), any(boolean.class), any(Territory.class),
+        anyCollectionOf(Territory.class), any(String.class))).thenAnswer(new Answer<Territory>() {
+
+          @Override
+          public Territory answer(InvocationOnMock invocation) throws Throwable {
+
+            throw new IllegalStateException(
+                "Should not be asked to retreat:" + invocation.getArgumentAt(4, String.class));
+          }
+        });
+    bridge.setRemote(player);
     move(uk.getUnits().getMatches(Matches.UnitIsAir), m_data.getMap().getRoute(uk, sz5));
     // move units for amphib assault
     moveDelegate(m_data).end();
@@ -1538,12 +1556,7 @@ public class WW2V3_41_Test {
     bridge.setStepName("CombatMove");
     moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(m_data).start();
-    bridge.setRemote(new DummyTripleAPlayer() {
-      @Override
-      public boolean confirmMoveHariKari() {
-        return false;
-      }
-    });
+    bridge.setRemote(dummyPlayer);
     // the fighter should be able to move and hover in the sea zone
     // the fighter has no movement left
     final Territory neEurope = territory("Northwestern Europe", m_data);
@@ -1560,12 +1573,7 @@ public class WW2V3_41_Test {
     bridge.setStepName("CombatMove");
     moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(m_data).start();
-    bridge.setRemote(new DummyTripleAPlayer() {
-      @Override
-      public boolean confirmMoveHariKari() {
-        return false;
-      }
-    });
+    bridge.setRemote(dummyPlayer);
     // the fighter should not be able to move and hover in the sea zone
     // since their are no carriers to place
     // the fighter has no movement left

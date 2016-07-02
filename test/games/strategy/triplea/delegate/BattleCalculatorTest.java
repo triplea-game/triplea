@@ -9,6 +9,8 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.makeGameLowLuck;
 import static games.strategy.triplea.delegate.GameDataTestUtil.setSelectAACasualties;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,6 +19,8 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
@@ -25,11 +29,11 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.net.GUID;
+import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
-import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.Match;
 
@@ -130,6 +134,7 @@ public class BattleCalculatorTest {
     assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 2);
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void testAACasualtiesLowLuckMixedWithChooseAACasualties() {
     final GameData data = m_bridge.getData();
@@ -139,18 +144,24 @@ public class BattleCalculatorTest {
     final Collection<Unit> planes = bomber(data).create(6, british(data));
     planes.addAll(fighter(data).create(6, british(data)));
     final Collection<Unit> defendingAA = territory("Germany", data).getUnits().getMatches(Matches.UnitIsAAforAnything);
-    m_bridge.setRemote(new DummyTripleAPlayer() {
-      @Override
-      public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
-          final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-          final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
-          final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
-          final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
-          final boolean allowMultipleHitsPerUnit) {
-        final List<Unit> selected = Match.getNMatches(selectFrom, count, Matches.UnitIsStrategicBomber);
-        return new CasualtyDetails(selected, new ArrayList<>(), false);
-      }
-    });
+    TripleAPlayer player = MockObjects.getDummyPlayer();
+    when(player.selectCasualties(any(Collection.class), any(Map.class), any(int.class), any(String.class),
+        any(DiceRoll.class), any(PlayerID.class), any(Collection.class), any(PlayerID.class), any(Collection.class),
+        any(boolean.class), any(Collection.class),
+        any(CasualtyList.class), any(GUID.class), any(Territory.class), any(boolean.class)))
+            .thenAnswer(new Answer<CasualtyDetails>() {
+
+              @Override
+              public CasualtyDetails answer(InvocationOnMock invocation) throws Throwable {
+                Collection<Unit> selectFrom = (Collection<Unit>) invocation.getArguments()[0];
+                int count = (int) invocation.getArguments()[2];
+
+                final List<Unit> selected = Match.getNMatches(selectFrom, count, Matches.UnitIsStrategicBomber);
+                return new CasualtyDetails(selected, new ArrayList<>(), false);
+              }
+
+            });
+    m_bridge.setRemote(player);
     // don't allow rolling, 6 of each is deterministic
     m_bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
     final DiceRoll roll =
@@ -169,6 +180,7 @@ public class BattleCalculatorTest {
     assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 0);
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void testAACasualtiesLowLuckMixedWithChooseAACasualtiesRoll() {
     final GameData data = m_bridge.getData();
@@ -178,18 +190,24 @@ public class BattleCalculatorTest {
     final Collection<Unit> planes = bomber(data).create(7, british(data));
     planes.addAll(fighter(data).create(7, british(data)));
     final Collection<Unit> defendingAA = territory("Germany", data).getUnits().getMatches(Matches.UnitIsAAforAnything);
-    m_bridge.setRemote(new DummyTripleAPlayer() {
-      @Override
-      public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
-          final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-          final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
-          final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
-          final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
-          final boolean allowMultipleHitsPerUnit) {
-        final List<Unit> selected = Match.getNMatches(selectFrom, count, Matches.UnitIsStrategicBomber);
-        return new CasualtyDetails(selected, new ArrayList<>(), false);
-      }
-    });
+    TripleAPlayer player = MockObjects.getDummyPlayer();
+    when(player.selectCasualties(any(Collection.class), any(Map.class), any(int.class), any(String.class),
+        any(DiceRoll.class), any(PlayerID.class), any(Collection.class), any(PlayerID.class), any(Collection.class),
+        any(boolean.class), any(Collection.class),
+        any(CasualtyList.class), any(GUID.class), any(Territory.class), any(boolean.class)))
+            .thenAnswer(new Answer<CasualtyDetails>() {
+
+              @Override
+              public CasualtyDetails answer(InvocationOnMock invocation) throws Throwable {
+                Collection<Unit> selectFrom = (Collection<Unit>) invocation.getArguments()[0];
+                int count = (int) invocation.getArguments()[2];
+
+                final List<Unit> selected = Match.getNMatches(selectFrom, count, Matches.UnitIsStrategicBomber);
+                return new CasualtyDetails(selected, new ArrayList<>(), false);
+              }
+
+            });
+    m_bridge.setRemote(player);
     // only 1 roll, a hit
     m_bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, ScriptedRandomSource.ERROR}));
     final DiceRoll roll =

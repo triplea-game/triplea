@@ -52,7 +52,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private final CopyOnWriteArrayList<IMessageListener> listeners = new CopyOnWriteArrayList<>();
   private final CopyOnWriteArrayList<IMessengerErrorListener> errorListeners =
       new CopyOnWriteArrayList<>();
-  private final CopyOnWriteArrayList<IConnectionChangeListener> connectionListeners =
+  protected final CopyOnWriteArrayList<IConnectionChangeListener> connectionListeners =
       new CopyOnWriteArrayList<>();
   private boolean acceptNewConnection = false;
   private ILoginValidator loginValidator;

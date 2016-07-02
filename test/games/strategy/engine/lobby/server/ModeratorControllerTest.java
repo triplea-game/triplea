@@ -14,23 +14,24 @@ import org.junit.Test;
 
 import games.strategy.engine.lobby.server.userDB.BannedIpController;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
-import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
+import games.strategy.net.IServerMessenger;
 import games.strategy.net.Node;
+import games.strategy.triplea.delegate.MockObjects;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
 
 public class ModeratorControllerTest {
-  private DummyMessenger m_messenger;
+  private IServerMessenger m_messenger;
   private ModeratorController m_controller;
   private ConnectionChangeListener m_listener;
   private INode m_adminNode;
 
   @Before
   public void setUp() throws UnknownHostException {
-    m_messenger = new DummyMessenger();
+    m_messenger = MockObjects.getDummyMessenger();
     m_controller = new ModeratorController(m_messenger, null);
     m_listener = new ConnectionChangeListener();
     m_messenger.addConnectionChangeListener(m_listener);

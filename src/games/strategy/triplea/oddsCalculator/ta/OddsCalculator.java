@@ -1,5 +1,7 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,7 +13,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import games.strategy.triplea.delegate.GameDelegateBridge;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -33,13 +34,13 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.net.GUID;
-import games.strategy.sound.DummySoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.ai.AIUtils;
 import games.strategy.triplea.ai.AbstractAI;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.GameDelegateBridge;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MustFightBattle;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
@@ -48,7 +49,7 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.ui.display.DummyTripleADisplay;
+import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
@@ -387,8 +388,8 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 
 class DummyDelegateBridge implements IDelegateBridge {
   private final PlainRandomSource m_randomSource = new PlainRandomSource();
-  private final DummyTripleADisplay m_display = new DummyTripleADisplay();
-  private final DummySoundChannel m_soundChannel = new DummySoundChannel();
+  private final ITripleADisplay m_display = mock(ITripleADisplay.class);
+  private final ISound m_soundChannel = mock(ISound.class);
   private final DummyPlayer m_attackingPlayer;
   private final DummyPlayer m_defendingPlayer;
   private final PlayerID m_attacker;

@@ -40,10 +40,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -54,6 +57,8 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
@@ -68,6 +73,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -77,7 +83,6 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
@@ -85,10 +90,12 @@ import games.strategy.util.Match;
 
 public class RevisedTest {
   private GameData m_data;
+  private TripleAPlayer dummyPlayer = MockObjects.getDummyPlayer();
 
   @Before
   public void setUp() throws Exception {
     m_data = LoadGameUtil.loadTestGame("revised_test.xml");
+
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
@@ -201,7 +208,7 @@ public class RevisedTest {
     battle.start();
     // fight the battle
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0}));
-    bridge.setRemote(getDummyPlayer());
+    bridge.setRemote(dummyPlayer);
     fight(battle, sinkiang, false);
     battle.end();
     assertEquals(sinkiang.getOwner(), americans);
@@ -311,12 +318,9 @@ public class RevisedTest {
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    bridge.setRemote(new DummyTripleAPlayer() {
-      @Override
-      public boolean shouldBomberBomb(final Territory territory) {
-        return true;
-      }
-    });
+    TripleAPlayer player = MockObjects.getDummyPlayer();
+    when(player.shouldBomberBomb(any(Territory.class))).thenReturn(true);
+    bridge.setRemote(player);
     final Territory uk = territory("United Kingdom", m_data);
     final Territory germany = territory("Germany", m_data);
     final Route route = new Route(uk, territory("6 Sea Zone", m_data), territory("5 Sea Zone", m_data), germany);
@@ -337,6 +341,7 @@ public class RevisedTest {
     assertFalse(tracker.hasPendingBattle(germany, false));
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void testOverFlyBombersDies() {
     final PlayerID british = british(m_data);
@@ -345,12 +350,9 @@ public class RevisedTest {
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    bridge.setRemote(new DummyTripleAPlayer() {
-      @Override
-      public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
-        return true;
-      }
-    });
+    TripleAPlayer player = MockObjects.getDummyPlayer();
+    when(player.confirmMoveInFaceOfAA(any(Collection.class))).thenReturn(true);
+    bridge.setRemote(player);
     bridge.setRandomSource(new ScriptedRandomSource(0));
     final Territory uk = territory("United Kingdom", m_data);
     final Territory we = territory("Western Europe", m_data);
@@ -363,6 +365,7 @@ public class RevisedTest {
     assertTrue(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void testMultipleOverFlyBombersDies() {
     final PlayerID british = british(m_data);
@@ -371,12 +374,9 @@ public class RevisedTest {
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    bridge.setRemote(new DummyTripleAPlayer() {
-      @Override
-      public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
-        return true;
-      }
-    });
+    TripleAPlayer player = MockObjects.getDummyPlayer();
+    when(player.confirmMoveInFaceOfAA(any(Collection.class))).thenReturn(true);
+    bridge.setRemote(player);
     bridge.setRandomSource(new ScriptedRandomSource(0, 4));
     final Territory uk = territory("United Kingdom", m_data);
     final Territory sz7 = territory("7 Sea Zone", m_data);
@@ -393,6 +393,7 @@ public class RevisedTest {
     assertTrue(balk.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void testOverFlyBombersJoiningBattleDie() {
     // a bomber flies over aa to join a battle, gets hit,
@@ -403,12 +404,9 @@ public class RevisedTest {
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    bridge.setRemote(new DummyTripleAPlayer() {
-      @Override
-      public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
-        return true;
-      }
-    });
+    TripleAPlayer player = MockObjects.getDummyPlayer();
+    when(player.confirmMoveInFaceOfAA(any(Collection.class))).thenReturn(true);
+    bridge.setRemote(player);
     bridge.setRandomSource(new ScriptedRandomSource(0));
     final Territory uk = territory("United Kingdom", m_data);
     final Territory we = territory("Western Europe", m_data);
@@ -825,7 +823,7 @@ public class RevisedTest {
     // Set up battle
     MustFightBattle battle =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(fic, false, null);
-    delegateBridge.setRemote(new DummyTripleAPlayer());
+    delegateBridge.setRemote(dummyPlayer);
     // fight
     ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 5);
     delegateBridge.setRandomSource(randomSource);
@@ -847,7 +845,7 @@ public class RevisedTest {
     assertValid(validResults);
     moveDelegate(m_data).end();
     battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(fic, false, null);
-    delegateBridge.setRemote(new DummyTripleAPlayer());
+    delegateBridge.setRemote(dummyPlayer);
     // fight
     randomSource = new ScriptedRandomSource(0, 5);
     delegateBridge.setRandomSource(randomSource);
@@ -869,7 +867,7 @@ public class RevisedTest {
     assertValid(validResults);
     moveDelegate(m_data).end();
     battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(fic, false, null);
-    delegateBridge.setRemote(new DummyTripleAPlayer());
+    delegateBridge.setRemote(dummyPlayer);
     // fight
     randomSource = new ScriptedRandomSource(0, 5);
     delegateBridge.setRandomSource(randomSource);
@@ -893,7 +891,7 @@ public class RevisedTest {
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers, null);
     tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(british);
-    bridge.setRemote(getDummyPlayer());
+    bridge.setRemote(dummyPlayer);
     // aa guns rolls 0 and hits
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, ScriptedRandomSource.ERROR}));
     // int PUsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
@@ -919,7 +917,7 @@ public class RevisedTest {
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers, null);
     tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(british);
-    bridge.setRemote(getDummyPlayer());
+    bridge.setRemote(dummyPlayer);
     // should be exactly 3 rolls total. would be exactly 2 rolls if the number of units being shot at = max dice side of
     // the AA gun, because
     // the casualty selection roll would not happen in LL
@@ -948,7 +946,7 @@ public class RevisedTest {
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers, null);
     tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(british);
-    bridge.setRemote(getDummyPlayer());
+    bridge.setRemote(dummyPlayer);
     // aa guns rolls 0 and hits, next 5 dice are for the bombing raid cost for the
     // surviving bombers
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0, 0, 0, 0, ScriptedRandomSource.ERROR}));
@@ -1064,7 +1062,7 @@ public class RevisedTest {
     final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
     final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
     assertTrue(attackSubs < defendSubs);
-    bridge.setRemote(new DummyTripleAPlayer());
+    bridge.setRemote(dummyPlayer);
     // fight, each sub should fire
     // and hit
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 0, ScriptedRandomSource.ERROR);
@@ -1119,7 +1117,7 @@ public class RevisedTest {
     final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
     final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
     assertTrue(attackSubs < defendSubs);
-    bridge.setRemote(new DummyTripleAPlayer());
+    bridge.setRemote(dummyPlayer);
     // attacking subs fires, defending destroyer and sub still gets to fire
     // attacking subs still gets to fire even if defending sub hits
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 2, 0, 0, ScriptedRandomSource.ERROR);
@@ -1178,7 +1176,7 @@ public class RevisedTest {
     final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
     final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
     assertTrue(attackSubs < defendSubs);
-    bridge.setRemote(new DummyTripleAPlayer());
+    bridge.setRemote(dummyPlayer);
     // attacking subs fires, defending destroyer and sub still gets to fire
     // attacking subs still gets to fire even if defending sub hits
     // battleship will not get to fire since it is killed by defending sub's sneak attack
@@ -1218,7 +1216,7 @@ public class RevisedTest {
     final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
     final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
     assertTrue(attackSubs < defendSubs);
-    bridge.setRemote(new DummyTripleAPlayer());
+    bridge.setRemote(dummyPlayer);
     // attacking sub hits with sneak attack, but defending sub gets to return fire because it is a sub and this is
     // revised rules
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 0, ScriptedRandomSource.ERROR);
@@ -1277,7 +1275,7 @@ public class RevisedTest {
     final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
     final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
     assertTrue(attackSubs < defendSubs);
-    bridge.setRemote(new DummyTripleAPlayer());
+    bridge.setRemote(dummyPlayer);
     // attacking subs fires, defending destroyer and sub still gets to fire
     // attacking subs still gets to fire even if defending sub hits
     // battleship will not get to fire since it is killed by defending sub's sneak attack
@@ -1289,6 +1287,7 @@ public class RevisedTest {
     assertEquals(3, attacked.getUnits().size());
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void testAttackDestroyerAndSubsAgainstSubAndDestroyer() {
     final String defender = "Germans";
@@ -1318,18 +1317,22 @@ public class RevisedTest {
     final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
     final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
     assertTrue(attackSubs < defendSubs);
-    bridge.setRemote(new DummyTripleAPlayer());
-    bridge.setRemote(new DummyTripleAPlayer() {
-      @Override
-      public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
-          final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-          final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
-          final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
-          final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
-          final boolean allowMultipleHitsPerUnit) {
-        return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), Collections.<Unit>emptyList(), false);
-      }
-    });
+    TripleAPlayer player = MockObjects.getDummyPlayer();
+    when(player.selectCasualties(any(Collection.class), any(Map.class), any(int.class), any(String.class),
+        any(DiceRoll.class), any(PlayerID.class), any(Collection.class), any(PlayerID.class), any(Collection.class),
+        any(boolean.class), any(Collection.class),
+        any(CasualtyList.class), any(GUID.class), any(Territory.class), any(boolean.class)))
+            .thenAnswer(new Answer<CasualtyDetails>() {
+
+              @Override
+              public CasualtyDetails answer(InvocationOnMock invocation) throws Throwable {
+                Collection<Unit> selectFrom = (Collection<Unit>) invocation.getArguments()[0];
+                return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), new ArrayList<>(),
+                    false);
+              }
+
+            });
+    bridge.setRemote(player);
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 0, 0, 0, ScriptedRandomSource.ERROR);
     bridge.setRandomSource(randomSource);
     battle.fight(bridge);
@@ -1353,7 +1356,7 @@ public class RevisedTest {
     final MoveDelegate move = moveDelegate(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
     bridge.setStepName("CombatMove");
-    bridge.setRemote(new DummyTripleAPlayer() {});
+    bridge.setRemote(dummyPlayer);
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
     // remove the russians units in caucasus so we can blitz
@@ -1428,7 +1431,7 @@ public class RevisedTest {
     addTo(germany, armour(m_data).create(3, germans));
     final ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
     bridge.setStepName("CombatMove");
-    bridge.setRemote(getDummyPlayer());
+    bridge.setRemote(dummyPlayer);
     moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(m_data).start();
     // load two transports, 1 tank each
@@ -1484,10 +1487,6 @@ public class RevisedTest {
     moveDelegate.start();
     final String error = moveDelegate.move(sz14.getUnits().getUnits(), new Route(sz14, sz15, sz34));
     assertError(error);
-  }
-
-  private ITripleAPlayer getDummyPlayer() {
-    return new DummyTripleAPlayer();
   }
 
   public void testTransportIsTransport() {

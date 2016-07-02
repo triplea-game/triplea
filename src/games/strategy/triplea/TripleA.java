@@ -1,18 +1,19 @@
 package games.strategy.triplea;
 
+import static org.mockito.Mockito.mock;
+
 import java.awt.Frame;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import games.strategy.engine.framework.IGameLoader;
-import games.strategy.ui.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.IGame;
+import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
@@ -22,7 +23,6 @@ import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.DefaultSoundChannel;
-import games.strategy.sound.DummySoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ai.fastAI.FastAI;
@@ -34,9 +34,9 @@ import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.HeadlessUIContext;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.display.DummyTripleADisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.ui.display.TripleADisplay;
+import games.strategy.ui.SwingAction;
 
 @MapSupport
 public class TripleA implements IGameLoader {
@@ -120,8 +120,13 @@ public class TripleA implements IGameLoader {
       } else {
         headlessFrameUI = null;
       }
-      display = new DummyTripleADisplay(headlessFrameUI);
-      soundChannel = new DummySoundChannel();
+      display = new TripleADisplay(mock(TripleAFrame.class)){
+        @Override
+        public void shutDown(){
+          headlessFrameUI.stopGame();
+        }
+      };
+      soundChannel = mock(ISound.class);
       game.addDisplay(display);
       game.addSoundChannel(soundChannel);
 

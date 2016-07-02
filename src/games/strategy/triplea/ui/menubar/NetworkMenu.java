@@ -6,6 +6,8 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JMenu;
 
+import org.mockito.internal.util.MockUtil;
+
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.networkMaintenance.BanPlayerAction;
 import games.strategy.engine.framework.networkMaintenance.BootPlayerAction;
@@ -13,26 +15,24 @@ import games.strategy.engine.framework.networkMaintenance.MutePlayerAction;
 import games.strategy.engine.framework.networkMaintenance.SetPasswordAction;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
-import games.strategy.engine.message.DummyMessenger;
 import games.strategy.net.IServerMessenger;
 import games.strategy.triplea.ui.PlayersPanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
-
 
 public class NetworkMenu {
 
   private final IGame game;
   private final TripleAFrame frame;
 
-  public NetworkMenu(TripleAMenuBar menuBar, InGameLobbyWatcherWrapper watcher, TripleAFrame  frame) {
+  public NetworkMenu(TripleAMenuBar menuBar, InGameLobbyWatcherWrapper watcher, TripleAFrame frame) {
     this.frame = frame;
     game = frame.getGame();
 
     // revisit
     // if we are not a client or server game
     // then this will not create the network menu
-    if (game.getMessenger() instanceof DummyMessenger) {
+    if (new MockUtil().isMock(game.getMessenger())) {
       return;
     }
     final JMenu menuNetwork = new JMenu("Network");

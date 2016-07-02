@@ -19,6 +19,7 @@ import games.strategy.net.INode;
 import games.strategy.net.MacFinder;
 import games.strategy.net.ServerMessenger;
 import games.strategy.test.TestUtil;
+import games.strategy.triplea.delegate.MockObjects;
 import games.strategy.util.ThreadUtil;
 
 public class RemoteMessengerTest {
@@ -30,7 +31,7 @@ public class RemoteMessengerTest {
   @Before
   public void setUp() throws Exception {
     // simple set up for non networked testing
-    m_messenger = new DummyMessenger();
+    m_messenger = MockObjects.getDummyMessenger();
     m_remoteMessenger = new RemoteMessenger(new UnifiedMessenger(m_messenger));
     SERVER_PORT = TestUtil.getUniquePort();
   }

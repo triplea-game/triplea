@@ -12,7 +12,6 @@ import org.junit.Test;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.message.ChannelMessenger;
-import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.message.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
@@ -20,6 +19,7 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.ServerMessenger;
 import games.strategy.test.TestUtil;
+import games.strategy.triplea.delegate.MockObjects;
 
 /**
  * Comment(KG): This test is broken, If you run each test individually they all work, but when running all test in the
@@ -68,8 +68,7 @@ public class VaultTest {
 
   @Test
   public void testLocal() throws NotUnlockedException {
-    final DummyMessenger messenger = new DummyMessenger();
-    final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
+    final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(MockObjects.getDummyMessenger());
     final ChannelMessenger channelMessenger = new ChannelMessenger(unifiedMessenger);
     // RemoteMessenger remoteMessenger = new RemoteMessenger(unifiedMessenger);
     final Vault vault = new Vault(channelMessenger);

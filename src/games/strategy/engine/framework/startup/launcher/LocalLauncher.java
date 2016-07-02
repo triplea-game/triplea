@@ -1,5 +1,7 @@
 package games.strategy.engine.framework.startup.launcher;
 
+import static org.mockito.Mockito.mock;
+
 import java.awt.Component;
 import java.util.HashMap;
 import java.util.Set;
@@ -13,7 +15,6 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.net.IServerMessenger;
@@ -38,7 +39,7 @@ public class LocalLauncher extends AbstractLauncher {
     ServerGame game = null;
     try {
       m_gameData.doPreGameStartDataModifications(m_playerListing);
-      final IServerMessenger messenger = new DummyMessenger();
+      final IServerMessenger messenger = mock(IServerMessenger.class);
       final Messengers messengers = new Messengers(messenger);
       final Set<IGamePlayer> gamePlayers =
           m_gameData.getGameLoader().createPlayers(m_playerListing.getLocalPlayerTypes());

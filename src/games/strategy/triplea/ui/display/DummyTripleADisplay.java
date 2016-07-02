@@ -13,7 +13,12 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
-
+/**
+ * 
+ * @deprecated Use Mock Objects instead
+ *
+ */
+@Deprecated
 public class DummyTripleADisplay implements ITripleADisplay {
   private final MainGameFrame m_ui;
 
