@@ -1,16 +1,17 @@
 package games.strategy.triplea.delegate;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.*;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -24,7 +25,6 @@ import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Node;
-import games.strategy.net.ServerMessenger;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
@@ -83,19 +83,37 @@ public class MockObjects {
   }
 
   public static IServerMessenger getDummyMessenger() {
-    IServerMessenger messenger = null;
-    try {
-      messenger = spy(new ServerMessenger("", 0){
-        @Override
-        public void removeConnection(INode node){
-          for (final IConnectionChangeListener listener : connectionListeners) {
-            listener.connectionRemoved(node);
-          }
+    IServerMessenger messenger = mock(IServerMessenger.class);
+    List<IConnectionChangeListener> connectionListeners = new CopyOnWriteArrayList<>();
+    doAnswer(new Answer<Void>() {
+
+      @Override
+      public Void answer(InvocationOnMock invocation) throws Throwable {
+        connectionListeners.add(invocation.getArgumentAt(0, IConnectionChangeListener.class));
+        return null;
+      }
+
+    }).when(messenger).addConnectionChangeListener(any(IConnectionChangeListener.class));
+    doAnswer(new Answer<Void>() {
+
+      @Override
+      public Void answer(InvocationOnMock invocation) throws Throwable {
+        connectionListeners.remove(invocation.getArgumentAt(0, IConnectionChangeListener.class));
+        return null;
+      }
+
+    }).when(messenger).removeConnectionChangeListener(any(IConnectionChangeListener.class));
+    doAnswer(new Answer<Void>() {
+
+      @Override
+      public Void answer(InvocationOnMock invocation) throws Throwable {
+        for (final IConnectionChangeListener listener : connectionListeners) {
+          listener.connectionRemoved(invocation.getArgumentAt(0, INode.class));
         }
-      });
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+        return null;
+      }
+
+    }).when(messenger).removeConnection(any(INode.class));
     Node dummyNode;
     try {
       dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);
@@ -114,9 +132,6 @@ public class MockObjects {
     when(messenger.IsUsernameMiniBanned(any(String.class))).thenReturn(false);
     when(messenger.IsIpMiniBanned(any(String.class))).thenReturn(false);
     when(messenger.IsMacMiniBanned(any(String.class))).thenReturn(false);
-    doCallRealMethod().when(messenger).addConnectionChangeListener(any(IConnectionChangeListener.class));
-    doCallRealMethod().when(messenger).removeConnectionChangeListener(any(IConnectionChangeListener.class));
-    doCallRealMethod().when(messenger).removeConnection(any(INode.class));
     return messenger;
   }
 }
