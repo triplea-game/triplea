@@ -51,7 +51,8 @@ public class ProBidAI {
 
   private GameData data;
 
-  public void bid(int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data, final PlayerID player) {
+  public void bid(int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data,
+      final PlayerID player) {
     ProLogger.info("Starting bid purchase phase");
 
     // Current data at the start of combat move
@@ -96,9 +97,10 @@ public class ProBidAI {
       // transport/factory/aa unit
       if (((UnitAttachment.get(x).getAttack(player) - UnitAttachment.get(x).getDefense(player) >= 3 || UnitAttachment
           .get(x).getDefense(player) - UnitAttachment.get(x).getAttack(player) >= 3) || UnitAttachment.get(x)
-          .getDefense(player) < 1)
-          && !(UnitAttachment.get(x).getCanProduceUnits() || (UnitAttachment.get(x).getTransportCapacity() > 0 && Matches.UnitTypeIsSea
-              .match(x)))) {
+              .getDefense(player) < 1)
+          && !(UnitAttachment.get(x).getCanProduceUnits()
+              || (UnitAttachment.get(x).getTransportCapacity() > 0 && Matches.UnitTypeIsSea
+                  .match(x)))) {
         // maybe the map only has weird units. make sure there is at least one of each type before we decide not to use
         // it (we are relying
         // on the fact that map makers generally put specialty units AFTER useful units in their production lists [ie:
@@ -480,7 +482,8 @@ public class ProBidAI {
       // gibralter, etc.
       for (final Territory noRouteTerr : ourTerrs) {
         // do not place bids on areas that have no direct land access to an enemy, unless the value is 3 or greater
-        if (distanceToEnemy(noRouteTerr, data, player, false) < 1 && TerritoryAttachment.getProduction(noRouteTerr) < 3) {
+        if (distanceToEnemy(noRouteTerr, data, player, false) < 1
+            && TerritoryAttachment.getProduction(noRouteTerr) < 3) {
           ourSemiRankedBidTerrs.remove(noRouteTerr);
         }
       }
@@ -1091,7 +1094,8 @@ public class ProBidAI {
   /**
    * true or false...does a land route exist from territory to any enemy owned capitol?
    */
-  private static boolean hasLandRouteToEnemyOwnedCapitol(final Territory t, final PlayerID player, final GameData data) {
+  private static boolean hasLandRouteToEnemyOwnedCapitol(final Territory t, final PlayerID player,
+      final GameData data) {
     for (final PlayerID ePlayer : data.getPlayerList().getPlayers()) {
       for (final Territory capital : TerritoryAttachment.getAllCapitals(ePlayer, data)) {
         if (data.getRelationshipTracker().isAtWar(player, capital.getOwner())
@@ -1226,7 +1230,7 @@ public class ProBidAI {
       if (lRCap
           && (!Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits)
               .match(eTerr) && !Matches.territoryIsAlliedAndHasAlliedUnitMatching(data, player,
-              Matches.UnitCanProduceUnits).match(eTerr))) {
+                  Matches.UnitCanProduceUnits).match(eTerr))) {
         final Route eCapRoute =
             findNearest(eTerr,
                 Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits),
@@ -1409,8 +1413,9 @@ public class ProBidAI {
     }
     final Set<Territory> waterTerr = data.getMap().getNeighbors(location, Matches.TerritoryIsWater);
     while (playerIter.hasNext()) {
-      float seaStrength = 0.0F, firstStrength = 0.0F, secondStrength = 0.0F, blitzStrength = 0.0F, strength = 0.0F, airStrength =
-          0.0F;
+      float seaStrength = 0.0F, firstStrength = 0.0F, secondStrength = 0.0F, blitzStrength = 0.0F, strength = 0.0F,
+          airStrength =
+              0.0F;
       ePlayer = playerIter.next();
       final CompositeMatch<Unit> enemyPlane =
           new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanMove);
@@ -1766,8 +1771,8 @@ public class ProBidAI {
           }
           for (final Unit u : neighbor.getUnits()) {
             Route route1 = new Route();
-            for (Route r : routes){
-              route1 = Route.join(route1,r);
+            for (final Route r : routes) {
+              route1 = Route.join(route1, r);
             }
             if (unitCondition.match(u) && Matches.UnitHasEnoughMovementForRoute(route1).match(u)) {
               units.add(u);
@@ -1797,6 +1802,9 @@ public class ProBidAI {
    */
   private static List<Unit> findPlaneAttackersThatCanLand(final Territory start, final int maxDistance,
       final PlayerID player, final GameData data, final List<Territory> ignore, final List<Territory> checked) {
+    if (checked.isEmpty()) {
+      return new ArrayList<>();
+    }
     final IntegerMap<Territory> distance = new IntegerMap<>();
     final IntegerMap<Unit> unitDistance = new IntegerMap<>();
     final List<Unit> units = new ArrayList<>();
@@ -1968,24 +1976,24 @@ public class ProBidAI {
   }
 
   private static void reorder(final List<?> reorder, final Map<?, ? extends Number> map, final boolean greaterThan) {
-    Collections.sort(reorder, (Comparator<Object>)(o1, o2) -> {
-        double v1 = safeGet(map, o1);
-        double v2 = safeGet(map, o2);
-        if (greaterThan) {
-          final double t = v1;
-          v1 = v2;
-          v2 = t;
-        }
-        if (v1 > v2) {
-          return 1;
-        } else if (v1 == v2) {
-          return 0;
-        } else {
-          return -1;
-        }
+    Collections.sort(reorder, (Comparator<Object>) (o1, o2) -> {
+      double v1 = safeGet(map, o1);
+      double v2 = safeGet(map, o2);
+      if (greaterThan) {
+        final double t = v1;
+        v1 = v2;
+        v2 = t;
+      }
+      if (v1 > v2) {
+        return 1;
+      } else if (v1 == v2) {
+        return 0;
+      } else {
+        return -1;
+      }
     });
   }
-  
+
   private static double safeGet(final Map<?, ? extends Number> map, final Object o1) {
     if (!map.containsKey(o1)) {
       return 0;
