@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.LocalPlayers;
@@ -40,7 +41,6 @@ public abstract class AbstractUIContext implements IUIContext {
   protected static final String SHOW_TRIGGERED_CHANCE_SUCCESSFUL = "ShowTriggeredChanceSuccessful";
   protected static final String SHOW_TRIGGERED_CHANCE_FAILURE = "ShowTriggeredChanceFailure";
   protected static final String SHOW_BATTLES_BETWEEN_AIS = "ShowBattlesBetweenAIs";
-  protected static final String AI_PAUSE_DURATION = "AIPauseDuration";
   protected static ResourceLoader m_resourceLoader;
   // instance
   protected boolean m_isShutDown = false;
@@ -55,18 +55,11 @@ public abstract class AbstractUIContext implements IUIContext {
   }
 
   public static int getAIPauseDuration() {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
-    return prefs.getInt(AI_PAUSE_DURATION, 400);
+    return ClientContext.aiSettings().getAiPauseDuration();
   }
 
   public static void setAIPauseDuration(final int value) {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
-    prefs.putInt(AI_PAUSE_DURATION, value);
-    try {
-      prefs.flush();
-    } catch (final BackingStoreException ex) {
-      ClientLogger.logQuietly(ex);
-    }
+    ClientContext.aiSettings().setAiPauseDuration(String.valueOf(value));
   }
 
   @Override
@@ -420,19 +413,12 @@ public abstract class AbstractUIContext implements IUIContext {
 
   @Override
   public boolean getShowBattlesBetweenAIs() {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
-    return prefs.getBoolean(SHOW_BATTLES_BETWEEN_AIS, true);
+    return ClientContext.aiSettings().showBattlesBetweenAi();
   }
 
   @Override
   public void setShowBattlesBetweenAIs(final boolean aBool) {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
-    prefs.putBoolean(SHOW_BATTLES_BETWEEN_AIS, aBool);
-    try {
-      prefs.flush();
-    } catch (final BackingStoreException ex) {
-      ClientLogger.logQuietly(ex);
-    }
+    ClientContext.aiSettings().setShowBattlesBetweenAi(aBool);
   }
 
   @Override

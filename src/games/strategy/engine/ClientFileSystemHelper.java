@@ -17,11 +17,11 @@ import java.net.URLDecoder;
  * during construction, depending upon ordering this can cause an infinite call loop.
  */
 public final class ClientFileSystemHelper {
+
   private ClientFileSystemHelper() {
 
   }
 
-  /** This method is available via ClientContext */
   public static File getRootFolder() {
     final String fileName = getGameRunnerFileLocation("GameRunner2.class");
 
@@ -128,15 +128,21 @@ public final class ClientFileSystemHelper {
   }
 
   public static File getUserMapsFolder() {
-    final File f = new File(getUserRootFolder(), "downloadedMaps");
-    if (!f.exists()) {
+    String path = ClientContext.folderSettings().getDownloadedMapPath();
+
+
+    File mapsFolder = new File(path);
+    if (!mapsFolder.exists()) {
       try {
-        f.mkdirs();
+        mapsFolder.mkdirs();
       } catch (final SecurityException e) {
-        ClientLogger.logQuietly(e);
+        ClientLogger.logError(e);
       }
     }
-    return f;
+    if(!mapsFolder.exists()) {
+      ClientLogger.logError("Error, downloaded maps folder does not exist: " + mapsFolder.getAbsolutePath());
+    }
+    return mapsFolder;
   }
 
   /** Create a temporary file, checked exceptions are re-thrown as unchecked */

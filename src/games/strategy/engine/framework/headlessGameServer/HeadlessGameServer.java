@@ -20,6 +20,7 @@ import javax.swing.WindowConstants;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.DebugUtils;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
@@ -255,9 +256,9 @@ public class HeadlessGameServer {
           @Override
           public void run() {
             System.out.println("Remote Stop Game Initiated.");
-            SaveGameFileChooser.ensureDefaultDirExists();
-            final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
-            final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
+            SaveGameFileChooser.ensureMapsFolderExists();
+            final File f1 = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
+            final File f2 = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
             final File f;
             if (f1.lastModified() > f2.lastModified()) {
               f = f2;
