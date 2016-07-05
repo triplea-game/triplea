@@ -2,10 +2,10 @@ package games.strategy.engine.framework.map.download;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
 import games.strategy.debug.ClientLogger;
@@ -48,7 +48,7 @@ public class DownloadFile {
   protected DownloadFile(DownloadFileDescription download, Consumer<Integer> progressUpdateListener) {
     this.downloadDescription = download;
     this.progressUpdateListener = progressUpdateListener;
-    this.downloadCompletedListeners = Lists.newArrayList();
+    this.downloadCompletedListeners = new ArrayList<>();
   }
 
   public void startAsyncDownload() {

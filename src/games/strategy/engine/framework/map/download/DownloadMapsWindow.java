@@ -9,6 +9,7 @@ import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -389,7 +390,7 @@ public class DownloadMapsWindow extends JFrame {
       DefaultListModel<String> listModel) {
     return (e) -> {
       List<String> selectedValues = gamesList.getSelectedValuesList();
-      List<DownloadFileDescription> downloadList = Lists.newArrayList();
+      List<DownloadFileDescription> downloadList = new ArrayList<>();
       for (DownloadFileDescription map : maps) {
         if (selectedValues.contains(map.getMapName())) {
           downloadList.add(map);

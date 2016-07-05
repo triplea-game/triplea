@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.map.download;
 
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -11,7 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import games.strategy.ui.SwingComponents;
@@ -31,7 +31,7 @@ public final class MapDownloadProgressPanel extends JPanel {
   private JPanel labelGrid = SwingComponents.gridPanel(0, 1);
   private JPanel progressGrid = SwingComponents.gridPanel(0, 1);
 
-  private List<DownloadFileDescription> downloadList = Lists.newArrayList();
+  private List<DownloadFileDescription> downloadList = new ArrayList<>();
   private Map<DownloadFileDescription, JLabel> labels = Maps.newHashMap();
   private Map<DownloadFileDescription, JProgressBar> progressBars = Maps.newHashMap();
 
@@ -48,7 +48,7 @@ public final class MapDownloadProgressPanel extends JPanel {
 
 
   public void download(List<DownloadFileDescription> newDownloads) {
-    List<DownloadFileDescription> brandNewDownloads = Lists.newArrayList();
+    List<DownloadFileDescription> brandNewDownloads = new ArrayList<>();
     for (DownloadFileDescription download : newDownloads) {
       if (!downloadList.contains(download) && !download.isDummyUrl() && !download.getMapName().isEmpty()) {
         brandNewDownloads.add(download);

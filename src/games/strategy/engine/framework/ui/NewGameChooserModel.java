@@ -39,7 +39,14 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
 
 
   public NewGameChooserModel() {
-    populate();
+    final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
+
+    final List<NewGameChooserEntry> entries = new ArrayList<>(parsedMapSet);
+    Collections.sort(entries, NewGameChooserEntry.getComparator());
+
+    for (final NewGameChooserEntry entry : entries) {
+      addElement(entry);
+    }
   }
 
   @Override
@@ -49,18 +56,6 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
 
   public static File getDefaultMapsDir() {
     return new File(ClientFileSystemHelper.getRootFolder(), "maps");
-  }
-
-
-  private void populate() {
-    final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
-
-    final List<NewGameChooserEntry> entries = Lists.newArrayList(parsedMapSet);
-    Collections.sort(entries, NewGameChooserEntry.getComparator());
-
-    for (final NewGameChooserEntry entry : entries) {
-      addElement(entry);
-    }
   }
 
   private static List<File> allMapFiles() {
@@ -95,7 +90,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
 
   private static List<NewGameChooserEntry> populateFromZip(final File map) {
     boolean badMapZip = false;
-    final List<NewGameChooserEntry> entries = Lists.newArrayList();
+    final List<NewGameChooserEntry> entries = new ArrayList<>();
 
     try (ZipFile zipFile = new ZipFile(map);
         final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
@@ -207,9 +202,14 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   }
 
   private static List<NewGameChooserEntry> populateFromDirectory(final File mapDir) {
-    final List<NewGameChooserEntry> entries = Lists.newArrayList();
+    final List<NewGameChooserEntry> entries = new ArrayList<>();
 
-    final File games = new File(mapDir, "games");
+    // use contents under a "mapDir/map" folder if present, otherwise use the "mapDir/" contents directly
+    final File mapFolder = new File(mapDir, "map");
+
+    final File parentFolder = mapFolder.exists() ? mapFolder : mapDir;
+    final File games = new File(parentFolder, "games");
+
     if (!games.exists()) {
       // no games in this map dir
       return entries;

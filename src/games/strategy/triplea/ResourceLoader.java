@@ -7,18 +7,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringTokenizer;
 
-import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
-import games.strategy.util.Match;
+import games.strategy.ui.SwingComponents;
 import games.strategy.util.UrlStreams;
 
 /**
@@ -83,6 +81,7 @@ public class ResourceLoader {
     final String zipName = dirName + ".zip";
     final List<File> candidates = new ArrayList<>();
     // prioritize user maps folder over root folder
+    candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), dirName + File.separator + "map"));
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), dirName));
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), zipName));
     candidates.add(new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps", dirName));
@@ -91,26 +90,16 @@ public class ResourceLoader {
     String normalizedZipName = normalizeMapZipName(zipName);
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), normalizedZipName));
 
-
-    final Collection<File> existing = Match.getMatches(candidates, new Match<File>() {
-      @Override
-      public boolean match(final File f) {
-        return f.exists();
-      }
-    });
-    if (existing.size() > 1) {
-      System.out.println("INFO: Found too many files for: " + mapName + "  found: " + existing);
+    Optional<File> match = candidates.stream().filter(file -> file.exists()).findFirst();
+    if(!match.isPresent()) {
+      ClientLogger.logError("Could not find map: " +mapName + " in any of the following locations: " + candidates);
     }
-    // At least one must exist
-    if (existing.isEmpty()) {
-      return Collections.emptyList();
-    }
-    final File match = existing.iterator().next();
+    ClientLogger.logQuietly("Loading map: " + mapName + ", from: " + match.get().getAbsolutePath());
 
     final List<String> rVal = new ArrayList<>();
-    rVal.add(match.getAbsolutePath());
+    rVal.add(match.get().getAbsolutePath());
     // find dependencies
-    try (final URLClassLoader url = new URLClassLoader(new URL[] {match.toURI().toURL()})) {
+    try (final URLClassLoader url = new URLClassLoader(new URL[] {match.get().toURI().toURL()})) {
       final URL dependencesURL = url.getResource("dependencies.txt");
       if (dependencesURL != null) {
         final java.util.Properties dependenciesFile = new java.util.Properties();
@@ -181,7 +170,7 @@ public class ResourceLoader {
     // Return first any match that is not in the assets folder (we expect that to be the users maps folder (loading from
     // map.zip))
     // If we don't have any matches, then return any matches we had from the assets folder
-    for (URL element : getMatchingResources(path)) {// Collections.list(m_loader.getResources(path))) {
+    for (URL element : getMatchingResources(path)) {
       if (element.toString().contains(RESOURCE_FOLDER)) {
         defaultUrl = element;
       } else {

@@ -62,7 +62,7 @@ public class MapDownloadListSortTest {
   @Test
   public void testSortingUnSortedListWithHeaders() {
     List<DownloadFileDescription> downloads =
-        Lists.newArrayList(HEADER, MAP_B, MAP_A, HEADER, MAP_D, MAP_C, HEADER, HEADER);
+    Lists.newArrayList(HEADER, MAP_B, MAP_A, HEADER, MAP_D, MAP_C, HEADER, HEADER);
     List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
     assertThat(sorted.get(0).isDummyUrl(), is(true));
     assertThat(sorted.get(1).getMapName(), is(MAP_A.getMapName()));
