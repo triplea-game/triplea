@@ -201,20 +201,12 @@ public class ProTerritoryValueUtils {
       return 0.0;
     }
 
-    // Find nearby capitals and factories
-    final GameData data = ProData.getData();
-    Set<Territory> neighborTerritories = new HashSet<>();
-    for (int i = 9; i <= 30; i++) {
-      neighborTerritories = data.getMap().getNeighbors(t, i);
-      neighborTerritories.retainAll(enemyCapitalsAndFactoriesMap.keySet());
-      if (!neighborTerritories.isEmpty()) {
-        break;
-      }
-    }
-
     // Determine value based on enemy factory land distance
     final List<Double> values = new ArrayList<>();
-    for (final Territory enemyCapitalOrFactory : neighborTerritories) {
+    final GameData data = ProData.getData();
+    final Set<Territory> nearbyEnemyCapitalsAndFactories =
+        findNearbyEnemyCapitalsAndFactories(t, enemyCapitalsAndFactoriesMap);
+    for (final Territory enemyCapitalOrFactory : nearbyEnemyCapitalsAndFactories) {
       final int distance = data.getMap().getDistance(t, enemyCapitalOrFactory,
           ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, true));
       if (distance > 0) {
@@ -267,19 +259,11 @@ public class ProTerritoryValueUtils {
       return 0.0;
     }
 
-    // Find nearby capitals and factories
-    Set<Territory> neighborTerritories = new HashSet<>();
-    for (int i = 9; i <= 30; i++) {
-      neighborTerritories = data.getMap().getNeighbors(t, i);
-      neighborTerritories.retainAll(enemyCapitalsAndFactoriesMap.keySet());
-      if (!neighborTerritories.isEmpty()) {
-        break;
-      }
-    }
-
     // Determine value based on enemy factory distance
     final List<Double> values = new ArrayList<>();
-    for (final Territory enemyCapitalOrFactory : neighborTerritories) {
+    final Set<Territory> nearbyEnemyCapitalsAndFactories =
+        findNearbyEnemyCapitalsAndFactories(t, enemyCapitalsAndFactoriesMap);
+    for (final Territory enemyCapitalOrFactory : nearbyEnemyCapitalsAndFactories) {
       final Route route = data.getMap().getRoute_IgnoreEnd(t, enemyCapitalOrFactory,
           ProMatches.territoryCanMoveSeaUnits(player, data, true));
       if (route == null || MoveValidator.validateCanal(route, null, player, data) != null) {
@@ -328,6 +312,19 @@ public class ProTerritoryValueUtils {
     }
     final double value = capitalOrFactoryValue / 100 + nearbyLandValue / 10;
     return value;
+  }
+
+  private static Set<Territory> findNearbyEnemyCapitalsAndFactories(final Territory t,
+      final Map<Territory, Double> enemyCapitalsAndFactoriesMap) {
+    Set<Territory> nearbyEnemyCapitalsAndFactories = new HashSet<>();
+    for (int i = 9; i <= 30; i++) {
+      nearbyEnemyCapitalsAndFactories = ProData.getData().getMap().getNeighbors(t, i);
+      nearbyEnemyCapitalsAndFactories.retainAll(enemyCapitalsAndFactoriesMap.keySet());
+      if (!nearbyEnemyCapitalsAndFactories.isEmpty()) {
+        break;
+      }
+    }
+    return nearbyEnemyCapitalsAndFactories;
   }
 
 }
