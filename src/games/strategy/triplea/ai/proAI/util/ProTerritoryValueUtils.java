@@ -119,9 +119,19 @@ public class ProTerritoryValueUtils {
       if (!territoriesThatCantBeHeld.contains(t) && t.isWater()
           && !data.getMap().getNeighbors(t, Matches.TerritoryIsWater).isEmpty()) {
 
+        // Find nearby capitals and factories
+        Set<Territory> neighborTerritories = new HashSet<>();
+        for (int i = 9; i <= 30; i++) {
+          neighborTerritories = data.getMap().getNeighbors(t, i);
+          neighborTerritories.retainAll(enemyCapitalsAndFactoriesMap.keySet());
+          if (!neighborTerritories.isEmpty()) {
+            break;
+          }
+        }
+
         // Determine value based on enemy factory distance
         final List<Double> values = new ArrayList<>();
-        for (final Territory enemyCapitalOrFactory : enemyCapitalsAndFactoriesMap.keySet()) {
+        for (final Territory enemyCapitalOrFactory : neighborTerritories) {
           final Route route = data.getMap().getRoute_IgnoreEnd(t, enemyCapitalOrFactory,
               ProMatches.territoryCanMoveSeaUnits(player, data, true));
           if (route == null || MoveValidator.validateCanal(route, null, player, data) != null) {
@@ -160,6 +170,11 @@ public class ProTerritoryValueUtils {
               }
               nearbyLandValue += value;
             }
+            if (!territoryValueMap.containsKey(nearbyLandTerritory)) {
+              final double value = findLandValue(nearbyLandTerritory, player, maxLandMassSize,
+                  enemyCapitalsAndFactoriesMap, territoriesThatCantBeHeld, territoriesToAttack);
+              territoryValueMap.put(nearbyLandTerritory, value);
+            }
             nearbyLandValue += territoryValueMap.get(nearbyLandTerritory);
           }
         }
@@ -169,6 +184,7 @@ public class ProTerritoryValueUtils {
         territoryValueMap.put(t, 0.0);
       }
     }
+
     return territoryValueMap;
   }
 
