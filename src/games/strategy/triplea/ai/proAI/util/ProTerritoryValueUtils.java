@@ -25,7 +25,6 @@ public class ProTerritoryValueUtils {
 
   public static double findTerritoryAttackValue(final PlayerID player, final Territory t) {
     final GameData data = ProData.getData();
-
     final int isEnemyFactory = ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).match(t) ? 1 : 0;
     double value = 3 * TerritoryAttachment.getProduction(t) * (isEnemyFactory + 1);
     if (!t.isWater() && t.getOwner().isNull()) {
@@ -36,11 +35,13 @@ public class ProTerritoryValueUtils {
       final double TUVSwing = -(strength / 8) * ProData.minCostPerHitPoint;
       value += TUVSwing;
     }
+
     return value;
   }
 
   public static Map<Territory, Double> findTerritoryValues(final PlayerID player,
       final List<Territory> territoriesThatCantBeHeld, final List<Territory> territoriesToAttack) {
+
     return findTerritoryValues(player, territoriesThatCantBeHeld, territoriesToAttack,
         new HashSet<>(ProData.getData().getMap().getTerritories()));
   }
@@ -70,17 +71,17 @@ public class ProTerritoryValueUtils {
         territoryValueMap.put(t, value);
       }
     }
+
     return territoryValueMap;
   }
 
   public static Map<Territory, Double> findSeaTerritoryValues(final PlayerID player,
       final List<Territory> territoriesThatCantBeHeld) {
-    final GameData data = ProData.getData();
-    final List<Territory> allTerritories = data.getMap().getTerritories();
 
     // Determine value for water territories
     final Map<Territory, Double> territoryValueMap = new HashMap<>();
-    for (final Territory t : allTerritories) {
+    final GameData data = ProData.getData();
+    for (final Territory t : data.getMap().getTerritories()) {
       if (!territoriesThatCantBeHeld.contains(t) && t.isWater()
           && !data.getMap().getNeighbors(t, Matches.TerritoryIsWater).isEmpty()) {
 
@@ -128,14 +129,14 @@ public class ProTerritoryValueUtils {
         territoryValueMap.put(t, 0.0);
       }
     }
+
     return territoryValueMap;
   }
 
   private static int findMaxLandMassSize(final PlayerID player) {
-    final GameData data = ProData.getData();
-    final List<Territory> allTerritories = data.getMap().getTerritories();
     int maxLandMassSize = 1;
-    for (final Territory t : allTerritories) {
+    final GameData data = ProData.getData();
+    for (final Territory t : data.getMap().getTerritories()) {
       if (!t.isWater()) {
         final int landMassSize = 1 + data.getMap()
             .getNeighbors(t, 6, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, true)).size();
@@ -144,6 +145,7 @@ public class ProTerritoryValueUtils {
         }
       }
     }
+
     return maxLandMassSize;
   }
 
@@ -152,9 +154,9 @@ public class ProTerritoryValueUtils {
       final List<Territory> territoriesToAttack) {
 
     // Get all enemy factories and capitals (check if most territories have factories and if so remove them)
+    final Set<Territory> enemyCapitalsAndFactories = new HashSet<>();
     final GameData data = ProData.getData();
     final List<Territory> allTerritories = data.getMap().getTerritories();
-    final Set<Territory> enemyCapitalsAndFactories = new HashSet<>();
     enemyCapitalsAndFactories.addAll(
         Match.getMatches(allTerritories, ProMatches.territoryHasInfraFactoryAndIsOwnedByPlayersOrCantBeHeld(player,
             data, ProUtils.getPotentialEnemyPlayers(player), territoriesThatCantBeHeld)));
@@ -166,6 +168,7 @@ public class ProTerritoryValueUtils {
     enemyCapitalsAndFactories.addAll(ProUtils.getLiveEnemyCapitals(data, player));
     enemyCapitalsAndFactories.removeAll(territoriesToAttack);
 
+    // Find value for each enemy capital and factory
     final Map<Territory, Double> enemyCapitalsAndFactoriesMap = new HashMap<>();
     for (final Territory t : enemyCapitalsAndFactories) {
 
@@ -190,6 +193,7 @@ public class ProTerritoryValueUtils {
           * landMassSize / maxLandMassSize;
       enemyCapitalsAndFactoriesMap.put(t, value);
     }
+
     return enemyCapitalsAndFactoriesMap;
   }
 
@@ -247,6 +251,7 @@ public class ProTerritoryValueUtils {
     if (ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t)) {
       value *= 1.1; // prefer territories with factories
     }
+
     return value;
   }
 
@@ -311,11 +316,13 @@ public class ProTerritoryValueUtils {
       }
     }
     final double value = capitalOrFactoryValue / 100 + nearbyLandValue / 10;
+
     return value;
   }
 
   private static Set<Territory> findNearbyEnemyCapitalsAndFactories(final Territory t,
       final Map<Territory, Double> enemyCapitalsAndFactoriesMap) {
+
     Set<Territory> nearbyEnemyCapitalsAndFactories = new HashSet<>();
     for (int i = 9; i <= 30; i++) {
       nearbyEnemyCapitalsAndFactories = ProData.getData().getMap().getNeighbors(t, i);
@@ -324,6 +331,7 @@ public class ProTerritoryValueUtils {
         break;
       }
     }
+
     return nearbyEnemyCapitalsAndFactories;
   }
 
