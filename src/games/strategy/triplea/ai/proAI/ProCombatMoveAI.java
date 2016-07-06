@@ -88,8 +88,10 @@ public class ProCombatMoveAI {
       clearedTerritories.add(patd.getTerritory());
     }
     territoryManager.populateEnemyAttackOptions(clearedTerritories, new ArrayList<>());
+    Set<Territory> territoriesToCheck = new HashSet<>(clearedTerritories);
+    territoriesToCheck.addAll(ProData.myUnitTerritories);
     Map<Territory, Double> territoryValueMap =
-        ProTerritoryValueUtils.findTerritoryValues(player, new ArrayList<>(), clearedTerritories);
+        ProTerritoryValueUtils.findTerritoryValues(player, new ArrayList<>(), clearedTerritories, territoriesToCheck);
     determineTerritoriesThatCanBeHeld(attackOptions, territoryValueMap);
     prioritizeAttackOptions(player, attackOptions);
     removeTerritoriesThatArentWorthAttacking(attackOptions);
@@ -107,7 +109,10 @@ public class ProCombatMoveAI {
       }
     }
     territoryManager.populateEnemyAttackOptions(clearedTerritories, new ArrayList<>(possibleTransportTerritories));
-    territoryValueMap = ProTerritoryValueUtils.findTerritoryValues(player, new ArrayList<>(), clearedTerritories);
+    territoriesToCheck = new HashSet<>(clearedTerritories);
+    territoriesToCheck.addAll(ProData.myUnitTerritories);
+    territoryValueMap =
+        ProTerritoryValueUtils.findTerritoryValues(player, new ArrayList<>(), clearedTerritories, territoriesToCheck);
     determineTerritoriesThatCanBeHeld(attackOptions, territoryValueMap);
     removeTerritoriesThatArentWorthAttacking(attackOptions);
 
