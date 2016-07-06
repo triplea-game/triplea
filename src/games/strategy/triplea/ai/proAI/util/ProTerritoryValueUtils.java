@@ -41,6 +41,13 @@ public class ProTerritoryValueUtils {
 
   public static Map<Territory, Double> findTerritoryValues(final PlayerID player,
       final List<Territory> territoriesThatCantBeHeld, final List<Territory> territoriesToAttack) {
+    return findTerritoryValues(player, territoriesThatCantBeHeld, territoriesToAttack,
+        new HashSet<>(ProData.getData().getMap().getTerritories()));
+  }
+
+  public static Map<Territory, Double> findTerritoryValues(final PlayerID player,
+      final List<Territory> territoriesThatCantBeHeld, final List<Territory> territoriesToAttack,
+      final Set<Territory> territoriesToCheck) {
     final GameData data = ProData.getData();
     final List<Territory> allTerritories = data.getMap().getTerritories();
 
@@ -99,7 +106,7 @@ public class ProTerritoryValueUtils {
 
     // Determine value for land territories
     final Map<Territory, Double> territoryValueMap = new HashMap<>();
-    for (final Territory t : allTerritories) {
+    for (final Territory t : territoriesToCheck) {
       if (!t.isWater() && !territoriesThatCantBeHeld.contains(t)) {
 
         // Determine value based on enemy factory land distance
@@ -153,7 +160,7 @@ public class ProTerritoryValueUtils {
     }
 
     // Determine value for water territories
-    for (final Territory t : allTerritories) {
+    for (final Territory t : territoriesToCheck) {
       if (!territoriesThatCantBeHeld.contains(t) && t.isWater()
           && !data.getMap().getNeighbors(t, Matches.TerritoryIsWater).isEmpty()) {
 
