@@ -195,7 +195,7 @@ public class MapData implements Closeable {
 
   private Map<String, Image> territoryNameImages() {
     if (!m_resourceLoader.hasPath("territoryNames/")) {
-      return Collections.EMPTY_MAP;
+      return new HashMap<>();
     }
 
     Map<String, Image> territoryNameImages = new HashMap<>();
