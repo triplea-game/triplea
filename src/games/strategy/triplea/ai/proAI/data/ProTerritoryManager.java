@@ -1103,7 +1103,7 @@ public class ProTerritoryManager {
       combinedUnits.addAll(patd.getMaxAmphibUnits());
       ProLogger.debug("Removing territory that we can't successfully attack: " + t + ", maxWin%="
           + patd.getMaxBattleResult().getWinPercentage() + ", maxAttackers=" + combinedUnits.size());
-      result.remove(t);
+      result.remove(attackMap.get(t));
       for (final Set<Territory> territories : unitAttackMap.values()) {
         territories.remove(t);
       }
