@@ -200,11 +200,11 @@ public class MapData implements Closeable {
 
     Map<String, Image> territoryNameImages = new HashMap<>();
     for (final String name : m_centers.keySet()) {
-        Optional<Image> territoryNameImage = loadTerritoryNameImage(name);
+      Optional<Image> territoryNameImage = loadTerritoryNameImage(name);
 
-        if (territoryNameImage.isPresent()) {
-          territoryNameImages.put(name, territoryNameImage.get());
-        }
+      if (territoryNameImage.isPresent()) {
+        territoryNameImages.put(name, territoryNameImage.get());
+      }
     }
     return territoryNameImages;
   }
@@ -218,7 +218,7 @@ public class MapData implements Closeable {
       if (img == null) {
         img = loadImage(constructTerritoryNameImagePath(imageName));
       }
-    } catch(Exception e ) {
+    } catch (Exception e) {
       // TODO: this is checking for IllegalStateException - we should bubble up the Optional image load and just
       // check instead if the optional is empty.
       ClientLogger.logQuietly("Image loading failed: " + imageName, e);
@@ -228,7 +228,7 @@ public class MapData implements Closeable {
 
 
   private String constructTerritoryNameImagePath(String baseName) {
-    return "territoryNames/" + baseName+ ".png";
+    return "territoryNames/" + baseName + ".png";
   }
 
 
