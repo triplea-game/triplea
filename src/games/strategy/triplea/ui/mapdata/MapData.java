@@ -210,20 +210,21 @@ public class MapData implements Closeable {
   }
 
   private Optional<Image> loadTerritoryNameImage(String imageName) {
-    Image img = null;
+    Optional<Image> img;
     try {
       // try first file names that have underscores instead of spaces
       final String normalizedName = imageName.replace(' ', '_');
-      img = loadImage(constructTerritoryNameImagePath(normalizedName));
-      if (img == null) {
-        img = loadImage(constructTerritoryNameImagePath(imageName));
+      img = Optional.ofNullable(loadImage(constructTerritoryNameImagePath(normalizedName)));
+      if (!img.isPresent()) {
+        img = Optional.ofNullable(loadImage(constructTerritoryNameImagePath(imageName)));
       }
+      return img;
     } catch (Exception e) {
       // TODO: this is checking for IllegalStateException - we should bubble up the Optional image load and just
       // check instead if the optional is empty.
       ClientLogger.logQuietly("Image loading failed: " + imageName, e);
+      return Optional.empty();
     }
-    return Optional.ofNullable(img);
   }
 
 
