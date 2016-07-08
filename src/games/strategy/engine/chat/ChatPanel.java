@@ -22,8 +22,8 @@ import games.strategy.net.IMessenger;
 public class ChatPanel extends JPanel implements IChatPanel {
   private static final long serialVersionUID = -6177517517279779486L;
   static int s_divider_size = 5;
-  private ChatPlayerPanel m_chatPlayerPanel;
-  private ChatMessagePanel m_chatMessagePanel;
+  private ChatPlayerPanel chatPlayerPanel;
+  private ChatMessagePanel chatMessagePanel;
 
   /** Creates a new instance of ChatFrame */
   public ChatPanel(final IMessenger messenger, final IChannelMessenger channelMessenger,
@@ -51,15 +51,15 @@ public class ChatPanel extends JPanel implements IChatPanel {
 
   @Override
   public String getAllText() {
-    return m_chatMessagePanel.getAllText();
+    return chatMessagePanel.getAllText();
   }
 
   @Override
   public void shutDown() {
     // get first, before below turns it null
     final Chat chat = getChat();
-    m_chatMessagePanel.shutDown();
-    m_chatPlayerPanel.shutDown();
+    chatMessagePanel.shutDown();
+    chatPlayerPanel.shutDown();
     if (chat != null) {
       // now shut down
       chat.shutdown();
@@ -68,21 +68,21 @@ public class ChatPanel extends JPanel implements IChatPanel {
 
   @Override
   public void setChat(final Chat chat) {
-    m_chatMessagePanel.setChat(chat);
-    m_chatPlayerPanel.setChat(chat);
+    chatMessagePanel.setChat(chat);
+    chatPlayerPanel.setChat(chat);
   }
 
   @Override
   public Chat getChat() {
-    return m_chatMessagePanel.getChat();
+    return chatMessagePanel.getChat();
   }
 
   private void layoutComponents() {
     final Container content = this;
     content.setLayout(new BorderLayout());
     final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    split.setLeftComponent(m_chatMessagePanel);
-    split.setRightComponent(m_chatPlayerPanel);
+    split.setLeftComponent(chatMessagePanel);
+    split.setRightComponent(chatPlayerPanel);
     split.setOneTouchExpandable(false);
     split.setDividerSize(s_divider_size);
     split.setResizeWeight(1);
@@ -90,28 +90,28 @@ public class ChatPanel extends JPanel implements IChatPanel {
   }
 
   private void createComponents() {
-    m_chatPlayerPanel = new ChatPlayerPanel(null);
-    m_chatMessagePanel = new ChatMessagePanel(null);
+    chatPlayerPanel = new ChatPlayerPanel(null);
+    chatMessagePanel = new ChatMessagePanel(null);
   }
 
   @Override
   public void setPlayerRenderer(final DefaultListCellRenderer renderer) {
-    m_chatPlayerPanel.setPlayerRenderer(renderer);
+    chatPlayerPanel.setPlayerRenderer(renderer);
     // gets remaining width from parent component, so setting
     // the width is not really necessary
-    m_chatMessagePanel.setPreferredSize(new Dimension(30, m_chatMessagePanel.getPreferredSize().height));
+    chatMessagePanel.setPreferredSize(new Dimension(30, chatMessagePanel.getPreferredSize().height));
   }
 
   @Override
   public void setShowChatTime(final boolean showTime) {
-    m_chatMessagePanel.setShowTime(showTime);
+    chatMessagePanel.setShowTime(showTime);
   }
 
   public ChatPlayerPanel getChatPlayerPanel() {
-    return m_chatPlayerPanel;
+    return chatPlayerPanel;
   }
 
   public ChatMessagePanel getChatMessagePanel() {
-    return m_chatMessagePanel;
+    return chatMessagePanel;
   }
 }
