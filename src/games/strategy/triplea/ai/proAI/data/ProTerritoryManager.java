@@ -1098,12 +1098,12 @@ public class ProTerritoryManager {
     Collections.sort(territoriesToRemove);
     final List<ProTerritory> result = new ArrayList<>(attackMap.values());
     for (final Territory t : territoriesToRemove) {
-      final ProTerritory patd = attackMap.get(t);
-      final Set<Unit> combinedUnits = new HashSet<>(patd.getMaxUnits());
-      combinedUnits.addAll(patd.getMaxAmphibUnits());
+      final ProTerritory proTerritoryToRemove = attackMap.get(t);
+      final Set<Unit> combinedUnits = new HashSet<>(proTerritoryToRemove.getMaxUnits());
+      combinedUnits.addAll(proTerritoryToRemove.getMaxAmphibUnits());
       ProLogger.debug("Removing territory that we can't successfully attack: " + t + ", maxWin%="
-          + patd.getMaxBattleResult().getWinPercentage() + ", maxAttackers=" + combinedUnits.size());
-      result.remove(attackMap.get(t));
+          + proTerritoryToRemove.getMaxBattleResult().getWinPercentage() + ", maxAttackers=" + combinedUnits.size());
+      result.remove(proTerritoryToRemove);
       for (final Set<Territory> territories : unitAttackMap.values()) {
         territories.remove(t);
       }
