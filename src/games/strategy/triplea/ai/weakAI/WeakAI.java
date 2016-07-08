@@ -94,8 +94,7 @@ public class WeakAI extends AbstractAI {
     // find a land route to an enemy territory from our capitol
     final Route invasionRoute =
         Utils.findNearest(capitol, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data),
-            new CompositeMatchAnd<>(Matches.TerritoryIsLand,
-                new InverseMatch<>(Matches.TerritoryIsNeutralButNotWater)),
+            new CompositeMatchAnd<>(Matches.TerritoryIsLand, new InverseMatch<>(Matches.TerritoryIsNeutralButNotWater)),
             data);
     return invasionRoute == null;
   }
@@ -215,8 +214,8 @@ public class WeakAI extends AbstractAI {
     }
   }
 
-  private void populateTransportUnloadNonCom(final GameData data,
-      final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player) {
+  private void populateTransportUnloadNonCom(final GameData data, final List<Collection<Unit>> moveUnits,
+      final List<Route> moveRoutes, final PlayerID player) {
     final Route amphibRoute = getAmphibRoute(player, data);
     if (amphibRoute == null) {
       return;
@@ -352,9 +351,9 @@ public class WeakAI extends AbstractAI {
 
   private Route getMaxSeaRoute(final GameData data, final Territory start, final Territory destination,
       final PlayerID player) {
-    final Match<Territory> routeCond = new CompositeMatchAnd<>(Matches.TerritoryIsWater,
-        Matches.territoryHasEnemyUnits(player, data).invert(),
-        Matches.territoryHasNonAllowedCanal(player, null, data).invert());
+    final Match<Territory> routeCond =
+        new CompositeMatchAnd<>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data).invert(),
+            Matches.territoryHasNonAllowedCanal(player, null, data).invert());
     Route r = data.getMap().getRoute(start, destination, routeCond);
     if (r == null) {
       return null;
@@ -566,9 +565,9 @@ public class WeakAI extends AbstractAI {
     populateBomberCombat(data, moveUnits, moveRoutes, player);
     final Collection<Unit> unitsAlreadyMoved = new HashSet<>();
     // find the territories we can just walk into
-    final CompositeMatchOr<Territory> walkInto = new CompositeMatchOr<>(
-        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data),
-        Matches.isTerritoryFreeNeutral(data));
+    final CompositeMatchOr<Territory> walkInto =
+        new CompositeMatchOr<>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data),
+            Matches.isTerritoryFreeNeutral(data));
     final List<Territory> enemyOwned = Match.getMatches(data.getMap().getTerritories(), walkInto);
     Collections.shuffle(enemyOwned);
     Collections.sort(enemyOwned, new Comparator<Territory>() {
@@ -674,11 +673,11 @@ public class WeakAI extends AbstractAI {
       if (enemyStrength > 0) {
         final CompositeMatch<Unit> attackable = new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player),
             Matches.UnitIsStrategicBomber.invert(), new Match<Unit>() {
-          @Override
-          public boolean match(final Unit o) {
-            return !unitsAlreadyMoved.contains(o);
-          }
-        });
+              @Override
+              public boolean match(final Unit o) {
+                return !unitsAlreadyMoved.contains(o);
+              }
+            });
         attackable.add(Matches.UnitIsNotAA);
         attackable.add(Matches.UnitCanMove);
         attackable.add(Matches.UnitIsNotInfrastructure);
@@ -733,15 +732,13 @@ public class WeakAI extends AbstractAI {
       final List<Route> moveRoutes, final PlayerID player) {
     final Match<Territory> enemyFactory = Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player,
         Matches.UnitCanProduceUnitsAndCanBeDamaged);
-    final Match<Unit> ownBomber =
-        new CompositeMatchAnd<>(Matches.UnitIsStrategicBomber, Matches.unitIsOwnedBy(player));
+    final Match<Unit> ownBomber = new CompositeMatchAnd<>(Matches.UnitIsStrategicBomber, Matches.unitIsOwnedBy(player));
     for (final Territory t : data.getMap().getTerritories()) {
       final Collection<Unit> bombers = t.getUnits().getMatches(ownBomber);
       if (bombers.isEmpty()) {
         continue;
       }
-      final Match<Territory> routeCond =
-          new InverseMatch<>(Matches.territoryHasEnemyAAforCombatOnly(player, data));
+      final Match<Territory> routeCond = new InverseMatch<>(Matches.territoryHasEnemyAAforCombatOnly(player, data));
       final Route bombRoute = Utils.findNearest(t, enemyFactory, routeCond, data);
       moveUnits.add(bombers);
       moveRoutes.add(bombRoute);

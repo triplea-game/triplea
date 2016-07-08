@@ -13,8 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.ui.SwingAction;
 
 /**
  * GUI class used to display logging window and logging settings.
@@ -343,19 +343,17 @@ public class ProLogWindow extends javax.swing.JDialog {
     String message = "";
     if (v_tabPaneMain.getSelectedIndex() == 0) // Debugging
     {
-      message =
-          "Debugging\r\n"
-              + "\r\n"
-              + "AI Logging: When this is checked, the AI's will output their logs, as they come in, so you can see exactly what the AI is thinking.\r\n"
-              + "Note that if you check this on, you still have to press OK then reopen the settings window for the logs to actually start displaying.\r\n"
-              + "\r\n"
-              + "Log Depth: This setting lets you choose how deep you want the AI logging to be. Fine only displays the high-level events, like the start of a phase, etc.\r\n"
-              + "Finer displays medium-level events, such as attacks, reinforcements, etc.\r\n"
-              + "Finest displays all the AI logging available. Can be used for detailed ananlysis, but is a lot harder to read through it.\r\n"
-              + "\r\n"
-              + "Pause AI's: This checkbox pauses all the Dynamix AI's while it's checked, so you can look at the logs without the AI's outputing floods of information.\r\n"
-              + "\r\n"
-              + "Limit Log History To X Rounds: If this is checked, the AI log information will be limited to X rounds of information.\r\n";
+      message = "Debugging\r\n" + "\r\n"
+          + "AI Logging: When this is checked, the AI's will output their logs, as they come in, so you can see exactly what the AI is thinking.\r\n"
+          + "Note that if you check this on, you still have to press OK then reopen the settings window for the logs to actually start displaying.\r\n"
+          + "\r\n"
+          + "Log Depth: This setting lets you choose how deep you want the AI logging to be. Fine only displays the high-level events, like the start of a phase, etc.\r\n"
+          + "Finer displays medium-level events, such as attacks, reinforcements, etc.\r\n"
+          + "Finest displays all the AI logging available. Can be used for detailed ananlysis, but is a lot harder to read through it.\r\n"
+          + "\r\n"
+          + "Pause AI's: This checkbox pauses all the Dynamix AI's while it's checked, so you can look at the logs without the AI's outputing floods of information.\r\n"
+          + "\r\n"
+          + "Limit Log History To X Rounds: If this is checked, the AI log information will be limited to X rounds of information.\r\n";
     }
     final JTextArea label = new JTextArea(message);
     label.setFont(new Font("Segoe UI", Font.PLAIN, 12));

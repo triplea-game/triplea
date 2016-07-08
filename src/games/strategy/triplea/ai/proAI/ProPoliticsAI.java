@@ -1,5 +1,12 @@
 package games.strategy.triplea.ai.proAI;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
@@ -16,13 +23,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Pro politics AI.
@@ -51,10 +51,8 @@ public class ProPoliticsAI {
         BasicPoliticalAI.getPoliticalActionsTowardsWar(player, politicsDelegate.getTestedConditions(), data);
     ProLogger.trace("War options: " + actionChoicesTowardsWar);
     final List<PoliticalActionAttachment> validWarActions =
-        Match.getMatches(
-            actionChoicesTowardsWar,
-            new CompositeMatchAnd<>(Matches
-                .AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())));
+        Match.getMatches(actionChoicesTowardsWar, new CompositeMatchAnd<>(
+            Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())));
     ProLogger.trace("Valid War options: " + validWarActions);
 
     // Divide war actions into enemy and neutral
@@ -151,7 +149,8 @@ public class ProPoliticsAI {
         final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
         while (actionOtherIter.hasNext() && MAX_OTHER_ACTIONS_PER_TURN > 0) {
           final PoliticalActionAttachment action = actionOtherIter.next();
-          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions()).match(action)) {
+          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
+              .match(action)) {
             continue;
           }
           if (action.getCostPU() > 0 && action.getCostPU() > player.getResources().getQuantity(Constants.PUS)) {

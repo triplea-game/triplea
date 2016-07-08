@@ -1,5 +1,14 @@
 package games.strategy.triplea.ai.proAI.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
@@ -27,15 +36,6 @@ import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Pro AI purchase utilities.
@@ -197,13 +197,11 @@ public class ProPurchaseUtils {
     if (ra != null && ra.getPlacementAnyTerritory()) {
       ownedAndNotConqueredFactoryTerritories = data.getMap().getTerritoriesOwnedBy(player);
     } else {
-      ownedAndNotConqueredFactoryTerritories =
-          Match.getMatches(data.getMap().getTerritories(),
-              ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data));
+      ownedAndNotConqueredFactoryTerritories = Match.getMatches(data.getMap().getTerritories(),
+          ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data));
     }
-    ownedAndNotConqueredFactoryTerritories =
-        Match.getMatches(ownedAndNotConqueredFactoryTerritories,
-            ProMatches.territoryCanMoveLandUnits(player, data, false));
+    ownedAndNotConqueredFactoryTerritories = Match.getMatches(ownedAndNotConqueredFactoryTerritories,
+        ProMatches.territoryCanMoveLandUnits(player, data, false));
 
     // Create purchase territory holder for each factory territory
     final Map<Territory, ProPurchaseTerritory> purchaseTerritories = new HashMap<>();
@@ -218,9 +216,8 @@ public class ProPurchaseUtils {
 
   public static int getUnitProduction(final Territory territory, final GameData data, final PlayerID player) {
 
-    final CompositeMatchAnd<Unit> factoryMatch =
-        new CompositeMatchAnd<>(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches
-            .unitIsBeingTransported().invert());
+    final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<>(
+        Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
     if (territory.isWater()) {
       factoryMatch.add(Matches.UnitIsLand.invert());
     } else {
@@ -241,8 +238,8 @@ public class ProPurchaseUtils {
     if (ra != null && ra.getPlacementAnyTerritory()) {
       return Integer.MAX_VALUE;
     }
-    return TripleAUnit.getProductionPotentialOfTerritory(territory.getUnits().getUnits(), territory, player, data,
-        true, true);
+    return TripleAUnit.getProductionPotentialOfTerritory(territory.getUnits().getUnits(), territory, player, data, true,
+        true);
   }
 
   private static PlayerID getOriginalFactoryOwner(final Territory territory, final PlayerID player) {

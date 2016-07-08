@@ -1,5 +1,11 @@
 package games.strategy.triplea.ai.proAI.data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
@@ -16,12 +22,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class ProPurchaseOption {
 
@@ -93,12 +93,10 @@ public class ProPurchaseOption {
     }
     hitPointEfficiency =
         (hitPoints + 0.1 * attack * 6 / data.getDiceSides() + 0.2 * defense * 6 / data.getDiceSides()) / cost;
-    attackEfficiency =
-        (1 + hitPoints) * (hitPoints + attack * 6 / data.getDiceSides() + 0.5 * defense * 6 / data.getDiceSides())
-            / cost;
-    defenseEfficiency =
-        (1 + hitPoints) * (hitPoints + 0.5 * attack * 6 / data.getDiceSides() + defense * 6 / data.getDiceSides())
-            / cost;
+    attackEfficiency = (1 + hitPoints)
+        * (hitPoints + attack * 6 / data.getDiceSides() + 0.5 * defense * 6 / data.getDiceSides()) / cost;
+    defenseEfficiency = (1 + hitPoints)
+        * (hitPoints + 0.5 * attack * 6 / data.getDiceSides() + defense * 6 / data.getDiceSides()) / cost;
     maxBuiltPerPlayer = unitAttachment.getMaxBuiltPerPlayer();
 
     // Support fields
@@ -262,8 +260,8 @@ public class ProPurchaseOption {
   public double getSeaDefenseEfficiency(final GameData data, final List<Unit> ownedLocalUnits,
       final List<Unit> unitsToPlace, final boolean needDestroyer, final int unusedCarrierCapacity,
       final int unusedLocalCarrierCapacity) {
-    if (isAir
-        && (carrierCost <= 0 || carrierCost > unusedCarrierCapacity || !Properties.getProduceFightersOnCarriers(data))) {
+    if (isAir && (carrierCost <= 0 || carrierCost > unusedCarrierCapacity
+        || !Properties.getProduceFightersOnCarriers(data))) {
       return 0;
     }
     final double supportAttackFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, false);
@@ -280,7 +278,8 @@ public class ProPurchaseOption {
     return calculateEfficiency(0.75, 1, supportAttackFactor, supportDefenseFactor, movement, seaFactor, data);
   }
 
-  public double getAmphibEfficiency(final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace) {
+  public double getAmphibEfficiency(final GameData data, final List<Unit> ownedLocalUnits,
+      final List<Unit> unitsToPlace) {
     final double supportAttackFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, false);
     final double supportDefenseFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, true);
     final double hitPointPerUnitFactor = (3 + hitPoints / quantity);
@@ -379,8 +378,8 @@ public class ProPurchaseOption {
     final double hitPointValue = 2 * hitPoints;
     final double attackValue = attackFactor * (attack + supportAttackFactor * quantity) * 6 / data.getDiceSides();
     final double defenseValue = defenseFactor * (defense + supportDefenseFactor * quantity) * 6 / data.getDiceSides();
-    return Math.pow((hitPointValue + attackValue + defenseValue) * hitPointPerUnitFactor * distanceFactor * seaFactor
-        / cost, 30)
+    return Math.pow(
+        (hitPointValue + attackValue + defenseValue) * hitPointPerUnitFactor * distanceFactor * seaFactor / cost, 30)
         / quantity;
   }
 }

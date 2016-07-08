@@ -1,5 +1,10 @@
 package games.strategy.triplea.ai.proAI.data;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -9,11 +14,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class ProPurchaseOptionMap {
 
@@ -60,7 +60,8 @@ public class ProPurchaseOptionMap {
       final UnitType unitType = (UnitType) resourceOrUnit;
 
       // Add rule to appropriate purchase option list
-      if ((UnitAttachment.get(unitType).getMovement(player) <= 0 && !(UnitAttachment.get(unitType).getCanProduceUnits()))
+      if ((UnitAttachment.get(unitType).getMovement(player) <= 0
+          && !(UnitAttachment.get(unitType).getCanProduceUnits()))
           || Matches.UnitTypeConsumesUnitsOnCreation.match(unitType) || UnitAttachment.get(unitType).getIsSuicide()) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         specialOptions.add(ppo);
