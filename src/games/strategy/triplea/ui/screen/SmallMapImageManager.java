@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ui.MapData;
+import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.ImageScrollerSmallView;
 import games.strategy.ui.Util;

@@ -10,7 +10,7 @@ import java.util.List;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ui.MapData;
+import games.strategy.triplea.ui.mapdata.MapData;
 
 public class TerritoryOverLayDrawable implements IDrawable {
   public static enum OP {

@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui;
+package games.strategy.triplea.ui.mapdata;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -6,8 +6,8 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -39,34 +39,10 @@ import games.strategy.util.UrlStreams;
 /**
  * contains data about the territories useful for drawing
  */
-public class MapData {
-  public static final String PROPERTY_COLOR_PREFIX = "color.";
+public class MapData implements Closeable {
   public static final String PROPERTY_UNITS_SCALE = "units.scale";
   public static final String PROPERTY_UNITS_WIDTH = "units.width";
   public static final String PROPERTY_UNITS_HEIGHT = "units.height";
-  public static final String PROPERTY_UNITS_COUNTER_OFFSET_WIDTH = "units.counter.offset.width";
-  public static final String PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT = "units.counter.offset.height";
-  public static final String PROPERTY_UNITS_STACK_SIZE = "units.stack.size";
-  public static final String PROPERTY_MAP_WIDTH = "map.width";
-  public static final String PROPERTY_MAP_HEIGHT = "map.height";
-  public static final String PROPERTY_MAP_SCROLLWRAPX = "map.scrollWrapX";
-  public static final String PROPERTY_MAP_SCROLLWRAPY = "map.scrollWrapY";
-  public static final String PROPERTY_MAP_HASRELIEF = "map.hasRelief";
-  public static final String PROPERTY_MAP_CURSOR_HOTSPOT_X = "map.cursor.hotspot.x";
-  public static final String PROPERTY_MAP_CURSOR_HOTSPOT_Y = "map.cursor.hotspot.y";
-  public static final String PROPERTY_MAP_SHOWCAPITOLMARKERS = "map.showCapitolMarkers";
-  public static final String PROPERTY_MAP_USETERRITORYEFFECTMARKERS = "map.useTerritoryEffectMarkers";
-  public static final String PROPERTY_MAP_SHOWTERRITORYNAMES = "map.showTerritoryNames";
-  public static final String PROPERTY_MAP_SHOWRESOURCES = "map.showResources";
-  public static final String PROPERTY_MAP_SHOWCOMMENTS = "map.showComments";
-  public static final String PROPERTY_MAP_SHOWCONVOYNAMES = "map.showConvoyNames";
-  public static final String PROPERTY_MAP_SHOWSEAZONENAMES = "map.showSeaZoneNames";
-  public static final String PROPERTY_MAP_DRAWNAMESFROMTOPLEFT = "map.drawNamesFromTopLeft";
-  public static final String PROPERTY_MAP_USENATION_CONVOYFLAGS = "map.useNation_convoyFlags";
-  public static final String PROPERTY_DONT_DRAW_TERRITORY_NAMES = "dont_draw_territory_names";
-  public static final String PROPERTY_MAP_MAPBLENDS = "map.mapBlends";
-  public static final String PROPERTY_MAP_MAPBLENDMODE = "map.mapBlendMode";
-  public static final String PROPERTY_MAP_MAPBLENDALPHA = "map.mapBlendAlpha";
   public static final String PROPERTY_SCREENSHOT_TITLE_ENABLED = "screenshot.title.enabled";
   public static final String PROPERTY_SCREENSHOT_TITLE_X = "screenshot.title.x";
   public static final String PROPERTY_SCREENSHOT_TITLE_Y = "screenshot.title.y";
@@ -77,23 +53,48 @@ public class MapData {
   public static final String PROPERTY_SCREENSHOT_STATS_Y = "screenshot.stats.y";
   public static final String PROPERTY_SCREENSHOT_STATS_TEXT_COLOR = "screenshot.stats.text.color";
   public static final String PROPERTY_SCREENSHOT_STATS_BORDER_COLOR = "screenshot.stats.border.color";
-  public static final String CENTERS_FILE = "centers.txt";
-  public static final String POLYGON_FILE = "polygons.txt";
-  public static final String PLACEMENT_FILE = "place.txt";
-  public static final String TERRITORY_EFFECT_FILE = "territory_effects.txt";
-  public static final String MAP_PROPERTIES = "map.properties";
-  public static final String CAPITAL_MARKERS = "capitols.txt";
-  public static final String CONVOY_MARKERS = "convoy.txt";
-  public static final String COMMENT_MARKERS = "comments.txt";
-  public static final String VC_MARKERS = "vc.txt";
-  public static final String BLOCKADE_MARKERS = "blockade.txt";
-  public static final String PU_PLACE_FILE = "pu_place.txt";
-  public static final String TERRITORY_NAME_PLACE_FILE = "name_place.txt";
-  public static final String KAMIKAZE_FILE = "kamikaze_place.txt";
-  public static final String DECORATIONS_FILE = "decorations.txt";
+
+  private static final String PROPERTY_COLOR_PREFIX = "color.";
+  private static final String PROPERTY_UNITS_COUNTER_OFFSET_WIDTH = "units.counter.offset.width";
+  private static final String PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT = "units.counter.offset.height";
+  private static final String PROPERTY_UNITS_STACK_SIZE = "units.stack.size";
+  private static final String PROPERTY_MAP_WIDTH = "map.width";
+  private static final String PROPERTY_MAP_HEIGHT = "map.height";
+  private static final String PROPERTY_MAP_SCROLLWRAPX = "map.scrollWrapX";
+  private static final String PROPERTY_MAP_SCROLLWRAPY = "map.scrollWrapY";
+  private static final String PROPERTY_MAP_HASRELIEF = "map.hasRelief";
+  private static final String PROPERTY_MAP_CURSOR_HOTSPOT_X = "map.cursor.hotspot.x";
+  private static final String PROPERTY_MAP_CURSOR_HOTSPOT_Y = "map.cursor.hotspot.y";
+  private static final String PROPERTY_MAP_SHOWCAPITOLMARKERS = "map.showCapitolMarkers";
+  private static final String PROPERTY_MAP_USETERRITORYEFFECTMARKERS = "map.useTerritoryEffectMarkers";
+  private static final String PROPERTY_MAP_SHOWTERRITORYNAMES = "map.showTerritoryNames";
+  private static final String PROPERTY_MAP_SHOWRESOURCES = "map.showResources";
+  private static final String PROPERTY_MAP_SHOWCOMMENTS = "map.showComments";
+  private static final String PROPERTY_MAP_SHOWSEAZONENAMES = "map.showSeaZoneNames";
+  private static final String PROPERTY_MAP_DRAWNAMESFROMTOPLEFT = "map.drawNamesFromTopLeft";
+  private static final String PROPERTY_MAP_USENATION_CONVOYFLAGS = "map.useNation_convoyFlags";
+  private static final String PROPERTY_DONT_DRAW_TERRITORY_NAMES = "dont_draw_territory_names";
+  private static final String PROPERTY_MAP_MAPBLENDS = "map.mapBlends";
+  private static final String PROPERTY_MAP_MAPBLENDMODE = "map.mapBlendMode";
+  private static final String PROPERTY_MAP_MAPBLENDALPHA = "map.mapBlendAlpha";
+
+  private static final String CENTERS_FILE = "centers.txt";
+  private static final String POLYGON_FILE = "polygons.txt";
+  private static final String PLACEMENT_FILE = "place.txt";
+  private static final String TERRITORY_EFFECT_FILE = "territory_effects.txt";
+  private static final String MAP_PROPERTIES = "map.properties";
+  private static final String CAPITAL_MARKERS = "capitols.txt";
+  private static final String CONVOY_MARKERS = "convoy.txt";
+  private static final String COMMENT_MARKERS = "comments.txt";
+  private static final String VC_MARKERS = "vc.txt";
+  private static final String BLOCKADE_MARKERS = "blockade.txt";
+  private static final String PU_PLACE_FILE = "pu_place.txt";
+  private static final String TERRITORY_NAME_PLACE_FILE = "name_place.txt";
+  private static final String KAMIKAZE_FILE = "kamikaze_place.txt";
+  private static final String DECORATIONS_FILE = "decorations.txt";
   // default colour if none is defined.
-  private final List<Color> m_defaultColours = new ArrayList<>(Arrays.asList(new Color[] {Color.RED,
-      Color.MAGENTA, Color.YELLOW, Color.ORANGE, Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY}));
+  private final List<Color> m_defaultColours = Arrays.asList(Color.RED, Color.MAGENTA, Color.YELLOW, Color.ORANGE,
+      Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY);
   // maps PlayerName as String to Color
   private final Map<String, Color> m_playerColors = new HashMap<>();
   // maps String -> List of points
@@ -128,12 +129,6 @@ public class MapData {
   private Map<String, Image> m_territoryNameImages;
   private final Map<String, Image> m_effectImages = new HashMap<>();
   private final ResourceLoader m_resourceLoader;
-  private BufferedImage m_vcImage;
-  private BufferedImage m_blockadeImage;
-  private BufferedImage m_errorImage = null;
-  private BufferedImage m_warningImage = null;
-  private BufferedImage m_infoImage = null;
-  private BufferedImage m_helpImage = null;
 
   public boolean scrollWrapX() {
     return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPX, "true"));
@@ -173,15 +168,15 @@ public class MapData {
       m_namePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + TERRITORY_NAME_PLACE_FILE));
       m_kamikazePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + KAMIKAZE_FILE));
       m_mapProperties = new Properties();
-      loadDecorations();
-      loadTerritoryNames();
+      m_decorations = loadDecorations();
+      m_territoryNameImages = territoryNameImages();
       try {
         final URL url = loader.getResource(prefix + MAP_PROPERTIES);
         if (url == null) {
           throw new IllegalStateException("No map.properties file defined");
         }
         Optional<InputStream> inputStream = UrlStreams.openStream(url);
-        if(inputStream.isPresent()) {
+        if (inputStream.isPresent()) {
           m_mapProperties.load(inputStream.get());
         }
       } catch (final Exception e) {
@@ -193,43 +188,66 @@ public class MapData {
     }
   }
 
+  @Override
   public void close() {
     m_resourceLoader.close();
   }
 
-  private void loadTerritoryNames() {
-    m_territoryNameImages = new HashMap<>();
+  private Map<String, Image> territoryNameImages() {
     if (!m_resourceLoader.hasPath("territoryNames/")) {
-      return;
+      return new HashMap<>();
     }
+
+    Map<String, Image> territoryNameImages = new HashMap<>();
     for (final String name : m_centers.keySet()) {
-      try {
-        final Image img = loadImage("territoryNames/" + name + ".png");
-        if (img != null) {
-          m_territoryNameImages.put(name, img);
-        }
-      } catch (final Exception e) {
-        // skip that territory then
+      Optional<Image> territoryNameImage = loadTerritoryNameImage(name);
+
+      if (territoryNameImage.isPresent()) {
+        territoryNameImages.put(name, territoryNameImage.get());
       }
+    }
+    return territoryNameImages;
+  }
+
+  private Optional<Image> loadTerritoryNameImage(String imageName) {
+    Optional<Image> img;
+    try {
+      // try first file names that have underscores instead of spaces
+      final String normalizedName = imageName.replace(' ', '_');
+      img = Optional.ofNullable(loadImage(constructTerritoryNameImagePath(normalizedName)));
+      if (!img.isPresent()) {
+        img = Optional.ofNullable(loadImage(constructTerritoryNameImagePath(imageName)));
+      }
+      return img;
+    } catch (Exception e) {
+      // TODO: this is checking for IllegalStateException - we should bubble up the Optional image load and just
+      // check instead if the optional is empty.
+      ClientLogger.logQuietly("Image loading failed: " + imageName, e);
+      return Optional.empty();
     }
   }
 
-  private void loadDecorations() throws IOException {
-    final URL decorations = m_resourceLoader.getResource(DECORATIONS_FILE);
-    if (decorations == null) {
-      m_decorations = Collections.emptyMap();
-      return;
-    }
-    m_decorations = new HashMap<>();
 
-    Optional<InputStream> inputStream = UrlStreams.openStream(decorations);
-    if(inputStream.isPresent()) {
+  private String constructTerritoryNameImagePath(String baseName) {
+    return "territoryNames/" + baseName + ".png";
+  }
+
+
+  private Map<Image, List<Point>> loadDecorations() {
+    final URL decorationsFileUrl = m_resourceLoader.getResource(DECORATIONS_FILE);
+    if (decorationsFileUrl == null) {
+      return Collections.emptyMap();
+    }
+    Map<Image, List<Point>> decorations = new HashMap<>();
+    Optional<InputStream> inputStream = UrlStreams.openStream(decorationsFileUrl);
+    if (inputStream.isPresent()) {
       final Map<String, List<Point>> points = PointFileReaderWriter.readOneToMany(inputStream.get());
       for (final String name : points.keySet()) {
         final Image img = loadImage("misc/" + name);
-        m_decorations.put(img, points.get(name));
+        decorations.put(img, points.get(name));
       }
     }
+    return decorations;
   }
 
   public double getDefaultUnitScale() {
@@ -559,11 +577,8 @@ public class MapData {
     return getCenter(terr);
   }
 
-  public Point getCommentMarkerLocation(final Territory terr) {
-    if (m_commentPlace.containsKey(terr.getName())) {
-      return m_commentPlace.get(terr.getName());
-    }
-    return null;
+  public Optional<Point> getCommentMarkerLocation(final Territory terr) {
+    return Optional.ofNullable(m_commentPlace.get(terr.getName()));
   }
 
   public Point getKamikazeMarkerLocation(final Territory terr) {
@@ -587,18 +602,12 @@ public class MapData {
     return getCenter(terr);
   }
 
-  public Point getPUPlacementPoint(final Territory terr) {
-    if (m_PUPlace.containsKey(terr.getName())) {
-      return m_PUPlace.get(terr.getName());
-    }
-    return null;
+  public Optional<Point> getPUPlacementPoint(final Territory terr) {
+    return Optional.ofNullable(m_PUPlace.get(terr.getName()));
   }
 
-  public Point getNamePlacementPoint(final Territory terr) {
-    if (m_namePlace.containsKey(terr.getName())) {
-      return m_namePlace.get(terr.getName());
-    }
-    return null;
+  public Optional<Point> getNamePlacementPoint(final Territory terr) {
+    return Optional.ofNullable(m_namePlace.get(terr.getName()));
   }
 
   /**
@@ -709,82 +718,28 @@ public class MapData {
     return boundingRect;
   }
 
-  /**
-   * Get the territories that intersect or are bound by this shapes bounding
-   * rect.
-   *
-   * @return List of territory names as Strings
-   */
-  public List<String> territoriesThatOverlap(final Rectangle2D bounds) {
-    List<String> rVal = null;
-    final Iterator<String> terrIter = getTerritories().iterator();
-    while (terrIter.hasNext()) {
-      final String terr = terrIter.next();
-      final List<Polygon> polygons = getPolygons(terr);
-      for (int i = 0; i < polygons.size(); i++) {
-        final Polygon item = polygons.get(i);
-        if (item.intersects(bounds) || item.contains(bounds) || bounds.contains(item.getBounds2D())) {
-          if (rVal == null) {
-            rVal = new ArrayList<>(4);
-          }
-          rVal.add(terr);
-          // only add it once
-          break;
-        }
-      }
-    }
-    if (rVal == null) {
-      return Collections.emptyList();
-    }
-    return rVal;
-  }
-
   public Image getVCImage() {
-    if (m_vcImage != null) {
-      return m_vcImage;
-    }
-    m_vcImage = loadImage("misc/vc.png");
-    return m_vcImage;
+    return loadImage("misc/vc.png");
   }
 
   public Image getBlockadeImage() {
-    if (m_blockadeImage != null) {
-      return m_blockadeImage;
-    }
-    m_blockadeImage = loadImage("misc/blockade.png");
-    return m_blockadeImage;
+    return loadImage("misc/blockade.png");
   }
 
   public Image getErrorImage() {
-    if (m_errorImage != null) {
-      return m_errorImage;
-    }
-    m_errorImage = loadImage("misc/error.gif");
-    return m_errorImage;
+    return loadImage("misc/error.gif");
   }
 
   public Image getWarningImage() {
-    if (m_warningImage != null) {
-      return m_warningImage;
-    }
-    m_warningImage = loadImage("misc/warning.gif");
-    return m_warningImage;
+    return loadImage("misc/warning.gif");
   }
 
   public Image getInfoImage() {
-    if (m_infoImage != null) {
-      return m_infoImage;
-    }
-    m_infoImage = loadImage("misc/information.gif");
-    return m_infoImage;
+    return loadImage("misc/information.gif");
   }
 
   public Image getHelpImage() {
-    if (m_helpImage != null) {
-      return m_helpImage;
-    }
-    m_helpImage = loadImage("misc/help.gif");
-    return m_helpImage;
+    return loadImage("misc/help.gif");
   }
 
   private BufferedImage loadImage(final String imageName) {
