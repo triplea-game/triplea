@@ -23,29 +23,29 @@ import games.strategy.triplea.ui.IUIContext;
 
 public class PlayerChatRenderer extends DefaultListCellRenderer {
   private static final long serialVersionUID = -8195565028281374498L;
-  private final IGame m_game;
-  private final IUIContext m_uiContext;
+  private final IGame game;
+  private final IUIContext uiContext;
   int m_maxIconCounter = 0;
-  HashMap<String, List<Icon>> m_iconMap = new HashMap<>();
-  HashMap<String, Set<String>> m_playerMap = new HashMap<>();
+  HashMap<String, List<Icon>> iconMap = new HashMap<>();
+  HashMap<String, Set<String>> playerMap = new HashMap<>();
 
   public PlayerChatRenderer(final IGame game, final IUIContext uiContext) {
-    m_game = game;
-    m_uiContext = uiContext;
+    this.game = game;
+    this.uiContext = uiContext;
     setIconMap();
   }
 
   @Override
   public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
       final boolean isSelected, final boolean cellHasFocus) {
-    final List<Icon> icons = m_iconMap.get(value.toString());
+    final List<Icon> icons = iconMap.get(value.toString());
     if (icons != null) {
       super.getListCellRendererComponent(list, ((INode) value).getName(), index, isSelected, cellHasFocus);
       setHorizontalTextPosition(SwingConstants.LEFT);
       setIcon(new CompositeIcon(icons));
     } else {
       final StringBuilder sb = new StringBuilder(((INode) value).getName());
-      final Set<String> players = m_playerMap.get(value.toString());
+      final Set<String> players = playerMap.get(value.toString());
       if (players != null && !players.isEmpty()) {
         sb.append(" (");
         sb.append(Joiner.on(", ").join(players));
@@ -57,13 +57,13 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
   }
 
   private void setIconMap() {
-    final PlayerManager playerManager = m_game.getPlayerManager();
+    final PlayerManager playerManager = game.getPlayerManager();
     PlayerList playerList;
-    m_game.getData().acquireReadLock();
+    game.getData().acquireReadLock();
     try {
-      playerList = m_game.getData().getPlayerList();
+      playerList = game.getData().getPlayerList();
     } finally {
-      m_game.getData().releaseReadLock();
+      game.getData().releaseReadLock();
     }
     // new HashSet removes duplicates
     for (final INode playerNode : new HashSet<>(playerManager.getPlayerMapping().values()))  {
@@ -71,16 +71,16 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
       if (players.size() > 0) {
         final List<Icon> icons = new ArrayList<>(players.size());
         for (final String player : players) {
-          if (m_uiContext != null && m_uiContext.getFlagImageFactory() != null) {
-            icons.add(new ImageIcon(m_uiContext.getFlagImageFactory().getSmallFlag(playerList.getPlayerID(player))));
+          if (uiContext != null && uiContext.getFlagImageFactory() != null) {
+            icons.add(new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(playerList.getPlayerID(player))));
           }
         }
         m_maxIconCounter = Math.max(m_maxIconCounter, icons.size());
-        m_playerMap.put(playerNode.toString(), players);
-        if (m_uiContext == null) {
-          m_iconMap.put(playerNode.toString(), null);
+        playerMap.put(playerNode.toString(), players);
+        if (uiContext == null) {
+          iconMap.put(playerNode.toString(), null);
         } else {
-          m_iconMap.put(playerNode.toString(), icons);
+          iconMap.put(playerNode.toString(), icons);
         }
       }
     }
