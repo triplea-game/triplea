@@ -23,6 +23,9 @@ import games.strategy.util.Match;
  */
 public class ProTerritoryValueUtils {
 
+  private static int MIN_FACTORY_CHECK_DISTANCE = 9;
+  private static int MAX_FACTORY_CHECK_DISTANCE = 30;
+
   public static double findTerritoryAttackValue(final PlayerID player, final Territory t) {
     final GameData data = ProData.getData();
     final int isEnemyFactory = ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).match(t) ? 1 : 0;
@@ -324,7 +327,7 @@ public class ProTerritoryValueUtils {
       final Map<Territory, Double> enemyCapitalsAndFactoriesMap) {
 
     Set<Territory> nearbyEnemyCapitalsAndFactories = new HashSet<>();
-    for (int i = 9; i <= 30; i++) {
+    for (int i = MIN_FACTORY_CHECK_DISTANCE; i <= MAX_FACTORY_CHECK_DISTANCE; i++) {
       nearbyEnemyCapitalsAndFactories = ProData.getData().getMap().getNeighbors(t, i);
       nearbyEnemyCapitalsAndFactories.retainAll(enemyCapitalsAndFactoriesMap.keySet());
       if (!nearbyEnemyCapitalsAndFactories.isEmpty()) {
