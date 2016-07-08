@@ -1,5 +1,9 @@
 package games.strategy.triplea.ai.fastAI;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -10,10 +14,6 @@ import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorListener;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 public class FastOddsEstimator implements IOddsCalculator {
 
   private Territory location = null;
@@ -21,8 +21,7 @@ public class FastOddsEstimator implements IOddsCalculator {
   private Collection<Unit> defendingUnits = new ArrayList<>();
 
   @Override
-  public void setGameData(final GameData data) {
-  }
+  public void setGameData(final GameData data) {}
 
   @Override
   public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location,
@@ -35,9 +34,8 @@ public class FastOddsEstimator implements IOddsCalculator {
 
   @Override
   public AggregateResults calculate() {
-    final double winPercentage =
-        ProBattleUtils.estimateStrengthDifference(location, new ArrayList<>(attackingUnits), new ArrayList<>(
-            defendingUnits));
+    final double winPercentage = ProBattleUtils.estimateStrengthDifference(location, new ArrayList<>(attackingUnits),
+        new ArrayList<>(defendingUnits));
     final int battleRoundsFought = 3;
     final List<Unit> remainingAttackingUnits = new ArrayList<>();
     final List<Unit> remainingDefendingUnits = new ArrayList<>();

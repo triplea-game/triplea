@@ -1,5 +1,9 @@
 package games.strategy.triplea.ai.proAI.util;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -13,10 +17,6 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.util.Match;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Pro AI odds calculator.
@@ -104,14 +104,13 @@ public class ProOddsCalculator {
   }
 
 
-  public ProBattleResult callBattleCalculator(final PlayerID player, final Territory t,
-      final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits) {
+  public ProBattleResult callBattleCalculator(final PlayerID player, final Territory t, final List<Unit> attackingUnits,
+      final List<Unit> defendingUnits, final Set<Unit> bombardingUnits) {
     return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits, false);
   }
 
-  public ProBattleResult callBattleCalculator(final PlayerID player, final Territory t,
-      final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits,
-      final boolean retreatWhenOnlyAirLeft) {
+  public ProBattleResult callBattleCalculator(final PlayerID player, final Territory t, final List<Unit> attackingUnits,
+      final List<Unit> defendingUnits, final Set<Unit> bombardingUnits, final boolean retreatWhenOnlyAirLeft) {
     final GameData data = ProData.getData();
 
     if (isCanceled || attackingUnits.isEmpty() || defendingUnits.isEmpty()) {
@@ -127,9 +126,8 @@ public class ProOddsCalculator {
     if (retreatWhenOnlyAirLeft) {
       calc.setRetreatWhenOnlyAirLeft(true);
     }
-    results =
-        calc.setCalculateDataAndCalculate(attacker, defender, t, attackingUnits, defendingUnits, new ArrayList<>(
-            bombardingUnits), TerritoryEffectHelper.getEffects(t), runCount);
+    results = calc.setCalculateDataAndCalculate(attacker, defender, t, attackingUnits, defendingUnits,
+        new ArrayList<>(bombardingUnits), TerritoryEffectHelper.getEffects(t), runCount);
     if (retreatWhenOnlyAirLeft) {
       calc.setRetreatWhenOnlyAirLeft(false);
     }

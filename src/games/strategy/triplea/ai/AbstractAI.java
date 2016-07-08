@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import games.strategy.triplea.player.AbstractBaseAI;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
@@ -40,6 +39,7 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
+import games.strategy.triplea.player.AbstractBaseAI;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
@@ -294,9 +294,9 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleAPlaye
       return true;
     }
     // would we normally be allies?
-    final List<String> allies = Arrays
-        .asList(new String[] {Constants.PLAYER_NAME_AMERICANS, Constants.PLAYER_NAME_AUSTRALIANS, Constants.PLAYER_NAME_BRITISH,
-            Constants.PLAYER_NAME_CANADIANS, Constants.PLAYER_NAME_CHINESE, Constants.PLAYER_NAME_FRENCH, Constants.PLAYER_NAME_RUSSIANS});
+    final List<String> allies = Arrays.asList(new String[] {Constants.PLAYER_NAME_AMERICANS,
+        Constants.PLAYER_NAME_AUSTRALIANS, Constants.PLAYER_NAME_BRITISH, Constants.PLAYER_NAME_CANADIANS,
+        Constants.PLAYER_NAME_CHINESE, Constants.PLAYER_NAME_FRENCH, Constants.PLAYER_NAME_RUSSIANS});
     if (allies.contains(getPlayerID().getName()) && allies.contains(playerSendingProposal.getName())) {
       return true;
     }
@@ -338,8 +338,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleAPlaye
     if (attackTokens.size() <= 0) {
       return null;
     }
-    final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> rVal =
-        new HashMap<>();
+    final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> rVal = new HashMap<>();
     for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet()) {
       if (attackTokens.size() <= 0) {
         continue;

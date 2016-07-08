@@ -95,12 +95,11 @@ public class ProBidAI {
       // Remove from consideration any unit with Zero defense, or 3 or more attack/defense than defense/attack, that is
       // not a
       // transport/factory/aa unit
-      if (((UnitAttachment.get(x).getAttack(player) - UnitAttachment.get(x).getDefense(player) >= 3 || UnitAttachment
-          .get(x).getDefense(player) - UnitAttachment.get(x).getAttack(player) >= 3) || UnitAttachment.get(x)
-              .getDefense(player) < 1)
+      if (((UnitAttachment.get(x).getAttack(player) - UnitAttachment.get(x).getDefense(player) >= 3
+          || UnitAttachment.get(x).getDefense(player) - UnitAttachment.get(x).getAttack(player) >= 3)
+          || UnitAttachment.get(x).getDefense(player) < 1)
           && !(UnitAttachment.get(x).getCanProduceUnits()
-              || (UnitAttachment.get(x).getTransportCapacity() > 0 && Matches.UnitTypeIsSea
-                  .match(x)))) {
+              || (UnitAttachment.get(x).getTransportCapacity() > 0 && Matches.UnitTypeIsSea.match(x)))) {
         // maybe the map only has weird units. make sure there is at least one of each type before we decide not to use
         // it (we are relying
         // on the fact that map makers generally put specialty units AFTER useful units in their production lists [ie:
@@ -356,9 +355,8 @@ public class ProBidAI {
       // allFactories.remove(capitol);
       for (final Territory checkFactory : allFactories) {
         final boolean isLandRoute = hasLandRouteToEnemyOwnedCapitol(checkFactory, player, data);
-        final int factProduction =
-            TripleAUnit.getProductionPotentialOfTerritory(checkFactory.getUnits().getUnits(), checkFactory, player,
-                data, false, true);
+        final int factProduction = TripleAUnit.getProductionPotentialOfTerritory(checkFactory.getUnits().getUnits(),
+            checkFactory, player, data, false, true);
         allProduction += factProduction;
         if (isLandRoute) {
           totProduction += factProduction;
@@ -434,9 +432,8 @@ public class ProBidAI {
       Territory bidSeaTerr = null, bidTransTerr = null;
       // CompositeMatch<Territory> enemyWaterTerr = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater,
       // Matches.territoryHasEnemyUnits(player, data));
-      final CompositeMatch<Territory> waterFactoryWaterTerr =
-          new CompositeMatchAnd<>(Matches.TerritoryIsWater, Matches.territoryHasOwnedNeighborWithOwnedUnitMatching(
-              data, player, Matches.UnitCanProduceUnits));
+      final CompositeMatch<Territory> waterFactoryWaterTerr = new CompositeMatchAnd<>(Matches.TerritoryIsWater,
+          Matches.territoryHasOwnedNeighborWithOwnedUnitMatching(data, player, Matches.UnitCanProduceUnits));
       final List<Territory> enemySeaTerr = findUnitTerr(data, player, enemyAttackUnit);
       final List<Territory> isWaterTerr = onlyWaterTerr(data, enemySeaTerr);
       enemySeaTerr.retainAll(isWaterTerr);
@@ -650,8 +647,8 @@ public class ProBidAI {
   private static boolean findPurchaseMix(final IntegerMap<ProductionRule> bestAttack,
       final IntegerMap<ProductionRule> bestDefense, final IntegerMap<ProductionRule> bestTransport,
       final IntegerMap<ProductionRule> bestMaxUnits, final IntegerMap<ProductionRule> bestMobileAttack,
-      final List<ProductionRule> rules, final int totPU, final int maxUnits, final GameData data,
-      final PlayerID player, final int fighters) {
+      final List<ProductionRule> rules, final int totPU, final int maxUnits, final GameData data, final PlayerID player,
+      final int fighters) {
     // Resource key = data.getResourceList().getResource(Constants.PUS);
     final IntegerMap<String> parameters = new IntegerMap<>();
     parameters.put("attack", 0);
@@ -702,9 +699,8 @@ public class ProBidAI {
           && Matches.UnitTypeIsAAforAnything.invert().match(x));
     }
     final int countNum = 1;
-    final int goodLoop =
-        purchaseLoop(parameters, countNum, bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack,
-            transportMap, infMap, nonInfMap, supportableInfMap, data, player, fighters);
+    final int goodLoop = purchaseLoop(parameters, countNum, bestAttack, bestDefense, bestTransport, bestMaxUnits,
+        bestMobileAttack, transportMap, infMap, nonInfMap, supportableInfMap, data, player, fighters);
     if (goodLoop > 0 && bestAttack.size() > 0 && bestDefense.size() > 0) {
       return true;
     } else {
@@ -883,9 +879,8 @@ public class ProBidAI {
         parameters.put("infantry", infCount);
         parameters.put("nonInfantry", nonInfCount);
         parameters.put("supportableInfCount", supportableInfCount);
-        parametersChanged =
-            purchaseLoop(parameters, counter, bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack,
-                transportMap, infMap, nonInfMap, supportableInfMap, data, player, fighters);
+        parametersChanged = purchaseLoop(parameters, counter, bestAttack, bestDefense, bestTransport, bestMaxUnits,
+            bestMobileAttack, transportMap, infMap, nonInfMap, supportableInfMap, data, player, fighters);
         maxAttack = parameters.getInt("maxAttack");
         maxTransAttack = parameters.getInt("maxTransAttack");
         maxTransCost = parameters.getInt("maxTransCost");
@@ -1143,13 +1138,12 @@ public class ProBidAI {
    * @return HashMap ranking of Territories
    */
   private static HashMap<Territory, Float> rankTerritories(final GameData data, final List<Territory> ourFriendlyTerr,
-      final List<Territory> ourEnemyTerr, final List<Territory> ignoreTerr, final PlayerID player,
-      final boolean tFirst, final boolean waterBased, final boolean nonCombat) {
+      final List<Territory> ourEnemyTerr, final List<Territory> ignoreTerr, final PlayerID player, final boolean tFirst,
+      final boolean waterBased, final boolean nonCombat) {
     final HashMap<Territory, Float> landRankMap = new HashMap<>();
     final HashMap<Territory, Float> landStrengthMap = new HashMap<>();
-    final CompositeMatch<Territory> noEnemyOrWater =
-        new CompositeMatchAnd<>(Matches.TerritoryIsNotImpassableToLandUnits(player, data), Matches.isTerritoryAllied(
-            player, data));
+    final CompositeMatch<Territory> noEnemyOrWater = new CompositeMatchAnd<>(
+        Matches.TerritoryIsNotImpassableToLandUnits(player, data), Matches.isTerritoryAllied(player, data));
     final CompositeMatch<Territory> enemyAndNoWater =
         new CompositeMatchAnd<>(Matches.TerritoryIsNotImpassableToLandUnits(player, data),
             Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
@@ -1163,10 +1157,9 @@ public class ProBidAI {
       myCapitals.addAll(TerritoryAttachment.getAllCapitals(player, data));
     }
     if (myCapitals.isEmpty()) {
-      myCapitals.addAll(Match.getMatches(
-          data.getMap().getTerritories(),
-          new CompositeMatchAnd<>(Matches.TerritoryIsNotImpassableToLandUnits(player, data), Matches
-              .territoryHasUnitsThatMatch(Matches.unitIsLandAndOwnedBy(player)))));
+      myCapitals.addAll(Match.getMatches(data.getMap().getTerritories(),
+          new CompositeMatchAnd<>(Matches.TerritoryIsNotImpassableToLandUnits(player, data),
+              Matches.territoryHasUnitsThatMatch(Matches.unitIsLandAndOwnedBy(player)))));
     }
     for (final Territory myCapital : myCapitals) {
       final Iterator<Territory> eCapsIter = enemyCapitals.iterator();
@@ -1197,11 +1190,10 @@ public class ProBidAI {
       final Territory aFTerr = aFIter.next();
       final float aFPotential = getStrengthOfPotentialAttackers(aFTerr, data, player, tFirst, true, null);
       final float alliedStrength = strengthOfTerritory(data, aFTerr, player, false, false, tFirst, true);
-      if (aFPotential < alliedStrength * 0.75F
-          || aFPotential < 1.0F
+      if (aFPotential < alliedStrength * 0.75F || aFPotential < 1.0F
           || !Matches.TerritoryIsPassableAndNotRestricted(player, data).match(aFTerr)
-          || (Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data).match(aFTerr) && Matches
-              .territoryHasEnemyLandNeighbor(data, player).match(aFTerr))) {
+          || (Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data).match(aFTerr)
+              && Matches.territoryHasEnemyLandNeighbor(data, player).match(aFTerr))) {
         aFIter.remove();
       }
     }
@@ -1227,14 +1219,13 @@ public class ProBidAI {
       final boolean lRCap = hasLandRouteToEnemyOwnedCapitol(eTerr, player, data);
       // 16 might be too much, consider changing to 8
       eTerrValue += lRCap ? 16.0F : 0.0F;
-      if (lRCap
-          && (!Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits)
-              .match(eTerr) && !Matches.territoryIsAlliedAndHasAlliedUnitMatching(data, player,
-                  Matches.UnitCanProduceUnits).match(eTerr))) {
-        final Route eCapRoute =
-            findNearest(eTerr,
-                Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits),
-                Matches.TerritoryIsNotImpassableToLandUnits(player, data), data);
+      if (lRCap && (!Matches
+          .territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits).match(eTerr)
+          && !Matches.territoryIsAlliedAndHasAlliedUnitMatching(data, player, Matches.UnitCanProduceUnits)
+              .match(eTerr))) {
+        final Route eCapRoute = findNearest(eTerr,
+            Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits),
+            Matches.TerritoryIsNotImpassableToLandUnits(player, data), data);
         if (eCapRoute != null) {
           // 8 might be too much, consider changing to 4
           eTerrValue = Math.max(eTerrValue - 8, eTerrValue - (eCapRoute.numberOfSteps() - 1));
@@ -1264,11 +1255,11 @@ public class ProBidAI {
         // bonus for killing air units
         eTerrValue += eTerr.getUnits().countMatches(Matches.UnitIsAir) * 2;
         eTerrValue +=
-            Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits).match(
-                eTerr) ? 4.0F : 0.0F;
+            Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits)
+                .match(eTerr) ? 4.0F : 0.0F;
         eTerrValue +=
-            Matches.territoryHasAlliedNeighborWithAlliedUnitMatching(data, player, Matches.UnitCanProduceUnits).match(
-                eTerr) ? 8.0F : 0.0F;
+            Matches.territoryHasAlliedNeighborWithAlliedUnitMatching(data, player, Matches.UnitCanProduceUnits)
+                .match(eTerr) ? 8.0F : 0.0F;
         eTerrValue +=
             Matches.territoryHasEnemyLandNeighbor(data, player).invert().match(eTerr) ? productionValue + 1 : 0.0F;
         final float netStrength = (eTerrStrength - alliedPotential + 0.5F * rankStrength);
@@ -1322,9 +1313,8 @@ public class ProBidAI {
       // should add them here.
     }
     if (nonCombat) {
-      final CompositeMatch<Territory> alliedLandTerr =
-          new CompositeMatchAnd<>(Matches.isTerritoryAllied(player, data), Matches.TerritoryIsLand,
-              Matches.TerritoryIsNotImpassable);
+      final CompositeMatch<Territory> alliedLandTerr = new CompositeMatchAnd<>(Matches.isTerritoryAllied(player, data),
+          Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable);
       // Set<Territory> terrList = landRankMap.keySet();
       for (final Territory terr1 : alliedFactories) {
         if (!landRankMap.containsKey(terr1)) {
@@ -1414,19 +1404,16 @@ public class ProBidAI {
     final Set<Territory> waterTerr = data.getMap().getNeighbors(location, Matches.TerritoryIsWater);
     while (playerIter.hasNext()) {
       float seaStrength = 0.0F, firstStrength = 0.0F, secondStrength = 0.0F, blitzStrength = 0.0F, strength = 0.0F,
-          airStrength =
-              0.0F;
+          airStrength = 0.0F;
       ePlayer = playerIter.next();
       final CompositeMatch<Unit> enemyPlane =
           new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanMove);
-      final CompositeMatch<Unit> enemyTransport =
-          new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitIsSea, Matches.UnitIsTransport,
-              Matches.UnitCanMove);
+      final CompositeMatch<Unit> enemyTransport = new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer),
+          Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
       final CompositeMatch<Unit> enemyShip =
           new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitIsSea, Matches.UnitCanMove);
-      final CompositeMatch<Unit> enemyTransportable =
-          new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanBeTransported,
-              Matches.UnitIsNotAA, Matches.UnitCanMove);
+      final CompositeMatch<Unit> enemyTransportable = new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer),
+          Matches.UnitCanBeTransported, Matches.UnitIsNotAA, Matches.UnitCanMove);
       final CompositeMatch<Unit> aTransport =
           new CompositeMatchAnd<>(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
       final List<Territory> eFTerrs = findUnitTerr(data, ePlayer, enemyPlane);
@@ -1481,9 +1468,8 @@ public class ProBidAI {
         final HashSet<Integer> ignore = new HashSet<>();
         ignore.add(1);
         final List<Route> r = new ArrayList<>();
-        final List<Unit> ships =
-            findAttackers(location, 3, ignore, ePlayer, data, enemyShip, Matches.territoryIsBlockedSea(ePlayer, data),
-                ignoreTerr, r, true);
+        final List<Unit> ships = findAttackers(location, 3, ignore, ePlayer, data, enemyShip,
+            Matches.territoryIsBlockedSea(ePlayer, data), ignoreTerr, r, true);
         secondStrength = strength(ships, true, true, tFirst);
         enemyWaterUnits.addAll(ships);
       }
@@ -1713,9 +1699,8 @@ public class ProBidAI {
     ignore.add(1);
     final CompositeMatch<Unit> blitzUnit =
         new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanBlitz, Matches.UnitCanMove);
-    final CompositeMatch<Territory> validBlitzRoute =
-        new CompositeMatchAnd<>(Matches.territoryHasNoEnemyUnits(ePlayer, data),
-            Matches.TerritoryIsNotImpassableToLandUnits(ePlayer, data));
+    final CompositeMatch<Territory> validBlitzRoute = new CompositeMatchAnd<>(
+        Matches.territoryHasNoEnemyUnits(ePlayer, data), Matches.TerritoryIsNotImpassableToLandUnits(ePlayer, data));
     final List<Route> routes = new ArrayList<>();
     final List<Unit> blitzUnits =
         findAttackers(blitzHere, 2, ignore, ePlayer, data, blitzUnit, validBlitzRoute, blockTerr, routes, false);
@@ -1912,12 +1897,8 @@ public class ProBidAI {
     // shouldn't be a huge problem
     // if we fail due to canal, then don't go near any enemy canals
     if (MoveValidator.validateCanal(r, null, player, data) != null) {
-      r =
-          data.getMap().getRoute(
-              start,
-              destination,
-              new CompositeMatchAnd<>(routeCondition, Matches.territoryHasNonAllowedCanal(player, null, data)
-                  .invert()));
+      r = data.getMap().getRoute(start, destination,
+          new CompositeMatchAnd<>(routeCondition, Matches.territoryHasNonAllowedCanal(player, null, data).invert()));
     }
     if (r == null || r.getEnd() == null) {
       return null;
@@ -2119,12 +2100,10 @@ public class ProBidAI {
       endCondition = new CompositeMatchAnd<>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data));
       routeCondition = Matches.TerritoryIsWater;
     } else {
-      endCondition =
-          new CompositeMatchAnd<>(Matches.isTerritoryEnemy(player, data), Matches.TerritoryIsNotImpassable,
-              Matches.TerritoryIsLand);
-      routeCondition =
-          new CompositeMatchAnd<>(Matches.isTerritoryAllied(player, data), Matches.TerritoryIsNotImpassable,
-              Matches.TerritoryIsLand);
+      endCondition = new CompositeMatchAnd<>(Matches.isTerritoryEnemy(player, data), Matches.TerritoryIsNotImpassable,
+          Matches.TerritoryIsLand);
+      routeCondition = new CompositeMatchAnd<>(Matches.isTerritoryAllied(player, data),
+          Matches.TerritoryIsNotImpassable, Matches.TerritoryIsLand);
     }
     final Route r = findNearest(t, endCondition, routeCondition, data);
     if (r == null) {
@@ -2280,8 +2259,8 @@ public class ProBidAI {
    * Removes the inner circle neighbors
    * neutral - whether to include neutral countries
    */
-  private static List<Territory> getExactNeighbors(final Territory territory, final int distance,
-      final PlayerID player, final GameData data, final boolean neutral) {
+  private static List<Territory> getExactNeighbors(final Territory territory, final int distance, final PlayerID player,
+      final GameData data, final boolean neutral) {
     // old functionality retained, i.e. no route condition is imposed.
     // feel free to change, if you are confortable all calls to this function conform.
     final CompositeMatch<Territory> endCond = new CompositeMatchAnd<>(Matches.TerritoryIsImpassable.invert());

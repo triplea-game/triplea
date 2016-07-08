@@ -1,5 +1,14 @@
 package games.strategy.triplea.ai.proAI.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -11,15 +20,6 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Pro AI attack options utilities.
@@ -37,10 +37,10 @@ public class ProSortMoveOptionsUtils {
         // Sort by number of move options then cost of unit then unit type
         if (o1.getValue().size() != o2.getValue().size()) {
           return (o1.getValue().size() - o2.getValue().size());
-        } else if (ProData.unitValueMap.getInt(o1.getKey().getType()) != ProData.unitValueMap.getInt(o2.getKey()
-            .getType())) {
-          return (ProData.unitValueMap.getInt(o1.getKey().getType()) - ProData.unitValueMap.getInt(o2.getKey()
-              .getType()));
+        } else if (ProData.unitValueMap.getInt(o1.getKey().getType()) != ProData.unitValueMap
+            .getInt(o2.getKey().getType())) {
+          return (ProData.unitValueMap.getInt(o1.getKey().getType())
+              - ProData.unitValueMap.getInt(o2.getKey().getType()));
         }
         return o1.getKey().getType().getName().compareTo(o2.getKey().getType().getName());
       }
@@ -91,8 +91,8 @@ public class ProSortMoveOptionsUtils {
           return (numOptions1 - numOptions2);
         }
         if (ProData.unitValueMap.getInt(o1.getKey().getType()) != ProData.unitValueMap.getInt(o2.getKey().getType())) {
-          return (ProData.unitValueMap.getInt(o1.getKey().getType()) - ProData.unitValueMap.getInt(o2.getKey()
-              .getType()));
+          return (ProData.unitValueMap.getInt(o1.getKey().getType())
+              - ProData.unitValueMap.getInt(o2.getKey().getType()));
         }
         return o1.getKey().getType().getName().compareTo(o2.getKey().getType().getName());
       }
@@ -160,9 +160,8 @@ public class ProSortMoveOptionsUtils {
             Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.unitValueMap,
                 TerritoryEffectHelper.getEffects(t), data, false, false));
             Collections.reverse(sortedUnitsList);
-            final int powerWith =
-                DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
-                    false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+            final int powerWith = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList,
+                defendingUnits, false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
             final int power = powerWith - powerWithout;
             if (power < minPower1) {
               minPower1 = power;
@@ -189,9 +188,8 @@ public class ProSortMoveOptionsUtils {
             Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.unitValueMap,
                 TerritoryEffectHelper.getEffects(t), data, false, false));
             Collections.reverse(sortedUnitsList);
-            final int powerWith =
-                DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
-                    false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+            final int powerWith = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList,
+                defendingUnits, false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
             final int power = powerWith - powerWithout;
             if (power < minPower2) {
               minPower2 = power;
@@ -218,17 +216,15 @@ public class ProSortMoveOptionsUtils {
             int distance1 = 0;
             for (final Territory t : o1.getValue()) {
               if (!attackMap.get(t).isCurrentlyWins()) {
-                distance1 +=
-                    data.getMap().getDistance_IgnoreEndForCondition(unitTerritoryMap.get(o1.getKey()), t,
-                        ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, true));
+                distance1 += data.getMap().getDistance_IgnoreEndForCondition(unitTerritoryMap.get(o1.getKey()), t,
+                    ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, true));
               }
             }
             int distance2 = 0;
             for (final Territory t : o2.getValue()) {
               if (!attackMap.get(t).isCurrentlyWins()) {
-                distance2 +=
-                    data.getMap().getDistance_IgnoreEndForCondition(unitTerritoryMap.get(o2.getKey()), t,
-                        ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, true));
+                distance2 += data.getMap().getDistance_IgnoreEndForCondition(unitTerritoryMap.get(o2.getKey()), t,
+                    ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, true));
               }
             }
             if (distance1 != distance2) {

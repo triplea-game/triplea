@@ -83,7 +83,8 @@ public class AdvancedUtils {
 
   public static List<Territory> getTerritoriesWithinXDistanceOfYMatchingZ(final GameData data, final Territory start,
       final int maxDistance, final Match<Territory> match) {
-    return getTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, start, maxDistance, match, Match.getAlwaysMatch());
+    return getTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, start, maxDistance, match,
+        Match.getAlwaysMatch());
   }
 
   private static List<Territory> getTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(final GameData data,
@@ -144,8 +145,7 @@ public class AdvancedUtils {
         // If this is the first carrier seek
         if (seekedCarrier == null) {
           final int seekedCarrierIndex = getIndexOfLastUnitMatching(result,
-              new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
-              result.size() - 1);
+              new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
           if (seekedCarrierIndex == -1) {
             // No carriers left
             break;
@@ -174,8 +174,7 @@ public class AdvancedUtils {
             filledCarriers.add(seekedCarrier);
             // Find the next carrier
             seekedCarrier = getLastUnitMatching(result,
-                new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
-                result.size() - 1);
+                new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
             if (seekedCarrier == null) {
               // No carriers left
               break;
@@ -215,8 +214,7 @@ public class AdvancedUtils {
             }
             // Find the next carrier
             seekedCarrier = getLastUnitMatching(result,
-                new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
-                result.size() - 1);
+                new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
             if (seekedCarrier == null) {
               // No carriers left
               break;

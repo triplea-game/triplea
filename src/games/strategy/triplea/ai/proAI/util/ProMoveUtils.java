@@ -78,24 +78,18 @@ public class ProMoveUtils {
         if (Match.someMatch(unitList, Matches.UnitIsSea)) {
 
           // Sea unit (including carriers with planes)
-          route =
-              data.getMap().getRoute_IgnoreEnd(startTerritory, t,
-                  ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
+          route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,
+              ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
         } else if (Match.allMatch(unitList, Matches.UnitIsLand)) {
 
           // Land unit
-          route =
-              data.getMap().getRoute_IgnoreEnd(
-                  startTerritory,
-                  t,
-                  ProMatches.territoryCanMoveLandUnitsThrough(player, data, u, startTerritory, isCombatMove,
-                      new ArrayList<>()));
+          route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, ProMatches
+              .territoryCanMoveLandUnitsThrough(player, data, u, startTerritory, isCombatMove, new ArrayList<>()));
         } else if (Match.allMatch(unitList, Matches.UnitIsAir)) {
 
           // Air unit
-          route =
-              data.getMap().getRoute_IgnoreEnd(startTerritory, t,
-                  ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, isCombatMove));
+          route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,
+              ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, isCombatMove));
         }
         if (route == null) {
           ProLogger.warn(data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
@@ -157,12 +151,10 @@ public class ProMoveUtils {
           if (t.isWater()) {
             distanceFromEnd++;
           }
-          if (movesLeft > 0
-              && (distanceFromEnd > 1 || !remainingUnitsToLoad.isEmpty() || (unloadTerritory != null && !unloadTerritory
-                  .equals(transportTerritory)))) {
-            final Set<Territory> neighbors =
-                data.getMap().getNeighbors(transportTerritory,
-                    ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
+          if (movesLeft > 0 && (distanceFromEnd > 1 || !remainingUnitsToLoad.isEmpty()
+              || (unloadTerritory != null && !unloadTerritory.equals(transportTerritory)))) {
+            final Set<Territory> neighbors = data.getMap().getNeighbors(transportTerritory,
+                ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
             Territory territoryToMoveTo = null;
             int minUnitDistance = Integer.MAX_VALUE;
             int maxDistanceFromEnd = Integer.MIN_VALUE; // Used to move to farthest away loading territory first
@@ -173,13 +165,11 @@ public class ProMoveUtils {
               }
               int distanceFromUnloadTerritory = 0;
               if (unloadTerritory != null) {
-                distanceFromUnloadTerritory =
-                    data.getMap().getDistance_IgnoreEndForCondition(neighbor, unloadTerritory,
-                        ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
+                distanceFromUnloadTerritory = data.getMap().getDistance_IgnoreEndForCondition(neighbor, unloadTerritory,
+                    ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
               }
-              int neighborDistanceFromEnd =
-                  data.getMap().getDistance_IgnoreEndForCondition(neighbor, t,
-                      ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
+              int neighborDistanceFromEnd = data.getMap().getDistance_IgnoreEndForCondition(neighbor, t,
+                  ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
               if (t.isWater()) {
                 neighborDistanceFromEnd++;
               }
@@ -190,8 +180,7 @@ public class ProMoveUtils {
                   maxUnitDistance = distance;
                 }
               }
-              if (neighborDistanceFromEnd <= movesLeft
-                  && maxUnitDistance <= minUnitDistance
+              if (neighborDistanceFromEnd <= movesLeft && maxUnitDistance <= minUnitDistance
                   && distanceFromUnloadTerritory < movesLeft
                   && (maxUnitDistance < minUnitDistance
                       || (maxUnitDistance > 1 && neighborDistanceFromEnd > maxDistanceFromEnd)
@@ -263,9 +252,8 @@ public class ProMoveUtils {
         if (Match.allMatch(unitList, ProMatches.unitCanBeMovedAndIsOwnedSea(player, true))) {
 
           // Naval unit
-          route =
-              data.getMap().getRoute_IgnoreEnd(startTerritory, bombardFromTerritory,
-                  ProMatches.territoryCanMoveSeaUnitsThrough(player, data, true));
+          route = data.getMap().getRoute_IgnoreEnd(startTerritory, bombardFromTerritory,
+              ProMatches.territoryCanMoveSeaUnitsThrough(player, data, true));
         }
         moveRoutes.add(route);
       }
