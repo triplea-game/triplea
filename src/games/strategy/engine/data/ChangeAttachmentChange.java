@@ -4,31 +4,31 @@ import games.strategy.util.PropertyUtil;
 
 public class ChangeAttachmentChange extends Change {
   private static final long serialVersionUID = -6447264150952218283L;
-  private final Attachable m_attachedTo;
-  private final String m_attachmentName;
-  private final Object m_newValue;
-  private final Object m_oldValue;
-  private final String m_property;
-  private boolean m_clearFirst = false;
+  private final Attachable attachedTo;
+  private final String attachmentName;
+  private final Object newValue;
+  private final Object oldValue;
+  private final String property;
+  private boolean clearFirst = false;
 
   public Attachable getAttachedTo() {
-    return m_attachedTo;
+    return attachedTo;
   }
 
   public String getAttachmentName() {
-    return m_attachmentName;
+    return attachmentName;
   }
 
   ChangeAttachmentChange(final IAttachment attachment, final Object newValue, final String property) {
     if (attachment == null) {
       throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
     }
-    m_attachedTo = attachment.getAttachedTo();
-    m_clearFirst = false;
-    m_attachmentName = attachment.getName();
-    m_oldValue = PropertyUtil.getPropertyFieldObject(property, attachment);
-    m_newValue = newValue;
-    m_property = property;
+    attachedTo = attachment.getAttachedTo();
+    clearFirst = false;
+    attachmentName = attachment.getName();
+    oldValue = PropertyUtil.getPropertyFieldObject(property, attachment);
+    this.newValue = newValue;
+    this.property = property;
   }
 
   /**
@@ -41,12 +41,12 @@ public class ChangeAttachmentChange extends Change {
     if (attachment == null) {
       throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
     }
-    m_attachedTo = attachment.getAttachedTo();
-    m_clearFirst = resetFirst;
-    m_attachmentName = attachment.getName();
-    m_oldValue = PropertyUtil.getPropertyFieldObject(property, attachment);
-    m_newValue = newValue;
-    m_property = property;
+    attachedTo = attachment.getAttachedTo();
+    clearFirst = resetFirst;
+    attachmentName = attachment.getName();
+    oldValue = PropertyUtil.getPropertyFieldObject(property, attachment);
+    this.newValue = newValue;
+    this.property = property;
   }
 
   /**
@@ -56,28 +56,28 @@ public class ChangeAttachmentChange extends Change {
    */
   public ChangeAttachmentChange(final Attachable attachTo, final String attachmentName, final Object newValue,
       final Object oldValue, final String property, final boolean resetFirst) {
-    m_attachmentName = attachmentName;
-    m_attachedTo = attachTo;
-    m_newValue = newValue;
-    m_oldValue = oldValue;
-    m_property = property;
-    m_clearFirst = resetFirst;
+    this.attachmentName = attachmentName;
+    attachedTo = attachTo;
+    this.newValue = newValue;
+    this.oldValue = oldValue;
+    this.property = property;
+    clearFirst = resetFirst;
   }
 
   @Override
   public void perform(final GameData data) {
-    final IAttachment attachment = m_attachedTo.getAttachment(m_attachmentName);
-    PropertyUtil.set(m_property, m_newValue, attachment, m_clearFirst);
+    final IAttachment attachment = attachedTo.getAttachment(attachmentName);
+    PropertyUtil.set(property, newValue, attachment, clearFirst);
   }
 
   @Override
   public Change invert() {
-    return new ChangeAttachmentChange(m_attachedTo, m_attachmentName, m_oldValue, m_newValue, m_property, m_clearFirst);
+    return new ChangeAttachmentChange(attachedTo, attachmentName, oldValue, newValue, property, clearFirst);
   }
 
   @Override
   public String toString() {
-    return "ChangAttachmentChange attached to:" + m_attachedTo + " name:" + m_attachmentName + " new value:"
-        + m_newValue + " old value:" + m_oldValue;
+    return "ChangAttachmentChange attached to:" + attachedTo + " name:" + attachmentName + " new value:"
+        + newValue + " old value:" + oldValue;
   }
 }
