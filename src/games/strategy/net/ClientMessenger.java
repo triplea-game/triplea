@@ -111,9 +111,9 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
       // our socket channel should already be closed
       m_socket.shutDown();
       if (conversation.getErrorMessage() != null) {
-        String msg = conversation.getErrorMessage() ;
-        if(m_connectionRefusedError != null) {
-          msg += ", "+ m_connectionRefusedError;
+        String msg = conversation.getErrorMessage();
+        if (m_connectionRefusedError != null) {
+          msg += ", " + m_connectionRefusedError;
         }
         login.notifyFailedLogin(msg);
         throw new CouldNotLogInException();
