@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
 
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import org.junit.Before;
 import org.junit.Test;
 

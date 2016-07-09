@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.junit.Assert;
 
-import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;

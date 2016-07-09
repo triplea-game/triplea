@@ -587,7 +587,7 @@ public class GameParser {
   /**
    * Creates and adds new territories and their connections to their map, based on a grid.
    */
-  protected static void setGrids(final GameData data, final String gridType, final String name, final String xs,
+  public static void setGrids(final GameData data, final String gridType, final String name, final String xs,
       final String ys, final Set<String> water, final String horizontalConnections, final String verticalConnections,
       final String diagonalConnections, final boolean addingOntoExistingMap) throws GameParseException {
     final GameMap map = data.getMap();

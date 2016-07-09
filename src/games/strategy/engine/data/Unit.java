@@ -76,8 +76,7 @@ public class Unit extends GameDataComponent {
   /**
    * can be null.
    */
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  void setOwner(PlayerID player) {
+  @GameProperty(xmlProperty = false, gameProperty = true, adds = false) public void setOwner(PlayerID player) {
     if (player == null) {
       player = PlayerID.NULL_PLAYERID;
     }

@@ -1,4 +1,4 @@
-package games.strategy.engine.data;
+package games.strategy.engine.data.changefactory;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,6 +11,30 @@ import java.util.Map;
 import java.util.Set;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.BattleRecordsList;
+import games.strategy.engine.data.BombingUnitDamageChange;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeAttachmentChange;
+import games.strategy.engine.data.CompositeChange;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
+import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.GameSequence;
+import games.strategy.engine.data.GameStep;
+import games.strategy.engine.data.IAttachment;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionFrontier;
+import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.RelationshipType;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
+import games.strategy.engine.data.TechnologyFrontier;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitCollection;
+import games.strategy.engine.data.UnitHitsChange;
+import games.strategy.engine.data.UnitHolder;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAUnit;

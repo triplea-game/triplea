@@ -13,7 +13,7 @@ import java.util.concurrent.Callable;
 
 import games.strategy.triplea.delegate.GameDelegateBridge;
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
