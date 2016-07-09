@@ -8,10 +8,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -38,7 +36,6 @@ import games.strategy.util.Version;
 public class EngineVersionProperties {
   private final Version m_latestVersionOut;
   private final Version m_showUpdatesFrom;
-  private final Map<Version, String> m_releaseNotes;
   private final String m_link;
   private final String m_linkAlt;
   private final String m_changelogLink;
@@ -55,21 +52,10 @@ public class EngineVersionProperties {
         new Version(props.getProperty("SHOW_FROM", ClientContext.engineVersion().getVersion().toStringFull(".")));
     m_showUpdatesFrom =
         (ClientContext.engineVersion().getVersion().isLessThan(showUpdatesFromTemp) ? ClientContext.engineVersion().getVersion() : showUpdatesFromTemp);
-    m_link = props.getProperty("LINK", "http://triplea.sourceforge.net/");
+    m_link = props.getProperty("LINK", "http://triplea.sourceforge.net/"); // TODO: update source forge links, the source forge links are old
     m_linkAlt = props.getProperty("LINK_ALT", "http://sourceforge.net/projects/tripleamaps/files/TripleA/stable/");
-    m_changelogLink = props.getProperty("CHANGELOG",
-        "https://triplea.svn.sourceforge.net/svnroot/triplea/trunk/triplea/changelog.txt");
-    m_releaseNotes = new HashMap<>();
-    for (final Entry<Object, Object> entry : props.entrySet()) {
-      final String key = (String) entry.getKey();
-      if (key != null && key.length() > 6 && key.startsWith("NOTES_")) {
-        final Version version = new Version(key.substring(6));
-        final String value = (String) entry.getValue();
-        if (value != null && value.trim().length() > 0) {
-          m_releaseNotes.put(version, value);
-        }
-      }
-    }
+    m_changelogLink = props.getProperty("CHANGELOG", "http://triplea-game.github.io/release_notes/");
+
     m_done = true;
   }
 
@@ -174,10 +160,6 @@ public class EngineVersionProperties {
     return m_changelogLink;
   }
 
-  public Map<Version, String> getReleaseNotes() {
-    return m_releaseNotes;
-  }
-
   private String getOutOfDateMessage() {
     final StringBuilder text = new StringBuilder("<html>");
     text.append("<h2>A new version of TripleA is out.  Please Update TripleA!</h2>");
@@ -195,70 +177,15 @@ public class EngineVersionProperties {
     return text.toString();
   }
 
-  private String getOutOfDateReleaseUpdates(final boolean showAll) {
+  private String getOutOfDateReleaseUpdates() {
     final StringBuilder text = new StringBuilder("<html>");
-    final List<Version> versions = new ArrayList<>();
-    versions.addAll(getReleaseNotes().keySet());
-    Collections.sort(versions, Version.getHighestToLowestComparator());
-    for (final Version v : versions) {
-      if (showAll || ClientContext.engineVersion().getVersion().isLessThan(v)) {
-        text.append("<br />").append(getReleaseNotes().get(v)).append("<br /><br />");
-      }
-    }
     text.append("Link to full Change Log:<br /><a class=\"external\" href=\"").append(getChangeLogLink()).append("\">")
         .append(getChangeLogLink()).append("</a><br />");
     text.append("</html>");
     return text.toString();
   }
 
-  public Component getCurrentFeaturesComponent() {
-    final JPanel panel = new JPanel(new BorderLayout());
-    final JEditorPane intro = new JEditorPane("text/html", "<html><h2>What is new in version " + ClientContext.engineVersion()
-        + "</h2><br />" + "Please visit our forum to get involved: "
-        + "<a class=\"external\" href=\"http://triplea.sourceforge.net/mywiki/Forum\">http://triplea.sourceforge.net/mywiki/Forum</a><br /><br /></html>");
-    intro.setEditable(false);
-    intro.setOpaque(false);
-    intro.setBorder(BorderFactory.createEmptyBorder());
-    final HyperlinkListener hyperlinkListener = new HyperlinkListener() {
-      @Override
-      public void hyperlinkUpdate(final HyperlinkEvent e) {
-        if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
-          DesktopUtilityBrowserLauncher.openURL(e.getDescription());
-        }
-      }
-    };
-    intro.addHyperlinkListener(hyperlinkListener);
-    panel.add(intro, BorderLayout.NORTH);
-    final StringBuilder releaseNotesBuilder = new StringBuilder("<html>");
-    final List<Version> versions = new ArrayList<>();
-    versions.addAll(getReleaseNotes().keySet());
-    Collections.sort(versions, Version.getHighestToLowestComparator());
-    for (final Version v : versions) {
-      if (getShowUpdatesFrom().equals(v, false) || getShowUpdatesFrom().isLessThan(v)) {
-        releaseNotesBuilder.append("<br />").append(getReleaseNotes().get(v)).append("<br /><br />");
-      }
-    }
-    releaseNotesBuilder.append("Link to full Change Log:<br /><a class=\"external\" href=\"").append(getChangeLogLink())
-        .append("\">").append(getChangeLogLink()).append("</a><br />");
-    releaseNotesBuilder.append("</html>");
-    final JEditorPane updates = new JEditorPane("text/html", releaseNotesBuilder.toString());
-    updates.setEditable(false);
-    updates.setOpaque(false);
-    updates.setBorder(BorderFactory.createEmptyBorder());
-    updates.addHyperlinkListener(hyperlinkListener);
-    updates.setCaretPosition(0);
-    final JScrollPane scroll = new JScrollPane(updates);
-    // scroll.setBorder(BorderFactory.createEmptyBorder());
-    panel.add(scroll, BorderLayout.CENTER);
-    final Dimension maxDimension = panel.getPreferredSize();
-    maxDimension.width = Math.min(maxDimension.width, 700);
-    maxDimension.height = Math.min(maxDimension.height, 480);
-    panel.setMaximumSize(maxDimension);
-    panel.setPreferredSize(maxDimension);
-    return panel;
-  }
-
-  public Component getOutOfDateComponent(final boolean showAll) {
+  public Component getOutOfDateComponent() {
     final JPanel panel = new JPanel(new BorderLayout());
     final JEditorPane intro = new JEditorPane("text/html", getOutOfDateMessage());
     intro.setEditable(false);
@@ -274,7 +201,7 @@ public class EngineVersionProperties {
     };
     intro.addHyperlinkListener(hyperlinkListener);
     panel.add(intro, BorderLayout.NORTH);
-    final JEditorPane updates = new JEditorPane("text/html", getOutOfDateReleaseUpdates(showAll));
+    final JEditorPane updates = new JEditorPane("text/html", getOutOfDateReleaseUpdates());
     updates.setEditable(false);
     updates.setOpaque(false);
     updates.setBorder(BorderFactory.createEmptyBorder());
