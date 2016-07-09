@@ -2,10 +2,9 @@ package games.strategy.triplea.delegate.dataObjects;
 
 import java.io.Serializable;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.SerializationProxySupport;
+import games.strategy.engine.data.Territory;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 
@@ -48,10 +47,7 @@ public class BattleRecord implements Serializable {
   private BattleResults m_battleResults;
 
 
-  @SerializationProxySupport
-  public Object writeReplace(Object write) {
-    return new SerializationProxy(this);
-  }
+
 
   @SerializationProxySupport
   private BattleRecord(Territory battleSite, PlayerID attacker, PlayerID defender, int attackerLostTUV,
@@ -66,7 +62,10 @@ public class BattleRecord implements Serializable {
     this.m_battleType = battleType;
     this.m_battleResults = battleResults;
   }
-
+  @SerializationProxySupport
+  public Object writeReplace(Object write) {
+    return new SerializationProxy(this);
+  }
 
   private static class SerializationProxy implements Serializable {
     private static final long serialVersionUID = 355188139820567143L;
@@ -96,7 +95,9 @@ public class BattleRecord implements Serializable {
     }
   }
 
-
+  /**
+   * Convenience copy constructor
+   */
   protected BattleRecord(final BattleRecord record) {
     m_battleSite = record.m_battleSite;
     m_attacker = record.m_attacker;
