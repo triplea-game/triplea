@@ -84,13 +84,11 @@ public class AllianceTracker extends GameDataComponent {
   public Set<PlayerID> getAllies(PlayerID currentPlayer) {
     Set<PlayerID> allies = new HashSet<>();
     // iterate through all alliances the player is in
-    if (alliances.get(currentPlayer) != null) {
-      for (final String alliance : alliances.get(currentPlayer)) {
-        // iterate through the members of the alliances
-        for (final PlayerID alliedPlayer : getPlayersInAlliance(alliance)) {
-          // add each allianceMember to the alliesList
-          allies.add(alliedPlayer);
-        }
+    for (final String alliance : alliances.get(currentPlayer)) {
+      // iterate through the members of the alliances
+      for (final PlayerID alliedPlayer : getPlayersInAlliance(alliance)) {
+        // add each allianceMember to the alliesList
+        allies.add(alliedPlayer);
       }
     }
     return allies;
