@@ -37,30 +37,28 @@ public class BattleRecord implements Serializable {
 
 
   private static final long serialVersionUID = 3642216371483289106L;
-  private Territory m_battleSite;
-  private PlayerID m_attacker;
+  private Territory battleSite;
+  private PlayerID attacker;
   private PlayerID m_defender;
-  private int m_attackerLostTUV = 0;
-  private int m_defenderLostTUV = 0;
-  private BattleResultDescription m_battleResultDescription;
-  private BattleType m_battleType;
-  private BattleResults m_battleResults;
-
-
+  private int attackerLostTUV = 0;
+  private int defenderLostTUV = 0;
+  private BattleResultDescription battleResultDescription;
+  private BattleType battleType;
+  private BattleResults battleResults;
 
 
   @SerializationProxySupport
   private BattleRecord(Territory battleSite, PlayerID attacker, PlayerID defender, int attackerLostTUV,
       int defenderLostTUV, BattleResultDescription battleResultDescription, BattleType battleType,
       BattleResults battleResults) {
-    this.m_battleSite = battleSite;
-    this.m_attacker = attacker;
+    this.battleSite = battleSite;
+    this.attacker = attacker;
     this.m_defender = defender;
-    this.m_attackerLostTUV = attackerLostTUV;
-    this.m_defenderLostTUV = defenderLostTUV;
-    this.m_battleResultDescription = battleResultDescription;
-    this.m_battleType = battleType;
-    this.m_battleResults = battleResults;
+    this.attackerLostTUV = attackerLostTUV;
+    this.defenderLostTUV = defenderLostTUV;
+    this.battleResultDescription = battleResultDescription;
+    this.battleType = battleType;
+    this.battleResults = battleResults;
   }
   @SerializationProxySupport
   public Object writeReplace(Object write) {
@@ -79,14 +77,14 @@ public class BattleRecord implements Serializable {
     private final BattleResults battleResults;
 
     public SerializationProxy(BattleRecord battleRecord) {
-      battleSite = battleRecord.m_battleSite;
-      attacker = battleRecord.m_attacker;
+      battleSite = battleRecord.battleSite;
+      attacker = battleRecord.attacker;
       defender = battleRecord.m_defender;
-      attackerLostTUV = battleRecord.m_attackerLostTUV;
-      defenderLostTUV = battleRecord.m_defenderLostTUV;
-      battleResultDescription = battleRecord.m_battleResultDescription;
-      battleType = battleRecord.m_battleType;
-      battleResults = battleRecord.m_battleResults;
+      attackerLostTUV = battleRecord.attackerLostTUV;
+      defenderLostTUV = battleRecord.defenderLostTUV;
+      battleResultDescription = battleRecord.battleResultDescription;
+      battleType = battleRecord.battleType;
+      battleResults = battleRecord.battleResults;
     }
 
     private Object readResolve() {
@@ -99,45 +97,45 @@ public class BattleRecord implements Serializable {
    * Convenience copy constructor
    */
   protected BattleRecord(final BattleRecord record) {
-    m_battleSite = record.m_battleSite;
-    m_attacker = record.m_attacker;
+    battleSite = record.battleSite;
+    attacker = record.attacker;
     m_defender = record.m_defender;
-    m_attackerLostTUV = record.m_attackerLostTUV;
-    m_defenderLostTUV = record.m_defenderLostTUV;
-    m_battleResultDescription = record.m_battleResultDescription;
-    m_battleType = record.m_battleType;
-    m_battleResults = record.m_battleResults;
+    attackerLostTUV = record.attackerLostTUV;
+    defenderLostTUV = record.defenderLostTUV;
+    battleResultDescription = record.battleResultDescription;
+    battleType = record.battleType;
+    battleResults = record.battleResults;
   }
 
   protected BattleRecord(final Territory battleSite, final PlayerID attacker, final BattleType battleType) {
-    m_battleSite = battleSite;
-    m_attacker = attacker;
-    m_battleType = battleType;
+    this.battleSite = battleSite;
+    this.attacker = attacker;
+    this.battleType = battleType;
   }
 
   protected void setResult(final PlayerID defender, final int attackerLostTUV, final int defenderLostTUV,
       final BattleResultDescription battleResultDescription, final BattleResults battleResults) {
     m_defender = defender;
-    m_attackerLostTUV = attackerLostTUV;
-    m_defenderLostTUV = defenderLostTUV;
-    m_battleResultDescription = battleResultDescription;
-    m_battleResults = battleResults;
+    this.attackerLostTUV = attackerLostTUV;
+    this.defenderLostTUV = defenderLostTUV;
+    this.battleResultDescription = battleResultDescription;
+    this.battleResults = battleResults;
   }
 
   protected Territory getBattleSite() {
-    return m_battleSite;
+    return battleSite;
   }
 
   protected void setBattleSite(final Territory battleSite) {
-    this.m_battleSite = battleSite;
+    this.battleSite = battleSite;
   }
 
   protected PlayerID getAttacker() {
-    return m_attacker;
+    return attacker;
   }
 
   protected void setAttacker(final PlayerID attacker) {
-    this.m_attacker = attacker;
+    this.attacker = attacker;
   }
 
   protected PlayerID getDefender() {
@@ -149,20 +147,20 @@ public class BattleRecord implements Serializable {
   }
 
   protected int getAttackerLostTUV() {
-    return m_attackerLostTUV;
+    return attackerLostTUV;
   }
 
   protected int getDefenderLostTUV() {
-    return m_defenderLostTUV;
+    return defenderLostTUV;
   }
 
   protected BattleType getBattleType() {
-    return m_battleType;
+    return battleType;
   }
 
   @Override
   public int hashCode() {
-    return m_battleSite.hashCode();
+    return battleSite.hashCode();
   }
 
   @Override
@@ -171,12 +169,12 @@ public class BattleRecord implements Serializable {
       return false;
     }
     final BattleRecord other = (BattleRecord) o;
-    return other.m_battleSite.equals(this.m_battleSite) && other.m_battleType.equals(this.m_battleType)
-        && other.m_attacker.equals(this.m_attacker);
+    return other.battleSite.equals(this.battleSite) && other.battleType.equals(this.battleType)
+        && other.attacker.equals(this.attacker);
   }
 
   @Override
   public String toString() {
-    return m_battleType + " battle in " + m_battleSite;
+    return battleType + " battle in " + battleSite;
   }
 }
