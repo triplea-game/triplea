@@ -1,5 +1,9 @@
 package games.strategy.engine.data;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,7 +23,7 @@ import java.util.Set;
 public class AllianceTracker extends GameDataComponent {
   private static final long serialVersionUID = 2815023984535209353L;
   // maps PlayerID to Collection of alliances names
-  Map<PlayerID, Collection<String>> alliances = new HashMap<>();
+  private Multimap<PlayerID, String> alliances = HashMultimap.create();
 
   public AllianceTracker(final GameData data) {
     super(data);
@@ -28,20 +32,11 @@ public class AllianceTracker extends GameDataComponent {
   /**
    * Adds PlayerID player to the alliance specified by allianceName.
    *
-   * @param player
-   *        The player to add to the alliance.
-   * @param allianceName
-   *        The alliance to add to.
+   * @param player       The player to add to the alliance.
+   * @param allianceName The alliance to add to.
    */
   protected void addToAlliance(final PlayerID player, final String allianceName) {
-    if (!alliances.containsKey(player)) {
-      final Collection<String> alliances = new HashSet<>();
-      alliances.add(allianceName);
-      this.alliances.put(player, alliances);
-    } else {
-      final Collection<String> alliances = this.alliances.get(player);
-      alliances.add(allianceName);
-    }
+    alliances.put(player, allianceName);
   }
 
   /**
@@ -60,8 +55,7 @@ public class AllianceTracker extends GameDataComponent {
    * Returns the PlayerID's that are members of the alliance
    * specified by the String allianceName
    *
-   * @param allianceName
-   *        Alliance name
+   * @param allianceName Alliance name
    * @return all the players in the given alliance
    */
   public HashSet<PlayerID> getPlayersInAlliance(final String allianceName) {
@@ -86,7 +80,22 @@ public class AllianceTracker extends GameDataComponent {
     return rVal;
   }
 
-  public Map<PlayerID, Collection<String>> getAlliancesMap() {
+  public Multimap<PlayerID, String> getAlliancesMap() {
     return alliances;
+  }
+
+  public Set<PlayerID> getAllies(PlayerID currentPlayer) {
+    Set<PlayerID> allies = new HashSet<>();
+    // iterate through all alliances the player is in
+    if (getAlliancesMap().get(currentPlayer) != null) {
+      for (final String alliance : getAlliancesMap().get(currentPlayer)) {
+        // iterate through the members of the alliances
+        for (final PlayerID alliedPlayer : getPlayersInAlliance(alliance)) {
+          // add each allianceMember to the alliesList
+          allies.add(alliedPlayer);
+        }
+      }
+    }
+    return allies;
   }
 }
