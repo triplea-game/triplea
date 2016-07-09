@@ -69,6 +69,7 @@ public class BattleRecord implements Serializable {
 
 
   private static class SerializationProxy implements Serializable {
+    private static final long serialVersionUID = 355188139820567143L;
     private final Territory battleSite;
     private final PlayerID attacker;
     private final PlayerID defender;
