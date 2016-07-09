@@ -44,11 +44,6 @@ public class EventThreadJOptionPane {
 
   public static void showMessageDialog(final Component parentComponent, final Object message, final String title,
       final int messageType, final boolean useJLabel, final CountDownLatchHandler latchHandler) {
-    if (SwingUtilities.isEventDispatchThread()) {
-      JOptionPane.showMessageDialog(parentComponent, useJLabel ? createJLabelInScrollPane((String) message) : message,
-          title, messageType);
-      return;
-    }
     final CountDownLatch latch = new CountDownLatch(1);
     SwingUtilities.invokeLater(new Runnable() {
       @Override
@@ -84,10 +79,6 @@ public class EventThreadJOptionPane {
 
   public static void showMessageDialog(final Component parentComponent, final Object message,
       final CountDownLatchHandler latchHandler) {
-    if (SwingUtilities.isEventDispatchThread()) {
-      JOptionPane.showMessageDialog(parentComponent, message);
-      return;
-    }
     final CountDownLatch latch = new CountDownLatch(1);
     SwingUtilities.invokeLater(new Runnable() {
       @Override
@@ -105,10 +96,6 @@ public class EventThreadJOptionPane {
   public static int showOptionDialog(final Component parentComponent, final Object message, final String title,
       final int optionType, final int messageType, final Icon icon, final Object[] options, final Object initialValue,
       final CountDownLatchHandler latchHandler) {
-    if (SwingUtilities.isEventDispatchThread()) {
-      return JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options,
-          initialValue);
-    }
     final CountDownLatch latch = new CountDownLatch(1);
     final AtomicInteger rVal = new AtomicInteger();
     SwingUtilities.invokeLater(new Runnable() {
@@ -128,9 +115,6 @@ public class EventThreadJOptionPane {
 
   public static int showConfirmDialog(final Component parentComponent, final Object message, final String title,
       final int optionType, final CountDownLatchHandler latchHandler) throws HeadlessException {
-    if (SwingUtilities.isEventDispatchThread()) {
-      return JOptionPane.showConfirmDialog(parentComponent, message, title, optionType);
-    }
     final CountDownLatch latch = new CountDownLatch(1);
     final AtomicInteger rVal = new AtomicInteger();
     SwingUtilities.invokeLater(new Runnable() {
