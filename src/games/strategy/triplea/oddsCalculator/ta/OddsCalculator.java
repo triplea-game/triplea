@@ -1,7 +1,5 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
-import static org.mockito.Mockito.mock;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,6 +32,7 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.net.GUID;
+import games.strategy.sound.HeadlessSoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.ai.AIUtils;
 import games.strategy.triplea.ai.AbstractAI;
@@ -49,6 +48,7 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
+import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
@@ -388,8 +388,8 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 
 class DummyDelegateBridge implements IDelegateBridge {
   private final PlainRandomSource m_randomSource = new PlainRandomSource();
-  private final ITripleADisplay m_display = mock(ITripleADisplay.class);
-  private final ISound m_soundChannel = mock(ISound.class);
+  private final ITripleADisplay m_display = new HeadlessDisplay(null);
+  private final ISound m_soundChannel = new HeadlessSoundChannel();
   private final DummyPlayer m_attackingPlayer;
   private final DummyPlayer m_defendingPlayer;
   private final PlayerID m_attacker;
