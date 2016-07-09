@@ -73,11 +73,11 @@ public class AllianceTracker extends GameDataComponent {
 
   public Collection<String> getAlliancesPlayerIsIn(final PlayerID player) {
     final Collection<String> rVal = alliances.get(player);
-    if (rVal == null) {
-      System.out.println("Player, " + player.getName() + ", is not a member of any alliance!");
+    if(!rVal.isEmpty()) {
+      return rVal;
+    } else {
       return Collections.singleton(player.getName());
     }
-    return rVal;
   }
 
 
