@@ -386,7 +386,7 @@ public class AirBattle extends AbstractBattle {
     }
     bridge.getHistoryWriter().addChildToEvent(text);
     m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), 0);
+        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     getDisplay(bridge).battleEnd(m_battleID, "Air Battle over");
     m_isOver = true;
     m_battleTracker.removeBattle(AirBattle.this);
