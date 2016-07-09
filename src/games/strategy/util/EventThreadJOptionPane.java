@@ -61,6 +61,11 @@ public class EventThreadJOptionPane {
     if (latchHandler != null) {
       latchHandler.addShutdownLatch(latch);
     }
+
+    awaitLatch(latchHandler, latch);
+  }
+
+  private static void awaitLatch(CountDownLatchHandler latchHandler, CountDownLatch latch) {
     boolean done = false;
     while (!done) {
       try {
@@ -94,20 +99,7 @@ public class EventThreadJOptionPane {
     if (latchHandler != null) {
       latchHandler.addShutdownLatch(latch);
     }
-    boolean done = false;
-    while (!done) {
-      try {
-        latch.await();
-        done = true;
-      } catch (final InterruptedException e) {
-        if (latchHandler != null) {
-          latchHandler.interruptLatch(latch);
-        }
-      }
-    }
-    if (latchHandler != null) {
-      latchHandler.removeShutdownLatch(latch);
-    }
+    awaitLatch(latchHandler, latch);
   }
 
   public static int showOptionDialog(final Component parentComponent, final Object message, final String title,
@@ -130,20 +122,7 @@ public class EventThreadJOptionPane {
     if (latchHandler != null) {
       latchHandler.addShutdownLatch(latch);
     }
-    boolean done = false;
-    while (!done) {
-      try {
-        latch.await();
-        done = true;
-      } catch (final InterruptedException e) {
-        if (latchHandler != null) {
-          latchHandler.interruptLatch(latch);
-        }
-      }
-    }
-    if (latchHandler != null) {
-      latchHandler.removeShutdownLatch(latch);
-    }
+    awaitLatch(latchHandler, latch);
     return rVal.get();
   }
 
@@ -164,20 +143,7 @@ public class EventThreadJOptionPane {
     if (latchHandler != null) {
       latchHandler.addShutdownLatch(latch);
     }
-    boolean done = false;
-    while (!done) {
-      try {
-        latch.await();
-        done = true;
-      } catch (final InterruptedException e) {
-        if (latchHandler != null) {
-          latchHandler.interruptLatch(latch);
-        }
-      }
-    }
-    if (latchHandler != null) {
-      latchHandler.removeShutdownLatch(latch);
-    }
+    awaitLatch(latchHandler, latch);
     return rVal.get();
   }
 }
