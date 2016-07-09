@@ -40,7 +40,6 @@ public class MainPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -5548760379892913464L;
   private static final Dimension initialSize = new Dimension(800, 620);
 
-  private GameSelectorPanel gameSelectorPanel;
   private JButton playButton;
   private JButton cancelButton;
   private ISetupPanel gameSetupPanel;
@@ -72,7 +71,7 @@ public class MainPanel extends JPanel implements Observer {
       }
     });
     cancelButton = SwingComponents.newJButton("Cancel", "Go back to main screen.", e -> gameTypePanelModel.showSelectType());
-    gameSelectorPanel = new GameSelectorPanel(gameSelectorModel);
+    GameSelectorPanel gameSelectorPanel = new GameSelectorPanel(gameSelectorModel);
     gameSelectorPanel.setBorder(new EtchedBorder());
     gameSetupPanelHolder = new JPanel();
     gameSetupPanelHolder.setLayout(new BorderLayout());
