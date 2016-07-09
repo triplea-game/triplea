@@ -1,9 +1,13 @@
 package games.strategy.engine.data;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Properties;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.history.DelegateHistoryWriter;
@@ -14,8 +18,9 @@ import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.UnifiedMessenger;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRandomStats.DiceType;
+import games.strategy.net.IServerMessenger;
+import games.strategy.net.Node;
 import games.strategy.sound.ISound;
-import games.strategy.triplea.delegate.MockObjects;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 
 /**
@@ -44,8 +49,15 @@ public class TestDelegateBridge implements ITestDelegateBridge {
     final History history = new History(m_data);
     final HistoryWriter historyWriter = new HistoryWriter(history);
     historyWriter.startNextStep("", "", PlayerID.NULL_PLAYERID, "");
+    IServerMessenger messenger = mock(IServerMessenger.class);
+    try {
+      when(messenger.getLocalNode()).thenReturn(new Node("dummy", InetAddress.getLocalHost(), 0));
+    } catch (UnknownHostException e) {
+      ClientLogger.logQuietly(e);
+    }
+    when(messenger.isServer()).thenReturn(true);
     final ChannelMessenger channelMessenger =
-        new ChannelMessenger(new UnifiedMessenger(MockObjects.getDummyMessenger()));
+        new ChannelMessenger(new UnifiedMessenger(messenger));
     m_historyWriter = new DelegateHistoryWriter(channelMessenger);
   }
 

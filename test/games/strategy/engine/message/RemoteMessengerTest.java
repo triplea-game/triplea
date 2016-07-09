@@ -5,33 +5,71 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.net.ClientMessenger;
-import games.strategy.net.IMessenger;
+import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
+import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
+import games.strategy.net.Node;
 import games.strategy.net.ServerMessenger;
 import games.strategy.test.TestUtil;
-import games.strategy.triplea.delegate.MockObjects;
 import games.strategy.util.ThreadUtil;
 
 public class RemoteMessengerTest {
   private int SERVER_PORT = -1;
-  private IMessenger m_messenger;
+  private IServerMessenger m_messenger = mock(IServerMessenger.class);
   private RemoteMessenger m_remoteMessenger;
   private UnifiedMessengerHub m_hub;
 
   @Before
   public void setUp() throws Exception {
     // simple set up for non networked testing
-    m_messenger = MockObjects.getDummyMessenger();
+    List<IConnectionChangeListener> connectionListeners = new CopyOnWriteArrayList<>();
+    doAnswer(new Answer<Void>() {
+      @Override
+      public Void answer(InvocationOnMock invocation) throws Throwable {
+        connectionListeners.add(invocation.getArgumentAt(0, IConnectionChangeListener.class));
+        return null;
+      }
+    }).when(m_messenger).addConnectionChangeListener(any(IConnectionChangeListener.class));
+    doAnswer(new Answer<Void>() {
+      @Override
+      public Void answer(InvocationOnMock invocation) throws Throwable {
+        for (final IConnectionChangeListener listener : connectionListeners) {
+          listener.connectionRemoved(invocation.getArgumentAt(0, INode.class));
+        }
+        return null;
+      }
+    }).when(m_messenger).removeConnection(any(INode.class));
+    Node dummyNode;
+    try {
+      dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);
+    } catch (final UnknownHostException e) {
+      ClientLogger.logQuietly(e);
+      throw new IllegalStateException(e);
+    }
+    when(m_messenger.getLocalNode()).thenReturn(dummyNode);
+    when(m_messenger.getServerNode()).thenReturn(dummyNode);
+    when(m_messenger.isServer()).thenReturn(true);
     m_remoteMessenger = new RemoteMessenger(new UnifiedMessenger(m_messenger));
     SERVER_PORT = TestUtil.getUniquePort();
   }

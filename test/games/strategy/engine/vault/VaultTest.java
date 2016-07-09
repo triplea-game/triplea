@@ -3,8 +3,12 @@ package games.strategy.engine.vault;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -17,9 +21,9 @@ import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
+import games.strategy.net.Node;
 import games.strategy.net.ServerMessenger;
 import games.strategy.test.TestUtil;
-import games.strategy.triplea.delegate.MockObjects;
 
 /**
  * Comment(KG): This test is broken, If you run each test individually they all work, but when running all test in the
@@ -68,7 +72,13 @@ public class VaultTest {
 
   @Test
   public void testLocal() throws NotUnlockedException {
-    final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(MockObjects.getDummyMessenger());
+    IServerMessenger messenger = mock(IServerMessenger.class);
+    try {
+      when(messenger.getLocalNode()).thenReturn(new Node("dummy", InetAddress.getLocalHost(), 0));
+    } catch (UnknownHostException e) {
+      ClientLogger.logQuietly(e);
+    }
+    final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
     final ChannelMessenger channelMessenger = new ChannelMessenger(unifiedMessenger);
     // RemoteMessenger remoteMessenger = new RemoteMessenger(unifiedMessenger);
     final Vault vault = new Vault(channelMessenger);
