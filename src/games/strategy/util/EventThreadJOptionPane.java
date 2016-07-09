@@ -38,7 +38,6 @@ public class EventThreadJOptionPane {
     final int newHeight = (scroll.getPreferredSize().height > availHeight ? availHeight
         : (scroll.getPreferredSize().height + (scroll.getPreferredSize().width > availWidth ? 20 : 0)));
     scroll.setPreferredSize(new Dimension(newWidth, newHeight));
-    // scroll.setMaximumSize(new Dimension(newWidth, newHeight));
     return scroll;
   }
 
