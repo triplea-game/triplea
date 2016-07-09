@@ -1,9 +1,11 @@
 package games.strategy.triplea.delegate.dataObjects;
 
+import java.io.Serializable;
+
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataComponent;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.WriteReplaceMagicMethod;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 
@@ -11,7 +13,8 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
  * The Purpose of this class is to record various information about combat,
  * in order to use it for conditions and other things later.
  */
-public class BattleRecord extends GameDataComponent {
+public class BattleRecord implements Serializable {
+
   /**
    * BLITZED = conquered without a fight <br>
    * CONQUERED = fought, won, and took over territory if land or convoy <br>
@@ -33,6 +36,7 @@ public class BattleRecord extends GameDataComponent {
     BLITZED, CONQUERED, WON_WITHOUT_CONQUERING, WON_WITH_ENEMY_LEFT, STALEMATE, LOST, BOMBED, AIR_BATTLE_WON, AIR_BATTLE_LOST, AIR_BATTLE_STALEMATE, NO_BATTLE
   }
 
+
   private static final long serialVersionUID = 3642216371483289106L;
   private Territory m_battleSite;
   private PlayerID m_attacker;
@@ -42,13 +46,57 @@ public class BattleRecord extends GameDataComponent {
   private BattleResultDescription m_battleResultDescription;
   private BattleType m_battleType;
   private BattleResults m_battleResults;
-  // Something in IBattle (formerly part of BattleResults) cannot be Serialized, which can causing MAJOR problems. So
-  // the IBattle should
-  // never be part of BattleResults or BattleRecord.
 
-  // Create copy
+
+  @WriteReplaceMagicMethod
+  public Object writeReplace(Object write) {
+    return new SerializationProxy(this);
+  }
+
+  @WriteReplaceMagicMethod
+  private BattleRecord(Territory battleSite, PlayerID attacker, PlayerID defender, int attackerLostTUV,
+      int defenderLostTUV, BattleResultDescription battleResultDescription, BattleType battleType,
+      BattleResults battleResults) {
+    this.m_battleSite = battleSite;
+    this.m_attacker = attacker;
+    this.m_defender = defender;
+    this.m_attackerLostTUV = attackerLostTUV;
+    this.m_defenderLostTUV = defenderLostTUV;
+    this.m_battleResultDescription = battleResultDescription;
+    this.m_battleType = battleType;
+    this.m_battleResults = battleResults;
+  }
+
+
+  private static class SerializationProxy implements Serializable {
+    private final Territory battleSite;
+    private final PlayerID attacker;
+    private final PlayerID defender;
+    private final int attackerLostTUV;
+    private final int defenderLostTUV;
+    private final BattleResultDescription battleResultDescription;
+    private final BattleType battleType;
+    private final BattleResults battleResults;
+
+    public SerializationProxy(BattleRecord battleRecord) {
+      battleSite = battleRecord.m_battleSite;
+      attacker = battleRecord.m_attacker;
+      defender = battleRecord.m_defender;
+      attackerLostTUV = battleRecord.m_attackerLostTUV;
+      defenderLostTUV = battleRecord.m_defenderLostTUV;
+      battleResultDescription = battleRecord.m_battleResultDescription;
+      battleType = battleRecord.m_battleType;
+      battleResults = battleRecord.m_battleResults;
+    }
+
+    private Object readResolve() {
+      return new BattleRecord(battleSite, attacker, defender, attackerLostTUV, defenderLostTUV, battleResultDescription,
+          battleType, battleResults);
+    }
+  }
+
+
   protected BattleRecord(final BattleRecord record) {
-    super(record.getData());
     m_battleSite = record.m_battleSite;
     m_attacker = record.m_attacker;
     m_defender = record.m_defender;
@@ -61,7 +109,6 @@ public class BattleRecord extends GameDataComponent {
 
   protected BattleRecord(final Territory battleSite, final PlayerID attacker, final BattleType battleType,
       final GameData data) {
-    super(data);
     m_battleSite = battleSite;
     m_attacker = attacker;
     m_battleType = battleType;
