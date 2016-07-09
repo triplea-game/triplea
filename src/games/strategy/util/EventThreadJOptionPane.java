@@ -143,12 +143,6 @@ public class EventThreadJOptionPane {
     }
   }
 
-  public static void showMessageDialog(final Component parentComponent, final Object message, final String title,
-      final int messageType, final Icon icon, final CountDownLatchHandler latchHandler) {
-    showOptionDialog(parentComponent, message, title, JOptionPane.DEFAULT_OPTION, messageType, icon, null, null,
-        latchHandler);
-  }
-
   public static int showOptionDialog(final Component parentComponent, final Object message, final String title,
       final int optionType, final int messageType, final Icon icon, final Object[] options, final Object initialValue,
       final CountDownLatchHandler latchHandler) {
