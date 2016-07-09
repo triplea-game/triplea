@@ -68,8 +68,7 @@ public class BattleRecord extends GameDataComponent {
   }
 
   protected void setResult(final PlayerID defender, final int attackerLostTUV, final int defenderLostTUV,
-      final BattleResultDescription battleResultDescription, final BattleResults battleResults,
-      final int bombingDamage) {
+      final BattleResultDescription battleResultDescription, final BattleResults battleResults) {
     m_defender = defender;
     m_attackerLostTUV = attackerLostTUV;
     m_defenderLostTUV = defenderLostTUV;

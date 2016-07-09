@@ -683,7 +683,7 @@ public class BattleTracker implements java.io.Serializable {
       if (bombingBattle != null) {
         final BattleResults results = new BattleResults(bombingBattle, WhoWon.DRAW, data);
         getBattleRecords(data).addResultToBattle(id, bombingBattle.getBattleID(), null, 0, 0,
-            BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
+            BattleRecord.BattleResultDescription.NO_BATTLE, results);
         bombingBattle.cancelBattle(bridge);
         removeBattle(bombingBattle);
         throw new IllegalStateException(

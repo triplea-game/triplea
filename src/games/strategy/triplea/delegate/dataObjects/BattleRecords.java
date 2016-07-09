@@ -176,7 +176,7 @@ public class BattleRecords extends GameDataComponent {
 
   public void addResultToBattle(final PlayerID currentPlayer, final GUID battleID, final PlayerID defender,
       final int attackerLostTUV, final int defenderLostTUV, final BattleResultDescription battleResultDescription,
-      final BattleResults battleResults, final int bombingDamage) {
+      final BattleResults battleResults) {
     final HashMap<GUID, BattleRecord> current = m_records.get(currentPlayer);
     if (current == null) {
       throw new IllegalStateException("Trying to add info to battle records that do not exist");
@@ -185,7 +185,7 @@ public class BattleRecords extends GameDataComponent {
       throw new IllegalStateException("Trying to add info to a battle that does not exist");
     }
     final BattleRecord record = current.get(battleID);
-    record.setResult(defender, attackerLostTUV, defenderLostTUV, battleResultDescription, battleResults, bombingDamage);
+    record.setResult(defender, attackerLostTUV, defenderLostTUV, battleResultDescription, battleResults);
   }
 
   public void clear() {
