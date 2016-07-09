@@ -38,6 +38,8 @@ import games.strategy.engine.framework.startup.mc.SetupPanelModel;
  */
 public class MainPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -5548760379892913464L;
+  private static final Dimension m_initialSize = new Dimension(800, 620);
+
   private JScrollPane m_gameSetupPanelScroll;
   private GameSelectorPanel m_gameSelectorPanel;
   private JButton m_playButton;
@@ -50,11 +52,6 @@ public class MainPanel extends JPanel implements Observer {
   private final SetupPanelModel m_gameTypePanelModel;
   private final JPanel m_mainPanel = new JPanel();
   private JSplitPane m_chatSplit;
-  private static final Dimension m_initialSize;
-
-  static {
-    m_initialSize = new Dimension(800, 620);
-  }
 
   // private final Dimension m_initialSizeWithChat = new Dimension(500,650);
   private boolean m_isChatShowing;
