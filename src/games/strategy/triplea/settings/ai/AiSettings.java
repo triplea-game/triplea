@@ -7,7 +7,7 @@ import games.strategy.triplea.settings.SystemPreferences;
 public class AiSettings implements HasDefaults {
 
 
-  private static final int DEFAULT_AI_PAUSE_DURACTION = 400;
+  static final int DEFAULT_AI_PAUSE_DURACTION = 400;
   private static final boolean DEFAULT_SHOW_BATTLE_BETWEEN_AI = true;
 
   @Override
