@@ -107,8 +107,7 @@ public class BattleRecord implements Serializable {
     m_battleResults = record.m_battleResults;
   }
 
-  protected BattleRecord(final Territory battleSite, final PlayerID attacker, final BattleType battleType,
-      final GameData data) {
+  protected BattleRecord(final Territory battleSite, final PlayerID attacker, final BattleType battleType) {
     m_battleSite = battleSite;
     m_attacker = attacker;
     m_battleType = battleType;

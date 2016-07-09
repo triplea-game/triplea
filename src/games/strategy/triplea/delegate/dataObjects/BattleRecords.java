@@ -164,12 +164,12 @@ public class BattleRecords extends GameDataComponent {
   }
 
   public void addBattle(final PlayerID currentPlayerAndAttacker, final GUID battleID, final Territory battleSite,
-      final BattleType battleType, final GameData data) {
+      final BattleType battleType) {
     HashMap<GUID, BattleRecord> current = m_records.get(currentPlayerAndAttacker);
     if (current == null) {
       current = new HashMap<>();
     }
-    final BattleRecord initial = new BattleRecord(battleSite, currentPlayerAndAttacker, battleType, data);
+    final BattleRecord initial = new BattleRecord(battleSite, currentPlayerAndAttacker, battleType);
     current.put(battleID, initial);
     m_records.put(currentPlayerAndAttacker, current);
   }
