@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -49,16 +50,16 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private final Node node;
   private boolean shutdown = false;
   private final NIOSocket nioSocket;
-  private final CopyOnWriteArrayList<IMessageListener> listeners = new CopyOnWriteArrayList<>();
-  private final CopyOnWriteArrayList<IMessengerErrorListener> errorListeners =
+  private final List<IMessageListener> listeners = new CopyOnWriteArrayList<>();
+  private final List<IMessengerErrorListener> errorListeners =
       new CopyOnWriteArrayList<>();
-  protected final CopyOnWriteArrayList<IConnectionChangeListener> connectionListeners =
+  private final List<IConnectionChangeListener> connectionListeners =
       new CopyOnWriteArrayList<>();
   private boolean acceptNewConnection = false;
   private ILoginValidator loginValidator;
   // all our nodes
-  private final ConcurrentHashMap<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<>();
-  private final ConcurrentHashMap<SocketChannel, INode> channelToNode = new ConcurrentHashMap<>();
+  private final Map<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<>();
+  private final Map<SocketChannel, INode> channelToNode = new ConcurrentHashMap<>();
 
   // A hack, till I think of something better
   public ServerMessenger(final String name, final int portNumber, final IObjectStreamFactory streamFactory)
@@ -665,8 +666,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private TimerTask getUsernameUnmuteTask(final String username) {
     return createUnmuteTimerTask(
         () -> (isLobby() && new MutedUsernameController().getUsernameUnmuteTime(username) == -1) || (isGame()),
-        () -> m_liveMutedUsernames.remove(username)
-    );
+        () -> m_liveMutedUsernames.remove(username));
   }
 
   private TimerTask createUnmuteTimerTask(final Supplier<Boolean> runCondition, final Runnable action) {
@@ -685,15 +685,13 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private TimerTask getIpUnmuteTask(final String ip) {
     return createUnmuteTimerTask(
         () -> (isLobby() && new MutedIpController().getIpUnmuteTime(ip) == -1) || (isGame()),
-        () -> m_liveMutedIpAddresses.remove(ip)
-    );
+        () -> m_liveMutedIpAddresses.remove(ip));
   }
 
   private TimerTask getMacUnmuteTask(final String mac) {
     return createUnmuteTimerTask(
         () -> (isLobby() && new MutedMacController().getMacUnmuteTime(mac) == -1) || (isGame()),
-        () -> m_liveMutedMacAddresses.remove(mac)
-    );
+        () -> m_liveMutedMacAddresses.remove(mac));
   }
 
   @Override
