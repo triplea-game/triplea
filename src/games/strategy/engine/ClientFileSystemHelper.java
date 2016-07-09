@@ -1,6 +1,7 @@
 package games.strategy.engine;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.config.GameEnginePropertyFileReader;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.util.Version;
@@ -10,6 +11,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Pure utility class, final and private constructor to enforce this
@@ -76,16 +80,28 @@ public final class ClientFileSystemHelper {
   private static File getRootRelativeToClassFile(final String fileName) {
     File f = new File(fileName);
 
-    // move up 1 directory for each package
+    // move up one directory for each package
     final int moveUpCount = GameRunner2.class.getName().split("\\.").length + 1;
     for (int i = 0; i < moveUpCount; i++) {
       f = f.getParentFile();
     }
+
+    // keep moving up one directory until we find the game_engine properties file that we expect to be at the root
+    while(!folderContainsGamePropsFile(f)) {
+      f = f.getParentFile();
+    }
+
     if (!f.exists()) {
       System.err.println("Could not find root folder, does  not exist:" + f);
       return new File(System.getProperties().getProperty("user.dir"));
     }
     return f;
+  }
+
+  private static boolean folderContainsGamePropsFile(File folder) {
+    File[] files = folder.listFiles();
+    List<String> fileNames = Arrays.asList(files).stream().map(file->file.getName()).collect(Collectors.toList());
+    return fileNames.contains(GameEnginePropertyFileReader.GAME_ENGINE_PROPERTY_FILE);
   }
 
   public static boolean areWeOldExtraJar() {
