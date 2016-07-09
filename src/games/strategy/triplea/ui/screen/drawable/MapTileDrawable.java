@@ -3,6 +3,7 @@ package games.strategy.triplea.ui.screen.drawable;
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.triplea.util.Stopwatch;
 
 import java.awt.Graphics2D;
@@ -47,9 +48,7 @@ abstract class MapTileDrawable implements IDrawable {
     if (unscaled != null) {
       graphics.setTransform(unscaled);
     }
-    final Stopwatch drawStopWatch = new Stopwatch(s_logger, Level.FINEST, "drawing tile images");
     graphics.drawImage(img, m_x * TileManager.TILE_SIZE - bounds.x, m_y * TileManager.TILE_SIZE - bounds.y, null);
-    drawStopWatch.done();
     if (unscaled != null) {
       graphics.setTransform(scaled);
     }
