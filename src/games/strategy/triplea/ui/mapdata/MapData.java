@@ -243,8 +243,10 @@ public class MapData implements Closeable {
     if (inputStream.isPresent()) {
       final Map<String, List<Point>> points = PointFileReaderWriter.readOneToMany(inputStream.get());
       for (final String name : points.keySet()) {
-        final Image img = loadImage("misc/" + name);
-        decorations.put(img, points.get(name));
+        final Optional<Image> img = loadImage("misc/" + name);
+        if(img.isPresent()) {
+          decorations.put(img.get(), points.get(name));
+        }
       }
     }
     return decorations;
