@@ -115,7 +115,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
               continue;
             }
           }
-          addChatMessage(message.getMessage(), message.getFrom(), message.isMeMessage());
+          addChatMessage(message.getMessage(), message.getFrom(), message.isMyMessage());
         }
       }
     } else {
