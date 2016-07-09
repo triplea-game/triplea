@@ -119,7 +119,7 @@ public class EnginePreferences extends JDialog {
     buttonsPanel.add(new JLabel(" "));
     buttonsPanel.add(SwingComponents.newJButton("Engine Settings", e -> SettingsWindow.showWindow()));
     buttonsPanel.add(new JLabel(" "));
-    SoundOptions.addToPanel(buttonsPanel, SoundPath.SoundType.TRIPLEA);
+    SoundOptions.addToPanel(buttonsPanel);
     buttonsPanel.add(new JLabel(" "));
     buttonsPanel.add(m_lookAndFeel);
     buttonsPanel.add(new JLabel(" "));
