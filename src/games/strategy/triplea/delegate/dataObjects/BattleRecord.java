@@ -40,7 +40,6 @@ public class BattleRecord extends GameDataComponent {
   private int m_attackerLostTUV = 0;
   private int m_defenderLostTUV = 0;
   private BattleResultDescription m_battleResultDescription;
-  private int m_bombingDamage = 0;
   private BattleType m_battleType;
   private BattleResults m_battleResults;
   // Something in IBattle (formerly part of BattleResults) cannot be Serialized, which can causing MAJOR problems. So
@@ -56,7 +55,6 @@ public class BattleRecord extends GameDataComponent {
     m_attackerLostTUV = record.m_attackerLostTUV;
     m_defenderLostTUV = record.m_defenderLostTUV;
     m_battleResultDescription = record.m_battleResultDescription;
-    m_bombingDamage = record.m_bombingDamage;
     m_battleType = record.m_battleType;
     m_battleResults = record.m_battleResults;
   }
@@ -77,7 +75,6 @@ public class BattleRecord extends GameDataComponent {
     m_defenderLostTUV = defenderLostTUV;
     m_battleResultDescription = battleResultDescription;
     m_battleResults = battleResults;
-    m_bombingDamage = bombingDamage;
   }
 
   protected Territory getBattleSite() {
@@ -108,48 +105,12 @@ public class BattleRecord extends GameDataComponent {
     return m_attackerLostTUV;
   }
 
-  protected void setAttackerLostTUV(final int attackerLostTUV) {
-    this.m_attackerLostTUV = attackerLostTUV;
-  }
-
   protected int getDefenderLostTUV() {
     return m_defenderLostTUV;
   }
 
-  protected void setDefenderLostTUV(final int defenderLostTUV) {
-    this.m_defenderLostTUV = defenderLostTUV;
-  }
-
-  protected BattleResultDescription getBattleResultDescription() {
-    return m_battleResultDescription;
-  }
-
-  protected void setBattleResultDescription(final BattleResultDescription battleResult) {
-    this.m_battleResultDescription = battleResult;
-  }
-
-  protected int getBombingDamage() {
-    return m_bombingDamage;
-  }
-
-  protected void setBombingDamage(final int bombingDamage) {
-    this.m_bombingDamage = bombingDamage;
-  }
-
   protected BattleType getBattleType() {
     return m_battleType;
-  }
-
-  protected void setBattleType(final BattleType battleType) {
-    this.m_battleType = battleType;
-  }
-
-  protected BattleResults getBattleResults() {
-    return m_battleResults;
-  }
-
-  protected void setBattleResults(final BattleResults battleResults) {
-    m_battleResults = battleResults;
   }
 
   @Override
