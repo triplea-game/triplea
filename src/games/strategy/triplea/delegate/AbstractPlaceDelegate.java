@@ -1714,10 +1714,3 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 }
 
 
-class PlaceExtendedDelegateState implements Serializable {
-  private static final long serialVersionUID = -4926754941623641735L;
-  Serializable superState;
-  // add other variables here:
-  public Map<Territory, Collection<Unit>> m_produced;
-  public List<UndoablePlacement> m_placements;
-}
