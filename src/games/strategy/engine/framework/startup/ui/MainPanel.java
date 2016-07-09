@@ -53,11 +53,7 @@ public class MainPanel extends JPanel implements Observer {
   private static final Dimension m_initialSize;
 
   static {
-    if (GameRunner.isMac()) {
-      m_initialSize = new Dimension(685, 620);
-    } else {
-      m_initialSize = new Dimension(625, 550);
-    }
+    m_initialSize = new Dimension(800, 620);
   }
 
   // private final Dimension m_initialSizeWithChat = new Dimension(500,650);
