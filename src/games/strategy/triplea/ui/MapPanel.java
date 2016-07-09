@@ -791,19 +791,19 @@ public class MapPanel extends ImageScrollerLargeView {
     setCursor(uiContext.getCursor());
   }
 
-  public Image getErrorImage() {
+  public Optional<Image> getErrorImage() {
     return uiContext.getMapData().getErrorImage();
   }
 
-  public Image getWarningImage() {
+  public Optional<Image> getWarningImage() {
     return uiContext.getMapData().getWarningImage();
   }
 
-  public Image getInfoImage() {
+  public Optional<Image> getInfoImage() {
     return uiContext.getMapData().getInfoImage();
   }
 
-  public Image getHelpImage() {
+  public Optional<Image> getHelpImage() {
     return uiContext.getMapData().getHelpImage();
   }
 }
