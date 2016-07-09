@@ -514,7 +514,7 @@ public class MovePanel extends AbstractMovePanel {
         currentCursorImage = null;
       } else {
         setStatusWarningMessage("Not all units can move there");
-        currentCursorImage = getMap().getWarningImage();
+        currentCursorImage = getMap().getWarningImage().orElse(null);
       }
     } else {
       String message = allResults.getError();
@@ -526,10 +526,10 @@ public class MovePanel extends AbstractMovePanel {
       }
       if (!lastResults.isMoveValid()) {
         setStatusErrorMessage(message);
-        currentCursorImage = getMap().getErrorImage();
+        currentCursorImage = getMap().getErrorImage().orElse(null);
       } else {
         setStatusWarningMessage(message);
-        currentCursorImage = getMap().getWarningImage();
+        currentCursorImage = getMap().getWarningImage().orElse(null);
       }
     }
     if (unitsThatCanMoveOnRoute.size() != new HashSet<>(unitsThatCanMoveOnRoute).size()) {
