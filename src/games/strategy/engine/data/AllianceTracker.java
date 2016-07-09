@@ -58,7 +58,7 @@ public class AllianceTracker extends GameDataComponent {
    * @param allianceName Alliance name
    * @return all the players in the given alliance
    */
-  public HashSet<PlayerID> getPlayersInAlliance(final String allianceName) {
+  public Set<PlayerID> getPlayersInAlliance(final String allianceName) {
     final Iterator<PlayerID> keys = alliances.keySet().iterator();
     final HashSet<PlayerID> rVal = new HashSet<>();
     while (keys.hasNext()) {
