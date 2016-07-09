@@ -60,6 +60,7 @@ public class BattleRecord implements Serializable {
     this.battleType = battleType;
     this.battleResults = battleResults;
   }
+
   @SerializationProxySupport
   public Object writeReplace(Object write) {
     return new SerializationProxy(this);
