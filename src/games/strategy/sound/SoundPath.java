@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.properties.IEditableProperty;
 
@@ -78,59 +79,8 @@ public class SoundPath {
   public static final String CLIP_USER_ACTION_SUCCESSFUL = "user_action_successful";
 
   public static Set<String> getAllSoundOptions() {
-    final Set<String> rVal = new HashSet<>();
-    rVal.add(CLIP_CHAT_MESSAGE);
-    rVal.add(CLIP_CHAT_SLAP);
-    rVal.add(CLIP_CHAT_JOIN_GAME);
-    rVal.add(CLIP_CLICK_BUTTON);
-    rVal.add(CLIP_CLICK_PLOT);
-    rVal.add(CLIP_GAME_START);
-    rVal.add(CLIP_GAME_WON);
-    rVal.add(CLIP_REQUIRED_ACTION);
-    rVal.add(CLIP_REQUIRED_YOUR_TURN_SERIES);
-    rVal.add(CLIP_BATTLE_AA_HIT);
-    rVal.add(CLIP_BATTLE_AA_MISS);
-    rVal.add(CLIP_BATTLE_AIR);
-    rVal.add(CLIP_BATTLE_AIR_SUCCESSFUL);
-    rVal.add(CLIP_BATTLE_BOMBARD);
-    rVal.add(CLIP_BATTLE_FAILURE);
-    rVal.add(CLIP_BATTLE_LAND);
-    rVal.add(CLIP_BATTLE_RETREAT_AIR);
-    rVal.add(CLIP_BATTLE_RETREAT_LAND);
-    rVal.add(CLIP_BATTLE_RETREAT_SEA);
-    rVal.add(CLIP_BATTLE_RETREAT_SUBMERGE);
-    rVal.add(CLIP_BATTLE_SEA_NORMAL);
-    rVal.add(CLIP_BATTLE_SEA_SUBS);
-    rVal.add(CLIP_BATTLE_SEA_SUCCESSFUL);
-    rVal.add(CLIP_BATTLE_STALEMATE);
-    rVal.add(CLIP_BOMBING_ROCKET);
-    rVal.add(CLIP_BOMBING_STRATEGIC);
-    rVal.add(CLIP_PHASE_BATTLE);
-    rVal.add(CLIP_PHASE_END_TURN);
-    rVal.add(CLIP_PHASE_MOVE_COMBAT);
-    rVal.add(CLIP_PHASE_MOVE_NONCOMBAT);
-    rVal.add(CLIP_PHASE_PLACEMENT);
-    rVal.add(CLIP_PHASE_POLITICS);
-    rVal.add(CLIP_PHASE_PURCHASE);
-    rVal.add(CLIP_PHASE_TECHNOLOGY);
-    rVal.add(CLIP_PHASE_USER_ACTIONS);
-    rVal.add(CLIP_PLACED_AIR);
-    rVal.add(CLIP_PLACED_INFRASTRUCTURE);
-    rVal.add(CLIP_PLACED_LAND);
-    rVal.add(CLIP_PLACED_SEA);
-    rVal.add(CLIP_POLITICAL_ACTION_FAILURE);
-    rVal.add(CLIP_POLITICAL_ACTION_SUCCESSFUL);
-    rVal.add(CLIP_TECHNOLOGY_FAILURE);
-    rVal.add(CLIP_TECHNOLOGY_SUCCESSFUL);
-    rVal.add(CLIP_TERRITORY_CAPTURE_BLITZ);
-    rVal.add(CLIP_TERRITORY_CAPTURE_CAPITAL);
-    rVal.add(CLIP_TERRITORY_CAPTURE_LAND);
-    rVal.add(CLIP_TERRITORY_CAPTURE_SEA);
-    rVal.add(CLIP_USER_ACTION_FAILURE);
-    rVal.add(CLIP_USER_ACTION_SUCCESSFUL);
-    return rVal;
+    return getSoundOptions().stream().map(soundProp -> soundProp.getName()).collect(Collectors.toSet());
   }
-
 
   public static List<IEditableProperty> getSoundOptions() {
     final List<IEditableProperty> rVal = new ArrayList<>();
