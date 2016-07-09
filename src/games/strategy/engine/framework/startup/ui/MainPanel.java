@@ -52,7 +52,6 @@ public class MainPanel extends JPanel implements Observer {
   private final JPanel mainPanel = new JPanel();
   private JSplitPane chatSplit;
 
-  // private final Dimension m_initialSizeWithChat = new Dimension(500,650);
   private boolean isChatShowing;
 
   public MainPanel(final SetupPanelModel typePanelModel) {
@@ -65,10 +64,6 @@ public class MainPanel extends JPanel implements Observer {
     if (typePanelModel.getPanel() != null) {
       setGameSetupPanel(typePanelModel.getPanel());
     }
-  }
-
-  JButton getDefaultButton() {
-    return playButton;
   }
 
   private void createComponents() {
@@ -190,34 +185,16 @@ public class MainPanel extends JPanel implements Observer {
   }
 
   private void setupListeners() {
-    gameTypePanelModel.addObserver(new Observer() {
-      @Override
-      public void update(final Observable o, final Object arg) {
-        setGameSetupPanel(gameTypePanelModel.getPanel());
+    gameTypePanelModel.addObserver((o, arg) -> setGameSetupPanel(gameTypePanelModel.getPanel()));
+    playButton.addActionListener(e -> play());
+    quitButton.addActionListener(e -> {
+      try {
+        gameSetupPanel.shutDown();
+      } finally {
+        System.exit(0);
       }
     });
-    playButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        play();
-      }
-    });
-    quitButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          gameSetupPanel.shutDown();
-        } finally {
-          System.exit(0);
-        }
-      }
-    });
-    cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        gameTypePanelModel.showSelectType();
-      }
-    });
+    cancelButton.addActionListener(e -> gameTypePanelModel.showSelectType());
     gameSelectorModel.addObserver(this);
   }
 
@@ -232,12 +209,7 @@ public class MainPanel extends JPanel implements Observer {
 
   private void setWidgetActivation() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          setWidgetActivation();
-        }
-      });
+      SwingUtilities.invokeLater(() -> setWidgetActivation());
       return;
     }
     gameTypePanelModel.setWidgetActivation();
