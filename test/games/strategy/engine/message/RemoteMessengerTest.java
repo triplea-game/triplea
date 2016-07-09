@@ -47,19 +47,19 @@ public class RemoteMessengerTest {
     doAnswer(new Answer<Void>() {
       @Override
       public Void answer(InvocationOnMock invocation) throws Throwable {
-        connectionListeners.add(invocation.getArgumentAt(0, IConnectionChangeListener.class));
+        connectionListeners.add(invocation.getArgument(0));
         return null;
       }
-    }).when(m_messenger).addConnectionChangeListener(any(IConnectionChangeListener.class));
+    }).when(m_messenger).addConnectionChangeListener(any());
     doAnswer(new Answer<Void>() {
       @Override
       public Void answer(InvocationOnMock invocation) throws Throwable {
         for (final IConnectionChangeListener listener : connectionListeners) {
-          listener.connectionRemoved(invocation.getArgumentAt(0, INode.class));
+          listener.connectionRemoved(invocation.getArgument(0));
         }
         return null;
       }
-    }).when(m_messenger).removeConnection(any(INode.class));
+    }).when(m_messenger).removeConnection(any());
     Node dummyNode;
     try {
       dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);

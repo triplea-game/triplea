@@ -44,11 +44,13 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollectionOf;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.contains;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -60,9 +62,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -83,9 +86,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
-import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -104,10 +105,21 @@ import games.strategy.util.Match;
 
 public class WW2V3_41_Test {
   private GameData m_data;
-  private TripleAPlayer dummyPlayer = MockObjects.getDummyPlayer();
+  private ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
 
   @Before
   public void setUp() throws Exception {
+    when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(), any(), any(), any(), any(), any(),
+        anyBoolean(), any(), any(), any(), any(), anyBoolean())).thenAnswer(new Answer<CasualtyDetails>() {
+          @Override
+          public CasualtyDetails answer(InvocationOnMock invocation) throws Throwable {
+            CasualtyList defaultCasualties = invocation.getArgument(11);
+            if (defaultCasualties != null) {
+              return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
+            }
+            return null;
+          }
+        });
     m_data = LoadGameUtil.loadTestGame("ww2v3_1941_test.xml");
   }
 
@@ -121,8 +133,7 @@ public class WW2V3_41_Test {
         return battle.fightBattle(territory, false, entry.getKey());
       }
     }
-    throw new IllegalStateException(
-        "Could not find battle in: " + territory.getName());
+    throw new IllegalStateException("Could not find battle in: " + territory.getName());
   }
 
   @Test
@@ -336,10 +347,8 @@ public class WW2V3_41_Test {
     final MoveDelegate moveDelegate = moveDelegate(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setStepName("britishCombatMove");
-
-    TripleAPlayer player = MockObjects.getDummyPlayer();
-    when(player.selectAttackSubs(any(Territory.class))).thenReturn(true);
-    bridge.setRemote(player);
+    when(dummyPlayer.selectAttackSubs(any(Territory.class))).thenReturn(true);
+    bridge.setRemote(dummyPlayer);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     final Territory sz9 = territory("9 Sea Zone", m_data);
@@ -916,7 +925,6 @@ public class WW2V3_41_Test {
     assertEquals(2, attacked.getUnits().size());
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void testAttackDestroyerAndSubsAgainstSubAndDestroyer() {
     final String defender = "Germans";
@@ -943,24 +951,16 @@ public class WW2V3_41_Test {
             defender + SELECT_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, defender + FIRE,
             attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(),
         steps.toString());
-
-    TripleAPlayer player = MockObjects.getDummyPlayer();
-    when(player.selectCasualties(anyCollectionOf(Unit.class), any(Map.class), any(int.class), any(String.class),
-        any(DiceRoll.class), any(PlayerID.class), anyCollectionOf(Unit.class), any(PlayerID.class),
-        anyCollectionOf(Unit.class),
-        any(boolean.class), anyCollectionOf(Unit.class),
-        any(CasualtyList.class), any(GUID.class), any(Territory.class), any(boolean.class)))
-            .thenAnswer(new Answer<CasualtyDetails>() {
-
-              @Override
-              public CasualtyDetails answer(InvocationOnMock invocation) throws Throwable {
-                Collection<Unit> selectFrom = (Collection<Unit>) invocation.getArguments()[0];
-                return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), new ArrayList<>(),
-                    false);
-              }
-
-            });
-    bridge.setRemote(player);
+    when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(), any(), any(), any(), any(), any(), anyBoolean(),
+        any(),
+        any(), any(), any(), anyBoolean())).thenAnswer(new Answer<CasualtyDetails>() {
+          @Override
+          public CasualtyDetails answer(InvocationOnMock invocation) {
+            Collection<Unit> selectFrom = invocation.getArgument(0);
+            return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), new ArrayList<>(), false);
+          }
+        });
+    bridge.setRemote(dummyPlayer);
     // attacking subs sneak attack and hit
     // no chance to return fire
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 0, 0, 0, ScriptedRandomSource.ERROR);
@@ -975,9 +975,8 @@ public class WW2V3_41_Test {
     final MoveDelegate move = moveDelegate(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
 
-    TripleAPlayer player = MockObjects.getDummyPlayer();
-    when(player.selectShoreBombard(any(Territory.class))).thenReturn(true);
-    bridge.setRemote(player);
+    when(dummyPlayer.selectShoreBombard(any(Territory.class))).thenReturn(true);
+    bridge.setRemote(dummyPlayer);
     bridge.setStepName("CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
@@ -1024,9 +1023,8 @@ public class WW2V3_41_Test {
   public void testBombardStrengthVariable() {
     final MoveDelegate move = moveDelegate(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
-    TripleAPlayer player = MockObjects.getDummyPlayer();
-    when(player.selectShoreBombard(any(Territory.class))).thenReturn(true);
-    bridge.setRemote(player);
+    when(dummyPlayer.selectShoreBombard(any(Territory.class))).thenReturn(true);
+    bridge.setRemote(dummyPlayer);
     bridge.setStepName("CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
@@ -1085,9 +1083,8 @@ public class WW2V3_41_Test {
   public void testAmphAttackUndoAndAttackAgainBombard() {
     final MoveDelegate move = moveDelegate(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
-    TripleAPlayer player = MockObjects.getDummyPlayer();
-    when(player.selectShoreBombard(any(Territory.class))).thenReturn(true);
-    bridge.setRemote(player);
+    when(dummyPlayer.selectShoreBombard(any())).thenReturn(true);
+    bridge.setRemote(dummyPlayer);
     bridge.setStepName("CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
@@ -1464,32 +1461,35 @@ public class WW2V3_41_Test {
     final Territory sz13 = territory("13 Sea Zone", m_data);
     final Territory sz14 = territory("14 Sea Zone", m_data);
     final Territory sz15 = territory("15 Sea Zone", m_data);
-
-    TripleAPlayer player = MockObjects.getDummyPlayer();
-    when(player.retreatQuery(any(GUID.class), any(boolean.class), any(Territory.class),
-        anyCollectionOf(Territory.class), any(String.class))).thenAnswer(new Answer<Territory>() {
-
-          @Override
-          public Territory answer(InvocationOnMock invocation) throws Throwable {
-            assertFalse(invocation.getArgumentAt(4, String.class).contains(BattleStepStrings.RETREAT_PLANES));
-            return null;
-          }
-        });
-    bridge.setRemote(player);
+    ;
+    when(dummyPlayer.retreatQuery(any(), anyBoolean(), any(),
+        any(), contains(BattleStepStrings.RETREAT_PLANES))).thenThrow(
+            new AssertionError("The Message is not allowed to contain the BattleStepStrings.RETREAT_PLANES constant"));
+    bridge.setRemote(dummyPlayer);
     ITripleADisplay dummyDisplay = mock(ITripleADisplay.class);
-    doAnswer(new Answer<Void>(){
+    doThrow(new AssertionError(
+        "None of the Battle steps is allow to contain the BattleStepStrings.PLANES_WITHDRAW constant"))
+            .when(dummyDisplay).listBattleSteps(any(), argThat(new BaseMatcher<List<String>>() {
 
-      @SuppressWarnings("unchecked")
-      @Override
-      public Void answer(InvocationOnMock invocation) throws Throwable {
-        List<String> steps = (List<String>) invocation.getArguments()[1];
-        for (final String s : steps) {
-          assertFalse(s.contains(BattleStepStrings.PLANES_WITHDRAW));
-        }
-        return null;
-      }
-      
-    }).when(dummyDisplay).listBattleSteps(any(GUID.class), anyListOf(String.class));
+              @SuppressWarnings("unchecked")
+              @Override
+              public boolean matches(Object item) {
+                if (!(item instanceof List)) {
+                  throw new IllegalArgumentException("Matcher.matches(Object) was called with type "
+                      + item.getClass().getTypeName() + " instead of List<String>");
+                }
+                for (String string : (List<String>) item) {
+                  if (string.contains(BattleStepStrings.PLANES_WITHDRAW)) {
+                    return true;
+                  }
+                }
+                return false;
+              }
+
+              @Override
+              public void describeTo(Description description) {}
+
+            }));
     bridge.setDisplay(dummyDisplay);
     // move units for amphib assault
     load(france.getUnits().getMatches(Matches.UnitIsInfantry), new Route(france, sz13));
@@ -1520,18 +1520,15 @@ public class WW2V3_41_Test {
     // remove the sub
     removeFrom(sz5, sz5.getUnits().getMatches(Matches.UnitIsSub));
 
-    TripleAPlayer player = MockObjects.getDummyPlayer();
-    when(player.retreatQuery(any(GUID.class), any(boolean.class), any(Territory.class),
-        anyCollectionOf(Territory.class), any(String.class))).thenAnswer(new Answer<Territory>() {
-
+    when(dummyPlayer.retreatQuery(any(), anyBoolean(), any(),
+        any(), any())).thenAnswer(new Answer<Territory>() {
           @Override
           public Territory answer(InvocationOnMock invocation) throws Throwable {
-
             throw new IllegalStateException(
-                "Should not be asked to retreat:" + invocation.getArgumentAt(4, String.class));
+                "Should not be asked to retreat:" + invocation.getArgument(4));
           }
         });
-    bridge.setRemote(player);
+    bridge.setRemote(dummyPlayer);
     move(uk.getUnits().getMatches(Matches.UnitIsAir), m_data.getMap().getRoute(uk, sz5));
     // move units for amphib assault
     moveDelegate(m_data).end();

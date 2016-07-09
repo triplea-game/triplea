@@ -41,7 +41,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollectionOf;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.InvocationHandler;
@@ -52,7 +54,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -72,9 +73,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
-import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -91,10 +90,21 @@ import games.strategy.util.Match;
 
 public class RevisedTest {
   private GameData m_data;
-  private TripleAPlayer dummyPlayer = MockObjects.getDummyPlayer();
+  private ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
 
   @Before
   public void setUp() throws Exception {
+    when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(), any(), any(), any(), any(), any(),
+        anyBoolean(), any(), any(), any(), any(), anyBoolean())).thenAnswer(new Answer<CasualtyDetails>() {
+          @Override
+          public CasualtyDetails answer(InvocationOnMock invocation) throws Throwable {
+            CasualtyList defaultCasualties = invocation.getArgument(11);
+            if (defaultCasualties != null) {
+              return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
+            }
+            return null;
+          }
+        });
     m_data = LoadGameUtil.loadTestGame("revised_test.xml");
   }
 
@@ -318,9 +328,8 @@ public class RevisedTest {
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    TripleAPlayer player = MockObjects.getDummyPlayer();
-    when(player.shouldBomberBomb(any(Territory.class))).thenReturn(true);
-    bridge.setRemote(player);
+    when(dummyPlayer.shouldBomberBomb(any())).thenReturn(true);
+    bridge.setRemote(dummyPlayer);
     final Territory uk = territory("United Kingdom", m_data);
     final Territory germany = territory("Germany", m_data);
     final Route route = new Route(uk, territory("6 Sea Zone", m_data), territory("5 Sea Zone", m_data), germany);
@@ -349,9 +358,8 @@ public class RevisedTest {
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    TripleAPlayer player = MockObjects.getDummyPlayer();
-    when(player.confirmMoveInFaceOfAA(anyCollectionOf(Territory.class))).thenReturn(true);
-    bridge.setRemote(player);
+    when(dummyPlayer.confirmMoveInFaceOfAA(any())).thenReturn(true);
+    bridge.setRemote(dummyPlayer);
     bridge.setRandomSource(new ScriptedRandomSource(0));
     final Territory uk = territory("United Kingdom", m_data);
     final Territory we = territory("Western Europe", m_data);
@@ -372,9 +380,8 @@ public class RevisedTest {
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    TripleAPlayer player = MockObjects.getDummyPlayer();
-    when(player.confirmMoveInFaceOfAA(anyCollectionOf(Territory.class))).thenReturn(true);
-    bridge.setRemote(player);
+    when(dummyPlayer.confirmMoveInFaceOfAA(any())).thenReturn(true);
+    bridge.setRemote(dummyPlayer);
     bridge.setRandomSource(new ScriptedRandomSource(0, 4));
     final Territory uk = territory("United Kingdom", m_data);
     final Territory sz7 = territory("7 Sea Zone", m_data);
@@ -401,9 +408,8 @@ public class RevisedTest {
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    TripleAPlayer player = MockObjects.getDummyPlayer();
-    when(player.confirmMoveInFaceOfAA(anyCollectionOf(Territory.class))).thenReturn(true);
-    bridge.setRemote(player);
+    when(dummyPlayer.confirmMoveInFaceOfAA(any())).thenReturn(true);
+    bridge.setRemote(dummyPlayer);
     bridge.setRandomSource(new ScriptedRandomSource(0));
     final Territory uk = territory("United Kingdom", m_data);
     final Territory we = territory("Western Europe", m_data);
@@ -1284,7 +1290,6 @@ public class RevisedTest {
     assertEquals(3, attacked.getUnits().size());
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void testAttackDestroyerAndSubsAgainstSubAndDestroyer() {
     final String defender = "Germans";
@@ -1314,22 +1319,18 @@ public class RevisedTest {
     final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
     final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
     assertTrue(attackSubs < defendSubs);
-    TripleAPlayer player = MockObjects.getDummyPlayer();
-    when(player.selectCasualties(any(Collection.class), any(Map.class), any(int.class), any(String.class),
-        any(DiceRoll.class), any(PlayerID.class), any(Collection.class), any(PlayerID.class), any(Collection.class),
-        any(boolean.class), any(Collection.class),
-        any(CasualtyList.class), any(GUID.class), any(Territory.class), any(boolean.class)))
+    when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(),
+        any(), any(), any(), any(), any(),
+        anyBoolean(), any(),
+        any(), any(), any(), anyBoolean()))
             .thenAnswer(new Answer<CasualtyDetails>() {
-
               @Override
               public CasualtyDetails answer(InvocationOnMock invocation) throws Throwable {
-                Collection<Unit> selectFrom = (Collection<Unit>) invocation.getArguments()[0];
-                return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), new ArrayList<>(),
-                    false);
+                Collection<Unit> selectFrom = invocation.getArgument(0);
+                return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), new ArrayList<>(), false);
               }
-
             });
-    bridge.setRemote(player);
+    bridge.setRemote(dummyPlayer);
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 0, 0, 0, ScriptedRandomSource.ERROR);
     bridge.setRandomSource(randomSource);
     battle.fight(bridge);

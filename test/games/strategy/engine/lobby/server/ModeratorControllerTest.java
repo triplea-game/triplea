@@ -3,7 +3,6 @@ package games.strategy.engine.lobby.server;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -51,7 +50,7 @@ public class ModeratorControllerTest {
     doAnswer(new Answer<Void>() {
       @Override
       public Void answer(InvocationOnMock invocation) throws Throwable {
-        m_listener.connectionRemoved(invocation.getArgumentAt(0, INode.class));
+        m_listener.connectionRemoved(invocation.getArgument(0));
         return null;
       }
     }).when(m_messenger).removeConnection(booted);
