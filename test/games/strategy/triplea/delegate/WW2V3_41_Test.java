@@ -46,11 +46,11 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.contains;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -64,8 +64,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -1469,26 +1467,13 @@ public class WW2V3_41_Test {
     ITripleADisplay dummyDisplay = mock(ITripleADisplay.class);
     doThrow(new AssertionError(
         "None of the Battle steps is allow to contain the BattleStepStrings.PLANES_WITHDRAW constant"))
-            .when(dummyDisplay).listBattleSteps(any(), argThat(new BaseMatcher<List<String>>() {
-
-              @SuppressWarnings("unchecked")
-              @Override
-              public boolean matches(Object item) {
-                if (!(item instanceof List)) {
-                  throw new IllegalArgumentException("Matcher.matches(Object) was called with type "
-                      + item.getClass().getTypeName() + " instead of List<String>");
+            .when(dummyDisplay).listBattleSteps(any(), argThat(list -> {
+              for (String string : list) {
+                if (string.contains(BattleStepStrings.PLANES_WITHDRAW)) {
+                  return true;
                 }
-                for (String string : (List<String>) item) {
-                  if (string.contains(BattleStepStrings.PLANES_WITHDRAW)) {
-                    return true;
-                  }
-                }
-                return false;
               }
-
-              @Override
-              public void describeTo(Description description) {}
-
+              return false;
             }));
     bridge.setDisplay(dummyDisplay);
     // move units for amphib assault
