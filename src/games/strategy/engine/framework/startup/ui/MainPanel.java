@@ -108,6 +108,20 @@ public class MainPanel extends JPanel implements Observer {
     setPreferredSize(initialSize);
   }
 
+  private void setupListeners() {
+    gameTypePanelModel.addObserver((o, arg) -> setGameSetupPanel(gameTypePanelModel.getPanel()));
+    playButton.addActionListener(e -> play());
+    quitButton.addActionListener(e -> {
+      try {
+        gameSetupPanel.shutDown();
+      } finally {
+        System.exit(0);
+      }
+    });
+    cancelButton.addActionListener(e -> gameTypePanelModel.showSelectType());
+    gameSelectorModel.addObserver(this);
+  }
+
   private void addChat() {
     remove(mainPanel);
     remove(chatSplit);
@@ -184,19 +198,6 @@ public class MainPanel extends JPanel implements Observer {
     cancelPanel.add(button);
   }
 
-  private void setupListeners() {
-    gameTypePanelModel.addObserver((o, arg) -> setGameSetupPanel(gameTypePanelModel.getPanel()));
-    playButton.addActionListener(e -> play());
-    quitButton.addActionListener(e -> {
-      try {
-        gameSetupPanel.shutDown();
-      } finally {
-        System.exit(0);
-      }
-    });
-    cancelButton.addActionListener(e -> gameTypePanelModel.showSelectType());
-    gameSelectorModel.addObserver(this);
-  }
 
   private void play() {
     gameSetupPanel.preStartGame();
