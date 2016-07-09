@@ -129,7 +129,7 @@ public class MainPanel extends JPanel implements Observer {
     isChatShowing = chat != null;
   }
 
-  public void setGameSetupPanel(final ISetupPanel panel) {
+  private void setGameSetupPanel(final ISetupPanel panel) {
     SetupPanel setupPanel = null;
     if (SetupPanel.class.isAssignableFrom(panel.getClass())) {
       setupPanel = (SetupPanel) panel;
