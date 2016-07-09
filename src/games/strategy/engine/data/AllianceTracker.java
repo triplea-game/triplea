@@ -32,7 +32,7 @@ public class AllianceTracker implements Serializable {
     this.alliances = alliances;
   }
 
-  @WriteReplaceMagicMethod
+  @SerializationProxySupport
   public Object writeReplace() {
     return new SerializationProxy(this);
   }

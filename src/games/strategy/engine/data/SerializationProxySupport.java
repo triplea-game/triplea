@@ -34,5 +34,5 @@ package games.strategy.engine.data;
  * This way you only are using public methods to recreate your object on a read, so long as those methods are left
  * in place, we will be able to load games between versions.
  */
-public @interface WriteReplaceMagicMethod {
+public @interface SerializationProxySupport {
 }

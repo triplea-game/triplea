@@ -5,7 +5,7 @@ import java.io.Serializable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.WriteReplaceMagicMethod;
+import games.strategy.engine.data.SerializationProxySupport;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 
@@ -48,12 +48,12 @@ public class BattleRecord implements Serializable {
   private BattleResults m_battleResults;
 
 
-  @WriteReplaceMagicMethod
+  @SerializationProxySupport
   public Object writeReplace(Object write) {
     return new SerializationProxy(this);
   }
 
-  @WriteReplaceMagicMethod
+  @SerializationProxySupport
   private BattleRecord(Territory battleSite, PlayerID attacker, PlayerID defender, int attackerLostTUV,
       int defenderLostTUV, BattleResultDescription battleResultDescription, BattleType battleType,
       BattleResults battleResults) {
