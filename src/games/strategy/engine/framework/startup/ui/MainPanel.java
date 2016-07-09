@@ -28,6 +28,7 @@ import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
+import games.strategy.ui.SwingComponents;
 
 /**
  * When the game launches, the MainFrame is loaded which will contain
@@ -39,12 +40,9 @@ public class MainPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -5548760379892913464L;
   private static final Dimension initialSize = new Dimension(800, 620);
 
-  private JScrollPane gameSetupPanelScroll;
   private GameSelectorPanel gameSelectorPanel;
   private JButton playButton;
-  private JButton quitButton;
   private JButton cancelButton;
-  private final GameSelectorModel gameSelectorModel;
   private ISetupPanel gameSetupPanel;
   private JPanel gameSetupPanelHolder;
   private JPanel chatPanelHolder;
@@ -56,7 +54,7 @@ public class MainPanel extends JPanel implements Observer {
 
   public MainPanel(final SetupPanelModel typePanelModel) {
     gameTypePanelModel = typePanelModel;
-    gameSelectorModel = typePanelModel.getGameSelectorModel();
+    GameSelectorModel gameSelectorModel = typePanelModel.getGameSelectorModel();
     setWidgetActivation();
     if (typePanelModel.getPanel() != null) {
       setGameSetupPanel(typePanelModel.getPanel());
@@ -65,15 +63,20 @@ public class MainPanel extends JPanel implements Observer {
     playButton = new JButton("Play");
     playButton.setToolTipText(
         "<html>Start your game! <br>If not enabled, then you must select a way to play your game first: <br>Play Online, or Local Game, or PBEM, or Host Networked.</html>");
-    quitButton = new JButton("Quit");
-    quitButton.setToolTipText("Close TripleA.");
+    JButton quitButton = SwingComponents.newJButton("Quit", "Close TripleA.", e -> {
+      try {
+        gameSetupPanel.shutDown();
+      } finally {
+        System.exit(0);
+      }
+    });
     cancelButton = new JButton("Cancel");
     cancelButton.setToolTipText("Go back to main screen.");
     gameSelectorPanel = new GameSelectorPanel(gameSelectorModel);
     gameSelectorPanel.setBorder(new EtchedBorder());
     gameSetupPanelHolder = new JPanel();
     gameSetupPanelHolder.setLayout(new BorderLayout());
-    gameSetupPanelScroll = new JScrollPane(gameSetupPanelHolder);
+    JScrollPane gameSetupPanelScroll = new JScrollPane(gameSetupPanelHolder);
     gameSetupPanelScroll.setBorder(BorderFactory.createEmptyBorder());
     chatPanelHolder = new JPanel();
     chatPanelHolder.setLayout(new BorderLayout());
@@ -102,13 +105,6 @@ public class MainPanel extends JPanel implements Observer {
 
     gameTypePanelModel.addObserver((o, arg) -> setGameSetupPanel(gameTypePanelModel.getPanel()));
     playButton.addActionListener(e -> play());
-    quitButton.addActionListener(e -> {
-      try {
-        gameSetupPanel.shutDown();
-      } finally {
-        System.exit(0);
-      }
-    });
     cancelButton.addActionListener(e -> gameTypePanelModel.showSelectType());
     gameSelectorModel.addObserver(this);
   }
