@@ -704,11 +704,6 @@ public class TripleAFrame extends MainGameFrame {
     setStatus(msg, mapPanel.getWarningImage());
   }
 
-  public void setStatusInfoMessage(final String msg) {
-    setStatus(msg, mapPanel.getInfoImage());
-  }
-
-
   public IntegerMap<ProductionRule> getProduction(final PlayerID player, final boolean bid) {
     if (messageAndDialogThreadPool == null) {
       return null;
