@@ -15,7 +15,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.lobby.server.NullModeratorController;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.RemoteMessenger;
-import games.strategy.engine.message.UnifiedMessenger;
+import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;

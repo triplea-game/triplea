@@ -3,6 +3,7 @@ package games.strategy.engine.message;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
+import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.INode;
 
 /**
@@ -15,7 +16,7 @@ public class ChannelMessenger implements IChannelMessenger {
     m_unifiedMessenger = messenger;
   }
 
-  UnifiedMessenger getUnifiedMessenger() {
+  public UnifiedMessenger getUnifiedMessenger() {
     return m_unifiedMessenger;
   }
 

@@ -1,5 +1,6 @@
 package games.strategy.engine.message;
 
+import games.strategy.engine.message.unifiedmessenger.Invoke;
 import games.strategy.net.GUID;
 
 public class HubInvoke extends Invoke {

@@ -1,10 +1,13 @@
-package games.strategy.engine.message;
+package games.strategy.engine.message.unifiedmessenger;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.Comparator;
 import java.util.List;
 
+import games.strategy.engine.message.RemoteMethodCall;
+import games.strategy.engine.message.RemoteMethodCallResults;
+import games.strategy.engine.message.unifiedmessenger.EndPoint;
 import org.junit.Test;
 
 public class EndPointTest {

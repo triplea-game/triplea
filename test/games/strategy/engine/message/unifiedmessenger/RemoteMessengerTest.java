@@ -1,4 +1,4 @@
-package games.strategy.engine.message;
+package games.strategy.engine.message.unifiedmessenger;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -17,6 +17,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import games.strategy.engine.message.ConnectionLostException;
+import games.strategy.engine.message.DummyMessenger;
+import games.strategy.engine.message.IRemote;
+import games.strategy.engine.message.MessageContext;
+import games.strategy.engine.message.RemoteMessenger;
+import games.strategy.engine.message.RemoteName;
+import games.strategy.engine.message.RemoteNotFoundException;
+import games.strategy.engine.message.UnifiedMessengerHub;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
