@@ -347,7 +347,7 @@ public class WW2V3_41_Test {
     final MoveDelegate moveDelegate = moveDelegate(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setStepName("britishCombatMove");
-    when(dummyPlayer.selectAttackSubs(any(Territory.class))).thenReturn(true);
+    when(dummyPlayer.selectAttackSubs(any())).thenReturn(true);
     bridge.setRemote(dummyPlayer);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -975,7 +975,7 @@ public class WW2V3_41_Test {
     final MoveDelegate move = moveDelegate(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
 
-    when(dummyPlayer.selectShoreBombard(any(Territory.class))).thenReturn(true);
+    when(dummyPlayer.selectShoreBombard(any())).thenReturn(true);
     bridge.setRemote(dummyPlayer);
     bridge.setStepName("CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
@@ -1023,7 +1023,7 @@ public class WW2V3_41_Test {
   public void testBombardStrengthVariable() {
     final MoveDelegate move = moveDelegate(m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
-    when(dummyPlayer.selectShoreBombard(any(Territory.class))).thenReturn(true);
+    when(dummyPlayer.selectShoreBombard(any())).thenReturn(true);
     bridge.setRemote(dummyPlayer);
     bridge.setStepName("CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
