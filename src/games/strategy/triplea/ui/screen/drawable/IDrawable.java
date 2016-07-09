@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui.screen;
+package games.strategy.triplea.ui.screen.drawable;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
