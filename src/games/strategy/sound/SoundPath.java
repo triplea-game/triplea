@@ -2,6 +2,8 @@ package games.strategy.sound;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import games.strategy.engine.data.properties.IEditableProperty;
 
@@ -75,8 +77,8 @@ public class SoundPath {
   public static final String CLIP_USER_ACTION_FAILURE = "user_action_failure";
   public static final String CLIP_USER_ACTION_SUCCESSFUL = "user_action_successful";
 
-  public static HashSet<String> getAllSoundOptions() {
-    final HashSet<String> rVal = new HashSet<>();
+  public static Set<String> getAllSoundOptions() {
+    final Set<String> rVal = new HashSet<>();
     rVal.add(CLIP_CHAT_MESSAGE);
     rVal.add(CLIP_CHAT_SLAP);
     rVal.add(CLIP_CHAT_JOIN_GAME);
@@ -130,8 +132,8 @@ public class SoundPath {
   }
 
 
-  public static ArrayList<IEditableProperty> getSoundOptions() {
-    final ArrayList<IEditableProperty> rVal = new ArrayList<>();
+  public static List<IEditableProperty> getSoundOptions() {
+    final List<IEditableProperty> rVal = new ArrayList<>();
     rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_CHAT_MESSAGE, "Chat Messaging"));
     rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_CHAT_SLAP, "Chat Slapping"));
     rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_CHAT_JOIN_GAME, "Joined Chat"));

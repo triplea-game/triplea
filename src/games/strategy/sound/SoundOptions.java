@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -56,7 +57,7 @@ public final class SoundOptions {
     final String selectAll = "All";
     final String selectNone = "None";
     
-    final ArrayList<IEditableProperty> properties = SoundPath.getSoundOptions();
+    final List<IEditableProperty> properties = SoundPath.getSoundOptions();
     final Object pressedButton = PropertiesSelector.getButton(parent, "Sound Options", properties,
         ok, selectAll, selectNone, cancel);
     if (pressedButton == null || pressedButton.equals(cancel)) {
