@@ -77,41 +77,8 @@ public class EventThreadJOptionPane {
     }
   }
 
-  public static void showMessageDialog(final Frame parentComponent, final String message,
-      final CountDownLatchHandler latchHandler) {
-    if (SwingUtilities.isEventDispatchThread()) {
-      JOptionPane.showMessageDialog(parentComponent, message);
-      return;
-    }
-    final CountDownLatch latch = new CountDownLatch(1);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        JOptionPane.showMessageDialog(parentComponent, message);
-        latch.countDown();
-      }
-    });
-    if (latchHandler != null) {
-      latchHandler.addShutdownLatch(latch);
-    }
-    boolean done = false;
-    while (!done) {
-      try {
-        latch.await();
-        done = true;
-      } catch (final InterruptedException e) {
-        if (latchHandler != null) {
-          latchHandler.interruptLatch(latch);
-        }
-      }
-    }
-    if (latchHandler != null) {
-      latchHandler.removeShutdownLatch(latch);
-    }
-  }
-
   public static void showMessageDialog(final Component parentComponent, final Object message,
-      final CountDownLatchHandler latchHandler) throws HeadlessException {
+      final CountDownLatchHandler latchHandler) {
     if (SwingUtilities.isEventDispatchThread()) {
       JOptionPane.showMessageDialog(parentComponent, message);
       return;
