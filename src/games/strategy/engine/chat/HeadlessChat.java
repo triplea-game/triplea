@@ -145,7 +145,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
               continue;
             }
           }
-          addChatMessage(message.getMessage(), message.getFrom(), message.isMeMessage());
+          addChatMessage(message.getMessage(), message.getFrom(), message.isMyMessage());
         }
       }
     } else {
