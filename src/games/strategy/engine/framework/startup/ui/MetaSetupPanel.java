@@ -250,7 +250,6 @@ public class MetaSetupPanel extends SetupPanel {
     Version currentVersion = ClientContext.engineVersion().getVersion();
 
     Optional<Map<String, Object>> matchingVersionProps = lobbyProps.stream()
-        .filter(props -> props.containsKey("version"))
         .filter(props -> currentVersion.equals(props.get("version")))
         .findFirst();
     return matchingVersionProps.orElse(lobbyProps.get(0));
