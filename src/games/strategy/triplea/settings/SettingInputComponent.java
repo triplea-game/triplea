@@ -57,9 +57,8 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
       final String label, final String description, JTextComponent component,
       BiConsumer<Z, String> updater, Function<Z, String> extractor) {
 
-    String descriptionWithRange =
-        "(" + valueRange.lowerValue + " - " + valueRange + ", default: " + valueRange.defaultValue
-            + ") " + description;
+    String descriptionWithRange = "(" + valueRange.lowerValue + " - " + valueRange.upperValue
+        + ", default: " + valueRange.defaultValue + ")\n" + description;
 
     return SettingInputComponent.build(label, descriptionWithRange, component, updater, extractor,
         InputValidator.inRange(valueRange.lowerValue, valueRange.upperValue));
@@ -91,7 +90,7 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
   }
 
   static <Z extends HasDefaults> SettingInputComponent<Z> buildYesOrNoRadioButtons(final String label,
-      final String description,boolean initialValue,  BiConsumer<Z, String> settingsObjectUpdater,
+      final String description, boolean initialValue, BiConsumer<Z, String> settingsObjectUpdater,
       Function<Z, String> settingsObjectExtractor) {
 
     JRadioButton radioButtonYes = new JRadioButton("Yes");
