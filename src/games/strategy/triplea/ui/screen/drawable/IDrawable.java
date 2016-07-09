@@ -1,9 +1,11 @@
 package games.strategy.triplea.ui.screen.drawable;
 
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
-import java.util.logging.Logger;
+import java.util.Optional;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -40,6 +42,12 @@ public interface IDrawable {
       AffineTransform scaled);
 
   int getLevel();
+
+  default void drawImage(final Graphics2D graphics, Optional<Image> image, Point location, Rectangle bounds) {
+    if (image.isPresent()) {
+      graphics.drawImage(image.get(), location.x - bounds.x, location.y - bounds.y, null);
+    }
+  }
 }
 
 

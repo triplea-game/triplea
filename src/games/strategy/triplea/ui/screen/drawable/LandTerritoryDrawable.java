@@ -10,7 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
-class LandTerritoryDrawable extends TerritoryDrawable implements IDrawable {
+public class LandTerritoryDrawable extends TerritoryDrawable implements IDrawable {
   private final String m_territoryName;
 
   public LandTerritoryDrawable(final String territoryName) {

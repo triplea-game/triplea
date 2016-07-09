@@ -25,7 +25,7 @@ class BlockadeZoneDrawable implements IDrawable {
       final AffineTransform unscaled, final AffineTransform scaled) {
     // Find blockade.png from misc folder
     final Point point = mapData.getBlockadePlacementPoint(data.getMap().getTerritory(m_location));
-    graphics.drawImage(mapData.getBlockadeImage(), point.x - bounds.x, point.y - bounds.y, null);
+    drawImage(graphics, mapData.getBlockadeImage(), point, bounds);
   }
 
   @Override

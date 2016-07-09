@@ -9,7 +9,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
-class DecoratorDrawable implements IDrawable {
+public class DecoratorDrawable implements IDrawable {
   private final Point m_point;
   private final Image m_image;
 
