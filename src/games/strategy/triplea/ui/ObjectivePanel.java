@@ -40,7 +40,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IAttachment;
@@ -56,7 +55,7 @@ import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.net.GUID;
-import games.strategy.sound.DummySoundChannel;
+import games.strategy.sound.HeadlessSoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
@@ -74,7 +73,9 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.ui.display.DummyTripleADisplay;
+import games.strategy.triplea.ui.display.HeadlessDisplay;
+import games.strategy.triplea.ui.display.ITripleADisplay;
+import games.strategy.ui.SwingAction;
 import games.strategy.util.IllegalCharacterRemover;
 import games.strategy.util.Tuple;
 import games.strategy.util.UrlStreams;
@@ -493,8 +494,8 @@ class ObjectiveProperties {
 
 
 class ObjectivePanelDummyDelegateBridge implements IDelegateBridge {
-  private final DummyTripleADisplay m_display = new DummyTripleADisplay();
-  private final DummySoundChannel m_soundChannel = new DummySoundChannel();
+  private final ITripleADisplay m_display = new HeadlessDisplay(null);
+  private final ISound m_soundChannel =  new HeadlessSoundChannel();
   private final DelegateHistoryWriter m_writer = new DelegateHistoryWriter(new DummyGameModifiedChannel());
   private final GameData m_data;
   private final ObjectivePanelDummyPlayer m_dummyAI =

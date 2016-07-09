@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -18,7 +20,7 @@ import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
-import games.strategy.triplea.ui.display.DummyTripleADisplay;
+import games.strategy.triplea.ui.display.ITripleADisplay;
 import junit.framework.AssertionFailedError;
 
 public class GameDataTestUtil {
@@ -143,7 +145,7 @@ public class GameDataTestUtil {
   }
 
   public static ITestDelegateBridge getDelegateBridge(final PlayerID player, final GameData data) {
-    return new TestDelegateBridge(data, player, new DummyTripleADisplay());
+    return new TestDelegateBridge(data, player, mock(ITripleADisplay.class));
   }
 
   public static void load(final Collection<Unit> units, final Route route) {

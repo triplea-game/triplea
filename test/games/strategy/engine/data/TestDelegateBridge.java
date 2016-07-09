@@ -1,7 +1,13 @@
 package games.strategy.engine.data;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Properties;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.history.DelegateHistoryWriter;
@@ -9,11 +15,11 @@ import games.strategy.engine.history.History;
 import games.strategy.engine.history.HistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.ChannelMessenger;
-import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.message.UnifiedMessenger;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.sound.DummySoundChannel;
+import games.strategy.net.IServerMessenger;
+import games.strategy.net.Node;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 
@@ -30,7 +36,7 @@ public class TestDelegateBridge implements ITestDelegateBridge {
   private PlayerID m_id;
   private String m_stepName = "no name specified";
   private IDisplay m_dummyDisplay;
-  private final DummySoundChannel m_soundChannel = new DummySoundChannel();
+  private final ISound m_soundChannel = mock(ISound.class);
   private IRandomSource m_randomSource;
   private final IDelegateHistoryWriter m_historyWriter;
   private IRemotePlayer m_remote;
@@ -43,7 +49,15 @@ public class TestDelegateBridge implements ITestDelegateBridge {
     final History history = new History(m_data);
     final HistoryWriter historyWriter = new HistoryWriter(history);
     historyWriter.startNextStep("", "", PlayerID.NULL_PLAYERID, "");
-    final ChannelMessenger channelMessenger = new ChannelMessenger(new UnifiedMessenger(new DummyMessenger()));
+    IServerMessenger messenger = mock(IServerMessenger.class);
+    try {
+      when(messenger.getLocalNode()).thenReturn(new Node("dummy", InetAddress.getLocalHost(), 0));
+    } catch (UnknownHostException e) {
+      ClientLogger.logQuietly(e);
+    }
+    when(messenger.isServer()).thenReturn(true);
+    final ChannelMessenger channelMessenger =
+        new ChannelMessenger(new UnifiedMessenger(messenger));
     m_historyWriter = new DelegateHistoryWriter(channelMessenger);
   }
 

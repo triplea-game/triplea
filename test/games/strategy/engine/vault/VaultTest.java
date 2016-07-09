@@ -3,8 +3,12 @@ package games.strategy.engine.vault;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -12,12 +16,12 @@ import org.junit.Test;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.message.ChannelMessenger;
-import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.message.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
+import games.strategy.net.Node;
 import games.strategy.net.ServerMessenger;
 import games.strategy.test.TestUtil;
 
@@ -68,7 +72,12 @@ public class VaultTest {
 
   @Test
   public void testLocal() throws NotUnlockedException {
-    final DummyMessenger messenger = new DummyMessenger();
+    IServerMessenger messenger = mock(IServerMessenger.class);
+    try {
+      when(messenger.getLocalNode()).thenReturn(new Node("dummy", InetAddress.getLocalHost(), 0));
+    } catch (UnknownHostException e) {
+      ClientLogger.logQuietly(e);
+    }
     final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
     final ChannelMessenger channelMessenger = new ChannelMessenger(unifiedMessenger);
     // RemoteMessenger remoteMessenger = new RemoteMessenger(unifiedMessenger);

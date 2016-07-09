@@ -13,10 +13,9 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.ScriptedRandomSource;
-import games.strategy.net.IServerMessenger;
+import games.strategy.net.HeadlessServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.util.ThreadUtil;
 
@@ -38,8 +37,7 @@ public class LocalLauncher extends AbstractLauncher {
     ServerGame game = null;
     try {
       m_gameData.doPreGameStartDataModifications(m_playerListing);
-      final IServerMessenger messenger = new DummyMessenger();
-      final Messengers messengers = new Messengers(messenger);
+      final Messengers messengers = new Messengers(new HeadlessServerMessenger());
       final Set<IGamePlayer> gamePlayers =
           m_gameData.getGameLoader().createPlayers(m_playerListing.getLocalPlayerTypes());
       game = new ServerGame(m_gameData, gamePlayers, new HashMap<>(), messengers);

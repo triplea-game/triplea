@@ -13,16 +13,17 @@ import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.PlainRandomSource;
-import games.strategy.sound.DummySoundChannel;
+import games.strategy.sound.HeadlessSoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.delegate.MustFightBattle;
-import games.strategy.triplea.ui.display.DummyTripleADisplay;
+import games.strategy.triplea.ui.display.HeadlessDisplay;
+import games.strategy.triplea.ui.display.ITripleADisplay;
 
 public class ProDummyDelegateBridge implements IDelegateBridge {
   private final PlainRandomSource m_randomSource = new PlainRandomSource();
-  private final DummyTripleADisplay m_display = new DummyTripleADisplay();
-  private final DummySoundChannel m_soundChannel = new DummySoundChannel();
+  private final ITripleADisplay m_display = new HeadlessDisplay(null);
+  private final ISound m_soundChannel = new HeadlessSoundChannel();
   private final PlayerID m_player;
   private final ProAI m_proAI;
   private final DelegateHistoryWriter m_writer = new DelegateHistoryWriter(new ProDummyGameModifiedChannel());

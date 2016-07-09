@@ -3,6 +3,9 @@ package games.strategy.engine.lobby.server;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -11,29 +14,28 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import games.strategy.engine.lobby.server.userDB.BannedIpController;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
-import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
+import games.strategy.net.IServerMessenger;
 import games.strategy.net.Node;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
 
 public class ModeratorControllerTest {
-  private DummyMessenger m_messenger;
+  private IServerMessenger m_messenger = mock(IServerMessenger.class);
   private ModeratorController m_controller;
   private ConnectionChangeListener m_listener;
   private INode m_adminNode;
 
   @Before
   public void setUp() throws UnknownHostException {
-    m_messenger = new DummyMessenger();
     m_controller = new ModeratorController(m_messenger, null);
-    m_listener = new ConnectionChangeListener();
-    m_messenger.addConnectionChangeListener(m_listener);
     final String adminName = Util.createUniqueTimeStamp();
     new DBUserController().createUser(adminName, "n@n.n", MD5Crypt.crypt(adminName), true);
     m_adminNode = new Node(adminName, InetAddress.getLocalHost(), 0);
@@ -42,7 +44,19 @@ public class ModeratorControllerTest {
   @Test
   public void testBoot() throws UnknownHostException {
     MessageContext.setSenderNodeForThread(m_adminNode);
+    m_listener = new ConnectionChangeListener();
     final INode booted = new Node("foo", InetAddress.getByAddress(new byte[] {1, 2, 3, 4}), 0);
+
+    doAnswer(new Answer<Void>() {
+      @Override
+      public Void answer(InvocationOnMock invocation) throws Throwable {
+        m_listener.connectionRemoved(invocation.getArgument(0));
+        return null;
+      }
+    }).when(m_messenger).removeConnection(booted);
+
+    INode dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);
+    when(m_messenger.getServerNode()).thenReturn(dummyNode);
     m_controller.boot(booted);
     assertTrue(m_listener.getRemoved().contains(booted));
   }
