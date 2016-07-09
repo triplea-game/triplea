@@ -205,7 +205,7 @@ public class MetaSetupPanel extends SetupPanel {
     try {
       yamlContent = new String(Files.readAllBytes(yamlFile.toPath()));
     } catch (IOException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to read from: " + yamlFile.getAbsolutePath(), e);
       return Optional.empty();
     }
     Yaml yaml = new Yaml();
@@ -233,7 +233,7 @@ public class MetaSetupPanel extends SetupPanel {
       // try reading properties from the local file as a backup
       String localFileProp = propReader.readProperty(GameEngineProperty.LOBBY_PROPS_BACKUP_FILE);
       File localFile = new File(ClientFileSystemHelper.getRootFolder(), localFileProp);
-      yamlDataObj = loadYaml(propFile);
+      yamlDataObj = loadYaml(localFile);
       if( !yamlDataObj.isPresent()) {
         throw new IllegalStateException("Failed to read lobby properties from both: " + urlProp + ", and: " + localFile.getAbsolutePath());
       }
@@ -248,16 +248,12 @@ public class MetaSetupPanel extends SetupPanel {
   private static Map<String, Object> matchCurrentVersion(List<Map<String, Object>> lobbyProps) {
     checkNotNull(lobbyProps);
     Version currentVersion = ClientContext.engineVersion().getVersion();
-    for (Map<String, Object> props : lobbyProps) {
-      if (props.containsKey("version")) {
-        Version otherVersion = new Version((String) props.get("version"));
-        if (otherVersion.equals(currentVersion)) {
-          return props;
-        }
-      }
-    }
 
-    return lobbyProps.get(0);
+    Optional<Map<String, Object>> matchingVersionProps = lobbyProps.stream()
+        .filter(props -> props.containsKey("version"))
+        .filter(props -> currentVersion.equals(props.get("version")))
+        .findFirst();
+    return matchingVersionProps.orElse(lobbyProps.get(0));
   }
 
 
