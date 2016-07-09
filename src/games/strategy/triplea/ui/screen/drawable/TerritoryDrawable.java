@@ -11,7 +11,7 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.util.List;
 
-abstract class TerritoryDrawable {
+public abstract class TerritoryDrawable {
   protected static void draw(final Rectangle bounds, final Graphics2D graphics, final MapData mapData,
       final AffineTransform scaled, final Territory territory,
       final Paint territoryPaint) {

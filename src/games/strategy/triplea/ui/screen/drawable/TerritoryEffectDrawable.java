@@ -9,7 +9,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
-class TerritoryEffectDrawable implements IDrawable {
+public class TerritoryEffectDrawable implements IDrawable {
   private final TerritoryEffect m_effect;
   private final Point point;
 

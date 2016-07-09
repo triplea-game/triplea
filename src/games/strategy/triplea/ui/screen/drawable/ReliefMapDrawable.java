@@ -5,7 +5,7 @@ import games.strategy.triplea.ui.IUIContext;
 
 import java.awt.Image;
 
-class ReliefMapDrawable extends MapTileDrawable {
+public class ReliefMapDrawable extends MapTileDrawable {
   public ReliefMapDrawable(final int x, final int y, final IUIContext context) {
     super(x, y, context);
   }

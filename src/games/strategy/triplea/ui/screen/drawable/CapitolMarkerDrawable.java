@@ -12,7 +12,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
-class CapitolMarkerDrawable implements IDrawable {
+public class CapitolMarkerDrawable implements IDrawable {
   private final String m_player;
   private final String m_location;
   private final IUIContext m_uiContext;

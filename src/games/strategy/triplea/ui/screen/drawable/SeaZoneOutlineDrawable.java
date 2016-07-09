@@ -12,7 +12,7 @@ import java.awt.geom.AffineTransform;
 import java.util.Iterator;
 import java.util.List;
 
-class SeaZoneOutlineDrawable implements IDrawable {
+public class SeaZoneOutlineDrawable implements IDrawable {
   private final String m_territoryName;
 
   public SeaZoneOutlineDrawable(final String territoryName) {

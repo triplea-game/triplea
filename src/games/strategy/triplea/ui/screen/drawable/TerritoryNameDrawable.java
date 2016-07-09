@@ -19,7 +19,7 @@ import java.awt.geom.AffineTransform;
 import java.util.List;
 import java.util.Optional;
 
-class TerritoryNameDrawable implements IDrawable {
+public class TerritoryNameDrawable implements IDrawable {
   private final String m_territoryName;
   private final IUIContext m_uiContext;
 

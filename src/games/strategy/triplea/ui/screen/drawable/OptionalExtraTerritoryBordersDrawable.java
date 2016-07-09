@@ -12,7 +12,7 @@ import java.awt.geom.AffineTransform;
 import java.util.Iterator;
 import java.util.List;
 
-class OptionalExtraTerritoryBordersDrawable implements IDrawable {
+public class OptionalExtraTerritoryBordersDrawable implements IDrawable {
   private final String m_territoryName;
   private final OptionalExtraBorderLevel m_level;
 

@@ -10,7 +10,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
-class BlockadeZoneDrawable implements IDrawable {
+public class BlockadeZoneDrawable implements IDrawable {
   private final String m_location;
 
   // private final UIContext m_uiContext;

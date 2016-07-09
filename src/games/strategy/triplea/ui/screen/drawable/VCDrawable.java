@@ -9,7 +9,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
-class VCDrawable implements IDrawable {
+public class VCDrawable implements IDrawable {
   private final Territory location;
 
   public VCDrawable(final Territory location) {

@@ -1,19 +1,17 @@
 package games.strategy.triplea.ui.screen.drawable;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.triplea.ui.IUIContext;
-import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.triplea.ui.screen.TileManager;
-import games.strategy.triplea.util.Stopwatch;
-
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
-import java.util.logging.Level;
 
-abstract class MapTileDrawable implements IDrawable {
+import games.strategy.engine.data.GameData;
+import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.triplea.ui.screen.TileManager;
+
+public abstract class MapTileDrawable implements IDrawable {
   protected boolean m_noImage = false;
   protected final int m_x;
   protected final int m_y;

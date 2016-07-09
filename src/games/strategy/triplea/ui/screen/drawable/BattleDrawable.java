@@ -16,7 +16,7 @@ import java.awt.geom.AffineTransform;
 import java.util.HashSet;
 import java.util.Set;
 
-class BattleDrawable extends TerritoryDrawable implements IDrawable {
+public class BattleDrawable extends TerritoryDrawable implements IDrawable {
   private final String m_territoryName;
 
   public BattleDrawable(final String territoryName) {

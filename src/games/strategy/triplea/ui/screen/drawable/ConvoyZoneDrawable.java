@@ -13,7 +13,7 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
 // Rewritten class to use country markers rather than shading for Convoy Centers/Routes.
-class ConvoyZoneDrawable implements IDrawable {
+public class ConvoyZoneDrawable implements IDrawable {
   private final String m_player;
   private final String m_location;
   private final IUIContext m_uiContext;

@@ -14,7 +14,7 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
 // Class to use 'Faded' country markers for Kamikaze Zones.
-class KamikazeZoneDrawable implements IDrawable {
+public class KamikazeZoneDrawable implements IDrawable {
   private final String m_location;
   private final IUIContext m_uiContext;
 
