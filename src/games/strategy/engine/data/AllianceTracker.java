@@ -80,15 +80,12 @@ public class AllianceTracker extends GameDataComponent {
     return rVal;
   }
 
-  public Multimap<PlayerID, String> getAlliancesMap() {
-    return alliances;
-  }
 
   public Set<PlayerID> getAllies(PlayerID currentPlayer) {
     Set<PlayerID> allies = new HashSet<>();
     // iterate through all alliances the player is in
-    if (getAlliancesMap().get(currentPlayer) != null) {
-      for (final String alliance : getAlliancesMap().get(currentPlayer)) {
+    if (alliances.get(currentPlayer) != null) {
+      for (final String alliance : alliances.get(currentPlayer)) {
         // iterate through the members of the alliances
         for (final PlayerID alliedPlayer : getPlayersInAlliance(alliance)) {
           // add each allianceMember to the alliesList
