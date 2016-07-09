@@ -60,9 +60,10 @@ public class MainPanel extends JPanel implements Observer {
       setGameSetupPanel(typePanelModel.getPanel());
     }
 
-    playButton = new JButton("Play");
-    playButton.setToolTipText(
-        "<html>Start your game! <br>If not enabled, then you must select a way to play your game first: <br>Play Online, or Local Game, or PBEM, or Host Networked.</html>");
+    playButton = SwingComponents.newJButton("Play",
+        "<html>Start your game! <br>If not enabled, then you must select a way to play your game first: <br>Play Online, or Local Game, or PBEM, or Host Networked.</html>",
+        e -> play());
+
     JButton quitButton = SwingComponents.newJButton("Quit", "Close TripleA.", e -> {
       try {
         gameSetupPanel.shutDown();
@@ -70,8 +71,7 @@ public class MainPanel extends JPanel implements Observer {
         System.exit(0);
       }
     });
-    cancelButton = new JButton("Cancel");
-    cancelButton.setToolTipText("Go back to main screen.");
+    cancelButton = SwingComponents.newJButton("Cancel", "Go back to main screen.", e -> gameTypePanelModel.showSelectType());
     gameSelectorPanel = new GameSelectorPanel(gameSelectorModel);
     gameSelectorPanel.setBorder(new EtchedBorder());
     gameSetupPanelHolder = new JPanel();
@@ -104,8 +104,6 @@ public class MainPanel extends JPanel implements Observer {
     setPreferredSize(initialSize);
 
     gameTypePanelModel.addObserver((o, arg) -> setGameSetupPanel(gameTypePanelModel.getPanel()));
-    playButton.addActionListener(e -> play());
-    cancelButton.addActionListener(e -> gameTypePanelModel.showSelectType());
     gameSelectorModel.addObserver(this);
   }
 
