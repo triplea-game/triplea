@@ -2,7 +2,6 @@ package games.strategy.util;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.util.concurrent.CountDownLatch;
@@ -25,6 +24,21 @@ public class EventThreadJOptionPane {
     EventThreadJOptionPane.showMessageDialog(parentComponent, message, title, messageType, false, latchHandler);
   }
 
+  public static void showMessageDialog(final Component parentComponent, final Object message, final String title,
+      final int messageType, final boolean useJLabel, final CountDownLatchHandler latchHandler) {
+    final CountDownLatch latch = new CountDownLatch(1);
+    SwingUtilities.invokeLater(() -> {
+      JOptionPane.showMessageDialog(parentComponent, useJLabel ? createJLabelInScrollPane((String) message) : message,
+          title, messageType);
+      latch.countDown();
+    });
+    if (latchHandler != null) {
+      latchHandler.addShutdownLatch(latch);
+    }
+
+    awaitLatch(latchHandler, latch);
+  }
+
   private static JScrollPane createJLabelInScrollPane(final String message) {
     final JLabel label = new JLabel(message);
     final JScrollPane scroll = new JScrollPane(label);
@@ -39,21 +53,6 @@ public class EventThreadJOptionPane {
         : (scroll.getPreferredSize().height + (scroll.getPreferredSize().width > availWidth ? 20 : 0)));
     scroll.setPreferredSize(new Dimension(newWidth, newHeight));
     return scroll;
-  }
-
-  public static void showMessageDialog(final Component parentComponent, final Object message, final String title,
-      final int messageType, final boolean useJLabel, final CountDownLatchHandler latchHandler) {
-    final CountDownLatch latch = new CountDownLatch(1);
-    SwingUtilities.invokeLater(() -> {
-      JOptionPane.showMessageDialog(parentComponent, useJLabel ? createJLabelInScrollPane((String) message) : message,
-          title, messageType);
-      latch.countDown();
-    });
-    if (latchHandler != null) {
-      latchHandler.addShutdownLatch(latch);
-    }
-
-    awaitLatch(latchHandler, latch);
   }
 
   private static void awaitLatch(CountDownLatchHandler latchHandler, CountDownLatch latch) {
