@@ -57,16 +57,11 @@ public class MainPanel extends JPanel implements Observer {
   public MainPanel(final SetupPanelModel typePanelModel) {
     gameTypePanelModel = typePanelModel;
     gameSelectorModel = typePanelModel.getGameSelectorModel();
-    createComponents();
-    layoutComponents();
-    setupListeners();
     setWidgetActivation();
     if (typePanelModel.getPanel() != null) {
       setGameSetupPanel(typePanelModel.getPanel());
     }
-  }
 
-  private void createComponents() {
     playButton = new JButton("Play");
     playButton.setToolTipText(
         "<html>Start your game! <br>If not enabled, then you must select a way to play your game first: <br>Play Online, or Local Game, or PBEM, or Host Networked.</html>");
@@ -87,9 +82,7 @@ public class MainPanel extends JPanel implements Observer {
     chatSplit.setResizeWeight(0.8);
     chatSplit.setOneTouchExpandable(false);
     chatSplit.setDividerSize(5);
-  }
 
-  private void layoutComponents() {
     final JPanel buttonsPanel = new JPanel();
     buttonsPanel.setBorder(new EtchedBorder());
     buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -106,9 +99,7 @@ public class MainPanel extends JPanel implements Observer {
     addChat();
     add(buttonsPanel, BorderLayout.SOUTH);
     setPreferredSize(initialSize);
-  }
 
-  private void setupListeners() {
     gameTypePanelModel.addObserver((o, arg) -> setGameSetupPanel(gameTypePanelModel.getPanel()));
     playButton.addActionListener(e -> play());
     quitButton.addActionListener(e -> {
