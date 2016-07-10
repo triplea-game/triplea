@@ -51,7 +51,7 @@ import games.strategy.triplea.ui.AbstractUIContext;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.PurchasePanel;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.screen.IDrawable;
+import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.CountDownLatchHandler;

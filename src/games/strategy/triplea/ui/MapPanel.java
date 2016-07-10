@@ -50,7 +50,7 @@ import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
+import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.triplea.ui.screen.TileManager;
@@ -791,19 +791,19 @@ public class MapPanel extends ImageScrollerLargeView {
     setCursor(uiContext.getCursor());
   }
 
-  public Image getErrorImage() {
+  public Optional<Image> getErrorImage() {
     return uiContext.getMapData().getErrorImage();
   }
 
-  public Image getWarningImage() {
+  public Optional<Image> getWarningImage() {
     return uiContext.getMapData().getWarningImage();
   }
 
-  public Image getInfoImage() {
+  public Optional<Image> getInfoImage() {
     return uiContext.getMapData().getInfoImage();
   }
 
-  public Image getHelpImage() {
+  public Optional<Image> getHelpImage() {
     return uiContext.getMapData().getHelpImage();
   }
 }

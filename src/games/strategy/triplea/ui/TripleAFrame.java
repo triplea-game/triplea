@@ -37,6 +37,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
@@ -683,39 +684,24 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public void setStatusErrorMessage(final String msg) {
-    if (status == null) {
+    setStatus(msg, mapPanel.getErrorImage());
+  }
+
+  private void setStatus(String msg, Optional<Image> image) {
+    if(status == null) {
       return;
     }
     status.setText(msg);
-    if (!msg.equals("")) {
-      status.setIcon(new ImageIcon(mapPanel.getErrorImage()));
+
+    if (!msg.equals("") && image.isPresent()) {
+      status.setIcon(new ImageIcon(image.get()));
     } else {
       status.setIcon(null);
     }
   }
 
   public void setStatusWarningMessage(final String msg) {
-    if (status == null) {
-      return;
-    }
-    status.setText(msg);
-    if (!msg.equals("")) {
-      status.setIcon(new ImageIcon(mapPanel.getWarningImage()));
-    } else {
-      status.setIcon(null);
-    }
-  }
-
-  public void setStatusInfoMessage(final String msg) {
-    if (status == null) {
-      return;
-    }
-    status.setText(msg);
-    if (!msg.equals("")) {
-      status.setIcon(new ImageIcon(mapPanel.getInfoImage()));
-    } else {
-      status.setIcon(null);
-    }
+    setStatus(msg, mapPanel.getWarningImage());
   }
 
   public IntegerMap<ProductionRule> getProduction(final PlayerID player, final boolean bid) {

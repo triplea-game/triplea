@@ -214,9 +214,9 @@ public class MapData implements Closeable {
     try {
       // try first file names that have underscores instead of spaces
       final String normalizedName = imageName.replace(' ', '_');
-      img = Optional.ofNullable(loadImage(constructTerritoryNameImagePath(normalizedName)));
+      img = loadImage(constructTerritoryNameImagePath(normalizedName));
       if (!img.isPresent()) {
-        img = Optional.ofNullable(loadImage(constructTerritoryNameImagePath(imageName)));
+        img = loadImage(constructTerritoryNameImagePath(imageName));
       }
       return img;
     } catch (Exception e) {
@@ -243,8 +243,10 @@ public class MapData implements Closeable {
     if (inputStream.isPresent()) {
       final Map<String, List<Point>> points = PointFileReaderWriter.readOneToMany(inputStream.get());
       for (final String name : points.keySet()) {
-        final Image img = loadImage("misc/" + name);
-        decorations.put(img, points.get(name));
+        final Optional<Image> img = loadImage("misc/" + name);
+        if(img.isPresent()) {
+          decorations.put(img.get(), points.get(name));
+        }
       }
     }
     return decorations;
@@ -718,37 +720,39 @@ public class MapData implements Closeable {
     return boundingRect;
   }
 
-  public Image getVCImage() {
+  public Optional<Image> getVCImage() {
     return loadImage("misc/vc.png");
   }
 
-  public Image getBlockadeImage() {
+  public Optional<Image> getBlockadeImage() {
     return loadImage("misc/blockade.png");
   }
 
-  public Image getErrorImage() {
+  public Optional<Image> getErrorImage() {
     return loadImage("misc/error.gif");
   }
 
-  public Image getWarningImage() {
+  public Optional<Image> getWarningImage() {
     return loadImage("misc/warning.gif");
   }
 
-  public Image getInfoImage() {
+  public Optional<Image> getInfoImage() {
     return loadImage("misc/information.gif");
   }
 
-  public Image getHelpImage() {
+  public Optional<Image> getHelpImage() {
     return loadImage("misc/help.gif");
   }
 
-  private BufferedImage loadImage(final String imageName) {
+  private Optional<Image> loadImage(final String imageName) {
     final URL url = m_resourceLoader.getResource(imageName);
     if (url == null) {
-      throw new IllegalStateException("Could not load " + imageName);
+      // this is actually pretty common that we try to read images that are not there. Let the caller
+      // decide if this is an error or not.
+      return Optional.empty();
     }
     try {
-      return ImageIO.read(url);
+      return Optional.of(ImageIO.read(url));
     } catch (final IOException e) {
       ClientLogger.logQuietly(e);
       throw new IllegalStateException(e.getMessage());
@@ -770,12 +774,13 @@ public class MapData implements Closeable {
     return m_territoryEffects.get(territory.getName());
   }
 
-  public Image getTerritoryEffectImage(final String m_effectName) {
+  public Optional<Image> getTerritoryEffectImage(final String m_effectName) {
+    // TODO: what does this cache buy us? should we still keep it?
     if (m_effectImages.get(m_effectName) != null) {
-      return m_effectImages.get(m_effectName);
+      return Optional.of(m_effectImages.get(m_effectName));
     }
-    final Image effectImage = loadImage("territoryEffects/" + m_effectName + ".png");
-    m_effectImages.put(m_effectName, effectImage);
+    final Optional<Image> effectImage = loadImage("territoryEffects/" + m_effectName + ".png");
+    m_effectImages.put(m_effectName, effectImage.orElse(null));
     return effectImage;
   }
 }
