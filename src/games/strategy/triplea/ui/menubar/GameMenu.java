@@ -68,7 +68,7 @@ public class GameMenu {
     menuGame.addSeparator();
     menuGame.add(SwingAction.of("Engine Settings", e -> SettingsWindow.showWindow()));
     SoundOptions.addGlobalSoundSwitchMenu(menuGame);
-    SoundOptions.addToMenu(menuGame, SoundPath.SoundType.TRIPLEA);
+    SoundOptions.addToMenu(menuGame);
     menuGame.addSeparator();
     menuGame.add(frame.getShowGameAction()).setMnemonic(KeyEvent.VK_G);
     menuGame.add(frame.getShowHistoryAction()).setMnemonic(KeyEvent.VK_H);

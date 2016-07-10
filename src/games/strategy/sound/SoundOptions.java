@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -15,7 +16,6 @@ import javax.swing.JPanel;
 
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.ui.PropertiesSelector;
-import games.strategy.sound.SoundPath.SoundType;
 
 /**
  * Sound option window framework.
@@ -27,37 +27,37 @@ public final class SoundOptions {
    * @param parentMenu
    *        menu where to add the menu item "Sound Options..."
    */
-  public static void addToMenu(final JMenu parentMenu, final SoundType soundType) {
+  public static void addToMenu(final JMenu parentMenu) {
     final JMenuItem soundOptions = new JMenuItem("Sound Options...");
     soundOptions.setMnemonic(KeyEvent.VK_S);
     soundOptions.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        new SoundOptions(parentMenu, soundType);
+        new SoundOptions(parentMenu);
       }
     });
     parentMenu.add(soundOptions);
   }
 
-  public static void addToPanel(final JPanel parentPanel, final SoundType soundType) {
+  public static void addToPanel(final JPanel parentPanel) {
     final JButton soundOptions = new JButton("Sound Options...");
     soundOptions.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        new SoundOptions(parentPanel, soundType);
+        new SoundOptions(parentPanel);
       }
     });
     parentPanel.add(soundOptions);
   }
 
-  public SoundOptions(final JComponent parent, final SoundType soundType) {
+  public SoundOptions(final JComponent parent) {
     clipPlayer = ClipPlayer.getInstance();
     final String ok = "OK";
     final String cancel = "Cancel";
     final String selectAll = "All";
     final String selectNone = "None";
     
-    final ArrayList<IEditableProperty> properties = SoundPath.getSoundOptions(soundType);
+    final List<IEditableProperty> properties = SoundPath.getSoundOptions();
     final Object pressedButton = PropertiesSelector.getButton(parent, "Sound Options", properties,
         ok, selectAll, selectNone, cancel);
     if (pressedButton == null || pressedButton.equals(cancel)) {

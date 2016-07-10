@@ -23,10 +23,6 @@ class SoundOptionCheckBox extends BooleanProperty {
     this.clipName = clipName;
   }
 
-  public String getClip() {
-    return clipName;
-  }
-
   public String getClipName() {
     return clipName;
   }
