@@ -9,16 +9,16 @@ import games.strategy.util.Util;
 
 public class BombingUnitDamageChange extends Change {
   private static final long serialVersionUID = -6425858423179501847L;
-  private final IntegerMap<Unit> m_hits;
-  private final IntegerMap<Unit> m_undoHits;
+  private final IntegerMap<Unit> hits;
+  private final IntegerMap<Unit> undoHits;
 
   private BombingUnitDamageChange(final IntegerMap<Unit> hits, final IntegerMap<Unit> undoHits) {
-    m_hits = hits;
-    m_undoHits = undoHits;
+    this.hits = hits;
+    this.undoHits = undoHits;
   }
 
   public Collection<Unit> getUnits() {
-    return m_hits.keySet();
+    return hits.keySet();
   }
 
   BombingUnitDamageChange(final IntegerMap<Unit> hits) {
@@ -27,19 +27,19 @@ public class BombingUnitDamageChange extends Change {
         throw new IllegalArgumentException("BombingUnitDamage can only apply to a TripleAUnit object");
       }
     }
-    m_hits = hits.copy();
-    m_undoHits = new IntegerMap<>();
-    for (final Unit item : m_hits.keySet()) {
-      m_undoHits.put(item, item.getHits());
+    this.hits = hits.copy();
+    undoHits = new IntegerMap<>();
+    for (final Unit item : this.hits.keySet()) {
+      undoHits.put(item, item.getHits());
     }
   }
 
   @Override
   protected void perform(final GameData data) {
-    for (final Unit item : m_hits.keySet()) {
-      ((TripleAUnit) item).setUnitDamage(m_hits.getInt(item));
+    for (final Unit item : hits.keySet()) {
+      ((TripleAUnit) item).setUnitDamage(hits.getInt(item));
     }
-    final Set<Unit> units = m_hits.keySet();
+    final Set<Unit> units = hits.keySet();
     for (final Territory element : data.getMap().getTerritories()) {
       if (Util.someIntersect(element.getUnits().getUnits(), units)) {
         element.notifyChanged();
@@ -49,6 +49,6 @@ public class BombingUnitDamageChange extends Change {
 
   @Override
   public Change invert() {
-    return new BombingUnitDamageChange(m_undoHits, m_hits);
+    return new BombingUnitDamageChange(undoHits, hits);
   }
 }

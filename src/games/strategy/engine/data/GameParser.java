@@ -835,21 +835,11 @@ public class GameParser {
       // iterate through all players to get known allies and enemies
       for (final PlayerID currentPlayer : players) {
         // start with all players as enemies
-        final HashSet<PlayerID> enemies = new HashSet<>(players);
         // start with no players as allies
-        final HashSet<PlayerID> allies = new HashSet<>();
-        // iterate through all alliances the player is in
-        if (allianceTracker.getAlliancesMap().get(currentPlayer) != null) {
-          for (final String alliance : allianceTracker.getAlliancesMap().get(currentPlayer)) {
-            // iterate through the members of the alliances
-            for (final PlayerID alliedPlayer : allianceTracker.getPlayersInAlliance(alliance)) {
-              // add each allianceMember to the alliesList
-              allies.add(alliedPlayer);
-              // remove each allianceMember from the enemiesList
-              enemies.remove(alliedPlayer);
-            }
-          }
-        }
+        final Set<PlayerID> allies = allianceTracker.getAllies(currentPlayer);
+        final Set<PlayerID> enemies = new HashSet<>(players);
+        enemies.removeAll(allies);
+
         // remove self from enemieslist (in case of free-for-all)
         enemies.remove(currentPlayer);
         // remove self from allieslist (in case you are a member of an alliance)
