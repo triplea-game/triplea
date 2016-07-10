@@ -1,13 +1,13 @@
 package games.strategy.triplea.delegate.dataObjects;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataComponent;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.SerializationProxySupport;
 import games.strategy.engine.data.Territory;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.IBattle.BattleType;
@@ -18,18 +18,41 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
  * The Purpose of this class is to record various information about combat,
  * in order to use it for conditions and other things later.
  */
-public class BattleRecords extends GameDataComponent {
+public class BattleRecords implements Serializable {
   private static final long serialVersionUID = 1473664374777905497L;
-  private final HashMap<PlayerID, HashMap<GUID, BattleRecord>> m_records =
-      new HashMap<>();
 
-  public BattleRecords(final GameData data) {
-    super(data);
+  private final HashMap<PlayerID, HashMap<GUID, BattleRecord>> m_records;
+
+
+  public BattleRecords() {
+    this.m_records = new HashMap<>();
+  }
+
+  public BattleRecords(HashMap<PlayerID, HashMap<GUID, BattleRecord>> records) {
+    this.m_records = records;
+  }
+
+  @SerializationProxySupport
+  public Object writeReplace() {
+    return new SerializationProxy(this);
+  }
+
+  @SerializationProxySupport
+  private static class SerializationProxy {
+    private final HashMap<PlayerID, HashMap<GUID, BattleRecord>> records;
+    public SerializationProxy(BattleRecords battleRecords) {
+      this.records= battleRecords.m_records;
+    }
+
+    private Object readResolve() {
+      return new BattleRecords(records);
+    }
+
   }
 
   // Create copy
   public BattleRecords(final BattleRecords records) {
-    super(records.getData());
+    m_records = new HashMap<>();
     for (final Entry<PlayerID, HashMap<GUID, BattleRecord>> entry : records.m_records.entrySet()) {
       final PlayerID p = entry.getKey();
       final HashMap<GUID, BattleRecord> record = entry.getValue();

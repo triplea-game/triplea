@@ -2504,7 +2504,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     m_battleResultDescription = BattleRecord.BattleResultDescription.LOST;
     showCasualties(bridge);
     if (!m_headless) {
-      m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
+      m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
           m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     }
     checkDefendingPlanesCanLand(bridge, m_defender);
@@ -2522,7 +2522,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     m_battleResultDescription = BattleRecord.BattleResultDescription.STALEMATE;
     showCasualties(bridge);
     if (!m_headless) {
-      m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
+      m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
           m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
       bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_STALEMATE, m_attacker);
     }
@@ -2563,7 +2563,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     bridge.getHistoryWriter().addChildToEvent(m_attacker.getName() + " win", new ArrayList<>(m_attackingUnits));
     showCasualties(bridge);
     if (!m_headless) {
-      m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
+      m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
           m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     }
     if (!m_headless) {
@@ -2779,7 +2779,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       m_attackerLostTUV += tuvLostAttacker;
       m_whoWon = WhoWon.DEFENDER;
       if (!m_headless) {
-        m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender,
+        m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender,
             m_attackerLostTUV, m_defenderLostTUV, BattleRecord.BattleResultDescription.LOST,
             new BattleResults(this, m_data));
       }

@@ -88,7 +88,7 @@ public class NonFightingBattle extends AbstractBattle {
       m_whoWon = WhoWon.DEFENDER;
       m_battleResultDescription = BattleRecord.BattleResultDescription.LOST;
     }
-    m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
+    m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
         m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     end();
   }
