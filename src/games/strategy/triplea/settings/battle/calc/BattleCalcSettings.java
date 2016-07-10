@@ -5,8 +5,8 @@ import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
 
 public class BattleCalcSettings implements HasDefaults {
-  private static final int DEFAULT_SIMULATION_COUNT_DICE = 2000;
-  private static final int DEFAULT_SIMULATION_COUNT_LOW_LUCK = 500;
+  static final int DEFAULT_SIMULATION_COUNT_DICE = 2000;
+  static final int DEFAULT_SIMULATION_COUNT_LOW_LUCK = 500;
 
   @Override
   public void setToDefault() {

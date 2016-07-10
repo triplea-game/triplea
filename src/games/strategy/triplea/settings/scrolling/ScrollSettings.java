@@ -6,14 +6,14 @@ import games.strategy.triplea.settings.SystemPreferences;
 
 public class ScrollSettings implements HasDefaults {
 
-  private static final int DEFAULT_MAP_EDGE_SCROLL_SPEED = 30;
-  private static final int DEFAULT_MAP_EDGE_SCROLL_ZONE_SIZE = 30;
-  private static final int DEFAULT_MAP_EDGE_FASTER_SCROLL_MULTIPLIER = 2;
-  private static final int DEFAULT_MAP_EDGE_FASTER_SCROLL_ZONE_SIZE = 10;
+  static final int DEFAULT_MAP_EDGE_SCROLL_SPEED = 30;
+  static final int DEFAULT_MAP_EDGE_SCROLL_ZONE_SIZE = 30;
+  static final int DEFAULT_MAP_EDGE_FASTER_SCROLL_MULTIPLIER = 2;
+  static final int DEFAULT_MAP_EDGE_FASTER_SCROLL_ZONE_SIZE = 10;
 
-  private static final int DEFAULT_ARROW_KEY_SCROLL_SPEED = 70;
-  private static final int DEFAULT_FASTER_ARROW_KEY_SCROLL_MULTIPLIER = 3;
-  private static final int DEFAULT_WHEEL_SCROLL_AMOUNT = 60;
+  static final int DEFAULT_ARROW_KEY_SCROLL_SPEED = 70;
+  static final int DEFAULT_FASTER_ARROW_KEY_SCROLL_MULTIPLIER = 3;
+  static final int DEFAULT_WHEEL_SCROLL_AMOUNT = 60;
 
   @Override
   public void setToDefault() {

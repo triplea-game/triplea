@@ -3,7 +3,6 @@ package games.strategy.triplea.settings;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Insets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
-import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 
 import games.strategy.engine.ClientContext;

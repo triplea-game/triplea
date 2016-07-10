@@ -26,7 +26,7 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
 
   /**
    * @return Detailed (but concise) text description of what the setting represents. This is a message to the user
-   * describing a specific setting, what it does, and which values they should change it to.
+   *         describing a specific setting, what it does, and which values they should change it to.
    */
   String getDescription();
 
@@ -36,9 +36,9 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
   SettingsInput getInputElement();
 
   /**
-   * Return true if a valid setting can be read from  the input component and applied to the 'settings' data object.
+   * Return true if a valid setting can be read from the input component and applied to the 'settings' data object.
    *
-   * @param toUpdate       The 'Settings' data object to be updated.
+   * @param toUpdate The 'Settings' data object to be updated.
    * @param inputComponent User input source
    */
   boolean updateSettings(SettingsObjectType toUpdate, SettingsInput inputComponent);
@@ -52,12 +52,24 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
   String getValue(SettingsObjectType settingsType);
 
 
+
+  static <Z extends HasDefaults> SettingInputComponent<Z> build(IntegerValueRange valueRange,
+      final String label, final String description, JTextComponent component,
+      BiConsumer<Z, String> updater, Function<Z, String> extractor) {
+
+    String descriptionWithRange = "(" + valueRange.lowerValue + " - " + valueRange.upperValue
+        + ", default: " + valueRange.defaultValue + ")\n" + description;
+
+    return SettingInputComponent.build(label, descriptionWithRange, component, updater, extractor,
+        InputValidator.inRange(valueRange.lowerValue, valueRange.upperValue));
+  }
+
   /**
    * Factory method to create instances of this interface, backed by TextField component types
    */
   static <Z extends HasDefaults> SettingInputComponent<Z> build(final String label, final String description,
-      JTextComponent component,
-      BiConsumer<Z, String> updater, Function<Z, String> extractor, InputValidator... validators) {
+      JTextComponent component, BiConsumer<Z, String> updater,
+      Function<Z, String> extractor, InputValidator... validators) {
     SettingsInput inputComponent = new SettingsInput() {
       @Override
       public JComponent getSwingComponent() {
@@ -77,8 +89,9 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
     return build(label, description, inputComponent, updater, extractor, validators);
   }
 
-  static <Z extends HasDefaults> SettingInputComponent<Z> buildYesOrNoRadioButtons(final String label, final String description,
-      boolean initialValue, BiConsumer<Z, String> settingsObjectUpdater, Function<Z, String> settingsObjectExtractor) {
+  static <Z extends HasDefaults> SettingInputComponent<Z> buildYesOrNoRadioButtons(final String label,
+      final String description, boolean initialValue, BiConsumer<Z, String> settingsObjectUpdater,
+      Function<Z, String> settingsObjectExtractor) {
 
     JRadioButton radioButtonYes = new JRadioButton("Yes");
     JRadioButton radioButtonNo = new JRadioButton("No");
@@ -109,8 +122,8 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
 
 
   /**
-     * Factory method to create instances of this interface backed by TextField component types
-     */
+   * Factory method to create instances of this interface backed by TextField component types
+   */
   static <Z extends HasDefaults> SettingInputComponent<Z> build(final String label, final String description,
       JPanel componentPanel, Supplier<String> componentReader,
       BiConsumer<Z, String> settingsObjectUpdater, Function<Z, String> settingsObjectExtractor,
@@ -194,7 +207,8 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
   }
 
   /**
-   * In cases where we try to update to an invalid value, set Value is called to restore the default/previous valid value
+   * In cases where we try to update to an invalid value, set Value is called to restore the default/previous valid
+   * value
    */
   void setValue(String valueToSet);
 }
