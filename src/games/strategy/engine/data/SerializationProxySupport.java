@@ -12,7 +12,7 @@ package games.strategy.engine.data;
  * A typical usage of this annotation will and pattern will look like this:
  * Code formatted below for easy copy paste:<code>
      @SerializationProxySupport
-     public Object writeReplace() {
+     protected Object writeReplace() {
        return new SerializationProxy(this);
      }
 
