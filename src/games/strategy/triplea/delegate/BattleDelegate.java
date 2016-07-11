@@ -497,7 +497,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               && Match.allMatch(enemyUnits, Matches.unitHasDefendValueOfAtLeast(1).invert()))) {
         final BattleResults results = new BattleResults(battle, WhoWon.DRAW, data);
         battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0,
-            BattleRecord.BattleResultDescription.STALEMATE, results, 0);
+            BattleRecord.BattleResultDescription.STALEMATE, results);
         battle.cancelBattle(aBridge);
         battleTracker.removeBattle(battle);
         continue;
@@ -509,7 +509,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           if (!remotePlayer.selectAttackUnits(territory)) {
             final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
             battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0,
-                BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
+                BattleRecord.BattleResultDescription.NO_BATTLE, results);
             battle.cancelBattle(aBridge);
             battleTracker.removeBattle(battle);
           }
@@ -523,7 +523,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             if (!remotePlayer.selectAttackTransports(territory)) {
               final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
               battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0,
-                  BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
+                  BattleRecord.BattleResultDescription.NO_BATTLE, results);
               battle.cancelBattle(aBridge);
               battleTracker.removeBattle(battle);
             }
@@ -534,7 +534,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             if (!remotePlayer.selectAttackSubs(territory)) {
               final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
               battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0,
-                  BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
+                  BattleRecord.BattleResultDescription.NO_BATTLE, results);
               battle.cancelBattle(aBridge);
               battleTracker.removeBattle(battle);
             }
@@ -545,7 +545,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             if (!remotePlayer.selectAttackUnits(territory)) {
               final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
               battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0,
-                  BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
+                  BattleRecord.BattleResultDescription.NO_BATTLE, results);
               battle.cancelBattle(aBridge);
               battleTracker.removeBattle(battle);
             }

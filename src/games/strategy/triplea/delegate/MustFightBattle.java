@@ -2505,7 +2505,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     showCasualties(bridge);
     if (!m_headless) {
       m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-          m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), 0);
+          m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     }
     checkDefendingPlanesCanLand(bridge, m_defender);
     BattleTracker.captureOrDestroyUnits(m_battleSite, m_defender, m_defender, bridge, null);
@@ -2523,7 +2523,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     showCasualties(bridge);
     if (!m_headless) {
       m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-          m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), 0);
+          m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
       bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_STALEMATE, m_attacker);
     }
     checkDefendingPlanesCanLand(bridge, m_defender);
@@ -2564,7 +2564,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     showCasualties(bridge);
     if (!m_headless) {
       m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-          m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), 0);
+          m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     }
     if (!m_headless) {
       if (Matches.TerritoryIsWater.match(m_battleSite)) {
@@ -2781,7 +2781,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       if (!m_headless) {
         m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender,
             m_attackerLostTUV, m_defenderLostTUV, BattleRecord.BattleResultDescription.LOST,
-            new BattleResults(this, m_data), 0);
+            new BattleResults(this, m_data));
       }
       m_battleTracker.removeBattle(this);
     }

@@ -285,7 +285,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     m_whoWon = WhoWon.DRAW;
     m_battleResultDescription = BattleRecord.BattleResultDescription.NO_BATTLE;
     m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), m_bombingRaidTotal);
+        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     m_isOver = true;
     m_battleTracker.removeBattle(StrategicBombingRaidBattle.this);
   }
@@ -309,7 +309,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       m_battleResultDescription = BattleRecord.BattleResultDescription.LOST;
     }
     m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), m_bombingRaidTotal);
+        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     m_isOver = true;
     m_battleTracker.removeBattle(StrategicBombingRaidBattle.this);
   }

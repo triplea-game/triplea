@@ -892,7 +892,7 @@ public class RevisedTest {
     final List<Unit> bombers = uk.getUnits().getMatches(Matches.UnitIsStrategicBomber);
     addTo(germany, bombers);
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers, null);
-    tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
+    tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setRemote(dummyPlayer);
     // aa guns rolls 0 and hits
@@ -918,7 +918,7 @@ public class RevisedTest {
     final List<Unit> bombers = bomber(m_data).create(2, british);
     addTo(germany, bombers);
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers, null);
-    tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
+    tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setRemote(dummyPlayer);
     // should be exactly 3 rolls total. would be exactly 2 rolls if the number of units being shot at = max dice side of
@@ -947,7 +947,7 @@ public class RevisedTest {
     final List<Unit> bombers = bomber(m_data).create(7, british);
     addTo(germany, bombers);
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers, null);
-    tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
+    tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setRemote(dummyPlayer);
     // aa guns rolls 0 and hits, next 5 dice are for the bombing raid cost for the
@@ -972,7 +972,7 @@ public class RevisedTest {
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany),
         uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
     addTo(germany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
-    tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
+    tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
