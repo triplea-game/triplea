@@ -14,6 +14,7 @@ import javax.swing.ListSelectionModel;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
+import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
 
 public class PlayerChooser extends JOptionPane {
@@ -62,7 +63,7 @@ public class PlayerChooser extends JOptionPane {
         }
       }
     });
-    setMessage(m_list);
+    setMessage(SwingComponents.newJScrollPane(m_list));
   }
 
   /**
