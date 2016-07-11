@@ -2,6 +2,7 @@ package games.strategy.triplea.ui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -42,7 +43,7 @@ public class MapRouteDrawer {
   /**
    * Draws the route to the screen.
    */
-  public void drawRoute(final Graphics2D graphics, final RouteDescription routeDescription, final MapPanel view,
+  public void drawRoute(final Graphics2D graphics, final RouteDescription routeDescription, final MapPanel mapPanel,
       final MapData mapData, final String maxMovement) {
     if (routeDescription == null) {
       return;
@@ -57,17 +58,24 @@ public class MapRouteDrawer {
     graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
     final int numTerritories = route.getAllTerritories().size();
-    final Point[] points = getRoutePoints(routeDescription, mapData);
+    final int xOffset = mapPanel.getXOffset();
+    final int yOffset = mapPanel.getYOffset();
+    final int imageWidth = mapPanel.getImageWidth();
+    final int imageHeight = mapPanel.getImageHeight();
+    final Dimension imageDimension = new Dimension(imageWidth, imageHeight);
+    final Point[] points =
+        getRoutePoints(routeDescription, mapData, xOffset, yOffset, imageDimension);
     final boolean tooFewTerritories = numTerritories <= 1;
     final boolean tooFewPoints = points.length <= 2;
-    final int xOffset = view.getXOffset();
-    final int yOffset = view.getYOffset();
-    final double scale = view.getScale();
+    final double scale = mapPanel.getScale();
     if (tooFewTerritories || tooFewPoints) {
-      if (routeDescription.getEnd() != null) {
-        drawDirectPath(graphics, routeDescription.getStart(), routeDescription.getEnd(), xOffset, yOffset, scale);
+      if (routeDescription.getEnd() != null) {// AI has no End Point
+        drawDirectPath(graphics,
+            getPointOnMap(routeDescription.getStart(), xOffset, yOffset, imageDimension),
+            getPointOnMap(routeDescription.getEnd(), xOffset, yOffset, imageDimension), xOffset, yOffset, scale);
       } else {
-        drawDirectPath(graphics, points[0], points[points.length - 1], xOffset, yOffset, scale);
+        drawDirectPath(graphics, getPointOnMap(points[0], xOffset, yOffset, imageDimension),
+            getPointOnMap(points[points.length - 1], xOffset, yOffset, imageDimension), xOffset, yOffset, scale);
       }
       if (tooFewPoints && !tooFewTerritories) {
         drawMoveLength(graphics, points, xOffset, yOffset, scale, numTerritories, maxMovement);
@@ -77,7 +85,7 @@ public class MapRouteDrawer {
       drawMoveLength(graphics, points, xOffset, yOffset, scale, numTerritories, maxMovement);
     }
     drawJoints(graphics, points, xOffset, yOffset, scale);
-    drawCustomCursor(graphics, routeDescription, xOffset, yOffset, scale);
+    drawCustomCursor(graphics, routeDescription, xOffset, yOffset, scale, imageDimension);
   }
 
   /**
@@ -110,12 +118,13 @@ public class MapRouteDrawer {
    * @param scale The scale-factor of the Map
    */
   private void drawCustomCursor(Graphics2D graphics, RouteDescription routeDescription, int xOffset, int yOffset,
-      double scale) {
+      double scale, Dimension imageDimension) {
     final Image cursorImage = routeDescription.getCursorImage();
     if (cursorImage != null) {
+      Point wrappedEndPoint = getPointOnMap(routeDescription.getEnd(), xOffset, yOffset, imageDimension);
       graphics.drawImage(cursorImage,
-          (int) (((routeDescription.getEnd().x - xOffset) - (cursorImage.getWidth(null) / 2)) * scale),
-          (int) (((routeDescription.getEnd().y - yOffset) - (cursorImage.getHeight(null) / 2)) * scale), null);
+          (int) (((wrappedEndPoint.x - xOffset) - (cursorImage.getWidth(null) / 2)) * scale),
+          (int) (((wrappedEndPoint.y - yOffset) - (cursorImage.getHeight(null) / 2)) * scale), null);
     }
 
   }
@@ -186,23 +195,60 @@ public class MapRouteDrawer {
    * 
    * @param routeDescription {@linkplain RouteDescription} containing the Route information
    * @param mapData {@linkplain MapData} Object containing Information about the Map Coordinates
+   * @param width The width of the Map
+   * @param height The height of the Map
    * @return The {@linkplain Point} array specified by the {@linkplain RouteDescription} and {@linkplain MapData}
    *         objects
    */
-  protected Point[] getRoutePoints(RouteDescription routeDescription, MapData mapData) {
+  protected Point[] getRoutePoints(RouteDescription routeDescription, MapData mapData, int xOffset, int yOffset,
+      Dimension imageDimension) {
     final List<Territory> territories = routeDescription.getRoute().getAllTerritories();
     final int numTerritories = territories.size();
     final Point[] points = new Point[numTerritories];
     for (int i = 0; i < numTerritories; i++) {
-      points[i] = mapData.getCenter(territories.get(i));
+      points[i] = getPointOnMap(mapData.getCenter(territories.get(i)), xOffset, yOffset, imageDimension);
     }
     if (routeDescription.getStart() != null) {
-      points[0] = routeDescription.getStart();
+      points[0] = getPointOnMap(routeDescription.getStart(), xOffset, yOffset, imageDimension);
     }
     if (routeDescription.getEnd() != null && numTerritories > 1) {
-      points[numTerritories - 1] = new Point(routeDescription.getEnd());
+      points[numTerritories - 1] =
+          getPointOnMap(routeDescription.getEnd(), xOffset, yOffset, imageDimension);
     }
     return points;
+  }
+
+  /**
+   * This method moves point one width/length on an infinite-scroll Map
+   * so that they route goes beyond non existent borders
+   * 
+   * @param point The reference {@linkplain Point}
+   * @param xOffset The horizontal pixel-difference between the frame and the Map
+   * @param yOffset The vertical pixel-difference between the frame and the Map
+   * @param width The width of the Map
+   * @param height The height of the Map
+   * @return The "real" Point
+   */
+  protected static Point getPointOnMap(Point point, int xOffset, int yOffset, Dimension dimension) {
+    Point newPoint = null;
+    int x = (int) point.getX();
+    int y = (int) point.getY();
+    int width = dimension.width;
+    int height = dimension.height;
+    if (x - width > xOffset) {
+      newPoint = new Point(x - width, y);
+      x = (int) newPoint.getX();
+    } else if (x < xOffset) {
+      newPoint = new Point(x + width, y);
+      x = (int) newPoint.getX();
+    }
+    if (y - height > yOffset) {
+      newPoint = new Point(x, y - height);
+    }
+    if (y < yOffset) {
+      newPoint = new Point(x, y + height);
+    }
+    return newPoint != null ? newPoint : point;
   }
 
   /**
