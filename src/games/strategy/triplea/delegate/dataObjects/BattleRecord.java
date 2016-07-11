@@ -1,8 +1,9 @@
 package games.strategy.triplea.delegate.dataObjects;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataComponent;
+import java.io.Serializable;
+
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.SerializationProxySupport;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
@@ -11,7 +12,8 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
  * The Purpose of this class is to record various information about combat,
  * in order to use it for conditions and other things later.
  */
-public class BattleRecord extends GameDataComponent {
+public class BattleRecord implements Serializable {
+
   /**
    * BLITZED = conquered without a fight <br>
    * CONQUERED = fought, won, and took over territory if land or convoy <br>
@@ -33,67 +35,108 @@ public class BattleRecord extends GameDataComponent {
     BLITZED, CONQUERED, WON_WITHOUT_CONQUERING, WON_WITH_ENEMY_LEFT, STALEMATE, LOST, BOMBED, AIR_BATTLE_WON, AIR_BATTLE_LOST, AIR_BATTLE_STALEMATE, NO_BATTLE
   }
 
-  private static final long serialVersionUID = 3642216371483289106L;
-  private Territory m_battleSite;
-  private PlayerID m_attacker;
-  private PlayerID m_defender;
-  private int m_attackerLostTUV = 0;
-  private int m_defenderLostTUV = 0;
-  private BattleResultDescription m_battleResultDescription;
-  private int m_bombingDamage = 0;
-  private BattleType m_battleType;
-  private BattleResults m_battleResults;
-  // Something in IBattle (formerly part of BattleResults) cannot be Serialized, which can causing MAJOR problems. So
-  // the IBattle should
-  // never be part of BattleResults or BattleRecord.
 
-  // Create copy
-  protected BattleRecord(final BattleRecord record) {
-    super(record.getData());
-    m_battleSite = record.m_battleSite;
-    m_attacker = record.m_attacker;
-    m_defender = record.m_defender;
-    m_attackerLostTUV = record.m_attackerLostTUV;
-    m_defenderLostTUV = record.m_defenderLostTUV;
-    m_battleResultDescription = record.m_battleResultDescription;
-    m_bombingDamage = record.m_bombingDamage;
-    m_battleType = record.m_battleType;
-    m_battleResults = record.m_battleResults;
+  private static final long serialVersionUID = 3642216371483289106L;
+  private Territory battleSite;
+  private PlayerID attacker;
+  private PlayerID m_defender;
+  private int attackerLostTUV = 0;
+  private int defenderLostTUV = 0;
+  private BattleResultDescription battleResultDescription;
+  private BattleType battleType;
+  private BattleResults battleResults;
+
+
+  @SerializationProxySupport
+  private BattleRecord(Territory battleSite, PlayerID attacker, PlayerID defender, int attackerLostTUV,
+      int defenderLostTUV, BattleResultDescription battleResultDescription, BattleType battleType,
+      BattleResults battleResults) {
+    this.battleSite = battleSite;
+    this.attacker = attacker;
+    this.m_defender = defender;
+    this.attackerLostTUV = attackerLostTUV;
+    this.defenderLostTUV = defenderLostTUV;
+    this.battleResultDescription = battleResultDescription;
+    this.battleType = battleType;
+    this.battleResults = battleResults;
   }
 
-  protected BattleRecord(final Territory battleSite, final PlayerID attacker, final BattleType battleType,
-      final GameData data) {
-    super(data);
-    m_battleSite = battleSite;
-    m_attacker = attacker;
-    m_battleType = battleType;
+  @SerializationProxySupport
+  public Object writeReplace(Object write) {
+    return new SerializationProxy(this);
+  }
+
+  private static class SerializationProxy implements Serializable {
+    private static final long serialVersionUID = 355188139820567143L;
+    private final Territory battleSite;
+    private final PlayerID attacker;
+    private final PlayerID defender;
+    private final int attackerLostTUV;
+    private final int defenderLostTUV;
+    private final BattleResultDescription battleResultDescription;
+    private final BattleType battleType;
+    private final BattleResults battleResults;
+
+    public SerializationProxy(BattleRecord battleRecord) {
+      battleSite = battleRecord.battleSite;
+      attacker = battleRecord.attacker;
+      defender = battleRecord.m_defender;
+      attackerLostTUV = battleRecord.attackerLostTUV;
+      defenderLostTUV = battleRecord.defenderLostTUV;
+      battleResultDescription = battleRecord.battleResultDescription;
+      battleType = battleRecord.battleType;
+      battleResults = battleRecord.battleResults;
+    }
+
+    private Object readResolve() {
+      return new BattleRecord(battleSite, attacker, defender, attackerLostTUV, defenderLostTUV, battleResultDescription,
+          battleType, battleResults);
+    }
+  }
+
+  /**
+   * Convenience copy constructor
+   */
+  protected BattleRecord(final BattleRecord record) {
+    battleSite = record.battleSite;
+    attacker = record.attacker;
+    m_defender = record.m_defender;
+    attackerLostTUV = record.attackerLostTUV;
+    defenderLostTUV = record.defenderLostTUV;
+    battleResultDescription = record.battleResultDescription;
+    battleType = record.battleType;
+    battleResults = record.battleResults;
+  }
+
+  protected BattleRecord(final Territory battleSite, final PlayerID attacker, final BattleType battleType) {
+    this.battleSite = battleSite;
+    this.attacker = attacker;
+    this.battleType = battleType;
   }
 
   protected void setResult(final PlayerID defender, final int attackerLostTUV, final int defenderLostTUV,
-      final BattleResultDescription battleResultDescription, final BattleResults battleResults,
-      final int bombingDamage) {
+      final BattleResultDescription battleResultDescription, final BattleResults battleResults) {
     m_defender = defender;
-    m_attackerLostTUV = attackerLostTUV;
-    m_defenderLostTUV = defenderLostTUV;
-    m_battleResultDescription = battleResultDescription;
-    m_battleResults = battleResults;
-    m_bombingDamage = bombingDamage;
+    this.attackerLostTUV = attackerLostTUV;
+    this.defenderLostTUV = defenderLostTUV;
+    this.battleResultDescription = battleResultDescription;
+    this.battleResults = battleResults;
   }
 
   protected Territory getBattleSite() {
-    return m_battleSite;
+    return battleSite;
   }
 
   protected void setBattleSite(final Territory battleSite) {
-    this.m_battleSite = battleSite;
+    this.battleSite = battleSite;
   }
 
   protected PlayerID getAttacker() {
-    return m_attacker;
+    return attacker;
   }
 
   protected void setAttacker(final PlayerID attacker) {
-    this.m_attacker = attacker;
+    this.attacker = attacker;
   }
 
   protected PlayerID getDefender() {
@@ -105,56 +148,20 @@ public class BattleRecord extends GameDataComponent {
   }
 
   protected int getAttackerLostTUV() {
-    return m_attackerLostTUV;
-  }
-
-  protected void setAttackerLostTUV(final int attackerLostTUV) {
-    this.m_attackerLostTUV = attackerLostTUV;
+    return attackerLostTUV;
   }
 
   protected int getDefenderLostTUV() {
-    return m_defenderLostTUV;
-  }
-
-  protected void setDefenderLostTUV(final int defenderLostTUV) {
-    this.m_defenderLostTUV = defenderLostTUV;
-  }
-
-  protected BattleResultDescription getBattleResultDescription() {
-    return m_battleResultDescription;
-  }
-
-  protected void setBattleResultDescription(final BattleResultDescription battleResult) {
-    this.m_battleResultDescription = battleResult;
-  }
-
-  protected int getBombingDamage() {
-    return m_bombingDamage;
-  }
-
-  protected void setBombingDamage(final int bombingDamage) {
-    this.m_bombingDamage = bombingDamage;
+    return defenderLostTUV;
   }
 
   protected BattleType getBattleType() {
-    return m_battleType;
-  }
-
-  protected void setBattleType(final BattleType battleType) {
-    this.m_battleType = battleType;
-  }
-
-  protected BattleResults getBattleResults() {
-    return m_battleResults;
-  }
-
-  protected void setBattleResults(final BattleResults battleResults) {
-    m_battleResults = battleResults;
+    return battleType;
   }
 
   @Override
   public int hashCode() {
-    return m_battleSite.hashCode();
+    return battleSite.hashCode();
   }
 
   @Override
@@ -163,12 +170,12 @@ public class BattleRecord extends GameDataComponent {
       return false;
     }
     final BattleRecord other = (BattleRecord) o;
-    return other.m_battleSite.equals(this.m_battleSite) && other.m_battleType.equals(this.m_battleType)
-        && other.m_attacker.equals(this.m_attacker);
+    return other.battleSite.equals(this.battleSite) && other.battleType.equals(this.battleType)
+        && other.attacker.equals(this.attacker);
   }
 
   @Override
   public String toString() {
-    return m_battleType + " battle in " + m_battleSite;
+    return battleType + " battle in " + battleSite;
   }
 }

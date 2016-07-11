@@ -1,16 +1,15 @@
 package games.strategy.engine.data;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
-
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * Tracks alliances between players.
@@ -20,14 +19,37 @@ import java.util.Set;
  * victory conditions.
  * Not used for determining in-game alliances (instead, see the Relationship tracker for that).
  */
-public class AllianceTracker extends GameDataComponent {
+public class AllianceTracker implements Serializable {
   private static final long serialVersionUID = 2815023984535209353L;
   // maps PlayerID to Collection of alliances names
-  private Multimap<PlayerID, String> alliances = HashMultimap.create();
+  private final Multimap<PlayerID, String> alliances;
 
-  public AllianceTracker(final GameData data) {
-    super(data);
+  public AllianceTracker() {
+    alliances = HashMultimap.create();
   }
+
+  public AllianceTracker(Multimap<PlayerID, String> alliances) {
+    this.alliances = alliances;
+  }
+
+  @SerializationProxySupport
+  public Object writeReplace() {
+    return new SerializationProxy(this);
+  }
+
+  private static class SerializationProxy implements Serializable {
+    private static final long serialVersionUID = -4193924040595347947L;
+    private final Multimap<PlayerID, String> alliances;
+
+    public SerializationProxy(AllianceTracker allianceTracker) {
+      alliances = ImmutableMultimap.copyOf(allianceTracker.alliances);
+    }
+
+    private Object readResolve() {
+      return new AllianceTracker(alliances);
+    }
+  }
+
 
   /**
    * Adds PlayerID player to the alliance specified by allianceName.

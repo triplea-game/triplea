@@ -56,8 +56,8 @@ public class FinishedBattle extends AbstractBattle {
   @Override
   public void fight(final IDelegateBridge bridge) {
     if (!m_headless) {
-      m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-          m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), 0);
+      m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
+          m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     }
     m_battleTracker.removeBattle(this);
     m_isOver = true;
@@ -151,9 +151,9 @@ public class FinishedBattle extends AbstractBattle {
         // scripted?
         m_whoWon = WhoWon.DEFENDER;
         if (!m_headless) {
-          m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender,
+          m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender,
               m_attackerLostTUV, m_defenderLostTUV, BattleRecord.BattleResultDescription.LOST,
-              new BattleResults(this, m_data), 0);
+              new BattleResults(this, m_data));
         }
         m_battleTracker.removeBattle(this);
       }
