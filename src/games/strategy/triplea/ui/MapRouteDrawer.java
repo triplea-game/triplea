@@ -234,19 +234,10 @@ public class MapRouteDrawer {
     int x = (int) point.getX();
     int y = (int) point.getY();
     int width = dimension.width;
-    int height = dimension.height;
     if (x - width > xOffset) {
       newPoint = new Point(x - width, y);
-      x = (int) newPoint.getX();
     } else if (x < xOffset) {
       newPoint = new Point(x + width, y);
-      x = (int) newPoint.getX();
-    }
-    if (y - height > yOffset) {
-      newPoint = new Point(x, y - height);
-    }
-    if (y < yOffset) {
-      newPoint = new Point(x, y + height);
     }
     return newPoint != null ? newPoint : point;
   }
