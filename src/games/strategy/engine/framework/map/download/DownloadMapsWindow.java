@@ -30,12 +30,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionListener;
 
-import com.google.common.collect.Lists;
-
-import games.strategy.ui.SwingComponents;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
+import games.strategy.ui.SwingComponents;
 import games.strategy.util.Version;
 
 

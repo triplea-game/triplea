@@ -86,6 +86,8 @@ public class SwingComponents {
 
 
   public static class ModalJDialog extends JDialog {
+    private static final long serialVersionUID = -3953716954531215173L;
+
     public ModalJDialog() {
       super((Frame) null, true);
       setLocationByPlatform(true);

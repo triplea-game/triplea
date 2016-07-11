@@ -24,8 +24,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import com.google.common.collect.Lists;
-
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.startup.mc.ClientModel;

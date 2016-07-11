@@ -22,12 +22,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
-import games.strategy.engine.lobby.client.ui.LobbyFrame;
-import games.strategy.engine.lobby.client.ui.MacLobbyWrapper;
-import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
+import games.strategy.engine.lobby.client.ui.LobbyFrame;
+import games.strategy.engine.lobby.client.ui.MacLobbyWrapper;
 import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.lobby.server.IUserManager;
 import games.strategy.engine.lobby.server.ModeratorController;
@@ -36,8 +34,9 @@ import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.net.INode;
 import games.strategy.net.Node;
 import games.strategy.sound.SoundOptions;
-import games.strategy.sound.SoundPath;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.ui.SwingAction;
+import games.strategy.ui.SwingComponents;
 import games.strategy.util.MD5Crypt;
 
 public class LobbyMenu extends JMenuBar {

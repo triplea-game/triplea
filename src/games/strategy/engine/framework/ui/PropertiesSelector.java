@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.ui;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -10,9 +9,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.ui.SwingAction;
 
 /**
  * Wrapper for properties selection window.

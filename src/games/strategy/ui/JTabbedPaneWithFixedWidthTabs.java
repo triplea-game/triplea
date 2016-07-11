@@ -11,7 +11,7 @@ import java.awt.Dimension;
  */
 public class JTabbedPaneWithFixedWidthTabs extends JTabbedPane {
 
-
+  private static final long serialVersionUID = -625035680314209854L;
   private static final int DEFAULT_TAB_WIDTH = 130;
   private static final int DEFAULT_TAB_HEIGHT = 20;
 

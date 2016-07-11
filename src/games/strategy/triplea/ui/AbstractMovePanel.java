@@ -19,7 +19,6 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import games.strategy.engine.data.GameData;
