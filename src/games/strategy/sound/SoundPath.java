@@ -82,9 +82,9 @@ public class SoundPath {
     return getAllSoundOptionsWithDescription().keySet();
   }
 
-  public static Map<String,String> getAllSoundOptionsWithDescription() {
-    final Map<String,String> soundOptions = new HashMap<>();
-    
+  public static Map<String, String> getAllSoundOptionsWithDescription() {
+    final Map<String, String> soundOptions = new HashMap<>();
+
     soundOptions.put(SoundPath.CLIP_CHAT_MESSAGE, "Chat Messaging");
     soundOptions.put(SoundPath.CLIP_CHAT_SLAP, "Chat Slapping");
     soundOptions.put(SoundPath.CLIP_CHAT_JOIN_GAME, "Joined Chat");
