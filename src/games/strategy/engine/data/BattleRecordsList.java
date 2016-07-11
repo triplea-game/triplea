@@ -47,7 +47,7 @@ public class BattleRecordsList extends GameDataComponent {
   public BattleRecords getCurrentRoundCopy() {
     final BattleRecords current = battleRecords.get(getData().getSequence().getRound());
     if (current == null) {
-      return new BattleRecords(getData());
+      return new BattleRecords();
     } else {
       return new BattleRecords(current);
     }
