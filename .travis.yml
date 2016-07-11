@@ -7,7 +7,7 @@ jdk:
 - oraclejdk8
 install: true
 script:
-- gradle clean test --info --debug --stacktrace
+- gradlew clean test
 before_deploy:
 ## Run the travis setup, will download install4j and configure it
 - chmod +x ./.travis/setup && ./.travis/setup
