@@ -6,6 +6,9 @@
  * accompanies this distribution and is available at
  *
  * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Source: https://github.com/junit-team/junit5-samples/blob/r5.0.0-M1/junit5-mockito-extension/src/main/java/com/example/mockito/MockitoExtension.java
+ * 
  */
 
 package games.strategy.test;
