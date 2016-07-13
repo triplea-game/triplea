@@ -18,7 +18,7 @@ public class BootPlayerAction extends AbstractAction {
   private final IServerMessenger m_messenger;
 
   public BootPlayerAction(final Component parent, final IServerMessenger messenger) {
-    super("Remove Player...");
+    super("Remove Player");
     m_parent = JOptionPane.getFrameForComponent(parent);
     m_messenger = messenger;
   }

@@ -66,7 +66,8 @@ public class HelpMenu {
 
 
   private void addMoveHelpMenu(final JMenu parentMenu) {
-    parentMenu.add(SwingAction.of("Movement/Selection help...", e -> {
+    String moveSelectionHelpTitle = "Movement/Selection Help";
+    parentMenu.add(SwingAction.of(moveSelectionHelpTitle, e -> {
       // html formatted string
       final String hints = "<b> Selecting Units</b><br>" + "Left click on a unit stack to select 1 unit.<br>"
           + "ALT-Left click on a unit stack to select 10 units of that type in the stack.<br>"
@@ -104,7 +105,7 @@ public class HelpMenu {
       editorPane.setContentType("text/html");
       editorPane.setText(hints);
       final JScrollPane scroll = new JScrollPane(editorPane);
-      JOptionPane.showMessageDialog(null, scroll, "Movement Help", JOptionPane.PLAIN_MESSAGE);
+      JOptionPane.showMessageDialog(null, scroll, moveSelectionHelpTitle, JOptionPane.PLAIN_MESSAGE);
     })).setMnemonic(KeyEvent.VK_M);
   }
 
@@ -161,7 +162,7 @@ public class HelpMenu {
 
 
   private void addUnitHelpMenu(final JMenu parentMenu) {
-    parentMenu.add(SwingAction.of("Unit help...", e -> {
+    parentMenu.add(SwingAction.of("Unit help", e -> {
       final JEditorPane editorPane = new JEditorPane();
       editorPane.setEditable(false);
       editorPane.setContentType("text/html");
@@ -224,7 +225,7 @@ public class HelpMenu {
       gameNotesPane.setEditable(false);
       gameNotesPane.setContentType("text/html");
       gameNotesPane.setText(notes);
-      parentMenu.add(SwingAction.of("Game Notes...", e ->
+      parentMenu.add(SwingAction.of("Game Notes", e ->
           SwingUtilities.invokeLater(() -> {
             final JEditorPane pane = gameNotesPane;
             final JScrollPane scroll = new JScrollPane(pane);
@@ -285,7 +286,7 @@ public class HelpMenu {
     scroll.setBorder(null);
     if (System.getProperty("mrj.version") == null) {
       parentMenu.addSeparator();
-      parentMenu.add(SwingAction.of("About...", e -> {
+      parentMenu.add(SwingAction.of("About", e -> {
         JOptionPane.showMessageDialog(null, editorPane, "About " + gameData.getGameName(),
             JOptionPane.PLAIN_MESSAGE);
       })).setMnemonic(KeyEvent.VK_A);

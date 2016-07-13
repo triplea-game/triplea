@@ -23,7 +23,7 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
   private final IServerStartupRemote m_serverRemote;
 
   public ChangeGameOptionsClientAction(final Component parent, final IServerStartupRemote serverRemote) {
-    super("Edit Game Options...");
+    super("Edit Game Options");
     m_parent = JOptionPane.getFrameForComponent(parent);
     m_serverRemote = serverRemote;
   }

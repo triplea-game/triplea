@@ -115,7 +115,7 @@ public class ViewMenu {
   }
 
   private void addShowGameUuid(final JMenu menuView) {
-    menuView.add(SwingAction.of("Game UUID...", e -> {
+    menuView.add(SwingAction.of("Game UUID", e -> {
       final String id = (String) gameData.getProperties().get(GameData.GAME_UUID);
       final JTextField text = new JTextField();
       text.setText(id);
@@ -131,7 +131,7 @@ public class ViewMenu {
   }
 
   private void addSetLookAndFeel(final JMenu menuView) {
-    menuView.add(SwingAction.of("Set Look and Feel...", e -> {
+    menuView.add(SwingAction.of("Set Look and Feel", e -> {
       final Triple<JList<String>, Map<String, String>, String> lookAndFeel = TripleAMenuBar.getLookAndFeelList();
       final JList<String> list = lookAndFeel.getFirst();
       final String currentKey = lookAndFeel.getThird();
@@ -154,7 +154,7 @@ public class ViewMenu {
 
 
   private void addZoomMenu(final JMenu menuGame) {
-    final Action mapZoom = SwingAction.of("Map Zoom...", e -> {
+    final Action mapZoom = SwingAction.of("Map Zoom", e -> {
       final SpinnerNumberModel model = new SpinnerNumberModel();
       model.setMaximum(100);
       model.setMinimum(15);
@@ -430,7 +430,7 @@ public class ViewMenu {
   }
 
   private void addMapFontAndColorEditorMenu(final JMenu parentMenu) {
-    final Action mapFontOptions = SwingAction.of("Edit Map Font and Color...", e -> {
+    final Action mapFontOptions = SwingAction.of("Edit Map Font and Color", e -> {
       final List<IEditableProperty> properties = new ArrayList<>();
       final NumberProperty fontsize =
           new NumberProperty("Font Size", null, 60, 0, MapImage.getPropertyMapFont().getSize());

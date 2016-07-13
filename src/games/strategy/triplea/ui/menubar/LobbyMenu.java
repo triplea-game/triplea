@@ -410,31 +410,31 @@ public class LobbyMenu extends JMenuBar {
    * @param parentMenu
    */
   private static void addHelpMenu(final JMenu parentMenu) {
-    final JMenuItem hostingLink = new JMenuItem("How to Host...");
+    final JMenuItem hostingLink = new JMenuItem("How to Host");
     hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_HOSTING_MAPS));
     parentMenu.add(hostingLink);
 
-    final JMenuItem bugReport = new JMenuItem("Bug Report...");
+    final JMenuItem bugReport = new JMenuItem("Bug Report");
     bugReport.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES));
     parentMenu.add(bugReport);
 
-    final JMenuItem lobbyRules = new JMenuItem("Lobby Rules...");
+    final JMenuItem lobbyRules = new JMenuItem("Lobby Rules");
     lobbyRules.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB_LOBBY_RULES ));
     parentMenu.add(lobbyRules);
 
-    final JMenuItem warClub = new JMenuItem("War Club & Ladder...");
+    final JMenuItem warClub = new JMenuItem("War Club & Ladder");
     warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB));
     parentMenu.add(warClub);
 
-    final JMenuItem donateLink = new JMenuItem("Donate...");
+    final JMenuItem donateLink = new JMenuItem("Donate");
     donateLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
     parentMenu.add(donateLink);
 
-    final JMenuItem helpLink = new JMenuItem("Help...");
+    final JMenuItem helpLink = new JMenuItem("Help");
     helpLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.WEBSITE_HELP));
     parentMenu.add(helpLink);
 
-    final JMenuItem ruleBookLink = new JMenuItem("Rule Book...");
+    final JMenuItem ruleBookLink = new JMenuItem("Rule Book");
     ruleBookLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK));
     parentMenu.add(ruleBookLink);
   }

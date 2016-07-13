@@ -16,7 +16,7 @@ public class ChangeGameToSaveGameClientAction extends AbstractAction {
   private final IClientMessenger m_clientMessenger;
 
   public ChangeGameToSaveGameClientAction(final Component parent, final IClientMessenger clientMessenger) {
-    super("Change To Gamesave (Load Game)...");
+    super("Change To Gamesave (Load Game)");
     m_parent = JOptionPane.getFrameForComponent(parent);
     m_clientMessenger = clientMessenger;
   }

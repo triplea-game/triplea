@@ -74,7 +74,7 @@ public class NetworkMenu {
   private void addShowPlayers(final JMenu menuGame) {
     if (!game.getData().getProperties().getEditableProperties().isEmpty()) {
       final AbstractAction optionsAction =
-          SwingAction.of("Show Who is Who...", e -> PlayersPanel.showPlayers(game, frame));
+          SwingAction.of("Show Who is Who", e -> PlayersPanel.showPlayers(game, frame));
       menuGame.add(optionsAction);
     }
   }

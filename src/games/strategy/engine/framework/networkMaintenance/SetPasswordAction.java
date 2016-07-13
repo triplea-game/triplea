@@ -21,7 +21,7 @@ public class SetPasswordAction extends AbstractAction {
 
   public SetPasswordAction(final Component parent, final InGameLobbyWatcherWrapper watcher,
       final ClientLoginValidator validator) {
-    super("Set Game Password...");
+    super("Set Game Password");
     m_validator = validator;
     m_parent = parent;
     m_lobbyWatcher = watcher;

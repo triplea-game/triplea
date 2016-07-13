@@ -89,7 +89,7 @@ public class ExportMenu {
 
   // TODO: create a second menu option for parsing current attachments
   private void addExportXML(final JMenu parentMenu) {
-    final Action exportXML = SwingAction.of("Export game.xml file (Beta)...", e -> exportXMLFile());
+    final Action exportXML = SwingAction.of("Export game.xml file (Beta)", e -> exportXMLFile());
     parentMenu.add(exportXML).setMnemonic(KeyEvent.VK_X);
   }
 
@@ -132,7 +132,7 @@ public class ExportMenu {
 
 
   private void addSaveScreenshot(final JMenu parentMenu) {
-    AbstractAction abstractAction = SwingAction.of("Export Screenshot...", e-> {
+    AbstractAction abstractAction = SwingAction.of("Export Screenshot", e-> {
 
       HistoryPanel historyPanel = frame.getHistoryPanel();
       final HistoryNode curNode;
@@ -367,12 +367,12 @@ public class ExportMenu {
   }
 
   private void addExportStatsFull(final JMenu parentMenu) {
-    final Action showDiceStats = SwingAction.of("Export Full Game Stats...", e -> createAndSaveStats(true));
+    final Action showDiceStats = SwingAction.of("Export Full Game Stats", e -> createAndSaveStats(true));
     parentMenu.add(showDiceStats).setMnemonic(KeyEvent.VK_F);
   }
 
   private void addExportStats(final JMenu parentMenu) {
-    final Action showDiceStats = SwingAction.of("Export Short Game Stats...", e -> createAndSaveStats(false));
+    final Action showDiceStats = SwingAction.of("Export Short Game Stats", e -> createAndSaveStats(false));
     parentMenu.add(showDiceStats).setMnemonic(KeyEvent.VK_S);
   }
 
@@ -629,7 +629,7 @@ public class ExportMenu {
   }
 
   private void addExportUnitStats(final JMenu parentMenu) {
-    final JMenuItem menuFileExport = new JMenuItem(SwingAction.of("Export Unit Charts...", e -> {
+    final JMenuItem menuFileExport = new JMenuItem(SwingAction.of("Export Unit Charts", e -> {
       final JFileChooser chooser = new JFileChooser();
       chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
       final File rootDir = new File(System.getProperties().getProperty("user.dir"));
@@ -655,7 +655,7 @@ public class ExportMenu {
 
 
   private void addExportSetupCharts(final JMenu parentMenu) {
-    final JMenuItem menuFileExport = new JMenuItem(SwingAction.of("Export Setup Charts...", e -> {
+    final JMenuItem menuFileExport = new JMenuItem(SwingAction.of("Export Setup Charts", e -> {
       final JFrame frame = new JFrame("Export Setup Files");
       frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       GameData clonedGameData;
