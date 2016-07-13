@@ -66,7 +66,8 @@ public class HelpMenu {
 
 
   private void addMoveHelpMenu(final JMenu parentMenu) {
-    parentMenu.add(SwingAction.of("Movement/Selection help", e -> {
+    String moveSelectionHelpTitle = "Movement/Selection Help";
+    parentMenu.add(SwingAction.of(moveSelectionHelpTitle, e -> {
       // html formatted string
       final String hints = "<b> Selecting Units</b><br>" + "Left click on a unit stack to select 1 unit.<br>"
           + "ALT-Left click on a unit stack to select 10 units of that type in the stack.<br>"
@@ -104,7 +105,7 @@ public class HelpMenu {
       editorPane.setContentType("text/html");
       editorPane.setText(hints);
       final JScrollPane scroll = new JScrollPane(editorPane);
-      JOptionPane.showMessageDialog(null, scroll, "Movement Help", JOptionPane.PLAIN_MESSAGE);
+      JOptionPane.showMessageDialog(null, scroll, moveSelectionHelpTitle, JOptionPane.PLAIN_MESSAGE);
     })).setMnemonic(KeyEvent.VK_M);
   }
 
