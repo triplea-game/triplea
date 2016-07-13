@@ -3,6 +3,7 @@ package games.strategy.triplea.settings;
 import games.strategy.ui.SwingComponents;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -202,6 +203,18 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
       public void setValue(String valueToSet) {
         getInputElement().setText(valueToSet);
       }
+
+      @Override
+      public String getErrorMessage() {
+        String input = getInputElement().getText();
+
+        Optional<InputValidator>
+            failedValidator = Arrays.asList(validators).stream().filter(validator -> !validator.apply(input)).findFirst();
+        if(!failedValidator.isPresent()) {
+          return "";
+        }
+        return input + ", " + failedValidator.get().getErrorMessage();
+      }
     };
   }
 
@@ -210,4 +223,6 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
    * value
    */
   void setValue(String valueToSet);
+
+  String getErrorMessage();
 }

@@ -14,36 +14,58 @@ public interface SettingsTab<T extends HasDefaults> {
 
   default void updateSettings(List<SettingInputComponent<T>> inputs) {
     final StringBuilder msg = new StringBuilder();
+    final StringBuilder failMsg = new StringBuilder();
+
+
+    // keep track explicitly of the status..
+    boolean somethingSaved = false;
+    boolean somethingInvalid = false;
+
     final List<String> invalidValues = new ArrayList<>();
-    inputs.forEach(input -> {
+    for (SettingInputComponent<T> input : inputs) {
       T settingsObject = getSettingsObject();
 
       String oldValue = input.getValue(settingsObject);
       if (input.updateSettings(settingsObject)) {
         String newValue = input.getValue(settingsObject);
-        if(!newValue.equals(oldValue)) {
-          msg.append("\n").append(input.getLabel()).append(": ").append(oldValue).append(" -> ").append(newValue);
+
+        if (!newValue.equals(oldValue)) {
+          if (!msg.toString().isEmpty()) {
+            msg.append("\n");
+          }
+          msg.append(input.getLabel()).append(": ").append(oldValue).append(" -> ").append(newValue);
+          somethingSaved = true;
         }
       } else {
+        if (!failMsg.toString().isEmpty()) {
+          failMsg.append("\n");
+        }
+        failMsg.append(input.getLabel()).append(": ").append(input.getErrorMessage());
+
         invalidValues.add(input.getInputElement().getText());
         input.setValue(oldValue);
+        somethingInvalid = true;
       }
-    });
+    }
 
-    String message = msg.toString();
-    if(message.isEmpty()) {
+
+    final String title;
+    final String message;
+    if (!somethingSaved && !somethingInvalid) {
+      // TODO: Save button should not be enabled unless something is updated, so we would never fall into this case.
+      title = "Nothing changed";
       message = "No values updated";
+    } else if(somethingSaved && !somethingInvalid) {
+      title = "Settings Saved";
+      message = msg.toString();
+    } else if (!somethingSaved && somethingInvalid) {
+      title = "Failed to Save Settings";
+      message = failMsg.toString();
     } else {
-      message = "Updated values:" + msg.toString();
+      title = "Some Settings Saved";
+      message = "Successfully updated\n" + msg.toString() + "\n\nNOT Updated\n" + failMsg.toString();
     }
-
-    if( !invalidValues.isEmpty() ) {
-      message += "\nValues out of range, not updated: ";
-      for (String invalidValue : invalidValues) {
-        message += "\n" + invalidValue;
-      }
-    }
-    SwingComponents.showDialog(message);
+    SwingComponents.showDialog(title, message);
   }
 
 }

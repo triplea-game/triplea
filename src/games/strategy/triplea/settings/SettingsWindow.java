@@ -151,7 +151,7 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
               settingTab.getSettingsObject().setToDefault();
               SystemPreferences.flush();
               dispose();
-              SwingComponents.showDialog("Reverted the '" + settingTab.getTabTitle() + "' settings back to defaults");
+              SwingComponents.showDialog("Defaults Restored", "Reverted the '" + settingTab.getTabTitle() + "' settings back to defaults");
             })));
 
     buttonsPanel.add(Box.createHorizontalGlue());

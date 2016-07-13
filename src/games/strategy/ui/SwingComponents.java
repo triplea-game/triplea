@@ -276,8 +276,8 @@ public class SwingComponents {
     SwingComponents.promptUser("Open external URL?", msg, () -> DesktopUtilityBrowserLauncher.openURL(url));
   }
 
-  public static void showDialog(String message) {
-    JOptionPane.showMessageDialog(null,message);
+  public static void showDialog(String title, String message) {
+    JOptionPane.showMessageDialog(null,message, title, JOptionPane.INFORMATION_MESSAGE);
   }
 
 
