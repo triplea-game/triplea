@@ -29,7 +29,7 @@ public class DebugMenu {
     }
 
     debugMenu.add(new EnablePerformanceLoggingCheckBox());
-    debugMenu.add(SwingAction.of("Show Console...", e -> {
+    debugMenu.add(SwingAction.of("Show Console", e -> {
       ErrorConsole.getConsole().setVisible(true);
       ErrorConsole.getConsole().append(DebugUtils.getMemory());
     })).setMnemonic(KeyEvent.VK_C);

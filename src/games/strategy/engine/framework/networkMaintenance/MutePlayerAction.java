@@ -18,7 +18,7 @@ public class MutePlayerAction extends AbstractAction {
   private final IServerMessenger m_messenger;
 
   public MutePlayerAction(final Component parent, final IServerMessenger messenger) {
-    super("Mute Player's Chatting...");
+    super("Mute Player's Chatting");
     m_parent = JOptionPane.getFrameForComponent(parent);
     m_messenger = messenger;
   }

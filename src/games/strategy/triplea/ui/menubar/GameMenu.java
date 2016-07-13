@@ -94,7 +94,7 @@ public class GameMenu {
 
 
   private void addShowVerifiedDice(final JMenu parentMenu) {
-    final Action showVerifiedDice = SwingAction.of("Show Verified Dice..",
+    final Action showVerifiedDice = SwingAction.of("Show Verified Dice",
         e -> new VerifiedRandomNumbersDialog(frame.getRootPane()).setVisible(true));
     if (game instanceof ClientGame) {
       parentMenu.add(showVerifiedDice).setMnemonic(KeyEvent.VK_V);
@@ -103,7 +103,7 @@ public class GameMenu {
 
   protected void addGameOptionsMenu(final JMenu menuGame) {
     if (!gameData.getProperties().getEditableProperties().isEmpty()) {
-      final AbstractAction optionsAction = SwingAction.of("Game Options...", e -> {
+      final AbstractAction optionsAction = SwingAction.of("Game Options", e -> {
         final PropertiesUI ui = new PropertiesUI(gameData.getProperties().getEditableProperties(), false);
         JOptionPane.showMessageDialog(frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
       });
@@ -141,7 +141,7 @@ public class GameMenu {
   private void addNotificationSettings(final JMenu parentMenu) {
     final JMenu notificationMenu = new JMenu();
     notificationMenu.setMnemonic(KeyEvent.VK_U);
-    notificationMenu.setText("User Notifications...");
+    notificationMenu.setText("User Notifications");
     final JCheckBoxMenuItem showEndOfTurnReport = new JCheckBoxMenuItem("Show End of Turn Report");
     showEndOfTurnReport.setMnemonic(KeyEvent.VK_R);
     final JCheckBoxMenuItem showTriggeredNotifications = new JCheckBoxMenuItem("Show Triggered Notifications");
@@ -199,7 +199,7 @@ public class GameMenu {
   }
 
   private void addShowDiceStats(final JMenu parentMenu) {
-    final Action showDiceStats = SwingAction.of("Show Dice Stats...", e -> {
+    final Action showDiceStats = SwingAction.of("Show Dice Stats", e -> {
       final IRandomStats randomStats =
           (IRandomStats) game.getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME);
       final RandomStatsDetails stats = randomStats.getRandomStats(gameData.getDiceSides());
@@ -210,7 +210,7 @@ public class GameMenu {
   }
 
   private void addRollDice(final JMenu parentMenu) {
-    final JMenuItem RollDiceBox = new JMenuItem("Roll Dice...");
+    final JMenuItem RollDiceBox = new JMenuItem("Roll Dice");
     RollDiceBox.setMnemonic(KeyEvent.VK_R);
     RollDiceBox.addActionListener(new ActionListener() {
       @Override
@@ -259,7 +259,7 @@ public class GameMenu {
   }
 
   private void addBattleCalculatorMenu(final JMenu menuGame) {
-    final Action showBattleMenu = SwingAction.of("Battle Calculator...", e -> OddsCalculatorDialog.show(frame, null));
+    final Action showBattleMenu = SwingAction.of("Battle Calculator", e -> OddsCalculatorDialog.show(frame, null));
     final JMenuItem showBattleMenuItem = menuGame.add(showBattleMenu);
     showBattleMenuItem.setMnemonic(KeyEvent.VK_B);
     showBattleMenuItem.setAccelerator(

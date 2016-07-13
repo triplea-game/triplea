@@ -45,7 +45,7 @@ public class FileMenu {
   }
 
   private JMenuItem createSaveMenu() {
-    final JMenuItem menuFileSave = new JMenuItem(SwingAction.of("Save...", e -> {
+    final JMenuItem menuFileSave = new JMenuItem(SwingAction.of("Save", e -> {
       final File f = TripleAMenuBar.getSaveGameLocationDialog(frame);
       if (f != null) {
         game.saveGame(f);
@@ -59,7 +59,7 @@ public class FileMenu {
   }
 
   protected JMenuItem addPostPBEM() {
-    final JMenuItem menuPBEM = new JMenuItem(SwingAction.of("Post PBEM/PBF Gamesave...", e -> {
+    final JMenuItem menuPBEM = new JMenuItem(SwingAction.of("Post PBEM/PBF Gamesave", e -> {
       if (gameData == null || !PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(gameData)) {
         return;
       }

@@ -25,10 +25,10 @@ public final class SoundOptions {
 
   /**
    * @param parentMenu
-   *        menu where to add the menu item "Sound Options..."
+   *        menu where to add the menu item "Sound Options"
    */
   public static void addToMenu(final JMenu parentMenu) {
-    final JMenuItem soundOptions = new JMenuItem("Sound Options...");
+    final JMenuItem soundOptions = new JMenuItem("Sound Options");
     soundOptions.setMnemonic(KeyEvent.VK_S);
     soundOptions.addActionListener(new ActionListener() {
       @Override
@@ -40,7 +40,7 @@ public final class SoundOptions {
   }
 
   public static void addToPanel(final JPanel parentPanel) {
-    final JButton soundOptions = new JButton("Sound Options...");
+    final JButton soundOptions = new JButton("Sound Options");
     soundOptions.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
