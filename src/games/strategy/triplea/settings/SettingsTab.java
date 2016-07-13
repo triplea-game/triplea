@@ -19,7 +19,7 @@ public interface SettingsTab<T extends HasDefaults> {
       T settingsObject = getSettingsObject();
 
       String oldValue = input.getValue(settingsObject);
-      if (input.updateSettings(settingsObject, input.getInputElement())) {
+      if (input.updateSettings(settingsObject)) {
         String newValue = input.getValue(settingsObject);
         if(!newValue.equals(oldValue)) {
           msg.append("\n").append(input.getLabel()).append(": ").append(oldValue).append(" -> ").append(newValue);
