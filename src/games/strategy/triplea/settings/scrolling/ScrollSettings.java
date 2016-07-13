@@ -9,7 +9,7 @@ public class ScrollSettings implements HasDefaults {
   static final int DEFAULT_MAP_EDGE_SCROLL_SPEED = 30;
   static final int DEFAULT_MAP_EDGE_SCROLL_ZONE_SIZE = 30;
   static final int DEFAULT_MAP_EDGE_FASTER_SCROLL_MULTIPLIER = 2;
-  static final int DEFAULT_MAP_EDGE_FASTER_SCROLL_ZONE_SIZE = 10;
+  static final int DEFAULT_MAP_EDGE_FASTER_SCROLL_ZONE_SIZE = 5;
 
   static final int DEFAULT_ARROW_KEY_SCROLL_SPEED = 70;
   static final int DEFAULT_FASTER_ARROW_KEY_SCROLL_MULTIPLIER = 3;
