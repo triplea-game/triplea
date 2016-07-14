@@ -83,9 +83,8 @@ public class TestRoute {
       assertArrayEquals(dummyPoints, spyRouteDrawer.getRoutePoints(dummyRouteDescription, dummyMapData, 0, 0,
           new Dimension(randomInt(1000, 100), randomInt(1000, 100))));
       int randX = randomInt(1000, 0);
-      int randY = randomInt(1000, 0);
-      assertEquals(new Point(randX, randY),
-          MapRouteDrawer.getPointOnMap(new Point(), randX, randY, new Dimension(randX, randY)));
+      assertEquals(new Point(randX, 0),
+          MapRouteDrawer.getPointOnMap(new Point(), randX, 0, new Dimension(randX, 0)));
     }
   }
 
