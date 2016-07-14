@@ -1,6 +1,9 @@
 package games.strategy.triplea.ui;
 
 import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -11,9 +14,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
+import games.strategy.triplea.settings.SystemPreferences;
+import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
 
 public class PlayerChooser extends JOptionPane {
@@ -62,8 +68,14 @@ public class PlayerChooser extends JOptionPane {
         }
       }
     });
-    setMessage(m_list);
+    setMessage(SwingComponents.newJScrollPane(m_list));
+
+    int maxSize = 700;
+    int suggestedSize = m_players.size() * 40;
+    int actualSize = suggestedSize > maxSize ? maxSize : suggestedSize;
+    setPreferredSize(new Dimension(300, actualSize));
   }
+
 
   /**
    * Returns the selected player or null, or null if the dialog was closed
