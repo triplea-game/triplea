@@ -731,29 +731,11 @@ public class GameRunner2 {
         SwingUtilities.invokeLater(new Runnable() {
           @Override
           public void run() {
-            EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(false),
+            EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(),
                 "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, false, new CountDownLatchHandler(true));
           }
         });
         return true;
-      } else {
-        // if this is the first time we are running THIS version of TripleA, then show what is new.
-        if (firstTimeThisVersion
-            && latestEngineOut.getReleaseNotes().containsKey(ClientContext.engineVersion().getVersion())) {
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getCurrentFeaturesComponent(),
-                  "What is New?", JOptionPane.INFORMATION_MESSAGE, false, new CountDownLatchHandler(true));
-            }
-          });
-          pref.putBoolean(TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, false);
-          try {
-            pref.flush();
-          } catch (final BackingStoreException ex) {
-          }
-          return true;
-        }
       }
     } catch (final Exception e) {
       System.out.println("Error while checking for engine updates: " + e.getMessage());
