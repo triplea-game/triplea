@@ -3,8 +3,6 @@ package games.strategy.debug;
 import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 
 import javax.swing.AbstractAction;
@@ -18,7 +16,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import games.strategy.ui.SwingAction;
-import games.strategy.util.ThreadUtil;
 
 public abstract class GenericConsole extends JFrame {
   private static final long serialVersionUID = 5754914217052820386L;

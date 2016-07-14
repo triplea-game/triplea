@@ -38,6 +38,7 @@ import games.strategy.ui.SwingComponents;
  */
 public class SettingsWindow extends SwingComponents.ModalJDialog {
 
+  private static final long serialVersionUID = 8108714206041495198L;
   private static final int MAX_WIDTH = 1100;
   private static final int TEXT_LABEL_WIDTH = MAX_WIDTH / 4;
   private static final int ROW_HEIGHT = 60;
@@ -54,18 +55,18 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
         new FoldersTab(ClientContext.folderSettings())));
   }
 
-  private SettingsWindow(SettingsTab... tabs) {
+  private SettingsWindow(SettingsTab<?>... tabs) {
     add(buildTabbedPane(tabs), BorderLayout.CENTER);
   }
 
-  private JTabbedPane buildTabbedPane(SettingsTab... tabs) {
+  private JTabbedPane buildTabbedPane(SettingsTab<?>... tabs) {
     JTabbedPane pane = SwingComponents.newJTabbedPane();
     Arrays.asList(tabs).forEach(tab -> pane.addTab(tab.getTabTitle(), createTabWindow(tab)));
     return pane;
   }
 
-  private Component createTabWindow(SettingsTab settingTab) {
-    List<SettingInputComponent> inputs = settingTab.getInputs();
+  private <T extends HasDefaults> Component createTabWindow(SettingsTab<T> settingTab) {
+    List<SettingInputComponent<T>> inputs = settingTab.getInputs();
 
     JPanel settingsPanel = SwingComponents.newJPanelWithVerticalBoxLayout();
     int topOfWindowPadding = 20;
@@ -84,7 +85,7 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
     return panel;
   }
 
-  private static JPanel createInputElementRow(SettingInputComponent input) {
+  private static JPanel createInputElementRow(SettingInputComponent<?> input) {
     JPanel contentRow = createContentRow(createTextAndInputPanel(input), createInputDescription(input));
     return SwingComponents.createRowWithTopAndBottomPadding(contentRow, 3, 5);
   }
@@ -107,7 +108,7 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
   }
 
 
-  private static JPanel createTextAndInputPanel(SettingInputComponent input) {
+  private static JPanel createTextAndInputPanel(SettingInputComponent<?> input) {
     JPanel labelInputPanel = SwingComponents.newJPanelWithGridLayout(1, 2);
     JLabel label = new JLabel(input.getLabel());
     labelInputPanel.add(label);
@@ -126,7 +127,7 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
 
   }
 
-  private static JTextArea createInputDescription(SettingInputComponent input) {
+  private static JTextArea createInputDescription(SettingInputComponent<?> input) {
     JTextArea description = new JTextArea(input.getDescription(), 2, 50);
 
     // TODO: JTextArea.setLineWrap(boolean) does not wrap on word boundaries, instead it'll split words across lines
@@ -138,7 +139,7 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
   /**
    * Each element is arranged in a row, with glue in between every element
    */
-  private JPanel createButtonsPanel(SettingsTab settingTab) {
+  private <T extends HasDefaults> JPanel createButtonsPanel(SettingsTab<T> settingTab) {
     JPanel buttonsPanel = SwingComponents.newJPanelWithHorizontalBoxLayout();
 
     // instead of glue, use one vertical strut to give the buttons panel a minimum height

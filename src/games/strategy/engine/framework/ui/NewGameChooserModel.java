@@ -1,18 +1,5 @@
 package games.strategy.engine.framework.ui;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import games.strategy.ui.SwingAction;
-import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.data.EngineVersionException;
-import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.framework.startup.ui.MainFrame;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JOptionPane;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +16,21 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import com.google.common.collect.Sets;
+
+import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.data.EngineVersionException;
+import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.ui.SwingAction;
 
 public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   private static final long serialVersionUID = -2044689419834812524L;
