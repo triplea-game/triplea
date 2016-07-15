@@ -1,9 +1,7 @@
 package games.strategy.triplea.ui;
 
 import java.awt.Component;
-import java.awt.Dialog;
 import java.awt.Dimension;
-import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -14,11 +12,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
-import games.strategy.triplea.settings.SystemPreferences;
 import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
 
