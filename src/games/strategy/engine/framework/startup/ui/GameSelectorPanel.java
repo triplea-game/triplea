@@ -149,12 +149,12 @@ public class GameSelectorPanel extends JPanel implements Observer {
     m_versionText = new JLabel();
     m_roundText = new JLabel();
     m_fileNameText = new JLabel();
-    m_loadNewGame = new JButton("Choose Game...");
+    m_loadNewGame = new JButton("Select Game");
     m_loadNewGame.setToolTipText(
         "<html>Select a game from all the maps/games that come with TripleA, <br>and the ones you have downloaded.</html>");
-    m_loadSavedGame = new JButton("Load Saved Game...");
-    m_loadSavedGame.setToolTipText("Load a previously saved game, or an autosave.");
-    m_gameOptions = new JButton("Game Options...");
+    m_loadSavedGame = new JButton("Open Saved Game");
+    m_loadSavedGame.setToolTipText("Open a previously saved game, or an autosave.");
+    m_gameOptions = new JButton("Game Options");
     m_gameOptions.setToolTipText(
         "<html>Set options for the currently selected game, <br>such as enabling/disabling Low Luck, or Technology, etc.</html>");
   }
