@@ -9,8 +9,10 @@ import java.util.prefs.Preferences;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
-
+@RunWith(JUnitPlatform.class)
 public class ChatIgnoreListTest {
   @BeforeEach
   public void setUp() throws BackingStoreException {

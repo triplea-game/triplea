@@ -8,6 +8,8 @@ import static org.mockito.Mockito.when;
 import java.net.InetAddress;
 
 import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
@@ -15,6 +17,7 @@ import games.strategy.net.Messengers;
 import games.strategy.net.Node;
 import games.strategy.util.ThreadUtil;
 
+@RunWith(JUnitPlatform.class)
 public class StatusTest {
 
   @Test

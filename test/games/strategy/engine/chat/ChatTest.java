@@ -10,6 +10,8 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.lobby.server.NullModeratorController;
@@ -26,6 +28,7 @@ import games.strategy.sound.SoundPath;
 import games.strategy.test.TestUtil;
 import games.strategy.util.ThreadUtil;
 
+@RunWith(JUnitPlatform.class)
 public class ChatTest {
   private static int SERVER_PORT = -1;
   private IServerMessenger m_server;
