@@ -610,7 +610,7 @@ public class TripleAFrame extends MainGameFrame {
   @Override
   public void leaveGame() {
     final int rVal = EventThreadJOptionPane.showConfirmDialog(this,
-        "Are you sure you want to leave?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION,
+        "Are you sure you want to leave?\nUnsaved game data will be lost.", "Leave Game", JOptionPane.YES_NO_OPTION,
         getUIContext().getCountDownLatchHandler());
     if (rVal != JOptionPane.OK_OPTION) {
       return;
