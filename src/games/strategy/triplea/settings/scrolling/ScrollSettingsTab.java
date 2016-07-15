@@ -17,17 +17,17 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
   public ScrollSettingsTab(ScrollSettings settings) {
     inputs = Arrays.asList(
         SettingInputComponent.build(
-            new IntegerValueRange(2, 100, ScrollSettings.DEFAULT_ARROW_KEY_SCROLL_SPEED),
+            new IntegerValueRange(2, 200, ScrollSettings.DEFAULT_ARROW_KEY_SCROLL_SPEED),
             "Arrow scroll speed",
-            "Arrow key scrolling speed",
+            "How fast the map scrolls when using the arrow keys",
             new JTextField(String.valueOf(settings.getArrowKeyScrollSpeed()), 5),
             ((scrollSettings, s) -> scrollSettings.setArrowKeyScrollSpeed(s)),
             scrollSettings -> String.valueOf(scrollSettings.getArrowKeyScrollSpeed())),
 
         SettingInputComponent.build(
-            new IntegerValueRange(2, 5, ScrollSettings.DEFAULT_FASTER_ARROW_KEY_SCROLL_MULTIPLIER),
+            new IntegerValueRange(2, 4, ScrollSettings.DEFAULT_FASTER_ARROW_KEY_SCROLL_MULTIPLIER),
             "Arrow scroll speed multiplier",
-            "Arrow key scroll speed increase when control is held down",
+            "When holding control down, the arrow key map scroll speed is multiplied by this amount",
             new JTextField(String.valueOf(settings.getFasterArrowKeyScrollMultiplier()), 5),
             ((scrollSettings, s) -> scrollSettings.setFasterArrowKeyScrollMultiplier(s)),
             scrollSettings -> String.valueOf(scrollSettings.getFasterArrowKeyScrollMultiplier())),
@@ -41,7 +41,7 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
             scrollSettings -> String.valueOf(scrollSettings.getMapEdgeScrollSpeed())),
 
         SettingInputComponent.build(
-            new IntegerValueRange(0, 300, ScrollSettings.DEFAULT_MAP_EDGE_SCROLL_ZONE_SIZE),
+            new IntegerValueRange(0, 150, ScrollSettings.DEFAULT_MAP_EDGE_SCROLL_ZONE_SIZE),
             "Map Edge Scroll Zone Size",
             "How close the mouse cursor must be to the edge of the map for the map to scroll",
             new JTextField(String.valueOf(settings.getMapEdgeScrollZoneSize()), 5),
@@ -49,9 +49,9 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
             scrollSettings -> String.valueOf(scrollSettings.getMapEdgeScrollZoneSize())),
 
         SettingInputComponent.build(
-            new IntegerValueRange(0, 150, ScrollSettings.DEFAULT_MAP_EDGE_FASTER_SCROLL_ZONE_SIZE),
+            new IntegerValueRange(0, 100, ScrollSettings.DEFAULT_MAP_EDGE_FASTER_SCROLL_ZONE_SIZE),
             "Map Edge Faster Scroll Zone Size",
-            "How close the mouse curose must be to the edge of the map for the map to scroll faster",
+            "How close the mouse cursor must be to the edge of the map for the map to scroll faster",
             new JTextField(String.valueOf(settings.getMapEdgeFasterScrollZoneSize()), 5),
             ((scrollSettings, s) -> scrollSettings.setMapEdgeFasterScrollZoneSize(s)),
             scrollSettings -> String.valueOf(scrollSettings.getMapEdgeFasterScrollZoneSize())),
@@ -59,7 +59,7 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
         SettingInputComponent.build(
             new IntegerValueRange(2, 5, ScrollSettings.DEFAULT_MAP_EDGE_FASTER_SCROLL_MULTIPLIER),
             "Scroll Zone Multiplier",
-            "How much faster the map scrolls when the mouse is closer to the edge",
+            "Multiplier for how much faster the map scrolls when the mouse is closest to the edge",
             new JTextField(String.valueOf(settings.getMapEdgeFasterScrollMultiplier()), 5),
             ((scrollSettings, s) -> scrollSettings.setMapEdgeFasterScrollMultiplier(s)),
             scrollSettings -> String.valueOf(scrollSettings.getMapEdgeFasterScrollMultiplier())),
