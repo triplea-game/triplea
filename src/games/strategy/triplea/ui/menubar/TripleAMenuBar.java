@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Vector;
 
 import javax.swing.JFileChooser;
@@ -72,10 +73,11 @@ public class TripleAMenuBar extends JMenuBar {
     new GameMenu(this, frame);
     new ExportMenu(this, frame);
 
-    final ServerGame serverGame = (ServerGame) frame.getGame();
-    final InGameLobbyWatcherWrapper watcher = serverGame.getInGameLobbyWatcher();
 
-    createLobbyMenu(this, watcher);
+    final Optional<InGameLobbyWatcherWrapper> watcher = frame.getInGameLobbyWatcher();
+    if( watcher.isPresent() && watcher.get().isActive()) {
+      createLobbyMenu(this, watcher.get());
+    }
     new NetworkMenu(this, watcher, frame);
     new WebHelpMenu(this);
 
@@ -83,18 +85,12 @@ public class TripleAMenuBar extends JMenuBar {
     new HelpMenu(this, frame.getUIContext(), frame.getGame().getData(), getBackground());
   }
 
-  private InGameLobbyWatcherWrapper createLobbyMenu(final JMenuBar menuBar, InGameLobbyWatcherWrapper watcher ) {
-    if (!(frame.getGame() instanceof ServerGame)) {
-      return null;
-    }
-    if( watcher != null && watcher.isActive()) {
-      final JMenu lobby = new JMenu("Lobby");
-      lobby.setMnemonic(KeyEvent.VK_L);
-      menuBar.add(lobby);
-      lobby.add(new EditGameCommentAction(watcher, frame));
-      lobby.add(new RemoveGameFromLobbyAction(watcher));
-    }
-    return watcher;
+  private void createLobbyMenu(final JMenuBar menuBar, InGameLobbyWatcherWrapper watcher ) {
+    final JMenu lobby = new JMenu("Lobby");
+    lobby.setMnemonic(KeyEvent.VK_L);
+    menuBar.add(lobby);
+    lobby.add(new EditGameCommentAction(watcher, frame));
+    lobby.add(new RemoveGameFromLobbyAction(watcher));
   }
 
 
