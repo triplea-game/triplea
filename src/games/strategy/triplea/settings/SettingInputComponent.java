@@ -3,6 +3,7 @@ package games.strategy.triplea.settings;
 import games.strategy.ui.SwingComponents;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -39,9 +40,8 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
    * Return true if a valid setting can be read from the input component and applied to the 'settings' data object.
    *
    * @param toUpdate The 'Settings' data object to be updated.
-   * @param inputComponent User input source
    */
-  boolean updateSettings(SettingsObjectType toUpdate, SettingsInput inputComponent);
+  boolean updateSettings(SettingsObjectType toUpdate);
 
   /**
    * Method to read the settings value from the SettingsObject that has the value saved.
@@ -180,8 +180,8 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
 
 
       @Override
-      public boolean updateSettings(Z toUpdate, SettingsInput inputComponent) {
-        String input = inputComponent.getText();
+      public boolean updateSettings(Z toUpdate) {
+        String input = getInputElement().getText();
 
         for (InputValidator validator : Arrays.asList(validators)) {
           boolean isValid = validator.apply(input);
@@ -203,6 +203,18 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
       public void setValue(String valueToSet) {
         getInputElement().setText(valueToSet);
       }
+
+      @Override
+      public String getErrorMessage() {
+        String input = getInputElement().getText();
+
+        Optional<InputValidator>
+            failedValidator = Arrays.asList(validators).stream().filter(validator -> !validator.apply(input)).findFirst();
+        if(!failedValidator.isPresent()) {
+          return "";
+        }
+        return input + ", " + failedValidator.get().getErrorMessage();
+      }
     };
   }
 
@@ -211,4 +223,6 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
    * value
    */
   void setValue(String valueToSet);
+
+  String getErrorMessage();
 }
