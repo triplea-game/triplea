@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui.menubar;
 
 import java.awt.event.KeyEvent;
+import java.util.Optional;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -23,7 +24,7 @@ public class NetworkMenu {
   private final IGame game;
   private final TripleAFrame frame;
 
-  public NetworkMenu(TripleAMenuBar menuBar, InGameLobbyWatcherWrapper watcher, TripleAFrame frame) {
+  public NetworkMenu(TripleAMenuBar menuBar, Optional<InGameLobbyWatcherWrapper> watcher, TripleAFrame frame) {
     this.frame = frame;
     game = frame.getGame();
     final JMenu menuNetwork = new JMenu("Network");
@@ -63,12 +64,12 @@ public class NetworkMenu {
     parentMenu.add(mute);
   }
 
-  private void addSetGamePassword(final JMenu parentMenu, final InGameLobbyWatcherWrapper watcher) {
-    if (!game.getMessenger().isServer()) {
+  private void addSetGamePassword(final JMenu parentMenu, final Optional<InGameLobbyWatcherWrapper> watcher) {
+    if(!watcher.isPresent()) {
       return;
     }
     final IServerMessenger messenger = (IServerMessenger) game.getMessenger();
-    parentMenu.add(new SetPasswordAction(parentMenu, watcher, (ClientLoginValidator) messenger.getLoginValidator()));
+    parentMenu.add(new SetPasswordAction(parentMenu, watcher.get(), (ClientLoginValidator) messenger.getLoginValidator()));
   }
 
   private void addShowPlayers(final JMenu menuGame) {

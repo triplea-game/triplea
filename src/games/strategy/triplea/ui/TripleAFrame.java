@@ -105,6 +105,7 @@ import games.strategy.engine.framework.HistorySynchronizer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
@@ -2168,5 +2169,13 @@ public class TripleAFrame extends MainGameFrame {
   @Override
   public void setShowChatTime(final boolean showTime) {
     chatPanel.setShowChatTime(showTime);
+  }
+
+  public Optional<InGameLobbyWatcherWrapper> getInGameLobbyWatcher() {
+    if( ServerGame.class.isAssignableFrom(getGame().getClass())) {
+      return Optional.of(((ServerGame) getGame()).getInGameLobbyWatcher());
+    } else {
+      return Optional.empty();
+    }
   }
 }
