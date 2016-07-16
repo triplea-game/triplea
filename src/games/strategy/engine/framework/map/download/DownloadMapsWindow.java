@@ -282,7 +282,7 @@ public class DownloadMapsWindow extends JFrame {
     final long mapSize;
     String labelText = "<html>" + map.getMapName() + DOUBLE_SPACE + " v" + map.getVersion() + DOUBLE_SPACE + " (";
     if (action == MapAction.INSTALL) {
-      mapSize = DownloadUtils.getDownloadLength(map.newURL());
+      mapSize = DownloadUtils.getDownloadLength(map.newURL()).orElse(-1);
     } else {
       mapSize = map.getInstallLocation().length();
     }
