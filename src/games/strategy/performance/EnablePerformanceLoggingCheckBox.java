@@ -10,12 +10,12 @@ public class EnablePerformanceLoggingCheckBox extends JCheckBoxMenuItem {
 
   public EnablePerformanceLoggingCheckBox() {
     super("Enable Performance Logging");
-    setSelected(Perf.isEnabled());
+    setSelected(PerfTimer.isEnabled());
     setMnemonic(KeyEvent.VK_L);
-    addActionListener( e -> handleCheckAction(super.isSelected()));
+    addActionListener(e -> handleCheckAction(super.isSelected()));
   }
 
   private static void handleCheckAction(final boolean checked) {
-    Perf.setEnabled(checked);
+    PerfTimer.setEnabled(checked);
   }
 }

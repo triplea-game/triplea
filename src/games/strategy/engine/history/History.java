@@ -225,7 +225,6 @@ class SerializedHistory implements Serializable {
   }
 }
 
-
 class RootHistoryNode extends HistoryNode {
   private static final long serialVersionUID = 625147613043836829L;
 
@@ -238,12 +237,6 @@ class RootHistoryNode extends HistoryNode {
     throw new IllegalStateException("Not implemented");
   }
 }
-
-
-interface SerializationWriter extends Serializable {
-  void write(HistoryWriter writer);
-}
-
 
 class ChangeSerializationWriter implements SerializationWriter {
   private static final long serialVersionUID = -3802807345707883606L;
