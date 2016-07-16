@@ -70,7 +70,7 @@ public class BattleDrawable extends TerritoryDrawable implements IDrawable {
       final Paint paint = new GradientPaint(0 - (float) bounds.getX(), 0 - (float) bounds.getY(),
           new Color(stripeColor.getRed(), stripeColor.getGreen(), stripeColor.getBlue(), 120),
           30 - (float) bounds.getX(), 50 - (float) bounds.getY(), new Color(0, 0, 0, 0), true);
-      super.draw(bounds, graphics, mapData, scaled, territory, paint);
+      draw(bounds, graphics, mapData, scaled, territory, paint);
     }
   }
 
