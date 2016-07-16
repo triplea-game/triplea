@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.swing.JFrame;
@@ -105,11 +106,13 @@ public final class MapDownloadProgressPanel extends JPanel {
       Runnable completionListener = () -> SwingUtilities.invokeLater(() -> progressBar.setValue(progressBar.getMaximum()));
 
       (new Thread(() -> {
-        int length = DownloadUtils.getDownloadLength(download.newURL());
-        SwingUtilities.invokeLater(() -> {
-          progressBar.setMinimum(0);
-          progressBar.setMaximum(length);
-        });
+        Optional<Integer> length = DownloadUtils.getDownloadLength(download.newURL());
+        if(length.isPresent()) {
+          SwingUtilities.invokeLater(() -> {
+            progressBar.setMinimum(0);
+            progressBar.setMaximum(length.get());
+          });
+        }
         downloadCoordinator.accept(download, progressListener, completionListener);
       })).start();
     }

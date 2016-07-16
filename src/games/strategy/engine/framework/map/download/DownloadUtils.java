@@ -1,5 +1,7 @@
 package games.strategy.engine.framework.map.download;
 
+import games.strategy.debug.ClientLogger;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,20 +10,23 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.Optional;
 
 public class DownloadUtils {
-  public static int getDownloadLength(URL url) {
+  public static Optional<Integer> getDownloadLength(URL url) {
     try {
       HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
       int responseCode = httpConn.getResponseCode();
       // always check HTTP response code first
       if (responseCode == HttpURLConnection.HTTP_OK) {
-        return httpConn.getContentLength();
+        return Optional.of(httpConn.getContentLength());
       } else {
-        return -1;
+        return Optional.empty();
       }
     } catch (IOException e) {
-      throw new IllegalStateException(e);
+      ClientLogger.logQuietly("Failed to connect to: " + url + ", to get download size. Ignoring this error and will "
+          + "not display the map download size on the UI.", e);
+      return Optional.empty();
     }
   }
 
