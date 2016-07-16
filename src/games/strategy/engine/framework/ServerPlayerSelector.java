@@ -106,29 +106,3 @@ public class ServerPlayerSelector extends JFrame {
 }
 
 
-class PlayerChoice extends JPanel {
-  private static final long serialVersionUID = 8059707233260441012L;
-  private static final String REMOTE = "Remote";
-  private static final String LOCAL = "Local";
-  private static final String[] s_choices = {LOCAL, REMOTE};
-  private final String m_name;
-  private final JComboBox<String> m_choice;
-
-  public PlayerChoice(final String name) {
-    setLayout(new FlowLayout(FlowLayout.LEFT));
-    m_name = name;
-    add(new JLabel(name));
-    m_choice = new JComboBox<>(s_choices);
-    m_choice.setSelectedIndex(0);
-    m_choice.setEditable(false);
-    add(m_choice);
-  }
-
-  public String getPlayerName() {
-    return m_name;
-  }
-
-  public boolean isRemote() {
-    return s_choices[m_choice.getSelectedIndex()].equals(REMOTE);
-  }
-}

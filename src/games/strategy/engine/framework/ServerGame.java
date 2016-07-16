@@ -648,6 +648,3 @@ public class ServerGame extends AbstractGame {
 }
 
 
-interface IServerRemote extends IRemote {
-  byte[] getSavedGame();
-}
