@@ -23,16 +23,6 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
-import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientContext;
-import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
-import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
-import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
-import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.util.Triple;
 import org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel;
@@ -61,6 +51,16 @@ import org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel
 import org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel;
+
+import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientContext;
+import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
+import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
+import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.util.Triple;
 
 public class TripleAMenuBar extends JMenuBar {
   private static final long serialVersionUID = -1447295944297939539L;
