@@ -9,6 +9,7 @@ import games.strategy.net.INode;
 import games.strategy.net.Node;
 
 public class SpokeInvoke extends Invoke {
+  private static final long serialVersionUID = -2007645463748969L;
   private INode m_invoker;
 
   public SpokeInvoke() {
