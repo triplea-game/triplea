@@ -118,7 +118,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
       if (tempPlayer != null) {
         m_actionAccept.add(tempPlayer);
       } else {
-        throw new GameParseException("No player named: " + name + thisErrorMsg());
+        throw new GameParseException(getData(), "No player named: " + name + thisErrorMsg());
       }
     }
   }
@@ -214,7 +214,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   public void validate(final GameData data) throws GameParseException {
     super.validate(data);
     if (m_text.trim().length() <= 0) {
-      throw new GameParseException("value: text can't be empty" + thisErrorMsg());
+      throw new GameParseException(getData(), "value: text can't be empty" + thisErrorMsg());
     }
   }
 }
