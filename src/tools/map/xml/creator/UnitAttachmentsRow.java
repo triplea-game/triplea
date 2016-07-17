@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 
-class UnitAttachmentsRow extends DynamicRow {
+public class UnitAttachmentsRow extends DynamicRow {
 
   private JTextField textFieldAttachmentName;
   private JTextField textFieldValue;

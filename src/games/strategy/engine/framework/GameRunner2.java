@@ -23,23 +23,22 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import games.strategy.debug.ErrorConsole;
-import games.strategy.engine.lobby.server.LobbyServer;
-import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import org.apache.commons.httpclient.HostConfiguration;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
+import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.startup.ui.MainFrame;
-import games.strategy.performance.Perf;
+import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.performance.PerfTimer;
+import games.strategy.triplea.ui.menubar.TripleAMenuBar;
+import games.strategy.ui.SwingAction;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Version;
-import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
 
 public class GameRunner2 {
 
@@ -110,7 +109,8 @@ public class GameRunner2 {
 
   public static String[] getProperties() {
     return new String[] {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
-        TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED, LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
+        TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
+        LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
         LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, PROXY_HOST, PROXY_PORT,
         TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, TRIPLEA_MEMORY_SET};
   }
@@ -119,7 +119,8 @@ public class GameRunner2 {
     System.out.println("Arguments\n" + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n" + "   "
         + TRIPLEA_SERVER_PROPERTY + "=true\n" + "   " + TRIPLEA_CLIENT_PROPERTY + "=true\n" + "   "
         + TRIPLEA_HOST_PROPERTY + "=<HOST_IP>\n" + "   " + TRIPLEA_PORT_PROPERTY + "=<PORT>\n" + "   "
-        + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n" + "   " + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n" + "   " + LOBBY_HOST
+        + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n" + "   " + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY
+        + "=<LOBBY_PORT>\n" + "   " + LOBBY_HOST
         + "=<LOBBY_HOST>\n" + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n" + "   " + LOBBY_GAME_HOSTED_BY
         + "=<LOBBY_GAME_HOSTED_BY>\n" + "   " + PROXY_HOST + "=<Proxy_Host>\n" + "   " + PROXY_PORT + "=<Proxy_Port>\n"
         + "   " + TRIPLEA_MEMORY_SET + "=true/false <did you set the xmx manually?>\n" + "\n"
@@ -137,16 +138,15 @@ public class GameRunner2 {
   public static void main(final String[] args) {
     ErrorConsole.getConsole();
 
-    try (PerfTimer timer = Perf.startTimer("Show main window")) {
-      // do after we handle command line args
-      checkForMemoryXMX();
-      SwingUtilities.invokeLater(() -> setupLookAndFeel());
-      showMainFrame();
-    }
-    (new Thread(() -> setupLogging())).start();
-
+    PerfTimer timer = PerfTimer.startTimer("Show main window");
+    // do after we handle command line args
+    checkForMemoryXMX();
+    SwingUtilities.invokeLater(() -> setupLookAndFeel());
+    showMainFrame();
+    new Thread(() -> setupLogging()).start();
+    timer.stop();
     setupProxies();
-    (new Thread(() -> checkForUpdates())).start();
+    new Thread(() -> checkForUpdates()).start();
     handleCommandLineArgs(args);
   }
 
@@ -269,8 +269,6 @@ public class GameRunner2 {
     final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
     // substance 7.x
     String defaultLookAndFeel = SubstanceGraphiteLookAndFeel.class.getName();
-    // substance 5.x
-    // String defaultLookAndFeel = "org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel";
     // macs are already beautiful
     if (GameRunner.isMac()) {
       defaultLookAndFeel = UIManager.getSystemLookAndFeelClassName();
@@ -666,34 +664,31 @@ public class GameRunner2 {
   }
 
   private static void checkForUpdates() {
-    final Thread t = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        // do not check if we are the old extra jar. (a jar kept for backwards compatibility only)
-        if (ClientFileSystemHelper.areWeOldExtraJar()) {
-          return;
-        }
-        if (System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true")) {
-          return;
-        }
-        if (System.getProperty(GameRunner2.TRIPLEA_CLIENT_PROPERTY, "false").equalsIgnoreCase("true")) {
-          return;
-        }
-        if (System.getProperty(GameRunner2.TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true")) {
-          return;
-        }
+    final Thread t = new Thread(() -> {
+      // do not check if we are the old extra jar. (a jar kept for backwards compatibility only)
+      if (ClientFileSystemHelper.areWeOldExtraJar()) {
+        return;
+      }
+      if (System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true")) {
+        return;
+      }
+      if (System.getProperty(GameRunner2.TRIPLEA_CLIENT_PROPERTY, "false").equalsIgnoreCase("true")) {
+        return;
+      }
+      if (System.getProperty(GameRunner2.TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true")) {
+        return;
+      }
 
-        // if we are joining a game online, or hosting, or loading straight into a savegame, do not check
-        final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
-        if (fileName.trim().length() > 0) {
-          return;
-        }
+      // if we are joining a game online, or hosting, or loading straight into a savegame, do not check
+      final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
+      if (fileName.trim().length() > 0) {
+        return;
+      }
 
-        boolean busy = false;
-        busy = checkForLatestEngineVersionOut();
-        if (!busy) {
-          busy = checkForUpdatedMaps();
-        }
+      boolean busy = false;
+      busy = checkForLatestEngineVersionOut();
+      if (!busy) {
+        busy = checkForUpdatedMaps();
       }
     }, "Checking Latest TripleA Engine Version");
     t.start();
@@ -768,5 +763,4 @@ public class GameRunner2 {
     }
     return img;
   }
-
 }
