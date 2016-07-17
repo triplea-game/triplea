@@ -646,8 +646,3 @@ public class ServerGame extends AbstractGame {
     return !m_delegateExecutionStopped;
   }
 }
-
-
-interface IServerRemote extends IRemote {
-  byte[] getSavedGame();
-}
