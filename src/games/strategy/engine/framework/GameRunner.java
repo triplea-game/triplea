@@ -2,7 +2,6 @@ package games.strategy.engine.framework;
 
 import javax.swing.JOptionPane;
 
-import games.strategy.performance.Perf;
 import games.strategy.performance.PerfTimer;
 
 /**
@@ -34,28 +33,21 @@ public class GameRunner {
     final boolean v14 = version.contains("1.4");
     final boolean v15 = version.contains("1.5");
     if (v15 || v14 || v13 || v12) {
-      if (isMac()) {
-        JOptionPane.showMessageDialog(null,
-            "TripleA requires a java runtime greater than or equal to 6 [ie: Java 6]. (Note, this requires Mac OS X >= 10.5 or 10.6 depending.) \nPlease download a newer version of java from http://www.java.com/",
-            "ERROR", JOptionPane.ERROR_MESSAGE);
-        System.exit(-1);
-      } else {
-        JOptionPane.showMessageDialog(null,
-            "TripleA requires a java runtime greater than or equal to 6 [ie: Java 6]. \nPlease download a newer version of java from http://www.java.com/",
-            "ERROR", JOptionPane.ERROR_MESSAGE);
-        System.exit(-1);
-      }
+      JOptionPane.showMessageDialog(null,
+          "TripleA requires a java runtime greater than or equal to 8 [ie: Java 8]. \nPlease download a newer version of java from http://www.java.com/",
+          "ERROR", JOptionPane.ERROR_MESSAGE);
+      System.exit(-1);
     }
-  }// end checkJavaVersion()
+  }
 
   public static void main(final String[] args) {
+    PerfTimer timer = PerfTimer.startTimer("GameRunner1 Total Launch");
     // we want this class to be executable in older jvm's
-    // since we require jdk 1.5, this class delegates to GameRunner2
+    // since we require jdk 1.8, this class delegates to GameRunner2
     // and all we do is check the java version
-    try (PerfTimer timer = Perf.startTimer("GameRunner1 Total Launch")) {
-      (new Thread(() -> checkJavaVersion())).start();
-      // do the other interesting stuff here
-      GameRunner2.main(args);
-    }
+    new Thread(() -> checkJavaVersion()).start();
+    // do the other interesting stuff here
+    GameRunner2.main(args);
+    timer.stop();
   }
 }
