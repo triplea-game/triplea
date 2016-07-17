@@ -1,7 +1,6 @@
 package games.strategy.performance;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.prefs.Preferences;
 
 /**
@@ -10,14 +9,13 @@ import java.util.prefs.Preferences;
  */
 public class PerfTimer implements Closeable {
 
+  private static final String LOG_PERFORMANCE_KEY = "logPerformance";
   private static final PerfTimer DISABLED_TIMER = new PerfTimer("disabled");
 
-  public final String title;
-  private final long startMillis;
-
-  private static final String LOG_PERFORMANCE_KEY = "logPerformance";
   private static boolean enabled;
 
+  private final long startMillis;
+  public final String title;
 
   static {
     enabled = isEnabled();
@@ -36,11 +34,10 @@ public class PerfTimer implements Closeable {
     return end - startMillis;
   }
 
-  /** Alias for the close method, stops the timer */
-  public void stop() {
+  @Override
+  public void close() {
     processResult(stopTimer(), this);
   }
-
 
   public static void setEnabled(final boolean isEnabled) {
     if (enabled != isEnabled) {
@@ -74,10 +71,5 @@ public class PerfTimer implements Closeable {
     long milliFraction = (stopMicros % 1000) / 100;
     long millis = (stopMicros / 1000);
     PerformanceConsole.getInstance().append(millis + "." + milliFraction + " ms - " + perfTimer.title + "\n");
-  }
-
-  @Override
-  public void close() throws IOException {
-    stop();
   }
 }
