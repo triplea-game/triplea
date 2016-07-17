@@ -338,6 +338,8 @@ public class GameSelectorModel extends Observable {
     }
     if (!selectedGame.isGameDataLoaded()) {
       try {
+        // TODO: if we can avoid doing the full parse, then the main game screen will load faster. The new game chooser
+        // needs to know just a couple of things, map name, version, round, and file name.
         selectedGame.fullyParseGameData();
       } catch (final GameParseException e) {
         // Load real default game...
