@@ -57,7 +57,7 @@ Developer Setup
       - Once installed, right click the eclipse launchers found in 'triplea/eclipse/launchers'
       - Select 'convert with eclipser', then the launchers will be available to run as intelliJ run configurations
 
-Note that eclipse and NetBeans are currently not supporting JUnit 5. Therefore we use the JUnit 4 based Runner `JUnitPlatform.class` until there is official support.
+Note that eclipse and NetBeans are currently not supporting JUnit 5. Therefore we use the JUnit 4 based Runner `JUnitPlatform.class` until there is official support. Apply it by annotating the JUnit 5 based class with `@RunWith(JUnitPlatform.class)`
 
   - *Troubleshooting*
     - If you are getting "JAVA HOME not yet set", see: http://stackoverflow.com/questions/31215452/intellij-idea-importing-gradle-project-getting-java-home-not-defined-yet
