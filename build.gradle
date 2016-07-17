@@ -29,6 +29,10 @@ compileJava {
     options.encoding = 'UTF-8'
     options.compilerArgs << "-Xlint:all"
 }
+compileTestJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:all"
+}
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 tasks.withType(JavaCompile) { options.incremental = true }
