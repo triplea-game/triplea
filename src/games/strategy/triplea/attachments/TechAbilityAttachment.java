@@ -101,8 +101,11 @@ public class TechAbilityAttachment extends DefaultAttachment {
   private IntegerMap<UnitType> m_defenseRollsBonus = new IntegerMap<>();
   private IntegerMap<UnitType> m_bombingBonus = new IntegerMap<>();
 
+  private final String mapName;
+
   public TechAbilityAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
+    mapName = gameData.getGameName();
   }
 
   // setters and getters
@@ -113,14 +116,14 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setAttackBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("attackBonus cannot be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException(getData(), "attackBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
+      throw new GameParseException(getData(), "No unit called:" + unitType + thisErrorMsg());
     }
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
@@ -151,14 +154,14 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setDefenseBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("defenseBonus cannot be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException(getData(), "defenseBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
+      throw new GameParseException(getData(), "No unit called:" + unitType + thisErrorMsg());
     }
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
@@ -189,14 +192,14 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setMovementBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("movementBonus cannot be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException(getData(), "movementBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
+      throw new GameParseException(getData(), "No unit called:" + unitType + thisErrorMsg());
     }
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
@@ -227,14 +230,14 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setRadarBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("radarBonus cannot be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException(getData(), "radarBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
+      throw new GameParseException(getData(), "No unit called:" + unitType + thisErrorMsg());
     }
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
@@ -265,14 +268,14 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setAirAttackBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("airAttackBonus cannot be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException(getData(), "airAttackBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
+      throw new GameParseException(getData(), "No unit called:" + unitType + thisErrorMsg());
     }
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
@@ -303,14 +306,14 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setAirDefenseBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("airDefenseBonus cannot be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException(getData(), "airDefenseBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
+      throw new GameParseException(getData(), "No unit called:" + unitType + thisErrorMsg());
     }
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
@@ -338,17 +341,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setProductionBonus(final String value) throws GameParseException {
+  public void setProductionBonus(final String mapName, final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("productionBonus cannot be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException(getData(), "productionBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
+      throw new GameParseException(mapName, "No unit called:" + unitType + thisErrorMsg());
     }
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
@@ -373,10 +376,11 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setMinimumTerritoryValueForProductionBonus(final String value) throws GameParseException {
+  public void setMinimumTerritoryValueForProductionBonus(final String mapName, final String value)
+      throws GameParseException {
     final int v = getInt(value);
     if ((v != -1) && (v < 0 || v > 10000)) {
-      throw new GameParseException(
+      throw new GameParseException(mapName,
           "minimumTerritoryValueForProductionBonus must be -1 (no effect), or be between 0 and 10000" + thisErrorMsg());
     }
     m_minimumTerritoryValueForProductionBonus = v;
@@ -396,10 +400,11 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRepairDiscount(final String value) throws GameParseException {
+  public void setRepairDiscount(final String mapName, final String value) throws GameParseException {
     final int v = getInt(value);
     if ((v != -1) && (v < 0 || v > 100)) {
-      throw new GameParseException("m_repairDiscount must be -1 (no effect), or be between 0 and 100" + thisErrorMsg());
+      throw new GameParseException(mapName,
+          "m_repairDiscount must be -1 (no effect), or be between 0 and 100" + thisErrorMsg());
     }
     m_repairDiscount = v;
   }
@@ -421,7 +426,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setWarBondDiceSides(final String value) throws GameParseException {
     final int v = getInt(value);
     if ((v != -1) && (v < 0 || v > 200)) {
-      throw new GameParseException("warBondDiceSides must be -1 (no effect), or be between 0 and 200" + thisErrorMsg());
+      throw new GameParseException(mapName, "warBondDiceSides must be -1 (no effect), or be between 0 and 200" + thisErrorMsg());
     }
     m_warBondDiceSides = v;
   }
@@ -443,7 +448,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setWarBondDiceNumber(final String value) throws GameParseException {
     final int v = getInt(value);
     if (v < 0 || v > 100) {
-      throw new GameParseException("warBondDiceNumber must be between 0 and 100" + thisErrorMsg());
+      throw new GameParseException(mapName, "warBondDiceNumber must be between 0 and 100" + thisErrorMsg());
     }
     m_warBondDiceNumber = v;
   }
@@ -468,14 +473,14 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setRocketDiceNumber(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length != 2) {
-      throw new GameParseException("rocketDiceNumber must have two fields" + thisErrorMsg());
+      throw new GameParseException(mapName, "rocketDiceNumber must have two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
+      throw new GameParseException(mapName, "No unit called:" + unitType + thisErrorMsg());
     }
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
@@ -503,7 +508,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setRocketDistance(final String value) throws GameParseException {
     final int v = getInt(value);
     if (v < 0 || v > 100) {
-      throw new GameParseException("rocketDistance must be between 0 and 100" + thisErrorMsg());
+      throw new GameParseException(mapName, "rocketDistance must be between 0 and 100" + thisErrorMsg());
     }
     m_rocketDistance = v;
   }
@@ -525,7 +530,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setRocketNumberPerTerritory(final String value) throws GameParseException {
     final int v = getInt(value);
     if (v < 0 || v > 200) {
-      throw new GameParseException("rocketNumberPerTerritory must be between 0 and 200" + thisErrorMsg());
+      throw new GameParseException(mapName, "rocketNumberPerTerritory must be between 0 and 200" + thisErrorMsg());
     }
     m_rocketNumberPerTerritory = v;
   }
@@ -550,7 +555,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setUnitAbilitiesGained(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length < 2) {
-      throw new GameParseException(
+      throw new GameParseException(mapName,
           "unitAbilitiesGained must list the unit type, then all abilities gained" + thisErrorMsg());
     }
     String unitType;
@@ -558,7 +563,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
+      throw new GameParseException(mapName, "No unit called:" + unitType + thisErrorMsg());
     }
     HashSet<String> abilities = m_unitAbilitiesGained.get(ut);
     if (abilities == null) {
@@ -568,7 +573,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     for (int i = 1; i < s.length; i++) {
       final String ability = s[i];
       if (!(ability.equals(ABILITY_CAN_BLITZ) || ability.equals(ABILITY_CAN_BOMBARD))) {
-        throw new GameParseException("unitAbilitiesGained so far only supports: " + ABILITY_CAN_BLITZ + " and "
+        throw new GameParseException(mapName, "unitAbilitiesGained so far only supports: " + ABILITY_CAN_BLITZ + " and "
             + ABILITY_CAN_BOMBARD + thisErrorMsg());
       }
       abilities.add(ability);
@@ -618,14 +623,14 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setAirborneCapacity(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("airborneCapacity cannot be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException(mapName, "airborneCapacity cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
+      throw new GameParseException(mapName, "No unit called:" + unitType + thisErrorMsg());
     }
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
@@ -658,7 +663,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     for (final String u : s) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(u);
       if (ut == null) {
-        throw new GameParseException("airborneTypes: no such unit type: " + u + thisErrorMsg());
+        throw new GameParseException(mapName, "airborneTypes: no such unit type: " + u + thisErrorMsg());
       }
       m_airborneTypes.add(ut);
     }
@@ -685,7 +690,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setAirborneDistance(final String value) throws GameParseException {
     final int v = getInt(value);
     if (v < 0 || v > 100) {
-      throw new GameParseException("airborneDistance must be between 0 and 100" + thisErrorMsg());
+      throw new GameParseException(mapName, "airborneDistance must be between 0 and 100" + thisErrorMsg());
     }
     m_airborneDistance = v;
   }
@@ -712,7 +717,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     for (final String u : s) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(u);
       if (ut == null) {
-        throw new GameParseException("airborneBases: no such unit type: " + u + thisErrorMsg());
+        throw new GameParseException(mapName, "airborneBases: no such unit type: " + u + thisErrorMsg());
       }
       m_airborneBases.add(ut);
     }
@@ -742,14 +747,14 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setAirborneTargettedByAA(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length < 2) {
-      throw new GameParseException("airborneTargettedByAA must have at least two fields" + thisErrorMsg());
+      throw new GameParseException(mapName, "airborneTargettedByAA must have at least two fields" + thisErrorMsg());
     }
     final String aaType = s[0];
     final HashSet<UnitType> unitTypes = new HashSet<>();
     for (int i = 1; i < s.length; i++) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
       if (ut == null) {
-        throw new GameParseException("airborneTargettedByAA: no such unit type: " + s[i] + thisErrorMsg());
+        throw new GameParseException(mapName, "airborneTargettedByAA: no such unit type: " + s[i] + thisErrorMsg());
       }
       unitTypes.add(ut);
     }
@@ -780,14 +785,15 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setAttackRollsBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("attackRollsBonus cannot be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException(mapName,
+          "attackRollsBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
+      throw new GameParseException(mapName, "No unit called:" + unitType + thisErrorMsg());
     }
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
@@ -818,14 +824,15 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setDefenseRollsBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("defenseRollsBonus cannot be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException(mapName,
+          "defenseRollsBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
+      throw new GameParseException(mapName, "No unit called:" + unitType + thisErrorMsg());
     }
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
@@ -856,14 +863,14 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setBombingBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("bombingBonus cannot be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException(mapName, "bombingBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitType;
     unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
+      throw new GameParseException(mapName, "No unit called:" + unitType + thisErrorMsg());
     }
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
@@ -1287,10 +1294,10 @@ public class TechAbilityAttachment extends DefaultAttachment {
           final List<UnitType> allFactories =
               Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeCanProduceUnits);
           for (final UnitType factory : allFactories) {
-            taa.setProductionBonus("2:" + factory.getName());
-            taa.setMinimumTerritoryValueForProductionBonus("3");
+            taa.setProductionBonus(data.getGameName(), "2:" + factory.getName());
+            taa.setMinimumTerritoryValueForProductionBonus(data.getGameName(), "3");
             // means a 50% discount, which is half price
-            taa.setRepairDiscount("50");
+            taa.setRepairDiscount(data.getGameName(), "50");
           }
         } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_WAR_BONDS)) {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
@@ -1364,7 +1371,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (ta instanceof GenericTechAdvance) {
       final TechAdvance hardCodedAdvance = ((GenericTechAdvance) ta).getAdvance();
       if (hardCodedAdvance != null) {
-        throw new GameParseException(
+        throw new GameParseException(data,
             "A custom Generic Tech Advance naming a hardcoded tech, may not have a Tech Ability Attachment!"
                 + this.thisErrorMsg());
       }
