@@ -73,6 +73,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
+import games.strategy.test.TestUtil;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
@@ -987,7 +988,8 @@ public class RevisedTest {
       }
     };
     final ITripleAPlayer player = (ITripleAPlayer) Proxy
-        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleAPlayer.class}, handler);
+        .newProxyInstance(Thread.currentThread().getContextClassLoader(),
+            TestUtil.getClassArrayFrom(ITripleAPlayer.class), handler);
     bridge.setRemote(player);
     // int PUsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
     final int pusBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
