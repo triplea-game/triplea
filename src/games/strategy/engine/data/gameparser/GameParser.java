@@ -89,16 +89,16 @@ public class GameParser {
   public static final String DTD_FILE_NAME = "game.dtd";
   private static HashMap<String, String> newClassesForOldNames;
 
-  public GameParser() {}
+  public GameParser() {
+  }
 
   /**
    * Parses a file into a GameData object.
    *
    * @param stream
-   * @param delayParsing
-   *        Should we only parse the game name, notes, and playerlist? Normally this should be "false", except for the
-   *        game chooser which
-   *        should use the user set preference.
+   * @param delayParsing Should we only parse the game name, notes, and playerlist? Normally this should be "false", except for the
+   *                     game chooser which
+   *                     should use the user set preference.
    * @throws GameParseException
    * @throws SAXException
    * @throws EngineVersionException
@@ -123,7 +123,7 @@ public class GameParser {
       gameName.set(data.getGameName());
     }
     // test minimum engine version FIRST
-    parseMinimumEngineVersionNumber(getSingleChild(gameName.get(), "triplea", root, true));
+    parseMinimumEngineVersionNumber(getSingleChildOptional(gameName.get(), "triplea", root));
     parseGameLoader(gameName.get(), getSingleChild(gameName.get(), "loader", root));
     // if we manage to get this far, past the minimum engine version number test, AND we are still good, then check and
     // see if we have any
@@ -136,11 +136,11 @@ public class GameParser {
       }
     }
     final int defaultDiceSides = 6;
-    data.setDiceSides(parseDiceSides(getSingleChild(gameName.get(), "diceSides", root, true), defaultDiceSides));
+    data.setDiceSides(parseDiceSides(getSingleChildOptional(gameName.get(), "diceSides", root), defaultDiceSides));
     final Element playerListNode = getSingleChild(gameName.get(), "playerList", root);
     parsePlayerList(playerListNode);
     parseAlliances(gameName.get(), playerListNode);
-    final Node properties = getSingleChild(gameName.get(), "propertyList", root, true);
+    final Node properties = getSingleChildOptional(gameName.get(), "propertyList", root);
     if (properties != null) {
       parseProperties(gameName.get(), properties);
     }
@@ -149,39 +149,39 @@ public class GameParser {
       return data;
     }
     parseMap(gameName.get(), getSingleChild(gameName.get(), "map", root));
-    final Element resourceList = getSingleChild(gameName.get(), "resourceList", root, true);
+    final Element resourceList = getSingleChildOptional(gameName.get(), "resourceList", root);
     if (resourceList != null) {
       parseResources(resourceList);
     }
-    final Element unitList = getSingleChild(gameName.get(), "unitList", root, true);
+    final Element unitList = getSingleChildOptional(gameName.get(), "unitList", root);
     if (unitList != null) {
       parseUnits(unitList);
     }
     // Parse all different relationshipTypes that are defined in the xml, for example: War, Allied, Neutral, NAP
-    final Element relationshipTypes = getSingleChild(gameName.get(), "relationshipTypes", root, true);
+    final Element relationshipTypes = getSingleChildOptional(gameName.get(), "relationshipTypes", root);
     if (relationshipTypes != null) {
       parseRelationshipTypes(relationshipTypes);
     }
-    final Element territoryEffectList = getSingleChild(gameName.get(), "territoryEffectList", root, true);
+    final Element territoryEffectList = getSingleChildOptional(gameName.get(), "territoryEffectList", root);
     if (territoryEffectList != null) {
       parseTerritoryEffects(territoryEffectList);
     }
     parseGamePlay(gameName.get(), getSingleChild(gameName.get(), "gamePlay", root));
-    final Element production = getSingleChild(gameName.get(), "production", root, true);
+    final Element production = getSingleChildOptional(gameName.get(), "production", root);
     if (production != null) {
       parseProduction(gameName.get(), production);
     }
-    final Element technology = getSingleChild(gameName.get(), "technology", root, true);
+    final Element technology = getSingleChildOptional(gameName.get(), "technology", root);
     if (technology != null) {
       parseTechnology(gameName.get(), technology);
     } else {
       TechAdvance.createDefaultTechAdvances(data);
     }
-    final Element attachmentList = getSingleChild(gameName.get(), "attachmentList", root, true);
+    final Element attachmentList = getSingleChildOptional(gameName.get(), "attachmentList", root);
     if (attachmentList != null) {
       parseAttachments(gameName.get(), attachmentList);
     }
-    final Node initialization = getSingleChild(gameName.get(), "initialize", root, true);
+    final Node initialization = getSingleChildOptional(gameName.get(), "initialize", root);
     if (initialization != null) {
       parseInitialization(gameName.get(), initialization);
     }
@@ -207,7 +207,7 @@ public class GameParser {
   }
 
   private int parseDiceSides(final Node diceSides, int defaultValue) {
-    if(diceSides == null) {
+    if (diceSides == null) {
       return defaultValue;
     } else {
       return Integer.parseInt(((Element) diceSides).getAttribute("value"));
@@ -260,7 +260,8 @@ public class GameParser {
       for (final PlayerID player2 : data.getPlayerList()) {
         // See if there is a relationship between them
         if ((data.getRelationshipTracker().getRelationshipType(player, player2) == null)) {
-          throw new GameParseException(mapName, "No relation set for: " + player.getName() + " and " + player2.getName());
+          throw new GameParseException(mapName,
+              "No relation set for: " + player.getName() + " and " + player2.getName());
           // or else throw an exception!
         }
       }
@@ -322,9 +323,8 @@ public class GameParser {
    * If mustfind is true and cannot find the player an exception will be thrown.
    *
    * @return a RelationshipType from the relationshipTypeList, at this point all relationshipTypes should have been
-   *         declared
-   * @throws GameParseException
-   *         when
+   * declared
+   * @throws GameParseException when
    */
   private RelationshipType getRelationshipType(final String mapName, final Element element, final String attribute,
       final boolean mustFind) throws GameParseException {
@@ -377,7 +377,8 @@ public class GameParser {
   /**
    * If mustfind is true and cannot find the territory an exception will be thrown.
    */
-  private Territory getTerritory(final String mapName, final Element element, final String attribute, final boolean mustFind)
+  private Territory getTerritory(final String mapName, final Element element, final String attribute,
+      final boolean mustFind)
       throws GameParseException {
     final String name = element.getAttribute(attribute);
     final Territory territory = data.getMap().getTerritory(name);
@@ -390,7 +391,8 @@ public class GameParser {
   /**
    * If mustfind is true and cannot find the unitType an exception will be thrown.
    */
-  private UnitType getUnitType(final String mapName, final Element element, final String attribute, final boolean mustFind)
+  private UnitType getUnitType(final String mapName, final Element element, final String attribute,
+      final boolean mustFind)
       throws GameParseException {
     final String name = element.getAttribute(attribute);
     final UnitType type = data.getUnitTypeList().getUnitType(name);
@@ -403,7 +405,8 @@ public class GameParser {
   /**
    * If mustfind is true and cannot find the technology an exception will be thrown.
    */
-  private TechAdvance getTechnology(final String mapName, final Element element, final String attribute, final boolean mustFind)
+  private TechAdvance getTechnology(final String mapName, final Element element, final String attribute,
+      final boolean mustFind)
       throws GameParseException {
     final String name = element.getAttribute(attribute);
     TechAdvance type = data.getTechnologyFrontier().getAdvanceByName(name);
@@ -419,7 +422,8 @@ public class GameParser {
   /**
    * If mustfind is true and cannot find the Delegate an exception will be thrown.
    */
-  private IDelegate getDelegate(final String mapName, final Element element, final String attribute, final boolean mustFind)
+  private IDelegate getDelegate(final String mapName, final Element element, final String attribute,
+      final boolean mustFind)
       throws GameParseException {
     final String name = element.getAttribute(attribute);
     final IDelegate delegate = data.getDelegateList().getDelegate(name);
@@ -432,7 +436,8 @@ public class GameParser {
   /**
    * If mustfind is true and cannot find the Resource an exception will be thrown.
    */
-  private Resource getResource(final String mapName, final Element element, final String attribute, final boolean mustFind)
+  private Resource getResource(final String mapName, final Element element, final String attribute,
+      final boolean mustFind)
       throws GameParseException {
     final String name = element.getAttribute(attribute);
     final Resource resource = data.getResourceList().getResource(name);
@@ -458,7 +463,8 @@ public class GameParser {
   /**
    * If mustfind is true and cannot find the productionRule an exception will be thrown.
    */
-  private RepairFrontier getRepairFrontier(final String mapName, final Element element, final String attribute, final boolean mustFind)
+  private RepairFrontier getRepairFrontier(final String mapName, final Element element, final String attribute,
+      final boolean mustFind)
       throws GameParseException {
     final String name = element.getAttribute(attribute);
     final RepairFrontier repairFrontier = data.getRepairFrontierList().getRepairFrontier(name);
@@ -482,7 +488,8 @@ public class GameParser {
     catch (final ClassNotFoundException cnfe) {
       throw new GameParseException(mapName, "Class <" + className + "> could not be found.");
     } catch (final InstantiationException ie) {
-      throw new GameParseException(mapName, "Class <" + className + "> could not be instantiated. ->" + ie.getMessage());
+      throw new GameParseException(mapName,
+          "Class <" + className + "> could not be instantiated. ->" + ie.getMessage());
     } catch (final IllegalAccessException iae) {
       throw new GameParseException(mapName, "Constructor could not be accessed ->" + iae.getMessage());
     }
@@ -517,10 +524,15 @@ public class GameParser {
    * Get the given child.
    * If there is not exactly one child throw a SAXExcpetion
    */
-  private Element getSingleChild(final String mapName, final String name, final Element node) throws GameParseException {
+  private Element getSingleChild(final String mapName, final String name, final Element node)
+      throws GameParseException {
     return getSingleChild(mapName, name, node, false);
   }
 
+  private Element getSingleChildOptional(final String mapName, final String name, final Node node)
+      throws GameParseException {
+    return getSingleChild(mapName, name, node, true);
+  }
   /**
    * If optional is true, will not throw an exception if there are 0 children
    */
