@@ -48,7 +48,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
     }
   }
 
-  protected void addStep(final GameStep step) {
+  public void addStep(final GameStep step) {
     m_steps.add(step);
   }
 

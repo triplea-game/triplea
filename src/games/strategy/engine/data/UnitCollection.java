@@ -42,7 +42,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
     m_holder.notifyChanged();
   }
 
-  void addAllUnits(final Collection<Unit> units) {
+  public void addAllUnits(final Collection<Unit> units) {
     m_units.addAll(units);
     m_holder.notifyChanged();
   }

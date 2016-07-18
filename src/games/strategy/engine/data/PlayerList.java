@@ -24,7 +24,7 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
     super(data);
   }
 
-  protected void addPlayerID(final PlayerID player) {
+  public void addPlayerID(final PlayerID player) {
     m_players.put(player.getName(), player);
   }
 

@@ -91,7 +91,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     return m_territories.get(listIndex);
   }
 
-  protected void reorderTerritoryList() {
+  public void reorderTerritoryList() {
     Collections.sort(m_territories, TERRITORY_GRID_ORDERING);
   }
 
@@ -164,7 +164,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     return true;
   }
 
-  protected void addTerritory(final Territory t1) {
+  public void addTerritory(final Territory t1) {
     if (m_territories.contains(t1)) {
       throw new IllegalArgumentException("Map already contains " + t1.getName());
     }
@@ -202,7 +202,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param t1
    * @param t2
    */
-  protected void addConnection(final Territory t1, final Territory t2) {
+  public void addConnection(final Territory t1, final Territory t2) {
     if (t1.equals(t2)) {
       throw new IllegalArgumentException("Cannot connect a territory to itself");
     }

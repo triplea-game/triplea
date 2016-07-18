@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.gameparser.GameParser;
 
 public class LoadGameUtil {
 

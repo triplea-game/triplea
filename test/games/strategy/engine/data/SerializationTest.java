@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicReference;
 
+import games.strategy.engine.data.gameparser.GameParser;
 import org.junit.Before;
 import org.junit.Test;
 
