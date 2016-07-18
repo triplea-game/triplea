@@ -301,11 +301,11 @@ public class GameData implements java.io.Serializable {
     return loader;
   }
 
-  void setGameLoader(final IGameLoader loader) {
+  public void setGameLoader(final IGameLoader loader) {
     this.loader = loader;
   }
 
-  void setGameVersion(final Version gameVersion) {
+  public void setGameVersion(final Version gameVersion) {
     this.gameVersion = gameVersion;
   }
 
@@ -313,7 +313,7 @@ public class GameData implements java.io.Serializable {
     return gameVersion;
   }
 
-  void setGameName(final String gameName) {
+  public void setGameName(final String gameName) {
     this.gameName = gameName;
   }
 
@@ -321,7 +321,7 @@ public class GameData implements java.io.Serializable {
     return gameName;
   }
 
-  void setDiceSides(final int diceSides) {
+  public void setDiceSides(final int diceSides) {
     if (diceSides > 0 && diceSides <= 200) {
       this.diceSides = diceSides;
     } else {

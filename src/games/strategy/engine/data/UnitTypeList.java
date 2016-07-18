@@ -24,7 +24,7 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
     super(data);
   }
 
-  protected void addUnitType(final UnitType type) {
+  public void addUnitType(final UnitType type) {
     m_unitTypes.put(type.getName(), type);
   }
 

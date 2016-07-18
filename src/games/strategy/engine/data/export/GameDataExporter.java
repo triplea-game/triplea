@@ -13,7 +13,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
-import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.NamedAttachable;

@@ -17,7 +17,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;

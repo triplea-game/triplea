@@ -24,7 +24,7 @@ import java.util.zip.ZipInputStream;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.framework.ui.NewGameChooserModel;
 import games.strategy.triplea.Constants;
 import games.strategy.util.UrlStreams;
