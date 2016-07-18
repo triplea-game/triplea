@@ -196,7 +196,7 @@ public class GameParser {
       TechAbilityAttachment.setDefaultTechnologyAttachments(data);
     }
     try {
-      validate(data);
+      new GameValidator().validate(data);
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
       throw new GameParseException(gameName.get(), e.getMessage());
@@ -224,53 +224,9 @@ public class GameParser {
     }
   }
 
-  private void validate(final GameData data) throws GameParseException {
-    // validate unit attachments
-    for (final UnitType u : data.getUnitTypeList()) {
-      validateAttachments(data, u);
-    }
-    for (final Territory t : data.getMap()) {
-      validateAttachments(data, t);
-    }
-    for (final Resource r : data.getResourceList().getResources()) {
-      validateAttachments(data, r);
-    }
-    for (final PlayerID r : data.getPlayerList().getPlayers()) {
-      validateAttachments(data, r);
-    }
-    for (final RelationshipType r : data.getRelationshipTypeList().getAllRelationshipTypes()) {
-      validateAttachments(data, r);
-    }
-    for (final TerritoryEffect r : data.getTerritoryEffectList().values()) {
-      validateAttachments(data, r);
-    }
-    for (final TechAdvance r : data.getTechnologyFrontier().getTechs()) {
-      validateAttachments(data, r);
-    }
-    // if relationships are used, every player should have a relationship with every other player
-    validateRelationships(data);
-  }
 
-  private void validateRelationships(final GameData data) throws GameParseException {
-    // for every player
-    for (final PlayerID player : data.getPlayerList()) {
-      // in relation to every player
-      for (final PlayerID player2 : data.getPlayerList()) {
-        // See if there is a relationship between them
-        if ((data.getRelationshipTracker().getRelationshipType(player, player2) == null)) {
-          throw new GameParseException(data.getGameName(),
-              "No relation set for: " + player.getName() + " and " + player2.getName());
-          // or else throw an exception!
-        }
-      }
-    }
-  }
 
-  private void validateAttachments(final GameData data, final Attachable attachable) throws GameParseException {
-    for (final IAttachment a : attachable.getAttachments().values()) {
-      a.validate(data);
-    }
-  }
+
 
   public Document getDocument(final InputStream input) throws SAXException, IOException, ParserConfigurationException {
     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -820,31 +776,27 @@ public class GameParser {
   }
 
   private void parseResources(final GameData data, final Element root) {
-    final Iterator<Element> iter = getChildren("resource", root).iterator();
-    while (iter.hasNext()) {
-      data.getResourceList().addResource(new Resource(iter.next().getAttribute("name"), data));
+    for (Element element : getChildren("resource", root)) {
+      data.getResourceList().addResource(new Resource(element.getAttribute("name"), data));
     }
   }
 
   private void parseRelationshipTypes(final GameData data, final Element root) {
-    final Iterator<Element> iter = getChildren("relationshipType", root).iterator();
-    while (iter.hasNext()) {
-      data.getRelationshipTypeList().addRelationshipType(new RelationshipType(iter.next().getAttribute("name"), data));
+    for (Element element : getChildren("relationshipType", root)) {
+      data.getRelationshipTypeList().addRelationshipType(new RelationshipType(element.getAttribute("name"), data));
     }
   }
 
   private void parseTerritoryEffects(final GameData data, final Element root) {
-    final Iterator<Element> iter = getChildren("territoryEffect", root).iterator();
-    while (iter.hasNext()) {
-      final String name = iter.next().getAttribute("name");
+    for (Element element : getChildren("territoryEffect", root)) {
+      final String name = element.getAttribute("name");
       data.getTerritoryEffectList().put(name, new TerritoryEffect(name, data));
     }
   }
 
   private void parseUnits(final GameData data, final Element root) {
-    final Iterator<Element> iter = getChildren("unit", root).iterator();
-    while (iter.hasNext()) {
-      data.getUnitTypeList().addUnitType(new UnitType(iter.next().getAttribute("name"), data));
+    for (Element element : getChildren("unit", root)) {
+      data.getUnitTypeList().addUnitType(new UnitType(element.getAttribute("name"), data));
     }
   }
 
@@ -925,9 +877,7 @@ public class GameParser {
   private void parseProperties(final GameData data, final Node root) throws GameParseException {
     final Collection<String> runningList = new ArrayList<>();
     final GameProperties properties = data.getProperties();
-    final Iterator<Element> children = getChildren("property", root).iterator();
-    while (children.hasNext()) {
-      final Element current = children.next();
+    for (Element current : getChildren("property", root)) {
       final String editable = current.getAttribute("editable");
       final String property = current.getAttribute("name");
       String value = current.getAttribute("value");
@@ -1052,9 +1002,7 @@ public class GameParser {
 
   private void parseDelegates(final GameData data, final List<Element> delegateList) throws GameParseException {
     final DelegateList delegates = data.getDelegateList();
-    final Iterator<Element> iterator = delegateList.iterator();
-    while (iterator.hasNext()) {
-      final Element current = iterator.next();
+    for (Element current : delegateList) {
       // load the class
       final String className = current.getAttribute("javaClass");
       IDelegate delegate = null;
@@ -1078,9 +1026,7 @@ public class GameParser {
   }
 
   private void parseSteps(final GameData data, final List<Element> stepList) throws GameParseException {
-    final Iterator<Element> iterator = stepList.iterator();
-    while (iterator.hasNext()) {
-      final Element current = iterator.next();
+    for (Element current : stepList) {
       final IDelegate delegate = getDelegate(data, current, "delegate", true);
       final PlayerID player = getPlayerID(data, current, "player", false);
       final String name = current.getAttribute("name");
@@ -1273,9 +1219,8 @@ public class GameParser {
 
   private void parseFrontierRules(final GameData data, final List<Element> elements, final ProductionFrontier frontier)
       throws GameParseException {
-    final Iterator<Element> iter = elements.iterator();
-    while (iter.hasNext()) {
-      final ProductionRule rule = getProductionRule(data, iter.next(), "name", true);
+    for (Element element : elements) {
+      final ProductionRule rule = getProductionRule(data, element, "name", true);
       frontier.addRule(rule);
     }
   }
@@ -1314,9 +1259,8 @@ public class GameParser {
 
   private void parseRepairFrontierRules(final GameData data, final List<Element> elements, final RepairFrontier frontier)
       throws GameParseException {
-    final Iterator<Element> iter = elements.iterator();
-    while (iter.hasNext()) {
-      final RepairRule rule = getRepairRule(data, iter.next(), "name", true);
+    for (Element element : elements) {
+      final RepairRule rule = getRepairRule(data, element, "name", true);
       frontier.addRule(rule);
     }
   }
