@@ -10,8 +10,6 @@ import com.google.common.io.Files;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.performance.Perf;
-import games.strategy.performance.PerfTimer;
 
 /**
  * Keeps track of the state for a file download from a URL.
@@ -68,13 +66,11 @@ public class DownloadFile {
   private Thread createDownloadThread(final File fileToDownloadTo) {
     return new Thread(() -> {
       if (state != DownloadState.CANCELLED) {
-        try (PerfTimer timer = Perf.startTimer("Download map: " + downloadDescription.getUrl())) {
-          URL url = downloadDescription.newURL();
-          try {
-            DownloadUtils.downloadFile(url, fileToDownloadTo);
-          } catch (Exception e) {
-            ClientLogger.logError("Failed to download: " + url, e);
-          }
+        URL url = downloadDescription.newURL();
+        try {
+          DownloadUtils.downloadFile(url, fileToDownloadTo);
+        } catch (Exception e) {
+          ClientLogger.logError("Failed to download: " + url, e);
         }
         if (state == DownloadState.CANCELLED) {
           return;
