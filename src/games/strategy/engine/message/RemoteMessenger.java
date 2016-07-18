@@ -1,5 +1,7 @@
 package games.strategy.engine.message;
 
+import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 

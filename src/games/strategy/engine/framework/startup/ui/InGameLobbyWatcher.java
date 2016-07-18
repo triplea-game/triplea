@@ -28,7 +28,7 @@ import games.strategy.engine.lobby.server.RemoteHostUtils;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
-import games.strategy.engine.message.UnifiedMessenger;
+import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.net.GUID;
