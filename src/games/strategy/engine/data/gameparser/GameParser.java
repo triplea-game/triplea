@@ -87,16 +87,16 @@ public class GameParser {
   public static final String DTD_FILE_NAME = "game.dtd";
   private static HashMap<String, String> newClassesForOldNames;
 
-  public GameParser() {
-  }
+  public GameParser() {}
 
   /**
    * Parses a file into a GameData object.
    *
    * @param stream
-   * @param delayParsing Should we only parse the game name, notes, and playerlist? Normally this should be "false", except for the
-   *                     game chooser which
-   *                     should use the user set preference.
+   * @param delayParsing Should we only parse the game name, notes, and playerlist? Normally this should be "false",
+   *        except for the
+   *        game chooser which
+   *        should use the user set preference.
    * @throws GameParseException
    * @throws SAXException
    * @throws EngineVersionException
@@ -280,7 +280,7 @@ public class GameParser {
    * If mustfind is true and cannot find the player an exception will be thrown.
    *
    * @return a RelationshipType from the relationshipTypeList, at this point all relationshipTypes should have been
-   * declared
+   *         declared
    * @throws GameParseException when
    */
   private RelationshipType getRelationshipType(final GameData data, final Element element, final String attribute)
@@ -395,6 +395,7 @@ public class GameParser {
       throws GameParseException {
     return getResource(data, element, attribute, true);
   }
+
   /**
    * If mustfind is true and cannot find the Resource an exception will be thrown.
    */
@@ -494,6 +495,7 @@ public class GameParser {
       throws GameParseException {
     return getSingleChild(mapName, name, node, true);
   }
+
   /**
    * If optional is true, will not throw an exception if there are 0 children
    */
@@ -606,7 +608,8 @@ public class GameParser {
     } else if (horizontalConnections.equals("explicit")) {
       horizontalConnectionsImplict = false;
     } else {
-      throw new GameParseException(data, "horizontal-connections attribute must be either \"explicit\" or \"implicit\"");
+      throw new GameParseException(data,
+          "horizontal-connections attribute must be either \"explicit\" or \"implicit\"");
     }
     boolean verticalConnectionsImplict;
     if (verticalConnections.equals("implicit")) {
@@ -959,7 +962,8 @@ public class GameParser {
     }
   }
 
-  private void parseEditableProperty(final GameData data, final Element property, final String name, final String defaultValue)
+  private void parseEditableProperty(final GameData data, final Element property, final String name,
+      final String defaultValue)
       throws GameParseException {
     // what type
     final List<Node> children = getNonTextNodes(property);
@@ -1113,7 +1117,8 @@ public class GameParser {
     }
   }
 
-  private void parseRepairCosts(final GameData data, final RepairRule rule, final List<Element> elements) throws GameParseException {
+  private void parseRepairCosts(final GameData data, final RepairRule rule, final List<Element> elements)
+      throws GameParseException {
     if (elements.size() == 0) {
       throw new GameParseException(data, "no costs  for rule:" + rule.getName());
     }
@@ -1124,7 +1129,8 @@ public class GameParser {
     }
   }
 
-  private void parseResults(final GameData data, final ProductionRule rule, final List<Element> elements) throws GameParseException {
+  private void parseResults(final GameData data, final ProductionRule rule, final List<Element> elements)
+      throws GameParseException {
     if (elements.size() == 0) {
       throw new GameParseException(data, "no results  for rule:" + rule.getName());
     }
@@ -1143,7 +1149,8 @@ public class GameParser {
     }
   }
 
-  private void parseRepairResults(final GameData data, final RepairRule rule, final List<Element> elements) throws GameParseException {
+  private void parseRepairResults(final GameData data, final RepairRule rule, final List<Element> elements)
+      throws GameParseException {
     if (elements.size() == 0) {
       throw new GameParseException(data, "no results  for rule:" + rule.getName());
     }
@@ -1232,7 +1239,8 @@ public class GameParser {
     }
   }
 
-  private void parseTechs(final GameData data, final List<Element> elements, final TechnologyFrontier allTechsFrontier) {
+  private void parseTechs(final GameData data, final List<Element> elements,
+      final TechnologyFrontier allTechsFrontier) {
     for (final Element current : elements) {
       final String name = current.getAttribute("name");
       final String tech = current.getAttribute("tech");
@@ -1264,7 +1272,8 @@ public class GameParser {
     }
   }
 
-  private void parseRepairFrontierRules(final GameData data, final List<Element> elements, final RepairFrontier frontier)
+  private void parseRepairFrontierRules(final GameData data, final List<Element> elements,
+      final RepairFrontier frontier)
       throws GameParseException {
     for (Element element : elements) {
       final RepairRule rule = getRepairRule(data, element, "name", true);
@@ -1298,18 +1307,21 @@ public class GameParser {
       try {
         final IAttachment attachment = (IAttachment) constructors.get(className).newInstance(name, attachable, data);
         attachable.addAttachment(name, attachment);
-        final ArrayList<Tuple<String, String>> attachmentOptionValues = setValues(data.getGameName(), attachment, options);
+        final ArrayList<Tuple<String, String>> attachmentOptionValues =
+            setValues(data.getGameName(), attachment, options);
         // keep a list of attachment references in the order they were added
         data.addToAttachmentOrderAndValues(
             Tuple.of(attachment, attachmentOptionValues));
-      } catch (final InstantiationException | InvocationTargetException | IllegalArgumentException | IllegalAccessException e) {
+      } catch (final InstantiationException | InvocationTargetException | IllegalArgumentException
+          | IllegalAccessException e) {
         throw new GameParseException(data,
             "Attachment of type " + className + " could not be instanciated: " + e.getMessage());
       }
     }
   }
 
-  private Attachable findAttachment(final GameData data, final Element element, final String type) throws GameParseException {
+  private Attachable findAttachment(final GameData data, final Element element, final String type)
+      throws GameParseException {
     Attachable returnVal;
     final String name = "attachTo";
     if (type.equals("unitType")) {
@@ -1338,7 +1350,8 @@ public class GameParser {
     return first + aString.substring(1);
   }
 
-  private static ArrayList<Tuple<String, String>> setValues(String mapName, final IAttachment attachment, final List<Element> values)
+  private static ArrayList<Tuple<String, String>> setValues(String mapName, final IAttachment attachment,
+      final List<Element> values)
       throws GameParseException {
     final ArrayList<Tuple<String, String>> options = new ArrayList<>();
     for (final Element current : values) {
@@ -1370,10 +1383,12 @@ public class GameParser {
         final Object[] args = {itemValues};
         setter.invoke(attachment, args);
       } catch (final IllegalAccessException iae) {
-        throw new GameParseException(mapName, "Setter not public. Setter:" + name + " Class:" + attachment.getClass().getName());
+        throw new GameParseException(mapName,
+            "Setter not public. Setter:" + name + " Class:" + attachment.getClass().getName());
       } catch (final InvocationTargetException ite) {
         ite.getCause().printStackTrace(System.out);
-        throw new GameParseException(mapName, "Error setting property:" + name + " cause:" + ite.getCause().getMessage());
+        throw new GameParseException(mapName,
+            "Error setting property:" + name + " cause:" + ite.getCause().getMessage());
       }
       options.add(Tuple.of(name, itemValues));
     }
@@ -1478,7 +1493,8 @@ public class GameParser {
     }
   }
 
-  private void parseResourceInitialization(final GameData data, final List<Element> elements) throws GameParseException {
+  private void parseResourceInitialization(final GameData data, final List<Element> elements)
+      throws GameParseException {
     for (final Element current : elements) {
       final PlayerID player = getPlayerID(data, current, "player", true);
       final Resource resource = getResource(data, current, "resource", true);
