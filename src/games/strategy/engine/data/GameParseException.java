@@ -2,7 +2,7 @@ package games.strategy.engine.data;
 
 import com.google.common.base.Joiner;
 
-public class GameParseException extends Exception {
+public class GameParseException extends IllegalStateException {
   private static final long serialVersionUID = 4015574053053781872L;
 
   public GameParseException(final GameData gameData, final String error) {

@@ -19,6 +19,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -103,7 +104,7 @@ public class GameParser {
    */
   public synchronized GameData parse(final InputStream stream, final AtomicReference<String> gameName,
       final boolean delayParsing)
-      throws GameParseException, SAXException, EngineVersionException, IllegalArgumentException {
+      throws GameParseException, SAXException, EngineVersionException {
     checkNotNull(stream);
 
     Document doc = null;
@@ -138,51 +139,39 @@ public class GameParser {
     final Element playerListNode = getSingleChild(gameName.get(), "playerList", root);
     parsePlayerList(data, playerListNode);
     parseAlliances(data, playerListNode);
-    final Node properties = getSingleChildOptional(gameName.get(), "propertyList", root);
-    if (properties != null) {
-      parseProperties(data, properties);
-    }
+
+    parseOptionalElement(data, "propertyList", root, (gameData, parseElement) -> parseProduction(gameData, parseElement));
+
+
     // everything until here is needed to select a game, the rest can be parsed when a game is selected
     if (delayParsing) {
       return data;
     }
     parseMap(data, getSingleChild(gameName.get(), "map", root));
-    final Element resourceList = getSingleChildOptional(gameName.get(), "resourceList", root);
-    if (resourceList != null) {
-      parseResources(data, resourceList);
-    }
-    final Element unitList = getSingleChildOptional(gameName.get(), "unitList", root);
-    if (unitList != null) {
-      parseUnits(data, unitList);
-    }
+
+    parseOptionalElement(data, "resourceList", root, (gameData, parseElement) -> parseProduction(gameData, parseElement));
+
+    parseOptionalElement(data, "unitList", root, (gameData, parseElement) -> parseProduction(gameData, parseElement));
     // Parse all different relationshipTypes that are defined in the xml, for example: War, Allied, Neutral, NAP
-    final Element relationshipTypes = getSingleChildOptional(gameName.get(), "relationshipTypes", root);
-    if (relationshipTypes != null) {
-      parseRelationshipTypes(data, relationshipTypes);
-    }
-    final Element territoryEffectList = getSingleChildOptional(gameName.get(), "territoryEffectList", root);
-    if (territoryEffectList != null) {
-      parseTerritoryEffects(data, territoryEffectList);
-    }
+    parseOptionalElement(data, "relationshipTypes", root, (gameData, parseElement) -> parseProduction(gameData, parseElement));
+
+    parseOptionalElement(data, "territoryEffectList", root, (gameData, parseElement) -> parseProduction(gameData, parseElement));
+
     parseGamePlay(data, getSingleChild(gameName.get(), "gamePlay", root));
-    final Element production = getSingleChildOptional(gameName.get(), "production", root);
-    if (production != null) {
-      parseProduction(data, production);
-    }
+
+    parseOptionalElement(data, "production", root, (gameData, parseElement) -> parseProduction(gameData, parseElement));
+
     final Element technology = getSingleChildOptional(gameName.get(), "technology", root);
     if (technology != null) {
       parseTechnology(data, technology);
     } else {
       TechAdvance.createDefaultTechAdvances(data);
     }
-    final Element attachmentList = getSingleChildOptional(gameName.get(), "attachmentList", root);
-    if (attachmentList != null) {
-      parseAttachments(data, attachmentList);
-    }
-    final Node initialization = getSingleChildOptional(gameName.get(), "initialize", root);
-    if (initialization != null) {
-      parseInitialization(data, initialization);
-    }
+
+    parseOptionalElement(data, "attachmentList", root, (gameData, parseElement) -> parseAttachments(gameData, parseElement));
+
+  	parseOptionalElement(data, "initialize", root, (gameData, parseElement) -> parseInitialization(gameData, parseElement));
+
     // set & override default relationships
     // sets the relationship between all players and the NullPlayer to NullRelation
     // (with archeType War)
@@ -202,6 +191,12 @@ public class GameParser {
       throw new GameParseException(gameName.get(), e.getMessage());
     }
     return data;
+  }
+  private static void parseOptionalElement(GameData data, String elementName, Element root, BiConsumer<GameData, Node> parser) throws GameParseException {
+    final Node element = getSingleChildOptional(data.getGameName(), elementName, root);
+    if (element != null) {
+      parser.accept(data, element);
+    }
   }
 
   private int parseDiceSides(final Node diceSides, int defaultValue) {
@@ -491,7 +486,7 @@ public class GameParser {
     return getSingleChild(mapName, name, node, false);
   }
 
-  private Element getSingleChildOptional(final String mapName, final String name, final Node node)
+  private static Element getSingleChildOptional(final String mapName, final String name, final Node node)
       throws GameParseException {
     return getSingleChild(mapName, name, node, true);
   }
@@ -499,7 +494,7 @@ public class GameParser {
   /**
    * If optional is true, will not throw an exception if there are 0 children
    */
-  private Element getSingleChild(final String mapName, final String name, final Node node, final boolean optional)
+  private static Element getSingleChild(final String mapName, final String name, final Node node, final boolean optional)
       throws GameParseException {
     final List<Element> children = getChildren(name, node);
     // none found
@@ -516,7 +511,7 @@ public class GameParser {
     return children.get(0);
   }
 
-  private List<Element> getChildren(final String name, final Node node) {
+  private static List<Element> getChildren(final String name, final Node node) {
     final ArrayList<Element> found = new ArrayList<>();
     final NodeList children = node.getChildNodes();
     for (int i = 0; i < children.getLength(); i++) {
@@ -1281,7 +1276,7 @@ public class GameParser {
     }
   }
 
-  private void parseAttachments(final GameData data, final Element root) throws GameParseException {
+  private void parseAttachments(final GameData data, final Node root) throws GameParseException {
     final HashMap<String, Constructor<?>> constructors = new HashMap<>();
     for (final Element current : getChildren("attachment", root)) {
       // get class name and constructor
