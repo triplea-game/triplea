@@ -135,7 +135,8 @@ public class GameParser {
             + error.getLineNumber() + ", column: " + error.getColumnNumber() + ", error: " + error.getMessage());
       }
     }
-    parseDiceSides(getSingleChild(gameName.get(), "diceSides", root, true));
+    final int defaultDiceSides = 6;
+    data.setDiceSides(parseDiceSides(getSingleChild(gameName.get(), "diceSides", root, true), defaultDiceSides));
     final Element playerListNode = getSingleChild(gameName.get(), "playerList", root);
     parsePlayerList(playerListNode);
     parseAlliances(gameName.get(), playerListNode);
@@ -205,11 +206,11 @@ public class GameParser {
     return data;
   }
 
-  private void parseDiceSides(final Node diceSides) {
-    if (diceSides == null) {
-      data.setDiceSides(6);
+  private int parseDiceSides(final Node diceSides, int defaultValue) {
+    if(diceSides == null) {
+      return defaultValue;
     } else {
-      data.setDiceSides(Integer.parseInt(((Element) diceSides).getAttribute("value")));
+      return Integer.parseInt(((Element) diceSides).getAttribute("value"));
     }
   }
 
