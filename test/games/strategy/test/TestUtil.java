@@ -57,4 +57,8 @@ public class TestUtil {
     SwingAction.invokeAndWait(() -> {
     });
   }
+  
+  public static Class<?>[] getClassArrayFrom(Class<?>... classes){
+    return classes;
+  }
 }

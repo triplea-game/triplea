@@ -84,6 +84,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
+import games.strategy.test.TestUtil;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
@@ -1134,7 +1135,8 @@ public class WW2V3_41_Test {
       }
     };
     final ITripleAPlayer player = (ITripleAPlayer) Proxy
-        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleAPlayer.class}, handler);
+        .newProxyInstance(Thread.currentThread().getContextClassLoader(),
+            TestUtil.getClassArrayFrom(ITripleAPlayer.class), handler);
     bridge.setRemote(player);
     // Perform the combat movement
     move.setDelegateBridgeAndPlayer(bridge);
