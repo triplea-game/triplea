@@ -1,11 +1,14 @@
 buildscript {
 	repositories {
 		maven { url 'http://maven.ej-technologies.com/repository' }
+        mavenCentral()
 	}
 	dependencies {
 		classpath group: 'com.install4j', name: 'gradle-plugin', version: '6.0.4'
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0-M1'
 	}
 }
+
 
 plugins {
 	id 'java'
@@ -15,12 +18,18 @@ plugins {
 	id "de.qaware.seu.as.code.git" version "2.2.0"
 }
 
+apply plugin: 'org.junit.platform.gradle.plugin'
+
 version = System.getenv("TAGGED_VERSION") ?: ""
 group = 'triplea'
 description = 'TripleA is a free online turn based strategy game and board game engine, similar to such board games as Axis & Allies or Risk.'
 mainClassName = "games.strategy.engine.framework.GameRunner"
 
 compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:all"
+}
+compileTestJava {
     options.encoding = 'UTF-8'
     options.compilerArgs << "-Xlint:all"
 }
@@ -62,10 +71,15 @@ dependencies {
 	compile files('lib/AppleJavaExtensions-1.6.jar')
 	compile files('lib/upnp.jar')
 
-	testCompile 'junit:junit:4.12'
 	testCompile 'org.apache.derby:derby:10.12.1.1'
 	testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
+	testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.0-M1'
+	testCompile 'org.junit.platform:junit-platform-runner:1.0.0-M1'
+	testCompile 'org.junit.vintage:junit-vintage-engine:4.12.0-M1'//JUnit Backwards compatibility
 	testCompile 'org.mockito:mockito-core:2.0.82-beta'
+	
+	testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.0.0-M1'
+	testRuntime 'org.junit.vintage:junit-vintage-engine:4.12.0-M1'//JUnit Backwards compatibility
 }
 
 test {
@@ -74,6 +88,9 @@ test {
 	}
 }
 
+junitPlatform {
+    logManager 'java.util.logging.LogManager'
+}
 
 def assetsDirectory = file("${buildDir}/assets")
 git {
