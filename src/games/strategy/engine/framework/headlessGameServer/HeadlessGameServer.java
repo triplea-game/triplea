@@ -70,21 +70,13 @@ public class HeadlessGameServer {
   private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = 2 * LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM;
   private static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
 
-  public static String[] getProperties() {
-    return new String[] {GameRunner.TRIPLEA_GAME_PROPERTY, TRIPLEA_GAME_HOST_CONSOLE_PROPERTY,
-        TRIPLEA_GAME_HOST_UI_PROPERTY, GameRunner.TRIPLEA_SERVER_PROPERTY, GameRunner.TRIPLEA_PORT_PROPERTY,
-        GameRunner.TRIPLEA_NAME_PROPERTY, GameRunner.LOBBY_HOST, LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
-        GameRunner.LOBBY_GAME_COMMENTS, GameRunner.LOBBY_GAME_HOSTED_BY, GameRunner.LOBBY_GAME_SUPPORT_EMAIL,
-        GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, GameRunner.LOBBY_GAME_RECONNECTION,
-        GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME};
-  }
-
   private static void usage() {
     System.out.println("\nUsage and Valid Arguments:\n" + "   " + GameRunner.TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
         + "   " + TRIPLEA_GAME_HOST_CONSOLE_PROPERTY + "=<true/false>\n" + "   " + TRIPLEA_GAME_HOST_UI_PROPERTY
         + "=<true/false>\n" + "   " + GameRunner.TRIPLEA_SERVER_PROPERTY + "=true\n" + "   "
         + GameRunner.TRIPLEA_PORT_PROPERTY + "=<PORT>\n" + "   " + GameRunner.TRIPLEA_NAME_PROPERTY
-        + "=<PLAYER_NAME>\n" + "   " + GameRunner.LOBBY_HOST + "=<LOBBY_HOST>\n" + "   " + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY
+        + "=<PLAYER_NAME>\n" + "   " + GameRunner.LOBBY_HOST + "=<LOBBY_HOST>\n" + "   "
+        + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY
         + "=<LOBBY_PORT>\n" + "   " + GameRunner.LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n" + "   "
         + GameRunner.LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n" + "   " + GameRunner.LOBBY_GAME_SUPPORT_EMAIL
         + "=<youremail@emailprovider.com>\n" + "   " + GameRunner.LOBBY_GAME_SUPPORT_PASSWORD
@@ -257,8 +249,10 @@ public class HeadlessGameServer {
           public void run() {
             System.out.println("Remote Stop Game Initiated.");
             SaveGameFileChooser.ensureMapsFolderExists();
-            final File f1 = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
-            final File f2 = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
+            final File f1 =
+                new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
+            final File f2 =
+                new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
             final File f;
             if (f1.lastModified() > f2.lastModified()) {
               f = f2;
@@ -572,6 +566,15 @@ public class HeadlessGameServer {
         }
       }
     }
+  }
+
+  public static String[] getProperties() {
+    return new String[] {GameRunner.TRIPLEA_GAME_PROPERTY, TRIPLEA_GAME_HOST_CONSOLE_PROPERTY,
+        TRIPLEA_GAME_HOST_UI_PROPERTY, GameRunner.TRIPLEA_SERVER_PROPERTY, GameRunner.TRIPLEA_PORT_PROPERTY,
+        GameRunner.TRIPLEA_NAME_PROPERTY, GameRunner.LOBBY_HOST, LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
+        GameRunner.LOBBY_GAME_COMMENTS, GameRunner.LOBBY_GAME_HOSTED_BY, GameRunner.LOBBY_GAME_SUPPORT_EMAIL,
+        GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, GameRunner.LOBBY_GAME_RECONNECTION,
+        GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME};
   }
 
   public String getStatus() {
