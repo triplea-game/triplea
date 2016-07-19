@@ -21,12 +21,10 @@ import games.strategy.util.Version;
  */
 public final class ClientFileSystemHelper {
 
-  private ClientFileSystemHelper() {
-
-  }
+  private ClientFileSystemHelper() {}
 
   public static File getRootFolder() {
-    final String fileName = getGameRunnerFileLocation(GameRunner.class.getTypeName() + ".class");
+    final String fileName = getGameRunnerFileLocation(GameRunner.class.getSimpleName() + ".class");
 
     final String tripleaJarName = "triplea.jar!";
     if (fileName.contains(tripleaJarName)) {
@@ -104,7 +102,7 @@ public final class ClientFileSystemHelper {
   }
 
   public static boolean areWeOldExtraJar() {
-    final URL url = GameRunner.class.getResource(GameRunner.class.getTypeName() + ".class");
+    final URL url = GameRunner.class.getResource(GameRunner.class.getSimpleName() + ".class");
     String fileName = url.getFile();
     try {
       fileName = URLDecoder.decode(fileName, "UTF-8");
@@ -134,7 +132,7 @@ public final class ClientFileSystemHelper {
     final File userHome = new File(System.getProperties().getProperty("user.home"));
     // the default
     File rootDir;
-    if (GameRunner.isMac()) {
+    if (System.getProperties().getProperty("os.name").toLowerCase().contains("mac")) {
       rootDir = new File(new File(userHome, "Documents"), "triplea");
     } else {
       rootDir = new File(userHome, "triplea");

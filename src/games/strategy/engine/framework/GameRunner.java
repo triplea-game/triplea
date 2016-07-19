@@ -39,6 +39,10 @@ import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Version;
 
+/**
+ * GameRunner - The entrance class with the main method.
+ * In this class commonly used constants are getting defined and the Game is being launched
+ */
 public class GameRunner {
 
   // not arguments:
@@ -66,12 +70,9 @@ public class GameRunner {
   public static final String LOBBY_GAME_SUPPORT_EMAIL = "triplea.lobby.game.supportEmail";
   public static final String LOBBY_GAME_SUPPORT_PASSWORD = "triplea.lobby.game.supportPassword";
   public static final String LOBBY_GAME_RECONNECTION = "triplea.lobby.game.reconnection";
-  // what is the default version of triplea (the one in the "bin" folder)
   public static final String TRIPLEA_ENGINE_VERSION_BIN = "triplea.engine.version.bin";
-  // proxy stuff
   public static final String PROXY_HOST = "proxy.host";
   public static final String PROXY_PORT = "proxy.port";
-  // other stuff
   public static final String TRIPLEA_DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
   // has the memory been manually set or not?
   public static final String TRIPLEA_MEMORY_SET = "triplea.memory.set";
@@ -101,7 +102,7 @@ public class GameRunner {
   public static final int DEFAULT_SERVER_START_GAME_SYNC_WAIT_TIME =
       Math.max(Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, 900),
           DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110);
-  
+
 
   public static boolean isWindows() {
     return System.getProperties().getProperty("os.name").toLowerCase().contains("windows");

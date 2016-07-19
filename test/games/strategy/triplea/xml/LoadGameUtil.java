@@ -90,7 +90,7 @@ public class LoadGameUtil {
 
   /* From the Game Runner root location, walk up directories until we find a given folder */
   private static File getParentFolder(final String folderToFind) {
-    File f = new File(ClientFileSystemHelper.getGameRunnerFileLocation(GameRunner.class.getTypeName() + ".class"));
+    File f = new File(ClientFileSystemHelper.getGameRunnerFileLocation(GameRunner.class.getSimpleName() + ".class"));
 
     while (f != null && f.exists() && !folderContains(f, folderToFind)) {
       f = f.getParentFile();
