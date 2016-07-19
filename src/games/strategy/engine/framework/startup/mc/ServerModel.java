@@ -38,7 +38,7 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
@@ -182,20 +182,20 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   private ServerProps getServerProps(final Component ui) {
-    if (System.getProperties().getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equals("true")
-        && System.getProperties().getProperty(GameRunner2.TRIPLEA_STARTED, "").equals("")) {
+    if (System.getProperties().getProperty(GameRunner.TRIPLEA_SERVER_PROPERTY, "false").equals("true")
+        && System.getProperties().getProperty(GameRunner.TRIPLEA_STARTED, "").equals("")) {
       final ServerProps props = new ServerProps();
-      props.setName(System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY));
-      props.setPort(Integer.parseInt(System.getProperty(GameRunner2.TRIPLEA_PORT_PROPERTY)));
-      if (System.getProperty(GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY) != null) {
-        props.setPassword(System.getProperty(GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY));
+      props.setName(System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY));
+      props.setPort(Integer.parseInt(System.getProperty(GameRunner.TRIPLEA_PORT_PROPERTY)));
+      if (System.getProperty(GameRunner.TRIPLEA_SERVER_PASSWORD_PROPERTY) != null) {
+        props.setPassword(System.getProperty(GameRunner.TRIPLEA_SERVER_PASSWORD_PROPERTY));
       }
-      System.setProperty(GameRunner2.TRIPLEA_STARTED, "true");
+      System.setProperty(GameRunner.TRIPLEA_STARTED, "true");
       return props;
     }
     final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
     final String playername = prefs.get(PLAYERNAME, System.getProperty("user.name"));
-    final ServerOptions options = new ServerOptions(ui, playername, GameRunner2.PORT, false);
+    final ServerOptions options = new ServerOptions(ui, playername, GameRunner.PORT, false);
     options.setLocationRelativeTo(ui);
     options.setVisible(true);
     options.dispose();

@@ -31,7 +31,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionListener;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.Version;
@@ -90,7 +90,7 @@ public class DownloadMapsWindow extends JFrame {
 
   private DownloadMapsWindow(final Optional<String> mapName, final List<DownloadFileDescription> games) {
     super("Download Maps");
-    setIconImage(GameRunner2.getGameIcon(this));
+    setIconImage(GameRunner.getGameIcon(this));
     progressPanel = new MapDownloadProgressPanel(this);
     if (mapName.isPresent()) {
       Optional<DownloadFileDescription> mapDownload = findMap(mapName.get(), games);

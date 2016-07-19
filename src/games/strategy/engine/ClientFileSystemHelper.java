@@ -3,7 +3,7 @@ package games.strategy.engine;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.config.GameEnginePropertyFileReader;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.util.Version;
 
 import java.io.File;
@@ -44,7 +44,7 @@ public final class ClientFileSystemHelper {
 
 
   public static String getGameRunnerFileLocation(final String runnerClassName) {
-    final URL url = GameRunner2.class.getResource(runnerClassName);
+    final URL url = GameRunner.class.getResource(runnerClassName);
     String fileName = url.getFile();
 
     try {
@@ -81,7 +81,7 @@ public final class ClientFileSystemHelper {
     File f = new File(fileName);
 
     // move up one directory for each package
-    final int moveUpCount = GameRunner2.class.getName().split("\\.").length + 1;
+    final int moveUpCount = GameRunner.class.getName().split("\\.").length + 1;
     for (int i = 0; i < moveUpCount; i++) {
       f = f.getParentFile();
     }
@@ -105,7 +105,7 @@ public final class ClientFileSystemHelper {
   }
 
   public static boolean areWeOldExtraJar() {
-    final URL url = GameRunner2.class.getResource("GameRunner2.class");
+    final URL url = GameRunner.class.getResource("GameRunner2.class");
     String fileName = url.getFile();
     try {
       fileName = URLDecoder.decode(fileName, "UTF-8");

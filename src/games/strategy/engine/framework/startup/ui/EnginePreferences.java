@@ -32,8 +32,8 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
-import games.strategy.engine.framework.GameRunner2;
-import games.strategy.engine.framework.GameRunner2.ProxyChoice;
+import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner.ProxyChoice;
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.engine.framework.TripleAProcessRunner;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
@@ -169,14 +169,14 @@ public class EnginePreferences extends JDialog {
         if (selectedValue.equals(currentKey)) {
           return;
         }
-        GameRunner2.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
+        GameRunner.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
         EventThreadJOptionPane.showMessageDialog(m_parentFrame,
             "The look and feel will update when you restart TripleA", new CountDownLatchHandler(true));
       }
     }));
     m_gameParser.addActionListener(SwingAction.of("Enable/Disable Delayed Parsing of Game XML's", e -> {
       // TODO: replace with 2 radio buttons
-      final boolean current = GameRunner2.getDelayedParsing();
+      final boolean current = GameRunner.getDelayedParsing();
       final Object[] options = {"Parse Selected", "Parse All", "Cancel"};
       final int answer = JOptionPane.showOptionDialog(m_parentFrame,
           new JLabel("<html>Delay Parsing of Game Data from XML until game is selected?" + "<br><br>'" + options[1]
@@ -192,14 +192,14 @@ public class EnginePreferences extends JDialog {
       if (delay == current) {
         return;
       }
-      GameRunner2.setDelayedParsing(delay);
+      GameRunner.setDelayedParsing(delay);
       EventThreadJOptionPane.showMessageDialog(m_parentFrame, "Please restart TripleA to avoid any potential errors",
           new CountDownLatchHandler(true));
 
     }));
     m_casualtySelection.addActionListener(SwingAction.of("Set Default Casualty Selection Method", e -> {
       // TODO: replace with 2 radio buttons
-      final boolean currentIsPerfectButSlow = GameRunner2.getCasualtySelectionSlow();
+      final boolean currentIsPerfectButSlow = GameRunner.getCasualtySelectionSlow();
       final Object[] options = {"Default", "Perfect but Slow", "Cancel"};
       final int answer = JOptionPane.showOptionDialog(m_parentFrame,
           new JLabel("<html>Use 'Default' OR 'Perfect but Slow' default casualty selection method?" + "<br><br>'"
@@ -216,17 +216,17 @@ public class EnginePreferences extends JDialog {
       if (usePerfectButSlow == currentIsPerfectButSlow) {
         return;
       }
-      GameRunner2.setCasualtySelectionSlow(usePerfectButSlow);
+      GameRunner.setCasualtySelectionSlow(usePerfectButSlow);
       EventThreadJOptionPane.showMessageDialog(m_parentFrame, "Please restart TripleA for this to take effect",
           new CountDownLatchHandler(true));
     }));
     m_setupProxies.addActionListener(SwingAction.of("Setup Network and Proxy Settings", e -> {
-      final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
+      final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
       final ProxyChoice proxyChoice =
-          ProxyChoice.valueOf(pref.get(GameRunner2.PROXY_CHOICE, ProxyChoice.NONE.toString()));
-      final String proxyHost = pref.get(GameRunner2.PROXY_HOST, "");
+          ProxyChoice.valueOf(pref.get(GameRunner.PROXY_CHOICE, ProxyChoice.NONE.toString()));
+      final String proxyHost = pref.get(GameRunner.PROXY_HOST, "");
       final JTextField hostText = new JTextField(proxyHost);
-      final String proxyPort = pref.get(GameRunner2.PROXY_PORT, "");
+      final String proxyPort = pref.get(GameRunner.PROXY_PORT, "");
       final JTextField portText = new JTextField(proxyPort);
       final JRadioButton noneButton = new JRadioButton("None", proxyChoice == ProxyChoice.NONE);
       final JRadioButton systemButton =
@@ -262,17 +262,17 @@ public class EnginePreferences extends JDialog {
       } else {
         newChoice = ProxyChoice.NONE;
       }
-      GameRunner2.setProxy(hostText.getText(), portText.getText(), newChoice);
+      GameRunner.setProxy(hostText.getText(), portText.getText(), newChoice);
     }));
     m_hostWaitTime.addActionListener(SwingAction.of("Set Max Host Wait Time for Clients and Observers", e -> {
       final NumberProperty clientWait =
           new NumberProperty("Max seconds to wait for all clients to sync data on game start",
               "Max seconds to wait for all clients to sync data on game start", 9999,
-              GameRunner2.MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, GameRunner2.getServerStartGameSyncWaitTime());
+              GameRunner.MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, GameRunner.getServerStartGameSyncWaitTime());
       final NumberProperty observerWait =
           new NumberProperty("Max seconds to wait for an observer joining a running game",
               "Max seconds to wait for an observer joining a running game", 9000,
-              GameRunner2.MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME, GameRunner2.getServerObserverJoinWaitTime());
+              GameRunner.MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME, GameRunner.getServerObserverJoinWaitTime());
       final List<IEditableProperty> list = new ArrayList<>();
       list.add(clientWait);
       list.add(observerWait);
@@ -281,27 +281,27 @@ public class EnginePreferences extends JDialog {
       final int answer = JOptionPane.showOptionDialog(m_parentFrame, ui, "Host Wait Settings",
           JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
       if (answer == JOptionPane.YES_OPTION) {
-        GameRunner2.setServerStartGameSyncWaitTime(clientWait.getValue());
-        GameRunner2.setServerObserverJoinWaitTime(observerWait.getValue());
+        GameRunner.setServerStartGameSyncWaitTime(clientWait.getValue());
+        GameRunner.setServerObserverJoinWaitTime(observerWait.getValue());
       } else if (answer == JOptionPane.NO_OPTION) {// reset
-        GameRunner2.resetServerStartGameSyncWaitTime();
-        GameRunner2.resetServerObserverJoinWaitTime();
+        GameRunner.resetServerStartGameSyncWaitTime();
+        GameRunner.resetServerObserverJoinWaitTime();
       }
     }));
     m_setMaxMemory.addActionListener(SwingAction.of("Set Max Memory Usage", e -> {
       final AtomicBoolean tested = new AtomicBoolean();
       tested.set(false);
-      final Properties systemIni = GameRunner2.getSystemIni();
-      final int currentSetting = GameRunner2.getMaxMemoryFromSystemIniFileInMB(systemIni);
-      final boolean useDefault = GameRunner2.useDefaultMaxMemory(systemIni) || currentSetting <= 0;
-      final int currentMaxMemoryInMB = (int) (GameRunner2.getMaxMemoryInBytes() / (1024 * 1024));
+      final Properties systemIni = GameRunner.getSystemIni();
+      final int currentSetting = GameRunner.getMaxMemoryFromSystemIniFileInMB(systemIni);
+      final boolean useDefault = GameRunner.useDefaultMaxMemory(systemIni) || currentSetting <= 0;
+      final int currentMaxMemoryInMB = (int) (GameRunner.getMaxMemoryInBytes() / (1024 * 1024));
       final IntTextField newMaxMemory = new IntTextField(0, (1024 * 3), currentMaxMemoryInMB, 5);
       final JRadioButton noneButton = new JRadioButton("Use Default", useDefault);
       final JRadioButton userButton = new JRadioButton("Use These User Settings:", !useDefault);
       final ButtonGroup bgroup = new ButtonGroup();
       bgroup.add(noneButton);
       bgroup.add(userButton);
-      final boolean onlineOnlyOriginalSetting = GameRunner2.getUseMaxMemorySettingOnlyForOnlineJoinOrHost(systemIni);
+      final boolean onlineOnlyOriginalSetting = GameRunner.getUseMaxMemorySettingOnlyForOnlineJoinOrHost(systemIni);
       final JCheckBox onlyOnlineCheckBox =
           new JCheckBox("Only use these user memory settings for online games (join/host). [Default = On]");
       onlyOnlineCheckBox.setSelected(onlineOnlyOriginalSetting);
@@ -356,19 +356,19 @@ public class EnginePreferences extends JDialog {
         return;
       }
       if (noneButton.isSelected()) {
-        GameRunner2.clearMaxMemory();
+        GameRunner.clearMaxMemory();
       } else if (userButton.isSelected()) {
         final boolean setOnlineOnly = onlineOnlyOriginalSetting != onlyOnlineCheckBox.isSelected();
         final boolean setMaxMemory = newMaxMemory.getValue() > 64 && tested.get();
         if (setOnlineOnly || setMaxMemory) {
           Properties prop;
           if (setMaxMemory) {
-            prop = GameRunner2.setMaxMemoryInMB(newMaxMemory.getValue());
+            prop = GameRunner.setMaxMemoryInMB(newMaxMemory.getValue());
           } else {
             prop = new Properties();
           }
-          GameRunner2.setUseMaxMemorySettingOnlyForOnlineJoinOrHost(onlyOnlineCheckBox.isSelected(), prop);
-          GameRunner2.writeSystemIni(prop, false);
+          GameRunner.setUseMaxMemorySettingOnlyForOnlineJoinOrHost(onlyOnlineCheckBox.isSelected(), prop);
+          GameRunner.writeSystemIni(prop, false);
         }
       }
 
@@ -418,7 +418,7 @@ public class EnginePreferences extends JDialog {
     System.out.println("Total Memory: " + runtime.totalMemory() / mb);
     // Print Maximum available memory
     System.out.println("Max Memory: " + runtime.maxMemory() / mb);
-    final int currentMaxSetting = GameRunner2.getMaxMemoryFromSystemIniFileInMB(GameRunner2.getSystemIni());
+    final int currentMaxSetting = GameRunner.getMaxMemoryFromSystemIniFileInMB(GameRunner.getSystemIni());
     if (currentMaxSetting > 0) {
       System.out.println("Max Memory user setting within 20% of: " + currentMaxSetting);
     }

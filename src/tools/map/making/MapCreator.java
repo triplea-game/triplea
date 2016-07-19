@@ -31,7 +31,7 @@ import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.UrlConstants;
@@ -76,7 +76,7 @@ public class MapCreator extends JFrame {
   }
 
   public static void main(final String[] args) {
-    GameRunner2.setupLookAndFeel();
+    GameRunner.setupLookAndFeel();
     final MapCreator creator = new MapCreator();
     creator.setSize(800, 600);
     creator.setLocationRelativeTo(null);

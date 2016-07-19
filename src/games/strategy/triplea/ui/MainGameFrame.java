@@ -3,7 +3,7 @@ package games.strategy.triplea.ui;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 
@@ -14,7 +14,7 @@ public abstract class MainGameFrame extends JFrame {
   public MainGameFrame(final String name, final LocalPlayers players) {
     super(name);
     localPlayers = players;
-    setIconImage(GameRunner2.getGameIcon(this));
+    setIconImage(GameRunner.getGameIcon(this));
   }
 
   public abstract IGame getGame();
