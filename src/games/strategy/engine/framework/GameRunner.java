@@ -103,7 +103,6 @@ public class GameRunner {
       Math.max(Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, 900),
           DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110);
 
-
   public static boolean isWindows() {
     return System.getProperties().getProperty("os.name").toLowerCase().contains("windows");
   }
@@ -114,14 +113,6 @@ public class GameRunner {
 
   public static enum ProxyChoice {
     NONE, USE_SYSTEM_SETTINGS, USE_USER_PREFERENCES
-  }
-
-  public static String[] getProperties() {
-    return new String[] {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
-        TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
-        LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
-        LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, PROXY_HOST, PROXY_PORT,
-        TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, TRIPLEA_MEMORY_SET};
   }
 
   private static void usage() {
@@ -228,6 +219,14 @@ public class GameRunner {
       System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());
       System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion());
     }
+  }
+
+  public static String[] getProperties() {
+    return new String[] {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
+        TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
+        LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
+        LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, PROXY_HOST, PROXY_PORT,
+        TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, TRIPLEA_MEMORY_SET};
   }
 
   private static String getValue(final String arg) {
@@ -667,7 +666,7 @@ public class GameRunner {
   }
 
   private static void checkForUpdates() {
-    final Thread t = new Thread(() -> {
+    new Thread(() -> {
       // do not check if we are the old extra jar. (a jar kept for backwards compatibility only)
       if (ClientFileSystemHelper.areWeOldExtraJar()) {
         return;
@@ -693,8 +692,7 @@ public class GameRunner {
       if (!busy) {
         busy = checkForUpdatedMaps();
       }
-    }, "Checking Latest TripleA Engine Version");
-    t.start();
+    }, "Checking Latest TripleA Engine Version").start();
   }
 
   /**
