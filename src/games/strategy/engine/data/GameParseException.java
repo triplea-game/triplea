@@ -10,6 +10,6 @@ public class GameParseException extends Exception {
   }
 
   public GameParseException(final String mapName, final String error) {
-    super(Joiner.on(':').join(mapName, error).toString());
+    super(Joiner.on(':').join(mapName, error));
   }
 }
