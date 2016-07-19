@@ -326,7 +326,7 @@ public class GameSelectorModel extends Observable {
     final String userPreferredDefaultGameName =
         (forceFactoryDefault ? DEFAULT_GAME_NAME : prefs.get(DEFAULT_GAME_NAME_PREF, DEFAULT_GAME_NAME));
     final NewGameChooserModel model = NewGameChooser.getNewGameChooserModel();
-//    selectedGame = model.findByName(userPreferredDefaultGameName);
+    selectedGame = model.findByName(userPreferredDefaultGameName);
     if (selectedGame == null) {
       selectedGame = model.findByName(DEFAULT_GAME_NAME);
     }
