@@ -1,11 +1,5 @@
 package games.strategy.engine;
 
-import games.strategy.debug.ClientLogger;
-import games.strategy.engine.config.GameEnginePropertyFileReader;
-import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.GameRunner;
-import games.strategy.util.Version;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -14,6 +8,11 @@ import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import games.strategy.debug.ClientLogger;
+import games.strategy.engine.config.GameEnginePropertyFileReader;
+import games.strategy.engine.framework.GameRunner;
+import games.strategy.util.Version;
 
 /**
  * Pure utility class, final and private constructor to enforce this
@@ -27,7 +26,7 @@ public final class ClientFileSystemHelper {
   }
 
   public static File getRootFolder() {
-    final String fileName = getGameRunnerFileLocation("GameRunner2.class");
+    final String fileName = getGameRunnerFileLocation(GameRunner.class.getTypeName() + ".class");
 
     final String tripleaJarName = "triplea.jar!";
     if (fileName.contains(tripleaJarName)) {
@@ -87,7 +86,7 @@ public final class ClientFileSystemHelper {
     }
 
     // keep moving up one directory until we find the game_engine properties file that we expect to be at the root
-    while(!folderContainsGamePropsFile(f)) {
+    while (!folderContainsGamePropsFile(f)) {
       f = f.getParentFile();
     }
 
@@ -100,12 +99,12 @@ public final class ClientFileSystemHelper {
 
   private static boolean folderContainsGamePropsFile(File folder) {
     File[] files = folder.listFiles();
-    List<String> fileNames = Arrays.asList(files).stream().map(file->file.getName()).collect(Collectors.toList());
+    List<String> fileNames = Arrays.asList(files).stream().map(file -> file.getName()).collect(Collectors.toList());
     return fileNames.contains(GameEnginePropertyFileReader.GAME_ENGINE_PROPERTY_FILE);
   }
 
   public static boolean areWeOldExtraJar() {
-    final URL url = GameRunner.class.getResource("GameRunner2.class");
+    final URL url = GameRunner.class.getResource(GameRunner.class.getTypeName() + ".class");
     String fileName = url.getFile();
     try {
       fileName = URLDecoder.decode(fileName, "UTF-8");
@@ -155,7 +154,7 @@ public final class ClientFileSystemHelper {
         ClientLogger.logError(e);
       }
     }
-    if(!mapsFolder.exists()) {
+    if (!mapsFolder.exists()) {
       ClientLogger.logError("Error, downloaded maps folder does not exist: " + mapsFolder.getAbsolutePath());
     }
     return mapsFolder;
