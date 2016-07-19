@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;

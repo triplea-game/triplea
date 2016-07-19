@@ -15,7 +15,7 @@ public class UnitsList implements java.io.Serializable, Iterable<Unit> {
   // note, weak hash maps are not serializable
   private Map<GUID, Unit> m_allUnits;
 
-  Unit get(final GUID id) {
+  public Unit get(final GUID id) {
     return m_allUnits.get(id);
   }
 

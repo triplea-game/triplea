@@ -24,7 +24,7 @@ public class ChangeAttachmentChange extends Change {
    * @param newValue The new value for the property
    * @param property The property by String name.
    */
-  ChangeAttachmentChange(final IAttachment attachment, final Object newValue, final String property) {
+  public ChangeAttachmentChange(final IAttachment attachment, final Object newValue, final String property) {
     if (attachment == null) {
       throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
     }
@@ -41,7 +41,7 @@ public class ChangeAttachmentChange extends Change {
    * actually adding things to a
    * list rather than overwriting.
    */
-  ChangeAttachmentChange(final IAttachment attachment, final Object newValue, final String property,
+  public ChangeAttachmentChange(final IAttachment attachment, final Object newValue, final String property,
       final boolean resetFirst) {
     if (attachment == null) {
       throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);

@@ -18,7 +18,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;

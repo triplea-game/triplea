@@ -173,7 +173,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     m_territoryLookup.put(t1.getName(), t1);
   }
 
-  protected void removeTerritory(final Territory t1) {
+  public void removeTerritory(final Territory t1) {
     if (!m_territories.contains(t1)) {
       throw new IllegalArgumentException("Map does not contain " + t1.getName());
     }
