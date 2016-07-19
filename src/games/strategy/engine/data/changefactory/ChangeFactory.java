@@ -1,27 +1,15 @@
 package games.strategy.engine.data.changefactory;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.BombingUnitDamageChange;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeAttachmentChange;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameMap;
-import games.strategy.engine.data.GameParser;
-import games.strategy.engine.data.GameSequence;
-import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
@@ -32,20 +20,12 @@ import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitHitsChange;
-import games.strategy.engine.data.UnitHolder;
-import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
-import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
-import games.strategy.util.PropertyUtil;
 
 /**
  * All changes made to GameData should be made through changes produced here. <br>
