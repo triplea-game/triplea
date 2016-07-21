@@ -130,14 +130,8 @@ public final class ClientFileSystemHelper {
 
   public static File getUserRootFolder() {
     final File userHome = new File(System.getProperties().getProperty("user.home"));
-    // the default
-    File rootDir;
-    if (System.getProperties().getProperty("os.name").toLowerCase().contains("mac")) {
-      rootDir = new File(new File(userHome, "Documents"), "triplea");
-    } else {
-      rootDir = new File(userHome, "triplea");
-    }
-    return rootDir;
+    File rootDir = new File(new File(userHome, "Documents"), "triplea");
+    return rootDir.exists() ? rootDir : new File(userHome, "triplea");
   }
 
   public static File getUserMapsFolder() {
