@@ -28,7 +28,7 @@ public class EngineVersionProperties {
   private final String m_link;
   private final String m_linkAlt;
   private final String m_changelogLink;
-  private static final String s_linkToTripleA = "http://triplea.sourceforge.net/latest/latest_version.properties";
+  private static final String s_linkToTripleA = "https://raw.githubusercontent.com/triplea-game/triplea/master/latest_version.properties";
 
   private EngineVersionProperties(final URL url) {
     this(getProperties(url));
@@ -76,8 +76,7 @@ public class EngineVersionProperties {
       latch.await(15, TimeUnit.SECONDS);
     } catch (final InterruptedException e) {
     }
-    final EngineVersionProperties props = ref.get();
-    return props;
+    return ref.get();
   }
 
   private static Properties getProperties(final URL url) {
