@@ -193,7 +193,7 @@ public class ServerGame extends AbstractGame {
         }
       }, "Waiting on observer to finish joining: " + newNode.getName())).start();
       try {
-        if (!waitOnObserver.await(GameRunner2.getServerObserverJoinWaitTime(), TimeUnit.SECONDS)) {
+        if (!waitOnObserver.await(GameRunner.getServerObserverJoinWaitTime(), TimeUnit.SECONDS)) {
           nonBlockingObserver.cannotJoinGame("Taking too long to join.");
         }
       } catch (final InterruptedException e) {

@@ -21,7 +21,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.engine.framework.startup.ui.editors.MicroWebPosterEditor;
@@ -113,7 +113,7 @@ public class TripleAWebPoster implements IWebPoster {
     final HttpState httpState = new HttpState();
     final HostConfiguration hostConfiguration = new HostConfiguration();
     // add the proxy
-    GameRunner2.addProxy(hostConfiguration);
+    GameRunner.addProxy(hostConfiguration);
     hostConfiguration.setHost(host);
     final MultipartRequestEntity entity =
         new MultipartRequestEntity(parts.toArray(new Part[parts.size()]), new HttpMethodParams());

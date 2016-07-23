@@ -1,6 +1,7 @@
 package games.strategy.net;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -18,7 +19,6 @@ import org.junit.Test;
 import games.strategy.debug.ClientLogger;
 import games.strategy.test.TestUtil;
 import games.strategy.util.ThreadUtil;
-import junit.framework.TestCase;
 
 public class MessengerTest {
   private static int SERVER_PORT = -1;
@@ -299,8 +299,6 @@ class MessageListener implements IMessageListener {
   private final ArrayList<INode> senders = new ArrayList<>();
   private final Object lock = new Object();
 
-  public MessageListener() {}
-
   @Override
   public void messageReceived(final Serializable msg, final INode from) {
     synchronized (lock) {
@@ -325,7 +323,7 @@ class MessageListener implements IMessageListener {
       if (messages.isEmpty()) {
         waitForMessage();
       }
-      TestCase.assertFalse(messages.isEmpty());
+      assertFalse(messages.isEmpty());
       return messages.get(0);
     }
   }

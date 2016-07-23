@@ -19,7 +19,7 @@ import games.strategy.util.Version;
 
 public class TripleAProcessRunner {
   public static void startNewTripleA(final Long maxMemory) {
-    startGame(System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY), null, maxMemory);
+    startGame(System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY), null, maxMemory);
   }
 
   public static void startGame(final String savegamePath, final String classpath, final Long maxMemory) {
@@ -30,22 +30,22 @@ public class TripleAProcessRunner {
       ProcessRunnerUtil.populateBasicJavaArgs(commands, classpath);
     }
     if (savegamePath != null && savegamePath.length() > 0) {
-      commands.add("-D" + GameRunner2.TRIPLEA_GAME_PROPERTY + "=" + savegamePath);
+      commands.add("-D" + GameRunner.TRIPLEA_GAME_PROPERTY + "=" + savegamePath);
     }
     // add in any existing command line items
-    for (final String property : GameRunner2.getProperties()) {
+    for (final String property : GameRunner.getProperties()) {
       // we add game property above, and we add version bin in the populateBasicJavaArgs
-      if (GameRunner2.TRIPLEA_GAME_PROPERTY.equals(property)
-          || GameRunner2.TRIPLEA_ENGINE_VERSION_BIN.equals(property)) {
+      if (GameRunner.TRIPLEA_GAME_PROPERTY.equals(property)
+          || GameRunner.TRIPLEA_ENGINE_VERSION_BIN.equals(property)) {
         continue;
       }
       final String value = System.getProperty(property);
       if (value != null) {
         commands.add("-D" + property + "=" + value);
-      } else if (GameRunner2.LOBBY_HOST.equals(property) || LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY.equals(property)
-          || GameRunner2.LOBBY_GAME_HOSTED_BY.equals(property)) {
+      } else if (GameRunner.LOBBY_HOST.equals(property) || LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY.equals(property)
+          || GameRunner.LOBBY_GAME_HOSTED_BY.equals(property)) {
         // for these 3 properties, we clear them after hosting, but back them up.
-        final String oldValue = System.getProperty(property + GameRunner2.OLD_EXTENSION);
+        final String oldValue = System.getProperty(property + GameRunner.OLD_EXTENSION);
         if (oldValue != null) {
           commands.add("-D" + property + "=" + oldValue);
         }
@@ -62,21 +62,21 @@ public class TripleAProcessRunner {
       final Messengers messengers) {
     final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands);
-    commands.add("-D" + GameRunner2.TRIPLEA_SERVER_PROPERTY + "=true");
-    commands.add("-D" + GameRunner2.TRIPLEA_PORT_PROPERTY + "=" + port);
-    commands.add("-D" + GameRunner2.TRIPLEA_NAME_PROPERTY + "=" + playerName);
-    commands.add("-D" + GameRunner2.LOBBY_HOST + "="
+    commands.add("-D" + GameRunner.TRIPLEA_SERVER_PROPERTY + "=true");
+    commands.add("-D" + GameRunner.TRIPLEA_PORT_PROPERTY + "=" + port);
+    commands.add("-D" + GameRunner.TRIPLEA_NAME_PROPERTY + "=" + playerName);
+    commands.add("-D" + GameRunner.LOBBY_HOST + "="
         + messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
     commands
         .add("-D" + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=" + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
-    commands.add("-D" + GameRunner2.LOBBY_GAME_COMMENTS + "=" + comments);
-    commands.add("-D" + GameRunner2.LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
+    commands.add("-D" + GameRunner.LOBBY_GAME_COMMENTS + "=" + comments);
+    commands.add("-D" + GameRunner.LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
     if (password != null && password.length() > 0) {
-      commands.add("-D" + GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY + "=" + password);
+      commands.add("-D" + GameRunner.TRIPLEA_SERVER_PASSWORD_PROPERTY + "=" + password);
     }
-    final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
+    final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
     if (fileName.length() > 0) {
-      commands.add("-D" + GameRunner2.TRIPLEA_GAME_PROPERTY + "=" + fileName);
+      commands.add("-D" + GameRunner.TRIPLEA_GAME_PROPERTY + "=" + fileName);
     }
     final String javaClass = "games.strategy.engine.framework.GameRunner";
     commands.add(javaClass);
@@ -131,10 +131,10 @@ public class TripleAProcessRunner {
       final Messengers messengers) {
     final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
-    commands.add("-D" + GameRunner2.TRIPLEA_CLIENT_PROPERTY + "=true");
-    commands.add("-D" + GameRunner2.TRIPLEA_PORT_PROPERTY + "=" + port);
-    commands.add("-D" + GameRunner2.TRIPLEA_HOST_PROPERTY + "=" + hostAddressIP);
-    commands.add("-D" + GameRunner2.TRIPLEA_NAME_PROPERTY + "=" + messengers.getMessenger().getLocalNode().getName());
+    commands.add("-D" + GameRunner.TRIPLEA_CLIENT_PROPERTY + "=true");
+    commands.add("-D" + GameRunner.TRIPLEA_PORT_PROPERTY + "=" + port);
+    commands.add("-D" + GameRunner.TRIPLEA_HOST_PROPERTY + "=" + hostAddressIP);
+    commands.add("-D" + GameRunner.TRIPLEA_NAME_PROPERTY + "=" + messengers.getMessenger().getLocalNode().getName());
     final String javaClass = "games.strategy.engine.framework.GameRunner";
     commands.add(javaClass);
     ProcessRunnerUtil.exec(commands);
@@ -146,7 +146,7 @@ public class TripleAProcessRunner {
     }
     // first, see if the default/main triplea can run it
     if (ClientFileSystemHelper.areWeOldExtraJar()) {
-      final String version = System.getProperty(GameRunner2.TRIPLEA_ENGINE_VERSION_BIN);
+      final String version = System.getProperty(GameRunner.TRIPLEA_ENGINE_VERSION_BIN);
       if (version != null && version.length() > 0) {
         Version defaultVersion = null;
         try {

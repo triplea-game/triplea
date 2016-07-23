@@ -21,7 +21,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import games.strategy.ui.SwingAction;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.ui.IntTextField;
 
 /**
@@ -164,7 +164,7 @@ public class ServerOptions extends JDialog {
     final Color backGround = m_passwordField.isEnabled() ? m_portField.getBackground() : getBackground();
     m_passwordField.setBackground(backGround);
     if (ClientFileSystemHelper.areWeOldExtraJar()
-        && System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true")) {
+        && System.getProperty(GameRunner.TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true")) {
       setNameEditable(false);
     }
   }

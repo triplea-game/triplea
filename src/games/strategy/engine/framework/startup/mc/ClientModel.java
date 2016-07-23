@@ -30,7 +30,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.networkMaintenance.ChangeGameOptionsClientAction;
@@ -102,19 +102,19 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   private ClientProps getProps(final Component ui) {
-    if (System.getProperties().getProperty(GameRunner2.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")
-        && System.getProperties().getProperty(GameRunner2.TRIPLEA_STARTED, "").equals("")) {
+    if (System.getProperties().getProperty(GameRunner.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")
+        && System.getProperties().getProperty(GameRunner.TRIPLEA_STARTED, "").equals("")) {
       final ClientProps props = new ClientProps();
-      props.setHost(System.getProperty(GameRunner2.TRIPLEA_HOST_PROPERTY));
-      props.setName(System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY));
-      props.setPort(Integer.parseInt(System.getProperty(GameRunner2.TRIPLEA_PORT_PROPERTY)));
-      System.setProperty(GameRunner2.TRIPLEA_STARTED, "true");
+      props.setHost(System.getProperty(GameRunner.TRIPLEA_HOST_PROPERTY));
+      props.setName(System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY));
+      props.setPort(Integer.parseInt(System.getProperty(GameRunner.TRIPLEA_PORT_PROPERTY)));
+      System.setProperty(GameRunner.TRIPLEA_STARTED, "true");
       return props;
     }
     // load in the saved name!
     final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
     final String playername = prefs.get(ServerModel.PLAYERNAME, System.getProperty("user.name"));
-    final ClientOptions options = new ClientOptions(ui, playername, GameRunner2.PORT, "127.0.0.1");
+    final ClientOptions options = new ClientOptions(ui, playername, GameRunner.PORT, "127.0.0.1");
     options.setLocationRelativeTo(ui);
     options.setVisible(true);
     options.dispose();
@@ -251,7 +251,7 @@ public class ClientModel implements IMessengerErrorListener {
       final CountDownLatch latch = new CountDownLatch(1);
       startGame(gameData, players, latch, false);
       try {
-        latch.await(GameRunner2.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
+        latch.await(GameRunner.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
       } catch (final InterruptedException e) {
         ClientLogger.logQuietly(e);
       }
@@ -264,7 +264,7 @@ public class ClientModel implements IMessengerErrorListener {
       final CountDownLatch latch = new CountDownLatch(1);
       startGame(gameData, players, latch, true);
       try {
-        latch.await(GameRunner2.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
+        latch.await(GameRunner.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
       } catch (final InterruptedException e) {
         ClientLogger.logQuietly(e);
       }
