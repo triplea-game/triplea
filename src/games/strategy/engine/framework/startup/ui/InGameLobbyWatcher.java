@@ -16,7 +16,7 @@ import games.strategy.debug.HeartBeat;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.events.GameStepListener;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -89,20 +89,20 @@ public class InGameLobbyWatcher {
    */
   public static InGameLobbyWatcher newInGameLobbyWatcher(final IServerMessenger gameMessenger, final JComponent parent,
       final InGameLobbyWatcher oldWatcher) {
-    final String host = System.getProperties().getProperty(GameRunner2.LOBBY_HOST);
+    final String host = System.getProperties().getProperty(GameRunner.LOBBY_HOST);
     final String port = System.getProperties().getProperty(LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY);
-    final String hostedBy = System.getProperties().getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY);
+    final String hostedBy = System.getProperties().getProperty(GameRunner.LOBBY_GAME_HOSTED_BY);
     if (host == null || port == null) {
       return null;
     }
     // clear the properties
-    System.getProperties().remove(GameRunner2.LOBBY_HOST);
+    System.getProperties().remove(GameRunner.LOBBY_HOST);
     System.getProperties().remove(LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY);
-    System.getProperties().remove(GameRunner2.LOBBY_GAME_HOSTED_BY);
+    System.getProperties().remove(GameRunner.LOBBY_GAME_HOSTED_BY);
     // add them as temporary properties (in case we load an old savegame and need them again)
-    System.getProperties().setProperty(GameRunner2.LOBBY_HOST + GameRunner2.OLD_EXTENSION, host);
-    System.getProperties().setProperty(LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + GameRunner2.OLD_EXTENSION, port);
-    System.getProperties().setProperty(GameRunner2.LOBBY_GAME_HOSTED_BY + GameRunner2.OLD_EXTENSION, hostedBy);
+    System.getProperties().setProperty(GameRunner.LOBBY_HOST + GameRunner.OLD_EXTENSION, host);
+    System.getProperties().setProperty(LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + GameRunner.OLD_EXTENSION, port);
+    System.getProperties().setProperty(GameRunner.LOBBY_GAME_HOSTED_BY + GameRunner.OLD_EXTENSION, hostedBy);
     final IConnectionLogin login = new IConnectionLogin() {
       @Override
       public void notifyFailedLogin(final String message) {}
@@ -173,7 +173,7 @@ public class InGameLobbyWatcher {
     m_messenger = messenger;
     m_remoteMessenger = remoteMessenger;
     m_gameMessenger = serverMessenger;
-    final String password = System.getProperty(GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY);
+    final String password = System.getProperty(GameRunner.TRIPLEA_SERVER_PASSWORD_PROPERTY);
     final boolean passworded = password != null && password.length() > 0;
     final Date startDateTime = (oldWatcher == null || oldWatcher.m_gameDescription == null
         || oldWatcher.m_gameDescription.getStartDateTime() == null) ? new Date()
@@ -188,7 +188,7 @@ public class InGameLobbyWatcher {
             ? "-" : oldWatcher.m_gameDescription.getRound();
     m_gameDescription = new GameDescription(m_messenger.getLocalNode(), m_gameMessenger.getLocalNode().getPort(),
         startDateTime, "???", playerCount, gameStatus, gameRound, m_gameMessenger.getLocalNode().getName(),
-        System.getProperty(GameRunner2.LOBBY_GAME_COMMENTS), passworded, ClientContext.engineVersion().toString(), "0");
+        System.getProperty(GameRunner.LOBBY_GAME_COMMENTS), passworded, ClientContext.engineVersion().toString(), "0");
     final ILobbyGameController controller =
         (ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
     synchronized (m_mutex) {
@@ -230,7 +230,7 @@ public class InGameLobbyWatcher {
             SwingUtilities.invokeLater(new Runnable() {
               @Override
               public void run() {
-                String portString = System.getProperty(GameRunner2.TRIPLEA_PORT_PROPERTY);
+                String portString = System.getProperty(GameRunner.TRIPLEA_PORT_PROPERTY);
                 if (portString == null || portString.trim().length() <= 0) {
                   portString = "3300";
                 }

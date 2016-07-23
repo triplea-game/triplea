@@ -1,11 +1,5 @@
 package games.strategy.engine;
 
-import games.strategy.debug.ClientLogger;
-import games.strategy.engine.config.GameEnginePropertyFileReader;
-import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.GameRunner2;
-import games.strategy.util.Version;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -15,6 +9,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import games.strategy.debug.ClientLogger;
+import games.strategy.engine.config.GameEnginePropertyFileReader;
+import games.strategy.engine.framework.GameRunner;
+import games.strategy.util.Version;
+
 /**
  * Pure utility class, final and private constructor to enforce this
  * WARNING: do not call ClientContext in this class. ClientContext call this class in turn
@@ -22,12 +21,10 @@ import java.util.stream.Collectors;
  */
 public final class ClientFileSystemHelper {
 
-  private ClientFileSystemHelper() {
-
-  }
+  private ClientFileSystemHelper() {}
 
   public static File getRootFolder() {
-    final String fileName = getGameRunnerFileLocation("GameRunner2.class");
+    final String fileName = getGameRunnerFileLocation(GameRunner.class.getSimpleName() + ".class");
 
     final String tripleaJarName = "triplea.jar!";
     if (fileName.contains(tripleaJarName)) {
@@ -44,7 +41,7 @@ public final class ClientFileSystemHelper {
 
 
   public static String getGameRunnerFileLocation(final String runnerClassName) {
-    final URL url = GameRunner2.class.getResource(runnerClassName);
+    final URL url = GameRunner.class.getResource(runnerClassName);
     String fileName = url.getFile();
 
     try {
@@ -81,13 +78,13 @@ public final class ClientFileSystemHelper {
     File f = new File(fileName);
 
     // move up one directory for each package
-    final int moveUpCount = GameRunner2.class.getName().split("\\.").length + 1;
+    final int moveUpCount = GameRunner.class.getName().split("\\.").length + 1;
     for (int i = 0; i < moveUpCount; i++) {
       f = f.getParentFile();
     }
 
     // keep moving up one directory until we find the game_engine properties file that we expect to be at the root
-    while(!folderContainsGamePropsFile(f)) {
+    while (!folderContainsGamePropsFile(f)) {
       f = f.getParentFile();
     }
 
@@ -100,12 +97,12 @@ public final class ClientFileSystemHelper {
 
   private static boolean folderContainsGamePropsFile(File folder) {
     File[] files = folder.listFiles();
-    List<String> fileNames = Arrays.asList(files).stream().map(file->file.getName()).collect(Collectors.toList());
+    List<String> fileNames = Arrays.asList(files).stream().map(file -> file.getName()).collect(Collectors.toList());
     return fileNames.contains(GameEnginePropertyFileReader.GAME_ENGINE_PROPERTY_FILE);
   }
 
   public static boolean areWeOldExtraJar() {
-    final URL url = GameRunner2.class.getResource("GameRunner2.class");
+    final URL url = GameRunner.class.getResource(GameRunner.class.getSimpleName() + ".class");
     String fileName = url.getFile();
     try {
       fileName = URLDecoder.decode(fileName, "UTF-8");
@@ -133,14 +130,8 @@ public final class ClientFileSystemHelper {
 
   public static File getUserRootFolder() {
     final File userHome = new File(System.getProperties().getProperty("user.home"));
-    // the default
-    File rootDir;
-    if (GameRunner.isMac()) {
-      rootDir = new File(new File(userHome, "Documents"), "triplea");
-    } else {
-      rootDir = new File(userHome, "triplea");
-    }
-    return rootDir;
+    File rootDir = new File(new File(userHome, "Documents"), "triplea");
+    return rootDir.exists() ? rootDir : new File(userHome, "triplea");
   }
 
   public static File getUserMapsFolder() {
@@ -155,7 +146,7 @@ public final class ClientFileSystemHelper {
         ClientLogger.logError(e);
       }
     }
-    if(!mapsFolder.exists()) {
+    if (!mapsFolder.exists()) {
       ClientLogger.logError("Error, downloaded maps folder does not exist: " + mapsFolder.getAbsolutePath());
     }
     return mapsFolder;

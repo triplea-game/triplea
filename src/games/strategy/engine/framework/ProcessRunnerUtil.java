@@ -35,7 +35,7 @@ public class ProcessRunnerUtil {
     // add 64m to that to
     // compensate
     // final long maxMemory = ((long) (Runtime.getRuntime().maxMemory() * 1.15) + 67108864);
-    final long maxMemory = GameRunner2.getMaxMemoryInBytes();
+    final long maxMemory = GameRunner.getMaxMemoryInBytes();
     System.out.println("Setting memory for new triplea process to: " + (maxMemory / (1024 * 1024)) + "m");
     populateBasicJavaArgs(commands, newClasspath, maxMemory);
   }
@@ -72,12 +72,12 @@ public class ProcessRunnerUtil {
       }
       commands.add("-Xdock:icon=" + icons.getAbsolutePath() + "");
     }
-    final String version = System.getProperty(GameRunner2.TRIPLEA_ENGINE_VERSION_BIN);
+    final String version = System.getProperty(GameRunner.TRIPLEA_ENGINE_VERSION_BIN);
     if (version != null && version.length() > 0) {
       final Version testVersion;
       try {
         testVersion = new Version(version);
-        commands.add("-D" + GameRunner2.TRIPLEA_ENGINE_VERSION_BIN + "=" + testVersion.toString());
+        commands.add("-D" + GameRunner.TRIPLEA_ENGINE_VERSION_BIN + "=" + testVersion.toString());
       } catch (final Exception e) {
         // nothing
       }
@@ -85,7 +85,7 @@ public class ProcessRunnerUtil {
     // since we are setting the xmx already, we need to
     // make sure this property is set so that triplea
     // doesn't restart
-    commands.add("-D" + GameRunner2.TRIPLEA_MEMORY_SET + "=" + Boolean.TRUE.toString());
+    commands.add("-D" + GameRunner.TRIPLEA_MEMORY_SET + "=" + Boolean.TRUE.toString());
   }
 
   public static void exec(final List<String> commands) {

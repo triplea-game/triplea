@@ -35,7 +35,7 @@ import games.strategy.triplea.settings.scrolling.ScrollSettings;
  *
  * Third Note: Any classes created by ClientContext cannot call ClientContext in their constructor, all dependencies
  * must be passed to them.
- * Since GameRunner2 creates ClientContext, similar none of the classes created by Client Context can game runner 2
+ * Since GameRunner creates ClientContext, similar none of the classes created by Client Context can game runner 2
  */
 public final class ClientContext {
   private static final ClientContext instance = new ClientContext();

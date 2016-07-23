@@ -26,7 +26,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
@@ -705,7 +705,7 @@ public class BattleCalculator {
       final Collection<Unit> amphibiousLandAttackers, final Territory battlesite, final IntegerMap<UnitType> costs,
       final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
       final boolean bonus) {
-    if (!GameRunner2.getCasualtySelectionSlow()) {
+    if (!GameRunner.getCasualtySelectionSlow()) {
       return sortUnitsForCasualtiesWithSupportNewWithCaching(targetsToPickFrom, defending, player,
           enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs, territoryEffects, data,
           bonus);

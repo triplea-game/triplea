@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
+import games.strategy.engine.framework.GameRunner;
 
 public class LoadGameUtil {
 
@@ -89,7 +90,7 @@ public class LoadGameUtil {
 
   /* From the Game Runner root location, walk up directories until we find a given folder */
   private static File getParentFolder(final String folderToFind) {
-    File f = new File(ClientFileSystemHelper.getGameRunnerFileLocation("GameRunner2.class"));
+    File f = new File(ClientFileSystemHelper.getGameRunnerFileLocation(GameRunner.class.getSimpleName() + ".class"));
 
     while (f != null && f.exists() && !folderContains(f, folderToFind)) {
       f = f.getParentFile();

@@ -20,7 +20,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
@@ -136,7 +136,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
       final HostConfiguration config = client.getHostConfiguration();
       config.setHost(host, port);
       // add the proxy
-      GameRunner2.addProxy(config);
+      GameRunner.addProxy(config);
       client.executeMethod(post);
       final String result = post.getResponseBodyAsString();
       return result;
