@@ -24,28 +24,29 @@ import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.util.Version;
 
 public class EngineVersionProperties {
-  private final Version m_latestVersionOut;
-  private final String m_link;
-  private final String m_linkAlt;
-  private final String m_changelogLink;
-  private static final String s_linkToTripleA = "https://raw.githubusercontent.com/triplea-game/triplea/master/latest_version.properties";
+  private final Version latestVersionOut;
+  private final String link;
+  private final String linkAlt;
+  private final String changelogLink;
+  private static final String TRIPLEA_VERSION_LINK =
+      "https://raw.githubusercontent.com/triplea-game/triplea/master/latest_version.properties";
 
   private EngineVersionProperties(final URL url) {
     this(getProperties(url));
   }
 
   private EngineVersionProperties(final Properties props) {
-    m_latestVersionOut =
+    latestVersionOut =
         new Version(props.getProperty("LATEST", ClientContext.engineVersion().getVersion().toStringFull(".")));
-    m_link = props.getProperty("LINK", "http://triplea-game.github.io/");
-    m_linkAlt = props.getProperty("LINK_ALT", "http://triplea-game.github.io/download/");
-    m_changelogLink = props.getProperty("CHANGELOG", "http://triplea-game.github.io/release_notes/");
+    link = props.getProperty("LINK", "http://triplea-game.github.io/");
+    linkAlt = props.getProperty("LINK_ALT", "http://triplea-game.github.io/download/");
+    changelogLink = props.getProperty("CHANGELOG", "http://triplea-game.github.io/release_notes/");
   }
 
   public static EngineVersionProperties contactServerForEngineVersionProperties() {
     final URL engineversionPropsURL;
     try {
-      engineversionPropsURL = new URL(s_linkToTripleA);
+      engineversionPropsURL = new URL(TRIPLEA_VERSION_LINK);
     } catch (final MalformedURLException e) {
       ClientLogger.logQuietly(e);
       return new EngineVersionProperties(new Properties());
@@ -82,27 +83,27 @@ public class EngineVersionProperties {
   private static Properties getProperties(final URL url) {
     final Properties props = new Properties();
     try {
-      props.load(new URL(s_linkToTripleA).openStream());
+      props.load(new URL(TRIPLEA_VERSION_LINK).openStream());
     } catch (IOException e) {
-      ClientLogger.logError("Failed while attempting to check for a new Version", e);
+      ClientLogger.logQuietly("Failed while attempting to check for a new Version", e);
     }
     return props;
   }
 
   public Version getLatestVersionOut() {
-    return m_latestVersionOut;
+    return latestVersionOut;
   }
 
   public String getLinkToDownloadLatestVersion() {
-    return m_link;
+    return link;
   }
 
   public String getLinkAltToDownloadLatestVersion() {
-    return m_linkAlt;
+    return linkAlt;
   }
 
   public String getChangeLogLink() {
-    return m_changelogLink;
+    return changelogLink;
   }
 
   private String getOutOfDateMessage() {
