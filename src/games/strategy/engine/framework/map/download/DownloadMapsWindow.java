@@ -86,6 +86,7 @@ public class DownloadMapsWindow extends JFrame {
     dia.setLocationRelativeTo(parentFrame);
     dia.setMinimumSize(new Dimension(200, 200));
     dia.setVisible(true);
+    SwingUtilities.invokeLater(() -> dia.requestFocus());
   }
 
   private DownloadMapsWindow(final Optional<String> mapName, final List<DownloadFileDescription> games) {
@@ -161,7 +162,7 @@ public class DownloadMapsWindow extends JFrame {
     }
 
     // otherwise show the updates first
-    if( outOfDate != null ) {
+    if (outOfDate != null) {
       tabbedPane.addTab("Update", outOfDate);
     }
 
@@ -216,16 +217,18 @@ public class DownloadMapsWindow extends JFrame {
     return main;
   }
 
-  private DownloadFileDescription determineCurrentMapSelection(final List<DownloadFileDescription> maps, Optional<String> mapToSelect) {
-    if( mapToSelect.isPresent() ) {
-      Optional<DownloadFileDescription> potentialMap = maps.stream().filter(m -> m.getMapName().equalsIgnoreCase(mapToSelect.get())).findFirst();
-      if( potentialMap.isPresent() ) {
+  private DownloadFileDescription determineCurrentMapSelection(final List<DownloadFileDescription> maps,
+      Optional<String> mapToSelect) {
+    if (mapToSelect.isPresent()) {
+      Optional<DownloadFileDescription> potentialMap =
+          maps.stream().filter(m -> m.getMapName().equalsIgnoreCase(mapToSelect.get())).findFirst();
+      if (potentialMap.isPresent()) {
         return potentialMap.get();
       }
     }
 
     Optional<DownloadFileDescription> map = maps.stream().filter(m -> !m.isDummyUrl()).findFirst();
-    if( map.isPresent() ) {
+    if (map.isPresent()) {
       return map.get();
     }
     return maps.stream().findFirst().get();
@@ -254,8 +257,9 @@ public class DownloadMapsWindow extends JFrame {
         String mapName = gamesList.getModel().getElementAt(index);
 
         // find the map description by map name and update the map download detail panel
-        Optional<DownloadFileDescription> map = maps.stream().filter(mapDescription -> mapDescription.getMapName().equals(mapName)).findFirst();
-        if(map.isPresent()) {
+        Optional<DownloadFileDescription> map =
+            maps.stream().filter(mapDescription -> mapDescription.getMapName().equals(mapName)).findFirst();
+        if (map.isPresent()) {
           String text = createEditorPaneText(map.get());
           descriptionPanel.setText(text);
           descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
