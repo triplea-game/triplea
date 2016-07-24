@@ -46,8 +46,6 @@ import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.IGameLoader;
-import games.strategy.performance.Perf;
-import games.strategy.performance.PerfTimer;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
