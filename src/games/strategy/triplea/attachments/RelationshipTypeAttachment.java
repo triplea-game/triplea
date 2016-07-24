@@ -89,7 +89,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     } else if (archeType.toLowerCase().equals(ARCHETYPE_NEUTRAL)) {
       m_archeType = ARCHETYPE_NEUTRAL;
     } else {
-      throw new GameParseException("archeType must be " + ARCHETYPE_WAR + "," + ARCHETYPE_ALLIED + " or "
+      throw new GameParseException(getData(), "archeType must be " + ARCHETYPE_WAR + "," + ARCHETYPE_ALLIED + " or "
           + ARCHETYPE_NEUTRAL + " for " + thisErrorMsg());
     }
   }
@@ -195,17 +195,17 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     } else {
       final String[] s = integerCost.split(":");
       if (s.length < 1 || s.length > 2) {
-        throw new GameParseException("upkeepCost must have either 1 or 2 fields" + thisErrorMsg());
+        throw new GameParseException(getData(), "upkeepCost must have either 1 or 2 fields" + thisErrorMsg());
       }
       final int cost = getInt(s[0]);
       if (s.length == 2) {
         if (s[1].equals(UPKEEP_FLAT)) {
         } else if (s[1].equals(UPKEEP_PERCENTAGE)) {
           if (cost > 100) {
-            throw new GameParseException("upkeepCost may not have a percentage greater than 100" + thisErrorMsg());
+            throw new GameParseException(getData(), "upkeepCost may not have a percentage greater than 100" + thisErrorMsg());
           }
         } else {
-          throw new GameParseException(
+          throw new GameParseException(getData(),
               "upkeepCost must have either: " + UPKEEP_FLAT + " or " + UPKEEP_PERCENTAGE + thisErrorMsg());
         }
       }
@@ -227,7 +227,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAlliancesCanChainTogether(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
-      throw new GameParseException("alliancesCanChainTogether must be either " + PROPERTY_DEFAULT + " or "
+      throw new GameParseException(getData(), "alliancesCanChainTogether must be either " + PROPERTY_DEFAULT + " or "
           + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
     }
     m_alliancesCanChainTogether = value;
@@ -247,7 +247,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setIsDefaultWarPosition(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
-      throw new GameParseException("isDefaultWarPosition must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE
+      throw new GameParseException(getData(), "isDefaultWarPosition must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE
           + " or " + PROPERTY_TRUE + thisErrorMsg());
     }
     m_isDefaultWarPosition = value;
@@ -267,7 +267,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setGivesBackOriginalTerritories(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
-      throw new GameParseException("givesBackOriginalTerritories must be either " + PROPERTY_DEFAULT + " or "
+      throw new GameParseException(getData(), "givesBackOriginalTerritories must be either " + PROPERTY_DEFAULT + " or "
           + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
     }
     m_givesBackOriginalTerritories = value;
@@ -287,7 +287,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setCanMoveIntoDuringCombatMove(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
-      throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or "
+      throw new GameParseException(getData(), "canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or "
           + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
     }
     m_canMoveIntoDuringCombatMove = value;
@@ -308,7 +308,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setCanMoveThroughCanals(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
-      throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or "
+      throw new GameParseException(getData(), "canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or "
           + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
     }
     m_canMoveThroughCanals = value;
@@ -329,7 +329,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setRocketsCanFlyOver(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
-      throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or "
+      throw new GameParseException(getData(), "canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or "
           + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
     }
     m_rocketsCanFlyOver = value;

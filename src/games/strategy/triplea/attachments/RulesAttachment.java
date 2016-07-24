@@ -157,17 +157,17 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     final String[] s = value.split(":");
     if (s.length != 2) {
-      throw new GameParseException(
+      throw new GameParseException(getData(),
           "destroyedTUV must have 2 fields, value=currentRound/allRounds, count= the amount of TUV that this player must destroy"
               + thisErrorMsg());
     }
     final int i = getInt(s[0]);
     if (i < -1) {
-      throw new GameParseException(
+      throw new GameParseException(getData(),
           "destroyedTUV count cannot be less than -1 [with -1 meaning the condition is not active]" + thisErrorMsg());
     }
     if (!(s[1].equals("currentRound") || s[1].equals("allRounds"))) {
-      throw new GameParseException("destroyedTUV value must be currentRound or allRounds" + thisErrorMsg());
+      throw new GameParseException(getData(), "destroyedTUV value must be currentRound or allRounds" + thisErrorMsg());
     }
     m_destroyedTUV = value;
   }
@@ -187,26 +187,27 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   public void setBattle(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length < 5) {
-      throw new GameParseException(
+      throw new GameParseException(getData(),
           "battle must have at least 5 fields, attacker:defender:resultType:round:territory1..." + thisErrorMsg());
     }
     final PlayerID attacker = getData().getPlayerList().getPlayerID(s[0]);
     if (attacker == null && !s[0].equalsIgnoreCase("any")) {
-      throw new GameParseException("no player named: " + s[0] + thisErrorMsg());
+      throw new GameParseException(getData(), "no player named: " + s[0] + thisErrorMsg());
     }
     final PlayerID defender = getData().getPlayerList().getPlayerID(s[1]);
     if (defender == null && !s[1].equalsIgnoreCase("any")) {
-      throw new GameParseException("no player named: " + s[1] + thisErrorMsg());
+      throw new GameParseException(getData(), "no player named: " + s[1] + thisErrorMsg());
     }
     if (!s[2].equalsIgnoreCase("any")) {
-      throw new GameParseException("battle allows the following for resultType: any" + thisErrorMsg());
+      throw new GameParseException(getData(), "battle allows the following for resultType: any" + thisErrorMsg());
     }
     if (!s[3].equalsIgnoreCase("currentRound")) {
       try {
         getInt(s[3].split("-")[0]);
         getInt(s[3].split("-")[1]);
       } catch (final Exception e) {
-        throw new GameParseException("round must either be currentRound or two numbers like: 2-4" + thisErrorMsg());
+        throw new GameParseException(getData(),
+            "round must either be currentRound or two numbers like: 2-4" + thisErrorMsg());
       }
     }
     final ArrayList<Territory> terrs = new ArrayList<>();
@@ -215,7 +216,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     for (int i = 4; i < s.length; i++) {
       final Territory t = map.getTerritory(s[i]);
       if (t == null) {
-        throw new GameParseException("no such territory called: " + s[i] + thisErrorMsg());
+        throw new GameParseException(getData(), "no such territory called: " + s[i] + thisErrorMsg());
       }
       terrs.add(t);
     }
@@ -249,27 +250,27 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   public void setRelationship(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length < 3 || s.length > 4) {
-      throw new GameParseException(
+      throw new GameParseException(getData(),
           "relationship should have value=\"playername1:playername2:relationshiptype:numberOfRoundsExisting\""
               + thisErrorMsg());
     }
     if (getData().getPlayerList().getPlayerID(s[0]) == null) {
-      throw new GameParseException(
+      throw new GameParseException(getData(),
           "playername: " + s[0] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
     }
     if (getData().getPlayerList().getPlayerID(s[1]) == null) {
-      throw new GameParseException(
+      throw new GameParseException(getData(),
           "playername: " + s[1] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
     }
     if (!(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
         || Matches.isValidRelationshipName(getData()).match(s[2]))) {
-      throw new GameParseException(
+      throw new GameParseException(getData(),
           "relationship: " + s[2] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
     }
     if (s.length == 4 && Integer.parseInt(s[3]) < -1) {
-      throw new GameParseException(
+      throw new GameParseException(getData(),
           "numberOfRoundsExisting should be a number between -1 and 100000.  -1 should be default value if you don't know what to put"
               + thisErrorMsg());
     }
@@ -513,20 +514,20 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   public void setUnitPresence(String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 1) {
-      throw new GameParseException(
+      throw new GameParseException(getData(),
           "unitPresence must have at least 2 fields. Format value=unit1 count=number, or value=unit1:unit2:unit3 count=number"
               + thisErrorMsg());
     }
     final int n = getInt(s[0]);
     if (n < 0) {
-      throw new GameParseException("unitPresence must be a positive integer" + thisErrorMsg());
+      throw new GameParseException(getData(), "unitPresence must be a positive integer" + thisErrorMsg());
     }
     for (int i = 1; i < s.length; i++) {
       final String unitTypeToProduce = s[i];
       // validate that this unit exists in the xml
       final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
       if (ut == null && !(unitTypeToProduce.equals("any") || unitTypeToProduce.equals("ANY"))) {
-        throw new GameParseException("No unit called: " + unitTypeToProduce + thisErrorMsg());
+        throw new GameParseException(getData(), "No unit called: " + unitTypeToProduce + thisErrorMsg());
       }
     }
     value = value.replaceFirst(s[0] + ":", "");
@@ -567,7 +568,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final String[] s = players.split(":");
     int count = -1;
     if (s.length < 1) {
-      throw new GameParseException("Empty enemy list" + thisErrorMsg());
+      throw new GameParseException(getData(), "Empty enemy list" + thisErrorMsg());
     }
     try {
       count = getInt(s[0]);
@@ -576,13 +577,13 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       m_atWarCount = 0;
     }
     if (s.length < 1 || s.length == 1 && count != -1) {
-      throw new GameParseException("Empty enemy list" + thisErrorMsg());
+      throw new GameParseException(getData(), "Empty enemy list" + thisErrorMsg());
     }
     m_atWarPlayers = new HashSet<>();
     for (int i = count == -1 ? 0 : 1; i < s.length; i++) {
       final PlayerID player = getData().getPlayerList().getPlayerID(s[i]);
       if (player == null) {
-        throw new GameParseException("Could not find player. name:" + s[i] + thisErrorMsg());
+        throw new GameParseException(getData(), "Could not find player. name:" + s[i] + thisErrorMsg());
       }
       m_atWarPlayers.add(player);
     }
@@ -610,7 +611,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final String[] s = newTechs.split(":");
     int count = -1;
     if (s.length < 1) {
-      throw new GameParseException("Empty tech list" + thisErrorMsg());
+      throw new GameParseException(getData(), "Empty tech list" + thisErrorMsg());
     }
     try {
       count = getInt(s[0]);
@@ -619,7 +620,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       m_techCount = 0;
     }
     if (s.length < 1 || s.length == 1 && count != -1) {
-      throw new GameParseException("Empty tech list" + thisErrorMsg());
+      throw new GameParseException(getData(), "Empty tech list" + thisErrorMsg());
     }
     m_techs = new ArrayList<>();
     for (int i = count == -1 ? 0 : 1; i < s.length; i++) {
@@ -628,7 +629,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
       }
       if (ta == null) {
-        throw new GameParseException("Technology not found :" + Arrays.toString(s) + thisErrorMsg());
+        throw new GameParseException(getData(), "Technology not found :" + Arrays.toString(s) + thisErrorMsg());
       }
       m_techs.add(ta);
     }
