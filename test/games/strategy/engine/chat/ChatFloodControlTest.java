@@ -1,14 +1,10 @@
 package games.strategy.engine.chat;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
+import org.junit.Test;
 
-
-@RunWith(JUnitPlatform.class)
 public class ChatFloodControlTest {
   private final ChatFloodControl fc = new ChatFloodControl();
 
