@@ -12,6 +12,7 @@ public class ClientLogger {
   }
 
   private static void log(final PrintStream stream, final Throwable e) {
+    stream.println("Exception: " + e.getMessage());
     e.printStackTrace(stream);
   }
 
