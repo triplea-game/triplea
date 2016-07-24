@@ -45,7 +45,6 @@ public class NewGameChooser extends JDialog {
     setupListeners();
     setWidgetActivation();
     updateInfoPanel();
-    refreshGameList();
   }
 
   private void createComponents() {
@@ -197,24 +196,6 @@ public class NewGameChooser extends JDialog {
   /** Populates the NewGameChooserModel cache if empty, then returns the cached instance */
   public synchronized static NewGameChooserModel getNewGameChooserModel() {
       return new NewGameChooserModel();
-  }
-
-
-  /**
-   * Refreshes the game list (from disk) then caches the new list
-   */
-  private void refreshGameList() {
-    gameList.setEnabled(false);
-    final NewGameChooserEntry selected = getSelected();
-        try {
-          gameListModel = getNewGameChooserModel();
-          gameList.setModel(gameListModel);
-          if(selected != null){
-            selectGame(selected.getGameData().getGameName());
-          }
-        } finally {
-          gameList.setEnabled(true);
-        }
   }
 
   private void selectAndReturn() {

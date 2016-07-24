@@ -15,7 +15,7 @@ import games.strategy.engine.history.History;
 import games.strategy.engine.history.HistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.ChannelMessenger;
-import games.strategy.engine.message.UnifiedMessenger;
+import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.net.IServerMessenger;

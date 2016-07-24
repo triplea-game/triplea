@@ -21,7 +21,7 @@ public class BombingUnitDamageChange extends Change {
     return hits.keySet();
   }
 
-  BombingUnitDamageChange(final IntegerMap<Unit> hits) {
+  public BombingUnitDamageChange(final IntegerMap<Unit> hits) {
     for (final Unit u : hits.keySet()) {
       if (!(u instanceof TripleAUnit)) {
         throw new IllegalArgumentException("BombingUnitDamage can only apply to a TripleAUnit object");

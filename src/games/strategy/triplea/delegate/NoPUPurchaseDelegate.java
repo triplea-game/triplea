@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;

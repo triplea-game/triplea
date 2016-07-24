@@ -20,7 +20,7 @@ public class UnitHitsChange extends Change {
     return m_hits.keySet();
   }
 
-  UnitHitsChange(final IntegerMap<Unit> hits) {
+  public UnitHitsChange(final IntegerMap<Unit> hits) {
     m_hits = hits.copy();
     m_undoHits = new IntegerMap<>();
     for (final Unit item : m_hits.keySet()) {

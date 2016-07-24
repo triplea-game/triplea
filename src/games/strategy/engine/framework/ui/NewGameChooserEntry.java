@@ -17,7 +17,7 @@ import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.Constants;
 
 public class NewGameChooserEntry {
@@ -51,7 +51,7 @@ public class NewGameChooserEntry {
     }
 
     try (InputStream input = inputStream.get()) {
-      final boolean delayParsing = GameRunner2.getDelayedParsing();
+      final boolean delayParsing = GameRunner.getDelayedParsing();
       m_data = new GameParser().parse(input, gameName, delayParsing);
       m_gameDataFullyLoaded = !delayParsing;
       m_gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
@@ -76,15 +76,15 @@ public class NewGameChooserEntry {
 
     } catch (final EngineVersionException e) {
       ClientLogger.logQuietly(e);
-      throw new GameParseException(e.getMessage());
+      throw new GameParseException(m_url.toString(), e.getMessage());
     } catch (final SAXParseException e) {
       String msg = "Could not parse:" + m_url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber();
       ClientLogger.logError(msg, e);
-      throw new GameParseException(e.getMessage());
+      throw new GameParseException(m_url.toString(), e.getMessage());
     } catch (final Exception e) {
       String msg = "Could not parse:" + m_url;
       ClientLogger.logError(msg, e);
-      throw new GameParseException(e.getMessage());
+      throw new GameParseException(m_url.toString(), e.getMessage());
     }
   }
 

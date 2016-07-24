@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
 import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.util.CountDownLatchHandler;
@@ -55,7 +55,7 @@ public class MapDownloadController {
    */
   public boolean checkDownloadedMapsAreLatest() {
     try {
-      final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
+      final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
       // check at most once per month
       final Calendar calendar = Calendar.getInstance();
       final int year = calendar.get(Calendar.YEAR);

@@ -114,7 +114,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   private void setCombatEffect(final String combatEffect, final boolean defending) throws GameParseException {
     final String[] s = combatEffect.split(":");
     if (s.length < 2) {
-      throw new GameParseException(
+      throw new GameParseException(getData(),
           "combatDefenseEffect and combatOffenseEffect must have a count and at least one unitType" + thisErrorMsg());
     }
     final Iterator<String> iter = Arrays.asList(s).iterator();
@@ -123,7 +123,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
       final String unitTypeToProduce = iter.next();
       final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
       if (ut == null) {
-        throw new GameParseException("No unit called:" + unitTypeToProduce + thisErrorMsg());
+        throw new GameParseException(getData(), "No unit called:" + unitTypeToProduce + thisErrorMsg());
       }
       if (defending) {
         m_combatDefenseEffect.put(ut, effect);
@@ -151,12 +151,12 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   public void setNoBlitz(final String noBlitzUnitTypes) throws GameParseException {
     final String[] s = noBlitzUnitTypes.split(":");
     if (s.length < 1) {
-      throw new GameParseException("noBlitz must have at least one unitType" + thisErrorMsg());
+      throw new GameParseException(getData(), "noBlitz must have at least one unitType" + thisErrorMsg());
     }
     for (final String unitTypeName : Arrays.asList(s)) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeName);
       if (ut == null) {
-        throw new GameParseException("No unit called:" + unitTypeName + thisErrorMsg());
+        throw new GameParseException(getData(), "No unit called:" + unitTypeName + thisErrorMsg());
       }
       m_noBlitz.add(ut);
     }
@@ -189,12 +189,12 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   public void setUnitsNotAllowed(final String unitsNotAllowedUnitTypes) throws GameParseException {
     final String[] s = unitsNotAllowedUnitTypes.split(":");
     if (s.length < 1) {
-      throw new GameParseException("unitsNotAllowed must have at least one unitType" + thisErrorMsg());
+      throw new GameParseException(getData(), "unitsNotAllowed must have at least one unitType" + thisErrorMsg());
     }
     for (final String unitTypeName : s) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeName);
       if (ut == null) {
-        throw new GameParseException("No unit called:" + unitTypeName + thisErrorMsg());
+        throw new GameParseException(getData(), "No unit called:" + unitTypeName + thisErrorMsg());
       }
       m_unitsNotAllowed.add(ut);
     }

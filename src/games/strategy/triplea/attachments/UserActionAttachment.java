@@ -71,7 +71,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     // triggerName:numberOfTimes:useUses:testUses:testConditions:testChance
     final String[] s = value.split(":");
     if (s.length != 6) {
-      throw new GameParseException(
+      throw new GameParseException(getData(),
           "activateTrigger must have 6 parts: triggerName:numberOfTimes:useUses:testUses:testConditions:testChance"
               + thisErrorMsg());
     }
@@ -88,13 +88,13 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
       }
     }
     if (trigger == null) {
-      throw new GameParseException("No TriggerAttachment named: " + s[0] + thisErrorMsg());
+      throw new GameParseException(getData(), "No TriggerAttachment named: " + s[0] + thisErrorMsg());
     }
     String options = value;
     options = options.replaceFirst((s[0] + ":"), "");
     final int numberOfTimes = getInt(s[1]);
     if (numberOfTimes < 0) {
-      throw new GameParseException(
+      throw new GameParseException(getData(),
           "activateTrigger must be positive for the number of times to fire: " + s[1] + thisErrorMsg());
     }
     getBool(s[2]);

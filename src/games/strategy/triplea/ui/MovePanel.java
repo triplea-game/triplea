@@ -2,10 +2,8 @@ package games.strategy.triplea.ui;
 
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,11 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JOptionPane;
 
-import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -35,6 +30,7 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
+import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
@@ -1546,30 +1542,6 @@ public class MovePanel extends AbstractMovePanel {
     }
     if (!highlight.isEmpty()) {
       getMap().setUnitHighlight(highlight);
-    }
-  }
-
-}
-
-
-/**
- * Avoid holding a strong reference to the action
- * fixes a memory leak in swing.
- */
-class WeakAction extends AbstractAction {
-  private static final long serialVersionUID = 8931357243476123862L;
-  private final WeakReference<Action> delegate;
-
-  WeakAction(final String name, final Action delegate) {
-    super(name);
-    this.delegate = new WeakReference<>(delegate);
-  }
-
-  @Override
-  public void actionPerformed(final ActionEvent e) {
-    final Action a = delegate.get();
-    if (a != null) {
-      a.actionPerformed(e);
     }
   }
 }

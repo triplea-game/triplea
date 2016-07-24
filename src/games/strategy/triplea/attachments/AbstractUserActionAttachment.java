@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
@@ -118,7 +118,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
       if (tempPlayer != null) {
         m_actionAccept.add(tempPlayer);
       } else {
-        throw new GameParseException("No player named: " + name + thisErrorMsg());
+        throw new GameParseException(getData(), "No player named: " + name + thisErrorMsg());
       }
     }
   }
@@ -214,7 +214,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   public void validate(final GameData data) throws GameParseException {
     super.validate(data);
     if (m_text.trim().length() <= 0) {
-      throw new GameParseException("value: text can't be empty" + thisErrorMsg());
+      throw new GameParseException(getData(), "value: text can't be empty" + thisErrorMsg());
     }
   }
 }

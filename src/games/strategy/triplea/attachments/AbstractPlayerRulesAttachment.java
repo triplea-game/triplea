@@ -104,7 +104,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
       return;
     }
     if (!(value.equals("disallowed") || value.equals("allowed"))) {
-      throw new GameParseException("movementRestrictionType must be allowed or disallowed" + thisErrorMsg());
+      throw new GameParseException(getData(), "movementRestrictionType must be allowed or disallowed" + thisErrorMsg());
     }
     m_movementRestrictionType = value;
   }
@@ -127,7 +127,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   public void setProductionPerXTerritories(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException(
+      throw new GameParseException(getData(),
           "productionPerXTerritories cannot be empty or have more than two fields" + thisErrorMsg());
     }
     String unitTypeToProduce;
@@ -139,11 +139,11 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
     if (ut == null) {
-      throw new GameParseException("No unit called: " + unitTypeToProduce + thisErrorMsg());
+      throw new GameParseException(getData(), "No unit called: " + unitTypeToProduce + thisErrorMsg());
     }
     final int n = getInt(s[0]);
     if (n <= 0) {
-      throw new GameParseException("productionPerXTerritories must be a positive integer" + thisErrorMsg());
+      throw new GameParseException(getData(), "productionPerXTerritories must be a positive integer" + thisErrorMsg());
     }
     m_productionPerXTerritories.put(ut, n);
   }

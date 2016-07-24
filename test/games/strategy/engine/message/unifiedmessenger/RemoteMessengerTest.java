@@ -1,4 +1,4 @@
-package games.strategy.engine.message;
+package games.strategy.engine.message.unifiedmessenger;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -24,6 +24,13 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.message.ConnectionLostException;
+import games.strategy.engine.message.IRemote;
+import games.strategy.engine.message.MessageContext;
+import games.strategy.engine.message.RemoteMessenger;
+import games.strategy.engine.message.RemoteName;
+import games.strategy.engine.message.RemoteNotFoundException;
+import games.strategy.engine.message.UnifiedMessengerHub;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;

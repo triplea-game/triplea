@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.FileHandler;
 
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 
 public class RotatingLogFileHandlerForHeadlessGameServer extends FileHandler {
@@ -22,7 +22,7 @@ public class RotatingLogFileHandlerForHeadlessGameServer extends FileHandler {
       logDir.mkdir();
     }
     final String serverInstanceName =
-        System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY, System.getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY, ""));
+        System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY, System.getProperty(GameRunner.LOBBY_GAME_HOSTED_BY, ""));
     logFile = new File(logDir, "headless-game-server-" + serverInstanceName + "-log%g.txt").getAbsolutePath();
     System.out.print("logging to :" + logFile);
   }

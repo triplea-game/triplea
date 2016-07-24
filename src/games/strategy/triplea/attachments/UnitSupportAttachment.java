@@ -101,7 +101,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     for (final String element : s) {
       final UnitType type = getData().getUnitTypeList().getUnitType(element);
       if (type == null) {
-        throw new GameParseException("Could not find unitType. name:" + element + thisErrorMsg());
+        throw new GameParseException(getData(), "Could not find unitType. name:" + element + thisErrorMsg());
       }
       m_unitType.add(type);
     }
@@ -131,7 +131,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
       } else if (element.equalsIgnoreCase("enemy")) {
         m_enemy = true;
       } else {
-        throw new GameParseException(faction + " faction must be allied, or enemy" + thisErrorMsg());
+        throw new GameParseException(getData(), faction + " faction must be allied, or enemy" + thisErrorMsg());
       }
     }
     m_faction = faction;
@@ -162,7 +162,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
       } else if (element.equalsIgnoreCase("offence")) {
         m_offence = true;
       } else {
-        throw new GameParseException(side + " side must be defence or offence" + thisErrorMsg());
+        throw new GameParseException(getData(), side + " side must be defence or offence" + thisErrorMsg());
       }
     }
     m_side = side;
@@ -193,7 +193,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
       } else if (element.equalsIgnoreCase("strength")) {
         m_strength = true;
       } else {
-        throw new GameParseException(dice + " dice must be roll or strength" + thisErrorMsg());
+        throw new GameParseException(getData(), dice + " dice must be roll or strength" + thisErrorMsg());
       }
     }
     m_dice = dice;
@@ -262,7 +262,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     for (final String element : s) {
       final PlayerID player = getData().getPlayerList().getPlayerID(element);
       if (player == null) {
-        throw new GameParseException("Could not find player. name:" + element + thisErrorMsg());
+        throw new GameParseException(getData(), "Could not find player. name:" + element + thisErrorMsg());
       } else {
         m_players.add(player);
       }
