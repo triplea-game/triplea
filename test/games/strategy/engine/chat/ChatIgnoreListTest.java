@@ -1,26 +1,23 @@
 package games.strategy.engine.chat;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-@RunWith(JUnitPlatform.class)
 public class ChatIgnoreListTest {
-  @BeforeEach
+  @Before
   public void setUp() throws BackingStoreException {
     // clear this
     clearStore();
   }
 
-  @AfterEach
+  @After
   public void tearDown() throws BackingStoreException {
     clearStore();
   }

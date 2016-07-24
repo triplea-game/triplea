@@ -1,17 +1,15 @@
 package games.strategy.engine.chat;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.lobby.server.NullModeratorController;
@@ -28,7 +26,6 @@ import games.strategy.sound.SoundPath;
 import games.strategy.test.TestUtil;
 import games.strategy.util.ThreadUtil;
 
-@RunWith(JUnitPlatform.class)
 public class ChatTest {
   private static int SERVER_PORT = -1;
   private IServerMessenger m_server;
@@ -48,7 +45,7 @@ public class ChatTest {
   TestChatListener m_client2ChatListener;
   NullModeratorController m_smc;
 
-  @BeforeEach
+  @Before
   public void setUp() throws IOException {
     SERVER_PORT = TestUtil.getUniquePort();
     m_server = new ServerMessenger("Server", SERVER_PORT);
@@ -72,7 +69,7 @@ public class ChatTest {
     m_client2ChatListener = new TestChatListener();
   }
 
-  @AfterEach
+  @After
   public void tearDown() {
     try {
       if (m_server != null) {
