@@ -179,7 +179,6 @@ public class GameData implements java.io.Serializable {
    * @return the Technology Frontier for this game.
    */
   public TechnologyFrontier getTechnologyFrontier() {
-    ensureLockHeld();
     return technologyFrontier;
   }
 
