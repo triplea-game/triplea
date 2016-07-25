@@ -46,7 +46,6 @@ import games.strategy.util.Util;
  */
 public class HeadlessGameServer {
 
-  public static final String TRIPLEA_GAME_HOST_UI_PROPERTY = "triplea.game.host.ui";
   public static final String TRIPLEA_HEADLESS = "triplea.headless";
   public static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.game.host.console";
   final static Logger s_logger = Logger.getLogger(HeadlessGameServer.class.getName());
@@ -65,8 +64,8 @@ public class HeadlessGameServer {
 
   private static void usage() {
     System.out.println("\nUsage and Valid Arguments:\n" + "   " + GameRunner.TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
-        + "   " + TRIPLEA_GAME_HOST_CONSOLE_PROPERTY + "=<true/false>\n" + "   " + TRIPLEA_GAME_HOST_UI_PROPERTY
-        + "=<true/false>\n" + "   " + GameRunner.TRIPLEA_SERVER_PROPERTY + "=true\n" + "   "
+        + "   " + TRIPLEA_GAME_HOST_CONSOLE_PROPERTY + "=<true/false>\n" + "   "
+        + "   " + GameRunner.TRIPLEA_SERVER_PROPERTY + "=true\n" + "   "
         + GameRunner.TRIPLEA_PORT_PROPERTY + "=<PORT>\n" + "   " + GameRunner.TRIPLEA_NAME_PROPERTY
         + "=<PLAYER_NAME>\n" + "   " + GameRunner.LOBBY_HOST + "=<LOBBY_HOST>\n" + "   "
         + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY
@@ -88,10 +87,6 @@ public class HeadlessGameServer {
 
   public static synchronized HeadlessGameServer getInstance() {
     return s_instance;
-  }
-
-  public static synchronized boolean getUseGameServerUI() {
-    return Boolean.parseBoolean(System.getProperty(TRIPLEA_GAME_HOST_UI_PROPERTY, "false"));
   }
 
   public static synchronized boolean headless() {
@@ -538,7 +533,7 @@ public class HeadlessGameServer {
 
   public static String[] getProperties() {
     return new String[] {GameRunner.TRIPLEA_GAME_PROPERTY, TRIPLEA_GAME_HOST_CONSOLE_PROPERTY,
-        TRIPLEA_GAME_HOST_UI_PROPERTY, GameRunner.TRIPLEA_SERVER_PROPERTY, GameRunner.TRIPLEA_PORT_PROPERTY,
+        GameRunner.TRIPLEA_SERVER_PROPERTY, GameRunner.TRIPLEA_PORT_PROPERTY,
         GameRunner.TRIPLEA_NAME_PROPERTY, GameRunner.LOBBY_HOST, LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
         GameRunner.LOBBY_GAME_COMMENTS, GameRunner.LOBBY_GAME_HOSTED_BY, GameRunner.LOBBY_GAME_SUPPORT_EMAIL,
         GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, GameRunner.LOBBY_GAME_RECONNECTION,
