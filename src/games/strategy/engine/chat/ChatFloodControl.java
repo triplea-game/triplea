@@ -4,15 +4,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Simple flood control, only allow so many events per window of time
+ * Simple flood control, only allow so many events per window of time. During each rolling time window, anyone that
+ * sends more than "N" messages will be filtered until the next time window begins.
+ *
  */
 public class ChatFloodControl {
   private static final int ONE_MINUTE = 60 * 1000;
   static final int EVENTS_PER_WINDOW = 20;
   static final int WINDOW = ONE_MINUTE;
   private final Object lock = new Object();
-  private long clearTime = System.currentTimeMillis();
   private final Map<String, Integer> messageCount = new HashMap<>();
+  private long clearTime;
+
+  public ChatFloodControl() {
+    this(System.currentTimeMillis());
+  }
+
+  ChatFloodControl(long initialClearTime) {
+    clearTime = initialClearTime;
+  }
 
   public boolean allow(final String from, final long now) {
     synchronized (lock) {
@@ -22,9 +32,10 @@ public class ChatFloodControl {
         clearTime = now + WINDOW;
       }
       if (!messageCount.containsKey(from)) {
-        messageCount.put(from, 0);
+        messageCount.put(from, 1);
+      } else {
+        messageCount.put(from, messageCount.get(from) + 1);
       }
-      messageCount.put(from, messageCount.get(from) + 1);
       return messageCount.get(from) <= EVENTS_PER_WINDOW;
     }
   }
