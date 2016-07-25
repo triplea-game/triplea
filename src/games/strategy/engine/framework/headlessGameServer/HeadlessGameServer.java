@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.headlessGameServer;
 
-import java.awt.Dimension;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -13,10 +12,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.DebugUtils;
@@ -61,7 +56,6 @@ public class HeadlessGameServer {
   private final GameSelectorModel m_gameSelectorModel;
   private SetupPanelModel m_setupPanelModel = null;
   private HeadlessServerMainPanel m_mainPanel = null;
-  private final boolean m_useUI;
   private final ScheduledExecutorService m_lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
   private ServerGame m_iGame = null;
   private boolean m_shutDown = false;
@@ -451,20 +445,16 @@ public class HeadlessGameServer {
     return m_shutDown;
   }
 
-  public HeadlessGameServer(final boolean useUI) {
+  public HeadlessGameServer() {
     super();
     if (s_instance != null) {
       throw new IllegalStateException("Instance already exists");
     }
     s_instance = this;
-    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-      @Override
-      public void run() {
-        System.out.println("Running ShutdownHook.");
-        shutdown();
-      }
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      System.out.println("Running ShutdownHook.");
+      shutdown();
     }));
-    m_useUI = useUI;
     m_availableGames = new AvailableGames();
     m_gameSelectorModel = new GameSelectorModel();
     final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
@@ -476,40 +466,19 @@ public class HeadlessGameServer {
         m_gameSelectorModel.resetGameDataToNull();
       }
     }
-    if (m_useUI) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          System.out.println("Starting UI");
-          final JFrame frame = new JFrame("TripleA Headless Game Server UI Main Frame");
-          frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-          frame.setPreferredSize(new Dimension(700, 630));
-          frame.setSize(new Dimension(700, 630));
-          frame.setLocationRelativeTo(null);
-          m_setupPanelModel = new HeadlessServerSetupPanelModel(m_gameSelectorModel, frame);
-          m_setupPanelModel.showSelectType();
-          m_mainPanel = new HeadlessServerMainPanel(m_setupPanelModel, m_availableGames);
-          frame.getContentPane().add(m_mainPanel);
-          frame.pack();
-          frame.setVisible(true);
-          frame.toFront();
-          System.out.println("Waiting for users to connect.");
-        }
-      });
-    } else {
-      final Runnable r = new Runnable() {
-        @Override
-        public void run() {
-          System.out.println("Headless Start");
-          m_setupPanelModel = new HeadlessServerSetupPanelModel(m_gameSelectorModel, null);
-          m_setupPanelModel.showSelectType();
-          System.out.println("Waiting for users to connect.");
-          waitForUsersHeadless();
-        }
-      };
-      final Thread t = new Thread(r, "Initialize Headless Server Setup Model");
-      t.start();
-    }
+    final Runnable r = new Runnable() {
+      @Override
+      public void run() {
+        System.out.println("Headless Start");
+        m_setupPanelModel = new HeadlessServerSetupPanelModel(m_gameSelectorModel, null);
+        m_setupPanelModel.showSelectType();
+        System.out.println("Waiting for users to connect.");
+        waitForUsersHeadless();
+      }
+    };
+    final Thread t = new Thread(r, "Initialize Headless Server Setup Model");
+    t.start();
+
     int reconnect;
     try {
       final String reconnectionSeconds =
@@ -647,9 +616,7 @@ public class HeadlessGameServer {
 
   public void waitForUsersHeadless() {
     setServerGame(null);
-    if (m_useUI) {
-      return;
-    }
+
     final Runnable r = new Runnable() {
       @Override
       public void run() {
@@ -757,13 +724,10 @@ public class HeadlessGameServer {
     final PrintStream out = System.out;
     // after handling the command lines, because we use the triplea.game.name= property in our log file name
     setupLogging();
-    final boolean startUI = getUseGameServerUI();
-    if (!startUI) {
-      ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
-    }
+    ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
     HeadlessGameServer server = null;
     try {
-      server = new HeadlessGameServer(startUI);
+      server = new HeadlessGameServer();
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
     }

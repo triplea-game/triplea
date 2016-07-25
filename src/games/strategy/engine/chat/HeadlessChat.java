@@ -30,7 +30,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   private StringBuffer m_allText = new StringBuffer();
   private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("'('HH:mm:ss')'");
   private final ChatFloodControl floodControl = new ChatFloodControl();
-  public Set<String> m_hiddenPlayers = new HashSet<>();
+  private Set<String> m_hiddenPlayers = new HashSet<>();
   private final Set<INode> m_players = new HashSet<>();
   private PrintStream m_out = null;
 
