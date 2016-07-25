@@ -55,7 +55,6 @@ public class HeadlessGameServer {
   private final AvailableGames m_availableGames;
   private final GameSelectorModel m_gameSelectorModel;
   private SetupPanelModel m_setupPanelModel = null;
-  private HeadlessServerMainPanel m_mainPanel = null;
   private final ScheduledExecutorService m_lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
   private ServerGame m_iGame = null;
   private boolean m_shutDown = false;
@@ -609,7 +608,6 @@ public class HeadlessGameServer {
     }
     s_instance = null;
     m_setupPanelModel = null;
-    m_mainPanel = null;
     m_iGame = null;
     System.out.println("Shutdown Script Finished.");
   }

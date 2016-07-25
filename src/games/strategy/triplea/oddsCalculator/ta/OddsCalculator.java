@@ -388,7 +388,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 
 class DummyDelegateBridge implements IDelegateBridge {
   private final PlainRandomSource m_randomSource = new PlainRandomSource();
-  private final ITripleADisplay m_display = new HeadlessDisplay(null);
+  private final ITripleADisplay m_display = new HeadlessDisplay();
   private final ISound m_soundChannel = new HeadlessSoundChannel();
   private final DummyPlayer m_attackingPlayer;
   private final DummyPlayer m_defendingPlayer;

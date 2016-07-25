@@ -494,7 +494,7 @@ class ObjectiveProperties {
 
 
 class ObjectivePanelDummyDelegateBridge implements IDelegateBridge {
-  private final ITripleADisplay m_display = new HeadlessDisplay(null);
+  private final ITripleADisplay m_display = new HeadlessDisplay();
   private final ISound m_soundChannel =  new HeadlessSoundChannel();
   private final DelegateHistoryWriter m_writer = new DelegateHistoryWriter(new DummyGameModifiedChannel());
   private final GameData m_data;

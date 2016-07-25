@@ -8,7 +8,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.display.IDisplayBridge;
-import games.strategy.engine.framework.headlessGameServer.HeadlessGameServerUI;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
@@ -16,10 +15,7 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
 
 public class HeadlessDisplay implements ITripleADisplay {
   
-  private HeadlessGameServerUI ui;
-  
-  public HeadlessDisplay(HeadlessGameServerUI ui){
-    this.ui = ui;
+  public HeadlessDisplay(){
   }
 
   @Override
@@ -27,7 +23,6 @@ public class HeadlessDisplay implements ITripleADisplay {
 
   @Override
   public void shutDown() {
-    ui.stopGame();
   }
 
   @Override
