@@ -62,74 +62,71 @@ import games.strategy.net.ServerMessenger;
 import games.strategy.util.Version;
 
 public class ServerModel extends Observable implements IMessengerErrorListener, IConnectionChangeListener {
-  public static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
   public static final RemoteName SERVER_REMOTE_NAME =
       new RemoteName("games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE", IServerStartupRemote.class);
 
-  public static RemoteName getObserverWaitingToStartName(final INode node) {
+  public enum InteractionMode { HEADLESS, SWING_CLIENT_UI }
+
+  static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
+  static final String PLAYERNAME = "PlayerName";
+  static RemoteName getObserverWaitingToStartName(final INode node) {
     return new RemoteName("games.strategy.engine.framework.startup.mc.ServerModel.OBSERVER" + node.getName(),
         IObserverWaitingToJoin.class);
   }
 
-  final static String PLAYERNAME = "PlayerName";
-  private static Logger s_logger = Logger.getLogger(ServerModel.class.getName());
-  private final GameObjectStreamFactory m_objectStreamFactory = new GameObjectStreamFactory(null);
-  private final SetupPanelModel m_typePanelModel;
-  private final boolean m_headless;
-  private IServerMessenger m_serverMessenger;
-  private IRemoteMessenger m_remoteMessenger;
-  private IChannelMessenger m_channelMessenger;
-  private GameData m_data;
-  private Map<String, String> m_playersToNodeListing = new HashMap<>();
-  private Map<String, Boolean> m_playersEnabledListing = new HashMap<>();
-  private Collection<String> m_playersAllowedToBeDisabled = new HashSet<>();
-  private Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder =
+  private static Logger logger = Logger.getLogger(ServerModel.class.getName());
+  private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
+  private final SetupPanelModel typePanelModel;
+  private final boolean headless;
+  private IServerMessenger serverMessenger;
+  private IRemoteMessenger remoteMessenger;
+  private IChannelMessenger channelMessenger;
+  private GameData data;
+  private Map<String, String> playersToNodeListing = new HashMap<>();
+  private Map<String, Boolean> playersEnabledListing = new HashMap<>();
+  private Collection<String> playersAllowedToBeDisabled = new HashSet<>();
+  private Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder =
       new LinkedHashMap<>();
-  private IRemoteModelListener m_listener = IRemoteModelListener.NULL_LISTENER;
-  private final GameSelectorModel m_gameSelectorModel;
-  private Component m_ui;
-  private IChatPanel m_chatPanel;
-  private ChatController m_chatController;
-  private final Map<String, String> m_localPlayerTypes = new HashMap<>();
+  private IRemoteModelListener remoteModelListener = IRemoteModelListener.NULL_LISTENER;
+  private final GameSelectorModel gameSelectorModel;
+  private Component ui;
+  private IChatPanel chatPanel;
+  private ChatController chatController;
+  private final Map<String, String> localPlayerTypes = new HashMap<>();
   // while our server launcher is not null, delegate new/lost connections to it
-  private volatile ServerLauncher m_serverLauncher;
-  private CountDownLatch m_removeConnectionsLatch = null;
-  private final Observer m_gameSelectorObserver = new Observer() {
-    @Override
-    public void update(final Observable o, final Object arg) {
-      gameDataChanged();
-    }
-  };
+  private volatile ServerLauncher serverLauncher;
+  private CountDownLatch removeConnectionsLatch = null;
+  private final Observer gameSelectorObserver = (observable, value) -> gameDataChanged();
 
-  public ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
-    this(gameSelectorModel, typePanelModel, false);
+  ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
+    this(gameSelectorModel, typePanelModel, InteractionMode.SWING_CLIENT_UI);
   }
 
   public ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel,
-      final boolean headless) {
-    m_gameSelectorModel = gameSelectorModel;
-    m_typePanelModel = typePanelModel;
-    m_gameSelectorModel.addObserver(m_gameSelectorObserver);
-    m_headless = headless;
+      final InteractionMode interactionMode) {
+    this.gameSelectorModel = gameSelectorModel;
+    this.typePanelModel = typePanelModel;
+    this.gameSelectorModel.addObserver(gameSelectorObserver);
+    headless = (interactionMode == InteractionMode.HEADLESS);
   }
 
   public void shutDown() {
-    m_gameSelectorModel.deleteObserver(m_gameSelectorObserver);
-    if (m_serverMessenger != null) {
-      m_chatController.deactivate();
-      m_serverMessenger.shutDown();
-      m_serverMessenger.removeErrorListener(this);
-      m_chatPanel.shutDown();
+    gameSelectorModel.deleteObserver(gameSelectorObserver);
+    if (serverMessenger != null) {
+      chatController.deactivate();
+      serverMessenger.shutDown();
+      serverMessenger.removeErrorListener(this);
+      chatPanel.shutDown();
     }
   }
 
   public void cancel() {
-    m_gameSelectorModel.deleteObserver(m_gameSelectorObserver);
-    if (m_serverMessenger != null) {
-      m_chatController.deactivate();
-      m_serverMessenger.shutDown();
-      m_serverMessenger.removeErrorListener(this);
-      m_chatPanel.setChat(null);
+    gameSelectorModel.deleteObserver(gameSelectorObserver);
+    if (serverMessenger != null) {
+      chatController.deactivate();
+      serverMessenger.shutDown();
+      serverMessenger.removeErrorListener(this);
+      chatPanel.setChat(null);
     }
   }
 
@@ -137,48 +134,48 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     if (listener == null) {
       listener = IRemoteModelListener.NULL_LISTENER;
     }
-    m_listener = listener;
+    remoteModelListener = listener;
   }
 
   public void setLocalPlayerType(final String player, final String type) {
     synchronized (this) {
-      m_localPlayerTypes.put(player, type);
+      localPlayerTypes.put(player, type);
     }
   }
 
   private void gameDataChanged() {
     synchronized (this) {
-      m_data = m_gameSelectorModel.getGameData();
-      if (m_data != null) {
-        m_playersToNodeListing = new HashMap<>();
-        m_playersEnabledListing = new HashMap<>();
-        m_playersAllowedToBeDisabled = new HashSet<>(m_data.getPlayerList().getPlayersThatMayBeDisabled());
-        m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
-        for (final PlayerID player : m_data.getPlayerList().getPlayers()) {
+      data = gameSelectorModel.getGameData();
+      if (data != null) {
+        playersToNodeListing = new HashMap<>();
+        playersEnabledListing = new HashMap<>();
+        playersAllowedToBeDisabled = new HashSet<>(data.getPlayerList().getPlayersThatMayBeDisabled());
+        playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
+        for (final PlayerID player : data.getPlayerList().getPlayers()) {
           final String name = player.getName();
-          if (m_headless) {
+          if (headless) {
             if (player.getIsDisabled()) {
-              m_playersToNodeListing.put(name, m_serverMessenger.getLocalNode().getName());
+              playersToNodeListing.put(name, serverMessenger.getLocalNode().getName());
               // the 2nd in the list should be Weak AI
-              int indexPosition = Math.max(0, Math.min(m_data.getGameLoader().getServerPlayerTypes().length - 1, 1));
-              m_localPlayerTypes.put(name, m_data.getGameLoader().getServerPlayerTypes()[indexPosition]);
+              int indexPosition = Math.max(0, Math.min(data.getGameLoader().getServerPlayerTypes().length - 1, 1));
+              localPlayerTypes.put(name, data.getGameLoader().getServerPlayerTypes()[indexPosition]);
             } else {
               // we generally do not want a headless host bot to be doing any AI turns, since that
               // is taxing on the system
-              m_playersToNodeListing.put(name, null);
+              playersToNodeListing.put(name, null);
             }
           } else {
-            m_playersToNodeListing.put(name, m_serverMessenger.getLocalNode().getName());
+            playersToNodeListing.put(name, serverMessenger.getLocalNode().getName());
           }
-          m_playerNamesAndAlliancesInTurnOrder.put(name, m_data.getAllianceTracker().getAlliancesPlayerIsIn(player));
-          m_playersEnabledListing.put(name, !player.getIsDisabled());
+          playerNamesAndAlliancesInTurnOrder.put(name, data.getAllianceTracker().getAlliancesPlayerIsIn(player));
+          playersEnabledListing.put(name, !player.getIsDisabled());
         }
       }
-      m_objectStreamFactory.setData(m_data);
-      m_localPlayerTypes.clear();
+      objectStreamFactory.setData(data);
+      localPlayerTypes.clear();
     }
     notifyChanellPlayersChanged();
-    m_listener.playerListChanged();
+    remoteModelListener.playerListChanged();
   }
 
   private ServerProps getServerProps(final Component ui) {
@@ -203,12 +200,12 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       return null;
     }
     final String name = options.getName();
-    s_logger.log(Level.FINE, "Server playing as:" + name);
+    logger.log(Level.FINE, "Server playing as:" + name);
     // save the name! -- lnxduk
     prefs.put(PLAYERNAME, name);
     final int port = options.getPort();
     if (port >= 65536 || port == 0) {
-      if (m_headless) {
+      if (headless) {
         System.out.println("Invalid Port: " + port);
       } else {
         JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
@@ -228,41 +225,41 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
    */
   public boolean createServerMessenger(Component ui) {
     ui = ui == null ? null : JOptionPane.getFrameForComponent(ui);
-    m_ui = ui;
+    this.ui = ui;
     final ServerProps props = getServerProps(ui);
     if (props == null) {
       return false;
     }
     try {
-      m_serverMessenger = new ServerMessenger(props.getName(), props.getPort(), m_objectStreamFactory);
-      final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(m_serverMessenger);
+      serverMessenger = new ServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
+      final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(serverMessenger);
       clientLoginValidator.setGamePassword(props.getPassword());
-      m_serverMessenger.setLoginValidator(clientLoginValidator);
-      m_serverMessenger.addErrorListener(this);
-      m_serverMessenger.addConnectionChangeListener(this);
-      final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(m_serverMessenger);
-      m_remoteMessenger = new RemoteMessenger(unifiedMessenger);
-      m_remoteMessenger.registerRemote(m_serverStartupRemote, SERVER_REMOTE_NAME);
-      m_channelMessenger = new ChannelMessenger(unifiedMessenger);
-      final NullModeratorController moderatorController = new NullModeratorController(m_serverMessenger, null);
-      moderatorController.register(m_remoteMessenger);
-      m_chatController =
-          new ChatController(CHAT_NAME, m_serverMessenger, m_remoteMessenger, m_channelMessenger, moderatorController);
+      serverMessenger.setLoginValidator(clientLoginValidator);
+      serverMessenger.addErrorListener(this);
+      serverMessenger.addConnectionChangeListener(this);
+      final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(serverMessenger);
+      remoteMessenger = new RemoteMessenger(unifiedMessenger);
+      remoteMessenger.registerRemote(m_serverStartupRemote, SERVER_REMOTE_NAME);
+      channelMessenger = new ChannelMessenger(unifiedMessenger);
+      final NullModeratorController moderatorController = new NullModeratorController(serverMessenger, null);
+      moderatorController.register(remoteMessenger);
+      chatController =
+          new ChatController(CHAT_NAME, serverMessenger, remoteMessenger, channelMessenger, moderatorController);
 
-      if (ui == null && m_headless) {
-        m_chatPanel = new HeadlessChat(m_serverMessenger, m_channelMessenger, m_remoteMessenger, CHAT_NAME,
+      if (ui == null && headless) {
+        chatPanel = new HeadlessChat(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
             Chat.CHAT_SOUND_PROFILE.GAME_CHATROOM);
       } else {
-        m_chatPanel = new ChatPanel(m_serverMessenger, m_channelMessenger, m_remoteMessenger, CHAT_NAME,
+        chatPanel = new ChatPanel(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
             Chat.CHAT_SOUND_PROFILE.GAME_CHATROOM);
       }
 
-      m_serverMessenger.setAcceptNewConnections(true);
+      serverMessenger.setAcceptNewConnections(true);
       gameDataChanged();
       return true;
     } catch (final IOException ioe) {
       ioe.printStackTrace(System.out);
-      if (m_headless) {
+      if (headless) {
         System.out.println("Unable to create server socket:" + ioe.getMessage());
       } else {
         JOptionPane.showMessageDialog(ui, "Unable to create server socket:" + ioe.getMessage(), "Error",
@@ -290,7 +287,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     @Override
     public void disablePlayer(final String playerName) {
-      if (!m_headless) {
+      if (!headless) {
         return;
       }
       // we don't want the client's changing stuff for anyone but a bot
@@ -299,7 +296,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     @Override
     public void enablePlayer(final String playerName) {
-      if (!m_headless) {
+      if (!headless) {
         return;
       }
       // we don't want the client's changing stuff for anyone but a bot
@@ -308,13 +305,13 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     @Override
     public boolean isGameStarted(final INode newNode) {
-      if (m_serverLauncher != null) {
+      if (serverLauncher != null) {
         final RemoteName remoteName = getObserverWaitingToStartName(newNode);
         final IObserverWaitingToJoin observerWaitingToJoinBlocking =
-            (IObserverWaitingToJoin) m_remoteMessenger.getRemote(remoteName);
+            (IObserverWaitingToJoin) remoteMessenger.getRemote(remoteName);
         final IObserverWaitingToJoin observerWaitingToJoinNonBlocking =
-            (IObserverWaitingToJoin) m_remoteMessenger.getRemote(remoteName, true);
-        m_serverLauncher.addObserver(observerWaitingToJoinBlocking, observerWaitingToJoinNonBlocking, newNode);
+            (IObserverWaitingToJoin) remoteMessenger.getRemote(remoteName, true);
+        serverLauncher.addObserver(observerWaitingToJoinBlocking, observerWaitingToJoinNonBlocking, newNode);
         return true;
       } else {
         return false;
@@ -336,7 +333,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
       byte[] bytes = null;
       try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000)) {
-        new GameDataManager().saveGame(sink, m_data);
+        new GameDataManager().saveGame(sink, data);
         bytes = sink.toByteArray();
       } catch (final IOException e) {
         ClientLogger.logQuietly(e);
@@ -348,11 +345,11 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     @Override
     public byte[] getGameOptions() {
       byte[] bytes = null;
-      if (m_data == null || m_data.getProperties() == null || m_data.getProperties().getEditableProperties() == null
-          || m_data.getProperties().getEditableProperties().isEmpty()) {
+      if (data == null || data.getProperties() == null || data.getProperties().getEditableProperties() == null
+          || data.getProperties().getEditableProperties().isEmpty()) {
         return bytes;
       }
-      final List<IEditableProperty> currentEditableProperties = m_data.getProperties().getEditableProperties();
+      final List<IEditableProperty> currentEditableProperties = data.getProperties().getEditableProperties();
 
       try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000)) {
         GameProperties.toOutputStream(sink, currentEditableProperties);
@@ -443,16 +440,16 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   private PlayerListing getPlayerListingInternal() {
     synchronized (this) {
-      if (m_data == null) {
-        return new PlayerListing(new HashMap<>(), new HashMap<>(m_playersEnabledListing),
-            getLocalPlayerTypes(), new Version(0, 0), m_gameSelectorModel.getGameName(),
-            m_gameSelectorModel.getGameRound(), new HashSet<>(m_playersAllowedToBeDisabled),
+      if (data == null) {
+        return new PlayerListing(new HashMap<>(), new HashMap<>(playersEnabledListing),
+            getLocalPlayerTypes(), new Version(0, 0), gameSelectorModel.getGameName(),
+            gameSelectorModel.getGameRound(), new HashSet<>(playersAllowedToBeDisabled),
             new LinkedHashMap<>());
       } else {
-        return new PlayerListing(new HashMap<>(m_playersToNodeListing),
-            new HashMap<>(m_playersEnabledListing), getLocalPlayerTypes(), m_data.getGameVersion(),
-            m_data.getGameName(), m_data.getSequence().getRound() + "",
-            new HashSet<>(m_playersAllowedToBeDisabled), m_playerNamesAndAlliancesInTurnOrder);
+        return new PlayerListing(new HashMap<>(playersToNodeListing),
+            new HashMap<>(playersEnabledListing), getLocalPlayerTypes(), data.getGameVersion(),
+            data.getGameName(), data.getSequence().getRound() + "",
+            new HashSet<>(playersAllowedToBeDisabled), playerNamesAndAlliancesInTurnOrder);
       }
     }
   }
@@ -460,63 +457,63 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private void takePlayerInternal(final INode from, final boolean take, final String playerName) {
     // synchronize to make sure two adds arent executed at once
     synchronized (this) {
-      if (!m_playersToNodeListing.containsKey(playerName)) {
+      if (!playersToNodeListing.containsKey(playerName)) {
         return;
       }
       if (take) {
-        m_playersToNodeListing.put(playerName, from.getName());
+        playersToNodeListing.put(playerName, from.getName());
       } else {
-        m_playersToNodeListing.put(playerName, null);
+        playersToNodeListing.put(playerName, null);
       }
     }
     notifyChanellPlayersChanged();
-    m_listener.playersTakenChanged();
+    remoteModelListener.playersTakenChanged();
   }
 
   private void setPlayerEnabled(final String playerName, final boolean enabled) {
-    takePlayerInternal(m_serverMessenger.getLocalNode(), true, playerName);
+    takePlayerInternal(serverMessenger.getLocalNode(), true, playerName);
     // synchronize
     synchronized (this) {
-      if (!m_playersEnabledListing.containsKey(playerName)) {
+      if (!playersEnabledListing.containsKey(playerName)) {
         return;
       }
-      m_playersEnabledListing.put(playerName, enabled);
-      if (m_headless) {
+      playersEnabledListing.put(playerName, enabled);
+      if (headless) {
         // we do not want the host bot to actually play, so set to null if enabled, and set to weak ai if disabled
         if (enabled) {
-          m_playersToNodeListing.put(playerName, null);
+          playersToNodeListing.put(playerName, null);
         } else {
-          m_localPlayerTypes.put(playerName,
-              m_data.getGameLoader().getServerPlayerTypes()[Math.max(0,
+          localPlayerTypes.put(playerName,
+              data.getGameLoader().getServerPlayerTypes()[Math.max(0,
                   // the 2nd in the list should be Weak AI
-                  Math.min(m_data.getGameLoader().getServerPlayerTypes().length - 1, 1))]);
+                  Math.min(data.getGameLoader().getServerPlayerTypes().length - 1, 1))]);
         }
       }
     }
     notifyChanellPlayersChanged();
-    m_listener.playersTakenChanged();
+    remoteModelListener.playersTakenChanged();
   }
 
   public void setAllPlayersToNullNodes() {
-    if (m_playersToNodeListing != null) {
-      for (final String p : m_playersToNodeListing.keySet()) {
-        m_playersToNodeListing.put(p, null);
+    if (playersToNodeListing != null) {
+      for (final String p : playersToNodeListing.keySet()) {
+        playersToNodeListing.put(p, null);
       }
     }
   }
 
   private void notifyChanellPlayersChanged() {
     final IClientChannel channel =
-        (IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
+        (IClientChannel) channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
     channel.playerListingChanged(getPlayerListingInternal());
   }
 
   public void takePlayer(final String playerName) {
-    takePlayerInternal(m_serverMessenger.getLocalNode(), true, playerName);
+    takePlayerInternal(serverMessenger.getLocalNode(), true, playerName);
   }
 
   public void releasePlayer(final String playerName) {
-    takePlayerInternal(m_serverMessenger.getLocalNode(), false, playerName);
+    takePlayerInternal(serverMessenger.getLocalNode(), false, playerName);
   }
 
   public void disablePlayer(final String playerName) {
@@ -528,43 +525,43 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   public IServerMessenger getMessenger() {
-    return m_serverMessenger;
+    return serverMessenger;
   }
 
   public Map<String, String> getPlayersToNodeListing() {
     synchronized (this) {
-      return new HashMap<>(m_playersToNodeListing);
+      return new HashMap<>(playersToNodeListing);
     }
   }
 
   public Map<String, Boolean> getPlayersEnabledListing() {
     synchronized (this) {
-      return new HashMap<>(m_playersEnabledListing);
+      return new HashMap<>(playersEnabledListing);
     }
   }
 
   public Collection<String> getPlayersAllowedToBeDisabled() {
     synchronized (this) {
-      return new HashSet<>(m_playersAllowedToBeDisabled);
+      return new HashSet<>(playersAllowedToBeDisabled);
     }
   }
 
   public Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap() {
     synchronized (this) {
-      return new LinkedHashMap<>(m_playerNamesAndAlliancesInTurnOrder);
+      return new LinkedHashMap<>(playerNamesAndAlliancesInTurnOrder);
     }
   }
 
   @Override
   public void messengerInvalid(final IMessenger messenger, final Exception reason) {
-    if (m_headless) {
+    if (headless) {
       System.out.println("Connection Lost");
-      if (m_typePanelModel != null) {
-        m_typePanelModel.showSelectType();
+      if (typePanelModel != null) {
+        typePanelModel.showSelectType();
       }
     } else {
-      JOptionPane.showMessageDialog(m_ui, "Connection lost", "Error", JOptionPane.ERROR_MESSAGE);
-      m_typePanelModel.showSelectType();
+      JOptionPane.showMessageDialog(ui, "Connection lost", "Error", JOptionPane.ERROR_MESSAGE);
+      typePanelModel.showSelectType();
     }
   }
 
@@ -573,22 +570,22 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   @Override
   public void connectionRemoved(final INode node) {
-    if (m_removeConnectionsLatch != null) {
+    if (removeConnectionsLatch != null) {
       try {
-        m_removeConnectionsLatch.await(6, TimeUnit.SECONDS);
+        removeConnectionsLatch.await(6, TimeUnit.SECONDS);
       } catch (final InterruptedException e) {// no worries
       }
     }
     // will be handled elsewhere
-    if (m_serverLauncher != null) {
-      m_serverLauncher.connectionLost(node);
+    if (serverLauncher != null) {
+      serverLauncher.connectionLost(node);
       return;
     }
     // we lost a node. Remove the players he plays.
     final List<String> free = new ArrayList<>();
     synchronized (this) {
-      for (final String player : m_playersToNodeListing.keySet()) {
-        final String playedBy = m_playersToNodeListing.get(player);
+      for (final String player : playersToNodeListing.keySet()) {
+        final String playedBy = playersToNodeListing.get(player);
         if (playedBy != null && playedBy.equals(node.getName())) {
           free.add(player);
         }
@@ -600,42 +597,42 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   public IChatPanel getChatPanel() {
-    return m_chatPanel;
+    return chatPanel;
   }
 
   public void disallowRemoveConnections() {
-    while (m_removeConnectionsLatch != null && m_removeConnectionsLatch.getCount() > 0) {
-      m_removeConnectionsLatch.countDown();
+    while (removeConnectionsLatch != null && removeConnectionsLatch.getCount() > 0) {
+      removeConnectionsLatch.countDown();
     }
-    m_removeConnectionsLatch = new CountDownLatch(1);
+    removeConnectionsLatch = new CountDownLatch(1);
   }
 
   public void allowRemoveConnections() {
-    while (m_removeConnectionsLatch != null && m_removeConnectionsLatch.getCount() > 0) {
-      m_removeConnectionsLatch.countDown();
+    while (removeConnectionsLatch != null && removeConnectionsLatch.getCount() > 0) {
+      removeConnectionsLatch.countDown();
     }
-    m_removeConnectionsLatch = null;
+    removeConnectionsLatch = null;
   }
 
   public Map<String, String> getLocalPlayerTypes() {
     final Map<String, String> localPlayerMappings = new HashMap<>();
-    if (m_data == null) {
+    if (data == null) {
       return localPlayerMappings;
     }
     // local player default = humans (for bots = weak ai)
-    final String defaultLocalType = m_headless
-        ? m_data.getGameLoader().getServerPlayerTypes()[Math.max(0,
-            Math.min(m_data.getGameLoader().getServerPlayerTypes().length - 1, 1))]
-        : m_data.getGameLoader().getServerPlayerTypes()[0];
-    for (final String player : m_playersToNodeListing.keySet()) {
-      final String playedBy = m_playersToNodeListing.get(player);
+    final String defaultLocalType = headless
+        ? data.getGameLoader().getServerPlayerTypes()[Math.max(0,
+            Math.min(data.getGameLoader().getServerPlayerTypes().length - 1, 1))]
+        : data.getGameLoader().getServerPlayerTypes()[0];
+    for (final String player : playersToNodeListing.keySet()) {
+      final String playedBy = playersToNodeListing.get(player);
       if (playedBy == null) {
         continue;
       }
-      if (playedBy.equals(m_serverMessenger.getLocalNode().getName())) {
+      if (playedBy.equals(serverMessenger.getLocalNode().getName())) {
         String type = defaultLocalType;
-        if (m_localPlayerTypes.containsKey(player)) {
-          type = m_localPlayerTypes.get(player);
+        if (localPlayerTypes.containsKey(player)) {
+          type = localPlayerTypes.get(player);
         }
         localPlayerMappings.put(player, type);
       }
@@ -647,15 +644,15 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     synchronized (this) {
       disallowRemoveConnections();
       // -1 since we dont count outselves
-      final int clientCount = m_serverMessenger.getNodes().size() - 1;
+      final int clientCount = serverMessenger.getNodes().size() - 1;
       final Map<String, INode> remotePlayers = new HashMap<>();
-      for (final String player : m_playersToNodeListing.keySet()) {
-        final String playedBy = m_playersToNodeListing.get(player);
+      for (final String player : playersToNodeListing.keySet()) {
+        final String playedBy = playersToNodeListing.get(player);
         if (playedBy == null) {
           return null;
         }
-        if (!playedBy.equals(m_serverMessenger.getLocalNode().getName())) {
-          final Set<INode> nodes = m_serverMessenger.getNodes();
+        if (!playedBy.equals(serverMessenger.getLocalNode().getName())) {
+          final Set<INode> nodes = serverMessenger.getNodes();
           for (final INode node : nodes) {
             if (node.getName().equals(playedBy)) {
               remotePlayers.put(player, node);
@@ -664,34 +661,34 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           }
         }
       }
-      final ServerLauncher launcher = new ServerLauncher(clientCount, m_remoteMessenger, m_channelMessenger,
-          m_serverMessenger, m_gameSelectorModel, getPlayerListingInternal(), remotePlayers, this, m_headless);
+      final ServerLauncher launcher = new ServerLauncher(clientCount, remoteMessenger, channelMessenger,
+          serverMessenger, gameSelectorModel, getPlayerListingInternal(), remotePlayers, this, headless);
       return launcher;
     }
   }
 
   public void newGame() {
-    m_serverMessenger.setAcceptNewConnections(true);
+    serverMessenger.setAcceptNewConnections(true);
     final IClientChannel channel =
-        (IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
+        (IClientChannel) channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
     notifyChanellPlayersChanged();
     channel.gameReset();
   }
 
   public void setServerLauncher(final ServerLauncher launcher) {
-    m_serverLauncher = launcher;
+    serverLauncher = launcher;
   }
 
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder();
-    sb.append("ServerModel GameData:").append(m_data == null ? "null" : m_data.getGameName()).append("\n");
-    sb.append("Connected:").append(m_serverMessenger == null ? "null" : m_serverMessenger.isConnected()).append("\n");
-    sb.append(m_serverMessenger);
+    sb.append("ServerModel GameData:").append(data == null ? "null" : data.getGameName()).append("\n");
+    sb.append("Connected:").append(serverMessenger == null ? "null" : serverMessenger.isConnected()).append("\n");
+    sb.append(serverMessenger);
     sb.append("\n");
-    sb.append(m_remoteMessenger);
+    sb.append(remoteMessenger);
     sb.append("\n");
-    sb.append(m_channelMessenger);
+    sb.append(channelMessenger);
     return sb.toString();
   }
 }
