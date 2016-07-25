@@ -62,16 +62,18 @@ import games.strategy.net.ServerMessenger;
 import games.strategy.util.Version;
 
 public class ServerModel extends Observable implements IMessengerErrorListener, IConnectionChangeListener {
-  public static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
   public static final RemoteName SERVER_REMOTE_NAME =
       new RemoteName("games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE", IServerStartupRemote.class);
 
-  public static RemoteName getObserverWaitingToStartName(final INode node) {
+  public enum InteractionMode { HEADLESS, SWING_CLIENT_UI }
+
+  static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
+  static final String PLAYERNAME = "PlayerName";
+  static RemoteName getObserverWaitingToStartName(final INode node) {
     return new RemoteName("games.strategy.engine.framework.startup.mc.ServerModel.OBSERVER" + node.getName(),
         IObserverWaitingToJoin.class);
   }
 
-  final static String PLAYERNAME = "PlayerName";
   private static Logger s_logger = Logger.getLogger(ServerModel.class.getName());
   private final GameObjectStreamFactory m_objectStreamFactory = new GameObjectStreamFactory(null);
   private final SetupPanelModel m_typePanelModel;
@@ -101,16 +103,16 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     }
   };
 
-  public ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
-    this(gameSelectorModel, typePanelModel, false);
+  ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
+    this(gameSelectorModel, typePanelModel, InteractionMode.SWING_CLIENT_UI);
   }
 
   public ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel,
-      final boolean headless) {
+      final InteractionMode interactionMode) {
     m_gameSelectorModel = gameSelectorModel;
     m_typePanelModel = typePanelModel;
     m_gameSelectorModel.addObserver(m_gameSelectorObserver);
-    m_headless = headless;
+    m_headless = (interactionMode == InteractionMode.HEADLESS);
   }
 
   public void shutDown() {
