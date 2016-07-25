@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.Test;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;

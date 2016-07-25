@@ -12,7 +12,7 @@ public class ProductionRuleList extends GameDataComponent {
     super(data);
   }
 
-  protected void addProductionRule(final ProductionRule pf) {
+  public void addProductionRule(final ProductionRule pf) {
     m_productionRules.put(pf.getName(), pf);
   }
 

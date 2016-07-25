@@ -57,7 +57,7 @@ public class AllianceTracker implements Serializable {
    * @param player       The player to add to the alliance.
    * @param allianceName The alliance to add to.
    */
-  protected void addToAlliance(final PlayerID player, final String allianceName) {
+  public void addToAlliance(final PlayerID player, final String allianceName) {
     alliances.put(player, allianceName);
   }
 

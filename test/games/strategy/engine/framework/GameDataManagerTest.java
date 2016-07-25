@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.data.SerializationTest;
 
 public class GameDataManagerTest {

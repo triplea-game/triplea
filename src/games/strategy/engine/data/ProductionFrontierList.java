@@ -12,7 +12,7 @@ public class ProductionFrontierList extends GameDataComponent {
     super(data);
   }
 
-  protected void addProductionFrontier(final ProductionFrontier pf) {
+  public void addProductionFrontier(final ProductionFrontier pf) {
     m_productionFrontiers.put(pf.getName(), pf);
   }
 

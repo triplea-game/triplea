@@ -13,7 +13,7 @@ public class ResourceList extends GameDataComponent {
     super(data);
   }
 
-  protected void addResource(final Resource resource) {
+  public void addResource(final Resource resource) {
     m_resourceList.put(resource.getName(), resource);
   }
 

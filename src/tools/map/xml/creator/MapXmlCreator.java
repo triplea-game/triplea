@@ -64,7 +64,7 @@ import org.xml.sax.SAXException;
 
 import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import tools.image.FileSave;

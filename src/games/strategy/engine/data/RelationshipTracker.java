@@ -37,7 +37,7 @@ public class RelationshipTracker extends RelationshipInterpreter {
    * @param r
    * @param roundValue
    */
-  protected void setRelationship(final PlayerID p1, final PlayerID p2, final RelationshipType r, final int roundValue) {
+  public void setRelationship(final PlayerID p1, final PlayerID p2, final RelationshipType r, final int roundValue) {
     m_relationships.put(new RelatedPlayers(p1, p2), new Relationship(r, roundValue));
   }
 
@@ -94,7 +94,7 @@ public class RelationshipTracker extends RelationshipInterpreter {
    * This methods will create all SelfRelations of all players including NullPlayer with oneself.
    * This method should only be called once.
    */
-  protected void setSelfRelations() {
+  public void setSelfRelations() {
     for (final PlayerID p : getData().getPlayerList().getPlayers()) {
       setRelationship(p, p, getSelfRelationshipType());
     }
@@ -105,7 +105,7 @@ public class RelationshipTracker extends RelationshipInterpreter {
    * This methods will create all relationship of all players with the NullPlayer.
    * This method should only be called once.
    */
-  protected void setNullPlayerRelations() {
+  public void setNullPlayerRelations() {
     for (final PlayerID p : getData().getPlayerList().getPlayers()) {
       setRelationship(p, PlayerID.NULL_PLAYERID, getNullRelationshipType());
     }
