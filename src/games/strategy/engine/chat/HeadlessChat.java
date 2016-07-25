@@ -28,17 +28,11 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   private Chat m_chat;
   private boolean m_showTime = true;
   private StringBuffer m_allText = new StringBuffer();
-  private String m_lastText = "";
   private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("'('HH:mm:ss')'");
   private final ChatFloodControl floodControl = new ChatFloodControl();
   public Set<String> m_hiddenPlayers = new HashSet<>();
   private final Set<INode> m_players = new HashSet<>();
   private PrintStream m_out = null;
-  private final IStatusListener m_statusListener = new IStatusListener() {
-    @Override
-    public void statusChanged(final INode node, final String newStatus) { // nothing for now
-    }
-  };
 
   public HeadlessChat(final IMessenger messenger, final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger, final String chatName, final CHAT_SOUND_PROFILE chatSoundProfile) {
@@ -46,17 +40,9 @@ public class HeadlessChat implements IChatListener, IChatPanel {
     setChat(chat);
   }
 
-  public HeadlessChat(final Chat chat) {
-    setChat(chat);
-  }
-
   @Override
   public boolean isHeadless() {
     return true;
-  }
-
-  public Set<INode> getAllChatters() {
-    return new HashSet<>(m_players);
   }
 
   public void setPrintStream(final PrintStream out) {
@@ -71,10 +57,6 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   @Override
   public String getAllText() {
     return m_allText.toString();
-  }
-
-  public String getLastText() {
-    return m_lastText;
   }
 
   @Override
@@ -101,15 +83,10 @@ public class HeadlessChat implements IChatListener, IChatPanel {
     }
   }
 
-  public void addHiddenPlayerName(final String name) {
-    m_hiddenPlayers.add(name);
-  }
-
   @Override
   public void shutDown() {
     if (m_chat != null) {
       m_chat.removeChatListener(this);
-      m_chat.getStatusManager().removeStatusListener(m_statusListener);
       m_chat.shutdown();
     }
     m_chat = null;
@@ -119,15 +96,12 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   public void setChat(final Chat chat) {
     if (m_chat != null) {
       m_chat.removeChatListener(this);
-      m_chat.getStatusManager().removeStatusListener(m_statusListener);
     }
     m_chat = chat;
     if (m_chat != null) {
       m_chat.addChatListener(this);
-      m_chat.getStatusManager().addStatusListener(m_statusListener);
       synchronized (m_chat.getMutex()) {
         m_allText = new StringBuffer();
-        m_lastText = "";
         try {
           if (m_out != null) {
             m_out.println();
@@ -196,23 +170,6 @@ public class HeadlessChat implements IChatListener, IChatPanel {
     final String prefix = thirdperson ? (m_showTime ? "* " + time + " " + from : "* " + from)
         : (m_showTime ? time + " " + from + ": " : from + ": ");
     final String fullMessage = prefix + " " + message + "\n";
-    m_lastText = fullMessage;
-    final String currentAllText = m_allText.toString();
-    if (currentAllText.length() > MAX_LENGTH) {
-      m_allText = new StringBuffer(currentAllText.substring(MAX_LENGTH / 2, currentAllText.length()));
-    }
-    m_allText.append(fullMessage);
-    try {
-      if (m_out != null) {
-        m_out.print("CHAT: " + fullMessage);
-      }
-    } catch (final Exception e) {
-    }
-  }
-
-  public void addServerMessage(final String message) {
-    final String fullMessage = "Server Message: \n" + message + "\n";
-    m_lastText = fullMessage;
     final String currentAllText = m_allText.toString();
     if (currentAllText.length() > MAX_LENGTH) {
       m_allText = new StringBuffer(currentAllText.substring(MAX_LENGTH / 2, currentAllText.length()));
@@ -229,7 +186,6 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   @Override
   public void addStatusMessage(final String message) {
     final String fullMessage = "--- " + message + " ---\n";
-    m_lastText = fullMessage;
     final String currentAllText = m_allText.toString();
     if (currentAllText.length() > MAX_LENGTH) {
       m_allText = new StringBuffer(currentAllText.substring(MAX_LENGTH / 2, currentAllText.length()));
@@ -243,65 +199,12 @@ public class HeadlessChat implements IChatListener, IChatPanel {
     }
   }
 
-  private String trimMessage(final String originalMessage) {
+  private static String trimMessage(final String originalMessage) {
     // dont allow messages that are too long
     if (originalMessage.length() > 200) {
       return originalMessage.substring(0, 199) + "...";
     } else {
       return originalMessage;
     }
-  }
-
-  public String getPlayerDisplayString(final INode node) {
-    if (m_chat == null) {
-      return "";
-    }
-    String extra = "";
-    final String notes = m_chat.getNotesForNode(node);
-    if (notes != null && notes.length() > 0) {
-      extra = extra + notes;
-    }
-    String status = m_chat.getStatusManager().getStatus(node);
-    final StringBuilder statusSB = new StringBuilder("");
-    if (status != null && status.length() > 0) {
-      if (status.length() > 25) {
-        status = status.substring(0, 25);
-      }
-      for (int i = 0; i < status.length(); i++) {
-        final char c = status.charAt(i);
-        // skip combining characters
-        if (c >= '\u0300' && c <= '\u036F') {
-          continue;
-        }
-        statusSB.append(c);
-      }
-      extra = extra + " (" + statusSB.toString() + ")";
-    }
-    if (extra.length() == 0) {
-      return node.getName();
-    }
-    return node.getName() + extra;
-  }
-
-  public void ignorePlayer(final INode player) {
-    final boolean isIgnored = m_chat.isIgnored(player);
-    if (!isIgnored) {
-      m_chat.setIgnored(player, true);
-    }
-  }
-
-  public void stopIgnoringPlayer(final INode player) {
-    final boolean isIgnored = m_chat.isIgnored(player);
-    if (isIgnored) {
-      m_chat.setIgnored(player, false);
-    }
-  }
-
-  public void slapPlayer(final INode player) {
-    m_chat.sendSlap(player.getName());
-  }
-
-  public void slapPlayer(final String playerName) {
-    m_chat.sendSlap(playerName);
   }
 }
