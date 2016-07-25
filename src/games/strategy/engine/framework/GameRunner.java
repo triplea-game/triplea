@@ -1,7 +1,10 @@
 package games.strategy.engine.framework;
 
+import java.awt.AWTEvent;
+import java.awt.EventQueue;
 import java.awt.Image;
 import java.awt.MediaTracker;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.io.File;
 import java.io.FileInputStream;
@@ -139,6 +142,16 @@ public class GameRunner {
     ErrorConsole.getConsole();
     // do after we handle command line args
     checkForMemoryXMX();
+    Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueue() {
+      @Override
+      protected void dispatchEvent(AWTEvent newEvent) {
+        try {
+          super.dispatchEvent(newEvent);
+        } catch (Throwable t) {
+          ClientLogger.logError(t);
+        }
+      }
+    });
     SwingUtilities.invokeLater(() -> setupLookAndFeel());
     showMainFrame();
     new Thread(() -> setupLogging()).start();
