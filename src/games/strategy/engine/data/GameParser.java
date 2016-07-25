@@ -1,9 +1,10 @@
 package games.strategy.engine.data;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -16,6 +17,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -52,9 +56,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.Tuple;
 import games.strategy.util.Version;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-
 public class GameParser {
   private static final Class<?>[] SETTER_ARGS = {String.class};
   private GameData data;
@@ -63,6 +64,9 @@ public class GameParser {
   private static HashMap<String, String> newClassesForOldNames;
 
   public GameParser() {}
+
+  private static final int THREAD_COUNT = 8;
+  private static ExecutorService threadPool = Executors.newFixedThreadPool(THREAD_COUNT);
 
   /**
    * Parses a file into a GameData object.
@@ -149,6 +153,7 @@ public class GameParser {
     } else {
       TechAdvance.createDefaultTechAdvances(data);
     }
+    // TODO: see about doing this early, since we do the attachment parsing in background
     final Element attachmentList = getSingleChild(gameName.get(), "attachmentList", root, true);
     if (attachmentList != null) {
       parseAttachments(gameName.get(), attachmentList);
@@ -169,6 +174,16 @@ public class GameParser {
       checkThatAllUnitsHaveAttachments(data);
       TechAbilityAttachment.setDefaultTechnologyAttachments(data);
     }
+
+    try {
+      threadPool.shutdown();
+      // TODO: we could get some validation errors while for empty data if execution winds up taking too long, and
+      // we proceed without the threadpool actually being done.
+      threadPool.awaitTermination(60, TimeUnit.SECONDS);
+      threadPool = Executors.newFixedThreadPool(THREAD_COUNT);
+    } catch (InterruptedException e) {
+      ClientLogger.logQuietly(e);
+    }
     try {
       validate(gameName.get());
     } catch (final Exception e) {
@@ -177,6 +192,7 @@ public class GameParser {
     }
     return data;
   }
+
 
   private void parseDiceSides(final Node diceSides) {
     if (diceSides == null) {
@@ -1281,31 +1297,20 @@ public class GameParser {
     }
   }
 
+
   private void parseAttachments(String mapName, final Element root) throws GameParseException {
-    final HashMap<String, Constructor<?>> constructors = new HashMap<>();
     for (final Element current : getChildren("attachment", root)) {
-      // get class name and constructor
       final String className = current.getAttribute("javaClass");
-      if (!constructors.containsKey(className)) {
-        try {
-          final Class<?> objectClass = getClassByName(mapName, className);
-          if (!IAttachment.class.isAssignableFrom(objectClass)) {
-            throw new GameParseException(mapName, className + " does not implement IAttachable");
-          }
-          constructors.put(className, objectClass.getConstructor(IAttachment.attachmentConstructorParameter));
-        } catch (final NoSuchMethodException | SecurityException exception) {
-          throw new GameParseException(mapName,
-              "Constructor for class " + className + " could not be found: " + exception.getMessage());
-        }
-      }
       // find the attachable
       final String type = current.getAttribute("type");
       final Attachable attachable = findAttachment(mapName, current, type);
-      // create new attachment
       final String name = current.getAttribute("name");
       final List<Element> options = getChildren("option", current);
+
       try {
-        final IAttachment attachment = (IAttachment) constructors.get(className).newInstance(name, attachable, data);
+        // create new attachment
+        final IAttachment attachment = (IAttachment) getClassByName(mapName, className).
+            getConstructor(IAttachment.attachmentConstructorParameter).newInstance(name, attachable, data);
         attachable.addAttachment(name, attachment);
         final ArrayList<Tuple<String, String>> attachmentOptionValues = setValues(mapName, attachment, options);
         // keep a list of attachment references in the order they were added
@@ -1314,6 +1319,9 @@ public class GameParser {
       } catch (final InstantiationException | InvocationTargetException | IllegalArgumentException | IllegalAccessException e) {
         throw new GameParseException(mapName,
             "Attachment of type " + className + " could not be instanciated: " + e.getMessage());
+      } catch (NoSuchMethodException e) {
+        throw new GameParseException(mapName,
+            "Attachment of type " + className + ", no such method: " + e.getMessage());
       }
     }
   }
@@ -1375,15 +1383,9 @@ public class GameParser {
         itemValues = value;
       }
       // invoke
-      try {
-        final Object[] args = {itemValues};
-        setter.invoke(attachment, args);
-      } catch (final IllegalAccessException iae) {
-        throw new GameParseException(mapName, "Setter not public. Setter:" + name + " Class:" + attachment.getClass().getName());
-      } catch (final InvocationTargetException ite) {
-        ite.getCause().printStackTrace(System.out);
-        throw new GameParseException(mapName, "Error setting property:" + name + " cause:" + ite.getCause().getMessage());
-      }
+      final Object[] args = {itemValues};
+      Method finalSetter = setter;
+      threadPool.submit(() -> finalSetter.invoke(attachment, args));
       options.add(Tuple.of(name, itemValues));
     }
     return options;
