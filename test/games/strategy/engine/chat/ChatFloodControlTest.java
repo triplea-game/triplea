@@ -6,7 +6,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class ChatFloodControlTest {
-  private final ChatFloodControl testObj = new ChatFloodControl();
+  private final static long INITIAL_CLEAR_TIME = 100;
+  private final ChatFloodControl testObj = new ChatFloodControl(INITIAL_CLEAR_TIME);
 
   @Test
   public void testSimple() {
@@ -15,17 +16,19 @@ public class ChatFloodControlTest {
 
   @Test
   public void testDeny() {
+    long now = 123;
     for (int i = 0; i < ChatFloodControl.EVENTS_PER_WINDOW; i++) {
-      testObj.allow("", System.currentTimeMillis());
+      assertTrue(testObj.allow("",now));
     }
-    assertFalse(testObj.allow("", System.currentTimeMillis()));
+    assertFalse(testObj.allow("", now));
   }
 
   @Test
-  public void testReney() {
+  public void throttlingReleasedAfterTimePeriod() {
+    long now = 100;
     for (int i = 0; i < 100; i++) {
-      testObj.allow("", System.currentTimeMillis());
+      testObj.allow("", now);
     }
-    assertTrue(testObj.allow("", System.currentTimeMillis() + 1000 * 60 * 60));
+    assertTrue(testObj.allow("", INITIAL_CLEAR_TIME + ChatFloodControl.WINDOW + 1));
   }
 }

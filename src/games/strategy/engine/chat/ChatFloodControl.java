@@ -11,8 +11,16 @@ public class ChatFloodControl {
   static final int EVENTS_PER_WINDOW = 20;
   static final int WINDOW = ONE_MINUTE;
   private final Object lock = new Object();
-  private long clearTime = System.currentTimeMillis();
   private final Map<String, Integer> messageCount = new HashMap<>();
+  private long clearTime;
+
+  public ChatFloodControl() {
+    this(System.currentTimeMillis());
+  }
+
+  ChatFloodControl(long initialClearTime) {
+    clearTime = initialClearTime;
+  }
 
   public boolean allow(final String from, final long now) {
     synchronized (lock) {
