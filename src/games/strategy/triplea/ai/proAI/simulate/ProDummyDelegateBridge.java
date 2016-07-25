@@ -22,7 +22,7 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
 
 public class ProDummyDelegateBridge implements IDelegateBridge {
   private final PlainRandomSource m_randomSource = new PlainRandomSource();
-  private final ITripleADisplay m_display = new HeadlessDisplay(null);
+  private final ITripleADisplay m_display = new HeadlessDisplay();
   private final ISound m_soundChannel = new HeadlessSoundChannel();
   private final PlayerID m_player;
   private final ProAI m_proAI;

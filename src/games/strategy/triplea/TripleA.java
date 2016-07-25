@@ -15,7 +15,6 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
-import games.strategy.engine.framework.headlessGameServer.HeadlessGameServerUI;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
@@ -108,26 +107,13 @@ public class TripleA implements IGameLoader {
       final IUIContext uiContext = new HeadlessUIContext();
       uiContext.setDefaultMapDir(game.getData());
       uiContext.setLocalPlayers(localPlayers);
-      final boolean useServerUI = HeadlessGameServer.getUseGameServerUI();
-      final HeadlessGameServerUI headlessFrameUI;
-      if (useServerUI) {
-        headlessFrameUI = new HeadlessGameServerUI(game, localPlayers, uiContext);
-      } else {
-        headlessFrameUI = null;
-      }
-      display = new HeadlessDisplay(headlessFrameUI);
+      display = new HeadlessDisplay();
       soundChannel = new HeadlessSoundChannel();
       game.addDisplay(display);
       game.addSoundChannel(soundChannel);
 
       // technically not needed because we won't have any "local human players" in a headless game.
       connectPlayers(players, null);
-      if (headlessFrameUI != null) {
-        headlessFrameUI.setLocationRelativeTo(null);
-        headlessFrameUI.setSize(700, 400);
-        headlessFrameUI.setVisible(true);
-        headlessFrameUI.toFront();
-      }
     } else {
       SwingAction.invokeAndWait(() -> {
         final TripleAFrame frame;
