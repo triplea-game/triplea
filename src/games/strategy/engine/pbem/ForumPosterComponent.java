@@ -65,10 +65,10 @@ public class ForumPosterComponent extends JPanel {
     m_includeTerritoryAction = SwingAction.of("Include territory summary", e ->
 
     updateHistoryLog());
-    m_includeTerritoryAllPlayersAction = SwingAction.of("Include full territory summary", e -> updateHistoryLog());
-    m_includeProductionAction = SwingAction.of("Include production summary", e -> updateHistoryLog());
+    m_includeTerritoryAllPlayersAction = SwingAction.of("Include Full Territory Summary", e -> updateHistoryLog());
+    m_includeProductionAction = SwingAction.of("Include Production Summary", e -> updateHistoryLog());
     m_showDetailsAction = SwingAction.of("Show dice/battle details", e -> updateHistoryLog());
-    m_showDiceStatisticsAction = SwingAction.of("Include overall dice statistics", e -> updateHistoryLog());
+    m_showDiceStatisticsAction = SwingAction.of("Include Overall Dice Statistics", e -> updateHistoryLog());
     m_repostAction = SwingAction.of("Repost " + m_title, e -> {
       if (m_repostTurnSummaryCheckBox.isSelected()) {
         m_postButton.setEnabled(true);

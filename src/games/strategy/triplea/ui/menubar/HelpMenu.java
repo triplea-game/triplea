@@ -162,7 +162,7 @@ public class HelpMenu {
 
 
   private void addUnitHelpMenu(final JMenu parentMenu) {
-    parentMenu.add(SwingAction.of("Unit help", e -> {
+    parentMenu.add(SwingAction.of("Unit Help", e -> {
       final JEditorPane editorPane = new JEditorPane();
       editorPane.setEditable(false);
       editorPane.setContentType("text/html");

@@ -322,7 +322,7 @@ public class DecorationPlacer extends JFrame {
         DecorationPlacer.this.repaint();
       }
     });
-    final Action clearAction = SwingAction.of("Clear all current points.", e -> m_currentImagePoints.clear());
+    final Action clearAction = SwingAction.of("Clear All Current Points.", e -> m_currentImagePoints.clear());
     clearAction.putValue(Action.SHORT_DESCRIPTION, "Delete all points.");
     final JMenu editMenu = new JMenu("Edit");
     editMenu.setMnemonic('E');

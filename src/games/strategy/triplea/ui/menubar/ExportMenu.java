@@ -89,7 +89,7 @@ public class ExportMenu {
 
   // TODO: create a second menu option for parsing current attachments
   private void addExportXML(final JMenu parentMenu) {
-    final Action exportXML = SwingAction.of("Export game.xml file (Beta)", e -> exportXMLFile());
+    final Action exportXML = SwingAction.of("Export game.xml File (Beta)", e -> exportXMLFile());
     parentMenu.add(exportXML).setMnemonic(KeyEvent.VK_X);
   }
 
