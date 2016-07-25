@@ -102,7 +102,7 @@ public class FileMenu {
     if (isMac) {
       MacQuitMenuWrapper.registerMacShutdownHandler(frame);
     } else { // On non-Mac operating systems, we need to manually create an Exit menu item
-      final JMenuItem menuFileExit = new JMenuItem(SwingAction.of("Exit", e -> frame.shutdown()));
+      final JMenuItem menuFileExit = new JMenuItem(SwingAction.of("Exit Program", e -> frame.shutdown()));
       menuFileExit.setMnemonic(KeyEvent.VK_E);
       parentMenu.add(menuFileExit);
     }
