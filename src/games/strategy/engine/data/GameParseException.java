@@ -6,4 +6,9 @@ public class GameParseException extends Exception {
   public GameParseException(final String error) {
     super(error);
   }
+
+  public GameParseException(final String mapName, final String error) {
+    super("MapName: " + mapName + ", " + error);
+  }
+
 }
