@@ -222,11 +222,11 @@ public class TerritoryAttachment extends DefaultAttachment {
     final String[] s = value.split(":");
     final int amount = getInt(s[0]);
     if (s[1].equals(Constants.PUS)) {
-      throw new GameParseException(getData(), "Please set PUs using production, not resource" + thisErrorMsg());
+      throw new GameParseException("Please set PUs using production, not resource" + thisErrorMsg());
     }
     final Resource resource = getData().getResourceList().getResource(s[1]);
     if (resource == null) {
-      throw new GameParseException(getData(), "No resource named: " + s[1] + thisErrorMsg());
+      throw new GameParseException("No resource named: " + s[1] + thisErrorMsg());
     }
     m_resources.putResource(resource, amount);
   }
@@ -274,7 +274,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     }
     final PlayerID p = getData().getPlayerList().getPlayerID(value);
     if (p == null) {
-      throw new GameParseException(getData(), "No Player named: " + value + thisErrorMsg());
+      throw new GameParseException("No Player named: " + value + thisErrorMsg());
     }
     m_capital = value;
   }
@@ -432,7 +432,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     }
     final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(player);
     if (tempPlayer == null) {
-      throw new GameParseException(getData(), ", No player named: " + player + thisErrorMsg());
+      throw new GameParseException("No player named: " + player + thisErrorMsg());
     }
     m_originalOwner = tempPlayer;
   }
@@ -479,7 +479,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       } else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false")) {
         m_changeUnitOwners.clear();
       } else {
-        throw new GameParseException(getData(), "No player named: " + name + thisErrorMsg());
+        throw new GameParseException("No player named: " + name + thisErrorMsg());
       }
     }
   }
@@ -515,7 +515,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       if (tempPlayer != null) {
         m_captureUnitOnEnteringBy.add(tempPlayer);
       } else {
-        throw new GameParseException(getData(), "No player named: " + name + thisErrorMsg());
+        throw new GameParseException("No player named: " + name + thisErrorMsg());
       }
     }
   }
@@ -547,13 +547,13 @@ public class TerritoryAttachment extends DefaultAttachment {
   public void setWhenCapturedByGoesTo(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length != 2) {
-      throw new GameParseException(getData(),
+      throw new GameParseException(
           "whenCapturedByGoesTo must have 2 player names separated by a colon" + thisErrorMsg());
     }
     for (final String name : s) {
       final PlayerID player = getData().getPlayerList().getPlayerID(name);
       if (player == null) {
-        throw new GameParseException(getData(), "No player named: " + name + thisErrorMsg());
+        throw new GameParseException("No player named: " + name + thisErrorMsg());
       }
     }
     m_whenCapturedByGoesTo.add(value);
@@ -589,7 +589,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       if (effect != null) {
         m_territoryEffect.add(effect);
       } else {
-        throw new GameParseException(getData(), "No TerritoryEffect named: " + name + thisErrorMsg());
+        throw new GameParseException("No TerritoryEffect named: " + name + thisErrorMsg());
       }
     }
   }
@@ -625,7 +625,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     for (final String subString : value.split(":")) {
       final Territory territory = getData().getMap().getTerritory(subString);
       if (territory == null) {
-        throw new GameParseException(getData(), "No territory called:" + subString + thisErrorMsg());
+        throw new GameParseException("No territory called:" + subString + thisErrorMsg());
       }
       m_convoyAttached.add(territory);
     }

@@ -69,7 +69,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
         }
       }
       if (condition == null) {
-        throw new GameParseException(getData(), "Could not find rule. name:" + subString + thisErrorMsg());
+        throw new GameParseException("Could not find rule. name:" + subString + thisErrorMsg());
       }
       if (m_conditions == null) {
         m_conditions = new ArrayList<>();
@@ -133,19 +133,19 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       final String[] nums = s.split("-");
       if (nums.length == 1) {
         if (Integer.parseInt(nums[0]) < 0) {
-          throw new GameParseException(getData(),
+          throw new GameParseException(
               "conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y"
                   + thisErrorMsg());
         }
       } else if (nums.length == 2) {
         if (Integer.parseInt(nums[0]) < 0 || Integer.parseInt(nums[1]) < 0
             || !(Integer.parseInt(nums[0]) < Integer.parseInt(nums[1]))) {
-          throw new GameParseException(getData(),
+          throw new GameParseException(
               "conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y"
                   + thisErrorMsg());
         }
       } else {
-        throw new GameParseException(getData(),
+        throw new GameParseException(
             "conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y"
                 + thisErrorMsg());
       }
@@ -313,12 +313,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       final int i = getInt(s[0]);
       final int j = getInt(s[1]);
       if (i > j || i < 0 || j < 0 || i > 120 || j > 120) {
-        throw new GameParseException(getData(),
+        throw new GameParseException(
             "chance should have a format of \"x:y\" where x is <= y and both x and y are >=0 and <=120"
                 + thisErrorMsg());
       }
     } catch (final IllegalArgumentException iae) {
-      throw new GameParseException(getData(),
+      throw new GameParseException(
           "Invalid chance declaration: " + chance + " format: \"1:10\" for 10% chance" + thisErrorMsg());
     }
     m_chance = chance;
