@@ -73,8 +73,6 @@ import tools.image.FileSave;
  * A frame that will show the different steps creating a game XML.
  */
 public class MapXmlCreator extends JFrame {
-  public static boolean testMode = false;
-
   private static final String BUTTON_LABEL_SAVE_MAP_XML = "Save Map XML";
   private static final String FILE_NAME_CENTERS_TXT = "centers.txt";
   static final String FILE_NAME_ENDING_XML = ".xml";
