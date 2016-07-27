@@ -97,9 +97,6 @@ public class MapXmlCreator extends JFrame {
   final JPanel mainPanel;
   final JPanel sidePanel;
   final JPanel stepPanel = new JPanel();
-  final JPanel panel2 = new JPanel();
-  final JPanel panel3 = new JPanel();
-  final JPanel panel4 = new JPanel();
   private JPanel stepListPanel;
   private final ArrayList<GameStepLabel> stepList = new ArrayList<>();
   private final JPanel southPanel = new JPanel();
