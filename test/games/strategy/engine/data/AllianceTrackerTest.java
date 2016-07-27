@@ -20,7 +20,7 @@ public class AllianceTrackerTest {
     // get the xml file
     final URL url = this.getClass().getResource("Test.xml");
     final InputStream input = url.openStream();
-    m_data = (new GameParser()).parse(input, new AtomicReference<>(), false);
+    m_data = (new GameParser(url.toString())).parse(input, new AtomicReference<>(), false);
   }
 
   @Test
