@@ -58,8 +58,11 @@ public class GameParser {
   private final Collection<SAXParseException> errorsSAX = new ArrayList<>();
   public static final String DTD_FILE_NAME = "game.dtd";
   private static HashMap<String, String> newClassesForOldNames;
+  private final String mapName;
 
-  public GameParser() {}
+  public GameParser(String mapName) {
+    this.mapName = mapName;
+  }
 
   /**
    * Parses a file into a GameData object.

@@ -1114,7 +1114,7 @@ public class MapXmlCreator extends JFrame {
     final FileInputStream in = new FileInputStream(gameXMLPath);
 
     // parse using builder to get DOM representation of the XML file
-    final org.w3c.dom.Document dom = new GameParser().getDocument(in);
+    final org.w3c.dom.Document dom = new GameParser(gameXMLPath).getDocument(in);
 
     GAME_STEP goToStep = MapXmlHelper.parseValuesFromXML(dom);
 

@@ -30,7 +30,7 @@ public class ChangeTest {
     final URL url = this.getClass().getResource("Test.xml");
     // System.out.println(url);
     final InputStream input = url.openStream();
-    m_data = (new GameParser()).parse(input, new AtomicReference<>(), false);
+    m_data = (new GameParser(url.toString())).parse(input, new AtomicReference<>(), false);
   }
 
   private Change serialize(final Change aChange) throws Exception {

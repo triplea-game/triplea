@@ -24,7 +24,7 @@ public class GameDataManagerTest {
     final URL url = SerializationTest.class.getResource("Test.xml");
     // get the source data
     final InputStream input = url.openStream();
-    (new GameParser()).parse(input, new AtomicReference<>(), false);
+    (new GameParser(url.toString())).parse(input, new AtomicReference<>(), false);
   }
 
   @Test

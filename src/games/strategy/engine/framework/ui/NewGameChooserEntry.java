@@ -52,7 +52,7 @@ public class NewGameChooserEntry {
 
     try (InputStream input = inputStream.get()) {
       final boolean delayParsing = GameRunner.getDelayedParsing();
-      m_data = new GameParser().parse(input, gameName, delayParsing);
+      m_data = new GameParser(uri.toString()).parse(input, gameName, delayParsing);
       m_gameDataFullyLoaded = !delayParsing;
       m_gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
     }
@@ -71,7 +71,7 @@ public class NewGameChooserEntry {
     }
 
     try (InputStream input = inputStream.get()) {
-      m_data = new GameParser().parse(input, gameName, false);
+      m_data = new GameParser(m_url.toString()).parse(input, gameName, false);
       m_gameDataFullyLoaded = true;
 
     } catch (final EngineVersionException e) {
@@ -101,7 +101,7 @@ public class NewGameChooserEntry {
       return;
     }
     try (InputStream input = inputStream.get()) {
-      m_data = new GameParser().parse(input, gameName, true);
+      m_data = new GameParser(m_url.toString()).parse(input, gameName, true);
       m_gameDataFullyLoaded = false;
     } catch (final EngineVersionException e) {
       System.out.println(e.getMessage());
