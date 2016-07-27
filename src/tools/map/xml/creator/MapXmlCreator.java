@@ -286,11 +286,8 @@ public class MapXmlCreator extends JFrame {
     super("TripleA Map XML Creator");
 
     MapXmlCreator.testMode = testMode;
-
     mapFolderLocation = getDefaultMapFolderLocation();
-    // keep for the moment for test purposes
-    // mapFolderLocation = new File("C:\\Users\\evdO\\triplea\\triplea_1_7_0_3\\maps\\minimap");
-    // mapFolderLocation = new File("C:\\Users\\User\\workspace\\triplea\\maps\\minimap");
+
     final File myFile = getDefaultMapXmlFile();
     if (myFile.exists()) {
       try {
