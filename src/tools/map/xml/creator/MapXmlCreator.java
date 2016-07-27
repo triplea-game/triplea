@@ -207,8 +207,8 @@ public class MapXmlCreator extends JFrame {
     }
   }
 
-  private static GameStep getPrevGameStepTo(final GameStep step_cur) {
-    switch (step_cur) {
+  private static GameStep getPrevGameStepTo(final GameStep currentStep) {
+    switch (currentStep) {
       case MAP_PROPERTIES:
         return GameStep.MAP_PROPERTIES;
       case TERRITORY_DEFINITIONS:
@@ -243,7 +243,7 @@ public class MapXmlCreator extends JFrame {
         return GameStep.GAME_SETTINGS;
       default:
         throw new IllegalArgumentException(
-            "'" + step_cur + "' is not a valid string for " + GameStep.class);
+            "'" + currentStep + "' is not a valid string for " + GameStep.class);
     }
   }
 
