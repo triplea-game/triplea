@@ -73,8 +73,6 @@ import tools.image.FileSave;
  * A frame that will show the different steps creating a game XML.
  */
 public class MapXmlCreator extends JFrame {
-  public static boolean testMode = false;
-
   private static final String BUTTON_LABEL_SAVE_MAP_XML = "Save Map XML";
   private static final String FILE_NAME_CENTERS_TXT = "centers.txt";
   static final String FILE_NAME_ENDING_XML = ".xml";
@@ -86,7 +84,7 @@ public class MapXmlCreator extends JFrame {
   public static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
   public static final String TRIPLEA_UNIT_HEIGHT = "triplea.unit.height";
 
-  private GAME_STEP highestStep = GAME_STEP_FIRST;
+  private GameStep highestStep = GAME_STEP_FIRST;
 
   static File mapImageFile = null;
   static File mapCentersFile = null;
@@ -97,9 +95,6 @@ public class MapXmlCreator extends JFrame {
   final JPanel mainPanel;
   final JPanel sidePanel;
   final JPanel stepPanel = new JPanel();
-  final JPanel panel2 = new JPanel();
-  final JPanel panel3 = new JPanel();
-  final JPanel panel4 = new JPanel();
   private JPanel stepListPanel;
   private final ArrayList<GameStepLabel> stepList = new ArrayList<>();
   private final JPanel southPanel = new JPanel();
@@ -117,20 +112,20 @@ public class MapXmlCreator extends JFrame {
 
   private final JLabel stepTitleLabel;
   private final JPanel actionPanel;
-  private GAME_STEP currentStep = GAME_STEP_FIRST;
+  private GameStep currentStep = GAME_STEP_FIRST;
 
-  final public static GAME_STEP GAME_STEP_FIRST = GAME_STEP.MAP_PROPERTIES;
+  final public static GameStep GAME_STEP_FIRST = GameStep.MAP_PROPERTIES;
   public static final String MAP_XML_CREATOR_LOGGER_NAME = "Logger for Map XML Creation";
 
-  public static enum GAME_STEP {
+  public static enum GameStep {
     MAP_PROPERTIES, TERRITORY_DEFINITIONS, TERRITORY_CONNECTIONS, PLAYERS_AND_ALLIANCES, UNIT_DEFINITIONS, GAMEPLAY_SEQUENCE, PLAYER_SEQUENCE, TECHNOLOGY_DEFINITIONS, PRODUCTION_FRONTIERS, UNIT_ATTACHMENTS, TERRITORY_PRODUCTION, CANAL_DEFINITIONS, TERRITORY_OWNERSHIP, UNIT_PLACEMENTS, GAME_SETTINGS, MAP_FINISHED
   }
 
-  public static GAME_STEP getMaxGameStep(final GAME_STEP step1, final GAME_STEP step2) {
+  public static GameStep getMaxGameStep(final GameStep step1, final GameStep step2) {
     return (step1.ordinal() >= step2.ordinal()) ? step1 : step2;
   }
 
-  private static String getGameStepName(final GAME_STEP step) {
+  private static String getGameStepName(final GameStep step) {
     switch (step) {
       case MAP_PROPERTIES:
         return "Map Properties";
@@ -166,87 +161,87 @@ public class MapXmlCreator extends JFrame {
         return "Map finished!";
       default:
         throw new IllegalArgumentException(
-            "Provided value is not valid for " + GAME_STEP.class);
+            "Provided value is not valid for " + GameStep.class);
     }
   }
 
-  private static GAME_STEP getNextGameStepTo(final GAME_STEP step_cur) {
+  private static GameStep getNextGameStepTo(final GameStep step_cur) {
     switch (step_cur) {
       case MAP_PROPERTIES:
-        return GAME_STEP.TERRITORY_DEFINITIONS;
+        return GameStep.TERRITORY_DEFINITIONS;
       case TERRITORY_DEFINITIONS:
-        return GAME_STEP.TERRITORY_CONNECTIONS;
+        return GameStep.TERRITORY_CONNECTIONS;
       case TERRITORY_CONNECTIONS:
-        return GAME_STEP.PLAYERS_AND_ALLIANCES;
+        return GameStep.PLAYERS_AND_ALLIANCES;
       case PLAYERS_AND_ALLIANCES:
-        return GAME_STEP.UNIT_DEFINITIONS;
+        return GameStep.UNIT_DEFINITIONS;
       case UNIT_DEFINITIONS:
-        return GAME_STEP.GAMEPLAY_SEQUENCE;
+        return GameStep.GAMEPLAY_SEQUENCE;
       case GAMEPLAY_SEQUENCE:
-        return GAME_STEP.PLAYER_SEQUENCE;
+        return GameStep.PLAYER_SEQUENCE;
       case PLAYER_SEQUENCE:
-        return GAME_STEP.TECHNOLOGY_DEFINITIONS;
+        return GameStep.TECHNOLOGY_DEFINITIONS;
       case TECHNOLOGY_DEFINITIONS:
-        return GAME_STEP.PRODUCTION_FRONTIERS;
+        return GameStep.PRODUCTION_FRONTIERS;
       case PRODUCTION_FRONTIERS:
-        return GAME_STEP.UNIT_ATTACHMENTS;
+        return GameStep.UNIT_ATTACHMENTS;
       case UNIT_ATTACHMENTS:
-        return GAME_STEP.TERRITORY_PRODUCTION;
+        return GameStep.TERRITORY_PRODUCTION;
       case TERRITORY_PRODUCTION:
-        return GAME_STEP.CANAL_DEFINITIONS;
+        return GameStep.CANAL_DEFINITIONS;
       case CANAL_DEFINITIONS:
-        return GAME_STEP.TERRITORY_OWNERSHIP;
+        return GameStep.TERRITORY_OWNERSHIP;
       case TERRITORY_OWNERSHIP:
-        return GAME_STEP.UNIT_PLACEMENTS;
+        return GameStep.UNIT_PLACEMENTS;
       case UNIT_PLACEMENTS:
-        return GAME_STEP.GAME_SETTINGS;
+        return GameStep.GAME_SETTINGS;
       case GAME_SETTINGS:
-        return GAME_STEP.MAP_FINISHED;
+        return GameStep.MAP_FINISHED;
       case MAP_FINISHED:
-        return GAME_STEP.MAP_FINISHED;
+        return GameStep.MAP_FINISHED;
       default:
         throw new IllegalArgumentException(
-            "'" + step_cur + "' is not a valid string for " + GAME_STEP.class);
+            "'" + step_cur + "' is not a valid string for " + GameStep.class);
     }
   }
 
-  private static GAME_STEP getPrevGameStepTo(final GAME_STEP step_cur) {
-    switch (step_cur) {
+  private static GameStep getPrevGameStepTo(final GameStep currentStep) {
+    switch (currentStep) {
       case MAP_PROPERTIES:
-        return GAME_STEP.MAP_PROPERTIES;
+        return GameStep.MAP_PROPERTIES;
       case TERRITORY_DEFINITIONS:
-        return GAME_STEP.MAP_PROPERTIES;
+        return GameStep.MAP_PROPERTIES;
       case TERRITORY_CONNECTIONS:
-        return GAME_STEP.TERRITORY_DEFINITIONS;
+        return GameStep.TERRITORY_DEFINITIONS;
       case PLAYERS_AND_ALLIANCES:
-        return GAME_STEP.TERRITORY_CONNECTIONS;
+        return GameStep.TERRITORY_CONNECTIONS;
       case UNIT_DEFINITIONS:
-        return GAME_STEP.PLAYERS_AND_ALLIANCES;
+        return GameStep.PLAYERS_AND_ALLIANCES;
       case GAMEPLAY_SEQUENCE:
-        return GAME_STEP.UNIT_DEFINITIONS;
+        return GameStep.UNIT_DEFINITIONS;
       case PLAYER_SEQUENCE:
-        return GAME_STEP.GAMEPLAY_SEQUENCE;
+        return GameStep.GAMEPLAY_SEQUENCE;
       case TECHNOLOGY_DEFINITIONS:
-        return GAME_STEP.PLAYER_SEQUENCE;
+        return GameStep.PLAYER_SEQUENCE;
       case PRODUCTION_FRONTIERS:
-        return GAME_STEP.TECHNOLOGY_DEFINITIONS;
+        return GameStep.TECHNOLOGY_DEFINITIONS;
       case UNIT_ATTACHMENTS:
-        return GAME_STEP.PRODUCTION_FRONTIERS;
+        return GameStep.PRODUCTION_FRONTIERS;
       case TERRITORY_PRODUCTION:
-        return GAME_STEP.UNIT_ATTACHMENTS;
+        return GameStep.UNIT_ATTACHMENTS;
       case CANAL_DEFINITIONS:
-        return GAME_STEP.TERRITORY_PRODUCTION;
+        return GameStep.TERRITORY_PRODUCTION;
       case TERRITORY_OWNERSHIP:
-        return GAME_STEP.CANAL_DEFINITIONS;
+        return GameStep.CANAL_DEFINITIONS;
       case UNIT_PLACEMENTS:
-        return GAME_STEP.TERRITORY_OWNERSHIP;
+        return GameStep.TERRITORY_OWNERSHIP;
       case GAME_SETTINGS:
-        return GAME_STEP.UNIT_PLACEMENTS;
+        return GameStep.UNIT_PLACEMENTS;
       case MAP_FINISHED:
-        return GAME_STEP.GAME_SETTINGS;
+        return GameStep.GAME_SETTINGS;
       default:
         throw new IllegalArgumentException(
-            "'" + step_cur + "' is not a valid string for " + GAME_STEP.class);
+            "'" + currentStep + "' is not a valid string for " + GameStep.class);
     }
   }
 
@@ -282,18 +277,10 @@ public class MapXmlCreator extends JFrame {
   }
 
   public MapXmlCreator() {
-    this(false);
-  }
-
-  public MapXmlCreator(final boolean testMode) {
     super("TripleA Map XML Creator");
 
-    MapXmlCreator.testMode = testMode;
-
     mapFolderLocation = getDefaultMapFolderLocation();
-    // keep for the moment for test purposes
-    // mapFolderLocation = new File("C:\\Users\\evdO\\triplea\\triplea_1_7_0_3\\maps\\minimap");
-    // mapFolderLocation = new File("C:\\Users\\User\\workspace\\triplea\\maps\\minimap");
+
     final File myFile = getDefaultMapXmlFile();
     if (myFile.exists()) {
       try {
@@ -381,7 +368,7 @@ public class MapXmlCreator extends JFrame {
   private Action createMenuBar() {
     // set up the actions
     final Action openAction = SwingAction.of("Load Map XML", e -> {
-      final GAME_STEP goToStep;
+      final GameStep goToStep;
       goToStep = MapXmlCreator.loadXML();
       highestStep = goToStep;
       DynamicRowsPanel.me = Optional.empty();
@@ -421,8 +408,8 @@ public class MapXmlCreator extends JFrame {
 
   private void createStepListPanel() {
     stepListPanel = new JPanel();
-    GAME_STEP step_cur = null;
-    GAME_STEP step_next = GAME_STEP_FIRST;
+    GameStep step_cur = null;
+    GameStep step_next = GAME_STEP_FIRST;
     int stepCounter = 1;
     while (step_cur != step_next) {
       step_cur = step_next;
@@ -799,7 +786,7 @@ public class MapXmlCreator extends JFrame {
   final private Font stepLabelFontDefault = new Font(stepLabelFontName, Font.PLAIN, 13);
   final private Font stepLabelFontHighlighted = new Font(stepLabelFontName, Font.BOLD, 13);
 
-  private void goToStep(final GAME_STEP step) {
+  private void goToStep(final GameStep step) {
     if (currentStep != step) {
       final GameStepLabel stepLabelOld = stepList.get(currentStep.ordinal());
       stepLabelOld.setFont(stepLabelFontDefault);
@@ -1089,7 +1076,7 @@ public class MapXmlCreator extends JFrame {
     getLogger().log(level, msg);
   }
 
-  static GAME_STEP loadXML() {
+  static GameStep loadXML() {
     final String gameXMLPath =
         MapXmlUIHelper.selectFile("Game XML File", MapXmlHelper.getMapXMLFile(), FILE_NAME_ENDING_XML).getPathString();
     MapXmlCreator.log(Level.INFO, "Load Game XML from " + gameXMLPath);
@@ -1109,14 +1096,14 @@ public class MapXmlCreator extends JFrame {
    * @throws IOException
    * @throws ParserConfigurationException
    */
-  public static GAME_STEP loadXmlFromFilePath(final String gameXMLPath)
+  public static GameStep loadXmlFromFilePath(final String gameXMLPath)
       throws SAXException, IOException, ParserConfigurationException {
     final FileInputStream in = new FileInputStream(gameXMLPath);
 
     // parse using builder to get DOM representation of the XML file
     final org.w3c.dom.Document dom = new GameParser().getDocument(in);
 
-    GAME_STEP goToStep = MapXmlHelper.parseValuesFromXML(dom);
+    GameStep goToStep = MapXmlHelper.parseValuesFromXML(dom);
 
     // set map file, image file and map folder
     MapXmlHelper.setMapXMLFile(new File(gameXMLPath));
@@ -1156,7 +1143,7 @@ public class MapXmlCreator extends JFrame {
 
   class GameStepLabel extends JLabel {
     private static final long serialVersionUID = -2034374214878411484L;
-    private final GAME_STEP gameStep;
+    private final GameStep gameStep;
 
     /**
      * Creates a <code>JLabel</code> instance with the specified text.
@@ -1165,7 +1152,7 @@ public class MapXmlCreator extends JFrame {
      *
      * @param text The text to be displayed by the label.
      */
-    public GameStepLabel(final String text, final GAME_STEP step) {
+    public GameStepLabel(final String text, final GameStep step) {
       super(text);
       gameStep = step;
       final GameStepLabel me = this;

@@ -228,7 +228,7 @@ public abstract class ImageScrollPanePanel {
     }
     if (MapXmlCreator.mapPolygonsFile != null
         || file.exists()
-            && (MapXmlCreator.testMode || JOptionPane.showConfirmDialog(new JPanel(),
+            && (JOptionPane.showConfirmDialog(new JPanel(),
                 "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territory shapes?",
                 "File Suggestion",
                 1) == 0)) {
