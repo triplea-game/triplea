@@ -33,7 +33,7 @@ public class GameSelectorModel extends Observable {
   /** Returns the folder where maps are held, example: "/maps" */
   public static final File DEFAULT_MAP_DIRECTORY = new File(ClientFileSystemHelper.getRootFolder(), "maps");
   private static final String DEFAULT_GAME_NAME_PREF = "DefaultGameName2";
-  private static final String DEFAULT_GAME_NAME = "Tutorial";
+  private static final String DEFAULT_GAME_NAME = "Big World : 1942";
   private static final String DEFAULT_GAME_URI_PREF = "DefaultGameURI";
   private static final String DEFAULT_GAME_URI = "";
   private GameData m_data = null;

@@ -87,19 +87,19 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   public void setRelationshipChange(final String relChange) throws GameParseException {
     final String[] s = relChange.split(":");
     if (s.length != 3) {
-      throw new GameParseException(getData(), "Invalid relationshipChange declaration: " + relChange
+      throw new GameParseException("Invalid relationshipChange declaration: " + relChange
           + " \n Use: player1:player2:newRelation\n" + thisErrorMsg());
     }
     if (getData().getPlayerList().getPlayerID(s[0]) == null) {
-      throw new GameParseException(getData(), "Invalid relationshipChange declaration: " + relChange + " \n player: " + s[0]
+      throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n player: " + s[0]
           + " unknown in: " + getName() + thisErrorMsg());
     }
     if (getData().getPlayerList().getPlayerID(s[1]) == null) {
-      throw new GameParseException(getData(), "Invalid relationshipChange declaration: " + relChange + " \n player: " + s[1]
+      throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n player: " + s[1]
           + " unknown in: " + getName() + thisErrorMsg());
     }
     if (!Matches.isValidRelationshipName(getData()).match(s[2])) {
-      throw new GameParseException(getData(), "Invalid relationshipChange declaration: " + relChange + " \n relationshipType: "
+      throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n relationshipType: "
           + s[2] + " unknown in: " + getName() + thisErrorMsg());
     }
     m_relationshipChange.add(relChange);
@@ -155,7 +155,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   public void validate(final GameData data) throws GameParseException {
     super.validate(data);
     if (m_relationshipChange.isEmpty()) {
-      throw new GameParseException(getData(), "value: relationshipChange can't be empty" + thisErrorMsg());
+      throw new GameParseException("value: relationshipChange can't be empty" + thisErrorMsg());
     }
   }
 }

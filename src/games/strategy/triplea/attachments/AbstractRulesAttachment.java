@@ -65,7 +65,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     for (final String p : names.split(":")) {
       final PlayerID player = pl.getPlayerID(p);
       if (player == null) {
-        throw new GameParseException(getData(), "Could not find player. name:" + p + thisErrorMsg());
+        throw new GameParseException("Could not find player. name:" + p + thisErrorMsg());
       }
       m_players.add(player);
     }
@@ -95,7 +95,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   @Override
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setChance(final String chance) throws GameParseException {
-    throw new GameParseException(getData(),
+    throw new GameParseException(
         "chance not allowed for use with RulesAttachments, instead use it with Triggers or PoliticalActions"
             + thisErrorMsg());
   }
@@ -225,7 +225,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     m_turns = new HashMap<>();
     final String[] s = turns.split(":");
     if (s.length < 1) {
-      throw new GameParseException(getData(), "Empty turn list" + thisErrorMsg());
+      throw new GameParseException("Empty turn list" + thisErrorMsg());
     }
     for (final String subString : s) {
       int start, end;
@@ -235,7 +235,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       } catch (final Exception e) {
         final String[] s2 = subString.split("-");
         if (s2.length != 2) {
-          throw new GameParseException(getData(), "Invalid syntax for turn range, must be 'int-int'" + thisErrorMsg());
+          throw new GameParseException("Invalid syntax for turn range, must be 'int-int'" + thisErrorMsg());
         }
         start = getInt(s2[0]);
         if (s2[1].equals("+")) {
