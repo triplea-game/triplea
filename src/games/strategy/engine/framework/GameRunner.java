@@ -147,6 +147,7 @@ public class GameRunner {
       protected void dispatchEvent(AWTEvent newEvent) {
         try {
           super.dispatchEvent(newEvent);
+          // This ensures, that all exceptions/errors inside any swing framework (like substance) are logged correctly
         } catch (Throwable t) {
           ClientLogger.logError(t);
         }
