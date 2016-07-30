@@ -1,13 +1,18 @@
 [![Travis](https://img.shields.io/travis/ajoberstar/gradle-git.svg?style=flat-square)](https://travis-ci.org/triplea-game/triplea) [![tripleA license](https://img.shields.io/github/license/triplea-game/tripleA.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)<br>
 TripleA is a free game engine that runs on open source and is community supported. 
 
-
 Installing TripleA and Playing
 ==============================
 - Download and install TripleA: http://triplea-game.github.io/download/
-- Bug reports, suggestions: http://github.com/triplea-game/triplea/issues/new
 - Online PDF rule book: http://github.com/triplea-game/assets/blob/master/rulebooks/TripleA_RuleBook.pdf
 
+TripleA Websites
+================
+- HomePage: http://triplea-game.github.io/
+- Community Website: http://www.tripleawarclub.org/
+- Community Maps Repository: http://github.com/triplea-maps
+- Source Forge (legacy): https://sourceforge.net/projects/triplea/
+- Bug reports, feature requests: http://github.com/triplea-game/triplea/issues/new
 
 TripleA Game Features
 =====================
@@ -29,13 +34,9 @@ We encourage people to create these relatively liberally. To be most effective t
 
 The overall goal is to keep a tracking ticket so we can discuss and identify problems/features directions we are going. Secondly, an issue is most ideal when it is an isolated independent nugget, that someone can pick up, read, and really understand enough context of the problem and have directions to reproduce the problem, at which point they can immediately begin work.
 
-
-Related Websites
+Map Maker Setup
 ================
-- TripleA HomePage: http://triplea-game.github.io/download/
-- TripleA Community Website: http://www.tripleawarclub.org/
-- TripleA Maps: http://github.com/triplea-maps
-- TripleA source forge (legacy): https://sourceforge.net/projects/triplea/
+See: https://github.com/triplea-maps/Project
 
 
 Developer Setup
