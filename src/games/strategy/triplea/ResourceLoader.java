@@ -45,7 +45,7 @@ public class ResourceLoader {
 
     final List<String> dirs = getPaths(mapName);
     if (mapName != null && dirs.isEmpty()) {
-      SwingComponents.promptUser("Download map?",
+      SwingComponents.promptUser("Download Map?",
           "Map missing: " + mapName + ", could not join game.\nWould you like to download the map now?"
               + "\nOnce the download completes, you may reconnect to this game.",
           () -> DownloadMapsWindow.showDownloadMapsWindow(mapName));
