@@ -86,7 +86,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 
   @Override
   public void reportMessage(final String message, final String title) {
-    ui.notifyMessage(message, title);
+    if(ui != null ) {
+      ui.notifyMessage(message, title);
+    }
   }
 
   @Override
@@ -97,8 +99,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       return;
     }
     if (ui == null) {
-      System.out.println("Game frame is null, but entered player step: " + name + " for player: " + this.toString());
-      // headless games shouldn't get here, but lets try returning anyway
+      // We will get here if we are loading a save game of a map that we do not have. Caller code should be doing
+      // the error handling, so just return..
       return;
     }
     // TODO: parsing which UI thing we should run based on the string name of a possibly extended delegate
