@@ -125,12 +125,19 @@ public class DownloadMapsWindow extends JFrame {
 
   private static Optional<DownloadFileDescription> findMap(final String mapName,
       final List<DownloadFileDescription> games) {
+
+    final String normalizedName = normalizeName(mapName);
     for (DownloadFileDescription download : games) {
-      if (download.getMapName().equalsIgnoreCase(mapName)) {
+      if (download.getMapName().equalsIgnoreCase(mapName)
+          || normalizedName.equals(normalizeName(download.getMapName()))) {
         return Optional.of(download);
       }
     }
     return Optional.empty();
+  }
+
+  private static String normalizeName(String mapName) {
+    return mapName.replace(' ', '_').toLowerCase();
   }
 
 

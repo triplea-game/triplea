@@ -28,9 +28,12 @@ public class ResourceLoader {
   public static String RESOURCE_FOLDER = "assets";
 
   public static ResourceLoader getGameEngineAssetLoader() {
-    return getMapResourceLoader(null);
+    return getMapResourceLoader("");
   }
 
+  /**
+   * Returns a resource loader that will find assets in a map directory.
+   */
   public static ResourceLoader getMapResourceLoader(final String mapName) {
     File atFolder = ClientFileSystemHelper.getRootFolder();
     File resourceFolder = new File(atFolder, RESOURCE_FOLDER);
@@ -42,7 +45,7 @@ public class ResourceLoader {
 
     final List<String> dirs = getPaths(mapName);
     if (mapName != null && dirs.isEmpty()) {
-      SwingComponents.promptUser("Download map?",
+      SwingComponents.promptUser("Download Map?",
           "Map missing: " + mapName + ", could not join game.\nWould you like to download the map now?"
               + "\nOnce the download completes, you may reconnect to this game.",
           () -> DownloadMapsWindow.showDownloadMapsWindow(mapName));
@@ -92,7 +95,8 @@ public class ResourceLoader {
 
     Optional<File> match = candidates.stream().filter(file -> file.exists()).findFirst();
     if(!match.isPresent()) {
-      ClientLogger.logError("Could not find map: " +mapName + " in any of the following locations: " + candidates);
+      // if we get no results, we will eventually prompt the user to download the map
+      return new ArrayList<>();
     }
     ClientLogger.logQuietly("Loading map: " + mapName + ", from: " + match.get().getAbsolutePath());
 
