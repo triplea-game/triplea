@@ -102,7 +102,7 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
     // the vertical struct gives the row height
     contentRow.add(Box.createVerticalStrut(ROW_HEIGHT));
 
-    contentRow.add(descriptionComponent);
+    contentRow.add(SwingComponents.newJScrollPane(descriptionComponent));
     contentRow.setBorder(new BevelBorder(BevelBorder.LOWERED));
     return contentRow;
   }
