@@ -26,6 +26,8 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import games.strategy.triplea.settings.SystemPreferenceKey;
+import games.strategy.triplea.settings.SystemPreferences;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
 
@@ -106,6 +108,9 @@ public class GameRunner {
       Math.max(Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, 900),
           DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110);
 
+  private static final String MAP_FOLDER = "mapFolder";
+
+
   public static boolean isWindows() {
     return System.getProperties().getProperty("os.name").toLowerCase().contains("windows");
   }
@@ -126,7 +131,9 @@ public class GameRunner {
         + "=<LOBBY_PORT>\n" + "   " + LOBBY_HOST
         + "=<LOBBY_HOST>\n" + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n" + "   " + LOBBY_GAME_HOSTED_BY
         + "=<LOBBY_GAME_HOSTED_BY>\n" + "   " + PROXY_HOST + "=<Proxy_Host>\n" + "   " + PROXY_PORT + "=<Proxy_Port>\n"
-        + "   " + TRIPLEA_MEMORY_SET + "=true/false <did you set the xmx manually?>\n" + "\n"
+        + "   " + TRIPLEA_MEMORY_SET + "=true/false <did you set the xmx manually?>\n" + MAP_FOLDER + "=mapFolder" +
+
+        "\n"
         + "if there is only one argument, and it does not start with triplea.game, the argument will be \n"
         + "taken as the name of the file to load.\n" + "\n" + "Example\n" + "   to start a game using the given file:\n"
         + "\n" + "   triplea /home/sgb/games/test.xml\n" + "\n" + "   or\n" + "\n"
@@ -200,7 +207,11 @@ public class GameRunner {
         for (final String property : properties) {
           if (arg.equals(property)) {
             final String value = getValue(arg1);
-            System.getProperties().setProperty(property, value);
+            if(property.equals(MAP_FOLDER)) {
+              SystemPreferences.put(SystemPreferenceKey.MAP_FOLDER_OVERRIDE, value);
+            } else {
+              System.getProperties().setProperty(property, value);
+            }
             System.out.println(property + ":" + value);
             found = true;
             break;
@@ -240,7 +251,7 @@ public class GameRunner {
         TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
         LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
         LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, PROXY_HOST, PROXY_PORT,
-        TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, TRIPLEA_MEMORY_SET};
+        TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, TRIPLEA_MEMORY_SET, MAP_FOLDER};
   }
 
   private static String getValue(final String arg) {
