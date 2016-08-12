@@ -12,6 +12,7 @@ import java.util.Properties;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.system.Memory;
 
 /**
  * Moved out of Console class, so that we don't need swing.
@@ -70,7 +71,7 @@ public class DebugUtils {
     buf.append("Free memory: ").append(runtime.freeMemory() / mb).append("\r\n");
     buf.append("Total memory: ").append(runtime.totalMemory() / mb).append("\r\n");
     buf.append("Max memory: ").append(runtime.maxMemory() / mb).append("\r\n");
-    final int currentMaxSetting = GameRunner.getMaxMemoryFromSystemIniFileInMB(GameRunner.getSystemIni());
+    final int currentMaxSetting = Memory.getMaxMemoryFromSystemIniFileInMB(GameRunner.getSystemIni());
     if (currentMaxSetting > 0) {
       buf.append("Max Memory user setting within 22% of: ").append(currentMaxSetting).append("\r\n");
     }

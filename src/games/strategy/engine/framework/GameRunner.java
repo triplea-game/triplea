@@ -34,6 +34,7 @@ import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.system.HttpProxy;
+import games.strategy.engine.framework.system.Memory;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.net.Messengers;
@@ -82,20 +83,14 @@ public class GameRunner {
   public static final String LOBBY_GAME_RECONNECTION = "triplea.lobby.game.reconnection";
   public static final String TRIPLEA_ENGINE_VERSION_BIN = "triplea.engine.version.bin";
   private static final String TRIPLEA_DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
-  // has the memory been manually set or not?
-  public static final String TRIPLEA_MEMORY_SET = "triplea.memory.set";
+  private static final String TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY =
+      "triplea.firstTimeThisVersion" + ClientContext.engineVersion();
+  private static final String TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE = "triplea.lastCheckForEngineUpdate";
+
   public static final String TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME = "triplea.server.startGameSyncWaitTime";
   public static final String TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME = "triplea.server.observerJoinWaitTime";
   // non-commandline-argument-properties (for preferences)
   // first time we've run this version of triplea?
-  private static final String TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY =
-      "triplea.firstTimeThisVersion" + ClientContext.engineVersion();
-  private static final String TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE = "triplea.lastCheckForEngineUpdate";
-  // only for Online?
-  private static final String TRIPLEA_MEMORY_ONLINE_ONLY = "triplea.memory.onlineOnly";
-  // what should our xmx be approximately?
-  private static final String TRIPLEA_MEMORY_XMX = "triplea.memory.Xmx";
-  private static final String TRIPLEA_MEMORY_USE_DEFAULT = "triplea.memory.useDefault";
   private static final String SYSTEM_INI = "system.ini";
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
   private static final int DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME =
@@ -154,7 +149,7 @@ public class GameRunner {
           + "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
           + "   " + HttpProxy.PROXY_HOST + "=<Proxy_Host>\n"
           + "   " + HttpProxy.PROXY_PORT + "=<Proxy_Port>\n"
-          + "   " + TRIPLEA_MEMORY_SET + "=true/false <did you set the xmx manually?>\n"
+          + "   " + Memory.TRIPLEA_MEMORY_SET + "=true/false <did you set the xmx manually?>\n"
           + "   " + MAP_FOLDER + "=mapFolder"
           + "\n"
           + "if there is only one argument, and it does not start with triplea.game, the argument will be \n"
@@ -173,7 +168,7 @@ public class GameRunner {
   public static void main(final String[] args) {
     ErrorConsole.getConsole();
     // do after we handle command line args
-    checkForMemoryXMX();
+    Memory.checkForMemoryXMX();
 
     SwingUtilities.invokeLater(() -> LookAndFeel.setupLookAndFeel());
     showMainFrame();
@@ -379,7 +374,7 @@ public class GameRunner {
         TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
         LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
         LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, HttpProxy.PROXY_HOST,
-        HttpProxy.PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, TRIPLEA_MEMORY_SET, MAP_FOLDER};
+        HttpProxy.PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, Memory.TRIPLEA_MEMORY_SET, MAP_FOLDER};
   }
 
   private static String getValue(final String arg) {
@@ -425,105 +420,6 @@ public class GameRunner {
 
 
 
-  private static void checkForMemoryXMX() {
-    final String memSetString = System.getProperty(TRIPLEA_MEMORY_SET, "false");
-    final boolean memSet = Boolean.parseBoolean(memSetString);
-    // if we have already set the memory, then return.
-    // (example: we used process runner to create a new triplea with a specific memory)
-    if (memSet) {
-      return;
-    }
-    final Properties systemIni = getSystemIni();
-    if (useDefaultMaxMemory(systemIni)) {
-      return;
-    }
-    if (getUseMaxMemorySettingOnlyForOnlineJoinOrHost(systemIni)) {
-      return;
-    }
-    long xmx = getMaxMemoryFromSystemIniFileInMB(systemIni);
-    // if xmx less than zero, return (because it means we do not want to change it)
-    if (xmx <= 0) {
-      return;
-    }
-    final int mb = 1024 * 1024;
-    xmx = xmx * mb;
-    final long currentMaxMemory = Runtime.getRuntime().maxMemory();
-    System.out.println("Current max memory: " + currentMaxMemory + ";  and new xmx should be: " + xmx);
-    final long diff = Math.abs(currentMaxMemory - xmx);
-    // Runtime.maxMemory is never accurate, and is usually off by 5% to 15%,
-    // so if our difference is less than 22% we should just ignore the difference
-    if (diff <= xmx * 0.22) {
-      return;
-    }
-    // the difference is significant enough that we should re-run triplea with a larger number
-    GameRunner.startNewTripleA(xmx);
-    // must exit now
-    System.exit(0);
-  }
-
-  public static boolean useDefaultMaxMemory(final Properties systemIni) {
-    final String useDefaultMaxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_USE_DEFAULT, "true");
-    return Boolean.parseBoolean(useDefaultMaxMemoryString);
-  }
-
-  public static long getMaxMemoryInBytes() {
-    final Properties systemIni = getSystemIni();
-    final String useDefaultMaxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_USE_DEFAULT, "true");
-    final boolean useDefaultMaxMemory = Boolean.parseBoolean(useDefaultMaxMemoryString);
-    final String maxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_XMX, "").trim();
-    // for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value.
-    // Just something to be aware of.
-    long max = Runtime.getRuntime().maxMemory();
-    if (!useDefaultMaxMemory && maxMemoryString.length() > 0) {
-      try {
-        final int maxMemorySet = Integer.parseInt(maxMemoryString);
-        // it is in MB
-        max = 1024 * 1024 * ((long) maxMemorySet);
-      } catch (final NumberFormatException e) {
-        ClientLogger.logQuietly(e);
-      }
-    }
-    return max;
-  }
-
-  public static int getMaxMemoryFromSystemIniFileInMB(final Properties systemIni) {
-    final String maxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_XMX, "").trim();
-    int maxMemorySet = -1;
-    if (maxMemoryString.length() > 0) {
-      try {
-        maxMemorySet = Integer.parseInt(maxMemoryString);
-      } catch (final NumberFormatException e) {
-        ClientLogger.logQuietly(e);
-      }
-    }
-    return maxMemorySet;
-  }
-
-  public static Properties setMaxMemoryInMB(final int maxMemoryInMB) {
-    System.out.println("Setting max memory for TripleA to: " + maxMemoryInMB + "m");
-    final Properties prop = new Properties();
-    prop.put(TRIPLEA_MEMORY_USE_DEFAULT, "false");
-    prop.put(TRIPLEA_MEMORY_XMX, "" + maxMemoryInMB);
-    return prop;
-  }
-
-  public static void clearMaxMemory() {
-    final Properties prop = new Properties();
-    prop.put(TRIPLEA_MEMORY_USE_DEFAULT, "true");
-    prop.put(TRIPLEA_MEMORY_ONLINE_ONLY, "true");
-    prop.put(TRIPLEA_MEMORY_XMX, "");
-    writeSystemIni(prop, false);
-  }
-
-  public static void setUseMaxMemorySettingOnlyForOnlineJoinOrHost(final boolean useForOnlineOnly,
-      final Properties prop) {
-    prop.put(TRIPLEA_MEMORY_ONLINE_ONLY, "" + useForOnlineOnly);
-  }
-
-  public static boolean getUseMaxMemorySettingOnlyForOnlineJoinOrHost(final Properties systemIni) {
-    final String forOnlineOnlyString = systemIni.getProperty(TRIPLEA_MEMORY_ONLINE_ONLY, "true");
-    return Boolean.parseBoolean(forOnlineOnlyString);
-  }
 
   public static Properties getSystemIni() {
     final Properties rVal = new Properties();
