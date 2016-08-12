@@ -1,12 +1,9 @@
 package games.strategy.engine.framework.ui.background;
 
 import java.awt.Component;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.SwingUtilities;
-
-import games.strategy.util.CountDownLatchHandler;
 
 public class BackgroundTaskRunner {
   public static void runInBackground(final Component parent, final String waitMessage, final Runnable r) {
@@ -33,33 +30,11 @@ public class BackgroundTaskRunner {
     }
   }
 
-  public static void runInBackground(final Component parent, final String waitMessage, final Runnable r,
-      final CountDownLatchHandler latchHandler) {
+  public static void runInBackground(final String waitMessage, final Runnable r) {
     if (SwingUtilities.isEventDispatchThread()) {
-      runInBackground(parent, waitMessage, r);
+      runInBackground(null, waitMessage, r);
       return;
     }
-    final CountDownLatch latch = new CountDownLatch(1);
-    SwingUtilities.invokeLater(() -> {
-      runInBackground(parent, waitMessage, r);
-      latch.countDown();
-    });
-    if (latchHandler != null) {
-      latchHandler.addShutdownLatch(latch);
-    }
-    boolean done = false;
-    while (!done) {
-      try {
-        latch.await();
-        done = true;
-      } catch (final InterruptedException e) {
-        if (latchHandler != null) {
-          latchHandler.interruptLatch(latch);
-        }
-      }
-    }
-    if (latchHandler != null) {
-      latchHandler.removeShutdownLatch(latch);
-    }
+    SwingUtilities.invokeLater(() -> runInBackground(null, waitMessage, r));
   }
 }
