@@ -589,13 +589,7 @@ public class GameRunner {
   private static boolean s_checkedCasualtySelectionSlowPreference = false;
 
   public static void setCasualtySelectionSlow(final boolean casualtySelectionBeta) {
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    pref.putBoolean(CASUALTY_SELECTION_SLOW, casualtySelectionBeta);
-    try {
-      pref.sync();
-    } catch (final BackingStoreException e) {
-      ClientLogger.logQuietly(e);
-    }
+    SystemPreferences.put(SystemPreferenceKey.CASUALTY_SELECTION_SLOW, casualtySelectionBeta);
   }
 
   public static int getServerStartGameSyncWaitTime() {
@@ -612,13 +606,7 @@ public class GameRunner {
     if (wait == getServerStartGameSyncWaitTime()) {
       return;
     }
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    pref.putInt(TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, wait);
-    try {
-      pref.sync();
-    } catch (final BackingStoreException e) {
-      ClientLogger.logQuietly(e);
-    }
+    SystemPreferences.put(SystemPreferenceKey.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, wait);
   }
 
   public static int getServerObserverJoinWaitTime() {
