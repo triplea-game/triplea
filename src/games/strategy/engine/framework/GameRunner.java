@@ -233,75 +233,73 @@ public class GameRunner {
       }
     }
 
-    if(gameMode == GameMode.HEADLESS_BOT) {
+    if (gameMode == GameMode.HEADLESS_BOT) {
       System.getProperties().setProperty(TRIPLEA_HEADLESS, "true");
       boolean printUsage = false;
-      { // now check for required fields
-        final String playerName = System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY, "");
-        final String hostName = System.getProperty(GameRunner.LOBBY_GAME_HOSTED_BY, "");
-        final String comments = System.getProperty(GameRunner.LOBBY_GAME_COMMENTS, "");
-        final String email = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_EMAIL, "");
-        final String reconnection =
-            System.getProperty(GameRunner.LOBBY_GAME_RECONNECTION, "" + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
-        if (playerName.length() < 7 || hostName.length() < 7 || !hostName.equals(playerName)
-            || !playerName.startsWith("Bot") || !hostName.startsWith("Bot")) {
-          System.out.println(
-              "Invalid argument: " + GameRunner.TRIPLEA_NAME_PROPERTY + " and " + GameRunner.LOBBY_GAME_HOSTED_BY
-                  + " must start with \"Bot\" and be at least 7 characters long and be the same.");
-          printUsage = true;
-        }
-        if (!comments.contains("automated_host")) {
-          System.out.println(
-              "Invalid argument: " + GameRunner.LOBBY_GAME_COMMENTS + " must contain the string \"automated_host\".");
-          printUsage = true;
-        }
-        if (email.length() < 3 || !Util.isMailValid(email)) {
-          System.out.println(
-              "Invalid argument: " + GameRunner.LOBBY_GAME_SUPPORT_EMAIL + " must contain a valid email address.");
-          printUsage = true;
-        }
-        try {
-          final int reconnect = Integer.parseInt(reconnection);
-          if (reconnect < LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM) {
-            System.out.println("Invalid argument: " + GameRunner.LOBBY_GAME_RECONNECTION
-                + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
-                + " seconds, and should normally be either " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT + " or "
-                + (2 * LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
-            printUsage = true;
-          }
-        } catch (final NumberFormatException e) {
+      final String playerName = System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY, "");
+      final String hostName = System.getProperty(GameRunner.LOBBY_GAME_HOSTED_BY, "");
+      final String comments = System.getProperty(GameRunner.LOBBY_GAME_COMMENTS, "");
+      final String email = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_EMAIL, "");
+      final String reconnection =
+          System.getProperty(GameRunner.LOBBY_GAME_RECONNECTION, "" + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
+      if (playerName.length() < 7 || hostName.length() < 7 || !hostName.equals(playerName)
+          || !playerName.startsWith("Bot") || !hostName.startsWith("Bot")) {
+        System.out.println(
+            "Invalid argument: " + GameRunner.TRIPLEA_NAME_PROPERTY + " and " + GameRunner.LOBBY_GAME_HOSTED_BY
+                + " must start with \"Bot\" and be at least 7 characters long and be the same.");
+        printUsage = true;
+      }
+      if (!comments.contains("automated_host")) {
+        System.out.println(
+            "Invalid argument: " + GameRunner.LOBBY_GAME_COMMENTS + " must contain the string \"automated_host\".");
+        printUsage = true;
+      }
+      if (email.length() < 3 || !Util.isMailValid(email)) {
+        System.out.println(
+            "Invalid argument: " + GameRunner.LOBBY_GAME_SUPPORT_EMAIL + " must contain a valid email address.");
+        printUsage = true;
+      }
+      try {
+        final int reconnect = Integer.parseInt(reconnection);
+        if (reconnect < LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM) {
           System.out.println("Invalid argument: " + GameRunner.LOBBY_GAME_RECONNECTION
               + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
               + " seconds, and should normally be either " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT + " or "
               + (2 * LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
           printUsage = true;
         }
-        // no passwords allowed for bots
+      } catch (final NumberFormatException e) {
+        System.out.println("Invalid argument: " + GameRunner.LOBBY_GAME_RECONNECTION
+            + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
+            + " seconds, and should normally be either " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT + " or "
+            + (2 * LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
+        printUsage = true;
       }
-      {// take any actions or commit to preferences
-        final String clientWait = System.getProperty(GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, "");
-        final String observerWait = System.getProperty(GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME, "");
-        if (clientWait.length() > 0) {
-          try {
-            final int wait = Integer.parseInt(clientWait);
-            GameRunner.setServerStartGameSyncWaitTime(wait);
-          } catch (final NumberFormatException e) {
-            System.out.println(
-                "Invalid argument: " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + " must be an integer.");
-            printUsage = true;
-          }
-        }
-        if (observerWait.length() > 0) {
-          try {
-            final int wait = Integer.parseInt(observerWait);
-            GameRunner.setServerObserverJoinWaitTime(wait);
-          } catch (final NumberFormatException e) {
-            System.out.println(
-                "Invalid argument: " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + " must be an integer.");
-            printUsage = true;
-          }
+      // no passwords allowed for bots
+      // take any actions or commit to preferences
+      final String clientWait = System.getProperty(GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, "");
+      final String observerWait = System.getProperty(GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME, "");
+      if (clientWait.length() > 0) {
+        try {
+          final int wait = Integer.parseInt(clientWait);
+          GameRunner.setServerStartGameSyncWaitTime(wait);
+        } catch (final NumberFormatException e) {
+          System.out.println(
+              "Invalid argument: " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + " must be an integer.");
+          printUsage = true;
         }
       }
+      if (observerWait.length() > 0) {
+        try {
+          final int wait = Integer.parseInt(observerWait);
+          GameRunner.setServerObserverJoinWaitTime(wait);
+        } catch (final NumberFormatException e) {
+          System.out.println(
+              "Invalid argument: " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + " must be an integer.");
+          printUsage = true;
+        }
+      }
+
       if (printUsage || usagePrinted) {
         usage(gameMode);
         System.exit(-1);
