@@ -28,6 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
@@ -65,7 +66,6 @@ public class GameRunner {
 
   // not arguments:
   public static final int PORT = 3300;
-  public static final String LOOK_AND_FEEL_PREF = "LookAndFeel";
   public static final String DELAYED_PARSING = "DelayedParsing";
   public static final String CASUALTY_SELECTION_SLOW = "CasualtySelectionSlow";
   public static final String PROXY_CHOICE = "proxy.choice";
@@ -188,7 +188,7 @@ public class GameRunner {
     // do after we handle command line args
     checkForMemoryXMX();
 
-    SwingUtilities.invokeLater(() -> setupLookAndFeel());
+    SwingUtilities.invokeLater(() -> LookAndFeel.setupLookAndFeel());
     showMainFrame();
     new Thread(() -> setupLogging(GameMode.SWING_CLIENT)).start();
     setupProxies();
@@ -403,27 +403,6 @@ public class GameRunner {
     return arg.substring(index + 1);
   }
 
-  public static void setupLookAndFeel() {
-    SwingAction.invokeAndWait(() -> {
-      try {
-        UIManager.setLookAndFeel(getDefaultLookAndFeel());
-        // FYI if you are getting a null pointer exception in Substance, like this:
-        // org.pushingpixels.substance.internal.utils.SubstanceColorUtilities
-        // .getDefaultBackgroundColor(SubstanceColorUtilities.java:758)
-        // Then it is because you included the swingx substance library without including swingx.
-        // You can solve by including both swingx libraries or removing both,
-        // or by setting the look and feel twice in a row.
-      } catch (final Throwable t) {
-        if (!SystemProperties.isMac()) {
-          try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-          } catch (final Exception e) {
-          }
-        }
-      }
-    });
-  }
-
   public static void setupLogging(GameMode gameMode) {
     if(gameMode == GameMode.SWING_CLIENT) {
       // setup logging to read our logging.properties
@@ -457,35 +436,7 @@ public class GameRunner {
     }
   }
 
-  private static String getDefaultLookAndFeel() {
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    // substance 7.x
-    String defaultLookAndFeel = SubstanceGraphiteLookAndFeel.class.getName();
-    // macs are already beautiful
-    if (SystemProperties.isMac()) {
-      defaultLookAndFeel = UIManager.getSystemLookAndFeelClassName();
-    }
-    final String userDefault = pref.get(LOOK_AND_FEEL_PREF, defaultLookAndFeel);
-    final List<String> availableSkins = TripleAMenuBar.getLookAndFeelAvailableList();
-    if (!availableSkins.contains(userDefault)) {
-      if (!availableSkins.contains(defaultLookAndFeel)) {
-        return UIManager.getSystemLookAndFeelClassName();
-      }
-      setDefaultLookAndFeel(defaultLookAndFeel);
-      return defaultLookAndFeel;
-    }
-    return userDefault;
-  }
 
-  public static void setDefaultLookAndFeel(final String lookAndFeelClassName) {
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    pref.put(LOOK_AND_FEEL_PREF, lookAndFeelClassName);
-    try {
-      pref.sync();
-    } catch (final BackingStoreException e) {
-      ClientLogger.logQuietly(e);
-    }
-  }
 
   private static void checkForMemoryXMX() {
     final String memSetString = System.getProperty(TRIPLEA_MEMORY_SET, "false");

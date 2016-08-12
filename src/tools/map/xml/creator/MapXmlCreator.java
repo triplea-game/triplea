@@ -60,6 +60,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import org.xml.sax.SAXException;
 
 import games.strategy.debug.ClientLogger;
@@ -261,7 +262,7 @@ public class MapXmlCreator extends JFrame {
     MapXmlCreator.log(Level.INFO, "Starting MapXMLCreator");
 
     // handleCommandLineArgs(args);
-    GameRunner.setupLookAndFeel();
+    LookAndFeel.setupLookAndFeel();
     start();
   }
 
