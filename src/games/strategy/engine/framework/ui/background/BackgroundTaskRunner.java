@@ -10,6 +10,8 @@ public class BackgroundTaskRunner {
       SwingUtilities.invokeLater(() -> runInBackground(waitMessage, r));
     }
     final WaitDialog window = new WaitDialog(null, waitMessage);
+    // this will center the window
+    window.setLocationRelativeTo(null);
     final AtomicBoolean doneWait = new AtomicBoolean(false);
     new Thread(() -> {
       try {
