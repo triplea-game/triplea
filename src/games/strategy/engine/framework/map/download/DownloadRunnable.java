@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 
 /** Used to download triplea_maps.xml */
+// TODO: make this class immutable, drop the volatile modifiers
 public class DownloadRunnable implements Runnable {
   private static Map<String,File> downloadCache = Maps.newHashMap();
   private final String urlString;
@@ -34,7 +36,11 @@ public class DownloadRunnable implements Runnable {
   }
 
   public List<DownloadFileDescription> getDownloads() {
-    return downloads;
+   if(downloads == null) {
+      return new ArrayList<>();
+    } else {
+      return downloads;
+    }
   }
 
   public String getError() {
