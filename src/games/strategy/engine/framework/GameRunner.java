@@ -188,46 +188,54 @@ public class GameRunner {
    * Move command line arguments to System.properties
    */
   public static void handleCommandLineArgs(final String[] args, final String[] availableProperties, GameMode gameMode) {
-    if(gameMode == GameMode.HEADLESS_BOT) {
-      System.getProperties().setProperty(TRIPLEA_HEADLESS, "true");
-      final String[] properties = getProperties();
-      // if only 1 arg, it might be the game path, find it (like if we are double clicking a savegame)
-      // optionally, it may not start with the property name
-      if (args.length == 1) {
-        boolean startsWithPropertyKey = false;
-        for (final String prop : properties) {
-          if (args[0].startsWith(prop)) {
-            startsWithPropertyKey = true;
+    final String[] properties = getProperties();
+    if (args.length == 1) {
+      boolean startsWithPropertyKey = false;
+      for (final String prop : properties) {
+        if (args[0].startsWith(prop)) {
+          startsWithPropertyKey = true;
+          break;
+        }
+      }
+      if (!startsWithPropertyKey) {
+        // change it to start with the key
+        args[0] = GameRunner.TRIPLEA_GAME_PROPERTY + "=" + args[0];
+      }
+    }
+
+    boolean usagePrinted = false;
+    for (final String arg1 : args) {
+      boolean found = false;
+      String arg = arg1;
+      final int indexOf = arg.indexOf('=');
+      if (indexOf > 0) {
+        arg = arg.substring(0, indexOf);
+        for (final String property : availableProperties) {
+          if (arg.equals(property)) {
+            final String value = getValue(arg1);
+            if (property.equals(MAP_FOLDER)) {
+              SystemPreferences.put(SystemPreferenceKey.MAP_FOLDER_OVERRIDE, value);
+            } else {
+              System.getProperties().setProperty(property, value);
+            }
+            System.out.println(property + ":" + value);
+            found = true;
             break;
           }
         }
-        if (!startsWithPropertyKey) {
-          // change it to start with the key
-          args[0] = GameRunner.TRIPLEA_GAME_PROPERTY + "=" + args[0];
+      }
+      if (!found) {
+        System.out.println("Unrecogized:" + arg1);
+        if (!usagePrinted) {
+          usagePrinted = true;
+          usage(gameMode);
         }
       }
-      boolean printUsage = false;
-      for (final String arg2 : args) {
-        boolean found = false;
-        String arg = arg2;
-        final int indexOf = arg.indexOf('=');
-        if (indexOf > 0) {
-          arg = arg.substring(0, indexOf);
-          for (final String propertie : properties) {
-            if (arg.equals(propertie)) {
-              final String value = getValue(arg2);
-              System.getProperties().setProperty(propertie, value);
-              System.out.println(propertie + ":" + value);
-              found = true;
-              break;
-            }
-          }
-        }
-        if (!found) {
-          System.out.println("Unrecogized argument: " + arg2);
-          printUsage = true;
-        }
-      }
+    }
+    boolean printUsage = false;
+
+    if(gameMode == GameMode.HEADLESS_BOT) {
+      System.getProperties().setProperty(TRIPLEA_HEADLESS, "true");
       { // now check for required fields
         final String playerName = System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY, "");
         final String hostName = System.getProperty(GameRunner.LOBBY_GAME_HOSTED_BY, "");
@@ -294,57 +302,14 @@ public class GameRunner {
           }
         }
       }
-      if (printUsage) {
+      if (printUsage || usagePrinted) {
         usage(gameMode);
         System.exit(-1);
       }
 
     } else {
-      final String[] properties = getProperties();
-      // if only 1 arg, it might be the game path, find it (like if we are double clicking a savegame)
-      // optionally, it may not start with the property name
-      if (args.length == 1) {
-        boolean startsWithPropertyKey = false;
-        for (final String prop : properties) {
-          if (args[0].startsWith(prop)) {
-            startsWithPropertyKey = true;
-            break;
-          }
-        }
-        if (!startsWithPropertyKey) {
-          // change it to start with the key
-          args[0] = TRIPLEA_GAME_PROPERTY + "=" + args[0];
-        }
-      }
-      boolean usagePrinted = false;
-      for (final String arg1 : args) {
-        boolean found = false;
-        String arg = arg1;
-        final int indexOf = arg.indexOf('=');
-        if (indexOf > 0) {
-          arg = arg.substring(0, indexOf);
-          for (final String property : availableProperties) {
-            if (arg.equals(property)) {
-              final String value = getValue(arg1);
-              if (property.equals(MAP_FOLDER)) {
-                SystemPreferences.put(SystemPreferenceKey.MAP_FOLDER_OVERRIDE, value);
-              } else {
-                System.getProperties().setProperty(property, value);
-              }
-              System.out.println(property + ":" + value);
-              found = true;
-              break;
-            }
-          }
-        }
-        if (!found) {
-          System.out.println("Unrecogized:" + arg1);
-          if (!usagePrinted) {
-            usagePrinted = true;
-            usage(gameMode);
-          }
-        }
-      }
+
+
       final String version = System.getProperty(TRIPLEA_ENGINE_VERSION_BIN);
       if (version != null && version.length() > 0) {
         final Version testVersion;
