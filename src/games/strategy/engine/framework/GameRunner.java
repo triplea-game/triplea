@@ -137,21 +137,23 @@ public class GameRunner {
 
   public static void usage(GameMode gameMode) {
     if(gameMode == GameMode.HEADLESS_BOT) {
-      System.out.println("\nUsage and Valid Arguments:\n" + "   " + GameRunner.TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
-          + "   " + TRIPLEA_GAME_HOST_CONSOLE_PROPERTY + "=<true/false>\n" + "   "
-          + "   " + GameRunner.TRIPLEA_SERVER_PROPERTY + "=true\n" + "   "
-          + GameRunner.TRIPLEA_PORT_PROPERTY + "=<PORT>\n" + "   " + GameRunner.TRIPLEA_NAME_PROPERTY
-          + "=<PLAYER_NAME>\n" + "   " + GameRunner.LOBBY_HOST + "=<LOBBY_HOST>\n" + "   "
-          + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY
-          + "=<LOBBY_PORT>\n" + "   " + GameRunner.LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n" + "   "
-          + GameRunner.LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n" + "   " + GameRunner.LOBBY_GAME_SUPPORT_EMAIL
-          + "=<youremail@emailprovider.com>\n" + "   " + GameRunner.LOBBY_GAME_SUPPORT_PASSWORD
-          + "=<password for remote actions, such as remote stop game>\n" + "   " + GameRunner.LOBBY_GAME_RECONNECTION
-          + "=<seconds between refreshing lobby connection [min " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
-          + "   " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME
-          + "=<seconds to wait for all clients to start the game>\n" + "   "
-          + GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME + "=<seconds to wait for an observer joining the game>\n"
-          + "\n" + "   You must start the Name and HostedBy with \"Bot\".\n"
+      System.out.println("\nUsage and Valid Arguments:\n"
+          + "   " + GameRunner.TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
+          + "   " + TRIPLEA_GAME_HOST_CONSOLE_PROPERTY + "=<true/false>\n"
+          + "   " + GameRunner.TRIPLEA_SERVER_PROPERTY + "=true\n"
+          + "   " + GameRunner.TRIPLEA_PORT_PROPERTY + "=<PORT>\n"
+          + "   " + GameRunner.TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n"
+          + "   " + GameRunner.LOBBY_HOST + "=<LOBBY_HOST>\n"
+          + "   " + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n"
+          + "   " + GameRunner.LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
+          + "   " + GameRunner.LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
+          + "   " + GameRunner.LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
+          + "   " + GameRunner.LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
+          + "   " + GameRunner.LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
+          + "   " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + "=<seconds to wait for all clients to start the game>\n"
+          + "   " + GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME + "=<seconds to wait for an observer joining the game>\n"
+          + "\n"
+          + "   You must start the Name and HostedBy with \"Bot\".\n"
           + "   Game Comments must have this string in it: \"automated_host\".\n"
           + "   You must include a support email for your host, so that you can be alerted by lobby admins when your host has an error."
           + " (For example they may email you when your host is down and needs to be restarted.)\n"
@@ -159,17 +161,22 @@ public class GameRunner {
           + " (Please email this password to one of the lobby moderators, or private message an admin on the TripleaWarClub.org website forum.)\n");
 
     } else {
-      System.out.println("Arguments\n" + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n" + "   "
-          + TRIPLEA_SERVER_PROPERTY + "=true\n" + "   " + TRIPLEA_CLIENT_PROPERTY + "=true\n" + "   "
-          + TRIPLEA_HOST_PROPERTY + "=<HOST_IP>\n" + "   " + TRIPLEA_PORT_PROPERTY + "=<PORT>\n" + "   "
-          + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n" + "   " + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY
-          + "=<LOBBY_PORT>\n" + "   " + LOBBY_HOST
-          + "=<LOBBY_HOST>\n" + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n" + "   " + LOBBY_GAME_HOSTED_BY
-          + "=<LOBBY_GAME_HOSTED_BY>\n" + "   " + PROXY_HOST + "=<Proxy_Host>\n" + "   " + PROXY_PORT
-          + "=<Proxy_Port>\n"
-          + "   " + TRIPLEA_MEMORY_SET + "=true/false <did you set the xmx manually?>\n" + MAP_FOLDER + "=mapFolder" +
-
-          "\n"
+      System.out.println("Arguments\n"
+          + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
+          + "   " + TRIPLEA_SERVER_PROPERTY + "=true\n"
+          + "   " + TRIPLEA_CLIENT_PROPERTY + "=true\n"
+          + "   " + TRIPLEA_HOST_PROPERTY + "=<HOST_IP>\n"
+          + "   " + TRIPLEA_PORT_PROPERTY + "=<PORT>\n"
+          + "   " + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n"
+          + "   " + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n"
+          + "   " + LOBBY_HOST + "=<LOBBY_HOST>\n"
+          + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
+          + "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
+          + "   " + PROXY_HOST + "=<Proxy_Host>\n"
+          + "   " + PROXY_PORT + "=<Proxy_Port>\n"
+          + "   " + TRIPLEA_MEMORY_SET + "=true/false <did you set the xmx manually?>\n"
+          + "   " + MAP_FOLDER + "=mapFolder"
+          + "\n"
           + "if there is only one argument, and it does not start with triplea.game, the argument will be \n"
           + "taken as the name of the file to load.\n" + "\n" + "Example\n"
           + "   to start a game using the given file:\n"
