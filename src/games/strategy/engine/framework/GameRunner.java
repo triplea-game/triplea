@@ -235,13 +235,10 @@ public class GameRunner {
 
     if (gameMode == GameMode.HEADLESS_BOT) {
       System.getProperties().setProperty(TRIPLEA_HEADLESS, "true");
+
       boolean printUsage = false;
       final String playerName = System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY, "");
       final String hostName = System.getProperty(GameRunner.LOBBY_GAME_HOSTED_BY, "");
-      final String comments = System.getProperty(GameRunner.LOBBY_GAME_COMMENTS, "");
-      final String email = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_EMAIL, "");
-      final String reconnection =
-          System.getProperty(GameRunner.LOBBY_GAME_RECONNECTION, "" + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
       if (playerName.length() < 7 || hostName.length() < 7 || !hostName.equals(playerName)
           || !playerName.startsWith("Bot") || !hostName.startsWith("Bot")) {
         System.out.println(
@@ -249,16 +246,23 @@ public class GameRunner {
                 + " must start with \"Bot\" and be at least 7 characters long and be the same.");
         printUsage = true;
       }
+
+      final String comments = System.getProperty(GameRunner.LOBBY_GAME_COMMENTS, "");
       if (!comments.contains("automated_host")) {
         System.out.println(
             "Invalid argument: " + GameRunner.LOBBY_GAME_COMMENTS + " must contain the string \"automated_host\".");
         printUsage = true;
       }
+
+      final String email = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_EMAIL, "");
       if (email.length() < 3 || !Util.isMailValid(email)) {
         System.out.println(
             "Invalid argument: " + GameRunner.LOBBY_GAME_SUPPORT_EMAIL + " must contain a valid email address.");
         printUsage = true;
       }
+
+      final String reconnection =
+          System.getProperty(GameRunner.LOBBY_GAME_RECONNECTION, "" + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
       try {
         final int reconnect = Integer.parseInt(reconnection);
         if (reconnect < LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM) {
