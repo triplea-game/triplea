@@ -184,23 +184,16 @@ public class GameRunner {
     });
   }
 
+
+
   /**
    * Move command line arguments to System.properties
    */
   public static void handleCommandLineArgs(final String[] args, final String[] availableProperties, GameMode gameMode) {
     final String[] properties = getProperties();
-    if (args.length == 1) {
-      boolean startsWithPropertyKey = false;
-      for (final String prop : properties) {
-        if (args[0].startsWith(prop)) {
-          startsWithPropertyKey = true;
-          break;
-        }
-      }
-      if (!startsWithPropertyKey) {
-        // change it to start with the key
-        args[0] = GameRunner.TRIPLEA_GAME_PROPERTY + "=" + args[0];
-      }
+    if (args.length == 1 && !argsStartsWithPropertykey(args[0], properties) {
+      // change it to start with the key
+      args[0] = GameRunner.TRIPLEA_GAME_PROPERTY + "=" + args[0];
     }
 
     boolean usagePrinted = false;
@@ -339,6 +332,16 @@ public class GameRunner {
         LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
         LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, HttpProxy.PROXY_HOST,
         HttpProxy.PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, Memory.TRIPLEA_MEMORY_SET, MAP_FOLDER};
+  }
+  private static boolean argsStartsWithPropertykey(String firstArg, String[] properties) {
+    boolean startsWithPropertyKey = false;
+    for (final String prop : properties) {
+      if (firstArg.startsWith(prop)) {
+        startsWithPropertyKey = true;
+        break;
+      }
+    }
+    return startsWithPropertyKey;
   }
 
   private static String getValue(final String arg) {
