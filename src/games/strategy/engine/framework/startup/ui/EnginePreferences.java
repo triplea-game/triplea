@@ -33,10 +33,10 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.GameRunner.ProxyChoice;
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.engine.framework.TripleAProcessRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
+import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.settings.SettingsWindow;
@@ -222,18 +222,19 @@ public class EnginePreferences extends JDialog {
           new CountDownLatchHandler(true));
     }));
     m_setupProxies.addActionListener(SwingAction.of("Setup Network and Proxy Settings", e -> {
+      // TODO: this action listener should probably come from the HttpProxy class
       final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-      final ProxyChoice proxyChoice =
-          ProxyChoice.valueOf(pref.get(GameRunner.PROXY_CHOICE, ProxyChoice.NONE.toString()));
-      final String proxyHost = pref.get(GameRunner.PROXY_HOST, "");
+      final HttpProxy.ProxyChoice proxyChoice =
+          HttpProxy.ProxyChoice.valueOf(pref.get(HttpProxy.PROXY_CHOICE, HttpProxy.ProxyChoice.NONE.toString()));
+      final String proxyHost = pref.get(HttpProxy.PROXY_HOST, "");
       final JTextField hostText = new JTextField(proxyHost);
-      final String proxyPort = pref.get(GameRunner.PROXY_PORT, "");
+      final String proxyPort = pref.get(HttpProxy.PROXY_PORT, "");
       final JTextField portText = new JTextField(proxyPort);
-      final JRadioButton noneButton = new JRadioButton("None", proxyChoice == ProxyChoice.NONE);
+      final JRadioButton noneButton = new JRadioButton("None", proxyChoice == HttpProxy.ProxyChoice.NONE);
       final JRadioButton systemButton =
-          new JRadioButton("Use System Settings", proxyChoice == ProxyChoice.USE_SYSTEM_SETTINGS);
+          new JRadioButton("Use System Settings", proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
       final JRadioButton userButton =
-          new JRadioButton("Use These User Settings:", proxyChoice == ProxyChoice.USE_USER_PREFERENCES);
+          new JRadioButton("Use These User Settings:", proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
       final ButtonGroup bgroup = new ButtonGroup();
       bgroup.add(noneButton);
       bgroup.add(systemButton);
@@ -255,15 +256,15 @@ public class EnginePreferences extends JDialog {
       if (answer != JOptionPane.YES_OPTION) {
         return;
       }
-      final ProxyChoice newChoice;
+      final HttpProxy.ProxyChoice newChoice;
       if (systemButton.isSelected()) {
-        newChoice = ProxyChoice.USE_SYSTEM_SETTINGS;
+        newChoice = HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS;
       } else if (userButton.isSelected()) {
-        newChoice = ProxyChoice.USE_USER_PREFERENCES;
+        newChoice = HttpProxy.ProxyChoice.USE_USER_PREFERENCES;
       } else {
-        newChoice = ProxyChoice.NONE;
+        newChoice = HttpProxy.ProxyChoice.NONE;
       }
-      GameRunner.setProxy(hostText.getText(), portText.getText(), newChoice);
+      HttpProxy.setProxy(hostText.getText(), portText.getText(), newChoice);
     }));
     m_hostWaitTime.addActionListener(SwingAction.of("Set Max Host Wait Time for Clients and Observers", e -> {
       final NumberProperty clientWait =

@@ -18,7 +18,7 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.pbem.AbstractForumPoster;
 import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
@@ -70,7 +70,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
     m_httpState = new HttpState();
     m_hostConfiguration = new HostConfiguration();
     // add the proxy
-    GameRunner.addProxy(m_hostConfiguration);
+    HttpProxy.addProxy(m_hostConfiguration);
     m_hostConfiguration.setHost("www.axisandallies.org");
     final PostMethod post = new PostMethod("http://www.axisandallies.org/forums/index.php?action=login2");
     try {

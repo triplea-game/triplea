@@ -12,18 +12,18 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
-import games.strategy.debug.ClientLogger;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
+import games.strategy.engine.framework.system.HttpProxy;
 
 /**
  * A pbem dice roller that reads its configuration from a properties file
@@ -135,8 +135,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
       }
       final HostConfiguration config = client.getHostConfiguration();
       config.setHost(host, port);
-      // add the proxy
-      GameRunner.addProxy(config);
+      HttpProxy.addProxy(config);
       client.executeMethod(post);
       final String result = post.getResponseBodyAsString();
       return result;
