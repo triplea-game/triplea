@@ -31,7 +31,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import games.strategy.ui.SwingAction;
-import games.strategy.engine.framework.TripleAProcessRunner;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.lobby.server.AbstractModeratorController;
@@ -333,7 +333,7 @@ public class LobbyGamePanel extends JPanel {
     // we sort the table, so get the correct index
     final int modelIndex = m_tableSorter.modelIndex(selectedIndex);
     final GameDescription description = m_gameTableModel.get(modelIndex);
-    TripleAProcessRunner.joinGame(description, m_messengers, getParent());
+    GameRunner.joinGame(description, m_messengers, getParent());
   }
 
   protected void hostGame() {
@@ -345,7 +345,7 @@ public class LobbyGamePanel extends JPanel {
     if (!options.getOKPressed()) {
       return;
     }
-    TripleAProcessRunner.hostGame(options.getPort(), options.getName(), options.getComments(), options.getPassword(),
+    GameRunner.hostGame(options.getPort(), options.getName(), options.getComments(), options.getPassword(),
         m_messengers);
   }
 

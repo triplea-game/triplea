@@ -82,7 +82,7 @@ public class GameDataManager {
         // same engine as was
         // used for this savegame, and if so try to run it
         try {
-          final String newClassPath = TripleAProcessRunner.findOldJar(readVersion, true);
+          final String newClassPath = GameRunner.findOldJar(readVersion, true);
           // ask user if we really want to do this?
           final String messageString = "<html>This TripleA engine is version " + ClientContext.engineVersion().getVersion()
               + " and you are trying to open a savegame made with version " + readVersion.toString()
@@ -104,7 +104,7 @@ public class GameDataManager {
             return null;
           }
           final boolean closeCurrentInstance = buttonPressed.equals(yesClose);
-          TripleAProcessRunner.startGame(savegamePath, newClassPath, null);
+          GameRunner.startGame(savegamePath, newClassPath, null);
           if (closeCurrentInstance) {
             ThreadUtil.sleep(1000);
             System.exit(0);

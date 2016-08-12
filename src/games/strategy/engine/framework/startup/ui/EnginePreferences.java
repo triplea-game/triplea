@@ -34,7 +34,7 @@ import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ProcessRunnerUtil;
-import games.strategy.engine.framework.TripleAProcessRunner;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
@@ -315,7 +315,7 @@ public class EnginePreferences extends JDialog {
         tested.set(true);
         System.out.println("Testing TripleA launch with max memory of: " + newMaxMemory.getValue() + "m");
         // it is in MB
-        TripleAProcessRunner.startNewTripleA((((long) newMaxMemory.getValue()) * 1024 * 1024) + 67108864);
+        GameRunner.startNewTripleA((((long) newMaxMemory.getValue()) * 1024 * 1024) + 67108864);
       }));
       final JPanel radioPanel = new JPanel();
       radioPanel.setLayout(new BoxLayout(radioPanel, BoxLayout.Y_AXIS));
