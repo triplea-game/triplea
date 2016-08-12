@@ -372,7 +372,7 @@ public class EnginePreferences extends JDialog {
             prop = new Properties();
           }
           Memory.setUseMaxMemorySettingOnlyForOnlineJoinOrHost(onlyOnlineCheckBox.isSelected(), prop);
-          GameRunner.writeSystemIni(prop, false);
+          GameRunner.writeSystemIni(prop);
         }
       }
 
