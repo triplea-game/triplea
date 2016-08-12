@@ -11,8 +11,8 @@ import javax.swing.KeyStroke;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.ui.MacQuitMenuWrapper;
@@ -85,7 +85,7 @@ public class FileMenu {
   }
 
   protected void addExitMenu(final JMenu parentMenu) {
-    final boolean isMac = GameRunner.isMac();
+    final boolean isMac = SystemProperties.isMac();
     final JMenuItem leaveGameMenuExit = new JMenuItem(SwingAction.of("Leave Game", e -> frame.leaveGame()));
     leaveGameMenuExit.setMnemonic(KeyEvent.VK_L);
     if (isMac) { // On Mac OS X, the command-Q is reserved for the Quit action,

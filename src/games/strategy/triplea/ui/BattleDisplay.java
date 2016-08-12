@@ -60,16 +60,16 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
-import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -635,7 +635,7 @@ public class BattleDisplay extends JPanel {
     add(diceAndSteps, BorderLayout.CENTER);
     add(m_actionButton, BorderLayout.SOUTH);
     m_actionButton.setEnabled(false);
-    if (!GameRunner.isMac()) {
+    if (!SystemProperties.isMac()) {
       m_actionButton.setBackground(Color.lightGray.darker());
       m_actionButton.setForeground(Color.white);
     }
