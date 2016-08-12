@@ -1,20 +1,18 @@
 package games.strategy.engine.framework.lookandfeel;
 
-import games.strategy.debug.ClientLogger;
-import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.triplea.ui.menubar.TripleAMenuBar;
-import games.strategy.ui.SwingAction;
-import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
+import java.util.List;
 
 import javax.swing.UIManager;
-import java.util.List;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
+
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
+
+import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.triplea.settings.SystemPreferenceKey;
+import games.strategy.triplea.settings.SystemPreferences;
+import games.strategy.triplea.ui.menubar.TripleAMenuBar;
+import games.strategy.ui.SwingAction;
 
 public class LookAndFeel {
-  public static final String LOOK_AND_FEEL_PREF = "LookAndFeel";
-
   public static void setupLookAndFeel() {
     SwingAction.invokeAndWait(() -> {
       try {
@@ -37,32 +35,27 @@ public class LookAndFeel {
   }
 
   private static String getDefaultLookAndFeel() {
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    // substance 7.x
     String defaultLookAndFeel = SubstanceGraphiteLookAndFeel.class.getName();
-    // macs are already beautiful
+
     if (SystemProperties.isMac()) {
+      // stay consistent with mac look and feel if we are on a mac
       defaultLookAndFeel = UIManager.getSystemLookAndFeelClassName();
     }
-    final String userDefault = pref.get(LOOK_AND_FEEL_PREF, defaultLookAndFeel);
+
+    String userDefault = SystemPreferences.get(SystemPreferenceKey.LOOK_AND_FEEL_PREF, defaultLookAndFeel);
     final List<String> availableSkins = TripleAMenuBar.getLookAndFeelAvailableList();
-    if (!availableSkins.contains(userDefault)) {
-      if (!availableSkins.contains(defaultLookAndFeel)) {
-        return UIManager.getSystemLookAndFeelClassName();
-      }
+
+    if (availableSkins.contains(userDefault)) {
+      return userDefault;
+    }
+    if (availableSkins.contains(defaultLookAndFeel)) {
       setDefaultLookAndFeel(defaultLookAndFeel);
       return defaultLookAndFeel;
     }
-    return userDefault;
+    return UIManager.getSystemLookAndFeelClassName();
   }
 
   public static void setDefaultLookAndFeel(final String lookAndFeelClassName) {
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    pref.put(LOOK_AND_FEEL_PREF, lookAndFeelClassName);
-    try {
-      pref.sync();
-    } catch (final BackingStoreException e) {
-      ClientLogger.logQuietly(e);
-    }
+    SystemPreferences.put(SystemPreferenceKey.LOOK_AND_FEEL_PREF, lookAndFeelClassName);
   }
 }
