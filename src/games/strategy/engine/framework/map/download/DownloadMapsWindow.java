@@ -76,7 +76,7 @@ public class DownloadMapsWindow extends JFrame {
   private static void showDownloadMapsWindow(final Component parent, Optional<String> mapName) {
     final DownloadRunnable download = new DownloadRunnable(ClientContext.mapListingSource().getMapListDownloadSite());
     final String popupWindowTitle = "Downloading list of availabe maps....";
-    BackgroundTaskRunner.runInBackground(null, popupWindowTitle, download);
+    BackgroundTaskRunner.runInBackground(popupWindowTitle, download);
     final List<DownloadFileDescription> games = download.getDownloads();
     checkNotNull(games);
 
