@@ -784,21 +784,21 @@ public class GameRunner {
       final Messengers messengers) {
     final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands);
-    commands.add("-D" + GameRunner.TRIPLEA_SERVER_PROPERTY + "=true");
-    commands.add("-D" + GameRunner.TRIPLEA_PORT_PROPERTY + "=" + port);
-    commands.add("-D" + GameRunner.TRIPLEA_NAME_PROPERTY + "=" + playerName);
-    commands.add("-D" + GameRunner.LOBBY_HOST + "="
+    commands.add("-D" + TRIPLEA_SERVER_PROPERTY + "=true");
+    commands.add("-D" + TRIPLEA_PORT_PROPERTY + "=" + port);
+    commands.add("-D" + TRIPLEA_NAME_PROPERTY + "=" + playerName);
+    commands.add("-D" + LOBBY_HOST + "="
         + messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
     commands
         .add("-D" + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=" + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
-    commands.add("-D" + GameRunner.LOBBY_GAME_COMMENTS + "=" + comments);
-    commands.add("-D" + GameRunner.LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
+    commands.add("-D" + LOBBY_GAME_COMMENTS + "=" + comments);
+    commands.add("-D" + LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
     if (password != null && password.length() > 0) {
-      commands.add("-D" + GameRunner.TRIPLEA_SERVER_PASSWORD_PROPERTY + "=" + password);
+      commands.add("-D" + TRIPLEA_SERVER_PASSWORD_PROPERTY + "=" + password);
     }
-    final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
+    final String fileName = System.getProperty(TRIPLEA_GAME_PROPERTY, "");
     if (fileName.length() > 0) {
-      commands.add("-D" + GameRunner.TRIPLEA_GAME_PROPERTY + "=" + fileName);
+      commands.add("-D" + TRIPLEA_GAME_PROPERTY + "=" + fileName);
     }
     final String javaClass = "games.strategy.engine.framework.GameRunner";
     commands.add(javaClass);
@@ -853,10 +853,10 @@ public class GameRunner {
       final Messengers messengers) {
     final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
-    commands.add("-D" + GameRunner.TRIPLEA_CLIENT_PROPERTY + "=true");
-    commands.add("-D" + GameRunner.TRIPLEA_PORT_PROPERTY + "=" + port);
-    commands.add("-D" + GameRunner.TRIPLEA_HOST_PROPERTY + "=" + hostAddressIP);
-    commands.add("-D" + GameRunner.TRIPLEA_NAME_PROPERTY + "=" + messengers.getMessenger().getLocalNode().getName());
+    commands.add("-D" + TRIPLEA_CLIENT_PROPERTY + "=true");
+    commands.add("-D" + TRIPLEA_PORT_PROPERTY + "=" + port);
+    commands.add("-D" + TRIPLEA_HOST_PROPERTY + "=" + hostAddressIP);
+    commands.add("-D" + TRIPLEA_NAME_PROPERTY + "=" + messengers.getMessenger().getLocalNode().getName());
     final String javaClass = "games.strategy.engine.framework.GameRunner";
     commands.add(javaClass);
     ProcessRunnerUtil.exec(commands);
