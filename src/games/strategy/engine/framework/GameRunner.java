@@ -232,10 +232,10 @@ public class GameRunner {
         }
       }
     }
-    boolean printUsage = false;
 
     if(gameMode == GameMode.HEADLESS_BOT) {
       System.getProperties().setProperty(TRIPLEA_HEADLESS, "true");
+      boolean printUsage = false;
       { // now check for required fields
         final String playerName = System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY, "");
         final String hostName = System.getProperty(GameRunner.LOBBY_GAME_HOSTED_BY, "");
