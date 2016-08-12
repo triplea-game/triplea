@@ -431,15 +431,12 @@ public class GameRunner {
     return rVal;
   }
 
-  public static void writeSystemIni(final Properties properties, final boolean clearOldAndOverwrite) {
+  public static void writeSystemIni(final Properties properties) {
     final Properties toWrite;
-    if (clearOldAndOverwrite) {
-      toWrite = properties;
-    } else {
-      toWrite = getSystemIni();
-      for (final Entry<Object, Object> entry : properties.entrySet()) {
-        toWrite.put(entry.getKey(), entry.getValue());
-      }
+
+    toWrite = getSystemIni();
+    for (final Entry<Object, Object> entry : properties.entrySet()) {
+      toWrite.put(entry.getKey(), entry.getValue());
     }
 
     final File systemIni = new File(ClientFileSystemHelper.getRootFolder(), SYSTEM_INI);

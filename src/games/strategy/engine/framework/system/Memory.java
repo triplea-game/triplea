@@ -103,7 +103,7 @@ public class Memory {
     prop.put(TRIPLEA_MEMORY_USE_DEFAULT, "true");
     prop.put(TRIPLEA_MEMORY_ONLINE_ONLY, "true");
     prop.put(TRIPLEA_MEMORY_XMX, "");
-    GameRunner.writeSystemIni(prop, false);
+    GameRunner.writeSystemIni(prop);
   }
 
   public static void setUseMaxMemorySettingOnlyForOnlineJoinOrHost(final boolean useForOnlineOnly,
