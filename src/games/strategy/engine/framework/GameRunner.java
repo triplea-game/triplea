@@ -657,8 +657,8 @@ public class GameRunner {
   }
 
   private static void setToUseSystemProxies() {
-    final String JAVA_NET_USESYSTEMPROXIES = "java.net.useSystemProxies";
-    System.setProperty(JAVA_NET_USESYSTEMPROXIES, "true");
+    final String javaNetUseSystemProxies = "java.net.useSystemProxies";
+    System.setProperty(javaNetUseSystemProxies, "true");
     List<Proxy> proxyList = null;
     try {
       final ProxySelector def = ProxySelector.getDefault();
@@ -704,7 +704,7 @@ public class GameRunner {
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
     } finally {
-      System.setProperty(JAVA_NET_USESYSTEMPROXIES, "false");
+      System.setProperty(javaNetUseSystemProxies, "false");
     }
   }
 
