@@ -36,8 +36,12 @@ public class SystemPreferences {
   /**
    * Puts a value into system preferences (note: not actually persisted until flush is called)
    */
-  public static void putNoFlush(SystemPreferenceKey key, String value) {
+  private static void putNoFlush(SystemPreferenceKey key, String value) {
     getPrefs().put(key.name(), value);
+  }
+
+  public static void put(SystemPreferenceKey tripleaServerObserverJoinWaitTime, int wait) {
+    put(tripleaServerObserverJoinWaitTime, String.valueOf(wait));
   }
 
   private static Preferences getPrefs() {
