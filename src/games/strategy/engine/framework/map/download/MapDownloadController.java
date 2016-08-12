@@ -1,24 +1,20 @@
 package games.strategy.engine.framework.map.download;
 
-import java.awt.Frame;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
-import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
-
-import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
-import games.strategy.util.CountDownLatchHandler;
+import games.strategy.triplea.settings.SystemPreferenceKey;
+import games.strategy.triplea.settings.SystemPreferences;
+import games.strategy.ui.SwingComponents;
 
 
 /** Controller for in-game map download actions */
@@ -31,22 +27,10 @@ public class MapDownloadController {
     mapDownloadProperties = mapSource;
   }
 
-  public DownloadRunnable downloadForLatestMapsCheck() {
+  private DownloadRunnable downloadForLatestMapsCheck() {
     final DownloadRunnable runnable = new DownloadRunnable(mapDownloadProperties.getMapListDownloadSite());
-    BackgroundTaskRunner.runInBackground(null, "Checking for out-of-date Maps.", runnable,
-        new CountDownLatchHandler(true));
+    BackgroundTaskRunner.runInBackground("Checking for out-of-date Maps.", runnable);
     return runnable;
-  }
-
-  public void downloadMap(String mapName) {
-    DownloadMapsWindow.showDownloadMapsWindow(mapName);
-  }
-
-
-  /** Opens a new window dialog where a user can select maps to download or update */
-  public void openDownloadMapScreen(JComponent parentComponent) {
-    final Frame parentFrame = JOptionPane.getFrameForComponent(parentComponent);
-    DownloadMapsWindow.showDownloadMapsWindow(parentFrame);
   }
 
   /**
@@ -61,18 +45,14 @@ public class MapDownloadController {
       final int year = calendar.get(Calendar.YEAR);
       final int month = calendar.get(Calendar.MONTH);
       // format year:month
-      final String lastCheckTime = pref.get(TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, "");
+      final String lastCheckTime = SystemPreferences.get(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, "");
       if (lastCheckTime != null && lastCheckTime.trim().length() > 0) {
         final String[] yearMonth = lastCheckTime.split(":");
         if (Integer.parseInt(yearMonth[0]) >= year && Integer.parseInt(yearMonth[1]) >= month) {
           return false;
         }
       }
-      pref.put(TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, year + ":" + month);
-      try {
-        pref.sync();
-      } catch (final BackingStoreException e) {
-      }
+      SystemPreferences.put(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, year + ":" + month);
 
       MapDownloadController controller = new MapDownloadController(mapDownloadProperties);
       final DownloadRunnable download = controller.downloadForLatestMapsCheck();
@@ -93,7 +73,7 @@ public class MapDownloadController {
           text.append("<li> ").append(map).append("</li>");
         }
         text.append("</ul></html>");
-        SwingComponents.promptUser("Update Your Maps?", text.toString(), () -> DownloadMapsWindow.showDownloadMapsWindow());
+        SwingComponents.promptUser("Update Your Maps?", text.toString(), DownloadMapsWindow::showDownloadMapsWindow);
         return true;
       }
     } catch (final Exception e) {
@@ -103,7 +83,7 @@ public class MapDownloadController {
   }
 
 
-  public static void populateOutOfDateMapsListing(final Collection<String> listingToBeAddedTo,
+  private static void populateOutOfDateMapsListing(final Collection<String> listingToBeAddedTo,
       final Collection<DownloadFileDescription> gamesDownloadFileDescriptions) {
     if (listingToBeAddedTo == null) {
       return;
@@ -112,10 +92,10 @@ public class MapDownloadController {
     for (final DownloadFileDescription d : gamesDownloadFileDescriptions) {
       if (d != null && !d.isDummyUrl()) {
         File installed = new File(ClientFileSystemHelper.getUserMapsFolder(), d.getMapName() + ".zip");
-        if (installed == null || !installed.exists()) {
+        if (!installed.exists()) {
           installed = new File(GameSelectorModel.DEFAULT_MAP_DIRECTORY, d.getMapName() + ".zip");
         }
-        if (installed != null && installed.exists()) {
+        if (installed.exists()) {
           if (d.getVersion() != null && d.getVersion().isGreaterThan(DownloadMapsWindow.getVersion(installed), true)) {
             listingToBeAddedTo.add(d.getMapName());
           }
