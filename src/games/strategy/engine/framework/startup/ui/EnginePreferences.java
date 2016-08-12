@@ -36,6 +36,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameRunner.ProxyChoice;
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.engine.framework.TripleAProcessRunner;
+import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.settings.SettingsWindow;
@@ -169,7 +170,7 @@ public class EnginePreferences extends JDialog {
         if (selectedValue.equals(currentKey)) {
           return;
         }
-        GameRunner.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
+        LookAndFeel.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
         EventThreadJOptionPane.showMessageDialog(m_parentFrame,
             "The look and feel will update when you restart TripleA", new CountDownLatchHandler(true));
       }

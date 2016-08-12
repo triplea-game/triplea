@@ -27,6 +27,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
@@ -76,7 +77,7 @@ public class MapCreator extends JFrame {
   }
 
   public static void main(final String[] args) {
-    GameRunner.setupLookAndFeel();
+    LookAndFeel.setupLookAndFeel();
     final MapCreator creator = new MapCreator();
     creator.setSize(800, 600);
     creator.setLocationRelativeTo(null);
