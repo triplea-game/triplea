@@ -61,8 +61,8 @@ public class GameRunner {
 
   // not arguments:
   public static final int PORT = 3300;
-  public static final String DELAYED_PARSING = "DelayedParsing";
-  public static final String CASUALTY_SELECTION_SLOW = "CasualtySelectionSlow";
+  private static final String DELAYED_PARSING = "DelayedParsing";
+  private static final String CASUALTY_SELECTION_SLOW = "CasualtySelectionSlow";
   // do not include this in the getProperties list. they are only for loading an old savegame.
   public static final String OLD_EXTENSION = ".old";
   // argument options below:
@@ -81,7 +81,7 @@ public class GameRunner {
   public static final String LOBBY_GAME_SUPPORT_PASSWORD = "triplea.lobby.game.supportPassword";
   public static final String LOBBY_GAME_RECONNECTION = "triplea.lobby.game.reconnection";
   public static final String TRIPLEA_ENGINE_VERSION_BIN = "triplea.engine.version.bin";
-  public static final String TRIPLEA_DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
+  private static final String TRIPLEA_DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
   // has the memory been manually set or not?
   public static final String TRIPLEA_MEMORY_SET = "triplea.memory.set";
   public static final String TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME = "triplea.server.startGameSyncWaitTime";
@@ -92,22 +92,22 @@ public class GameRunner {
       "triplea.firstTimeThisVersion" + ClientContext.engineVersion();
   private static final String TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE = "triplea.lastCheckForEngineUpdate";
   // only for Online?
-  public static final String TRIPLEA_MEMORY_ONLINE_ONLY = "triplea.memory.onlineOnly";
+  private static final String TRIPLEA_MEMORY_ONLINE_ONLY = "triplea.memory.onlineOnly";
   // what should our xmx be approximately?
-  public static final String TRIPLEA_MEMORY_XMX = "triplea.memory.Xmx";
-  public static final String TRIPLEA_MEMORY_USE_DEFAULT = "triplea.memory.useDefault";
-  public static final String SYSTEM_INI = "system.ini";
+  private static final String TRIPLEA_MEMORY_XMX = "triplea.memory.Xmx";
+  private static final String TRIPLEA_MEMORY_USE_DEFAULT = "triplea.memory.useDefault";
+  private static final String SYSTEM_INI = "system.ini";
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
-  public static final int DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME =
+  private static final int DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME =
       Math.max(MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, 25);
   // need time for network transmission of a large game data
   public static final int MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME = MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME + 10;
-  public static final int DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME =
+  private static final int DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME =
       Math.max(DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME + 10, 35);
   public static final int ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME = 10;
   public static final int MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME =
       MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110;
-  public static final int DEFAULT_SERVER_START_GAME_SYNC_WAIT_TIME =
+  private static final int DEFAULT_SERVER_START_GAME_SYNC_WAIT_TIME =
       Math.max(Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, 900),
           DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110);
 
@@ -115,7 +115,7 @@ public class GameRunner {
 
 
 
-  public static void usage(GameMode gameMode) {
+  private static void usage(GameMode gameMode) {
     if(gameMode == GameMode.HEADLESS_BOT) {
       System.out.println("\nUsage and Valid Arguments:\n"
           + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
@@ -374,7 +374,7 @@ public class GameRunner {
     }
   }
 
-  public static String[] getProperties() {
+  private static String[] getProperties() {
     return new String[] {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
         TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
         LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
@@ -851,7 +851,7 @@ public class GameRunner {
   }
 
   // newClassPath can be null
-  public static void joinGame(final int port, final String hostAddressIP, final String newClassPath,
+  private static void joinGame(final int port, final String hostAddressIP, final String newClassPath,
       final Messengers messengers) {
     final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
