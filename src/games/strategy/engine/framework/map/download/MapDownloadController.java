@@ -5,11 +5,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
-import java.util.prefs.Preferences;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.settings.SystemPreferenceKey;
@@ -20,7 +18,6 @@ import games.strategy.ui.SwingComponents;
 /** Controller for in-game map download actions */
 public class MapDownloadController {
 
-  private static final String TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES = "triplea.lastCheckForMapUpdates";
   private final MapListingSource mapDownloadProperties;
 
   public MapDownloadController(final MapListingSource mapSource) {
@@ -39,7 +36,6 @@ public class MapDownloadController {
    */
   public boolean checkDownloadedMapsAreLatest() {
     try {
-      final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
       // check at most once per month
       final Calendar calendar = Calendar.getInstance();
       final int year = calendar.get(Calendar.YEAR);
