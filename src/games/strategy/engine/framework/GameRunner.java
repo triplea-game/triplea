@@ -463,8 +463,7 @@ public class GameRunner {
 
   public static boolean useDefaultMaxMemory(final Properties systemIni) {
     final String useDefaultMaxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_USE_DEFAULT, "true");
-    final boolean useDefaultMaxMemory = Boolean.parseBoolean(useDefaultMaxMemoryString);
-    return useDefaultMaxMemory;
+    return Boolean.parseBoolean(useDefaultMaxMemoryString);
   }
 
   public static long getMaxMemoryInBytes() {
@@ -523,14 +522,13 @@ public class GameRunner {
 
   public static boolean getUseMaxMemorySettingOnlyForOnlineJoinOrHost(final Properties systemIni) {
     final String forOnlineOnlyString = systemIni.getProperty(TRIPLEA_MEMORY_ONLINE_ONLY, "true");
-    final boolean forOnlineOnly = Boolean.parseBoolean(forOnlineOnlyString);
-    return forOnlineOnly;
+    return Boolean.parseBoolean(forOnlineOnlyString);
   }
 
   public static Properties getSystemIni() {
     final Properties rVal = new Properties();
     final File systemIni = new File(ClientFileSystemHelper.getRootFolder(), SYSTEM_INI);
-    if (systemIni != null && systemIni.exists()) {
+    if (systemIni.exists()) {
       try (FileInputStream fis = new FileInputStream(systemIni)) {
         rVal.load(fis);
       } catch (final IOException e) {
@@ -907,7 +905,7 @@ public class GameRunner {
                     "Cannot find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
               }
               final String newClassPath = ourBinJar.getCanonicalPath();
-              if (newClassPath == null || newClassPath.length() <= 0) {
+              if (newClassPath.length() <= 0) {
                 throw new IOException(
                     "Cannot find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
               }
@@ -950,7 +948,7 @@ public class GameRunner {
       throw new IOException("Cannot find 'old' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
     }
     final String newClassPath = ourOldJar.getCanonicalPath();
-    if (newClassPath == null || newClassPath.length() <= 0) {
+    if (newClassPath.length() <= 0) {
       throw new IOException("Cannot find 'old' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
     }
     return newClassPath;
