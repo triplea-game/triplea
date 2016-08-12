@@ -8,6 +8,7 @@ import java.util.List;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.util.Version;
 
 /**
@@ -63,7 +64,7 @@ public class ProcessRunnerUtil {
         }
       }
     }
-    if (GameRunner.isMac()) {
+    if (SystemProperties.isMac()) {
       commands.add("-Dapple.laf.useScreenMenuBar=true");
       commands.add("-Xdock:name=\"TripleA\"");
       final File icons = new File(ClientFileSystemHelper.getRootFolder(), "icons/triplea_icon.png");

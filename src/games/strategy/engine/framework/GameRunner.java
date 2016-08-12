@@ -28,6 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
 import games.strategy.triplea.util.LoggingPrintStream;
@@ -122,14 +123,6 @@ public class GameRunner {
 
   private static final String MAP_FOLDER = "mapFolder";
 
-
-  public static boolean isWindows() {
-    return System.getProperties().getProperty("os.name").toLowerCase().contains("windows");
-  }
-
-  public static boolean isMac() {
-    return System.getProperties().getProperty("os.name").toLowerCase().contains("mac");
-  }
 
   public static enum ProxyChoice {
     NONE, USE_SYSTEM_SETTINGS, USE_USER_PREFERENCES
@@ -431,7 +424,7 @@ public class GameRunner {
         // You can solve by including both swingx libraries or removing both,
         // or by setting the look and feel twice in a row.
       } catch (final Throwable t) {
-        if (!isMac()) {
+        if (!SystemProperties.isMac()) {
           try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
           } catch (final Exception e) {
@@ -468,7 +461,7 @@ public class GameRunner {
     // substance 7.x
     String defaultLookAndFeel = SubstanceGraphiteLookAndFeel.class.getName();
     // macs are already beautiful
-    if (isMac()) {
+    if (SystemProperties.isMac()) {
       defaultLookAndFeel = UIManager.getSystemLookAndFeelClassName();
     }
     final String userDefault = pref.get(LOOK_AND_FEEL_PREF, defaultLookAndFeel);

@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.config.GameEnginePropertyFileReader;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.util.Version;
 
 /**
@@ -66,7 +67,7 @@ public final class ClientFileSystemHelper {
 
   private static File getRootFolderRelativeToJar(final String fileName, final String tripleaJarName) {
     final String subString =
-        fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1), fileName.indexOf(tripleaJarName) - 1);
+        fileName.substring("file:/".length() - (SystemProperties.isWindows() ? 0 : 1), fileName.indexOf(tripleaJarName) - 1);
     final File f = new File(subString).getParentFile();
     if (!f.exists()) {
       throw new IllegalStateException("File not found:" + f);
@@ -111,7 +112,7 @@ public final class ClientFileSystemHelper {
     }
     final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
     if (fileName.contains(tripleaJarNameWithEngineVersion)) {
-      final String subString = fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1),
+      final String subString = fileName.substring("file:/".length() - (SystemProperties.isWindows() ? 0 : 1),
           fileName.indexOf(tripleaJarNameWithEngineVersion) - 1);
       final File f = new File(subString);
       if (!f.exists()) {

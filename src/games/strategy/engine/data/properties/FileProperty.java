@@ -15,6 +15,7 @@ import javax.swing.filechooser.FileFilter;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.system.SystemProperties;
 
 /**
  * User editable property representing a file.
@@ -127,7 +128,7 @@ public class FileProperty extends AEditableProperty {
     // For some strange reason,
     // the only way to get a Mac OS X native-style file dialog
     // is to use an AWT FileDialog instead of a Swing JDialog
-    if (GameRunner.isMac()) {
+    if (SystemProperties.isMac()) {
       final FileDialog fileDialog = new FileDialog(MainFrame.getInstance());
       fileDialog.setMode(FileDialog.LOAD);
       fileDialog.setFilenameFilter(new FilenameFilter() {

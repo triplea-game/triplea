@@ -23,6 +23,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.engine.lobby.client.ui.MacLobbyWrapper;
@@ -47,7 +48,7 @@ public class LobbyMenu extends JMenuBar {
     m_frame = frame;
     // file only has one value
     // and on mac it is in the apple menu
-    if (!GameRunner.isMac()) {
+    if (!SystemProperties.isMac()) {
       createFileMenu(this);
     } else {
       MacLobbyWrapper.registerMacShutdownHandler(m_frame);
@@ -479,7 +480,7 @@ public class LobbyMenu extends JMenuBar {
   }
 
   private void addExitMenu(final JMenu parentMenu) {
-    final boolean isMac = GameRunner.isMac();
+    final boolean isMac = SystemProperties.isMac();
     // Mac OS X automatically creates a Quit menu item under the TripleA menu,
     // so all we need to do is register that menu item with triplea's shutdown mechanism
     if (!isMac) { // On non-Mac operating systems, we need to manually create an Exit menu item

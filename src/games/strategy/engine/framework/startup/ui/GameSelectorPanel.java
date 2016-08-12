@@ -28,6 +28,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.ui.SwingComponents;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
@@ -369,7 +370,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
   }
 
   public static File selectGameFile(final Component parent) {
-    if (GameRunner.isMac()) {
+    if (SystemProperties.isMac()) {
       final FileDialog fileDialog = new FileDialog(JOptionPane.getFrameForComponent(parent));
       fileDialog.setMode(FileDialog.LOAD);
       SaveGameFileChooser.ensureMapsFolderExists();
@@ -408,7 +409,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     // is to use an AWT FileDialog instead of a Swing JDialog
     if (saved) {
       final File file =
-          selectGameFile(GameRunner.isMac() ? MainFrame.getInstance() : JOptionPane.getFrameForComponent(this));
+          selectGameFile(SystemProperties.isMac() ? MainFrame.getInstance() : JOptionPane.getFrameForComponent(this));
       if (file == null || !file.exists()) {
         return;
       }
