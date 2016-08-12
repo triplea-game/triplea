@@ -635,13 +635,7 @@ public class GameRunner {
     if (wait == getServerObserverJoinWaitTime()) {
       return;
     }
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    pref.putInt(TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME, wait);
-    try {
-      pref.sync();
-    } catch (final BackingStoreException e) {
-      ClientLogger.logQuietly(e);
-    }
+    SystemPreferences.put(SystemPreferenceKey.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME, wait);
   }
 
   private static void checkForUpdates() {
@@ -679,25 +673,22 @@ public class GameRunner {
    */
   private static boolean checkForLatestEngineVersionOut() {
     try {
-      final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-      final boolean firstTimeThisVersion = pref.getBoolean(TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, true);
+      final boolean firstTimeThisVersion = SystemPreferences.get(SystemPreferenceKey.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, true);
       // check at most once per 2 days (but still allow a 'first run message' for a new version of triplea)
       final Calendar calendar = Calendar.getInstance();
       final int year = calendar.get(Calendar.YEAR);
       final int day = calendar.get(Calendar.DAY_OF_YEAR);
       // format year:day
-      final String lastCheckTime = pref.get(TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE, "");
+      final String lastCheckTime = SystemPreferences.get(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE, "");
       if (!firstTimeThisVersion && lastCheckTime != null && lastCheckTime.trim().length() > 0) {
         final String[] yearDay = lastCheckTime.split(":");
         if (Integer.parseInt(yearDay[0]) >= year && Integer.parseInt(yearDay[1]) + 1 >= day) {
           return false;
         }
       }
-      pref.put(TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE, year + ":" + day);
-      try {
-        pref.sync();
-      } catch (final BackingStoreException e) {
-      }
+
+      SystemPreferences.put(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE, year + ":" + day);
+
       final EngineVersionProperties latestEngineOut = EngineVersionProperties.contactServerForEngineVersionProperties();
       if (latestEngineOut == null) {
         return false;
