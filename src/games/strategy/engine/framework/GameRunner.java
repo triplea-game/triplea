@@ -16,8 +16,8 @@ import java.net.ProxySelector;
 import java.net.URI;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -26,28 +26,23 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
-import games.strategy.engine.framework.lookandfeel.LookAndFeel;
-import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.triplea.settings.SystemPreferenceKey;
-import games.strategy.triplea.settings.SystemPreferences;
-import games.strategy.triplea.util.LoggingPrintStream;
-import games.strategy.util.Util;
 import org.apache.commons.httpclient.HostConfiguration;
-import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.lobby.server.LobbyServer;
-import games.strategy.triplea.ui.menubar.TripleAMenuBar;
-import games.strategy.ui.SwingAction;
+import games.strategy.triplea.settings.SystemPreferenceKey;
+import games.strategy.triplea.settings.SystemPreferences;
+import games.strategy.triplea.util.LoggingPrintStream;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
+import games.strategy.util.Util;
 import games.strategy.util.Version;
 
 /**
@@ -131,20 +126,20 @@ public class GameRunner {
   public static void usage(GameMode gameMode) {
     if(gameMode == GameMode.HEADLESS_BOT) {
       System.out.println("\nUsage and Valid Arguments:\n"
-          + "   " + GameRunner.TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
+          + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
           + "   " + TRIPLEA_GAME_HOST_CONSOLE_PROPERTY + "=<true/false>\n"
-          + "   " + GameRunner.TRIPLEA_SERVER_PROPERTY + "=true\n"
-          + "   " + GameRunner.TRIPLEA_PORT_PROPERTY + "=<PORT>\n"
-          + "   " + GameRunner.TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n"
-          + "   " + GameRunner.LOBBY_HOST + "=<LOBBY_HOST>\n"
+          + "   " + TRIPLEA_SERVER_PROPERTY + "=true\n"
+          + "   " + TRIPLEA_PORT_PROPERTY + "=<PORT>\n"
+          + "   " + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n"
+          + "   " + LOBBY_HOST + "=<LOBBY_HOST>\n"
           + "   " + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n"
-          + "   " + GameRunner.LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
-          + "   " + GameRunner.LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
-          + "   " + GameRunner.LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
-          + "   " + GameRunner.LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
-          + "   " + GameRunner.LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
-          + "   " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + "=<seconds to wait for all clients to start the game>\n"
-          + "   " + GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME + "=<seconds to wait for an observer joining the game>\n"
+          + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
+          + "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
+          + "   " + LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
+          + "   " + LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
+          + "   " + LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
+          + "   " + TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + "=<seconds to wait for all clients to start the game>\n"
+          + "   " + TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME + "=<seconds to wait for an observer joining the game>\n"
           + "\n"
           + "   You must start the Name and HostedBy with \"Bot\".\n"
           + "   Game Comments must have this string in it: \"automated_host\".\n"
