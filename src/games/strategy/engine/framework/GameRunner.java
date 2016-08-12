@@ -105,6 +105,12 @@ public class GameRunner {
 
   private static final String MAP_FOLDER = "mapFolder";
 
+  private static String[] COMMAND_LINE_ARGS =
+      {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
+          TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
+          LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
+          LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, HttpProxy.PROXY_HOST,
+          HttpProxy.PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, Memory.TRIPLEA_MEMORY_SET, MAP_FOLDER};
 
 
   private static void usage(GameMode gameMode) {
@@ -172,7 +178,7 @@ public class GameRunner {
     new Thread(() -> setupLogging(GameMode.SWING_CLIENT)).start();
     HttpProxy.setupProxies();
     new Thread(() -> checkForUpdates()).start();
-    handleCommandLineArgs(args, getProperties(), GameMode.SWING_CLIENT);
+    handleCommandLineArgs(args, COMMAND_LINE_ARGS, GameMode.SWING_CLIENT);
   }
 
   private static void showMainFrame() {
@@ -190,8 +196,7 @@ public class GameRunner {
    * Move command line arguments to System.properties
    */
   public static void handleCommandLineArgs(final String[] args, final String[] availableProperties, GameMode gameMode) {
-    final String[] properties = getProperties();
-    if (args.length == 1 && !argsStartsWithPropertykey(args[0], properties) {
+    if (args.length == 1 && !argsStartsWithPropertykey(args[0])) {
       // change it to start with the key
       args[0] = GameRunner.TRIPLEA_GAME_PROPERTY + "=" + args[0];
     }
@@ -326,17 +331,10 @@ public class GameRunner {
     }
   }
 
-  private static String[] getProperties() {
-    return new String[] {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
-        TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
-        LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
-        LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, HttpProxy.PROXY_HOST,
-        HttpProxy.PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, Memory.TRIPLEA_MEMORY_SET, MAP_FOLDER};
-  }
-  private static boolean argsStartsWithPropertykey(String firstArg, String[] properties) {
+  private static boolean argsStartsWithPropertykey(String firstArg) {
     boolean startsWithPropertyKey = false;
-    for (final String prop : properties) {
-      if (firstArg.startsWith(prop)) {
+    for (final String arg : COMMAND_LINE_ARGS) {
+      if (firstArg.startsWith(arg)) {
         startsWithPropertyKey = true;
         break;
       }
@@ -384,8 +382,6 @@ public class GameRunner {
       }
     }
   }
-
-
 
 
   public static Properties getSystemIni() {
@@ -594,7 +590,7 @@ public class GameRunner {
       commands.add("-D" + GameRunner.TRIPLEA_GAME_PROPERTY + "=" + savegamePath);
     }
     // add in any existing command line items
-    for (final String property : GameRunner.getProperties()) {
+    for (final String property : GameRunner.COMMAND_LINE_ARGS) {
       // we add game property above, and we add version bin in the populateBasicJavaArgs
       if (GameRunner.TRIPLEA_GAME_PROPERTY.equals(property)
           || GameRunner.TRIPLEA_ENGINE_VERSION_BIN.equals(property)) {
