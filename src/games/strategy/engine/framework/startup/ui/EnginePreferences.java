@@ -38,6 +38,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.system.HttpProxy;
+import games.strategy.engine.framework.system.Memory;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.settings.SettingsWindow;
@@ -284,19 +285,20 @@ public class EnginePreferences extends JDialog {
       }
     }));
     m_setMaxMemory.addActionListener(SwingAction.of("Set Max Memory Usage", e -> {
+      // TODO: this action should all be coming from Memory.java
       final AtomicBoolean tested = new AtomicBoolean();
       tested.set(false);
       final Properties systemIni = GameRunner.getSystemIni();
-      final int currentSetting = GameRunner.getMaxMemoryFromSystemIniFileInMB(systemIni);
-      final boolean useDefault = GameRunner.useDefaultMaxMemory(systemIni) || currentSetting <= 0;
-      final int currentMaxMemoryInMB = (int) (GameRunner.getMaxMemoryInBytes() / (1024 * 1024));
+      final int currentSetting = Memory.getMaxMemoryFromSystemIniFileInMB(systemIni);
+      final boolean useDefault = Memory.useDefaultMaxMemory(systemIni) || currentSetting <= 0;
+      final int currentMaxMemoryInMB = (int) (Memory.getMaxMemoryInBytes() / (1024 * 1024));
       final IntTextField newMaxMemory = new IntTextField(0, (1024 * 3), currentMaxMemoryInMB, 5);
       final JRadioButton noneButton = new JRadioButton("Use Default", useDefault);
       final JRadioButton userButton = new JRadioButton("Use These User Settings:", !useDefault);
       final ButtonGroup bgroup = new ButtonGroup();
       bgroup.add(noneButton);
       bgroup.add(userButton);
-      final boolean onlineOnlyOriginalSetting = GameRunner.getUseMaxMemorySettingOnlyForOnlineJoinOrHost(systemIni);
+      final boolean onlineOnlyOriginalSetting = Memory.getUseMaxMemorySettingOnlyForOnlineJoinOrHost(systemIni);
       final JCheckBox onlyOnlineCheckBox =
           new JCheckBox("Only use these user memory settings for online games (join/host). [Default = On]");
       onlyOnlineCheckBox.setSelected(onlineOnlyOriginalSetting);
@@ -351,18 +353,18 @@ public class EnginePreferences extends JDialog {
         return;
       }
       if (noneButton.isSelected()) {
-        GameRunner.clearMaxMemory();
+        Memory.clearMaxMemory();
       } else if (userButton.isSelected()) {
         final boolean setOnlineOnly = onlineOnlyOriginalSetting != onlyOnlineCheckBox.isSelected();
         final boolean setMaxMemory = newMaxMemory.getValue() > 64 && tested.get();
         if (setOnlineOnly || setMaxMemory) {
           Properties prop;
           if (setMaxMemory) {
-            prop = GameRunner.setMaxMemoryInMB(newMaxMemory.getValue());
+            prop = Memory.setMaxMemoryInMB(newMaxMemory.getValue());
           } else {
             prop = new Properties();
           }
-          GameRunner.setUseMaxMemorySettingOnlyForOnlineJoinOrHost(onlyOnlineCheckBox.isSelected(), prop);
+          Memory.setUseMaxMemorySettingOnlyForOnlineJoinOrHost(onlyOnlineCheckBox.isSelected(), prop);
           GameRunner.writeSystemIni(prop, false);
         }
       }
@@ -406,7 +408,7 @@ public class EnginePreferences extends JDialog {
     System.out.println("Total Memory: " + runtime.totalMemory() / mb);
     // Print Maximum available memory
     System.out.println("Max Memory: " + runtime.maxMemory() / mb);
-    final int currentMaxSetting = GameRunner.getMaxMemoryFromSystemIniFileInMB(GameRunner.getSystemIni());
+    final int currentMaxSetting = Memory.getMaxMemoryFromSystemIniFileInMB(GameRunner.getSystemIni());
     if (currentMaxSetting > 0) {
       System.out.println("Max Memory user setting within 20% of: " + currentMaxSetting);
     }
