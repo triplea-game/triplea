@@ -9,7 +9,6 @@ import java.util.List;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
 import games.strategy.ui.SwingComponents;
@@ -22,12 +21,6 @@ public class MapDownloadController {
 
   public MapDownloadController(final MapListingSource mapSource) {
     mapDownloadProperties = mapSource;
-  }
-
-  private DownloadRunnable downloadForLatestMapsCheck() {
-    final DownloadRunnable runnable = new DownloadRunnable(mapDownloadProperties.getMapListDownloadSite());
-    BackgroundTaskRunner.runInBackground("Checking for out-of-date Maps.", runnable);
-    return runnable;
   }
 
   /**
@@ -48,18 +41,18 @@ public class MapDownloadController {
           return false;
         }
       }
+
       SystemPreferences.put(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, year + ":" + month);
 
-      final DownloadRunnable download = downloadForLatestMapsCheck();
+      final DownloadRunnable download = new DownloadRunnable(mapDownloadProperties.getMapListDownloadSite());
+      // we are already in a background thread, so just the run the runnable.
+      download.run();
+
       if (download.getError() != null) {
         return false;
       }
       final List<DownloadFileDescription> downloads = download.getDownloads();
-      if (downloads == null || downloads.isEmpty()) {
-        return false;
-      }
-      final List<String> outOfDateMaps = new ArrayList<>();
-      populateOutOfDateMapsListing(outOfDateMaps, downloads);
+      final Collection<String> outOfDateMaps = populateOutOfDateMapsListing(downloads);
       if (!outOfDateMaps.isEmpty()) {
         final StringBuilder text =
             new StringBuilder("<html>Some of the maps you have are out of date, and newer versions of those maps exist."
@@ -78,12 +71,11 @@ public class MapDownloadController {
   }
 
 
-  private static void populateOutOfDateMapsListing(final Collection<String> listingToBeAddedTo,
+  private static Collection<String> populateOutOfDateMapsListing(
       final Collection<DownloadFileDescription> gamesDownloadFileDescriptions) {
-    if (listingToBeAddedTo == null) {
-      return;
-    }
-    listingToBeAddedTo.clear();
+
+    final Collection<String> listingToBeAddedTo = new ArrayList<>();
+
     for (final DownloadFileDescription d : gamesDownloadFileDescriptions) {
       if (d != null && !d.isDummyUrl()) {
         File installed = new File(ClientFileSystemHelper.getUserMapsFolder(), d.getMapName() + ".zip");
@@ -97,5 +89,6 @@ public class MapDownloadController {
         }
       }
     }
+    return listingToBeAddedTo;
   }
 }
