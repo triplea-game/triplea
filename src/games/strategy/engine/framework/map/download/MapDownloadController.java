@@ -50,8 +50,7 @@ public class MapDownloadController {
       }
       SystemPreferences.put(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, year + ":" + month);
 
-      MapDownloadController controller = new MapDownloadController(mapDownloadProperties);
-      final DownloadRunnable download = controller.downloadForLatestMapsCheck();
+      final DownloadRunnable download = downloadForLatestMapsCheck();
       if (download.getError() != null) {
         return false;
       }
