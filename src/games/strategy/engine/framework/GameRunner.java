@@ -774,9 +774,7 @@ public class GameRunner {
       }
     }
     // classpath for main
-    final String javaClass = "games.strategy.engine.framework.GameRunner";
-    commands.add(javaClass);
-    // System.out.println("Commands: " + commands);
+    commands.add(GameRunner.class.getName());
     ProcessRunnerUtil.exec(commands);
   }
 
