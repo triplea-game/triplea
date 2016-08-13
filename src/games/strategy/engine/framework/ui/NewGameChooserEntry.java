@@ -47,7 +47,9 @@ public class NewGameChooserEntry {
 
     Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if(!inputStream.isPresent()) {
-      throw new IOException("Failed to open an input stream to: " + uri);
+      m_gameNameAndMapNameProperty = "";
+      // this means the map was deleted out from under us.
+      return;
     }
 
     try (InputStream input = inputStream.get()) {
