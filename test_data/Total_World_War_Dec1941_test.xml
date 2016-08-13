@@ -11205,7 +11205,7 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Rocky Mountains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-                        <option name="isImpassible" value="true"/>
+                        <option name="isImpassable" value="true"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Los Angeles" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="4"/>
@@ -11284,7 +11284,7 @@
                    </attachment>
                    <attachment name="territoryAttachment" attachTo="Optionsland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-                        <option name="isImpassible" value="true"/>
+                        <option name="isImpassable" value="true"/>
                    </attachment>
                    <attachment name="territoryAttachment" attachTo="Northern Brazil" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
@@ -13000,7 +13000,7 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Ural" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-                        <option name="isImpassible" value="true"/>
+                        <option name="isImpassable" value="true"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="British Columbia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
@@ -13034,7 +13034,7 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Himalaya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-                        <option name="isImpassible" value="true"/>
+                        <option name="isImpassable" value="true"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Midway" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
@@ -13065,11 +13065,11 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Greenland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-                        <option name="isImpassible" value="true"/>
+                        <option name="isImpassable" value="true"/>
                    </attachment>
                    <attachment name="territoryAttachment" attachTo="Sahara" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-                        <option name="isImpassible" value="true"/>
+                        <option name="isImpassable" value="true"/>
                    </attachment>
                    <attachment name="territoryAttachment" attachTo="53 Sea Zone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>

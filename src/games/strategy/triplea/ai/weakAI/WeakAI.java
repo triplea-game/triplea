@@ -67,7 +67,7 @@ public class WeakAI extends AbstractAI {
     final Match<Territory> endMatch = new Match<Territory>() {
       @Override
       public boolean match(final Territory o) {
-        final boolean impassable = TerritoryAttachment.get(o) != null && TerritoryAttachment.get(o).getIsImpassible();
+        final boolean impassable = TerritoryAttachment.get(o) != null && TerritoryAttachment.get(o).getIsImpassable();
         return !impassable && !o.isWater() && Utils.hasLandRouteToEnemyOwnedCapitol(o, player, data);
       }
     };
@@ -93,7 +93,7 @@ public class WeakAI extends AbstractAI {
     }
     // find a land route to an enemy territory from our capitol
     final Route invasionRoute =
-        Utils.findNearest(capitol, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data),
+        Utils.findNearest(capitol, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data),
             new CompositeMatchAnd<>(Matches.TerritoryIsLand, new InverseMatch<>(Matches.TerritoryIsNeutralButNotWater)),
             data);
     return invasionRoute == null;
@@ -566,7 +566,7 @@ public class WeakAI extends AbstractAI {
     final Collection<Unit> unitsAlreadyMoved = new HashSet<>();
     // find the territories we can just walk into
     final CompositeMatchOr<Territory> walkInto =
-        new CompositeMatchOr<>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data),
+        new CompositeMatchOr<>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data),
             Matches.isTerritoryFreeNeutral(data));
     final List<Territory> enemyOwned = Match.getMatches(data.getMap().getTerritories(), walkInto);
     Collections.shuffle(enemyOwned);

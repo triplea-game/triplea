@@ -185,7 +185,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   // While "setProductionOnly" sets only m_production.
   private int m_production = 0;
   private int m_victoryCity = 0;
-  private boolean m_isImpassible = false;
+  private boolean m_isImpassable = false;
   private PlayerID m_originalOwner = null;
   private boolean m_convoyRoute = false;
   private HashSet<Territory> m_convoyAttached = new HashSet<>();
@@ -249,21 +249,21 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsImpassible(final String value) {
-    m_isImpassible = getBool(value);
+  public void setIsImpassable(final String value) {
+    m_isImpassable = getBool(value);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsImpassible(final Boolean value) {
-    m_isImpassible = value;
+  public void setIsImpassable(final Boolean value) {
+    m_isImpassable = value;
   }
 
-  public boolean getIsImpassible() {
-    return m_isImpassible;
+  public boolean getIsImpassable() {
+    return m_isImpassable;
   }
 
-  public void resetIsImpassible() {
-    m_isImpassible = false;
+  public void resetIsImpassable() {
+    m_isImpassable = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -765,7 +765,7 @@ public class TerritoryAttachment extends DefaultAttachment {
         sb.append(br);
       }
     }
-    if (m_isImpassible) {
+    if (m_isImpassable) {
       sb.append("Is Impassable");
       sb.append(br);
     }

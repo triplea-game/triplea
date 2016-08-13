@@ -1691,7 +1691,7 @@
                    </attachment>
 				   <attachment name="territoryAttachment" attachTo="Himalayas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
                    </attachment>
 				   <attachment name="territoryAttachment" attachTo="India" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
@@ -2032,7 +2032,7 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Pripet Marshes" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Eire" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>

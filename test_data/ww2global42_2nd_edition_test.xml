@@ -3026,7 +3026,7 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Himalayas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-                        <option name="isImpassible" value="true"/>
+                        <option name="isImpassable" value="true"/>
 						<option name="capital" value="Chinese"/>
 						<!-- used for chinese capitol until the engine supports capitols not in the map -->
 						<option name="changeUnitOwners" value="British"/>
@@ -3516,7 +3516,7 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Pripet Marshes" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Eire" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>

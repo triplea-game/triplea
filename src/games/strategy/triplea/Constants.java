@@ -12,7 +12,7 @@ public interface Constants {
   String PLAYER_NAME_CHINESE = "Chinese";
   String PLAYER_NAME_FRENCH = "French";
   String PLAYER_NAME_GERMANS = "Germans";
-  String PLAYER_NAME_IMPASSIBLE = "Impassible";
+  String PLAYER_NAME_IMPASSABLE = "Impassable";
   String PLAYER_NAME_ITALIANS = "Italians";
   String PLAYER_NAME_JAPANESE = "Japanese";
   String PLAYER_NAME_NEUTRAL = "Neutral";

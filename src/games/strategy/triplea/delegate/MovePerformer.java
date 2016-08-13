@@ -288,7 +288,7 @@ public class MovePerformer implements Serializable {
 
   private static CompositeMatch<Territory> getMustFightThroughMatch(final PlayerID id, final GameData data) {
     final CompositeMatch<Territory> mustFightThrough = new CompositeMatchOr<>();
-    mustFightThrough.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, data));
+    mustFightThrough.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data));
     mustFightThrough.add(Matches.territoryHasNonSubmergedEnemyUnits(id, data));
     mustFightThrough
         .add(Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id));

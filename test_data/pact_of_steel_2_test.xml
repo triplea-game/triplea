@@ -2299,7 +2299,7 @@
 																		When used with these rules, "unitProduction" lets you set the unit production potential of a territory, separate from the production. This means a territory with unitProduction = 2 will be able to produce 2 units there, regardless of if production is 0 or 20.
 																		(The damage potential of these units will normally be 2x the unitProduction, but this can be set individually by creative use of maxDamage and canProduceXUnits)
 			resources								values: the amount we will get, then the name of the resource. example: value="2:steel"
-			isImpassible							values: true or false, is this territory not passible?
+			isImpassable							values: true or false, is this territory not passable?
 			capital									values: the capital of a player, and player's can have multiple capitals.  all players except for optional players require a capital. 
 																capital uses an image located in the "flags" folder of a map called "<nation>_large.png", and the location is determined in a file called "capitols.txt" in the map's root directory
 			victoryCity								values: a victory city is typically used for victory conditions
@@ -2418,7 +2418,7 @@
 
 				<attachment name="territoryAttachment" attachTo="Turkey" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 
 				<attachment name="territoryAttachment" attachTo="Belgian Congo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2448,12 +2448,12 @@
 
 				<attachment name="territoryAttachment" attachTo="Spain" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 
 				<attachment name="territoryAttachment" attachTo="Afghanistan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 
 				<attachment name="territoryAttachment" attachTo="Philipine Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2474,12 +2474,12 @@
 
 				<attachment name="territoryAttachment" attachTo="Eire" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 
 				<attachment name="territoryAttachment" attachTo="Mozambique" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 
 				<attachment name="territoryAttachment" attachTo="Italian East Africa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2534,12 +2534,12 @@
 
 				<attachment name="territoryAttachment" attachTo="Saudia Arabia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 
 				<attachment name="territoryAttachment" attachTo="Switzerland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 
 				<attachment name="territoryAttachment" attachTo="Norway" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2562,7 +2562,7 @@
 
 				<attachment name="territoryAttachment" attachTo="Venezuala" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 
 				<attachment name="territoryAttachment" attachTo="Trans-Jordan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2584,12 +2584,12 @@
 
 				<attachment name="territoryAttachment" attachTo="Rio De Oro" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 
 				<attachment name="territoryAttachment" attachTo="Angloa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 
 				<attachment name="territoryAttachment" attachTo="New Zealand" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2598,7 +2598,7 @@
 
 				<attachment name="territoryAttachment" attachTo="Sahara" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 
 				<attachment name="territoryAttachment" attachTo="French Equatorial Africa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2640,7 +2640,7 @@
 
 				<attachment name="territoryAttachment" attachTo="Himilaya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 						<option name="capital" value="Chinese"/>
 				</attachment>
 
@@ -2651,7 +2651,7 @@
 
 				<attachment name="territoryAttachment" attachTo="Sweden" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 
 				<attachment name="territoryAttachment" attachTo="Libya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2664,7 +2664,7 @@
 
 				<attachment name="territoryAttachment" attachTo="Mongolia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 
 				<attachment name="territoryAttachment" attachTo="West Russia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2676,7 +2676,7 @@
 
 				<attachment name="territoryAttachment" attachTo="Peru" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 
 				<!-- American Capital -->
@@ -2730,7 +2730,7 @@
 
 				<attachment name="territoryAttachment" attachTo="Argentina" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 
 				<attachment name="territoryAttachment" attachTo="China" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">

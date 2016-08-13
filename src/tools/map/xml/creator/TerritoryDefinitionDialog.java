@@ -58,7 +58,7 @@ public class TerritoryDefinitionDialog extends JDialog {
   private static final long serialVersionUID = -2504102953599720855L;
   public static final String TERRITORY_DEFINITION_IS_WATER = "water";
   public static final String TERRITORY_DEFINITION_IS_VICTORY_CITY = "victoryCity";
-  public static final String TERRITORY_DEFINITION_IMPASSABLE = "isImpassible"; // typo in engine!!!
+  public static final String TERRITORY_DEFINITION_IMPASSABLE = "isImpassable"; // typo in engine!!!
   public static final String TERRITORY_DEFINITION_IS_CAPITAL = "capital";
 
   private final Map<DEFINITION, Boolean> properties;

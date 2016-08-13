@@ -1799,7 +1799,7 @@
 
                     <attachment name="territoryAttachment" attachTo="Afghanistan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-                        <option name="isImpassible" value="true"/>
+                        <option name="isImpassable" value="true"/>
                     </attachment>
 
                     <attachment name="territoryAttachment" attachTo="Newfoundland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -1828,7 +1828,7 @@
 
                     <attachment name="territoryAttachment" attachTo="Kashmir" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-                        <option name="isImpassible" value="true"/>
+                        <option name="isImpassable" value="true"/>
                     </attachment>
 
                     <attachment name="territoryAttachment" attachTo="Northern Russia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -1930,7 +1930,7 @@
 
                     <attachment name="territoryAttachment" attachTo="Himalaya-Tibet" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-                        <option name="isImpassible" value="true"/>
+                        <option name="isImpassable" value="true"/>
                     </attachment>
 
                     <attachment name="territoryAttachment" attachTo="Baffin Island" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2011,7 +2011,7 @@
 
                     <attachment name="territoryAttachment" attachTo="Western South America" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-                        <option name="isImpassible" value="true"/>
+                        <option name="isImpassable" value="true"/>
                     </attachment>
 
                     <attachment name="territoryAttachment" attachTo="New Zealand" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2024,7 +2024,7 @@
 
                     <attachment name="territoryAttachment" attachTo="Sahara" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-                        <option name="isImpassible" value="true"/>
+                        <option name="isImpassable" value="true"/>
                     </attachment>
 
                     <attachment name="territoryAttachment" attachTo="Novo-Sibirsk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2183,7 +2183,7 @@
 
                     <attachment name="territoryAttachment" attachTo="Siberia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-                        <option name="isImpassible" value="true"/>
+                        <option name="isImpassable" value="true"/>
                     </attachment>
 
                     <attachment name="territoryAttachment" attachTo="Southern Siberia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2196,7 +2196,7 @@
 
                     <attachment name="territoryAttachment" attachTo="Mongolia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-                        <option name="isImpassible" value="true"/>
+                        <option name="isImpassable" value="true"/>
                     </attachment>
 
                     <attachment name="territoryAttachment" attachTo="Arabian Peninsula" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">

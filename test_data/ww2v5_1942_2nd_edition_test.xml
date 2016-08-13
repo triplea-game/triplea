@@ -1361,67 +1361,67 @@
 				</attachment>
 				<attachment name="territoryAttachment" attachTo="Afghanistan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 				<attachment name="territoryAttachment" attachTo="Chile" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 				<attachment name="territoryAttachment" attachTo="Spain Portugal" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 				<attachment name="territoryAttachment" attachTo="Turkey" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 				<attachment name="territoryAttachment" attachTo="Mozambique" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 				<attachment name="territoryAttachment" attachTo="Saudi Arabia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 				<attachment name="territoryAttachment" attachTo="Switzerland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 				<attachment name="territoryAttachment" attachTo="Mongolia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 				<attachment name="territoryAttachment" attachTo="Eire" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 				<attachment name="territoryAttachment" attachTo="Colombia Equador" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 				<attachment name="territoryAttachment" attachTo="Angola" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 				<attachment name="territoryAttachment" attachTo="Venezuela" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 				<attachment name="territoryAttachment" attachTo="Sahara" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 				<attachment name="territoryAttachment" attachTo="Sweden" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 				<attachment name="territoryAttachment" attachTo="Himalaya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 				<attachment name="territoryAttachment" attachTo="Peru Argentina" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
 				</attachment>
 				
 				<!-- Canals -->

@@ -1233,7 +1233,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
     // the air unit may have come from a conquered or enemy territory, don't allow retreating
     final Match<Territory> conqueuredOrEnemy = new CompositeMatchOr<>(
-        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(m_attacker, m_data),
+        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(m_attacker, m_data),
         new CompositeMatchAnd<Territory>(
             // Matches.TerritoryIsLand,
             Matches.TerritoryIsWater, Matches.territoryWasFoughOver(m_battleTracker)));
