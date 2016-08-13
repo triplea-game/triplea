@@ -70,13 +70,7 @@ public class ComboProperty<T> extends AEditableProperty {
   public JComponent getEditorComponent() {
     final JComboBox<T> box = new JComboBox<>(new Vector<>(m_possibleValues));
     box.setSelectedItem(m_value);
-    box.addActionListener(new ActionListener() {
-      @Override
-      @SuppressWarnings("unchecked")
-      public void actionPerformed(final ActionEvent e) {
-        m_value = (T) box.getSelectedItem();
-      }
-    });
+    box.addActionListener(e -> m_value = (T) box.getSelectedItem());
     return box;
   }
 

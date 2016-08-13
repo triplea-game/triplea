@@ -230,15 +230,12 @@ public class ProTerritoryManager {
         // Add max scramble units
         if (maxCanScramble > 0 && !canScrambleAir.isEmpty()) {
           if (maxCanScramble < canScrambleAir.size()) {
-            Collections.sort(canScrambleAir, new Comparator<Unit>() {
-              @Override
-              public int compare(final Unit o1, final Unit o2) {
-                final double strength1 =
-                    ProBattleUtils.estimateStrength(to, Collections.singletonList(o1), new ArrayList<>(), false);
-                final double strength2 =
-                    ProBattleUtils.estimateStrength(to, Collections.singletonList(o2), new ArrayList<>(), false);
-                return Double.compare(strength2, strength1);
-              }
+            Collections.sort(canScrambleAir, (o1, o2) -> {
+              final double strength1 =
+                  ProBattleUtils.estimateStrength(to, Collections.singletonList(o1), new ArrayList<>(), false);
+              final double strength2 =
+                  ProBattleUtils.estimateStrength(to, Collections.singletonList(o2), new ArrayList<>(), false);
+              return Double.compare(strength2, strength1);
             });
             canScrambleAir = canScrambleAir.subList(0, maxCanScramble);
           }

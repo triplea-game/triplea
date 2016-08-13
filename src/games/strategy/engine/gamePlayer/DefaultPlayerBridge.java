@@ -31,19 +31,15 @@ public class DefaultPlayerBridge implements IPlayerBridge {
   /** Creates new DefaultPlayerBridge */
   public DefaultPlayerBridge(final IGame aGame) {
     m_game = aGame;
-    GameStepListener m_gameStepListener = new GameStepListener() {
-      @Override
-      public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player,
-          final int round, final String displayName) {
-        if (stepName == null) {
-          throw new IllegalArgumentException("Null step");
-        }
-        if (delegateName == null) {
-          throw new IllegalArgumentException("Null delegate");
-        }
-        m_currentStep = stepName;
-        m_currentDelegate = delegateName;
+    GameStepListener m_gameStepListener = (stepName, delegateName, player, round, displayName) -> {
+      if (stepName == null) {
+        throw new IllegalArgumentException("Null step");
       }
+      if (delegateName == null) {
+        throw new IllegalArgumentException("Null delegate");
+      }
+      m_currentStep = stepName;
+      m_currentDelegate = delegateName;
     };
     m_game.addGameStepListener(m_gameStepListener);
   }

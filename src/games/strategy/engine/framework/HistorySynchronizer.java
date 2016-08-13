@@ -45,12 +45,9 @@ public class HistorySynchronizer {
   private final IGameModifiedChannel m_gameModifiedChannelListener = new IGameModifiedChannel() {
     @Override
     public void gameDataChanged(final Change aChange) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          final Change localizedChange = (Change) translateIntoMyData(aChange);
-          m_data.getHistory().getHistoryWriter().addChange(localizedChange);
-        }
+      SwingUtilities.invokeLater(() -> {
+        final Change localizedChange = (Change) translateIntoMyData(aChange);
+        m_data.getHistory().getHistoryWriter().addChange(localizedChange);
       });
     }
 
@@ -64,32 +61,21 @@ public class HistorySynchronizer {
 
     @Override
     public void startHistoryEvent(final String event) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          m_data.getHistory().getHistoryWriter().startEvent(event);
-        }
-      });
+      SwingUtilities.invokeLater(() -> m_data.getHistory().getHistoryWriter().startEvent(event));
     }
 
     @Override
     public void addChildToEvent(final String text, final Object renderingData) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          final Object translatedRenderingData = translateIntoMyData(renderingData);
-          m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, translatedRenderingData));
-        }
+      SwingUtilities.invokeLater(() -> {
+        final Object translatedRenderingData = translateIntoMyData(renderingData);
+        m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, translatedRenderingData));
       });
     }
 
     protected void setRenderingData(final Object renderingData) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          final Object translatedRenderingData = translateIntoMyData(renderingData);
-          m_data.getHistory().getHistoryWriter().setRenderingData(translatedRenderingData);
-        }
+      SwingUtilities.invokeLater(() -> {
+        final Object translatedRenderingData = translateIntoMyData(renderingData);
+        m_data.getHistory().getHistoryWriter().setRenderingData(translatedRenderingData);
       });
     }
 
@@ -100,15 +86,12 @@ public class HistorySynchronizer {
       if (loadedFromSavedGame) {
         return;
       }
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          if (m_currentRound != round) {
-            m_currentRound = round;
-            m_data.getHistory().getHistoryWriter().startNextRound(m_currentRound);
-          }
-          m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
+      SwingUtilities.invokeLater(() -> {
+        if (m_currentRound != round) {
+          m_currentRound = round;
+          m_data.getHistory().getHistoryWriter().startNextRound(m_currentRound);
         }
+        m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
       });
     }
 

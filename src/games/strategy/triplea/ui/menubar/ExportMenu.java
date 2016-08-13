@@ -180,13 +180,10 @@ public class ExportMenu {
         }
       }
       final File file = f;
-      final Runnable t = new Runnable() {
-        @Override
-        public void run() {
-          if (saveScreenshot(node, file, frame, gameData)) {
-            JOptionPane.showMessageDialog(null, "Screenshot Saved", "Screenshot Saved",
-                JOptionPane.INFORMATION_MESSAGE);
-          }
+      final Runnable t = () -> {
+        if (saveScreenshot(node, file, frame, gameData)) {
+          JOptionPane.showMessageDialog(null, "Screenshot Saved", "Screenshot Saved",
+              JOptionPane.INFORMATION_MESSAGE);
         }
       };
       SwingAction.invokeAndWait(t);

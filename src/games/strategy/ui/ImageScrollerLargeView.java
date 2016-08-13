@@ -81,69 +81,66 @@ public class ImageScrollerLargeView extends JComponent {
     m_model.setMaxBounds((int) dimension.getWidth(), (int) dimension.getHeight());
     setPreferredSize(getImageDimensions());
     setMaximumSize(getImageDimensions());
-    MouseWheelListener MOUSE_WHEEL_LISTENER = new MouseWheelListener() {
-      @Override
-      public void mouseWheelMoved(final MouseWheelEvent e) {
-        if (!e.isAltDown()) {
-          if (m_edge == NONE) {
-            m_insideCount = 0;
-          }
-          // compute the amount to move
-          int dx = 0;
-          int dy = 0;
-          if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK) {
-            dx = e.getWheelRotation() * scrollSettings.getWheelScrollAmount();
-          } else {
-            dy = e.getWheelRotation() * scrollSettings.getWheelScrollAmount();
-          }
-          // move left and right and test for wrap
-          int newX = (m_model.getX() + dx);
-          if (newX > m_model.getMaxWidth() - getWidth()) {
-            newX -= m_model.getMaxWidth();
-          }
-          if (newX < -getWidth()) {
-            newX += m_model.getMaxWidth();
-          }
-          // move up and down and test for edges
-          final int newY = m_model.getY() + dy;
-          // update the map
-          m_model.set(newX, newY);
-        } else {
-          double value = m_scale;
-          int positive = 1;
-          if (e.getUnitsToScroll() > 0) {
-            positive = -1;
-          }
-          if ((positive > 0 && value == 1) || (positive < 0 && value <= .21)) {
-            return;
-          }
-          if (positive > 0) {
-            if (value >= .79) {
-              value = 1.0;
-            } else if (value >= .59) {
-              value = .8;
-            } else if (value >= .39) {
-              value = .6;
-            } else if (value >= .19) {
-              value = .4;
-            } else {
-              value = .2;
-            }
-          } else {
-            if (value <= .41) {
-              value = .2;
-            } else if (value <= .61) {
-              value = .4;
-            } else if (value <= .81) {
-              value = .6;
-            } else if (value <= 1.0) {
-              value = .8;
-            } else {
-              value = 1.0;
-            }
-          }
-          setScale(value);
+    MouseWheelListener MOUSE_WHEEL_LISTENER = e -> {
+      if (!e.isAltDown()) {
+        if (m_edge == NONE) {
+          m_insideCount = 0;
         }
+        // compute the amount to move
+        int dx = 0;
+        int dy = 0;
+        if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK) {
+          dx = e.getWheelRotation() * scrollSettings.getWheelScrollAmount();
+        } else {
+          dy = e.getWheelRotation() * scrollSettings.getWheelScrollAmount();
+        }
+        // move left and right and test for wrap
+        int newX = (m_model.getX() + dx);
+        if (newX > m_model.getMaxWidth() - getWidth()) {
+          newX -= m_model.getMaxWidth();
+        }
+        if (newX < -getWidth()) {
+          newX += m_model.getMaxWidth();
+        }
+        // move up and down and test for edges
+        final int newY = m_model.getY() + dy;
+        // update the map
+        m_model.set(newX, newY);
+      } else {
+        double value = m_scale;
+        int positive = 1;
+        if (e.getUnitsToScroll() > 0) {
+          positive = -1;
+        }
+        if ((positive > 0 && value == 1) || (positive < 0 && value <= .21)) {
+          return;
+        }
+        if (positive > 0) {
+          if (value >= .79) {
+            value = 1.0;
+          } else if (value >= .59) {
+            value = .8;
+          } else if (value >= .39) {
+            value = .6;
+          } else if (value >= .19) {
+            value = .4;
+          } else {
+            value = .2;
+          }
+        } else {
+          if (value <= .41) {
+            value = .2;
+          } else if (value <= .61) {
+            value = .4;
+          } else if (value <= .81) {
+            value = .6;
+          } else if (value <= 1.0) {
+            value = .8;
+          } else {
+            value = 1.0;
+          }
+        }
+        setScale(value);
       }
     };
     addMouseWheelListener(MOUSE_WHEEL_LISTENER);
@@ -234,12 +231,9 @@ public class ImageScrollerLargeView extends JComponent {
     };
     addComponentListener(COMPONENT_LISTENER);
     m_timer.start();
-    m_model.addObserver(new Observer() {
-      @Override
-      public void update(final Observable o, final Object arg) {
-        repaint();
-        notifyScollListeners();
-      }
+    m_model.addObserver((o, arg) -> {
+      repaint();
+      notifyScollListeners();
     });
   }
 

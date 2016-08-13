@@ -139,23 +139,20 @@ public class Version implements Serializable, Comparable<Object> {
   }
 
   public static Comparator<Version> getHighestToLowestComparator() {
-    return new Comparator<Version>() {
-      @Override
-      public int compare(final Version v1, final Version v2) {
-        if (v1 == null && v2 == null) {
-          return 0;
-        } else if (v1 == null) {
-          return 1;
-        } else if (v2 == null) {
-          return -1;
-        }
-        if (v1.equals(v2, false)) {
-          return 0;
-        } else if (v1.isGreaterThan(v2, false)) {
-          return -1;
-        } else {
-          return 1;
-        }
+    return (v1, v2) -> {
+      if (v1 == null && v2 == null) {
+        return 0;
+      } else if (v1 == null) {
+        return 1;
+      } else if (v2 == null) {
+        return -1;
+      }
+      if (v1.equals(v2, false)) {
+        return 0;
+      } else if (v1.isGreaterThan(v2, false)) {
+        return -1;
+      } else {
+        return 1;
       }
     };
   }

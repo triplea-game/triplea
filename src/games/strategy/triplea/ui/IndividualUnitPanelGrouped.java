@@ -48,12 +48,7 @@ public class IndividualUnitPanelGrouped extends JPanel {
       new ArrayList<>();
   private final JLabel m_leftToSelect = new JLabel();
   private final boolean m_showSelectAll;
-  private final ScrollableTextFieldListener m_textFieldListener = new ScrollableTextFieldListener() {
-    @Override
-    public void changedValue(final ScrollableTextField field) {
-      updateLeft();
-    }
-  };
+  private final ScrollableTextFieldListener m_textFieldListener = field -> updateLeft();
 
   /**
    * For when you want multiple individual unit panels, perhaps one for each territory, etc.
@@ -129,18 +124,8 @@ public class IndividualUnitPanelGrouped extends JPanel {
     m_autoSelectButton.setPreferredSize(buttonSize);
     add(m_title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         nullInsets, 0, 0));
-    m_selectNoneButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        selectNone();
-      }
-    });
-    m_autoSelectButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        autoSelect();
-      }
-    });
+    m_selectNoneButton.addActionListener(e -> selectNone());
+    m_autoSelectButton.addActionListener(e -> autoSelect());
     final JPanel entries = new JPanel();
     entries.setLayout(new FlowLayout());
     entries.setBorder(BorderFactory.createEmptyBorder());

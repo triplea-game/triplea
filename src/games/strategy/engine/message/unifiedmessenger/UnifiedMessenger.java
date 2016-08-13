@@ -61,19 +61,9 @@ public class UnifiedMessenger {
    */
   public UnifiedMessenger(final IMessenger messenger) {
     m_messenger = messenger;
-    IMessageListener m_messageListener = new IMessageListener() {
-      @Override
-      public void messageReceived(final Serializable msg, final INode from) {
-        UnifiedMessenger.this.messageReceived(msg, from);
-      }
-    };
+    IMessageListener m_messageListener = (msg, from) -> UnifiedMessenger.this.messageReceived(msg, from);
     m_messenger.addMessageListener(m_messageListener);
-    IMessengerErrorListener m_messengerErrorListener = new IMessengerErrorListener() {
-      @Override
-      public void messengerInvalid(final IMessenger messenger, final Exception reason) {
-        UnifiedMessenger.this.messengerInvalid();
-      }
-    };
+    IMessengerErrorListener m_messengerErrorListener = (messenger1, reason) -> UnifiedMessenger.this.messengerInvalid();
     m_messenger.addErrorListener(m_messengerErrorListener);
     if (m_messenger.isServer()) {
       m_hub = new UnifiedMessengerHub(m_messenger, this);
@@ -307,21 +297,18 @@ public class UnifiedMessenger {
       // reading messages
       // per connection, so run with out thread pool
       final EndPoint localFinal = local;
-      final Runnable task = new Runnable() {
-        @Override
-        public void run() {
-          final List<RemoteMethodCallResults> results =
-              localFinal.invokeLocal(invoke.call, methodRunNumber, invoke.getInvoker());
-          if (invoke.needReturnValues) {
-            RemoteMethodCallResults result = null;
-            if (results.size() == 1) {
-              result = results.get(0);
-            } else {
-              result = new RemoteMethodCallResults(
-                  new IllegalStateException("Invalid result count" + results.size()) + " for end point:" + localFinal);
-            }
-            send(new HubInvocationResults(result, invoke.methodCallID), from);
+      final Runnable task = () -> {
+        final List<RemoteMethodCallResults> results =
+            localFinal.invokeLocal(invoke.call, methodRunNumber, invoke.getInvoker());
+        if (invoke.needReturnValues) {
+          RemoteMethodCallResults result = null;
+          if (results.size() == 1) {
+            result = results.get(0);
+          } else {
+            result = new RemoteMethodCallResults(
+                new IllegalStateException("Invalid result count" + results.size()) + " for end point:" + localFinal);
           }
+          send(new HubInvocationResults(result, invoke.methodCallID), from);
         }
       };
       threadPool.execute(task);

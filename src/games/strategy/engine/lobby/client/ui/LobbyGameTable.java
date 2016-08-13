@@ -23,13 +23,9 @@ public class LobbyGameTable extends JTable {
 
   public LobbyGameTable(final TableModel model) {
     super(model);
-    getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-      // track the currently selected row
-      @Override
-      public void valueChanged(final ListSelectionEvent e) {
-        if (!inTableChange) {
-          markSelection();
-        }
+    getSelectionModel().addListSelectionListener(e -> {
+      if (!inTableChange) {
+        markSelection();
       }
     });
   }

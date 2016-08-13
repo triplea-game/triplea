@@ -45,12 +45,7 @@ class PlayerSequenceRow extends DynamicRow {
         JOptionPane.showMessageDialog(stepActionPanel, "Sequence '" + inputText + "' already exists.", "Input error",
             JOptionPane.ERROR_MESSAGE);
         parentRowPanel.setDataIsConsistent(false);
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            textFieldSequenceName.requestFocus();
-          }
-        });
+        SwingUtilities.invokeLater(() -> textFieldSequenceName.requestFocus());
         return;
       }
       // everything is okay with the new player namer, lets rename everything
@@ -100,13 +95,10 @@ class PlayerSequenceRow extends DynamicRow {
         JOptionPane.showMessageDialog(stepActionPanel, "'" + inputText + "' is no integer value.", "Input error",
             JOptionPane.ERROR_MESSAGE);
         parentRowPanel.setDataIsConsistent(false);
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            textFieldMaxCount.updateUI();
-            textFieldMaxCount.requestFocus();
-            textFieldMaxCount.selectAll();
-          }
+        SwingUtilities.invokeLater(() -> {
+          textFieldMaxCount.updateUI();
+          textFieldMaxCount.requestFocus();
+          textFieldMaxCount.selectAll();
         });
         return;
       }

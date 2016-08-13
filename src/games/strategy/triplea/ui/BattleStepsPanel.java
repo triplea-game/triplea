@@ -145,12 +145,7 @@ class BattleStepsPanel extends JPanel implements Active {
         }
         try {
           ThreadUtil.sleep(330);
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              walkStep();
-            }
-          });
+          SwingUtilities.invokeLater(() -> walkStep());
         } finally {
           synchronized (m_mutex) {
             m_hasWalkThread = false;

@@ -42,12 +42,7 @@ public class NIOReader {
       logger.log(Level.SEVERE, "Could not create Selector", e);
       throw new IllegalStateException(e);
     }
-    final Thread t = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        loop();
-      }
-    }, "NIO Reader - " + threadSuffix);
+    final Thread t = new Thread(() -> loop(), "NIO Reader - " + threadSuffix);
     t.start();
   }
 

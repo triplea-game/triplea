@@ -56,20 +56,10 @@ public class InGameLobbyWatcher {
   private boolean m_shutdown = false;
   private final GUID m_gameID = new GUID();
   private GameSelectorModel m_gameSelectorModel;
-  private final Observer m_gameSelectorModelObserver = new Observer() {
-    @Override
-    public void update(final Observable o, final Object arg) {
-      gameSelectorModelUpdated();
-    }
-  };
+  private final Observer m_gameSelectorModelObserver = (o, arg) -> gameSelectorModelUpdated();
   private IGame m_game;
-  private final GameStepListener m_gameStepListener = new GameStepListener() {
-    @Override
-    public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player,
-        final int round, final String displayName) {
-      InGameLobbyWatcher.this.gameStepChanged(stepName, round);
-    }
-  };
+  private final GameStepListener m_gameStepListener =
+      (stepName, delegateName, player, round, displayName) -> InGameLobbyWatcher.this.gameStepChanged(stepName, round);
   // we create this messenger, and use it to connect to the
   // game lobby
   private final IMessenger m_messenger;
@@ -194,12 +184,7 @@ public class InGameLobbyWatcher {
     synchronized (m_mutex) {
       controller.postGame(m_gameID, (GameDescription) m_gameDescription.clone());
     }
-    m_messengerErrorListener = new IMessengerErrorListener() {
-      @Override
-      public void messengerInvalid(final IMessenger messenger, final Exception reason) {
-        shutDown();
-      }
-    };
+    m_messengerErrorListener = (messenger1, reason) -> shutDown();
     m_messenger.addErrorListener(m_messengerErrorListener);
     m_connectionChangeListener = new IConnectionChangeListener() {
       @Override
@@ -219,61 +204,55 @@ public class InGameLobbyWatcher {
       this.setGameStatus(oldWatcher.m_gameDescription.getStatus(), oldWatcher.m_game);
     }
     // if we loose our connection, then shutdown
-    final Runnable r = new Runnable() {
-      @Override
-      public void run() {
-        final String addressUsed = controller.testGame(m_gameID);
-        // if the server cannot connect to us, then quit
-        if (addressUsed != null) {
-          if (isActive()) {
-            shutDown();
-            SwingUtilities.invokeLater(new Runnable() {
-              @Override
-              public void run() {
-                String portString = System.getProperty(GameRunner.TRIPLEA_PORT_PROPERTY);
-                if (portString == null || portString.trim().length() <= 0) {
-                  portString = "3300";
-                }
-                final String message = "Your computer is not reachable from the internet.\r\n"
-                    + "Please make sure your Firewall allows incoming connections (hosting) for TripleA.\r\n"
-                    + "(The firewall exception must be updated every time a new version of TripleA comes out.)\r\n"
-                    + "And that your Router is configured to send TCP traffic on port " + portString
-                    + " to your local ip address.\r\n"
-                    + "See 'How To Host...' in the help menu, at the top of the lobby screen.\r\n"
-                    + "The server tried to connect to your external ip: " + addressUsed + "\r\n";
-                if (HeadlessGameServer.headless()) {
-                  System.out.println(message);
-                  System.exit(-1);
-                }
-                final int port = Integer.parseInt(portString);
-                final Frame parentComponent = JOptionPane.getFrameForComponent(parent);
-                JOptionPane.showMessageDialog(parentComponent, message, "Could Not Host", JOptionPane.ERROR_MESSAGE);
-                final String question =
-                    "TripleA has a new feature (in BETA) that will attempt to set your Port Forwarding for you.\r\n"
-                        + "You must have Universal Plug and Play (UPnP) enabled on your router.\r\n"
-                        + "Only around half of all routers come with UPnP enabled by default.\r\n\r\n"
-                        + "If this does not work, try turning on UPnP in your router, then try this all again.\r\n"
-                        + "(To change your router's settings, click 'How To Host...' in the help menu, or use google search.)\r\n\r\n"
-                        + "If TripleA previously successfully set your port forwarding, but you still cannot host, \r\n"
-                        + "then the problem is most likely your firewall. Try creating an exception for TripleA in the firewall.\r\n"
-                        + "Or disable the firewall briefly just to test.\r\n"
-                        + "The firewall exception must be updated every time a new version of TripleA comes out.\r\n";
-                final int answer = JOptionPane.showConfirmDialog(parentComponent, question,
-                    "Try Setting Port Forwarding with UPnP?", JOptionPane.YES_NO_OPTION);
-                if (answer != JOptionPane.YES_OPTION) {
-                  System.exit(-1);
-                }
-                UniversalPlugAndPlayHelper.attemptAddingPortForwarding(parentComponent, port);
-                if (JOptionPane.showConfirmDialog(parentComponent,
-                    "Do you want to view the tutorial on how to host?  This will open in your internet browser.",
-                    "View Help Website?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                  DesktopUtilityBrowserLauncher.openURL(
-                      "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html");
-                }
-                System.exit(-1);
-              }
-            });
-          }
+    final Runnable r = () -> {
+      final String addressUsed = controller.testGame(m_gameID);
+      // if the server cannot connect to us, then quit
+      if (addressUsed != null) {
+        if (isActive()) {
+          shutDown();
+          SwingUtilities.invokeLater(() -> {
+            String portString = System.getProperty(GameRunner.TRIPLEA_PORT_PROPERTY);
+            if (portString == null || portString.trim().length() <= 0) {
+              portString = "3300";
+            }
+            final String message = "Your computer is not reachable from the internet.\r\n"
+                + "Please make sure your Firewall allows incoming connections (hosting) for TripleA.\r\n"
+                + "(The firewall exception must be updated every time a new version of TripleA comes out.)\r\n"
+                + "And that your Router is configured to send TCP traffic on port " + portString
+                + " to your local ip address.\r\n"
+                + "See 'How To Host...' in the help menu, at the top of the lobby screen.\r\n"
+                + "The server tried to connect to your external ip: " + addressUsed + "\r\n";
+            if (HeadlessGameServer.headless()) {
+              System.out.println(message);
+              System.exit(-1);
+            }
+            final int port = Integer.parseInt(portString);
+            final Frame parentComponent = JOptionPane.getFrameForComponent(parent);
+            JOptionPane.showMessageDialog(parentComponent, message, "Could Not Host", JOptionPane.ERROR_MESSAGE);
+            final String question =
+                "TripleA has a new feature (in BETA) that will attempt to set your Port Forwarding for you.\r\n"
+                    + "You must have Universal Plug and Play (UPnP) enabled on your router.\r\n"
+                    + "Only around half of all routers come with UPnP enabled by default.\r\n\r\n"
+                    + "If this does not work, try turning on UPnP in your router, then try this all again.\r\n"
+                    + "(To change your router's settings, click 'How To Host...' in the help menu, or use google search.)\r\n\r\n"
+                    + "If TripleA previously successfully set your port forwarding, but you still cannot host, \r\n"
+                    + "then the problem is most likely your firewall. Try creating an exception for TripleA in the firewall.\r\n"
+                    + "Or disable the firewall briefly just to test.\r\n"
+                    + "The firewall exception must be updated every time a new version of TripleA comes out.\r\n";
+            final int answer = JOptionPane.showConfirmDialog(parentComponent, question,
+                "Try Setting Port Forwarding with UPnP?", JOptionPane.YES_NO_OPTION);
+            if (answer != JOptionPane.YES_OPTION) {
+              System.exit(-1);
+            }
+            UniversalPlugAndPlayHelper.attemptAddingPortForwarding(parentComponent, port);
+            if (JOptionPane.showConfirmDialog(parentComponent,
+                "Do you want to view the tutorial on how to host?  This will open in your internet browser.",
+                "View Help Website?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+              DesktopUtilityBrowserLauncher.openURL(
+                  "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html");
+            }
+            System.exit(-1);
+          });
         }
       }
     };

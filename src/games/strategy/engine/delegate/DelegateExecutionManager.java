@@ -100,25 +100,22 @@ public class DelegateExecutionManager {
    */
   public Object createOutboundImplementation(final Object implementor, final Class<?>[] interfaces) {
     assertGameNotOver();
-    final InvocationHandler ih = new InvocationHandler() {
-      @Override
-      public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+    final InvocationHandler ih = (proxy, method, args) -> {
+      assertGameNotOver();
+      final boolean threadLocks = currentThreadHasReadLock();
+      if (threadLocks) {
+        leaveDelegateExecution();
+      }
+      try {
+        return method.invoke(implementor, args);
+      } catch (final MessengerException me) {
+        throw new GameOverException("Game Over!");
+      } catch (final InvocationTargetException ite) {
         assertGameNotOver();
-        final boolean threadLocks = currentThreadHasReadLock();
+        throw ite;
+      } finally {
         if (threadLocks) {
-          leaveDelegateExecution();
-        }
-        try {
-          return method.invoke(implementor, args);
-        } catch (final MessengerException me) {
-          throw new GameOverException("Game Over!");
-        } catch (final InvocationTargetException ite) {
-          assertGameNotOver();
-          throw ite;
-        } finally {
-          if (threadLocks) {
-            enterDelegateExecution();
-          }
+          enterDelegateExecution();
         }
       }
     };

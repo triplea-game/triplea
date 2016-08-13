@@ -25,8 +25,8 @@ public class CompositeMatchAnd<T> extends CompositeMatch<T> {
   @Override
   public boolean match(final T o) {
     final List<Match<T>> matches = super.getMatches();
-    for (int i = 0; i < matches.size(); i++) {
-      if (!matches.get(i).match(o)) {
+    for (Match<T> matche : matches) {
+      if (!matche.match(o)) {
         return false;
       }
     }

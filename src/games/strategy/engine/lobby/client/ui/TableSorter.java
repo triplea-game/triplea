@@ -147,8 +147,7 @@ public class TableSorter extends AbstractTableModel {
   }
 
   private Directive getDirective(final int column) {
-    for (int i = 0; i < sortingColumns.size(); i++) {
-      final Directive directive = sortingColumns.get(i);
+    for (final Directive directive : sortingColumns) {
       if (directive.column == column) {
         return directive;
       }

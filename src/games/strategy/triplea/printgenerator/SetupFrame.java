@@ -51,31 +51,25 @@ public class SetupFrame extends JPanel {
     m_radioButtonGroup.add(m_originalState);
     m_originalState.setSelected(true);
     m_outDirButton.setText("Choose the Output Directory");
-    m_outDirButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final int returnVal = m_outChooser.showOpenDialog(null);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-          final File outDir = m_outChooser.getSelectedFile();
-          m_outField.setText(outDir.getAbsolutePath());
-        }
+    m_outDirButton.addActionListener(e -> {
+      final int returnVal = m_outChooser.showOpenDialog(null);
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
+        final File outDir = m_outChooser.getSelectedFile();
+        m_outField.setText(outDir.getAbsolutePath());
       }
     });
     m_runButton.setText("Generate the Files");
-    m_runButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (!m_outField.getText().equals("")) {
-          m_outDir = new File(m_outField.getText());
-          final PrintGenerationData printData = new PrintGenerationData();
-          printData.setOutDir(m_outDir);
-          printData.setData(m_data);
-          new InitialSetup().run(printData, m_originalState.isSelected());
-          JOptionPane.showMessageDialog(null, "Done!", "Done!", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-          JOptionPane.showMessageDialog(null, "You need to select an Output Directory.", "Select an Output Directory!",
-              JOptionPane.ERROR_MESSAGE);
-        }
+    m_runButton.addActionListener(e -> {
+      if (!m_outField.getText().equals("")) {
+        m_outDir = new File(m_outField.getText());
+        final PrintGenerationData printData = new PrintGenerationData();
+        printData.setOutDir(m_outDir);
+        printData.setData(m_data);
+        new InitialSetup().run(printData, m_originalState.isSelected());
+        JOptionPane.showMessageDialog(null, "Done!", "Done!", JOptionPane.INFORMATION_MESSAGE);
+      } else {
+        JOptionPane.showMessageDialog(null, "You need to select an Output Directory.", "Select an Output Directory!",
+            JOptionPane.ERROR_MESSAGE);
       }
     });
     JPanel m_infoPanel = SwingComponents.gridPanel(3, 1);

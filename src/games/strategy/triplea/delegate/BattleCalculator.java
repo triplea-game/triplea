@@ -68,14 +68,11 @@ public class BattleCalculator {
   // we also want to sort by movement, so casualties will be choosen as the
   // units with least movement
   public static void sortPreBattle(final List<Unit> units) {
-    final Comparator<Unit> comparator = new Comparator<Unit>() {
-      @Override
-      public int compare(final Unit u1, final Unit u2) {
-        if (u1.getUnitType().equals(u2.getUnitType())) {
-          return UnitComparator.getLowestToHighestMovementComparator().compare(u1, u2);
-        }
-        return u1.getUnitType().getName().compareTo(u2.getUnitType().getName());
+    final Comparator<Unit> comparator = (u1, u2) -> {
+      if (u1.getUnitType().equals(u2.getUnitType())) {
+        return UnitComparator.getLowestToHighestMovementComparator().compare(u1, u2);
       }
+      return u1.getUnitType().getName().compareTo(u2.getUnitType().getName());
     };
     Collections.sort(units, comparator);
   }

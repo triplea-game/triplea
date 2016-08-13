@@ -118,54 +118,14 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   private void setupListeners() {
-    m_startLocal.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_model.showLocal();
-      }
-    });
-    m_startPBEM.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_model.showPBEM();
-      }
-    });
-    m_hostGame.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_model.showServer(MetaSetupPanel.this);
-      }
-    });
-    m_connectToHostedGame.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        m_model.showClient(MetaSetupPanel.this);
-      }
-    });
-    m_connectToLobby.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        connectToLobby();
-      }
-    });
-    m_enginePreferences.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        enginePreferences();
-      }
-    });
-    m_ruleBook.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        ruleBook();
-      }
-    });
-    m_helpButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        helpPage();
-      }
-    });
+    m_startLocal.addActionListener(e -> m_model.showLocal());
+    m_startPBEM.addActionListener(e -> m_model.showPBEM());
+    m_hostGame.addActionListener(e -> m_model.showServer(MetaSetupPanel.this));
+    m_connectToHostedGame.addActionListener(e -> m_model.showClient(MetaSetupPanel.this));
+    m_connectToLobby.addActionListener(e -> connectToLobby());
+    m_enginePreferences.addActionListener(e -> enginePreferences());
+    m_ruleBook.addActionListener(e -> ruleBook());
+    m_helpButton.addActionListener(e -> helpPage());
 
     m_donate.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
   }

@@ -45,8 +45,7 @@ public class CompositeChange extends Change {
 
   @Override
   protected void perform(final GameData data) {
-    for (int i = 0; i < m_changes.size(); i++) {
-      final Change current = m_changes.get(i);
+    for (final Change current : m_changes) {
       current.perform(data);
     }
   }
