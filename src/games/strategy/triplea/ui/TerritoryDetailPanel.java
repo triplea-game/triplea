@@ -71,12 +71,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
         OddsCalculatorDialog.show(m_frame, m_currentTerritory);
       }
     };
-    m_showOdds.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        showBattleCalc.actionPerformed(e);
-      }
-    });
+    m_showOdds.addActionListener(e -> showBattleCalc.actionPerformed(e));
     final JComponent contentPane = (JComponent) m_frame.getContentPane();
     contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
         .put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.META_MASK), show_battle_calc);

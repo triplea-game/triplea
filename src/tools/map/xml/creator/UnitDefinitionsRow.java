@@ -41,13 +41,10 @@ class UnitDefinitionsRow extends DynamicRow {
         JOptionPane.showMessageDialog(stepActionPanel, "Unit '" + inputText + "' already exists.", "Input error",
             JOptionPane.ERROR_MESSAGE);
         parentRowPanel.setDataIsConsistent(false);
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            textFieldUnitName.updateUI();
-            textFieldUnitName.requestFocus();
-            textFieldUnitName.selectAll();
-          }
+        SwingUtilities.invokeLater(() -> {
+          textFieldUnitName.updateUI();
+          textFieldUnitName.requestFocus();
+          textFieldUnitName.selectAll();
         });
         return;
       }

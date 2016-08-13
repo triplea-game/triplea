@@ -80,12 +80,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
   private void updateGameData() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          updateGameData();
-        }
-      });
+      SwingUtilities.invokeLater(() -> updateGameData());
       return;
     }
     m_nameText.setText(m_model.getGameName());
@@ -219,54 +214,45 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
 
   private void setupListeners() {
-    m_loadNewGame.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (canSelectLocalGameData()) {
-          selectGameFile(false);
-        } else if (canChangeHostBotGameData()) {
-          final ClientModel clientModelForHostBots = m_model.getClientModelForHostBots();
-          if (clientModelForHostBots != null) {
-            clientModelForHostBots.getHostBotSetMapClientAction(GameSelectorPanel.this).actionPerformed(e);
-          }
+    m_loadNewGame.addActionListener(e -> {
+      if (canSelectLocalGameData()) {
+        selectGameFile(false);
+      } else if (canChangeHostBotGameData()) {
+        final ClientModel clientModelForHostBots = m_model.getClientModelForHostBots();
+        if (clientModelForHostBots != null) {
+          clientModelForHostBots.getHostBotSetMapClientAction(GameSelectorPanel.this).actionPerformed(e);
         }
       }
     });
-    m_loadSavedGame.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (canSelectLocalGameData()) {
-          selectGameFile(true);
-        } else if (canChangeHostBotGameData()) {
-          final ClientModel clientModelForHostBots = m_model.getClientModelForHostBots();
-          if (clientModelForHostBots != null) {
-            final JPopupMenu menu = new JPopupMenu();
-            menu.add(clientModelForHostBots.getHostBotChangeGameToSaveGameClientAction(GameSelectorPanel.this));
-            menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-                SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
-            menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-                SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2));
-            menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-                SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));
-            menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-                SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN));
-            menu.add(clientModelForHostBots.getHostBotGetGameSaveClientAction(GameSelectorPanel.this));
-            final Point point = m_loadSavedGame.getLocation();
-            menu.show(GameSelectorPanel.this, point.x + m_loadSavedGame.getWidth(), point.y);
-          }
+    m_loadSavedGame.addActionListener(e -> {
+      if (canSelectLocalGameData()) {
+        selectGameFile(true);
+      } else if (canChangeHostBotGameData()) {
+        final ClientModel clientModelForHostBots = m_model.getClientModelForHostBots();
+        if (clientModelForHostBots != null) {
+          final JPopupMenu menu = new JPopupMenu();
+          menu.add(clientModelForHostBots.getHostBotChangeGameToSaveGameClientAction(GameSelectorPanel.this));
+          menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
+              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
+          menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
+              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2));
+          menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
+              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));
+          menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
+              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN));
+          menu.add(clientModelForHostBots.getHostBotGetGameSaveClientAction(GameSelectorPanel.this));
+          final Point point = m_loadSavedGame.getLocation();
+          menu.show(GameSelectorPanel.this, point.x + m_loadSavedGame.getWidth(), point.y);
         }
       }
     });
-    m_gameOptions.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (canSelectLocalGameData()) {
-          selectGameOptions();
-        } else if (canChangeHostBotGameData()) {
-          final ClientModel clientModelForHostBots = m_model.getClientModelForHostBots();
-          if (clientModelForHostBots != null) {
-            clientModelForHostBots.getHostBotChangeGameOptionsClientAction(GameSelectorPanel.this).actionPerformed(e);
-          }
+    m_gameOptions.addActionListener(e -> {
+      if (canSelectLocalGameData()) {
+        selectGameOptions();
+      } else if (canChangeHostBotGameData()) {
+        final ClientModel clientModelForHostBots = m_model.getClientModelForHostBots();
+        if (clientModelForHostBots != null) {
+          clientModelForHostBots.getHostBotChangeGameOptionsClientAction(GameSelectorPanel.this).actionPerformed(e);
         }
       }
     });
@@ -327,12 +313,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
   private void setWidgetActivation() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          setWidgetActivation();
-        }
-      });
+      SwingUtilities.invokeLater(() -> setWidgetActivation());
       return;
     }
     final boolean canSelectGameData = canSelectLocalGameData();
@@ -374,13 +355,10 @@ public class GameSelectorPanel extends JPanel implements Observer {
       fileDialog.setMode(FileDialog.LOAD);
       SaveGameFileChooser.ensureMapsFolderExists();
       fileDialog.setDirectory(new File(ClientContext.folderSettings().getSaveGamePath()).getPath());
-      fileDialog.setFilenameFilter(new FilenameFilter() {
-        @Override
-        public boolean accept(final File dir, final String name) {
-          // the extension should be .tsvg, but find svg extensions as well
-          // also, macs download the file as tsvg.gz, so accept that as well
-          return name.endsWith(".tsvg") || name.endsWith(".svg") || name.endsWith("tsvg.gz");
-        }
+      fileDialog.setFilenameFilter((dir, name) -> {
+        // the extension should be .tsvg, but find svg extensions as well
+        // also, macs download the file as tsvg.gz, so accept that as well
+        return name.endsWith(".tsvg") || name.endsWith(".svg") || name.endsWith("tsvg.gz");
       });
       fileDialog.setVisible(true);
       final String fileName = fileDialog.getFile();

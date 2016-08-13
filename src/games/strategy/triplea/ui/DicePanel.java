@@ -41,12 +41,7 @@ public class DicePanel extends JPanel {
 
   public void setDiceRoll(final DiceRoll diceRoll) {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          setDiceRoll(diceRoll);
-        }
-      });
+      SwingUtilities.invokeLater(() -> setDiceRoll(diceRoll));
       return;
     }
     removeAll();

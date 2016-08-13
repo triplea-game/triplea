@@ -127,12 +127,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
     refresh.addActionListener(SwingAction.of("Refresh Objectives", e -> {
         m_objectiveModel.loadData();
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            table.repaint();
-          }
-        });
+        SwingUtilities.invokeLater(() -> table.repaint());
     }));
     add(Box.createVerticalStrut(6));
     add(refresh);
@@ -381,12 +376,7 @@ public class ObjectivePanel extends AbstractStatPanel {
       synchronized (this) {
         m_isDirty = true;
       }
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          repaint();
-        }
-      });
+      SwingUtilities.invokeLater(() -> repaint());
     }
 
     @Override

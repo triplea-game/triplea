@@ -77,12 +77,7 @@ public class ColorProperty extends AEditableProperty {
           if (colorSelected != null) {
             color = colorSelected;
             // Ask Swing to repaint this label when it's convenient
-            SwingUtilities.invokeLater(new Runnable() {
-              @Override
-              public void run() {
-                label.repaint();
-              }
-            });
+            SwingUtilities.invokeLater(() -> label.repaint());
           }
         } catch (final Exception exception) {
           System.err.println(exception.getMessage());

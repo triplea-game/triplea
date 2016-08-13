@@ -184,16 +184,13 @@ public class MainPanel extends JPanel implements Observer {
     }
     // if we need this for something other than network, add a way to set it
     final JButton button = new JButton("Network...");
-    button.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final JPopupMenu menu = new JPopupMenu();
-        final List<Action> actions = gameSetupPanel.getUserActions();
-        for (final Action a : actions) {
-          menu.add(a);
-        }
-        menu.show(button, 0, button.getHeight());
+    button.addActionListener(e -> {
+      final JPopupMenu menu = new JPopupMenu();
+      final List<Action> actions = gameSetupPanel.getUserActions();
+      for (final Action a : actions) {
+        menu.add(a);
       }
+      menu.show(button, 0, button.getHeight());
     });
     cancelPanel.add(button);
   }

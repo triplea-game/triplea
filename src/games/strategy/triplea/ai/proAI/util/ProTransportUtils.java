@@ -106,29 +106,26 @@ public class ProTransportUtils {
       units.removeAll(unitsToIgnore);
 
       // Sort units by attack
-      Collections.sort(units, new Comparator<Unit>() {
-        @Override
-        public int compare(final Unit o1, final Unit o2) {
+      Collections.sort(units, (o1, o2) -> {
 
-          // Very rough way to add support power
-          final Set<UnitSupportAttachment> supportAttachments1 = UnitSupportAttachment.get(o1.getType());
-          int maxSupport1 = 0;
-          for (final UnitSupportAttachment usa : supportAttachments1) {
-            if (usa.getAllied() && usa.getOffence() && usa.getBonus() > maxSupport1) {
-              maxSupport1 = usa.getBonus();
-            }
+        // Very rough way to add support power
+        final Set<UnitSupportAttachment> supportAttachments1 = UnitSupportAttachment.get(o1.getType());
+        int maxSupport1 = 0;
+        for (final UnitSupportAttachment usa : supportAttachments1) {
+          if (usa.getAllied() && usa.getOffence() && usa.getBonus() > maxSupport1) {
+            maxSupport1 = usa.getBonus();
           }
-          final int attack1 = UnitAttachment.get(o1.getType()).getAttack(player) + maxSupport1;
-          final Set<UnitSupportAttachment> supportAttachments2 = UnitSupportAttachment.get(o2.getType());
-          int maxSupport2 = 0;
-          for (final UnitSupportAttachment usa : supportAttachments2) {
-            if (usa.getAllied() && usa.getOffence() && usa.getBonus() > maxSupport2) {
-              maxSupport2 = usa.getBonus();
-            }
-          }
-          final int attack2 = UnitAttachment.get(o2.getType()).getAttack(player) + maxSupport2;
-          return attack2 - attack1;
         }
+        final int attack1 = UnitAttachment.get(o1.getType()).getAttack(player) + maxSupport1;
+        final Set<UnitSupportAttachment> supportAttachments2 = UnitSupportAttachment.get(o2.getType());
+        int maxSupport2 = 0;
+        for (final UnitSupportAttachment usa : supportAttachments2) {
+          if (usa.getAllied() && usa.getOffence() && usa.getBonus() > maxSupport2) {
+            maxSupport2 = usa.getBonus();
+          }
+        }
+        final int attack2 = UnitAttachment.get(o2.getType()).getAttack(player) + maxSupport2;
+        return attack2 - attack1;
       });
 
       // Get best units that can be loaded

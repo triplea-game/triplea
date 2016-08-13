@@ -62,19 +62,16 @@ public class LobbyGameTableModel extends AbstractTableModel {
   }
 
   private void removeGame(final GUID gameId) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (gameId == null) {
-          return;
-        }
+    SwingUtilities.invokeLater(() -> {
+      if (gameId == null) {
+        return;
+      }
 
-        final Tuple<GUID, GameDescription> gameToRemove = findGame(gameId);
-        if (gameToRemove != null) {
-          final int index = gameList.indexOf(gameToRemove);
-          gameList.remove(gameToRemove);
-          fireTableRowsDeleted(index, index);
-        }
+      final Tuple<GUID, GameDescription> gameToRemove = findGame(gameId);
+      if (gameToRemove != null) {
+        final int index = gameList.indexOf(gameToRemove);
+        gameList.remove(gameToRemove);
+        fireTableRowsDeleted(index, index);
       }
     });
   }
@@ -112,21 +109,18 @@ public class LobbyGameTableModel extends AbstractTableModel {
   }
 
   private void updateGame(final GUID gameId, final GameDescription description) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (gameId == null) {
-          return;
-        }
+    SwingUtilities.invokeLater(() -> {
+      if (gameId == null) {
+        return;
+      }
 
-        final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
-        if (toReplace == null) {
-          gameList.add(Tuple.of(gameId, description));
-        } else {
-          final int replaceIndex = gameList.indexOf(toReplace);
-          gameList.set(replaceIndex, Tuple.of(gameId, description));
-          fireTableRowsUpdated(replaceIndex, replaceIndex);
-        }
+      final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
+      if (toReplace == null) {
+        gameList.add(Tuple.of(gameId, description));
+      } else {
+        final int replaceIndex = gameList.indexOf(toReplace);
+        gameList.set(replaceIndex, Tuple.of(gameId, description));
+        fireTableRowsUpdated(replaceIndex, replaceIndex);
       }
     });
   }

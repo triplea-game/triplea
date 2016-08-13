@@ -293,13 +293,9 @@ public class HelpMenu {
     } else
     // On Mac OS X, put the About menu where Mac users expect it to be
     {
-      Application.getApplication().setAboutHandler(new AboutHandler(){
-        @Override
-        public void handleAbout(AppEvent.AboutEvent paramAboutEvent) {
-          JOptionPane.showMessageDialog(null, editorPane, "About " + gameData.getGameName(),
-              JOptionPane.PLAIN_MESSAGE);
-        }
-      });
+      Application.getApplication().setAboutHandler(
+          paramAboutEvent -> JOptionPane.showMessageDialog(null, editorPane, "About " + gameData.getGameName(),
+              JOptionPane.PLAIN_MESSAGE));
     }
   }
 

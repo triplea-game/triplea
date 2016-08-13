@@ -178,21 +178,13 @@ public class MapPanel extends ImageScrollerLargeView {
       }
     };
     this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
-    this.addScrollListener(new ScrollListener() {
-      @Override
-      public void scrolled(final int x, final int y) {
-        SwingUtilities.invokeLater(() -> repaint());
-      }
-    });
+    this.addScrollListener((x2, y2) -> SwingUtilities.invokeLater(() -> repaint()));
     recreateTiles(data, this.uiContext);
-    this.uiContext.addActive(new Active() {
-      @Override
-      public void deactivate() {
-        // super.deactivate
-        MapPanel.this.deactivate();
-        clearUndrawn();
-        backgroundDrawer.stop();
-      }
+    this.uiContext.addActive(() -> {
+      // super.deactivate
+      MapPanel.this.deactivate();
+      clearUndrawn();
+      backgroundDrawer.stop();
     });
   }
   LinkedBlockingQueue<Tile> getUndrawnTiles() {

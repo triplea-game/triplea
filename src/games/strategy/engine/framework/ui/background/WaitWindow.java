@@ -46,13 +46,10 @@ public class WaitWindow extends JWindow {
         m_timer = null;
       }
     }
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        setVisible(false);
-        removeAll();
-        dispose();
-      }
+    SwingUtilities.invokeLater(() -> {
+      setVisible(false);
+      removeAll();
+      dispose();
     });
     m_finished = true;
   }

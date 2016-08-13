@@ -252,95 +252,89 @@ public class PBEMMessagePoster implements Serializable {
       }
       final ProgressWindow progressWindow = new ProgressWindow(mainGameFrame, "Posting " + title + "...");
       progressWindow.setVisible(true);
-      final Runnable t = new Runnable() {
-        @Override
-        public void run() {
-          boolean postOk = true;
-          File saveGameFile = null;
-          if (postingDelegate != null) {
-            postingDelegate.setHasPostedTurnSummary(true);
-          }
-          try {
-            saveGameFile = File.createTempFile("triplea", ".tsvg");
-            if (saveGameFile != null) {
-              mainGameFrame.getGame().saveGame(saveGameFile);
-              posterPBEM.setSaveGame(saveGameFile);
-            }
-          } catch (final Exception e) {
-            postOk = false;
-            ClientLogger.logQuietly(e);
-          }
-          posterPBEM.setTurnSummary(historyLog.toString());
-          try {
-            // forward the poster to the delegate which invokes post() on the poster
-            if (postingDelegate != null) {
-              if (!postingDelegate.postTurnSummary(posterPBEM, title, includeSaveGame)) {
-                postOk = false;
-              }
-            } else {
-              if (!posterPBEM.post(null, title, includeSaveGame)) {
-                postOk = false;
-              }
-            }
-          } catch (final Exception e) {
-            postOk = false;
-            ClientLogger.logQuietly(e);
-          }
-          if (postingDelegate != null) {
-            postingDelegate.setHasPostedTurnSummary(postOk);
-          }
-          final StringBuilder sb = new StringBuilder();
-          if (posterPBEM.getForumPoster() != null) {
-            final String saveGameRef = posterPBEM.getSaveGameRef();
-            final String turnSummaryRef = posterPBEM.getTurnSummaryRef();
-            if (saveGameRef != null) {
-              sb.append("\nSave Game : ").append(saveGameRef);
-            }
-            if (turnSummaryRef != null) {
-              sb.append("\nSummary Text: ").append(turnSummaryRef);
-            }
-          }
-          if (posterPBEM.getEmailSender() != null) {
-            sb.append("\nEmails: ").append(posterPBEM.getEmailSendStatus());
-          }
-          if (posterPBEM.getWebPoster() != null) {
-            sb.append("\nWeb Site Post: ").append(posterPBEM.getWebPostStatus());
-          }
-          historyLog.getWriter().println(sb.toString());
-          if (historyLog.isVisible()) {
-            historyLog.setVisible(true);
-          }
-          try {
-            if (saveGameFile != null && !saveGameFile.delete()) {
-              System.out.println(
-                  (new StringBuilder()).append("INFO TripleA PBEM/PBF poster couldn't delete temporary savegame: ")
-                      .append(saveGameFile.getCanonicalPath()).toString());
-            }
-          } catch (final IOException e) {
-            ClientLogger.logQuietly("save game file = " + saveGameFile, e);
-          }
-          progressWindow.setVisible(false);
-          progressWindow.removeAll();
-          progressWindow.dispose();
-          final boolean finalPostOk = postOk;
-          final String finalMessage = sb.toString();
-          final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-              if (postButton != null) {
-                postButton.setEnabled(!finalPostOk);
-              }
-              if (finalPostOk) {
-                JOptionPane.showMessageDialog(mainGameFrame, finalMessage, title + " Posted",
-                    JOptionPane.INFORMATION_MESSAGE);
-              } else {
-                JOptionPane.showMessageDialog(mainGameFrame, finalMessage, title + " Posted",
-                    JOptionPane.ERROR_MESSAGE);
-              }
-            }
-          };
-          SwingUtilities.invokeLater(runnable);
+      final Runnable t = () -> {
+        boolean postOk = true;
+        File saveGameFile = null;
+        if (postingDelegate != null) {
+          postingDelegate.setHasPostedTurnSummary(true);
         }
+        try {
+          saveGameFile = File.createTempFile("triplea", ".tsvg");
+          if (saveGameFile != null) {
+            mainGameFrame.getGame().saveGame(saveGameFile);
+            posterPBEM.setSaveGame(saveGameFile);
+          }
+        } catch (final Exception e) {
+          postOk = false;
+          ClientLogger.logQuietly(e);
+        }
+        posterPBEM.setTurnSummary(historyLog.toString());
+        try {
+          // forward the poster to the delegate which invokes post() on the poster
+          if (postingDelegate != null) {
+            if (!postingDelegate.postTurnSummary(posterPBEM, title, includeSaveGame)) {
+              postOk = false;
+            }
+          } else {
+            if (!posterPBEM.post(null, title, includeSaveGame)) {
+              postOk = false;
+            }
+          }
+        } catch (final Exception e) {
+          postOk = false;
+          ClientLogger.logQuietly(e);
+        }
+        if (postingDelegate != null) {
+          postingDelegate.setHasPostedTurnSummary(postOk);
+        }
+        final StringBuilder sb1 = new StringBuilder();
+        if (posterPBEM.getForumPoster() != null) {
+          final String saveGameRef = posterPBEM.getSaveGameRef();
+          final String turnSummaryRef = posterPBEM.getTurnSummaryRef();
+          if (saveGameRef != null) {
+            sb1.append("\nSave Game : ").append(saveGameRef);
+          }
+          if (turnSummaryRef != null) {
+            sb1.append("\nSummary Text: ").append(turnSummaryRef);
+          }
+        }
+        if (posterPBEM.getEmailSender() != null) {
+          sb1.append("\nEmails: ").append(posterPBEM.getEmailSendStatus());
+        }
+        if (posterPBEM.getWebPoster() != null) {
+          sb1.append("\nWeb Site Post: ").append(posterPBEM.getWebPostStatus());
+        }
+        historyLog.getWriter().println(sb1.toString());
+        if (historyLog.isVisible()) {
+          historyLog.setVisible(true);
+        }
+        try {
+          if (saveGameFile != null && !saveGameFile.delete()) {
+            System.out.println(
+                (new StringBuilder()).append("INFO TripleA PBEM/PBF poster couldn't delete temporary savegame: ")
+                    .append(saveGameFile.getCanonicalPath()).toString());
+          }
+        } catch (final IOException e) {
+          ClientLogger.logQuietly("save game file = " + saveGameFile, e);
+        }
+        progressWindow.setVisible(false);
+        progressWindow.removeAll();
+        progressWindow.dispose();
+        final boolean finalPostOk = postOk;
+        final String finalMessage = sb1.toString();
+        final Runnable runnable = () -> {
+          if (postButton != null) {
+            postButton.setEnabled(!finalPostOk);
+          }
+          if (finalPostOk) {
+            JOptionPane.showMessageDialog(mainGameFrame, finalMessage, title + " Posted",
+                JOptionPane.INFORMATION_MESSAGE);
+          } else {
+            JOptionPane.showMessageDialog(mainGameFrame, finalMessage, title + " Posted",
+                JOptionPane.ERROR_MESSAGE);
+          }
+        };
+        SwingUtilities.invokeLater(runnable);
       };
       // start a new thread for posting the summary.
       new Thread(t).start();

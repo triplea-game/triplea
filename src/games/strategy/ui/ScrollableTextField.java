@@ -109,12 +109,7 @@ public class ScrollableTextField extends JPanel {
     maxMin.add(m_min);
     add(upDown);
     add(maxMin);
-    IntTextFieldChangeListener m_textListener = new IntTextFieldChangeListener() {
-      @Override
-      public void changedValue(final IntTextField field) {
-        notifyListeners();
-      }
-    };
+    IntTextFieldChangeListener m_textListener = field -> notifyListeners();
     m_text.addChangeListener(m_textListener);
     setWidgetActivation();
   }

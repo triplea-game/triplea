@@ -71,12 +71,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     layoutComponents();
     setupListeners();
     setWidgetActivation();
-    statusListener = new IStatusListener() {
-      @Override
-      public void statusChanged(final INode node, final String newStatus) {
-        repaint();
-      }
-    };
+    statusListener = (node, newStatus) -> repaint();
     setChat(chat);
   }
 
@@ -131,25 +126,22 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     listModel = new DefaultListModel<>();
     players = new JList<>(listModel);
     players.setFocusable(false);
-    players.setCellRenderer(new ListCellRenderer<INode>() {
-      @Override
-      public Component getListCellRendererComponent(JList<? extends INode> list, INode node, int index, boolean isSelected, boolean cellHasFocus) {
-        if (setCellRenderer == null) {
-          return new JLabel();
-        }
-        final DefaultListCellRenderer renderer;
-        if (setCellRenderer instanceof PlayerChatRenderer) {
-          renderer = (DefaultListCellRenderer) setCellRenderer.getListCellRendererComponent(list, node, index,
-              isSelected, cellHasFocus);
-        } else {
-          renderer = (DefaultListCellRenderer) setCellRenderer.getListCellRendererComponent(list,
-              getDisplayString(node), index, isSelected, cellHasFocus);
-        }
-        if (chat.isIgnored(node)) {
-          renderer.setIcon(ignoreIcon);
-        }
-        return renderer;
+    players.setCellRenderer((list, node, index, isSelected, cellHasFocus) -> {
+      if (setCellRenderer == null) {
+        return new JLabel();
       }
+      final DefaultListCellRenderer renderer;
+      if (setCellRenderer instanceof PlayerChatRenderer) {
+        renderer = (DefaultListCellRenderer) setCellRenderer.getListCellRendererComponent(list, node, index,
+            isSelected, cellHasFocus);
+      } else {
+        renderer = (DefaultListCellRenderer) setCellRenderer.getListCellRendererComponent(list,
+            getDisplayString(node), index, isSelected, cellHasFocus);
+      }
+      if (chat.isIgnored(node)) {
+        renderer.setIcon(ignoreIcon);
+      }
+      return renderer;
     });
   }
 
@@ -175,28 +167,25 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
         mouseOnPlayersList(e);
       }
     });
-    actionFactories.add(new IPlayerActionFactory() {
-      @Override
-      public List<Action> mouseOnPlayer(final INode clickedOn) {
-        // you can't slap or ignore yourself
-        if (clickedOn.equals(chat.getLocalNode())) {
-          return Collections.emptyList();
-        }
-        final boolean isIgnored = chat.isIgnored(clickedOn);
-        final Action ignore = SwingAction.of( isIgnored ? "Stop Ignoring" : "Ignore", e-> {
-            chat.setIgnored(clickedOn, !isIgnored);
-            repaint();
-        });
-        final Action slap = new AbstractAction("Slap " + clickedOn.getName()) {
-          private static final long serialVersionUID = -5514772068903406263L;
-
-          @Override
-          public void actionPerformed(final ActionEvent event) {
-            chat.sendSlap(clickedOn.getName());
-          }
-        };
-        return Arrays.asList(slap, ignore);
+    actionFactories.add(clickedOn -> {
+      // you can't slap or ignore yourself
+      if (clickedOn.equals(chat.getLocalNode())) {
+        return Collections.emptyList();
       }
+      final boolean isIgnored = chat.isIgnored(clickedOn);
+      final Action ignore = SwingAction.of( isIgnored ? "Stop Ignoring" : "Ignore", e-> {
+          chat.setIgnored(clickedOn, !isIgnored);
+          repaint();
+      });
+      final Action slap = new AbstractAction("Slap " + clickedOn.getName()) {
+        private static final long serialVersionUID = -5514772068903406263L;
+
+        @Override
+        public void actionPerformed(final ActionEvent event) {
+          chat.sendSlap(clickedOn.getName());
+        }
+      };
+      return Arrays.asList(slap, ignore);
     });
   }
 
@@ -244,14 +233,11 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
    */
   @Override
   public synchronized void updatePlayerList(final Collection<INode> players) {
-    final Runnable runner = new Runnable() {
-      @Override
-      public void run() {
-        listModel.clear();
-        for (final INode name : players) {
-          if (!hiddenPlayers.contains(name.getName())) {
-            listModel.addElement(name);
-          }
+    final Runnable runner = () -> {
+      listModel.clear();
+      for (final INode name : players) {
+        if (!hiddenPlayers.contains(name.getName())) {
+          listModel.addElement(name);
         }
       }
     };

@@ -46,12 +46,7 @@ public class Decoder {
     errorReporter = reporter;
     this.objectStreamFactory = objectStreamFactory;
     this.nioSocket = nioSocket;
-    thread = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        loop();
-      }
-    }, "Decoder -" + threadSuffix);
+    thread = new Thread(() -> loop(), "Decoder -" + threadSuffix);
     thread.start();
   }
 

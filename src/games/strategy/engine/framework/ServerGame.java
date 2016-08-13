@@ -148,18 +148,15 @@ public class ServerGame extends AbstractGame {
     m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
     setupDelegateMessaging(data);
     m_randomStats = new RandomStats(m_remoteMessenger);
-    IServerRemote m_serverRemote = new IServerRemote() {
-      @Override
-      public byte[] getSavedGame() {
-        final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000);
-        try {
-          saveGame(sink);
-        } catch (final IOException e) {
-          ClientLogger.logQuietly(e);
-          throw new IllegalStateException(e);
-        }
-        return sink.toByteArray();
+    IServerRemote m_serverRemote = () -> {
+      final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000);
+      try {
+        saveGame(sink);
+      } catch (final IOException e) {
+        ClientLogger.logQuietly(e);
+        throw new IllegalStateException(e);
       }
+      return sink.toByteArray();
     };
     m_remoteMessenger.registerRemote(m_serverRemote, SERVER_REMOTE);
   }
@@ -179,17 +176,14 @@ public class ServerGame extends AbstractGame {
       final CountDownLatch waitOnObserver = new CountDownLatch(1);
       final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000);
       saveGame(sink);
-      (new Thread(new Runnable() {
-        @Override
-        public void run() {
-          try {
-            blockingObserver.joinGame(sink.toByteArray(), m_playerManager.getPlayerMapping());
-            waitOnObserver.countDown();
-          } catch (final ConnectionLostException cle) {
-            System.out.println("Connection lost to observer while joining: " + newNode.getName());
-          } catch (final Exception e) {
-            ClientLogger.logQuietly(e);
-          }
+      (new Thread(() -> {
+        try {
+          blockingObserver.joinGame(sink.toByteArray(), m_playerManager.getPlayerMapping());
+          waitOnObserver.countDown();
+        } catch (final ConnectionLostException cle) {
+          System.out.println("Connection lost to observer while joining: " + newNode.getName());
+        } catch (final Exception e) {
+          ClientLogger.logQuietly(e);
         }
       }, "Waiting on observer to finish joining: " + newNode.getName())).start();
       try {

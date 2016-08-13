@@ -20,16 +20,13 @@ class ImageRef {
   private static final AtomicInteger s_imageCount = new AtomicInteger();
 
   static {
-    final Runnable r = new Runnable() {
-      @Override
-      public void run() {
-        while (true) {
-          try {
-            s_referenceQueue.remove();
-            s_logger.finer("Removed soft reference image. Image count:" + s_imageCount.decrementAndGet());
-          } catch (final InterruptedException e) {
-            ClientLogger.logQuietly(e);
-          }
+    final Runnable r = () -> {
+      while (true) {
+        try {
+          s_referenceQueue.remove();
+          s_logger.finer("Removed soft reference image. Image count:" + s_imageCount.decrementAndGet());
+        } catch (final InterruptedException e) {
+          ClientLogger.logQuietly(e);
         }
       }
     };

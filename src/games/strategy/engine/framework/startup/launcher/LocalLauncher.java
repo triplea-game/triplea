@@ -67,12 +67,7 @@ public class LocalLauncher extends AbstractLauncher {
         // by closing of stream while unloading map resources.
         ThreadUtil.sleep(100);
       m_gameSelectorModel.loadDefaultGame(parent);
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          JOptionPane.getFrameForComponent(parent).setVisible(true);
-        }
-      });
+      SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
     }
   }
 }

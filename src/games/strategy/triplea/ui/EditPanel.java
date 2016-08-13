@@ -540,32 +540,29 @@ public class EditPanel extends ActionPanel {
   }
 
   private static Comparator<Unit> getRemovableUnitsOrder() {
-    final Comparator<Unit> removableUnitsOrder = new Comparator<Unit>() {
-      @Override
-      public int compare(final Unit unit1, final Unit unit2) {
-        final TripleAUnit u1 = TripleAUnit.get(unit1);
-        final TripleAUnit u2 = TripleAUnit.get(unit2);
-        if (UnitAttachment.get(u1.getType()).getTransportCapacity() != -1) {
+    final Comparator<Unit> removableUnitsOrder = (unit1, unit2) -> {
+      final TripleAUnit u1 = TripleAUnit.get(unit1);
+      final TripleAUnit u2 = TripleAUnit.get(unit2);
+      if (UnitAttachment.get(u1.getType()).getTransportCapacity() != -1) {
 
-          // Sort by decreasing transport capacity
-          final Collection<Unit> transporting1 = u1.getTransporting();
-          final Collection<Unit> transporting2 = u2.getTransporting();
-          final int cost1 = TransportUtils.getTransportCost(transporting1);
-          final int cost2 = TransportUtils.getTransportCost(transporting2);
-          if (cost1 != cost2) {
-            return cost2 - cost1;
-          }
+        // Sort by decreasing transport capacity
+        final Collection<Unit> transporting1 = u1.getTransporting();
+        final Collection<Unit> transporting2 = u2.getTransporting();
+        final int cost1 = TransportUtils.getTransportCost(transporting1);
+        final int cost2 = TransportUtils.getTransportCost(transporting2);
+        if (cost1 != cost2) {
+          return cost2 - cost1;
         }
-
-        // Sort by increasing movement left
-        final int left1 = u1.getMovementLeft();
-        final int left2 = u2.getMovementLeft();
-        if (left1 != left2) {
-          return left1 - left2;
-        }
-
-        return Integer.compare(u1.hashCode(), u2.hashCode());
       }
+
+      // Sort by increasing movement left
+      final int left1 = u1.getMovementLeft();
+      final int left2 = u2.getMovementLeft();
+      if (left1 != left2) {
+        return left1 - left2;
+      }
+
+      return Integer.compare(u1.hashCode(), u2.hashCode());
     };
     return removableUnitsOrder;
   }
@@ -743,22 +740,19 @@ public class EditPanel extends ActionPanel {
       getMap().setMouseShadowUnits(m_selectedUnits);
     }
   };
-  private final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = new MouseOverUnitListener() {
-    @Override
-    public void mouseEnter(final List<Unit> units, final Territory territory, final MouseDetails md) {
-      if (!getActive()) {
-        return;
-      }
-      if (m_currentAction != null) {
-        return;
-      }
-      if (!units.isEmpty()) {
-        final Map<Territory, List<Unit>> highlight = new HashMap<>();
-        highlight.put(territory, units);
-        getMap().setUnitHighlight(highlight);
-      } else {
-        getMap().setUnitHighlight(null);
-      }
+  private final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = (units, territory, md) -> {
+    if (!getActive()) {
+      return;
+    }
+    if (m_currentAction != null) {
+      return;
+    }
+    if (!units.isEmpty()) {
+      final Map<Territory, List<Unit>> highlight = new HashMap<>();
+      highlight.put(territory, units);
+      getMap().setUnitHighlight(highlight);
+    } else {
+      getMap().setUnitHighlight(null);
     }
   };
   private final MapSelectionListener MAP_SELECTION_LISTENER = new DefaultMapSelectionListener() {
@@ -788,12 +782,7 @@ public class EditPanel extends ActionPanel {
                 JOptionPane.ERROR_MESSAGE);
           }
         }
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            CANCEL_EDIT_ACTION.actionPerformed(null);
-          }
-        });
+        SwingUtilities.invokeLater(() -> CANCEL_EDIT_ACTION.actionPerformed(null));
       } else if (m_currentAction == m_addUnitsAction) {
         final boolean allowNeutral = doesPlayerHaveUnitsOnMap(PlayerID.NULL_PLAYERID, getData());
         final PlayerChooser playerChooser =
@@ -821,12 +810,7 @@ public class EditPanel extends ActionPanel {
                 JOptionPane.ERROR_MESSAGE);
           }
         }
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            CANCEL_EDIT_ACTION.actionPerformed(null);
-          }
-        });
+        SwingUtilities.invokeLater(() -> CANCEL_EDIT_ACTION.actionPerformed(null));
       }
     }
 

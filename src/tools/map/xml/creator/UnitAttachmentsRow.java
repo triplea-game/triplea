@@ -42,12 +42,10 @@ class UnitAttachmentsRow extends DynamicRow {
                 JOptionPane.ERROR_MESSAGE);
             parentRowPanel.setDataIsConsistent(false);
             // UI Update
-            SwingUtilities.invokeLater(new Runnable() {
-              public void run() {
-                stepActionPanel.revalidate();
-                stepActionPanel.repaint();
-                textFieldAttachmentName.requestFocus();
-              }
+            SwingUtilities.invokeLater(() -> {
+              stepActionPanel.revalidate();
+              stepActionPanel.repaint();
+              textFieldAttachmentName.requestFocus();
             });
             return;
           } else {
@@ -86,13 +84,10 @@ class UnitAttachmentsRow extends DynamicRow {
           JOptionPane.showMessageDialog(stepActionPanel, "'" + inputText + "' is no integer value.", "Input error",
               JOptionPane.ERROR_MESSAGE);
           textFieldValue.setText(prevValue);
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              textFieldValue.updateUI();
-              textFieldValue.requestFocus();
-              textFieldValue.selectAll();
-            }
+          SwingUtilities.invokeLater(() -> {
+            textFieldValue.updateUI();
+            textFieldValue.requestFocus();
+            textFieldValue.selectAll();
           });
           return;
         }
