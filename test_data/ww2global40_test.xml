@@ -2789,7 +2789,7 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Himalayas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-                        <option name="isImpassible" value="true"/>
+                        <option name="isImpassable" value="true"/>
 						<option name="capital" value="Chinese"/>
 						<!-- used for chinese capitol until the engine supports capitols not in the map -->
 						<option name="changeUnitOwners" value="British"/>
@@ -3264,7 +3264,7 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Pripet Marshes" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-						<option name="isImpassible" value="true"/>
+						<option name="isImpassable" value="true"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Eire" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
@@ -5309,11 +5309,11 @@
 						<boolean/>
 				</property>
 
-				<property name="Battleships repair at end of round" value="false" editable="false">
+				<property name="Units repair at end of round" value="false" editable="false">
 						<boolean/>
 				</property>
 
-				<property name="Battleships repair at beginning of round" value="true" editable="false">
+				<property name="Units repair at beginning of round" value="true" editable="false">
 						<boolean/>
 				</property>
 
@@ -5500,7 +5500,7 @@
 						<boolean/>
 				</property>
 
-				<property name="Naval Bombard Casualties Return Fire Restricted" value="true" editable="false">
+				<property name="Naval Bombard Casualties Return Fire" value="true" editable="false">
 						<boolean/>
 				</property>
 

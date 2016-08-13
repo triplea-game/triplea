@@ -38,7 +38,7 @@ public class MapProperties {
     COLOR_MAP.put(Constants.PLAYER_NAME_PUPPET_STATES, new Color(0x1B5DA0));
     COLOR_MAP.put(Constants.PLAYER_NAME_RUSSIANS, new Color(0xB23B00));
     COLOR_MAP.put(Constants.PLAYER_NAME_NEUTRAL, new Color(0xE2A071));
-    COLOR_MAP.put(Constants.PLAYER_NAME_IMPASSIBLE, new Color(0xD8BA7C));
+    COLOR_MAP.put(Constants.PLAYER_NAME_IMPASSABLE, new Color(0xD8BA7C));
   }
 
   public Tuple<PropertiesUI, List<MapPropertyWrapper<?>>> propertyWrapperUI(final boolean editable) {
