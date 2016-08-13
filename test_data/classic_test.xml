@@ -1570,7 +1570,7 @@
 				<boolean/>
 		</property>
 
-		<property name="Naval Bombard Casualties Return Fire Restricted" value="false" editable="true">
+		<property name="Naval Bombard Casualties Return Fire" value="false" editable="true">
 				<boolean/>
 		</property>
 		
@@ -1665,7 +1665,7 @@
 			<br>Two Hit Battleship = All battleships have 2 hitpoints.
 			<br>Battleships repair at end/beginning of turn = Do battleships repair, and when?
 			<br>Shore Bombard Per Ground Unit Restricted = Bombardment is limited to the number of units offloading for the amphibious assault.
-			<br>Naval Bombard Casualties Return Fire Restricted = Bombardment casualties may return fire.
+			<br>Naval Bombard Casualties Return Fire = Bombardment casualties may return fire.
 			<br>Partial Amphibious Retreat = Non-Amphibious units may retreat from an amphibious assault.
 			<br>Attacker Retreat Planes = Attacking air units may retreat from an amphibious assault.
 			<br>Unit Placement In Enemy Seas = May place naval units in enemy occupied seazones.

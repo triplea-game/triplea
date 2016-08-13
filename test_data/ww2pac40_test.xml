@@ -2734,7 +2734,7 @@
 						<boolean/>
 				</property>
 
-				<property name="Naval Bombard Casualties Return Fire Restricted" value="true" editable="false">
+				<property name="Naval Bombard Casualties Return Fire" value="true" editable="false">
 						<boolean/>
 				</property>
 

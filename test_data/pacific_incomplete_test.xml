@@ -2152,7 +2152,7 @@ Coded by Iron__Cross
                         <boolean/>
                 </property>
 		
-		<property name="Naval Bombard Casualties Return Fire Restricted" value="true" editable="true">
+		<property name="Naval Bombard Casualties Return Fire" value="true" editable="true">
                         <boolean/>
                 </property>
 		
