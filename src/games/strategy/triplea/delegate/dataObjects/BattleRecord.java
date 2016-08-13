@@ -39,7 +39,7 @@ public class BattleRecord implements Serializable {
   private static final long serialVersionUID = 3642216371483289106L;
   private Territory battleSite;
   private PlayerID attacker;
-  private PlayerID m_defender;
+  private PlayerID defender;
   private int attackerLostTUV = 0;
   private int defenderLostTUV = 0;
   private BattleResultDescription battleResultDescription;
@@ -53,7 +53,7 @@ public class BattleRecord implements Serializable {
       BattleResults battleResults) {
     this.battleSite = battleSite;
     this.attacker = attacker;
-    this.m_defender = defender;
+    this.defender = defender;
     this.attackerLostTUV = attackerLostTUV;
     this.defenderLostTUV = defenderLostTUV;
     this.battleResultDescription = battleResultDescription;
@@ -80,7 +80,7 @@ public class BattleRecord implements Serializable {
     public SerializationProxy(BattleRecord battleRecord) {
       battleSite = battleRecord.battleSite;
       attacker = battleRecord.attacker;
-      defender = battleRecord.m_defender;
+      defender = battleRecord.defender;
       attackerLostTUV = battleRecord.attackerLostTUV;
       defenderLostTUV = battleRecord.defenderLostTUV;
       battleResultDescription = battleRecord.battleResultDescription;
@@ -100,7 +100,7 @@ public class BattleRecord implements Serializable {
   protected BattleRecord(final BattleRecord record) {
     battleSite = record.battleSite;
     attacker = record.attacker;
-    m_defender = record.m_defender;
+    defender = record.defender;
     attackerLostTUV = record.attackerLostTUV;
     defenderLostTUV = record.defenderLostTUV;
     battleResultDescription = record.battleResultDescription;
@@ -116,7 +116,7 @@ public class BattleRecord implements Serializable {
 
   protected void setResult(final PlayerID defender, final int attackerLostTUV, final int defenderLostTUV,
       final BattleResultDescription battleResultDescription, final BattleResults battleResults) {
-    m_defender = defender;
+    this.defender = defender;
     this.attackerLostTUV = attackerLostTUV;
     this.defenderLostTUV = defenderLostTUV;
     this.battleResultDescription = battleResultDescription;
@@ -140,11 +140,11 @@ public class BattleRecord implements Serializable {
   }
 
   protected PlayerID getDefender() {
-    return m_defender;
+    return defender;
   }
 
   protected void setDefenders(final PlayerID defender) {
-    this.m_defender = defender;
+    this.defender = defender;
   }
 
   protected int getAttackerLostTUV() {
