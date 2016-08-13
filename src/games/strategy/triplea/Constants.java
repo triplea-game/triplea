@@ -84,7 +84,7 @@ public interface Constants {
   String DEFENDING_SUBS_SNEAK_ATTACK = "Defending Subs Sneak Attack";
   String ATTACKER_RETREAT_PLANES = "Attacker Retreat Planes";
   String NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE_RESTRICTED =
-      "Naval Bombard Casualties Return Fire Restricted";
+      "Naval Bombard Casualties Return Fire";
   String SURVIVING_AIR_MOVE_TO_LAND = "Surviving Air Move To Land";
   String BLITZ_THROUGH_FACTORIES_AND_AA_RESTRICTED = "Blitz Through Factories And AA Restricted";
   String AIR_ATTACK_SUB_RESTRICTED = "Air Attack Sub Restricted";
