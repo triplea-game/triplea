@@ -1,13 +1,13 @@
 package games.strategy.triplea.delegate.dataObjects;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataComponent;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.SerializationProxySupport;
 import games.strategy.engine.data.Territory;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.IBattle.BattleType;
@@ -18,18 +18,41 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
  * The Purpose of this class is to record various information about combat,
  * in order to use it for conditions and other things later.
  */
-public class BattleRecords extends GameDataComponent {
+public class BattleRecords implements Serializable {
   private static final long serialVersionUID = 1473664374777905497L;
-  private final HashMap<PlayerID, HashMap<GUID, BattleRecord>> m_records =
-      new HashMap<>();
 
-  public BattleRecords(final GameData data) {
-    super(data);
+  private final HashMap<PlayerID, HashMap<GUID, BattleRecord>> m_records;
+
+
+  public BattleRecords() {
+    this.m_records = new HashMap<>();
+  }
+
+  public BattleRecords(HashMap<PlayerID, HashMap<GUID, BattleRecord>> records) {
+    this.m_records = records;
+  }
+
+  @SerializationProxySupport
+  public Object writeReplace() {
+    return new SerializationProxy(this);
+  }
+
+  @SerializationProxySupport
+  private static class SerializationProxy {
+    private final HashMap<PlayerID, HashMap<GUID, BattleRecord>> records;
+    public SerializationProxy(BattleRecords battleRecords) {
+      this.records= battleRecords.m_records;
+    }
+
+    private Object readResolve() {
+      return new BattleRecords(records);
+    }
+
   }
 
   // Create copy
   public BattleRecords(final BattleRecords records) {
-    super(records.getData());
+    m_records = new HashMap<>();
     for (final Entry<PlayerID, HashMap<GUID, BattleRecord>> entry : records.m_records.entrySet()) {
       final PlayerID p = entry.getKey();
       final HashMap<GUID, BattleRecord> record = entry.getValue();
@@ -164,19 +187,19 @@ public class BattleRecords extends GameDataComponent {
   }
 
   public void addBattle(final PlayerID currentPlayerAndAttacker, final GUID battleID, final Territory battleSite,
-      final BattleType battleType, final GameData data) {
+      final BattleType battleType) {
     HashMap<GUID, BattleRecord> current = m_records.get(currentPlayerAndAttacker);
     if (current == null) {
       current = new HashMap<>();
     }
-    final BattleRecord initial = new BattleRecord(battleSite, currentPlayerAndAttacker, battleType, data);
+    final BattleRecord initial = new BattleRecord(battleSite, currentPlayerAndAttacker, battleType);
     current.put(battleID, initial);
     m_records.put(currentPlayerAndAttacker, current);
   }
 
   public void addResultToBattle(final PlayerID currentPlayer, final GUID battleID, final PlayerID defender,
       final int attackerLostTUV, final int defenderLostTUV, final BattleResultDescription battleResultDescription,
-      final BattleResults battleResults, final int bombingDamage) {
+      final BattleResults battleResults) {
     final HashMap<GUID, BattleRecord> current = m_records.get(currentPlayer);
     if (current == null) {
       throw new IllegalStateException("Trying to add info to battle records that do not exist");
@@ -185,7 +208,7 @@ public class BattleRecords extends GameDataComponent {
       throw new IllegalStateException("Trying to add info to a battle that does not exist");
     }
     final BattleRecord record = current.get(battleID);
-    record.setResult(defender, attackerLostTUV, defenderLostTUV, battleResultDescription, battleResults, bombingDamage);
+    record.setResult(defender, attackerLostTUV, defenderLostTUV, battleResultDescription, battleResults);
   }
 
   public void clear() {
