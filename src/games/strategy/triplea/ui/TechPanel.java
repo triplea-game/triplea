@@ -53,19 +53,16 @@ public class TechPanel extends ActionPanel {
   @Override
   public void display(final PlayerID id) {
     super.display(id);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        removeAll();
-        m_actionLabel.setText(id.getName() + " Tech Roll");
-        add(m_actionLabel);
-        if (isWW2V3TechModel()) {
-          add(new JButton(getTechTokenAction));
-          add(new JButton(JustRollTech));
-        } else {
-          add(new JButton(getTechRollsAction));
-          add(new JButton(DontBother));
-        }
+    SwingUtilities.invokeLater(() -> {
+      removeAll();
+      m_actionLabel.setText(id.getName() + " Tech Roll");
+      add(m_actionLabel);
+      if (isWW2V3TechModel()) {
+        add(new JButton(getTechTokenAction));
+        add(new JButton(JustRollTech));
+      } else {
+        add(new JButton(getTechRollsAction));
+        add(new JButton(DontBother));
       }
     });
   }
@@ -288,12 +285,8 @@ class TechRollPanel extends JPanel {
     final JLabel title = new JLabel("Select the number of tech rolls:");
     title.setBorder(new javax.swing.border.EmptyBorder(5, 5, 5, 5));
     m_textField = new ScrollableTextField(0, PUs / TechTracker.getTechCost(player));
-    ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener() {
-      @Override
-      public void changedValue(final ScrollableTextField stf) {
-        setLabel(m_PUs - (TechTracker.getTechCost(m_player) * m_textField.getValue()));
-      }
-    };
+    ScrollableTextFieldListener m_listener =
+        stf -> setLabel(m_PUs - (TechTracker.getTechCost(m_player) * m_textField.getValue()));
     m_textField.addChangeListener(m_listener);
     final JLabel costLabel = new JLabel("x" + TechTracker.getTechCost(m_player));
     setLabel(PUs);
@@ -347,12 +340,9 @@ class TechTokenPanel extends JPanel {
     title.setBorder(new javax.swing.border.EmptyBorder(5, 5, 5, 5));
     final int techCost = TechTracker.getTechCost(m_player);
     m_textField = new ScrollableTextField(0, m_totalPUs / techCost);
-    ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener() {
-      @Override
-      public void changedValue(final ScrollableTextField stf) {
-        setLabel(TechTracker.getTechCost(m_player) * m_textField.getValue());
-        setWidgetActivation();
-      }
+    ScrollableTextFieldListener m_listener = stf -> {
+      setLabel(TechTracker.getTechCost(m_player) * m_textField.getValue());
+      setWidgetActivation();
     };
     m_textField.addChangeListener(m_listener);
     final JLabel costLabel = new JLabel("x" + techCost + " cost per token");
@@ -459,12 +449,7 @@ class TechTokenPanel extends JPanel {
   }
 
   private ScrollableTextFieldListener setWidgetAction() {
-    return new ScrollableTextFieldListener() {
-      @Override
-      public void changedValue(final ScrollableTextField stf) {
-        setWidgetActivation();
-      }
-    };
+    return stf -> setWidgetActivation();
   }
 
   public int getValue() {

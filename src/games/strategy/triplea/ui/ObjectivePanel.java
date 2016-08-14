@@ -127,12 +127,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
     refresh.addActionListener(SwingAction.of("Refresh Objectives", e -> {
         m_objectiveModel.loadData();
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            table.repaint();
-          }
-        });
+        SwingUtilities.invokeLater(() -> table.repaint());
     }));
     add(Box.createVerticalStrut(6));
     add(refresh);
@@ -381,12 +376,7 @@ public class ObjectivePanel extends AbstractStatPanel {
       synchronized (this) {
         m_isDirty = true;
       }
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          repaint();
-        }
-      });
+      SwingUtilities.invokeLater(() -> repaint());
     }
 
     @Override
@@ -836,8 +826,8 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
       return 0;
     }
     int maximum_height = 0;
-    for (final Iterator<?> it = rowheights.entrySet().iterator(); it.hasNext();) {
-      final Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
+    for (Entry<?, ?> entry1 : rowheights.entrySet()) {
+      final Entry<?, ?> entry = (Entry<?, ?>) entry1;
       final int cellHeight = (Integer) entry.getValue();
       maximum_height = Math.max(maximum_height, cellHeight);
     }

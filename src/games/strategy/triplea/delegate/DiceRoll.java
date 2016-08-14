@@ -319,28 +319,25 @@ public class DiceRoll implements Externalizable {
   }
 
   private static void sortAAHighToLow(final List<Unit> units, final GameData data, final boolean defending) {
-    final Comparator<Unit> comparator = new Comparator<Unit>() {
-      @Override
-      public int compare(final Unit u1, final Unit u2) {
-        final Tuple<Integer, Integer> tuple1 = getAAattackAndMaxDiceSides(Collections.singleton(u1), data, defending);
-        final Tuple<Integer, Integer> tuple2 = getAAattackAndMaxDiceSides(Collections.singleton(u2), data, defending);
-        if (tuple1.getFirst() == 0) {
-          if (tuple2.getFirst() == 0) {
-            return 0;
-          }
-          return 1;
-        } else if (tuple2.getFirst() == 0) {
-          return -1;
+    final Comparator<Unit> comparator = (u1, u2) -> {
+      final Tuple<Integer, Integer> tuple1 = getAAattackAndMaxDiceSides(Collections.singleton(u1), data, defending);
+      final Tuple<Integer, Integer> tuple2 = getAAattackAndMaxDiceSides(Collections.singleton(u2), data, defending);
+      if (tuple1.getFirst() == 0) {
+        if (tuple2.getFirst() == 0) {
+          return 0;
         }
-        final float value1 = ((float) tuple1.getFirst()) / ((float) tuple1.getSecond());
-        final float value2 = ((float) tuple2.getFirst()) / ((float) tuple2.getSecond());
-        if (value1 < value2) {
-          return 1;
-        } else if (value1 > value2) {
-          return -1;
-        }
-        return 0;
+        return 1;
+      } else if (tuple2.getFirst() == 0) {
+        return -1;
       }
+      final float value1 = ((float) tuple1.getFirst()) / ((float) tuple1.getSecond());
+      final float value2 = ((float) tuple2.getFirst()) / ((float) tuple2.getSecond());
+      if (value1 < value2) {
+        return 1;
+      } else if (value1 > value2) {
+        return -1;
+      }
+      return 0;
     };
     Collections.sort(units, comparator);
   }
@@ -740,19 +737,16 @@ public class DiceRoll implements Externalizable {
   }
 
   public static void sortByStrength(final List<Unit> units, final boolean defending) {
-    final Comparator<Unit> comp = new Comparator<Unit>() {
-      @Override
-      public int compare(final Unit u1, final Unit u2) {
-        Integer v1, v2;
-        if (defending) {
-          v1 = UnitAttachment.get(u1.getType()).getDefense(u1.getOwner());
-          v2 = UnitAttachment.get(u2.getType()).getDefense(u2.getOwner());
-        } else {
-          v1 = UnitAttachment.get(u1.getType()).getAttack(u1.getOwner());
-          v2 = UnitAttachment.get(u2.getType()).getAttack(u2.getOwner());
-        }
-        return v1.compareTo(v2);
+    final Comparator<Unit> comp = (u1, u2) -> {
+      Integer v1, v2;
+      if (defending) {
+        v1 = UnitAttachment.get(u1.getType()).getDefense(u1.getOwner());
+        v2 = UnitAttachment.get(u2.getType()).getDefense(u2.getOwner());
+      } else {
+        v1 = UnitAttachment.get(u1.getType()).getAttack(u1.getOwner());
+        v2 = UnitAttachment.get(u2.getType()).getAttack(u2.getOwner());
       }
+      return v1.compareTo(v2);
     };
     Collections.sort(units, comp);
   }
@@ -760,95 +754,92 @@ public class DiceRoll implements Externalizable {
   private static void sortSupportRules(final Set<List<UnitSupportAttachment>> support, final boolean defense,
       final boolean friendly) {
     // first, sort the lists inside each set
-    final Comparator<UnitSupportAttachment> compList = new Comparator<UnitSupportAttachment>() {
-      @Override
-      public int compare(final UnitSupportAttachment u1, final UnitSupportAttachment u2) {
-        int compareTo = 0;
-        // we want to apply the biggest bonus first
-        // Make sure stronger supports are ordered first if friendly, and worst are ordered first if enemy
-        // TODO: it is possible that we will waste negative support if we reduce a units power to less than zero.
-        // We should actually apply enemy negative support in order from worst to least bad, on a unit list that is
-        // ordered from strongest
-        // to weakest.
-        final boolean u1CanBonus = defense ? u1.getDefence() : u1.getOffence();
-        final boolean u2CanBonus = defense ? u2.getDefence() : u2.getOffence();
-        if (friendly) {
-          // favor rolls over strength
-          if (u1.getRoll() || u2.getRoll()) {
-            final Integer u1Bonus = u1.getRoll() && u1CanBonus ? u1.getBonus() : 0;
-            final Integer u2Bonus = u2.getRoll() && u2CanBonus ? u2.getBonus() : 0;
-            compareTo = u2Bonus.compareTo(u1Bonus);
-            if (compareTo != 0) {
-              return compareTo;
-            }
-          }
-          if (u1.getStrength() || u2.getStrength()) {
-            final Integer u1Bonus = u1.getStrength() && u1CanBonus ? u1.getBonus() : 0;
-            final Integer u2Bonus = u2.getStrength() && u2CanBonus ? u2.getBonus() : 0;
-            compareTo = u2Bonus.compareTo(u1Bonus);
-            if (compareTo != 0) {
-              return compareTo;
-            }
-          }
-        } else {
-          if (u1.getRoll() || u2.getRoll()) {
-            final Integer u1Bonus = u1.getRoll() && u1CanBonus ? u1.getBonus() : 0;
-            final Integer u2Bonus = u2.getRoll() && u2CanBonus ? u2.getBonus() : 0;
-            compareTo = u1Bonus.compareTo(u2Bonus);
-            if (compareTo != 0) {
-              return compareTo;
-            }
-          }
-          if (u1.getStrength() || u2.getStrength()) {
-            final Integer u1Bonus = u1.getStrength() && u1CanBonus ? u1.getBonus() : 0;
-            final Integer u2Bonus = u2.getStrength() && u2CanBonus ? u2.getBonus() : 0;
-            compareTo = u1Bonus.compareTo(u2Bonus);
-            if (compareTo != 0) {
-              return compareTo;
-            }
+    final Comparator<UnitSupportAttachment> compList = (u1, u2) -> {
+      int compareTo = 0;
+      // we want to apply the biggest bonus first
+      // Make sure stronger supports are ordered first if friendly, and worst are ordered first if enemy
+      // TODO: it is possible that we will waste negative support if we reduce a units power to less than zero.
+      // We should actually apply enemy negative support in order from worst to least bad, on a unit list that is
+      // ordered from strongest
+      // to weakest.
+      final boolean u1CanBonus = defense ? u1.getDefence() : u1.getOffence();
+      final boolean u2CanBonus = defense ? u2.getDefence() : u2.getOffence();
+      if (friendly) {
+        // favor rolls over strength
+        if (u1.getRoll() || u2.getRoll()) {
+          final Integer u1Bonus = u1.getRoll() && u1CanBonus ? u1.getBonus() : 0;
+          final Integer u2Bonus = u2.getRoll() && u2CanBonus ? u2.getBonus() : 0;
+          compareTo = u2Bonus.compareTo(u1Bonus);
+          if (compareTo != 0) {
+            return compareTo;
           }
         }
-        // if the bonuses are the same, we want to make sure any support which only supports 1 single unittype goes
-        // first
-        // the reason being that we could have Support1 which supports both infantry and mech infantry, and Support2
-        // which only supports
-        // mech infantry
-        // if the Support1 goes first, and the mech infantry is first in the unit list (highly probable), then Support1
-        // will end up using
-        // all of itself up on the mech infantry
-        // then when the Support2 comes up, all the mech infantry are used up, and it does nothing.
-        // instead, we want Support2 to come first, support all mech infantry that it can, then have Support1 come in
-        // and support whatever
-        // is left, that way no support is wasted
-        // TODO: this breaks down completely if we have Support1 having a higher bonus than Support2, because it will
-        // come first. It should
-        // come first, unless we would have support wasted otherwise. This ends up being a pretty tricky math puzzle.
-        final HashSet<UnitType> types1 = u1.getUnitType();
-        final HashSet<UnitType> types2 = u2.getUnitType();
-        final Integer s1 = types1 == null ? 0 : types1.size();
-        final Integer s2 = types2 == null ? 0 : types2.size();
-        compareTo = s1.compareTo(s2);
-        if (compareTo != 0) {
-          return compareTo;
+        if (u1.getStrength() || u2.getStrength()) {
+          final Integer u1Bonus = u1.getStrength() && u1CanBonus ? u1.getBonus() : 0;
+          final Integer u2Bonus = u2.getStrength() && u2CanBonus ? u2.getBonus() : 0;
+          compareTo = u2Bonus.compareTo(u1Bonus);
+          if (compareTo != 0) {
+            return compareTo;
+          }
         }
-        // Now we need to sort so that the supporters who are the most powerful go before the less powerful
-        // This is not necessary for the providing of support, but is necessary for our default casualty selection
-        // method
-        final UnitType unitType1 = (UnitType) u1.getAttachedTo();
-        final UnitType unitType2 = (UnitType) u2.getAttachedTo();
-        final UnitAttachment ua1 = UnitAttachment.get(unitType1);
-        final UnitAttachment ua2 = UnitAttachment.get(unitType2);
-        final Integer unitPower1;
-        final Integer unitPower2;
-        if (u1.getDefence()) {
-          unitPower1 = ua1.getDefenseRolls(PlayerID.NULL_PLAYERID) * ua1.getDefense(PlayerID.NULL_PLAYERID);
-          unitPower2 = ua2.getDefenseRolls(PlayerID.NULL_PLAYERID) * ua2.getDefense(PlayerID.NULL_PLAYERID);
-        } else {
-          unitPower1 = ua1.getAttackRolls(PlayerID.NULL_PLAYERID) * ua1.getAttack(PlayerID.NULL_PLAYERID);
-          unitPower2 = ua2.getAttackRolls(PlayerID.NULL_PLAYERID) * ua2.getAttack(PlayerID.NULL_PLAYERID);
+      } else {
+        if (u1.getRoll() || u2.getRoll()) {
+          final Integer u1Bonus = u1.getRoll() && u1CanBonus ? u1.getBonus() : 0;
+          final Integer u2Bonus = u2.getRoll() && u2CanBonus ? u2.getBonus() : 0;
+          compareTo = u1Bonus.compareTo(u2Bonus);
+          if (compareTo != 0) {
+            return compareTo;
+          }
         }
-        return unitPower2.compareTo(unitPower1);
+        if (u1.getStrength() || u2.getStrength()) {
+          final Integer u1Bonus = u1.getStrength() && u1CanBonus ? u1.getBonus() : 0;
+          final Integer u2Bonus = u2.getStrength() && u2CanBonus ? u2.getBonus() : 0;
+          compareTo = u1Bonus.compareTo(u2Bonus);
+          if (compareTo != 0) {
+            return compareTo;
+          }
+        }
       }
+      // if the bonuses are the same, we want to make sure any support which only supports 1 single unittype goes
+      // first
+      // the reason being that we could have Support1 which supports both infantry and mech infantry, and Support2
+      // which only supports
+      // mech infantry
+      // if the Support1 goes first, and the mech infantry is first in the unit list (highly probable), then Support1
+      // will end up using
+      // all of itself up on the mech infantry
+      // then when the Support2 comes up, all the mech infantry are used up, and it does nothing.
+      // instead, we want Support2 to come first, support all mech infantry that it can, then have Support1 come in
+      // and support whatever
+      // is left, that way no support is wasted
+      // TODO: this breaks down completely if we have Support1 having a higher bonus than Support2, because it will
+      // come first. It should
+      // come first, unless we would have support wasted otherwise. This ends up being a pretty tricky math puzzle.
+      final HashSet<UnitType> types1 = u1.getUnitType();
+      final HashSet<UnitType> types2 = u2.getUnitType();
+      final Integer s1 = types1 == null ? 0 : types1.size();
+      final Integer s2 = types2 == null ? 0 : types2.size();
+      compareTo = s1.compareTo(s2);
+      if (compareTo != 0) {
+        return compareTo;
+      }
+      // Now we need to sort so that the supporters who are the most powerful go before the less powerful
+      // This is not necessary for the providing of support, but is necessary for our default casualty selection
+      // method
+      final UnitType unitType1 = (UnitType) u1.getAttachedTo();
+      final UnitType unitType2 = (UnitType) u2.getAttachedTo();
+      final UnitAttachment ua1 = UnitAttachment.get(unitType1);
+      final UnitAttachment ua2 = UnitAttachment.get(unitType2);
+      final Integer unitPower1;
+      final Integer unitPower2;
+      if (u1.getDefence()) {
+        unitPower1 = ua1.getDefenseRolls(PlayerID.NULL_PLAYERID) * ua1.getDefense(PlayerID.NULL_PLAYERID);
+        unitPower2 = ua2.getDefenseRolls(PlayerID.NULL_PLAYERID) * ua2.getDefense(PlayerID.NULL_PLAYERID);
+      } else {
+        unitPower1 = ua1.getAttackRolls(PlayerID.NULL_PLAYERID) * ua1.getAttack(PlayerID.NULL_PLAYERID);
+        unitPower2 = ua2.getAttackRolls(PlayerID.NULL_PLAYERID) * ua2.getAttack(PlayerID.NULL_PLAYERID);
+      }
+      return unitPower2.compareTo(unitPower1);
     };
     final Iterator<List<UnitSupportAttachment>> iter = support.iterator();
     while (iter.hasNext()) {

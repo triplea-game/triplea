@@ -49,12 +49,8 @@ public class PlacePanel extends AbstractMovePanel {
   }
 
   private void refreshActionLabelText(final boolean bid) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : ""));
-      }
-    });
+    SwingUtilities.invokeLater(
+        () -> actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : "")));
   }
 
   public PlaceData waitForPlace(final boolean bid, final IPlayerBridge playerBridge) {

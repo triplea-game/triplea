@@ -94,12 +94,7 @@ public class FileProperty extends AEditableProperty {
           m_file = selection;
           label.setText(m_file.getAbsolutePath());
           // Ask Swing to repaint this label when it's convenient
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              label.repaint();
-            }
-          });
+          SwingUtilities.invokeLater(() -> label.repaint());
         }
       }
 
@@ -130,19 +125,16 @@ public class FileProperty extends AEditableProperty {
     if (GameRunner.isMac()) {
       final FileDialog fileDialog = new FileDialog(MainFrame.getInstance());
       fileDialog.setMode(FileDialog.LOAD);
-      fileDialog.setFilenameFilter(new FilenameFilter() {
-        @Override
-        public boolean accept(final File dir, final String name) {
-          if (acceptableSuffixes == null || acceptableSuffixes.length == 0) {
+      fileDialog.setFilenameFilter((dir, name) -> {
+        if (acceptableSuffixes == null || acceptableSuffixes.length == 0) {
+          return true;
+        }
+        for (final String suffix : acceptableSuffixes) {
+          if (name.toLowerCase().endsWith(suffix)) {
             return true;
           }
-          for (final String suffix : acceptableSuffixes) {
-            if (name.toLowerCase().endsWith(suffix)) {
-              return true;
-            }
-          }
-          return false;
         }
+        return false;
       });
       fileDialog.setVisible(true);
       final String fileName = fileDialog.getFile();

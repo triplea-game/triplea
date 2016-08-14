@@ -477,11 +477,11 @@ public class MapData implements Closeable {
   }
 
   /**
-   * returns the color for impassible territories
+   * returns the color for impassable territories
    */
-  public Color impassibleColor() {
+  public Color impassableColor() {
     // just use getPlayerColor, since it parses the properties
-    return getPlayerColor(Constants.PLAYER_NAME_IMPASSIBLE);
+    return getPlayerColor(Constants.PLAYER_NAME_IMPASSABLE);
   }
 
   /**

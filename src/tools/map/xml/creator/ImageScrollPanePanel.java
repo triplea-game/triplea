@@ -122,14 +122,7 @@ public abstract class ImageScrollPanePanel {
         final Point cp = e.getPoint();
         final Point vp = vport.getViewPosition();
         vp.translate(pp.x - cp.x, pp.y - cp.y);
-        SwingUtilities.invokeLater(new Runnable() {
-
-          @Override
-          public void run() {
-
-            imagePanel.scrollRectToVisible(new Rectangle(vp, vport.getSize()));
-          }
-        });
+        SwingUtilities.invokeLater(() -> imagePanel.scrollRectToVisible(new Rectangle(vp, vport.getSize())));
         pp.setLocation(cp);
       }
 

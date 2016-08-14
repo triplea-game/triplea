@@ -83,34 +83,31 @@ public class ActionButtons extends JPanel {
     // between objects
     // and if there is a memory leak
     // this will minimize the damage
-    map.getUIContext().addActive(new Active() {
-      @Override
-      public void deactivate() {
-        removeAll();
-        m_current = null;
-        m_battlePanel.removeAll();
-        m_movePanel.removeAll();
-        m_repairPanel.removeAll();
-        m_purchasePanel.removeAll();
-        m_placePanel.removeAll();
-        m_techPanel.removeAll();
-        m_endTurnPanel.removeAll();
-        m_moveForumPosterPanel.removeAll();
-        m_politicsPanel.removeAll();
-        m_userActionPanel.removeAll();
-        m_pickTerritoryAndUnitsPanel.removeAll();
-        m_battlePanel = null;
-        m_movePanel = null;
-        m_repairPanel = null;
-        m_purchasePanel = null;
-        m_placePanel = null;
-        m_techPanel = null;
-        m_endTurnPanel = null;
-        m_moveForumPosterPanel = null;
-        m_politicsPanel = null;
-        m_userActionPanel = null;
-        m_pickTerritoryAndUnitsPanel = null;
-      }
+    map.getUIContext().addActive(() -> {
+      removeAll();
+      m_current = null;
+      m_battlePanel.removeAll();
+      m_movePanel.removeAll();
+      m_repairPanel.removeAll();
+      m_purchasePanel.removeAll();
+      m_placePanel.removeAll();
+      m_techPanel.removeAll();
+      m_endTurnPanel.removeAll();
+      m_moveForumPosterPanel.removeAll();
+      m_politicsPanel.removeAll();
+      m_userActionPanel.removeAll();
+      m_pickTerritoryAndUnitsPanel.removeAll();
+      m_battlePanel = null;
+      m_movePanel = null;
+      m_repairPanel = null;
+      m_purchasePanel = null;
+      m_placePanel = null;
+      m_techPanel = null;
+      m_endTurnPanel = null;
+      m_moveForumPosterPanel = null;
+      m_politicsPanel = null;
+      m_userActionPanel = null;
+      m_pickTerritoryAndUnitsPanel = null;
     });
   }
 
@@ -169,12 +166,9 @@ public class ActionButtons extends JPanel {
     }
     m_current.display(id);
     final String currentName = m_current.toString();
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (m_layout != null) {
-          m_layout.show(ActionButtons.this, currentName);
-        }
+    SwingUtilities.invokeLater(() -> {
+      if (m_layout != null) {
+        m_layout.show(ActionButtons.this, currentName);
       }
     });
   }

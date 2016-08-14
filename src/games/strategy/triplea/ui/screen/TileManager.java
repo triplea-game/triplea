@@ -496,8 +496,7 @@ public class TileManager {
       if (selected.isWater()) {
         c = Color.RED;
       } else {
-        c = mapData.getPlayerColor(selected.getOwner().getName());
-        c = new Color(c.getRed() ^ c.getRed(), c.getGreen() ^ c.getGreen(), c.getRed() ^ c.getRed());
+        c = new Color(0, 0, 0);
       }
       final TerritoryOverLayDrawable told = new TerritoryOverLayDrawable(c, selected.getName(), 100, OP.FILL);
       told.draw(bounds, data, graphics, mapData, null, null);

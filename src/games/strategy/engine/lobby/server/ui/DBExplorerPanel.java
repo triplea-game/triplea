@@ -53,12 +53,7 @@ public class DBExplorerPanel extends JPanel {
   }
 
   private void setupListeners() {
-    m_execute.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        execute();
-      }
-    });
+    m_execute.addActionListener(e -> execute());
   }
 
   public static boolean isNotQuery(String sql) {

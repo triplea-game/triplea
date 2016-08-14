@@ -87,12 +87,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
         ++m_cancelCurrentOperation;
         // increment our token, so that we can set the data in a different thread and return from this one
         m_latchWorkerThreadsCreation.increment();
-        m_executor.submit(new Runnable() {
-          @Override
-          public void run() {
-            createWorkers(data);
-          }
-        });
+        m_executor.submit(() -> createWorkers(data));
       }
     }
   }
@@ -162,14 +157,11 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
           final CountDownLatch workerLatch = new CountDownLatch(m_currentThreads - 1);
           while (i < (m_currentThreads - 1)) {
             ++i;
-            m_executor.submit(new Runnable() {
-              @Override
-              public void run() {
-                if (m_cancelCurrentOperation >= 0) {
-                  m_workers.add(new OddsCalculator(newData, false));
-                }
-                workerLatch.countDown();
+            m_executor.submit(() -> {
+              if (m_cancelCurrentOperation >= 0) {
+                m_workers.add(new OddsCalculator(newData, false));
               }
+              workerLatch.countDown();
             });
           }
           // the last one will use our already copied data from above, without copying it again

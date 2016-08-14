@@ -160,23 +160,17 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
     }
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        ui.getEditModeButtonModel().addActionListener(m_editModeAction);
-        ui.getEditModeButtonModel().setEnabled(true);
-      }
+    SwingUtilities.invokeLater(() -> {
+      ui.getEditModeButtonModel().addActionListener(m_editModeAction);
+      ui.getEditModeButtonModel().setEnabled(true);
     });
   }
 
   private void disableEditModeMenu() {
     ui.setEditDelegate(null);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        ui.getEditModeButtonModel().setEnabled(false);
-        ui.getEditModeButtonModel().removeActionListener(m_editModeAction);
-      }
+    SwingUtilities.invokeLater(() -> {
+      ui.getEditModeButtonModel().setEnabled(false);
+      ui.getEditModeButtonModel().removeActionListener(m_editModeAction);
     });
   }
 

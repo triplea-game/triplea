@@ -78,7 +78,7 @@ public class DownloadMapsWindow extends JFrame {
     final String popupWindowTitle = "Downloading list of availabe maps....";
     BackgroundTaskRunner.runInBackground(null, popupWindowTitle, download);
     final List<DownloadFileDescription> games = download.getDownloads();
-    checkNotNull(games);
+    checkNotNull(games, "Failed to download map listing from: " + ClientContext.mapListingSource().getMapListDownloadSite());
 
     final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
     final DownloadMapsWindow dia = new DownloadMapsWindow(mapName, games);

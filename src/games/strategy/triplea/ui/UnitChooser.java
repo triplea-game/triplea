@@ -214,18 +214,8 @@ public class UnitChooser extends JPanel {
     m_autoSelectButton.setPreferredSize(buttonSize);
     add(m_title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         nullInsets, 0, 0));
-    m_selectNoneButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        selectNone();
-      }
-    });
-    m_autoSelectButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        autoSelect();
-      }
-    });
+    m_selectNoneButton.addActionListener(e -> selectNone());
+    m_autoSelectButton.addActionListener(e -> autoSelect());
     int yIndex = 1;
     for (final ChooserEntry entry : m_entries) {
       entry.createComponents(this, yIndex);
@@ -403,12 +393,7 @@ class ChooserEntry {
           GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
       panel.add(scroll, new GridBagConstraints(gridx++, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
           GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 0), 0, 0));
-      scroll.addChangeListener(new ScrollableTextFieldListener() {
-        @Override
-        public void changedValue(final ScrollableTextField field) {
-          updateLeftToSelect();
-        }
-      });
+      scroll.addChangeListener(field -> updateLeftToSelect());
     }
     updateLeftToSelect();
   }

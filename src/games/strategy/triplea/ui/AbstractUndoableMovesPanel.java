@@ -42,12 +42,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
 
   public void setMoves(final List<AbstractUndoableMove> m_undoableMoves) {
     m_moves = m_undoableMoves;
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        initLayout();
-      }
-    });
+    SwingUtilities.invokeLater(() -> initLayout());
   }
 
   public void undoMoves(Map<Territory, List<Unit>> highlightUnitByTerritory) {
@@ -113,12 +108,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
       scrollBarPreviousValue = null;
     }
     add(scroll, BorderLayout.CENTER);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        validate();
-      }
-    });
+    SwingUtilities.invokeLater(() -> validate());
   }
 
   private JComponent createComponentForMove(final AbstractUndoableMove move) {

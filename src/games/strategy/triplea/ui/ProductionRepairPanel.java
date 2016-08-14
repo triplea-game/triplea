@@ -72,12 +72,7 @@ public class ProductionRepairPanel extends JPanel {
     this.calculateLimits();
     m_dialog.pack();
     m_dialog.setLocationRelativeTo(parent);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_done.requestFocusInWindow();
-      }
-    });
+    SwingUtilities.invokeLater(() -> m_done.requestFocusInWindow());
     m_dialog.setVisible(true);
     m_dialog.dispose();
     return getProduction();
@@ -307,10 +302,5 @@ public class ProductionRepairPanel extends JPanel {
     }
   }
 
-  private final ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener() {
-    @Override
-    public void changedValue(final ScrollableTextField stf) {
-      calculateLimits();
-    }
-  };
+  private final ScrollableTextFieldListener m_listener = stf -> calculateLimits();
 }

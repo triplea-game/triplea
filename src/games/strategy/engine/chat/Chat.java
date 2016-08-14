@@ -147,12 +147,7 @@ public class Chat {
     }
     chatInitVersion = init.getSecond().longValue();
     synchronized (mutexQueue) {
-      queuedInitMessages.add(0, new Runnable() {
-        @Override
-        public void run() {
-          assignNodeTags(chatters);
-        }
-      });
+      queuedInitMessages.add(0, () -> assignNodeTags(chatters));
       for (final Runnable job : queuedInitMessages) {
         job.run();
       }
@@ -303,12 +298,7 @@ public class Chat {
           if (queuedInitMessages == null) {
             speakerAdded(node, tag, version);
           } else {
-            queuedInitMessages.add(new Runnable() {
-              @Override
-              public void run() {
-                speakerAdded(node, tag, version);
-              }
-            });
+            queuedInitMessages.add(() -> speakerAdded(node, tag, version));
           }
         }
         return;
@@ -336,12 +326,7 @@ public class Chat {
           if (queuedInitMessages == null) {
             speakerRemoved(node, version);
           } else {
-            queuedInitMessages.add(new Runnable() {
-              @Override
-              public void run() {
-                speakerRemoved(node, version);
-              }
-            });
+            queuedInitMessages.add(() -> speakerRemoved(node, version));
           }
         }
         return;

@@ -477,19 +477,16 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     getDisplay(bridge).casualtyNotification(m_battleID, REMOVE_PREFIX + currentTypeAA + CASUALTIES_SUFFIX, dice,
         m_attacker, new ArrayList<>(casualties.getKilled()), new ArrayList<>(casualties.getDamaged()),
         Collections.emptyMap());
-    final Runnable r = new Runnable() {
-      @Override
-      public void run() {
-        try {
-          final ITripleAPlayer defender = (ITripleAPlayer) bridge.getRemotePlayer(m_defender);
-          defender.confirmEnemyCasualties(m_battleID, "Press space to continue", m_attacker);
-        } catch (final ConnectionLostException cle) {
-          // somone else will deal with this
-          // System.out.println(cle.getMessage());
-          // cle.printStackTrace(System.out);
-        } catch (final Exception e) {
-          // ignore
-        }
+    final Runnable r = () -> {
+      try {
+        final ITripleAPlayer defender = (ITripleAPlayer) bridge.getRemotePlayer(m_defender);
+        defender.confirmEnemyCasualties(m_battleID, "Press space to continue", m_attacker);
+      } catch (final ConnectionLostException cle) {
+        // somone else will deal with this
+        // System.out.println(cle.getMessage());
+        // cle.printStackTrace(System.out);
+      } catch (final Exception e) {
+        // ignore
       }
     };
     final Thread t = new Thread(r, "click to continue waiter");

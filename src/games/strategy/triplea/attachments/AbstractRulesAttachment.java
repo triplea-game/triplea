@@ -290,7 +290,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       }
       setTerritoryCount(String.valueOf(originalTerrs.size()));
       return originalTerrs;
-    } else if (name.equals("originalNoWater")) // get all originally owned territories, but no water or impassibles
+    } else if (name.equals("originalNoWater")) // get all originally owned territories, but no water or impassables
     {
       final Set<Territory> originalTerrs = new HashSet<>();
       for (final PlayerID player : players) {

@@ -122,20 +122,10 @@ public class HistoryPanel extends JPanel {
     m_currentPopupNode = null;
     final JButton previousButton = new JButton("<-Back");
     previousButton.addMouseListener(mouseFocusListener);
-    previousButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        previous();
-      }
-    });
+    previousButton.addActionListener(e -> previous());
     final JButton nextButton = new JButton("Next->");
     nextButton.addMouseListener(mouseFocusListener);
-    nextButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        next();
-      }
-    });
+    nextButton.addActionListener(e -> next());
     final JPanel buttons = new JPanel();
     buttons.setLayout(new GridBagLayout());
     buttons.add(previousButton, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.WEST,
@@ -183,12 +173,7 @@ public class HistoryPanel extends JPanel {
       @Override
       public void mouseReleased(final MouseEvent me) {}
     });
-    m_tree.addTreeSelectionListener(new TreeSelectionListener() {
-      @Override
-      public void valueChanged(final TreeSelectionEvent e) {
-        treeSelectionChanged(e);
-      }
-    });
+    m_tree.addTreeSelectionListener(e -> treeSelectionChanged(e));
   }
 
   private void previous() {

@@ -108,12 +108,7 @@ public class EconomyPanel extends AbstractStatPanel {
       synchronized (this) {
         m_isDirty = true;
       }
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          repaint();
-        }
-      });
+      SwingUtilities.invokeLater(() -> repaint());
     }
 
     @Override

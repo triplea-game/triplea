@@ -46,12 +46,7 @@ public class VerifiedRandomNumbersDialog extends JDialog {
     buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
     getContentPane().add(buttons, BorderLayout.SOUTH);
     final JButton close = new JButton("Close");
-    close.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        setVisible(false);
-      }
-    });
+    close.addActionListener(e -> setVisible(false));
     buttons.add(close);
   }
 

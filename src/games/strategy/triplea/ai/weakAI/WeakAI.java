@@ -67,7 +67,7 @@ public class WeakAI extends AbstractAI {
     final Match<Territory> endMatch = new Match<Territory>() {
       @Override
       public boolean match(final Territory o) {
-        final boolean impassable = TerritoryAttachment.get(o) != null && TerritoryAttachment.get(o).getIsImpassible();
+        final boolean impassable = TerritoryAttachment.get(o) != null && TerritoryAttachment.get(o).getIsImpassable();
         return !impassable && !o.isWater() && Utils.hasLandRouteToEnemyOwnedCapitol(o, player, data);
       }
     };
@@ -93,7 +93,7 @@ public class WeakAI extends AbstractAI {
     }
     // find a land route to an enemy territory from our capitol
     final Route invasionRoute =
-        Utils.findNearest(capitol, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data),
+        Utils.findNearest(capitol, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data),
             new CompositeMatchAnd<>(Matches.TerritoryIsLand, new InverseMatch<>(Matches.TerritoryIsNeutralButNotWater)),
             data);
     return invasionRoute == null;
@@ -566,66 +566,62 @@ public class WeakAI extends AbstractAI {
     final Collection<Unit> unitsAlreadyMoved = new HashSet<>();
     // find the territories we can just walk into
     final CompositeMatchOr<Territory> walkInto =
-        new CompositeMatchOr<>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data),
+        new CompositeMatchOr<>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data),
             Matches.isTerritoryFreeNeutral(data));
     final List<Territory> enemyOwned = Match.getMatches(data.getMap().getTerritories(), walkInto);
     Collections.shuffle(enemyOwned);
-    Collections.sort(enemyOwned, new Comparator<Territory>() {
-      // private final Map<Territory, Integer> randomInts = new HashMap<Territory, Integer>();
-      @Override
-      public int compare(final Territory o1, final Territory o2) {
-        // -1 means o1 goes first. 1 means o2 goes first. zero means they are equal.
-        if (o1 == o2 || (o1 == null && o2 == null)) {
-          return 0;
-        }
-        if (o1 == null) {
-          return 1;
-        }
-        if (o2 == null) {
-          return -1;
-        }
-        if (o1.equals(o2)) {
-          return 0;
-        }
-        final TerritoryAttachment ta1 = TerritoryAttachment.get(o1);
-        final TerritoryAttachment ta2 = TerritoryAttachment.get(o2);
-        if (ta1 == null && ta2 == null) {
-          return 0;
-        }
-        if (ta1 == null) {
-          return 1;
-        }
-        if (ta2 == null) {
-          return -1;
-        }
-        // take capitols first if we can
-        if (ta1.isCapital() && !ta2.isCapital()) {
-          return -1;
-        }
-        if (!ta1.isCapital() && ta2.isCapital()) {
-          return 1;
-        }
-        final boolean factoryInT1 = o1.getUnits().someMatch(Matches.UnitCanProduceUnits);
-        final boolean factoryInT2 = o2.getUnits().someMatch(Matches.UnitCanProduceUnits);
-        // next take territories which can produce
-        if (factoryInT1 && !factoryInT2) {
-          return -1;
-        }
-        if (!factoryInT1 && factoryInT2) {
-          return 1;
-        }
-        final boolean infrastructureInT1 = o1.getUnits().someMatch(Matches.UnitIsInfrastructure);
-        final boolean infrastructureInT2 = o2.getUnits().someMatch(Matches.UnitIsInfrastructure);
-        // next take territories with infrastructure
-        if (infrastructureInT1 && !infrastructureInT2) {
-          return -1;
-        }
-        if (!infrastructureInT1 && infrastructureInT2) {
-          return 1;
-        }
-        // next take territories with largest PU value
-        return ta2.getProduction() - ta1.getProduction();
+    Collections.sort(enemyOwned, (o1, o2) -> {
+      // -1 means o1 goes first. 1 means o2 goes first. zero means they are equal.
+      if (o1 == o2 || (o1 == null && o2 == null)) {
+        return 0;
       }
+      if (o1 == null) {
+        return 1;
+      }
+      if (o2 == null) {
+        return -1;
+      }
+      if (o1.equals(o2)) {
+        return 0;
+      }
+      final TerritoryAttachment ta1 = TerritoryAttachment.get(o1);
+      final TerritoryAttachment ta2 = TerritoryAttachment.get(o2);
+      if (ta1 == null && ta2 == null) {
+        return 0;
+      }
+      if (ta1 == null) {
+        return 1;
+      }
+      if (ta2 == null) {
+        return -1;
+      }
+      // take capitols first if we can
+      if (ta1.isCapital() && !ta2.isCapital()) {
+        return -1;
+      }
+      if (!ta1.isCapital() && ta2.isCapital()) {
+        return 1;
+      }
+      final boolean factoryInT1 = o1.getUnits().someMatch(Matches.UnitCanProduceUnits);
+      final boolean factoryInT2 = o2.getUnits().someMatch(Matches.UnitCanProduceUnits);
+      // next take territories which can produce
+      if (factoryInT1 && !factoryInT2) {
+        return -1;
+      }
+      if (!factoryInT1 && factoryInT2) {
+        return 1;
+      }
+      final boolean infrastructureInT1 = o1.getUnits().someMatch(Matches.UnitIsInfrastructure);
+      final boolean infrastructureInT2 = o2.getUnits().someMatch(Matches.UnitIsInfrastructure);
+      // next take territories with infrastructure
+      if (infrastructureInT1 && !infrastructureInT2) {
+        return -1;
+      }
+      if (!infrastructureInT1 && infrastructureInT2) {
+        return 1;
+      }
+      // next take territories with largest PU value
+      return ta2.getProduction() - ta1.getProduction();
     });
     final List<Territory> isWaterTerr = Utils.onlyWaterTerr(data, enemyOwned);
     enemyOwned.removeAll(isWaterTerr);

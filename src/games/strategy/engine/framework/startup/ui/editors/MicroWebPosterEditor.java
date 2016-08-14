@@ -104,30 +104,10 @@ public class MicroWebPosterEditor extends EditorPanel {
    * Configures the listeners for the gui components
    */
   private void setupListeners() {
-    m_viewSite.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        ((IWebPoster) getBean()).viewSite();
-      }
-    });
-    m_testSite.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        testSite();
-      }
-    });
-    m_initGame.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        initGame();
-      }
-    });
-    m_hosts.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        fireEditorChanged();
-      }
-    });
+    m_viewSite.addActionListener(e -> ((IWebPoster) getBean()).viewSite());
+    m_testSite.addActionListener(e -> testSite());
+    m_initGame.addActionListener(e -> initGame());
+    m_hosts.addActionListener(e -> fireEditorChanged());
     // add a document listener which will validate input when the content of any input field is changed
     final DocumentListener docListener = new EditorChangedFiringDocumentListener();
     // m_hosts.getDocument().addDocumentListener(docListener);
@@ -190,43 +170,37 @@ public class MicroWebPosterEditor extends EditorPanel {
           GridBagConstraints.NONE, new Insets(5, 5, 5, 20), 0, 0));
     }
     final JButton btnClose = new JButton("Cancel");
-    btnClose.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        window.setVisible(false);
-        window.dispose();
-      }
+    btnClose.addActionListener(e -> {
+      window.setVisible(false);
+      window.dispose();
     });
     final JButton btnOK = new JButton("Initialize");
-    btnOK.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        window.setVisible(false);
-        window.dispose();
-        final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < comboBoxes.size(); i++) {
-          sb.append(m_parties[i]);
-          sb.append(": ");
-          sb.append(comboBoxes.get(i).getSelectedItem());
-          sb.append("\n");
+    btnOK.addActionListener(e -> {
+      window.setVisible(false);
+      window.dispose();
+      final StringBuilder sb = new StringBuilder();
+      for (int i = 0; i < comboBoxes.size(); i++) {
+        sb.append(m_parties[i]);
+        sb.append(": ");
+        sb.append(comboBoxes.get(i).getSelectedItem());
+        sb.append("\n");
+      }
+      final List<Part> parts = new ArrayList<>();
+      parts.add(TripleAWebPoster.createStringPart("siteid", m_id.getText()));
+      parts.add(TripleAWebPoster.createStringPart("players", sb.toString()));
+      parts.add(TripleAWebPoster.createStringPart("gamename", m_gameName.getText()));
+      try {
+        final String response = TripleAWebPoster.executePost(hostUrl, "create.php", parts);
+        if (response.toLowerCase().contains("success")) {
+          JOptionPane.showMessageDialog(MainFrame.getInstance(), response, "Game initialized",
+              JOptionPane.INFORMATION_MESSAGE);
+        } else {
+          JOptionPane.showMessageDialog(MainFrame.getInstance(), "Game initialization failed:\n" + response, "Error",
+              JOptionPane.INFORMATION_MESSAGE);
         }
-        final java.util.List<Part> parts = new ArrayList<>();
-        parts.add(TripleAWebPoster.createStringPart("siteid", m_id.getText()));
-        parts.add(TripleAWebPoster.createStringPart("players", sb.toString()));
-        parts.add(TripleAWebPoster.createStringPart("gamename", m_gameName.getText()));
-        try {
-          final String response = TripleAWebPoster.executePost(hostUrl, "create.php", parts);
-          if (response.toLowerCase().contains("success")) {
-            JOptionPane.showMessageDialog(MainFrame.getInstance(), response, "Game initialized",
-                JOptionPane.INFORMATION_MESSAGE);
-          } else {
-            JOptionPane.showMessageDialog(MainFrame.getInstance(), "Game initialization failed:\n" + response, "Error",
-                JOptionPane.INFORMATION_MESSAGE);
-          }
-        } catch (final Exception ex) {
-          JOptionPane.showMessageDialog(MainFrame.getInstance(), "Game initialization failed:\n" + ex.toString(),
-              "Error", JOptionPane.INFORMATION_MESSAGE);
-        }
+      } catch (final Exception ex) {
+        JOptionPane.showMessageDialog(MainFrame.getInstance(), "Game initialization failed:\n" + ex.toString(),
+            "Error", JOptionPane.INFORMATION_MESSAGE);
       }
     });
     window.getContentPane().add(btnOK, new GridBagConstraints(0, m_parties.length + 1, 1, 1, 0, 0,
@@ -245,40 +219,34 @@ public class MicroWebPosterEditor extends EditorPanel {
     final IWebPoster poster = (IWebPoster) getBean();
     final ProgressWindow progressWindow = new ProgressWindow(MainFrame.getInstance(), poster.getTestMessage());
     progressWindow.setVisible(true);
-    final Runnable runnable = new Runnable() {
-      @Override
-      public void run() {
-        Exception tmpException = null;
-        try {
-          final File f = File.createTempFile("123", "test");
-          f.deleteOnExit();
-          // For .jpg use this:
-          final BufferedImage image = new BufferedImage(130, 40, BufferedImage.TYPE_INT_RGB);
-          final Graphics g = image.getGraphics();
-          g.drawString("Testing file upload", 10, 20);
-          ImageIO.write(image, "jpg", f);
-          poster.addSaveGame(f, "Test.jpg");
-          poster.postTurnSummary(null, "Test Turn Summary.", "TestPlayer", 1);
-        } catch (final Exception ex) {
-          tmpException = ex;
-        } finally {
-          progressWindow.setVisible(false);
-        }
-        final Exception exception = tmpException;
-        // now that we have a result, marshall it back unto the swing thread
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            try {
-              final String message = (exception != null) ? exception.toString() : m_bean.getServerMessage();
-              JOptionPane.showMessageDialog(MainFrame.getInstance(), message, "Test Turn Summary Post",
-                  JOptionPane.INFORMATION_MESSAGE);
-            } catch (final HeadlessException e) {
-              // should never happen in a GUI app
-            }
-          }
-        });
+    final Runnable runnable = () -> {
+      Exception tmpException = null;
+      try {
+        final File f = File.createTempFile("123", "test");
+        f.deleteOnExit();
+        // For .jpg use this:
+        final BufferedImage image = new BufferedImage(130, 40, BufferedImage.TYPE_INT_RGB);
+        final Graphics g = image.getGraphics();
+        g.drawString("Testing file upload", 10, 20);
+        ImageIO.write(image, "jpg", f);
+        poster.addSaveGame(f, "Test.jpg");
+        poster.postTurnSummary(null, "Test Turn Summary.", "TestPlayer", 1);
+      } catch (final Exception ex) {
+        tmpException = ex;
+      } finally {
+        progressWindow.setVisible(false);
       }
+      final Exception exception = tmpException;
+      // now that we have a result, marshall it back unto the swing thread
+      SwingUtilities.invokeLater(() -> {
+        try {
+          final String message = (exception != null) ? exception.toString() : m_bean.getServerMessage();
+          JOptionPane.showMessageDialog(MainFrame.getInstance(), message, "Test Turn Summary Post",
+              JOptionPane.INFORMATION_MESSAGE);
+        } catch (final HeadlessException e) {
+          // should never happen in a GUI app
+        }
+      });
     };
     // start a background thread
     final Thread t = new Thread(runnable);
@@ -287,12 +255,8 @@ public class MicroWebPosterEditor extends EditorPanel {
 
   @Override
   public boolean isBeanValid() {
-    final boolean hostValid = validateText((String) m_hosts.getSelectedItem(), m_hostLabel, new IValidator() {
-      @Override
-      public boolean isValid(final String text) {
-        return text != null && text.length() > 0 && !text.equalsIgnoreCase(HTTP_BLANK);
-      }
-    });
+    final boolean hostValid = validateText((String) m_hosts.getSelectedItem(), m_hostLabel,
+        text -> text != null && text.length() > 0 && !text.equalsIgnoreCase(HTTP_BLANK));
     final boolean idValid = validateTextFieldNotEmpty(m_gameName, m_gameNameLabel);
     final boolean allValid = hostValid && idValid;
     m_testSite.setEnabled(allValid);

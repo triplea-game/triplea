@@ -1146,7 +1146,7 @@ public class ProBidAI {
         Matches.TerritoryIsNotImpassableToLandUnits(player, data), Matches.isTerritoryAllied(player, data));
     final CompositeMatch<Territory> enemyAndNoWater =
         new CompositeMatchAnd<>(Matches.TerritoryIsNotImpassableToLandUnits(player, data),
-            Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
+            Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data));
     final List<PlayerID> ePlayers = getEnemyPlayers(data, player);
     final PlayerID ePlayer = ePlayers.get(0);
     final List<Territory> enemyCapitals = getEnemyCapitals(data, player);
@@ -1192,7 +1192,7 @@ public class ProBidAI {
       final float alliedStrength = strengthOfTerritory(data, aFTerr, player, false, false, tFirst, true);
       if (aFPotential < alliedStrength * 0.75F || aFPotential < 1.0F
           || !Matches.TerritoryIsPassableAndNotRestricted(player, data).match(aFTerr)
-          || (Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data).match(aFTerr)
+          || (Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data).match(aFTerr)
               && Matches.territoryHasEnemyLandNeighbor(data, player).match(aFTerr))) {
         aFIter.remove();
       }
@@ -1243,7 +1243,7 @@ public class ProBidAI {
       // bonus for general closeness to enemy Capital
       // eTerrValue += (eMinDist < minDist - 1) ? 4.0F : 0.0F;
       if (Matches.TerritoryIsLand.match(eTerr)
-          && Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data).match(eTerr)) {
+          && Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data).match(eTerr)) {
         ourEnemyTerr.add(eTerr);
         eTerrValue += productionValue * 2;
         final float eTerrStrength =
@@ -1988,7 +1988,7 @@ public class ProBidAI {
   private static List<Territory> allEnemyTerritories(final GameData data, final PlayerID player) {
     final List<Territory> badGuys = new ArrayList<>();
     for (final Territory t : data.getMap().getTerritories()) {
-      if (Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data).match(t)) {
+      if (Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data).match(t)) {
         badGuys.add(t);
       }
     }
@@ -2185,9 +2185,8 @@ public class ProBidAI {
     int armorCount = armor.size();
     final int infCount = infantry.size();
     int othersCount = others.size();
-    for (int j = 0; j < infCount; j++) // interleave the artillery and armor with inf
-    {
-      sorted.add(infantry.get(j));
+    for (Unit anInfantry : infantry) {
+      sorted.add(anInfantry);
       // this should be based on combined attack and defense powers, not on attachments like blitz
       if (armorCount > 0) {
         sorted.add(armor.get(armorCount - 1));
