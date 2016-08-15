@@ -76,15 +76,15 @@ public class TestRoute {
   @Test
   public void testPointAcquisition() {
     assertArrayEquals(dummyPoints,
-        spyRouteDrawer.getRoutePoints(dummyRouteDescription, dummyMapData, 0, 0, new Dimension(0, 0)));
+        spyRouteDrawer.getRoutePoints(dummyRouteDescription, dummyMapData, 0, 0, new Dimension(), new Dimension()));
     for (int i = 0; i < 10; i++) {
       assertArrayEquals(dummyPoints, spyRouteDrawer.getRoutePoints(dummyRouteDescription, dummyMapData, randomInt(),
-          randomInt(), new Dimension(0, 0)));
+          randomInt(), new Dimension(), new Dimension()));
       assertArrayEquals(dummyPoints, spyRouteDrawer.getRoutePoints(dummyRouteDescription, dummyMapData, 0, 0,
-          new Dimension(randomInt(1000, 100), randomInt(1000, 100))));
+          new Dimension(randomInt(1000, 100), randomInt(1000, 100)), new Dimension()));
       int randX = randomInt(1000, 0);
       assertEquals(new Point(randX, 0),
-          MapRouteDrawer.getPointOnMap(new Point(randX, 0), randX, 0, new Dimension(randX, 0)));
+          MapRouteDrawer.getPointOnMap(new Point(randX, 0), randX, 0, new Dimension(randX, 0), new Dimension()));
     }
   }
 
