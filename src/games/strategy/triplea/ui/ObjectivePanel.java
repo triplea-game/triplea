@@ -788,11 +788,11 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
     if (rows == null) {
       cellSizes.put(table, rows = new HashMap<>());
     }
-    Map<Integer, Integer> rowheights = rows.get(new Integer(row));
+    Map<Integer, Integer> rowheights = rows.get(row);
     if (rowheights == null) {
-      rows.put(new Integer(row), rowheights = new HashMap<>());
+      rows.put(row, rowheights = new HashMap<>());
     }
-    rowheights.put(new Integer(column), new Integer(height));
+    rowheights.put(column, height);
   }
 
   /**
@@ -819,7 +819,7 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
     if (rows == null) {
       return 0;
     }
-    final Map<Integer, Integer> rowheights = rows.get(new Integer(row));
+    final Map<Integer, Integer> rowheights = rows.get(row);
     if (rowheights == null) {
       return 0;
     }
