@@ -621,7 +621,7 @@ public class GameRunner {
     if (fileName.length() > 0) {
       commands.add("-D" + TRIPLEA_GAME_PROPERTY + "=" + fileName);
     }
-    final String javaClass = "games.strategy.engine.framework.GameRunner";
+    final String javaClass = GameRunner.class.getName();
     commands.add(javaClass);
     ProcessRunnerUtil.exec(commands);
   }
