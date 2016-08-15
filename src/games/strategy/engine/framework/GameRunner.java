@@ -191,13 +191,12 @@ public class GameRunner {
   }
 
 
-
   /**
    * Move command line arguments to System.properties
    */
   public static void handleCommandLineArgs(final String[] args, final String[] availableProperties, GameMode gameMode) {
-    if (args.length == 1 && !argsStartsWithPropertykey(args[0])) {
-      // change it to start with the key
+    if (args.length == 1 && !args[0].contains("=")) {
+      // assume a default single arg, convert the format so we can process as normally.
       args[0] = GameRunner.TRIPLEA_GAME_PROPERTY + "=" + args[0];
     }
 
@@ -329,17 +328,6 @@ public class GameRunner {
         System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion());
       }
     }
-  }
-
-  private static boolean argsStartsWithPropertykey(String firstArg) {
-    boolean startsWithPropertyKey = false;
-    for (final String arg : COMMAND_LINE_ARGS) {
-      if (firstArg.startsWith(arg)) {
-        startsWithPropertyKey = true;
-        break;
-      }
-    }
-    return startsWithPropertyKey;
   }
 
   private static String getValue(final String arg) {
