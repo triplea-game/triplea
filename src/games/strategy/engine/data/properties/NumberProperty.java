@@ -6,7 +6,6 @@ import javax.swing.JComponent;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.ui.IntTextField;
-import games.strategy.ui.IntTextFieldChangeListener;
 
 public class NumberProperty extends AEditableProperty {
   // compatible with 0.9.0.2 saved games

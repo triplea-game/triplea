@@ -752,7 +752,7 @@ class EditorPaneCellEditor extends DefaultCellEditor {
 class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRenderer {
   private static final long serialVersionUID = -2835145877164663862L;
   private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
-  private final Map<JTable, Map<?,?>> cellSizes = new HashMap<>();
+  private final Map<JTable, Map<Integer, Map<Integer,Integer>>> cellSizes = new HashMap<>();
 
   public EditorPaneTableCellRenderer() {
     // setLineWrap(true);
@@ -784,16 +784,15 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
   }
 
   private void addSize(final JTable table, final int row, final int column, final int height) {
-    @SuppressWarnings("unchecked")
-    Map<Integer, Map<Integer,Integer>> rows = (Map<Integer, Map<Integer,Integer>>) cellSizes.get(table);
+    Map<Integer, Map<Integer,Integer>> rows = cellSizes.get(table);
     if (rows == null) {
       cellSizes.put(table, rows = new HashMap<>());
     }
-    Map<Integer, Integer> rowheights = rows.get(new Integer(row));
+    Map<Integer, Integer> rowheights = rows.get(row);
     if (rowheights == null) {
-      rows.put(new Integer(row), rowheights = new HashMap<>());
+      rows.put(row, rowheights = new HashMap<>());
     }
-    rowheights.put(new Integer(column), new Integer(height));
+    rowheights.put(column, height);
   }
 
   /**
@@ -816,19 +815,17 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
   }
 
   private int findMaximumRowSize(final JTable table, final int row) {
-    @SuppressWarnings("unchecked")
-    final Map<Integer, Map<Integer, Integer>> rows = (Map<Integer, Map<Integer, Integer>>) cellSizes.get(table);
+    final Map<Integer, Map<Integer, Integer>> rows = cellSizes.get(table);
     if (rows == null) {
       return 0;
     }
-    final Map<?,?> rowheights = rows.get(new Integer(row));
+    final Map<Integer, Integer> rowheights = rows.get(row);
     if (rowheights == null) {
       return 0;
     }
     int maximum_height = 0;
-    for (Entry<?, ?> entry1 : rowheights.entrySet()) {
-      final Entry<?, ?> entry = (Entry<?, ?>) entry1;
-      final int cellHeight = (Integer) entry.getValue();
+    for (Entry<Integer, Integer> entry : rowheights.entrySet()) {
+      final int cellHeight = entry.getValue();
       maximum_height = Math.max(maximum_height, cellHeight);
     }
     return maximum_height;

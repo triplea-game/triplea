@@ -5,8 +5,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,7 +29,6 @@ import javax.swing.event.DocumentListener;
 import org.apache.commons.httpclient.methods.multipart.Part;
 
 import games.strategy.engine.framework.startup.ui.MainFrame;
-import games.strategy.engine.framework.startup.ui.editors.validators.IValidator;
 import games.strategy.engine.pbem.IWebPoster;
 import games.strategy.engine.pbem.TripleAWebPoster;
 import games.strategy.ui.ProgressWindow;

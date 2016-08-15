@@ -4,8 +4,6 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.HeadlessException;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;

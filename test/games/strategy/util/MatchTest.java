@@ -33,13 +33,13 @@ public class MatchTest {
 
   @Before
   public void setUp() {
-    m_ints.add(new Integer(-1));
-    m_ints.add(new Integer(-2));
-    m_ints.add(new Integer(-3));
-    m_ints.add(new Integer(0));
-    m_ints.add(new Integer(1));
-    m_ints.add(new Integer(2));
-    m_ints.add(new Integer(3));
+    m_ints.add(-1);
+    m_ints.add(-2);
+    m_ints.add(-3);
+    m_ints.add(0);
+    m_ints.add(1);
+    m_ints.add(2);
+    m_ints.add(3);
   }
 
   @Test

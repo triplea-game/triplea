@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;

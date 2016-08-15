@@ -4,7 +4,6 @@ import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;

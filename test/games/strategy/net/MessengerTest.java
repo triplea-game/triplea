@@ -364,7 +364,7 @@ class MultipleMessageSender implements Runnable {
   public void run() {
     Thread.yield();
     for (int i = 0; i < 100; i++) {
-      m_messenger.broadcast(new Integer(i));
+      m_messenger.broadcast(i);
     }
   }
 }

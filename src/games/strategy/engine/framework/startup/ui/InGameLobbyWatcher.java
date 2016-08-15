@@ -4,7 +4,6 @@ import java.awt.Frame;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JComponent;
@@ -14,7 +13,6 @@ import javax.swing.SwingUtilities;
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.HeartBeat;
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
