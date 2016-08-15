@@ -203,7 +203,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     showBattle(bridge);
     final List<IExecutable> steps = new ArrayList<>();
     if (hasAA) {
-    	boolean foundSpecificAA = false;
+      boolean foundSpecificAA = false;
       for (final Unit target : m_targets.keySet()) {
     		if( target.getUnitAttachment().getIsAAforBombingThisUnitOnly() ) {
     			final Collection<Unit> currentAttackers = m_targets.get(target);
@@ -341,6 +341,22 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     Collection<Unit> m_casualtiesSoFar = new ArrayList<>();
     Collection<Unit> validAttackingUnitsForThisRoll;
     boolean determineAttackers;
+<<<<<<< 37f2a831acd06ad9d992fb8d085b6cc1fb20fdd2
+=======
+
+    public FireAA( Collection<Unit> attackers ) {
+    	validAttackingUnitsForThisRoll = attackers;
+    	determineAttackers = false;
+    }
+    
+    public FireAA() {
+    	validAttackingUnitsForThisRoll = Collections.emptyList();
+    	determineAttackers = true;
+    }
+    	
+    	
+    
+>>>>>>> Fix bug with AA firing at all units in Strategic Bombing. Should fire at only units attacking individual facility when isAAforBombingThisUnitOnly is set
 
     public FireAA( Collection<Unit> attackers ) {
     	validAttackingUnitsForThisRoll = attackers;
@@ -359,10 +375,15 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final Collection<Unit> currentPossibleAA                = Match.getMatches(m_defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
         final Set<UnitType> targetUnitTypesForThisTypeAA        = UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(m_data);
         final Set<UnitType> airborneTypesTargettedToo           = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAA);
+<<<<<<< 37f2a831acd06ad9d992fb8d085b6cc1fb20fdd2
         if( determineAttackers ) {
         	validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, new CompositeMatchOr<>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
                     new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
         }
+=======
+        if( determineAttackers ) validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, new CompositeMatchOr<>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
+                    new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+>>>>>>> Fix bug with AA firing at all units in Strategic Bombing. Should fire at only units attacking individual facility when isAAforBombingThisUnitOnly is set
 
         final IExecutable roll = new IExecutable() {
           private static final long serialVersionUID = 379538344036513009L;
