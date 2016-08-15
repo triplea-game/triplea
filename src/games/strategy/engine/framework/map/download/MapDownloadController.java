@@ -44,14 +44,9 @@ public class MapDownloadController {
 
       SystemPreferences.put(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, year + ":" + month);
 
-      final DownloadRunnable download = new DownloadRunnable(mapDownloadProperties.getMapListDownloadSite());
-      // we are already in a background thread, so just the run the runnable.
-      download.run();
+      final List<DownloadFileDescription> downloads =
+          new DownloadRunnable(mapDownloadProperties.getMapListDownloadSite()).getDownloads();
 
-      if (download.getError() != null) {
-        return false;
-      }
-      final List<DownloadFileDescription> downloads = download.getDownloads();
       final Collection<String> outOfDateMaps = populateOutOfDateMapsListing(downloads);
       if (!outOfDateMaps.isEmpty()) {
         final StringBuilder text =
