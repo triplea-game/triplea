@@ -35,6 +35,8 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.settings.SystemPreferenceKey;
+import games.strategy.triplea.settings.SystemPreferences;
 import games.strategy.triplea.util.LoggingPrintStream;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.ThreadUtil;
@@ -516,7 +518,8 @@ public class HeadlessGameServer {
         GameRunner.TRIPLEA_NAME_PROPERTY, GameRunner.LOBBY_HOST, LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
         GameRunner.LOBBY_GAME_COMMENTS, GameRunner.LOBBY_GAME_HOSTED_BY, GameRunner.LOBBY_GAME_SUPPORT_EMAIL,
         GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, GameRunner.LOBBY_GAME_RECONNECTION,
-        GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME};
+        GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME,
+        GameRunner.MAP_FOLDER};
   }
 
   public String getStatus() {
@@ -755,7 +758,11 @@ public class HeadlessGameServer {
         for (final String propertie : properties) {
           if (arg.equals(propertie)) {
             final String value = getValue(arg2);
-            System.getProperties().setProperty(propertie, value);
+            if(propertie.equals(GameRunner.MAP_FOLDER)) {
+              SystemPreferences.put(SystemPreferenceKey.MAP_FOLDER_OVERRIDE, value);
+            } else {
+              System.getProperties().setProperty(propertie, value);
+            }
             System.out.println(propertie + ":" + value);
             found = true;
             break;

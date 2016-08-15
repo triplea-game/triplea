@@ -108,7 +108,7 @@ public class GameRunner {
       Math.max(Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, 900),
           DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110);
 
-  private static final String MAP_FOLDER = "mapFolder";
+  public static final String MAP_FOLDER = "mapFolder";
 
 
   public static boolean isWindows() {
