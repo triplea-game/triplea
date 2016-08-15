@@ -9,7 +9,6 @@ import java.util.Properties;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IPersistentDelegate;

@@ -2183,7 +2183,6 @@ public class ProBidAI {
     }
     int artilleryCount = artillery.size();
     int armorCount = armor.size();
-    final int infCount = infantry.size();
     int othersCount = others.size();
     for (Unit anInfantry : infantry) {
       sorted.add(anInfantry);

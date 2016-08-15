@@ -1,7 +1,6 @@
 package games.strategy.engine.chat;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Image;
@@ -34,8 +33,8 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.net.INode;
+import games.strategy.ui.SwingAction;
 
 public class ChatPlayerPanel extends JPanel implements IChatListener {
   private static final long serialVersionUID = -3153022965393962945L;

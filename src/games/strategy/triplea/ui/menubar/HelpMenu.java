@@ -1,7 +1,5 @@
 package games.strategy.triplea.ui.menubar;
 
-import com.apple.eawt.AboutHandler;
-import com.apple.eawt.AppEvent;
 import com.apple.eawt.Application;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
