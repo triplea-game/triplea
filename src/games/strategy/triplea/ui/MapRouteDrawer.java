@@ -40,6 +40,8 @@ public class MapRouteDrawer {
   public static final double DETAIL_LEVEL = 1.0;
   private static final int arrowLength = 4;
 
+  protected static int screenWidth;
+
   /**
    * Draws the route to the screen.
    */
@@ -63,6 +65,7 @@ public class MapRouteDrawer {
     final int imageWidth = mapPanel.getImageWidth();
     final int imageHeight = mapPanel.getImageHeight();
     final Dimension imageDimension = new Dimension(imageWidth, imageHeight);
+    screenWidth = mapPanel.getWidth();
     final Point[] points =
         getRoutePoints(routeDescription, mapData, xOffset, yOffset, imageDimension);
     final boolean tooFewTerritories = numTerritories <= 1;
@@ -225,18 +228,17 @@ public class MapRouteDrawer {
    * @param point The reference {@linkplain Point}
    * @param xOffset The horizontal pixel-difference between the frame and the Map
    * @param yOffset The vertical pixel-difference between the frame and the Map
-   * @param width The width of the Map
-   * @param height The height of the Map
+   * @param dimension The height and width of the Map
    * @return The "real" Point
    */
   protected static Point getPointOnMap(Point point, int xOffset, int yOffset, Dimension dimension) {
     Point newPoint = null;
-    int x = (int) point.getX();
-    int y = (int) point.getY();
+    int x = point.x;
+    int y = point.y;
     int width = dimension.width;
-    if (x - width > xOffset) {
+    if (x - width > xOffset || (xOffset < 0 && xOffset + screenWidth < x)) {
       newPoint = new Point(x - width, y);
-    } else if (x < xOffset) {
+    } else if (x < xOffset && x + width < screenWidth + xOffset) {
       newPoint = new Point(x + width, y);
     }
     return newPoint != null ? newPoint : point;

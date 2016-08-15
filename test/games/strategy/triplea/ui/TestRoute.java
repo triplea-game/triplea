@@ -84,7 +84,7 @@ public class TestRoute {
           new Dimension(randomInt(1000, 100), randomInt(1000, 100))));
       int randX = randomInt(1000, 0);
       assertEquals(new Point(randX, 0),
-          MapRouteDrawer.getPointOnMap(new Point(), randX, 0, new Dimension(randX, 0)));
+          MapRouteDrawer.getPointOnMap(new Point(randX, 0), randX, 0, new Dimension(randX, 0)));
     }
   }
 
