@@ -210,7 +210,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     			if( currentAttackers != null ) {
     				steps.add(new FireAA(currentAttackers));
     			}
-    			foundSpecificAA = true;
     		}
     	}
       if( !foundSpecificAA ) {
@@ -351,7 +350,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     	validAttackingUnitsForThisRoll = Collections.emptyList();
     	determineAttackers = true;
     }
-   	
+
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
       final boolean isEditMode = BaseEditDelegate.getEditMode(bridge.getData());
@@ -363,8 +362,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         	validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, new CompositeMatchOr<>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
                     new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
         }
-        if( determineAttackers ) validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, new CompositeMatchOr<>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
-                    new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
 
         final IExecutable roll = new IExecutable() {
           private static final long serialVersionUID = 379538344036513009L;
