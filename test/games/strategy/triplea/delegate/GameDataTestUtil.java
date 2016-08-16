@@ -80,6 +80,10 @@ public class GameDataTestUtil {
     return unitType(Constants.UNIT_TYPE_CARRIER, data);
   }
 
+  public static UnitType tacBomber(final GameData data) {
+    return unitType(Constants.UNIT_TYPE_TAC_BOMBER, data);
+  }
+
   public static UnitType fighter(final GameData data) {
     return unitType(Constants.UNIT_TYPE_FIGHTER, data);
   }

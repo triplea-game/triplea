@@ -205,14 +205,19 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     if (hasAA) {
     	boolean foundGenericAA = false;
       for (final Unit target : m_targets.keySet()) {
-    		//for( Unit attacker
-    		if( ( (UnitAttachment) target.getType().getAttachment("unitAttachment")).getIsAAforBombingThisUnitOnly() ) {
+    		if( target.getUnitAttachment().getIsAAforBombingThisUnitOnly() ) {
     			final Collection<Unit> currentAttackers = m_targets.get(target);
-    			if( currentAttackers != null ) steps.add(new FireAA(currentAttackers));
+    			if( currentAttackers != null ) {
+    				steps.add(new FireAA(currentAttackers));
+    			}
     		}
-    		else foundGenericAA = true;
+    		else {
+    			foundGenericAA = true;
+    		}
     	}
-      if( foundGenericAA ) steps.add(new FireAA());
+      if( foundGenericAA ) {
+      	steps.add(new FireAA());
+      }
     }
     steps.add(new ConductBombing());
     steps.add(new IExecutable() {
@@ -349,9 +354,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     	determineAttackers = true;
     }
     	
-    	
-    
-
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
       final boolean isEditMode = BaseEditDelegate.getEditMode(bridge.getData());
@@ -359,8 +361,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final Collection<Unit> currentPossibleAA                = Match.getMatches(m_defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
         final Set<UnitType> targetUnitTypesForThisTypeAA        = UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(m_data);
         final Set<UnitType> airborneTypesTargettedToo           = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAA);
-        if( determineAttackers ) validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, new CompositeMatchOr<>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
+        if( determineAttackers ) {
+        	validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, new CompositeMatchOr<>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
                     new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+        }
 
         final IExecutable roll = new IExecutable() {
           private static final long serialVersionUID = 379538344036513009L;
