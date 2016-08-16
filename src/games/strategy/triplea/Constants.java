@@ -144,6 +144,7 @@ public interface Constants {
   String UNIT_TYPE_CARRIER = "carrier";
   String UNIT_TYPE_FIGHTER = "fighter";
   String UNIT_TYPE_BOMBER = "bomber";
+  String UNIT_TYPE_TAC_BOMBER = "tactical_bomber";
   String UNIT_TYPE_AIR_TRANSPORT = "air_transport";
   String UNIT_TYPE_FACTORY = "factory";
   String UNIT_TYPE_AAGUN = "aaGun";
