@@ -105,7 +105,9 @@ public class MapPanel extends ImageScrollerLargeView {
     this.m_scale = this.uiContext.getScale();
     this.backgroundDrawer = new BackgroundDrawer(this);
     this.tileManager = new TileManager(this.uiContext);
-    new Thread(this.backgroundDrawer, "Map panel background drawer").start();
+    Thread t = new Thread(this.backgroundDrawer, "Map panel background drawer");
+    t.setDaemon(true);
+    t.start();
     setDoubleBuffered(false);
     this.smallView = smallView;
     this.smallMapImageManager =
