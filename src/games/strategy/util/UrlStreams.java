@@ -12,8 +12,6 @@ import java.util.function.Function;
 
 import com.google.common.base.Throwables;
 
-import games.strategy.debug.ClientLogger;
-
 
 /**
  * Utility class for opening input streams from URL and URI objects.
@@ -80,7 +78,6 @@ public final class UrlStreams {
       connection.setUseCaches(false);
       return Optional.of(connection.getInputStream());
     } catch (IOException e) {
-      ClientLogger.logError("Failed to open a connection to: " + url, e);
       return Optional.empty();
     }
   }
