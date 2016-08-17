@@ -106,7 +106,7 @@ public interface Constants {
   // may be SUBMERSIBLE_SUBS below
   String SUB_RETREAT_BEFORE_BATTLE = "Sub Retreat Before Battle";
   String SHORE_BOMBARD_PER_GROUND_UNIT_RESTRICTED = "Shore Bombard Per Ground Unit Restricted";
-  String SBR_AFFECTS_UNIT_PRODUCTION = "SBR Affects Unit Production";
+  String SBR_AFFECTS_UNIT_PRODUCTION = "Damage From Bombing Done To Units Instead Of Territories";
   String AA_TERRITORY_RESTRICTED = "AA Territory Restricted";
   String MULTIPLE_AA_PER_TERRITORY = "Multiple AA Per Territory";
   String IGNORE_TRANSPORT_IN_MOVEMENT = "Ignore Transport In Movement";

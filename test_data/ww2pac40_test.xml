@@ -2858,7 +2858,7 @@
 						<boolean/>
 				</property>
 
-				<property name="SBR Affects Unit Production" value="false" editable="false">
+				<property name="Damage From Bombing Done To Units Instead Of Territories" value="false" editable="false">
 						<boolean/>
 				</property>
 				
