@@ -512,13 +512,4 @@ public class PlayerAttachment extends DefaultAttachment {
 
   @Override
   public void validate(final GameData data) throws GameParseException {}
-
-  /**
-   * @deprecated setTakeUnitControl (and getTakeUnitControl) DO NOTHING. They are kept for backwards compatibility only, otherwise
-   * users get Java
-   * errors.
-   */
-  @Deprecated
-  @GameProperty(xmlProperty = true, gameProperty = false, adds = false)
-  public void setTakeUnitControl(final String value) {}
 }
