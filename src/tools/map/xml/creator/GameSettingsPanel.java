@@ -122,10 +122,10 @@ public class GameSettingsPanel extends DynamicRowsPanel {
       gbc_tValue.gridx = 0;
       gridBadConstLabelValue.gridy = yValue;
       final List<String> settingValue = settingEntry.getValue();
-      Integer minValueInteger, maxValueInteger;
+      int minValueInteger, maxValueInteger;
       try {
-        minValueInteger = Integer.valueOf(settingValue.get(2));
-        maxValueInteger = Integer.valueOf(settingValue.get(3));
+        minValueInteger = Integer.parseInt(settingValue.get(2));
+        maxValueInteger = Integer.parseInt(settingValue.get(3));
       } catch (NumberFormatException nfe) {
         minValueInteger = 0;
         maxValueInteger = 0;

@@ -69,20 +69,13 @@ public class IntegerMap<T> implements Cloneable, Serializable {
     return mapValues.size();
   }
 
-  public void put(final T key, final Integer value) {
+  public void put(final T key, final int value) {
     mapValues.put(key, value);
   }
 
-  public void put(final T key, final int value) {
-    final Integer obj = Integer.valueOf(value);
-    mapValues.put(key, obj);
-  }
-
   public void putAll(final Collection<T> keys, final int value) {
-    final Integer obj = Integer.valueOf(value);
-    final Iterator<T> iter = keys.iterator();
-    while (iter.hasNext()) {
-      put(iter.next(), obj);
+    for (T object : keys) {
+      put(object, value);
     }
   }
 
@@ -97,22 +90,17 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    * returns 0 if no key found.
    */
   public int getInt(final T key) {
-    final Integer val = mapValues.get(key);
-    if (val == null) {
+    if(!mapValues.containsKey(key)){
       return 0;
     }
-    return val;
-  }
-
-  public void add(final T key, final Integer value) {
-    add(key, value.intValue());
+    return mapValues.get(key);
   }
 
   public void add(final T key, final int value) {
     if (mapValues.get(key) == null) {
       put(key, value);
     } else {
-      final Integer oldVal = mapValues.get(key);
+      final int oldVal = mapValues.get(key);
       final int newVal = oldVal + value;
       put(key, newVal);
     }
@@ -268,7 +256,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    */
   public int totalValues() {
     int sum = 0;
-    for (final Integer value : mapValues.values()) {
+    for (final int value : mapValues.values()) {
       sum += value;
     }
     return sum;

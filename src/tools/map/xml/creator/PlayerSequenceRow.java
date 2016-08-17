@@ -29,8 +29,7 @@ class PlayerSequenceRow extends DynamicRow {
     textFieldSequenceName = new JTextField(sequenceName);
     comboBoxGameSequenceName = new JComboBox<>(gameSequenceNames);
     comboBoxPlayerName = new JComboBox<>(playerNames);
-    final Integer maxCountInteger = Integer.valueOf(maxCount);
-    textFieldMaxCount = new JTextField(maxCountInteger == null ? "0" : Integer.toString(maxCountInteger));
+    textFieldMaxCount = new JTextField(Integer.toString(maxCount));
 
     Dimension dimension = textFieldSequenceName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_MEDIUM;
@@ -83,7 +82,7 @@ class PlayerSequenceRow extends DynamicRow {
     MapXmlUIHelper.addNewFocusListenerForTextField(textFieldMaxCount, () -> {
       final String inputText = textFieldMaxCount.getText().trim();
       try {
-        final Integer newValue = Integer.parseInt(inputText);
+        final int newValue = Integer.parseInt(inputText);
         if (newValue < 0) {
           throw new NumberFormatException();
         }

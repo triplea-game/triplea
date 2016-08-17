@@ -38,10 +38,8 @@ class GameSettingsRow extends DynamicRow {
     comboBoxSettingName = new JComboBox<>(settingNames);
     comboBoxEditable = new JComboBox<>(selectionTrueFalse);
     textFieldValue = new JTextField(value);
-    final Integer minCountInteger = Integer.valueOf(minNumber);
-    textFieldMinNumber = new JTextField(minCountInteger == null ? "0" : Integer.toString(minCountInteger));
-    final Integer maxCountInteger = Integer.valueOf(maxNumber);
-    textFieldMaxNumber = new JTextField(maxCountInteger == null ? "0" : Integer.toString(maxCountInteger));
+    textFieldMinNumber = new JTextField(Integer.toString(minNumber));
+    textFieldMaxNumber = new JTextField(Integer.toString(maxNumber));
 
     Dimension dimension = comboBoxSettingName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_LARGE;
@@ -181,7 +179,7 @@ class GameSettingsRow extends DynamicRow {
     MapXmlUIHelper.addNewFocusListenerForTextField(textFieldMinNumber, () -> {
       final String inputText = textFieldMinNumber.getText().trim();
       try {
-        final Integer newValue = Integer.parseInt(inputText);
+        final int newValue = Integer.parseInt(inputText);
         if (newValue < 0) {
           throw new NumberFormatException();
         }
@@ -210,7 +208,7 @@ class GameSettingsRow extends DynamicRow {
     MapXmlUIHelper.addNewFocusListenerForTextField(textFieldMaxNumber, () -> {
       final String inputText = textFieldMaxNumber.getText().trim();
       try {
-        final Integer newValue = Integer.parseInt(inputText);
+        final int newValue = Integer.parseInt(inputText);
         if (newValue < 0) {
           throw new NumberFormatException();
         }

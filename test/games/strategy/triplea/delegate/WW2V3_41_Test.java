@@ -537,8 +537,8 @@ public class WW2V3_41_Test {
     // Remove all units from east poland
     removeFrom(eastPoland, eastPoland.getUnits().getUnits());
     // Get total number of units in territories to start
-    final Integer preCountIntPoland = poland.getUnits().size();
-    final Integer preCountIntBelorussia = belorussia.getUnits().size();
+    final int preCountIntPoland = poland.getUnits().size();
+    final int preCountIntBelorussia = belorussia.getUnits().size();
     // Get units
     final Collection<Unit> moveUnits = poland.getUnits().getUnits(infantryType, 3);
     moveUnits.addAll(poland.getUnits().getMatches(Matches.UnitCanBlitz));
@@ -553,8 +553,8 @@ public class WW2V3_41_Test {
     final String validResults = moveDelegate.move(moveUnits, new Route(poland, eastPoland, belorussia));
     assertValid(validResults);
     // Get number of units in territories after move (adjusted for movement)
-    final Integer postCountIntPoland = poland.getUnits().size() + 4;
-    final Integer postCountIntBelorussia = belorussia.getUnits().size() - 4;
+    final int postCountIntPoland = poland.getUnits().size() + 4;
+    final int postCountIntBelorussia = belorussia.getUnits().size() - 4;
     // Compare the number of units before and after
     assertEquals(preCountIntPoland, postCountIntPoland);
     assertEquals(preCountIntBelorussia, postCountIntBelorussia);

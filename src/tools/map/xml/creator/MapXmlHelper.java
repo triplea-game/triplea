@@ -328,7 +328,7 @@ public class MapXmlHelper {
     getPlayerAllianceMap().put(key, value);
   }
 
-  static void putPlayerInitResources(final String key, final Integer value) {
+  static void putPlayerInitResources(final String key, final int value) {
     getPlayerInitResourcesMap().put(key, value);
   }
 
@@ -356,7 +356,7 @@ public class MapXmlHelper {
     getUnitAttachmentsMap().put(key, value);
   }
 
-  static void putTerritoyProductions(final String key, final Integer value) {
+  static void putTerritoyProductions(final String key, final int value) {
     getTerritoyProductionsMap().put(key, value);
   }
 
@@ -1144,12 +1144,12 @@ public class MapXmlHelper {
 
   private static void addAttachmentsFromTerritoryProductions(final Map<String, List<String>> territoryAttachments) {
     for (final Entry<String, Integer> productionEntry : getTerritoyProductionsMap().entrySet()) {
-      final Integer production = productionEntry.getValue();
+      final int production = productionEntry.getValue();
       if (production > 0) {
         final String territoryName = productionEntry.getKey();
         final ArrayList<String> attachmentOptions = new ArrayList<>();
         attachmentOptions.add(territoryName);
-        attachmentOptions.add(production.toString());
+        attachmentOptions.add(Integer.toString(production));
         territoryAttachments.put("production_" + territoryName, attachmentOptions);
       }
     }
@@ -1254,9 +1254,9 @@ public class MapXmlHelper {
           if (sequenceProperties.getSecond().length() > 0) {
             step.setAttribute(XML_ATTR_ATTACHMENT_NAME_PLAYER, sequenceProperties.getSecond());
           }
-          final Integer maxRunCount = sequenceProperties.getThird();
+          final int maxRunCount = sequenceProperties.getThird();
           if (maxRunCount > 0) {
-            step.setAttribute(XML_ATTR_STEP_NAME_MAX_RUN_COUNT, maxRunCount.toString());
+            step.setAttribute(XML_ATTR_STEP_NAME_MAX_RUN_COUNT, Integer.toString(maxRunCount));
           }
           if (stepNameIndicatesNonCombatMove(sequenceStepKey)) {
             step.setAttribute(XML_ATTR_STEP_NAME_DISPLAY, "Non Combat Move");

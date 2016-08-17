@@ -29,7 +29,7 @@ public class ExampleAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTechCost(final Integer techCost) {
+  public void setTechCost(final int techCost) {
     m_techCost = techCost;
   }
 

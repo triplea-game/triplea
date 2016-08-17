@@ -25,7 +25,7 @@ public class PUInfo {
       final Map<Resource, Integer> resourceMap = new HashMap<>();
       while (resourceIterator.hasNext()) {
         final Resource currentResource = resourceIterator.next();
-        final Integer amountOfResource = currentPlayer.getResources().getQuantity(currentResource);
+        final int amountOfResource = currentPlayer.getResources().getQuantity(currentResource);
         resourceMap.put(currentResource, amountOfResource);
       }
       m_infoMap.put(currentPlayer, resourceMap);
@@ -61,7 +61,7 @@ public class PUInfo {
         final Iterator<Resource> resIterator = resourceMap.keySet().iterator();
         while (resIterator.hasNext()) {
           final Resource currentResource = resIterator.next();
-          final Integer amountResource = resourceMap.get(currentResource);
+          final int amountResource = resourceMap.get(currentResource);
           resourceWriter.write("," + amountResource);
         }
         resourceWriter.write("\r\n");

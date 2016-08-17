@@ -436,9 +436,7 @@ public class MapData implements Closeable {
         throw new IllegalStateException("Colors must be a 6 digit hex number, eg FF0011, not:" + colorString);
       }
       try {
-        final Integer colorInt = Integer.decode("0x" + colorString);
-        final Color color = new Color(colorInt);
-        return color;
+        return new Color(Integer.decode("0x" + colorString));
       } catch (final NumberFormatException nfe) {
         throw new IllegalStateException("Player colors must be a 6 digit hex number, eg FF0011");
       }

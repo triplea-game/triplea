@@ -123,7 +123,7 @@ public class RandomStatsDetails implements Serializable {
       final String title, final String indentation) {
     final StringBuilder sb = new StringBuilder();
     sb.append(indentation).append(title).append("\n");
-    for (final Integer key : new TreeSet<>(diceRolls.keySet())) {
+    for (final int key : new TreeSet<>(diceRolls.keySet())) {
       final int value = diceRolls.getInt(key);
       sb.append(indentation).append(indentation).append(indentation).append(key).append(" was rolled ").append(value)
           .append(" times").append("\n");
@@ -174,7 +174,7 @@ public class RandomStatsDetails implements Serializable {
     panel.setBorder(BorderFactory.createEtchedBorder());
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     panel.add(new JLabel("<html><b>" + title + "</b></html>"));
-    for (final Integer key : new TreeSet<>(diceRolls.keySet())) {
+    for (final int key : new TreeSet<>(diceRolls.keySet())) {
       final int value = diceRolls.getInt(key);
       final JLabel label = new JLabel(key + " was rolled " + value + " times");
       panel.add(label);

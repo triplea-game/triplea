@@ -19,7 +19,7 @@ public class BattleRecordsList extends GameDataComponent {
     super(data);
   }
 
-  public static void addRecords(final Map<Integer, BattleRecords> recordList, final Integer currentRound,
+  public static void addRecords(final Map<Integer, BattleRecords> recordList, final int currentRound,
       final BattleRecords other) {
     final BattleRecords current = recordList.get(currentRound);
     if (current == null) {
@@ -30,7 +30,7 @@ public class BattleRecordsList extends GameDataComponent {
     recordList.put(currentRound, current);
   }
 
-  public static void removeRecords(final Map<Integer, BattleRecords> recordList, final Integer round,
+  public static void removeRecords(final Map<Integer, BattleRecords> recordList, final int round,
       final BattleRecords other) {
     final BattleRecords current = recordList.get(round);
     if (current == null) {

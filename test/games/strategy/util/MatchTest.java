@@ -15,19 +15,19 @@ public class MatchTest {
   Match<Integer> m_pos = new Match<Integer>() {
     @Override
     public boolean match(final Integer o) {
-      return o.intValue() > 0;
+      return o > 0;
     }
   };
   Match<Integer> m_neg = new Match<Integer>() {
     @Override
     public boolean match(final Integer o) {
-      return o.intValue() < 0;
+      return o < 0;
     }
   };
   Match<Integer> m_zero = new Match<Integer>() {
     @Override
     public boolean match(final Integer o) {
-      return o.intValue() == 0;
+      return o == 0;
     }
   };
 

@@ -512,7 +512,7 @@ public class DiceRoll implements Externalizable {
     return rVal;
   }
 
-  public static Integer getTotalPower(final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap,
+  public static int getTotalPower(final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap,
       final GameData data) {
     return getTotalPowerAndRolls(unitPowerAndRollsMap, data).getFirst();
   }
@@ -767,7 +767,7 @@ public class DiceRoll implements Externalizable {
       if (friendly) {
         // favor rolls over strength
         if (u1.getRoll() || u2.getRoll()) {
-          final Integer u1Bonus = u1.getRoll() && u1CanBonus ? u1.getBonus() : 0;
+          final int u1Bonus = u1.getRoll() && u1CanBonus ? u1.getBonus() : 0;
           final Integer u2Bonus = u2.getRoll() && u2CanBonus ? u2.getBonus() : 0;
           compareTo = u2Bonus.compareTo(u1Bonus);
           if (compareTo != 0) {
@@ -775,7 +775,7 @@ public class DiceRoll implements Externalizable {
           }
         }
         if (u1.getStrength() || u2.getStrength()) {
-          final Integer u1Bonus = u1.getStrength() && u1CanBonus ? u1.getBonus() : 0;
+          final int u1Bonus = u1.getStrength() && u1CanBonus ? u1.getBonus() : 0;
           final Integer u2Bonus = u2.getStrength() && u2CanBonus ? u2.getBonus() : 0;
           compareTo = u2Bonus.compareTo(u1Bonus);
           if (compareTo != 0) {
@@ -785,7 +785,7 @@ public class DiceRoll implements Externalizable {
       } else {
         if (u1.getRoll() || u2.getRoll()) {
           final Integer u1Bonus = u1.getRoll() && u1CanBonus ? u1.getBonus() : 0;
-          final Integer u2Bonus = u2.getRoll() && u2CanBonus ? u2.getBonus() : 0;
+          final int u2Bonus = u2.getRoll() && u2CanBonus ? u2.getBonus() : 0;
           compareTo = u1Bonus.compareTo(u2Bonus);
           if (compareTo != 0) {
             return compareTo;
@@ -793,7 +793,7 @@ public class DiceRoll implements Externalizable {
         }
         if (u1.getStrength() || u2.getStrength()) {
           final Integer u1Bonus = u1.getStrength() && u1CanBonus ? u1.getBonus() : 0;
-          final Integer u2Bonus = u2.getStrength() && u2CanBonus ? u2.getBonus() : 0;
+          final int u2Bonus = u2.getStrength() && u2CanBonus ? u2.getBonus() : 0;
           compareTo = u1Bonus.compareTo(u2Bonus);
           if (compareTo != 0) {
             return compareTo;
@@ -818,7 +818,7 @@ public class DiceRoll implements Externalizable {
       final HashSet<UnitType> types1 = u1.getUnitType();
       final HashSet<UnitType> types2 = u2.getUnitType();
       final Integer s1 = types1 == null ? 0 : types1.size();
-      final Integer s2 = types2 == null ? 0 : types2.size();
+      final int s2 = types2 == null ? 0 : types2.size();
       compareTo = s1.compareTo(s2);
       if (compareTo != 0) {
         return compareTo;
@@ -830,7 +830,7 @@ public class DiceRoll implements Externalizable {
       final UnitType unitType2 = (UnitType) u2.getAttachedTo();
       final UnitAttachment ua1 = UnitAttachment.get(unitType1);
       final UnitAttachment ua2 = UnitAttachment.get(unitType2);
-      final Integer unitPower1;
+      final int unitPower1;
       final Integer unitPower2;
       if (u1.getDefence()) {
         unitPower1 = ua1.getDefenseRolls(PlayerID.NULL_PLAYERID) * ua1.getDefense(PlayerID.NULL_PLAYERID);

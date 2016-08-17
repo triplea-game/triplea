@@ -191,12 +191,12 @@ public class TripleAUnit extends Unit {
   }
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  public void setAlreadyMoved(final Integer alreadyMoved) {
+  public void setAlreadyMoved(final int alreadyMoved) {
     m_alreadyMoved = alreadyMoved;
   }
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  public void setBonusMovement(final Integer bonusMovement) {
+  public void setBonusMovement(final int bonusMovement) {
     m_bonusMovement = bonusMovement;
   }
 
@@ -238,7 +238,7 @@ public class TripleAUnit extends Unit {
   }
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  public void setUnitDamage(final Integer unitDamage) {
+  public void setUnitDamage(final int unitDamage) {
     m_unitDamage = unitDamage;
   }
 
@@ -283,7 +283,7 @@ public class TripleAUnit extends Unit {
   }
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  public void setMaxScrambleCount(final Integer value) {
+  public void setMaxScrambleCount(final int value) {
     m_maxScrambleCount = value;
   }
 
@@ -292,7 +292,7 @@ public class TripleAUnit extends Unit {
   }
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  public void setLaunched(final Integer value) {
+  public void setLaunched(final int value) {
     m_launched = value;
   }
 

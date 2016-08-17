@@ -159,7 +159,7 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
     private Map<String, Integer> playerPlacements = null;
 
     public boolean placementsExist() {
-      for (final Integer value : playerPlacements.values()) {
+      for (final int value : playerPlacements.values()) {
         if (value > 0) {
           return true;
         }
@@ -242,9 +242,9 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
             if (newValue.equals(prevValue)) {
               return;
             }
-            final Integer newValueInteger;
+            final int newValueInteger;
             try {
-              newValueInteger = Integer.valueOf(newValue);
+              newValueInteger = Integer.parseInt(newValue);
               if (newValueInteger < 0) {
                 throw new NumberFormatException();
               }

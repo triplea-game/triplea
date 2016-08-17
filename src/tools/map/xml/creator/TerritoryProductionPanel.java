@@ -76,7 +76,7 @@ public class TerritoryProductionPanel extends ImageScrollPanePanel {
     final String inputText = JOptionPane.showInputDialog(null,
         "Enter the new production value for territory " + territoryName + ":", (currValue != null ? currValue : 0));
     try {
-      final Integer newValue = Integer.parseInt(inputText);
+      final int newValue = Integer.parseInt(inputText);
       MapXmlHelper.putTerritoyProductions(territoryName, newValue);
     } catch (final NumberFormatException nfe) {
       JOptionPane.showMessageDialog(null, "'" + inputText + "' is no integer value.", "Input error",

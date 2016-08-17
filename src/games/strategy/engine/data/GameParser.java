@@ -908,12 +908,8 @@ public class GameParser {
           // definition
           try {
             // test if it is an integer
-            final Integer integer = Integer.parseInt(value);
-            int intValue = 0;
-            if (integer != null) {
-              intValue = integer;
-            }
-            properties.set(property, intValue);
+            final int integer = Integer.parseInt(value);
+            properties.set(property, integer);
           } catch (final NumberFormatException e) {
             // then it must be a string
             properties.set(property, value);
