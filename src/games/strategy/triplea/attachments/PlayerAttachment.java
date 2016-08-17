@@ -391,8 +391,6 @@ public class PlayerAttachment extends DefaultAttachment {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
       if (tempPlayer != null) {
         m_giveUnitControl.add(tempPlayer);
-      } else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false")) {
-        m_giveUnitControl.clear();
       } else {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
       }
