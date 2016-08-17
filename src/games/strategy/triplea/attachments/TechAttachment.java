@@ -259,7 +259,7 @@ public class TechAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameData data) throws GameParseException {}
 
-  public static boolean isMechanizedInfantry(final PlayerID player) {
+  public static boolean isInfantryInfantry(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     if (ta == null) {
       return false;

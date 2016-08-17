@@ -1768,7 +1768,7 @@
 			transportCapacity					values: the amount of space of land units this unit can carry. can be used with sea or air units, except that air units will also require isAirTransport.
 			isCombatTransport					values: considers a unit to be a combat sea unit, even if it has transport capacity, for the purposes of convoys and restricted attack on transports
 			isAirTransportable							values: does nothing
-			isMechanized						values: does nothing
+			isInfantry						values: does nothing
 			
 			canScramble							values: allows the aircraft to enter a surrounding sea zone if the enemy is doing an attack on or from the surrounding sea zone
 			maxScrambleDistance					values: the distance out an aircraft can scramble. anything higher than 1 is not supported well at this point.
@@ -1898,9 +1898,9 @@
 						<!-- canBeCapturedOnEnteringBy will allow a unit to be captured from one player to another, if the specified player enters a territory with captureUnitOnEnteringBy
 								must be a list of Players who this unit can be given to.  example: value="Russians:Chinese" 
 						<option name="canBeCapturedOnEnteringBy" value="Americans:British"/>-->
-						<!-- isAirTransportable and isMechanized currently do NOTHING, and are only kept for backwards compatibility
+						<!-- isAirTransportable and isInfantry currently do NOTHING, and are only kept for backwards compatibility
 						<option name="isAirTransportable" value="false"/>
-						<option name="isMechanized" value="false"/> -->
+						<option name="isInfantry" value="false"/> -->
 				</attachment>
 				
 				
