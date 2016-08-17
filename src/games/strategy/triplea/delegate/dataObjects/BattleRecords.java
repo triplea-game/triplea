@@ -38,7 +38,8 @@ public class BattleRecords implements Serializable {
   }
 
   @SerializationProxySupport
-  private static class SerializationProxy {
+  private static class SerializationProxy implements Serializable {
+    private static final long serialVersionUID = 3837818110273155404L;
     private final HashMap<PlayerID, HashMap<GUID, BattleRecord>> records;
     public SerializationProxy(BattleRecords battleRecords) {
       this.records= battleRecords.m_records;
