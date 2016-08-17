@@ -225,7 +225,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     // TODO: this might be legacy code that can be deleted since we now keep paratrooper dependencies til they land (but
     // need to double
     // check)
-    if (TechAttachment.isParatroopers(m_attacker)) {
+    if (TechAttachment.isAirTransportableers(m_attacker)) {
       final Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
       final Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsAirTransportable);
       if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
@@ -506,7 +506,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
         steps.add(SUICIDE_DEFEND);
         steps.add(m_attacker.getName() + SELECT_CASUALTIES_SUICIDE);
       }
-      if (!m_battleSite.isWater() && TechAttachment.isParatroopers(m_attacker)) {
+      if (!m_battleSite.isWater() && TechAttachment.isAirTransportableers(m_attacker)) {
         final Collection<Unit> bombers =
             Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAirTransport);
         if (!bombers.isEmpty()) {
@@ -2364,7 +2364,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
   }
 
   private void landParatroops(final IDelegateBridge bridge) {
-    if (TechAttachment.isParatroopers(m_attacker)) {
+    if (TechAttachment.isAirTransportableers(m_attacker)) {
       final Collection<Unit> airTransports =
           Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAirTransport);
       if (!airTransports.isEmpty()) {
