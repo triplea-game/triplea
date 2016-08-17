@@ -867,7 +867,7 @@ public class MovePanel extends AbstractMovePanel {
         final Route route = getRoute(getFirstSelectedTerritory(), t, selectedUnits);
         // Load Bombers with paratroops
         if ((!nonCombat || IsParatroopersCanMoveDuringNonCombat(getData()))
-            && TechAttachment.isAirTransportableers(getCurrentPlayer())
+            && TechAttachment.isAirTransportable(getCurrentPlayer())
             && Match.someMatch(selectedUnits,
                 new CompositeMatchAnd<>(Matches.UnitIsAirTransport, Matches.unitHasNotMoved))) {
           final PlayerID player = getCurrentPlayer();

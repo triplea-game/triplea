@@ -267,7 +267,7 @@ public class TechAttachment extends DefaultAttachment {
     return ta.getMechanizedInfantry();
   }
 
-  public static boolean isAirTransportableers(final PlayerID player) {
+  public static boolean isAirTransportable(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     if (ta == null) {
       return false;
