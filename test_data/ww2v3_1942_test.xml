@@ -1477,7 +1477,7 @@
 					
 					<attachment name="territoryAttachment" attachTo="Kiangsu" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<option name="victoryCity" value="true"/>						
+						<option name="victoryCity" value="1"/>						
                         <option name="originalOwner" value="Chinese"/>
                     </attachment>
 					
@@ -1589,7 +1589,7 @@
                         <option name="production" value="6"/>
                         <option name="unitProduction" value="6"/>
 						<option name="capital" value="Russians"/> 
-                        <option name="victoryCity" value="true"/>
+                        <option name="victoryCity" value="1"/>
                     </attachment>
 					
 					<attachment name="territoryAttachment" attachTo="Sahara" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
