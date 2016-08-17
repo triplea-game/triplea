@@ -2546,7 +2546,7 @@
 						<boolean/>
 				</property>
 
-				<property name="Units repair at beginning of round" value="true" editable="false">
+				<property name="Units Repair Hits Start Turn" value="true" editable="false">
 						<boolean/>
 				</property>
 

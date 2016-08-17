@@ -175,7 +175,7 @@ public interface Constants {
   String MORE_CONSTRUCTIONS_WITHOUT_FACTORY = "More Constructions without Factory";
   String MORE_CONSTRUCTIONS_WITH_FACTORY = "More Constructions with Factory";
   String UNIT_PLACEMENT_RESTRICTIONS = "Unit Placement Restrictions";
-  String TWO_HIT_BATTLESHIPS_REPAIR_BEGINNING_OF_TURN = "Units repair at beginning of round";
+  String TWO_HIT_BATTLESHIPS_REPAIR_BEGINNING_OF_TURN = "Units Repair Hits Start Turn";
   String TWO_HITPOINT_UNITS_REQUIRE_REPAIR_FACILITIES =
       "Two HitPoint Units Require Repair Facilities";
   String LL_TECH_ONLY = "Low Luck for Technology";
