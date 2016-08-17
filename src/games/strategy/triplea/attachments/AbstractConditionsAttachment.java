@@ -331,10 +331,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     return m_chance;
   }
 
-  public void resetChance() {
-    m_chance = DEFAULT_CHANCE;
-  }
-
   public int getChanceToHit() {
     return getInt(getChance().split(":")[0]);
   }
@@ -355,10 +351,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 
   public int getChanceIncrementOnFailure() {
     return m_chanceIncrementOnFailure;
-  }
-
-  public void resetChanceIncrementOnFailure() {
-    m_chanceIncrementOnFailure = 0;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)

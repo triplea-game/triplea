@@ -253,17 +253,8 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_isImpassable = getBool(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsImpassable(final Boolean value) {
-    m_isImpassable = value;
-  }
-
   public boolean getIsImpassable() {
     return m_isImpassable;
-  }
-
-  public void resetIsImpassable() {
-    m_isImpassable = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -309,18 +300,10 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_originalFactory = getBool(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setOriginalFactory(final Boolean value) {
-    m_originalFactory = value;
-  }
-
   public boolean getOriginalFactory() {
     return m_originalFactory;
   }
 
-  public void resetOriginalFactory() {
-    m_originalFactory = false;
-  }
 
   /**
    * setProduction (or just "production" in a map xml) sets both the m_production AND the m_unitProduction of a
@@ -336,18 +319,6 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_unitProduction = m_production;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setProduction(final Integer value) {
-    m_production = value;
-    // do NOT remove. unitProduction should always default to production
-    m_unitProduction = m_production;
-  }
-
-  public void resetProduction() {
-    m_production = 0;
-    m_unitProduction = 0;
-  }
-
   /**
    * Sets only m_production
    *
@@ -358,36 +329,8 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_production = getInt(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setProductionOnly(final int value) {
-    m_production = value;
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setProductionOnly(final Integer value) {
-    m_production = value;
-  }
-
   public int getProduction() {
     return m_production;
-  }
-
-  /**
-   * @deprecated Use getProduction() instead.
-   * DO NOT DELETE THIS!
-   */
-  @Deprecated
-  public int getProductionOnly() {
-    return getProduction();
-  }
-
-  public void resetProductionOnly() {
-    m_production = 0;
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUnitProduction(final Integer value) {
-    m_unitProduction = value;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -397,10 +340,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   public int getUnitProduction() {
     return m_unitProduction;
-  }
-
-  public void resetUnitProduction() {
-    m_unitProduction = 0;
   }
 
   /**
@@ -838,5 +777,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   @Override
   public void validate(final GameData data) throws GameParseException {}
-  
+
+
 }
