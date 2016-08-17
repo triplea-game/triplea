@@ -136,14 +136,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_attackBonus;
   }
 
-  public void clearAttackBonus() {
-    m_attackBonus.clear();
-  }
-
-  public void resetAttackBonus() {
-    m_attackBonus = new IntegerMap<>();
-  }
-
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
@@ -174,13 +166,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_defenseBonus;
   }
 
-  public void clearDefenseBonus() {
-    m_defenseBonus.clear();
-  }
-
-  public void resetDefenseBonus() {
-    m_defenseBonus = new IntegerMap<>();
-  }
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
@@ -212,14 +197,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_movementBonus;
   }
 
-  public void clearMovementBonus() {
-    m_movementBonus.clear();
-  }
-
-  public void resetMovementBonus() {
-    m_movementBonus = new IntegerMap<>();
-  }
-
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
@@ -249,15 +226,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public IntegerMap<UnitType> getRadarBonus() {
     return m_radarBonus;
   }
-
-  public void clearRadarBonus() {
-    m_radarBonus.clear();
-  }
-
-  public void resetRadarBonus() {
-    m_radarBonus = new IntegerMap<>();
-  }
-
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
@@ -286,14 +254,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public IntegerMap<UnitType> getAirAttackBonus() {
     return m_airAttackBonus;
-  }
-
-  public void clearAirAttackBonus() {
-    m_airAttackBonus.clear();
-  }
-
-  public void resetAirAttackBonus() {
-    m_airAttackBonus = new IntegerMap<>();
   }
 
   /**
@@ -326,14 +286,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_airDefenseBonus;
   }
 
-  public void clearAirDefenseBonus() {
-    m_airDefenseBonus.clear();
-  }
-
-  public void resetAirDefenseBonus() {
-    m_airDefenseBonus = new IntegerMap<>();
-  }
-
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
@@ -364,14 +316,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_productionBonus;
   }
 
-  public void clearProductionBonus() {
-    m_productionBonus.clear();
-  }
-
-  public void resetProductionBonus() {
-    m_productionBonus = new IntegerMap<>();
-  }
-
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setMinimumTerritoryValueForProductionBonus(final String value) throws GameParseException {
     final int v = getInt(value);
@@ -382,18 +326,10 @@ public class TechAbilityAttachment extends DefaultAttachment {
     m_minimumTerritoryValueForProductionBonus = v;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setMinimumTerritoryValueForProductionBonus(final Integer value) {
-    m_minimumTerritoryValueForProductionBonus = value;
-  }
-
   public int getMinimumTerritoryValueForProductionBonus() {
     return m_minimumTerritoryValueForProductionBonus;
   }
 
-  public void resetMinimumTerritoryValueForProductionBonus() {
-    m_minimumTerritoryValueForProductionBonus = -1;
-  }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setRepairDiscount(final String value) throws GameParseException {
@@ -404,17 +340,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     m_repairDiscount = v;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRepairDiscount(final Integer value) {
-    m_repairDiscount = value;
-  }
-
   public int getRepairDiscount() {
     return m_repairDiscount;
-  }
-
-  public void resetRepairDiscount() {
-    m_repairDiscount = -1;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -426,17 +353,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     m_warBondDiceSides = v;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setWarBondDiceSides(final Integer value) {
-    m_warBondDiceSides = value;
-  }
-
   public int getWarBondDiceSides() {
     return m_warBondDiceSides;
-  }
-
-  public void resetWarBondDiceSides() {
-    m_warBondDiceSides = -1;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -448,17 +366,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
     m_warBondDiceNumber = v;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setWarBondDiceNumber(final Integer value) {
-    m_warBondDiceNumber = value;
-  }
 
   public int getWarBondDiceNumber() {
     return m_warBondDiceNumber;
-  }
-
-  public void resetWarBondDiceNumber() {
-    m_warBondDiceNumber = 0;
   }
 
   /**
@@ -491,13 +401,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_rocketDiceNumber;
   }
 
-  public void clearRocketDiceNumber() {
-    m_rocketDiceNumber.clear();
-  }
-
-  public void resetRocketDiceNumber() {
-    m_rocketDiceNumber = new IntegerMap<>();
-  }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setRocketDistance(final String value) throws GameParseException {
@@ -508,17 +411,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     m_rocketDistance = v;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRocketDistance(final Integer value) {
-    m_rocketDistance = value;
-  }
-
   public int getRocketDistance() {
     return m_rocketDistance;
-  }
-
-  public void resetRocketDistance() {
-    m_rocketDistance = 0;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -537,10 +431,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public int getRocketNumberPerTerritory() {
     return m_rocketNumberPerTerritory;
-  }
-
-  public void resetRocketNumberPerTerritory() {
-    m_rocketNumberPerTerritory = 0;
   }
 
   /**
@@ -585,30 +475,13 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_unitAbilitiesGained;
   }
 
-  public void clearUnitAbilitiesGained() {
-    m_unitAbilitiesGained.clear();
-  }
-
-  public void resetUnitAbilitiesGained() {
-    m_unitAbilitiesGained = new HashMap<>();
-  }
-
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAirborneForces(final String value) throws GameParseException {
     m_airborneForces = getBool(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAirborneForces(final Boolean value) {
-    m_airborneForces = value;
-  }
-
   public boolean getAirborneForces() {
     return m_airborneForces;
-  }
-
-  public void resetAirborneForces() {
-    m_airborneForces = false;
   }
 
   /**
@@ -641,14 +514,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_airborneCapacity;
   }
 
-  public void clearAirborneCapacity() {
-    m_airborneCapacity.clear();
-  }
-
-  public void resetAirborneCapacity() {
-    m_airborneCapacity = new IntegerMap<>();
-  }
-
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
@@ -673,14 +538,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_airborneTypes;
   }
 
-  public void clearAirborneTypes() {
-    m_airborneTypes.clear();
-  }
-
-  public void resetAirborneTypes() {
-    m_airborneTypes = new HashSet<>();
-  }
-
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAirborneDistance(final String value) throws GameParseException {
     final int v = getInt(value);
@@ -690,17 +547,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     m_airborneDistance = v;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAirborneDistance(final Integer value) {
-    m_airborneDistance = value;
-  }
-
   public int getAirborneDistance() {
     return m_airborneDistance;
-  }
-
-  public void resetAirborneDistance() {
-    m_airborneDistance = 0;
   }
 
   /**
@@ -725,14 +573,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public HashSet<UnitType> getAirborneBases() {
     return m_airborneBases;
-  }
-
-  public void clearAirborneBases() {
-    m_airborneBases.clear();
-  }
-
-  public void resetAirborneBases() {
-    m_airborneBases = new HashSet<>();
   }
 
   /**
@@ -765,14 +605,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_airborneTargettedByAA;
   }
 
-  public void clearAirborneTargettedByAA() {
-    m_airborneTargettedByAA.clear();
-  }
-
-  public void resetAirborneTargettedByAA() {
-    m_airborneTargettedByAA = new HashMap<>();
-  }
-
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
@@ -801,14 +633,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public IntegerMap<UnitType> getAttackRollsBonus() {
     return m_attackRollsBonus;
-  }
-
-  public void clearAttackRollsBonus() {
-    m_attackRollsBonus.clear();
-  }
-
-  public void resetAttackRollsBonus() {
-    m_attackRollsBonus = new IntegerMap<>();
   }
 
   /**
@@ -841,14 +665,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_defenseRollsBonus;
   }
 
-  public void clearDefenseRollsBonus() {
-    m_defenseRollsBonus.clear();
-  }
-
-  public void resetDefenseRollsBonus() {
-    m_defenseRollsBonus = new IntegerMap<>();
-  }
-
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
@@ -879,13 +695,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_bombingBonus;
   }
 
-  public void clearBombingBonus() {
-    m_bombingBonus.clear();
-  }
-
-  public void resetBombingBonus() {
-    m_bombingBonus = new IntegerMap<>();
-  }
 
   // Static Methods for interpreting data in attachments
   public static int getAttackBonus(final UnitType ut, final PlayerID player, final GameData data) {

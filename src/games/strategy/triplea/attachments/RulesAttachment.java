@@ -231,13 +231,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return m_battle;
   }
 
-  public void clearBattle() {
-    m_battle.clear();
-  }
-
-  public void resetBattle() {
-    m_battle = new ArrayList<>();
-  }
 
   /**
    * Condition to check if a certain relationship exists between 2 players.
@@ -285,13 +278,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return m_relationship;
   }
 
-  public void clearRelationship() {
-    m_relationship.clear();
-  }
-
-  public void resetRelationship() {
-    m_relationship = new ArrayList<>();
-  }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAlliedOwnershipTerritories(final String value) throws GameParseException {
@@ -310,10 +296,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   public String[] getAlliedOwnershipTerritories() {
     return m_alliedOwnershipTerritories;
-  }
-
-  public void resetAlliedOwnershipTerritories() {
-    m_alliedOwnershipTerritories = null;
   }
 
   // exclusion types = controlled, controlledNoWater, original, all, or list
@@ -383,10 +365,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return m_enemyExclusionTerritories;
   }
 
-  public void resetEnemyExclusionTerritories() {
-    m_enemyExclusionTerritories = null;
-  }
-
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setDirectPresenceTerritories(final String value) throws GameParseException {
     if (value == null) {
@@ -429,10 +407,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return m_alliedPresenceTerritories;
   }
 
-  public void resetAlliedPresenceTerritories() {
-    m_alliedPresenceTerritories = null;
-  }
-
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setEnemyPresenceTerritories(final String value) throws GameParseException {
     if (value == null) {
@@ -450,10 +424,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   public String[] getEnemyPresenceTerritories() {
     return m_enemyPresenceTerritories;
-  }
-
-  public void resetEnemyPresenceTerritories() {
-    m_enemyPresenceTerritories = null;
   }
 
   // exclusion types = original or list
@@ -499,10 +469,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return m_directOwnershipTerritories;
   }
 
-  public void resetDirectOwnershipTerritories() {
-    m_directOwnershipTerritories = null;
-  }
-
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    *
@@ -540,14 +506,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   public IntegerMap<String> getUnitPresence() {
     return m_unitPresence;
-  }
-
-  public void clearUnitPresence() {
-    m_unitPresence.clear();
-  }
-
-  public void resetUnitPresence() {
-    m_unitPresence = new IntegerMap<>();
   }
 
   public int getAtWarCount() {
@@ -595,10 +553,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   public HashSet<PlayerID> getAtWarPlayers() {
     return m_atWarPlayers;
-  }
-
-  public void resetAtWarPlayers() {
-    m_atWarPlayers = null;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)

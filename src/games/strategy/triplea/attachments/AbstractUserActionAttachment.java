@@ -75,10 +75,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     return m_text;
   }
 
-  public void resetText() {
-    m_text = "";
-  }
-
   /**
    * @param s
    *        the amount you need to pay to perform the action
@@ -86,11 +82,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setCostPU(final String s) {
     m_costPU = getInt(s);
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCostPU(final Integer s) {
-    m_costPU = s;
   }
 
   /**
@@ -135,14 +126,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     return m_actionAccept;
   }
 
-  public void clearActionAccept() {
-    m_actionAccept.clear();
-  }
-
-  public void resetActionAccept() {
-    m_actionAccept = new ArrayList<>();
-  }
-
   /**
    * @param s
    *        the amount of times you can try this Action per Round
@@ -150,50 +133,9 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAttemptsPerTurn(final String s) {
     m_attemptsPerTurn = getInt(s);
-    setAttemptsLeftThisTurn(m_attemptsPerTurn);
+    m_attemptsLeftThisTurn = m_attemptsPerTurn;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAttemptsPerTurn(final Integer s) {
-    m_attemptsPerTurn = s;
-    setAttemptsLeftThisTurn(m_attemptsPerTurn);
-  }
-
-  /**
-   * @return the amount of times you can try this Action per Round
-   */
-  public int getAttemptsPerTurn() {
-    return m_attemptsPerTurn;
-  }
-
-  public void resetAttemptsPerTurn() {
-    m_attemptsPerTurn = 1;
-  }
-
-  /**
-   * @param attempts
-   *        left this turn
-   */
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  public void setAttemptsLeftThisTurn(final int attempts) {
-    m_attemptsLeftThisTurn = attempts;
-  }
-
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  public void setAttemptsLeftThisTurn(final Integer attempts) {
-    m_attemptsLeftThisTurn = attempts;
-  }
-
-  /**
-   * @return attempts that are left this turn
-   */
-  public int getAttemptsLeftThisTurn() {
-    return m_attemptsLeftThisTurn;
-  }
-
-  public void resetAttemptsLeftThisTurn() {
-    m_attemptsLeftThisTurn = 1;
-  }
 
   public void resetAttempts(final IDelegateBridge aBridge) {
     if (m_attemptsLeftThisTurn != m_attemptsPerTurn) {
