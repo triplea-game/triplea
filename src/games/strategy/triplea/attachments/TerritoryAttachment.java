@@ -293,18 +293,7 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setVictoryCity(final String value) {
-    if (value.equalsIgnoreCase("false")) {
-      m_victoryCity = 0;
-    } else if (value.equalsIgnoreCase("true")) {
-      m_victoryCity = 1;
-    } else {
-      m_victoryCity = getInt(value);
-    }
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setVictoryCity(final Integer value) {
-    m_victoryCity = value;
+    m_victoryCity = getInt(value);
   }
 
   public int getVictoryCity() {

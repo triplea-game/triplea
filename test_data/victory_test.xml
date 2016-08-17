@@ -2307,7 +2307,7 @@
 						<!-- capital uses an image located in the "flags" folder of a map called "<nation>_large.png", and the location is determined in a file called "capitols.txt" in the map's root directory -->
                         <option name="capital" value="Germans"/>
 						<!-- victoryCity uses an image located in the "misc" folder of a map called "vc.png", and the location is determined in a file called "vc.txt" in the map's root directory -->
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
 						<!--- originalFactory means that the original controller of the territory may produce infinite units there, however if it is captured the opponent may only produce as normal, not infinite units 
 						<option name="originalFactory" value="true"/> -->
 						<!-- navalBase territory attachment works according to original pacific rules: it increases the non-combat movement of naval units by +1 IF they go from friendly naval base TO friendly naval base
@@ -2341,7 +2341,7 @@
 
                 <attachment name="territoryAttachment" attachTo="Australia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment"  type="territory">
                         <option name="production" value="3"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Kenya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2377,7 +2377,7 @@
 
                 <attachment name="territoryAttachment" attachTo="India" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Soviet Far East" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2388,7 +2388,7 @@
                 <attachment name="territoryAttachment" attachTo="Italy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="8"/>
                         <option name="capital" value="Italians"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                         <!--<option name="unitProduction" value="8"/>-->
                 </attachment>
 
@@ -2408,7 +2408,7 @@
 
                 <attachment name="territoryAttachment" attachTo="Philipine Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Archangel" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2442,19 +2442,19 @@
 
                 <attachment name="territoryAttachment" attachTo="Western United States" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="10"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                         <!--<option name="unitProduction" value="10"/>-->
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Karelia S.S.R." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Kwangtung" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
-						<option name="victoryCity" value="true"/>
-                        <option name="originalOwner" value="Chinese"/>
+						<option name="victoryCity" value="1"/>
+ 			                       <option name="originalOwner" value="Chinese"/>
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Brazil" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2475,7 +2475,7 @@
 
                 <attachment name="territoryAttachment" attachTo="Hawaiian Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="East Indies" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2523,13 +2523,13 @@
                 <attachment name="territoryAttachment" attachTo="United Kingdom" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="8"/>
                         <option name="capital" value="British"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                         <!--<option name="unitProduction" value="8"/>-->
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Western Europe" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="6"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Rio De Oro" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2565,7 +2565,7 @@
 
                 <attachment name="territoryAttachment" attachTo="Caucus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="4"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                         <!--<option name="unitProduction" value="4"/>-->
 						<!-- you can have multiple capitals per country, and can modify if they capture or destroy their PUs, and how many capitals are needed for that to happen -->
                         <!--<option name="capital" value="Russians"/>-->
@@ -2633,7 +2633,7 @@
                 <attachment name="territoryAttachment" attachTo="Eastern United States" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="12"/>
                         <option name="capital" value="Americans"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                         <!--<option name="unitProduction" value="12"/>-->
                 </attachment>
 
@@ -2649,7 +2649,7 @@
                 <attachment name="territoryAttachment" attachTo="Russia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="8"/>
                         <option name="capital" value="Russians"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                         <!--<option name="unitProduction" value="8"/>-->
                 </attachment>
 
@@ -2696,7 +2696,7 @@
                 <attachment name="territoryAttachment" attachTo="Japan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="8"/>
                         <option name="capital" value="Japanese"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                         <!--<option name="unitProduction" value="8"/>-->
                 </attachment>
 
@@ -2731,7 +2731,6 @@
 				<!-- Convoy Centers are simply sea zones with income. if you control your convoy zone, you get the income from it, but if an enemy takes the zone they do not get any income, they just deny you the income. can only be entered during combat movement -->
                 <attachment name="territoryAttachment" attachTo="3 Sea Zone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<option name="originalOwner" value="Russians"/>
                 </attachment>
 				<attachment name="territoryAttachment" attachTo="4 Sea Zone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
