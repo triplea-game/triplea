@@ -45,8 +45,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
   // strings
   // roll or strength
   private String m_dice = null;
-  // allied or enemy
-  private String m_faction = null;
   // offence or defence
   private String m_side = null;
 
@@ -111,7 +109,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   public void setUnitType(final HashSet<UnitType> value) {
     m_unitType = value;
   }
-  
+
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setFaction(final String faction) throws GameParseException {
     if (faction == null) {
@@ -130,11 +128,9 @@ public class UnitSupportAttachment extends DefaultAttachment {
         throw new GameParseException(faction + " faction must be allied, or enemy" + thisErrorMsg());
       }
     }
-    m_faction = faction;
   }
 
   public void resetFaction() {
-    m_faction = null;
     m_allied = false;
     m_enemy = false;
   }
