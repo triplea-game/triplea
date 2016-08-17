@@ -303,7 +303,7 @@ public class MoveValidator {
             new CompositeMatchAnd<>(nonFriendlyTerritories, territoryIsNotEnd);
         final Match<Territory> foughtOver = Matches.territoryWasFoughOver(AbstractMoveDelegate.getBattleTracker(data));
         final Match<Territory> notEndWasFought = new CompositeMatchAnd<>(territoryIsNotEnd, foughtOver);
-        final Boolean wasStartFoughtOver =
+        final boolean wasStartFoughtOver =
             AbstractMoveDelegate.getBattleTracker(data).wasConquered(route.getStart())
                 || AbstractMoveDelegate.getBattleTracker(data).wasBlitzed(route.getStart());
         nonBlitzingUnits.addAll(Match.getMatches(units, Matches.unitIsOfTypes(TerritoryEffectHelper
@@ -942,7 +942,7 @@ public class MoveValidator {
       return result;
     }
     // If there are non-sea transports return
-    final Boolean seaOrNoTransportsPresent =
+    final boolean seaOrNoTransportsPresent =
         transportsToLoad.isEmpty()
             || Match.someMatch(transportsToLoad, new CompositeMatchAnd<>(Matches.UnitIsSea,
                 Matches.UnitCanTransport));

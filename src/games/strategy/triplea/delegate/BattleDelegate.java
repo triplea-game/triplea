@@ -349,7 +349,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
    * Select which territory to bombard.
    */
   private IBattle selectBombardingBattle(final Unit u, final Territory uTerritory, final Collection<IBattle> battles) {
-    final Boolean bombardRestricted = isShoreBombardPerGroundUnitRestricted(getData());
+    final boolean bombardRestricted = isShoreBombardPerGroundUnitRestricted(getData());
     // If only one battle to select from just return that battle
     if ((battles.size() == 1)) {
       return battles.iterator().next();

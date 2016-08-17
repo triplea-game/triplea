@@ -681,7 +681,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       int cost = 0;
       final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(m_data);
       int index = 0;
-      final Boolean limitDamage = isWW2V2() || isLimitSBRDamageToProduction();
+      final boolean limitDamage = isWW2V2() || isLimitSBRDamageToProduction();
       final List<Die> dice = new ArrayList<>();
       final HashMap<Unit, List<Die>> targetToDiceMap = new HashMap<>();
       // limit to maxDamage

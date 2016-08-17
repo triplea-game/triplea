@@ -1280,7 +1280,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
   }
 
   // Added for test case calls
-  void externalRetreat(final Collection<Unit> retreaters, final Territory retreatTo, final Boolean defender,
+  void externalRetreat(final Collection<Unit> retreaters, final Territory retreatTo, final boolean defender,
       final IDelegateBridge bridge) {
     m_isOver = true;
     retreatUnits(retreaters, retreatTo, defender, bridge);
@@ -2435,10 +2435,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       removeFromDependents(killed, bridge, dependentBattles);
     }
     // and remove them from the battle display
-    if (defenderDying == null || defenderDying.booleanValue()) {
+    if (defenderDying == null || defenderDying) {
       m_defendingUnits.removeAll(killed);
     }
-    if (defenderDying == null || !defenderDying.booleanValue()) {
+    if (defenderDying == null || !defenderDying) {
       m_attackingUnits.removeAll(killed);
     }
   }

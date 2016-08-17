@@ -64,7 +64,7 @@ public class ResourceLoader {
 
     String spacesReplaced = zipName.replace(' ', '_');
 
-    for (Character c : spacesReplaced.toCharArray()) {
+    for (char c : spacesReplaced.toCharArray()) {
       // break up camel casing
       if (lastChar != null && Character.isLowerCase(lastChar) && Character.isUpperCase(c)) {
         sb.append("_");

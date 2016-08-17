@@ -236,7 +236,7 @@ public class TechAttachment extends DefaultAttachment {
     }
   }
 
-  public Boolean hasGenericTech(final String name) {
+  public boolean hasGenericTech(final String name) {
     return genericTech.get(name);
   }
 
@@ -248,7 +248,7 @@ public class TechAttachment extends DefaultAttachment {
    * @param value
    */
   @InternalDoNotExport
-  public void setGenericTech(final String name, final Boolean value) {
+  public void setGenericTech(final String name, final boolean value) {
     genericTech.put(name, value);
   }
 

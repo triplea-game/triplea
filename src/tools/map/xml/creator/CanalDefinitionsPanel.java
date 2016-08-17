@@ -204,7 +204,7 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
    *        IS_WATER
    * @return whether handling was successful or not
    */
-  private boolean handleSelectedTerritoryToCurrentCanal(final String newTerrName, final Boolean newTerrIsWater,
+  private boolean handleSelectedTerritoryToCurrentCanal(final String newTerrName, final boolean newTerrIsWater,
       final Set<String> newTerrNeighborsDiffType) {
     if (currentCanalName.isPresent()) {
       setSelectedTerritoriesFromTerritory();
@@ -263,7 +263,7 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
    * @param terrCanals - list of canals the newTerrName territory is linked to
    * @return evaluation result
    */
-  private boolean evaluateSelectedTerritoryToCurrentCanal(final String newTerrName, final Boolean newTerrIsWater,
+  private boolean evaluateSelectedTerritoryToCurrentCanal(final String newTerrName, final boolean newTerrIsWater,
       final Set<String> newTerrNeighborsDiffType, final List<String> terrCanals) {
     if (currentCanalName.isPresent()) {
       if (newTerrNeighborsDiffType.size() < 2) {
@@ -329,7 +329,7 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
    * @param newTerrIsWater - IS_WATER property of base territory
    * @param terrCanals - list of canals the base territory is linked to
    */
-  private List<String> getCanalsLinkedToTerritory(final String newTerrName, final Boolean newTerrIsWater) {
+  private List<String> getCanalsLinkedToTerritory(final String newTerrName, final boolean newTerrIsWater) {
     final List<String> terrCanals = new ArrayList<>();
     if (newTerrIsWater) {
       for (final Entry<String, CanalTerritoriesTuple> canalDef : MapXmlHelper.getCanalDefinitionsMap()
@@ -349,7 +349,7 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
     return terrCanals;
   }
 
-  private String getMessageTextOnToFewSuitableNeighbors(final Boolean newTerrIsWater,
+  private String getMessageTextOnToFewSuitableNeighbors(final boolean newTerrIsWater,
       final int selectedTerrsSameTypeCount) {
     return "The selected " + (newTerrIsWater ? "water" : "land")
         + " territory is connected to less than 2 common " + (!newTerrIsWater ? "water" : "land")

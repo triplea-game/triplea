@@ -18,13 +18,13 @@ import games.strategy.net.Messengers;
 import games.strategy.util.Version;
 
 public class TripleAProcessRunner {
-  public static void startNewTripleA(final Long maxMemory) {
+  public static void startNewTripleA(final long maxMemory) {
     startGame(System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY), null, maxMemory);
   }
 
-  public static void startGame(final String savegamePath, final String classpath, final Long maxMemory) {
+  public static void startGame(final String savegamePath, final String classpath, final long maxMemory) {
     final List<String> commands = new ArrayList<>();
-    if (maxMemory != null && maxMemory > (32 * 1024 * 1024)) {
+    if (maxMemory > (32 * 1024 * 1024)) {
       ProcessRunnerUtil.populateBasicJavaArgs(commands, classpath, maxMemory);
     } else {
       ProcessRunnerUtil.populateBasicJavaArgs(commands, classpath);

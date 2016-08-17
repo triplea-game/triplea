@@ -32,12 +32,13 @@ public class GameSettingsPanel extends DynamicRowsPanel {
   }
 
   public static SETTING_TYPE getSettingType(final String setting) {
-    if (setting.endsWith(" bid"))
+    if (setting.endsWith(" bid")) {
       return SETTING_TYPE.PER_PLAYER;
-    else if (setting.endsWith(" Honorable Victory VCs"))
+    } else if (setting.endsWith(" Honorable Victory VCs")) {
       return SETTING_TYPE.PER_ALLY;
-    else
+    } else {
       return SETTING_TYPE.NORMAL;
+    }
   }
 
   public static boolean isBoolean(final String setting) {
@@ -52,8 +53,9 @@ public class GameSettingsPanel extends DynamicRowsPanel {
   }
 
   public static void layout(final MapXmlCreator mapXmlCreator) {
-    if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof GameSettingsPanel))
+    if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof GameSettingsPanel)) {
       me = Optional.of(new GameSettingsPanel(mapXmlCreator.getStepActionPanel()));
+    }
     DynamicRowsPanel.layout(mapXmlCreator);
   }
 
@@ -84,32 +86,32 @@ public class GameSettingsPanel extends DynamicRowsPanel {
     labelMaxNumber.setPreferredSize(dimension);
 
     // <1> Set panel layout
-    GridBagLayout gbl_stepActionPanel = new GridBagLayout();
+    final GridBagLayout gbl_stepActionPanel = new GridBagLayout();
     setColumns(gbl_stepActionPanel);
     setRows(gbl_stepActionPanel, MapXmlHelper.getGameSettingsMap().size());
     getOwnPanel().setLayout(gbl_stepActionPanel);
 
     // <2> Add Row Labels: Setting Name, Alliance Name, Buy Quantity
-    GridBagConstraints gridBadConstLabelSettingName = new GridBagConstraints();
+    final GridBagConstraints gridBadConstLabelSettingName = new GridBagConstraints();
     gridBadConstLabelSettingName.insets = new Insets(0, 0, 5, 5);
     gridBadConstLabelSettingName.gridy = 0;
     gridBadConstLabelSettingName.gridx = 0;
     gridBadConstLabelSettingName.anchor = GridBagConstraints.WEST;
     getOwnPanel().add(labelSettingName, gridBadConstLabelSettingName);
 
-    GridBagConstraints gridBadConstLabelValue = (GridBagConstraints) gridBadConstLabelSettingName.clone();
+    final GridBagConstraints gridBadConstLabelValue = (GridBagConstraints) gridBadConstLabelSettingName.clone();
     gridBadConstLabelValue.gridx = 1;
     getOwnPanel().add(labelValue, gridBadConstLabelValue);
 
-    GridBagConstraints gridBadConstLabelEditable = (GridBagConstraints) gridBadConstLabelSettingName.clone();
+    final GridBagConstraints gridBadConstLabelEditable = (GridBagConstraints) gridBadConstLabelSettingName.clone();
     gridBadConstLabelEditable.gridx = 2;
     getOwnPanel().add(labelEditable, gridBadConstLabelEditable);
 
-    GridBagConstraints gridBadConstLabelMinNumber = (GridBagConstraints) gridBadConstLabelSettingName.clone();
+    final GridBagConstraints gridBadConstLabelMinNumber = (GridBagConstraints) gridBadConstLabelSettingName.clone();
     gridBadConstLabelMinNumber.gridx = 3;
     getOwnPanel().add(labelMinNumber, gridBadConstLabelMinNumber);
 
-    GridBagConstraints gridBadConstLabelMaxNumber = (GridBagConstraints) gridBadConstLabelSettingName.clone();
+    final GridBagConstraints gridBadConstLabelMaxNumber = (GridBagConstraints) gridBadConstLabelSettingName.clone();
     gridBadConstLabelMaxNumber.gridx = 4;
     getOwnPanel().add(labelMaxNumber, gridBadConstLabelMaxNumber);
 
@@ -118,7 +120,7 @@ public class GameSettingsPanel extends DynamicRowsPanel {
 
     final String[] settingNamesArray = settingNames.toArray(new String[settingNames.size()]);
     for (final Entry<String, List<String>> settingEntry : MapXmlHelper.getGameSettingsMap().entrySet()) {
-      GridBagConstraints gbc_tValue = (GridBagConstraints) gridBadConstLabelSettingName.clone();
+      final GridBagConstraints gbc_tValue = (GridBagConstraints) gridBadConstLabelSettingName.clone();
       gbc_tValue.gridx = 0;
       gridBadConstLabelValue.gridy = yValue;
       final List<String> settingValue = settingEntry.getValue();
@@ -126,7 +128,7 @@ public class GameSettingsPanel extends DynamicRowsPanel {
       try {
         minValueInteger = Integer.parseInt(settingValue.get(2));
         maxValueInteger = Integer.parseInt(settingValue.get(3));
-      } catch (NumberFormatException nfe) {
+      } catch (final NumberFormatException nfe) {
         minValueInteger = 0;
         maxValueInteger = 0;
       }
@@ -146,16 +148,13 @@ public class GameSettingsPanel extends DynamicRowsPanel {
           "Which game setting should be added?", "Choose Game Setting", JOptionPane.QUESTION_MESSAGE, null,
           settingNames.toArray(new String[settingNames.size()]), // Array of choices
           settingNames.iterator().next()); // Initial choice
-      if (suggestedSettingName == null || suggestedSettingName.isEmpty())
+      if (suggestedSettingName == null || suggestedSettingName.isEmpty()) {
         return;
+      }
 
       final ArrayList<String> newSettingValue = new ArrayList<>();
       final boolean settingIsBoolean = isBoolean(suggestedSettingName);
-      String newValue;
-      if (settingIsBoolean)
-        newValue = "true";
-      else
-        newValue = "0";
+      String newValue = settingIsBoolean ? "true" : "0";
       newSettingValue.add(newValue);
       newSettingValue.add("true");
       newSettingValue.add("0");
@@ -172,7 +171,7 @@ public class GameSettingsPanel extends DynamicRowsPanel {
     }));
     addButton(buttonAddValue);
 
-    GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelSettingName.clone();
+    final GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelSettingName.clone();
     gridBadConstButtonAddUnit.gridx = 0;
     gridBadConstButtonAddUnit.gridy = yValue;
     addFinalButtonRow(gridBadConstButtonAddUnit);
@@ -200,7 +199,7 @@ public class GameSettingsPanel extends DynamicRowsPanel {
   }
 
   @Override
-  protected void setColumns(GridBagLayout gbl_panel) {
+  protected void setColumns(final GridBagLayout gbl_panel) {
     gbl_panel.columnWidths = new int[] {60, 30, 30, 30, 30, 30};
     gbl_panel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
   }

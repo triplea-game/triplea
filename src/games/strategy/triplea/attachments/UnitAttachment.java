@@ -238,7 +238,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCanIntercept(final Boolean value) {
+  public void setCanIntercept(final boolean value) {
     m_canIntercept = value;
   }
 
@@ -256,7 +256,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCanEscort(final Boolean value) {
+  public void setCanEscort(final boolean value) {
     m_canEscort = value;
   }
 
@@ -1223,7 +1223,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsSuicide(final Boolean s) {
+  public void setIsSuicide(final boolean s) {
     m_isSuicide = s;
   }
 
@@ -1241,7 +1241,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsKamikaze(final Boolean s) {
+  public void setIsKamikaze(final boolean s) {
     m_isKamikaze = s;
   }
 
