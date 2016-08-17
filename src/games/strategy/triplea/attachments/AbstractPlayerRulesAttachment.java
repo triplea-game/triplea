@@ -1,13 +1,13 @@
 package games.strategy.triplea.attachments;
 
-    import games.strategy.engine.data.Attachable;
-    import games.strategy.engine.data.GameData;
-    import games.strategy.engine.data.GameParseException;
-    import games.strategy.engine.data.PlayerID;
-    import games.strategy.engine.data.UnitType;
-    import games.strategy.engine.data.annotations.GameProperty;
-    import games.strategy.triplea.Constants;
-    import games.strategy.util.IntegerMap;
+import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.annotations.GameProperty;
+import games.strategy.triplea.Constants;
+import games.strategy.util.IntegerMap;
 
 /**
  * The purpose of this class is to separate the Rules Attachment variables and methods that affect Players,
