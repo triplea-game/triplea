@@ -1168,7 +1168,7 @@
                          <option name="attack" value="4"/>
                          <option name="defense" value="4"/>
                          <option name="canBombard" value="true"/>
-                         <option name="isTwoHit" value="true"/>
+                         <option name="hitPoints" value="2"/>
                  </attachment>
 				 
 				 <!-- Cruiser -->
@@ -1178,7 +1178,7 @@
                          <option name="attack" value="3"/>
                          <option name="defense" value="3"/>
                          <option name="canBombard" value="true"/>
-                         <option name="isTwoHit" value="false"/>
+                         <option name="hitPoints" value="1"/>
                  </attachment>
                  
                 <!-- Destroyer -->

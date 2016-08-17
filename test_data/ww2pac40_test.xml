@@ -1297,7 +1297,7 @@
                          <option name="attack" value="4"/>
                          <option name="defense" value="4"/>
                          <option name="canBombard" value="true"/>
-                         <option name="isTwoHit" value="true"/>
+                         <option name="hitPoints" value="2"/>
 						 <option name="blockade" value="1"/>
                  </attachment>
 				 
@@ -1308,7 +1308,7 @@
                          <option name="attack" value="3"/>
                          <option name="defense" value="3"/>
                          <option name="canBombard" value="true"/>
-                         <option name="isTwoHit" value="false"/>
+                         <option name="hitPoints" value="1"/>
 						 <option name="blockade" value="1"/>
                  </attachment>
                  
@@ -1329,7 +1329,7 @@
                          <option name="attack" value="0"/>
                          <option name="defense" value="2"/>
 						 <option name="carrierCapacity" value="2"/>
-                         <option name="isTwoHit" value="true"/>
+                         <option name="hitPoints" value="2"/>
 						 <option name="blockade" value="1"/>
 						 <!-- whenCombatDamaged means that when this unit has x:y damage on it, it will have this effect -->
 						 <option name="whenCombatDamaged" value="unitsMayNotLandOnCarrier" count="1:2"/>

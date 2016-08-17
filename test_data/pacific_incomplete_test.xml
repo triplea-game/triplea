@@ -871,7 +871,7 @@ Coded by Iron__Cross
             <option name="attack" value="4"/>
             <option name="defense" value="4"/>
             <option name="canBombard" value="true"/>
-            <option name="isTwoHit" value="true"/>
+            <option name="hitPoints" value="2"/>
 			<option name="canBeGivenByTerritoryTo" value="British"/>
         </attachment>
         

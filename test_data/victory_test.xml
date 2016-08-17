@@ -1987,7 +1987,7 @@
                          <option name="isSea" value="true"/>
                          <option name="attack" value="4"/>
                          <option name="defense" value="4"/>
-                         <option name="isTwoHit" value="true"/>
+                         <option name="hitPoints" value="2"/>
                          <option name="canBombard" value="true"/>
 						 <!-- bombard defaults to the attack value of the unit if missing -->
                          <option name="bombard" value="4"/>
@@ -2002,7 +2002,7 @@
                          <option name="attack" value="3"/>
                          <option name="defense" value="3"/>
                          <option name="canBombard" value="true"/>
-                         <option name="isTwoHit" value="false"/>
+                         <option name="hitPoints" value="1"/>
                          <option name="bombard" value="3"/>
                          <option name="blockade" value="1"/>
                  </attachment>
@@ -2049,7 +2049,7 @@
 						 <option name="transportCapacity" value="5"/>
 						 <!-- isCombatTransport tells the engine that this sea unit can transport but can fight too. units will not be able to move through it like they would a transport, and it can be taken casualty during battle as normal -->
                          <option name="isCombatTransport" value="true"/>
-                         <!--<option name="isTwoHit" value="true"/>-->
+                         <!--<option name="hitPoints" value="2"/>-->
 						 <!-- whenCombatDamaged means that when this unit has x:y damage on it, it will have this effect
 						 <option name="whenCombatDamaged" value="unitsMayNotLandOnCarrier" count="1:2"/>
 						 <option name="whenCombatDamaged" value="unitsMayNotLeaveAlliedCarrier" count="1:2"/>-->
@@ -2105,7 +2105,7 @@
 								if "More Constructions with/without Factory" = true, then the minimum will be either maxConstructionsPerTypePerTerr or the PU value of the territory (whichever number is greater) in territories with/without factories
 								if "Unlimited Constructions" = true, then this number becomes 10000 -->
 						 <option name="maxConstructionsPerTypePerTerr" value="1"/>
-						 <!--<option name="isTwoHit" value="true"/>-->
+						 <!--<option name="hitPoints" value="2"/>-->
 						 <!-- canDieFromReachingMaxDamage means that if this unit reaches its maxDamage, then it will die.  maxDamage must be larger than zero -->
 						 <option name="canDieFromReachingMaxDamage" value="true"/>
 						 <!-- requiresUnits is a list of units required to be present in the territory in order for you to build this unit there.  Can have multiple instances. Only one instance needs to be true in order to build. -->
