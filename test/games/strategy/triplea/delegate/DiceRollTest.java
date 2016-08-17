@@ -33,7 +33,7 @@ public class DiceRollTest {
 
   @Before
   public void setUp() {
-    gameData = LoadGameUtil.loadTestGame("lhtr_test.xml");
+    gameData = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.LHTR);
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
@@ -168,7 +168,7 @@ public class DiceRollTest {
 
   @Test
   public void testMarineAttackPlus1() throws Exception {
-    gameData = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
+    gameData = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.IRON_BLITZ);
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
     final PlayerID americans = GameDataTestUtil.americans(gameData);
     final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
@@ -185,7 +185,7 @@ public class DiceRollTest {
 
   @Test
   public void testMarineAttackPlus1LowLuck() throws Exception {
-    gameData = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
+    gameData = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.IRON_BLITZ);
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
     final PlayerID americans = GameDataTestUtil.americans(gameData);
@@ -203,7 +203,7 @@ public class DiceRollTest {
 
   @Test
   public void testMarineAttacNormalIfNotAmphibious() throws Exception {
-    gameData = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
+    gameData = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.IRON_BLITZ);
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
     final PlayerID americans = GameDataTestUtil.americans(gameData);
     final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
@@ -315,7 +315,7 @@ public class DiceRollTest {
 
   @Test
   public void testAALowLuckWithRadar() {
-    gameData = LoadGameUtil.loadTestGame("ww2v3_1941_test.xml");
+    gameData = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.WW2V3_1941);
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory finnland = gameData.getMap().getTerritory("Finland");
     final PlayerID russians = GameDataTestUtil.russians(gameData);
@@ -364,7 +364,7 @@ public class DiceRollTest {
 
   @Test
   public void testHeavyBombers() {
-    gameData = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
+    gameData = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.IRON_BLITZ);
     final PlayerID british = GameDataTestUtil.british(gameData);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, testDelegateBridge,
@@ -381,7 +381,7 @@ public class DiceRollTest {
 
   @Test
   public void testHeavyBombersDefend() {
-    gameData = LoadGameUtil.loadTestGame("iron_blitz_test.xml");
+    gameData = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.IRON_BLITZ);
     final PlayerID british = GameDataTestUtil.british(gameData);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, testDelegateBridge,

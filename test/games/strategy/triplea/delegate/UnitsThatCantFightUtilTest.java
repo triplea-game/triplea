@@ -19,7 +19,7 @@ public class UnitsThatCantFightUtilTest {
   @Test
   public void testNoSuicideAttacksAA50AtStart() {
     // at the start of the game, there are no suicide attacks
-    final GameData data = LoadGameUtil.loadTestGame("ww2v3_1941_test.xml");
+    final GameData data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.WW2V3_1941);
     Collection<Territory> territories =
         new UnitsThatCantFightUtil(data).getTerritoriesWhereUnitsCantFight(germans(data));
     assertTrue(territories.isEmpty());
@@ -33,7 +33,7 @@ public class UnitsThatCantFightUtilTest {
 
   @Test
   public void testSuicideAttackInRevised() {
-    final GameData data = LoadGameUtil.loadTestGame("revised_test.xml");
+    final GameData data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.REVISED);
     final Territory sz15 = territory("15 Sea Zone", data);
     addTo(sz15, transport(data).create(1, germans(data)));
     final Collection<Territory> territories =

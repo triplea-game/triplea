@@ -38,7 +38,7 @@ public class LHTRTest {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadTestGame("lhtr_test.xml");
+    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.LHTR);
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {

@@ -114,7 +114,7 @@ public class UnitAutoChooserTest {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadTestGame("revised_test.xml");
+    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.REVISED);
     british = m_data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_BRITISH);
     armour = m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_ARMOUR);
     infantry = m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INFANTRY);

@@ -22,7 +22,7 @@ public class ChangeTripleATest {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadTestGame("big_world_1942_test.xml");
+    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.BIG_WORLD_1942);
     can = m_data.getMap().getTerritory("Western Canada");
     assertEquals(can.getUnits().getUnitCount(), 2);
   }
