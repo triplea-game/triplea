@@ -37,7 +37,7 @@ public class WW2V3_42_Test {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadTestGame("ww2v3_1942_test.xml");
+    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.WW2V3_1942);
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {

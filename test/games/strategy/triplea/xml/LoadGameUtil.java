@@ -14,12 +14,36 @@ import games.strategy.engine.framework.GameRunner;
 
 public class LoadGameUtil {
 
-  public static GameData loadTestGame(final String game) {
-    try (final InputStream is = openInputStream(game, new String[] {"test_data"})) {
+  public enum TestMapXml {
+    BIG_WORLD_1942("big_world_1942_test.xml"),
+    IRON_BLITZ("iron_blitz_test.xml"),
+    LHTR("lhtr_test.xml"),
+    PACIFIC_INCOMPLETE("pacific_incomplete_test.xml"),
+    PACT_OF_STEEL_2("pact_of_steel_2_test.xml"),
+    REVISED("revised_test.xml"),
+    VICTORY_TEST("victory_test.xml"),
+    WW2PAC40("ww2pac40_test.xml"),
+    WW2V3_1941("ww2v3_1941_test.xml"),
+    WW2V3_1942("ww2v3_1942_test.xml");
+
+    private final String value;
+    TestMapXml(String value) {
+      this.value = value;
+    }
+
+    @Override
+    public String toString(){
+      return value;
+    }
+  }
+
+  public static GameData loadTestGame(final TestMapXml game) {
+
+    try (final InputStream is = openInputStream(game.toString(), new String[] {"test_data"})) {
       if (is == null) {
         throw new IllegalStateException(game + " does not exist");
       }
-      return (new GameParser(game)).parse(is, new AtomicReference<>(), false);
+      return (new GameParser(game.toString())).parse(is, new AtomicReference<>(), false);
     } catch (final Exception e) {
       throw new IllegalStateException(e);
     }
