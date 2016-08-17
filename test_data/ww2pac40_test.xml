@@ -1465,14 +1465,14 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Shantung" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<option name="occupiedTerrOf" value="Chinese"/>
+						<option name="originalOwner" value="Chinese"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Formosa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Kwangsi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
-						<option name="occupiedTerrOf" value="Chinese"/>
+						<option name="originalOwner" value="Chinese"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Korea" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
@@ -1480,11 +1480,11 @@
                     <attachment name="territoryAttachment" attachTo="Kiangsu" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
                         <option name="victoryCity" value="true"/>
-						<option name="occupiedTerrOf" value="Chinese"/>
+						<option name="originalOwner" value="Chinese"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Kiangsi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
-						<option name="occupiedTerrOf" value="Chinese"/>
+						<option name="originalOwner" value="Chinese"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Japan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="8"/>
@@ -1493,7 +1493,7 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Jehol" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
-						<option name="occupiedTerrOf" value="Chinese"/>
+						<option name="originalOwner" value="Chinese"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Okinawa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
@@ -1506,7 +1506,7 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Manchuria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
-						<option name="occupiedTerrOf" value="Chinese"/>
+						<option name="originalOwner" value="Chinese"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Hainan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>

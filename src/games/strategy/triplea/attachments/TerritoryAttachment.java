@@ -849,28 +849,5 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   @Override
   public void validate(final GameData data) throws GameParseException {}
-
-  /**
-   * @deprecated Do NOT remove this. Removing it will break a lot of old game xmls.
-   *
-   * @param value
-   * @throws GameParseException
-   */
-  @Deprecated
-  @GameProperty(xmlProperty = true, gameProperty = false, adds = false)
-  public void setOccupiedTerrOf(final String value) throws GameParseException {
-    setOriginalOwner(value);
-  }
-
-  /**
-   * @deprecated Do NOT remove this. Removing it will break a lot of old game xmls.
-   *
-   * @param value
-   * @throws GameParseException
-   */
-  @Deprecated
-  @GameProperty(xmlProperty = true, gameProperty = false, adds = false)
-  public void setOccupiedTerrOf(final PlayerID value) {
-    setOriginalOwner(value);
-  }
+  
 }

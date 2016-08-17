@@ -1127,14 +1127,14 @@ Coded by Iron__Cross
             <option name="production" value="3"/>
             <option name="ConvoyRoute" value="true"/>
             <option name="ConvoyAttached" value="37 Sea Zone"/>
-			<option name="occupiedTerrOf" value="Chinese"/>
+			<option name="originalOwner" value="Chinese"/>
         </attachment>
         
         <attachment name="territoryAttachment" attachTo="Manchuria"
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="2"/>
-			<option name="occupiedTerrOf" value="Chinese"/>
+			<option name="originalOwner" value="Chinese"/>
         </attachment>
         
         <attachment name="territoryAttachment" attachTo="Korea"
@@ -1143,7 +1143,7 @@ Coded by Iron__Cross
             <option name="production" value="2"/>
             <option name="ConvoyRoute" value="true"/>
             <option name="ConvoyAttached" value="36 Sea Zone"/>
-			<option name="occupiedTerrOf" value="Chinese"/>
+			<option name="originalOwner" value="Chinese"/>
         </attachment>
         
         <attachment name="territoryAttachment" attachTo="Szechwan"

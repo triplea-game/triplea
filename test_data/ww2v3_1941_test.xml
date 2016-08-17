@@ -1275,7 +1275,7 @@
 					
 					<attachment name="territoryAttachment" attachTo="Burma" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-                        <option name="occupiedTerrOf" value="British"/>
+                        <option name="originalOwner" value="British"/>
                     </attachment>
 					
 					<attachment name="territoryAttachment" attachTo="Buryatia S.S.R." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -1445,7 +1445,7 @@
 					<attachment name="territoryAttachment" attachTo="Kiangsu" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
 						<option name="victoryCity" value="true"/>
-                        <option name="occupiedTerrOf" value="Chinese"/>
+                        <option name="originalOwner" value="Chinese"/>
                     </attachment>
 					
 					<attachment name="territoryAttachment" attachTo="Kwangtung" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -1459,7 +1459,7 @@
 					
 					<attachment name="territoryAttachment" attachTo="Manchuria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
-                        <option name="occupiedTerrOf" value="Chinese"/>
+                        <option name="originalOwner" value="Chinese"/>
                     </attachment>
 					
 					<attachment name="territoryAttachment" attachTo="Mexico" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
