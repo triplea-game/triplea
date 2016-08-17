@@ -14,17 +14,8 @@ import games.strategy.engine.framework.GameRunner;
 
 public class LoadGameUtil {
 
-  public static GameData loadGame(final String game) {
-    return loadGame(game, new String[] {"maps"});
-  }
-
   public static GameData loadTestGame(final String game) {
-    return loadGame(game, new String[] {"test_data"});
-  }
-
-  private static GameData loadGame(final String game, final String[] possibleFolders) {
-
-    try (final InputStream is = openInputStream(game, possibleFolders)) {
+    try (final InputStream is = openInputStream(game, new String[] {"test_data"})) {
       if (is == null) {
         throw new IllegalStateException(game + " does not exist");
       }
