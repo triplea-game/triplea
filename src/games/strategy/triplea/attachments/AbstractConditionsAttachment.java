@@ -104,11 +104,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     m_invert = getBool(s);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setInvert(final Boolean s) {
-    m_invert = s;
-  }
-
   @Override
   public boolean getInvert() {
     return m_invert;
@@ -264,20 +259,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
           break;
         }
       }
-    } else if (conditionType.equals("XOR")) {
-      // XOR is confusing with more than 2 conditions, so we will just say that one has to be true, while all others
-      // must be false
-      boolean isOneTrue = false;
-      for (final ICondition c : rulesToTest) {
-        met = testedConditions.get(c);
-        if (isOneTrue && met) {
-          isOneTrue = false;
-          break;
-        } else if (met) {
-          isOneTrue = true;
-        }
-      }
-      met = isOneTrue;
     } else {
       final String[] nums = conditionType.split("-");
       if (nums.length == 1) {
@@ -344,11 +325,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     m_chanceIncrementOnFailure = getInt(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setChanceIncrementOnFailure(final Integer value) {
-    m_chanceIncrementOnFailure = value;
-  }
-
   public int getChanceIncrementOnFailure() {
     return m_chanceIncrementOnFailure;
   }
@@ -358,17 +334,8 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     m_chanceDecrementOnSuccess = getInt(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setChanceDecrementOnSuccess(final Integer value) {
-    m_chanceDecrementOnSuccess = value;
-  }
-
   public int getChanceDecrementOnSuccess() {
     return m_chanceDecrementOnSuccess;
-  }
-
-  public void resetChanceDecrementOnSuccess() {
-    m_chanceDecrementOnSuccess = 0;
   }
 
   public void changeChanceDecrementOrIncrementOnSuccessOrFailure(final IDelegateBridge aBridge, final boolean success,
