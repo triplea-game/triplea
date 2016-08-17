@@ -1262,7 +1262,7 @@
 		</attachment>
 		
 		<attachment name="conditionAttachmentTurn1" attachTo="Russians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-				<option name="turns" value="1-+"/>
+				<option name="rounds" value="1-+"/>
 		</attachment>
 		
 		<attachment name="triggerAttachmentRussians_Can_Move" attachTo="Russians" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">

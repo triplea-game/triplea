@@ -1929,7 +1929,7 @@
 					
 					<!-- Conditions -->
 					<attachment name="conditionAttachmentAmericansNotYetAtWar" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-						<option name="turns" value="3"/>
+						<option name="rounds" value="3"/>
 						<option name="relationship" value="Americans:Japanese:anyNeutral"/>
 					</attachment>
 					

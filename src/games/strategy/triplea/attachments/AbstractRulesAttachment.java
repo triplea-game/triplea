@@ -179,13 +179,13 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTurns(final String turns) throws GameParseException {
-    if (turns == null) {
+  public void setRounds(final String rounds) throws GameParseException {
+    if (rounds == null) {
       m_turns = null;
       return;
     }
     m_turns = new HashMap<>();
-    final String[] s = turns.split(":");
+    final String[] s = rounds.split(":");
     if (s.length < 1) {
       throw new GameParseException("Empty turn list" + thisErrorMsg());
     }

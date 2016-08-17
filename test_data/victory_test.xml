@@ -3005,52 +3005,52 @@
 
                 <attachment name="objectiveAttachmentAmericans1_WarPhase1" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="2"/>
-                	<option name="turns" value="2-3"/>
+                	<option name="rounds" value="2-3"/>
                 </attachment>
 
                 <attachment name="objectiveAttachmentAmericans1_WarPhase2" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="4"/>
-                	<option name="turns" value="4-5"/>
+                	<option name="rounds" value="4-5"/>
                 </attachment>
 
                 <attachment name="objectiveAttachmentAmericans1_WarPhase3" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="6"/>
-                	<option name="turns" value="6-7"/>
+                	<option name="rounds" value="6-7"/>
                 </attachment>
 
                 <attachment name="objectiveAttachmentAmericans1_WarPhase4" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="8"/>
-                	<option name="turns" value="8-9"/>
+                	<option name="rounds" value="8-9"/>
                 </attachment>
 
                 <attachment name="objectiveAttachmentAmericans1_WarPhase5" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="10"/>
-                	<option name="turns" value="10-+"/>
+                	<option name="rounds" value="10-+"/>
                 </attachment>
 
                 <!--<attachment name="objectiveAttachmentAmericans8" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="12"/>
-                	<option name="turns" value="12-13"/>
+                	<option name="rounds" value="12-13"/>
                 </attachment>
 
                 <attachment name="objectiveAttachmentAmericans9" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="14"/>
-                	<option name="turns" value="14-15"/>
+                	<option name="rounds" value="14-15"/>
                 </attachment>
 
                 <attachment name="objectiveAttachmentAmericans10" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="16"/>
-                	<option name="turns" value="16-17"/>
+                	<option name="rounds" value="16-17"/>
                 </attachment>
 
                 <attachment name="objectiveAttachmentAmericans11" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="18"/>
-                	<option name="turns" value="18-19"/>
+                	<option name="rounds" value="18-19"/>
                 </attachment>
 
                 <attachment name="objectiveAttachmentAmericans12" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="20"/>
-                	<option name="turns" value="20-+"/>
+                	<option name="rounds" value="20-+"/>
                 </attachment>-->
 
 	<!-- Chinese Objectives -->
@@ -3073,23 +3073,23 @@
 	
 	<!-- Germans Conditions -->
                 <attachment name="conditionAttachmentGermans1" attachTo="Germans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="4:5"/>
+                	<option name="rounds" value="4:5"/>
                 	<option name="enemySurfaceExclusionTerritories" value="5 Sea Zone:6 Sea Zone:7 Sea Zone" count="3"/>
                 </attachment>
 				
                 <attachment name="conditionAttachmentGermans2" attachTo="Germans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3:4"/>
+                	<option name="rounds" value="3:4"/>
                 	<option name="alliedOwnershipTerritories" value="East Balkans:Eastern Europe:Ukraine S.S.R.:Belorussia:Karelia S.S.R.:Archangel:Caucus" count="6"/>
                 </attachment>
 				
                 <attachment name="conditionAttachmentGermans3a" attachTo="Germans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3:4"/>
+                	<option name="rounds" value="3:4"/>
                 	<option name="alliedOwnershipTerritories" value="Western Europe" count="1"/>
                 	<option name="invert" value="true"/>
                 </attachment>
 				
                 <attachment name="conditionAttachmentGermans3b" attachTo="Germans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3:4"/>
+                	<option name="rounds" value="3:4"/>
                 	<option name="alliedOwnershipTerritories" value="Norway" count="1"/>
                 </attachment>
 				
@@ -3135,16 +3135,16 @@
                 </attachment>
 				
                 <attachment name="conditionAttachmentJapanese1b" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3:4"/>
+                	<option name="rounds" value="3:4"/>
                 </attachment>
 				
                 <attachment name="conditionAttachmentJapanese2" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3:4:5"/>
+                	<option name="rounds" value="3:4:5"/>
                 	<option name="alliedOwnershipTerritories" value="Australia:India:Sinkiang" count="3"/>
                 </attachment>
 				
                 <attachment name="conditionAttachmentJapanese3" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="1-2:3:4-+"/>
+                	<option name="rounds" value="1-2:3:4-+"/>
                 	<option name="directOwnershipTerritories" value="original"/>
                 	<option name="invert" value="true"/>
                 </attachment>
@@ -3198,7 +3198,7 @@
 				
 	<!-- Italians Conditions -->
                 <attachment name="conditionAttachmentItalians1" attachTo="Italians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3:4"/>
+                	<option name="rounds" value="3:4"/>
                 	<option name="alliedOwnershipTerritories" value="Algeria:Libya:Anglo Egypt:Trans-Jordan" count="4"/>
                 </attachment>
 				
@@ -3211,31 +3211,31 @@
                 </attachment>
                 
                 <attachment name="conditionAttachmentItalianTurn2" attachTo="Italians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="2"/>
+                	<option name="rounds" value="2"/>
                 </attachment>
                  <attachment name="conditionAttachmentItalianTurn1" attachTo="Italians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="1"/>
+                	<option name="rounds" value="1"/>
                 </attachment>
                 
 				
 	<!-- Americans Conditions -->
                 <attachment name="conditionAttachmentAmericans1" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3-5"/>
+                	<option name="rounds" value="3-5"/>
                 	<option name="alliedOwnershipTerritories" value="Western Europe" count="1"/>
                 </attachment>
 				
                 <attachment name="conditionAttachmentAmericans2" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3-5"/>
+                	<option name="rounds" value="3-5"/>
                 	<option name="alliedOwnershipTerritories" value="Alaska:Wake Island:Hawaiian Islands:Midway" count="4"/>
                 </attachment>
 				
                 <attachment name="conditionAttachmentAmericans3a" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="1-8"/>
+                	<option name="rounds" value="1-8"/>
                 	<option name="alliedOwnershipTerritories" value="Western Europe" count="1"/>
                 </attachment>
 				
                 <attachment name="conditionAttachmentAmericans3b" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="1:2:3-7:8"/>
+                	<option name="rounds" value="1:2:3-7:8"/>
                 	<option name="alliedOwnershipTerritories" value="Alaska:Wake Island:Hawaiian Islands:Midway" count="4"/>
                 </attachment>
 				
@@ -3253,7 +3253,7 @@
 				
 	<!-- British Conditions -->
                 <attachment name="conditionAttachmentBritish2" attachTo="British" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3:4"/>
+                	<option name="rounds" value="3:4"/>
                 	<option name="alliedOwnershipTerritories" value="Union of South Africa:Gibraltar:Anglo Egypt:India:Australia" count="4"/>
                 </attachment>
 				
@@ -3267,7 +3267,7 @@
 				
 	<!-- Russians Conditions -->
                 <attachment name="conditionAttachmentRussians2" attachTo="Russians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3:4"/>
+                	<option name="rounds" value="3:4"/>
                 	<option name="alliedOwnershipTerritories" value="Karelia S.S.R.:Caucus" count="2"/>
                 </attachment>
                 
@@ -3280,7 +3280,7 @@
                 </attachment>
                 
 				<attachment name="conditionAttachmentRussiansNeutralJapanTurn5plus" attachTo="Russians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-					<option name="turns" value="5-+"/>
+					<option name="rounds" value="5-+"/>
                 	<option name="relationship" value="Japanese:Russians:anyNeutral"/>
                 </attachment>
                 
