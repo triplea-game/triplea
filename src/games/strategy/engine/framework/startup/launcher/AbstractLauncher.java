@@ -1,12 +1,13 @@
 package games.strategy.engine.framework.startup.launcher;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.framework.ui.background.WaitWindow;
+import java.awt.Component;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import java.awt.Component;
+
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.ui.background.WaitWindow;
 
 
 

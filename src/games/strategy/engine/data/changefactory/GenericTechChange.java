@@ -9,8 +9,8 @@ class GenericTechChange extends Change {
   private static final long serialVersionUID = -2439447526511535571L;
   private final Attachable m_attachedTo;
   private final String m_attachmentName;
-  private final Boolean m_newValue;
-  private final Boolean m_oldValue;
+  private final boolean m_newValue;
+  private final boolean m_oldValue;
   private final String m_property;
 
   public Attachable getAttachedTo() {
@@ -21,19 +21,19 @@ class GenericTechChange extends Change {
     return m_attachmentName;
   }
 
-  GenericTechChange(final TechAttachment attachment, final Boolean newValue, final String property) {
+  GenericTechChange(final TechAttachment attachment, final boolean newValue, final String property) {
     if (attachment == null) {
       throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
     }
     m_attachedTo = attachment.getAttachedTo();
     m_attachmentName = attachment.getName();
-    m_oldValue = Boolean.valueOf(attachment.hasGenericTech(property));
-    m_newValue = Boolean.valueOf(newValue);
+    m_oldValue = attachment.hasGenericTech(property);
+    m_newValue = newValue;
     m_property = property;
   }
 
-  public GenericTechChange(final Attachable attachTo, final String attachmentName, final Boolean newValue,
-      final Boolean oldValue, final String property) {
+  public GenericTechChange(final Attachable attachTo, final String attachmentName, final boolean newValue,
+      final boolean oldValue, final String property) {
     m_attachmentName = attachmentName;
     m_attachedTo = attachTo;
     m_newValue = newValue;

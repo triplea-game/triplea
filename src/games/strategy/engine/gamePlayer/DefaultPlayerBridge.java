@@ -9,7 +9,6 @@ import java.util.Properties;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IPersistentDelegate;
@@ -31,7 +30,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
   /** Creates new DefaultPlayerBridge */
   public DefaultPlayerBridge(final IGame aGame) {
     m_game = aGame;
-    GameStepListener m_gameStepListener = (stepName, delegateName, player, round, displayName) -> {
+    final GameStepListener m_gameStepListener = (stepName, delegateName, player, round, displayName) -> {
       if (stepName == null) {
         throw new IllegalArgumentException("Null step");
       }

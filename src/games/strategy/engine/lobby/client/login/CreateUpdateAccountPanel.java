@@ -6,8 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 
 import javax.swing.ImageIcon;
@@ -104,7 +102,7 @@ public class CreateUpdateAccountPanel extends JPanel {
   }
 
   private void okPressed() {
-    if (!Arrays.equals(m_password.getPassword(),m_password2.getPassword())) {
+    if (!Arrays.equals(m_password.getPassword(), m_password2.getPassword())) {
       JOptionPane.showMessageDialog(this, "The passwords do not match", "Passwords Do Not Match",
           JOptionPane.ERROR_MESSAGE);
       m_password.setText("");

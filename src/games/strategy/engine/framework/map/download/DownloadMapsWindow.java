@@ -73,12 +73,13 @@ public class DownloadMapsWindow extends JFrame {
   }
 
 
-  private static void showDownloadMapsWindow(final Component parent, Optional<String> mapName) {
+  private static void showDownloadMapsWindow(final Component parent, final Optional<String> mapName) {
     final DownloadRunnable download = new DownloadRunnable(ClientContext.mapListingSource().getMapListDownloadSite());
     final String popupWindowTitle = "Downloading list of availabe maps....";
     BackgroundTaskRunner.runInBackground(null, popupWindowTitle, download);
     final List<DownloadFileDescription> games = download.getDownloads();
-    checkNotNull(games, "Failed to download map listing from: " + ClientContext.mapListingSource().getMapListDownloadSite());
+    checkNotNull(games,
+        "Failed to download map listing from: " + ClientContext.mapListingSource().getMapListDownloadSite());
 
     final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
     final DownloadMapsWindow dia = new DownloadMapsWindow(mapName, games);
@@ -94,7 +95,7 @@ public class DownloadMapsWindow extends JFrame {
     setIconImage(GameRunner.getGameIcon(this));
     progressPanel = new MapDownloadProgressPanel(this);
     if (mapName.isPresent()) {
-      Optional<DownloadFileDescription> mapDownload = findMap(mapName.get(), games);
+      final Optional<DownloadFileDescription> mapDownload = findMap(mapName.get(), games);
       if (mapDownload.isPresent()) {
         progressPanel.download(Arrays.asList(mapDownload.get()));
       } else {
@@ -103,21 +104,21 @@ public class DownloadMapsWindow extends JFrame {
     }
     SwingComponents.addWindowCloseListener(this, () -> progressPanel.cancel());
 
-    JTabbedPane outerTabs = new JTabbedPane();
+    final JTabbedPane outerTabs = new JTabbedPane();
 
-    List<DownloadFileDescription> maps = filterMaps(games, download -> download.isMap());
+    final List<DownloadFileDescription> maps = filterMaps(games, download -> download.isMap());
     outerTabs.add("Maps", createAvailableInstalledTabbedPanel(mapName, maps));
 
-    List<DownloadFileDescription> mods = filterMaps(games, download -> download.isMapMod());
+    final List<DownloadFileDescription> mods = filterMaps(games, download -> download.isMapMod());
     outerTabs.add("Mods", createAvailableInstalledTabbedPanel(mapName, mods));
 
-    List<DownloadFileDescription> skins = filterMaps(games, download -> download.isMapSkin());
+    final List<DownloadFileDescription> skins = filterMaps(games, download -> download.isMapSkin());
     outerTabs.add("Skins", createAvailableInstalledTabbedPanel(mapName, skins));
 
-    List<DownloadFileDescription> tools = filterMaps(games, download -> download.isMapTool());
+    final List<DownloadFileDescription> tools = filterMaps(games, download -> download.isMapTool());
     outerTabs.add("Tools", createAvailableInstalledTabbedPanel(mapName, tools));
 
-    JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, outerTabs,
+    final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, outerTabs,
         SwingComponents.newJScrollPane(progressPanel));
     splitPane.setDividerLocation(DIVIDER_POSITION);
     add(splitPane);
@@ -127,7 +128,7 @@ public class DownloadMapsWindow extends JFrame {
       final List<DownloadFileDescription> games) {
 
     final String normalizedName = normalizeName(mapName);
-    for (DownloadFileDescription download : games) {
+    for (final DownloadFileDescription download : games) {
       if (download.getMapName().equalsIgnoreCase(mapName)
           || normalizedName.equals(normalizeName(download.getMapName()))) {
         return Optional.of(download);
@@ -136,7 +137,7 @@ public class DownloadMapsWindow extends JFrame {
     return Optional.empty();
   }
 
-  private static String normalizeName(String mapName) {
+  private static String normalizeName(final String mapName) {
     return mapName.replace(' ', '_').toLowerCase();
   }
 
@@ -150,9 +151,9 @@ public class DownloadMapsWindow extends JFrame {
 
   private JTabbedPane createAvailableInstalledTabbedPanel(final Optional<String> mapName,
       final List<DownloadFileDescription> games) {
-    MapDownloadList mapList = new MapDownloadList(games, new FileSystemAccessStrategy());
+    final MapDownloadList mapList = new MapDownloadList(games, new FileSystemAccessStrategy());
 
-    JTabbedPane tabbedPane = new JTabbedPane();
+    final JTabbedPane tabbedPane = new JTabbedPane();
 
 
     JPanel outOfDate = null;
@@ -187,7 +188,7 @@ public class DownloadMapsWindow extends JFrame {
   }
 
 
-  private static boolean containsNonDummyMaps(List<DownloadFileDescription> maps) {
+  private static boolean containsNonDummyMaps(final List<DownloadFileDescription> maps) {
     return maps.stream().anyMatch(e -> !e.isDummyUrl());
   }
 
@@ -205,7 +206,7 @@ public class DownloadMapsWindow extends JFrame {
 
 
     if (maps.size() > 0) {
-      DownloadFileDescription mapToSelect = determineCurrentMapSelection(maps, selectedMap);
+      final DownloadFileDescription mapToSelect = determineCurrentMapSelection(maps, selectedMap);
       final JList<String> gamesList = createGameSelectionList(mapToSelect, maps, descriptionPane, model);
       gamesList.addListSelectionListener(createDescriptionPanelUpdatingSelectionListener(
           descriptionPane, gamesList, maps, action, mapSizeLabel));
@@ -225,27 +226,28 @@ public class DownloadMapsWindow extends JFrame {
   }
 
   private DownloadFileDescription determineCurrentMapSelection(final List<DownloadFileDescription> maps,
-      Optional<String> mapToSelect) {
+      final Optional<String> mapToSelect) {
     if (mapToSelect.isPresent()) {
-      Optional<DownloadFileDescription> potentialMap =
+      final Optional<DownloadFileDescription> potentialMap =
           maps.stream().filter(m -> m.getMapName().equalsIgnoreCase(mapToSelect.get())).findFirst();
       if (potentialMap.isPresent()) {
         return potentialMap.get();
       }
     }
 
-    Optional<DownloadFileDescription> map = maps.stream().filter(m -> !m.isDummyUrl()).findFirst();
+    final Optional<DownloadFileDescription> map = maps.stream().filter(m -> !m.isDummyUrl()).findFirst();
     if (map.isPresent()) {
       return map.get();
     }
     return maps.stream().findFirst().get();
   }
 
-  private static JList<String> createGameSelectionList(DownloadFileDescription selectedMap,
-      final List<DownloadFileDescription> maps, final JEditorPane descriptionPanel, DefaultListModel<String> model) {
+  private static JList<String> createGameSelectionList(final DownloadFileDescription selectedMap,
+      final List<DownloadFileDescription> maps, final JEditorPane descriptionPanel,
+      final DefaultListModel<String> model) {
 
-    JList<String> gamesList = SwingComponents.newJList(model);
-    int selectedIndex = maps.indexOf(selectedMap);
+    final JList<String> gamesList = SwingComponents.newJList(model);
+    final int selectedIndex = maps.indexOf(selectedMap);
     gamesList.setSelectedIndex(selectedIndex);
 
     final String text = createEditorPaneText(maps.get(selectedIndex));
@@ -254,20 +256,22 @@ public class DownloadMapsWindow extends JFrame {
     return gamesList;
   }
 
-  private static ListSelectionListener createDescriptionPanelUpdatingSelectionListener(JEditorPane descriptionPanel,
-      JList<String> gamesList, List<DownloadFileDescription> maps, MapAction action, JLabel mapSizeLabelToUpdate) {
+  private static ListSelectionListener createDescriptionPanelUpdatingSelectionListener(
+      final JEditorPane descriptionPanel,
+      final JList<String> gamesList, final List<DownloadFileDescription> maps, final MapAction action,
+      final JLabel mapSizeLabelToUpdate) {
     return e -> {
       final int index = gamesList.getSelectedIndex();
 
-      boolean somethingIsSelected = index > 0;
+      final boolean somethingIsSelected = index > 0;
       if (somethingIsSelected) {
-        String mapName = gamesList.getModel().getElementAt(index);
+        final String mapName = gamesList.getModel().getElementAt(index);
 
         // find the map description by map name and update the map download detail panel
-        Optional<DownloadFileDescription> map =
+        final Optional<DownloadFileDescription> map =
             maps.stream().filter(mapDescription -> mapDescription.getMapName().equals(mapName)).findFirst();
         if (map.isPresent()) {
-          String text = createEditorPaneText(map.get());
+          final String text = createEditorPaneText(map.get());
           descriptionPanel.setText(text);
           descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
           updateMapUrlAndSizeLabel(map.get(), action, mapSizeLabelToUpdate);
@@ -276,7 +280,8 @@ public class DownloadMapsWindow extends JFrame {
     };
   }
 
-  private static void updateMapUrlAndSizeLabel(DownloadFileDescription map, MapAction action, JLabel mapSizeLabel) {
+  private static void updateMapUrlAndSizeLabel(final DownloadFileDescription map, final MapAction action,
+      final JLabel mapSizeLabel) {
     mapSizeLabel.setText(" ");
     if (!map.isDummyUrl()) {
       (new Thread(() -> {
@@ -287,7 +292,7 @@ public class DownloadMapsWindow extends JFrame {
 
   }
 
-  private static String createLabelText(MapAction action, DownloadFileDescription map) {
+  private static String createLabelText(final MapAction action, final DownloadFileDescription map) {
     final String DOUBLE_SPACE = "&nbsp;&nbsp;";
 
     final long mapSize;
@@ -309,14 +314,14 @@ public class DownloadMapsWindow extends JFrame {
     return labelText;
   }
 
-  private static String createSizeLabel(long bytes) {
-    long kiloBytes = (bytes / 1024);
-    long megaBytes = kiloBytes / 1024;
-    long kbDigits = ((kiloBytes % 1000) / 100);
+  private static String createSizeLabel(final long bytes) {
+    final long kiloBytes = (bytes / 1024);
+    final long megaBytes = kiloBytes / 1024;
+    final long kbDigits = ((kiloBytes % 1000) / 100);
     return megaBytes + "." + kbDigits + " MB";
   }
 
-  private static String createEditorPaneText(DownloadFileDescription map) {
+  private static String createEditorPaneText(final DownloadFileDescription map) {
     String text = "<h2>" + map.getMapName() + "</h2>";
     if (map.isDummyUrl()) {
       text += map.getDescription();
@@ -326,8 +331,9 @@ public class DownloadMapsWindow extends JFrame {
     return text;
   }
 
-  private JPanel createButtonsPanel(MapAction action, JList<String> gamesList, List<DownloadFileDescription> maps,
-      DefaultListModel<String> listModel) {
+  private JPanel createButtonsPanel(final MapAction action, final JList<String> gamesList,
+      final List<DownloadFileDescription> maps,
+      final DefaultListModel<String> listModel) {
     final JPanel buttonsPanel = SwingComponents.gridPanel(1, 5);
 
     buttonsPanel.setBorder(SwingComponents.newEmptyBorder(20));
@@ -338,12 +344,12 @@ public class DownloadMapsWindow extends JFrame {
     buttonsPanel.add(Box.createGlue());
 
     String toolTip = "Click this button to learn more about the map download feature in TripleA";
-    JButton helpButton = SwingComponents.newJButton("Help", toolTip,
+    final JButton helpButton = SwingComponents.newJButton("Help", toolTip,
         e -> JOptionPane.showMessageDialog(this, new MapDownloadHelpPanel()));
     buttonsPanel.add(helpButton);
 
     toolTip = "Click this button to submit map comments and bug reports back to the map makers";
-    JButton mapFeedbackButton = SwingComponents.newJButton("Give Map Feedback", toolTip,
+    final JButton mapFeedbackButton = SwingComponents.newJButton("Give Map Feedback", toolTip,
         e -> FeedbackDialog.showFeedbackDialog(gamesList.getSelectedValuesList(), maps));
     buttonsPanel.add(mapFeedbackButton);
 
@@ -363,27 +369,29 @@ public class DownloadMapsWindow extends JFrame {
   private static final String MULTIPLE_SELECT_MSG =
       "You can select multiple maps by holding control or shift while clicking map names.";
 
-  private JButton buildMapActionButton(MapAction action, JList<String> gamesList, List<DownloadFileDescription> maps,
-      DefaultListModel<String> listModel) {
+  private JButton buildMapActionButton(final MapAction action, final JList<String> gamesList,
+      final List<DownloadFileDescription> maps,
+      final DefaultListModel<String> listModel) {
     final JButton actionButton;
 
     if (action == MapAction.REMOVE) {
       actionButton = SwingComponents.newJButton("Remove", removeAction(gamesList, maps, listModel));
 
-      String hoverText =
+      final String hoverText =
           "Click this button to remove the maps selected above from your computer. " + MULTIPLE_SELECT_MSG;
       actionButton.setToolTipText(hoverText);
     } else {
       final String buttonText = (action == MapAction.INSTALL) ? "Install" : "Update";
       actionButton = SwingComponents.newJButton(buttonText, installAction(gamesList, maps, listModel));
-      String hoverText = "Click this button to download and install the maps selected above. " + MULTIPLE_SELECT_MSG;
+      final String hoverText =
+          "Click this button to download and install the maps selected above. " + MULTIPLE_SELECT_MSG;
       actionButton.setToolTipText(hoverText);
     }
     return actionButton;
   }
 
-  private static ActionListener removeAction(JList<String> gamesList, List<DownloadFileDescription> maps,
-      DefaultListModel<String> listModel) {
+  private static ActionListener removeAction(final JList<String> gamesList, final List<DownloadFileDescription> maps,
+      final DefaultListModel<String> listModel) {
     return (e) -> {
       final List<String> selectedValues = gamesList.getSelectedValuesList();
       final List<DownloadFileDescription> selectedMaps =
@@ -395,12 +403,12 @@ public class DownloadMapsWindow extends JFrame {
     };
   }
 
-  private ActionListener installAction(JList<String> gamesList, List<DownloadFileDescription> maps,
-      DefaultListModel<String> listModel) {
+  private ActionListener installAction(final JList<String> gamesList, final List<DownloadFileDescription> maps,
+      final DefaultListModel<String> listModel) {
     return (e) -> {
-      List<String> selectedValues = gamesList.getSelectedValuesList();
-      List<DownloadFileDescription> downloadList = new ArrayList<>();
-      for (DownloadFileDescription map : maps) {
+      final List<String> selectedValues = gamesList.getSelectedValuesList();
+      final List<DownloadFileDescription> downloadList = new ArrayList<>();
+      for (final DownloadFileDescription map : maps) {
         if (selectedValues.contains(map.getMapName())) {
           downloadList.add(map);
         }

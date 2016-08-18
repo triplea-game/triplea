@@ -24,9 +24,9 @@ class CountryChart {
       new HashMap<>();
 
   protected void saveToFile(final PlayerID player, final PrintGenerationData printData) {
-    GameData m_data = printData.getData();
-    PrintGenerationData m_printData = printData;
-    Collection<Territory> m_terrCollection =
+    final GameData m_data = printData.getData();
+    final PrintGenerationData m_printData = printData;
+    final Collection<Territory> m_terrCollection =
         Match.getMatches(m_data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
     Iterator<Territory> m_terrIterator = m_terrCollection.iterator();
     Iterator<UnitType> availableUnits = m_data.getUnitTypeList().iterator();
@@ -36,7 +36,7 @@ class CountryChart {
       final List<Map<UnitType, Integer>> unitPairs = new ArrayList<>();
       while (availableUnits.hasNext()) {
         final UnitType currentUnit = availableUnits.next();
-        final Integer amountHere = unitsHere.getUnitCount(currentUnit, player);
+        final int amountHere = unitsHere.getUnitCount(currentUnit, player);
         final Map<UnitType, Integer> innerMap = new HashMap<>();
         innerMap.put(currentUnit, amountHere);
         unitPairs.add(innerMap);
@@ -79,7 +79,7 @@ class CountryChart {
           final Iterator<UnitType> uIter = currentMap.keySet().iterator();
           while (uIter.hasNext()) {
             final UnitType uHere = uIter.next();
-            final Integer here = currentMap.get(uHere);
+            final int here = currentMap.get(uHere);
             countryFileWriter.write("," + here);
           }
         }

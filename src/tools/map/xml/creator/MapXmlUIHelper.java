@@ -170,8 +170,8 @@ public class MapXmlUIHelper {
     JOptionPane.showMessageDialog(null,
         "No valid selection for " + filename + "!",
         "Error while selecting " + filename, JOptionPane.ERROR_MESSAGE);
-    System.exit(1);//TODO make sure this is being removed, once this method is used other than on startup
-    return null;//This is never going to be returned
+    System.exit(1);// TODO make sure this is being removed, once this method is used other than on startup
+    return null;// This is never going to be returned
   }
 
   /**

@@ -70,18 +70,6 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     m_combatDefenseEffect = value;
   }
 
-  public IntegerMap<UnitType> getCombatDefenseEffect() {
-    return new IntegerMap<>(m_combatDefenseEffect);
-  }
-
-  public void clearCombatDefenseEffect() {
-    m_combatDefenseEffect.clear();
-  }
-
-  public void resetCombatDefenseEffect() {
-    m_combatDefenseEffect = new IntegerMap<>();
-  }
-
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    *
@@ -96,18 +84,6 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setCombatOffenseEffect(final IntegerMap<UnitType> value) {
     m_combatOffenseEffect = value;
-  }
-
-  public IntegerMap<UnitType> getCombatOffenseEffect() {
-    return new IntegerMap<>(m_combatOffenseEffect);
-  }
-
-  public void clearCombatOffenseEffect() {
-    m_combatOffenseEffect.clear();
-  }
-
-  public void resetCombatOffenseEffect() {
-    m_combatOffenseEffect = new IntegerMap<>();
   }
 
   @InternalDoNotExport
@@ -207,14 +183,6 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
 
   public ArrayList<UnitType> getUnitsNotAllowed() {
     return new ArrayList<>(m_unitsNotAllowed);
-  }
-
-  public void clearUnitsNotAllowed() {
-    m_unitsNotAllowed.clear();
-  }
-
-  public void resetUnitsNotAllowed() {
-    m_unitsNotAllowed = new ArrayList<>();
   }
 
   @Override

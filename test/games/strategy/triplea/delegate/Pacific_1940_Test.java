@@ -22,7 +22,7 @@ public class Pacific_1940_Test {
 
   @Before
   protected void setUp() throws Exception {
-    m_data = LoadGameUtil.loadTestGame("ww2pac40_test.xml");
+    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.WW2PAC40);
   }
 
   @SuppressWarnings("unused")

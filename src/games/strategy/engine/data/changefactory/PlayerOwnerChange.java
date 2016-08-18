@@ -1,15 +1,15 @@
 package games.strategy.engine.data.changefactory;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.net.GUID;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Changes ownership of a unit.

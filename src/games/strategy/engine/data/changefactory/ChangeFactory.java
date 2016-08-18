@@ -185,7 +185,7 @@ public class ChangeFactory {
     return new AttachmentPropertyReset(attachment, property);
   }
 
-  public static Change genericTechChange(final TechAttachment attachment, final Boolean value, final String property) {
+  public static Change genericTechChange(final TechAttachment attachment, final boolean value, final String property) {
     return new GenericTechChange(attachment, value, property);
   }
 

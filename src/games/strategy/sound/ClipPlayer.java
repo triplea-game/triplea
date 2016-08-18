@@ -23,17 +23,16 @@ import java.util.prefs.Preferences;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import games.strategy.util.UrlStreams;
-import javazoom.jl.player.AudioDevice;
-import javazoom.jl.player.FactoryRegistry;
-import javazoom.jl.player.advanced.AdvancedPlayer;
-
 import com.google.common.base.Throwables;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.triplea.ResourceLoader;
+import games.strategy.util.UrlStreams;
+import javazoom.jl.player.AudioDevice;
+import javazoom.jl.player.FactoryRegistry;
+import javazoom.jl.player.advanced.AdvancedPlayer;
 
 /**
  * Utility for loading and playing sound clips.
@@ -256,7 +255,7 @@ public class ClipPlayer {
    *        random.
    * @param playerId - the name of the player, or null
    */
-  public static void play(String clipPath, PlayerID playerId) {
+  public static void play(final String clipPath, final PlayerID playerId) {
     getInstance().playClip(clipPath, playerId);
   }
 
@@ -277,12 +276,12 @@ public class ClipPlayer {
     if (clip != null) {
       (new Thread(() -> {
         try {
-          Optional<InputStream> inputStream = UrlStreams.openStream(clip.toURL());
+          final Optional<InputStream> inputStream = UrlStreams.openStream(clip.toURL());
           if (inputStream.isPresent()) {
             final AudioDevice audioDevice = FactoryRegistry.systemRegistry().createAudioDevice();
             new AdvancedPlayer(inputStream.get(), audioDevice).play();
           }
-        } catch (Exception e) {
+        } catch (final Exception e) {
           ClientLogger.logError("Failed to play: " + clip, e);
         }
       })).start();
@@ -310,7 +309,7 @@ public class ClipPlayer {
     Collections.shuffle(availableSounds);
     try {
       return availableSounds.get(0).toURI();
-    } catch (URISyntaxException e) {
+    } catch (final URISyntaxException e) {
       throw Throwables.propagate(e);
     }
   }
@@ -459,7 +458,7 @@ public class ClipPlayer {
             final URL individualSoundURL = soundFile.toURI().toURL();
             availableSounds.add(individualSoundURL);
           } catch (final MalformedURLException e) {
-            String msg = "Error " + e.getMessage() + " with sound file: " + soundFile.getPath();
+            final String msg = "Error " + e.getMessage() + " with sound file: " + soundFile.getPath();
             ClientLogger.logQuietly(msg, e);
           }
         }
@@ -473,7 +472,7 @@ public class ClipPlayer {
     return availableSounds;
   }
 
-  private static boolean isZippedMp3(ZipEntry zipElement, String resourceAndPathURL) {
+  private static boolean isZippedMp3(final ZipEntry zipElement, final String resourceAndPathURL) {
     return zipElement != null && zipElement.getName() != null && zipElement.getName().contains(resourceAndPathURL)
         && (zipElement.getName().endsWith(MP3_SUFFIX));
   }

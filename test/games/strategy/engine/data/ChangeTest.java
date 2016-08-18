@@ -15,10 +15,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
 
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import org.junit.Before;
 import org.junit.Test;
 
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Constants;
 
 public class ChangeTest {

@@ -27,8 +27,9 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
   }
 
   public static void layout(final MapXmlCreator mapXmlCreator) {
-    if (!me.isPresent() || !(me.get() instanceof PlayerAndAlliancesPanel))
+    if (!me.isPresent() || !(me.get() instanceof PlayerAndAlliancesPanel)) {
       me = Optional.of(new PlayerAndAlliancesPanel(mapXmlCreator.getStepActionPanel()));
+    }
     DynamicRowsPanel.layout(mapXmlCreator);
   }
 
@@ -52,24 +53,25 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
     labelInitialResource.setPreferredSize(dimension);
 
     // <1> Set panel layout
-    GridBagLayout gbl_stepActionPanel = new GridBagLayout();
+    final GridBagLayout gbl_stepActionPanel = new GridBagLayout();
     setColumns(gbl_stepActionPanel);
     setRows(gbl_stepActionPanel, MapXmlHelper.getPlayerNames().size());
     getOwnPanel().setLayout(gbl_stepActionPanel);
 
     // <2> Add Row Labels: Player Name, Alliance Name, Initial Resource
-    GridBagConstraints gridBadConstLabelPlayerName = new GridBagConstraints();
+    final GridBagConstraints gridBadConstLabelPlayerName = new GridBagConstraints();
     gridBadConstLabelPlayerName.insets = new Insets(0, 0, 5, 5);
     gridBadConstLabelPlayerName.gridy = 0;
     gridBadConstLabelPlayerName.gridx = 0;
     gridBadConstLabelPlayerName.anchor = GridBagConstraints.WEST;
     getOwnPanel().add(labelPlayerName, gridBadConstLabelPlayerName);
 
-    GridBagConstraints gridBadConstLabelPlayerAlliance = (GridBagConstraints) gridBadConstLabelPlayerName.clone();
+    final GridBagConstraints gridBadConstLabelPlayerAlliance = (GridBagConstraints) gridBadConstLabelPlayerName.clone();
     gridBadConstLabelPlayerAlliance.gridx = 1;
     getOwnPanel().add(labelPlayerAlliance, gridBadConstLabelPlayerAlliance);
 
-    GridBagConstraints gridBadConstLabelInitialResource = (GridBagConstraints) gridBadConstLabelPlayerName.clone();
+    final GridBagConstraints gridBadConstLabelInitialResource =
+        (GridBagConstraints) gridBadConstLabelPlayerName.clone();
     gridBadConstLabelInitialResource.gridx = 2;
     getOwnPanel().add(labelInitialResource, gridBadConstLabelInitialResource);
 
@@ -77,7 +79,7 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
     final String[] alliancesArray = alliances.toArray(new String[alliances.size()]);
     int yValue = 1;
     for (final String playerName : MapXmlHelper.getPlayerNames()) {
-      GridBagConstraints gbc_tPlayerName = (GridBagConstraints) gridBadConstLabelPlayerName.clone();
+      final GridBagConstraints gbc_tPlayerName = (GridBagConstraints) gridBadConstLabelPlayerName.clone();
       gbc_tPlayerName.gridx = 0;
       gridBadConstLabelPlayerName.gridy = yValue;
       final PlayerAndAlliancesRow newRow = new PlayerAndAlliancesRow(this, getOwnPanel(), playerName,
@@ -97,8 +99,9 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
     buttonAddPlayer.addActionListener(SwingAction.of("Add Player", e -> {
       String newPlayerName = JOptionPane.showInputDialog(getOwnPanel(), "Enter a new player name:",
           "Player" + (MapXmlHelper.getPlayerNames().size() + 1));
-      if (newPlayerName == null || newPlayerName.isEmpty())
+      if (newPlayerName == null || newPlayerName.isEmpty()) {
         return;
+      }
       if (MapXmlHelper.getPlayerNames().contains(newPlayerName)) {
         JOptionPane.showMessageDialog(getOwnPanel(), "Player '" + newPlayerName + "' already exists.", "Input error",
             JOptionPane.ERROR_MESSAGE);
@@ -110,17 +113,19 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
       if (alliances.isEmpty()) {
         allianceName = JOptionPane.showInputDialog(getOwnPanel(),
             "Which alliance should player '" + newPlayerName + "' join?", "Alliance1");
-        if (allianceName == null)
+        if (allianceName == null) {
           return;
+        }
         allianceName = allianceName.trim();
         alliances.add(allianceName);
-      } else
+      } else {
         allianceName = (String) JOptionPane.showInputDialog(getOwnPanel(),
             "Which alliance should player '" + newPlayerName + "' join?",
             "Choose Player's Alliance",
             JOptionPane.QUESTION_MESSAGE, null,
             alliances.toArray(new String[alliances.size()]), // Array of choices
             alliances.iterator().next()); // Initial choice
+      }
 
       MapXmlHelper.addPlayerName(newPlayerName);
       MapXmlHelper.putPlayerAlliance(newPlayerName, allianceName);
@@ -140,18 +145,21 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
     buttonAddAlliance.addActionListener(SwingAction.of("Add Alliance", e -> {
       String newAllianceName = JOptionPane.showInputDialog(getOwnPanel(), "Enter a new alliance name:",
           "Alliance" + (alliances.size() + 1));
-      if (newAllianceName == null || newAllianceName.isEmpty())
+      if (newAllianceName == null || newAllianceName.isEmpty()) {
         return;
+      }
       if (alliances.contains(newAllianceName)) {
-        JOptionPane.showMessageDialog(getOwnPanel(), "Alliance '" + newAllianceName + "' already exists.", "Input error",
+        JOptionPane.showMessageDialog(getOwnPanel(), "Alliance '" + newAllianceName + "' already exists.",
+            "Input error",
             JOptionPane.ERROR_MESSAGE);
         return;
       }
       newAllianceName = newAllianceName.trim();
 
       alliances.add(newAllianceName);
-      if (alliances.size() > 1)
+      if (alliances.size() > 1) {
         buttonRemoveAlliance.setEnabled(true);
+      }
 
       // UI Update
       addToComboBoxesAlliance(newAllianceName);
@@ -165,22 +173,25 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
     buttonRemoveAlliance.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
     buttonRemoveAlliance.setEnabled(alliances.size() > 1);
     buttonRemoveAlliance.addActionListener(SwingAction.of("Remove Alliance", e -> {
-      String removeAllianceName = (String) JOptionPane.showInputDialog(getOwnPanel(),
+      final String removeAllianceName = (String) JOptionPane.showInputDialog(getOwnPanel(),
           "Which alliance should get removed?", "Remove Alliance", JOptionPane.QUESTION_MESSAGE,
           null, alliances.toArray(new String[alliances.size()]), // Array of choices
           alliances.iterator().next()); // Initial choice
-      if (removeAllianceName == null || removeAllianceName.isEmpty())
+      if (removeAllianceName == null || removeAllianceName.isEmpty()) {
         return;
+      }
       final ArrayList<String> playerStillUsing = new ArrayList<>();
       for (final DynamicRow row : rows) {
-        if (((PlayerAndAlliancesRow) row).isAllianceSelected(removeAllianceName))
+        if (((PlayerAndAlliancesRow) row).isAllianceSelected(removeAllianceName)) {
           playerStillUsing.add(row.getRowName());
+        }
       }
       if (!playerStillUsing.isEmpty()) {
-        StringBuilder formattedPlayerList = new StringBuilder();
+        final StringBuilder formattedPlayerList = new StringBuilder();
         final boolean plural = playerStillUsing.size() > 1;
-        for (final String playerString : playerStillUsing)
+        for (final String playerString : playerStillUsing) {
           formattedPlayerList.append("\r - ").append(playerString);
+        }
         JOptionPane.showMessageDialog(getOwnPanel(), "Cannot remove alliance.\rThe following player"
             + (plural ? "s are" : " is") + " still assigned to alliance '"
             + removeAllianceName + "':"
@@ -190,8 +201,9 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
       }
 
       alliances.remove(removeAllianceName);
-      if (alliances.size() <= 1)
+      if (alliances.size() <= 1) {
         buttonRemoveAlliance.setEnabled(false);
+      }
 
       // UI Update
       removeFromComboBoxesAlliance(removeAllianceName);
@@ -202,7 +214,7 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
     }));
     addButton(buttonRemoveAlliance);
 
-    GridBagConstraints gridBadConstButtonAddPlayer = (GridBagConstraints) gridBadConstLabelPlayerName.clone();
+    final GridBagConstraints gridBadConstButtonAddPlayer = (GridBagConstraints) gridBadConstLabelPlayerName.clone();
     gridBadConstButtonAddPlayer.gridx = 0;
     gridBadConstButtonAddPlayer.gridy = yValue;
     addFinalButtonRow(gridBadConstButtonAddPlayer);
@@ -237,7 +249,7 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
   }
 
   @Override
-  protected void setColumns(GridBagLayout gbl_panel) {
+  protected void setColumns(final GridBagLayout gbl_panel) {
     gbl_panel.columnWidths = new int[] {50, 60, 50, 30};
     gbl_panel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0};
   }

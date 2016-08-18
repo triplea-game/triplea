@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
@@ -26,11 +24,8 @@ import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.engine.framework.TripleAProcessRunner;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
@@ -40,6 +35,7 @@ import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.Node;
+import games.strategy.ui.SwingAction;
 import games.strategy.util.MD5Crypt;
 
 public class LobbyGamePanel extends JPanel {

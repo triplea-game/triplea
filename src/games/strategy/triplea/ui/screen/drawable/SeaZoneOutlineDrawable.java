@@ -1,9 +1,5 @@
 package games.strategy.triplea.ui.screen.drawable;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ui.mapdata.MapData;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -11,6 +7,10 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.util.Iterator;
 import java.util.List;
+
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Territory;
+import games.strategy.triplea.ui.mapdata.MapData;
 
 public class SeaZoneOutlineDrawable implements IDrawable {
   private final String m_territoryName;

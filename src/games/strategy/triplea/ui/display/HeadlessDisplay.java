@@ -14,62 +14,68 @@ import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 
 public class HeadlessDisplay implements ITripleADisplay {
-  
-  public HeadlessDisplay(){
-  }
+
+  public HeadlessDisplay() {}
 
   @Override
-  public void initialize(IDisplayBridge bridge) {}
+  public void initialize(final IDisplayBridge bridge) {}
 
   @Override
-  public void shutDown() {
-  }
+  public void shutDown() {}
 
   @Override
-  public void reportMessageToAll(String message, String title, boolean doNotIncludeHost, boolean doNotIncludeClients,
-      boolean doNotIncludeObservers) {}
+  public void reportMessageToAll(final String message, final String title, final boolean doNotIncludeHost,
+      final boolean doNotIncludeClients,
+      final boolean doNotIncludeObservers) {}
 
   @Override
-  public void reportMessageToPlayers(Collection<PlayerID> playersToSendTo, Collection<PlayerID> butNotThesePlayers,
-      String message, String title) {}
+  public void reportMessageToPlayers(final Collection<PlayerID> playersToSendTo,
+      final Collection<PlayerID> butNotThesePlayers,
+      final String message, final String title) {}
 
   @Override
-  public void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits,
-      Collection<Unit> defendingUnits, Collection<Unit> killedUnits, Collection<Unit> attackingWaitingToDie,
-      Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> dependentUnits, PlayerID attacker,
-      PlayerID defender, boolean isAmphibious, BattleType battleType, Collection<Unit> amphibiousLandAttackers) {}
+  public void showBattle(final GUID battleID, final Territory location, final String battleTitle,
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
+      final Collection<Unit> attackingWaitingToDie,
+      final Collection<Unit> defendingWaitingToDie, final Map<Unit, Collection<Unit>> dependentUnits,
+      final PlayerID attacker,
+      final PlayerID defender, final boolean isAmphibious, final BattleType battleType,
+      final Collection<Unit> amphibiousLandAttackers) {}
 
   @Override
-  public void listBattleSteps(GUID battleID, List<String> steps) {}
+  public void listBattleSteps(final GUID battleID, final List<String> steps) {}
 
   @Override
-  public void battleEnd(GUID battleID, String message) {}
+  public void battleEnd(final GUID battleID, final String message) {}
 
   @Override
-  public void casualtyNotification(GUID battleID, String step, DiceRoll dice, PlayerID player, Collection<Unit> killed,
-      Collection<Unit> damaged, Map<Unit, Collection<Unit>> dependents) {}
+  public void casualtyNotification(final GUID battleID, final String step, final DiceRoll dice, final PlayerID player,
+      final Collection<Unit> killed,
+      final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents) {}
 
   @Override
-  public void deadUnitNotification(GUID battleID, PlayerID player, Collection<Unit> dead,
-      Map<Unit, Collection<Unit>> dependents) {}
+  public void deadUnitNotification(final GUID battleID, final PlayerID player, final Collection<Unit> dead,
+      final Map<Unit, Collection<Unit>> dependents) {}
 
   @Override
-  public void changedUnitsNotification(GUID battleID, PlayerID player, Collection<Unit> removedUnits,
-      Collection<Unit> addedUnits, Map<Unit, Collection<Unit>> dependents) {}
+  public void changedUnitsNotification(final GUID battleID, final PlayerID player, final Collection<Unit> removedUnits,
+      final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents) {}
 
   @Override
-  public void bombingResults(GUID battleID, List<Die> dice, int cost) {}
+  public void bombingResults(final GUID battleID, final List<Die> dice, final int cost) {}
 
   @Override
-  public void notifyRetreat(String shortMessage, String message, String step, PlayerID retreatingPlayer) {}
+  public void notifyRetreat(final String shortMessage, final String message, final String step,
+      final PlayerID retreatingPlayer) {}
 
   @Override
-  public void notifyRetreat(GUID battleId, Collection<Unit> retreating) {}
+  public void notifyRetreat(final GUID battleId, final Collection<Unit> retreating) {}
 
   @Override
-  public void notifyDice(DiceRoll dice, String stepName) {}
+  public void notifyDice(final DiceRoll dice, final String stepName) {}
 
   @Override
-  public void gotoBattleStep(GUID battleId, String step) {}
+  public void gotoBattleStep(final GUID battleId, final String step) {}
 
 }

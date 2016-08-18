@@ -280,7 +280,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     }
     // make sure at least 1 player is enabled
     final Map<String, Boolean> someoneEnabled = m_model.getPlayersEnabledListing();
-    for (final Boolean bool : someoneEnabled.values()) {
+    for (final boolean bool : someoneEnabled.values()) {
       if (bool) {
         return true;
       }

@@ -7,7 +7,6 @@ import javax.swing.JComponent;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.ui.DoubleTextField;
-import games.strategy.ui.DoubleTextFieldChangeListener;
 
 public class DoubleProperty extends AEditableProperty {
   private static final long serialVersionUID = 5521967819500867581L;

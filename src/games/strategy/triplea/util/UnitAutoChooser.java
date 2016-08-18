@@ -615,7 +615,7 @@ class UnitAutoChooser {
     int bestUnitCount = 0;
     // setup a simple stack of List indexes to avoid the overhead of actual recursion
     final Stack<Integer> indexStack = new Stack<>();
-    Integer curIndex = Integer.valueOf(0);
+    int curIndex = 0;
     // do it
     while (true) {
       // handle stopping condition
@@ -637,7 +637,7 @@ class UnitAutoChooser {
         currentChosenCategoryCountsNoDependents.clear();
         int currentUnitCount = 0;
         // Populate all structures from our stack of list indexes
-        for (final Integer i : indexStack) {
+        for (final int i : indexStack) {
           final UnitCategory category = candidateCategoriesWithDependentsList.get(i);
           final UnitCategory chosenCategory = m_candidateToChosenCategories.get(category);
           currentCandidateCategories.add(category);

@@ -15,7 +15,7 @@ import games.strategy.util.Version;
  */
 public class ProcessRunnerUtil {
 
-  public static void runClass(Class<?> mainClass) {
+  public static void runClass(final Class<?> mainClass) {
     final List<String> commands = new ArrayList<>();
     populateBasicJavaArgs(commands);
     commands.add(mainClass.getName());

@@ -10,7 +10,6 @@ import java.util.List;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -19,6 +18,7 @@ import games.strategy.engine.data.RouteScripted;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.sound.SoundPath;
@@ -385,8 +385,8 @@ public class AirBattle extends AbstractBattle {
       bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_FAILURE, m_attacker);
     }
     bridge.getHistoryWriter().addChildToEvent(text);
-    m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), 0);
+    m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
+        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     getDisplay(bridge).battleEnd(m_battleID, "Air Battle over");
     m_isOver = true;
     m_battleTracker.removeBattle(AirBattle.this);
@@ -396,7 +396,7 @@ public class AirBattle extends AbstractBattle {
     makeBattle(bridge);
     m_whoWon = WhoWon.ATTACKER;
     m_battleResultDescription = BattleRecord.BattleResultDescription.NO_BATTLE;
-    m_battleTracker.getBattleRecords(m_data).removeBattle(m_attacker, m_battleID);
+    m_battleTracker.getBattleRecords().removeBattle(m_attacker, m_battleID);
     m_isOver = true;
     m_battleTracker.removeBattle(AirBattle.this);
   }

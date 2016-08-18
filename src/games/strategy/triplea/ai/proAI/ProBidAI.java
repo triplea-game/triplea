@@ -763,27 +763,27 @@ public class ProBidAI {
     if (rule == null) {
       return 0;
     }
-    Integer totAttack = parameters.getInt("attack");
-    Integer totDefense = parameters.getInt("defense");
-    Integer totCost = parameters.getInt("totcost");
-    Integer totMovement = parameters.getInt("totMovement");
-    final Integer maxCost = parameters.getInt("maxCost");
-    final Integer maxUnits = parameters.getInt("maxUnits");
-    Integer totUnits = parameters.getInt("totUnits");
-    Integer maxAttack = parameters.getInt("maxAttack");
-    Integer maxDefense = parameters.getInt("maxDefense");
-    Integer maxTransAttack = parameters.getInt("maxTransAttack");
-    Integer maxTransCost = parameters.getInt("maxTransCost");
-    Integer maxAttackCost = parameters.getInt("maxAttackCost");
-    Integer maxDefenseCost = parameters.getInt("maxDefenseCost");
-    Integer maxUnitAttack = parameters.getInt("maxUnitAttack");
-    Integer maxUnitCost = parameters.getInt("maxUnitCost");
-    Integer maxUnitCount = parameters.getInt("maxUnitCount");
-    Integer maxMobileAttack = parameters.getInt("maxMobileAttack");
-    Integer maxMovement = parameters.getInt("maxMovement");
-    Integer supportableInfCount = parameters.getInt("supportableInfCount");
-    Integer infCount = parameters.getInt("infantry");
-    Integer nonInfCount = parameters.getInt("nonInfantry");
+    int totAttack = parameters.getInt("attack");
+    int totDefense = parameters.getInt("defense");
+    int totCost = parameters.getInt("totcost");
+    int totMovement = parameters.getInt("totMovement");
+    final int maxCost = parameters.getInt("maxCost");
+    final int maxUnits = parameters.getInt("maxUnits");
+    int totUnits = parameters.getInt("totUnits");
+    int maxAttack = parameters.getInt("maxAttack");
+    int maxDefense = parameters.getInt("maxDefense");
+    int maxTransAttack = parameters.getInt("maxTransAttack");
+    int maxTransCost = parameters.getInt("maxTransCost");
+    int maxAttackCost = parameters.getInt("maxAttackCost");
+    int maxDefenseCost = parameters.getInt("maxDefenseCost");
+    int maxUnitAttack = parameters.getInt("maxUnitAttack");
+    int maxUnitCost = parameters.getInt("maxUnitCost");
+    int maxUnitCount = parameters.getInt("maxUnitCount");
+    int maxMobileAttack = parameters.getInt("maxMobileAttack");
+    int maxMovement = parameters.getInt("maxMovement");
+    int supportableInfCount = parameters.getInt("supportableInfCount");
+    int infCount = parameters.getInt("infantry");
+    int nonInfCount = parameters.getInt("nonInfantry");
     int parametersChanged = 0, thisParametersChanged = 0;
     final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
     if (!(resourceOrUnit instanceof UnitType)) {
@@ -1750,7 +1750,7 @@ public class ProBidAI {
             continue;
           }
           q.add(neighbor);
-          final Integer dist = distance.getInt(neighbor);
+          final int dist = distance.getInt(neighbor);
           if (ignoreDistance.contains(dist)) {
             continue;
           }
@@ -2183,9 +2183,8 @@ public class ProBidAI {
     }
     int artilleryCount = artillery.size();
     int armorCount = armor.size();
-    final int infCount = infantry.size();
     int othersCount = others.size();
-    for (Unit anInfantry : infantry) {
+    for (final Unit anInfantry : infantry) {
       sorted.add(anInfantry);
       // this should be based on combined attack and defense powers, not on attachments like blitz
       if (armorCount > 0) {

@@ -15,11 +15,11 @@ public class Tuple<T, S> implements Serializable {
    * Static creation method to create a new instance of a tuple with the parameters provided.
    *
    * This method allows for nicer tuple creation syntax, namely:
-   *    Tuple<String,Integer> myTuple = Tuple.of("abc",123);
+   * Tuple<String,Integer> myTuple = Tuple.of("abc",123);
    * Instead of:
-   *    Tuple<String,Integer> myTuple = new Tuple<String,Integer>("abc",123);
+   * Tuple<String,Integer> myTuple = new Tuple<String,Integer>("abc",123);
    */
-  public static <T,S> Tuple<T,S> of( final T first, final S second ) {
+  public static <T, S> Tuple<T, S> of(final T first, final S second) {
     return new Tuple<>(first, second);
   }
 
@@ -58,9 +58,9 @@ public class Tuple<T, S> implements Serializable {
     if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    
+
     // ignore parameterization, just perform equals-check on components
-	final Tuple<?,?> other = (Tuple<?,?>) obj;
+    final Tuple<?, ?> other = (Tuple<?, ?>) obj;
     return Objects.equals(getFirst(), other.getFirst())
         && Objects.equals(getSecond(), other.getSecond());
   }

@@ -16,7 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
@@ -24,6 +23,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.test.TestUtil;
@@ -38,7 +38,7 @@ public class LHTRTest {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadTestGame("lhtr_test.xml");
+    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.LHTR);
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
@@ -160,7 +160,7 @@ public class LHTRTest {
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany),
         uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
     addTo(germany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
-    tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
+    tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
@@ -201,7 +201,7 @@ public class LHTRTest {
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany),
         uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
     addTo(germany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
-    tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
+    tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));

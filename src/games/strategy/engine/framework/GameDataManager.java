@@ -84,13 +84,14 @@ public class GameDataManager {
         try {
           final String newClassPath = TripleAProcessRunner.findOldJar(readVersion, true);
           // ask user if we really want to do this?
-          final String messageString = "<html>This TripleA engine is version " + ClientContext.engineVersion().getVersion()
-              + " and you are trying to open a savegame made with version " + readVersion.toString()
-              + "<br>However, this TripleA cannot open any savegame made by any engine other than engines with the same first three version numbers as it (x_x_x_x)."
-              + "<br><br>TripleA now comes with older engines included with it, and has found the engine to run this savegame. This is a new feature and is in 'beta' stage."
-              + "<br>It will attempt to run a new instance of TripleA using the older engine jar file, and this instance will only be able to play this savegame."
-              + "<br><b>You may choose to either Close or Keep the current instance of TripleA!</b> (If hosting, you must close it). Please report any bugs or issues."
-              + "<br><br>Do you wish to continue?</html>";
+          final String messageString =
+              "<html>This TripleA engine is version " + ClientContext.engineVersion().getVersion()
+                  + " and you are trying to open a savegame made with version " + readVersion.toString()
+                  + "<br>However, this TripleA cannot open any savegame made by any engine other than engines with the same first three version numbers as it (x_x_x_x)."
+                  + "<br><br>TripleA now comes with older engines included with it, and has found the engine to run this savegame. This is a new feature and is in 'beta' stage."
+                  + "<br>It will attempt to run a new instance of TripleA using the older engine jar file, and this instance will only be able to play this savegame."
+                  + "<br><b>You may choose to either Close or Keep the current instance of TripleA!</b> (If hosting, you must close it). Please report any bugs or issues."
+                  + "<br><br>Do you wish to continue?</html>";
           final String yesClose = "Yes & Close Current";
           final String yesOpen = "Yes & Do Not Close";
           final String cancel = "Cancel";
@@ -104,7 +105,7 @@ public class GameDataManager {
             return null;
           }
           final boolean closeCurrentInstance = buttonPressed.equals(yesClose);
-          TripleAProcessRunner.startGame(savegamePath, newClassPath, null);
+          TripleAProcessRunner.startGame(savegamePath, newClassPath, 0);
           if (closeCurrentInstance) {
             ThreadUtil.sleep(1000);
             System.exit(0);
@@ -126,7 +127,8 @@ public class GameDataManager {
         final String messageString =
             "<html>Your TripleA engine is OUT OF DATE.  This save was made by a newer version of TripleA."
                 + "<br>However, because the first 3 version numbers are the same as your current version, we can still open the savegame."
-                + "<br><br>This TripleA engine is version " + ClientContext.engineVersion().getVersion().toStringFull("_")
+                + "<br><br>This TripleA engine is version "
+                + ClientContext.engineVersion().getVersion().toStringFull("_")
                 + " and you are trying to open a savegame made with version " + readVersion.toStringFull("_")
                 + "<br><br>To download the latest version of TripleA, Please visit http://triplea.sourceforge.net/"
                 + "<br><br>It is recommended that you upgrade to the latest version of TripleA before playing this savegame."
@@ -165,7 +167,8 @@ public class GameDataManager {
      * example1:
      * final Version v1610 = new Version(1, 6, 1, 0);
      * final Version v1620 = new Version(1, 6, 2, 0);
-     * if (originalEngineVersion.equals(v1610, false) && ClientContext.engineVersion().getVersion().isGreaterThan(v1610, false) &&
+     * if (originalEngineVersion.equals(v1610, false) && ClientContext.engineVersion().getVersion().isGreaterThan(v1610,
+     * false) &&
      * ClientContext.engineVersion().getVersion().isLessThan(v1620, true))
      * {
      * // if original save was done under 1.6.1.0, and new engine is greater than 1.6.1.0 and less than 1.6.2.0

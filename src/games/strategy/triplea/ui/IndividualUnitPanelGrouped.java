@@ -6,8 +6,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,7 +22,6 @@ import javax.swing.JTextArea;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
-import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
@@ -118,9 +115,9 @@ public class IndividualUnitPanelGrouped extends JPanel {
     this.setLayout(new GridBagLayout());
     final Insets nullInsets = new Insets(0, 0, 0, 0);
     final Dimension buttonSize = new Dimension(80, 20);
-    JButton m_selectNoneButton = new JButton("None");
+    final JButton m_selectNoneButton = new JButton("None");
     m_selectNoneButton.setPreferredSize(buttonSize);
-    JButton m_autoSelectButton = new JButton("Max");
+    final JButton m_autoSelectButton = new JButton("Max");
     m_autoSelectButton.setPreferredSize(buttonSize);
     add(m_title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         nullInsets, 0, 0));

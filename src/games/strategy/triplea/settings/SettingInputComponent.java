@@ -1,7 +1,5 @@
 package games.strategy.triplea.settings;
 
-import games.strategy.ui.SwingComponents;
-
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -12,6 +10,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.text.JTextComponent;
+
+import games.strategy.ui.SwingComponents;
 
 /**
  * Wrapper API around a 'settings' object, allows for a GUI interface that allows a user to read descriptions about
@@ -53,11 +53,11 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
 
 
 
-  static <Z extends HasDefaults> SettingInputComponent<Z> build(IntegerValueRange valueRange,
-      final String label, final String description, JTextComponent component,
-      BiConsumer<Z, String> updater, Function<Z, String> extractor) {
+  static <Z extends HasDefaults> SettingInputComponent<Z> build(final IntegerValueRange valueRange,
+      final String label, final String description, final JTextComponent component,
+      final BiConsumer<Z, String> updater, final Function<Z, String> extractor) {
 
-    String descriptionWithRange = "(" + valueRange.lowerValue + " - " + valueRange.upperValue
+    final String descriptionWithRange = "(" + valueRange.lowerValue + " - " + valueRange.upperValue
         + ", default: " + valueRange.defaultValue + ")\n" + description;
 
     return SettingInputComponent.build(label, descriptionWithRange, component, updater, extractor,
@@ -68,9 +68,9 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
    * Factory method to create instances of this interface, backed by TextField component types
    */
   static <Z extends HasDefaults> SettingInputComponent<Z> build(final String label, final String description,
-      JTextComponent component, BiConsumer<Z, String> updater,
-      Function<Z, String> extractor, InputValidator... validators) {
-    SettingsInput inputComponent = new SettingsInput() {
+      final JTextComponent component, final BiConsumer<Z, String> updater,
+      final Function<Z, String> extractor, final InputValidator... validators) {
+    final SettingsInput inputComponent = new SettingsInput() {
       @Override
       public JComponent getSwingComponent() {
         return component;
@@ -82,7 +82,7 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
       }
 
       @Override
-      public void setText(String valueToSet) {
+      public void setText(final String valueToSet) {
         component.setText(valueToSet);
       }
     };
@@ -90,11 +90,11 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
   }
 
   static <Z extends HasDefaults> SettingInputComponent<Z> buildYesOrNoRadioButtons(final String label,
-      final String description, boolean initialValue, BiConsumer<Z, String> settingsObjectUpdater,
-      Function<Z, String> settingsObjectExtractor) {
+      final String description, final boolean initialValue, final BiConsumer<Z, String> settingsObjectUpdater,
+      final Function<Z, String> settingsObjectExtractor) {
 
-    JRadioButton radioButtonYes = new JRadioButton("Yes");
-    JRadioButton radioButtonNo = new JRadioButton("No");
+    final JRadioButton radioButtonYes = new JRadioButton("Yes");
+    final JRadioButton radioButtonNo = new JRadioButton("No");
     SwingComponents.createButtonGroup(radioButtonYes, radioButtonNo);
 
 
@@ -108,13 +108,14 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
 
   }
 
-  static JPanel createRadioButtonPanel(JRadioButton buttonYes, JRadioButton buttonNo, boolean yesOptionIsSelected) {
+  static JPanel createRadioButtonPanel(final JRadioButton buttonYes, final JRadioButton buttonNo,
+      final boolean yesOptionIsSelected) {
     if (yesOptionIsSelected) {
       buttonYes.setSelected(true);
     } else {
       buttonNo.setSelected(true);
     }
-    JPanel panel = new JPanel();
+    final JPanel panel = new JPanel();
     panel.add(buttonYes);
     panel.add(buttonNo);
     return panel;
@@ -125,11 +126,11 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
    * Factory method to create instances of this interface backed by TextField component types
    */
   static <Z extends HasDefaults> SettingInputComponent<Z> build(final String label, final String description,
-      JPanel componentPanel, Supplier<String> componentReader,
-      BiConsumer<Z, String> settingsObjectUpdater, Function<Z, String> settingsObjectExtractor,
-      InputValidator... validators) {
+      final JPanel componentPanel, final Supplier<String> componentReader,
+      final BiConsumer<Z, String> settingsObjectUpdater, final Function<Z, String> settingsObjectExtractor,
+      final InputValidator... validators) {
 
-    SettingsInput inputComponent = new SettingsInput() {
+    final SettingsInput inputComponent = new SettingsInput() {
       @Override
       public JComponent getSwingComponent() {
         return componentPanel;
@@ -145,7 +146,7 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
        * valid values only, we never expect this to be the case
        */
       @Override
-      public void setText(String valueToSet) {
+      public void setText(final String valueToSet) {
         throw new RuntimeException("Unsupported operation");
       }
     };
@@ -158,8 +159,8 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
    * Generic factory method to create instances of this interface
    */
   static <Z extends HasDefaults> SettingInputComponent<Z> build(final String label, final String description,
-      SettingsInput component,
-      BiConsumer<Z, String> updater, Function<Z, String> extractor, InputValidator... validators) {
+      final SettingsInput component,
+      final BiConsumer<Z, String> updater, final Function<Z, String> extractor, final InputValidator... validators) {
 
 
     return new SettingInputComponent<Z>() {
@@ -180,11 +181,11 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
 
 
       @Override
-      public boolean updateSettings(Z toUpdate) {
-        String input = getInputElement().getText();
+      public boolean updateSettings(final Z toUpdate) {
+        final String input = getInputElement().getText();
 
-        for (InputValidator validator : Arrays.asList(validators)) {
-          boolean isValid = validator.apply(input);
+        for (final InputValidator validator : Arrays.asList(validators)) {
+          final boolean isValid = validator.apply(input);
 
           if (!isValid) {
             return false;
@@ -195,22 +196,22 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
       }
 
       @Override
-      public String getValue(Z settingsType) {
+      public String getValue(final Z settingsType) {
         return extractor.apply(settingsType);
       }
 
       @Override
-      public void setValue(String valueToSet) {
+      public void setValue(final String valueToSet) {
         getInputElement().setText(valueToSet);
       }
 
       @Override
       public String getErrorMessage() {
-        String input = getInputElement().getText();
+        final String input = getInputElement().getText();
 
-        Optional<InputValidator>
-            failedValidator = Arrays.asList(validators).stream().filter(validator -> !validator.apply(input)).findFirst();
-        if(!failedValidator.isPresent()) {
+        final Optional<InputValidator> failedValidator =
+            Arrays.asList(validators).stream().filter(validator -> !validator.apply(input)).findFirst();
+        if (!failedValidator.isPresent()) {
           return "";
         }
         return input + ", " + failedValidator.get().getErrorMessage();

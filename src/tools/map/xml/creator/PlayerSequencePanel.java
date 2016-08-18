@@ -29,8 +29,9 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
   }
 
   public static void layout(final MapXmlCreator mapXmlCreator) {
-    if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof PlayerSequencePanel))
+    if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof PlayerSequencePanel)) {
       me = Optional.of(new PlayerSequencePanel(mapXmlCreator.getStepActionPanel()));
+    }
     DynamicRowsPanel.layout(mapXmlCreator);
   }
 
@@ -56,28 +57,29 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
     labelMaxRunCount.setPreferredSize(dimension);
 
     // <1> Set panel layout
-    GridBagLayout gbl_stepActionPanel = new GridBagLayout();
+    final GridBagLayout gbl_stepActionPanel = new GridBagLayout();
     setColumns(gbl_stepActionPanel);
     setRows(gbl_stepActionPanel, MapXmlHelper.getPlayerSequenceMap().size());
     getOwnPanel().setLayout(gbl_stepActionPanel);
 
     // <2> Add Row Labels: Player Name, Alliance Name, Buy Quantity
-    GridBagConstraints gridBadConstLabelSequenceName = new GridBagConstraints();
+    final GridBagConstraints gridBadConstLabelSequenceName = new GridBagConstraints();
     gridBadConstLabelSequenceName.insets = new Insets(0, 0, 5, 5);
     gridBadConstLabelSequenceName.gridy = 0;
     gridBadConstLabelSequenceName.gridx = 0;
     gridBadConstLabelSequenceName.anchor = GridBagConstraints.WEST;
     getOwnPanel().add(labelSequenceName, gridBadConstLabelSequenceName);
 
-    GridBagConstraints gridBadConstLabelGameSequenceName = (GridBagConstraints) gridBadConstLabelSequenceName.clone();
+    final GridBagConstraints gridBadConstLabelGameSequenceName =
+        (GridBagConstraints) gridBadConstLabelSequenceName.clone();
     gridBadConstLabelGameSequenceName.gridx = 1;
     getOwnPanel().add(labelGameSequenceName, gridBadConstLabelGameSequenceName);
 
-    GridBagConstraints gridBadConstLabelPlayerName = (GridBagConstraints) gridBadConstLabelSequenceName.clone();
+    final GridBagConstraints gridBadConstLabelPlayerName = (GridBagConstraints) gridBadConstLabelSequenceName.clone();
     gridBadConstLabelPlayerName.gridx = 2;
     getOwnPanel().add(labelPlayerName, gridBadConstLabelPlayerName);
 
-    GridBagConstraints gridBadConstLabelMaxRunCount = (GridBagConstraints) gridBadConstLabelSequenceName.clone();
+    final GridBagConstraints gridBadConstLabelMaxRunCount = (GridBagConstraints) gridBadConstLabelSequenceName.clone();
     gridBadConstLabelMaxRunCount.gridx = 3;
     getOwnPanel().add(labelMaxRunCount, gridBadConstLabelMaxRunCount);
 
@@ -88,7 +90,7 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
     final String[] playerNamesArray = playerNames.toArray(new String[playerNames.size()]);
     for (final Entry<String, Triple<String, String, Integer>> playerSequence : MapXmlHelper.getPlayerSequenceMap()
         .entrySet()) {
-      GridBagConstraints gbc_tSequenceName = (GridBagConstraints) gridBadConstLabelSequenceName.clone();
+      final GridBagConstraints gbc_tSequenceName = (GridBagConstraints) gridBadConstLabelSequenceName.clone();
       gbc_tSequenceName.gridx = 0;
       gridBadConstLabelSequenceName.gridy = yValue;
       final Triple<String, String, Integer> defintionValues = playerSequence.getValue();
@@ -107,10 +109,12 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
     buttonAddSequence.addActionListener(SwingAction.of("Add Sequence", e -> {
       String newSequenceName = JOptionPane.showInputDialog(getOwnPanel(), "Enter a new sequence name:",
           "Sequence" + (MapXmlHelper.getPlayerSequenceMap().size() + 1));
-      if (newSequenceName == null || newSequenceName.isEmpty())
+      if (newSequenceName == null || newSequenceName.isEmpty()) {
         return;
+      }
       if (MapXmlHelper.getPlayerSequenceMap().containsKey(newSequenceName)) {
-        JOptionPane.showMessageDialog(getOwnPanel(), "Sequence '" + newSequenceName + "' already exists.", "Input error",
+        JOptionPane.showMessageDialog(getOwnPanel(), "Sequence '" + newSequenceName + "' already exists.",
+            "Input error",
             JOptionPane.ERROR_MESSAGE);
         return;
       }
@@ -130,7 +134,7 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
     }));
     addButton(buttonAddSequence);
 
-    GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelSequenceName.clone();
+    final GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelSequenceName.clone();
     gridBadConstButtonAddUnit.gridx = 0;
     gridBadConstButtonAddUnit.gridy = yValue;
     addFinalButtonRow(gridBadConstButtonAddUnit);
@@ -156,7 +160,7 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
   }
 
   @Override
-  protected void setColumns(GridBagLayout gbl_panel) {
+  protected void setColumns(final GridBagLayout gbl_panel) {
     gbl_panel.columnWidths = new int[] {50, 60, 50, 30, 30};
     gbl_panel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0};
   }

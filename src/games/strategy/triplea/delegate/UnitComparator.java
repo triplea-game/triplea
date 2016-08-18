@@ -1,5 +1,9 @@
 package games.strategy.triplea.delegate;
 
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
@@ -8,10 +12,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
-
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
 
 public class UnitComparator {
   public static Comparator<Unit> getLowestToHighestMovementComparator() {

@@ -9,10 +9,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
 
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import org.junit.Before;
 import org.junit.Test;
 
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.LoadGameUtil;
 
@@ -22,7 +22,7 @@ public class ChangeTripleATest {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadTestGame("big_world_1942_test.xml");
+    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.BIG_WORLD_1942);
     can = m_data.getMap().getTerritory("Western Canada");
     assertEquals(can.getUnits().getUnitCount(), 2);
   }

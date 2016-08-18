@@ -50,7 +50,7 @@ public class ProductionTabsProperties {
       propertyFile = PROPERTY_FILE + ".properties";
       url = loader.getResource(propertyFile);
       if (url != null) {
-        Optional<InputStream> inputStream = UrlStreams.openStream(url);
+        final Optional<InputStream> inputStream = UrlStreams.openStream(url);
         if (inputStream.isPresent()) {
           try {
             m_properties.load(inputStream.get());

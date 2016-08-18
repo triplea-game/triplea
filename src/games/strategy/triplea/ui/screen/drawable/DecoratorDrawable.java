@@ -1,13 +1,13 @@
 package games.strategy.triplea.ui.screen.drawable;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.triplea.ui.mapdata.MapData;
-
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
+
+import games.strategy.engine.data.GameData;
+import games.strategy.triplea.ui.mapdata.MapData;
 
 public class DecoratorDrawable implements IDrawable {
   private final Point m_point;

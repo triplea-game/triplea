@@ -28,7 +28,7 @@ public class OddsCalculatorTest {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadTestGame("revised_test.xml");
+    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.REVISED);
   }
 
   @Test
@@ -87,7 +87,7 @@ public class OddsCalculatorTest {
   @Test
   public void testDefendingTransports() {
     // use v3 rule set
-    m_data = LoadGameUtil.loadTestGame("ww2v3_1942_test.xml");
+    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.WW2V3_1942);
     final Territory sz1 = territory("1 Sea Zone", m_data);
     final List<Unit> attacking = submarine(m_data).create(2, americans(m_data));
     final List<Unit> defending = transport(m_data).create(2, germans(m_data));

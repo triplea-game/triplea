@@ -13,12 +13,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.test.TestUtil;
 import games.strategy.triplea.delegate.IBattle.BattleType;
@@ -32,7 +32,7 @@ public class AirThatCantLandUtilTest {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadTestGame("revised_test.xml");
+    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.REVISED);
     m_americans = GameDataTestUtil.americans(m_data);
     m_fighter = GameDataTestUtil.fighter(m_data);
   }
@@ -145,8 +145,8 @@ public class AirThatCantLandUtilTest {
     m_data.performChange(ChangeFactory.addUnits(sz_44, carrierType.create(1, americans)));
     m_data.performChange(ChangeFactory.addUnits(sz_44, fighterType.create(1, americans)));
     // Get total number of defending units before the battle
-    final Integer preCountSz_52 = sz_52.getUnits().size();
-    final Integer preCountAirSz_44 = sz_44.getUnits().getMatches(Matches.UnitIsAir).size();
+    final int preCountSz_52 = sz_52.getUnits().size();
+    final int preCountAirSz_44 = sz_44.getUnits().getMatches(Matches.UnitIsAir).size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
@@ -163,8 +163,8 @@ public class AirThatCantLandUtilTest {
     fight(battle, sz_44, false);
     battle.end();
     // Get the total number of units that should be left after the planes retreat
-    final Integer expectedCountSz_52 = sz_52.getUnits().size();
-    final Integer postCountInt = preCountSz_52 + preCountAirSz_44;
+    final int expectedCountSz_52 = sz_52.getUnits().size();
+    final int postCountInt = preCountSz_52 + preCountAirSz_44;
     // Compare the expected count with the actual number of units in landing zone
     assertEquals(expectedCountSz_52, postCountInt);
   }
@@ -194,8 +194,8 @@ public class AirThatCantLandUtilTest {
     m_data.performChange(ChangeFactory.addUnits(sz_44, fighterType.create(3, americans)));
     m_data.performChange(ChangeFactory.addUnits(sz_43, carrierType.create(1, americans)));
     // Get total number of defending units before the battle
-    final Integer preCountSz_52 = sz_52.getUnits().size();
-    final Integer preCountSz_43 = sz_43.getUnits().size();
+    final int preCountSz_52 = sz_52.getUnits().size();
+    final int preCountSz_43 = sz_43.getUnits().size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
@@ -212,10 +212,10 @@ public class AirThatCantLandUtilTest {
     fight(battle, sz_44, false);
     battle.end();
     // Get the total number of units that should be left after the planes retreat
-    final Integer expectedCountSz_52 = sz_52.getUnits().size();
-    final Integer expectedCountSz_43 = sz_43.getUnits().size();
-    final Integer postCountSz_52 = preCountSz_52 + 1;
-    final Integer postCountSz_43 = preCountSz_43 + 2;
+    final int expectedCountSz_52 = sz_52.getUnits().size();
+    final int expectedCountSz_43 = sz_43.getUnits().size();
+    final int postCountSz_52 = preCountSz_52 + 1;
+    final int postCountSz_43 = preCountSz_43 + 2;
     // Compare the expected count with the actual number of units in landing zone
     assertEquals(expectedCountSz_52, postCountSz_52);
     assertEquals(expectedCountSz_43, postCountSz_43);
@@ -244,8 +244,8 @@ public class AirThatCantLandUtilTest {
     m_data.performChange(ChangeFactory.addUnits(sz_9, carrierType.create(1, americans)));
     m_data.performChange(ChangeFactory.addUnits(sz_9, fighterType.create(1, americans)));
     // Get total number of defending units before the battle
-    final Integer preCountCanada = eastCanada.getUnits().size();
-    final Integer preCountAirSz_9 = sz_9.getUnits().getMatches(Matches.UnitIsAir).size();
+    final int preCountCanada = eastCanada.getUnits().size();
+    final int preCountAirSz_9 = sz_9.getUnits().getMatches(Matches.UnitIsAir).size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
@@ -262,8 +262,8 @@ public class AirThatCantLandUtilTest {
     fight(battle, sz_9, false);
     battle.end();
     // Get the total number of units that should be left after the planes retreat
-    final Integer expectedCountCanada = eastCanada.getUnits().size();
-    final Integer postCountInt = preCountCanada + preCountAirSz_9;
+    final int expectedCountCanada = eastCanada.getUnits().size();
+    final int postCountInt = preCountCanada + preCountAirSz_9;
     // Compare the expected count with the actual number of units in landing zone
     assertEquals(expectedCountCanada, postCountInt);
   }
@@ -295,8 +295,8 @@ public class AirThatCantLandUtilTest {
     initDel.start();
     initDel.end();
     // Get total number of defending units before the battle
-    final Integer preCountCanada = eastCanada.getUnits().size();
-    final Integer preCountAirSz_9 = sz_9.getUnits().getMatches(Matches.UnitIsAir).size();
+    final int preCountCanada = eastCanada.getUnits().size();
+    final int preCountAirSz_9 = sz_9.getUnits().getMatches(Matches.UnitIsAir).size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
@@ -314,8 +314,8 @@ public class AirThatCantLandUtilTest {
     fight(battle, sz_9, false);
     battle.end();
     // Get the total number of units that should be left after the planes retreat
-    final Integer expectedCountCanada = eastCanada.getUnits().size();
-    final Integer postCountInt = preCountCanada + preCountAirSz_9;
+    final int expectedCountCanada = eastCanada.getUnits().size();
+    final int postCountInt = preCountCanada + preCountAirSz_9;
     // Compare the expected count with the actual number of units in landing zone
     assertEquals(expectedCountCanada, postCountInt);
   }

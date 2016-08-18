@@ -5,8 +5,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,7 +29,6 @@ import javax.swing.event.DocumentListener;
 import org.apache.commons.httpclient.methods.multipart.Part;
 
 import games.strategy.engine.framework.startup.ui.MainFrame;
-import games.strategy.engine.framework.startup.ui.editors.validators.IValidator;
 import games.strategy.engine.pbem.IWebPoster;
 import games.strategy.engine.pbem.TripleAWebPoster;
 import games.strategy.ui.ProgressWindow;
@@ -128,7 +125,7 @@ public class MicroWebPosterEditor extends EditorPanel {
     final ArrayList<String> players = new ArrayList<>();
     try {
       final URL url = new URL(hostUrl + "getplayers.php");
-      Optional<InputStream> inputStream = UrlStreams.openStream(url);
+      final Optional<InputStream> inputStream = UrlStreams.openStream(url);
       if (inputStream.isPresent()) {
         try (InputStream stream = inputStream.get()) {
           try (InputStreamReader reader = new InputStreamReader(stream)) {
@@ -166,8 +163,9 @@ public class MicroWebPosterEditor extends EditorPanel {
       comboBoxes.get(i).setSelectedIndex(i % players.size());
       window.getContentPane().add(label, new GridBagConstraints(0, i + 1, 1, 1, 0, 0, GridBagConstraints.EAST,
           GridBagConstraints.NONE, new Insets(5, 20, 5, 5), 0, 0));
-      window.getContentPane().add(comboBoxes.get(i), new GridBagConstraints(1, i + 1, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.NONE, new Insets(5, 5, 5, 20), 0, 0));
+      window.getContentPane().add(comboBoxes.get(i),
+          new GridBagConstraints(1, i + 1, 1, 1, 0, 0, GridBagConstraints.WEST,
+              GridBagConstraints.NONE, new Insets(5, 5, 5, 20), 0, 0));
     }
     final JButton btnClose = new JButton("Cancel");
     btnClose.addActionListener(e -> {

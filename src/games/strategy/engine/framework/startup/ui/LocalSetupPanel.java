@@ -192,7 +192,7 @@ class LocalPlayerComboBoxSelector {
     m_playerName = playerName;
     m_name = new JLabel(m_playerName + ":");
     m_enabledCheckBox = new JCheckBox();
-    ActionListener m_disablePlayerActionListener = new ActionListener() {
+    final ActionListener m_disablePlayerActionListener = new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
         if (m_enabledCheckBox.isSelected()) {

@@ -1732,8 +1732,8 @@
 			transportCost						values: the space this unit takes up in a transport
 			transportCapacity					values: the amount of space of land units this unit can carry. can be used with sea or air units, except that air units will also require isAirTransport.
 			isCombatTransport					values: considers a unit to be a combat sea unit, even if it has transport capacity, for the purposes of convoys and restricted attack on transports
-			isParatroop							values: does nothing
-			isMechanized						values: does nothing
+			isAirTransportable							values: does nothing
+			isInfantry						values: does nothing
 			
 			canScramble							values: allows the aircraft to enter a surrounding sea zone if the enemy is doing an attack on or from the surrounding sea zone
 			maxScrambleDistance					values: the distance out an aircraft can scramble. anything higher than 1 is not supported well at this point.
@@ -1843,9 +1843,9 @@
 						 <!-- canBeCapturedOnEnteringBy will allow a unit to be captured from one player to another, if the specified player enters a territory with captureUnitOnEnteringBy
 								must be a list of Players who this unit can be given to.  example: value="Russians:Chinese" 
 						 <option name="canBeCapturedOnEnteringBy" value="Americans:British"/>-->
-						 <!-- isParatroop and isMechanized currently do NOTHING, and are only kept for backwards compatibility
-						 <option name="isParatroop" value="false"/>
-						 <option name="isMechanized" value="false"/> -->
+						 <!-- isAirTransportable and isInfantry currently do NOTHING, and are only kept for backwards compatibility
+						 <option name="isAirTransportable" value="false"/>
+						 <option name="isInfantry" value="false"/> -->
                 </attachment>
 				
 				
@@ -1987,7 +1987,7 @@
                          <option name="isSea" value="true"/>
                          <option name="attack" value="4"/>
                          <option name="defense" value="4"/>
-                         <option name="isTwoHit" value="true"/>
+                         <option name="hitPoints" value="2"/>
                          <option name="canBombard" value="true"/>
 						 <!-- bombard defaults to the attack value of the unit if missing -->
                          <option name="bombard" value="4"/>
@@ -2002,7 +2002,7 @@
                          <option name="attack" value="3"/>
                          <option name="defense" value="3"/>
                          <option name="canBombard" value="true"/>
-                         <option name="isTwoHit" value="false"/>
+                         <option name="hitPoints" value="1"/>
                          <option name="bombard" value="3"/>
                          <option name="blockade" value="1"/>
                  </attachment>
@@ -2049,7 +2049,7 @@
 						 <option name="transportCapacity" value="5"/>
 						 <!-- isCombatTransport tells the engine that this sea unit can transport but can fight too. units will not be able to move through it like they would a transport, and it can be taken casualty during battle as normal -->
                          <option name="isCombatTransport" value="true"/>
-                         <!--<option name="isTwoHit" value="true"/>-->
+                         <!--<option name="hitPoints" value="2"/>-->
 						 <!-- whenCombatDamaged means that when this unit has x:y damage on it, it will have this effect
 						 <option name="whenCombatDamaged" value="unitsMayNotLandOnCarrier" count="1:2"/>
 						 <option name="whenCombatDamaged" value="unitsMayNotLeaveAlliedCarrier" count="1:2"/>-->
@@ -2105,7 +2105,7 @@
 								if "More Constructions with/without Factory" = true, then the minimum will be either maxConstructionsPerTypePerTerr or the PU value of the territory (whichever number is greater) in territories with/without factories
 								if "Unlimited Constructions" = true, then this number becomes 10000 -->
 						 <option name="maxConstructionsPerTypePerTerr" value="1"/>
-						 <!--<option name="isTwoHit" value="true"/>-->
+						 <!--<option name="hitPoints" value="2"/>-->
 						 <!-- canDieFromReachingMaxDamage means that if this unit reaches its maxDamage, then it will die.  maxDamage must be larger than zero -->
 						 <option name="canDieFromReachingMaxDamage" value="true"/>
 						 <!-- requiresUnits is a list of units required to be present in the territory in order for you to build this unit there.  Can have multiple instances. Only one instance needs to be true in order to build. -->
@@ -2243,7 +2243,7 @@
 			production								values: the PU production of the territory. also sets unitProduction to be equal.
 			productionOnly							values: please do not use this. it is only here for use with triggers. it sets "production" without setting "unitProduction"
 			unitProduction							values: unitProduction is complex and has 2 uses, depending on how you plan on dealing with damage. Defaults to whatever "production" is, so please set it after you set "production"
-																1. 	First use is used only with ww2v3 factory damage rules ("SBR Affects Unit Production"), which have damage done to a Territory, not to a Unit.
+																1. 	First use is used only with ww2v3 factory damage rules ("Damage From Bombing Done To Units Instead Of Territories"), which have damage done to a Territory, not to a Unit.
 																		This decides the damage the territory starts at.  If unitProduction is less than production, then the territory starts damaged.  If they are equal, then the territory is not damaged. 
 																2. 	Second use is used with newer maps which are using the new damage rules ("Damage From Bombing Done To Units Instead Of Territories"), which have damage done to an individual Unit instead of a Territory.
 																		When used with these rules, "unitProduction" lets you set the unit production potential of a territory, separate from the production. This means a territory with unitProduction = 2 will be able to produce 2 units there, regardless of if production is 0 or 20.
@@ -2255,7 +2255,7 @@
 			victoryCity								values: a victory city is typically used for victory conditions
 																victoryCity uses an image located in the "misc" folder of a map called "vc.png", and the location is determined in a file called "vc.txt" in the map's root directory
 			originalFactory							values: means that the original controller of the territory may produce infinite units there, however if it is captured the opponent may only produce as normal, not infinite units
-			occupiedTerrOf							values: allows a territory to revert to this player's control if liberated by an ally
+			originalOwner							values: allows a territory to revert to this player's control if liberated by an ally
 			navalBase								values: works according to original pacific rules: it increases the non-combat movement of naval units by +1 IF they go from friendly naval base TO friendly naval base
 			airBase									values: works according to original pacific rules: it allows free movement between the land territory and any connecting water territories, 
 																which potentially gives an air units +2 movement if they move from airbase to airbase and both airbases have water connecting to them on the route (or are islands)
@@ -2307,7 +2307,7 @@
 						<!-- capital uses an image located in the "flags" folder of a map called "<nation>_large.png", and the location is determined in a file called "capitols.txt" in the map's root directory -->
                         <option name="capital" value="Germans"/>
 						<!-- victoryCity uses an image located in the "misc" folder of a map called "vc.png", and the location is determined in a file called "vc.txt" in the map's root directory -->
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
 						<!--- originalFactory means that the original controller of the territory may produce infinite units there, however if it is captured the opponent may only produce as normal, not infinite units 
 						<option name="originalFactory" value="true"/> -->
 						<!-- navalBase territory attachment works according to original pacific rules: it increases the non-combat movement of naval units by +1 IF they go from friendly naval base TO friendly naval base
@@ -2318,7 +2318,7 @@
 						<!-- unitProduction is complex and has 2 uses, depending on how you plan on dealing with damage. 
 									(setting "production" sets "unitProduction" at the same time to be equal, therefore unitProduction defaults to production if it is not set, or if it is set before production. 
 									If you want unitProduction to be different, please set it after you set production.)
-							1. 	First use is used only with ww2v3 factory damage rules ("SBR Affects Unit Production"), which have damage done to a Territory, not to a Unit.
+							1. 	First use is used only with ww2v3 factory damage rules ("Damage From Bombing Done To Units Instead Of Territories"), which have damage done to a Territory, not to a Unit.
 									This decides the damage the territory starts at.  If unitProduction is less than production, then the territory starts damaged.  If they are equal, then the territory is not damaged. 
 							2. 	Second use is used with newer maps which are using the new damage rules ("Damage From Bombing Done To Units Instead Of Territories"), which have damage done to an individual Unit instead of a Territory.
 									When used with these rules, "unitProduction" lets you set the unit production potential of a territory, separate from the production. This means a territory with unitProduction = 2 will be able to produce 2 units there, regardless of if production is 0 or 20.
@@ -2341,7 +2341,7 @@
 
                 <attachment name="territoryAttachment" attachTo="Australia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment"  type="territory">
                         <option name="production" value="3"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Kenya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2350,8 +2350,8 @@
 
                 <attachment name="territoryAttachment" attachTo="Manchuria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
-						<!-- occupiedTerrOf allows a territory to revert to that player's control if liberated by an ally -->
-                        <option name="occupiedTerrOf" value="Chinese"/>
+						<!-- originalOwner allows a territory to revert to that player's control if liberated by an ally -->
+                        <option name="originalOwner" value="Chinese"/>
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Alaska" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2377,7 +2377,7 @@
 
                 <attachment name="territoryAttachment" attachTo="India" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Soviet Far East" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2388,7 +2388,7 @@
                 <attachment name="territoryAttachment" attachTo="Italy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="8"/>
                         <option name="capital" value="Italians"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                         <!--<option name="unitProduction" value="8"/>-->
                 </attachment>
 
@@ -2408,7 +2408,7 @@
 
                 <attachment name="territoryAttachment" attachTo="Philipine Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Archangel" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2442,19 +2442,19 @@
 
                 <attachment name="territoryAttachment" attachTo="Western United States" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="10"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                         <!--<option name="unitProduction" value="10"/>-->
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Karelia S.S.R." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Kwangtung" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
-						<option name="victoryCity" value="true"/>
-                        <option name="occupiedTerrOf" value="Chinese"/>
+						<option name="victoryCity" value="1"/>
+ 			                       <option name="originalOwner" value="Chinese"/>
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Brazil" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2475,7 +2475,7 @@
 
                 <attachment name="territoryAttachment" attachTo="Hawaiian Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="East Indies" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2523,13 +2523,13 @@
                 <attachment name="territoryAttachment" attachTo="United Kingdom" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="8"/>
                         <option name="capital" value="British"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                         <!--<option name="unitProduction" value="8"/>-->
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Western Europe" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="6"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Rio De Oro" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2565,7 +2565,7 @@
 
                 <attachment name="territoryAttachment" attachTo="Caucus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="4"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                         <!--<option name="unitProduction" value="4"/>-->
 						<!-- you can have multiple capitals per country, and can modify if they capture or destroy their PUs, and how many capitals are needed for that to happen -->
                         <!--<option name="capital" value="Russians"/>-->
@@ -2633,7 +2633,7 @@
                 <attachment name="territoryAttachment" attachTo="Eastern United States" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="12"/>
                         <option name="capital" value="Americans"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                         <!--<option name="unitProduction" value="12"/>-->
                 </attachment>
 
@@ -2649,7 +2649,7 @@
                 <attachment name="territoryAttachment" attachTo="Russia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="8"/>
                         <option name="capital" value="Russians"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                         <!--<option name="unitProduction" value="8"/>-->
                 </attachment>
 
@@ -2696,7 +2696,7 @@
                 <attachment name="territoryAttachment" attachTo="Japan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="8"/>
                         <option name="capital" value="Japanese"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
                         <!--<option name="unitProduction" value="8"/>-->
                 </attachment>
 
@@ -2731,7 +2731,6 @@
 				<!-- Convoy Centers are simply sea zones with income. if you control your convoy zone, you get the income from it, but if an enemy takes the zone they do not get any income, they just deny you the income. can only be entered during combat movement -->
                 <attachment name="territoryAttachment" attachTo="3 Sea Zone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<option name="occupiedTerrOf" value="Russians"/>
                 </attachment>
 				<attachment name="territoryAttachment" attachTo="4 Sea Zone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
@@ -3006,52 +3005,52 @@
 
                 <attachment name="objectiveAttachmentAmericans1_WarPhase1" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="2"/>
-                	<option name="turns" value="2-3"/>
+                	<option name="rounds" value="2-3"/>
                 </attachment>
 
                 <attachment name="objectiveAttachmentAmericans1_WarPhase2" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="4"/>
-                	<option name="turns" value="4-5"/>
+                	<option name="rounds" value="4-5"/>
                 </attachment>
 
                 <attachment name="objectiveAttachmentAmericans1_WarPhase3" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="6"/>
-                	<option name="turns" value="6-7"/>
+                	<option name="rounds" value="6-7"/>
                 </attachment>
 
                 <attachment name="objectiveAttachmentAmericans1_WarPhase4" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="8"/>
-                	<option name="turns" value="8-9"/>
+                	<option name="rounds" value="8-9"/>
                 </attachment>
 
                 <attachment name="objectiveAttachmentAmericans1_WarPhase5" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="10"/>
-                	<option name="turns" value="10-+"/>
+                	<option name="rounds" value="10-+"/>
                 </attachment>
 
                 <!--<attachment name="objectiveAttachmentAmericans8" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="12"/>
-                	<option name="turns" value="12-13"/>
+                	<option name="rounds" value="12-13"/>
                 </attachment>
 
                 <attachment name="objectiveAttachmentAmericans9" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="14"/>
-                	<option name="turns" value="14-15"/>
+                	<option name="rounds" value="14-15"/>
                 </attachment>
 
                 <attachment name="objectiveAttachmentAmericans10" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="16"/>
-                	<option name="turns" value="16-17"/>
+                	<option name="rounds" value="16-17"/>
                 </attachment>
 
                 <attachment name="objectiveAttachmentAmericans11" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="18"/>
-                	<option name="turns" value="18-19"/>
+                	<option name="rounds" value="18-19"/>
                 </attachment>
 
                 <attachment name="objectiveAttachmentAmericans12" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="20"/>
-                	<option name="turns" value="20-+"/>
+                	<option name="rounds" value="20-+"/>
                 </attachment>-->
 
 	<!-- Chinese Objectives -->
@@ -3074,23 +3073,23 @@
 	
 	<!-- Germans Conditions -->
                 <attachment name="conditionAttachmentGermans1" attachTo="Germans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="4:5"/>
+                	<option name="rounds" value="4:5"/>
                 	<option name="enemySurfaceExclusionTerritories" value="5 Sea Zone:6 Sea Zone:7 Sea Zone" count="3"/>
                 </attachment>
 				
                 <attachment name="conditionAttachmentGermans2" attachTo="Germans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3:4"/>
+                	<option name="rounds" value="3:4"/>
                 	<option name="alliedOwnershipTerritories" value="East Balkans:Eastern Europe:Ukraine S.S.R.:Belorussia:Karelia S.S.R.:Archangel:Caucus" count="6"/>
                 </attachment>
 				
                 <attachment name="conditionAttachmentGermans3a" attachTo="Germans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3:4"/>
+                	<option name="rounds" value="3:4"/>
                 	<option name="alliedOwnershipTerritories" value="Western Europe" count="1"/>
                 	<option name="invert" value="true"/>
                 </attachment>
 				
                 <attachment name="conditionAttachmentGermans3b" attachTo="Germans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3:4"/>
+                	<option name="rounds" value="3:4"/>
                 	<option name="alliedOwnershipTerritories" value="Norway" count="1"/>
                 </attachment>
 				
@@ -3136,16 +3135,16 @@
                 </attachment>
 				
                 <attachment name="conditionAttachmentJapanese1b" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3:4"/>
+                	<option name="rounds" value="3:4"/>
                 </attachment>
 				
                 <attachment name="conditionAttachmentJapanese2" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3:4:5"/>
+                	<option name="rounds" value="3:4:5"/>
                 	<option name="alliedOwnershipTerritories" value="Australia:India:Sinkiang" count="3"/>
                 </attachment>
 				
                 <attachment name="conditionAttachmentJapanese3" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="1-2:3:4-+"/>
+                	<option name="rounds" value="1-2:3:4-+"/>
                 	<option name="directOwnershipTerritories" value="original"/>
                 	<option name="invert" value="true"/>
                 </attachment>
@@ -3199,7 +3198,7 @@
 				
 	<!-- Italians Conditions -->
                 <attachment name="conditionAttachmentItalians1" attachTo="Italians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3:4"/>
+                	<option name="rounds" value="3:4"/>
                 	<option name="alliedOwnershipTerritories" value="Algeria:Libya:Anglo Egypt:Trans-Jordan" count="4"/>
                 </attachment>
 				
@@ -3212,31 +3211,31 @@
                 </attachment>
                 
                 <attachment name="conditionAttachmentItalianTurn2" attachTo="Italians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="2"/>
+                	<option name="rounds" value="2"/>
                 </attachment>
                  <attachment name="conditionAttachmentItalianTurn1" attachTo="Italians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="1"/>
+                	<option name="rounds" value="1"/>
                 </attachment>
                 
 				
 	<!-- Americans Conditions -->
                 <attachment name="conditionAttachmentAmericans1" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3-5"/>
+                	<option name="rounds" value="3-5"/>
                 	<option name="alliedOwnershipTerritories" value="Western Europe" count="1"/>
                 </attachment>
 				
                 <attachment name="conditionAttachmentAmericans2" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3-5"/>
+                	<option name="rounds" value="3-5"/>
                 	<option name="alliedOwnershipTerritories" value="Alaska:Wake Island:Hawaiian Islands:Midway" count="4"/>
                 </attachment>
 				
                 <attachment name="conditionAttachmentAmericans3a" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="1-8"/>
+                	<option name="rounds" value="1-8"/>
                 	<option name="alliedOwnershipTerritories" value="Western Europe" count="1"/>
                 </attachment>
 				
                 <attachment name="conditionAttachmentAmericans3b" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="1:2:3-7:8"/>
+                	<option name="rounds" value="1:2:3-7:8"/>
                 	<option name="alliedOwnershipTerritories" value="Alaska:Wake Island:Hawaiian Islands:Midway" count="4"/>
                 </attachment>
 				
@@ -3254,7 +3253,7 @@
 				
 	<!-- British Conditions -->
                 <attachment name="conditionAttachmentBritish2" attachTo="British" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3:4"/>
+                	<option name="rounds" value="3:4"/>
                 	<option name="alliedOwnershipTerritories" value="Union of South Africa:Gibraltar:Anglo Egypt:India:Australia" count="4"/>
                 </attachment>
 				
@@ -3268,7 +3267,7 @@
 				
 	<!-- Russians Conditions -->
                 <attachment name="conditionAttachmentRussians2" attachTo="Russians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                	<option name="turns" value="3:4"/>
+                	<option name="rounds" value="3:4"/>
                 	<option name="alliedOwnershipTerritories" value="Karelia S.S.R.:Caucus" count="2"/>
                 </attachment>
                 
@@ -3281,7 +3280,7 @@
                 </attachment>
                 
 				<attachment name="conditionAttachmentRussiansNeutralJapanTurn5plus" attachTo="Russians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-					<option name="turns" value="5-+"/>
+					<option name="rounds" value="5-+"/>
                 	<option name="relationship" value="Japanese:Russians:anyNeutral"/>
                 </attachment>
                 
@@ -4648,11 +4647,11 @@
 						<boolean/>
 				</property>
 
-				<property name="Units repair at end of round" value="true" editable="true">
+				<property name="Units Repair Hits End Turn" value="true" editable="true">
 						<boolean/>
 				</property>
 
-				<property name="Units repair at beginning of round" value="false" editable="true">
+				<property name="Units Repair Hits Start Turn" value="false" editable="true">
 						<boolean/>
 				</property>
 
@@ -5015,12 +5014,12 @@
 						<boolean/>
 				</property>
 
-						<!-- SBR Affects Unit Production has Strategic Bombing and Rockets do damage to a territory rather than directly to the player's PUs (the bank) -->
-				<property name="SBR Affects Unit Production" value="false" editable="false">
+						<!-- Damage From Bombing Done To Units Instead Of Territories has Strategic Bombing and Rockets do damage to a territory rather than directly to the player's PUs (the bank) -->
+				<property name="Damage From Bombing Done To Units Instead Of Territories" value="false" editable="false">
 						<boolean/>
 				</property>
 
-						<!-- Damage From Bombing Done To Units Instead Of Territories has Strategic Bombing and Rockets do damage to a specific unit rather than directly to the player's PUs or to a territory.  You must have "SBR Affects Unit Production" false for this to work -->
+						<!-- Damage From Bombing Done To Units Instead Of Territories has Strategic Bombing and Rockets do damage to a specific unit rather than directly to the player's PUs or to a territory.  You must have "Damage From Bombing Done To Units Instead Of Territories" false for this to work -->
 				<property name="Damage From Bombing Done To Units Instead Of Territories" value="true" editable="false">
 						<boolean/>
 				</property>

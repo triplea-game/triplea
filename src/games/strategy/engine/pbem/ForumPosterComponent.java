@@ -10,15 +10,15 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import games.strategy.ui.SwingAction;
-import games.strategy.triplea.ui.MainGameFrame;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
+import games.strategy.triplea.ui.MainGameFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
+import games.strategy.ui.SwingAction;
 
 public class ForumPosterComponent extends JPanel {
   private static final long serialVersionUID = 4754052934098190357L;

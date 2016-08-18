@@ -26,8 +26,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import games.strategy.triplea.settings.SystemPreferenceKey;
-import games.strategy.triplea.settings.SystemPreferences;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
 
@@ -38,6 +36,8 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.lobby.server.LobbyServer;
+import games.strategy.triplea.settings.SystemPreferenceKey;
+import games.strategy.triplea.settings.SystemPreferences;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.CountDownLatchHandler;
@@ -108,7 +108,7 @@ public class GameRunner {
       Math.max(Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, 900),
           DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110);
 
-  private static final String MAP_FOLDER = "mapFolder";
+  public static final String MAP_FOLDER = "mapFolder";
 
 
   public static boolean isWindows() {
@@ -151,11 +151,11 @@ public class GameRunner {
     checkForMemoryXMX();
     Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueue() {
       @Override
-      protected void dispatchEvent(AWTEvent newEvent) {
+      protected void dispatchEvent(final AWTEvent newEvent) {
         try {
           super.dispatchEvent(newEvent);
           // This ensures, that all exceptions/errors inside any swing framework (like substance) are logged correctly
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
           ClientLogger.logError(t);
         }
       }
@@ -207,7 +207,7 @@ public class GameRunner {
         for (final String property : properties) {
           if (arg.equals(property)) {
             final String value = getValue(arg1);
-            if(property.equals(MAP_FOLDER)) {
+            if (property.equals(MAP_FOLDER)) {
               SystemPreferences.put(SystemPreferenceKey.MAP_FOLDER_OVERRIDE, value);
             } else {
               System.getProperties().setProperty(property, value);
@@ -764,7 +764,7 @@ public class GameRunner {
    * @return true if we have any out of date maps
    */
   private static boolean checkForUpdatedMaps() {
-    MapDownloadController downloadController = ClientContext.mapDownloadController();
+    final MapDownloadController downloadController = ClientContext.mapDownloadController();
     return downloadController.checkDownloadedMapsAreLatest();
   }
 

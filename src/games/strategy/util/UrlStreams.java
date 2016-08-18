@@ -12,8 +12,6 @@ import java.util.function.Function;
 
 import com.google.common.base.Throwables;
 
-import games.strategy.debug.ClientLogger;
-
 
 /**
  * Utility class for opening input streams from URL and URI objects.
@@ -27,7 +25,7 @@ public final class UrlStreams {
    * @return Optional.empty() if there was a failure opening the strema, otherwise an optional
    *         containing an input stream to the parameter uri.
    */
-  public static Optional<InputStream> openStream(URL url) {
+  public static Optional<InputStream> openStream(final URL url) {
     return new UrlStreams().newStream(url);
   }
 
@@ -40,10 +38,10 @@ public final class UrlStreams {
    * @return Optional.empty() if there was a failure opening the strema, otherwise an optional
    *         containing an input stream to the parameter uri.
    */
-  public static Optional<InputStream> openStream(URI uri) {
+  public static Optional<InputStream> openStream(final URI uri) {
     try {
       return UrlStreams.openStream(uri.toURL());
-    } catch (MalformedURLException e) {
+    } catch (final MalformedURLException e) {
       throw new IllegalStateException("Bad uri specified: " + uri, e);
     }
   }
@@ -57,7 +55,7 @@ public final class UrlStreams {
     this.urlConnectionFactory = (url) -> {
       try {
         return url.openConnection();
-      } catch (IOException e) {
+      } catch (final IOException e) {
         throw Throwables.propagate(e);
       }
     };
@@ -66,21 +64,20 @@ public final class UrlStreams {
   /**
    * For test, a constructor that allows mock object injection
    */
-  protected UrlStreams(Function<URL, URLConnection> connectionFactory) {
+  protected UrlStreams(final Function<URL, URLConnection> connectionFactory) {
     this.urlConnectionFactory = connectionFactory;
   }
 
-  protected Optional<InputStream> newStream(URL url) {
+  protected Optional<InputStream> newStream(final URL url) {
     try {
-      URLConnection connection = urlConnectionFactory.apply(url);
+      final URLConnection connection = urlConnectionFactory.apply(url);
 
       // Turn off URL connection caching to avoid open file leaks. When caching is on, the InputStream
       // returned is left open, even after you call 'InputStream.close()'
       connection.setDefaultUseCaches(false); // TODO: verify - setDefaultUseCaches(false) may not be necessary
       connection.setUseCaches(false);
       return Optional.of(connection.getInputStream());
-    } catch (IOException e) {
-      ClientLogger.logError("Failed to open a connection to: " + url, e);
+    } catch (final IOException e) {
       return Optional.empty();
     }
   }

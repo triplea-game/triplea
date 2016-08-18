@@ -52,7 +52,7 @@ public class MacFinder {
     }
     // Next, try to get the mac address of the first network interfaces that has an accessible mac address
     try {
-      for (NetworkInterface ni : Collections.list(NetworkInterface.getNetworkInterfaces())) {
+      for (final NetworkInterface ni : Collections.list(NetworkInterface.getNetworkInterfaces())) {
         final byte[] rawMac = ni.getHardwareAddress();
         final String mac = convertMacBytesToString(rawMac);
         if (isMacValid(mac)) {

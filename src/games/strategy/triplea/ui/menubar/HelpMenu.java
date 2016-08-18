@@ -1,31 +1,5 @@
 package games.strategy.triplea.ui.menubar;
 
-import com.apple.eawt.AboutHandler;
-import com.apple.eawt.AppEvent;
-import com.apple.eawt.Application;
-import games.strategy.engine.ClientContext;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.ResourceCollection;
-import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.UrlConstants;
-import games.strategy.triplea.delegate.BattleCalculator;
-import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.ui.IUIContext;
-import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
-import games.strategy.util.LocalizeHTML;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JEditorPane;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dialog;
@@ -39,6 +13,32 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JEditorPane;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+
+import com.apple.eawt.Application;
+
+import games.strategy.engine.ClientContext;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ResourceCollection;
+import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.UrlConstants;
+import games.strategy.triplea.delegate.BattleCalculator;
+import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.ui.IUIContext;
+import games.strategy.ui.SwingAction;
+import games.strategy.ui.SwingComponents;
+import games.strategy.util.LocalizeHTML;
 
 public class HelpMenu {
 
@@ -66,7 +66,7 @@ public class HelpMenu {
 
 
   private void addMoveHelpMenu(final JMenu parentMenu) {
-    String moveSelectionHelpTitle = "Movement/Selection Help";
+    final String moveSelectionHelpTitle = "Movement/Selection Help";
     parentMenu.add(SwingAction.of(moveSelectionHelpTitle, e -> {
       // html formatted string
       final String hints = "<b> Selecting Units</b><br>" + "Left click on a unit stack to select 1 unit.<br>"
@@ -148,13 +148,13 @@ public class HelpMenu {
     return hints.toString();
   }
 
-  private static String getUnitImageURL(final UnitType unitType, final PlayerID player, IUIContext iuiContext) {
+  private static String getUnitImageURL(final UnitType unitType, final PlayerID player, final IUIContext iuiContext) {
     final UnitImageFactory unitImageFactory = iuiContext.getUnitImageFactory();
     if (player == null || unitImageFactory == null) {
       return "no image";
     }
-    Optional<URL> imageUrl = unitImageFactory.getBaseImageURL(unitType.getName(), player);
-    String imageLocation = imageUrl.isPresent() ? imageUrl.get().toString() : "";
+    final Optional<URL> imageUrl = unitImageFactory.getBaseImageURL(unitType.getName(), player);
+    final String imageLocation = imageUrl.isPresent() ? imageUrl.get().toString() : "";
 
     return "<img src=\"" + imageLocation + "\" border=\"0\"/>";
   }
@@ -178,11 +178,11 @@ public class HelpMenu {
       scroll.setPreferredSize(new Dimension(
           (scroll.getPreferredSize().width > availWidth ? availWidth
               : (scroll.getPreferredSize().height > availHeight
-              ? Math.min(availWidth, scroll.getPreferredSize().width + 22) : scroll.getPreferredSize().width)),
+                  ? Math.min(availWidth, scroll.getPreferredSize().width + 22) : scroll.getPreferredSize().width)),
           (scroll.getPreferredSize().height > availHeight ? availHeight
               : (scroll.getPreferredSize().width > availWidth
-              ? Math.min(availHeight, scroll.getPreferredSize().height + 22)
-              : scroll.getPreferredSize().height))));
+                  ? Math.min(availHeight, scroll.getPreferredSize().height + 22)
+                  : scroll.getPreferredSize().height))));
       final JDialog dialog = new JDialog();
       dialog.setModal(false);
       // needs java 1.6 at least...
@@ -199,7 +199,7 @@ public class HelpMenu {
       dialog.getRootPane().setDefaultButton(button);
       dialog.add(buttons, BorderLayout.SOUTH);
       dialog.pack();
-//      dialog.setLocationRelativeTo(frame);
+      // dialog.setLocationRelativeTo(frame);
       dialog.addWindowListener(new WindowAdapter() {
         @Override
         public void windowOpened(final WindowEvent e) {
@@ -225,52 +225,51 @@ public class HelpMenu {
       gameNotesPane.setEditable(false);
       gameNotesPane.setContentType("text/html");
       gameNotesPane.setText(notes);
-      parentMenu.add(SwingAction.of("Game Notes", e ->
-          SwingUtilities.invokeLater(() -> {
-            final JEditorPane pane = gameNotesPane;
-            final JScrollPane scroll = new JScrollPane(pane);
-            scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-            final JDialog dialog = new JDialog();
-            dialog.setModalityType(Dialog.ModalityType.MODELESS);
-            dialog.setAlwaysOnTop(true);
-            dialog.add(scroll, BorderLayout.CENTER);
-            final JPanel buttons = new JPanel();
-            final JButton button = new JButton(SwingAction.of("OK", event -> {
-              dialog.setVisible(false);
-              dialog.removeAll();
-              dialog.dispose();
-            }));
-            buttons.add(button);
-            dialog.getRootPane().setDefaultButton(button);
-            dialog.add(buttons, BorderLayout.SOUTH);
-            dialog.pack();
-            if (dialog.getWidth() < 400) {
-              dialog.setSize(400, dialog.getHeight());
-            }
-            if (dialog.getHeight() < 300) {
-              dialog.setSize(dialog.getWidth(), 300);
-            }
-            if (dialog.getWidth() > 800) {
-              dialog.setSize(800, dialog.getHeight());
-            }
-            if (dialog.getHeight() > 600) {
-              dialog.setSize(dialog.getWidth(), 600);
-            }
-//            dialog.setLocationRelativeTo(frame);
-            dialog.addWindowListener(new WindowAdapter() {
-              @Override
-              public void windowOpened(final WindowEvent e) {
-                scroll.getVerticalScrollBar().getModel().setValue(0);
-                scroll.getHorizontalScrollBar().getModel().setValue(0);
-                button.requestFocus();
-              }
-            });
-            dialog.setVisible(true);
-          }))).setMnemonic(KeyEvent.VK_N);
+      parentMenu.add(SwingAction.of("Game Notes", e -> SwingUtilities.invokeLater(() -> {
+        final JEditorPane pane = gameNotesPane;
+        final JScrollPane scroll = new JScrollPane(pane);
+        scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+        final JDialog dialog = new JDialog();
+        dialog.setModalityType(Dialog.ModalityType.MODELESS);
+        dialog.setAlwaysOnTop(true);
+        dialog.add(scroll, BorderLayout.CENTER);
+        final JPanel buttons = new JPanel();
+        final JButton button = new JButton(SwingAction.of("OK", event -> {
+          dialog.setVisible(false);
+          dialog.removeAll();
+          dialog.dispose();
+        }));
+        buttons.add(button);
+        dialog.getRootPane().setDefaultButton(button);
+        dialog.add(buttons, BorderLayout.SOUTH);
+        dialog.pack();
+        if (dialog.getWidth() < 400) {
+          dialog.setSize(400, dialog.getHeight());
+        }
+        if (dialog.getHeight() < 300) {
+          dialog.setSize(dialog.getWidth(), 300);
+        }
+        if (dialog.getWidth() > 800) {
+          dialog.setSize(800, dialog.getHeight());
+        }
+        if (dialog.getHeight() > 600) {
+          dialog.setSize(dialog.getWidth(), 600);
+        }
+        // dialog.setLocationRelativeTo(frame);
+        dialog.addWindowListener(new WindowAdapter() {
+          @Override
+          public void windowOpened(final WindowEvent e) {
+            scroll.getVerticalScrollBar().getModel().setValue(0);
+            scroll.getHorizontalScrollBar().getModel().setValue(0);
+            button.requestFocus();
+          }
+        });
+        dialog.setVisible(true);
+      }))).setMnemonic(KeyEvent.VK_N);
     }
   }
 
-  private void addAboutMenu(final JMenu parentMenu, Color backgroundColor) {
+  private void addAboutMenu(final JMenu parentMenu, final Color backgroundColor) {
     final String text = "<h2>" + gameData.getGameName() + "</h2>" + "<p><b>Engine Version:</b> "
         + ClientContext.engineVersion() + "<br><b>Game:</b> " + gameData.getGameName()
         + "<br><b>Game Version:</b>" + gameData.getGameVersion() + "</p>"
@@ -300,9 +299,9 @@ public class HelpMenu {
   }
 
   private void addReportBugsMenu(final JMenu parentMenu) {
-    parentMenu.add(SwingAction.of( "Send Bug Report", e -> {
+    parentMenu.add(SwingAction.of("Send Bug Report", e -> {
       SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES);
-    } )).setMnemonic(KeyEvent.VK_B);
+    })).setMnemonic(KeyEvent.VK_B);
   }
 
 }

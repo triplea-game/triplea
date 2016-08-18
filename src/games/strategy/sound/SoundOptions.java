@@ -1,7 +1,5 @@
 package games.strategy.sound;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
@@ -45,7 +43,7 @@ public final class SoundOptions {
     final String cancel = "Cancel";
     final String selectAll = "All";
     final String selectNone = "None";
-    
+
     final List<IEditableProperty> properties = SoundPath.getSoundOptions();
     final Object pressedButton = PropertiesSelector.getButton(parent, "Sound Options", properties,
         ok, selectAll, selectNone, cancel);

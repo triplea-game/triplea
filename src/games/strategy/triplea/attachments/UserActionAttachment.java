@@ -48,7 +48,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   public static UserActionAttachment get(final PlayerID player, final String nameOfAttachment) {
-    UserActionAttachment rVal = (UserActionAttachment) player.getAttachment(nameOfAttachment);
+    final UserActionAttachment rVal = (UserActionAttachment) player.getAttachment(nameOfAttachment);
     if (rVal == null) {
       throw new IllegalStateException(
           "UserActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
@@ -111,14 +111,6 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
 
   public ArrayList<Tuple<String, String>> getActivateTrigger() {
     return m_activateTrigger;
-  }
-
-  public void clearActivateTrigger() {
-    m_activateTrigger.clear();
-  }
-
-  public void resetActivateTrigger() {
-    m_activateTrigger = new ArrayList<>();
   }
 
   public static void fireTriggers(final UserActionAttachment actionAttachment,

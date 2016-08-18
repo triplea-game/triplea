@@ -7,10 +7,10 @@ import games.strategy.engine.data.PlayerID;
 public class HeadlessSoundChannel implements ISound {
 
   @Override
-  public void playSoundForAll(String clipName, PlayerID playerID) {}
+  public void playSoundForAll(final String clipName, final PlayerID playerID) {}
 
   @Override
-  public void playSoundToPlayers(String clipName, Collection<PlayerID> playersToSendTo,
-      Collection<PlayerID> butNotThesePlayers, boolean includeObservers) {}
+  public void playSoundToPlayers(final String clipName, final Collection<PlayerID> playersToSendTo,
+      final Collection<PlayerID> butNotThesePlayers, final boolean includeObservers) {}
 
 }

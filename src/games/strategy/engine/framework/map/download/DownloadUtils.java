@@ -1,7 +1,5 @@
 package games.strategy.engine.framework.map.download;
 
-import games.strategy.debug.ClientLogger;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,52 +10,54 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.Optional;
 
+import games.strategy.debug.ClientLogger;
+
 public class DownloadUtils {
-  public static Optional<Integer> getDownloadLength(URL url) {
+  public static Optional<Integer> getDownloadLength(final URL url) {
     try {
-      HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
-      int responseCode = httpConn.getResponseCode();
+      final HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
+      final int responseCode = httpConn.getResponseCode();
       // always check HTTP response code first
       if (responseCode == HttpURLConnection.HTTP_OK) {
         return Optional.of(httpConn.getContentLength());
       } else {
         return Optional.empty();
       }
-    } catch (IOException e) {
+    } catch (final IOException e) {
       ClientLogger.logQuietly("Failed to connect to: " + url + ", to get download size. Ignoring this error and will "
           + "not display the map download size on the UI.", e);
       return Optional.empty();
     }
   }
 
-  public static URL toURL(String url) {
+  public static URL toURL(final String url) {
     try {
       return new URL(url);
-    } catch (MalformedURLException e) {
+    } catch (final MalformedURLException e) {
       throw new IllegalStateException("Invalid URL: " + url, e);
     }
   }
 
-  public static boolean beginsWithHttpProtocol(String urlString) {
+  public static boolean beginsWithHttpProtocol(final String urlString) {
     return urlString.startsWith("http://") || urlString.startsWith("https://");
   }
 
-  public static void downloadFile(URL url, File targetFile) throws IOException {
-    FileOutputStream fos = new FileOutputStream(targetFile);
+  public static void downloadFile(URL url, final File targetFile) throws IOException {
+    final FileOutputStream fos = new FileOutputStream(targetFile);
     url = getUrlFollowingRedirects(url);
-    ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+    final ReadableByteChannel rbc = Channels.newChannel(url.openStream());
     fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
     fos.close();
   }
-  
-  public static void downloadFile(String urlString, File targetFile) throws IOException {
+
+  public static void downloadFile(final String urlString, final File targetFile) throws IOException {
     downloadFile(getUrlFollowingRedirects(urlString), targetFile);
   }
 
-  private static URL getUrlFollowingRedirects(String possibleRedirectionUrl) throws IOException {
+  private static URL getUrlFollowingRedirects(final String possibleRedirectionUrl) throws IOException {
     URL url = new URL(possibleRedirectionUrl);
-    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-    int status = conn.getResponseCode();
+    final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+    final int status = conn.getResponseCode();
     if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
         || status == HttpURLConnection.HTTP_SEE_OTHER) {
       // update the URL if we were redirected
@@ -65,9 +65,10 @@ public class DownloadUtils {
     }
     return url;
   }
+
   private static URL getUrlFollowingRedirects(URL url) throws IOException {
-    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-    int status = conn.getResponseCode();
+    final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+    final int status = conn.getResponseCode();
     if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
         || status == HttpURLConnection.HTTP_SEE_OTHER) {
       // update the URL if we were redirected

@@ -6,8 +6,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,7 +19,6 @@ import javax.swing.JPanel;
 
 import org.yaml.snakeyaml.Yaml;
 
-import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
@@ -34,6 +31,7 @@ import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.ui.SwingComponents;
 import games.strategy.util.Version;
 
 public class MetaSetupPanel extends SetupPanel {
@@ -82,7 +80,7 @@ public class MetaSetupPanel extends SetupPanel {
     m_enginePreferences = new JButton("Engine Preferences");
     m_enginePreferences.setToolTipText("<html>Configure certain options related to the engine.");
     m_ruleBook = new JButton("Rule Book");
-    m_helpButton  = new JButton("Help");
+    m_helpButton = new JButton("Help");
     m_ruleBook.setToolTipText(
         "<html>Download a manual of how to play <br>(it is also included in the directory TripleA was installed to).</html>");
     m_donate = new JButton("Donate");
@@ -160,18 +158,18 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
 
-  private static Optional<List<Map<String, Object>>> loadYaml(File yamlFile) {
+  private static Optional<List<Map<String, Object>>> loadYaml(final File yamlFile) {
     String yamlContent;
     try {
       yamlContent = new String(Files.readAllBytes(yamlFile.toPath()));
-    } catch (IOException e) {
+    } catch (final IOException e) {
       ClientLogger.logQuietly("Failed to read from: " + yamlFile.getAbsolutePath(), e);
       return Optional.empty();
     }
-    Yaml yaml = new Yaml();
+    final Yaml yaml = new Yaml();
     @SuppressWarnings("unchecked")
-    List<Map<String, Object>> yamlDataObj = (List<Map<String, Object>>) yaml.load(yamlContent);
-    if( yamlDataObj == null ) {
+    final List<Map<String, Object>> yamlDataObj = (List<Map<String, Object>>) yaml.load(yamlContent);
+    if (yamlDataObj == null) {
       return Optional.empty();
     } else {
       return Optional.of(yamlDataObj);
@@ -179,37 +177,40 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   private static LobbyServerProperties getLobbyServerProperties() {
-    PropertyReader propReader = ClientContext.propertyReader();
-    String urlProp = propReader.readProperty(GameEngineProperty.LOBBY_PROPS_URL);
+    final PropertyReader propReader = ClientContext.propertyReader();
+    final String urlProp = propReader.readProperty(GameEngineProperty.LOBBY_PROPS_URL);
 
-    File propFile = ClientFileSystemHelper.createTempFile();
+    final File propFile = ClientFileSystemHelper.createTempFile();
     try {
       DownloadUtils.downloadFile(urlProp, propFile);
-    } catch (IOException e) {
-      ClientLogger.logQuietly("Failed to download lobby server props file: " + urlProp + ", using the backup local property file instead.", e);
+    } catch (final IOException e) {
+      ClientLogger.logQuietly(
+          "Failed to download lobby server props file: " + urlProp + ", using the backup local property file instead.",
+          e);
     }
     Optional<List<Map<String, Object>>> yamlDataObj = loadYaml(propFile);
-    if(!yamlDataObj.isPresent()) {
+    if (!yamlDataObj.isPresent()) {
       // try reading properties from the local file as a backup
-      String localFileProp = propReader.readProperty(GameEngineProperty.LOBBY_PROPS_BACKUP_FILE);
-      File localFile = new File(ClientFileSystemHelper.getRootFolder(), localFileProp);
+      final String localFileProp = propReader.readProperty(GameEngineProperty.LOBBY_PROPS_BACKUP_FILE);
+      final File localFile = new File(ClientFileSystemHelper.getRootFolder(), localFileProp);
       yamlDataObj = loadYaml(localFile);
-      if( !yamlDataObj.isPresent()) {
-        throw new IllegalStateException("Failed to read lobby properties from both: " + urlProp + ", and: " + localFile.getAbsolutePath());
+      if (!yamlDataObj.isPresent()) {
+        throw new IllegalStateException(
+            "Failed to read lobby properties from both: " + urlProp + ", and: " + localFile.getAbsolutePath());
       }
     }
 
-    Map<String, Object> yamlProps = matchCurrentVersion(yamlDataObj.get());
+    final Map<String, Object> yamlProps = matchCurrentVersion(yamlDataObj.get());
 
-    LobbyServerProperties lobbyProps = new LobbyServerProperties(yamlProps);
+    final LobbyServerProperties lobbyProps = new LobbyServerProperties(yamlProps);
     return lobbyProps;
   }
 
-  private static Map<String, Object> matchCurrentVersion(List<Map<String, Object>> lobbyProps) {
+  private static Map<String, Object> matchCurrentVersion(final List<Map<String, Object>> lobbyProps) {
     checkNotNull(lobbyProps);
-    Version currentVersion = ClientContext.engineVersion().getVersion();
+    final Version currentVersion = ClientContext.engineVersion().getVersion();
 
-    Optional<Map<String, Object>> matchingVersionProps = lobbyProps.stream()
+    final Optional<Map<String, Object>> matchingVersionProps = lobbyProps.stream()
         .filter(props -> currentVersion.equals(props.get("version")))
         .findFirst();
     return matchingVersionProps.orElse(lobbyProps.get(0));

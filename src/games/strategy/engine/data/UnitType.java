@@ -165,7 +165,7 @@ public class UnitType extends NamedAttachable {
             }
           } catch (final Exception e) {
             // TODO: does this cause excessive logging noise, or is the message useful?
-            ClientLogger.logQuietly("Quietly ignoring an exception while drawing unit type: "+ ut + ", " , e);
+            ClientLogger.logQuietly("Quietly ignoring an exception while drawing unit type: " + ut + ", ", e);
           }
         }
       }

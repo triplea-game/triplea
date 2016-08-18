@@ -3,7 +3,9 @@ package games.strategy.ui;
 import java.awt.event.ActionEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
-import javax.swing.*;
+
+import javax.swing.AbstractAction;
+import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
 
@@ -36,7 +38,7 @@ public class SwingAction {
       private static final long serialVersionUID = 6751222534195121860L;
 
       @Override
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         swingAction.accept(e);
       }
     };
@@ -47,22 +49,22 @@ public class SwingAction {
       private static final long serialVersionUID = 12331L;
 
       @Override
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         swingAction.accept(e);
       }
     };
   }
 
-  public static void invokeAndWait(Runnable action) {
+  public static void invokeAndWait(final Runnable action) {
     try {
-      if( SwingUtilities.isEventDispatchThread()) {
+      if (SwingUtilities.isEventDispatchThread()) {
         action.run();
       } else {
         SwingUtilities.invokeAndWait(() -> action.run());
       }
-    } catch (InvocationTargetException e) {
+    } catch (final InvocationTargetException e) {
       ClientLogger.logError(e);
-    } catch (InterruptedException e) {
+    } catch (final InterruptedException e) {
       ClientLogger.logQuietly(e);
     }
   }

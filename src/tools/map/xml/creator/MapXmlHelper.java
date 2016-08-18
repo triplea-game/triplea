@@ -158,7 +158,8 @@ public class MapXmlHelper {
     return mapXmlData.getTerritoryDefintionsMap();
   }
 
-  public static void setTerritoryDefintions(final Map<String, Map<TerritoryDefinitionDialog.DEFINITION, Boolean>> territoryDefintions) {
+  public static void setTerritoryDefintions(
+      final Map<String, Map<TerritoryDefinitionDialog.DEFINITION, Boolean>> territoryDefintions) {
     mapXmlData.setTerritoryDefintionsMap(territoryDefintions);
   }
 
@@ -312,7 +313,8 @@ public class MapXmlHelper {
     getResourceList().add(index, value);
   }
 
-  static void putTerritoryDefintions(final String key, final HashMap<TerritoryDefinitionDialog.DEFINITION, Boolean> value) {
+  static void putTerritoryDefintions(final String key,
+      final HashMap<TerritoryDefinitionDialog.DEFINITION, Boolean> value) {
     getTerritoryDefintionsMap().put(key, value);
   }
 
@@ -328,7 +330,7 @@ public class MapXmlHelper {
     getPlayerAllianceMap().put(key, value);
   }
 
-  static void putPlayerInitResources(final String key, final Integer value) {
+  static void putPlayerInitResources(final String key, final int value) {
     getPlayerInitResourcesMap().put(key, value);
   }
 
@@ -356,7 +358,7 @@ public class MapXmlHelper {
     getUnitAttachmentsMap().put(key, value);
   }
 
-  static void putTerritoyProductions(final String key, final Integer value) {
+  static void putTerritoyProductions(final String key, final int value) {
     getTerritoyProductionsMap().put(key, value);
   }
 
@@ -698,7 +700,8 @@ public class MapXmlHelper {
           getTerritoyProductionsMap().put(attachmentAttachTo,
               Integer.parseInt(attachmentOptionAttr.get(XML_NODE_NAME_VALUE)));
         } else {
-          Map<TerritoryDefinitionDialog.DEFINITION, Boolean> terrDefinitions = getTerritoryDefintionsMap().get(attachmentAttachTo);
+          Map<TerritoryDefinitionDialog.DEFINITION, Boolean> terrDefinitions =
+              getTerritoryDefintionsMap().get(attachmentAttachTo);
           if (terrDefinitions == null) {
             terrDefinitions = Maps.newHashMap();
             getTerritoryDefintionsMap().put(attachmentAttachTo, terrDefinitions);
@@ -1144,12 +1147,12 @@ public class MapXmlHelper {
 
   private static void addAttachmentsFromTerritoryProductions(final Map<String, List<String>> territoryAttachments) {
     for (final Entry<String, Integer> productionEntry : getTerritoyProductionsMap().entrySet()) {
-      final Integer production = productionEntry.getValue();
+      final int production = productionEntry.getValue();
       if (production > 0) {
         final String territoryName = productionEntry.getKey();
         final ArrayList<String> attachmentOptions = new ArrayList<>();
         attachmentOptions.add(territoryName);
-        attachmentOptions.add(production.toString());
+        attachmentOptions.add(Integer.toString(production));
         territoryAttachments.put("production_" + territoryName, attachmentOptions);
       }
     }
@@ -1159,7 +1162,8 @@ public class MapXmlHelper {
     for (final Entry<String, Map<TerritoryDefinitionDialog.DEFINITION, Boolean>> territoryDefinition : getTerritoryDefintionsMap()
         .entrySet()) {
       final String territoryName = territoryDefinition.getKey();
-      for (final Entry<TerritoryDefinitionDialog.DEFINITION, Boolean> definition : territoryDefinition.getValue().entrySet()) {
+      for (final Entry<TerritoryDefinitionDialog.DEFINITION, Boolean> definition : territoryDefinition.getValue()
+          .entrySet()) {
         if (definition.getValue() == Boolean.TRUE) {
           final ArrayList<String> attachmentOptions = new ArrayList<>();
           attachmentOptions.add(territoryName);
@@ -1181,11 +1185,13 @@ public class MapXmlHelper {
         .entrySet()) {
       final Element territory = doc.createElement(XML_NODE_NAME_TERRITORY);
       territory.setAttribute(XML_ATTR_PROPERTY_NAME_NAME, entryTerritoryDefinition.getKey());
-      final Map<TerritoryDefinitionDialog.DEFINITION, Boolean> territoryDefinition = entryTerritoryDefinition.getValue();
+      final Map<TerritoryDefinitionDialog.DEFINITION, Boolean> territoryDefinition =
+          entryTerritoryDefinition.getValue();
       final int territoryDefinitionSize = territoryDefinition.size();
       final Boolean isWater = territoryDefinition.get(TerritoryDefinitionDialog.DEFINITION.IS_WATER);
       if (isWater != null && isWater) {
-        territory.setAttribute(TerritoryDefinitionDialog.getDefinitionString(TerritoryDefinitionDialog.DEFINITION.IS_WATER), "true");
+        territory.setAttribute(
+            TerritoryDefinitionDialog.getDefinitionString(TerritoryDefinitionDialog.DEFINITION.IS_WATER), "true");
         if (territoryDefinitionSize > 1) {
           territoryAttachmentNeeded = true;
         }
@@ -1254,9 +1260,9 @@ public class MapXmlHelper {
           if (sequenceProperties.getSecond().length() > 0) {
             step.setAttribute(XML_ATTR_ATTACHMENT_NAME_PLAYER, sequenceProperties.getSecond());
           }
-          final Integer maxRunCount = sequenceProperties.getThird();
+          final int maxRunCount = sequenceProperties.getThird();
           if (maxRunCount > 0) {
-            step.setAttribute(XML_ATTR_STEP_NAME_MAX_RUN_COUNT, maxRunCount.toString());
+            step.setAttribute(XML_ATTR_STEP_NAME_MAX_RUN_COUNT, Integer.toString(maxRunCount));
           }
           if (stepNameIndicatesNonCombatMove(sequenceStepKey)) {
             step.setAttribute(XML_ATTR_STEP_NAME_DISPLAY, "Non Combat Move");

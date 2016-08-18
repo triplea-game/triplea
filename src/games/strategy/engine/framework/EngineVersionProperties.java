@@ -84,7 +84,7 @@ public class EngineVersionProperties {
     final Properties props = new Properties();
     try {
       props.load(new URL(TRIPLEA_VERSION_LINK).openStream());
-    } catch (IOException e) {
+    } catch (final IOException e) {
       ClientLogger.logQuietly("Failed while attempting to check for a new Version", e);
     }
     return props;

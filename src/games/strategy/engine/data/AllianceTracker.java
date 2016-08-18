@@ -28,7 +28,7 @@ public class AllianceTracker implements Serializable {
     alliances = HashMultimap.create();
   }
 
-  public AllianceTracker(Multimap<PlayerID, String> alliances) {
+  public AllianceTracker(final Multimap<PlayerID, String> alliances) {
     this.alliances = alliances;
   }
 
@@ -41,7 +41,7 @@ public class AllianceTracker implements Serializable {
     private static final long serialVersionUID = -4193924040595347947L;
     private final Multimap<PlayerID, String> alliances;
 
-    public SerializationProxy(AllianceTracker allianceTracker) {
+    public SerializationProxy(final AllianceTracker allianceTracker) {
       alliances = ImmutableMultimap.copyOf(allianceTracker.alliances);
     }
 
@@ -54,7 +54,7 @@ public class AllianceTracker implements Serializable {
   /**
    * Adds PlayerID player to the alliance specified by allianceName.
    *
-   * @param player       The player to add to the alliance.
+   * @param player The player to add to the alliance.
    * @param allianceName The alliance to add to.
    */
   protected void addToAlliance(final PlayerID player, final String allianceName) {
@@ -94,7 +94,7 @@ public class AllianceTracker implements Serializable {
 
   public Collection<String> getAlliancesPlayerIsIn(final PlayerID player) {
     final Collection<String> rVal = alliances.get(player);
-    if(!rVal.isEmpty()) {
+    if (!rVal.isEmpty()) {
       return rVal;
     } else {
       return Collections.singleton(player.getName());
@@ -102,8 +102,8 @@ public class AllianceTracker implements Serializable {
   }
 
 
-  public Set<PlayerID> getAllies(PlayerID currentPlayer) {
-    Set<PlayerID> allies = new HashSet<>();
+  public Set<PlayerID> getAllies(final PlayerID currentPlayer) {
+    final Set<PlayerID> allies = new HashSet<>();
     // for each of the player alliances, add each player from that alliance to the total alliance list
     alliances.get(currentPlayer).forEach(alliance -> allies.addAll(getPlayersInAlliance(alliance)));
     return allies;

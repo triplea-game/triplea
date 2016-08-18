@@ -63,7 +63,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
@@ -72,6 +71,7 @@ import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.test.TestUtil;
 import games.strategy.triplea.Constants;
@@ -91,22 +91,22 @@ import games.strategy.util.Match;
 
 public class RevisedTest {
   private GameData m_data;
-  private ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
+  private final ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
 
   @Before
   public void setUp() throws Exception {
     when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(), any(), any(), any(), any(), any(),
         anyBoolean(), any(), any(), any(), any(), anyBoolean())).thenAnswer(new Answer<CasualtyDetails>() {
           @Override
-          public CasualtyDetails answer(InvocationOnMock invocation) throws Throwable {
-            CasualtyList defaultCasualties = invocation.getArgument(11);
+          public CasualtyDetails answer(final InvocationOnMock invocation) throws Throwable {
+            final CasualtyList defaultCasualties = invocation.getArgument(11);
             if (defaultCasualties != null) {
               return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
             }
             return null;
           }
         });
-    m_data = LoadGameUtil.loadTestGame("revised_test.xml");
+    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.REVISED);
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
@@ -893,7 +893,7 @@ public class RevisedTest {
     final List<Unit> bombers = uk.getUnits().getMatches(Matches.UnitIsStrategicBomber);
     addTo(germany, bombers);
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers, null);
-    tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
+    tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setRemote(dummyPlayer);
     // aa guns rolls 0 and hits
@@ -919,7 +919,7 @@ public class RevisedTest {
     final List<Unit> bombers = bomber(m_data).create(2, british);
     addTo(germany, bombers);
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers, null);
-    tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
+    tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setRemote(dummyPlayer);
     // should be exactly 3 rolls total. would be exactly 2 rolls if the number of units being shot at = max dice side of
@@ -948,7 +948,7 @@ public class RevisedTest {
     final List<Unit> bombers = bomber(m_data).create(7, british);
     addTo(germany, bombers);
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers, null);
-    tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
+    tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setRemote(dummyPlayer);
     // aa guns rolls 0 and hits, next 5 dice are for the bombing raid cost for the
@@ -973,7 +973,7 @@ public class RevisedTest {
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany),
         uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
     addTo(germany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
-    tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
+    tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
@@ -1327,8 +1327,8 @@ public class RevisedTest {
         any(), any(), any(), anyBoolean()))
             .thenAnswer(new Answer<CasualtyDetails>() {
               @Override
-              public CasualtyDetails answer(InvocationOnMock invocation) throws Throwable {
-                Collection<Unit> selectFrom = invocation.getArgument(0);
+              public CasualtyDetails answer(final InvocationOnMock invocation) throws Throwable {
+                final Collection<Unit> selectFrom = invocation.getArgument(0);
                 return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), new ArrayList<>(), false);
               }
             });

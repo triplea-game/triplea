@@ -8,12 +8,12 @@ import java.util.HashSet;
 import java.util.List;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.formatter.MyFormatter;
 
@@ -102,11 +102,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setInvert(final String s) {
     m_invert = getBool(s);
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setInvert(final Boolean s) {
-    m_invert = s;
   }
 
   @Override
@@ -264,20 +259,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
           break;
         }
       }
-    } else if (conditionType.equals("XOR")) {
-      // XOR is confusing with more than 2 conditions, so we will just say that one has to be true, while all others
-      // must be false
-      boolean isOneTrue = false;
-      for (final ICondition c : rulesToTest) {
-        met = testedConditions.get(c);
-        if (isOneTrue && met) {
-          isOneTrue = false;
-          break;
-        } else if (met) {
-          isOneTrue = true;
-        }
-      }
-      met = isOneTrue;
     } else {
       final String[] nums = conditionType.split("-");
       if (nums.length == 1) {
@@ -331,10 +312,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     return m_chance;
   }
 
-  public void resetChance() {
-    m_chance = DEFAULT_CHANCE;
-  }
-
   public int getChanceToHit() {
     return getInt(getChance().split(":")[0]);
   }
@@ -348,17 +325,8 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     m_chanceIncrementOnFailure = getInt(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setChanceIncrementOnFailure(final Integer value) {
-    m_chanceIncrementOnFailure = value;
-  }
-
   public int getChanceIncrementOnFailure() {
     return m_chanceIncrementOnFailure;
-  }
-
-  public void resetChanceIncrementOnFailure() {
-    m_chanceIncrementOnFailure = 0;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -366,17 +334,8 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     m_chanceDecrementOnSuccess = getInt(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setChanceDecrementOnSuccess(final Integer value) {
-    m_chanceDecrementOnSuccess = value;
-  }
-
   public int getChanceDecrementOnSuccess() {
     return m_chanceDecrementOnSuccess;
-  }
-
-  public void resetChanceDecrementOnSuccess() {
-    m_chanceDecrementOnSuccess = 0;
   }
 
   public void changeChanceDecrementOrIncrementOnSuccessOrFailure(final IDelegateBridge aBridge, final boolean success,

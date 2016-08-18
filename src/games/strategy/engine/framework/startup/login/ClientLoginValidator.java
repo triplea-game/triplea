@@ -68,7 +68,8 @@ public class ClientLoginValidator implements ILoginValidator {
     // check for version
     final Version clientVersion = new Version(versionString);
     if (!ClientContext.engineVersion().getVersion().equals(clientVersion, false)) {
-      final String error = "Client is using " + clientVersion + " but server requires version " + ClientContext.engineVersion().getVersion();
+      final String error = "Client is using " + clientVersion + " but server requires version "
+          + ClientContext.engineVersion().getVersion();
       return error;
     }
     final String realName = clientName.split(" ")[0];

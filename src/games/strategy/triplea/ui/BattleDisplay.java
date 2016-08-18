@@ -50,8 +50,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -306,14 +304,14 @@ public class BattleDisplay extends JPanel {
     }
 
     final CountDownLatch continueLatch = new CountDownLatch(1);
-    AbstractAction buttonAction = SwingAction.of(message, e -> continueLatch.countDown());
+    final AbstractAction buttonAction = SwingAction.of(message, e -> continueLatch.countDown());
     SwingUtilities.invokeLater(() -> m_actionButton.setAction(buttonAction));
     m_mapPanel.getUIContext().addShutdownLatch(continueLatch);
 
     // Set a auto-wait expiration if the option is set.
-    if(!getConfirmDefensiveRolls()) {
+    if (!getConfirmDefensiveRolls()) {
       final int maxWaitTime = 1500;
-      Timer t = new Timer();
+      final Timer t = new Timer();
       t.schedule(new TimerTask() {
         @Override
         public void run() {
@@ -744,11 +742,11 @@ class BattleModel extends DefaultTableModel {
     // TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)
     final String[] diceColumns = new String[data.getDiceSides() + 1];
     {
-      for (Integer i = 0; i < diceColumns.length; i++) {
+      for (int i = 0; i < diceColumns.length; i++) {
         if (i == 0) {
           diceColumns[i] = " ";
         } else {
-          diceColumns[i] = i.toString();
+          diceColumns[i] = Integer.toString(i);
         }
       }
     }
@@ -803,7 +801,7 @@ class BattleModel extends DefaultTableModel {
 
     final List<List<TableData>> columns = new ArrayList<>(m_data.getDiceSides() + 1);
     for (int i = 0; i <= m_data.getDiceSides(); i++) {
-        columns.add(i, new ArrayList<>());
+      columns.add(i, new ArrayList<>());
     }
     final List<Unit> units = new ArrayList<>(m_units);
     DiceRoll.sortByStrength(units, !m_attack);
@@ -905,7 +903,7 @@ class TableData {
       stamp.setIcon(null);
     } else {
       stamp.setText("x" + m_count);
-      if(m_icon.isPresent()) {
+      if (m_icon.isPresent()) {
         stamp.setIcon(m_icon.get());
       }
     }
@@ -971,8 +969,9 @@ class CasualtyNotificationPanel extends JPanel {
       final UnitCategory category = categoryIter.next();
       final JPanel panel = new JPanel();
       // TODO Kev determine if we need to identify if the unit is hit/disabled
-      Optional<ImageIcon> unitImage = m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data,
-          damaged && category.hasDamageOrBombingUnitDamage(), disabled && category.getDisabled());
+      final Optional<ImageIcon> unitImage =
+          m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data,
+              damaged && category.hasDamageOrBombingUnitDamage(), disabled && category.getDisabled());
       final JLabel unit = unitImage.isPresent() ? new JLabel(unitImage.get()) : new JLabel();
       panel.add(unit);
       for (final UnitOwner owner : category.getDependents()) {

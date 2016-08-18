@@ -1,9 +1,6 @@
 package games.strategy.engine.lobby.client.ui;
 
-import com.apple.eawt.AppEvent.QuitEvent;
 import com.apple.eawt.Application;
-import com.apple.eawt.QuitHandler;
-import com.apple.eawt.QuitResponse;
 
 /**
  * TODO This class should be merged with games.strategy.triplea.ui.MacQuitMenuWrapper.

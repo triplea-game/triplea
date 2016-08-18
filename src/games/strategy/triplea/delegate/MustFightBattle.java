@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -22,6 +21,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.sound.SoundPath;
@@ -225,7 +225,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     // TODO: this might be legacy code that can be deleted since we now keep paratrooper dependencies til they land (but
     // need to double
     // check)
-    if (TechAttachment.isParatroopers(m_attacker)) {
+    if (TechAttachment.isAirTransportable(m_attacker)) {
       final Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
       final Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsAirTransportable);
       if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
@@ -506,7 +506,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
         steps.add(SUICIDE_DEFEND);
         steps.add(m_attacker.getName() + SELECT_CASUALTIES_SUICIDE);
       }
-      if (!m_battleSite.isWater() && TechAttachment.isParatroopers(m_attacker)) {
+      if (!m_battleSite.isWater() && TechAttachment.isAirTransportable(m_attacker)) {
         final Collection<Unit> bombers =
             Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAirTransport);
         if (!bombers.isEmpty()) {
@@ -1280,7 +1280,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
   }
 
   // Added for test case calls
-  void externalRetreat(final Collection<Unit> retreaters, final Territory retreatTo, final Boolean defender,
+  void externalRetreat(final Collection<Unit> retreaters, final Territory retreatTo, final boolean defender,
       final IDelegateBridge bridge) {
     m_isOver = true;
     retreatUnits(retreaters, retreatTo, defender, bridge);
@@ -2364,7 +2364,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
   }
 
   private void landParatroops(final IDelegateBridge bridge) {
-    if (TechAttachment.isParatroopers(m_attacker)) {
+    if (TechAttachment.isAirTransportable(m_attacker)) {
       final Collection<Unit> airTransports =
           Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAirTransport);
       if (!airTransports.isEmpty()) {
@@ -2435,10 +2435,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       removeFromDependents(killed, bridge, dependentBattles);
     }
     // and remove them from the battle display
-    if (defenderDying == null || defenderDying.booleanValue()) {
+    if (defenderDying == null || defenderDying) {
       m_defendingUnits.removeAll(killed);
     }
-    if (defenderDying == null || !defenderDying.booleanValue()) {
+    if (defenderDying == null || !defenderDying) {
       m_attackingUnits.removeAll(killed);
     }
   }
@@ -2501,8 +2501,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     m_battleResultDescription = BattleRecord.BattleResultDescription.LOST;
     showCasualties(bridge);
     if (!m_headless) {
-      m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-          m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), 0);
+      m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
+          m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     }
     checkDefendingPlanesCanLand(bridge, m_defender);
     BattleTracker.captureOrDestroyUnits(m_battleSite, m_defender, m_defender, bridge, null);
@@ -2519,8 +2519,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     m_battleResultDescription = BattleRecord.BattleResultDescription.STALEMATE;
     showCasualties(bridge);
     if (!m_headless) {
-      m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-          m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), 0);
+      m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
+          m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
       bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_STALEMATE, m_attacker);
     }
     checkDefendingPlanesCanLand(bridge, m_defender);
@@ -2560,8 +2560,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     bridge.getHistoryWriter().addChildToEvent(m_attacker.getName() + " win", new ArrayList<>(m_attackingUnits));
     showCasualties(bridge);
     if (!m_headless) {
-      m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-          m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), 0);
+      m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
+          m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     }
     if (!m_headless) {
       if (Matches.TerritoryIsWater.match(m_battleSite)) {
@@ -2602,7 +2602,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     // units in m_attackingUnits are allied with the attacker? Does it really matter?
     final CompositeMatch<Unit> alliedDefendingAir =
         new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.UnitWasScrambled.invert());
-    Collection<Unit> m_defendingAir = Match.getMatches(m_defendingUnits, alliedDefendingAir);
+    final Collection<Unit> m_defendingAir = Match.getMatches(m_defendingUnits, alliedDefendingAir);
     // no planes, exit
     if (m_defendingAir.isEmpty()) {
       return;
@@ -2773,9 +2773,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       m_attackerLostTUV += tuvLostAttacker;
       m_whoWon = WhoWon.DEFENDER;
       if (!m_headless) {
-        m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender,
+        m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender,
             m_attackerLostTUV, m_defenderLostTUV, BattleRecord.BattleResultDescription.LOST,
-            new BattleResults(this, m_data), 0);
+            new BattleResults(this, m_data));
       }
       m_battleTracker.removeBattle(this);
     }

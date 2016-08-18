@@ -178,7 +178,7 @@ public class PointFileReaderWriter {
     } finally {
       try {
         stream.close();
-      } catch (IOException e) {
+      } catch (final IOException e) {
         ClientLogger.logError(e);
       }
     }
@@ -205,7 +205,7 @@ public class PointFileReaderWriter {
     } finally {
       try {
         stream.close();
-      } catch (IOException e) {
+      } catch (final IOException e) {
         ClientLogger.logError(e);
       }
     }

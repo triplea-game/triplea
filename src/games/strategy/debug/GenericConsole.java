@@ -22,7 +22,7 @@ public abstract class GenericConsole extends JFrame {
 
   private final JTextArea m_text = new JTextArea(20, 50);
 
-  public GenericConsole(String title) {
+  public GenericConsole(final String title) {
     super(title);
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout());
@@ -30,21 +30,21 @@ public abstract class GenericConsole extends JFrame {
     m_text.setWrapStyleWord(true);
     final JScrollPane scroll = new JScrollPane(m_text);
     getContentPane().add(scroll, BorderLayout.CENTER);
-    JToolBar m_actions = new JToolBar(SwingConstants.HORIZONTAL);
+    final JToolBar m_actions = new JToolBar(SwingConstants.HORIZONTAL);
     getContentPane().add(m_actions, BorderLayout.SOUTH);
     m_actions.setFloatable(false);
     m_actions.add(m_threadDiagnoseAction);
-    AbstractAction m_memoryAction = SwingAction.of("Memory", e -> append(DebugUtils.getMemory()));
+    final AbstractAction m_memoryAction = SwingAction.of("Memory", e -> append(DebugUtils.getMemory()));
     m_actions.add(m_memoryAction);
-    AbstractAction m_propertiesAction = SwingAction.of("Properties", e -> append(DebugUtils.getProperties()));
+    final AbstractAction m_propertiesAction = SwingAction.of("Properties", e -> append(DebugUtils.getProperties()));
     m_actions.add(m_propertiesAction);
-    Action m_copyAction = SwingAction.of("Copy to clipboard", e -> {
+    final Action m_copyAction = SwingAction.of("Copy to clipboard", e -> {
       final String text = m_text.getText();
       final StringSelection select = new StringSelection(text);
       Toolkit.getDefaultToolkit().getSystemClipboard().setContents(select, select);
     });
     m_actions.add(m_copyAction);
-    AbstractAction m_clearAction = SwingAction.of("Clear", e -> clear());
+    final AbstractAction m_clearAction = SwingAction.of("Clear", e -> clear());
     m_actions.add(m_clearAction);
     SwingUtilities.invokeLater(() -> pack());
   }

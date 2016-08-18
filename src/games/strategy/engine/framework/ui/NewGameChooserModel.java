@@ -96,11 +96,11 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
 
     try (ZipFile zipFile = new ZipFile(map);
         final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
-      Enumeration<? extends ZipEntry> zipEntryEnumeration = zipFile.entries();
+      final Enumeration<? extends ZipEntry> zipEntryEnumeration = zipFile.entries();
       while (zipEntryEnumeration.hasMoreElements()) {
-        ZipEntry entry = zipEntryEnumeration.nextElement();
+        final ZipEntry entry = zipEntryEnumeration.nextElement();
         if (entry.getName().startsWith("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
-          ZipProcessingResult result = processZipEntry(loader, entry, entries);
+          final ZipProcessingResult result = processZipEntry(loader, entry, entries);
           if (result == ZipProcessingResult.ERROR) {
             badMapZip = true;
             break;
@@ -136,8 +136,8 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
    * Open up a confirmation dialog, if user says yes, delete the map specified by
    * parameter, then show confirmation of deletion.
    */
-  private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map, Optional<String> errorDetails) {
-    Runnable deleteMapRunnable = () -> {
+  private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map, final Optional<String> errorDetails) {
+    final Runnable deleteMapRunnable = () -> {
       final Component parentComponent = MainFrame.getInstance();
       String message = "Could not parse map file correctly, would you like to remove it?\n" + map.getAbsolutePath()
           + "\n(You may see this error message again if you keep the file)";
@@ -180,7 +180,8 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
     } catch (final EngineVersionException e) {
       System.out.println(e.getMessage());
     } catch (final SAXParseException e) {
-      String msg = "Could not parse:" + uri + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber();
+      final String msg =
+          "Could not parse:" + uri + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber();
       System.err.println(msg);
       ClientLogger.logQuietly(e);
     } catch (final Exception e) {

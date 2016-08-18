@@ -14,7 +14,7 @@ public class AiTab implements SettingsTab<AiSettings> {
 
   private final List<SettingInputComponent<AiSettings>> inputs;
 
-  public AiTab(AiSettings aiSettings) {
+  public AiTab(final AiSettings aiSettings) {
     inputs = Arrays.asList(
         SettingInputComponent.build(
             new IntegerValueRange(0, 3000, AiSettings.DEFAULT_AI_PAUSE_DURACTION),

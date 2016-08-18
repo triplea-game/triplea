@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
@@ -15,6 +14,7 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
@@ -43,7 +43,7 @@ public class VictoryTest {
 
   @Before
   public void setUp() throws Exception {
-    gameData = LoadGameUtil.loadTestGame("victory_test.xml");
+    gameData = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.VICTORY_TEST);
     italians = GameDataTestUtil.italians(gameData);
     testBridge = GameDataTestUtil.getDelegateBridge(italians, gameData);
     // we need to initialize the original owner

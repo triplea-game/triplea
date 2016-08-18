@@ -55,7 +55,7 @@ public class EventThreadJOptionPane {
     return scroll;
   }
 
-  private static void awaitLatch(CountDownLatchHandler latchHandler, CountDownLatch latch) {
+  private static void awaitLatch(final CountDownLatchHandler latchHandler, final CountDownLatch latch) {
     boolean done = false;
     while (!done) {
       try {

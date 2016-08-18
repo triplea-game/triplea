@@ -12,13 +12,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
@@ -1313,11 +1313,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       while (mapString.hasNext()) {
         final String constructionType = mapString.next();
         int unitMax = unitMapMaxType.getInt(constructionType);
-        if (wasFactoryThereAtStart && !constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY) && !constructionType.endsWith("structure")) {
+        if (wasFactoryThereAtStart && !constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY)
+            && !constructionType.endsWith("structure")) {
           unitMax =
               Math.max(Math.max(unitMax, (moreWithFactory ? toProduction : 0)), (unlimitedConstructions ? 10000 : 0));
         }
-        if (!wasFactoryThereAtStart && !constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY) && !constructionType.endsWith("structure")) {
+        if (!wasFactoryThereAtStart && !constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY)
+            && !constructionType.endsWith("structure")) {
           unitMax = Math.max(Math.max(unitMax, (moreWithoutFactory ? toProduction : 0)),
               (unlimitedConstructions ? 10000 : 0));
         }

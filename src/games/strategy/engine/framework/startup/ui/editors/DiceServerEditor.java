@@ -2,8 +2,6 @@ package games.strategy.engine.framework.startup.ui.editors;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -53,7 +51,7 @@ public class DiceServerEditor extends EditorPanel {
       row++;
     }
     if (m_bean.supportsGameId()) {
-      JLabel m_gameIdLabel = new JLabel("Game ID:");
+      final JLabel m_gameIdLabel = new JLabel("Game ID:");
       add(m_gameIdLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
           new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
       add(m_gameId, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,

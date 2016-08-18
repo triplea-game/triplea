@@ -12,12 +12,12 @@ import java.util.logging.Logger;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.TechnologyFrontier;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.util.Tuple;

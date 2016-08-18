@@ -420,7 +420,7 @@ public final class ProTechAI {
             continue;
           }
           q.add(neighbor);
-          final Integer dist = distance.getInt(neighbor);
+          final int dist = distance.getInt(neighbor);
           if (ignoreDistance.contains(dist)) {
             continue;
           }
@@ -701,9 +701,8 @@ public final class ProTechAI {
     }
     int artilleryCount = artillery.size();
     int armorCount = armor.size();
-    final int infCount = infantry.size();
     int othersCount = others.size();
-    for (Unit anInfantry : infantry) {
+    for (final Unit anInfantry : infantry) {
       sorted.add(anInfantry);
       // this should be based on combined attack and defense powers, not on attachments like blitz
       if (armorCount > 0) {

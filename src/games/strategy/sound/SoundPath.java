@@ -141,7 +141,7 @@ public class SoundPath {
   }
 
   public static List<IEditableProperty> getSoundOptions() {
-    List<IEditableProperty> soundBoxes = new ArrayList<>();
+    final List<IEditableProperty> soundBoxes = new ArrayList<>();
     getAllSoundOptionsWithDescription().forEach(
         (path, description) -> soundBoxes.add(new SoundOptionCheckBox(path, description)));
     return soundBoxes;

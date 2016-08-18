@@ -3,8 +3,6 @@ package games.strategy.engine.random;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -20,8 +18,8 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
+import games.strategy.ui.SwingAction;
 
 /**
  * Its a bit messy, but the threads are a pain to deal with We want to be able

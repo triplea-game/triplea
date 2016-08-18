@@ -28,7 +28,7 @@ public class ThreadPoolTest {
       pool.runTask(task);
     }
     pool.waitForAll();
-    for (Task runnable : tasks) {
+    for (final Task runnable : tasks) {
       assertTrue(runnable.isDone());
     }
     pool.shutDown();
@@ -45,7 +45,7 @@ public class ThreadPoolTest {
     }
 
     pool.waitForAll();
-    for(Task task1 : tasks){
+    for (final Task task1 : tasks) {
       assertTrue(task1.isDone());
     }
     pool.shutDown();
@@ -65,10 +65,10 @@ public class ThreadPoolTest {
       threads.add(t);
       t.start();
     }
-    for(Thread thread : threads){
+    for (final Thread thread : threads) {
       try {
         thread.join();
-      } catch (InterruptedException e) {
+      } catch (final InterruptedException e) {
         // ignore interrupted exception
       }
     }
@@ -102,7 +102,7 @@ class Task implements Runnable {
   public void run() {
     try {
       Thread.sleep(0, 1);
-    } catch (InterruptedException e) {
+    } catch (final InterruptedException e) {
       throw new IllegalStateException(e);
     }
     done = true;

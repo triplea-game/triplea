@@ -7,7 +7,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.Action;
 
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.IGame;
@@ -18,6 +17,7 @@ import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.util.ThreadUtil;
 
@@ -108,7 +108,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
     }
     // make sure at least 1 player is enabled
     final Map<String, Boolean> someoneEnabled = m_model.getPlayersEnabledListing();
-    for (final Boolean bool : someoneEnabled.values()) {
+    for (final boolean bool : someoneEnabled.values()) {
       if (bool) {
         return true;
       }

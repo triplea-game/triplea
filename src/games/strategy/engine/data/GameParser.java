@@ -60,7 +60,7 @@ public class GameParser {
   private static HashMap<String, String> newClassesForOldNames;
   private final String mapName;
 
-  public GameParser(String mapName) {
+  public GameParser(final String mapName) {
     this.mapName = mapName;
   }
 
@@ -233,7 +233,8 @@ public class GameParser {
       for (final PlayerID player2 : data.getPlayerList()) {
         // See if there is a relationship between them
         if ((data.getRelationshipTracker().getRelationshipType(player, player2) == null)) {
-          throw new GameParseException(mapName, "No relation set for: " + player.getName() + " and " + player2.getName());
+          throw new GameParseException(mapName,
+              "No relation set for: " + player.getName() + " and " + player2.getName());
           // or else throw an exception!
         }
       }
@@ -253,7 +254,7 @@ public class GameParser {
     final String dtdFile = "/games/strategy/engine/xml/" + DTD_FILE_NAME;
     final URL url = GameParser.class.getResource(dtdFile);
     if (url == null) {
-      throw new RuntimeException("Map: "+ mapName + ", " + String.format("Could not find in classpath %s", dtdFile));
+      throw new RuntimeException("Map: " + mapName + ", " + String.format("Could not find in classpath %s", dtdFile));
     }
     final String dtdSystem = url.toExternalForm();
     final String system = dtdSystem.substring(0, dtdSystem.length() - 8);
@@ -452,7 +453,8 @@ public class GameParser {
     catch (final ClassNotFoundException cnfe) {
       throw new GameParseException(mapName, "Class <" + className + "> could not be found.");
     } catch (final InstantiationException ie) {
-      throw new GameParseException(mapName, "Class <" + className + "> could not be instantiated. ->" + ie.getMessage());
+      throw new GameParseException(mapName,
+          "Class <" + className + "> could not be instantiated. ->" + ie.getMessage());
     } catch (final IllegalAccessException iae) {
       throw new GameParseException(mapName, "Constructor could not be accessed ->" + iae.getMessage());
     }
@@ -600,7 +602,8 @@ public class GameParser {
     } else if (horizontalConnections.equals("explicit")) {
       horizontalConnectionsImplict = false;
     } else {
-      throw new GameParseException(mapName, "horizontal-connections attribute must be either \"explicit\" or \"implicit\"");
+      throw new GameParseException(mapName,
+          "horizontal-connections attribute must be either \"explicit\" or \"implicit\"");
     }
     boolean verticalConnectionsImplict;
     if (verticalConnections.equals("implicit")) {
@@ -608,7 +611,8 @@ public class GameParser {
     } else if (verticalConnections.equals("explicit")) {
       verticalConnectionsImplict = false;
     } else {
-      throw new GameParseException(mapName, "vertical-connections attribute must be either \"explicit\" or \"implicit\"");
+      throw new GameParseException(mapName,
+          "vertical-connections attribute must be either \"explicit\" or \"implicit\"");
     }
     boolean diagonalConnectionsImplict;
     if (diagonalConnections.equals("implicit")) {
@@ -616,7 +620,8 @@ public class GameParser {
     } else if (diagonalConnections.equals("explicit")) {
       diagonalConnectionsImplict = false;
     } else {
-      throw new GameParseException(mapName, "diagonal-connections attribute must be either \"explicit\" or \"implicit\"");
+      throw new GameParseException(mapName,
+          "diagonal-connections attribute must be either \"explicit\" or \"implicit\"");
     }
     final int x_size = Integer.valueOf(xs);
     int y_size;
@@ -908,12 +913,8 @@ public class GameParser {
           // definition
           try {
             // test if it is an integer
-            final Integer integer = Integer.parseInt(value);
-            int intValue = 0;
-            if (integer != null) {
-              intValue = integer;
-            }
-            properties.set(property, intValue);
+            final int integer = Integer.parseInt(value);
+            properties.set(property, integer);
           } catch (final NumberFormatException e) {
             // then it must be a string
             properties.set(property, value);
@@ -1137,7 +1138,8 @@ public class GameParser {
         result = getUnitType(current, "resourceOrUnit", false);
       }
       if (result == null) {
-        throw new GameParseException("mapName, Could not find resource or unit" + current.getAttribute("resourceOrUnit"));
+        throw new GameParseException(
+            "mapName, Could not find resource or unit" + current.getAttribute("resourceOrUnit"));
       }
       final int quantity = Integer.parseInt(current.getAttribute("quantity"));
       rule.addResult(result, quantity);
@@ -1156,7 +1158,8 @@ public class GameParser {
         result = getUnitType(current, "resourceOrUnit", false);
       }
       if (result == null) {
-        throw new GameParseException(mapName, "Could not find resource or unit" + current.getAttribute("resourceOrUnit"));
+        throw new GameParseException(mapName,
+            "Could not find resource or unit" + current.getAttribute("resourceOrUnit"));
       }
       final int quantity = Integer.parseInt(current.getAttribute("quantity"));
       rule.addResult(result, quantity);
@@ -1304,7 +1307,8 @@ public class GameParser {
         // keep a list of attachment references in the order they were added
         data.addToAttachmentOrderAndValues(
             Tuple.of(attachment, attachmentOptionValues));
-      } catch (final InstantiationException | InvocationTargetException | IllegalArgumentException | IllegalAccessException e) {
+      } catch (final InstantiationException | InvocationTargetException | IllegalArgumentException
+          | IllegalAccessException e) {
         throw new GameParseException(mapName,
             "Attachment of type " + className + " could not be instanciated: " + e.getMessage());
       }
@@ -1372,10 +1376,12 @@ public class GameParser {
         final Object[] args = {itemValues};
         setter.invoke(attachment, args);
       } catch (final IllegalAccessException iae) {
-        throw new GameParseException(mapName, "Setter not public. Setter:" + name + " Class:" + attachment.getClass().getName());
+        throw new GameParseException(mapName,
+            "Setter not public. Setter:" + name + " Class:" + attachment.getClass().getName());
       } catch (final InvocationTargetException ite) {
         ite.getCause().printStackTrace(System.out);
-        throw new GameParseException(mapName, "Error setting property:" + name + " cause:" + ite.getCause().getMessage());
+        throw new GameParseException(mapName,
+            "Error setting property:" + name + " cause:" + ite.getCause().getMessage());
       }
       options.add(Tuple.of(name, itemValues));
     }

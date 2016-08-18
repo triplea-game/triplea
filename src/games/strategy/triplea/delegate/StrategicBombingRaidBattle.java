@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
@@ -18,6 +17,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.random.IRandomStats.DiceType;
@@ -284,8 +284,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     getDisplay(bridge).battleEnd(m_battleID, "Bombing raid does no damage");
     m_whoWon = WhoWon.DRAW;
     m_battleResultDescription = BattleRecord.BattleResultDescription.NO_BATTLE;
-    m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), m_bombingRaidTotal);
+    m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
+        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     m_isOver = true;
     m_battleTracker.removeBattle(StrategicBombingRaidBattle.this);
   }
@@ -308,8 +308,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       m_whoWon = WhoWon.DEFENDER;
       m_battleResultDescription = BattleRecord.BattleResultDescription.LOST;
     }
-    m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), m_bombingRaidTotal);
+    m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
+        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     m_isOver = true;
     m_battleTracker.removeBattle(StrategicBombingRaidBattle.this);
   }
@@ -681,7 +681,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       int cost = 0;
       final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(m_data);
       int index = 0;
-      final Boolean limitDamage = isWW2V2() || isLimitSBRDamageToProduction();
+      final boolean limitDamage = isWW2V2() || isLimitSBRDamageToProduction();
       final List<Die> dice = new ArrayList<>();
       final HashMap<Unit, List<Die>> targetToDiceMap = new HashMap<>();
       // limit to maxDamage

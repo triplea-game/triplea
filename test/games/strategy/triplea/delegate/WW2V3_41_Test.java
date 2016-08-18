@@ -71,7 +71,6 @@ import org.mockito.stubbing.Answer;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.ITestDelegateBridge;
@@ -83,6 +82,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.test.TestUtil;
 import games.strategy.triplea.Constants;
@@ -104,22 +104,22 @@ import games.strategy.util.Match;
 
 public class WW2V3_41_Test {
   private GameData m_data;
-  private ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
+  private final ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
 
   @Before
   public void setUp() throws Exception {
     when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(), any(), any(), any(), any(), any(),
         anyBoolean(), any(), any(), any(), any(), anyBoolean())).thenAnswer(new Answer<CasualtyDetails>() {
           @Override
-          public CasualtyDetails answer(InvocationOnMock invocation) throws Throwable {
-            CasualtyList defaultCasualties = invocation.getArgument(11);
+          public CasualtyDetails answer(final InvocationOnMock invocation) throws Throwable {
+            final CasualtyList defaultCasualties = invocation.getArgument(11);
             if (defaultCasualties != null) {
               return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
             }
             return null;
           }
         });
-    m_data = LoadGameUtil.loadTestGame("ww2v3_1941_test.xml");
+    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.WW2V3_1941);
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
@@ -537,8 +537,8 @@ public class WW2V3_41_Test {
     // Remove all units from east poland
     removeFrom(eastPoland, eastPoland.getUnits().getUnits());
     // Get total number of units in territories to start
-    final Integer preCountIntPoland = poland.getUnits().size();
-    final Integer preCountIntBelorussia = belorussia.getUnits().size();
+    final int preCountIntPoland = poland.getUnits().size();
+    final int preCountIntBelorussia = belorussia.getUnits().size();
     // Get units
     final Collection<Unit> moveUnits = poland.getUnits().getUnits(infantryType, 3);
     moveUnits.addAll(poland.getUnits().getMatches(Matches.UnitCanBlitz));
@@ -553,8 +553,8 @@ public class WW2V3_41_Test {
     final String validResults = moveDelegate.move(moveUnits, new Route(poland, eastPoland, belorussia));
     assertValid(validResults);
     // Get number of units in territories after move (adjusted for movement)
-    final Integer postCountIntPoland = poland.getUnits().size() + 4;
-    final Integer postCountIntBelorussia = belorussia.getUnits().size() - 4;
+    final int postCountIntPoland = poland.getUnits().size() + 4;
+    final int postCountIntBelorussia = belorussia.getUnits().size() - 4;
     // Compare the number of units before and after
     assertEquals(preCountIntPoland, postCountIntPoland);
     assertEquals(preCountIntBelorussia, postCountIntBelorussia);
@@ -954,8 +954,8 @@ public class WW2V3_41_Test {
         any(),
         any(), any(), any(), anyBoolean())).thenAnswer(new Answer<CasualtyDetails>() {
           @Override
-          public CasualtyDetails answer(InvocationOnMock invocation) {
-            Collection<Unit> selectFrom = invocation.getArgument(0);
+          public CasualtyDetails answer(final InvocationOnMock invocation) {
+            final Collection<Unit> selectFrom = invocation.getArgument(0);
             return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), new ArrayList<>(), false);
           }
         });
@@ -1466,11 +1466,11 @@ public class WW2V3_41_Test {
         any(), contains(BattleStepStrings.RETREAT_PLANES))).thenThrow(
             new AssertionError("The Message is not allowed to contain the BattleStepStrings.RETREAT_PLANES constant"));
     bridge.setRemote(dummyPlayer);
-    ITripleADisplay dummyDisplay = mock(ITripleADisplay.class);
+    final ITripleADisplay dummyDisplay = mock(ITripleADisplay.class);
     doThrow(new AssertionError(
         "None of the Battle steps is allow to contain the BattleStepStrings.PLANES_WITHDRAW constant"))
             .when(dummyDisplay).listBattleSteps(any(), argThat(list -> {
-              for (String string : list) {
+              for (final String string : list) {
                 if (string.contains(BattleStepStrings.PLANES_WITHDRAW)) {
                   return true;
                 }
@@ -1510,7 +1510,7 @@ public class WW2V3_41_Test {
     when(dummyPlayer.retreatQuery(any(), anyBoolean(), any(),
         any(), any())).thenAnswer(new Answer<Territory>() {
           @Override
-          public Territory answer(InvocationOnMock invocation) throws Throwable {
+          public Territory answer(final InvocationOnMock invocation) throws Throwable {
             throw new IllegalStateException(
                 "Should not be asked to retreat:" + invocation.getArgument(4));
           }

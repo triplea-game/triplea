@@ -2,7 +2,6 @@ package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.GameDescription.GameStatus;
 

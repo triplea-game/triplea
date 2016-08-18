@@ -18,7 +18,8 @@ public class AiSettings implements HasDefaults {
   public int getAiPauseDuration() {
     return SystemPreferences.get(SystemPreferenceKey.AI_PAUSE_DURACTION, DEFAULT_AI_PAUSE_DURACTION);
   }
-  public void setAiPauseDuration(String value) {
+
+  public void setAiPauseDuration(final String value) {
     SystemPreferences.put(SystemPreferenceKey.AI_PAUSE_DURACTION, value);
   }
 
@@ -26,7 +27,7 @@ public class AiSettings implements HasDefaults {
     return SystemPreferences.get(SystemPreferenceKey.SHOW_BATTLES_BETWEEN_AI, DEFAULT_SHOW_BATTLE_BETWEEN_AI);
   }
 
-  public void setShowBattlesBetweenAi(boolean value) {
+  public void setShowBattlesBetweenAi(final boolean value) {
     SystemPreferences.put(SystemPreferenceKey.SHOW_BATTLES_BETWEEN_AI, value);
   }
 }

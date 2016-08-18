@@ -18,13 +18,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.GameDataTestUtil;
@@ -114,7 +114,7 @@ public class UnitAutoChooserTest {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadTestGame("revised_test.xml");
+    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.REVISED);
     british = m_data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_BRITISH);
     armour = m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_ARMOUR);
     infantry = m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INFANTRY);

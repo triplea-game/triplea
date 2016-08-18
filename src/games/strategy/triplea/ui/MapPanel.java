@@ -12,9 +12,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -50,17 +48,16 @@ import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
+import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerLargeView;
-import games.strategy.ui.ScrollListener;
 import games.strategy.ui.Util;
 import games.strategy.util.ListenerList;
 import games.strategy.util.Match;
@@ -96,11 +93,12 @@ public class MapPanel extends ImageScrollerLargeView {
   private final LinkedBlockingQueue<Tile> undrawnTiles = new LinkedBlockingQueue<>();
   private Map<Territory, List<Unit>> highlightedUnits;
   private Cursor hiddenCursor = null;
+  private final MapRouteDrawer routeDrawer = new MapRouteDrawer();
 
 
   /** Creates new MapPanel */
   public MapPanel(final GameData data, final MapPanelSmallView smallView, final IUIContext uiContext,
-      final ImageScrollModel model)  {
+      final ImageScrollModel model) {
     super(uiContext.getMapData().getMapDimensions(), model);
     this.uiContext = uiContext;
     setCursor(this.uiContext.getCursor());
@@ -115,7 +113,7 @@ public class MapPanel extends ImageScrollerLargeView {
     this.smallMapImageManager =
         new SmallMapImageManager(smallView, this.uiContext.getMapImage().getSmallMapImage(), this.tileManager);
     setGameData(data);
-    MouseListener MOUSE_LISTENER = new MouseAdapter() {
+    this.addMouseListener(new MouseAdapter() {
       /**
        * Invoked when the mouse exits a component.
        */
@@ -148,9 +146,8 @@ public class MapPanel extends ImageScrollerLargeView {
           notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), md);
         }
       }
-    };
-    this.addMouseListener(MOUSE_LISTENER);
-    MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter() {
+    });
+    this.addMouseMotionListener(new MouseMotionAdapter() {
       @Override
       public void mouseMoved(final MouseEvent e) {
         final MouseDetails md = convert(e);
@@ -176,8 +173,7 @@ public class MapPanel extends ImageScrollerLargeView {
           }
         }
       }
-    };
-    this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
+    });
     this.addScrollListener((x2, y2) -> SwingUtilities.invokeLater(() -> repaint()));
     recreateTiles(data, this.uiContext);
     this.uiContext.addActive(() -> {
@@ -187,6 +183,7 @@ public class MapPanel extends ImageScrollerLargeView {
       backgroundDrawer.stop();
     });
   }
+
   LinkedBlockingQueue<Tile> getUndrawnTiles() {
     return undrawnTiles;
   }
@@ -258,11 +255,11 @@ public class MapPanel extends ImageScrollerLargeView {
   public void setRoute(final Route route, final Point start, final Point end, final Image cursorImage) {
     if (route == null) {
       routeDescription = null;
-      SwingUtilities.invokeLater(() ->  repaint());
+      SwingUtilities.invokeLater(() -> repaint());
       return;
     }
-    RouteDescription newRouteDescription = new RouteDescription(route, start, end, cursorImage);
-    if(routeDescription != null && routeDescription.equals(newRouteDescription)){
+    final RouteDescription newRouteDescription = new RouteDescription(route, start, end, cursorImage);
+    if (routeDescription != null && routeDescription.equals(newRouteDescription)) {
       return;
     }
     routeDescription = newRouteDescription;
@@ -538,7 +535,7 @@ public class MapPanel extends ImageScrollerLargeView {
       t.scale(m_scale, m_scale);
       g2d.drawImage(mouseShadowImage, t, this);
     }
-    new MapRouteDrawer().drawRoute(g2d, routeDescription, this, uiContext.getMapData(), movementLeftForCurrentUnits);
+    routeDrawer.drawRoute(g2d, routeDescription, this, uiContext.getMapData(), movementLeftForCurrentUnits);
     // used to keep strong references to what is on the screen so it wont be garbage collected
     // other references to the images are weak references
     this.images.clear();
@@ -556,9 +553,9 @@ public class MapPanel extends ImageScrollerLargeView {
             continue;
           }
 
-          Optional<Image> image = uiContext.getUnitImageFactory().getHighlightImage(category.getType(),
+          final Optional<Image> image = uiContext.getUnitImageFactory().getHighlightImage(category.getType(),
               category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
-          if(image.isPresent()) {
+          if (image.isPresent()) {
             final AffineTransform t = new AffineTransform();
             t.translate(normalizeX(r.getX() - getXOffset()) * m_scale, normalizeY(r.getY() - getYOffset()) * m_scale);
             t.scale(m_scale, m_scale);
@@ -799,6 +796,7 @@ public class MapPanel extends ImageScrollerLargeView {
     return uiContext.getMapData().getHelpImage();
   }
 }
+
 
 class BackgroundDrawer implements Runnable {
   // use a weak reference, if we see the panel is gc'd, then we can stop this thread

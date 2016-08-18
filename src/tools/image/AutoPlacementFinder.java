@@ -26,8 +26,8 @@ import javax.swing.JPanel;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
-import tools.map.making.JTextAreaOptionPane;
 import games.strategy.util.PointFileReaderWriter;
+import tools.map.making.JTextAreaOptionPane;
 
 public class AutoPlacementFinder {
   private static int PLACEWIDTH = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
@@ -81,10 +81,12 @@ public class AutoPlacementFinder {
       System.out.println("Shutting down");
       System.exit(0);
     }
-    File file = new File(ClientFileSystemHelper.getUserMapsFolder() + File.separator + mapDir + File.separator + "map.properties");
+    File file = new File(
+        ClientFileSystemHelper.getUserMapsFolder() + File.separator + mapDir + File.separator + "map.properties");
     if (!file.exists()) {
-      file = new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps" + File.separator + mapDir + File.separator
-          + "map.properties");
+      file = new File(
+          ClientFileSystemHelper.getRootFolder() + File.separator + "maps" + File.separator + mapDir + File.separator
+              + "map.properties");
     }
     if (file.exists() && s_mapFolderLocation == null) {
       s_mapFolderLocation = file.getParentFile();
@@ -354,7 +356,8 @@ public class AutoPlacementFinder {
   }
 
   /**
-   * isPlacement(java.tools.Collection, java.tools.Collection, java.tools.List, java.tools.List, java.awt.geom.Rectangle2D,
+   * isPlacement(java.tools.Collection, java.tools.Collection, java.tools.List, java.tools.List,
+   * java.awt.geom.Rectangle2D,
    * java.lang.int,
    * java.lang.int)
    *
@@ -378,7 +381,7 @@ public class AutoPlacementFinder {
       final List<Point> placementPoints, final Rectangle2D place, final int x, final int y) {
     place.setFrame(x, y, PLACEWIDTH, PLACEHEIGHT);
     if (containedIn(place, countryPolygons) && !intersectsOneOf(place, placementRects) &&
-        // make sure it is not in or intersects the contained country
+    // make sure it is not in or intersects the contained country
         (!containedIn(place, containedCountryPolygons) && !intersectsOneOf(place, containedCountryPolygons))) {
       placementPoints.add(new Point((int) place.getX(), (int) place.getY()));
       final Rectangle2D newRect = new Rectangle2D.Double();

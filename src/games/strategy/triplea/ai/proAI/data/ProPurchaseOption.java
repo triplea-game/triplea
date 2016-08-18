@@ -67,7 +67,7 @@ public class ProPurchaseOption {
     costs = productionRule.getCosts();
     movement = unitAttachment.getMovement(player);
     quantity = productionRule.getResults().totalValues();
-    boolean isInfra = unitAttachment.getIsInfrastructure();
+    final boolean isInfra = unitAttachment.getIsInfrastructure();
     hitPoints = unitAttachment.getHitPoints() * quantity;
     if (isInfra) {
       hitPoints = 0;

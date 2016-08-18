@@ -29,7 +29,7 @@ import games.strategy.triplea.ui.history.HistoryPanel;
 
 public class History extends DefaultTreeModel {
   private static final long serialVersionUID = -1769876896869L;
-  
+
   private final HistoryWriter m_writer = new HistoryWriter(this);
   private final List<Change> m_changes = new ArrayList<>();
   private final GameData m_data;
@@ -227,6 +227,7 @@ class SerializedHistory implements Serializable {
   }
 }
 
+
 class RootHistoryNode extends HistoryNode {
   private static final long serialVersionUID = 625147613043836829L;
 
@@ -239,6 +240,7 @@ class RootHistoryNode extends HistoryNode {
     throw new IllegalStateException("Not implemented");
   }
 }
+
 
 class ChangeSerializationWriter implements SerializationWriter {
   private static final long serialVersionUID = -3802807345707883606L;

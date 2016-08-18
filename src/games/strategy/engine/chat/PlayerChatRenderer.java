@@ -66,7 +66,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
       game.getData().releaseReadLock();
     }
     // new HashSet removes duplicates
-    for (final INode playerNode : new HashSet<>(playerManager.getPlayerMapping().values()))  {
+    for (final INode playerNode : new HashSet<>(playerManager.getPlayerMapping().values())) {
       final Set<String> players = playerManager.getPlayedBy(playerNode);
       if (players.size() > 0) {
         final List<Icon> icons = new ArrayList<>(players.size());

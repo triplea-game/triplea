@@ -48,8 +48,9 @@ public class ProPurchaseOptionMap {
 
     // Add each production rule to appropriate list(s)
     final ProductionFrontier productionFrontier = player.getProductionFrontier();
-    if (productionFrontier == null || productionFrontier.getRules() == null)
+    if (productionFrontier == null || productionFrontier.getRules() == null) {
       return;
+    }
     for (final ProductionRule rule : productionFrontier.getRules()) {
 
       // Check if rule is for a unit

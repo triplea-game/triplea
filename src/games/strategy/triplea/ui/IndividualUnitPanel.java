@@ -4,8 +4,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -182,9 +180,9 @@ public class IndividualUnitPanel extends JPanel {
     this.setLayout(new GridBagLayout());
     final Insets nullInsets = new Insets(0, 0, 0, 0);
     final Dimension buttonSize = new Dimension(80, 20);
-    JButton m_selectNoneButton = new JButton("None");
+    final JButton m_selectNoneButton = new JButton("None");
     m_selectNoneButton.setPreferredSize(buttonSize);
-    JButton m_autoSelectButton = new JButton("Max");
+    final JButton m_autoSelectButton = new JButton("Max");
     m_autoSelectButton.setPreferredSize(buttonSize);
     add(m_title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         nullInsets, 0, 0));
@@ -258,8 +256,8 @@ class SingleUnitPanel extends JPanel {
       final ScrollableTextFieldListener textFieldListener, final int max, final int min, final int currentValue,
       final boolean showMaxAndMin) {
     m_unit = unit;
-    GameData m_data = data;
-    IUIContext m_context = context;
+    final GameData m_data = data;
+    final IUIContext m_context = context;
     m_countTextFieldListener = textFieldListener;
     m_textField = new ScrollableTextField(0, 512);
     if (max >= 0) {
@@ -273,7 +271,7 @@ class SingleUnitPanel extends JPanel {
     setCount(currentValue);
     setLayout(new GridBagLayout());
 
-    boolean isDamaged = taUnit.getUnitDamage() > 0 || taUnit.getHits() > 0;
+    final boolean isDamaged = taUnit.getUnitDamage() > 0 || taUnit.getHits() > 0;
     final JLabel label = m_context.createUnitImageJLabel(m_unit.getType(), m_unit.getOwner(), m_data,
         isDamaged ? IUIContext.UnitDamage.DAMAGED : IUIContext.UnitDamage.NOT_DAMAGED,
         taUnit.getDisabled() ? IUIContext.UnitEnable.DISABLED : IUIContext.UnitEnable.ENABLED);

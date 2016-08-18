@@ -27,29 +27,29 @@ public final class DownloadFileParser {
 
   public static List<DownloadFileDescription> parse(final InputStream is) {
     @SuppressWarnings("unchecked")
-    List<Map<String,Object>> yamlData = (List<Map<String,Object>>) (new Yaml()).load(is);
+    final List<Map<String, Object>> yamlData = (List<Map<String, Object>>) (new Yaml()).load(is);
 
     final List<DownloadFileDescription> rVal = new ArrayList<>();
-    for( Map<String,Object> yaml : yamlData ) {
-      String url = (String) yaml.get(Tags.url.toString());
-      String description = (String) yaml.get(Tags.description.toString());
-      String mapName = (String) yaml.get(Tags.mapName.toString());
+    for (final Map<String, Object> yaml : yamlData) {
+      final String url = (String) yaml.get(Tags.url.toString());
+      final String description = (String) yaml.get(Tags.description.toString());
+      final String mapName = (String) yaml.get(Tags.mapName.toString());
 
       Version version = null;
-      Object versionObj = yaml.get(Tags.version.toString());
-      if( versionObj != null ) {
-        String versionString = String.valueOf(versionObj);
+      final Object versionObj = yaml.get(Tags.version.toString());
+      if (versionObj != null) {
+        final String versionString = String.valueOf(versionObj);
         version = new Version(versionString);
       }
 
       DownloadFileDescription.DownloadType downloadType = DownloadFileDescription.DownloadType.MAP;
 
-      String mapTypeString = (String) yaml.get(Tags.mapType.toString());
-      if( mapTypeString != null ) {
+      final String mapTypeString = (String) yaml.get(Tags.mapType.toString());
+      if (mapTypeString != null) {
         downloadType = DownloadFileDescription.DownloadType.valueOf(mapTypeString);
       }
 
-      DownloadFileDescription dl = new DownloadFileDescription(url, description, mapName, version, downloadType);
+      final DownloadFileDescription dl = new DownloadFileDescription(url, description, mapName, version, downloadType);
       rVal.add(dl);
     }
     return rVal;

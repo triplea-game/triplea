@@ -24,13 +24,13 @@ public class PerfTimer implements Closeable {
     }
   }
 
-  private PerfTimer(String title) {
+  private PerfTimer(final String title) {
     this.title = title;
     this.startMillis = System.nanoTime();
   }
 
   private long stopTimer() {
-    long end = System.nanoTime();
+    final long end = System.nanoTime();
     return end - startMillis;
   }
 
@@ -57,7 +57,7 @@ public class PerfTimer implements Closeable {
     return prefs.getBoolean(LOG_PERFORMANCE_KEY, false);
   }
 
-  public static PerfTimer startTimer(String title) {
+  public static PerfTimer startTimer(final String title) {
     if (!enabled) {
       return DISABLED_TIMER;
     } else {
@@ -65,11 +65,11 @@ public class PerfTimer implements Closeable {
     }
   }
 
-  private static void processResult(long stopNanos, PerfTimer perfTimer) {
-    long stopMicros = stopNanos / 1000;
+  private static void processResult(final long stopNanos, final PerfTimer perfTimer) {
+    final long stopMicros = stopNanos / 1000;
 
-    long milliFraction = (stopMicros % 1000) / 100;
-    long millis = (stopMicros / 1000);
+    final long milliFraction = (stopMicros % 1000) / 100;
+    final long millis = (stopMicros / 1000);
     PerformanceConsole.getInstance().append(millis + "." + milliFraction + " ms - " + perfTimer.title + "\n");
   }
 }

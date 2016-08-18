@@ -17,15 +17,16 @@ public class BattleCalcSettings implements HasDefaults {
     return SystemPreferences.get(SystemPreferenceKey.BATTLE_CALC_SIMULATION_COUNT_DICE, DEFAULT_SIMULATION_COUNT_DICE);
   }
 
-  public void setSimulationCountDice(String value) {
+  public void setSimulationCountDice(final String value) {
     SystemPreferences.put(SystemPreferenceKey.BATTLE_CALC_SIMULATION_COUNT_DICE, value);
   }
 
   public int getSimulationCountLowLuck() {
-    return SystemPreferences.get(SystemPreferenceKey.BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK, DEFAULT_SIMULATION_COUNT_LOW_LUCK);
+    return SystemPreferences.get(SystemPreferenceKey.BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK,
+        DEFAULT_SIMULATION_COUNT_LOW_LUCK);
   }
 
-  public void setSimulationCountLowLuck(String value) {
+  public void setSimulationCountLowLuck(final String value) {
     SystemPreferences.put(SystemPreferenceKey.BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK, value);
   }
 }

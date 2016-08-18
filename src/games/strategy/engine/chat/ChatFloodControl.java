@@ -20,7 +20,7 @@ public class ChatFloodControl {
     this(System.currentTimeMillis());
   }
 
-  ChatFloodControl(long initialClearTime) {
+  ChatFloodControl(final long initialClearTime) {
     clearTime = initialClearTime;
   }
 

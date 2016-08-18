@@ -45,8 +45,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
   // strings
   // roll or strength
   private String m_dice = null;
-  // allied or enemy
-  private String m_faction = null;
   // offence or defence
   private String m_side = null;
 
@@ -112,10 +110,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
     m_unitType = value;
   }
 
-  public void resetUnitType() {
-    m_unitType = null;
-  }
-
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setFaction(final String faction) throws GameParseException {
     if (faction == null) {
@@ -134,15 +128,9 @@ public class UnitSupportAttachment extends DefaultAttachment {
         throw new GameParseException(faction + " faction must be allied, or enemy" + thisErrorMsg());
       }
     }
-    m_faction = faction;
-  }
-
-  public String getFaction() {
-    return m_faction;
   }
 
   public void resetFaction() {
-    m_faction = null;
     m_allied = false;
     m_enemy = false;
   }
@@ -215,26 +203,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setBonus(final Integer bonus) {
-    m_bonus = bonus;
-  }
-
-  public void resetBonus() {
-    m_bonus = 0;
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setNumber(final String number) {
     m_number = getInt(number);
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setNumber(final Integer number) {
-    m_number = number;
-  }
-
-  public void resetNumber() {
-    m_number = 0;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -244,10 +214,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
       return;
     }
     m_bonusType = type;
-  }
-
-  public void resetBonusType() {
-    m_bonusType = null;
   }
 
   /**
@@ -278,26 +244,9 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return m_players;
   }
 
-  public void clearPlayers() {
-    m_players.clear();
-  }
-
-  public void resetPlayers() {
-    m_players = new ArrayList<>();
-  }
-
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setImpArtTech(final String tech) {
     m_impArtTech = getBool(tech);
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setImpArtTech(final Boolean tech) {
-    m_impArtTech = tech;
-  }
-
-  public void resetImpArtTech() {
-    m_impArtTech = false;
   }
 
   public HashSet<UnitType> getUnitType() {

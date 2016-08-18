@@ -7,8 +7,6 @@ import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -19,10 +17,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import games.strategy.ui.SwingAction;
+
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.ui.IntTextField;
+import games.strategy.ui.SwingAction;
 
 /**
  * UI for choosing server options.

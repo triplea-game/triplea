@@ -28,10 +28,10 @@ public class FileSystemStrategyTest {
   @Before
   public void setUp() throws Exception {
     testObj = new FileSystemAccessStrategy();
-    String text = DownloadFileProperties.VERSION_PROPERTY + " = 1.2";
+    final String text = DownloadFileProperties.VERSION_PROPERTY + " = 1.2";
     mapFile = TestUtil.createTempFile("");
-    File propFile = new File(mapFile.getAbsolutePath() + ".properties");
-    Files.write(text.getBytes(),  propFile);
+    final File propFile = new File(mapFile.getAbsolutePath() + ".properties");
+    Files.write(text.getBytes(), propFile);
   }
 
   @Test
@@ -40,8 +40,8 @@ public class FileSystemStrategyTest {
   }
 
   @Test
-  public void testMapFileFound()  {
-    assertThat(testObj.getMapVersion(mapFile.getAbsolutePath()) , is(Optional.of(new Version(1,2))));
+  public void testMapFileFound() {
+    assertThat(testObj.getMapVersion(mapFile.getAbsolutePath()), is(Optional.of(new Version(1, 2))));
   }
 
 }

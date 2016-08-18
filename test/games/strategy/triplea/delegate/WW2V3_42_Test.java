@@ -37,7 +37,7 @@ public class WW2V3_42_Test {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadTestGame("ww2v3_1942_test.xml");
+    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.WW2V3_1942);
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
@@ -75,7 +75,7 @@ public class WW2V3_42_Test {
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
+    final ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
     when(dummyPlayer.shouldBomberBomb(any())).thenReturn(true);
     bridge.setRemote(dummyPlayer);
     // remove the russian units

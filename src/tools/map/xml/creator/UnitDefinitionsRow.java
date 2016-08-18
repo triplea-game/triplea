@@ -23,10 +23,8 @@ class UnitDefinitionsRow extends DynamicRow {
     super(unitName, parentRowPanel, stepActionPanel);
 
     textFieldUnitName = new JTextField(unitName);
-    final Integer buyCostInteger = buyCost;
-    textFieldBuyCost = new JTextField(buyCostInteger == null ? "0" : Integer.toString(buyCostInteger));
-    final Integer buyQuantityInteger = buyQuantity;
-    textFieldBuyQuantity = new JTextField(buyQuantityInteger == null ? "1" : Integer.toString(buyQuantityInteger));
+    textFieldBuyCost = new JTextField(Integer.toString(buyCost));
+    textFieldBuyQuantity = new JTextField(Integer.toString(buyQuantity));
 
     Dimension dimension = textFieldUnitName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_MEDIUM;
@@ -71,7 +69,7 @@ class UnitDefinitionsRow extends DynamicRow {
     MapXmlUIHelper.addNewFocusListenerForTextField(textFieldBuyCost, () -> {
       final String inputText = textFieldBuyCost.getText().trim();
       try {
-        final Integer newValue = Integer.parseInt(inputText);
+        final int newValue = Integer.parseInt(inputText);
         MapXmlHelper.getUnitDefinitionsMap().get(unitName).set(0, newValue);
       } catch (final NumberFormatException e) {
         textFieldBuyCost.setText("0");
@@ -87,7 +85,7 @@ class UnitDefinitionsRow extends DynamicRow {
     MapXmlUIHelper.addNewFocusListenerForTextField(textFieldBuyQuantity, () -> {
       final String inputText = textFieldBuyQuantity.getText().trim();
       try {
-        final Integer newValue = Integer.parseInt(inputText);
+        final int newValue = Integer.parseInt(inputText);
         MapXmlHelper.getUnitDefinitionsMap().get(unitName).set(1, newValue);
       } catch (final NumberFormatException e) {
         textFieldBuyQuantity.setText("1");

@@ -11,7 +11,6 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
@@ -20,7 +19,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -48,8 +46,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
@@ -721,7 +717,7 @@ public class OddsCalculatorPanel extends JPanel {
     m_numRuns.setMin(1);
     m_numRuns.setMax(20000);
 
-    int simulationCount =
+    final int simulationCount =
         Properties.getLow_Luck(m_data) ? ClientContext.battleCalcSettings().getSimulationCountLowLuck()
             : ClientContext.battleCalcSettings().getSimulationCountDice();
     m_numRuns.setValue(simulationCount);
