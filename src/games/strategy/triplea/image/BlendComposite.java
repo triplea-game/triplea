@@ -15,11 +15,6 @@ class BlendComposite implements java.awt.Composite {
     NORMAL, OVERLAY, MULTIPLY, DIFFERENCE, LINEAR_LIGHT
   }
 
-  public static final BlendComposite Normal = new BlendComposite(BlendingMode.NORMAL);
-  public static final BlendComposite Overlay = new BlendComposite(BlendingMode.OVERLAY);
-  public static final BlendComposite Multiply = new BlendComposite(BlendingMode.MULTIPLY);
-  public static final BlendComposite Difference = new BlendComposite(BlendingMode.DIFFERENCE);
-  public static final BlendComposite Linear_Light = new BlendComposite(BlendingMode.LINEAR_LIGHT);
   private float alpha;
   private final BlendingMode mode;
 
@@ -38,10 +33,6 @@ class BlendComposite implements java.awt.Composite {
 
   public static BlendComposite getInstance(final BlendingMode mode, final float alpha) {
     return new BlendComposite(mode, alpha);
-  }
-
-  public BlendComposite derive(final BlendingMode mode) {
-    return this.mode == mode ? this : new BlendComposite(mode, getAlpha());
   }
 
   public BlendComposite derive(final float alpha) {

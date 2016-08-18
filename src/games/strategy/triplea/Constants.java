@@ -144,12 +144,10 @@ public interface Constants {
   String UNIT_TYPE_CARRIER = "carrier";
   String UNIT_TYPE_FIGHTER = "fighter";
   String UNIT_TYPE_BOMBER = "bomber";
-  String UNIT_TYPE_AIR_TRANSPORT = "air_transport";
   String UNIT_TYPE_FACTORY = "factory";
   String UNIT_TYPE_AAGUN = "aaGun";
   String UNIT_TYPE_ARTILLERY = "artillery";
   String UNIT_TYPE_DESTROYER = "destroyer";
-  String LARGE_MAP_FILENAME = "largeMap.gif";
   String SMALL_MAP_FILENAME = "smallMap.jpeg";
   String MAP_NAME = "mapName";
   String SHOW_ENEMY_CASUALTIES_USER_PREF = "ShowEnemyCasualties";
@@ -255,7 +253,6 @@ public interface Constants {
   String USE_POLITICS = "Use Politics";
   String PROPERTY_TRUE = "true";
   String PROPERTY_FALSE = "false";
-  String PROPERTY_DEFAULT = "default";
 
   String CONFIRM_DEFENSIVE_ROLLS = "confirm_defensive_rolls";
   String CONSTRUCTION_TYPE_FACTORY = "factory";
