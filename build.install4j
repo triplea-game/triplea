@@ -638,7 +638,7 @@
     </applications>
   </installerGui>
   <mediaSets>
-    <windows name="Windows 32 bit" id="90" customizedId="" mediaFileName="" installDir="${compiler:sys.shortName}_${compiler:sys.version}" overridePrincipalLanguage="false" jreBitType="32" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="windows-x86-1.8.0_66" manualJREEntry="false" bundleType="2" jreURL="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/windows-x86-1.8.0_66.tar.gz" jreShared="true" directDownload="true" installOnlyIfNecessary="true" customInstallBaseDir="" contentFilesType="1" verifyIntegrity="true">
+    <windows name="Windows 32 bit" id="90" customizedId="" mediaFileName="" installDir="${compiler:sys.shortName}" overridePrincipalLanguage="false" jreBitType="32" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="windows-x86-1.8.0_66" manualJREEntry="false" bundleType="2" jreURL="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/windows-x86-1.8.0_66.tar.gz" jreShared="true" directDownload="true" installOnlyIfNecessary="true" customInstallBaseDir="" contentFilesType="1" verifyIntegrity="true">
       <excludedComponents />
       <includedDownloadableComponents />
       <excludedLaunchers />
@@ -653,7 +653,7 @@
         <customAttributes />
       </autoUpdate>
     </windows>
-    <windows name="Windows 64 bit" id="87" customizedId="" mediaFileName="" installDir="${compiler:sys.shortName}_${compiler:sys.version}" overridePrincipalLanguage="false" jreBitType="64" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="windows-amd64-1.8.0_66" manualJREEntry="false" bundleType="2" jreURL="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/windows-amd64-1.8.0_66.tar.gz" jreShared="true" directDownload="true" installOnlyIfNecessary="true" customInstallBaseDir="" contentFilesType="1" verifyIntegrity="true">
+    <windows name="Windows 64 bit" id="87" customizedId="" mediaFileName="" installDir="${compiler:sys.shortName" overridePrincipalLanguage="false" jreBitType="64" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="windows-amd64-1.8.0_66" manualJREEntry="false" bundleType="2" jreURL="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/windows-amd64-1.8.0_66.tar.gz" jreShared="true" directDownload="true" installOnlyIfNecessary="true" customInstallBaseDir="" contentFilesType="1" verifyIntegrity="true">
       <excludedComponents />
       <includedDownloadableComponents />
       <excludedLaunchers />
@@ -668,7 +668,7 @@
         <customAttributes />
       </autoUpdate>
     </windows>
-    <macos name="Mac OS X" id="35" customizedId="" mediaFileName="" installDir="${compiler:sys.fullName}_${compiler:sys.version}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="macosx-amd64-1.8.0_66" manualJREEntry="false" bundleType="2" jreURL="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/macosx-amd64-1.8.0_66.tar.gz" jreShared="true" directDownload="true" installOnlyIfNecessary="true" appleJre="false" requiredVmIdPrefix="" customInstallBaseDir="" contentFilesType="1" installerName="${i18n:InstallerName(${compiler:sys.fullName})}" volumeName="${compiler:sys.shortName}" compressDmg="false" launcherId="33">
+    <macos name="Mac OS X" id="35" customizedId="" mediaFileName="" installDir="${compiler:sys.fullName}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="macosx-amd64-1.8.0_66" manualJREEntry="false" bundleType="2" jreURL="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/macosx-amd64-1.8.0_66.tar.gz" jreShared="true" directDownload="true" installOnlyIfNecessary="true" appleJre="false" requiredVmIdPrefix="" customInstallBaseDir="" contentFilesType="1" installerName="${i18n:InstallerName(${compiler:sys.fullName})}" volumeName="${compiler:sys.shortName}" compressDmg="false" launcherId="33">
       <excludedComponents />
       <includedDownloadableComponents />
       <excludedBeans />
@@ -681,7 +681,7 @@
       </autoUpdate>
       <topLevelFiles />
     </macos>
-    <unixInstaller name="Unix" id="36" customizedId="" mediaFileName="" installDir="${compiler:sys.shortName}_${compiler:sys.version}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="" manualJREEntry="false" bundleType="1" jreURL="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/macosx-amd64-1.8.0_66.tar.gz" jreShared="true" directDownload="true" installOnlyIfNecessary="true" customInstallBaseDir="" contentFilesType="1">
+    <unixInstaller name="Unix" id="36" customizedId="" mediaFileName="" installDir="${compiler:sys.shortName}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="" manualJREEntry="false" bundleType="1" jreURL="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/macosx-amd64-1.8.0_66.tar.gz" jreShared="true" directDownload="true" installOnlyIfNecessary="true" customInstallBaseDir="" contentFilesType="1">
       <excludedComponents />
       <includedDownloadableComponents />
       <excludedLaunchers />
