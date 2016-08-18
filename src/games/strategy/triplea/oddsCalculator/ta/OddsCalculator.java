@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -22,6 +21,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitHitsChange;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.GameDataUtils;
@@ -667,7 +667,7 @@ class DummyPlayer extends AbstractAI {
                   DiceRoll.getUnitPowerAndRollsForNormalBattles(enemyUnits, ourUnits, m_isAttacker, false,
                       m_bridge.getData(), battle.getTerritory(), battle.getTerritoryEffects(), battle.isAmphibious(),
                       (battle.isAmphibious() && !m_isAttacker ? enemyUnits : new ArrayList<>())),
-              m_bridge.getData());
+                  m_bridge.getData());
           final int diceSides = m_bridge.getData().getDiceSides();
           final int ourMetaPower = BattleCalculator.getNormalizedMetaPower(ourPower, ourHP, diceSides);
           final int enemyMetaPower = BattleCalculator.getNormalizedMetaPower(enemyPower, enemyHP, diceSides);

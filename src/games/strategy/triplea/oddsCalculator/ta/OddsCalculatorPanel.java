@@ -46,6 +46,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
@@ -716,7 +717,7 @@ public class OddsCalculatorPanel extends JPanel {
     m_numRuns.setMin(1);
     m_numRuns.setMax(20000);
 
-    int simulationCount =
+    final int simulationCount =
         Properties.getLow_Luck(m_data) ? ClientContext.battleCalcSettings().getSimulationCountLowLuck()
             : ClientContext.battleCalcSettings().getSimulationCountDice();
     m_numRuns.setValue(simulationCount);

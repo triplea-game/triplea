@@ -552,9 +552,9 @@ public class Route implements Serializable, Iterable<Territory> {
     return ownedFightersOnOwnedCarriers;
   }
 
-  public static Route create(List<Route> routes) {
+  public static Route create(final List<Route> routes) {
     Route route = new Route();
-    for(Route r : routes){
+    for (final Route r : routes) {
       route = Route.join(route, r);
     }
     return route;

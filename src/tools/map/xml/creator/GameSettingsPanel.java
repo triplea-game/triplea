@@ -154,7 +154,7 @@ public class GameSettingsPanel extends DynamicRowsPanel {
 
       final ArrayList<String> newSettingValue = new ArrayList<>();
       final boolean settingIsBoolean = isBoolean(suggestedSettingName);
-      String newValue = settingIsBoolean ? "true" : "0";
+      final String newValue = settingIsBoolean ? "true" : "0";
       newSettingValue.add(newValue);
       newSettingValue.add("true");
       newSettingValue.add("0");

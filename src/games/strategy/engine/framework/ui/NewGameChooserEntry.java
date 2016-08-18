@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-import games.strategy.util.UrlStreams;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -19,6 +18,7 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.Constants;
+import games.strategy.util.UrlStreams;
 
 public class NewGameChooserEntry {
   private final URI url;
@@ -33,7 +33,8 @@ public class NewGameChooserEntry {
       public int compare(final NewGameChooserEntry o1, final NewGameChooserEntry o2) {
         return getLowerCaseComparable(o1).compareTo(getLowerCaseComparable(o2));
       }
-      private String getLowerCaseComparable(NewGameChooserEntry newGameChooserEntry) {
+
+      private String getLowerCaseComparable(final NewGameChooserEntry newGameChooserEntry) {
         return newGameChooserEntry.getGameData().getGameName().toLowerCase();
       }
     };
@@ -45,8 +46,8 @@ public class NewGameChooserEntry {
     url = uri;
     final AtomicReference<String> gameName = new AtomicReference<>();
 
-    Optional<InputStream> inputStream = UrlStreams.openStream(uri);
-    if(!inputStream.isPresent()) {
+    final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
+    if (!inputStream.isPresent()) {
       gameNameAndMapNameProperty = "";
       // this means the map was deleted out from under us.
       return;
@@ -67,8 +68,8 @@ public class NewGameChooserEntry {
 
     final AtomicReference<String> gameName = new AtomicReference<>();
 
-    Optional<InputStream> inputStream = UrlStreams.openStream(url);
-    if(!inputStream.isPresent()) {
+    final Optional<InputStream> inputStream = UrlStreams.openStream(url);
+    if (!inputStream.isPresent()) {
       return;
     }
 
@@ -80,11 +81,12 @@ public class NewGameChooserEntry {
       ClientLogger.logQuietly(e);
       throw new GameParseException(e.getMessage());
     } catch (final SAXParseException e) {
-      String msg = "Could not parse:" + url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber();
+      final String msg =
+          "Could not parse:" + url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber();
       ClientLogger.logError(msg, e);
       throw new GameParseException(e.getMessage());
     } catch (final Exception e) {
-      String msg = "Could not parse:" + url;
+      final String msg = "Could not parse:" + url;
       ClientLogger.logError(msg, e);
       throw new GameParseException(e.getMessage());
     }
@@ -98,8 +100,8 @@ public class NewGameChooserEntry {
     gameData = null;
 
     final AtomicReference<String> gameName = new AtomicReference<>();
-    Optional<InputStream> inputStream = UrlStreams.openStream(url);
-    if(!inputStream.isPresent()) {
+    final Optional<InputStream> inputStream = UrlStreams.openStream(url);
+    if (!inputStream.isPresent()) {
       return;
     }
     try (InputStream input = inputStream.get()) {

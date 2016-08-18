@@ -23,22 +23,22 @@ public class HeadlessServerMessenger implements IServerMessenger {
   }
 
   @Override
-  public void send(Serializable msg, INode to) {}
+  public void send(final Serializable msg, final INode to) {}
 
   @Override
-  public void broadcast(Serializable msg) {}
+  public void broadcast(final Serializable msg) {}
 
   @Override
-  public void addMessageListener(IMessageListener listener) {}
+  public void addMessageListener(final IMessageListener listener) {}
 
   @Override
-  public void removeMessageListener(IMessageListener listener) {}
+  public void removeMessageListener(final IMessageListener listener) {}
 
   @Override
-  public void addErrorListener(IMessengerErrorListener listener) {}
+  public void addErrorListener(final IMessengerErrorListener listener) {}
 
   @Override
-  public void removeErrorListener(IMessengerErrorListener listener) {}
+  public void removeErrorListener(final IMessengerErrorListener listener) {}
 
   @Override
   public INode getLocalNode() {
@@ -69,7 +69,7 @@ public class HeadlessServerMessenger implements IServerMessenger {
   }
 
   @Override
-  public void setAcceptNewConnections(boolean accept) {}
+  public void setAcceptNewConnections(final boolean accept) {}
 
   @Override
   public boolean isAcceptNewConnections() {
@@ -77,7 +77,7 @@ public class HeadlessServerMessenger implements IServerMessenger {
   }
 
   @Override
-  public void setLoginValidator(ILoginValidator loginValidator) {}
+  public void setLoginValidator(final ILoginValidator loginValidator) {}
 
   @Override
   public ILoginValidator getLoginValidator() {
@@ -85,13 +85,13 @@ public class HeadlessServerMessenger implements IServerMessenger {
   }
 
   @Override
-  public void addConnectionChangeListener(IConnectionChangeListener listener) {}
+  public void addConnectionChangeListener(final IConnectionChangeListener listener) {}
 
   @Override
-  public void removeConnectionChangeListener(IConnectionChangeListener listener) {}
+  public void removeConnectionChangeListener(final IConnectionChangeListener listener) {}
 
   @Override
-  public void removeConnection(INode node) {}
+  public void removeConnection(final INode node) {}
 
   @Override
   public Set<INode> getNodes() {
@@ -99,40 +99,40 @@ public class HeadlessServerMessenger implements IServerMessenger {
   }
 
   @Override
-  public void NotifyIPMiniBanningOfPlayer(String ip, Date expires) {}
+  public void NotifyIPMiniBanningOfPlayer(final String ip, final Date expires) {}
 
   @Override
-  public void NotifyMacMiniBanningOfPlayer(String mac, Date expires) {}
+  public void NotifyMacMiniBanningOfPlayer(final String mac, final Date expires) {}
 
   @Override
-  public void NotifyUsernameMiniBanningOfPlayer(String username, Date expires) {}
+  public void NotifyUsernameMiniBanningOfPlayer(final String username, final Date expires) {}
 
   @Override
-  public String getPlayerMac(String name) {
+  public String getPlayerMac(final String name) {
     return null;
   }
 
   @Override
-  public void NotifyUsernameMutingOfPlayer(String username, Date muteExpires) {}
+  public void NotifyUsernameMutingOfPlayer(final String username, final Date muteExpires) {}
 
   @Override
-  public void NotifyIPMutingOfPlayer(String ip, Date muteExpires) {}
+  public void NotifyIPMutingOfPlayer(final String ip, final Date muteExpires) {}
 
   @Override
-  public void NotifyMacMutingOfPlayer(String mac, Date muteExpires) {}
+  public void NotifyMacMutingOfPlayer(final String mac, final Date muteExpires) {}
 
   @Override
-  public boolean IsUsernameMiniBanned(String username) {
+  public boolean IsUsernameMiniBanned(final String username) {
     return false;
   }
 
   @Override
-  public boolean IsIpMiniBanned(String ip) {
+  public boolean IsIpMiniBanned(final String ip) {
     return false;
   }
 
   @Override
-  public boolean IsMacMiniBanned(String mac) {
+  public boolean IsMacMiniBanned(final String mac) {
     return false;
   }
 }

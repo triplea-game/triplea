@@ -25,10 +25,12 @@ public class DebugUtils {
     final ThreadInfo[] threadInfo = threadMxBean.getThreadInfo(threadMxBean.getAllThreadIds(), Integer.MAX_VALUE);
     for (final ThreadInfo info : threadInfo) {
       if (info != null) {
-        result.append("thread<").append(info.getThreadId()).append(",").append(info.getThreadName()).append(">\n").append("state:")
+        result.append("thread<").append(info.getThreadId()).append(",").append(info.getThreadName()).append(">\n")
+            .append("state:")
             .append(info.getThreadState()).append("\n");
         if (info.getLockName() != null) {
-          result.append("locked on:").append(info.getLockName()).append(" locked owned by:<").append(info.getLockOwnerId())
+          result.append("locked on:").append(info.getLockName()).append(" locked owned by:<")
+              .append(info.getLockOwnerId())
               .append(",").append(info.getLockOwnerName()).append(">\n");
         }
         final StackTraceElement[] stackTrace = info.getStackTrace();
@@ -76,12 +78,13 @@ public class DebugUtils {
     }
     return buf.toString();
   }
+
   public static String getProperties() {
     final StringBuilder buf = new StringBuilder("SYSTEM PROPERTIES\n");
     final Properties props = System.getProperties();
     final List<String> keys = new ArrayList<>(props.stringPropertyNames());
     Collections.sort(keys);
-    for(String property : keys) {
+    for (final String property : keys) {
       final String value = props.getProperty(property);
       buf.append(property).append(" ").append(value).append("\n");
     }
@@ -114,7 +117,8 @@ public class DebugUtils {
     final StringBuilder builder = new StringBuilder("WINDOWS\n");
     for (final Frame f : Frame.getFrames()) {
       if (f.isVisible()) {
-        builder.append("window:").append("class ").append(f.getClass()).append(" size ").append(f.getSize()).append(" title ")
+        builder.append("window:").append("class ").append(f.getClass()).append(" size ").append(f.getSize())
+            .append(" title ")
             .append(f.getTitle()).append("\n");
       }
     }

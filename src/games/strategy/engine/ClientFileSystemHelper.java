@@ -95,9 +95,10 @@ public final class ClientFileSystemHelper {
     return f;
   }
 
-  private static boolean folderContainsGamePropsFile(File folder) {
-    File[] files = folder.listFiles();
-    List<String> fileNames = Arrays.asList(files).stream().map(file -> file.getName()).collect(Collectors.toList());
+  private static boolean folderContainsGamePropsFile(final File folder) {
+    final File[] files = folder.listFiles();
+    final List<String> fileNames =
+        Arrays.asList(files).stream().map(file -> file.getName()).collect(Collectors.toList());
     return fileNames.contains(GameEnginePropertyFileReader.GAME_ENGINE_PROPERTY_FILE);
   }
 
@@ -130,15 +131,15 @@ public final class ClientFileSystemHelper {
 
   public static File getUserRootFolder() {
     final File userHome = new File(System.getProperties().getProperty("user.home"));
-    File rootDir = new File(new File(userHome, "Documents"), "triplea");
+    final File rootDir = new File(new File(userHome, "Documents"), "triplea");
     return rootDir.exists() ? rootDir : new File(userHome, "triplea");
   }
 
   public static File getUserMapsFolder() {
-    String path = ClientContext.folderSettings().getDownloadedMapPath();
+    final String path = ClientContext.folderSettings().getDownloadedMapPath();
 
 
-    File mapsFolder = new File(path);
+    final File mapsFolder = new File(path);
     if (!mapsFolder.exists()) {
       try {
         mapsFolder.mkdirs();

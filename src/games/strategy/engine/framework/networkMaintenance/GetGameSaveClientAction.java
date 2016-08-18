@@ -10,8 +10,8 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
+import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 
 public class GetGameSaveClientAction extends AbstractAction {
   private static final long serialVersionUID = 1118264715230932068L;

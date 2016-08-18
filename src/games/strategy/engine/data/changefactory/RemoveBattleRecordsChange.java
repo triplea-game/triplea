@@ -1,11 +1,11 @@
 package games.strategy.engine.data.changefactory;
 
+import java.util.Map;
+
 import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
-
-import java.util.Map;
 
 class RemoveBattleRecordsChange extends Change {
   private static final long serialVersionUID = 3286634991233029854L;

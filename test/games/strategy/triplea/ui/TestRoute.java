@@ -3,12 +3,12 @@ package games.strategy.triplea.ui;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.times;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -17,7 +17,6 @@ import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
-import games.strategy.triplea.ui.mapdata.MapData;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.junit.Before;
@@ -25,14 +24,15 @@ import org.junit.Test;
 
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.ui.mapdata.MapData;
 
 public class TestRoute {
-  private MapRouteDrawer spyRouteDrawer = spy(new MapRouteDrawer());
-  private Point[] dummyPoints = new Point[] {new Point(0, 0), new Point(100, 0), new Point(0, 100)};
-  private double[] dummyIndex = spyRouteDrawer.createParameterizedIndex(dummyPoints);
-  private Route dummyRoute = spy(new Route());
-  private MapData dummyMapData = mock(MapData.class);
-  private RouteDescription dummyRouteDescription =
+  private final MapRouteDrawer spyRouteDrawer = spy(new MapRouteDrawer());
+  private final Point[] dummyPoints = new Point[] {new Point(0, 0), new Point(100, 0), new Point(0, 100)};
+  private final double[] dummyIndex = spyRouteDrawer.createParameterizedIndex(dummyPoints);
+  private final Route dummyRoute = spy(new Route());
+  private final MapData dummyMapData = mock(MapData.class);
+  private final RouteDescription dummyRouteDescription =
       spy(new RouteDescription(dummyRoute, dummyPoints[0], dummyPoints[2], null));
 
   @Before
@@ -67,8 +67,8 @@ public class TestRoute {
 
   @Test
   public void testPointSplitting() {
-    double[] xCoords = new double[] {0, 100, 0};
-    double[] yCoords = new double[] {0, 0, 100};
+    final double[] xCoords = new double[] {0, 100, 0};
+    final double[] yCoords = new double[] {0, 0, 100};
     assertArrayEquals(xCoords, spyRouteDrawer.getValues(dummyPoints, point -> point.getX()), 0);
     assertArrayEquals(yCoords, spyRouteDrawer.getValues(dummyPoints, point -> point.getY()), 0);
   }
@@ -82,7 +82,7 @@ public class TestRoute {
           randomInt(), new Dimension(), new Dimension()));
       assertArrayEquals(dummyPoints, spyRouteDrawer.getRoutePoints(dummyRouteDescription, dummyMapData, 0, 0,
           new Dimension(randomInt(1000, 100), randomInt(1000, 100)), new Dimension()));
-      int randX = randomInt(1000, 0);
+      final int randX = randomInt(1000, 0);
       assertEquals(new Point(randX, 0),
           MapRouteDrawer.getPointOnMap(new Point(randX, 0), randX, 0, new Dimension(randX, 0), new Dimension()));
     }
@@ -90,7 +90,7 @@ public class TestRoute {
 
   private static int randomInt(int max, int min) {
     if (max - min < 0) {
-      int oldMax = max;
+      final int oldMax = max;
       max = min;
       min = oldMax;
     }
@@ -105,12 +105,12 @@ public class TestRoute {
   public void testCorrectParameterHandling() {
     // Should not throw any exception - should do nothing
     spyRouteDrawer.drawRoute(null, null, null, null, null);
-    MapPanel mockedMapPanel = mock(MapPanel.class);
+    final MapPanel mockedMapPanel = mock(MapPanel.class);
     when(mockedMapPanel.getXOffset()).thenReturn(0);
     when(mockedMapPanel.getYOffset()).thenReturn(0);
     when(mockedMapPanel.getScale()).thenReturn(0.0);
-    Shape mockShape = mock(Shape.class);
-    Graphics2D mockGraphics = mock(Graphics2D.class);
+    final Shape mockShape = mock(Shape.class);
+    final Graphics2D mockGraphics = mock(Graphics2D.class);
     when(mockShape.contains(any(Point2D.class))).thenReturn(true);
     when(mockGraphics.getClip()).thenReturn(mockShape);
     spyRouteDrawer.drawRoute(mockGraphics, dummyRouteDescription, mockedMapPanel, dummyMapData, "2");

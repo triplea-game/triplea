@@ -35,7 +35,7 @@ public class UnitCategory implements Comparable<Object> {
     final TripleAUnit taUnit = (TripleAUnit) unit;
     m_type = taUnit.getType();
     m_owner = taUnit.getOwner();
-    m_movement =  -1;
+    m_movement = -1;
     m_transportCost = -1;
     m_damaged = taUnit.getHits();
     m_bombingDamage = taUnit.getUnitDamage();

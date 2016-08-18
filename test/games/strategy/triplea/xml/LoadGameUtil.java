@@ -15,24 +15,19 @@ import games.strategy.engine.framework.GameRunner;
 public class LoadGameUtil {
 
   public enum TestMapXml {
-    BIG_WORLD_1942("big_world_1942_test.xml"),
-    IRON_BLITZ("iron_blitz_test.xml"),
-    LHTR("lhtr_test.xml"),
-    PACIFIC_INCOMPLETE("pacific_incomplete_test.xml"),
-    PACT_OF_STEEL_2("pact_of_steel_2_test.xml"),
-    REVISED("revised_test.xml"),
-    VICTORY_TEST("victory_test.xml"),
-    WW2PAC40("ww2pac40_test.xml"),
-    WW2V3_1941("ww2v3_1941_test.xml"),
-    WW2V3_1942("ww2v3_1942_test.xml");
+    BIG_WORLD_1942("big_world_1942_test.xml"), IRON_BLITZ("iron_blitz_test.xml"), LHTR(
+        "lhtr_test.xml"), PACIFIC_INCOMPLETE("pacific_incomplete_test.xml"), PACT_OF_STEEL_2(
+            "pact_of_steel_2_test.xml"), REVISED("revised_test.xml"), VICTORY_TEST("victory_test.xml"), WW2PAC40(
+                "ww2pac40_test.xml"), WW2V3_1941("ww2v3_1941_test.xml"), WW2V3_1942("ww2v3_1942_test.xml");
 
     private final String value;
-    TestMapXml(String value) {
+
+    TestMapXml(final String value) {
       this.value = value;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
       return value;
     }
   }
@@ -53,7 +48,7 @@ public class LoadGameUtil {
    * First try to load the game as a file on the classpath, if not found there
    * then try to load it from either the "maps" or "test_data" folders.
    */
-  private static InputStream openInputStream(final String game, String[] possibleFolders) {
+  private static InputStream openInputStream(final String game, final String[] possibleFolders) {
     InputStream is = LoadGameUtil.class.getResourceAsStream(game);
     if (is == null) {
       final File f = getFile(game, possibleFolders);

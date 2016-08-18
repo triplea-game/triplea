@@ -43,7 +43,8 @@ public interface IWebPoster extends IBean {
   /**
    * Get the display name
    */
-  @Override String getDisplayName();
+  @Override
+  String getDisplayName();
 
   /**
    * Get the site id

@@ -16,16 +16,16 @@ public class ChatFloodControlTest {
 
   @Test
   public void testDeny() {
-    long now = 123;
+    final long now = 123;
     for (int i = 0; i < ChatFloodControl.EVENTS_PER_WINDOW; i++) {
-      assertTrue(testObj.allow("",now));
+      assertTrue(testObj.allow("", now));
     }
     assertFalse(testObj.allow("", now));
   }
 
   @Test
   public void throttlingReleasedAfterTimePeriod() {
-    long now = 100;
+    final long now = 100;
     for (int i = 0; i < 100; i++) {
       testObj.allow("", now);
     }

@@ -66,9 +66,9 @@ public class PlayerChooser extends JOptionPane {
     });
     setMessage(SwingComponents.newJScrollPane(m_list));
 
-    int maxSize = 700;
-    int suggestedSize = m_players.size() * 40;
-    int actualSize = suggestedSize > maxSize ? maxSize : suggestedSize;
+    final int maxSize = 700;
+    final int suggestedSize = m_players.size() * 40;
+    final int actualSize = suggestedSize > maxSize ? maxSize : suggestedSize;
     setPreferredSize(new Dimension(300, actualSize));
   }
 

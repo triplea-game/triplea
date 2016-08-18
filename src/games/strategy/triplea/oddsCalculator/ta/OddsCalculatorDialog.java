@@ -14,11 +14,11 @@ import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.ui.SwingAction;
 
 public class OddsCalculatorDialog extends JDialog {
   private static final long serialVersionUID = -7625420355087851930L;
@@ -79,7 +79,7 @@ public class OddsCalculatorDialog extends JDialog {
   }
 
   @Override
-  public void setVisible(boolean vis) {
+  public void setVisible(final boolean vis) {
     super.setVisible(vis);
     panel.selectCalculateButton();
   }

@@ -24,7 +24,8 @@ public class NetworkMenu {
   private final IGame game;
   private final TripleAFrame frame;
 
-  public NetworkMenu(TripleAMenuBar menuBar, Optional<InGameLobbyWatcherWrapper> watcher, TripleAFrame frame) {
+  public NetworkMenu(final TripleAMenuBar menuBar, final Optional<InGameLobbyWatcherWrapper> watcher,
+      final TripleAFrame frame) {
     this.frame = frame;
     game = frame.getGame();
     final JMenu menuNetwork = new JMenu("Network");
@@ -65,11 +66,12 @@ public class NetworkMenu {
   }
 
   private void addSetGamePassword(final JMenu parentMenu, final Optional<InGameLobbyWatcherWrapper> watcher) {
-    if(!watcher.isPresent()) {
+    if (!watcher.isPresent()) {
       return;
     }
     final IServerMessenger messenger = (IServerMessenger) game.getMessenger();
-    parentMenu.add(new SetPasswordAction(parentMenu, watcher.get(), (ClientLoginValidator) messenger.getLoginValidator()));
+    parentMenu
+        .add(new SetPasswordAction(parentMenu, watcher.get(), (ClientLoginValidator) messenger.getLoginValidator()));
   }
 
   private void addShowPlayers(final JMenu menuGame) {

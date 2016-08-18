@@ -27,7 +27,7 @@ public class TupleTest {
   public void verifyEquality() {
     assertThat(testObj, is(testObj));
 
-    Tuple<String, Integer> copyObj = Tuple.of(testObj.getFirst(), testObj.getSecond());
+    final Tuple<String, Integer> copyObj = Tuple.of(testObj.getFirst(), testObj.getSecond());
     assertThat(testObj, is(copyObj));
     assertThat(copyObj, is(testObj));
 
@@ -43,7 +43,7 @@ public class TupleTest {
 
   @Test
   public void checkStoringNullCase() {
-    Tuple<String, String> nullTuple = Tuple.of((String) null, (String) null);
+    final Tuple<String, String> nullTuple = Tuple.of((String) null, (String) null);
 
     assertThat(nullTuple.getFirst(), nullValue());
     assertThat(nullTuple.getSecond(), nullValue());
@@ -52,9 +52,9 @@ public class TupleTest {
 
   @Test
   public void checkUsingTupleAsMapKey() {
-    Map<Tuple<String, String>, String> map = Maps.newHashMap();
-    Tuple<String, String> tuple = Tuple.of("This is a bad idea using tuples this much", "another value");
-    String value = "some value";
+    final Map<Tuple<String, String>, String> map = Maps.newHashMap();
+    final Tuple<String, String> tuple = Tuple.of("This is a bad idea using tuples this much", "another value");
+    final String value = "some value";
 
     assertFalse(map.containsKey(tuple));
 

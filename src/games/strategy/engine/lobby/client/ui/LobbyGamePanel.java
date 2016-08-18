@@ -26,7 +26,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.engine.framework.TripleAProcessRunner;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
@@ -36,6 +35,7 @@ import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.Node;
+import games.strategy.ui.SwingAction;
 import games.strategy.util.MD5Crypt;
 
 public class LobbyGamePanel extends JPanel {

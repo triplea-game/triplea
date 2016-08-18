@@ -15,8 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.triplea.delegate.Die.DieType;
+import games.strategy.ui.SwingAction;
 
 public class DiceChooser extends JPanel {
   private static final long serialVersionUID = -3658408802544268998L;

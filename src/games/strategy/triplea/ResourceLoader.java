@@ -58,13 +58,13 @@ public class ResourceLoader {
     return new ResourceLoader(dirs.toArray(new String[dirs.size()]));
   }
 
-  protected static String normalizeMapZipName(String zipName) {
-    StringBuilder sb = new StringBuilder();
+  protected static String normalizeMapZipName(final String zipName) {
+    final StringBuilder sb = new StringBuilder();
     Character lastChar = null;
 
-    String spacesReplaced = zipName.replace(' ', '_');
+    final String spacesReplaced = zipName.replace(' ', '_');
 
-    for (char c : spacesReplaced.toCharArray()) {
+    for (final char c : spacesReplaced.toCharArray()) {
       // break up camel casing
       if (lastChar != null && Character.isLowerCase(lastChar) && Character.isUpperCase(c)) {
         sb.append("_");
@@ -90,11 +90,11 @@ public class ResourceLoader {
     candidates.add(new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps", dirName));
     candidates.add(new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps", zipName));
 
-    String normalizedZipName = normalizeMapZipName(zipName);
+    final String normalizedZipName = normalizeMapZipName(zipName);
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), normalizedZipName));
 
-    Optional<File> match = candidates.stream().filter(file -> file.exists()).findFirst();
-    if(!match.isPresent()) {
+    final Optional<File> match = candidates.stream().filter(file -> file.exists()).findFirst();
+    if (!match.isPresent()) {
       // if we get no results, we will eventually prompt the user to download the map
       return new ArrayList<>();
     }
@@ -108,7 +108,7 @@ public class ResourceLoader {
       if (dependencesURL != null) {
         final java.util.Properties dependenciesFile = new java.util.Properties();
 
-        Optional<InputStream> inputStream = UrlStreams.openStream(dependencesURL);
+        final Optional<InputStream> inputStream = UrlStreams.openStream(dependencesURL);
         if (inputStream.isPresent()) {
           try (final InputStream stream = inputStream.get()) {
             dependenciesFile.load(stream);
@@ -131,7 +131,7 @@ public class ResourceLoader {
   public void close() {
     try {
       m_loader.close();
-    } catch (IOException e) {
+    } catch (final IOException e) {
       ClientLogger.logQuietly(e);
     }
   }
@@ -174,7 +174,7 @@ public class ResourceLoader {
     // Return first any match that is not in the assets folder (we expect that to be the users maps folder (loading from
     // map.zip))
     // If we don't have any matches, then return any matches we had from the assets folder
-    for (URL element : getMatchingResources(path)) {
+    for (final URL element : getMatchingResources(path)) {
       if (element.toString().contains(RESOURCE_FOLDER)) {
         defaultUrl = element;
       } else {
@@ -187,7 +187,7 @@ public class ResourceLoader {
   private List<URL> getMatchingResources(final String path) {
     try {
       return Collections.list(m_loader.getResources(path));
-    } catch (IOException e) {
+    } catch (final IOException e) {
       throw new IllegalStateException(e);
     }
   }
@@ -196,12 +196,12 @@ public class ResourceLoader {
    * Ensure that you close the InputStream returned by this method when you are done using it.
    */
   public InputStream getResourceAsStream(final String path) {
-    URL url = getResource(path);
+    final URL url = getResource(path);
     if (url == null) {
       return null;
     }
 
-    Optional<InputStream> inputStream = UrlStreams.openStream(url);
+    final Optional<InputStream> inputStream = UrlStreams.openStream(url);
     if (inputStream.isPresent()) {
       return inputStream.get();
     } else {

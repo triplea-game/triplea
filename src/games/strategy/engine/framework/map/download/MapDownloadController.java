@@ -12,12 +12,12 @@ import java.util.prefs.Preferences;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
-import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
+import games.strategy.ui.SwingComponents;
 import games.strategy.util.CountDownLatchHandler;
 
 
@@ -38,13 +38,13 @@ public class MapDownloadController {
     return runnable;
   }
 
-  public void downloadMap(String mapName) {
+  public void downloadMap(final String mapName) {
     DownloadMapsWindow.showDownloadMapsWindow(mapName);
   }
 
 
   /** Opens a new window dialog where a user can select maps to download or update */
-  public void openDownloadMapScreen(JComponent parentComponent) {
+  public void openDownloadMapScreen(final JComponent parentComponent) {
     final Frame parentFrame = JOptionPane.getFrameForComponent(parentComponent);
     DownloadMapsWindow.showDownloadMapsWindow(parentFrame);
   }
@@ -74,7 +74,7 @@ public class MapDownloadController {
       } catch (final BackingStoreException e) {
       }
 
-      MapDownloadController controller = new MapDownloadController(mapDownloadProperties);
+      final MapDownloadController controller = new MapDownloadController(mapDownloadProperties);
       final DownloadRunnable download = controller.downloadForLatestMapsCheck();
       if (download.getError() != null) {
         return false;
@@ -93,7 +93,8 @@ public class MapDownloadController {
           text.append("<li> ").append(map).append("</li>");
         }
         text.append("</ul></html>");
-        SwingComponents.promptUser("Update Your Maps?", text.toString(), () -> DownloadMapsWindow.showDownloadMapsWindow());
+        SwingComponents.promptUser("Update Your Maps?", text.toString(),
+            () -> DownloadMapsWindow.showDownloadMapsWindow());
         return true;
       }
     } catch (final Exception e) {

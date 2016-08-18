@@ -28,6 +28,7 @@ public abstract class DynamicRow {
   private final DynamicRowsPanel parentRowPanel;
   protected String currentRowName;
   protected JButton buttonRemovePerRow;
+
   protected DynamicRow(final String rowName, final DynamicRowsPanel parentRowPanel, final JPanel stepActionPanel) {
     currentRowName = rowName;
     this.parentRowPanel = parentRowPanel;

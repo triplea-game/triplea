@@ -28,7 +28,7 @@ public class ScrollSettings implements HasDefaults {
   }
 
 
-  private int getProp(SystemPreferenceKey key, int defaultValue) {
+  private int getProp(final SystemPreferenceKey key, final int defaultValue) {
     return SystemPreferences.get(key, defaultValue);
   }
 
@@ -36,7 +36,7 @@ public class ScrollSettings implements HasDefaults {
     return getProp(SystemPreferenceKey.MAP_EDGE_FASTER_SCROLL_ZONE_SIZE, DEFAULT_MAP_EDGE_FASTER_SCROLL_ZONE_SIZE);
   }
 
-  public void setMapEdgeFasterScrollMultiplier(String value) {
+  public void setMapEdgeFasterScrollMultiplier(final String value) {
     SystemPreferences.put(SystemPreferenceKey.MAP_EDGE_FASTER_SCROLL_MULTIPLER, value);
   }
 
@@ -44,7 +44,7 @@ public class ScrollSettings implements HasDefaults {
     return getProp(SystemPreferenceKey.MAP_EDGE_FASTER_SCROLL_MULTIPLER, DEFAULT_MAP_EDGE_FASTER_SCROLL_MULTIPLIER);
   }
 
-  public void setMapEdgeFasterScrollZoneSize(String value) {
+  public void setMapEdgeFasterScrollZoneSize(final String value) {
     SystemPreferences.put(SystemPreferenceKey.MAP_EDGE_FASTER_SCROLL_ZONE_SIZE, value);
   }
 
@@ -53,7 +53,7 @@ public class ScrollSettings implements HasDefaults {
     return getProp(SystemPreferenceKey.MAP_EDGE_SCROLL_ZONE_SIZE, DEFAULT_MAP_EDGE_SCROLL_ZONE_SIZE);
   }
 
-  public void setMapEdgeScrollZoneSize(String value) {
+  public void setMapEdgeScrollZoneSize(final String value) {
     SystemPreferences.put(SystemPreferenceKey.MAP_EDGE_SCROLL_ZONE_SIZE, value);
   }
 
@@ -61,7 +61,7 @@ public class ScrollSettings implements HasDefaults {
     return getProp(SystemPreferenceKey.ARROW_KEY_SCROLL_SPEED, DEFAULT_ARROW_KEY_SCROLL_SPEED);
   }
 
-  public void setArrowKeyScrollSpeed(String value) {
+  public void setArrowKeyScrollSpeed(final String value) {
     SystemPreferences.put(SystemPreferenceKey.ARROW_KEY_SCROLL_SPEED, value);
   }
 
@@ -69,7 +69,7 @@ public class ScrollSettings implements HasDefaults {
     return getProp(SystemPreferenceKey.FASTER_ARROW_KEY_SCROLL_MULTIPLIER, DEFAULT_FASTER_ARROW_KEY_SCROLL_MULTIPLIER);
   }
 
-  public void setFasterArrowKeyScrollMultiplier(String value) {
+  public void setFasterArrowKeyScrollMultiplier(final String value) {
     SystemPreferences.put(SystemPreferenceKey.FASTER_ARROW_KEY_SCROLL_MULTIPLIER, value);
   }
 
@@ -77,7 +77,7 @@ public class ScrollSettings implements HasDefaults {
     return getProp(SystemPreferenceKey.MAP_EDGE_SCROLL_SPEED, DEFAULT_MAP_EDGE_SCROLL_SPEED);
   }
 
-  public void setMapEdgeScrollSpeed(String value) {
+  public void setMapEdgeScrollSpeed(final String value) {
     SystemPreferences.put(SystemPreferenceKey.MAP_EDGE_SCROLL_SPEED, value);
   }
 
@@ -85,7 +85,7 @@ public class ScrollSettings implements HasDefaults {
     return getProp(SystemPreferenceKey.WHEEL_SCROLL_AMOUNT, DEFAULT_WHEEL_SCROLL_AMOUNT);
   }
 
-  public void setWheelScrollAmount(String value) {
+  public void setWheelScrollAmount(final String value) {
     SystemPreferences.put(SystemPreferenceKey.WHEEL_SCROLL_AMOUNT, value);
   }
 

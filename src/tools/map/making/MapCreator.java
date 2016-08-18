@@ -27,8 +27,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner;
@@ -36,6 +34,8 @@ import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.ui.SwingAction;
+import games.strategy.ui.SwingComponents;
 import tools.image.AutoPlacementFinder;
 import tools.image.CenterPicker;
 import tools.image.DecorationPlacer;
@@ -529,7 +529,7 @@ public class MapCreator extends JFrame {
     m_panel4.validate();
   }
 
-  private static void runUtility(Class<?> javaClass) {
+  private static void runUtility(final Class<?> javaClass) {
     final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands, s_memory);
     if (s_mapFolderLocation != null && s_mapFolderLocation.exists()) {

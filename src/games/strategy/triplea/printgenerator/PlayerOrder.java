@@ -26,9 +26,9 @@ public class PlayerOrder {
   }
 
   protected void saveToFile(final PrintGenerationData printData) throws IOException {
-    GameData m_data = printData.getData();
-    PrintGenerationData m_printData = printData;
-    Iterator<GameStep> m_gameStepIterator = m_data.getSequence().iterator();
+    final GameData m_data = printData.getData();
+    final PrintGenerationData m_printData = printData;
+    final Iterator<GameStep> m_gameStepIterator = m_data.getSequence().iterator();
     while (m_gameStepIterator.hasNext()) {
       final GameStep currentStep = m_gameStepIterator.next();
       if (currentStep.getDelegate() != null && currentStep.getDelegate().getClass() != null) {

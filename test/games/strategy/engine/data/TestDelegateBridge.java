@@ -49,10 +49,10 @@ public class TestDelegateBridge implements ITestDelegateBridge {
     final History history = new History(m_data);
     final HistoryWriter historyWriter = new HistoryWriter(history);
     historyWriter.startNextStep("", "", PlayerID.NULL_PLAYERID, "");
-    IServerMessenger messenger = mock(IServerMessenger.class);
+    final IServerMessenger messenger = mock(IServerMessenger.class);
     try {
       when(messenger.getLocalNode()).thenReturn(new Node("dummy", InetAddress.getLocalHost(), 0));
-    } catch (UnknownHostException e) {
+    } catch (final UnknownHostException e) {
       ClientLogger.logQuietly(e);
     }
     when(messenger.isServer()).thenReturn(true);

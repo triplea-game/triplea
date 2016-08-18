@@ -12,6 +12,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 
 /**
  * Reads property values from the game engine configuration file.
+ * 
  * @see PropertyReader for a complete listing of property keys
  */
 public class GameEnginePropertyFileReader implements PropertyReader {
@@ -24,30 +25,30 @@ public class GameEnginePropertyFileReader implements PropertyReader {
   }
 
   /** This constructor here for testing purposes, use the simple no-arg constructor instead */
-  protected GameEnginePropertyFileReader(File propertyFile) {
+  protected GameEnginePropertyFileReader(final File propertyFile) {
     this.propertyFile = propertyFile;
   }
 
   @Override
-  public String readProperty(GameEngineProperty propertyKey) {
+  public String readProperty(final GameEngineProperty propertyKey) {
     try (FileInputStream inputStream = new FileInputStream(propertyFile)) {
-      Properties props = new Properties();
+      final Properties props = new Properties();
       props.load(inputStream);
 
-      if(!props.containsKey(propertyKey.toString())) {
+      if (!props.containsKey(propertyKey.toString())) {
         throw new PropertyNotFoundException(propertyKey);
       } else {
         return props.getProperty(propertyKey.toString()).trim();
       }
-    } catch (FileNotFoundException e) {
+    } catch (final FileNotFoundException e) {
       throw Throwables.propagate(e);
-    } catch (IOException e) {
+    } catch (final IOException e) {
       throw new IllegalStateException("Failed to read propertyFile: " + propertyFile.getAbsolutePath(), e);
     }
   }
 
   public static String getConfigFilePath() {
-    File f = new File(ClientFileSystemHelper.getRootFolder(), GAME_ENGINE_PROPERTY_FILE);
+    final File f = new File(ClientFileSystemHelper.getRootFolder(), GAME_ENGINE_PROPERTY_FILE);
     return f.getAbsolutePath();
   }
 }

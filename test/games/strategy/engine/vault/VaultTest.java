@@ -72,10 +72,10 @@ public class VaultTest {
 
   @Test
   public void testLocal() throws NotUnlockedException {
-    IServerMessenger messenger = mock(IServerMessenger.class);
+    final IServerMessenger messenger = mock(IServerMessenger.class);
     try {
       when(messenger.getLocalNode()).thenReturn(new Node("dummy", InetAddress.getLocalHost(), 0));
-    } catch (UnknownHostException e) {
+    } catch (final UnknownHostException e) {
       ClientLogger.logQuietly(e);
     }
     final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);

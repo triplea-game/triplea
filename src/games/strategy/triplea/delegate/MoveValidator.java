@@ -1250,7 +1250,8 @@ public class MoveValidator {
         if (Matches.unitHasMoved.match(paratroop)) {
           result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
         }
-        if (Matches.isTerritoryFriendly(player, data).match(routeEnd) && !isAirTransportableCanMoveDuringNonCombat(data)) {
+        if (Matches.isTerritoryFriendly(player, data).match(routeEnd)
+            && !isAirTransportableCanMoveDuringNonCombat(data)) {
           result.addDisallowedUnit("Paratroops must advance to battle", paratroop);
         }
         if (!nonCombat && Matches.isTerritoryFriendly(player, data).match(routeEnd)

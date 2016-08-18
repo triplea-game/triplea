@@ -75,7 +75,7 @@ public class WW2V3_42_Test {
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
+    final ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
     when(dummyPlayer.shouldBomberBomb(any())).thenReturn(true);
     bridge.setRemote(dummyPlayer);
     // remove the russian units

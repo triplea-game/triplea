@@ -74,7 +74,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
   }
 
   public void putAll(final Collection<T> keys, final int value) {
-    for (T object : keys) {
+    for (final T object : keys) {
       put(object, value);
     }
   }
@@ -90,7 +90,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    * returns 0 if no key found.
    */
   public int getInt(final T key) {
-    if(!mapValues.containsKey(key)){
+    if (!mapValues.containsKey(key)) {
       return 0;
     }
     return mapValues.get(key);

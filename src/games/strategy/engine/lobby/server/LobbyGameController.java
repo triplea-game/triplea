@@ -27,7 +27,7 @@ public class LobbyGameController implements ILobbyGameController {
 
   public LobbyGameController(final ILobbyGameBroadcaster broadcaster, final IMessenger messenger) {
     m_broadcaster = broadcaster;
-    IMessenger m_messenger = messenger;
+    final IMessenger m_messenger = messenger;
     ((IServerMessenger) m_messenger).addConnectionChangeListener(new IConnectionChangeListener() {
       @Override
       public void connectionRemoved(final INode to) {

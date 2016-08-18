@@ -13,8 +13,6 @@ import javax.swing.AbstractAction;
 import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
 
-import games.strategy.triplea.player.AbstractHumanPlayer;
-import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -51,10 +49,12 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.player.AbstractHumanPlayer;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.BattleDisplay;
 import games.strategy.triplea.ui.PlaceData;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.ui.SwingAction;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -86,7 +86,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 
   @Override
   public void reportMessage(final String message, final String title) {
-    if(ui != null ) {
+    if (ui != null) {
       ui.notifyMessage(message, title);
     }
   }
@@ -312,7 +312,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (moveDescription == null) {
       if (GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData())) {
         if (!canAirLand(true, id)) {
-           // continue with the move loop
+          // continue with the move loop
           move(nonCombat, stepName);
         }
       }

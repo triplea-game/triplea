@@ -40,10 +40,11 @@ public class UnitsDrawer implements IDrawable {
   private final String territoryName;
   private final IUIContext uiContext;
   private static UnitFlagDrawMode drawUnitNationMode = UnitFlagDrawMode.NEXT_TO;
-  
-  public enum PreferenceKeys{
+
+  public enum PreferenceKeys {
     DRAW_MODE, DRAWING_ENABLED
   }
+
   public static boolean enabledFlags = false;
 
   public enum UnitFlagDrawMode {
@@ -98,7 +99,7 @@ public class UnitsDrawer implements IDrawable {
     }
 
     if (img.isPresent() && enabledFlags) {
-      int maxRange = new TripleAUnit(type, owner, data).getMaxMovementAllowed();
+      final int maxRange = new TripleAUnit(type, owner, data).getMaxMovementAllowed();
       switch (drawUnitNationMode) {
         case BELOW:
           // If unit is not in the "excluded list" it will get drawn
@@ -115,7 +116,7 @@ public class UnitsDrawer implements IDrawable {
         case NEXT_TO:
           drawUnit(graphics, img.get(), placementPoint, bounds);
           // If unit is not in the "excluded list" it will get drawn
-          if (maxRange != 0){
+          if (maxRange != 0) {
             final Image flag = uiContext.getFlagImageFactory().getSmallFlag(owner);
             final int xoffset = img.get().getWidth(null) - flag.getWidth(
                 null);// If someone wants to put more effort in this, he could add an algorithm to calculate the real
@@ -130,8 +131,8 @@ public class UnitsDrawer implements IDrawable {
           }
           break;
       }
-    } else{
-      if(img.isPresent()) {
+    } else {
+      if (img.isPresent()) {
         drawUnit(graphics, img.get(), placementPoint, bounds);
       }
     }
@@ -185,11 +186,12 @@ public class UnitsDrawer implements IDrawable {
           placementPoint.y - bounds.y + uiContext.getUnitImageFactory().getUnitImageHeight() / 4);
     }
   }
-  
+
   /**
    * This draws the given image onto the given graphics object
    */
-  private void drawUnit(Graphics2D graphics, Image image, Point placementPoint2, Rectangle bounds){
+  private void drawUnit(final Graphics2D graphics, final Image image, final Point placementPoint2,
+      final Rectangle bounds) {
     graphics.drawImage(image, placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
   }
 

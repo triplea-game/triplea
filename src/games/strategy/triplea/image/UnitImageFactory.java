@@ -108,7 +108,8 @@ public class UnitImageFactory {
   /**
    * Return the appropriate unit image.
    */
-  public Optional<Image> getImage(final UnitType type, final PlayerID player, final GameData data, final boolean damaged,
+  public Optional<Image> getImage(final UnitType type, final PlayerID player, final GameData data,
+      final boolean damaged,
       final boolean disabled) {
     final String baseName = getBaseImageName(type, player, data, damaged, disabled);
     final String fullName = baseName + player.getName();
@@ -119,7 +120,7 @@ public class UnitImageFactory {
     if (!image.isPresent()) {
       return Optional.empty();
     }
-    Image baseImage = image.get();
+    final Image baseImage = image.get();
 
 
     // We want to scale units according to the given scale factor.
@@ -149,23 +150,24 @@ public class UnitImageFactory {
   }
 
   private Optional<Image> getBaseImage(final String baseImageName, final PlayerID id) {
-    Optional<URL> imageLocation = getBaseImageURL(baseImageName, id);
+    final Optional<URL> imageLocation = getBaseImageURL(baseImageName, id);
     Image image = null;
-    if( imageLocation.isPresent()) {
+    if (imageLocation.isPresent()) {
       image = Toolkit.getDefaultToolkit().getImage(getBaseImageURL(baseImageName, id).get());
       Util.ensureImageLoaded(image);
     }
     return Optional.ofNullable(image);
   }
 
-  public Optional<Image> getHighlightImage(final UnitType type, final PlayerID player, final GameData data, final boolean damaged,
+  public Optional<Image> getHighlightImage(final UnitType type, final PlayerID player, final GameData data,
+      final boolean damaged,
       final boolean disabled) {
     final Optional<Image> baseImage = getImage(type, player, data, damaged, disabled);
     if (!baseImage.isPresent()) {
       return Optional.empty();
     }
 
-    Image base = baseImage.get();
+    final Image base = baseImage.get();
     final BufferedImage newImage = Util.createImage(base.getWidth(null), base.getHeight(null), true);
     // copy the real image
     final Graphics2D g = newImage.createGraphics();
@@ -182,7 +184,8 @@ public class UnitImageFactory {
   /**
    * Return a icon image for a unit.
    */
-  public Optional<ImageIcon> getIcon(final UnitType type, final PlayerID player, final GameData data, final boolean damaged,
+  public Optional<ImageIcon> getIcon(final UnitType type, final PlayerID player, final GameData data,
+      final boolean damaged,
       final boolean disabled) {
     final String baseName = getBaseImageName(type, player, data, damaged, disabled);
     final String fullName = baseName + player.getName();
@@ -190,7 +193,7 @@ public class UnitImageFactory {
       return Optional.of(m_icons.get(fullName));
     }
     final Optional<Image> image = getBaseImage(baseName, player);
-    if(!image.isPresent()) {
+    if (!image.isPresent()) {
       return Optional.empty();
     }
 

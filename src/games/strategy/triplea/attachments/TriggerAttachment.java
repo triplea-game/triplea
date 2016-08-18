@@ -14,7 +14,6 @@ import java.util.Set;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -30,6 +29,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.sound.SoundPath;
@@ -66,20 +66,24 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   private IntegerMap<UnitType> m_purchase = null;
   private String m_resource = null;
   private int m_resourceCount = 0;
-  private LinkedHashMap<String, Boolean> m_support = null; // never use a map of other attachments, inside of an attachment. java will not be able to deserialize it.
-  private ArrayList<String> m_relationshipChange = new ArrayList<>(); // List of relationshipChanges that should be executed when this trigger hits.
+  private LinkedHashMap<String, Boolean> m_support = null; // never use a map of other attachments, inside of an
+                                                           // attachment. java will not be able to deserialize it.
+  private ArrayList<String> m_relationshipChange = new ArrayList<>(); // List of relationshipChanges that should be
+                                                                      // executed when this trigger hits.
   private String m_victory = null;
   private ArrayList<Tuple<String, String>> m_activateTrigger = new ArrayList<>();
   private ArrayList<String> m_changeOwnership = new ArrayList<>();
   // raw property changes below:
-  private ArrayList<UnitType> m_unitType = new ArrayList<>(); // really m_unitTypes, but we are not going to rename because it will break all existing maps
+  private ArrayList<UnitType> m_unitType = new ArrayList<>(); // really m_unitTypes, but we are not going to rename
+                                                              // because it will break all existing maps
   private Tuple<String, String> m_unitAttachmentName = null; // covers UnitAttachment, UnitSupportAttachment
   private ArrayList<Tuple<String, String>> m_unitProperty = null;
   private ArrayList<Territory> m_territories = new ArrayList<>();
   private Tuple<String, String> m_territoryAttachmentName = null; // covers TerritoryAttachment, CanalAttachment
   private ArrayList<Tuple<String, String>> m_territoryProperty = null;
   private ArrayList<PlayerID> m_players = new ArrayList<>();
-  private Tuple<String, String> m_playerAttachmentName = null; // covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment, UserActionAttachment
+  private Tuple<String, String> m_playerAttachmentName = null; // covers PlayerAttachment, TriggerAttachment,
+                                                               // RulesAttachment, TechAttachment, UserActionAttachment
   private ArrayList<Tuple<String, String>> m_playerProperty = null;
   private ArrayList<RelationshipType> m_relationshipTypes = new ArrayList<>();
   private Tuple<String, String> m_relationshipTypeAttachmentName = null; // covers RelationshipTypeAttachment

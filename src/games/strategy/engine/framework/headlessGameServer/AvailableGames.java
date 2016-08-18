@@ -153,7 +153,7 @@ public class AvailableGames {
     }
     final AtomicReference<String> gameName = new AtomicReference<>();
 
-    Optional<InputStream> inputStream = UrlStreams.openStream(uri);
+    final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
       try (InputStream input = inputStream.get()) {
         final GameData data = new GameParser(uri.toString()).parse(input, gameName, s_delayedParsing);
@@ -195,7 +195,7 @@ public class AvailableGames {
     }
     final AtomicReference<String> gameName = new AtomicReference<>();
 
-    Optional<InputStream> inputStream = UrlStreams.openStream(uri);
+    final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
       try (InputStream input = inputStream.get()) {
         return new GameParser(uri.toString()).parse(input, gameName, false);

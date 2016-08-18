@@ -87,7 +87,7 @@ public class StatPanel extends AbstractStatPanel {
     if (!hasTech) {
       return;
     }
-    JTable m_techTable = new JTable(m_techModel);
+    final JTable m_techTable = new JTable(m_techModel);
     m_techTable.getTableHeader().setReorderingAllowed(false);
     m_techTable.getColumnModel().getColumn(0).setPreferredWidth(500);
     // setupIconHeaders(m_techTable);

@@ -28,7 +28,7 @@ import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
 
 public class ModeratorControllerTest {
-  private IServerMessenger m_messenger = mock(IServerMessenger.class);
+  private final IServerMessenger m_messenger = mock(IServerMessenger.class);
   private ModeratorController m_controller;
   private ConnectionChangeListener m_listener;
   private INode m_adminNode;
@@ -49,13 +49,13 @@ public class ModeratorControllerTest {
 
     doAnswer(new Answer<Void>() {
       @Override
-      public Void answer(InvocationOnMock invocation) throws Throwable {
+      public Void answer(final InvocationOnMock invocation) throws Throwable {
         m_listener.connectionRemoved(invocation.getArgument(0));
         return null;
       }
     }).when(m_messenger).removeConnection(booted);
 
-    INode dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);
+    final INode dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);
     when(m_messenger.getServerNode()).thenReturn(dummyNode);
     m_controller.boot(booted);
     assertTrue(m_listener.getRemoved().contains(booted));

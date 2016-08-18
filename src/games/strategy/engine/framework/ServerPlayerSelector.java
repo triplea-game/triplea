@@ -44,7 +44,7 @@ public class ServerPlayerSelector extends JFrame {
       m_playerChoices.add(current);
       getContentPane().add(current);
     }
-    WindowListener m_doneOnClose = new WindowAdapter() {
+    final WindowListener m_doneOnClose = new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {
         m_done.actionPerformed(null);

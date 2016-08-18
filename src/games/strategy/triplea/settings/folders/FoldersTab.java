@@ -13,7 +13,7 @@ import games.strategy.triplea.settings.SettingsTab;
 public class FoldersTab implements SettingsTab<FolderSettings> {
   private final List<SettingInputComponent<FolderSettings>> inputs;
 
-  public FoldersTab(FolderSettings settings) {
+  public FoldersTab(final FolderSettings settings) {
     inputs = Arrays.asList(
         SettingInputComponent.build("Save game path",
             "Default save game folder",
@@ -26,8 +26,7 @@ public class FoldersTab implements SettingsTab<FolderSettings> {
             new JTextField(settings.getDownloadedMapPath()),
             (((folderSettings, s) -> folderSettings.setDownloadedMapPath(s))),
             (folderSettings -> folderSettings.getDownloadedMapPath()),
-            InputValidator.IS_DIRECTORY)
-    );
+            InputValidator.IS_DIRECTORY));
   }
 
   @Override

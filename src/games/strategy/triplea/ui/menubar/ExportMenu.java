@@ -54,11 +54,11 @@ import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.printgenerator.SetupFrame;
 import games.strategy.triplea.ui.ExtendedStats;
 import games.strategy.triplea.ui.IUIContext;
-import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.MapPanel;
 import games.strategy.triplea.ui.StatPanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryPanel;
+import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
@@ -132,9 +132,9 @@ public class ExportMenu {
 
 
   private void addSaveScreenshot(final JMenu parentMenu) {
-    AbstractAction abstractAction = SwingAction.of("Export Screenshot", e-> {
+    final AbstractAction abstractAction = SwingAction.of("Export Screenshot", e -> {
 
-      HistoryPanel historyPanel = frame.getHistoryPanel();
+      final HistoryPanel historyPanel = frame.getHistoryPanel();
       final HistoryNode curNode;
       if (historyPanel == null) {
         curNode = gameData.getHistory().getLastNode();
@@ -146,7 +146,7 @@ public class ExportMenu {
     parentMenu.add(abstractAction).setMnemonic(KeyEvent.VK_E);
   }
 
-  public static void saveScreenshot(final HistoryNode node, TripleAFrame frame, GameData gameData) {
+  public static void saveScreenshot(final HistoryNode node, final TripleAFrame frame, final GameData gameData) {
     final FileFilter pngFilter = new FileFilter() {
       @Override
       public boolean accept(final File f) {
@@ -190,7 +190,8 @@ public class ExportMenu {
     }
   }
 
-  private static boolean saveScreenshot(final HistoryNode node, final File file, TripleAFrame frame, GameData gameData) {
+  private static boolean saveScreenshot(final HistoryNode node, final File file, final TripleAFrame frame,
+      final GameData gameData) {
     // get current history node. if we are in history view, get the selected node.
     boolean retval = true;
     // get round/step/player from history tree
@@ -202,11 +203,11 @@ public class ExportMenu {
         round = ((Round) curNode).getRoundNo();
       }
     }
-    IUIContext iuiContext = frame.getUIContext();
+    final IUIContext iuiContext = frame.getUIContext();
     final double scale = iuiContext.getScale();
     // print map panel to image
 
-    MapPanel mapPanel = frame.getMapPanel();
+    final MapPanel mapPanel = frame.getMapPanel();
     final BufferedImage mapImage =
         Util.createImage((int) (scale * mapPanel.getImageWidth()), (int) (scale * mapPanel.getImageHeight()), false);
     final Graphics2D mapGraphics = mapImage.createGraphics();
@@ -278,7 +279,7 @@ public class ExportMenu {
         // Fetch stats table and save current properties before modifying them
         // NOTE: This is a bit of a hack, but creating a fresh JTable and
         // populating it with statsPanel data seemed hard. This was easier.
-        StatPanel statsPanel = frame.getStatPanel();
+        final StatPanel statsPanel = frame.getStatPanel();
         final JTable table = statsPanel.getStatsTable();
         final javax.swing.table.TableCellRenderer oldRenderer = table.getDefaultRenderer(Object.class);
         final Font oldTableFont = table.getFont();

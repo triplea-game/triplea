@@ -51,8 +51,8 @@ import games.strategy.triplea.ui.AbstractUIContext;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.PurchasePanel;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
+import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
@@ -395,12 +395,10 @@ public class ViewMenu {
       }
 
       @Override
-      public void menuDeselected(final MenuEvent e) {
-      }
+      public void menuDeselected(final MenuEvent e) {}
 
       @Override
-      public void menuCanceled(final MenuEvent e) {
-      }
+      public void menuCanceled(final MenuEvent e) {}
     });
     noneButton.addActionListener(e -> {
       if (noneButton.isSelected()
@@ -507,14 +505,14 @@ public class ViewMenu {
     unitSizeMenu.setMnemonic(KeyEvent.VK_N);
     unitSizeMenu.setText("Flag Display Mode");
 
-    Preferences prefs = Preferences.userNodeForPackage(getClass());
-    UnitsDrawer.UnitFlagDrawMode setting = Enum.valueOf(UnitsDrawer.UnitFlagDrawMode.class,
+    final Preferences prefs = Preferences.userNodeForPackage(getClass());
+    final UnitsDrawer.UnitFlagDrawMode setting = Enum.valueOf(UnitsDrawer.UnitFlagDrawMode.class,
         prefs.get(UnitsDrawer.PreferenceKeys.DRAW_MODE.name(), UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString()));
     UnitsDrawer.setUnitFlagDrawMode(setting, prefs);
     UnitsDrawer.enabledFlags =
         prefs.getBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), UnitsDrawer.enabledFlags);
 
-    JCheckBoxMenuItem toggleFlags = new JCheckBoxMenuItem("Show by default");
+    final JCheckBoxMenuItem toggleFlags = new JCheckBoxMenuItem("Show by default");
     toggleFlags.setSelected(UnitsDrawer.enabledFlags);
     toggleFlags.addActionListener(e -> {
       UnitsDrawer.enabledFlags = toggleFlags.isSelected();
@@ -531,15 +529,17 @@ public class ViewMenu {
     parentMenu.add(unitSizeMenu);
   }
 
-  private JRadioButtonMenuItem createFlagDrawModeRadionButtonItem(String text, ButtonGroup group,
-      UnitsDrawer.UnitFlagDrawMode drawMode, UnitsDrawer.UnitFlagDrawMode setting, Preferences prefs) {
+  private JRadioButtonMenuItem createFlagDrawModeRadionButtonItem(final String text, final ButtonGroup group,
+      final UnitsDrawer.UnitFlagDrawMode drawMode, final UnitsDrawer.UnitFlagDrawMode setting,
+      final Preferences prefs) {
     return createRadioButtonItem(text, group, SwingAction.of(e -> {
       UnitsDrawer.setUnitFlagDrawMode(drawMode, prefs);
       frame.getMapPanel().resetMap();
     }), setting.equals(drawMode));
   }
 
-  private JRadioButtonMenuItem createRadioButtonItem(String text, ButtonGroup group, Action action, boolean selected) {
+  private JRadioButtonMenuItem createRadioButtonItem(final String text, final ButtonGroup group, final Action action,
+      final boolean selected) {
     final JRadioButtonMenuItem buttonItem = new JRadioButtonMenuItem(text);
     buttonItem.addActionListener(action);
     buttonItem.setSelected(selected);

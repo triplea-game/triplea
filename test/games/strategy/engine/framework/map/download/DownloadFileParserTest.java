@@ -18,9 +18,9 @@ public class DownloadFileParserTest {
   @Test
   public void testParseMap() {
     final ByteArrayInputStream inputStream = new ByteArrayInputStream(buildTestXml());
-    List<DownloadFileDescription> games = DownloadFileParser.parse(inputStream);
+    final List<DownloadFileDescription> games = DownloadFileParser.parse(inputStream);
     assertThat(games.size(), is(4));
-    DownloadFileDescription desc = games.get(0);
+    final DownloadFileDescription desc = games.get(0);
     assertThat(desc.getUrl(), is("http://example.com/games/game.zip"));
     assertThat(desc.getDescription(), Matchers.containsString("Some notes"));
     assertThat(desc.getMapName(), is(GAME_NAME));
@@ -35,9 +35,9 @@ public class DownloadFileParserTest {
   @Test
   public void testParseMapMod() {
     final ByteArrayInputStream inputStream = new ByteArrayInputStream(buildTestXml());
-    List<DownloadFileDescription> games = DownloadFileParser.parse(inputStream);
+    final List<DownloadFileDescription> games = DownloadFileParser.parse(inputStream);
     assertThat(games.size(), is(4));
-    DownloadFileDescription desc = games.get(1);
+    final DownloadFileDescription desc = games.get(1);
     assertThat(desc.isMap(), is(false));
     assertThat(desc.isMapMod(), is(true));
     assertThat(desc.isMapSkin(), is(false));
@@ -47,9 +47,9 @@ public class DownloadFileParserTest {
   @Test
   public void testParseModSkin() {
     final ByteArrayInputStream inputStream = new ByteArrayInputStream(buildTestXml());
-    List<DownloadFileDescription> games = DownloadFileParser.parse(inputStream);
+    final List<DownloadFileDescription> games = DownloadFileParser.parse(inputStream);
     assertThat(games.size(), is(4));
-    DownloadFileDescription desc = games.get(2);
+    final DownloadFileDescription desc = games.get(2);
     assertThat(desc.isMap(), is(false));
     assertThat(desc.isMapMod(), is(false));
     assertThat(desc.isMapSkin(), is(true));
@@ -59,9 +59,9 @@ public class DownloadFileParserTest {
   @Test
   public void testParseMapTool() {
     final ByteArrayInputStream inputStream = new ByteArrayInputStream(buildTestXml());
-    List<DownloadFileDescription> games = DownloadFileParser.parse(inputStream);
+    final List<DownloadFileDescription> games = DownloadFileParser.parse(inputStream);
     assertThat(games.size(), is(4));
-    DownloadFileDescription desc = games.get(3);
+    final DownloadFileDescription desc = games.get(3);
     assertThat(desc.isMap(), is(false));
     assertThat(desc.isMapMod(), is(false));
     assertThat(desc.isMapSkin(), is(false));
@@ -69,7 +69,7 @@ public class DownloadFileParserTest {
   }
 
 
-  private static String createTypeTag(DownloadFileParser.ValueType type) {
+  private static String createTypeTag(final DownloadFileParser.ValueType type) {
     return "  " + DownloadFileParser.Tags.mapType + ": " + type + "\n";
   }
 
@@ -105,7 +105,7 @@ public class DownloadFileParserTest {
   @Test
   public void testMapTypeDefaultsToMap() {
     final ByteArrayInputStream inputStream = new ByteArrayInputStream(createSimpleGameXmlWithNoTypeTag());
-    DownloadFileDescription download = DownloadFileParser.parse(inputStream).get(0);
+    final DownloadFileDescription download = DownloadFileParser.parse(inputStream).get(0);
 
     assertThat(download.isMap(), is(true));
     assertThat(download.isMapSkin(), is(false));
@@ -113,7 +113,7 @@ public class DownloadFileParserTest {
     assertThat(download.isMapMod(), is(false));
   }
 
-  private static byte[] createSimpleGameXmlWithNoTypeTag( ) {
+  private static byte[] createSimpleGameXmlWithNoTypeTag() {
     String xml = "";
     xml += "- url: http://example.com/games/mod.zip\n";
     xml += "  mapName: " + GAME_NAME + "\n";

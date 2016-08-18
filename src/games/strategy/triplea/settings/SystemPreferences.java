@@ -21,7 +21,7 @@ public class SystemPreferences {
    * Note: If there is a need to do many of these one after another,
    * then call 'putNoFlush' followed by a single'flush'.
    */
-  public static void put(SystemPreferenceKey key, String value) {
+  public static void put(final SystemPreferenceKey key, final String value) {
     putNoFlush(key, value);
     flush();
   }
@@ -29,14 +29,14 @@ public class SystemPreferences {
   /**
    * @see SystemPreferences.put( SystemPreferenceKey , String)
    */
-  public static void put(SystemPreferenceKey key, boolean value) {
+  public static void put(final SystemPreferenceKey key, final boolean value) {
     put(key, String.valueOf(value));
   }
 
   /**
    * Puts a value into system preferences (note: not actually persisted until flush is called)
    */
-  public static void putNoFlush(SystemPreferenceKey key, String value) {
+  public static void putNoFlush(final SystemPreferenceKey key, final String value) {
     getPrefs().put(key.name(), value);
   }
 
@@ -50,7 +50,7 @@ public class SystemPreferences {
   public static void flush() {
     try {
       getPrefs().flush();
-    } catch (BackingStoreException e) {
+    } catch (final BackingStoreException e) {
       throw new IllegalStateException("Failed to persist", e);
     }
   }
@@ -61,7 +61,7 @@ public class SystemPreferences {
    * @param key The preference key to look up
    * @param defaultValue A default value to use when the look up finds nothing
    */
-  public static String get(SystemPreferenceKey key, String defaultValue) {
+  public static String get(final SystemPreferenceKey key, final String defaultValue) {
     return getPrefs().get(key.name(), defaultValue);
   }
 
@@ -69,14 +69,14 @@ public class SystemPreferences {
   /**
    * @see SystemPreferences.get( SystemPreferenceKey , String)
    */
-  public static boolean get(SystemPreferenceKey key, boolean defaultValue) {
+  public static boolean get(final SystemPreferenceKey key, final boolean defaultValue) {
     return Boolean.parseBoolean(getPrefs().get(key.name(), String.valueOf(defaultValue)));
   }
 
   /**
    * @see SystemPreferences.get( SystemPreferenceKey , String)
    */
-  public static int get(SystemPreferenceKey key, int defaultValue) {
+  public static int get(final SystemPreferenceKey key, final int defaultValue) {
     return getPrefs().getInt(key.name(), defaultValue);
   }
 }

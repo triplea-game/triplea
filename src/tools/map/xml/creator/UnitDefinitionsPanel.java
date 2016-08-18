@@ -26,8 +26,9 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
   }
 
   public static void layout(final MapXmlCreator mapXmlCreator) {
-    if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof UnitDefinitionsPanel))
+    if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof UnitDefinitionsPanel)) {
       me = Optional.of(new UnitDefinitionsPanel(mapXmlCreator.getStepActionPanel()));
+    }
     DynamicRowsPanel.layout(mapXmlCreator);
   }
 
@@ -51,31 +52,31 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
     labelBuyQuantity.setPreferredSize(dimension);
 
     // <1> Set panel layout
-    GridBagLayout gbl_stepActionPanel = new GridBagLayout();
+    final GridBagLayout gbl_stepActionPanel = new GridBagLayout();
     setColumns(gbl_stepActionPanel);
     setRows(gbl_stepActionPanel, MapXmlHelper.getUnitDefinitionsMap().size());
     getOwnPanel().setLayout(gbl_stepActionPanel);
 
     // <2> Add Row Labels: Player Name, Alliance Name, Buy Quantity
-    GridBagConstraints gridBadConstLabelUnitName = new GridBagConstraints();
+    final GridBagConstraints gridBadConstLabelUnitName = new GridBagConstraints();
     gridBadConstLabelUnitName.insets = new Insets(0, 0, 5, 5);
     gridBadConstLabelUnitName.gridy = 0;
     gridBadConstLabelUnitName.gridx = 0;
     gridBadConstLabelUnitName.anchor = GridBagConstraints.WEST;
     getOwnPanel().add(labelUnitName, gridBadConstLabelUnitName);
 
-    GridBagConstraints gridBadConstLabelBuyCost = (GridBagConstraints) gridBadConstLabelUnitName.clone();
+    final GridBagConstraints gridBadConstLabelBuyCost = (GridBagConstraints) gridBadConstLabelUnitName.clone();
     gridBadConstLabelBuyCost.gridx = 1;
     getOwnPanel().add(labelBuyCost, gridBadConstLabelBuyCost);
 
-    GridBagConstraints gridBadConstLabelBuyQuantity = (GridBagConstraints) gridBadConstLabelUnitName.clone();
+    final GridBagConstraints gridBadConstLabelBuyQuantity = (GridBagConstraints) gridBadConstLabelUnitName.clone();
     gridBadConstLabelBuyQuantity.gridx = 2;
     getOwnPanel().add(labelBuyQuantity, gridBadConstLabelBuyQuantity);
 
     // <3> Add Main Input Rows
     int yValue = 1;
     for (final Entry<String, List<Integer>> unitDefinition : MapXmlHelper.getUnitDefinitionsMap().entrySet()) {
-      GridBagConstraints gbc_tUnitName = (GridBagConstraints) gridBadConstLabelUnitName.clone();
+      final GridBagConstraints gbc_tUnitName = (GridBagConstraints) gridBadConstLabelUnitName.clone();
       gbc_tUnitName.gridx = 0;
       gridBadConstLabelUnitName.gridy = yValue;
       final List<Integer> defintionValues = unitDefinition.getValue();
@@ -93,8 +94,9 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
     buttonAddUnit.addActionListener(SwingAction.of("Add Unit", e -> {
       String newUnitName = JOptionPane.showInputDialog(getOwnPanel(), "Enter a new unit name:",
           "Unit" + (MapXmlHelper.getUnitDefinitionsMap().size() + 1));
-      if (newUnitName == null || newUnitName.isEmpty())
+      if (newUnitName == null || newUnitName.isEmpty()) {
         return;
+      }
       if (MapXmlHelper.getUnitDefinitionsMap().containsKey(newUnitName)) {
         JOptionPane.showMessageDialog(getOwnPanel(), "Unit '" + newUnitName + "' already exists.", "Input error",
             JOptionPane.ERROR_MESSAGE);
@@ -117,7 +119,7 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
     }));
     addButton(buttonAddUnit);
 
-    GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelUnitName.clone();
+    final GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelUnitName.clone();
     gridBadConstButtonAddUnit.gridx = 0;
     gridBadConstButtonAddUnit.gridy = yValue;
     addFinalButtonRow(gridBadConstButtonAddUnit);
@@ -134,7 +136,7 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
   protected void initializeSpecifics() {}
 
   @Override
-  protected void setColumns(GridBagLayout gbl_panel) {
+  protected void setColumns(final GridBagLayout gbl_panel) {
     gbl_panel.columnWidths = new int[] {50, 60, 50, 30};
     gbl_panel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0};
   }

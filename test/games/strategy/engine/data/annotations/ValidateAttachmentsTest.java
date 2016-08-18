@@ -113,7 +113,7 @@ public class ValidateAttachmentsTest {
   }
 
   private static List<Class<? extends IAttachment>> getKnownAttachmentClasses() {
-    List<Class<? extends IAttachment>> result = new ArrayList<>();
+    final List<Class<? extends IAttachment>> result = new ArrayList<>();
     result.add(DefaultAttachment.class);
     result.add(CanalAttachment.class);
     result.add(PlayerAttachment.class);

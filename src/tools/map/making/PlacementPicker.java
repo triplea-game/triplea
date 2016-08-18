@@ -44,10 +44,10 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 import tools.image.FileOpen;
@@ -470,8 +470,8 @@ public class PlacementPicker extends JFrame {
    * Saves the placements to disk.
    */
   private void savePlacements() {
-      final String fileName =
-          new FileSave("Where To Save place.txt ?", "place.txt", s_mapFolderLocation).getPathString();
+    final String fileName =
+        new FileSave("Where To Save place.txt ?", "place.txt", s_mapFolderLocation).getPathString();
     try {
       if (fileName == null) {
         return;

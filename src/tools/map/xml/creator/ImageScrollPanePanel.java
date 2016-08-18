@@ -257,7 +257,7 @@ public abstract class ImageScrollPanePanel {
 
   private static Map<String, Point> loadCenters() {
     centers.clear();
-    String fileName = "Load Centers from " + MapXmlCreator.mapCentersFile.getAbsolutePath();
+    final String fileName = "Load Centers from " + MapXmlCreator.mapCentersFile.getAbsolutePath();
     try {
       final FileInputStream in = new FileInputStream(MapXmlCreator.mapCentersFile);
       centers = PointFileReaderWriter.readOneToOne(in);

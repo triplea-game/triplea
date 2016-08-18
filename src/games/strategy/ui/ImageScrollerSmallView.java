@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
+
 import javax.swing.JComponent;
 import javax.swing.border.EtchedBorder;
 
@@ -35,7 +36,7 @@ public class ImageScrollerSmallView extends JComponent {
     setPreferredSize(prefSize);
     setMinimumSize(prefSize);
     setMaximumSize(prefSize);
-    MouseAdapter MOUSE_LISTENER = new MouseAdapter() {
+    final MouseAdapter MOUSE_LISTENER = new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent e) {
         // try to center around the click
@@ -45,11 +46,11 @@ public class ImageScrollerSmallView extends JComponent {
       }
     };
     this.addMouseListener(MOUSE_LISTENER);
-    MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter() {
+    final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter() {
       @Override
       public void mouseDragged(final MouseEvent e) {
         final long now = System.currentTimeMillis();
-        long MIN_UPDATE_DELAY = 30;
+        final long MIN_UPDATE_DELAY = 30;
         if (now < mLastUpdate + MIN_UPDATE_DELAY) {
           return;
         }

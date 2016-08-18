@@ -758,7 +758,7 @@ public class HeadlessGameServer {
         for (final String propertie : properties) {
           if (arg.equals(propertie)) {
             final String value = getValue(arg2);
-            if(propertie.equals(GameRunner.MAP_FOLDER)) {
+            if (propertie.equals(GameRunner.MAP_FOLDER)) {
               SystemPreferences.put(SystemPreferenceKey.MAP_FOLDER_OVERRIDE, value);
             } else {
               System.getProperties().setProperty(propertie, value);

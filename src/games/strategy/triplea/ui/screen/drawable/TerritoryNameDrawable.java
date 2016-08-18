@@ -1,14 +1,5 @@
 package games.strategy.triplea.ui.screen.drawable;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
-import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.ui.IUIContext;
-import games.strategy.triplea.ui.mapdata.MapData;
-
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -18,6 +9,15 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.util.List;
 import java.util.Optional;
+
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.image.MapImage;
+import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.mapdata.MapData;
 
 public class TerritoryNameDrawable implements IDrawable {
   private final String m_territoryName;

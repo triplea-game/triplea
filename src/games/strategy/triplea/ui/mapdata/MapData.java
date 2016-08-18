@@ -174,7 +174,7 @@ public class MapData implements Closeable {
         if (url == null) {
           throw new IllegalStateException("No map.properties file defined");
         }
-        Optional<InputStream> inputStream = UrlStreams.openStream(url);
+        final Optional<InputStream> inputStream = UrlStreams.openStream(url);
         if (inputStream.isPresent()) {
           m_mapProperties.load(inputStream.get());
         }
@@ -197,9 +197,9 @@ public class MapData implements Closeable {
       return new HashMap<>();
     }
 
-    Map<String, Image> territoryNameImages = new HashMap<>();
+    final Map<String, Image> territoryNameImages = new HashMap<>();
     for (final String name : m_centers.keySet()) {
-      Optional<Image> territoryNameImage = loadTerritoryNameImage(name);
+      final Optional<Image> territoryNameImage = loadTerritoryNameImage(name);
 
       if (territoryNameImage.isPresent()) {
         territoryNameImages.put(name, territoryNameImage.get());
@@ -208,7 +208,7 @@ public class MapData implements Closeable {
     return territoryNameImages;
   }
 
-  private Optional<Image> loadTerritoryNameImage(String imageName) {
+  private Optional<Image> loadTerritoryNameImage(final String imageName) {
     Optional<Image> img;
     try {
       // try first file names that have underscores instead of spaces
@@ -218,7 +218,7 @@ public class MapData implements Closeable {
         img = loadImage(constructTerritoryNameImagePath(imageName));
       }
       return img;
-    } catch (Exception e) {
+    } catch (final Exception e) {
       // TODO: this is checking for IllegalStateException - we should bubble up the Optional image load and just
       // check instead if the optional is empty.
       ClientLogger.logQuietly("Image loading failed: " + imageName, e);
@@ -227,7 +227,7 @@ public class MapData implements Closeable {
   }
 
 
-  private String constructTerritoryNameImagePath(String baseName) {
+  private String constructTerritoryNameImagePath(final String baseName) {
     return "territoryNames/" + baseName + ".png";
   }
 
@@ -237,13 +237,13 @@ public class MapData implements Closeable {
     if (decorationsFileUrl == null) {
       return Collections.emptyMap();
     }
-    Map<Image, List<Point>> decorations = new HashMap<>();
-    Optional<InputStream> inputStream = UrlStreams.openStream(decorationsFileUrl);
+    final Map<Image, List<Point>> decorations = new HashMap<>();
+    final Optional<InputStream> inputStream = UrlStreams.openStream(decorationsFileUrl);
     if (inputStream.isPresent()) {
       final Map<String, List<Point>> points = PointFileReaderWriter.readOneToMany(inputStream.get());
       for (final String name : points.keySet()) {
         final Optional<Image> img = loadImage("misc/" + name);
-        if(img.isPresent()) {
+        if (img.isPresent()) {
           decorations.put(img.get(), points.get(name));
         }
       }

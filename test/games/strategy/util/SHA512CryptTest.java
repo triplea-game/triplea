@@ -40,12 +40,12 @@ public class SHA512CryptTest {
         "33ef24a097ceb53a1ab529475902b327b1af425adcda7a2d66d02c2fb92005ee662bce17e469681a8503d3fabda14d7974792e32477104bd98574a298cf7868",
         SHA512Crypt.crypt("Tanks", "LOL"));
   }
-  
+
   @Test
-  public void testSaltCryptPassed(){
-    for(int i = 0; i < 10; i++){
-      String randomText = new BigInteger(130, new SecureRandom()).toString(32);
-      String randomSalt = new BigInteger(130, new SecureRandom()).toString(32);
+  public void testSaltCryptPassed() {
+    for (int i = 0; i < 10; i++) {
+      final String randomText = new BigInteger(130, new SecureRandom()).toString(32);
+      final String randomSalt = new BigInteger(130, new SecureRandom()).toString(32);
       assertTrue(SHA512Crypt.cryptPassSalt(randomText, randomSalt).startsWith("$" + randomSalt));
     }
   }

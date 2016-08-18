@@ -20,8 +20,6 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
 import javax.swing.SpinnerNumberModel;
 
-import games.strategy.triplea.ui.menubar.LobbyMenu;
-import games.strategy.ui.SwingAction;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatPlayerPanel;
@@ -32,6 +30,8 @@ import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.net.INode;
+import games.strategy.triplea.ui.menubar.LobbyMenu;
+import games.strategy.ui.SwingAction;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.MD5Crypt;

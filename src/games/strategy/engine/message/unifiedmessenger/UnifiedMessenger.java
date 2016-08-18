@@ -61,9 +61,10 @@ public class UnifiedMessenger {
    */
   public UnifiedMessenger(final IMessenger messenger) {
     m_messenger = messenger;
-    IMessageListener m_messageListener = (msg, from) -> UnifiedMessenger.this.messageReceived(msg, from);
+    final IMessageListener m_messageListener = (msg, from) -> UnifiedMessenger.this.messageReceived(msg, from);
     m_messenger.addMessageListener(m_messageListener);
-    IMessengerErrorListener m_messengerErrorListener = (messenger1, reason) -> UnifiedMessenger.this.messengerInvalid();
+    final IMessengerErrorListener m_messengerErrorListener =
+        (messenger1, reason) -> UnifiedMessenger.this.messengerInvalid();
     m_messenger.addErrorListener(m_messengerErrorListener);
     if (m_messenger.isServer()) {
       m_hub = new UnifiedMessengerHub(m_messenger, this);
@@ -125,7 +126,7 @@ public class UnifiedMessenger {
     }
 
     synchronized (m_pendingLock) {
-      RemoteMethodCallResults results = m_results.remove(methodCallID);
+      final RemoteMethodCallResults results = m_results.remove(methodCallID);
       if (results == null) {
         throw new IllegalStateException(
             "No results from remote call. Method returned:" + remoteCall.getMethodName() + " for remote name:"

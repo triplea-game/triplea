@@ -65,10 +65,13 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   public static final RemoteName SERVER_REMOTE_NAME =
       new RemoteName("games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE", IServerStartupRemote.class);
 
-  public enum InteractionMode { HEADLESS, SWING_CLIENT_UI }
+  public enum InteractionMode {
+    HEADLESS, SWING_CLIENT_UI
+  }
 
   static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
   static final String PLAYERNAME = "PlayerName";
+
   static RemoteName getObserverWaitingToStartName(final INode node) {
     return new RemoteName("games.strategy.engine.framework.startup.mc.ServerModel.OBSERVER" + node.getName(),
         IObserverWaitingToJoin.class);
@@ -157,7 +160,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
             if (player.getIsDisabled()) {
               playersToNodeListing.put(name, serverMessenger.getLocalNode().getName());
               // the 2nd in the list should be Weak AI
-              int indexPosition = Math.max(0, Math.min(data.getGameLoader().getServerPlayerTypes().length - 1, 1));
+              final int indexPosition =
+                  Math.max(0, Math.min(data.getGameLoader().getServerPlayerTypes().length - 1, 1));
               localPlayerTypes.put(name, data.getGameLoader().getServerPlayerTypes()[indexPosition]);
             } else {
               // we generally do not want a headless host bot to be doing any AI turns, since that
@@ -393,7 +397,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       } else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD.equals(typeOfAutosave)) {
         save = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveOddFileName());
       } else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN.equals(typeOfAutosave)) {
-        save = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveEvenFileName());
+        save =
+            new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveEvenFileName());
       } else {
         return;
       }

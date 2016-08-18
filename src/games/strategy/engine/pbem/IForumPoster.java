@@ -89,7 +89,8 @@ public interface IForumPoster extends IBean {
   /**
    * Get the user name to login with
    */
-  @Override String getDisplayName();
+  @Override
+  String getDisplayName();
 
   /**
    * Get the forum id

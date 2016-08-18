@@ -8,12 +8,12 @@ import java.util.HashSet;
 import java.util.List;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.formatter.MyFormatter;
 

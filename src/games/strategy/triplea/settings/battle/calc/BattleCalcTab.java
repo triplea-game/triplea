@@ -33,8 +33,7 @@ public class BattleCalcTab implements SettingsTab<BattleCalcSettings> {
             CALC_DESCRIPTION + " (low luck games)",
             new JTextField(String.valueOf(battleCalcSettings.getSimulationCountLowLuck()), 5),
             ((settings, s) -> settings.setSimulationCountLowLuck(s)),
-            (settings -> String.valueOf(settings.getSimulationCountLowLuck())))
-    );
+            (settings -> String.valueOf(settings.getSimulationCountLowLuck()))));
   }
 
   @Override

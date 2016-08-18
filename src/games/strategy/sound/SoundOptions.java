@@ -43,7 +43,7 @@ public final class SoundOptions {
     final String cancel = "Cancel";
     final String selectAll = "All";
     final String selectNone = "None";
-    
+
     final List<IEditableProperty> properties = SoundPath.getSoundOptions();
     final Object pressedButton = PropertiesSelector.getButton(parent, "Sound Options", properties,
         ok, selectAll, selectNone, cancel);

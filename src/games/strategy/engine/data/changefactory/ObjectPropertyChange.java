@@ -1,18 +1,18 @@
 package games.strategy.engine.data.changefactory;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.util.PropertyUtil;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
 
 class ObjectPropertyChange extends Change {
   private static final long serialVersionUID = 4218093376094170940L;
   private final Object m_object;
   private String m_property;
-  private Object m_newValue;
-  private Object m_oldValue;
+  private final Object m_newValue;
+  private final Object m_oldValue;
 
   public ObjectPropertyChange(final Object object, final String property, final Object newValue) {
     m_object = object;

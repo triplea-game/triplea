@@ -1,8 +1,8 @@
 package games.strategy.triplea.ui.screen.drawable;
 
-import games.strategy.triplea.ui.IUIContext;
-
 import java.awt.Image;
+
+import games.strategy.triplea.ui.IUIContext;
 
 public class BaseMapDrawable extends MapTileDrawable {
   public BaseMapDrawable(final int x, final int y, final IUIContext uiContext) {

@@ -496,9 +496,10 @@ class ChooserEntry {
     @Override
     public void paint(final Graphics g) {
       super.paint(g);
-      Optional<Image> image = uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
-          m_forceDamaged || m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled());
-      if(image.isPresent()) {
+      final Optional<Image> image =
+          uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
+              m_forceDamaged || m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled());
+      if (image.isPresent()) {
         g.drawImage(image.get(), 0, 0, this);
       }
 
@@ -509,7 +510,7 @@ class ChooserEntry {
         final int x = uiContext.getUnitImageFactory().getUnitImageWidth() * index;
         final Optional<Image> unitImg =
             uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), m_data, false, false);
-        if(unitImg.isPresent()) {
+        if (unitImg.isPresent()) {
           g.drawImage(unitImg.get(), x, 0, this);
         }
         index++;

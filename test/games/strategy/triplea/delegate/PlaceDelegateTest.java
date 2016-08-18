@@ -29,6 +29,7 @@ public class PlaceDelegateTest extends DelegateTest {
     return m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INFANTRY).create(count, player);
   }
 
+  @Override
   @Before
   public void setUp() throws Exception {
     super.setUp();

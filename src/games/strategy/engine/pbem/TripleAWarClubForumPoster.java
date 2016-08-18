@@ -91,7 +91,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
     try {
       login();
       // load the reply page
-      String s_forumId = "20";
+      final String s_forumId = "20";
       final String url =
           WAR_CLUB_FORUM_URL + "/reply.php?forum=" + s_forumId + "&topic_id=" + m_topicId;
       GetMethod get = new GetMethod(url);

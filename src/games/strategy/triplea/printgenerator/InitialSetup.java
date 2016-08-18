@@ -23,20 +23,20 @@ public class InitialSetup {
    * @param boolean useOriginalState
    */
   protected void run(final PrintGenerationData printData, final boolean useOriginalState) {
-    GameData m_data = printData.getData();
-    PrintGenerationData m_printData = printData;
+    final GameData m_data = printData.getData();
+    final PrintGenerationData m_printData = printData;
     if (useOriginalState) {
       final HistoryNode root = (HistoryNode) m_data.getHistory().getRoot();
       m_data.getHistory().gotoNode(root);
     }
-    Iterator<UnitType> m_unitTypeIterator = m_data.getUnitTypeList().iterator();
+    final Iterator<UnitType> m_unitTypeIterator = m_data.getUnitTypeList().iterator();
     while (m_unitTypeIterator.hasNext()) {
       final UnitType currentType = m_unitTypeIterator.next();
       final UnitAttachment currentTypeUnitAttachment = UnitAttachment.get(currentType);
       m_unitInfoMap.put(currentType, currentTypeUnitAttachment);
     }
     new UnitInformation().saveToFile(m_printData, m_unitInfoMap);
-    Iterator<PlayerID> m_playerIterator = m_data.getPlayerList().iterator();
+    final Iterator<PlayerID> m_playerIterator = m_data.getPlayerList().iterator();
     while (m_playerIterator.hasNext()) {
       final PlayerID currentPlayer = m_playerIterator.next();
       new CountryChart().saveToFile(currentPlayer, m_printData);

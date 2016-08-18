@@ -24,9 +24,9 @@ class CountryChart {
       new HashMap<>();
 
   protected void saveToFile(final PlayerID player, final PrintGenerationData printData) {
-    GameData m_data = printData.getData();
-    PrintGenerationData m_printData = printData;
-    Collection<Territory> m_terrCollection =
+    final GameData m_data = printData.getData();
+    final PrintGenerationData m_printData = printData;
+    final Collection<Territory> m_terrCollection =
         Match.getMatches(m_data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
     Iterator<Territory> m_terrIterator = m_terrCollection.iterator();
     Iterator<UnitType> availableUnits = m_data.getUnitTypeList().iterator();

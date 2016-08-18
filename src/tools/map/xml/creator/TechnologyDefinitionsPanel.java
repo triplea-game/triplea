@@ -29,8 +29,9 @@ public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
   }
 
   public static void layout(final MapXmlCreator mapXmlCreator) {
-    if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof TechnologyDefinitionsPanel))
+    if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof TechnologyDefinitionsPanel)) {
       me = Optional.of(new TechnologyDefinitionsPanel(mapXmlCreator.getStepActionPanel()));
+    }
     DynamicRowsPanel.layout(mapXmlCreator);
   }
 
@@ -54,24 +55,25 @@ public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
     labelAlreadyEnabled.setPreferredSize(dimension);
 
     // <1> Set panel layout
-    GridBagLayout gbl_stepActionPanel = new GridBagLayout();
+    final GridBagLayout gbl_stepActionPanel = new GridBagLayout();
     setColumns(gbl_stepActionPanel);
     setRows(gbl_stepActionPanel, MapXmlHelper.getTechnologyDefinitionsMap().size());
     getOwnPanel().setLayout(gbl_stepActionPanel);
 
     // <2> Add Row Labels: Player Name, Alliance Name, Buy Quantity
-    GridBagConstraints gridBadConstLabelTechnologyName = new GridBagConstraints();
+    final GridBagConstraints gridBadConstLabelTechnologyName = new GridBagConstraints();
     gridBadConstLabelTechnologyName.insets = new Insets(0, 0, 5, 5);
     gridBadConstLabelTechnologyName.gridy = 0;
     gridBadConstLabelTechnologyName.gridx = 0;
     gridBadConstLabelTechnologyName.anchor = GridBagConstraints.WEST;
     getOwnPanel().add(labelTechnologyName, gridBadConstLabelTechnologyName);
 
-    GridBagConstraints gridBadConstLabelPlayerName = (GridBagConstraints) gridBadConstLabelTechnologyName.clone();
+    final GridBagConstraints gridBadConstLabelPlayerName = (GridBagConstraints) gridBadConstLabelTechnologyName.clone();
     gridBadConstLabelPlayerName.gridx = 1;
     getOwnPanel().add(labelPlayerName, gridBadConstLabelPlayerName);
 
-    GridBagConstraints gridBadConstLabelAlreadyEnabled = (GridBagConstraints) gridBadConstLabelTechnologyName.clone();
+    final GridBagConstraints gridBadConstLabelAlreadyEnabled =
+        (GridBagConstraints) gridBadConstLabelTechnologyName.clone();
     gridBadConstLabelAlreadyEnabled.gridx = 2;
     getOwnPanel().add(labelAlreadyEnabled, gridBadConstLabelAlreadyEnabled);
 
@@ -81,7 +83,7 @@ public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
     final String[] playerNamesArray = playerNames.toArray(new String[playerNames.size()]);
     for (final Entry<String, List<String>> technologyDefinition : MapXmlHelper.getTechnologyDefinitionsMap()
         .entrySet()) {
-      GridBagConstraints gbc_tTechnologyName = (GridBagConstraints) gridBadConstLabelTechnologyName.clone();
+      final GridBagConstraints gbc_tTechnologyName = (GridBagConstraints) gridBadConstLabelTechnologyName.clone();
       gbc_tTechnologyName.gridx = 0;
       gridBadConstLabelTechnologyName.gridy = yValue;
       final List<String> definition = technologyDefinition.getValue();
@@ -101,13 +103,15 @@ public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
     buttonAddTechnology.addActionListener(SwingAction.of("Add Technology", e -> {
       String newTechnologyName = JOptionPane.showInputDialog(getOwnPanel(), "Enter a new technology name:",
           "Technology" + (MapXmlHelper.getTechnologyDefinitionsMap().size() + 1));
-      if (newTechnologyName == null || newTechnologyName.isEmpty())
+      if (newTechnologyName == null || newTechnologyName.isEmpty()) {
         return;
+      }
       newTechnologyName = newTechnologyName.trim();
       String suggestedPlayerName = null;
       for (final String playerName : MapXmlHelper.getPlayerNames()) {
-        if (!MapXmlHelper.getTechnologyDefinitionsMap().containsKey(newTechnologyName + "_" + playerName))
+        if (!MapXmlHelper.getTechnologyDefinitionsMap().containsKey(newTechnologyName + "_" + playerName)) {
           suggestedPlayerName = playerName;
+        }
       }
       if (suggestedPlayerName == null) {
         JOptionPane.showMessageDialog(getOwnPanel(),
@@ -132,7 +136,7 @@ public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
     }));
     addButton(buttonAddTechnology);
 
-    GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelTechnologyName.clone();
+    final GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelTechnologyName.clone();
     gridBadConstButtonAddUnit.gridx = 0;
     gridBadConstButtonAddUnit.gridy = yValue;
     addFinalButtonRow(gridBadConstButtonAddUnit);
@@ -153,7 +157,7 @@ public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
   }
 
   @Override
-  protected void setColumns(GridBagLayout gbl_panel) {
+  protected void setColumns(final GridBagLayout gbl_panel) {
     gbl_panel.columnWidths = new int[] {50, 60, 50, 30};
     gbl_panel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0};
   }

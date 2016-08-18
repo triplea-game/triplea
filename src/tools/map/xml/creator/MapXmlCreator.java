@@ -62,11 +62,11 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.xml.sax.SAXException;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.ui.SwingAction;
 import tools.image.FileSave;
 
 /**
@@ -286,7 +286,8 @@ public class MapXmlCreator extends JFrame {
       try {
         loadXmlFromFilePath(myFile.getAbsolutePath());
       } catch (SAXException | IOException | ParserConfigurationException e) {
-        getLogger().log(Level.WARNING, "Default Map XML File could not be loaded from '" + myFile.getAbsolutePath() + "'.", e);
+        getLogger().log(Level.WARNING,
+            "Default Map XML File could not be loaded from '" + myFile.getAbsolutePath() + "'.", e);
         throw new IllegalStateException(
             "Default Map XML File could not be loaded from '" + myFile.getAbsolutePath() + "'.");
       }
@@ -426,7 +427,7 @@ public class MapXmlCreator extends JFrame {
     mainPanel.add(southPanel, BorderLayout.SOUTH);
     southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.X_AXIS));
 
-    JPanel southLeftPanel = new JPanel();
+    final JPanel southLeftPanel = new JPanel();
     southLeftPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
     final FlowLayout southLeftPanelFlowLayout = (FlowLayout) southLeftPanel.getLayout();
     southLeftPanelFlowLayout.setAlignment(FlowLayout.LEFT);
@@ -445,12 +446,12 @@ public class MapXmlCreator extends JFrame {
 
     addSouthCenterPanelButtons();
 
-    JPanel southRightPanel = new JPanel();
+    final JPanel southRightPanel = new JPanel();
     final FlowLayout southRightPanelFlowLayout = (FlowLayout) southRightPanel.getLayout();
     southRightPanelFlowLayout.setAlignment(FlowLayout.RIGHT);
     southPanel.add(southRightPanel);
 
-    JButton buttonAvailableChoices = MapXmlUIHelper.createButton("Available Choices", KeyEvent.VK_C);
+    final JButton buttonAvailableChoices = MapXmlUIHelper.createButton("Available Choices", KeyEvent.VK_C);
     buttonAvailableChoices.addActionListener(e -> {
       switch (currentStep) {
 
@@ -1083,7 +1084,7 @@ public class MapXmlCreator extends JFrame {
     try {
       return loadXmlFromFilePath(gameXMLPath);
     } catch (SAXException | IOException | ParserConfigurationException e) {
-      ClientLogger.logError("Failed to load XML File: " + gameXMLPath,e);
+      ClientLogger.logError("Failed to load XML File: " + gameXMLPath, e);
       return loadXML();
     }
   }

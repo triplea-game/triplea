@@ -17,14 +17,14 @@ public class MapDownloadHelpPanel extends JPanel {
   };
 
   public MapDownloadHelpPanel() {
-    JLabel label = new JLabel(buildHelpHtmlOutput());
+    final JLabel label = new JLabel(buildHelpHtmlOutput());
     add(label);
   }
 
   private static String buildHelpHtmlOutput() {
-    StringBuilder sb = new StringBuilder();
+    final StringBuilder sb = new StringBuilder();
     sb.append("<html>");
-    for (String helpComment : HELP_COMMENTS) {
+    for (final String helpComment : HELP_COMMENTS) {
       sb.append("<li>").append(helpComment).append("</li>");
     }
     sb.append("</html>");

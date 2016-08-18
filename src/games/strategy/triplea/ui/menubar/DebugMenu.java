@@ -22,7 +22,7 @@ public class DebugMenu {
     menuBar.add(debugMenu);
 
     final Set<IGamePlayer> players = frame.getLocalPlayers().getLocalPlayers();
-    boolean areThereProAIs = players.stream().filter(player -> player instanceof  ProAI ).findFirst().isPresent();
+    final boolean areThereProAIs = players.stream().filter(player -> player instanceof ProAI).findFirst().isPresent();
     if (areThereProAIs) {
       ProAI.initialize(frame);
       debugMenu.add(SwingAction.of("Show Hard AI Logs", e -> ProAI.showSettingsWindow())).setMnemonic(KeyEvent.VK_X);

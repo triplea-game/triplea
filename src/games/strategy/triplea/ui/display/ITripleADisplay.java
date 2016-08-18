@@ -24,7 +24,8 @@ public interface ITripleADisplay extends IDisplay {
       final boolean doNotIncludeClients, final boolean doNotIncludeObservers);
 
   /**
-   * Sends a message to all TripleAFrame's that are playing AND are controlling one or more of the players listed but NOT any of the players
+   * Sends a message to all TripleAFrame's that are playing AND are controlling one or more of the players listed but
+   * NOT any of the players
    * listed as butNotThesePlayers.
    * (No message to any observers or players not in the list.)
    *

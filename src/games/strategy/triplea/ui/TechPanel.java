@@ -23,7 +23,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.TechnologyFrontier;
@@ -34,6 +33,7 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.dataObjects.TechRoll;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
+import games.strategy.ui.SwingAction;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Util;
 
@@ -285,7 +285,7 @@ class TechRollPanel extends JPanel {
     final JLabel title = new JLabel("Select the number of tech rolls:");
     title.setBorder(new javax.swing.border.EmptyBorder(5, 5, 5, 5));
     m_textField = new ScrollableTextField(0, PUs / TechTracker.getTechCost(player));
-    ScrollableTextFieldListener m_listener =
+    final ScrollableTextFieldListener m_listener =
         stf -> setLabel(m_PUs - (TechTracker.getTechCost(m_player) * m_textField.getValue()));
     m_textField.addChangeListener(m_listener);
     final JLabel costLabel = new JLabel("x" + TechTracker.getTechCost(m_player));
@@ -340,7 +340,7 @@ class TechTokenPanel extends JPanel {
     title.setBorder(new javax.swing.border.EmptyBorder(5, 5, 5, 5));
     final int techCost = TechTracker.getTechCost(m_player);
     m_textField = new ScrollableTextField(0, m_totalPUs / techCost);
-    ScrollableTextFieldListener m_listener = stf -> {
+    final ScrollableTextFieldListener m_listener = stf -> {
       setLabel(TechTracker.getTechCost(m_player) * m_textField.getValue());
       setWidgetActivation();
     };

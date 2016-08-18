@@ -16,7 +16,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 
 /** Used to download triplea_maps.xml */
 public class DownloadRunnable implements Runnable {
-  private static Map<String,File> downloadCache = Maps.newHashMap();
+  private static Map<String, File> downloadCache = Maps.newHashMap();
   private final String urlString;
   private final boolean parse;
   private volatile byte[] contents;
@@ -50,20 +50,20 @@ public class DownloadRunnable implements Runnable {
     }
   }
 
-  public static boolean beginsWithHttpProtocol(String urlString) {
+  public static boolean beginsWithHttpProtocol(final String urlString) {
     return urlString.startsWith("http://") || urlString.startsWith("https://");
   }
 
   private void downloadFile() {
     try {
-      if( !downloadCache.containsKey(urlString)) {
-        File tempFile = ClientFileSystemHelper.createTempFile();
+      if (!downloadCache.containsKey(urlString)) {
+        final File tempFile = ClientFileSystemHelper.createTempFile();
         DownloadUtils.downloadFile(urlString, tempFile);
         downloadCache.put(urlString, tempFile);
       }
-      File f = downloadCache.get(urlString);
+      final File f = downloadCache.get(urlString);
       contents = Files.readAllBytes(f.toPath());
-    } catch (IOException e) {
+    } catch (final IOException e) {
       error = e.getMessage();
       return;
     }
@@ -81,12 +81,12 @@ public class DownloadRunnable implements Runnable {
   }
 
   private void readLocalFile() {
-    File targetFile = new File(ClientFileSystemHelper.getRootFolder(), urlString);
+    final File targetFile = new File(ClientFileSystemHelper.getRootFolder(), urlString);
     try {
       contents = Files.readAllBytes(targetFile.toPath());
       downloads = DownloadFileParser.parse(new ByteArrayInputStream(getContents()));
       checkNotNull(downloads);
-    } catch (IOException e) {
+    } catch (final IOException e) {
       ClientLogger.logError("Failed to read file at: " + targetFile.getAbsolutePath(), e);
     }
   }

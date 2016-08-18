@@ -73,11 +73,11 @@ public class LobbyGameTableModelTest {
 
   @Test
   public void updateGame() {
-    int commentColumnIndex = testObj.getColumnIndex(LobbyGameTableModel.Column.Comments);
+    final int commentColumnIndex = testObj.getColumnIndex(LobbyGameTableModel.Column.Comments);
     assertThat((String) testObj.getValueAt(0, commentColumnIndex), nullValue());
 
-    String newComment = "comment";
-    GameDescription newDescription = new GameDescription();
+    final String newComment = "comment";
+    final GameDescription newDescription = new GameDescription();
     newDescription.setComment(newComment);
 
     testObj.getLobbyGameBroadcaster().gameUpdated(fakeGame.getFirst(), newDescription);

@@ -32,8 +32,8 @@ class UnitAttachmentsRow extends DynamicRow {
       String currentValue = attachmentName;
 
       @Override
-      public void focusLost(FocusEvent e) {
-        String newAttachmentName = textFieldAttachmentName.getText().trim();
+      public void focusLost(final FocusEvent e) {
+        final String newAttachmentName = textFieldAttachmentName.getText().trim();
         if (!currentValue.equals(newAttachmentName)) {
           final String newUnitAttachmentKey = newAttachmentName + "_" + unitName;
           if (MapXmlHelper.getUnitAttachmentsMap().containsKey(newUnitAttachmentKey)) {
@@ -60,7 +60,7 @@ class UnitAttachmentsRow extends DynamicRow {
       }
 
       @Override
-      public void focusGained(FocusEvent e) {
+      public void focusGained(final FocusEvent e) {
         textFieldAttachmentName.selectAll();
       }
     });
@@ -75,12 +75,13 @@ class UnitAttachmentsRow extends DynamicRow {
       String prevValue = value;
 
       @Override
-      public void focusLost(FocusEvent e) {
-        String inputText = textFieldValue.getText().trim().toLowerCase();
+      public void focusLost(final FocusEvent e) {
+        final String inputText = textFieldValue.getText().trim().toLowerCase();
         try {
-          if (Integer.parseInt(inputText) < 0)
+          if (Integer.parseInt(inputText) < 0) {
             throw new NumberFormatException();
-        } catch (NumberFormatException nfe) {
+          }
+        } catch (final NumberFormatException nfe) {
           JOptionPane.showMessageDialog(stepActionPanel, "'" + inputText + "' is no integer value.", "Input error",
               JOptionPane.ERROR_MESSAGE);
           textFieldValue.setText(prevValue);
@@ -99,7 +100,7 @@ class UnitAttachmentsRow extends DynamicRow {
       }
 
       @Override
-      public void focusGained(FocusEvent e) {
+      public void focusGained(final FocusEvent e) {
         textFieldValue.selectAll();
       }
     });

@@ -115,9 +115,9 @@ public class IndividualUnitPanelGrouped extends JPanel {
     this.setLayout(new GridBagLayout());
     final Insets nullInsets = new Insets(0, 0, 0, 0);
     final Dimension buttonSize = new Dimension(80, 20);
-    JButton m_selectNoneButton = new JButton("None");
+    final JButton m_selectNoneButton = new JButton("None");
     m_selectNoneButton.setPreferredSize(buttonSize);
-    JButton m_autoSelectButton = new JButton("Max");
+    final JButton m_autoSelectButton = new JButton("Max");
     m_autoSelectButton.setPreferredSize(buttonSize);
     add(m_title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         nullInsets, 0, 0));

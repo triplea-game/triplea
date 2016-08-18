@@ -125,7 +125,7 @@ public class MicroWebPosterEditor extends EditorPanel {
     final ArrayList<String> players = new ArrayList<>();
     try {
       final URL url = new URL(hostUrl + "getplayers.php");
-      Optional<InputStream> inputStream = UrlStreams.openStream(url);
+      final Optional<InputStream> inputStream = UrlStreams.openStream(url);
       if (inputStream.isPresent()) {
         try (InputStream stream = inputStream.get()) {
           try (InputStreamReader reader = new InputStreamReader(stream)) {
@@ -163,8 +163,9 @@ public class MicroWebPosterEditor extends EditorPanel {
       comboBoxes.get(i).setSelectedIndex(i % players.size());
       window.getContentPane().add(label, new GridBagConstraints(0, i + 1, 1, 1, 0, 0, GridBagConstraints.EAST,
           GridBagConstraints.NONE, new Insets(5, 20, 5, 5), 0, 0));
-      window.getContentPane().add(comboBoxes.get(i), new GridBagConstraints(1, i + 1, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.NONE, new Insets(5, 5, 5, 20), 0, 0));
+      window.getContentPane().add(comboBoxes.get(i),
+          new GridBagConstraints(1, i + 1, 1, 1, 0, 0, GridBagConstraints.WEST,
+              GridBagConstraints.NONE, new Insets(5, 5, 5, 20), 0, 0));
     }
     final JButton btnClose = new JButton("Cancel");
     btnClose.addActionListener(e -> {

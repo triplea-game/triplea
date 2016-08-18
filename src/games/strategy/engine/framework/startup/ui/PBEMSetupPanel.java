@@ -505,7 +505,7 @@ class PBEMLocalPlayerComboBoxSelector {
     m_playerName = playerName;
     m_name = new JLabel(m_playerName + ":");
     m_enabledCheckBox = new JCheckBox();
-    ActionListener m_disablePlayerActionListener = new ActionListener() {
+    final ActionListener m_disablePlayerActionListener = new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
         if (m_enabledCheckBox.isSelected()) {
@@ -589,6 +589,7 @@ class PBEMLocalPlayerComboBoxSelector {
 
 }
 
+
 /** A bean cache used by PBEMSetupPanel */
 enum LocalBeanCache {
   INSTANCE;
@@ -612,7 +613,7 @@ enum LocalBeanCache {
           ObjectInput oin = new ObjectInputStream(fin);) {
         final Object o = oin.readObject();
         if (o instanceof Map) {
-          final Map<?,?> m = (Map<?,?>) o;
+          final Map<?, ?> m = (Map<?, ?>) o;
           for (final Object o1 : m.keySet()) {
             if (!(o1 instanceof String)) {
               throw new Exception("Map is corrupt");

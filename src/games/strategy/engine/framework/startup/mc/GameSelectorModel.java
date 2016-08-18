@@ -75,7 +75,7 @@ public class GameSelectorModel extends Observable {
     m_fileName = entry.getLocation();
     setGameData(entry.getGameData());
     final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-    if(entry.getGameData() != null ) {
+    if (entry.getGameData() != null) {
       prefs.put(DEFAULT_GAME_NAME_PREF, entry.getGameData().getGameName());
     }
     prefs.put(DEFAULT_GAME_URI_PREF, entry.getURI().toString());

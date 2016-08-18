@@ -110,7 +110,7 @@ public class ClientGame extends AbstractGame {
       }
     };
     m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
-    IGameStepAdvancer m_gameStepAdvancer = (stepName, player) -> {
+    final IGameStepAdvancer m_gameStepAdvancer = (stepName, player) -> {
       if (m_isGameOver) {
         return;
       }

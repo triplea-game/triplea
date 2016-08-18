@@ -55,47 +55,48 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
         new FoldersTab(ClientContext.folderSettings())));
   }
 
-  private SettingsWindow(SettingsTab<?>... tabs) {
+  private SettingsWindow(final SettingsTab<?>... tabs) {
     add(buildTabbedPane(tabs), BorderLayout.CENTER);
   }
 
-  private JTabbedPane buildTabbedPane(SettingsTab<?>... tabs) {
-    JTabbedPane pane = SwingComponents.newJTabbedPane();
+  private JTabbedPane buildTabbedPane(final SettingsTab<?>... tabs) {
+    final JTabbedPane pane = SwingComponents.newJTabbedPane();
     Arrays.asList(tabs).forEach(tab -> pane.addTab(tab.getTabTitle(), createTabWindow(tab)));
     return pane;
   }
 
-  private <T extends HasDefaults> Component createTabWindow(SettingsTab<T> settingTab) {
-    List<SettingInputComponent<T>> inputs = settingTab.getInputs();
+  private <T extends HasDefaults> Component createTabWindow(final SettingsTab<T> settingTab) {
+    final List<SettingInputComponent<T>> inputs = settingTab.getInputs();
 
-    JPanel settingsPanel = SwingComponents.newJPanelWithVerticalBoxLayout();
-    int topOfWindowPadding = 20;
+    final JPanel settingsPanel = SwingComponents.newJPanelWithVerticalBoxLayout();
+    final int topOfWindowPadding = 20;
     settingsPanel.add(Box.createVerticalStrut(topOfWindowPadding));
 
     inputs.forEach(input -> {
       settingsPanel.add(createInputElementRow(input));
 
-      int paddingBetweenRows = 15;
+      final int paddingBetweenRows = 15;
       settingsPanel.add(Box.createVerticalStrut(paddingBetweenRows));
     });
 
-    JPanel panel = SwingComponents.newJPanelWithVerticalBoxLayout();
+    final JPanel panel = SwingComponents.newJPanelWithVerticalBoxLayout();
     panel.add(new JScrollPane(settingsPanel));
     panel.add(createButtonsPanel(settingTab));
     return panel;
   }
 
-  private static JPanel createInputElementRow(SettingInputComponent<?> input) {
-    JPanel contentRow = createContentRow(createTextAndInputPanel(input), createInputDescription(input));
+  private static JPanel createInputElementRow(final SettingInputComponent<?> input) {
+    final JPanel contentRow = createContentRow(createTextAndInputPanel(input), createInputDescription(input));
     return SwingComponents.createRowWithTopAndBottomPadding(contentRow, 3, 5);
   }
 
 
-  private static JPanel createContentRow(JComponent textAndInputComponent, JComponent descriptionComponent) {
-    JPanel contentRow = SwingComponents.newJPanelWithHorizontalBoxLayout();
+  private static JPanel createContentRow(final JComponent textAndInputComponent,
+      final JComponent descriptionComponent) {
+    final JPanel contentRow = SwingComponents.newJPanelWithHorizontalBoxLayout();
     contentRow.setMaximumSize(new Dimension(MAX_WIDTH, ROW_HEIGHT));
 
-    int leftHandPadding = 20;
+    final int leftHandPadding = 20;
     contentRow.add(Box.createHorizontalStrut(leftHandPadding));
     contentRow.add(textAndInputComponent);
 
@@ -108,12 +109,12 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
   }
 
 
-  private static JPanel createTextAndInputPanel(SettingInputComponent<?> input) {
-    JPanel labelInputPanel = SwingComponents.newJPanelWithGridLayout(1, 2);
-    JLabel label = new JLabel(input.getLabel());
+  private static JPanel createTextAndInputPanel(final SettingInputComponent<?> input) {
+    final JPanel labelInputPanel = SwingComponents.newJPanelWithGridLayout(1, 2);
+    final JLabel label = new JLabel(input.getLabel());
     labelInputPanel.add(label);
 
-    JPanel inputPanel = new JPanel();
+    final JPanel inputPanel = new JPanel();
     inputPanel.add(input.getInputElement().getSwingComponent());
     inputPanel.add(Box.createHorizontalGlue());
 
@@ -127,8 +128,8 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
 
   }
 
-  private static JTextArea createInputDescription(SettingInputComponent<?> input) {
-    JTextArea description = new JTextArea(input.getDescription(), 2, 50);
+  private static JTextArea createInputDescription(final SettingInputComponent<?> input) {
+    final JTextArea description = new JTextArea(input.getDescription(), 2, 50);
 
     // TODO: JTextArea.setLineWrap(boolean) does not wrap on word boundaries, instead it'll split words across lines
     description.setLineWrap(true);
@@ -139,11 +140,11 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
   /**
    * Each element is arranged in a row, with glue in between every element
    */
-  private <T extends HasDefaults> JPanel createButtonsPanel(SettingsTab<T> settingTab) {
-    JPanel buttonsPanel = SwingComponents.newJPanelWithHorizontalBoxLayout();
+  private <T extends HasDefaults> JPanel createButtonsPanel(final SettingsTab<T> settingTab) {
+    final JPanel buttonsPanel = SwingComponents.newJPanelWithHorizontalBoxLayout();
 
     // instead of glue, use one vertical strut to give the buttons panel a minimum height
-    int buttonPanelHeight = 50;
+    final int buttonPanelHeight = 50;
     buttonsPanel.add(Box.createVerticalStrut(buttonPanelHeight));
 
     buttonsPanel.add(SwingComponents.newJButton("Use Defaults",
@@ -152,7 +153,8 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
               settingTab.getSettingsObject().setToDefault();
               SystemPreferences.flush();
               dispose();
-              SwingComponents.showDialog("Defaults Restored", "Reverted the '" + settingTab.getTabTitle() + "' settings back to defaults");
+              SwingComponents.showDialog("Defaults Restored",
+                  "Reverted the '" + settingTab.getTabTitle() + "' settings back to defaults");
             })));
 
     buttonsPanel.add(Box.createHorizontalGlue());

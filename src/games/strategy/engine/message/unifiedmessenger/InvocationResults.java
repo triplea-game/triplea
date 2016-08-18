@@ -1,12 +1,12 @@
 package games.strategy.engine.message.unifiedmessenger;
 
-import games.strategy.engine.message.RemoteMethodCallResults;
-import games.strategy.net.GUID;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import games.strategy.engine.message.RemoteMethodCallResults;
+import games.strategy.net.GUID;
 
 // the results of a remote invocation
 public abstract class InvocationResults implements Externalizable {
