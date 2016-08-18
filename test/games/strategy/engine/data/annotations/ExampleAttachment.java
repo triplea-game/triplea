@@ -29,7 +29,7 @@ public class ExampleAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTechCost(final Integer techCost) {
+  public void setTechCost(final int techCost) {
     m_techCost = techCost;
   }
 
@@ -47,7 +47,7 @@ public class ExampleAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setHeavyBomber(final Boolean heavyBomber) {
+  public void setHeavyBomber(final boolean heavyBomber) {
     m_heavyBomber = heavyBomber;
   }
 

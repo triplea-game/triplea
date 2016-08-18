@@ -104,7 +104,7 @@ public class GameDataManager {
             return null;
           }
           final boolean closeCurrentInstance = buttonPressed.equals(yesClose);
-          TripleAProcessRunner.startGame(savegamePath, newClassPath, null);
+          TripleAProcessRunner.startGame(savegamePath, newClassPath, 0);
           if (closeCurrentInstance) {
             ThreadUtil.sleep(1000);
             System.exit(0);

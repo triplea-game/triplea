@@ -1500,7 +1500,7 @@ public class TripleAFrame extends MainGameFrame {
     ThreadUtil.sleep(300);
     SwingAction.invokeAndWait(() -> {
       final Boolean play = requiredTurnSeries.get(player);
-      if (play != null && play.booleanValue()) {
+      if (play != null && play) {
         ClipPlayer.play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
         requiredTurnSeries.put(player, false);
       }

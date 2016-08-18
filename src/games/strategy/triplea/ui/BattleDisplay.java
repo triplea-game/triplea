@@ -742,11 +742,11 @@ class BattleModel extends DefaultTableModel {
     // TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)
     final String[] diceColumns = new String[data.getDiceSides() + 1];
     {
-      for (Integer i = 0; i < diceColumns.length; i++) {
+      for (int i = 0; i < diceColumns.length; i++) {
         if (i == 0) {
           diceColumns[i] = " ";
         } else {
-          diceColumns[i] = i.toString();
+          diceColumns[i] = Integer.toString(i);
         }
       }
     }

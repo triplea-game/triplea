@@ -36,7 +36,7 @@ class CountryChart {
       final List<Map<UnitType, Integer>> unitPairs = new ArrayList<>();
       while (availableUnits.hasNext()) {
         final UnitType currentUnit = availableUnits.next();
-        final Integer amountHere = unitsHere.getUnitCount(currentUnit, player);
+        final int amountHere = unitsHere.getUnitCount(currentUnit, player);
         final Map<UnitType, Integer> innerMap = new HashMap<>();
         innerMap.put(currentUnit, amountHere);
         unitPairs.add(innerMap);
@@ -79,7 +79,7 @@ class CountryChart {
           final Iterator<UnitType> uIter = currentMap.keySet().iterator();
           while (uIter.hasNext()) {
             final UnitType uHere = uIter.next();
-            final Integer here = currentMap.get(uHere);
+            final int here = currentMap.get(uHere);
             countryFileWriter.write("," + here);
           }
         }

@@ -121,7 +121,7 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
     if (intMap == null) {
       return "";
     }
-    for (final Integer curInt : intMap.keySet()) {
+    for (final int curInt : intMap.keySet()) {
       final int start = curInt;
       final int end = intMap.get(curInt);
       if (intList.length() > 0) {

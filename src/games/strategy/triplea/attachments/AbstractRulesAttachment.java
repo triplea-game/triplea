@@ -206,9 +206,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
           end = getInt(s2[1]);
         }
       }
-      final Integer t = start;
-      final Integer u = end;
-      m_turns.put(t, u);
+      m_turns.put(start, end);
     }
   }
 
@@ -219,7 +217,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 
   protected boolean checkTurns(final GameData data) {
     final int turn = data.getSequence().getRound();
-    for (final Integer t : m_turns.keySet()) {
+    for (final int t : m_turns.keySet()) {
       if (turn >= t && turn <= m_turns.get(t)) {
         return true;
       }

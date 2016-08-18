@@ -31,7 +31,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
   protected final GameData m_data;
   protected final AbstractMovePanel m_movePanel;
   protected JScrollPane scroll;
-  protected Integer scrollBarPreviousValue = null;
+  protected Integer scrollBarPreviousValue = null;//TODO replace this Integer with a int primitive... Using null as toggle switch is bad code
   protected Integer previousVisibleIndex = null;
 
   public AbstractUndoableMovesPanel(final GameData data, final AbstractMovePanel movePanel) {

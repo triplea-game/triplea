@@ -34,9 +34,8 @@ class PlayerAndAlliancesRow extends DynamicRow {
 
     textFieldPlayerName = new JTextField(playerName);
     comboBoxPlayerAlliance = new JComboBox<>(alliances);
-    final Integer initialResourceInteger = Integer.valueOf(initialResource);
     textFieldInitialResource =
-        new JTextField(initialResourceInteger == null ? "0" : Integer.toString(initialResourceInteger));
+        new JTextField(Integer.toString(initialResource));
 
     Dimension dimension = textFieldPlayerName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_MEDIUM;
@@ -125,8 +124,7 @@ class PlayerAndAlliancesRow extends DynamicRow {
       public void focusLost(final FocusEvent arg0) {
         final String inputText = textFieldInitialResource.getText().trim();
         try {
-          final Integer newValue = Integer.parseInt(inputText);
-          MapXmlHelper.getPlayerInitResourcesMap().put(playerName, newValue);
+          MapXmlHelper.getPlayerInitResourcesMap().put(playerName, Integer.parseInt(inputText));
         } catch (final NumberFormatException e) {
           textFieldInitialResource.setText(prevValue);
           JOptionPane.showMessageDialog(stepActionPanel, "'" + inputText + "' is no integer value.", "Input error",

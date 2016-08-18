@@ -420,7 +420,7 @@ public final class ProTechAI {
             continue;
           }
           q.add(neighbor);
-          final Integer dist = distance.getInt(neighbor);
+          final int dist = distance.getInt(neighbor);
           if (ignoreDistance.contains(dist)) {
             continue;
           }
