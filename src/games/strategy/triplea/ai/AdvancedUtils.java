@@ -36,24 +36,6 @@ public class AdvancedUtils {
     return -1;
   }
 
-  public static int getSlowestMovementUnitInList(final Collection<Unit> list) {
-    int lowestMovement = Integer.MAX_VALUE;
-    for (final Unit unit : list) {
-      final TripleAUnit tu = TripleAUnit.get(unit);
-      if (tu.getMovementLeft() < lowestMovement) {
-        // If like was added so units on transport wouldn't slow transport down
-        if (TripleAUnit.get(unit).getTransportedBy() == null
-            || !list.contains(TripleAUnit.get(unit).getTransportedBy())) {
-          lowestMovement = tu.getMovementLeft();
-        }
-      }
-    }
-    if (lowestMovement == Integer.MAX_VALUE) {
-      return -1;
-    }
-    return lowestMovement;
-  }
-
   private static Route trimRouteBeforeFirstTerMatching(final Route route, final int newRouteJumpCount,
       final Match<Territory> match) {
     final List<Territory> newTers = new ArrayList<>();
@@ -72,19 +54,6 @@ public class AdvancedUtils {
       return null;
     }
     return new Route(newTers);
-  }
-
-  public static Route trimRouteBeforeFirstTerWithEnemyUnits(final Route route, final int newRouteJumpCount,
-      final PlayerID player, final GameData data) {
-    return trimRouteBeforeFirstTerMatching(route, newRouteJumpCount,
-        Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<>(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1),
-            Matches.unitIsEnemyOf(data, player))));
-  }
-
-  public static List<Territory> getTerritoriesWithinXDistanceOfYMatchingZ(final GameData data, final Territory start,
-      final int maxDistance, final Match<Territory> match) {
-    return getTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, start, maxDistance, match,
-        Match.getAlwaysMatch());
   }
 
   private static List<Territory> getTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(final GameData data,

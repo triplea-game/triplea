@@ -82,16 +82,6 @@ class EndPoint {
     }
   }
 
-  public boolean isSingleThreaded() {
-    return m_singleThreaded;
-  }
-
-  public boolean hasImplementors() {
-    synchronized (m_implementorsMutext) {
-      return !m_implementors.isEmpty();
-    }
-  }
-
   public int getLocalImplementorCount() {
     synchronized (m_implementorsMutext) {
       return m_implementors.size();
@@ -184,15 +174,6 @@ class EndPoint {
     }
   }
 
-  public boolean equivalent(final EndPoint other) {
-    if (other.m_singleThreaded != this.m_singleThreaded) {
-      return false;
-    }
-    if (!other.m_name.equals(this.m_name)) {
-      return false;
-    }
-    return other.m_remoteClass.equals(m_remoteClass);
-  }
 
   @Override
   public String toString() {

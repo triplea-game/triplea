@@ -467,14 +467,6 @@ class ChooserEntry {
     return getHits(m_hitTexts.size() - 1);
   }
 
-  public int getAllButFinalHit() {
-    int hits = 0;
-    for (int i = 0; i < m_hitTexts.size() - 1; i++) {
-      hits += getHits(i);
-    }
-    return hits;
-  }
-
   public int size() {
     return m_hitTexts.size();
   }
