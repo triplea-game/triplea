@@ -96,3 +96,19 @@ On each and every merge to master, travis picks up, runs gradle, which then invo
 
 More documentation on how build system is configured can be found on the [triplea github wiki]
 (https://github.com/triplea-game/triplea/wiki/Continuous-Build-Process-Configs)
+
+
+Task and Issue Tracking
+========================
+
+* Discussion - technical discussions, anything non-technical should be pushed to forum
+* Feature Backlog (prefer feature over wishlist) - prioritized list of potential features
+* Bug Backlog - prioritized list of bugs to fix
+* Infra/Code Backlog - prioritized list of build, infra, code improvement, process, misc issues
+* Next Release - what we are currently targeting for the next release (anything in progress should have an assignee)
+
+Every issue should get a tag identifying whether it is a discussion, feature, bug, infra/code (couple of tags here). We then have tags to categorize the portion of TripleA experience it affects such as UI, performance, AI, game play/rules, map support, etc.
+
+For the most part each issue should end up with 2 tags with 1 from each list (sometimes it might not get a second tag or have multiple tags from the second list).
+
+For background and discussion, please see: See: https://github.com/triplea-game/triplea/issues/1059
