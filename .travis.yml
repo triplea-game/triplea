@@ -15,8 +15,6 @@ before_deploy:
 - GAME_CONFIG=game_engine.properties
 - ENGINE_VERSION=$(grep "engine_version" $GAME_CONFIG | sed 's/.*= *//g')
 - export TAGGED_VERSION="$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER"
-# Update install4j to have the build number in the install folder
-- sed -i "s/shortName=\"TripleA\"/shortName=\"TripleA-$TAGGED_VERSION\"/" build.install4j
 - sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" $GAME_CONFIG
 ## Download tutorial map
 - mkdir -p maps
