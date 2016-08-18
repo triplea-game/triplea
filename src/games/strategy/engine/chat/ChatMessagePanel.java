@@ -26,12 +26,12 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.net.INode;
 import games.strategy.net.ServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
+import games.strategy.ui.SwingAction;
 
 /**
  * A Chat window.
@@ -254,7 +254,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
       // don't let the chat get too big
       trimLines(doc, MAX_LINES);
     } catch (final BadLocationException e) {
-      ClientLogger.logError("There was an Error whilst trying to add the Chat Message \"" + message +"\" sent by " + from + " at " + time, e);
+      ClientLogger.logError("There was an Error whilst trying to add the Chat Message \"" + message + "\" sent by "
+          + from + " at " + time, e);
     }
   }
 

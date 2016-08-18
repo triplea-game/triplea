@@ -37,13 +37,13 @@ public class DownloadFile {
    * @param progressUpdateListener Called periodically while download progress is made.
    * @param completionListener Called when the File download is complete.
    */
-  public DownloadFile(DownloadFileDescription download, Consumer<Integer> progressUpdateListener,
-      Runnable completionListener) {
+  public DownloadFile(final DownloadFileDescription download, final Consumer<Integer> progressUpdateListener,
+      final Runnable completionListener) {
     this(download, progressUpdateListener);
     this.addDownloadCompletedListener(completionListener);
   }
 
-  protected DownloadFile(DownloadFileDescription download, Consumer<Integer> progressUpdateListener) {
+  protected DownloadFile(final DownloadFileDescription download, final Consumer<Integer> progressUpdateListener) {
     this.downloadDescription = download;
     this.progressUpdateListener = progressUpdateListener;
     this.downloadCompletedListeners = new ArrayList<>();
@@ -66,10 +66,10 @@ public class DownloadFile {
   private Thread createDownloadThread(final File fileToDownloadTo) {
     return new Thread(() -> {
       if (state != DownloadState.CANCELLED) {
-        URL url = downloadDescription.newURL();
+        final URL url = downloadDescription.newURL();
         try {
           DownloadUtils.downloadFile(url, fileToDownloadTo);
-        } catch (Exception e) {
+        } catch (final Exception e) {
           ClientLogger.logError("Failed to download: " + url, e);
         }
         if (state == DownloadState.CANCELLED) {
@@ -83,8 +83,8 @@ public class DownloadFile {
           props.setFrom(downloadDescription);
           DownloadFileProperties.saveForZip(downloadDescription.getInstallLocation(), props);
 
-        } catch (Exception e) {
-          String msg = "Failed to move downloaded file (" + fileToDownloadTo.getAbsolutePath() + ") to: "
+        } catch (final Exception e) {
+          final String msg = "Failed to move downloaded file (" + fileToDownloadTo.getAbsolutePath() + ") to: "
               + downloadDescription.getInstallLocation().getAbsolutePath();
           ClientLogger.logError(msg, e);
         }
@@ -117,7 +117,7 @@ public class DownloadFile {
     return state == DownloadState.NOT_STARTED;
   }
 
-  public void addDownloadCompletedListener(Runnable listener) {
+  public void addDownloadCompletedListener(final Runnable listener) {
     downloadCompletedListeners.add(listener);
   }
 }

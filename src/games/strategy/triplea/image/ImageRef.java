@@ -1,13 +1,13 @@
 package games.strategy.triplea.image;
 
-import games.strategy.debug.ClientLogger;
-
 import java.awt.Image;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
+
+import games.strategy.debug.ClientLogger;
 
 /**
  * We keep a soft reference to the image to allow it to be garbage collected.

@@ -20,6 +20,6 @@ public abstract class AbstractBaseAI extends AbstractBasePlayer {
    * Pause the game to allow the human player to see what is going on.
    */
   protected void pause() {
-     ThreadUtil.sleep(AbstractUIContext.getAIPauseDuration());
+    ThreadUtil.sleep(AbstractUIContext.getAIPauseDuration());
   }
 }

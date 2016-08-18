@@ -18,6 +18,7 @@ import games.strategy.util.Match;
 
 public class MoveValidatorTest extends DelegateTest {
 
+  @Override
   @Before
   public void setUp() throws Exception {
     super.setUp();

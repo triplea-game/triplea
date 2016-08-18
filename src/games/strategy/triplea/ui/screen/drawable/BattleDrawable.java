@@ -1,12 +1,5 @@
 package games.strategy.triplea.ui.screen.drawable;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.ui.mapdata.MapData;
-
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
@@ -15,6 +8,13 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.util.HashSet;
 import java.util.Set;
+
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.ui.mapdata.MapData;
 
 public class BattleDrawable extends TerritoryDrawable implements IDrawable {
   private final String m_territoryName;

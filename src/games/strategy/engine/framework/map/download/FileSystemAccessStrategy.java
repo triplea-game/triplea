@@ -33,23 +33,24 @@ public class FileSystemAccessStrategy {
     }
   }
 
-  public static void remove(List<DownloadFileDescription> toRemove, DefaultListModel<String> listModel) {
+  public static void remove(final List<DownloadFileDescription> toRemove, final DefaultListModel<String> listModel) {
     SwingComponents.promptUser("Remove Maps?",
         "<html>Will remove " + toRemove.size() + " maps, are you sure? <br/>"
             + formatMapList(toRemove, map -> map.getMapName()) + "</html>",
         createRemoveMapAction(toRemove, listModel));
   }
 
-  private static Runnable createRemoveMapAction(List<DownloadFileDescription> maps, DefaultListModel<String> listModel) {
+  private static Runnable createRemoveMapAction(final List<DownloadFileDescription> maps,
+      final DefaultListModel<String> listModel) {
     return () -> {
-      List<DownloadFileDescription> fails = new ArrayList<>();
-      List<DownloadFileDescription> deletes = new ArrayList<>();
+      final List<DownloadFileDescription> fails = new ArrayList<>();
+      final List<DownloadFileDescription> deletes = new ArrayList<>();
 
       // delete the map files
-      for (DownloadFileDescription map : maps) {
+      for (final DownloadFileDescription map : maps) {
         try {
-          Files.delete( map.getInstallLocation().toPath());
-        } catch (IOException e) {
+          Files.delete(map.getInstallLocation().toPath());
+        } catch (final IOException e) {
           ClientLogger.logQuietly(e);
         }
         map.getInstallLocation().delete();
@@ -58,11 +59,11 @@ public class FileSystemAccessStrategy {
       // now sleep a short while before we check our work
       try {
         Thread.sleep(10);
-      } catch (InterruptedException e) {
+      } catch (final InterruptedException e) {
       }
 
       // check our work, see if we actuall deleted stuff
-      for (DownloadFileDescription map : maps) {
+      for (final DownloadFileDescription map : maps) {
         if (map.getInstallLocation().exists()) {
           fails.add(map);
         } else {
@@ -86,33 +87,34 @@ public class FileSystemAccessStrategy {
     };
   }
 
-  private static void showRemoveFailDialog(String failMessage, List<DownloadFileDescription> mapList) {
-    String message = createDialogMessage(failMessage, mapList);
+  private static void showRemoveFailDialog(final String failMessage, final List<DownloadFileDescription> mapList) {
+    final String message = createDialogMessage(failMessage, mapList);
     showDialog(message, mapList, (map) -> map.getInstallLocation().getAbsolutePath());
   }
 
-  private static void showRemoveSuccessDialog(String successMessage, List<DownloadFileDescription> mapList) {
-    String message = createDialogMessage(successMessage, mapList);
+  private static void showRemoveSuccessDialog(final String successMessage,
+      final List<DownloadFileDescription> mapList) {
+    final String message = createDialogMessage(successMessage, mapList);
     showDialog(message, mapList, (map) -> map.getMapName());
   }
 
-  private static void showDialog(String message, List<DownloadFileDescription> mapList,
-      Function<DownloadFileDescription, String> outputFunction) {
-    StringBuilder sb = new StringBuilder("<html>" + message + "<br /> " + formatMapList(mapList, outputFunction));
+  private static void showDialog(final String message, final List<DownloadFileDescription> mapList,
+      final Function<DownloadFileDescription, String> outputFunction) {
+    final StringBuilder sb = new StringBuilder("<html>" + message + "<br /> " + formatMapList(mapList, outputFunction));
     sb.append("</html>");
 
     SwingComponents.newMessageDialog(sb.toString());
   }
 
-  private static String createDialogMessage(String message, List<DownloadFileDescription> mapList) {
-    String plural = mapList.size() > 0 ? "s" : "";
+  private static String createDialogMessage(final String message, final List<DownloadFileDescription> mapList) {
+    final String plural = mapList.size() > 0 ? "s" : "";
     return message + " " + mapList.size() + " map" + plural;
   }
 
-  private static String formatMapList(List<DownloadFileDescription> mapList,
-      Function<DownloadFileDescription, String> outputFunction) {
+  private static String formatMapList(final List<DownloadFileDescription> mapList,
+      final Function<DownloadFileDescription, String> outputFunction) {
     final int MAX_MAPS_TO_LIST = 6;
-    StringBuilder sb = new StringBuilder("<ul>");
+    final StringBuilder sb = new StringBuilder("<ul>");
     for (int i = 0; i < mapList.size(); i++) {
       if (i > MAX_MAPS_TO_LIST) {
         sb.append("<li>...</li>");

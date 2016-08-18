@@ -15,8 +15,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.ui.IntTextField;
+import games.strategy.ui.SwingAction;
 
 /**
  * UI for choosing client options.

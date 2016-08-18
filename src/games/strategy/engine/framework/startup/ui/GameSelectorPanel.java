@@ -25,7 +25,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import games.strategy.ui.SwingComponents;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
@@ -39,6 +38,7 @@ import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.ui.SwingComponents;
 
 public class GameSelectorPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -4598107601238030020L;
@@ -131,7 +131,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
   private void createComponents() {
     m_engineVersionLabel = new JLabel("Engine Version:");
-    String version = ClientContext.engineVersion().getFullVersion();
+    final String version = ClientContext.engineVersion().getFullVersion();
     m_engineVersionText = new JLabel(version);
     m_nameLabel = new JLabel("Map Name:");
     m_versionLabel = new JLabel("Map Version:");
@@ -175,7 +175,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
     add(m_loadSavedGame, buildGridRow(0, 7, new Insets(0, 10, 10, 10)));
 
-    JButton downloadMapButton =
+    final JButton downloadMapButton =
         SwingComponents.newJButton("Download Maps", "Click this button to install additional maps",
             () -> DownloadMapsWindow.showDownloadMapsWindow());
     add(downloadMapButton, buildGridRow(0, 8, new Insets(0, 10, 10, 10)));
@@ -188,23 +188,23 @@ public class GameSelectorPanel extends JPanel implements Observer {
   }
 
 
-  private static GridBagConstraints buildGridCell(int x, int y, Insets insets) {
+  private static GridBagConstraints buildGridCell(final int x, final int y, final Insets insets) {
     return buildGrid(x, y, insets, 1);
   }
 
-  private static GridBagConstraints buildGridRow(int x, int y, Insets insets) {
+  private static GridBagConstraints buildGridRow(final int x, final int y, final Insets insets) {
     return buildGrid(x, y, insets, 2);
   }
 
-  private static GridBagConstraints buildGrid(int x, int y, Insets insets, int width) {
-    int gridWidth = width;
-    int gridHeight = 1;
-    double weigthX = 0;
-    double weigthY = 0;
-    int anchor = GridBagConstraints.WEST;
-    int fill = GridBagConstraints.NONE;
-    int ipadx = 0;
-    int ipady = 0;
+  private static GridBagConstraints buildGrid(final int x, final int y, final Insets insets, final int width) {
+    final int gridWidth = width;
+    final int gridHeight = 1;
+    final double weigthX = 0;
+    final double weigthY = 0;
+    final int anchor = GridBagConstraints.WEST;
+    final int fill = GridBagConstraints.NONE;
+    final int ipadx = 0;
+    final int ipady = 0;
 
     return new GridBagConstraints(x, y, gridWidth, gridHeight, weigthX, weigthY, anchor, fill, insets, ipadx, ipady);
   }

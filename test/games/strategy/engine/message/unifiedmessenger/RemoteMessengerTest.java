@@ -50,17 +50,17 @@ public class RemoteMessengerTest {
   @Before
   public void setUp() throws Exception {
     // simple set up for non networked testing
-    List<IConnectionChangeListener> connectionListeners = new CopyOnWriteArrayList<>();
+    final List<IConnectionChangeListener> connectionListeners = new CopyOnWriteArrayList<>();
     doAnswer(new Answer<Void>() {
       @Override
-      public Void answer(InvocationOnMock invocation) throws Throwable {
+      public Void answer(final InvocationOnMock invocation) throws Throwable {
         connectionListeners.add(invocation.getArgument(0));
         return null;
       }
     }).when(m_messenger).addConnectionChangeListener(any());
     doAnswer(new Answer<Void>() {
       @Override
-      public Void answer(InvocationOnMock invocation) throws Throwable {
+      public Void answer(final InvocationOnMock invocation) throws Throwable {
         for (final IConnectionChangeListener listener : connectionListeners) {
           listener.connectionRemoved(invocation.getArgument(0));
         }
@@ -196,7 +196,7 @@ public class RemoteMessengerTest {
     }
   }
 
-  private static void shutdownServerAndClient(ServerMessenger server, ClientMessenger client) {
+  private static void shutdownServerAndClient(final ServerMessenger server, final ClientMessenger client) {
     if (server != null) {
       server.shutDown();
     }

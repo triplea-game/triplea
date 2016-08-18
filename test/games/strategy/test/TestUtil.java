@@ -11,14 +11,14 @@ import games.strategy.ui.SwingAction;
 public class TestUtil {
 
   /** Create and returns a simple delete on exit temp file with contents equal to the String parameter. */
-  public static File createTempFile(String contents) {
+  public static File createTempFile(final String contents) {
     File file;
     try {
       file = File.createTempFile("testFile", ".tmp");
       file.deleteOnExit();
       Files.write(contents, file, java.nio.charset.StandardCharsets.UTF_8);
       return file;
-    } catch (IOException e) {
+    } catch (final IOException e) {
       throw Throwables.propagate(e);
     }
   }
@@ -57,8 +57,8 @@ public class TestUtil {
     SwingAction.invokeAndWait(() -> {
     });
   }
-  
-  public static Class<?>[] getClassArrayFrom(Class<?>... classes){
+
+  public static Class<?>[] getClassArrayFrom(final Class<?>... classes) {
     return classes;
   }
 }

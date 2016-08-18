@@ -164,8 +164,9 @@ public class GameProperties extends GameDataComponent {
     List<IEditableProperty> editableProperties = null;
     try {
       editableProperties = streamToIEditablePropertiesList(byteArray);
-    } catch (final ClassNotFoundException | ClassCastException | IOException  e) {
-      ClientLogger.logError("An Error occured whilst trying to apply a Byte Map to Property. Bytes: " + Arrays.toString(byteArray), e);
+    } catch (final ClassNotFoundException | ClassCastException | IOException e) {
+      ClientLogger.logError(
+          "An Error occured whilst trying to apply a Byte Map to Property. Bytes: " + Arrays.toString(byteArray), e);
     }
     applyListToChangeProperties(editableProperties, gamePropertiesToBeChanged);
   }

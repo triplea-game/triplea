@@ -157,7 +157,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     try {
       return (T) m_getter.invoke(object);
     } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-       ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly(e);
     }
     return null;
   }
@@ -169,7 +169,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
       System.out.println(m_setter + "   to   " + value);
       m_setter.invoke(object, args);
     } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-       ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -206,7 +206,8 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
         continue;
       }
       try {
-        final MapPropertyWrapper<?> wrapper = new MapPropertyWrapper<>(propertyName, null, currentValue, setter, getter);
+        final MapPropertyWrapper<?> wrapper =
+            new MapPropertyWrapper<>(propertyName, null, currentValue, setter, getter);
         properties.add(wrapper);
       } catch (final Exception e) {
         ClientLogger.logQuietly(e);

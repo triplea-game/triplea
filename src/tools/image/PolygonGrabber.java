@@ -46,8 +46,8 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
+import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 
@@ -208,57 +208,57 @@ public class PolygonGrabber extends JFrame {
     exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
     final Action autoAction = SwingAction.of("Auto Find Polygons", e -> {
       JOptionPane.showMessageDialog(null,
-            new JLabel("<html>"
-                + "You will need to check and go back and do some polygons manually, as Auto does not catch them all. "
-                + "<br>Also, if a territory has more than 1 part (like an island chain), you will need to go back and "
-                + "<br>redo the entire territory chain using CTRL + Click in order to capture each part of the territory."
-                + "</html>"));
-        m_current = new ArrayList<>();
-        final BufferedImage imageCopy = new BufferedImage(m_bufferedImage.getWidth(null),
-            m_bufferedImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        final Graphics g = imageCopy.getGraphics();
-        g.drawImage(m_bufferedImage, 0, 0, null);
-        final Iterator<String> territoryNames = m_centers.keySet().iterator();
-        while (territoryNames.hasNext()) {
-          final String territoryName = territoryNames.next();
-          final Point center = m_centers.get(territoryName);
-          System.out.println("Detecting Polygon for:" + territoryName);
-          final Polygon p = findPolygon(center.x, center.y);
-          // test if the poly contains the center point (this often fails when there is an island right above (because
-          // findPolygon will grab
-          // the island instead)
-          if (!p.contains(center)) {
-            continue;
-          }
-          // test if this poly contains any other centers, and if so do not do this one. let the user manually do it to
-          // make sure it gets
-          // done properly
-          boolean hasIslands = false;
-          for (final Point otherCenterPoint : m_centers.values()) {
-            if (center.equals(otherCenterPoint)) {
-              continue;
-            }
-            if (p.contains(otherCenterPoint)) {
-              hasIslands = true;
-              break;
-            }
-          }
-          if (hasIslands) {
-            continue;
-          }
-          // some islands do not have centers on them because they are island chains that are also part of an island or
-          // territory touching a
-          // sidewall or outside of this polygon. we should still skip them.
-          if (doesPolygonContainAnyBlackInside(p, imageCopy, g)) {
-            continue;
-          }
-          final List<Polygon> polys = new ArrayList<>();
-          polys.add(p);
-          m_polygons.put(territoryName, polys);
+          new JLabel("<html>"
+              + "You will need to check and go back and do some polygons manually, as Auto does not catch them all. "
+              + "<br>Also, if a territory has more than 1 part (like an island chain), you will need to go back and "
+              + "<br>redo the entire territory chain using CTRL + Click in order to capture each part of the territory."
+              + "</html>"));
+      m_current = new ArrayList<>();
+      final BufferedImage imageCopy = new BufferedImage(m_bufferedImage.getWidth(null),
+          m_bufferedImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+      final Graphics g = imageCopy.getGraphics();
+      g.drawImage(m_bufferedImage, 0, 0, null);
+      final Iterator<String> territoryNames = m_centers.keySet().iterator();
+      while (territoryNames.hasNext()) {
+        final String territoryName = territoryNames.next();
+        final Point center = m_centers.get(territoryName);
+        System.out.println("Detecting Polygon for:" + territoryName);
+        final Polygon p = findPolygon(center.x, center.y);
+        // test if the poly contains the center point (this often fails when there is an island right above (because
+        // findPolygon will grab
+        // the island instead)
+        if (!p.contains(center)) {
+          continue;
         }
-        g.dispose();
-        imageCopy.flush();
-        repaint();
+        // test if this poly contains any other centers, and if so do not do this one. let the user manually do it to
+        // make sure it gets
+        // done properly
+        boolean hasIslands = false;
+        for (final Point otherCenterPoint : m_centers.values()) {
+          if (center.equals(otherCenterPoint)) {
+            continue;
+          }
+          if (p.contains(otherCenterPoint)) {
+            hasIslands = true;
+            break;
+          }
+        }
+        if (hasIslands) {
+          continue;
+        }
+        // some islands do not have centers on them because they are island chains that are also part of an island or
+        // territory touching a
+        // sidewall or outside of this polygon. we should still skip them.
+        if (doesPolygonContainAnyBlackInside(p, imageCopy, g)) {
+          continue;
+        }
+        final List<Polygon> polys = new ArrayList<>();
+        polys.add(p);
+        m_polygons.put(territoryName, polys);
+      }
+      g.dispose();
+      imageCopy.flush();
+      repaint();
 
     });
     autoAction.putValue(Action.SHORT_DESCRIPTION, "Autodetect Polygons around Centers");
@@ -400,7 +400,7 @@ public class PolygonGrabber extends JFrame {
       repaint();
     } catch (final FileNotFoundException ex) {
       ClientLogger.logQuietly("file name = " + polyName, ex);
-    } catch (HeadlessException ex) {
+    } catch (final HeadlessException ex) {
       // TODO: remove HeadlessException (fix anti-pattern control flow via exception handling with proper control flow)
       ClientLogger.logQuietly(ex);
     }

@@ -181,7 +181,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
           post.addRequestHeader("Referer", "http://www.axisandallies.org/forums/index.php?action=post;topic="
               + m_topicId + ".0;num_replies=" + numReplies);
           post.addRequestHeader("Accept", "*/*");
-            // the site has spam prevention which means you can't post until 15 seconds after login
+          // the site has spam prevention which means you can't post until 15 seconds after login
           ThreadUtil.sleep(15 * 1000);
           post.setFollowRedirects(false);
           status = m_client.executeMethod(m_hostConfiguration, post, m_httpState);

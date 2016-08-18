@@ -80,7 +80,6 @@ public class HeadlessConsoleController {
 
 
 
-
   private void send(final String command) {
     if (command == null) {
       return;
@@ -359,8 +358,10 @@ public class HeadlessConsoleController {
       final boolean stop = readin.toLowerCase().startsWith("y");
       if (stop) {
         SaveGameFileChooser.ensureMapsFolderExists();
-        final File f1 = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
-        final File f2 = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
+        final File f1 =
+            new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
+        final File f2 =
+            new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
         final File f;
         if (f1.lastModified() > f2.lastModified()) {
           f = f2;
@@ -389,7 +390,7 @@ public class HeadlessConsoleController {
           final ISetupPanel setup = server.getSetupPanelModel().getPanel();
           if (setup != null && setup instanceof ServerSetupPanel) {
             setup.shutDown();// this is causing a deadlock when in a shutdown hook, due to swing/awt. so we will shut
-                                                  // it down here instead.
+                             // it down here instead.
           }
         }
         System.exit(0);

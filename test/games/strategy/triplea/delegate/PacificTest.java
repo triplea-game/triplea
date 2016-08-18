@@ -54,6 +54,7 @@ public class PacificTest extends DelegateTest {
   ITestDelegateBridge bridge;
   MoveDelegate m_delegate;
 
+  @Override
   @Before
   public void setUp() throws Exception {
     super.setUp();

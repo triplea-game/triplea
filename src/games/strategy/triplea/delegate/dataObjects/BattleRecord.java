@@ -43,14 +43,15 @@ public class BattleRecord implements Serializable {
   private int attackerLostTUV = 0;
   private int defenderLostTUV = 0;
   private BattleResultDescription battleResultDescription;
-  private BattleType battleType;
+  private final BattleType battleType;
   private BattleResults battleResults;
 
 
   @SerializationProxySupport
-  private BattleRecord(Territory battleSite, PlayerID attacker, PlayerID defender, int attackerLostTUV,
-      int defenderLostTUV, BattleResultDescription battleResultDescription, BattleType battleType,
-      BattleResults battleResults) {
+  private BattleRecord(final Territory battleSite, final PlayerID attacker, final PlayerID defender,
+      final int attackerLostTUV,
+      final int defenderLostTUV, final BattleResultDescription battleResultDescription, final BattleType battleType,
+      final BattleResults battleResults) {
     this.battleSite = battleSite;
     this.attacker = attacker;
     this.defender = defender;
@@ -62,7 +63,7 @@ public class BattleRecord implements Serializable {
   }
 
   @SerializationProxySupport
-  public Object writeReplace(Object write) {
+  public Object writeReplace(final Object write) {
     return new SerializationProxy(this);
   }
 
@@ -77,7 +78,7 @@ public class BattleRecord implements Serializable {
     private final BattleType battleType;
     private final BattleResults battleResults;
 
-    public SerializationProxy(BattleRecord battleRecord) {
+    public SerializationProxy(final BattleRecord battleRecord) {
       battleSite = battleRecord.battleSite;
       attacker = battleRecord.attacker;
       defender = battleRecord.defender;

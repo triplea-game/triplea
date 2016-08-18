@@ -2184,7 +2184,7 @@ public class ProBidAI {
     int artilleryCount = artillery.size();
     int armorCount = armor.size();
     int othersCount = others.size();
-    for (Unit anInfantry : infantry) {
+    for (final Unit anInfantry : infantry) {
       sorted.add(anInfantry);
       // this should be based on combined attack and defense powers, not on attachments like blitz
       if (armorCount > 0) {

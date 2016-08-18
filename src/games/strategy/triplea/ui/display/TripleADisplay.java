@@ -26,7 +26,7 @@ public class TripleADisplay implements ITripleADisplay {
 
   @Override
   public void initialize(final IDisplayBridge bridge) {
-    IDisplayBridge m_displayBridge = bridge;
+    final IDisplayBridge m_displayBridge = bridge;
     m_displayBridge.toString();
   }
 

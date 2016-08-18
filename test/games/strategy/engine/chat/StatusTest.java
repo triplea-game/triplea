@@ -19,8 +19,8 @@ public class StatusTest {
 
   @Test
   public void testStatus() throws Exception {
-    IServerMessenger messenger = mock(IServerMessenger.class);
-    INode dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);
+    final IServerMessenger messenger = mock(IServerMessenger.class);
+    final INode dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);
     when(messenger.getLocalNode()).thenReturn(dummyNode);
     when(messenger.getServerNode()).thenReturn(dummyNode);
     when(messenger.isConnected()).thenReturn(true);

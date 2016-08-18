@@ -12,7 +12,7 @@ public interface SettingsTab<T extends HasDefaults> {
 
   T getSettingsObject();
 
-  default void updateSettings(List<SettingInputComponent<T>> inputs) {
+  default void updateSettings(final List<SettingInputComponent<T>> inputs) {
     final StringBuilder msg = new StringBuilder();
     final StringBuilder failMsg = new StringBuilder();
 
@@ -22,12 +22,12 @@ public interface SettingsTab<T extends HasDefaults> {
     boolean somethingInvalid = false;
 
     final List<String> invalidValues = new ArrayList<>();
-    for (SettingInputComponent<T> input : inputs) {
-      T settingsObject = getSettingsObject();
+    for (final SettingInputComponent<T> input : inputs) {
+      final T settingsObject = getSettingsObject();
 
-      String oldValue = input.getValue(settingsObject);
+      final String oldValue = input.getValue(settingsObject);
       if (input.updateSettings(settingsObject)) {
-        String newValue = input.getValue(settingsObject);
+        final String newValue = input.getValue(settingsObject);
 
         if (!newValue.equals(oldValue)) {
           if (!msg.toString().isEmpty()) {
@@ -55,7 +55,7 @@ public interface SettingsTab<T extends HasDefaults> {
       // TODO: Save button should not be enabled unless something is updated, so we would never fall into this case.
       title = "Nothing changed";
       message = "No values updated";
-    } else if(somethingSaved && !somethingInvalid) {
+    } else if (somethingSaved && !somethingInvalid) {
       title = "Settings Saved";
       message = msg.toString();
     } else if (!somethingSaved && somethingInvalid) {

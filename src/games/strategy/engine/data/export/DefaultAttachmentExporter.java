@@ -21,12 +21,12 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
   @Override
   public String getAttachmentOptions(final IAttachment attachment) {
     final StringBuffer xmlfile = new StringBuffer();
-    for(Field field : attachment.getClass().getDeclaredFields()) {
+    for (final Field field : attachment.getClass().getDeclaredFields()) {
       field.setAccessible(true);
       try {
         xmlfile.append(printOption(field, attachment));
       } catch (final AttachmentExportException e) {
-        ClientLogger.logQuietly("Could not export field: "+ field.getName(), e);
+        ClientLogger.logQuietly("Could not export field: " + field.getName(), e);
       }
     }
     return xmlfile.toString();
@@ -88,8 +88,10 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
           } catch (final NullPointerException e) {
             ClientLogger.logError("NullPointer Exception on Field " + fieldName, e);
           } catch (final NoSuchMethodException e) {
-            ClientLogger.logError("NoSuchMethodException Method: " + (Character.toUpperCase(fieldName.charAt(2)) + fieldName.substring(3))
-                + " found on: " + attachment.getClass().getCanonicalName(), e);
+            ClientLogger.logError(
+                "NoSuchMethodException Method: " + (Character.toUpperCase(fieldName.charAt(2)) + fieldName.substring(3))
+                    + " found on: " + attachment.getClass().getCanonicalName(),
+                e);
           }
         }
       }
@@ -232,7 +234,7 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
     try {
       final List<PlayerID> playerIds = (List<PlayerID>) field.get(attachment);
       final List<String> playerNames = new ArrayList<>();
-      for(PlayerID playerID : playerIds) {
+      for (final PlayerID playerID : playerIds) {
         playerNames.add(playerID.getName());
       }
       final String optionName = "" + Character.toLowerCase(field.getName().charAt(2)) + field.getName().substring(3);
@@ -252,11 +254,11 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
     try {
       final String optionName = "" + Character.toLowerCase(field.getName().charAt(2)) + field.getName().substring(3);
       final IntegerMap<UnitType> map = (IntegerMap<UnitType>) field.get(attachment);
-      StringBuilder returnValue = new StringBuilder();
+      final StringBuilder returnValue = new StringBuilder();
       if (map == null) {
         return "";
       }
-      for(UnitType type : map.keySet()) {
+      for (final UnitType type : map.keySet()) {
         final int number = map.getInt(type);
         if (type == null) {
           returnValue.append(printCountOption(optionName, "ANY", "" + number));

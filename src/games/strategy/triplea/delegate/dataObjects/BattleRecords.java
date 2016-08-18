@@ -28,7 +28,7 @@ public class BattleRecords implements Serializable {
     this.m_records = new HashMap<>();
   }
 
-  public BattleRecords(HashMap<PlayerID, HashMap<GUID, BattleRecord>> records) {
+  public BattleRecords(final HashMap<PlayerID, HashMap<GUID, BattleRecord>> records) {
     this.m_records = records;
   }
 
@@ -41,8 +41,9 @@ public class BattleRecords implements Serializable {
   private static class SerializationProxy implements Serializable {
     private static final long serialVersionUID = 3837818110273155404L;
     private final HashMap<PlayerID, HashMap<GUID, BattleRecord>> records;
-    public SerializationProxy(BattleRecords battleRecords) {
-      this.records= battleRecords.m_records;
+
+    public SerializationProxy(final BattleRecords battleRecords) {
+      this.records = battleRecords.m_records;
     }
 
     private Object readResolve() {

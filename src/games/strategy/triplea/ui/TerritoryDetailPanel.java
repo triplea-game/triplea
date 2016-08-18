@@ -51,7 +51,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     mapPanel.addMapSelectionListener(new DefaultMapSelectionListener() {
       @Override
       public void mouseEntered(final Territory territory) {
-          territoryChanged(territory);
+        territoryChanged(territory);
       }
     });
     initLayout();
@@ -131,9 +131,10 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
         panel.add(Box.createVerticalStrut(15));
       }
       // TODO Kev determine if we need to identify if the unit is hit/disabled
-      final Optional<ImageIcon> unitIcon = uiContext.getUnitImageFactory().getIcon(item.getType(), item.getOwner(), data,
-          item.hasDamageOrBombingUnitDamage(), item.getDisabled());
-      if(unitIcon.isPresent()) {
+      final Optional<ImageIcon> unitIcon =
+          uiContext.getUnitImageFactory().getIcon(item.getType(), item.getOwner(), data,
+              item.hasDamageOrBombingUnitDamage(), item.getDisabled());
+      if (unitIcon.isPresent()) {
         // overlay flag onto upper-right of icon
         final ImageIcon flagIcon = new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
         final Icon flaggedUnitIcon =

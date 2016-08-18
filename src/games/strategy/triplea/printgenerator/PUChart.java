@@ -34,7 +34,7 @@ class PUChart {
   private final File m_outDir;
 
   PUChart(final PrintGenerationData printData) {
-    GameData m_data = printData.getData();
+    final GameData m_data = printData.getData();
     m_playerIterator = m_data.getPlayerList().iterator();
     m_moneyMap = new IntegerMap<>();
     m_numPlayers = m_data.getPlayerList().size();
@@ -81,8 +81,8 @@ class PUChart {
   protected void saveToFile() throws IOException {
     initializeMap();
     initializeAvoidMap();
-    int yDimension = 6;
-    int xDimension = 7;
+    final int yDimension = 6;
+    final int xDimension = 7;
     final int numChartsNeeded = (int) Math.ceil(((double) m_moneyMap.totalValues()) / (xDimension * yDimension));
     for (int i = 0; i < numChartsNeeded; i++) {
       m_g2d.setColor(Color.black);

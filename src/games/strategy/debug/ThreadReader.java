@@ -1,8 +1,8 @@
 package games.strategy.debug;
 
-import games.strategy.util.ThreadUtil;
-
 import javax.swing.JTextArea;
+
+import games.strategy.util.ThreadUtil;
 
 class ThreadReader implements Runnable {
   private static final int CONSOLE_UPDATE_INTERVAL_MS = 100;
@@ -12,7 +12,7 @@ class ThreadReader implements Runnable {
   private final GenericConsole parentConsole;
 
   ThreadReader(final SynchedByteArrayOutputStream in, final JTextArea text, final boolean displayConsoleOnWrite,
-      GenericConsole parentConsole) {
+      final GenericConsole parentConsole) {
     m_in = in;
     m_text = text;
     m_displayConsoleOnWrite = displayConsoleOnWrite;

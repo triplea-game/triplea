@@ -19,7 +19,7 @@ public interface SettingsInput {
 
   /**
    * @return The current text value of the user input component. Should be the raw value of what is selected/chosen
-   * by the user.
+   *         by the user.
    */
   String getText();
 

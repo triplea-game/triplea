@@ -93,12 +93,12 @@ public class GameDataExporter {
 
   private String playertechs(final GameData data) {
     final StringBuffer returnValue = new StringBuffer();
-    for(PlayerID player : data.getPlayerList()) {
+    for (final PlayerID player : data.getPlayerList()) {
       if (player.getTechnologyFrontierList().getFrontiers().size() > 0) {
         returnValue.append("        <playerTech player=\"").append(player.getName()).append("\">\n");
-        for(TechnologyFrontier frontier : player.getTechnologyFrontierList().getFrontiers()) {
+        for (final TechnologyFrontier frontier : player.getTechnologyFrontierList().getFrontiers()) {
           returnValue.append("            <category name=\"").append(frontier.getName()).append("\">\n");
-          for(TechAdvance tech : frontier.getTechs()) {
+          for (final TechAdvance tech : frontier.getTechs()) {
             String name = tech.getName();
             final String cat = tech.getProperty();
             for (final String definedName : TechAdvance.s_allPreDefinedTechnologyNames) {
@@ -120,7 +120,7 @@ public class GameDataExporter {
     final StringBuffer returnValue = new StringBuffer();
     if (data.getTechnologyFrontier().getTechs().size() > 0) {
       returnValue.append("        <technologies>\n");
-      for(TechAdvance tech : data.getTechnologyFrontier().getTechs()) {
+      for (final TechAdvance tech : data.getTechnologyFrontier().getTechs()) {
         String name = tech.getName();
         final String cat = tech.getProperty();
         // definedAdvances are handled differently by gameparser, they are set in xml with the category as the name but
@@ -160,7 +160,7 @@ public class GameDataExporter {
   }
 
   private void printEditableProperties(final Map<String, IEditableProperty> edProperties) {
-    for(String property : edProperties.keySet()) {
+    for (final String property : edProperties.keySet()) {
       printEditableProperty(edProperties.get(property));
     }
   }
@@ -212,7 +212,7 @@ public class GameDataExporter {
   }
 
   private void printConstantProperties(final Map<String, Object> conProperties) {
-    for(String propName : conProperties.keySet()) {
+    for (final String propName : conProperties.keySet()) {
       if (propName.equals("notes")) { // TODO: unchecked reflection
         // Special handling of notes property
         printNotes((String) conProperties.get(propName));
@@ -285,8 +285,8 @@ public class GameDataExporter {
 
   private void resourceInitialize(final GameData data) {
     xmlfile.append("        <resourceInitialize>\n");
-    for(PlayerID player : data.getPlayerList()) {
-      for(Resource resource : data.getResourceList().getResources()){
+    for (final PlayerID player : data.getPlayerList()) {
+      for (final Resource resource : data.getResourceList().getResources()) {
         if (player.getResources().getQuantity(resource.getName()) > 0) {
           xmlfile.append("            <resourceGiven player=\"").append(player.getName()).append("\" resource=\"")
               .append(resource.getName()).append("\" quantity=\"")
@@ -299,11 +299,11 @@ public class GameDataExporter {
 
   private void unitInitialize(final GameData data) {
     xmlfile.append("        <unitInitialize>\n");
-    for(Territory terr : data.getMap().getTerritories()){
+    for (final Territory terr : data.getMap().getTerritories()) {
       final UnitCollection uc = terr.getUnits();
-      for(PlayerID player : uc.getPlayersWithUnits()){
+      for (final PlayerID player : uc.getPlayersWithUnits()) {
         final IntegerMap<UnitType> ucp = uc.getUnitsByType(player);
-        for(UnitType unit : ucp.keySet()){
+        for (final UnitType unit : ucp.keySet()) {
           if (player == null || player.getName().equals(Constants.PLAYER_NAME_NEUTRAL)) {
             xmlfile.append("            <unitPlacement unitType=\"").append(unit.getName()).append("\" territory=\"")
                 .append(terr.getName()).append("\" quantity=\"").append(ucp.getInt(unit)).append("\"/>\n");
@@ -320,7 +320,7 @@ public class GameDataExporter {
 
   private void ownerInitialize(final GameData data) {
     xmlfile.append("        <ownerInitialize>\n");
-    for(Territory terr : data.getMap().getTerritories()){
+    for (final Territory terr : data.getMap().getTerritories()) {
       if (!terr.getOwner().getName().equals(Constants.PLAYER_NAME_NEUTRAL)) {
         xmlfile.append("            <territoryOwner territory=\"").append(terr.getName()).append("\" owner=\"")
             .append(terr.getOwner().getName()).append("\"/>\n");
@@ -332,7 +332,7 @@ public class GameDataExporter {
   private void attachments(final GameData data, final boolean currentAttachmentObjects) {
     xmlfile.append("\n");
     xmlfile.append("    <attachmentList>\n");
-    for(Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachment : data.getAttachmentOrderAndValues()){
+    for (final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachment : data.getAttachmentOrderAndValues()) {
       // TODO: use a ui switch to determine if we are printing the xml as it was created, or as it stands right now
       // (including changes to
       // the game data)
@@ -433,13 +433,13 @@ public class GameDataExporter {
   }
 
   private void repairRules(final GameData data) {
-    for(RepairRule rr : data.getRepairRuleList().getRepairRules()){
+    for (final RepairRule rr : data.getRepairRuleList().getRepairRules()) {
       xmlfile.append("        <repairRule name=\"").append(rr.getName()).append("\">\n");
-      for(Resource cost : rr.getCosts().keySet()){
+      for (final Resource cost : rr.getCosts().keySet()) {
         xmlfile.append("            <cost resource=\"").append(cost.getName()).append("\" quantity=\"")
             .append(rr.getCosts().getInt(cost)).append("\"/>\n");
       }
-      for(NamedAttachable result : rr.getResults().keySet()){
+      for (final NamedAttachable result : rr.getResults().keySet()) {
         xmlfile.append("            <result resourceOrUnit=\"").append(result.getName()).append("\" quantity=\"")
             .append(rr.getResults().getInt(result)).append("\"/>\n");
       }
@@ -448,11 +448,11 @@ public class GameDataExporter {
   }
 
   private void repairFrontiers(final GameData data) {
-    for(String frontierName : data.getRepairFrontierList().getRepairFrontierNames()) {
+    for (final String frontierName : data.getRepairFrontierList().getRepairFrontierNames()) {
       final RepairFrontier frontier = data.getRepairFrontierList().getRepairFrontier(frontierName);
       xmlfile.append("\n");
       xmlfile.append("        <repairFrontier name=\"").append(frontier.getName()).append("\">\n");
-      for(RepairRule rule : frontier.getRules()) {
+      for (final RepairRule rule : frontier.getRules()) {
         xmlfile.append("            <repairRules name=\"").append(rule.getName()).append("\"/>\n");
       }
       xmlfile.append("        </repairFrontier>\n");
@@ -461,7 +461,7 @@ public class GameDataExporter {
   }
 
   private void playerRepair(final GameData data) {
-    for(PlayerID player : data.getPlayerList()){
+    for (final PlayerID player : data.getPlayerList()) {
       try {
         final String playerRepair = player.getRepairFrontier().getName();
         final String playername = player.getName();
@@ -474,7 +474,7 @@ public class GameDataExporter {
   }
 
   private void playerProduction(final GameData data) {
-    for(PlayerID player : data.getPlayerList()){
+    for (final PlayerID player : data.getPlayerList()) {
       try {
         final String playerfrontier = player.getProductionFrontier().getName();
         final String playername = player.getName();
@@ -487,11 +487,11 @@ public class GameDataExporter {
   }
 
   private void productionFrontiers(final GameData data) {
-    for(String frontierName : data.getProductionFrontierList().getProductionFrontierNames()){
+    for (final String frontierName : data.getProductionFrontierList().getProductionFrontierNames()) {
       final ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier(frontierName);
       xmlfile.append("\n");
       xmlfile.append("        <productionFrontier name=\"").append(frontier.getName()).append("\">\n");
-      for(ProductionRule rule : frontier.getRules()){
+      for (final ProductionRule rule : frontier.getRules()) {
         xmlfile.append("            <frontierRules name=\"").append(rule.getName()).append("\"/>\n");
       }
       xmlfile.append("        </productionFrontier>\n");
@@ -500,13 +500,13 @@ public class GameDataExporter {
   }
 
   private void productionRules(final GameData data) {
-    for(ProductionRule pr : data.getProductionRuleList().getProductionRules()){
+    for (final ProductionRule pr : data.getProductionRuleList().getProductionRules()) {
       xmlfile.append("        <productionRule name=\"").append(pr.getName()).append("\">\n");
-      for(Resource cost : pr.getCosts().keySet()){
+      for (final Resource cost : pr.getCosts().keySet()) {
         xmlfile.append("            <cost resource=\"").append(cost.getName()).append("\" quantity=\"")
             .append(pr.getCosts().getInt(cost)).append("\"/>\n");
       }
-      for(NamedAttachable result : pr.getResults().keySet()){
+      for (final NamedAttachable result : pr.getResults().keySet()) {
         xmlfile.append("            <result resourceOrUnit=\"").append(result.getName()).append("\" quantity=\"")
             .append(pr.getResults().getInt(result)).append("\"/>\n");
       }
@@ -517,7 +517,7 @@ public class GameDataExporter {
   private void gamePlay(final GameData data) {
     xmlfile.append("\n");
     xmlfile.append("    <gamePlay>\n");
-    for(IDelegate delegate : data.getDelegateList()){
+    for (final IDelegate delegate : data.getDelegateList()) {
       if (!delegate.getName().equals("edit")) {
         xmlfile.append("        <delegate name=\"").append(delegate.getName()).append("\" javaClass=\"")
             .append(delegate.getClass().getCanonicalName()).append("\" display=\"").append(delegate.getDisplayName())
@@ -532,7 +532,7 @@ public class GameDataExporter {
   private void sequence(final GameData data) {
     xmlfile.append("\n");
     xmlfile.append("        <sequence>\n");
-    for(GameStep step : data.getSequence()){
+    for (final GameStep step : data.getSequence()) {
       try {
         final Field mDelegateField = GameStep.class.getDeclaredField("m_delegate"); // TODO: unchecked reflection
         mDelegateField.setAccessible(true);
@@ -564,7 +564,7 @@ public class GameDataExporter {
   private void unitList(final GameData data) {
     xmlfile.append("\n");
     xmlfile.append("    <unitList>\n");
-    for(UnitType unit : data.getUnitTypeList()){
+    for (final UnitType unit : data.getUnitTypeList()) {
       xmlfile.append("        <unit name=\"").append(unit.getName()).append("\"/>\n");
     }
     xmlfile.append("    </unitList>\n");
@@ -573,12 +573,12 @@ public class GameDataExporter {
   private void playerList(final GameData data) {
     xmlfile.append("\n");
     xmlfile.append("    <playerList>\n");
-    for(PlayerID player : data.getPlayerList().getPlayers()){
+    for (final PlayerID player : data.getPlayerList().getPlayers()) {
       xmlfile.append("        <player name=\"").append(player.getName()).append("\" optional=\"")
           .append(player.getOptional()).append("\"/>\n");
     }
-    for(String allianceName : data.getAllianceTracker().getAlliances()){
-      for(PlayerID alliedPlayer : data.getAllianceTracker().getPlayersInAlliance(allianceName)){
+    for (final String allianceName : data.getAllianceTracker().getAlliances()) {
+      for (final PlayerID alliedPlayer : data.getAllianceTracker().getPlayersInAlliance(allianceName)) {
         xmlfile.append("        <alliance player=\"").append(alliedPlayer.getName()).append("\" alliance=\"")
             .append(allianceName).append("\"/>\n");
       }
@@ -593,7 +593,7 @@ public class GameDataExporter {
     }
     xmlfile.append("\n");
     xmlfile.append("    <relationshipTypes>\n");
-    for(RelationshipType current : types){
+    for (final RelationshipType current : types) {
       final String name = current.getName();
       if (name.equals(Constants.RELATIONSHIP_TYPE_SELF) || name.equals(Constants.RELATIONSHIP_TYPE_NULL)
           || name.equals(Constants.RELATIONSHIP_TYPE_DEFAULT_WAR)
@@ -612,7 +612,7 @@ public class GameDataExporter {
     }
     xmlfile.append("\n");
     xmlfile.append("    <territoryEffectList>\n");
-    for(TerritoryEffect current : types){
+    for (final TerritoryEffect current : types) {
       xmlfile.append("        <territoryEffect name=\"").append(current.getName()).append("\"/>\n");
     }
     xmlfile.append("    </territoryEffectList>\n");
@@ -621,7 +621,7 @@ public class GameDataExporter {
   private void resourceList(final GameData data) {
     xmlfile.append("\n");
     xmlfile.append("    <resourceList>\n");
-    for(Resource resource : data.getResourceList().getResources()){
+    for (final Resource resource : data.getResourceList().getResources()) {
       xmlfile.append("        <resource name=\"").append(resource.getName()).append("\"/>\n");
     }
     xmlfile.append("    </resourceList>\n");
@@ -632,7 +632,7 @@ public class GameDataExporter {
     xmlfile.append("    <map>\n");
     xmlfile.append("        <!-- Territory Definitions -->\n");
     final GameMap map = data.getMap();
-    for(Territory ter : map.getTerritories()){
+    for (final Territory ter : map.getTerritories()) {
       xmlfile.append("        <territory name=\"").append(ter.getName()).append("\"");
       if (ter.isWater()) {
         xmlfile.append(" water=\"true\"");
@@ -671,8 +671,8 @@ public class GameDataExporter {
     xmlfile.append("        <!-- Territory Connections -->\n");
     final GameMap map = data.getMap();
     final List<Connection> reverseConnectionTracker = new ArrayList<>();
-    for(Territory ter : map.getTerritories()) {
-      for(Territory nb : map.getNeighbors(ter)){
+    for (final Territory ter : map.getTerritories()) {
+      for (final Territory nb : map.getNeighbors(ter)) {
         if (!reverseConnectionTracker.contains(new Connection(ter, nb))) {
           xmlfile.append("        <connection t1=\"").append(ter.getName()).append("\" t2=\"").append(nb.getName())
               .append("\"/>\n");

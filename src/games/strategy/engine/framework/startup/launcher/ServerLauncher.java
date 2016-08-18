@@ -19,9 +19,8 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import games.strategy.engine.ClientContext;
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameDataManager;
@@ -34,6 +33,7 @@ import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.IClientChannel;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
 import games.strategy.engine.framework.startup.mc.ServerModel;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.lobby.server.GameDescription;
@@ -264,7 +264,8 @@ public class ServerLauncher extends AbstractLauncher {
               final File f1 =
                   new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
               final File f2 =
-                  new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
+                  new File(ClientContext.folderSettings().getSaveGamePath(),
+                      SaveGameFileChooser.getAutoSave2FileName());
               final File f;
               if (!f1.exists() && !f2.exists()) {
                 m_gameSelectorModel.resetGameDataToNull();
@@ -392,15 +393,18 @@ public class ServerLauncher extends AbstractLauncher {
     // a hack, if headless save to the autosave to avoid polluting our savegames folder with a million saves
     final File f;
     if (m_headless) {
-      final File f1 = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
-      final File f2 = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
+      final File f1 =
+          new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
+      final File f2 =
+          new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
       if (f1.lastModified() > f2.lastModified()) {
         f = f2;
       } else {
         f = f1;
       }
     } else {
-      f = new File(ClientContext.folderSettings().getSaveGamePath(), "connection_lost_on_" + format.format(new Date()) + ".tsvg");
+      f = new File(ClientContext.folderSettings().getSaveGamePath(),
+          "connection_lost_on_" + format.format(new Date()) + ".tsvg");
     }
     try {
       m_serverGame.saveGame(f);

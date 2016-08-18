@@ -1,9 +1,9 @@
 package games.strategy.engine.message;
 
-import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+
+import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 
 /**
  * An implementation of IRemoteMessenger based on MessageManager and Messenger.
@@ -25,7 +25,7 @@ public class RemoteMessenger implements IRemoteMessenger {
     final InvocationHandler ih =
         new UnifiedInvocationHandler(m_unifiedMessenger, remoteName.getName(), ignoreResults, remoteName.getClazz());
     final IRemote rVal = (IRemote) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-        new Class<?>[]{remoteName.getClazz()}, ih);
+        new Class<?>[] {remoteName.getClazz()}, ih);
     return rVal;
   }
 

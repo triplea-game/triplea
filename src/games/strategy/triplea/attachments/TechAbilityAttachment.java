@@ -226,6 +226,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public IntegerMap<UnitType> getRadarBonus() {
     return m_radarBonus;
   }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */

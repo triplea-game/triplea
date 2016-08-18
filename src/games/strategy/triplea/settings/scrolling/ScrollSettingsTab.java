@@ -14,7 +14,7 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
 
   private final List<SettingInputComponent<ScrollSettings>> inputs;
 
-  public ScrollSettingsTab(ScrollSettings settings) {
+  public ScrollSettingsTab(final ScrollSettings settings) {
     inputs = Arrays.asList(
         SettingInputComponent.build(
             new IntegerValueRange(2, 200, ScrollSettings.DEFAULT_ARROW_KEY_SCROLL_SPEED),

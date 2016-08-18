@@ -32,7 +32,8 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
   /**
    * Called before the delegate will run.
    * All classes should call super.start if they override this.
-   * Persistent delegates like Edit Delegate should not extend BaseDelegate, because we do not want to fire triggers in the edit delegate.
+   * Persistent delegates like Edit Delegate should not extend BaseDelegate, because we do not want to fire triggers in
+   * the edit delegate.
    */
   @Override
   public void start() {
@@ -46,7 +47,8 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
   /**
    * Called before the delegate will stop running.
    * All classes should call super.end if they override this.
-   * Persistent delegates like Edit Delegate should not extend BaseDelegate, because we do not want to fire triggers in the edit delegate.
+   * Persistent delegates like Edit Delegate should not extend BaseDelegate, because we do not want to fire triggers in
+   * the edit delegate.
    */
   @Override
   public void end() {
@@ -56,7 +58,8 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
       m_endBaseStepsFinished = true;
       triggerWhenTriggerAttachments(TriggerAttachment.AFTER);
     }
-    // these should probably be somewhere else, but we are relying on the fact that reloading a save go into the start step,
+    // these should probably be somewhere else, but we are relying on the fact that reloading a save go into the start
+    // step,
     // but nothing goes into the end step, and therefore there is no way to save then have the end step repeat itself
     m_startBaseStepsFinished = false;
     m_endBaseStepsFinished = false;

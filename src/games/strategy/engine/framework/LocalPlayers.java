@@ -3,9 +3,9 @@ package games.strategy.engine.framework;
 import java.util.Collections;
 import java.util.Set;
 
-import games.strategy.triplea.player.AbstractHumanPlayer;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.triplea.player.AbstractHumanPlayer;
 
 public class LocalPlayers {
   protected final Set<IGamePlayer> m_localPlayers;

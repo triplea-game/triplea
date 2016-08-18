@@ -31,7 +31,8 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
   @Override
   protected void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
       final Point item, final int x_text_start) {
-    final Map<TerritoryDefinitionDialog.DEFINITION, Boolean> territoryDefinition = MapXmlHelper.getTerritoryDefintionsMap().get(centerName);
+    final Map<TerritoryDefinitionDialog.DEFINITION, Boolean> territoryDefinition =
+        MapXmlHelper.getTerritoryDefintionsMap().get(centerName);
     if (territoryDefinition != null) {
       final int y_value = item.y + 10;
       short definition_count = 0;
@@ -39,7 +40,8 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
       final FontMetrics fm = g.getFontMetrics();
       int h = fm.getAscent();
       final int oneCharacterWidthSpace = 17;
-      for (final Entry<TerritoryDefinitionDialog.DEFINITION, Boolean> definitionEntry : territoryDefinition.entrySet()) {
+      for (final Entry<TerritoryDefinitionDialog.DEFINITION, Boolean> definitionEntry : territoryDefinition
+          .entrySet()) {
         if (definitionEntry.getValue()) {
           final int x_value = x_text_start + oneCharacterWidthSpace * definition_count;
           int w;
@@ -121,7 +123,8 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
       centers.put(territoryNameNew, centers.get(territoryName));
     } else {
       SwingUtilities.invokeLater(() -> {
-        Map<TerritoryDefinitionDialog.DEFINITION, Boolean> territoyDefintions = MapXmlHelper.getTerritoryDefintionsMap().get(territoryName);
+        Map<TerritoryDefinitionDialog.DEFINITION, Boolean> territoyDefintions =
+            MapXmlHelper.getTerritoryDefintionsMap().get(territoryName);
         if (territoyDefintions == null) {
           territoyDefintions = Maps.newHashMap();
         }

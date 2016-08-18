@@ -16,7 +16,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
-import games.strategy.ui.SwingComponents;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -26,6 +25,7 @@ import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.ui.SwingComponents;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
 

@@ -1,11 +1,11 @@
 package games.strategy.triplea.ai.weakAI;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.ai.AbstractAI;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;

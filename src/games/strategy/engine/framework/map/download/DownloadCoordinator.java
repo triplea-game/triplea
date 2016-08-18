@@ -36,7 +36,7 @@ public class DownloadCoordinator {
           startNextDownloads();
           // pause for a brief while before the next iteration, helps avoid a Github too many requests error
           ThreadUtil.sleep(250);
-        } catch (Exception e) {
+        } catch (final Exception e) {
           ClientLogger.logQuietly(e);
           throw e;
         }
@@ -45,7 +45,7 @@ public class DownloadCoordinator {
   }
 
   private void startNextDownloads() {
-    long downloadingCount = countDownloadsInProgress();
+    final long downloadingCount = countDownloadsInProgress();
     if (downloadList != null && downloadingCount < MAX_CONCURRENT_DOWNLOAD) {
       startNextDownload();
     }
@@ -57,12 +57,12 @@ public class DownloadCoordinator {
   }
 
 
-  private long count(Predicate<DownloadFile> filter) {
+  private long count(final Predicate<DownloadFile> filter) {
     return downloadList.stream().filter(filter).count();
   }
 
   private void startNextDownload() {
-    for (DownloadFile download : downloadList) {
+    for (final DownloadFile download : downloadList) {
       if (download.isWaiting()) {
         download.startAsyncDownload();
         break;
@@ -79,8 +79,8 @@ public class DownloadCoordinator {
    *        the size of the downloaded file in bytes.
    * @param completionListener A listener that is called when this specific download finishes.
    */
-  public void accept(DownloadFileDescription download, Consumer<Integer> progressUpdateListener,
-      Runnable completionListener) {
+  public void accept(final DownloadFileDescription download, final Consumer<Integer> progressUpdateListener,
+      final Runnable completionListener) {
     // To avoid double acceptance, hold a lock while we check the 'downloadSet'
     synchronized (this) {
       if (download.isDummyUrl() || downloadSet.contains(download)) {
@@ -98,7 +98,7 @@ public class DownloadCoordinator {
    */
   public void cancelDownloads() {
     cancelled = true;
-    for (DownloadFile download : downloadList) {
+    for (final DownloadFile download : downloadList) {
       download.cancelDownload();
     }
   }

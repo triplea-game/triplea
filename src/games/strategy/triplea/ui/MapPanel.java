@@ -93,7 +93,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private final LinkedBlockingQueue<Tile> undrawnTiles = new LinkedBlockingQueue<>();
   private Map<Territory, List<Unit>> highlightedUnits;
   private Cursor hiddenCursor = null;
-  private MapRouteDrawer routeDrawer = new MapRouteDrawer();
+  private final MapRouteDrawer routeDrawer = new MapRouteDrawer();
 
 
   /** Creates new MapPanel */
@@ -105,7 +105,7 @@ public class MapPanel extends ImageScrollerLargeView {
     this.m_scale = this.uiContext.getScale();
     this.backgroundDrawer = new BackgroundDrawer(this);
     this.tileManager = new TileManager(this.uiContext);
-    Thread t = new Thread(this.backgroundDrawer, "Map panel background drawer");
+    final Thread t = new Thread(this.backgroundDrawer, "Map panel background drawer");
     t.setDaemon(true);
     t.start();
     setDoubleBuffered(false);
@@ -258,7 +258,7 @@ public class MapPanel extends ImageScrollerLargeView {
       SwingUtilities.invokeLater(() -> repaint());
       return;
     }
-    RouteDescription newRouteDescription = new RouteDescription(route, start, end, cursorImage);
+    final RouteDescription newRouteDescription = new RouteDescription(route, start, end, cursorImage);
     if (routeDescription != null && routeDescription.equals(newRouteDescription)) {
       return;
     }
@@ -553,7 +553,7 @@ public class MapPanel extends ImageScrollerLargeView {
             continue;
           }
 
-          Optional<Image> image = uiContext.getUnitImageFactory().getHighlightImage(category.getType(),
+          final Optional<Image> image = uiContext.getUnitImageFactory().getHighlightImage(category.getType(),
               category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
           if (image.isPresent()) {
             final AffineTransform t = new AffineTransform();

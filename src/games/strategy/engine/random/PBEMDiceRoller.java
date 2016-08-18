@@ -18,8 +18,8 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
+import games.strategy.ui.SwingAction;
 
 /**
  * Its a bit messy, but the threads are a pain to deal with We want to be able

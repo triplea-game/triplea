@@ -5,20 +5,20 @@ import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 
-public class Triple<F, S, T> implements Serializable  {
+public class Triple<F, S, T> implements Serializable {
   private static final long serialVersionUID = -8188046743232005918L;
-  private final Tuple<F,S> tuple;
+  private final Tuple<F, S> tuple;
   private final T third;
 
   /**
    * Static creation method to create a new instance of a triple with the parameters provided.
    *
    * This method allows for nicer triple creation syntax, namely:
-   *    Triple<String,Integer,String> myTriple = Triple.of("abc",123,"xyz");
+   * Triple<String,Integer,String> myTriple = Triple.of("abc",123,"xyz");
    * Instead of:
-   *    Triple<String,Integer,String> myTriple = new Triple<String,Integer,String>("abc",123,"xyz");
+   * Triple<String,Integer,String> myTriple = new Triple<String,Integer,String>("abc",123,"xyz");
    */
-  public static <F,S,T> Triple<F, S, T> of( F first, S second, T third ) {
+  public static <F, S, T> Triple<F, S, T> of(final F first, final S second, final T third) {
     return new Triple<>(first, second, third);
   }
 
@@ -30,6 +30,7 @@ public class Triple<F, S, T> implements Serializable  {
   public F getFirst() {
     return tuple.getFirst();
   }
+
   public S getSecond() {
     return tuple.getSecond();
   }
@@ -62,8 +63,8 @@ public class Triple<F, S, T> implements Serializable  {
       return false;
     }
 
-    final Triple<?,?,?> other = (Triple<?,?,?>) obj;
+    final Triple<?, ?, ?> other = (Triple<?, ?, ?>) obj;
     return Objects.equals(tuple, other.tuple) &&
-        Objects.equals(getThird(), other.getThird() );
+        Objects.equals(getThird(), other.getThird());
   }
 }

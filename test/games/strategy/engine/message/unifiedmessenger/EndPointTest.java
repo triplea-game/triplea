@@ -5,11 +5,10 @@ import static org.junit.Assert.assertEquals;
 import java.util.Comparator;
 import java.util.List;
 
-import games.strategy.engine.message.RemoteMethodCall;
-import games.strategy.engine.message.RemoteMethodCallResults;
-import games.strategy.engine.message.unifiedmessenger.EndPoint;
 import org.junit.Test;
 
+import games.strategy.engine.message.RemoteMethodCall;
+import games.strategy.engine.message.RemoteMethodCallResults;
 import games.strategy.test.TestUtil;
 
 public class EndPointTest {

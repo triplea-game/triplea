@@ -7,14 +7,14 @@ import java.util.SimpleTimeZone;
 
 public class TimeManager {
   /**
-   * 
+   *
    * Replacement for Date.toGMTString();
-   * 
+   *
    * @param date The Date being returned as String
    * @return formatted GMT Date String
    */
-  public static String getGMTString(Date date){
-    DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm:ss z");
+  public static String getGMTString(final Date date) {
+    final DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm:ss z");
     dateFormat.setTimeZone(new SimpleTimeZone(0, "GMT"));
     return dateFormat.format(date);
   }

@@ -37,7 +37,7 @@ import games.strategy.util.Match;
 
 public class BattleCalculatorTest {
   private ITestDelegateBridge m_bridge;
-  private ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
+  private final ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
 
   @Before
   public void setUp() throws Exception {
@@ -146,9 +146,9 @@ public class BattleCalculatorTest {
         any(),
         any(), any(), any(), anyBoolean())).thenAnswer(new Answer<CasualtyDetails>() {
           @Override
-          public CasualtyDetails answer(InvocationOnMock invocation) throws Throwable {
-            Collection<Unit> selectFrom = invocation.getArgument(0);
-            int count = invocation.getArgument(2);
+          public CasualtyDetails answer(final InvocationOnMock invocation) throws Throwable {
+            final Collection<Unit> selectFrom = invocation.getArgument(0);
+            final int count = invocation.getArgument(2);
 
             final List<Unit> selected = Match.getNMatches(selectFrom, count, Matches.UnitIsStrategicBomber);
             return new CasualtyDetails(selected, new ArrayList<>(), false);
@@ -185,9 +185,9 @@ public class BattleCalculatorTest {
     when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(), any(), any(), any(), any(), any(), anyBoolean(),
         any(), any(), any(), any(), anyBoolean())).thenAnswer(new Answer<CasualtyDetails>() {
           @Override
-          public CasualtyDetails answer(InvocationOnMock invocation) throws Throwable {
-            Collection<Unit> selectFrom = invocation.getArgument(0);
-            int count = invocation.getArgument(2);
+          public CasualtyDetails answer(final InvocationOnMock invocation) throws Throwable {
+            final Collection<Unit> selectFrom = invocation.getArgument(0);
+            final int count = invocation.getArgument(2);
             final List<Unit> selected = Match.getNMatches(selectFrom, count, Matches.UnitIsStrategicBomber);
             return new CasualtyDetails(selected, new ArrayList<>(), false);
           }

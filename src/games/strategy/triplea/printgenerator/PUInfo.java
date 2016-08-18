@@ -16,8 +16,8 @@ public class PUInfo {
   private final Map<PlayerID, Map<Resource, Integer>> m_infoMap = new HashMap<>();
 
   protected void saveToFile(final PrintGenerationData printData) {
-    GameData m_data = printData.getData();
-    PrintGenerationData m_printData = printData;
+    final GameData m_data = printData.getData();
+    final PrintGenerationData m_printData = printData;
     Iterator<PlayerID> m_playerIterator = m_data.getPlayerList().iterator();
     while (m_playerIterator.hasNext()) {
       final PlayerID currentPlayer = m_playerIterator.next();

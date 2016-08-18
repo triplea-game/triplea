@@ -1,7 +1,7 @@
 package games.strategy.debug;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.triplea.ui.ErrorHandler;
+import games.strategy.ui.SwingAction;
 
 public class ErrorConsole extends GenericConsole {
   private static final long serialVersionUID = -3489030525309243438L;

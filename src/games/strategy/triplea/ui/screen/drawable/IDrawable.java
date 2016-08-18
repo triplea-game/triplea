@@ -43,7 +43,8 @@ public interface IDrawable {
 
   int getLevel();
 
-  default void drawImage(final Graphics2D graphics, Optional<Image> image, Point location, Rectangle bounds) {
+  default void drawImage(final Graphics2D graphics, final Optional<Image> image, final Point location,
+      final Rectangle bounds) {
     if (image.isPresent()) {
       graphics.drawImage(image.get(), location.x - bounds.x, location.y - bounds.y, null);
     }

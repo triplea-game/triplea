@@ -61,7 +61,7 @@ public class TechAttachment extends DefaultAttachment {
   // do not export at this point. currently map xml cannot
   // define a player having a custom tech at start of game
   @InternalDoNotExport
-  private HashMap<String, Boolean> genericTech = new HashMap<>();
+  private final HashMap<String, Boolean> genericTech = new HashMap<>();
 
   public TechAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -69,12 +69,14 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   /**
-   * @deprecated Since many maps do not include a tech attachment for each player (and no maps include tech attachments for the Null
-   * Player),
-   * we must ensure a default tech attachment is available for all these players. It is preferred to use the full
-   * constructor. Do not delete
-   * this.
-   * TODO: create tech attachments all players that don't have one, as the map is initialized.
+   * @deprecated Since many maps do not include a tech attachment for each player (and no maps include tech attachments
+   *             for the Null
+   *             Player),
+   *             we must ensure a default tech attachment is available for all these players. It is preferred to use the
+   *             full
+   *             constructor. Do not delete
+   *             this.
+   *             TODO: create tech attachments all players that don't have one, as the map is initialized.
    */
   @Deprecated
   public TechAttachment() {

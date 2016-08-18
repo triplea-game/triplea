@@ -29,7 +29,6 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.tree.TreeNode;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -38,6 +37,7 @@ import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
+import games.strategy.ui.SwingAction;
 
 public class CommentPanel extends JPanel {
   private static final long serialVersionUID = -9122162393288045888L;

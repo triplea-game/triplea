@@ -7,11 +7,11 @@ import java.util.List;
  * True if all matches return true.
  */
 public class CompositeMatchAnd<T> extends CompositeMatch<T> {
-  @SuppressWarnings("unchecked")//TODO rewrite in order to remove Supressed Warning
+  @SuppressWarnings("unchecked") // TODO rewrite in order to remove Supressed Warning
   public CompositeMatchAnd(final Match<?>... matches) {
     super();
     for (final Match<?> m : matches) {
-      add((Match<T>)m);
+      add((Match<T>) m);
     }
   }
 
@@ -25,7 +25,7 @@ public class CompositeMatchAnd<T> extends CompositeMatch<T> {
   @Override
   public boolean match(final T o) {
     final List<Match<T>> matches = super.getMatches();
-    for (Match<T> matche : matches) {
+    for (final Match<T> matche : matches) {
       if (!matche.match(o)) {
         return false;
       }

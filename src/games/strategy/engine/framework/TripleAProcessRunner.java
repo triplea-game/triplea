@@ -68,7 +68,8 @@ public class TripleAProcessRunner {
     commands.add("-D" + GameRunner.LOBBY_HOST + "="
         + messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
     commands
-        .add("-D" + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=" + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
+        .add("-D" + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "="
+            + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
     commands.add("-D" + GameRunner.LOBBY_GAME_COMMENTS + "=" + comments);
     commands.add("-D" + GameRunner.LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
     if (password != null && password.length() > 0) {

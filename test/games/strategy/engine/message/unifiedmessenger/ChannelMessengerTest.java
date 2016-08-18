@@ -5,15 +5,15 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import games.strategy.engine.message.ChannelMessenger;
-import games.strategy.engine.message.IChannelSubscribor;
-import games.strategy.engine.message.RemoteName;
-import games.strategy.engine.message.UnifiedMessengerHub;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.message.ChannelMessenger;
+import games.strategy.engine.message.IChannelSubscribor;
+import games.strategy.engine.message.RemoteName;
+import games.strategy.engine.message.UnifiedMessengerHub;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;

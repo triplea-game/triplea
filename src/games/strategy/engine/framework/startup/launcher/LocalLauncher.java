@@ -47,7 +47,7 @@ public class LocalLauncher extends AbstractLauncher {
         game.setRandomSource(new ScriptedRandomSource());
       }
       m_gameData.getGameLoader().startGame(game, gamePlayers, m_headless);
-    } catch( MapNotFoundException e ) {
+    } catch (final MapNotFoundException e) {
       exceptionLoadingGame = e;
     } catch (final Exception ex) {
       ClientLogger.logQuietly(ex);
@@ -63,9 +63,9 @@ public class LocalLauncher extends AbstractLauncher {
       }
     } finally {
       // todo(kg), this does not occur on the swing thread, and this notifies setupPanel observers
-        // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused
-        // by closing of stream while unloading map resources.
-        ThreadUtil.sleep(100);
+      // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused
+      // by closing of stream while unloading map resources.
+      ThreadUtil.sleep(100);
       m_gameSelectorModel.loadDefaultGame(parent);
       SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
     }

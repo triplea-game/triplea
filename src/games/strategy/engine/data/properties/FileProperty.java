@@ -23,7 +23,7 @@ import games.strategy.engine.framework.startup.ui.MainFrame;
  */
 public class FileProperty extends AEditableProperty {
   private static final long serialVersionUID = 6826763550643504789L;
-  private static final String[] defaultImageSuffixes = { "png", "jpg", "jpeg", "gif" };
+  private static final String[] defaultImageSuffixes = {"png", "jpg", "jpeg", "gif"};
 
   private final String[] m_acceptableSuffixes;
   private File m_file;
@@ -38,8 +38,8 @@ public class FileProperty extends AEditableProperty {
     this(name, description, getFileIfExists(new File(fileName)));
   }
 
-  private static File getFileIfExists( File file ) {
-    if( file.exists()) {
+  private static File getFileIfExists(final File file) {
+    if (file.exists()) {
       return file;
     }
     return null;
@@ -47,12 +47,12 @@ public class FileProperty extends AEditableProperty {
 
 
   public FileProperty(final String name, final String description, final File file) {
-    this(name, description, file, defaultImageSuffixes );
+    this(name, description, file, defaultImageSuffixes);
   }
 
   public FileProperty(final String name, final String description, final File file, final String[] acceptableSuffixes) {
     super(name, description);
-    m_file = getFileIfExists( file );
+    m_file = getFileIfExists(file);
     m_acceptableSuffixes = acceptableSuffixes;
   }
 

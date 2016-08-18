@@ -48,7 +48,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   public static UserActionAttachment get(final PlayerID player, final String nameOfAttachment) {
-    UserActionAttachment rVal = (UserActionAttachment) player.getAttachment(nameOfAttachment);
+    final UserActionAttachment rVal = (UserActionAttachment) player.getAttachment(nameOfAttachment);
     if (rVal == null) {
       throw new IllegalStateException(
           "UserActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);

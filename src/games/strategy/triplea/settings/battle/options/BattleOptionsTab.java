@@ -11,15 +11,15 @@ import games.strategy.triplea.settings.SettingsTab;
 import games.strategy.ui.SwingComponents;
 
 public class BattleOptionsTab implements SettingsTab<BattleOptionsSettings> {
-  private List<SettingInputComponent<BattleOptionsSettings>> inputs;
+  private final List<SettingInputComponent<BattleOptionsSettings>> inputs;
 
   public BattleOptionsTab(final BattleOptionsSettings battleOptionSettings) {
-    JRadioButton radioButtonYes = new JRadioButton("Yes");
-    JRadioButton radioButtonNo = new JRadioButton("No");
+    final JRadioButton radioButtonYes = new JRadioButton("Yes");
+    final JRadioButton radioButtonNo = new JRadioButton("No");
     SwingComponents.createButtonGroup(radioButtonYes, radioButtonNo);
 
-    JRadioButton confirmDefensiveRollsYes = new JRadioButton("Yes");
-    JRadioButton confirmDefensiveRollsNo = new JRadioButton("No");
+    final JRadioButton confirmDefensiveRollsYes = new JRadioButton("Yes");
+    final JRadioButton confirmDefensiveRollsNo = new JRadioButton("No");
     SwingComponents.createButtonGroup(confirmDefensiveRollsYes, confirmDefensiveRollsNo);
 
     inputs = Arrays.asList(

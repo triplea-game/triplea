@@ -63,7 +63,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
@@ -72,6 +71,7 @@ import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.test.TestUtil;
 import games.strategy.triplea.Constants;
@@ -91,15 +91,15 @@ import games.strategy.util.Match;
 
 public class RevisedTest {
   private GameData m_data;
-  private ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
+  private final ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
 
   @Before
   public void setUp() throws Exception {
     when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(), any(), any(), any(), any(), any(),
         anyBoolean(), any(), any(), any(), any(), anyBoolean())).thenAnswer(new Answer<CasualtyDetails>() {
           @Override
-          public CasualtyDetails answer(InvocationOnMock invocation) throws Throwable {
-            CasualtyList defaultCasualties = invocation.getArgument(11);
+          public CasualtyDetails answer(final InvocationOnMock invocation) throws Throwable {
+            final CasualtyList defaultCasualties = invocation.getArgument(11);
             if (defaultCasualties != null) {
               return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
             }
@@ -1327,8 +1327,8 @@ public class RevisedTest {
         any(), any(), any(), anyBoolean()))
             .thenAnswer(new Answer<CasualtyDetails>() {
               @Override
-              public CasualtyDetails answer(InvocationOnMock invocation) throws Throwable {
-                Collection<Unit> selectFrom = invocation.getArgument(0);
+              public CasualtyDetails answer(final InvocationOnMock invocation) throws Throwable {
+                final Collection<Unit> selectFrom = invocation.getArgument(0);
                 return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), new ArrayList<>(), false);
               }
             });

@@ -167,21 +167,21 @@ public class TripleAFrame extends MainGameFrame {
   private IGame game;
   private MapPanel mapPanel;
   private MapPanelSmallView smallView;
-  private JLabel message = new JLabel("No selection");
-  private JLabel status = new JLabel("");
-  private JLabel step = new JLabel("xxxxxx");
-  private JLabel round = new JLabel("xxxxxx");
-  private JLabel player = new JLabel("xxxxxx");
+  private final JLabel message = new JLabel("No selection");
+  private final JLabel status = new JLabel("");
+  private final JLabel step = new JLabel("xxxxxx");
+  private final JLabel round = new JLabel("xxxxxx");
+  private final JLabel player = new JLabel("xxxxxx");
   private ActionButtons actionButtons;
-  private JPanel gameMainPanel = new JPanel();
-  private JPanel rightHandSidePanel = new JPanel();
-  private JTabbedPane tabsPanel = new JTabbedPane();
+  private final JPanel gameMainPanel = new JPanel();
+  private final JPanel rightHandSidePanel = new JPanel();
+  private final JTabbedPane tabsPanel = new JTabbedPane();
   private StatPanel statsPanel;
   private EconomyPanel economyPanel;
   private ObjectivePanel objectivePanel;
   private NotesPanel notesPanel;
   private TerritoryDetailPanel details;
-  private JPanel historyComponent = new JPanel();
+  private final JPanel historyComponent = new JPanel();
   private JPanel gameSouthPanel;
   private HistoryPanel historyPanel;
   private boolean inHistory = false;
@@ -202,7 +202,7 @@ public class TripleAFrame extends MainGameFrame {
   private List<Unit> unitsBeingMousedOver;
   private PlayerID lastStepPlayer;
   private PlayerID currentStepPlayer;
-  private Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<>();
+  private final Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<>();
   private ThreadPool messageAndDialogThreadPool;
   private TripleAMenuBar menu;
   private final ScrollSettings scrollSettings;
@@ -216,7 +216,7 @@ public class TripleAFrame extends MainGameFrame {
     messageAndDialogThreadPool = new ThreadPool(1);
     addZoomKeyboardShortcuts();
     this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    WindowListener WINDOW_LISTENER = new WindowAdapter() {
+    final WindowListener WINDOW_LISTENER = new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {
         leaveGame();
@@ -232,7 +232,7 @@ public class TripleAFrame extends MainGameFrame {
     editModeButtonModel = new JToggleButton.ToggleButtonModel();
     editModeButtonModel.setEnabled(false);
     showCommentLogButtonModel = new JToggleButton.ToggleButtonModel();
-    AbstractAction m_showCommentLogAction = new AbstractAction() {
+    final AbstractAction m_showCommentLogAction = new AbstractAction() {
       private static final long serialVersionUID = 3964381772343872268L;
 
       @Override
@@ -285,7 +285,7 @@ public class TripleAFrame extends MainGameFrame {
     smallView = new MapPanelSmallView(small, model);
     mapPanel = new MapPanel(data, smallView, uiContext, model);
     mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
-    MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = (units, territory, me) -> unitsBeingMousedOver = units;
+    final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = (units, territory, me) -> unitsBeingMousedOver = units;
     mapPanel.addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
     // link the small and large images
     mapPanel.initSmallMap();
@@ -368,12 +368,12 @@ public class TripleAFrame extends MainGameFrame {
     tabsPanel.setBorder(null);
     rightHandSidePanel.add(tabsPanel, BorderLayout.CENTER);
 
-    MovePanel movePanel = new MovePanel(data, mapPanel, this);
+    final MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
 
-    List<KeyListener> keyListeners =
+    final List<KeyListener> keyListeners =
         ImmutableList.of(getArrowKeyListener(), movePanel.getCustomKeyListeners(), getFlagToggleKeyListener(this));
-    for (KeyListener keyListener : keyListeners) {
+    for (final KeyListener keyListener : keyListeners) {
       mapPanel.addKeyListener(keyListener);
     }
 
@@ -454,7 +454,7 @@ public class TripleAFrame extends MainGameFrame {
   }
 
 
-  public static KeyListener getFlagToggleKeyListener(TripleAFrame frame) {
+  public static KeyListener getFlagToggleKeyListener(final TripleAFrame frame) {
     return new KeyListener() {
       private boolean blockInputs = false;
       private long timeSinceLastPressEvent = 0;
@@ -473,7 +473,7 @@ public class TripleAFrame extends MainGameFrame {
         }
       }
 
-      private void resetFlagsOnTimeOut(int keyCode) {
+      private void resetFlagsOnTimeOut(final int keyCode) {
         new Thread(() -> {
           running = true;
           while (running) {
@@ -495,7 +495,7 @@ public class TripleAFrame extends MainGameFrame {
         running = false;
       }
 
-      private void toggleFlags(int keyCode) {
+      private void toggleFlags(final int keyCode) {
         if (keyCode == KeyEvent.VK_L) {
           UnitsDrawer.enabledFlags = !UnitsDrawer.enabledFlags;
           frame.getMapPanel().resetMap();
@@ -586,7 +586,8 @@ public class TripleAFrame extends MainGameFrame {
   @Override
   public void shutdown() {
     final int rVal = EventThreadJOptionPane.showConfirmDialog(this,
-        "Are you sure you want to exit TripleA?\nUnsaved game data will be lost.", "Exit Program", JOptionPane.YES_NO_OPTION,
+        "Are you sure you want to exit TripleA?\nUnsaved game data will be lost.", "Exit Program",
+        JOptionPane.YES_NO_OPTION,
         getUIContext().getCountDownLatchHandler());
     if (rVal != JOptionPane.OK_OPTION) {
       return;
@@ -598,7 +599,8 @@ public class TripleAFrame extends MainGameFrame {
   @Override
   public void leaveGame() {
     final int rVal = EventThreadJOptionPane.showConfirmDialog(this,
-        "Are you sure you want to leave the current game?\nUnsaved game data will be lost.", "Leave Game", JOptionPane.YES_NO_OPTION,
+        "Are you sure you want to leave the current game?\nUnsaved game data will be lost.", "Leave Game",
+        JOptionPane.YES_NO_OPTION,
         getUIContext().getCountDownLatchHandler());
     if (rVal != JOptionPane.OK_OPTION) {
       return;
@@ -675,8 +677,8 @@ public class TripleAFrame extends MainGameFrame {
     setStatus(msg, mapPanel.getErrorImage());
   }
 
-  private void setStatus(String msg, Optional<Image> image) {
-    if(status == null) {
+  private void setStatus(final String msg, final Optional<Image> image) {
+    if (status == null) {
       return;
     }
     status.setText(msg);
@@ -778,7 +780,8 @@ public class TripleAFrame extends MainGameFrame {
       return;
     }
     messageAndDialogThreadPool.runTask(
-        () -> EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage, "Error", JOptionPane.ERROR_MESSAGE,
+        () -> EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage, "Error",
+            JOptionPane.ERROR_MESSAGE,
             true, getUIContext().getCountDownLatchHandler()));
   }
 
@@ -1982,7 +1985,7 @@ public class TripleAFrame extends MainGameFrame {
     return isEditMode;
   }
 
-  private AbstractAction m_showHistoryAction = new AbstractAction("Show history") {
+  private final AbstractAction m_showHistoryAction = new AbstractAction("Show history") {
     private static final long serialVersionUID = -3960551522512897374L;
 
     @Override
@@ -1991,7 +1994,7 @@ public class TripleAFrame extends MainGameFrame {
       m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     }
   };
-  private AbstractAction m_showGameAction = new AbstractAction("Show current game") {
+  private final AbstractAction m_showGameAction = new AbstractAction("Show current game") {
     private static final long serialVersionUID = -7551760679570164254L;
 
     {
@@ -2004,7 +2007,7 @@ public class TripleAFrame extends MainGameFrame {
       m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     }
   };
-  private AbstractAction m_showMapOnlyAction = new AbstractAction("Show map only") {
+  private final AbstractAction m_showMapOnlyAction = new AbstractAction("Show map only") {
     private static final long serialVersionUID = -6621157075878333141L;
 
     @Override
@@ -2106,8 +2109,8 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public Optional<InGameLobbyWatcherWrapper> getInGameLobbyWatcher() {
-    if(ServerGame.class.isAssignableFrom(getGame().getClass())) {
-      ServerGame serverGame = (ServerGame) getGame();
+    if (ServerGame.class.isAssignableFrom(getGame().getClass())) {
+      final ServerGame serverGame = (ServerGame) getGame();
       return Optional.ofNullable(serverGame.getInGameLobbyWatcher());
     } else {
       return Optional.empty();

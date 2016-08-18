@@ -126,8 +126,8 @@ public class ObjectivePanel extends AbstractStatPanel {
     final JButton refresh = new JButton("Refresh Objectives");
     refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
     refresh.addActionListener(SwingAction.of("Refresh Objectives", e -> {
-        m_objectiveModel.loadData();
-        SwingUtilities.invokeLater(() -> table.repaint());
+      m_objectiveModel.loadData();
+      SwingUtilities.invokeLater(() -> table.repaint());
     }));
     add(Box.createVerticalStrut(6));
     add(refresh);
@@ -436,6 +436,7 @@ public class ObjectivePanel extends AbstractStatPanel {
   }
 }
 
+
 /** TODO: copy paste overlap with NotifcationMessages.java */
 class ObjectiveProperties {
   // Filename
@@ -450,19 +451,20 @@ class ObjectiveProperties {
     final ResourceLoader loader = AbstractUIContext.getResourceLoader();
     final URL url = loader.getResource(PROPERTY_FILE);
     if (url != null) {
-        Optional<InputStream> inputStream = UrlStreams.openStream(url);
-        if(inputStream.isPresent()) {
-          try {
-            m_properties.load(inputStream.get());
-          } catch (final IOException e) {
-            System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
-          }
+      final Optional<InputStream> inputStream = UrlStreams.openStream(url);
+      if (inputStream.isPresent()) {
+        try {
+          m_properties.load(inputStream.get());
+        } catch (final IOException e) {
+          System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
         }
+      }
     }
   }
 
   public static ObjectiveProperties getInstance() {
-    if (s_op == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 1000) { // cache properties for 1 second
+    if (s_op == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 1000) { // cache properties for 1
+                                                                                         // second
       s_op = new ObjectiveProperties();
       s_timestamp = Calendar.getInstance().getTimeInMillis();
     }
@@ -485,7 +487,7 @@ class ObjectiveProperties {
 
 class ObjectivePanelDummyDelegateBridge implements IDelegateBridge {
   private final ITripleADisplay m_display = new HeadlessDisplay();
-  private final ISound m_soundChannel =  new HeadlessSoundChannel();
+  private final ISound m_soundChannel = new HeadlessSoundChannel();
   private final DelegateHistoryWriter m_writer = new DelegateHistoryWriter(new DummyGameModifiedChannel());
   private final GameData m_data;
   private final ObjectivePanelDummyPlayer m_dummyAI =
@@ -752,7 +754,7 @@ class EditorPaneCellEditor extends DefaultCellEditor {
 class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRenderer {
   private static final long serialVersionUID = -2835145877164663862L;
   private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
-  private final Map<JTable, Map<Integer, Map<Integer,Integer>>> cellSizes = new HashMap<>();
+  private final Map<JTable, Map<Integer, Map<Integer, Integer>>> cellSizes = new HashMap<>();
 
   public EditorPaneTableCellRenderer() {
     // setLineWrap(true);
@@ -784,7 +786,7 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
   }
 
   private void addSize(final JTable table, final int row, final int column, final int height) {
-    Map<Integer, Map<Integer,Integer>> rows = cellSizes.get(table);
+    Map<Integer, Map<Integer, Integer>> rows = cellSizes.get(table);
     if (rows == null) {
       cellSizes.put(table, rows = new HashMap<>());
     }
@@ -824,7 +826,7 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
       return 0;
     }
     int maximum_height = 0;
-    for (Entry<Integer, Integer> entry : rowheights.entrySet()) {
+    for (final Entry<Integer, Integer> entry : rowheights.entrySet()) {
       final int cellHeight = entry.getValue();
       maximum_height = Math.max(maximum_height, cellHeight);
     }

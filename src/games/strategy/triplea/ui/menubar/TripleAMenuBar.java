@@ -74,7 +74,7 @@ public class TripleAMenuBar extends JMenuBar {
 
 
     final Optional<InGameLobbyWatcherWrapper> watcher = frame.getInGameLobbyWatcher();
-    if( watcher.isPresent() && watcher.get().isActive()) {
+    if (watcher.isPresent() && watcher.get().isActive()) {
       createLobbyMenu(this, watcher.get());
     }
     new NetworkMenu(this, watcher, frame);
@@ -84,7 +84,7 @@ public class TripleAMenuBar extends JMenuBar {
     new HelpMenu(this, frame.getUIContext(), frame.getGame().getData(), getBackground());
   }
 
-  private void createLobbyMenu(final JMenuBar menuBar, InGameLobbyWatcherWrapper watcher ) {
+  private void createLobbyMenu(final JMenuBar menuBar, final InGameLobbyWatcherWrapper watcher) {
     final JMenu lobby = new JMenu("Lobby");
     lobby.setMnemonic(KeyEvent.VK_L);
     menuBar.add(lobby);
@@ -105,7 +105,7 @@ public class TripleAMenuBar extends JMenuBar {
 
       fileDialog.setDirectory(ClientContext.folderSettings().getSaveGamePath());
       fileDialog.setFilenameFilter((dir, name) -> { // the extension should be .tsvg, but find svg
-                                                                 // extensions as well
+                                                    // extensions as well
         return name.endsWith(".tsvg") || name.endsWith(".svg");
       });
       fileDialog.setVisible(true);
@@ -191,8 +191,7 @@ public class TripleAMenuBar extends JMenuBar {
             SubstanceOfficeSilver2007LookAndFeel.class.getName(),
             SubstanceRavenLookAndFeel.class.getName(),
             SubstanceSaharaLookAndFeel.class.getName(),
-            SubstanceTwilightLookAndFeel.class.getName()
-        ));
+            SubstanceTwilightLookAndFeel.class.getName()));
     return substanceLooks;
   }
 

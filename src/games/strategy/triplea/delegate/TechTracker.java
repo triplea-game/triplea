@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.TechnologyFrontier;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 
@@ -70,7 +70,7 @@ public class TechTracker implements java.io.Serializable {
       final TechAdvance advance) {
     Change attachmentChange;
     if (advance instanceof GenericTechAdvance && ((GenericTechAdvance) advance).getAdvance() == null) {
-        attachmentChange = ChangeFactory.genericTechChange(TechAttachment.get(player), true, advance.getProperty());
+      attachmentChange = ChangeFactory.genericTechChange(TechAttachment.get(player), true, advance.getProperty());
     } else {
       attachmentChange =
           ChangeFactory.attachmentPropertyChange(TechAttachment.get(player), "true", advance.getProperty());
