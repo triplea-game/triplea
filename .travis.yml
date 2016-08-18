@@ -18,7 +18,7 @@ before_deploy:
 - sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" $GAME_CONFIG
 ## Download tutorial map
 - mkdir -p maps
-- (cd maps; wget https://github.com/triplea-maps/tutorial/releases/download/0.123/tutorial.zip)
+- (cd maps; wget https://github.com/triplea-maps/tutorial/releases/download/0.125/tutorial.zip)
 ## Create the installers
 - ./gradlew release
 - ls build/releases/
