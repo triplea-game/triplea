@@ -75,67 +75,25 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     return getConditions();
   }
 
-  /**
-   * @deprecated please use setConditions, getConditions, clearConditions, instead.
-   */
-  @Deprecated
-  public void clearTrigger() {
-    clearConditions();
-  }
-
-  /**
-   * @deprecated please use setConditions, getConditions, clearConditions, instead.
-   */
-  @Deprecated
-  public void resetTrigger() {
-    resetConditions();
-  }
-
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setUses(final String s) {
     m_uses = getInt(s);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUses(final Integer u) {
-    m_uses = u;
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUses(final int u) {
-    m_uses = u;
-  }
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setUsedThisRound(final String s) {
     m_usedThisRound = getBool(s);
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  public void setUsedThisRound(final boolean usedThisRound) {
-    m_usedThisRound = usedThisRound;
-  }
-
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  public void setUsedThisRound(final Boolean usedThisRound) {
-    m_usedThisRound = usedThisRound;
-  }
-
   public boolean getUsedThisRound() {
     return m_usedThisRound;
-  }
-
-  public void resetUsedThisRound() {
-    m_usedThisRound = false;
   }
 
   public int getUses() {
     return m_uses;
   }
 
-  public void resetUses() {
-    m_uses = -1;
-  }
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
@@ -164,14 +122,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     return m_when;
   }
 
-  public void clearWhen() {
-    m_when.clear();
-  }
-
-  public void resetWhen() {
-    m_when = new ArrayList<>();
-  }
-
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setNotification(final String sNotification) {
     if (sNotification == null) {
@@ -185,9 +135,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     return m_notification;
   }
 
-  public void resetNotification() {
-    m_notification = null;
-  }
 
   protected void use(final IDelegateBridge aBridge) {
     // instead of using up a "use" with every action, we will instead use up a "use" if the trigger is fired during this

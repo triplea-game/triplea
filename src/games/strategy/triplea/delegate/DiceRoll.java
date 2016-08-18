@@ -478,7 +478,7 @@ public class DiceRoll implements Externalizable {
         }
         if (ua.getIsSea() && isAmphibiousBattle && Matches.TerritoryIsLand.match(location)) {
           // change the strength to be bombard, not attack/defense, because this is a
-          strength = ua.getBombard(current.getOwner());
+          strength = ua.getBombard();
           // bombarding naval unit
         }
         strength += getSupport(current, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly,

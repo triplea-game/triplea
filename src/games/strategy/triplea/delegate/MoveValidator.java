@@ -694,7 +694,7 @@ public class MoveValidator {
    */
   private static int getMechanizedSupportAvail(final Route route, final Collection<Unit> units, final PlayerID player) {
     int mechanizedSupportAvailable = 0;
-    if (TechAttachment.isMechanizedInfantry(player)) {
+    if (TechAttachment.isInfantryInfantry(player)) {
       final CompositeMatch<Unit> transportLand =
           new CompositeMatchAnd<>(Matches.UnitIsLandTransport, Matches.unitIsOwnedBy(player));
       mechanizedSupportAvailable = Match.countMatches(units, transportLand);
@@ -1186,7 +1186,7 @@ public class MoveValidator {
   // checks if there are non-paratroopers present that cause move validations to fail
   private static boolean nonParatroopersPresent(final PlayerID player, final Collection<Unit> units,
       final Route route) {
-    if (!TechAttachment.isParatroopers(player)) {
+    if (!TechAttachment.isAirTransportable(player)) {
       return true;
     }
     if (!Match.allMatch(units, new CompositeMatchOr<>(Matches.UnitIsAir, Matches.UnitIsLand))) {
@@ -1213,13 +1213,13 @@ public class MoveValidator {
   private static MoveValidationResult validateParatroops(final boolean nonCombat, final GameData data,
       final List<UndoableMove> undoableMoves, final Collection<Unit> units, final Route route, final PlayerID player,
       final MoveValidationResult result) {
-    if (!TechAttachment.isParatroopers(player)) {
+    if (!TechAttachment.isAirTransportable(player)) {
       return result;
     }
     if (Match.noneMatch(units, Matches.UnitIsAirTransportable) || Match.noneMatch(units, Matches.UnitIsAirTransport)) {
       return result;
     }
-    if (nonCombat && !isParatroopersCanMoveDuringNonCombat(data)) {
+    if (nonCombat && !isAirTransportableCanMoveDuringNonCombat(data)) {
       return result.setErrorReturnResult("Paratroops may not move during NonCombat");
     }
     if (!getEditMode(data)) {
@@ -1250,11 +1250,11 @@ public class MoveValidator {
         if (Matches.unitHasMoved.match(paratroop)) {
           result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
         }
-        if (Matches.isTerritoryFriendly(player, data).match(routeEnd) && !isParatroopersCanMoveDuringNonCombat(data)) {
+        if (Matches.isTerritoryFriendly(player, data).match(routeEnd) && !isAirTransportableCanMoveDuringNonCombat(data)) {
           result.addDisallowedUnit("Paratroops must advance to battle", paratroop);
         }
         if (!nonCombat && Matches.isTerritoryFriendly(player, data).match(routeEnd)
-            && isParatroopersCanMoveDuringNonCombat(data)) {
+            && isAirTransportableCanMoveDuringNonCombat(data)) {
           result.addDisallowedUnit("Paratroops may only airlift during Non-Combat Movement Phase", paratroop);
         }
       }
@@ -1663,7 +1663,7 @@ public class MoveValidator {
     return games.strategy.triplea.Properties.getMovementByTerritoryRestricted(data);
   }
 
-  private static boolean isParatroopersCanMoveDuringNonCombat(final GameData data) {
+  private static boolean isAirTransportableCanMoveDuringNonCombat(final GameData data) {
     return games.strategy.triplea.Properties.getParatroopersCanMoveDuringNonCombat(data);
   }
 

@@ -145,7 +145,7 @@ public class Pact_of_Steel_2_Test {
   }
 
   public void testRepairsUnits() {
-    // TODO repairsUnits, "Two HitPoint Units Require Repair Facilities", "Units repair at beginning of round"
+    // TODO repairsUnits, "Two HitPoint Units Require Repair Facilities", "Units Repair Hits Start Turn"
   }
 
   public void testProductionPerXTerritories() {

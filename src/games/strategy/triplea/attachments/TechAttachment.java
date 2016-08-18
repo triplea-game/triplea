@@ -91,26 +91,8 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTechCost(final Integer s) {
-    techCost = s;
-  }
-
-  public void resetTechCost() {
-    techCost = 5;
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setHeavyBomber(final String s) {
     heavyBomber = getBool(s);
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setHeavyBomber(final Boolean s) {
-    heavyBomber = s;
-  }
-
-  public void resetHeavyBomber() {
-    heavyBomber = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -119,26 +101,8 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setDestroyerBombard(final Boolean s) {
-    destroyerBombard = s;
-  }
-
-  public void resetDestroyerBombard() {
-    destroyerBombard = false;
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setLongRangeAir(final String s) {
     longRangeAir = getBool(s);
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setLongRangeAir(final Boolean s) {
-    longRangeAir = s;
-  }
-
-  public void resetLongRangeAir() {
-    longRangeAir = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -147,26 +111,8 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setJetPower(final Boolean s) {
-    jetPower = s;
-  }
-
-  public void resetJetPower() {
-    jetPower = false;
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setRocket(final String s) {
     rocket = getBool(s);
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRocket(final Boolean s) {
-    rocket = s;
-  }
-
-  public void resetRocket() {
-    rocket = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -175,26 +121,8 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIndustrialTechnology(final Boolean s) {
-    industrialTechnology = s;
-  }
-
-  public void resetIndustrialTechnology() {
-    industrialTechnology = false;
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setSuperSub(final String s) {
     superSub = getBool(s);
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setSuperSub(final Boolean s) {
-    superSub = s;
-  }
-
-  public void resetSuperSub() {
-    superSub = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -203,26 +131,8 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setImprovedArtillerySupport(final Boolean s) {
-    improvedArtillerySupport = s;
-  }
-
-  public void resetImprovedArtillerySupport() {
-    improvedArtillerySupport = false;
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setParatroopers(final String s) {
     paratroopers = getBool(s);
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setParatroopers(final Boolean s) {
-    paratroopers = s;
-  }
-
-  public void resetParatroopers() {
-    paratroopers = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -231,26 +141,8 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIncreasedFactoryProduction(final Boolean s) {
-    increasedFactoryProduction = s;
-  }
-
-  public void resetIncreasedFactoryProduction() {
-    increasedFactoryProduction = false;
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setWarBonds(final String s) {
     warBonds = getBool(s);
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setWarBonds(final Boolean s) {
-    warBonds = s;
-  }
-
-  public void resetWarBonds() {
-    warBonds = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -259,40 +151,13 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setMechanizedInfantry(final Boolean s) {
-    mechanizedInfantry = s;
-  }
-
-  public void resetMechanizedInfantry() {
-    mechanizedInfantry = false;
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAARadar(final String s) {
     aARadar = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAARadar(final Boolean s) {
-    aARadar = s;
-  }
-
-  public void resetAARadar() {
-    aARadar = false;
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setShipyards(final String s) {
     shipyards = getBool(s);
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setShipyards(final Boolean s) {
-    shipyards = s;
-  }
-
-  public void resetShipyards() {
-    shipyards = false;
   }
 
   // getters
@@ -387,23 +252,14 @@ public class TechAttachment extends DefaultAttachment {
     genericTech.put(name, value);
   }
 
-  @InternalDoNotExport
-  public void setGenericTech(final HashMap<String, Boolean> value) {
-    genericTech = value;
-  }
-
   public HashMap<String, Boolean> getGenericTech() {
     return genericTech;
-  }
-
-  public void clearGenericTech() {
-    genericTech.clear();
   }
 
   @Override
   public void validate(final GameData data) throws GameParseException {}
 
-  public static boolean isMechanizedInfantry(final PlayerID player) {
+  public static boolean isInfantryInfantry(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     if (ta == null) {
       return false;
@@ -411,7 +267,7 @@ public class TechAttachment extends DefaultAttachment {
     return ta.getMechanizedInfantry();
   }
 
-  public static boolean isParatroopers(final PlayerID player) {
+  public static boolean isAirTransportable(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     if (ta == null) {
       return false;

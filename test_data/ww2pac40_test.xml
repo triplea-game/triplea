@@ -1297,7 +1297,7 @@
                          <option name="attack" value="4"/>
                          <option name="defense" value="4"/>
                          <option name="canBombard" value="true"/>
-                         <option name="isTwoHit" value="true"/>
+                         <option name="hitPoints" value="2"/>
 						 <option name="blockade" value="1"/>
                  </attachment>
 				 
@@ -1308,7 +1308,7 @@
                          <option name="attack" value="3"/>
                          <option name="defense" value="3"/>
                          <option name="canBombard" value="true"/>
-                         <option name="isTwoHit" value="false"/>
+                         <option name="hitPoints" value="1"/>
 						 <option name="blockade" value="1"/>
                  </attachment>
                  
@@ -1329,7 +1329,7 @@
                          <option name="attack" value="0"/>
                          <option name="defense" value="2"/>
 						 <option name="carrierCapacity" value="2"/>
-                         <option name="isTwoHit" value="true"/>
+                         <option name="hitPoints" value="2"/>
 						 <option name="blockade" value="1"/>
 						 <!-- whenCombatDamaged means that when this unit has x:y damage on it, it will have this effect -->
 						 <option name="whenCombatDamaged" value="unitsMayNotLandOnCarrier" count="1:2"/>
@@ -1465,35 +1465,34 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Shantung" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<option name="occupiedTerrOf" value="Chinese"/>
+						<option name="originalOwner" value="Chinese"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Formosa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Kwangsi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
-						<option name="occupiedTerrOf" value="Chinese"/>
+						<option name="originalOwner" value="Chinese"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Korea" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Kiangsu" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
-                        <option name="victoryCity" value="true"/>
-						<option name="occupiedTerrOf" value="Chinese"/>
+                        <option name="victoryCity" value="1"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Kiangsi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
-						<option name="occupiedTerrOf" value="Chinese"/>
+						<option name="originalOwner" value="Chinese"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Japan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="8"/>
                         <option name="capital" value="Japanese"/>
-                        <option name="victoryCity" value="true"/>
+                        <option name="victoryCity" value="1"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Jehol" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
-						<option name="occupiedTerrOf" value="Chinese"/>
+						<option name="originalOwner" value="Chinese"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Okinawa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
@@ -1506,7 +1505,7 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Manchuria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
-						<option name="occupiedTerrOf" value="Chinese"/>
+						<option name="originalOwner" value="Chinese"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Hainan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
@@ -1572,7 +1571,7 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="India" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
-                        <option name="victoryCity" value="true"/>
+                        <option name="victoryCity" value="1"/>
 						<option name="capital" value="British"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Malaya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -1586,7 +1585,7 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Kwangtung" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
-                        <option name="victoryCity" value="true"/>
+                        <option name="victoryCity" value="1"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Queensland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
@@ -1606,7 +1605,7 @@
                     <attachment name="territoryAttachment" attachTo="New South Wales" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
                         <option name="capital" value="ANZAC"/>
-                        <option name="victoryCity" value="true"/>
+                        <option name="victoryCity" value="1"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="South Australia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
@@ -1622,7 +1621,7 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Philippines" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-                        <option name="victoryCity" value="true"/>
+                        <option name="victoryCity" value="1"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Line Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
@@ -1638,7 +1637,7 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Western United States" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="10"/>
-                        <option name="victoryCity" value="true"/>
+                        <option name="victoryCity" value="1"/>
 						<option name="capital" value="Americans"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Alaska" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -1652,7 +1651,7 @@
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Hawaiian Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
-                        <option name="victoryCity" value="true"/>
+                        <option name="victoryCity" value="1"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Midway" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
@@ -1930,7 +1929,7 @@
 					
 					<!-- Conditions -->
 					<attachment name="conditionAttachmentAmericansNotYetAtWar" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-						<option name="turns" value="3"/>
+						<option name="rounds" value="3"/>
 						<option name="relationship" value="Americans:Japanese:anyNeutral"/>
 					</attachment>
 					
@@ -2543,11 +2542,11 @@
 						<boolean/>
 				</property>
 
-				<property name="Units repair at end of round" value="false" editable="false">
+				<property name="Units Repair Hits End Turn" value="false" editable="false">
 						<boolean/>
 				</property>
 
-				<property name="Units repair at beginning of round" value="true" editable="false">
+				<property name="Units Repair Hits Start Turn" value="true" editable="false">
 						<boolean/>
 				</property>
 
@@ -2859,7 +2858,7 @@
 						<boolean/>
 				</property>
 
-				<property name="SBR Affects Unit Production" value="false" editable="false">
+				<property name="Damage From Bombing Done To Units Instead Of Territories" value="false" editable="false">
 						<boolean/>
 				</property>
 				

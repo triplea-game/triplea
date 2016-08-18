@@ -54,7 +54,7 @@ public interface Constants {
   String MOVE_EXISTING_FIGHTERS_TO_NEW_CARRIERS = "Move existing fighters to new carriers";
   String LAND_EXISTING_FIGHTERS_ON_NEW_CARRIERS = "Land existing fighters on new carriers";
   String HEAVY_BOMBER_DICE_ROLLS = "Heavy Bomber Dice Rolls";
-  String TWO_HIT_BATTLESHIPS_REPAIR_END_OF_TURN = "Units repair at end of round";
+  String TWO_HIT_BATTLESHIPS_REPAIR_END_OF_TURN = "Units Repair Hits End Turn";
   String WW2V2 = "WW2V2";
   String TOTAL_VICTORY = "Total Victory";
   String HONORABLE_SURRENDER = "Honorable Surrender";
@@ -106,7 +106,7 @@ public interface Constants {
   // may be SUBMERSIBLE_SUBS below
   String SUB_RETREAT_BEFORE_BATTLE = "Sub Retreat Before Battle";
   String SHORE_BOMBARD_PER_GROUND_UNIT_RESTRICTED = "Shore Bombard Per Ground Unit Restricted";
-  String SBR_AFFECTS_UNIT_PRODUCTION = "SBR Affects Unit Production";
+  String SBR_AFFECTS_UNIT_PRODUCTION = "Damage From Bombing Done To Units Instead Of Territories";
   String AA_TERRITORY_RESTRICTED = "AA Territory Restricted";
   String MULTIPLE_AA_PER_TERRITORY = "Multiple AA Per Territory";
   String IGNORE_TRANSPORT_IN_MOVEMENT = "Ignore Transport In Movement";
@@ -175,7 +175,7 @@ public interface Constants {
   String MORE_CONSTRUCTIONS_WITHOUT_FACTORY = "More Constructions without Factory";
   String MORE_CONSTRUCTIONS_WITH_FACTORY = "More Constructions with Factory";
   String UNIT_PLACEMENT_RESTRICTIONS = "Unit Placement Restrictions";
-  String TWO_HIT_BATTLESHIPS_REPAIR_BEGINNING_OF_TURN = "Units repair at beginning of round";
+  String TWO_HIT_BATTLESHIPS_REPAIR_BEGINNING_OF_TURN = "Units Repair Hits Start Turn";
   String TWO_HITPOINT_UNITS_REQUIRE_REPAIR_FACILITIES =
       "Two HitPoint Units Require Repair Facilities";
   String LL_TECH_ONLY = "Low Luck for Technology";

@@ -113,14 +113,6 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     return m_activateTrigger;
   }
 
-  public void clearActivateTrigger() {
-    m_activateTrigger.clear();
-  }
-
-  public void resetActivateTrigger() {
-    m_activateTrigger = new ArrayList<>();
-  }
-
   public static void fireTriggers(final UserActionAttachment actionAttachment,
       final HashMap<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge aBridge) {
     final GameData data = aBridge.getData();

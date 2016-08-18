@@ -534,7 +534,7 @@ public class MapXmlCreator extends JFrame {
 
         case UNIT_ATTACHMENTS:
           showInfoMessage(
-              "Here is a list of all the available unit attachments: movement, attack, defense, isAir, isSea, isAA, isFactory, canBlitz, isSub, canBombard, isStrategicBomber, isTwoHit, isDestroyer, isArtillery, isArtillerySupportable, isMarine, isInfantry, isParatroop, isMechanized, transportCapacity, transportCost, carrierCapacity, carrierCost",
+              "Here is a list of all the available unit attachments: movement, attack, defense, isAir, isSea, isAA, isFactory, canBlitz, isSub, canBombard, isStrategicBomber, hitPoints, isDestroyer, isArtillery, isArtillerySupportable, isMarine, isInfantry, isAirTransportable, isInfantry, transportCapacity, transportCost, carrierCapacity, carrierCost",
               "List Of Available Unit Attachment Choices (As Of TripleA 1.0.3.4)");
           break;
 
