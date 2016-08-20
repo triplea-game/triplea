@@ -31,7 +31,10 @@ compileTestJava {
 }
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-tasks.withType(JavaCompile) { options.incremental = true }
+
+tasks.withType(JavaCompile) {
+	options.incremental = true
+}
 
 sourceSets {
 	main {
@@ -46,6 +49,7 @@ sourceSets {
 checkstyle{
 	configFile = rootProject.file('google_checks.xml')
 	toolVersion = "7.1"
+	showViolations = false
 }
 
 jar {
