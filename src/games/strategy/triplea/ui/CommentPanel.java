@@ -164,11 +164,6 @@ public class CommentPanel extends JPanel {
     nextMessageKeymap.put(KeyStroke.getKeyStroke('\n'), m_saveAction);
   }
 
-  private void cleanupKeyMap() {
-    final InputMap nextMessageKeymap = m_nextMessage.getInputMap();
-    nextMessageKeymap.remove(KeyStroke.getKeyStroke('\n'));
-  }
-
   private void loadHistory() {
     final Document doc = m_text.getDocument();
     final HistoryNode rootNode = (HistoryNode) m_data.getHistory().getRoot();
