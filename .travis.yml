@@ -41,7 +41,7 @@ deploy:
   ## This is the list of files to be deployed to github releases
   file:
     - build/libs/triplea-${TAGGED_VERSION}-all.jar
-    - build/releases/triple_${TAGGED_VERSION}_windows-x64.exe
+    - build/releases/triplea_${TAGGED_VERSION}_windows-x64.exe
     - build/releases/triplea_${TAGGED_VERSION}_windows.exe
     - build/releases/triplea_${TAGGED_VERSION}_macos.dmg
     - build/releases/triplea_${TAGGED_VERSION}_unix.sh
