@@ -76,6 +76,9 @@ On first call these files will install the correct version of Gradle on your sys
 # creates into build/libs/triplea-<version>.jar
 ./gradlew test
 # compiles the project and runs the unit tests
+./gradlew check
+# runs the tests and runs the checkstyle application to be able to review the code quality
+a report html page can be found under {projectDir}/build/reports/checkstyle/
 ```
 
 * creates a self contained jar file from the project, all JAR dependencies are included
