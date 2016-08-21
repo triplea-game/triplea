@@ -20,7 +20,7 @@ import javax.swing.event.HyperlinkListener;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
-import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.net.OpenFileUtility;
 import games.strategy.util.Version;
 
 public class EngineVersionProperties {
@@ -139,7 +139,7 @@ public class EngineVersionProperties {
     intro.setBorder(BorderFactory.createEmptyBorder());
     final HyperlinkListener hyperlinkListener = e -> {
       if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
-        DesktopUtilityBrowserLauncher.openURL(e.getDescription());
+        OpenFileUtility.openURL(e.getDescription());
       }
     };
     intro.addHyperlinkListener(hyperlinkListener);

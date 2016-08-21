@@ -28,7 +28,7 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
-import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.net.OpenFileUtility;
 import games.strategy.net.GUID;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.IConnectionLogin;
@@ -246,7 +246,7 @@ public class InGameLobbyWatcher {
             if (JOptionPane.showConfirmDialog(parentComponent,
                 "Do you want to view the tutorial on how to host?  This will open in your internet browser.",
                 "View Help Website?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-              DesktopUtilityBrowserLauncher.openURL(
+              OpenFileUtility.openURL(
                   "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html");
             }
             System.exit(-1);

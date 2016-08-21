@@ -36,7 +36,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameRunner.ProxyChoice;
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.engine.framework.TripleAProcessRunner;
-import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.net.OpenFileUtility;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.settings.SettingsWindow;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
@@ -383,7 +383,7 @@ public class EnginePreferences extends JDialog {
     }));
     m_userFolder.addActionListener(SwingAction.of("Open User Maps and Savegames Folder", e -> {
       try {
-        DesktopUtilityBrowserLauncher.openFile(ClientFileSystemHelper.getUserRootFolder());
+        OpenFileUtility.openFile(ClientFileSystemHelper.getUserRootFolder());
       } catch (final Exception e1) {
         e1.printStackTrace();
       }
@@ -391,14 +391,14 @@ public class EnginePreferences extends JDialog {
     }));
     m_programFolder.addActionListener(SwingAction.of("Open Installed Program Folder", e -> {
       try {
-        DesktopUtilityBrowserLauncher.openFile(ClientFileSystemHelper.getRootFolder());
+        OpenFileUtility.openFile(ClientFileSystemHelper.getRootFolder());
       } catch (final Exception e1) {
         e1.printStackTrace();
       }
     }));
     m_readme.addActionListener(SwingAction.of("Open Readme / User Manual", e -> {
       try {
-        DesktopUtilityBrowserLauncher.openFile(new File(ClientFileSystemHelper.getRootFolder(), "readme.html"));
+        OpenFileUtility.openFile(new File(ClientFileSystemHelper.getRootFolder(), "readme.html"));
       } catch (final Exception e1) {
         e1.printStackTrace();
       }

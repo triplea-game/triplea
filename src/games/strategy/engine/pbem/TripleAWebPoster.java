@@ -26,7 +26,7 @@ import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.engine.framework.startup.ui.editors.MicroWebPosterEditor;
 import games.strategy.engine.stats.AbstractStat;
-import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -264,7 +264,7 @@ public class TripleAWebPoster implements IWebPoster {
 
   @Override
   public void viewSite() {
-    DesktopUtilityBrowserLauncher.openURL(getHost());
+    OpenFileUtility.openURL(getHost());
   }
 
   public void setParties(final String[] parties) {
