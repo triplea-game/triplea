@@ -42,16 +42,8 @@ public class DebugUtils {
         result.append("\n");
       }
     }
-    long[] deadlocks;
-    try {
-      // invoke a 1.6 method if available
-      final Method m = threadMxBean.getClass().getMethod("findDeadlockedThreads");
-      final Object o = m.invoke(threadMxBean);
-      deadlocks = (long[]) o;
-    } catch (final Throwable t) {
-      // fall back to 1.5
-      deadlocks = threadMxBean.findMonitorDeadlockedThreads();
-    }
+    long[] deadlocks = threadMxBean.findDeadlockedThreads();
+
     if (deadlocks != null) {
       result.append("DEADLOCKS!!");
       for (final long l : deadlocks) {
