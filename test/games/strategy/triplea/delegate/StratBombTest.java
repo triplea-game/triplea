@@ -78,18 +78,18 @@ public class StratBombTest {
 
     // Find facilities in territory
     for( final Unit target : germany.getUnits().getUnits() ) {
-    	switch( target.getType().getName() ) {
-				case "airfield"      : airfield = (TripleAUnit) target; 
-					break;
-				case "harbour"       : harbour = (TripleAUnit) target;
-					break;
-				case "factory_major" : factory = (TripleAUnit) target;
-					break;
-		  }
-		}
-		targets.put(airfield, new HashSet<>(Collections.singleton(tacBomber1)));
-		targets.put(harbour, new HashSet<>(Collections.singleton(tacBomber2)));
-		targets.put(factory, new HashSet<>(Collections.singleton(stratBomber)));
+      switch( target.getType().getName() ) {
+        case "airfield"      : airfield = (TripleAUnit) target; 
+          break;
+        case "harbour"       : harbour = (TripleAUnit) target;
+          break;
+        case "factory_major" : factory = (TripleAUnit) target;
+          break;
+      }
+    }
+    targets.put(airfield, new HashSet<>(Collections.singleton(tacBomber1)));
+    targets.put(harbour, new HashSet<>(Collections.singleton(tacBomber2)));
+    targets.put(factory, new HashSet<>(Collections.singleton(stratBomber)));
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     tracker.addBattle(new RouteScripted(germany), attackers, true, british, bridge, null, null, targets, true);
                 
@@ -97,7 +97,7 @@ public class StratBombTest {
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
     addTo(germany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
     tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
-    // aa guns rolls 1,3, first one hits, remaining bomber rolls 1 dice at 2
+    // aa guns rolls 1,3,2 first one hits, remaining bombers roll 1 dice each
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1, 3, 2, 5, 4}));
     // if we try to move aa, then the game will ask us if we want to move
     // fail if we are called
