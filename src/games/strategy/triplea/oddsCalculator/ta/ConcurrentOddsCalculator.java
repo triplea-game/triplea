@@ -387,15 +387,6 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
     }
   }
 
-  @Override
-  public void setRetreatWhenMetaPowerIsLower(final boolean value) {
-    synchronized (m_mutexCalcIsRunning) {
-      awaitLatch();
-      for (final OddsCalculator worker : m_workers) {
-        worker.setRetreatWhenMetaPowerIsLower(value);
-      }
-    }
-  }
 
   @Override
   public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {

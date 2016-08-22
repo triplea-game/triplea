@@ -92,11 +92,6 @@ public class FastOddsEstimator implements IOddsCalculator {
   }
 
   @Override
-  public void setRetreatWhenMetaPowerIsLower(final boolean value) {
-
-  }
-
-  @Override
   public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {
 
   }
