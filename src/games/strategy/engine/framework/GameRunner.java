@@ -205,9 +205,9 @@ public class GameRunner {
       if (indexOf > 0) {
         arg = arg.substring(0, indexOf);
         for (final String property : properties) {
-          if (arg.equals(property)) {
+          if (arg.equalsIgnoreCase(property)) {
             final String value = getValue(arg1);
-            if (property.equals(MAP_FOLDER)) {
+            if (property.equalsIgnoreCase(MAP_FOLDER)) {
               SystemPreferences.put(SystemPreferenceKey.MAP_FOLDER_OVERRIDE, value);
             } else {
               System.getProperties().setProperty(property, value);
