@@ -25,7 +25,7 @@ public class OpenFileUtility {
         ClientLogger.logError(e);
       }
     } else {
-      logDesktopAPIMessage();
+      logDesktopAPIMessage("File");
     }
   }
 
@@ -42,13 +42,13 @@ public class OpenFileUtility {
         ClientLogger.logError(e);
       }
     } else {
-      logDesktopAPIMessage();
+      logDesktopAPIMessage("URL");
     }
   }
 
-  private static void logDesktopAPIMessage() {
+  private static void logDesktopAPIMessage(String type) {
     ClientLogger.logQuietly("The Client doesn't support the Desktop API");
     JOptionPane.showMessageDialog(null,
-        "We're sorry, but it seems that your installed java version doesn't support the Desktop API required to open the destination File");
+        "We're sorry, but it seems that your installed java version doesn't support the Desktop API required to open the destination " + type);
   }
 }
