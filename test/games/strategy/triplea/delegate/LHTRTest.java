@@ -227,48 +227,6 @@ public class LHTRTest {
     // Changed to match StrategicBombingRaidBattle changes
     assertEquals(PUsBeforeRaid - 8, PUsAfterRaid);
   }
-
-  @Test
-  public void testBombingRaid2targets() {
-    final Territory germany = m_data.getMap().getTerritory("Germany");
-    final Territory uk = m_data.getMap().getTerritory("United Kingdom");
-    final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final PlayerID british = GameDataTestUtil.british(m_data);
-    // add a unit
-    final Unit stratBomber = GameDataTestUtil.bomber(m_data).create(british);
-    final Unit tacBomber = GameDataTestUtil.tacBomber(m_data).create(british);
-    final Change change1 = ChangeFactory.addUnits(uk, Collections.singleton(stratBomber));
-    m_data.performChange(change1);
-    final Change change2 = ChangeFactory.addUnits(uk, Collections.singleton(tacBomber));
-    m_data.performChange(change2);
-    final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
-    battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
-    addTo(germany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
-    tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
-    final ITestDelegateBridge bridge = getDelegateBridge(british);
-    // aa guns rolls 1,3, first one hits, remaining bomber rolls 1 dice at 2
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {3, 3, 2}));
-    // if we try to move aa, then the game will ask us if we want to move
-    // fail if we are called
-    final InvocationHandler handler = new InvocationHandler() {
-      @Override
-      public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-        return null;
-      }
-    };
-    final ITripleAPlayer player = (ITripleAPlayer) Proxy
-        .newProxyInstance(Thread.currentThread().getContextClassLoader(),
-            TestUtil.getClassArrayFrom(ITripleAPlayer.class), handler);
-    bridge.setRemote(player);
-    final int PUsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
-    battle.fight(bridge);
-    final int PUsAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
-    // targets dice is 4, so damage is 1 + 4 = 5
-    // bomber 2 hits at 2, so damage is 3, for a total of 8
-    // Changed to match StrategicBombingRaidBattle changes
-    assertEquals(PUsBeforeRaid - 8, PUsAfterRaid);
-  }
 }
 
 
