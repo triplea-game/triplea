@@ -2,6 +2,7 @@ package games.strategy.triplea.settings.ai;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import javax.swing.JTextField;
 
@@ -15,13 +16,16 @@ public class AiTab implements SettingsTab<AiSettings> {
   private final List<SettingInputComponent<AiSettings>> inputs;
 
   public AiTab(final AiSettings aiSettings) {
+
+    BiConsumer<AiSettings, String> aiSettingsWriter = (settings,s) -> settings.setAiPauseDuration(s);
+
     inputs = Arrays.asList(
-        SettingInputComponent.build(
+        SettingInputComponent.buildIntegerText(
             new IntegerValueRange(0, 3000, AiSettings.DEFAULT_AI_PAUSE_DURACTION),
             "AI Pause Duration",
             "Time delay (in milliseconds) between AI moves, allows for the AI moves to be watched",
             new JTextField(String.valueOf(aiSettings.getAiPauseDuration()), 5),
-            ((settings, s) -> settings.setAiPauseDuration(s)),
+            aiSettingsWriter,
             (settings -> String.valueOf(aiSettings.getAiPauseDuration()))),
         SettingInputComponent.buildYesOrNoRadioButtons("Show Battles Between AIs",
             "When set to yes, combats between AI players will be shown in a battle window.",

@@ -19,21 +19,20 @@ public class BattleCalcTab implements SettingsTab<BattleCalcSettings> {
   public BattleCalcTab(final BattleCalcSettings battleCalcSettings) {
 
     inputs = Arrays.asList(
-        SettingInputComponent.build(
+        SettingInputComponent.buildIntegerText(
             new IntegerValueRange(1, 10000, BattleCalcSettings.DEFAULT_SIMULATION_COUNT_DICE),
             "Default Dice Run Count",
             CALC_DESCRIPTION + " (dice games)",
             new JTextField(String.valueOf(battleCalcSettings.getSimulationCountDice()), 5),
-            ((settings, s) -> settings.setSimulationCountDice(s)),
-            (settings -> String.valueOf(settings.getSimulationCountDice()))),
-
-        SettingInputComponent.build(
+            BattleCalcSettings::setSimulationCountDice,
+            (calcSettings) -> String.valueOf(calcSettings.getSimulationCountDice())),
+        SettingInputComponent.buildIntegerText(
             new IntegerValueRange(1, 10000, BattleCalcSettings.DEFAULT_SIMULATION_COUNT_LOW_LUCK),
             "Default Low Luck Run Count",
             CALC_DESCRIPTION + " (low luck games)",
             new JTextField(String.valueOf(battleCalcSettings.getSimulationCountLowLuck()), 5),
-            ((settings, s) -> settings.setSimulationCountLowLuck(s)),
-            (settings -> String.valueOf(settings.getSimulationCountLowLuck()))));
+            BattleCalcSettings::setSimulationCountLowLuck,
+            (calcSettings) -> String.valueOf(calcSettings.getSimulationCountLowLuck())));
   }
 
   @Override

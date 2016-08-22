@@ -22,8 +22,14 @@ public class FolderSettings implements HasDefaults {
 
   public String getDownloadedMapPath() {
     // return the override first, then user maps folder preference, then the default
-    return SystemPreferences.get(SystemPreferenceKey.MAP_FOLDER_OVERRIDE,
-        SystemPreferences.get(SystemPreferenceKey.USER_MAPS_FOLDER_PATH, DEFAULT_DOWNLOADED_MAPS_PATH.toString()));
+
+        String override = SystemPreferences.get(SystemPreferenceKey.MAP_FOLDER_OVERRIDE, "");
+        if(override.isEmpty()) {
+          return SystemPreferences
+              .get(SystemPreferenceKey.USER_MAPS_FOLDER_PATH, DEFAULT_DOWNLOADED_MAPS_PATH.toString());
+        } else {
+          return override;
+        }
   }
 
   public void setDownloadedMapPath(final String downloadedMapPath) {

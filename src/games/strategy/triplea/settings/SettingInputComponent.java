@@ -3,6 +3,7 @@ package games.strategy.triplea.settings;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -27,7 +28,7 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
 
   /**
    * @return Detailed (but concise) text description of what the setting represents. This is a message to the user
-   *         describing a specific setting, what it does, and which values they should change it to.
+   * describing a specific setting, what it does, and which values they should change it to.
    */
   String getDescription();
 
@@ -53,70 +54,71 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
 
 
 
-  static <Z extends HasDefaults> SettingInputComponent<Z> build(
+  static <Z extends HasDefaults> SettingInputComponent buildIntegerText(
       final IntegerValueRange valueRange,
       final String label,
       final String description,
       final JTextComponent component,
-      final BiConsumer<Z, String> updater,
-      final Function<Z, String> extractor) {
+      final BiConsumer<Z, String> writer,
+      final Function<Z, String> reader) {
 
     final String descriptionWithRange = "(" + valueRange.lowerValue + " - " + valueRange.upperValue
         + ", default: " + valueRange.defaultValue + ")\n" + description;
 
-    return SettingInputComponent.build(label, descriptionWithRange, component, updater, extractor,
+    return SettingInputComponent.buildTextComponent(label, descriptionWithRange, component, reader, writer,
         InputValidator.inRange(valueRange.lowerValue, valueRange.upperValue));
   }
 
   /**
    * Factory method to create instances of this interface, backed by TextField component types
    */
-  static <Z extends HasDefaults> SettingInputComponent<Z> build(
+  static <Z extends HasDefaults> SettingInputComponent buildTextComponent(
       final String label,
       final String description,
       final JTextComponent component,
-      final BiConsumer<Z, String> updater,
-      final Function<Z, String> extractor,
+      final Function<Z, String> settingsModelReader,
+      final BiConsumer<Z, String> settingsModelWriter,
       final InputValidator... validators) {
-    final SettingsInput inputComponent = new SettingsInput() {
-      @Override
-      public JComponent getSwingComponent() {
-        return component;
-      }
 
-      @Override
-      public String getText() {
-        return component.getText();
-      }
+    JPanel panel = new JPanel();
+    panel.add(component);
 
-      @Override
-      public void setText(final String valueToSet) {
-        component.setText(valueToSet);
-      }
-    };
-    return build(label, description, inputComponent, updater, extractor, validators);
+    return SettingInputComponent.build(
+        panel,
+        new LabelDescription(label, description),
+        new SwingComponentReaderWriter(component::getText, component::setText),
+        new SettingsModelReaderWriter(settingsModelReader, settingsModelWriter),
+        validators);
+
   }
 
   static <Z extends HasDefaults> SettingInputComponent<Z> buildYesOrNoRadioButtons(
       final String label,
       final String description,
       final boolean initialValue,
-      final BiConsumer<Z, String> settingsObjectUpdater,
-      final Function<Z, String> settingsObjectExtractor) {
+      final BiConsumer<Z, String> settingsObjectWriter,
+      final Function<Z, String> settingsObjectReader) {
 
     final JRadioButton radioButtonYes = new JRadioButton("Yes");
     final JRadioButton radioButtonNo = new JRadioButton("No");
     SwingComponents.createButtonGroup(radioButtonYes, radioButtonNo);
 
 
-    return SettingInputComponent.build(
-        label,
-        description,
-        createRadioButtonPanel(radioButtonYes, radioButtonNo, initialValue),
-        (() -> radioButtonYes.isSelected() ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),
-        settingsObjectUpdater,
-        settingsObjectExtractor);
+    Supplier<String> reader = () -> String.valueOf(radioButtonYes.isSelected());
 
+    Consumer<String> writer = (input) -> {
+      if( Boolean.valueOf(input)) {
+        radioButtonYes.setSelected(true);
+      } else {
+        radioButtonNo.setSelected(true);
+      }
+    };
+
+    return SettingInputComponent.build(
+        createRadioButtonPanel(radioButtonYes, radioButtonNo, initialValue),
+        new LabelDescription(label, description),
+        new SwingComponentReaderWriter(reader, writer),
+        new SettingsModelReaderWriter(settingsObjectReader, settingsObjectWriter));
   }
 
   static JPanel createRadioButtonPanel(
@@ -134,75 +136,80 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
     return panel;
   }
 
+  static class LabelDescription {
+    private String label;
+    private String description;
 
-  /**
-   * Factory method to create instances of this interface backed by TextField component types
-   */
-  static <Z extends HasDefaults> SettingInputComponent<Z> build(
-      final String label,
-      final String description,
-      final JPanel componentPanel,
-      final Supplier<String> componentReader,
-      final BiConsumer<Z, String> settingsObjectUpdater,
-      final Function<Z, String> settingsObjectExtractor,
-      final InputValidator... validators) {
-
-    final SettingsInput inputComponent = new SettingsInput() {
-      @Override
-      public JComponent getSwingComponent() {
-        return componentPanel;
-      }
-
-      @Override
-      public String getText() {
-        return componentReader.get();
-      }
-
-      /**
-       * We expect this to only be called in the case when input validation fails. Since user input is constrained
-       * valid values only, we never expect this to be the case
-       */
-      @Override
-      public void setText(final String valueToSet) {
-        throw new RuntimeException("Unsupported operation");
-      }
-    };
-    return build(label, description, inputComponent, settingsObjectUpdater, settingsObjectExtractor, validators);
+    LabelDescription(String label, String description) {
+      this.label = label;
+      this.description = description;
+    }
   }
 
 
+  class SwingComponentReaderWriter{
+    private Supplier<String> reader;
+    private Consumer<String> writer;
+    SwingComponentReaderWriter(Supplier<String> reader, Consumer<String> writer) {
+      this.reader = reader;
+      this.writer = writer;
+    }
+  }
 
-  /**
-   * Generic factory method to create instances of this interface
-   */
-  static <Z extends HasDefaults> SettingInputComponent<Z> build(
-      final String label,
-      final String description,
-      final SettingsInput component,
-      final BiConsumer<Z, String> updater,
-      final Function<Z, String> extractor,
+  class SettingsModelReaderWriter<Type extends HasDefaults> {
+    private final Function<Type, String> settingsReader;
+    private final BiConsumer<Type, String> settingsWriter;
+
+    SettingsModelReaderWriter(Function<Type, String> settingsReader,
+        BiConsumer<Type, String> settingsWriter) {
+      this.settingsWriter = settingsWriter;
+      this.settingsReader = settingsReader;
+    }
+
+
+  }
+
+  static <Type extends HasDefaults> SettingInputComponent build(
+      JPanel componentPanel,
+      LabelDescription labelDescription,
+      SwingComponentReaderWriter swingReaderWriter,
+      SettingsModelReaderWriter modelReaderWriter,
       final InputValidator... validators) {
 
-
-    return new SettingInputComponent<Z>() {
+    return new SettingInputComponent<Type>() {
       @Override
       public String getLabel() {
-        return label;
+        return labelDescription.label;
       }
 
       @Override
       public String getDescription() {
-        return description;
+        return labelDescription.description;
       }
 
       @Override
       public SettingsInput getInputElement() {
-        return component;
+        return new SettingsInput() {
+
+          @Override
+          public JComponent getSwingComponent() {
+            return componentPanel;
+          }
+
+          @Override
+          public String getText() {
+            return swingReaderWriter.reader.get();
+          }
+
+          @Override
+          public void setText(String valueToSet) {
+            swingReaderWriter.writer.accept(valueToSet);
+          }
+        };
       }
 
-
       @Override
-      public boolean updateSettings(final Z toUpdate) {
+      public boolean updateSettings(Type toUpdate) {
         final String input = getInputElement().getText();
 
         for (final InputValidator validator : Arrays.asList(validators)) {
@@ -212,13 +219,14 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
             return false;
           }
         }
-        updater.accept(toUpdate, input);
+        modelReaderWriter.settingsWriter.accept(toUpdate, input);
         return true;
       }
 
+
       @Override
-      public String getValue(final Z settingsType) {
-        return extractor.apply(settingsType);
+      public String getValue(HasDefaults settingsType) {
+        return (String) modelReaderWriter.settingsReader.apply(settingsType);
       }
 
       @Override

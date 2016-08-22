@@ -3,6 +3,7 @@ package games.strategy.triplea.settings.folders;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import games.strategy.engine.ClientContext;
@@ -14,18 +15,24 @@ public class FoldersTab implements SettingsTab<FolderSettings> {
   private final List<SettingInputComponent<FolderSettings>> inputs;
 
   public FoldersTab(final FolderSettings settings) {
+    JTextField saveGamePathField = new JTextField(settings.getSaveGamePath());
+    JPanel holderPanel = new JPanel();
+    holderPanel.add(saveGamePathField);
+
     inputs = Arrays.asList(
-        SettingInputComponent.build("Save game path",
+        SettingInputComponent.buildTextComponent(
+            "Save game path",
             "Default save game folder",
-            new JTextField(settings.getSaveGamePath()),
-            (((folderSettings, s) -> folderSettings.setSaveGamePath(s))),
-            (folderSettings -> folderSettings.getSaveGamePath()),
+            saveGamePathField,
+            FolderSettings::getSaveGamePath,
+            FolderSettings::setSaveGamePath,
             InputValidator.IS_DIRECTORY),
-        SettingInputComponent.build("Map Download Path",
+        SettingInputComponent.buildTextComponent(
+            "Map Download Path",
             "Location where maps are downloaded and found",
             new JTextField(settings.getDownloadedMapPath()),
-            (((folderSettings, s) -> folderSettings.setDownloadedMapPath(s))),
-            (folderSettings -> folderSettings.getDownloadedMapPath()),
+            FolderSettings::getDownloadedMapPath,
+            FolderSettings::setDownloadedMapPath,
             InputValidator.IS_DIRECTORY));
   }
 
