@@ -53,9 +53,13 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
 
 
 
-  static <Z extends HasDefaults> SettingInputComponent<Z> build(final IntegerValueRange valueRange,
-      final String label, final String description, final JTextComponent component,
-      final BiConsumer<Z, String> updater, final Function<Z, String> extractor) {
+  static <Z extends HasDefaults> SettingInputComponent<Z> build(
+      final IntegerValueRange valueRange,
+      final String label,
+      final String description,
+      final JTextComponent component,
+      final BiConsumer<Z, String> updater,
+      final Function<Z, String> extractor) {
 
     final String descriptionWithRange = "(" + valueRange.lowerValue + " - " + valueRange.upperValue
         + ", default: " + valueRange.defaultValue + ")\n" + description;
@@ -67,9 +71,13 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
   /**
    * Factory method to create instances of this interface, backed by TextField component types
    */
-  static <Z extends HasDefaults> SettingInputComponent<Z> build(final String label, final String description,
-      final JTextComponent component, final BiConsumer<Z, String> updater,
-      final Function<Z, String> extractor, final InputValidator... validators) {
+  static <Z extends HasDefaults> SettingInputComponent<Z> build(
+      final String label,
+      final String description,
+      final JTextComponent component,
+      final BiConsumer<Z, String> updater,
+      final Function<Z, String> extractor,
+      final InputValidator... validators) {
     final SettingsInput inputComponent = new SettingsInput() {
       @Override
       public JComponent getSwingComponent() {
@@ -89,8 +97,11 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
     return build(label, description, inputComponent, updater, extractor, validators);
   }
 
-  static <Z extends HasDefaults> SettingInputComponent<Z> buildYesOrNoRadioButtons(final String label,
-      final String description, final boolean initialValue, final BiConsumer<Z, String> settingsObjectUpdater,
+  static <Z extends HasDefaults> SettingInputComponent<Z> buildYesOrNoRadioButtons(
+      final String label,
+      final String description,
+      final boolean initialValue,
+      final BiConsumer<Z, String> settingsObjectUpdater,
       final Function<Z, String> settingsObjectExtractor) {
 
     final JRadioButton radioButtonYes = new JRadioButton("Yes");
@@ -108,7 +119,9 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
 
   }
 
-  static JPanel createRadioButtonPanel(final JRadioButton buttonYes, final JRadioButton buttonNo,
+  static JPanel createRadioButtonPanel(
+      final JRadioButton buttonYes,
+      final JRadioButton buttonNo,
       final boolean yesOptionIsSelected) {
     if (yesOptionIsSelected) {
       buttonYes.setSelected(true);
@@ -125,9 +138,13 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
   /**
    * Factory method to create instances of this interface backed by TextField component types
    */
-  static <Z extends HasDefaults> SettingInputComponent<Z> build(final String label, final String description,
-      final JPanel componentPanel, final Supplier<String> componentReader,
-      final BiConsumer<Z, String> settingsObjectUpdater, final Function<Z, String> settingsObjectExtractor,
+  static <Z extends HasDefaults> SettingInputComponent<Z> build(
+      final String label,
+      final String description,
+      final JPanel componentPanel,
+      final Supplier<String> componentReader,
+      final BiConsumer<Z, String> settingsObjectUpdater,
+      final Function<Z, String> settingsObjectExtractor,
       final InputValidator... validators) {
 
     final SettingsInput inputComponent = new SettingsInput() {
@@ -158,9 +175,13 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
   /**
    * Generic factory method to create instances of this interface
    */
-  static <Z extends HasDefaults> SettingInputComponent<Z> build(final String label, final String description,
+  static <Z extends HasDefaults> SettingInputComponent<Z> build(
+      final String label,
+      final String description,
       final SettingsInput component,
-      final BiConsumer<Z, String> updater, final Function<Z, String> extractor, final InputValidator... validators) {
+      final BiConsumer<Z, String> updater,
+      final Function<Z, String> extractor,
+      final InputValidator... validators) {
 
 
     return new SettingInputComponent<Z>() {
