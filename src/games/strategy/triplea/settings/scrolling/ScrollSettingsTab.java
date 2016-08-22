@@ -8,6 +8,7 @@ import javax.swing.JTextField;
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.settings.IntegerValueRange;
 import games.strategy.triplea.settings.SettingInputComponent;
+import games.strategy.triplea.settings.SettingInputComponentFactory;
 import games.strategy.triplea.settings.SettingsTab;
 
 public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
@@ -15,10 +16,8 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
   private final List<SettingInputComponent<ScrollSettings>> inputs;
 
   public ScrollSettingsTab(final ScrollSettings settings) {
-
-
     inputs = Arrays.asList(
-        SettingInputComponent.buildIntegerText(
+        SettingInputComponentFactory.buildIntegerText(
             new IntegerValueRange(2, 200, ScrollSettings.DEFAULT_ARROW_KEY_SCROLL_SPEED),
             "Arrow scroll speed",
             "How fast the map scrolls when using the arrow keys",
@@ -26,7 +25,7 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
             ScrollSettings::setArrowKeyScrollSpeed,
             (scrollSettings) -> String.valueOf(scrollSettings.getArrowKeyScrollSpeed())),
 
-        SettingInputComponent.buildIntegerText(
+        SettingInputComponentFactory.buildIntegerText(
             new IntegerValueRange(2, 4, ScrollSettings.DEFAULT_FASTER_ARROW_KEY_SCROLL_MULTIPLIER),
             "Arrow scroll speed multiplier",
             "When holding control down, the arrow key map scroll speed is multiplied by this amount",
@@ -34,7 +33,7 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
             ScrollSettings::setFasterArrowKeyScrollMultiplier,
             (scrollSettings) -> String.valueOf(scrollSettings.getFasterArrowKeyScrollMultiplier())),
 
-        SettingInputComponent.buildIntegerText(
+        SettingInputComponentFactory.buildIntegerText(
             new IntegerValueRange(10, 250, ScrollSettings.DEFAULT_MAP_EDGE_SCROLL_SPEED),
             "Map Edge Scroll Speed",
             "How fast the map scrolls when the mouse cursor is placed close to the edge of the map",
@@ -42,7 +41,7 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
             ScrollSettings::setMapEdgeScrollSpeed,
             scrollSettings -> String.valueOf(scrollSettings.getMapEdgeScrollSpeed())),
 
-        SettingInputComponent.buildIntegerText(
+        SettingInputComponentFactory.buildIntegerText(
             new IntegerValueRange(0, 150, ScrollSettings.DEFAULT_MAP_EDGE_SCROLL_ZONE_SIZE),
             "Map Edge Scroll Zone Size",
             "How close the mouse cursor must be to the edge of the map for the map to scroll",
@@ -50,7 +49,7 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
             ScrollSettings::setMapEdgeFasterScrollZoneSize,
             scrollSettings -> String.valueOf(scrollSettings.getMapEdgeScrollZoneSize())),
 
-        SettingInputComponent.buildIntegerText(
+        SettingInputComponentFactory.buildIntegerText(
             new IntegerValueRange(0, 100, ScrollSettings.DEFAULT_MAP_EDGE_FASTER_SCROLL_ZONE_SIZE),
             "Map Edge Faster Scroll Zone Size",
             "How close the mouse cursor must be to the edge of the map for the map to scroll faster",
@@ -58,7 +57,7 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
             ScrollSettings::setMapEdgeFasterScrollZoneSize,
             scrollSettings -> String.valueOf(scrollSettings.getMapEdgeFasterScrollZoneSize())),
 
-        SettingInputComponent.buildIntegerText(
+        SettingInputComponentFactory.buildIntegerText(
             new IntegerValueRange(2, 5, ScrollSettings.DEFAULT_MAP_EDGE_FASTER_SCROLL_MULTIPLIER),
             "Scroll Zone Multiplier",
             "Multiplier for how much faster the map scrolls when the mouse is closest to the edge",
@@ -66,7 +65,7 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
             ScrollSettings::setMapEdgeFasterScrollMultiplier,
             scrollSettings -> String.valueOf(scrollSettings.getMapEdgeFasterScrollMultiplier())),
 
-        SettingInputComponent.buildIntegerText(
+        SettingInputComponentFactory.buildIntegerText(
             new IntegerValueRange(10, 400, ScrollSettings.DEFAULT_WHEEL_SCROLL_AMOUNT),
             "Mouse Wheel Scroll Amount",
             "The distance the map is scrolled when the mouse wheel is used",
