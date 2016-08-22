@@ -246,7 +246,7 @@ public class MapRouteDrawer {
     final int y = point.y;
     final int width = dimension.width;
     final int screenWidth = screenDimension.width;
-    if (x - width > xOffset || (xOffset < 0 && xOffset + screenWidth < x)) {
+    if (x - width > xOffset || (xOffset < - width / 2 && xOffset + screenWidth < x)) {
       newPoint = new Point(x - width, y);
     } else if (x < xOffset && x + width < screenWidth + xOffset) {
       newPoint = new Point(x + width, y);
