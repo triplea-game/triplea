@@ -22,6 +22,8 @@ before_deploy:
 ## Create the installers
 - ./gradlew release
 - ls build/releases/
+- mv build/releases/triplea_${TAGGED_VERSION}_windows-x64.exe build/releases/triplea_${TAGGED_VERSION}_windows-64bit.exe
+- mv build/releases/triplea_${TAGGED_VERSION}_windows.exe build/releases/triplea_${TAGGED_VERSION}_windows-32bit.exe
 
 ## Push a tag to github, will trigger the releases process
 - chmod +x ./.travis/push_tag && ./.travis/push_tag
@@ -41,8 +43,8 @@ deploy:
   ## This is the list of files to be deployed to github releases
   file:
     - build/libs/triplea-${TAGGED_VERSION}-all.jar
-    - build/releases/triplea_${TAGGED_VERSION}_windows-x64.exe
-    - build/releases/triplea_${TAGGED_VERSION}_windows.exe
+    - build/releases/triplea_${TAGGED_VERSION}_windows-64bit.exe
+    - build/releases/triplea_${TAGGED_VERSION}_windows-32bit.exe
     - build/releases/triplea_${TAGGED_VERSION}_macos.dmg
     - build/releases/triplea_${TAGGED_VERSION}_unix.sh
     - build/distributions/triplea-${TAGGED_VERSION}-all_platforms.zip
