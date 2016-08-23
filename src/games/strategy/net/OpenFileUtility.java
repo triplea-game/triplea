@@ -5,9 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
-import javax.swing.JOptionPane;
-
 import games.strategy.debug.ClientLogger;
+import games.strategy.ui.SwingComponents;
 
 /**
  * A wrapper class for opening Files & URLs using the Desktop API
@@ -27,7 +26,7 @@ public class OpenFileUtility {
         ClientLogger.logError("Could not open File " + file.getAbsolutePath(), e);
       }
     } else {
-      logDesktopAPIMessage("File", file.getAbsolutePath());
+      logDesktopAPIMessage(file.getAbsolutePath());
     }
   }
 
@@ -44,14 +43,13 @@ public class OpenFileUtility {
         ClientLogger.logError("Could not open URL " + url, e);
       }
     } else {
-      logDesktopAPIMessage("URL", url);
+      logDesktopAPIMessage(url);
     }
   }
 
-  private static void logDesktopAPIMessage(String type, String path) {
-    ClientLogger.logQuietly("The Client doesn't support the Desktop API");
-    JOptionPane.showMessageDialog(null,
-        "We're sorry, but it seems that your installed java version doesn't support the Desktop API required to open the destination "
-            + type + ": " + path);
+  private static void logDesktopAPIMessage(String path) {
+    SwingComponents.showDialog("Desktop API not supported",
+        "We're sorry, but it seems that your installed java version doesn't support the Desktop API required to open "
+            + path);
   }
 }
