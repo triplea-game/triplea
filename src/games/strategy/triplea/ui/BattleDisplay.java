@@ -184,11 +184,6 @@ public class BattleDisplay extends JPanel {
     return prefs.getBoolean(Constants.SHOW_ENEMY_CASUALTIES_USER_PREF, true);
   }
 
-  public static void setShowEnemyCasualtyNotification(final boolean aVal) {
-    final Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
-    prefs.putBoolean(Constants.SHOW_ENEMY_CASUALTIES_USER_PREF, aVal);
-  }
-
   public static boolean getFocusOnOwnCasualtiesNotification() {
     final Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
     return prefs.getBoolean(Constants.FOCUS_ON_OWN_CASUALTIES_USER_PREF, false);
