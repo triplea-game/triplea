@@ -81,8 +81,6 @@ public class MapCreator extends JFrame {
     creator.setSize(800, 600);
     creator.setLocationRelativeTo(null);
     creator.setVisible(true);
-    OpenFileUtility.openFile(new File("C:\\Users\\Robin\\Desktop\\index.php"));
-    OpenFileUtility.openURL("https://google.de");
   }
 
   public MapCreator() {
