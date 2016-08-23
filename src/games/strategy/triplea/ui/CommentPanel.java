@@ -164,11 +164,6 @@ public class CommentPanel extends JPanel {
     nextMessageKeymap.put(KeyStroke.getKeyStroke('\n'), m_saveAction);
   }
 
-  private void cleanupKeyMap() {
-    final InputMap nextMessageKeymap = m_nextMessage.getInputMap();
-    nextMessageKeymap.remove(KeyStroke.getKeyStroke('\n'));
-  }
-
   private void loadHistory() {
     final Document doc = m_text.getDocument();
     final HistoryNode rootNode = (HistoryNode) m_data.getHistory().getRoot();
@@ -236,30 +231,6 @@ public class CommentPanel extends JPanel {
     }
   }
 
-  /**
-   * Show only the first n lines
-   */
-  public static void trimLines(final Document doc, final int lineCount) {
-    if (doc.getLength() < lineCount) {
-      return;
-    }
-    try {
-      final String text = doc.getText(0, doc.getLength());
-      int returnsFound = 0;
-      for (int i = text.length() - 1; i >= 0; i--) {
-        if (text.charAt(i) == '\n') {
-          returnsFound++;
-        }
-        if (returnsFound == lineCount) {
-          doc.remove(0, i);
-          return;
-        }
-      }
-    } catch (final BadLocationException e) {
-      ClientLogger.logQuietly(e);
-    }
-  }
-
   private final Action m_saveAction = SwingAction.of("Add Comment", e -> {
     if (m_nextMessage.getText().trim().length() == 0) {
       return;
@@ -268,7 +239,4 @@ public class CommentPanel extends JPanel {
     m_nextMessage.setText("");
   });
 
-  public void cleanUp() {
-    cleanupKeyMap();
-  }
 }

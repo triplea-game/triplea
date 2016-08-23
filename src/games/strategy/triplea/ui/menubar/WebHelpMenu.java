@@ -22,11 +22,6 @@ public class WebHelpMenu {
     hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_HOSTING_MAPS));
     parentMenu.add(hostingLink);
 
-    final JMenuItem bugReport = new JMenuItem("Bug Report");
-    bugReport.setMnemonic(KeyEvent.VK_B);
-    bugReport.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES));
-    parentMenu.add(bugReport);
-
     final JMenuItem lobbyRules = new JMenuItem("Lobby Rules");
     lobbyRules.setMnemonic(KeyEvent.VK_L);
     lobbyRules.addActionListener(
@@ -53,6 +48,4 @@ public class WebHelpMenu {
     ruleBookLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK));
     parentMenu.add(ruleBookLink);
   }
-
-
 }

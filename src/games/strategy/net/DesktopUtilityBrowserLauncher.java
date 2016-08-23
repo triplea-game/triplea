@@ -1,10 +1,15 @@
 package games.strategy.net;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 
 import javax.swing.JOptionPane;
+
+import games.strategy.debug.ClientLogger;
+
 
 /**
  * <b>Bare Bones Browser Launch for Java</b><br>
@@ -32,24 +37,23 @@ public class DesktopUtilityBrowserLauncher {
    */
   public static void openFile(final File file) {
     // openURL(file.toURI().toString());
-    final URI uri = file.toURI();
-    try { // attempt to use Desktop library from JDK 1.6+
-      final Class<?> d = Class.forName("java.awt.Desktop");
-      d.getDeclaredMethod("browse", URI.class)
-          .invoke(d.getDeclaredMethod("getDesktop").invoke(null), uri);
-      // above code mimicks: java.awt.Desktop.getDesktop().browse()
-    } catch (final Exception ignore) { // library not available or failed
+    final URI uri = file.toURI();// TODO check if the failed thing is necessary
+    boolean failed = true;
+    if (Desktop.isDesktopSupported()) {
+      try {
+        Desktop.getDesktop().open(file);
+        failed = false;
+      } catch (IOException e) {
+        ClientLogger.logError(e);
+      }
+    }
+    if (failed) {
       // we use "toString()" or to "toASCIIString()" because "getPath()" sometimes does not work.
       final String url = uri.toString();
       final String osName = System.getProperty("os.name");
       try {
         if (osName != null && osName.startsWith("Mac OS")) {
-          try {
-            Class.forName("com.apple.eio.FileManager").getDeclaredMethod("open", String.class)
-                .invoke(null, url);
-          } catch (final Exception e) {
-            Runtime.getRuntime().exec("open " + url);
-          }
+          Runtime.getRuntime().exec("open " + url);
         } else if (osName != null && osName.startsWith("Windows")) {
           Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
         } else { // assume Unix or Linux
@@ -79,18 +83,19 @@ public class DesktopUtilityBrowserLauncher {
    *        A web address (URL) of a web page (ex: "http://www.google.com/")
    */
   public static void openURL(final String url) {
-    try { // attempt to use Desktop library from JDK 1.6+
-      final Class<?> d = Class.forName("java.awt.Desktop");
-      d.getDeclaredMethod("browse", URI.class)
-          .invoke(d.getDeclaredMethod("getDesktop").invoke(null), URI.create(url));
-      // above code mimicks: java.awt.Desktop.getDesktop().browse()
-    } catch (final Exception ignore) { // library not available or failed
+    boolean failed = true;// TODO check if the failed thing is necessary
+    if (Desktop.isDesktopSupported()) {
+      try {
+        Desktop.getDesktop().browse(URI.create(url));
+        failed = false;
+      } catch (IOException e) {
+        ClientLogger.logError(e);
+      }
+    }
+    if (failed) {
       final String osName = System.getProperty("os.name");
       try {
-        if (osName != null && osName.startsWith("Mac OS")) {
-          Class.forName("com.apple.eio.FileManager").getDeclaredMethod("openURL", String.class)
-              .invoke(null, url);
-        } else if (osName != null && osName.startsWith("Windows")) {
+        if (osName != null && osName.startsWith("Windows")) {
           Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
         } else { // assume Unix or Linux
           String browser = null;

@@ -19,20 +19,6 @@ public class CountDownLatchHandler {
   }
 
   /**
-   * If "releaseLatchOnInterrupt" was set to true (defaults to false) on construction of this handler, then interruptAll
-   * will release and
-   * remove all current latches.
-   * Otherwise does nothing.
-   */
-  public void interruptAll() {
-    if (m_releaseLatchOnInterrupt) {
-      for (final CountDownLatch latch : m_latchesToCloseOnShutdown) {
-        removeShutdownLatch(latch);
-      }
-    }
-  }
-
-  /**
    * If "releaseLatchOnInterrupt" was set to true (defaults to false) on construction of this handler, then
    * interruptLatch will release and
    * remove the latch.
