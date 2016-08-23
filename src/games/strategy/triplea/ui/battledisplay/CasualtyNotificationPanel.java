@@ -3,7 +3,6 @@ package games.strategy.triplea.ui.battledisplay;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.ui.DicePanel;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
