@@ -228,9 +228,7 @@ public class BattleDisplay extends JPanel {
       m_data.releaseReadLock();
     }
     final Collection<Unit> dependentUnitsReturned = new ArrayList<>();
-    final Iterator<Collection<Unit>> dependentUnitsCollections = dependentsMap.values().iterator();
-    while (dependentUnitsCollections.hasNext()) {
-      final Collection<Unit> dependentCollection = dependentUnitsCollections.next();
+    for (Collection<Unit> dependentCollection : dependentsMap.values()) {
       dependentUnitsReturned.addAll(dependentCollection);
     }
     for (final UnitCategory category : UnitSeperator.categorize(aKilledUnits, dependentsMap, false, false)) {
